@@ -423,16 +423,23 @@ void PyProblem::solve()
 
 PyField::PyField(char *fieldId)
 {
-    // TODO: check
-    if (Util::scene()->hasField(QString(fieldId)))
-    {
-        m_fieldInfo = Util::scene()->fieldInfo(fieldId);
-    }
+    QStringList mods;
+    std::map<std::string, std::string> modules = availableModules();
+    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+        mods.append(QString::fromStdString(it->first));
+
+    if (mods.contains(QString(fieldId)))
+        if (Util::scene()->hasField(QString(fieldId)))
+        {
+            m_fieldInfo = Util::scene()->fieldInfo(fieldId);
+        }
+        else
+        {
+            m_fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
+            Util::scene()->addField(fieldInfo());
+        }
     else
-    {
-        m_fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
-        Util::scene()->addField(fieldInfo());
-    }
+        throw invalid_argument(QObject::tr("Invalid field id. Valid keys: %1").arg(stringListToString(mods)).toStdString());
 }
 
 FieldInfo *PyField::fieldInfo()
@@ -442,10 +449,15 @@ FieldInfo *PyField::fieldInfo()
 
 void PyField::setAnalysisType(const char *analysisType)
 {
-    if (analysisTypeStringKeys().contains(QString(analysisType)))
+    QStringList ans;
+    std::map<std::string, std::string> analyses = availableAnalyses(m_fieldInfo->fieldId().toStdString());
+    for (std::map<std::string, std::string>::iterator it = analyses.begin(); it != analyses.end(); ++it)
+        ans.append(QString::fromStdString(it->first));
+
+    if (ans.contains(QString(analysisType)))
         Util::scene()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
     else
-        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(analysisTypeStringKeys())).toStdString());
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(ans)).toStdString());
 }
 
 void PyField::setNumberOfRefinements(const int numberOfRefinements)
