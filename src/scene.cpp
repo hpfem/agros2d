@@ -115,7 +115,7 @@ void FieldInfo::clear()
     initialCondition = Value("0.0", false);
 
     // weakforms
-    weakFormsType = WeakFormsType_Compiled;
+    weakFormsType = WeakFormsType_Interpreted;
 
     // linearity
     linearityType = LinearityType_Linear;
@@ -1054,8 +1054,6 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 
 void Scene::doInvalidated()
 {
-    logMessage("Scene::doInvalidated()");
-
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
     actNewLabel->setEnabled(materials->length() >= 1);
     //actClearSolutions->setEnabled(m_sceneSolution->isSolved());  //TODO kdy umoznit mazani?

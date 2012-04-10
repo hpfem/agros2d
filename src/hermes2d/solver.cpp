@@ -51,8 +51,6 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> Solver<Scalar>::readMesh()
     // load the mesh file
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
     QMap<FieldInfo*, Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
-//    cout << "reading mesh in solver CTVEREC" << endl;
-//    Mesh *mesh = readMeshFromFile("data/aa-electrostatic-ctverec.xml");
 
     // check that all boundary edges have a marker assigned
     QSet<int> boundaries;

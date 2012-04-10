@@ -18,69 +18,71 @@ cdef extern from "limits.h":
 cdef extern from "../../src/pythonlabagros.h":
     # PyProblem
     cdef cppclass PyProblem:
-        PyProblem(char*, char*, char*, char*, double, double, double) except +
+        PyProblem(int clear)
+
+        void clear()
 
         char *getName()
         void setName(char *name)
 
         char *getCoordinateType()
-        void setCoordinateType(char *coordinateType)
+        void setCoordinateType(char *coordinateType) except +
 
         char *getMeshType()
-        void setMeshType(char *meshType)
+        void setMeshType(char *meshType) except +
 
         char *getMatrixSolver()
-        void setMatrixSolver(char *matrixSolver)
+        void setMatrixSolver(char *matrixSolver) except +
 
         double getFrequency()
-        void setFrequency(double frequency)
+        void setFrequency(double frequency) except +
 
         double getTimeStep()
-        void setTimeStep(double timeStep)
+        void setTimeStep(double timeStep) except +
 
         double getTimeTotal()
-        void setTimeTotal(double timeTotal)
+        void setTimeTotal(double timeTotal) except +
 
         void solve()
 
     # PyField
     cdef cppclass PyField:
-        PyField(char*, char*, int, int, char*, double, int, char*, double, int, double, char*) except +
+        PyField(char *field_id) except +
 
         char *getFieldId()
 
         char *getAnalysisType()
-        void setAnalysisType(char*)
+        void setAnalysisType(char*) except +
 
-        int getNumberOfRefinemens()
-        void setNumberOfRefinemens(int)
+        int getNumberOfRefinements()
+        void setNumberOfRefinements(int) except +
 
         int getPolynomialOrder()
-        void setPolynomialOrder(int)
+        void setPolynomialOrder(int) except +
 
         char *getLinearityType()
-        void setLinearityType(char*)
+        void setLinearityType(char*) except +
 
         double getNonlinearTolerance()
-        void setNonlinearTolerance(double)
+        void setNonlinearTolerance(double) except +
 
         int getNonlinearSteps()
-        void setNonlinearSteps(int)
+        void setNonlinearSteps(int) except +
 
         char *getAdaptivityType()
-        void setAdaptivityType(char*)
+        void setAdaptivityType(char*) except +
 
         double getAdaptivityTolerance()
-        void setAdaptivityTolerance(double)
+        void setAdaptivityTolerance(double) except +
 
         int getAdaptivitySteps()
-        void setAdaptivitySteps(int)
+        void setAdaptivitySteps(int) except +
 
         double getInitialCondition()
-        void setInitialCondition(double)
+        void setInitialCondition(double) except +
 
         char *getWeakForms()
-        void setWeakForms(char*)
+        void setWeakForms(char*) except +
 
         void addBoundary(char*, char*, map[char*, double]) except +
         void setBoundary(char*, char*, map[char*, double]) except +
@@ -168,16 +170,19 @@ cdef extern from "../../src/pythonlabagros.h":
     int pythonTimeStepCount()
 
 # Problem
-cdef class Problem:
+cdef class __Problem__:
     cdef PyProblem *thisptr
 
-    # Problem(coordinate_type, name, mesh_type, matrix_solver, frequency, time_step, time_total)
-    def __cinit__(self, char *coordinate_type, char *name = "", char *mesh_type = "triangle", char *matrix_solver = "umfpack",
-                  double frequency=0.0, double time_step = 0.0, double time_total = 0.0):
-        self.thisptr = new PyProblem(coordinate_type, name, mesh_type, matrix_solver, frequency, time_step, time_total)
+    # Problem(clear)
+    def __cinit__(self, int clear = 0):
+        self.thisptr = new PyProblem(clear)
 
     def __dealloc__(self):
         del self.thisptr
+
+    # clear
+    def clear(self):
+        self.thisptr.clear()
 
     # name
     property name:
@@ -233,16 +238,13 @@ cdef class Problem:
         self.thisptr.solve()
 
 # Field
-cdef class Field:
+cdef class __Field__:
     cdef PyField *thisptr
 
-    # Field(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance, nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
-    def __cinit__(self, Problem problem, char *field_id, char *analysis_type, int number_of_refinements = 0, int polynomial_order = 1, char *linearity_type = "linear",
-                  double nonlinear_tolerance = 0.001, int nonlinear_steps = 10, char *adaptivity_type = "disabled", double adaptivity_tolerance = 1,
-                  int adaptivity_steps = 1, double initial_condition = 0.0, char *weak_forms = "interpreted"):
+    # Field(field_id)
+    def __cinit__(self, char *field_id):
         # todo - more problems
-        self.thisptr = new PyField(field_id, analysis_type, number_of_refinements, polynomial_order, linearity_type, nonlinear_tolerance,
-                                   nonlinear_steps, adaptivity_type, adaptivity_tolerance, adaptivity_steps, initial_condition, weak_forms)
+        self.thisptr = new PyField(field_id)
     def __dealloc__(self):
         del self.thisptr
 
@@ -261,9 +263,9 @@ cdef class Field:
     # number_of_refinements
     property number_of_refinements:
         def __get__(self):
-            return self.thisptr.getNumberOfRefinemens()
+            return self.thisptr.getNumberOfRefinements()
         def __set__(self, number_of_refinements):
-            self.thisptr.setNumberOfRefinemens(number_of_refinements)
+            self.thisptr.setNumberOfRefinements(number_of_refinements)
 
     # polynomial_order
     property polynomial_order:
@@ -424,11 +426,11 @@ cdef class Field:
         return out
 
 # Geometry
-cdef class Geometry:
+cdef class __Geometry__:
     cdef PyGeometry *thisptr
 
     # Geometry()
-    def __cinit__(self, Problem problem):
+    def __cinit__(self):
         # todo - more problems
         self.thisptr = new PyGeometry()
     def __dealloc__(self):
@@ -566,6 +568,24 @@ cdef class Geometry:
     # zoom_region()
     def zoom_region(self, double x1, double y1, double x2, double y2):
         self.thisptr.zoomRegion(x1, y1, x2, y2)
+
+# TODO - more problems?
+# private problem
+__problem__ = __Problem__()
+def problem(int clear = False):
+    if (clear):
+        __problem__.clear()
+    return __problem__
+
+# TODO - more geometries?
+# private geometry
+__geometry__ = __Geometry__()
+def geometry():
+    return __geometry__
+
+# field
+def field(char *field_id):
+    return __Field__(field_id)
 
 # version()
 def version():
