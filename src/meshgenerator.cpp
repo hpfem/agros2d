@@ -790,7 +790,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
         for (int i = 0; i<elementList.count(); i++)
         {
-            if (elementList[i].isUsed)
+            if (elementList[i].isUsed && (Util::scene()->labels->at(elementList[i].marker)->getMarker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
             {
                 QDomElement eleSubElement = doc.createElement("i");
                 eleSubElements.appendChild(eleSubElement);

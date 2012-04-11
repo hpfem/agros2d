@@ -23,13 +23,14 @@
 #include "util.h"
 
 class Scene;
-class SceneViewCommon;
+class SceneViewPost2D;
+class FieldInfo;
 
 class SceneMarkerSelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SceneMarkerSelectDialog(SceneViewCommon *sceneView, QWidget *parent = 0);
+    SceneMarkerSelectDialog(SceneViewPost2D *sceneView, SceneModePostprocessor mode, QWidget *parent = 0);
 
 private slots:
     void doAccept();
@@ -39,7 +40,7 @@ protected:
     void createControls();
 
 private:
-    SceneViewCommon *m_sceneView;
+    SceneViewPost2D *m_sceneView;
 
     QTabWidget* tabWidget;
 
