@@ -19,7 +19,6 @@
 
 #include "sceneview_post.h"
 #include "sceneview_data.h"
-//#include "scenesolution.h"
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"

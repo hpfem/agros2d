@@ -22,13 +22,39 @@
 #include "scenebasic.h"
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
-#include "scenesolution.h"
 #include "logview.h"
 #include "hermes2d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutiontypes.h"
+
+int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
+{
+    assert(mesh);
+
+    for (int i = 0; i < mesh->get_num_active_elements(); i++)
+    {
+        Hermes::Hermes2D::Element *element = mesh->get_element_fast(i);
+
+        bool inElement = false;
+        int j;
+        int npol = (element->is_triangle()) ? 3 : 4;
+
+        for (int i = 0, j = npol-1; i < npol; j = i++) {
+            if ((((element->vn[i]->y <= point.y) && (point.y < element->vn[j]->y)) ||
+                 ((element->vn[j]->y <= point.y) && (point.y < element->vn[i]->y))) &&
+                    (point.x < (element->vn[j]->x - element->vn[i]->x) * (point.y - element->vn[i]->y)
+                     / (element->vn[j]->y - element->vn[i]->y) + element->vn[i]->x))
+                inElement = !inElement;
+        }
+
+        if (inElement)
+            return i;
+    }
+
+    return -1;
+}
 
 LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : m_fieldInfo(fieldInfo), point(point)
 {
@@ -64,20 +90,18 @@ void LocalPointValue::calculate()
 
     this->point = point;
 
-    FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-    SceneSolution<double>* sceneSolution = Util::scene()->sceneSolution(fsid);
-    if (Util::problem()->isSolved() &&
-            m_fieldInfo->analysisType() == AnalysisType_Transient)
+    // update time functions
+    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         m_fieldInfo->module()->update_time_functions(Util::problem()->time());
 
     if (Util::problem()->isSolved())
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(), point);
+        int index = findElementInMesh(Util::problem()->meshInitial(m_fieldInfo), point);
         if (index != -1)
         {
             // find marker
-            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial()->get_element_fast(index);
-            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1);
+            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial(m_fieldInfo)->get_element_fast(index);
+            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *tmpMaterial = label->getMarker(m_fieldInfo);
 
             // set variables
@@ -93,8 +117,8 @@ void LocalPointValue::calculate()
 
             for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
             {
-                // solution
-                sln[k] = sceneSolution->sln(k + (Util::problem()->timeStep() * m_fieldInfo->module()->number_of_solution()));
+                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());                
+                sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.get();
 
                 double value;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) &&

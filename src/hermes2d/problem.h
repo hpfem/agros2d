@@ -113,11 +113,10 @@ public:
     // check geometry
     bool checkGeometry();
 
-    // progress dialog
-    ProgressDialog* progressDialog();
-
-    inline Hermes::Hermes2D::Mesh *meshInitial() { return m_meshInitial; }
-    inline void setMeshInitial(Hermes::Hermes2D::Mesh* mesh) { m_meshInitial = mesh; }
+    inline Hermes::Hermes2D::Mesh *meshInitial(FieldInfo* fieldInfo) { return m_meshesInitial[fieldInfo]; }
+    Hermes::Hermes2D::Mesh *activeMeshInitial();
+    inline QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesInitial() { return m_meshesInitial; }
+    inline void setMeshesInitial(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes) { m_meshesInitial = meshes; }
 
     // time TODO zatim tady, ale asi presunout
     //void setTimeStep(int timeStep, bool showViewProgress = true) { assert(0); }
@@ -126,7 +125,7 @@ public:
     double time() const { return 0; }
 
     bool isSolved() const {  return m_isSolved; }
-    bool isMeshed()  const {  return m_meshInitial; }
+    bool isMeshed()  const {  return ! m_meshesInitial.isEmpty(); }
     bool isSolving() const { return m_isSolving; }
 
 //    inline int timeElapsed() const { return m_timeElapsed; }
@@ -150,8 +149,8 @@ public:
     int m_timeStep;
     bool m_isSolved;
 
-    //TODO move to Field
-    Hermes::Hermes2D::Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
+    // todo: move to Field
+    QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
 };
 
 class SolutionStore

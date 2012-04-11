@@ -30,7 +30,6 @@
 #include "sceneview_common.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-#include "scenesolution.h"
 #include "logview.h"
 
 #include "hermes2d/module.h"
@@ -129,10 +128,10 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
 
             // load mesh
-            Hermes::Hermes2D::Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".xml");
+            QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
 
             // FIXME: jinak
-            Util::problem()->setMeshInitial(mesh);
+            Util::problem()->setMeshesInitial(meshes);
         }
         else
         {
@@ -332,11 +331,10 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     doc.appendChild(instr);
 
     // main document
-    QDomElement eleMesh = doc.createElement("mesh:mesh");
+    QDomElement eleMesh = doc.createElement("domain:domain");
     eleMesh.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    eleMesh.setAttribute("xmlns:mesh", "XMLMesh");
-    eleMesh.setAttribute("xmlns:element", "XMLMesh");
-    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLMesh %1/mesh_h2d_xml.xsd").arg(datadir() + "/resources/xsd"));
+    eleMesh.setAttribute("xmlns:domain", "XMLSubdomains");
+    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLSubdomains %1/subdomains_h2d_xml.xsd").arg(datadir() + "/resources/xsd"));
     doc.appendChild(eleMesh);
 
     QDomElement eleVertices = doc.createElement("vertices");
@@ -347,6 +345,8 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     eleMesh.appendChild(eleEdges);
     QDomElement eleCurves = doc.createElement("curves");
     eleMesh.appendChild(eleCurves);
+    QDomElement eleSubdomains = doc.createElement("subdomains");
+    eleMesh.appendChild(eleSubdomains);
 
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -402,7 +402,8 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         int marker;
 
         sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node[0], &node[1], &marker);
-        edgeList.append(MeshEdge(node[0], node[1], marker));
+
+        edgeList.append(MeshEdge(node[0], node[1], marker - 1)); // marker conversion from triangle, where it starts from 1
     }
     int edgeCountLinear = edgeList.count();
 
@@ -448,12 +449,13 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i	%i	%i	%i",
                &n, &node[0], &node[1], &node[2], &node[3], &node[4], &node[5], &marker);
+        assert(marker > 0);
 
         if (Util::scene()->problemInfo()->meshType == MeshType_Triangle ||
                 Util::scene()->problemInfo()->meshType == MeshType_QuadJoin ||
                 Util::scene()->problemInfo()->meshType == MeshType_QuadRoughDivision)
         {
-            elementList.append(MeshElement(node[0], node[1], node[2], marker));
+            elementList.append(MeshElement(node[0], node[1], node[2], marker - 1)); // marker conversion from triangle, where it starts from 1
         }
 
         if (Util::scene()->problemInfo()->meshType == MeshType_QuadFineDivision)
@@ -462,18 +464,18 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
             nodeList.append(Point((nodeList[node[0]].x + nodeList[node[1]].x + nodeList[node[2]].x) / 3.0,
                                   (nodeList[node[0]].y + nodeList[node[1]].y + nodeList[node[2]].y) / 3.0));
             // add three quad elements
-            elementList.append(MeshElement(node[4], node[0], node[5], nodeList.count() - 1, marker));
-            elementList.append(MeshElement(node[5], node[1], node[3], nodeList.count() - 1, marker));
-            elementList.append(MeshElement(node[3], node[2], node[4], nodeList.count() - 1, marker));
+            elementList.append(MeshElement(node[4], node[0], node[5], nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
+            elementList.append(MeshElement(node[5], node[1], node[3], nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
+            elementList.append(MeshElement(node[3], node[2], node[4], nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
         }
 
-        if (elementList[i].marker == 0)
+        if (marker == 0)
         {
             Util::log()->printError(tr("Mesh generator"), tr("some areas have no label marker"));
             return false;
         }
 
-        labelMarkersCheck.insert(marker);
+        labelMarkersCheck.insert(marker - 1);
     }
     int elementCountLinear = elementList.count();
 
@@ -519,7 +521,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     {
         for (int i = 0; i < edgeCountLinear; i++)
         {
-            if (edgeList[i].marker != 0)
+            if (edgeList[i].marker != -1)
             {
                 for (int j = 0; j < elementList.count() / 3; j++)
                 {
@@ -651,26 +653,31 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     int countEdges = 0;
     for (int i = 0; i < edgeList.count(); i++)
     {
-        if (edgeList[i].isUsed && edgeList[i].marker != 0)
+        if (edgeList[i].isUsed && edgeList[i].marker != -1)
         {
             //TODO - no "inner edges" in new xml mesh file format - remove?
             // inner edge marker (minus markers are ignored)
-            int marker = - (edgeList[i].marker-1);
-            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfoTMP)
-                        != SceneBoundaryContainer::getNone(fieldInfoTMP))
-                {
-                    // boundary marker
-                    marker = edgeList[i].marker;
+//            int marker = - (edgeList[i].marker-1);
+//            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+//                if (Util::scene()->edges->at(edgeList[i].marker-1)->getMarker(fieldInfoTMP)
+//                        != SceneBoundaryContainer::getNone(fieldInfoTMP))
+//                {
+//                    // boundary marker
+//                    marker = edgeList[i].marker;
 
-                    break;
-                }
+//                    break;
+//                }
 
-            countEdges++;
+//            countEdges++;
 
+            int marker = edgeList[i].marker;
+
+
+            //assert(countEdges == i+1);
             QDomElement eleEdge = doc.createElement("edge");
             eleEdge.setAttribute("v1", edgeList[i].node[0]);
             eleEdge.setAttribute("v2", edgeList[i].node[1]);
+            eleEdge.setAttribute("i", i);
             eleEdge.setAttribute("marker", marker);
 
             eleEdges.appendChild(eleEdge);
@@ -683,23 +690,23 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     {
         for (int i = 0; i<edgeList.count(); i++)
         {
-            if (edgeList[i].marker != 0)
+            if (edgeList[i].marker != -1)
             {
                 // curve
-                if (Util::scene()->edges->at(edgeList[i].marker-1)->angle > 0.0)
+                if (Util::scene()->edges->at(edgeList[i].marker)->angle > 0.0)
                 {
                     countCurves++;
-                    int segments = Util::scene()->edges->at(edgeList[i].marker-1)->segments();
+                    int segments = Util::scene()->edges->at(edgeList[i].marker)->segments();
 
                     // subdivision angle and chord
-                    double theta = deg2rad(Util::scene()->edges->at(edgeList[i].marker-1)->angle) / double(segments);
-                    double chord = 2 * Util::scene()->edges->at(edgeList[i].marker-1)->radius() * sin(theta / 2.0);
+                    double theta = deg2rad(Util::scene()->edges->at(edgeList[i].marker)->angle) / double(segments);
+                    double chord = 2 * Util::scene()->edges->at(edgeList[i].marker)->radius() * sin(theta / 2.0);
 
                     // length of short chord
                     double chordShort = (nodeList[edgeList[i].node[1]] - nodeList[edgeList[i].node[0]]).magnitude();
 
                     // direction
-                    Point center = Util::scene()->edges->at(edgeList[i].marker-1)->center();
+                    Point center = Util::scene()->edges->at(edgeList[i].marker)->center();
                     int direction = (((nodeList[edgeList[i].node[0]].x-center.x)*(nodeList[edgeList[i].node[1]].y-center.y) -
                                       (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
 
@@ -718,24 +725,25 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         // move nodes (arcs)
         for (int i = 0; i<edgeList.count(); i++)
         {
-            if (edgeList[i].marker != 0)
+           // assert(edgeList[i].marker >= 0); // markers changed to marker - 1, check...
+            if (edgeList[i].marker != -1)
             {
                 // curve
-                if (Util::scene()->edges->at(edgeList[i].marker-1)->angle > 0.0)
+                if (Util::scene()->edges->at(edgeList[i].marker)->angle > 0.0)
                 {
                     // angle
-                    Point center = Util::scene()->edges->at(edgeList[i].marker-1)->center();
+                    Point center = Util::scene()->edges->at(edgeList[i].marker)->center();
                     double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
                                                center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
 
                     double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
                                                center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
 
-                    nodeList[edgeList[i].node[0]].x = center.x + Util::scene()->edges->at(edgeList[i].marker-1)->radius() * cos(pointAngle1);
-                    nodeList[edgeList[i].node[0]].y = center.y + Util::scene()->edges->at(edgeList[i].marker-1)->radius() * sin(pointAngle1);
+                    nodeList[edgeList[i].node[0]].x = center.x + Util::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle1);
+                    nodeList[edgeList[i].node[0]].y = center.y + Util::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle1);
 
-                    nodeList[edgeList[i].node[1]].x = center.x + Util::scene()->edges->at(edgeList[i].marker-1)->radius() * cos(pointAngle2);
-                    nodeList[edgeList[i].node[1]].y = center.y + Util::scene()->edges->at(edgeList[i].marker-1)->radius() * sin(pointAngle2);
+                    nodeList[edgeList[i].node[1]].x = center.x + Util::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle2);
+                    nodeList[edgeList[i].node[1]].y = center.y + Util::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle2);
                 }
             }
         }
@@ -757,12 +765,13 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     {
         if (elementList[i].isUsed)
         {
-            QDomElement eleElement = doc.createElement(QString("element:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
+            QDomElement eleElement = doc.createElement(QString("domain:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
             eleElement.setAttribute("v1", elementList[i].node[0]);
             eleElement.setAttribute("v2", elementList[i].node[1]);
             eleElement.setAttribute("v3", elementList[i].node[2]);
             if (!elementList[i].isTriangle())
                 eleElement.setAttribute("v4", elementList[i].node[3]);
+            eleElement.setAttribute("i", i);
             eleElement.setAttribute("marker", QString("%1").arg(abs(elementList[i].marker)));
 
             eleElements.appendChild(eleElement);
@@ -770,7 +779,54 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     }
 
     // subdomains
-    //TODO
+    foreach(FieldInfo* fieldInfo, Util::scene()->fieldInfos())
+    {
+        QDomElement eleSubdomain = doc.createElement("subdomain");
+        eleSubdomains.appendChild(eleSubdomain);
+        eleSubdomain.setAttribute("name", fieldInfo->fieldId());
+
+        QDomElement eleSubElements = doc.createElement("elements");
+        eleSubdomain.appendChild(eleSubElements);
+
+        for (int i = 0; i<elementList.count(); i++)
+        {
+            if (elementList[i].isUsed)
+            {
+                QDomElement eleSubElement = doc.createElement("i");
+                eleSubElements.appendChild(eleSubElement);
+                QDomText number = doc.createTextNode(QString::number(i));
+                eleSubElement.appendChild(number);
+            }
+        }
+
+        QDomElement eleBoundaryEdges = doc.createElement("boundary_edges");
+        eleSubdomain.appendChild(eleBoundaryEdges);
+        QDomElement eleInnerEdges = doc.createElement("inner_edges");
+        eleSubdomain.appendChild(eleInnerEdges);
+
+        for (int i = 0; i < edgeList.count(); i++)
+        {
+            QDomElement eleEdge = doc.createElement("i");
+            QDomText number = doc.createTextNode(QString::number(i));
+            eleEdge.appendChild(number);
+
+            //assert(edgeList[i].marker >= 0);
+            if (edgeList[i].isUsed && edgeList[i].marker != -1)
+            {
+                if (Util::scene()->edges->at(edgeList[i].marker)->getMarker(fieldInfo)
+                        == SceneBoundaryContainer::getNone(fieldInfo))
+                {
+                    eleInnerEdges.appendChild(eleEdge);
+                    // todo:  To neni pravda, to ze nemaji prislusny marker jeste neznamena,
+                    // ze jsou inner mohou byt uplne mimo to pole
+                }
+                else{
+                    eleBoundaryEdges.appendChild(eleEdge);
+                }
+            }
+        }
+    }
+
 
     nodeList.clear();
     edgeList.clear();

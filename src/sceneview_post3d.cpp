@@ -20,7 +20,6 @@
 #include "sceneview_post3d.h"
 #include "util.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "hermes2d/problem.h"
 #include "logview.h"
 
@@ -81,7 +80,7 @@ void Post3DHermes::processInitialMesh()
     if (Util::problem()->isMeshed())
     {
         // init linearizer for initial mesh
-        Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->meshInitial());
+        Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
         m_linInitialMeshView.process_solution(&initial);
 
         m_initialMeshIsPrepared = true;

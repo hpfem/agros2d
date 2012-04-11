@@ -73,18 +73,10 @@ void PythonEditorWidget::createControls()
     trvPyLint->setMouseTracking(true);
     trvPyLint->setColumnCount(1);
     trvPyLint->setIndentation(12);
+    trvPyLint->setMaximumHeight(150);
     connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
 
     splitter->addWidget(trvPyLint);
-
-    QSizePolicy policy = splitter->sizePolicy();
-    policy.setHorizontalStretch(0.2);
-    policy.setVerticalStretch(1.0);
-    splitter->setSizePolicy(policy);
-
-    splitter->restoreState(settings.value("PythonEditorWidget/SplitterState").toByteArray());
-    splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry").toByteArray());
-    txtEditor->resize(txtEditor->width(), settings.value("PythonEditorWidget/EditorHeight").toInt());
 
     // contents
     QHBoxLayout *layout = new QHBoxLayout();
@@ -92,6 +84,10 @@ void PythonEditorWidget::createControls()
     layout->addWidget(splitter);
 
     setLayout(layout);
+
+    splitter->restoreState(settings.value("PythonEditorWidget/SplitterState").toByteArray());
+    splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry").toByteArray());
+    txtEditor->resize(txtEditor->width(), settings.value("PythonEditorWidget/EditorHeight").toInt());
 }
 
 void PythonEditorWidget::pyLintAnalyse()

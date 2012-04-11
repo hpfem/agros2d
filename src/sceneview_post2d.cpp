@@ -20,7 +20,6 @@
 #include "sceneview_post2d.h"
 #include "util.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "hermes2d/problem.h"
 #include "logview.h"
 
@@ -242,6 +241,10 @@ void SceneViewPost2D::createActionsPost2D()
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
     connect(actPostprocessorModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doPostprocessorModeGroup(QAction*)));
 
+    actExportVTKScalar = new QAction(tr("Export VTK scalar..."), this);
+    actExportVTKScalar->setStatusTip(tr("Export scalar view as VTK file"));
+    connect(actExportVTKScalar, SIGNAL(triggered()), this, SLOT(exportVTKScalarView()));
+
     // show
     actShowSolutionMesh = new QAction(tr("Solution mesh"), this);
     actShowSolutionMesh->setCheckable(true);
@@ -316,11 +319,11 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            int index = findElementInMesh(Util::problem()->meshInitial(), p);
+            int index = findElementInMesh(Util::problem()->activeMeshInitial(), p);
             if (index != -1)
             {
-                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().
-                                                                   get_user_marker(Util::problem()->meshInitial()->get_element_fast(index)->marker).marker.c_str()) - 1);
+                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().
+                                                                   get_user_marker(Util::problem()->activeMeshInitial()->get_element_fast(index)->marker).marker.c_str()) - 1);
 
                 label->isSelected = !label->isSelected;
                 updateGL();
@@ -945,10 +948,10 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
               0.5);
 
     // triangles
-    for (int i = 0; i < Util::problem()->meshInitial()->get_num_active_elements(); i++)
+    for (int i = 0; i < Util::problem()->activeMeshInitial()->get_num_active_elements(); i++)
     {
-        Hermes::Hermes2D::Element *element = Util::problem()->meshInitial()->get_element(i);
-        if (Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()) - 1)->isSelected)
+        Hermes::Hermes2D::Element *element = Util::problem()->activeMeshInitial()->get_element(i);
+        if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()) - 1)->isSelected)
         {
             if (element->is_triangle())
             {
@@ -1087,6 +1090,7 @@ void SceneViewPost2D::setControls()
     actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
     actSelectByMarker->setEnabled(Util::problem()->isSolved() && (actPostprocessorModeSurfaceIntegral->isChecked() || actPostprocessorModeVolumeIntegral->isChecked()));
     actSelectPoint->setEnabled(Util::problem()->isSolved() && actPostprocessorModeLocalPointValue->isChecked());
+    actExportVTKScalar->setEnabled(Util::problem()->isSolved());
 }
 
 void SceneViewPost2D::clear()
@@ -1096,6 +1100,53 @@ void SceneViewPost2D::clear()
     actPostprocessorModeLocalPointValue->trigger();
 
     SceneViewCommon2D::clear();
+}
+
+void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
+{
+    if (Util::problem()->isSolved())
+    {
+        QString fn = fileName;
+
+        if (fn.isEmpty())
+        {
+            // file dialog
+            QSettings settings;
+            QString dir = settings.value("General/LastVTKDir").toString();
+
+            fn = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+            if (fn.isEmpty())
+                return;
+
+            if (!fn.endsWith(".vtk"))
+                fn.append(".vtk");
+
+            // remove existing file
+            if (QFile::exists(fn))
+                QFile::remove(fn);
+        }
+
+        Hermes::Hermes2D::Views::Linearizer linScalarView;
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+                                                                                                                 Util::config()->scalarVariableComp);
+
+        linScalarView.save_solution_vtk(slnScalarView,
+                                        fn.toStdString().c_str(),
+                                        Util::config()->scalarVariable.toStdString().c_str(),
+                                        true);
+
+        delete slnScalarView;
+
+        if (!fn.isEmpty())
+        {
+            QFileInfo fileInfo(fn);
+            if (fileInfo.absoluteDir() != tempProblemDir())
+            {
+                QSettings settings;
+                settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+            }
+        }
+    }
 }
 
 void SceneViewPost2D::selectByMarker()

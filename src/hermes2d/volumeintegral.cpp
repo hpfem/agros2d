@@ -22,7 +22,6 @@
 #include "scenebasic.h"
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
-#include "scenesolution.h"
 #include "problem.h"
 
 #include "hermes2d.h"
@@ -34,14 +33,16 @@ VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(fie
     parser = new Parser(fieldInfo);
     initParser();
 
-    FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-    SceneSolution<double> *sceneSolution = Util::scene()->sceneSolution(fsid);
-    if (Util::problem()->isSolved() &&
-            m_fieldInfo->analysisType() == AnalysisType_Transient)
+    // update time functions
+    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         m_fieldInfo->module()->update_time_functions(Util::problem()->time());
 
+    // solution
     for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
-        sln.push_back(sceneSolution->sln(k + (Util::problem()->timeStep() * m_fieldInfo->module()->number_of_solution())));
+    {
+        FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
+    }
 
     calculate();
 }
@@ -111,7 +112,7 @@ void VolumeIntegralValue::calculate()
             if (label->isSelected)
             {
                 SceneMaterial *material = label->getMarker(m_fieldInfo);
-                int index = Util::scene()->labels->items().indexOf(label) + 1;
+                int index = Util::scene()->labels->items().indexOf(label);
 
                 parser->setParserVariables(material, NULL,
                                            pvalue[0], pdx[0], pdy[0]);

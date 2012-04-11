@@ -23,13 +23,11 @@
 
 #include "../weakform/src/weakform_factory.h"
 
-#include "progressdialog.h"
 #include "util.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarkerdialog.h"
 #include "scenelabel.h"
-#include "scenesolution.h"
 #include "sceneedge.h"
 #include "hermes2d/solver.h"
 #include "hermes2d/coupling.h"
@@ -266,14 +264,14 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
                      it < boundary_type->weakform_matrix_surface.end(); ++it)
                 {
-                    registerForm(WFType_MatSurf, field, QString::number(edgeNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_MatSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 }
 
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
                      it < boundary_type->weakform_vector_surface.end(); ++it)
                 {
-                    registerForm(WFType_VecSurf, field, QString::number(edgeNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_VecSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 }
             }
@@ -290,7 +288,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
                      it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
                 {
-                    registerForm(WFType_MatVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_MatVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
 
                 }
@@ -298,7 +296,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_vector_volume.begin();
                      it < fieldInfo->module()->weakform_vector_volume.end(); ++it)
                 {
-                    registerForm(WFType_VecVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
+                    registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
                 }
 
@@ -308,9 +306,15 @@ void WeakFormAgros<Scalar>::registerForms()
                     for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
                          it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
                     {
+
                         registerForm(WFType_VecVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
                                      m_block->offset(field), m_block->offset(field), material,
                                      Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
+
+                         registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                      m_block->offset(field), m_block->offset(field), material,
+                                      Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
+
                     }
                 }
             }
@@ -948,12 +952,19 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
 ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
+    // update time functions
+    /*
+    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+        m_fieldInfo->module()->update_time_functions(Util::problem()->time());
+    */
+
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < number_of_solution(); k++)
     {
-        sln.push_back(Util::scene()->activeSceneSolution()->sln(k));
+        FieldSolutionID fsid(Util::scene()->fieldInfo(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
     }
-    return new ViewScalarFilter<double>(Util::scene()->activeSceneSolution()->fieldInfo(),
+    return new ViewScalarFilter<double>(Util::scene()->fieldInfo(),
                                         sln,
                                         get_expression(physicFieldVariable, physicFieldVariableComp));
 }
@@ -1074,21 +1085,29 @@ void readMeshDirtyFix()
     setlocale(LC_NUMERIC, plocale);
 }
 
-Hermes::Hermes2D::Mesh *readMeshFromFile(const QString &fileName)
+QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMeshesFromFile(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
     // load the mesh file
-    Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.load(fileName.toStdString().c_str(), mesh);
+    Hermes::vector<Hermes::Hermes2D::Mesh*> meshes;
+    QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesMap;
+    foreach(FieldInfo* fieldInfo, Util::scene()->fieldInfos())
+    {
+        Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
+        meshes.push_back(mesh);
+        meshesMap[fieldInfo] = mesh;
+    }
+
+    meshloader.load(fileName.toStdString().c_str(), meshes);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
-    return mesh;
+    return meshesMap;
 }
 
 void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
@@ -1299,7 +1318,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
     Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
-    SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1)->getMarker(m_fieldInfo);
+    SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
     // warning: check this, lienearity...
     //    if (isLinear)
     //        parser->setParserVariables(material, NULL);

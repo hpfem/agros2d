@@ -21,7 +21,6 @@
 
 #include "gui.h"
 #include "scene.h"
-#include "scenesolution.h"
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"

@@ -17,7 +17,6 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "scenesolution.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneedge.h"
@@ -35,14 +34,16 @@ SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(f
     parser = new Parser(fieldInfo);
     initParser();
 
-    FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-    SceneSolution<double> *sceneSolution = Util::scene()->sceneSolution(fsid);
-    if (Util::problem()->isSolved() &&
-            m_fieldInfo->analysisType() == AnalysisType_Transient)
+    // update time functions
+    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         m_fieldInfo->module()->update_time_functions(Util::problem()->time());
 
+    // solution
     for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
-        sln.push_back(sceneSolution->sln(k + (Util::problem()->timeStep() * m_fieldInfo->module()->number_of_solution())));
+    {
+        FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
+    }
 
     calculate();
 }
@@ -122,15 +123,23 @@ void SurfaceIntegralValue::calculate()
 
                         if (e->en[edge]->marker != 0)
                         {
-                            if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) - 1 == i)
+//                            if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
+//                            {
+//                                // boundary
+//                                integrate = true;
+//                                boundary = true;
+//                            }
+//                            else if (- atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str()) == i)
+//                            {
+//                                // inner page
+//                                integrate = true;
+//                            }
+                            if (e->en[edge]->bnd == 1)
                             {
-                                // boundary
-                                integrate = true;
                                 boundary = true;
                             }
-                            else if (- atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str()) == i)
+                            if ((atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
                             {
-                                // inner page
                                 integrate = true;
                             }
                         }
@@ -170,7 +179,7 @@ void SurfaceIntegralValue::calculate()
                             double *x = ru->get_phys_x(eo);
                             double *y = ru->get_phys_y(eo);
 
-                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()) - 1)->getMarker(m_fieldInfo);
+                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
                             parser->initParserMaterialVariables();
                             parser->setParserVariables(material, NULL,
                                                        pvalue[0], pdx[0], pdy[0]);
