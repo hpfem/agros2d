@@ -323,7 +323,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
             if (index != -1)
             {
                 SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().
-                                                                   get_user_marker(Util::problem()->activeMeshInitial()->get_element_fast(index)->marker).marker.c_str()) - 1);
+                                                                   get_user_marker(Util::problem()->activeMeshInitial()->get_element_fast(index)->marker).marker.c_str()));
 
                 label->isSelected = !label->isSelected;
                 updateGL();
@@ -951,7 +951,7 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
     for (int i = 0; i < Util::problem()->activeMeshInitial()->get_num_active_elements(); i++)
     {
         Hermes::Hermes2D::Element *element = Util::problem()->activeMeshInitial()->get_element(i);
-        if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()) - 1)->isSelected)
+        if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
         {
             if (element->is_triangle())
             {
@@ -1151,7 +1151,9 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
 
 void SceneViewPost2D::selectByMarker()
 {
-    SceneMarkerSelectDialog sceneMarkerSelectDialog(this, QApplication::activeWindow());
+    SceneModePostprocessor mode = (actPostprocessorModeSurfaceIntegral->isChecked()) ? SceneModePostprocessor_SurfaceIntegral : SceneModePostprocessor_VolumeIntegral;
+
+    SceneMarkerSelectDialog sceneMarkerSelectDialog(this, mode, QApplication::activeWindow());
     sceneMarkerSelectDialog.exec();
 }
 
@@ -1194,5 +1196,3 @@ void SceneViewPost2D::selectedPoint(const Point &p)
     m_selectedPoint = p;
     updateGL();
 }
-
-

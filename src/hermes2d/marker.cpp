@@ -36,7 +36,7 @@ Marker::~Marker()
 
 Value Marker::getValue(std::string id)
 {
-    if (id != "")
+    if (!id.empty())
         return values[id];
 
     return Value();

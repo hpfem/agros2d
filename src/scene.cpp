@@ -1143,14 +1143,6 @@ void Scene::removeField(FieldInfo *field)
     boundaries->removeFieldMarkers(field);
     materials->removeFieldMarkers(field);
 
-//    // remove boundary conditions
-//    foreach (SceneBoundary *boundary, field->module()->boundaries().items())
-//        removeBoundary(boundary);
-
-//    // remove materials
-//    foreach (SceneMaterial *material, field->module()->materials().items())
-//        removeMaterial(material);
-
     // remove from the collection
     m_fieldInfos.remove(field->fieldId());
 
