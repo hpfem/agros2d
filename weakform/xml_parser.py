@@ -279,7 +279,7 @@ class WeakForm:
         return h_code 
     
     def get_cpp_code(self, cpp_template):                                
-        function_types = ['','_value', '_ord', '_derivatives']
+        function_types = ['','_value', '_ord', '_clone', '_derivatives']
         cpp_code = ''        
         for function_type in function_types:         
             node = cpp_template.getElementsByTagName('variable_definition')[0]

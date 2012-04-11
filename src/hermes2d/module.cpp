@@ -119,13 +119,13 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WFType type, const std::string &prob
                                             Marker* marker)
 {
     if(type == WFType_MatVol)
-        return factoryMatrixFormVol<Scalar>(problemId, form->i - 1, form->j - 1, area, form->sym, (SceneMaterial*) marker);
+        return factoryMatrixFormVol<Scalar>(problemId, form->i, form->j, area, form->sym, (SceneMaterial*) marker);
     else if(type == WFType_MatSurf)
-        return factoryMatrixFormSurf<Scalar>(problemId, form->i - 1, form->j - 1, area, (SceneBoundary*) marker);
+        return factoryMatrixFormSurf<Scalar>(problemId, form->i, form->j, area, (SceneBoundary*) marker);
     else if(type == WFType_VecVol)
-        return factoryVectorFormVol<Scalar>(problemId, form->i - 1, form->j - 1, area, (SceneMaterial*) marker);
+        return factoryVectorFormVol<Scalar>(problemId, form->i, form->j, area, (SceneMaterial*) marker);
     else if(type == WFType_VecSurf)
-       return factoryVectorFormSurf<Scalar>(problemId, form->i - 1, form->j - 1, area, (SceneBoundary*) marker);
+       return factoryVectorFormSurf<Scalar>(problemId, form->i, form->j, area, (SceneBoundary*) marker);
     else
         assert(0);
 }

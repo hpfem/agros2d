@@ -27,7 +27,6 @@
 
 #include "scene.h"
 #include "scenebasic.h"
-#include "scenesolution.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
@@ -47,27 +46,27 @@
 </includes>
 
 <condition_exact_solution>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1))
             return new namespace::FunctionName&lt;double&gt;(mesh, boundary);
 </condition_exact_solution>
 
 <condition_matrix_vol>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, sym, material);
 </condition_matrix_vol>
 
 <condition_vector_vol>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, material);
 </condition_vector_vol>
 
 <condition_matrix_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
 </condition_matrix_surf>
 
 <condition_vector_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
 </condition_vector_surf>
 
