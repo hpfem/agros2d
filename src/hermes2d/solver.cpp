@@ -136,7 +136,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                                                     analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
                                                     coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
 
-                                            Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+                                            Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, meshes[fieldInfo], boundary);
                                             custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index + 1).toStdString(),
                                                                                                                    function);
                     }
