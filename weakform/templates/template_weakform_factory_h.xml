@@ -29,6 +29,7 @@
 #include "scenebasic.h"
 #include "scenesolution.h"
 #include "scenemarker.h"
+#include "scenemarkerdialog.h"
 
 #include "hermes2d/localpoint.h"
 #include "hermes2d/volumeintegral.h"
@@ -37,12 +38,12 @@
 #include &lt;rapidxml.cpp&gt;
 #include &lt;rapidxml_utils.cpp&gt;
 
-#include "marker.h"
-#include "localpoint.h"
-#include "weakform_parser.h"
+#include "hermes2d/marker.h"
+#include "hermes2d/localpoint.h"
+#include "hermes2d/weakform_parser.h"
 </head>
 
-<includes>#include "./weakform/general_weakform.h"
+<includes>#include "general_weakform.h"
 </includes>
 
 <condition_exact_solution>

@@ -75,14 +75,13 @@ class NumericStringParser(object):
             elif item in self.functions:
                 string.append(item + '(' + self.translate_to_cpp(expression_list.pop()) + ')')                 
             elif item == '^':                
-                string[i-1] = 'pow(' + string[i-1] +  ',' + self.translate_to_cpp([expression_list.pop()]) + ')'
-                print 
+                string[i-1] = 'pow(' + string[i-1] +  ',' + self.translate_to_cpp([expression_list.pop()]) + ')'                
             else:                                                
                 if item in self.variables:                   
                     if self.without_variables:
                         string.append('1')
                     else:
-                        string.append(item + '.value(u_ext[this->i]->val[i])')
+                        string.append(item + '.value(0)')
                 elif item in self.variables_derivatives:                   
                     if self.without_variables:
                         string.append('1')

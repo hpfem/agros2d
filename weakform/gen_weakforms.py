@@ -2,10 +2,8 @@
 
 from xml_parser import XmlParser
 
-modules = []
 # modules = ['electrostatic', 'current', 'heat', 'acoustic', 'elasticity', 'rf', 'magnetic']
-# modules = ['magnetic']
+modules = ['electrostatic']
 xml_parser = XmlParser(modules)
 xml_parser.process()
-xml_parser.gen_doc()
-print('OK')
+#xml_parser.gen_doc()

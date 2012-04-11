@@ -46,7 +46,7 @@ CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned 
 
 </custom_matrix_form_vol>
 
-<variable_definition> variable_short = m_material->get_value("variable");
+<variable_definition> variable_short = m_material->getValue("variable");
 </variable_definition>
 
 <comment_separator>

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network xml webkit
+QT += core gui network xml webkit xmlpatterns
 
 TEMPLATE = lib
 TARGET = ../build/weakform/lib/weakform
@@ -24,11 +24,13 @@ linux-g++|linux-g++-64|linux-g++-32 {
     system(python ./gen_weakforms.py)
 }
 
-include(weakform.pri)
-
 OTHER_FILES += \
     gen_weakforms.py \
     xml_parser.py
+
+include(src/weakform.pri)
+
+
 
 
 
