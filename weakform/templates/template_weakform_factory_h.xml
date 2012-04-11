@@ -62,12 +62,12 @@
 </condition_vector_vol>
 
 <condition_matrix_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->type == "boundary_type"))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
 </condition_matrix_surf>
 
 <condition_vector_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->type == "boundary_type"))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
 </condition_vector_surf>
 

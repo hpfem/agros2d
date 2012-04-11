@@ -221,7 +221,7 @@ LIBS += -lhermes2d
 LIBS += -L../build/lib/lib
 LIBS += -llib
 LIBS += -L../build/weakform/lib
-#LIBS += -lweakform #//TODO
+LIBS += -lweakform #//TODO
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_MUMPS

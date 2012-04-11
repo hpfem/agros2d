@@ -84,11 +84,11 @@ Hermes::Hermes2D::VectorFormSurf<Scalar> *factoryVectorFormSurf(const std::strin
                                                                 const std::string &area, SceneBoundary *boundary)
 {
     
-        if ((problemId == "electrostatic_steadystate_planar")&&(i == 0)&&(j == 0)&&(boundary->type == "Surface_charge_density"))
-            return new electrostaticsteadystateplanar::CustomVectorFormSurf_Surface_charge_density_1_1<double>(0, 0, area, boundary);
+        if ((problemId == "electrostatic_steadystate_planar")&&(i == 0)&&(j == 0)&&(boundary->getType() == "electrostatic_surface_charge_density"))
+            return new electrostaticsteadystateplanar::CustomVectorFormSurf_electrostatic_surface_charge_density_1_1<double>(0, 0, area, boundary);
 
-        if ((problemId == "electrostatic_steadystate_axisymmetric")&&(i == 0)&&(j == 0)&&(boundary->type == "Surface_charge_density"))
-            return new electrostaticsteadystateaxi::CustomVectorFormSurf_Surface_charge_density_1_1<double>(0, 0, area, boundary);
+        if ((problemId == "electrostatic_steadystate_axisymmetric")&&(i == 0)&&(j == 0)&&(boundary->getType() == "electrostatic_surface_charge_density"))
+            return new electrostaticsteadystateaxi::CustomVectorFormSurf_electrostatic_surface_charge_density_1_1<double>(0, 0, area, boundary);
  
     return NULL;
 }
@@ -98,10 +98,10 @@ Hermes::Hermes2D::ExactSolutionScalar<Scalar> *factoryExactSolution(const std::s
 {
     
         if ((problemId == "electrostatic_steadystate_planar")&&(i == 0))
-            return new electrostaticsteadystateplanar::CustomEssentialFormSurf_Fixed_voltage_1_0<double>(mesh, boundary);
+            return new electrostaticsteadystateplanar::CustomEssentialFormSurf_electrostatic_potential_1_0<double>(mesh, boundary);
 
         if ((problemId == "electrostatic_steadystate_axisymmetric")&&(i == 0))
-            return new electrostaticsteadystateaxi::CustomEssentialFormSurf_Fixed_voltage_1_0<double>(mesh, boundary);
+            return new electrostaticsteadystateaxi::CustomEssentialFormSurf_electrostatic_potential_1_0<double>(mesh, boundary);
  
     return NULL;
 }

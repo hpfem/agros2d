@@ -71,10 +71,10 @@ class XmlParser:
         weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
                            'CustomMatrixFormSurf','CustomVectorFormSurf', 'CustomEssentialFormSurf']                    
         for weakform_temp in weakform_temps:                            
-            weakform_string = ''
+            weakform_string = ''            
             for condition in conditions:                  
                 if condition[0] == weakform_temp:                    
-                    weakform_string += condition[1]                        
+                    weakform_string += condition[1]                    
             node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
             string = node.childNodes[0].nodeValue      
             string = string.replace('//conditions', weakform_string)            
@@ -188,7 +188,7 @@ class XmlParser:
                              weakform.expression = ds_weakform.axi                             
                          weakform.coordinate_type = coordinate_type
                          weakform.integral_type = 'surf'
-                         weakform.boundary_type = ds_boundary.name
+                         weakform.boundary_type = ds_boundary.id                         
                          weakform.id = surface.id + '_' + surface.name + '_' \
                     + weakform.coordinate_type 
                          surface.weakforms.append(weakform)

@@ -29,6 +29,7 @@
 #include "module_agros.h"
 #include "weakform_parser.h"
 #include "logview.h"
+#include "../weakform/src/weakform_factory.h"
 
 //TODO will be removed after putting code to sceneSolution
 #include "scenesolution.h"
@@ -127,14 +128,14 @@ void Solver<Scalar>::createSpace(Mesh* mesh, MultiSolutionArray<Scalar>& msa)
                     // compiled form
                     if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
                     {
-                        assert(0);
-                        //                    string problemId = m_fieldInfo->module()->fieldid + "_" +
-                        //                            analysisTypeToStringKey(m_fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
-                        //                            coordinateTypeToStringKey(m_fieldInfo->module()->get_problem_type()).toStdString();
+                        // assert(0);
+                                            string problemId = fieldInfo->module()->fieldid + "_" +
+                                                    analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
+                                                    coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
 
-                        //                    Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
-                        //                    custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(i + 1).toStdString(),
-                        //                                                                                           function);
+                                            Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i-1, mesh, boundary);
+                                            custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index + 1).toStdString(),
+                                                                                                                   function);
                     }
 
                     if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
