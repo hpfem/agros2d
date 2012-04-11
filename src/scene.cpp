@@ -1089,7 +1089,7 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewBoundary()
 {
-    doNewBoundary(Util::scene()->fieldInfo()->fieldId());
+    doNewBoundary(Util::scene()->activeViewField()->fieldId());
     }
 
 void Scene::doNewBoundary(QString field)
@@ -1106,7 +1106,7 @@ void Scene::doNewBoundary(QString field)
 
 void Scene::doNewMaterial()
 {
-    doNewMaterial(Util::scene()->fieldInfo()->fieldId());
+    doNewMaterial(Util::scene()->activeViewField()->fieldId());
 }
 
 void Scene::doNewMaterial(QString field)

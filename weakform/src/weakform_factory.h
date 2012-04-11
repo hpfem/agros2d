@@ -25,7 +25,6 @@
 
 #include "scene.h"
 #include "scenebasic.h"
-//#include "scenesolution.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
