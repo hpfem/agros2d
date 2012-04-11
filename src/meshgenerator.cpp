@@ -778,6 +778,39 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         }
     }
 
+    // find edge neighbours
+
+    // for each vertex list elements that it belogns to
+    QList<QSet<int> > vertexElements;
+    vertexElements.reserve(nodeList.count());
+    for (int i = 0; i < nodeList.count(); i++)
+        vertexElements.push_back(QSet<int>());
+
+    for (int i = 0; i < elementList.count(); i++)
+    {
+        if (elementList[i].isUsed)
+        {
+            for(int elemNode = 0; elemNode < (elementList[i].isTriangle() ? 3 : 4); elemNode++)
+            {
+                vertexElements[elementList[i].node[elemNode]].insert(i);
+            }
+        }
+    }
+
+    for (int i = 0; i < edgeList.count(); i++)
+    {
+        if (edgeList[i].isUsed && edgeList[i].marker != -1)
+        {
+            QSet<int> neighbours = vertexElements[edgeList[i].node[0]];
+            neighbours.intersect(vertexElements[edgeList[i].node[1]]);
+            assert((neighbours.size() > 0) && (neighbours.size() <= 2));
+            edgeList[i].neighElem[0] = neighbours.values()[0];
+            if(neighbours.size() == 2)
+                edgeList[i].neighElem[1] = neighbours.values()[1];
+        }
+    }
+
+
     // subdomains
     foreach(FieldInfo* fieldInfo, Util::scene()->fieldInfos())
     {
@@ -813,15 +846,37 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
             //assert(edgeList[i].marker >= 0);
             if (edgeList[i].isUsed && edgeList[i].marker != -1)
             {
-                if (Util::scene()->edges->at(edgeList[i].marker)->getMarker(fieldInfo)
-                        == SceneBoundaryContainer::getNone(fieldInfo))
+                int numNeighWithField = 0;
+                for(int neigh_i = 0; neigh_i < 2; neigh_i++)
                 {
-                    eleInnerEdges.appendChild(eleEdge);
-                    // todo:  To neni pravda, to ze nemaji prislusny marker jeste neznamena,
-                    // ze jsou inner mohou byt uplne mimo to pole
+                    int neigh = edgeList[i].neighElem[neigh_i];
+                    if(neigh != -1)
+                    {
+                        if(Util::scene()->labels->at(elementList[neigh].marker)->getMarker(fieldInfo)
+                                != SceneMaterialContainer::getNone(fieldInfo))
+                            numNeighWithField++;
+                    }
                 }
-                else{
+
+                // edge has boundary condition prescribed for this field
+                bool hasFieldBoundaryCondition = (Util::scene()->edges->at(edgeList[i].marker)->getMarker(fieldInfo)
+                                                  != SceneBoundaryContainer::getNone(fieldInfo));
+
+                if(numNeighWithField == 1)
+                {
+                    // edge is on "boundary" of the field, should have boundary condition prescribed
+
+                    // todo: instead of assert put some warning and stop calculation, as if boundary condition is not assigned at all
+                    assert(hasFieldBoundaryCondition);
+
                     eleBoundaryEdges.appendChild(eleEdge);
+                }
+                else if(numNeighWithField == 2)
+                {
+                    // todo: we could enforce not to have boundary conditions prescribed inside:
+                    // assert(!hasFieldBoundaryCondition);
+
+                    eleInnerEdges.appendChild(eleEdge);
                 }
             }
         }
