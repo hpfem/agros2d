@@ -58,7 +58,18 @@ public:
 
 // *************************************************************************************************************************************
 
+/*
 class SceneLabelDialog : public DSceneBasic
+{
+    Q_OBJECT
+
+private:
+    QComboBox *cmbMaterials;
+    QPushButton * btnMaterials;
+}
+*/
+
+class SceneLabelDialog : public SceneBasicDialog
 {
     Q_OBJECT
 

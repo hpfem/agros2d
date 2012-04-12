@@ -34,8 +34,6 @@ Q_DECLARE_METATYPE(MaterialProperty)
 
 MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("MaterialBrowserDialog::MaterialBrowserDialog()");
-
     setWindowIcon(icon(""));
     setWindowTitle(tr("Material browser"));
 
@@ -63,8 +61,6 @@ int MaterialBrowserDialog::showDialog(bool select)
 
 void MaterialBrowserDialog::createControls()
 {
-    logMessage("MaterialBrowserDialog::createControls()");
-
     trvMaterial = new QTreeWidget(this);
     // trvMaterial->setContextMenuPolicy(Qt::CustomContextMenu);
     trvMaterial->setMouseTracking(true);
@@ -189,15 +185,11 @@ void MaterialBrowserDialog::readMaterials()
 
 void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
-    logMessage("MaterialBrowserDialog::doItemSelected()");
-
     doMaterialSelected(current, Qt::UserRole);
 }
 
 void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *item, int role)
 {
-    logMessage("MaterialBrowserDialog::doItemSelected()");
-
     if (item != NULL)
     {
         trvProperty->clear();
@@ -262,15 +254,11 @@ void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *item, int role)
 
 void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
-    logMessage("MaterialBrowserDialog::doPropertySelected()");
-
     doPropertySelected(current, Qt::UserRole);
 }
 
 void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *item, int role)
 {
-    logMessage("MaterialBrowserDialog::doPropertySelected()");
-
     m_x.clear();
     m_y.clear();
 

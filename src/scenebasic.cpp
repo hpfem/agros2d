@@ -30,16 +30,12 @@
 
 SceneBasic::SceneBasic()
 {
-    logMessage("SceneBasic::SceneBasic()");
-
     isSelected = false;
     isHighlighted = false;
 }
 
 QVariant SceneBasic::variant()
 {
-    logMessage("SceneBasic::variant()");
-
     QVariant v;
     v.setValue(this);
     return v;
@@ -301,25 +297,14 @@ template class MarkedSceneBasicContainer<SceneMaterial, SceneLabel>;
 
 // *************************************************************************************************************************************
 
-DSceneBasic::DSceneBasic(QWidget *parent, bool isNew) : QDialog(parent)
+SceneBasicDialog::SceneBasicDialog(QWidget *parent, bool isNew) : QDialog(parent)
 {
-    logMessage("DSceneBasic::DSceneBasic()");
-
     this->isNew = isNew;
     layout = new QVBoxLayout();
 }
 
-DSceneBasic::~DSceneBasic()
+void SceneBasicDialog::createControls()
 {
-    logMessage("DSceneBasic::~DSceneBasic()");
-
-    delete layout;
-}
-
-void DSceneBasic::createControls()
-{
-    logMessage("DSceneBasic::createControls()");
-
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
@@ -332,25 +317,19 @@ void DSceneBasic::createControls()
     setLayout(layout);
 }
 
-void DSceneBasic::doAccept()
+void SceneBasicDialog::doAccept()
 {
-    logMessage("DSceneBasic::doAccept()");
-
     if (save())
         accept();
 }
 
-void DSceneBasic::doReject()
+void SceneBasicDialog::doReject()
 {
-    logMessage("DSceneBasic::doReject()");
-
     reject();
 }
 
-void DSceneBasic::evaluated(bool isError)
+void SceneBasicDialog::evaluated(bool isError)
 {
-    logMessage("DSceneBasic::evaluated()");
-
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 

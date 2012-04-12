@@ -28,8 +28,6 @@
 
 #include "hermes2d/module.h"
 
-bool verbose = false;
-
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
@@ -169,8 +167,6 @@ QString stringListToString(const QStringList &list)
 
 QString analysisTypeString(AnalysisType analysisType)
 {
-    logMessage("analysisTypeString()");
-
     switch (analysisType)
     {
     case AnalysisType_SteadyState:
@@ -187,8 +183,6 @@ QString analysisTypeString(AnalysisType analysisType)
 
 QString couplingTypeString(CouplingType couplingType)
 {
-    logMessage("couplingTypeString()");
-
     switch (couplingType)
     {
     case CouplingType_None:
@@ -205,8 +199,6 @@ QString couplingTypeString(CouplingType couplingType)
 
 QString teModeString(Mode teMode)
 {
-    logMessage("TEModeString()");
-
     switch (teMode)
     {
     case Mode_0:
@@ -223,8 +215,6 @@ QString teModeString(Mode teMode)
 
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp)
 {
-    logMessage("physicFieldVariableCompString()");
-
     switch (physicFieldVariableComp)
     {
     case PhysicFieldVariableComp_Scalar:
@@ -242,15 +232,11 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
 
 QString coordinateTypeString(CoordinateType coordinateType)
 {
-    logMessage("problemTypeString()");
-
     return ((coordinateType == CoordinateType_Planar) ? QObject::tr("Planar") : QObject::tr("Axisymmetric"));
 }
 
 QString adaptivityTypeString(AdaptivityType adaptivityType)
 {
-    logMessage("adaptivityTypeString()");
-
     switch (adaptivityType)
     {
     case AdaptivityType_None:
@@ -269,8 +255,6 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
 
 QString weakFormsTypeString(WeakFormsType weakFormsType)
 {
-    logMessage("weakFormsTypeString()");
-
     switch (weakFormsType)
     {
     case WeakFormsType_Interpreted:
@@ -285,8 +269,6 @@ QString weakFormsTypeString(WeakFormsType weakFormsType)
 
 QString meshTypeString(MeshType meshType)
 {
-    logMessage("meshTypeString()");
-
     switch (meshType)
     {
     case MeshType_Triangle:
@@ -305,8 +287,6 @@ QString meshTypeString(MeshType meshType)
 
 QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
 {
-    logMessage("matrixSolverTypeString()");
-
     switch (matrixSolverType)
     {
     case Hermes::SOLVER_UMFPACK:
@@ -329,8 +309,6 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
 
 QString linearityTypeString(LinearityType linearityType)
 {
-    logMessage("linearityTypeString()");
-
     switch (linearityType)
     {
     case LinearityType_Linear:
@@ -347,8 +325,6 @@ QString linearityTypeString(LinearityType linearityType)
 
 void setGUIStyle(const QString &styleName)
 {
-    logMessage("setGUIStyle()");
-
     QStyle *style = NULL;
     if (styleName == "Manhattan")
     {
@@ -392,8 +368,6 @@ void setGUIStyle(const QString &styleName)
 
 void setLanguage(const QString &locale)
 {
-    logMessage("setLanguage()");
-
     // non latin-1 chars
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
@@ -421,8 +395,6 @@ void setLanguage(const QString &locale)
 
 QStringList availableLanguages()
 {
-    logMessage("availableLanguages()");
-
     QDir dir;
     dir.setPath(datadir() + LANGUAGEROOT);
 
@@ -491,8 +463,6 @@ QIcon icon(const QString &name)
 
 QString datadir()
 {
-    logMessage("datadir()");
-
     // windows and local installation
     if (QFile::exists(QApplication::applicationDirPath() + "/functions.py"))
         return QApplication::applicationDirPath();
@@ -507,8 +477,6 @@ QString datadir()
 
 QString tempProblemDir()
 {
-    logMessage("tempProblemDir()");
-
     QDir(QDir::temp().absolutePath()).mkpath("agros2d/" + QString::number(QApplication::applicationPid()));
 
     return QString("%1/agros2d/%2").arg(QDir::temp().absolutePath()).arg(QApplication::applicationPid());
@@ -521,8 +489,6 @@ QString tempProblemFileName()
 
 QTime milisecondsToTime(int ms)
 {
-    logMessage("milisecondsToTime()");
-
     // store the current ms remaining
     int tmp_ms = ms;
 
@@ -552,8 +518,6 @@ QTime milisecondsToTime(int ms)
 
 bool removeDirectory(const QDir &dir)
 {
-    logMessage("removeDirectory()");
-
     bool error = false;
 
     if (dir.exists())
@@ -587,46 +551,11 @@ bool removeDirectory(const QDir &dir)
 
 void msleep(unsigned long msecs)
 {
-    logMessage("msleep()");
-
     QWaitCondition w;
     QMutex sleepMutex;
     sleepMutex.lock();
     w.wait(&sleepMutex, msecs);
     sleepMutex.unlock();
-}
-
-// verbose
-void setVerbose(bool verb)
-{
-    verbose = verb;
-}
-
-QString formatLogMessage(QtMsgType type, const QString &msg)
-{
-    QString msgType = "";
-
-    switch (type) {
-    case QtDebugMsg:
-        msgType = "Debug";
-        break;
-    case QtWarningMsg:
-        msgType = "Warning";
-        break;
-    case QtCriticalMsg:
-        msgType = "Critical";
-        break;
-    case QtFatalMsg:
-        msgType = "Fatal";
-        break;
-    }
-
-    QString str = QString("%1 %2: %3").
-            arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz")).
-            arg(msgType).
-            arg(msg);
-
-    return str;
 }
 
 void appendToFile(const QString &fileName, const QString &str)
@@ -642,40 +571,8 @@ void appendToFile(const QString &fileName, const QString &str)
     }
 }
 
-void logOutput(QtMsgType type, const char *msg)
-{
-    QString str = formatLogMessage(type, msg);
-
-    // string
-    fprintf(stderr, "%s\n", str.toStdString().c_str());
-
-    if (Util::config()->enabledApplicationLog)
-    {
-        QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-        QDir("/").mkpath(location);
-
-        appendToFile(location + "/app.log", str);
-    }
-
-    if (type == QtFatalMsg)
-        abort();
-}
-
-void logMessage(const QString &msg)
-{
-    if (verbose)
-    {
-        QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-        QDir("/").mkpath(location);
-
-        appendToFile(location + "/app.log", formatLogMessage(QtDebugMsg, msg));
-    }
-}
-
 void showPage(const QString &str)
 {
-    logMessage("showPage()");
-
     if (str.isEmpty())
         QDesktopServices::openUrl(QUrl::fromLocalFile(datadir() + "/resources/help/index.html"));
     else
@@ -685,8 +582,6 @@ void showPage(const QString &str)
 
 QString readFileContent(const QString &fileName)
 {
-    logMessage("readFileContent()");
-
     QString content;
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -701,8 +596,6 @@ QString readFileContent(const QString &fileName)
 
 void writeStringContent(const QString &fileName, QString *content)
 {
-    logMessage("writeStringContent()");
-
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
     {
@@ -716,8 +609,6 @@ void writeStringContent(const QString &fileName, QString *content)
 
 QByteArray readFileContentByteArray(const QString &fileName)
 {
-    logMessage("eadFileContentByteArray()");
-
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly))
     {
@@ -730,8 +621,6 @@ QByteArray readFileContentByteArray(const QString &fileName)
 
 void writeStringContentByteArray(const QString &fileName, QByteArray content)
 {
-    logMessage("writeStringContentByteArray()");
-
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
     {
@@ -978,8 +867,6 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
 static CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)
 {
-    logMessage("checkForNewVersion()");
-
     // download version
     QUrl url("http://agros2d.org/version/version.xml");
     if (checkVersion == NULL)
@@ -1003,8 +890,6 @@ QString unitToHTML(const QString &str)
 
 CheckVersion::CheckVersion(QUrl url) : QObject()
 {
-    logMessage("CheckVersion::CheckVersion()");
-
     m_url = url;
 
     m_manager = new QNetworkAccessManager(this);
@@ -1013,15 +898,11 @@ CheckVersion::CheckVersion(QUrl url) : QObject()
 
 CheckVersion::~CheckVersion()
 {
-    logMessage("CheckVersion::~CheckVersion()");
-
     delete m_manager;
 }
 
 void CheckVersion::run(bool quiet)
 {
-    logMessage("CheckVersion::run()");
-
     m_quiet = quiet;
     m_networkReply = m_manager->get(QNetworkRequest(m_url));
 
@@ -1031,8 +912,6 @@ void CheckVersion::run(bool quiet)
 
 void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 {
-    logMessage("CheckVersion::downloadFinished()");
-
     QString text = networkReply->readAll();
 
     if (!text.isEmpty())
@@ -1085,15 +964,11 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 
 void CheckVersion::showProgress(qint64 dl, qint64 all)
 {
-    logMessage("CheckVersion::showProgress()");
-
     // qDebug() << QString("\rDownloaded %1 bytes of %2).").arg(dl).arg(all);
 }
 
 void CheckVersion::handleError(QNetworkReply::NetworkError error)
 {
-    logMessage("CheckVersion::handleError()");
-
     qDebug() << "An error ocurred (code #" << error << ").";
 }
 

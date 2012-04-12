@@ -166,13 +166,12 @@ public:
 
 // *************************************************************************************************************************************
 
-class DSceneBasic: public QDialog
+class SceneBasicDialog: public QDialog
 {
     Q_OBJECT
 
 public:
-    DSceneBasic(QWidget *parent, bool isNew = false);
-    ~DSceneBasic();
+    SceneBasicDialog(QWidget *parent, bool isNew = false);
 
 protected:
     bool isNew;

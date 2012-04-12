@@ -87,8 +87,6 @@ void SceneViewPreprocessor::createActionsGeometry()
 
 void SceneViewPreprocessor::createMenuGeometry()
 {
-    logMessage("SceneViewCommon::createMenu()");
-
     mnuScene = new QMenu(this);
 
     mnuScene->addAction(Util::scene()->actNewNode);
@@ -105,8 +103,6 @@ void SceneViewPreprocessor::createMenuGeometry()
 
 void SceneViewPreprocessor::doSceneObjectProperties()
 {
-    logMessage("SceneViewCommon::doSceneObjectProperties()");
-
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
     {
         if (Util::scene()->selectedCount() > 1)
@@ -147,8 +143,6 @@ void SceneViewPreprocessor::doSceneObjectProperties()
 
 void SceneViewPreprocessor::doSelectBasic()
 {
-    logMessage("SceneViewCommon::doSelectBasic()");
-
     SceneBasicSelectDialog sceneBasicSelectDialog(this, QApplication::activeWindow());
     sceneBasicSelectDialog.exec();
 }
@@ -206,8 +200,6 @@ void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
 
 void SceneViewPreprocessor::selectRegion(const Point &start, const Point &end)
 {
-    logMessage("SceneViewCommon::selectRegion()");
-
     Util::scene()->selectNone();
 
     switch (m_sceneMode)
@@ -732,8 +724,6 @@ void SceneViewPreprocessor::keyReleaseEvent(QKeyEvent *event)
 
 void SceneViewPreprocessor::contextMenuEvent(QContextMenuEvent *event)
 {
-    logMessage("SceneViewCommon::contextMenuEvent()");
-
     actSceneObjectProperties->setEnabled(false);
 
     // set boundary context menu
@@ -801,8 +791,6 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
 
 void SceneViewPreprocessor::paintBackgroundPixmap()
 {
-    logMessage("SceneViewCommon::paintBackgroundPixmap()");
-
     if (m_backgroundTexture != -1)
     {
         loadProjection2d(true);
@@ -883,8 +871,6 @@ void SceneViewPreprocessor::paintGL()
 
 void SceneViewPreprocessor::paintGeometry()
 {
-    logMessage("SceneViewCommon::paintGeometry()");
-
     loadProjection2d(true);
 
     // edges
@@ -1055,8 +1041,6 @@ void SceneViewPreprocessor::paintGeometry()
 
 void SceneViewPreprocessor::paintSnapToGrid()
 {
-    logMessage("SceneViewCommon::paintSnapToGrid()");
-
     if (m_snapToGrid)
     {
         loadProjection2d(true);
@@ -1079,8 +1063,6 @@ void SceneViewPreprocessor::paintSnapToGrid()
 
 void SceneViewPreprocessor::paintEdgeLine()
 {
-    logMessage("SceneViewCommon::paintEdgeLine()");
-
     if (m_nodeLast)
     {
         if (m_nodeLast->isSelected)
@@ -1132,8 +1114,6 @@ void SceneViewPreprocessor::paintEdgeLine()
 
 ErrorResult SceneViewPreprocessor::saveGeometryToFile(const QString &fileName, int format)
 {
-    logMessage("SceneViewCommon::saveImageToFile()");
-
     // store old value
     SceneGeometryMode sceneMode = m_sceneMode;
     m_sceneMode == SceneGeometryMode_OperateOnNodes;

@@ -21,8 +21,6 @@
 
 TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 {
-    logMessage("TooltipView::TooltipView()");
-
     setObjectName("TooltipView");
 
     txtView = new QTextEdit(this);
@@ -34,8 +32,6 @@ TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 
 void TooltipView::loadTooltip(const QString &html)
 {
-    logMessage("TooltipView::loadTooltip()");
-
     txtView->setText(html);
 }
 
@@ -46,8 +42,6 @@ void TooltipView::loadTooltipPost2D()
 
 void TooltipView::loadTooltip(SceneGeometryMode sceneMode)
 {
-    logMessage("TooltipView::loadTooltip()");
-
     switch (sceneMode)
     {
     case SceneGeometryMode_OperateOnNodes:

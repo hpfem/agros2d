@@ -92,8 +92,6 @@ void SceneViewCommon2D::loadProjection2d(bool setScene)
 
 SceneNode *SceneViewCommon2D::findClosestNode(const Point &point)
 {
-    logMessage("SceneViewCommon::findClosestNode()");
-
     SceneNode *nodeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
@@ -112,8 +110,6 @@ SceneNode *SceneViewCommon2D::findClosestNode(const Point &point)
 
 SceneEdge *SceneViewCommon2D::findClosestEdge(const Point &point)
 {
-    logMessage("SceneViewCommon::findClosestEdge()");
-
     SceneEdge *edgeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
@@ -132,8 +128,6 @@ SceneEdge *SceneViewCommon2D::findClosestEdge(const Point &point)
 
 SceneLabel *SceneViewCommon2D::findClosestLabel(const Point &point)
 {
-    logMessage("SceneViewCommon::findClosestLabel()");
-
     SceneLabel *labelClosest = NULL;
 
     double distance = numeric_limits<double>::max();
@@ -229,8 +223,6 @@ void SceneViewCommon2D::paintGrid()
 
 void SceneViewCommon2D::paintAxes()
 {
-    logMessage("SceneViewCommon::paintGrid()");
-
     loadProjection2d();
 
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
@@ -457,8 +449,6 @@ void SceneViewCommon2D::paintRulersHints()
 
 void SceneViewCommon2D::paintZoomRegion()
 {
-    logMessage("SceneViewCommon::paintZoomRegion()");
-
     loadProjection2d(true);
 
     // zoom region
@@ -667,8 +657,6 @@ void SceneViewCommon2D::mouseDoubleClickEvent(QMouseEvent * event)
 
 void SceneViewCommon2D::mouseReleaseEvent(QMouseEvent *event)
 {
-    logMessage("SceneViewCommon::mouseReleaseEvent()");
-
     setCursor(Qt::ArrowCursor);
 
     // zoom region

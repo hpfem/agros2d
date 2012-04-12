@@ -28,8 +28,6 @@
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("ConfigDialog::ConfigDialog()");
-
     setWindowIcon(icon("options"));
     setWindowTitle(tr("Options"));
 
@@ -43,8 +41,6 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 
 void ConfigDialog::load()
 {
-    logMessage("ConfigDialog::load()");
-
     // gui style
     cmbGUIStyle->setCurrentIndex(cmbGUIStyle->findText(Util::config()->guiStyle));
     if (cmbGUIStyle->currentIndex() == -1 && cmbGUIStyle->count() > 0) cmbGUIStyle->setCurrentIndex(0);
@@ -123,8 +119,6 @@ void ConfigDialog::load()
 
 void ConfigDialog::save()
 {
-    logMessage("ConfigDialog::save()");
-
     // gui style
     Util::config()->guiStyle = cmbGUIStyle->currentText();
     setGUIStyle(cmbGUIStyle->currentText());
@@ -216,8 +210,6 @@ void ConfigDialog::save()
 
 void ConfigDialog::createControls()
 {
-    logMessage("ConfigDialog::createControls()");
-
     lstView = new QListWidget(this);
     pages = new QStackedWidget(this);
 
@@ -286,8 +278,6 @@ void ConfigDialog::createControls()
 
 QWidget *ConfigDialog::createMainWidget()
 {
-    logMessage("ConfigDialog::createMainWidget()");
-
     QWidget *mainWidget = new QWidget(this);
 
     // general
@@ -370,8 +360,6 @@ QWidget *ConfigDialog::createMainWidget()
 
 QWidget *ConfigDialog::createSolverWidget()
 {
-    logMessage("ConfigDialog::createSolverWidget()");
-
     // general
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
@@ -509,8 +497,6 @@ QWidget *ConfigDialog::createSolverWidget()
 
 QWidget *ConfigDialog::createColorsWidget()
 {
-    logMessage("ConfigDialog::createColorsWidget()");
-
     QWidget *colorsWidget = new QWidget(this);
 
     // colors
@@ -575,8 +561,6 @@ QWidget *ConfigDialog::createColorsWidget()
 
 QWidget *ConfigDialog::createGlobalScriptWidget()
 {
-    logMessage("ConfigDialog::createGlobalScriptWidget()");
-
     QWidget *viewWidget = new QWidget(this);
 
     txtGlobalScript = new ScriptEditor(currentPythonEngine(), this);
@@ -592,8 +576,6 @@ QWidget *ConfigDialog::createGlobalScriptWidget()
 
 void ConfigDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 {
-    logMessage("fillComboBoxPhysicField()");
-
     // block signals
     cmbPhysicField->blockSignals(true);
 
@@ -613,30 +595,22 @@ void ConfigDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 
 void ConfigDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
-    logMessage("ConfigDialog::doCurrentItemChanged()");
-
     pages->setCurrentIndex(lstView->row(current));
 }
 
 void ConfigDialog::doAccept()
 {
-    logMessage("ConfigDialog::doAccept()");
-
     save();
     accept();
 }
 
 void ConfigDialog::doReject()
 {
-    logMessage("ConfigDialog::ConfigDialog()");
-
     reject();
 }
 
 void ConfigDialog::doClearApplicationLog()
 {
-    logMessage("ConfigDialog::doClearApplicationLog()");
-
     if (QMessageBox::question(this, tr("Delete"), tr("Are you sure that you want to permanently delete the application logfile?"), tr("&Yes"), tr("&No")) == 0)
     {
         QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
@@ -648,8 +622,6 @@ void ConfigDialog::doClearApplicationLog()
 
 void ConfigDialog::doAdaptivityDefault()
 {
-    logMessage("ConfigDialog::doAdaptivityDefault()");
-
     txtMaxDOFs->setValue(MAX_DOFS);
     //chkIsoOnly->setChecked(ADAPTIVITY_ISOONLY);
     txtConvExp->setValue(ADAPTIVITY_CONVEXP);
@@ -661,16 +633,12 @@ void ConfigDialog::doAdaptivityDefault()
 
 void ConfigDialog::doCommandsDefault()
 {
-    logMessage("ConfigDialog::doCommandsDefault()");
-
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
 }
 
 void ConfigDialog::doColorsDefault()
 {
-    logMessage("ConfigDialog::doColorsDefault()");
-
     colorBackground->setColor(COLORBACKGROUND);
     colorGrid->setColor(COLORGRID);
     colorCross->setColor(COLORCROSS);
@@ -689,8 +657,6 @@ void ConfigDialog::doColorsDefault()
 
 ColorButton::ColorButton(QWidget *parent) : QPushButton(parent)
 {
-    logMessage("ColorButton::ColorButton()");
-
     setAutoFillBackground(false);
     setCursor(Qt::PointingHandCursor);
     connect(this, SIGNAL(clicked()), this, SLOT(doClicked()));
@@ -698,21 +664,16 @@ ColorButton::ColorButton(QWidget *parent) : QPushButton(parent)
 
 ColorButton::~ColorButton()
 {
-    logMessage("ColorButton::~ColorButton()");
 }
 
 void ColorButton::setColor(const QColor &color)
 {
-    logMessage("ColorButton::setColor()");
-
     m_color = color;
     repaint();
 }
 
 void ColorButton::paintEvent(QPaintEvent *event)
 {
-    logMessage("ColorButton::paintEvent()");
-
     QPushButton::paintEvent(event);
 
     QPainter painter(this);
@@ -723,8 +684,6 @@ void ColorButton::paintEvent(QPaintEvent *event)
 
 void ColorButton::doClicked()
 {
-    logMessage("ColorButton::doClicked()");
-
     QColor color = QColorDialog::getColor(m_color);
 
     if (color.isValid())

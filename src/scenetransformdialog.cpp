@@ -24,8 +24,6 @@
 
 SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("SceneTransformDialog::SceneTransformDialog()");
-
     setWindowIcon(icon("scene-transform"));
     setWindowTitle(tr("Transform"));
 
@@ -60,8 +58,6 @@ void SceneTransformDialog::showDialog()
 
 void SceneTransformDialog::createControls()
 {
-    logMessage("SceneTransformDialog::createControls()");
-
     // translate
     txtTranslateX = new ValueLineEdit();
     txtTranslateY = new ValueLineEdit();
@@ -142,15 +138,11 @@ void SceneTransformDialog::createControls()
 
 void SceneTransformDialog::doClose()
 {
-    logMessage("SceneTransformDialog::doClose()");
-
     close();
 }
 
 void SceneTransformDialog::doTransform()
 {
-    logMessage("SceneTransformDialog::makeTransformation()");
-
     if (tabWidget->currentWidget() == widTranslate)
     {
         if (!txtTranslateX->evaluate(false)) return;
