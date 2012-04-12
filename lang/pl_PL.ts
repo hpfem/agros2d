@@ -7182,52 +7182,52 @@ Do you want to save your changes?</source>
         <translation>Przekształcenie</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="75"/>
+        <location filename="../src/scenetransformdialog.cpp" line="93"/>
         <source>Angle:</source>
         <translation>Kąt:</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="91"/>
+        <location filename="../src/scenetransformdialog.cpp" line="112"/>
         <source>Scaling factor:</source>
         <translation>Współ. skalowania:</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="98"/>
+        <location filename="../src/scenetransformdialog.cpp" line="119"/>
         <source>Copy objects</source>
         <translation>Skopiuj obiekty</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="101"/>
+        <location filename="../src/scenetransformdialog.cpp" line="122"/>
         <source>Apply</source>
         <translation>Zastosuj</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="104"/>
+        <location filename="../src/scenetransformdialog.cpp" line="125"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="114"/>
+        <location filename="../src/scenetransformdialog.cpp" line="135"/>
         <source>Translate</source>
         <translation>Przesunięcie</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="115"/>
+        <location filename="../src/scenetransformdialog.cpp" line="136"/>
         <source>Rotate</source>
         <translation>Obrót</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="116"/>
+        <location filename="../src/scenetransformdialog.cpp" line="137"/>
         <source>Scale</source>
         <translation>Skalowanie</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="160"/>
+        <location filename="../src/scenetransformdialog.cpp" line="181"/>
         <source>Scale factor</source>
         <translation>Skalowanie</translation>
     </message>
     <message>
-        <location filename="../src/scenetransformdialog.cpp" line="160"/>
+        <location filename="../src/scenetransformdialog.cpp" line="181"/>
         <source>Scale factor should not be zero.</source>
         <translation>Współczynnik skalowania nie może być równy zero.</translation>
     </message>
@@ -7461,12 +7461,12 @@ Do you want to save your changes?</source>
 <context>
     <name>ScriptEditor</name>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1454"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1419"/>
         <source>Goto line</source>
         <translation>Skocz do linii</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1454"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1419"/>
         <source>Line number:</source>
         <translation>Numer linii</translation>
     </message>
@@ -7764,27 +7764,27 @@ Do you want to save your changes?</source>
 <context>
     <name>SearchWidget</name>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1706"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1671"/>
         <source>Search for:</source>
         <translation>Szukaj:</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1707"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1672"/>
         <source>Replace with:</source>
         <translation>Zastąp przez:</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1714"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1679"/>
         <source>Find</source>
         <translation>Znajdź</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1718"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1683"/>
         <source>Replace all</source>
         <translation>Zastąp wszystkie</translation>
     </message>
     <message>
-        <location filename="../src/pythonlab/pythoneditor.cpp" line="1721"/>
+        <location filename="../src/pythonlab/pythoneditor.cpp" line="1686"/>
         <source>Hide</source>
         <translation>Ukryj</translation>
     </message>

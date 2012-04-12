@@ -20,7 +20,8 @@ linux-g++|linux-g++-64|linux-g++-32:CONFIG(release) system(cython --cplus python
 linux-g++|linux-g++-64|linux-g++-32:CONFIG(release) system(lrelease ../lang/*.ts)
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
-    lang/de_DE.ts
+    lang/de_DE.ts \
+	lang/ru_RU.ts
 CODECFORTR = UTF-8
 RC_FILE = src.rc
 RESOURCES = src.qrc
