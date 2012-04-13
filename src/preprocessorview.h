@@ -25,6 +25,7 @@
 #include <QWebView>
 
 class SceneViewPreprocessor;
+class FieldsToobar;
 
 class PreprocessorView : public QDockWidget
 {
@@ -63,8 +64,7 @@ private:
     QMenu *mnuPreprocessor;
     QWebView *webView;
 
-    QActionGroup *actFieldsGroup;
-    QToolBar *tlbFields;
+    FieldsToobar *fieldsToolbar;
 
     void createActions();
     void createControls();
@@ -77,9 +77,6 @@ private slots:
     void doContextMenu(const QPoint &pos);
     void doItemDoubleClicked(QTreeWidgetItem *item, int role);
     void doItemSelected(QTreeWidgetItem *item, int role);
-
-    void doProblemDialog(QAction *action);
-    void doAddField();
 
     void showInfo();
 };

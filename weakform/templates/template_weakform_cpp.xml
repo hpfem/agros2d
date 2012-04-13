@@ -39,7 +39,7 @@ CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned 
                                                  std::string area,
                                                  Hermes::Hermes2D::SymFlag sym,
                                                  Material *material)
-    : Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;(i, j, area, sym), m_material(material)
+    : Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;(i, j, area, sym), m_material(material), m_sym(sym)
 {
     //variable_definition	
 }
@@ -83,6 +83,16 @@ Hermes::Ord CustomMatrixFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::He
     }	
     return result;
 }</custom_matrix_form_vol_ord>
+
+<custom_matrix_form_vol_clone>template &lt;typename Scalar&gt;
+CustomMatrixFormVol&lt;Scalar&gt;* CustomMatrixFormVol&lt;Scalar&gt;::clone()
+{
+    return new CustomMatrixFormVol(this->i, this->j, this->areas[0], this->m_sym, 
+                                         this->m_material);
+}
+</custom_matrix_form_vol_clone>
+
+
 
 <custom_vector_form_vol>
 
@@ -131,6 +141,14 @@ Hermes::Ord CustomVectorFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::He
 }
 
 </custom_vector_form_vol_ord>
+
+<custom_vector_form_vol_clone>template &lt;typename Scalar&gt;
+CustomVectorFormVol&lt;Scalar&gt;* CustomVectorFormVol&lt;Scalar&gt;::clone()
+{
+    return new CustomVectorFormVol(this->i, this->j, this->areas[0],
+                                         this->m_material);
+}
+</custom_vector_form_vol_clone>
 
 
 <custom_matrix_form_surf>
@@ -182,6 +200,14 @@ Hermes::Ord CustomMatrixFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
 
 </custom_matrix_form_surf_ord>
 
+<custom_matrix_form_surf_clone>template &lt;typename Scalar&gt;
+CustomMatrixFormSurf&lt;Scalar&gt;* CustomMatrixFormSurf&lt;Scalar&gt;::clone()
+{
+    return new CustomMatrixFormSurf(this->i, this->j, this->areas[0],
+                                         this->m_boundary);
+}
+</custom_matrix_form_surf_clone>
+
 <custom_vector_form_surf>
 
 template &lt;typename Scalar&gt;
@@ -230,6 +256,14 @@ Hermes::Ord CustomVectorFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
 }
 
 </custom_vector_form_surf_ord>
+
+<custom_vector_form_surf_clone>template &lt;typename Scalar&gt;
+CustomVectorFormSurf&lt;Scalar&gt;* CustomVectorFormSurf&lt;Scalar&gt;::clone()
+{
+    return new CustomVectorFormSurf(this->i, this->j, this->areas[0],  
+                                         this->m_boundary);
+}
+</custom_vector_form_surf_clone>
 
 <custom_essential_form_surf>
 

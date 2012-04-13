@@ -228,7 +228,7 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
     return NULL;
 }
 
-void CouplingInfo::synchronizeCouplings(QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos)
+void CouplingInfo::synchronizeCouplings(const QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos)
 {
     // add missing
     foreach (FieldInfo* sourceField, fieldInfos)

@@ -53,8 +53,6 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    logMessage("MainWindow::MainWindow()");
-
     Util::createSingleton();
 
     // FIXME: curve elements from script doesn't work
@@ -176,8 +174,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 MainWindow::~MainWindow()
 {
-    logMessage("MainWindow::~MainWindow()");
-
     QSettings settings;
     settings.setValue("MainWindow/Geometry", saveGeometry());
     settings.setValue("MainWindow/State", saveState());
@@ -189,15 +185,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::open(const QString &fileName)
 {
-    logMessage("MainWindow::open()");
-
     doDocumentOpen(fileName);
 }
 
 void MainWindow::createActions()
 {
-    logMessage("MainWindow::createActions()");
-
     actDocumentNew = new QAction(icon("document-new"), tr("&New..."), this);
     actDocumentNew->setShortcuts(QKeySequence::New);
     actDocumentNew->setStatusTip(tr("Create a new file"));
@@ -419,8 +411,6 @@ void MainWindow::doFieldsChanged()
 
 void MainWindow::createMenus()
 {
-    logMessage("MainWindow::createMenus()");
-
     menuBar()->clear();
 
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
@@ -597,6 +587,7 @@ void MainWindow::createToolBars()
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(actScriptEditor);
     tlbLeftBar->addAction(actInfo);
+    tlbLeftBar->addAction(Util::scene()->actProblemProperties);
 
     addToolBar(Qt::LeftToolBarArea, tlbLeftBar);
 
@@ -675,8 +666,6 @@ void MainWindow::createToolBars()
 
 void MainWindow::createScene()
 {
-    logMessage("MainWindow::createScene()");
-
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(this);
     sceneViewPost2D = new SceneViewPost2D(this);
@@ -701,8 +690,6 @@ void MainWindow::createScene()
 
 void MainWindow::createViews()
 {
-    logMessage("MainWindow::createViews()");
-
     preprocessorView = new PreprocessorView(sceneViewPreprocessor, this);
     preprocessorView->setAllowedAreas(Qt::LeftDockWidgetArea);
     addDockWidget(Qt::LeftDockWidgetArea, preprocessorView);
@@ -792,8 +779,6 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
 
 void MainWindow::setRecentFiles()
 {
-    logMessage("MainWindow::setRecentFiles()");
-
     // recent files
     if (Util::scene()->problemInfo()->fileName != "")
     {
@@ -817,22 +802,16 @@ void MainWindow::setRecentFiles()
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
-    logMessage("MainWindow::dragEnterEvent()");
-
     event->acceptProposedAction();
 }
 
 void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 {
-    logMessage("MainWindow::dragLeacceEvent()");
-
     event->accept();
 }
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
-    logMessage("MainWindow::dropEvent()");
-
     if (event->mimeData()->hasUrls())
     {
         QString fileName = QUrl(event->mimeData()->urls().at(0)).toLocalFile().trimmed();
@@ -847,8 +826,6 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::doDocumentNew()
 {
-    logMessage("MainWindow::doDocumentNew()");
-
     ProblemInfo *problemInfo = new ProblemInfo();
     ProblemDialog problemDialog(problemInfo, true, this);
     if (problemDialog.showDialog() == QDialog::Accepted)
@@ -871,8 +848,6 @@ void MainWindow::doDocumentNew()
 
 void MainWindow::doDocumentOpen(const QString &fileName)
 {
-    logMessage("MainWindow::doDocumentOpen()");
-
     QSettings settings;
     QString fileNameDocument;
 
@@ -940,8 +915,6 @@ void MainWindow::doDocumentDownloadFromServer()
 
 void MainWindow::doDocumentOpenRecent(QAction *action)
 {
-    logMessage("MainWindow::doDocumentOpenRecent()");
-
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
@@ -961,8 +934,6 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    logMessage("MainWindow::doDocumentSave()");
-
     if (QFile::exists(Util::scene()->problemInfo()->fileName))
     {
         ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
@@ -975,8 +946,6 @@ void MainWindow::doDocumentSave()
 
 void MainWindow::doDocumentSaveWithSolution()
 {
-    logMessage("MainWindow::doDocumentSaveWithSolution()");
-
     QSettings settings;
 
     // save state
@@ -990,8 +959,6 @@ void MainWindow::doDocumentSaveWithSolution()
 
 void MainWindow::doDocumentSaveAs()
 {
-    logMessage("MainWindow::doDocumentSaveAs()");
-
     QSettings settings;
     QString dir = settings.value("General/LastProblemDir", "data").toString();
 
@@ -1021,8 +988,6 @@ void MainWindow::doDocumentUploadToServer()
 
 void MainWindow::doDocumentClose()
 {
-    logMessage("MainWindow::doDocumentClose()");
-
     // WILL BE FIXED
     /*
     while (!Util::scene()->undoStack()->isClean())
@@ -1055,8 +1020,6 @@ void MainWindow::doDocumentClose()
 
 void MainWindow::doDocumentImportDXF()
 {
-    logMessage("MainWindow::doDocumentImportDXF()");
-
     QSettings settings;
     QString dir = settings.value("General/LastDXFDir").toString();
 
@@ -1074,8 +1037,6 @@ void MainWindow::doDocumentImportDXF()
 
 void MainWindow::doDocumentExportDXF()
 {
-    logMessage("MainWindow::doDocumentExportDXF()");
-
     QSettings settings;
     QString dir = settings.value("General/LastDXFDir").toString();
 
@@ -1093,8 +1054,6 @@ void MainWindow::doDocumentExportDXF()
 
 void MainWindow::doDocumentSaveImage()
 {
-    logMessage("MainWindow::doDocumentSaveImage()");
-
     QSettings settings;
     QString dir = settings.value("General/LastImageDir").toString();
 
@@ -1115,8 +1074,6 @@ void MainWindow::doDocumentSaveImage()
 
 void MainWindow::doDocumentSaveGeometry()
 {
-    logMessage("MainWindow::doDocumentSaveGeometry()");
-
     QSettings settings;
     QString dir = settings.value("General/LastImageDir").toString();
 
@@ -1158,8 +1115,6 @@ void MainWindow::doDocumentSaveGeometry()
 
 void MainWindow::doCreateVideo()
 {
-    logMessage("MainWindow::doCreateVideo()");
-
     videoDialog->showDialog();
 }
 
@@ -1238,8 +1193,6 @@ void MainWindow::doSolveAdaptiveStep()
 
 void MainWindow::doFullScreen()
 {
-    logMessage("MainWindow::doFullScreen()");
-
     if (isFullScreen())
         showNormal();
     else
@@ -1283,30 +1236,22 @@ void MainWindow::doTransform()
 
 void MainWindow::doMaterialBrowser()
 {
-    logMessage("MainWindow::doMaterialBrowser()");
-
     MaterialBrowserDialog materialBrowserDialog(this);
     materialBrowserDialog.showDialog(false);
 }
 
 void MainWindow::doChart()
 {
-    logMessage("MainWindow::doChart()");
-
     chartDialog->showDialog();
 }
 
 void MainWindow::doScriptEditor()
 {
-    logMessage("MainWindow::doScriptEditor()");
-
     scriptEditorDialog->showDialog();
 }
 
 void MainWindow::doScriptEditorRunScript(const QString &fileName)
 {
-    logMessage("MainWindow::doScriptEditorRunScript()");
-
     QString fileNameScript;
     QSettings settings;
 
@@ -1349,21 +1294,17 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
 void MainWindow::doScriptEditorRunCommand()
 {
-    logMessage("MainWindow::doScriptEditorRunCommand()");
-
     consoleView->show();
     consoleView->activateWindow();
 }
 
 void MainWindow::doCut()
 {
-    logMessage("MainWindow::doCut()");
+
 }
 
 void MainWindow::doCopy()
 {
-    logMessage("MainWindow::doCopy()");
-
     // copy image to clipboard
     QPixmap pixmap = sceneViewPost2D->renderScenePixmap();
     QApplication::clipboard()->setImage(pixmap.toImage());
@@ -1371,13 +1312,11 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    logMessage("MainWindow::doPaste()");
+
 }
 
 void MainWindow::doTimeStepChanged(int index)
 {
-    logMessage("MainWindow::doTimeStepChanged()");
-
     if (cmbTimeStep->currentIndex() != -1)
     {
         Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
@@ -1491,36 +1430,26 @@ void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneMod
 
 void MainWindow::doHelp()
 {
-    logMessage("MainWindow::doHelp()");
-
     showPage("index.html");
 }
 
 void MainWindow::doHelpShortCut()
 {
-    logMessage("MainWindow::doHelpShortCut()");
-
     showPage("getting_started/shortcut_keys.html");
 }
 
 void MainWindow::doCollaborationServer()
 {
-    logMessage("MainWindow::doCollaborationServer()");
-
     QDesktopServices::openUrl(QUrl(Util::config()->collaborationServerURL + "problems.php"));
 }
 
 void MainWindow::doOnlineHelp()
 {
-    logMessage("MainWindow::doOnlineHelp()");
-
     QDesktopServices::openUrl(QUrl("http://hpfem.org/agros2d/help"));
 }
 
 void MainWindow::doCheckVersion()
 {
-    logMessage("MainWindow::doCheckVersion()");
-
     checkForNewVersion();
 }
 
@@ -1532,8 +1461,6 @@ void MainWindow::doAbout()
 
 void MainWindow::doDocumentExportMeshFile()
 {
-    logMessage("MainWindow::doDocumentExportMeshFile()");
-
     // generate mesh file
     bool commutator = Util::config()->deleteHermes2DMeshFile;
     if (commutator)
@@ -1590,22 +1517,16 @@ void MainWindow::doDocumentExportMeshFile()
 
 void MainWindow::doProgressLog()
 {
-    logMessage("MainWindow::doProgressLog()");
-
     logDialog->loadProgressLog();
 }
 
 void MainWindow::doApplicationLog()
 {
-    logMessage("MainWindow::doApplicationLog()");
-
     logDialog->loadApplicationLog();
 }
 
 void MainWindow::doLoadBackground()
 {
-    logMessage("MainWindow::doLoadBackground()");
-
     ImageLoaderDialog imageLoaderDialog;
     if (imageLoaderDialog.exec() == QDialog::Accepted)
     {
@@ -1622,8 +1543,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     // WILL BE FIXED
     /*
-    logMessage("MainWindow::closeEvent()");
-
     if (!Util::scene()->undoStack()->isClean())
         doDocumentClose();
 

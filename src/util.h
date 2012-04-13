@@ -62,13 +62,6 @@
 using namespace std;
 using std::tr1::shared_ptr;
 
-// verbose
-void setVerbose(bool verb);
-
-// log file
-void logOutput(QtMsgType type, const char *msg);
-void logMessage(const QString &msg);
-
 // show page
 void showPage(const QString &str = "");
 

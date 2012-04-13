@@ -38,8 +38,6 @@ PostprocessorView::PostprocessorView(SceneViewPreprocessor *sceneGeometry,
                                      SceneViewPost3D *scenePost3D,
                                      QWidget *parent) : QDockWidget(tr("View Properties"), parent)
 {
-    logMessage("PostprocessorView::PostprocessorView()");
-
     m_sceneGeometry = sceneGeometry;
     m_sceneMesh = sceneMesh;
     m_scenePost2D = scenePost2D;
@@ -59,8 +57,6 @@ PostprocessorView::PostprocessorView(SceneViewPreprocessor *sceneGeometry,
 
 void PostprocessorView::loadBasic()
 {
-    logMessage("PostprocessorView::loadBasic()");
-
     cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(Util::config()->activeField));
     if (cmbFieldInfo->currentIndex() == -1)
         cmbFieldInfo->setCurrentIndex(0);
@@ -118,8 +114,6 @@ void PostprocessorView::loadBasic()
 
 void PostprocessorView::loadAdvanced()
 {
-    logMessage("PostprocessorView::loadAdvanced()");
-
     // workspace
     txtGridStep->setText(QString::number(Util::config()->gridStep));
     chkShowGrid->setChecked(Util::config()->showGrid);
@@ -212,8 +206,6 @@ void PostprocessorView::loadAdvanced()
 
 void PostprocessorView::saveBasic()
 {
-    logMessage("PostprocessorView::saveBasic()");
-
     // active field
     Util::config()->activeField = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
 
@@ -251,8 +243,6 @@ void PostprocessorView::saveBasic()
 
 void PostprocessorView::saveAdvanced()
 {
-    logMessage("PostprocessorView::saveAdvanced()");
-
     // workspace
     Util::config()->showGrid = chkShowGrid->isChecked();
     Util::config()->gridStep = txtGridStep->text().toDouble();
@@ -330,8 +320,6 @@ void PostprocessorView::saveAdvanced()
 
 void PostprocessorView::createControls()
 {
-    logMessage("PostprocessorView::createControls()");
-
     // tab widget
     basic = controlsBasic();
     postprocessor = controlsPostprocessor();
@@ -927,8 +915,6 @@ QWidget *PostprocessorView::controlsPostprocessor()
 
 QWidget *PostprocessorView::controlsWorkspace()
 {
-    logMessage("PostprocessorView::controlsWorkspace()");
-
     // workspace
     txtGridStep = new QLineEdit("0.1");
     txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
@@ -1174,16 +1160,12 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
 
 void PostprocessorView::doScalarFieldRangeAuto(int state)
 {
-    logMessage("PostprocessorView::doScalarFieldRangeAuto()");
-
     txtScalarFieldRangeMin->setEnabled(!chkScalarFieldRangeAuto->isChecked());
     txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());
 }
 
 void PostprocessorView::doPaletteFilter(int state)
 {
-    logMessage("PostprocessorView::doPaletteFilter()");
-
     txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
@@ -1279,15 +1261,11 @@ void PostprocessorView::updateControls()
 
 void PostprocessorView::doPostprocessorGroupClicked(QAbstractButton *button)
 {
-    logMessage("PostprocessorView::doPostprocessorGroupClicked()");
-
     setControls();
 }
 
 void PostprocessorView::doApply()
 {
-    logMessage("PostprocessorView::doApply()");
-
     saveBasic();
     saveAdvanced();
 
@@ -1312,8 +1290,6 @@ void PostprocessorView::doApply()
 
 void PostprocessorView::doWorkspaceDefault()
 {
-    logMessage("PostprocessorView::doWorkspaceDefault()");
-
     txtGridStep->setText(QString::number(GRIDSTEP));
     chkShowGrid->setChecked(SHOWGRID);
     chkSnapToGrid->setChecked(SNAPTOGRID);
@@ -1332,8 +1308,6 @@ void PostprocessorView::doWorkspaceDefault()
 
 void PostprocessorView::doScalarFieldDefault()
 {
-    logMessage("PostprocessorView::doScalarFieldDefault()");
-
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
     chkPaletteFilter->setChecked(PALETTEFILTER);
     txtPaletteSteps->setValue(PALETTESTEPS);
@@ -1346,15 +1320,11 @@ void PostprocessorView::doScalarFieldDefault()
 
 void PostprocessorView::doContoursDefault()
 {
-    logMessage("PostprocessorView::doContoursDefault()");
-
     txtContoursCount->setValue(CONTOURSCOUNT);
 }
 
 void PostprocessorView::doVectorFieldDefault()
 {
-    logMessage("PostprocessorView::doVecotrFieldDefault()");
-
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
     txtVectorCount->setValue(VECTORNUMBER);
@@ -1363,8 +1333,6 @@ void PostprocessorView::doVectorFieldDefault()
 
 void PostprocessorView::doOrderDefault()
 {
-    logMessage("PostprocessorView::doPolynomialOrderDefault()");
-
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
     chkShowOrderScale->setChecked(SHOWORDERCOLORBAR);
     chkOrderLabel->setChecked(ORDERLABEL);
@@ -1372,8 +1340,6 @@ void PostprocessorView::doOrderDefault()
 
 void PostprocessorView::doAdvancedDefault()
 {
-    logMessage("PostprocessorView::doAdvancedDefault()");
-
     chkView3DLighting->setChecked(VIEW3DLIGHTING);
     txtView3DAngle->setValue(VIEW3DANGLE);
     chkView3DBackground->setChecked(VIEW3DBACKGROUND);
@@ -1386,8 +1352,6 @@ void PostprocessorView::doAdvancedDefault()
 
 void PostprocessorView::doParticleDefault()
 {
-    logMessage("PostprocessorView::doParticleDefault()");
-
     txtParticleNumberOfParticles->setValue(PARTICLENUMBEROFPARTICLES);
     txtParticleStartingRadius->setValue(PARTICLESTARTINGRADIUS);
     chkParticleIncludeGravitation->setChecked(PARTICLEINCLUDEGRAVITATION);
@@ -1449,8 +1413,6 @@ void PostprocessorView::doScalarFieldRangeMaxChanged()
 
 void PostprocessorView::doSceneFont()
 {
-    logMessage("PostprocessorView::doSceneFont()");
-
     bool ok;
     QFont sceneFont = QFontDialog::getFont(&ok, lblSceneFontExample->font(), this);
     if (ok)
@@ -1467,7 +1429,5 @@ void PostprocessorView::doShowGridChanged()
 
 void PostprocessorView::doScalarFieldLog(int state)
 {
-    logMessage("PostprocessorView::doScalarFieldLog()");
-
     txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }

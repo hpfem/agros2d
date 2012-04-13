@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     appendToFile(location, str);
 
     // register message handler
-    qInstallMsgHandler(logOutput);
+    // TODO: qInstallMsgHandler(logOutput);
 
     QApplication a(argc, argv);
 
@@ -66,10 +66,6 @@ int main(int argc, char *argv[])
             exit(0);
             return 0;
         }
-    }
-    if (args.contains("--verbose") || args.contains("/verbose"))
-    {
-        setVerbose(true);
     }
 
     QSettings settings;

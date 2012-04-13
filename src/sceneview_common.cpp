@@ -98,8 +98,6 @@ void SceneViewWidget::iconLeft(const QIcon &left)
 
 SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
-    logMessage("SceneViewCommon::SceneView()");
-
     m_mainWindow = (QMainWindow *) parent;
 
     createActions();
@@ -115,14 +113,10 @@ SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::Sam
 
 SceneViewCommon::~SceneViewCommon()
 {
-    logMessage("SceneViewCommon::~SceneView()");
-
 }
 
 void SceneViewCommon::createActions()
 {
-    logMessage("SceneViewCommon::createActions()");
-
     // scene - grid
     actSceneShowGrid = new QAction(icon("grid"), tr("Show grid"), this);
     actSceneShowGrid->setStatusTip(tr("Show grid"));
@@ -153,8 +147,6 @@ void SceneViewCommon::createActions()
 
 void SceneViewCommon::initializeGL()
 {
-    logMessage("SceneViewCommon::initializeGL()");
-
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE);
 }
@@ -273,16 +265,12 @@ void SceneViewCommon::doMaterialGroup(QAction *action)
 
 void SceneViewCommon::doBoundaryGroup(QAction *action)
 {
-    logMessage("SceneViewCommon::doBoundaryGroup()");
-
     if (SceneBoundary *boundary = action->data().value<SceneBoundary *>())
         Util::scene()->setBoundary(boundary);
 }
 
 void SceneViewCommon::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const
 {
-    logMessage("SceneViewCommon::drawArc()");
-
     double theta = arcAngle / double(segments - 1);
 
     glBegin(GL_LINE_STRIP);
@@ -300,8 +288,6 @@ void SceneViewCommon::drawArc(const Point &point, double r, double startAngle, d
 
 void SceneViewCommon::drawBlend(Point start, Point end, double red, double green, double blue, double alpha) const
 {
-    logMessage("SceneViewCommon::drawBlend()");
-
     // store color
     double color[4];
     glGetDoublev(GL_CURRENT_COLOR, color);
@@ -330,8 +316,6 @@ void SceneViewCommon::drawBlend(Point start, Point end, double red, double green
 
 ErrorResult SceneViewCommon::saveImageToFile(const QString &fileName, int w, int h)
 {
-    logMessage("SceneViewCommon::saveImageToFile()");
-
     QPixmap pixmap = renderScenePixmap(w, h);
     if (pixmap.save(fileName, "PNG"))
         resizeGL(width(), height());
@@ -343,9 +327,7 @@ ErrorResult SceneViewCommon::saveImageToFile(const QString &fileName, int w, int
 
 void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w, int h)
 {
-    assert(0); //TODO
-    //    logMessage("SceneViewCommon::saveImagesForReport()");
-
+    assert(0); //TODO    
     //    // store sceneview settings
     //    SceneViewSettings sceneViewSettingsCopy = Util::scene()ViewSettings;
     //    SceneMode sceneModeCopy = Util::scene()Mode;
@@ -487,7 +469,5 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
 
 void SceneViewCommon::setSceneFont()
 {
-    logMessage("SceneViewCommon::setSceneFont()");
-
     setFont(Util::config()->sceneFont);
 }

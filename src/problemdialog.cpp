@@ -26,10 +26,10 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/coupling.h"
 
+const int minWidth = 130;
+
 FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : QDialog(parent)
 {
-    logMessage("FieldSelectDialog::FieldSelectDialog()");
-
     setWindowTitle(tr("Select field"));
     setModal(true);
 
@@ -89,15 +89,11 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
 
 void FieldSelectDialog::doAccept()
 {
-    logMessage("FieldSelectDialog::doAccept()");
-
     accept();
 }
 
 void FieldSelectDialog::doReject()
 {
-    logMessage("FieldSelectDialog::doReject()");
-
     reject();
 }
 
@@ -178,8 +174,6 @@ void FieldWidget::createContent()
 
     // fill combobox
     fillComboBox();
-
-    int minWidth = 130;
 
     // table
     QGridLayout *layoutGeneral = new QGridLayout();
@@ -279,8 +273,6 @@ void FieldWidget::createContent()
 
 void FieldWidget::fillComboBox()
 {
-    logMessage("ProblemDialog::fillComboBox()");
-
     cmbAdaptivityType->clear();
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_None), AdaptivityType_None);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_H), AdaptivityType_H);
@@ -363,8 +355,6 @@ FieldInfo *FieldWidget::fieldInfo()
 
 void FieldWidget::doAnalysisTypeChanged(int index)
 {
-    logMessage("ProblemDialog::doAnalysisTypeChanged()");
-
     txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
 
     doShowEquation();
@@ -380,16 +370,12 @@ void FieldWidget::doShowEquation()
 
 void FieldWidget::doAdaptivityChanged(int index)
 {
-    logMessage("ProblemDialog::doAdaptivityChanged()");
-
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void FieldWidget::doLinearityTypeChanged(int index)
 {
-    logMessage("ProblemDialog::doLinearityTypeChanged()");
-
     txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 }
@@ -469,8 +455,6 @@ CouplingsWidget::CouplingsWidget(bool isNewProblem, QWidget *parent) : QWidget(p
 
 void CouplingsWidget::createContent()
 {
-    int minWidth = 130;
-
     if (layoutTable)
     {
         save();
@@ -501,7 +485,7 @@ void CouplingsWidget::createContent()
 
 void CouplingsWidget::fillComboBox()
 {
-    foreach(QComboBox* comboBox, m_comboBoxes)
+    foreach (QComboBox* comboBox, m_comboBoxes)
     {
         comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
         comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
@@ -511,7 +495,7 @@ void CouplingsWidget::fillComboBox()
 
 void CouplingsWidget::load()
 {
-    foreach(CouplingInfo *couplingInfo, m_couplingInfos)
+    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
     {
         m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
     }
@@ -523,11 +507,108 @@ void CouplingsWidget::save()
     {
         if(m_comboBoxes.contains(couplingInfo))
         {
-            couplingInfo->setCouplingType((CouplingType)m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
+            couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
         }
     }
 
     Util::scene()->setCouplingInfos(m_couplingInfos);
+}
+
+void CouplingsWidget::refresh()
+{
+    CouplingInfo::synchronizeCouplings(Util::scene()->fieldInfos(), m_couplingInfos);
+
+    createContent();
+}
+
+// ********************************************************************************************
+
+FieldsToobar::FieldsToobar(QWidget *parent, Qt::Orientation oriantation) : QWidget(parent)
+{
+    createControls(oriantation);
+
+    refresh();
+}
+
+void FieldsToobar::createControls(Qt::Orientation oriantation)
+{
+    actFieldsGroup = new QActionGroup(this);
+    connect(actFieldsGroup, SIGNAL(triggered(QAction *)), this, SLOT(fieldDialog(QAction *)));
+
+    tlbFields = new QToolBar(this);
+    tlbFields->setIconSize(QSize(36, 36));
+    tlbFields->setOrientation(oriantation);
+    if (oriantation == Qt::Horizontal)
+    {
+        tlbFields->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        tlbFields->setStyleSheet("QToolButton { font-size: 8pt; }");
+    }
+    else
+    {
+        tlbFields->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    }
+
+    QVBoxLayout *layoutToolBar = new QVBoxLayout();
+    layoutToolBar->addWidget(tlbFields);
+
+    setLayout(layoutToolBar);
+}
+
+void FieldsToobar::refresh()
+{
+    // fields
+    tlbFields->clear();
+    actFieldsGroup->actions().clear();
+
+    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    {
+        QAction *actField = new QAction(QString::fromStdString(fieldInfo->module()->name), this);
+        actField->setIcon(icon(QString::fromStdString("fields/" + fieldInfo->module()->fieldid)));
+        actField->setData(QString::fromStdString(fieldInfo->module()->fieldid));
+
+        actFieldsGroup->addAction(actField);
+        tlbFields->addAction(actField);
+    }
+    // spacing
+    QLabel *spacing = new QLabel;
+    spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    tlbFields->addWidget(spacing);
+
+    tlbFields->addAction(icon("tabadd"), tr("Add field"), this, SLOT(addField()));
+}
+
+void FieldsToobar::fieldDialog(QAction *action)
+{
+    FieldInfo *fieldInfo = Util::scene()->fieldInfo(action->data().toString());
+    if (fieldInfo)
+    {
+        FieldDialog fieldDialog(fieldInfo, this);
+        if (fieldDialog.exec() == QDialog::Accepted)
+            refresh();
+    }
+}
+
+void FieldsToobar::addField()
+{
+    // select field dialog
+    FieldSelectDialog dialog(Util::scene()->fieldInfos().keys(), this);
+    if (dialog.showDialog() == QDialog::Accepted)
+    {
+        // add field
+        FieldInfo *fieldInfo = new FieldInfo(Util::scene()->problemInfo(), dialog.selectedFieldId());
+
+        FieldDialog fieldDialog(fieldInfo, this);
+        if (fieldDialog.exec() == QDialog::Accepted)
+        {
+            Util::scene()->addField(fieldInfo);
+
+            refresh();
+        }
+        else
+        {
+            delete fieldInfo;
+        }
+    }
 }
 
 // ********************************************************************************************
@@ -551,8 +632,6 @@ ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
 
 int ProblemDialog::showDialog()
 {
-    logMessage("ProblemDialog::showDialog()");
-
     return exec();
 }
 
@@ -581,8 +660,6 @@ void ProblemDialog::createControls()
 
 QWidget *ProblemDialog::createControlsGeneral()
 {
-    logMessage("ProblemDialog::createControlsGeneral()");
-
     // problem
     cmbCoordinateType = new QComboBox();
     txtName = new QLineEdit("");
@@ -606,8 +683,6 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // fill combobox
     fillComboBox();
-
-    int minWidth = 130;
 
     // general
     QGridLayout *layoutGeneral = new QGridLayout();
@@ -667,6 +742,15 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutRight->addWidget(grpTransientAnalysis);
     layoutRight->addStretch();
 
+    // fields toolbar
+    FieldsToobar *fieldsToolbar = new FieldsToobar(this, Qt::Horizontal);
+    QVBoxLayout *layoutFields = new QVBoxLayout();
+    layoutFields->addWidget(fieldsToolbar);
+    connect(Util::scene(), SIGNAL(fieldsChanged()), couplingsWidget, SLOT(refresh()));
+
+    QGroupBox *grpFieldsToolbar = new QGroupBox(tr("Physical fields"));
+    grpFieldsToolbar->setLayout(layoutFields);
+
     // both
     QHBoxLayout *layoutPanel = new QHBoxLayout();
     layoutPanel->addLayout(layoutLeft);
@@ -674,13 +758,12 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // name
     QGridLayout *layoutName = new QGridLayout();
-    layoutName->setColumnMinimumWidth(0, minWidth);
-    layoutName->setColumnStretch(1, 1);
     layoutName->addWidget(new QLabel(tr("Name:")), 0, 0);
     layoutName->addWidget(txtName, 0, 1);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);
+    layoutProblem->addWidget(grpFieldsToolbar);
     layoutProblem->addLayout(layoutPanel);
 
     QWidget *widMain = new QWidget();
@@ -691,8 +774,6 @@ QWidget *ProblemDialog::createControlsGeneral()
 
 QWidget *ProblemDialog::createControlsStartupScript()
 {
-    logMessage("ProblemDialog::createControlsStartupScript()");
-
     txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
@@ -706,8 +787,6 @@ QWidget *ProblemDialog::createControlsStartupScript()
 
 QWidget *ProblemDialog::createControlsDescription()
 {
-    logMessage("ProblemDialog::createControlsDescription()");
-
     txtDescription = new QTextEdit(this);
     txtDescription->setAcceptRichText(false);
 
@@ -722,8 +801,6 @@ QWidget *ProblemDialog::createControlsDescription()
 
 void ProblemDialog::fillComboBox()
 {
-    logMessage("ProblemDialog::fillComboBox()");
-
     cmbCoordinateType->clear();
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Planar), CoordinateType_Planar);
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Axisymmetric), CoordinateType_Axisymmetric);
@@ -760,15 +837,13 @@ void ProblemDialog::load()
 
     // couplings
     couplingsWidget->load();
-    grpCouplings->setVisible(couplingsWidget->count() > 0);
+    // grpCouplings->setVisible(couplingsWidget->count() > 0);
 
     doTransientChanged();
 }
 
 bool ProblemDialog::save()
 {
-    logMessage("ProblemDialog::save()");
-
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
     {
@@ -804,22 +879,16 @@ bool ProblemDialog::save()
 
 void ProblemDialog::doAccept()
 {
-    logMessage("ProblemDialog::doAccept()");
-
     if (save()) accept();
 }
 
 void ProblemDialog::doReject()
 {
-    logMessage("ProblemDialog::doReject()");
-
     reject();
 }
 
 void ProblemDialog::doOpenXML()
 {
-    logMessage("ProblemDialog::doOpenXML()");
-
     QString fileName;
     //TODO custom
     //    if (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom")
@@ -846,8 +915,6 @@ void ProblemDialog::doOpenXML()
 
 void ProblemDialog::doTransientChanged()
 {
-    logMessage("ProblemDialog::doTransientChanged()");
-
     if (txtTransientTimeStep->evaluate(true) &&
             txtTransientTimeTotal->evaluate(true))
     {

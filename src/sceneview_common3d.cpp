@@ -61,8 +61,6 @@ SceneViewCommon3D::~SceneViewCommon3D()
 
 void SceneViewCommon3D::clear()
 {
-    logMessage("SceneViewCommon::doDefaultValues()");
-
     // 3d
     m_scale3d = 0.6;
     m_offset3d = Point();
@@ -79,8 +77,6 @@ void SceneViewCommon3D::clear()
 
 void SceneViewCommon3D::paintBackground()
 {
-    logMessage("SceneViewCommon::paintBackground()");
-
     // background
     glPushMatrix();
     glLoadIdentity();
@@ -170,8 +166,6 @@ void SceneViewCommon3D::setZoom(double power)
 
 void SceneViewCommon3D::initLighting()
 {
-    logMessage("SceneViewCommon::initLighting()");
-
     if (Util::config()->scalarView3DLighting || Util::config()->showPost3D == SceneViewPost3DShow_Model)
     {
         // environment
@@ -238,8 +232,6 @@ void SceneViewCommon3D::mouseDoubleClickEvent(QMouseEvent * event)
 
 void SceneViewCommon3D::mouseMoveEvent(QMouseEvent *event)
 {
-    logMessage("SceneViewCommon::mouseMoveEvent()");
-
     int dx = event->x() - m_lastPos.x();
     int dy = event->y() - m_lastPos.y();
 
@@ -291,8 +283,6 @@ void SceneViewCommon3D::mouseMoveEvent(QMouseEvent *event)
 
 void SceneViewCommon3D::wheelEvent(QWheelEvent *event)
 {
-    logMessage("SceneViewCommon::wheelEvent()");
-
     setZoom(event->delta()/150.0);
 }
 

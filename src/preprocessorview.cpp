@@ -37,8 +37,6 @@
 
 PreprocessorView::PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *parent): QDockWidget(tr("Preprocessor"), parent)
 {
-    logMessage("PreprocessorView::PreprocessorView()");
-
     this->m_sceneViewGeometry = sceneView;
 
     setMinimumWidth(160);
@@ -54,7 +52,6 @@ PreprocessorView::PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *pa
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
-    /// TODO
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
     connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(doInvalidated()));
 
@@ -77,8 +74,6 @@ PreprocessorView::~PreprocessorView()
 
 void PreprocessorView::createActions()
 {
-    logMessage("PreprocessorView::createActions()");
-
     actProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
     actProperties->setStatusTip(tr("Properties"));
     connect(actProperties, SIGNAL(triggered()), this, SLOT(doProperties()));
@@ -105,25 +100,14 @@ void PreprocessorView::createMenu()
 
 void PreprocessorView::createControls()
 {
-    tlbFields = new QToolBar(this);
-    tlbFields->setIconSize(QSize(36, 36));
-    tlbFields->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    tlbFields->setOrientation(Qt::Vertical);
-    // tlbFields->setStyleSheet("QToolButton { font-size: 8pt; }");
-
-    QVBoxLayout *layoutToolBar = new QVBoxLayout();
-    layoutToolBar->addWidget(tlbFields);
-    // layoutToolBar->addStretch();
-
-    actFieldsGroup = new QActionGroup(this);
-    connect(actFieldsGroup, SIGNAL(triggered(QAction *)), this, SLOT(doProblemDialog(QAction *)));
+    fieldsToolbar = new FieldsToobar(this, Qt::Vertical);
 
     webView = new QWebView(this);
     webView->setMinimumHeight(250);
 
     QHBoxLayout *layoutInfo = new QHBoxLayout();
     layoutInfo->setMargin(0);
-    layoutInfo->addLayout(layoutToolBar);
+    layoutInfo->addWidget(fieldsToolbar);
     layoutInfo->addWidget(webView);
 
     QWidget *widgetInfo = new QWidget(this);
@@ -208,25 +192,7 @@ void PreprocessorView::doInvalidated()
     clearNodes();
 
     // fields
-    tlbFields->clear();
-    actFieldsGroup->actions().clear();
-
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
-    {
-        QAction *actField = new QAction(QString::fromStdString(fieldInfo->module()->name), this);
-        actField->setIcon(icon(QString::fromStdString("fields/" + fieldInfo->module()->fieldid)));
-        actField->setData(QString::fromStdString(fieldInfo->module()->fieldid));
-
-        actFieldsGroup->addAction(actField);
-        tlbFields->addAction(actField);
-    }
-    // spacing
-    QLabel *spacing = new QLabel;
-    spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    tlbFields->addWidget(spacing);
-
-    tlbFields->addAction(icon("tabadd"), tr("Add field"), this, SLOT(doAddField()));
-    tlbFields->addAction(Util::scene()->actProblemProperties);
+    fieldsToolbar->refresh();
 
     // markers
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
@@ -370,44 +336,8 @@ void PreprocessorView::clearNodes()
     blockSignals(false);
 }
 
-void PreprocessorView::doProblemDialog(QAction *action)
-{
-    FieldInfo *fieldInfo = Util::scene()->fieldInfo(action->data().toString());
-    if (fieldInfo)
-    {
-        FieldDialog fieldDialog(fieldInfo, this);
-        if (fieldDialog.exec() == QDialog::Accepted)
-            doInvalidated();
-    }
-}
-
-void PreprocessorView::doAddField()
-{
-    // select field dialog
-    FieldSelectDialog dialog(Util::scene()->fieldInfos().keys(), this);
-    if (dialog.showDialog() == QDialog::Accepted)
-    {
-        // add field
-        FieldInfo *fieldInfo = new FieldInfo(Util::scene()->problemInfo(), dialog.selectedFieldId());
-
-        FieldDialog fieldDialog(fieldInfo, this);
-        if (fieldDialog.exec() == QDialog::Accepted)
-        {
-            Util::scene()->addField(fieldInfo);
-
-            doInvalidated();
-        }
-        else
-        {
-            delete fieldInfo;
-        }
-    }
-}
-
 void PreprocessorView::doContextMenu(const QPoint &pos)
 {
-    logMessage("PreprocessorView::doContextMenu()");
-
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     doItemSelected(item, 0);
 
@@ -486,8 +416,6 @@ void PreprocessorView::doItemDoubleClicked(QTreeWidgetItem *item, int role)
 
 void PreprocessorView::doProperties()
 {
-    logMessage("PreprocessorView::doProperties()");
-
     if (trvWidget->currentItem())
     {
         // geometry
@@ -527,8 +455,6 @@ void PreprocessorView::doProperties()
 
 void PreprocessorView::doDelete()
 {
-    logMessage("PreprocessorView::doDelete()");
-
     if (trvWidget->currentItem() != NULL)
     {
         // scene objects

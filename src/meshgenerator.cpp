@@ -318,9 +318,7 @@ bool MeshGeneratorTriangle::writeToTriangle()
 
 bool MeshGeneratorTriangle::triangleToHermes2D()
 {
-    logMessage("ProgressItemMesh::triangleToHermes2D()");
-
-    int n, k;
+    int k;
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -385,7 +383,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     QList<Point> nodeList;
     for (int i = 0; i<k; i++)
     {
-        int marker;
+        int marker, n;
         double x, y;
 
         sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
@@ -399,7 +397,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     for (int i = 0; i<k; i++)
     {
         int node[2];
-        int marker;
+        int marker, n;
 
         sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node[0], &node[1], &marker);
 
@@ -445,7 +443,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     for (int i = 0; i < k; i++)
     {
         int node[6];
-        int marker;
+        int marker, n;
 
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i	%i	%i	%i",
                &n, &node[0], &node[1], &node[2], &node[3], &node[4], &node[5], &marker);
@@ -507,6 +505,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
     sscanf(inNeigh.readLine().toStdString().c_str(), "%i", &k);
     for (int i = 0; i < k; i++)
     {
+        int n;
         int ele_1, ele_2, ele_3;
 
         sscanf(inNeigh.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &ele_1, &ele_2, &ele_3);

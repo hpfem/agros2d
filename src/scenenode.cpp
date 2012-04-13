@@ -26,22 +26,16 @@
 
 SceneNode::SceneNode(const Point &point) : SceneBasic()
 {
-    logMessage("SceneNode::SceneNode()");
-
     this->point = point;
 }
 
 double SceneNode::distance(const Point &point) const
 {
-    logMessage("SceneNode::distance()");
-
     return (this->point - point).magnitude();
 }
 
 int SceneNode::showDialog(QWidget *parent, bool isNew)
 {
-    logMessage("SceneNode::showDialog()");
-
     DSceneNode *dialog = new DSceneNode(this, parent, isNew);
     return dialog->exec();
 }
@@ -132,10 +126,8 @@ SceneNodeContainer SceneNodeContainer::selected()
 
 // *************************************************************************************************************************************
 
-DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
+DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : SceneBasicDialog(parent, isNew)
 {
-    logMessage("DSceneNode::DSceneNode()");
-
     m_object = node;
 
     setWindowIcon(icon("scene-node"));
@@ -151,16 +143,12 @@ DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : DSceneBas
 
 DSceneNode::~DSceneNode()
 {
-    logMessage("DSceneNode::~DSceneNode()");
-
     delete txtPointX;
     delete txtPointY;
 }
 
 QLayout* DSceneNode::createContent()
 {
-    logMessage("DSceneNode::createContent()");
-
     txtPointX = new ValueLineEdit();
     txtPointY = new ValueLineEdit();
     connect(txtPointX, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
@@ -185,8 +173,6 @@ QLayout* DSceneNode::createContent()
 
 bool DSceneNode::load()
 {
-    logMessage("DSceneNode::load()");
-
     SceneNode *sceneNode = dynamic_cast<SceneNode *>(m_object);
 
     txtPointX->setNumber(sceneNode->point.x);
@@ -199,8 +185,6 @@ bool DSceneNode::load()
 
 bool DSceneNode::save()
 {
-    logMessage("DSceneNode::save()");
-
     if (!txtPointX->evaluate(false)) return false;
     if (!txtPointY->evaluate(false)) return false;
 
@@ -230,8 +214,6 @@ bool DSceneNode::save()
 
 void DSceneNode::doEditingFinished()
 {
-    logMessage("DSceneNode::doEditingFinished()");
-
     lblDistance->setText(QString("%1 m").arg(sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number()))));
     lblAngle->setText(QString("%1 deg.").arg(
             (sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number())) > EPS_ZERO)
@@ -243,15 +225,11 @@ void DSceneNode::doEditingFinished()
 
 SceneNodeCommandAdd::SceneNodeCommandAdd(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneNodeCommandAdd::SceneNodeCommandAdd()");
-
     m_point = point;
 }
 
 void SceneNodeCommandAdd::undo()
 {
-    logMessage("SceneNodeCommandAdd::undo()");
-
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
@@ -261,29 +239,21 @@ void SceneNodeCommandAdd::undo()
 
 void SceneNodeCommandAdd::redo()
 {
-    logMessage("SceneNodeCommandAdd::redo()");
-
     Util::scene()->addNode(new SceneNode(m_point));
 }
 
 SceneNodeCommandRemove::SceneNodeCommandRemove(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneNodeCommandRemove::SceneNodeCommandRemove()");
-
     m_point = point;
 }
 
 void SceneNodeCommandRemove::undo()
 {
-    logMessage("SceneNodeCommandRemove::undo()");
-
     Util::scene()->addNode(new SceneNode(m_point));
 }
 
 void SceneNodeCommandRemove::redo()
 {
-    logMessage("SceneNodeCommandRemove::redo()");
-
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
@@ -293,16 +263,12 @@ void SceneNodeCommandRemove::redo()
 
 SceneNodeCommandEdit::SceneNodeCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneNodeCommandEdit::SceneNodeCommandEdit()");
-
     m_point = point;
     m_pointNew = pointNew;
 }
 
 void SceneNodeCommandEdit::undo()
 {
-    logMessage("SceneNodeCommandEdit::undo()");
-
     SceneNode *node = Util::scene()->getNode(m_pointNew);
     if (node)
     {
@@ -313,8 +279,6 @@ void SceneNodeCommandEdit::undo()
 
 void SceneNodeCommandEdit::redo()
 {
-    logMessage("SceneNodeCommandEdit:redo:()");
-
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {

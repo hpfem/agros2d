@@ -212,8 +212,6 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
 
 Chart::Chart(QWidget *parent) : QwtPlot(parent)
 {
-    logMessage("Chart::Chart()");
-
     //  chart style
     clear();
     setAutoReplot(false);
@@ -264,15 +262,11 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
 
 Chart::~Chart()
 {
-    logMessage("Chart::~Chart()");
-
     delete m_curve;
 }
 
 void Chart::saveImage(const QString &fileName)
 {
-    logMessage("Chart::saveImage()");
-
     QSettings settings;
     QString dir = settings.value("General/LastImageDir").toString();
 
@@ -302,8 +296,6 @@ void Chart::saveImage(const QString &fileName)
 
 QImage Chart::image() const
 {
-    logMessage("Chart::image()");
-
     QPixmap pixmap(width(), height());
     pixmap.fill(Qt::white); // Qt::transparent
 
@@ -320,8 +312,6 @@ QImage Chart::image() const
 
 void Chart::setData(double *xval, double *yval, int count)
 {
-    logMessage("Chart::setData()");
-
     const bool doReplot = autoReplot();
     setAutoReplot(false);
 
@@ -334,8 +324,6 @@ void Chart::setData(double *xval, double *yval, int count)
 
 void Chart::setData(QList<double> xval, QList<double> yval)
 {
-    logMessage("Chart::setData()");
-
     double *txval = new double[xval.count()];
     double *tyval = new double[xval.count()];
 
@@ -355,8 +343,6 @@ void Chart::setData(QList<double> xval, QList<double> yval)
 
 FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)
 {
-    logMessage("FileBrowser::FileBrowser()");
-
     setNameFilter("");
     setDir(QDir::currentPath());
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -388,22 +374,16 @@ FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)
 
 void FileBrowser::setNameFilter(const QString &nameFilter)
 {
-    logMessage("FileBrowser::setNameFilter()");
-
     m_nameFilter = nameFilter;
 }
 
 QString FileBrowser::basePath()
 {
-    logMessage("FileBrowser::basePath()");
-
     return QString(m_basePath);
 }
 
 void FileBrowser::setDir(const QString &path)
 {
-    logMessage("FileBrowser::setDir()");
-
     clear();
 
     QDir dir(path, m_nameFilter, QDir::DirsFirst);
@@ -436,19 +416,17 @@ void FileBrowser::setDir(const QString &path)
 
 void FileBrowser::refresh()
 {
-    logMessage("FileBrowser::refresh()");
-
     setDir(m_basePath);
 }
 
 void FileBrowser::doFileItemActivated(QListWidgetItem *item)
 {
-    logMessage("FileBrowser::doFileItemActivated()");
+
 }
 
 void FileBrowser::doFileItemDoubleClick(QListWidgetItem *item)
 {
-    logMessage("FileBrowser::doFileItemDoubleClick()");
+
 
     QString path = m_basePath + QDir::separator() + item->text();
     QDir dir(path);
@@ -465,8 +443,6 @@ void FileBrowser::doFileItemDoubleClick(QListWidgetItem *item)
 
 void FileBrowser::doContextMenu(const QPoint &point)
 {
-    logMessage("FileBrowser::doContextMenu()");
-
     actDelete->setEnabled(false);
     actRename->setEnabled(false);
 
@@ -484,8 +460,6 @@ void FileBrowser::doContextMenu(const QPoint &point)
 
 void FileBrowser::createDir(const QString &dirName)
 {
-    logMessage("FileBrowser::createDir()");
-
     QString str;
     if (dirName.isEmpty())
         str = QInputDialog::getText(QApplication::activeWindow(), tr("Create directory"), tr("Enter directory name"));
@@ -500,8 +474,6 @@ void FileBrowser::createDir(const QString &dirName)
 
 void FileBrowser::createFile(const QString &fileName)
 {
-    logMessage("FileBrowser::createFile()");
-
     QString str;
     if (fileName.isEmpty())
         str = QInputDialog::getText(QApplication::activeWindow(), tr("Create file"), tr("Enter file name"));
@@ -529,8 +501,6 @@ void FileBrowser::createFile(const QString &fileName)
 
 void FileBrowser::deleteDir(const QString &dirName)
 {
-    logMessage("FileBrowser::deleteDir()");
-
     QDir dir(dirName);
     if (dir.exists())
     {
@@ -541,8 +511,6 @@ void FileBrowser::deleteDir(const QString &dirName)
 
 void FileBrowser::deleteFile(const QString &fileName)
 {
-    logMessage("FileBrowser::deleteFile()");
-
     if (QFile::exists(fileName))
     {
         QFile::remove(fileName);
@@ -552,8 +520,6 @@ void FileBrowser::deleteFile(const QString &fileName)
 
 void FileBrowser::deleteObject(const QString &name)
 {
-    logMessage("FileBrowser::deleteObject()");
-
     QString str;
     if (name.isEmpty())
         str = m_basePath + QDir::separator() + currentItem()->text();
@@ -569,8 +535,6 @@ void FileBrowser::deleteObject(const QString &name)
 
 void FileBrowser::renameDir(const QString &dirName)
 {
-    logMessage("FileBrowser::renameDir()");
-
     QString str = QInputDialog::getText(QApplication::activeWindow(), tr("Rename directory"), tr("Enter directory name"),
                                         QLineEdit::Normal, QDir(dirName).dirName());
 
@@ -584,8 +548,6 @@ void FileBrowser::renameDir(const QString &dirName)
 
 void FileBrowser::renameFile(const QString &fileName)
 {
-    logMessage("FileBrowser::renameFile()");
-
     QString str = QInputDialog::getText(QApplication::activeWindow(), tr("Rename file"), tr("Enter file name"),
                                         QLineEdit::Normal, QFileInfo(fileName).baseName());
 
@@ -603,8 +565,6 @@ void FileBrowser::renameFile(const QString &fileName)
 
 void FileBrowser::renameObject(const QString &name)
 {
-    logMessage("FileBrowser::renameObject()");
-
     QString str;
     if (name.isEmpty())
         str = m_basePath + QDir::separator() + currentItem()->text();
@@ -622,8 +582,6 @@ void FileBrowser::renameObject(const QString &name)
 
 ImageLoaderDialog::ImageLoaderDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("ImageLoaderDialog::ImageLoaderDialog()");
-
     // setWindowIcon(icon("browser"));
     setWindowTitle(tr("Image"));
     setWindowFlags(Qt::Window);
@@ -642,16 +600,12 @@ ImageLoaderDialog::ImageLoaderDialog(QWidget *parent) : QDialog(parent)
 
 ImageLoaderDialog::~ImageLoaderDialog()
 {
-    logMessage("ImageLoaderDialog::~ImageLoaderDialog()");
-
     QSettings settings;
     settings.setValue("ImageLoaderDialog/Geometry", saveGeometry());
 }
 
 void ImageLoaderDialog::createControls()
 {
-    logMessage("ImageLoaderDialog::createControls()");
-
     lblImage = new QLabel();
     lblImage->setBackgroundRole(QPalette::Base);
     lblImage->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -710,8 +664,6 @@ void ImageLoaderDialog::doRemoveFile()
 
 void ImageLoaderDialog::doLoadFile()
 {
-    logMessage("ImageLoaderDialog::doLoadFile()");
-
     QSettings settings;
     QString dir = settings.value("General/LastImageDir").toString();
 
@@ -727,8 +679,6 @@ void ImageLoaderDialog::doLoadFile()
 
 void ImageLoaderDialog::doLoadFile(const QString &fileName)
 {
-    logMessage("ImageLoaderDialog::doLoadFile(const QString &fileName)");
-
     m_fileName = fileName;
     lblImageFileName->setText(m_fileName);
 
@@ -746,8 +696,6 @@ void ImageLoaderDialog::doLoadFile(const QString &fileName)
 
 void ImageLoaderDialog::doAccept()
 {
-    logMessage("ImageLoaderDialog::doAccept()");
-
     m_position.setX(txtX->value());
     m_position.setY(txtY->value());
     m_position.setWidth(txtWidth->value());
@@ -765,8 +713,6 @@ void ImageLoaderDialog::doAccept()
 
 void ImageLoaderDialog::doReject()
 {
-    logMessage("ImageLoaderDialog::doReject()");
-
     reject();
 }
 

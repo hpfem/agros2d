@@ -71,10 +71,10 @@ class XmlParser:
         weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
                            'CustomMatrixFormSurf','CustomVectorFormSurf', 'CustomEssentialFormSurf']                    
         for weakform_temp in weakform_temps:                            
-            weakform_string = ''
+            weakform_string = ''            
             for condition in conditions:                  
                 if condition[0] == weakform_temp:                    
-                    weakform_string += condition[1]                        
+                    weakform_string += condition[1]                    
             node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
             string = node.childNodes[0].nodeValue      
             string = string.replace('//conditions', weakform_string)            
@@ -172,30 +172,35 @@ class XmlParser:
                     quantity.id = ds_quantity.id                    
                     weakform.quantities.append(quantity)                 
                  n_essential = len(ds_boundary.essential)
+                 n_vector = n_essential + len(ds_boundary.vector)
                  i = 0                 
-                 for ds_weakform in ds_boundary.essential + ds_boundary.vector:                     
+                 for ds_vector in ds_boundary.essential + ds_boundary.vector + ds_boundary.matrix:                     
                      for coordinate_type in coordinate_types:                         
                          weakform = WeakForm()
-                         if (i < n_essential):
+                         if (i < n_essential) :
                              weakform.type = 'essential'
-                         else:
+                         if ((i >= n_essential) & (i < n_vector)):                                 
                              weakform.type = 'vector'   
-                             weakform.j = ds_weakform.j
-                         weakform.i = ds_weakform.i        
+                             weakform.j = ds_vector.j
+                         if (i >= n_vector):
+                             weakform.type = 'matrix'   
+                             weakform.j = ds_vector.j
+                         weakform.i = ds_vector.i        
                          if coordinate_type == 'planar':                            
-                             weakform.expression = ds_weakform.planar
+                             weakform.expression = ds_vector.planar
                          if coordinate_type == 'axi':
-                             weakform.expression = ds_weakform.axi                             
+                             weakform.expression = ds_vector.axi                             
                          weakform.coordinate_type = coordinate_type
+                         weakform.analysis_type = ds_weakform.analysistype
                          weakform.integral_type = 'surf'
-                         weakform.boundary_type = ds_boundary.name
-                         weakform.id = surface.id + '_' + surface.name + '_' \
-                    + weakform.coordinate_type 
-                         surface.weakforms.append(weakform)
+                         weakform.boundary_type = ds_boundary.id                         
+                         weakform.id = surface.id + '_' + weakform.analysis_type + '_' \
+                             + weakform.coordinate_type                           
+                         surface.weakforms.append(weakform)                         
                      i = i + 1
-             module.surfaces.append(surface)            
+         module.surfaces.append(surface)            
          self.modules.append(module)
-         #module.info()        
+        
         
 class WeakForm:
     def __init__(self):        
@@ -249,7 +254,7 @@ class WeakForm:
         namespace = self.id.replace('_','')
         string = string.replace('namespace', namespace)
         function_name = self.get_class_name();        
-        string = string.replace('FunctionName', function_name)                        
+        string = string.replace('FunctionName', function_name + '_' + self.analysis_type)
         factory_code = []
         factory_code.append(self.get_temp_class_name())
         factory_code.append(string)                        
@@ -264,8 +269,7 @@ class WeakForm:
             name = self.get_temp_class_name()             
             variable_defs = ''
             self.boundary_type = self.boundary_type.replace(' ','_')                
-            replaced_string = string.replace(name, name + '_' + self.boundary_type + '_' + str(self.i) \
-                + '_'  + str(self.j))               
+            replaced_string = string.replace(name, self.get_class_name() + '_' + self.analysis_type)            
             for variable in self.variables:                                    
                 variable_string = variable_def_temp.replace('variable_short', 
                                         variable.short_name)                    
@@ -279,7 +283,7 @@ class WeakForm:
         return h_code 
     
     def get_cpp_code(self, cpp_template):                                
-        function_types = ['','_value', '_ord', '_derivatives']
+        function_types = ['','_value', '_ord', '_clone', '_derivatives']
         cpp_code = ''        
         for function_type in function_types:         
             node = cpp_template.getElementsByTagName('variable_definition')[0]
@@ -287,8 +291,7 @@ class WeakForm:
             for node in cpp_template.getElementsByTagName(self.get_function_name() + function_type):                        
                 string = node.childNodes[0].nodeValue                                                                                                                                                                                                  
                 name = self.get_temp_class_name()             
-                replaced_string = string.replace(name, name + '_' + self.boundary_type + '_' + str(self.i) \
-                + '_'  + str(self.j))            
+                replaced_string = string.replace(name, self.get_class_name()  + '_' + self.analysis_type)
                 if function_type == '':
                     variable_defs = '' ;                    
                     for variable in self.variables:                    
@@ -531,7 +534,7 @@ class Module:
         for volume in self.volumes:  
             for weakform in volume.weakforms:                             
                 part_module_id = self.id + '_' + volume.name + '_' \
-                    + weakform.coordinate_type                                
+                    + weakform.coordinate_type + '_' + weakform.analysis_type                
                 if (part_module_id in module_types):                    
                     index = module_types.index(part_module_id)                                          
                     part_module = part_modules[index]
@@ -540,7 +543,8 @@ class Module:
                     module_types.append(part_module_id)                    
                     part_module = PartModule()                    
                     part_module.name = self.name
-                    part_module.id = part_module_id
+                    part_module.id = self.id + '_' + volume.name + '_' \
+                    + weakform.coordinate_type
                     part_module.description = self.description
                     part_module.coordinate_type = weakform.coordinate_type
                     part_module.constants = self.constants                    
@@ -550,26 +554,38 @@ class Module:
                 weakform.variables = self.quantities
                 weakform.constants = self.constants
                 weakform.id = part_module.id                
-                part_module.weakforms.append(weakform)                
-                           
+                part_module.weakforms.append(weakform)                        
+       
         for surface in self.surfaces:                                    
-                for weakform in surface.weakforms:                     
-                    if (weakform.id in module_types):                                                                
+                for weakform in surface.weakforms:                                         
+                    if (weakform.id + '_' + weakform.analysis_type in module_types):                                                                
                         if weakform.integral_type == 'surf':                            
-                            index = module_types.index(weakform.id)                    
+                            index = module_types.index(weakform.id + '_' + weakform.analysis_type)                    
                             part_module = part_modules[index] 
                             weakform.variables = surface.quantities
                             weakform.constants = self.constants                                        
                             part_module.weakforms.append(weakform)               
+        
+        print len(part_modules)
+        
+        for part_module in part_modules:
+            print "--------------------------"                            
+            print part_module.id
+            print "--------------------------"                
+            for weakform in part_module.weakforms:
+                print weakform.id, weakform.type, weakform.integral_type
+            
         return part_modules;
         
-                                                                                      
+                                                                                          
+    
     def get_code(self, param_templates):
         templates = dict() 
         templates['.cpp'] = param_templates['template_weakform_cpp.xml']
         templates['.h'] = param_templates['template_weakform_h.xml']
         file_strings = dict()
        
+                
         part_modules = self.extract_modules()                                                
         factory_codes = []                   
         for part_module in part_modules:                                    
@@ -593,7 +609,7 @@ class Module:
                
                 for weakform in part_module.weakforms:                                     
                     if key == '.cpp':
-                        class_names.add(weakform.get_class_name())
+                        class_names.add(weakform.get_class_name() + '_' + weakform.analysis_type)
                         file_strings[file_string_name] += weakform.get_cpp_code(templates[key])            
                         factory_code =  weakform.get_factory_code(param_templates['template_weakform_factory_h.xml'])
                         factory_codes.append(factory_code)
@@ -632,5 +648,5 @@ class Module:
 
 if __name__ == '__main__':    
     #parser = XmlParser(['heat', 'electrostatic', 'magnetic', 'current', 'acoustic', 'elasticity', 'rf_te'])        
-    parser = XmlParser(['electrostatic'])    
+    parser = XmlParser(['heat'])    
     parser.process()

@@ -21,8 +21,6 @@
 
 LogDialog::LogDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("LogDialog::LogDialog()");
-
     setWindowIcon(icon("log"));
     setWindowTitle(tr("Log dialog"));
     setWindowFlags(Qt::Window);
@@ -36,8 +34,6 @@ LogDialog::LogDialog(QWidget *parent) : QDialog(parent)
 
 LogDialog::~LogDialog()
 {
-    logMessage("LogDialog::~LogDialog()");
-
     QSettings settings;
     settings.setValue("LogDialog/Geometry", saveGeometry());
 
@@ -47,8 +43,6 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
-    logMessage("LogDialog::createControls()");
-
     lstMessages = new QTextEdit(this);
     lstMessages->setReadOnly(true);
 
@@ -89,8 +83,6 @@ void LogDialog::createControls()
 
 void LogDialog::showDialog()
 {
-    logMessage("LogDialog::showDialog()");
-
     show();
     activateWindow();
     raise();
@@ -98,8 +90,6 @@ void LogDialog::showDialog()
 
 void LogDialog::loadProgressLog()
 {
-    logMessage("LogDialog::loadProgressLog()");
-
     showDialog();
 
     lstMessages->clear();
@@ -141,8 +131,6 @@ void LogDialog::loadProgressLog()
 
 void LogDialog::loadApplicationLog()
 {
-    logMessage("LogDialog::loadApplicationLog()");
-
     showDialog();
 
     lstMessages->clear();
@@ -180,15 +168,11 @@ void LogDialog::loadApplicationLog()
 
 void LogDialog::doClose()
 {
-    logMessage("LogDialog::doClose()");
-
     hide();
 }
 
 void LogDialog::doSaveLog()
 {
-    logMessage("LogDialog::doSaveLog()");
-
     QSettings settings;
     QString dir = settings.value("General/LastLogDir").toString();
 
@@ -212,8 +196,6 @@ void LogDialog::doSaveLog()
 
 void LogDialog::doDeleteLog()
 {
-    logMessage("LogDialog::doDeleteLog()");
-
     if (QMessageBox::question(this, tr("Delete"), tr("Are you sure that you want to permanently delete the application logfile?"), tr("&Yes"), tr("&No")) == 0)
     {
         QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
@@ -225,8 +207,6 @@ void LogDialog::doDeleteLog()
 
 void LogDialog::showImage()
 {
-    logMessage("showPicture()");
-
     if (QFile::exists(imageFileName))
     {
         // load
@@ -271,8 +251,6 @@ void LogDialog::showImage()
 
 void LogDialog::doSaveData()
 {
-    logMessage("LogDialog::doSaveData()");
-
     QSettings settings;
     QString dir = settings.value("General/LastDataDir").toString();
 
@@ -297,42 +275,36 @@ void LogDialog::doSaveData()
 }
 
 void LogDialog::doSaveImage()
+{
+    QSettings settings;
+    QString dir = settings.value("General/LastImageDir").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save image to file"), dir, tr("PNG files (*.png)"));
+
+    if (!fileName.isEmpty())
     {
-        logMessage("LogDialog::doSaveImage()");
+        QFileInfo fileInfo(fileName);
 
-        QSettings settings;
-        QString dir = settings.value("General/LastImageDir").toString();
+        if (fileInfo.suffix().toLower() != "png")
+            fileName += ".png";
+        if (QFile::exists(fileName))
+            QFile::remove(fileName);
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save image to file"), dir, tr("PNG files (*.png)"));
-
-        if (!fileName.isEmpty())
-        {
-            QFileInfo fileInfo(fileName);
-
-            if (fileInfo.suffix().toLower() != "png")
-                fileName += ".png";
-            if (QFile::exists(fileName))
-                QFile::remove(fileName);
-
-            if (!QFile::copy(imageFileName, fileName))
-                QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("File '%1' could not be copied..").arg(fileName));
-            else
-                if (fileInfo.absoluteDir() != tempProblemDir())
-                    settings.setValue("General/LastImageDir", fileInfo.absolutePath());
-        }
+        if (!QFile::copy(imageFileName, fileName))
+            QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("File '%1' could not be copied..").arg(fileName));
+        else
+            if (fileInfo.absoluteDir() != tempProblemDir())
+                settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
+}
 
 void LogDialog::doCloseImage()
 {
-    logMessage("LogDialog::doCloseImage()");
-
     imageDialog->close();
 }
 
 void LogDialog::doShowAdaptivityErrorChart()
 {
-    logMessage("LogDialog::doShowAdaptivityErrorChart()");
-
     dataFileName = tempProblemDir() + "/adaptivity_error.csv";
     imageFileName = tempProblemDir() + "/adaptivity_error.png";
     showImage();
@@ -340,8 +312,6 @@ void LogDialog::doShowAdaptivityErrorChart()
 
 void LogDialog::doShowAdaptivityDOFChart()
 {
-    logMessage("LogDialog::doShowAdaptivityDOFChart()");
-
     dataFileName = tempProblemDir() + "/adaptivity_dof.csv";
     imageFileName = tempProblemDir() + "/adaptivity_dof.png";
     showImage();
@@ -349,8 +319,6 @@ void LogDialog::doShowAdaptivityDOFChart()
 
 void LogDialog::doShowAdaptivityErrorDOFChart()
 {
-    logMessage("LogDialog::doShowAdaptivityErrorDOFChart()");
-
     dataFileName = tempProblemDir() + "/adaptivity_conv.csv";
     imageFileName = tempProblemDir() + "/adaptivity_conv.png";
     showImage();

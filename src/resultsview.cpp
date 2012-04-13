@@ -29,8 +29,6 @@
 
 ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
 {
-    logMessage("ResultsView::ResultsView()");
-
     setMinimumWidth(280);
     setObjectName("ResultsView");
 
@@ -257,8 +255,6 @@ void ResultsView::showEmpty()
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)
 {
-    logMessage("LocalPointValueDialog::LocalPointValueDialog()");
-
     setWindowIcon(icon("scene-node"));
     setWindowTitle(tr("Local point value"));
 
@@ -294,14 +290,10 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
 Point LocalPointValueDialog::point()
 {
-    logMessage("LocalPointValueDialog::point()");
-
     return Point(txtPointX->value().number(), txtPointY->value().number());
 }
 
 void LocalPointValueDialog::evaluated(bool isError)
 {
-    logMessage("LocalPointValueDialog::evaluated()");
-
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
