@@ -436,93 +436,6 @@ void FieldDialog::deleteField()
 
 // ********************************************************************************************
 
-CouplingsWidget::CouplingsWidget(bool isNewProblem, QWidget *parent) : QWidget(parent), m_isNewProblem(isNewProblem)
-{
-    if (m_isNewProblem)
-    {
-        m_couplingInfos = QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >();
-    }
-    else
-    {
-        Util::scene()->synchronizeCouplings();
-        m_couplingInfos = Util::scene()->couplingInfos();
-    }
-
-    layoutTable = NULL;
-    createContent();
-    load();
-}
-
-void CouplingsWidget::createContent()
-{
-    if (layoutTable)
-    {
-        save();
-
-        delete layoutTable;
-        qDeleteAll(this->children());
-    }
-
-    layoutTable = new QGridLayout();
-    layoutTable->setColumnMinimumWidth(0, minWidth);
-    layoutTable->setColumnStretch(1, 1);
-
-    m_comboBoxes.clear();
-    int line = 0;
-    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
-    {
-        layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
-        m_comboBoxes[couplingInfo] = new QComboBox();
-        layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
-        line++;
-    }
-
-    fillComboBox();
-    load();
-
-    setLayout(layoutTable);
-}
-
-void CouplingsWidget::fillComboBox()
-{
-    foreach (QComboBox* comboBox, m_comboBoxes)
-    {
-        comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
-        comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
-        comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
-    }
-}
-
-void CouplingsWidget::load()
-{
-    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
-    {
-        m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
-    }
-}
-
-void CouplingsWidget::save()
-{
-    foreach(CouplingInfo *couplingInfo, m_couplingInfos)
-    {
-        if(m_comboBoxes.contains(couplingInfo))
-        {
-            couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
-        }
-    }
-
-    Util::scene()->setCouplingInfos(m_couplingInfos);
-}
-
-void CouplingsWidget::refresh()
-{
-    CouplingInfo::synchronizeCouplings(Util::scene()->fieldInfos(), m_couplingInfos);
-
-    createContent();
-}
-
-// ********************************************************************************************
-
 FieldsToobar::FieldsToobar(QWidget *parent, Qt::Orientation oriantation) : QWidget(parent)
 {
     createControls(oriantation);
@@ -609,6 +522,93 @@ void FieldsToobar::addField()
             delete fieldInfo;
         }
     }
+}
+
+// ********************************************************************************************
+
+CouplingsWidget::CouplingsWidget(bool isNewProblem, QWidget *parent) : QWidget(parent), m_isNewProblem(isNewProblem)
+{
+    if (m_isNewProblem)
+    {
+        m_couplingInfos = QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >();
+    }
+    else
+    {
+        Util::scene()->synchronizeCouplings();
+        m_couplingInfos = Util::scene()->couplingInfos();
+    }
+
+    layoutTable = NULL;
+    createContent();
+    load();
+}
+
+void CouplingsWidget::createContent()
+{
+    if (layoutTable)
+    {
+        save();
+
+        delete layoutTable;
+        qDeleteAll(this->children());
+    }
+
+    layoutTable = new QGridLayout();
+    layoutTable->setColumnMinimumWidth(0, minWidth);
+    layoutTable->setColumnStretch(1, 1);
+
+    m_comboBoxes.clear();
+    int line = 0;
+    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
+    {
+        layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
+        m_comboBoxes[couplingInfo] = new QComboBox();
+        layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
+        line++;
+    }
+
+    fillComboBox();
+    load();
+
+    setLayout(layoutTable);
+}
+
+void CouplingsWidget::fillComboBox()
+{
+    foreach (QComboBox* comboBox, m_comboBoxes)
+    {
+        comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
+        comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
+        comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
+    }
+}
+
+void CouplingsWidget::load()
+{
+    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
+    {
+        m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
+    }
+}
+
+void CouplingsWidget::save()
+{
+    foreach(CouplingInfo *couplingInfo, m_couplingInfos)
+    {
+        if(m_comboBoxes.contains(couplingInfo))
+        {
+            couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
+        }
+    }
+
+    Util::scene()->setCouplingInfos(m_couplingInfos);
+}
+
+void CouplingsWidget::refresh()
+{
+    CouplingInfo::synchronizeCouplings(Util::scene()->fieldInfos(), m_couplingInfos);
+
+    createContent();
 }
 
 // ********************************************************************************************
