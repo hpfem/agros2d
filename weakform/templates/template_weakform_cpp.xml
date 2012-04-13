@@ -203,7 +203,7 @@ Hermes::Ord CustomMatrixFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
 <custom_matrix_form_surf_clone>template &lt;typename Scalar&gt;
 CustomMatrixFormSurf&lt;Scalar&gt;* CustomMatrixFormSurf&lt;Scalar&gt;::clone()
 {
-    return new CustomVectorFormVol(this->i, this->j, this->areas[0],
+    return new CustomMatrixFormSurf(this->i, this->j, this->areas[0],
                                          this->m_boundary);
 }
 </custom_matrix_form_surf_clone>

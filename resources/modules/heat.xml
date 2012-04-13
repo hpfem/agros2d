@@ -73,12 +73,6 @@
                                         axi="h * r * uval * vval + SIGMA0 * eps * r * uval*uval*uval*uval * vval" symmetric="1" />
                     <vector i="1" j="1" planar="((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
                                         axi="r * ((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
-                                        <!--
-                    <matrix i="1" j="1" planar="h * uval * vval"
-                                        axi="h * r * uval * vval + SIGMA0 * eps * r * uval*uval*uval*uval * vval" symmetric="0" />
-                    <vector i="1" j="1" planar="((- ff - h * Te) + h * upval) * vval"
-                                        axi="r * ((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
-                                        -->
                 </boundary>
             </weakform>
         
