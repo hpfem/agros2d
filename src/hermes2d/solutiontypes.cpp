@@ -26,8 +26,6 @@ BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
 {
-    logMessage("SolutionArray::SolutionArray()");
-
     sln.reset();
     space.reset();
 
@@ -50,14 +48,11 @@ SolutionArray<Scalar>::SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scala
 template <typename Scalar>
 SolutionArray<Scalar>::~SolutionArray()
 {
-    logMessage("SolutionArray::~SolutionArray()");
 }
 
 template <typename Scalar>
 void SolutionArray<Scalar>::load(QDomElement element)
 {
-    logMessage("SolutionArray::load()");
-
     QString fileNameSolution = tempProblemFileName() + ".sln";
     QString fileNameSpace = tempProblemFileName() + ".spc";
 
@@ -87,8 +82,6 @@ void SolutionArray<Scalar>::load(QDomElement element)
 template <typename Scalar>
 void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 {
-    logMessage("SolutionArray::save()");
-
     // solution
     QString fileNameSolution = tempProblemFileName() + ".sln";
     // sln->save(fileNameSolution.toStdString().c_str(), false);

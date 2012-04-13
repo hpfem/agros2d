@@ -151,15 +151,11 @@ ostream& operator<<(ostream& output, FieldInfo& id)
 
 DxfFilter::DxfFilter(Scene *scene)
 {
-    logMessage("DxfFilter::DxfFilter()");
-
     this->m_scene = scene;
 }
 
 void DxfFilter::addLine(const DL_LineData &l)
 {
-    logMessage("DxfFilter::addLine()");
-
     // start node
     SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.x1, l.y1)));
     // end node
@@ -171,8 +167,6 @@ void DxfFilter::addLine(const DL_LineData &l)
 
 void DxfFilter::addArc(const DL_ArcData& a)
 {
-    logMessage("DxfFilter::addArc()");
-
     double angle1 = a.angle1;
     double angle2 = a.angle2;
 
@@ -192,8 +186,6 @@ void DxfFilter::addArc(const DL_ArcData& a)
 
 void DxfFilter::addCircle(const DL_CircleData& c)
 {
-    logMessage("DxfFilter::addCircle()");
-
     // nodes
     SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.cx + c.radius, c.cy)));
     SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy + c.radius)));
@@ -251,8 +243,6 @@ Util::Util()
 
 Util::~Util()
 {
-    logMessage("Util::~Util()");
-
     delete m_scene;
     delete m_config;
     delete m_scriptEngineRemote;
@@ -301,8 +291,6 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    logMessage("Scene::~Scene()");
-
     clear();
 
     delete m_undoStack;
@@ -317,8 +305,6 @@ Scene::~Scene()
 
 void Scene::createActions()
 {
-    logMessage("Scene::createActions()");
-
     // scene - add items
     actNewNode = new QAction(icon("scene-node"), tr("New &node..."), this);
     actNewNode->setShortcut(tr("Alt+N"));
@@ -385,8 +371,6 @@ void Scene::clearSolutions()
 
 SceneNode *Scene::addNode(SceneNode *node)
 {
-    logMessage("SceneNode *Scene::addNode()");
-
     // clear solution
     clearSolutions();
 
@@ -482,23 +466,17 @@ void Scene::removeLabel(SceneLabel *label)
 
 SceneLabel *Scene::getLabel(const Point &point)
 {
-    logMessage("SceneLabel *Scene::getLabel()");
-
     labels->get(point);
 }
 
 void Scene::addBoundary(SceneBoundary *boundary)
 {
-    logMessage("Scene::addBoundary()");
-
     boundaries->add(boundary);
     if (!scriptIsRunning()) emit invalidated();
 }
 
 void Scene::removeBoundary(SceneBoundary *boundary)
 {
-    logMessage("Scene::removeBoundary()");
-
     //TODO instead of setting NoneBoundary we now remove... rething
     edges->removeMarkerFromAll(boundary);
     boundaries->remove(boundary);
@@ -509,23 +487,17 @@ void Scene::removeBoundary(SceneBoundary *boundary)
 
 void Scene::setBoundary(SceneBoundary *boundary)
 {
-    logMessage("setEdgeBoundary()");
-
     edges->selected().addMarkerToAll(boundary);
     selectNone();
 }
 
 SceneBoundary *Scene::getBoundary(const QString &name)
 {
-    logMessage("SceneBoundary *Scene::getBoundary()");
-
     return boundaries->get(name);
 }
 
 void Scene::addMaterial(SceneMaterial *material)
 {
-    logMessage("Scene::addMaterial()");
-
     this->materials->add(material);
     if (!scriptIsRunning()) emit invalidated();
 }
@@ -533,15 +505,11 @@ void Scene::addMaterial(SceneMaterial *material)
 
 SceneMaterial *Scene::getMaterial(const QString &name)
 {
-    logMessage("Scene::SceneMaterial *Scene::getMaterial()");
-
     return materials->get(name);
 }
 
 void Scene::removeMaterial(SceneMaterial *material)
 {
-    logMessage("Scene::removeMaterial()");
-
     //TODO instead of setting NoneMaterial we now remove... rething
     labels->removeMarkerFromAll(material);
     this->materials->remove(material);
@@ -552,8 +520,6 @@ void Scene::removeMaterial(SceneMaterial *material)
 
 void Scene::setMaterial(SceneMaterial *material)
 {
-    logMessage("Scene::setLabelMaterial()");
-
     labels->selected().addMarkerToAll(material);
     selectNone();
 }
@@ -663,8 +629,6 @@ void Scene::clear()
 
 RectPoint Scene::boundingBox() const
 {
-    logMessage("RectPoint Scene::boundingBox()");
-
     if (nodes->isEmpty())
     {
         return RectPoint(Point(-0.5, -0.5), Point(0.5, 0.5));
@@ -677,8 +641,6 @@ RectPoint Scene::boundingBox() const
 
 void Scene::selectNone()
 {
-    logMessage("Scene::selectNone()");
-
     nodes->setSelected(false);
     edges->setSelected(false);
     labels->setSelected(false);
@@ -686,8 +648,6 @@ void Scene::selectNone()
 
 void Scene::selectAll(SceneGeometryMode sceneMode)
 {
-    logMessage("Scene::selectAll()");
-
     selectNone();
 
     switch (sceneMode)
@@ -706,8 +666,6 @@ void Scene::selectAll(SceneGeometryMode sceneMode)
 
 void Scene::deleteSelected()
 {
-    logMessage("Scene::deleteSelected()");
-
     m_undoStack->beginMacro(tr("Delete selected"));
 
     nodes->selected().deleteWithUndo(tr("Remove node"));
@@ -721,8 +679,6 @@ void Scene::deleteSelected()
 
 int Scene::selectedCount()
 {
-    logMessage("Scene::selectedCount()");
-
     return nodes->selected().length() +
             edges->selected().length() +
             labels->selected().length();
@@ -730,8 +686,6 @@ int Scene::selectedCount()
 
 void Scene::highlightNone()
 {
-    logMessage("Scene::highlightNone()");
-
     nodes->setHighlighted(false);
     edges->setHighlighted(false);
     labels->setHighlighted(false);
@@ -985,8 +939,6 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
 
 void Scene::transformTranslate(const Point &point, bool copy)
 {
-    logMessage("Scene::transformTranslate()");
-
     m_undoStack->beginMacro(tr("Translation"));
 
     moveSelectedNodesAndEdges(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
@@ -998,8 +950,6 @@ void Scene::transformTranslate(const Point &point, bool copy)
 
 void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
-    logMessage("Scene::transformRotate()");
-
     m_undoStack->beginMacro(tr("Rotation"));
 
     moveSelectedNodesAndEdges(SceneTransformMode_Rotate, point, angle, 0.0, copy);
@@ -1011,8 +961,6 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 
 void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
-    logMessage("Scene::transformScale()");
-
     m_undoStack->beginMacro(tr("Scale"));
 
     moveSelectedNodesAndEdges(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
@@ -1032,8 +980,6 @@ void Scene::doInvalidated()
 
 void Scene::doNewNode(const Point &point)
 {
-    logMessage("Scene::doNewNode()");
-
     SceneNode *node = new SceneNode(point);
     if (node->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
@@ -1046,8 +992,6 @@ void Scene::doNewNode(const Point &point)
 
 void Scene::doNewEdge()
 {
-    logMessage("Scene::doNewEdge()");
-
     SceneEdge *edge = new SceneEdge(nodes->at(0), nodes->at(1), 0, 0); //TODO - do it better
     if (edge->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
@@ -1065,8 +1009,6 @@ void Scene::doNewEdge()
 
 void Scene::doNewLabel(const Point &point)
 {
-    logMessage("Scene::doNewLabel()");
-
     SceneLabel *label = new SceneLabel(point, 0.0, 0); //TODO - do it better
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
@@ -1082,20 +1024,16 @@ void Scene::doNewLabel(const Point &point)
 
 void Scene::doDeleteSelected()
 {
-    logMessage("doDeleteSelected()");
-
     deleteSelected();
 }
 
 void Scene::doNewBoundary()
 {
-    doNewBoundary(Util::scene()->fieldInfo()->fieldId());
+    doNewBoundary(Util::scene()->activeViewField()->fieldId());
     }
 
 void Scene::doNewBoundary(QString field)
 {
-    logMessage("Scene::doNewBoundary()");
-
     SceneBoundary *marker = Util::scene()->fieldInfo(field)->module()->newBoundary();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
@@ -1106,13 +1044,11 @@ void Scene::doNewBoundary(QString field)
 
 void Scene::doNewMaterial()
 {
-    doNewMaterial(Util::scene()->fieldInfo()->fieldId());
+    doNewMaterial(Util::scene()->activeViewField()->fieldId());
 }
 
 void Scene::doNewMaterial(QString field)
 {
-    logMessage("Scene::doNewMaterial()");
-
     SceneMaterial *marker = Util::scene()->fieldInfo(field)->module()->newMaterial();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
@@ -1200,8 +1136,6 @@ void Scene::doFieldsChanged()
 
 void Scene::writeToDxf(const QString &fileName)
 {
-    logMessage("Scene::writeToDxf()");
-
     RectPoint box = boundingBox();
 
     // save current locale
@@ -1338,8 +1272,6 @@ void Scene::writeToDxf(const QString &fileName)
 
 void Scene::readFromDxf(const QString &fileName)
 {
-    logMessage("Scene::readFromDxf()");
-
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
@@ -1698,8 +1630,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
 ErrorResult Scene::writeToFile(const QString &fileName)
 {
-    logMessage("Scene::writeToFile()");
-
     QSettings settings;
 
     // custom form

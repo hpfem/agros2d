@@ -25,8 +25,6 @@
 
 DataTableDialog::DataTableDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("DataTableDialog::DataTableDialog()");
-
     setWindowIcon(icon("scene-function"));
     setWindowTitle(tr("Data Table"));
 
@@ -152,8 +150,6 @@ bool DataTableDialog::parseTable(bool addToTable)
 
 void DataTableDialog::createControls()
 {
-    logMessage("DataTableDialog::createControls()");
-
     lblInfoX = new QLabel();
     lblInfoY = new QLabel();
     lblInfoError = new QLabel();
@@ -264,8 +260,6 @@ void DataTableDialog::doTextChanged()
 
 void DataTableDialog::doPlot()
 {
-    logMessage("DSceneFunction::doPlot()");
-
     parseTable();
 
     // points
@@ -341,20 +335,16 @@ void DataTableDialog::doMaterialBrowser()
 
 void DataTableDialog::load()
 {
-    logMessage("DSceneFunction::load()");
+
 }
 
 bool DataTableDialog::save()
 {
-    logMessage("DSceneFunction::save()");
-
     return parseTable();
 }
 
 void DataTableDialog::doAccept()
 {
-    logMessage("DSceneFunction::doAccept()");
-
     if (save())
     {
         accept();
@@ -363,8 +353,6 @@ void DataTableDialog::doAccept()
 
 void DataTableDialog::doReject()
 {
-    logMessage("DSceneFunction::doReject()");
-
     reject();
 }
 

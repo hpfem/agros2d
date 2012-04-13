@@ -311,6 +311,11 @@
                                                 <xsl:value-of select="@acoustic_impedance"/>
                                             </xsl:attribute>
                                         </xsl:if>
+                                        <xsl:if test="@type='acoustic_matched_boundary'">
+                                            <xsl:attribute name="type">
+                                                <xsl:value-of select="@type"/>
+                                            </xsl:attribute>
+                                        </xsl:if>
 
                                         <!-- Current field -->
                                         <xsl:if test="@type='current_potential'">
@@ -366,6 +371,52 @@
                                             <xsl:attribute name="rf_port_phase">
                                                 <xsl:value-of select="@value_imag"/>
                                             </xsl:attribute>
+                                        </xsl:if>
+
+                                        <!-- Elasticity -->
+                                        <xsl:if test="@typex='elasticity_free'">
+                                            <xsl:if test="@typey='elasticity_free'">
+                                                <xsl:attribute name="type">elasticity_free_free</xsl:attribute>
+                                                <xsl:attribute name="elasticity_force_x">
+                                                    <xsl:value-of select="@forcex"/>
+                                                </xsl:attribute>
+                                                <xsl:attribute name="elasticity_force_y">
+                                                    <xsl:value-of select="@forcey"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                        </xsl:if>
+                                        <xsl:if test="@typex='elasticity_fixed'">
+                                            <xsl:if test="@typey='elasticity_fixed'">
+                                                <xsl:attribute name="type">elasticity_fixed_fixed</xsl:attribute>
+                                                <xsl:attribute name="elasticity_displacement_x">
+                                                    <xsl:value-of select="@forcex"/>
+                                                </xsl:attribute>
+                                                <xsl:attribute name="elasticity_displacement_y">
+                                                    <xsl:value-of select="@forcey"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                        </xsl:if>
+                                        <xsl:if test="@typex='elasticity_free'">
+                                            <xsl:if test="@typey='elasticity_fixed'">
+                                                <xsl:attribute name="type">elasticity_free_fixed</xsl:attribute>
+                                                <xsl:attribute name="elasticity_force_x">
+                                                    <xsl:value-of select="@forcex"/>
+                                                </xsl:attribute>
+                                                <xsl:attribute name="elasticity_displacement_y">
+                                                    <xsl:value-of select="@forcey"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                        </xsl:if>
+                                        <xsl:if test="@typex='elasticity_fixed'">
+                                            <xsl:if test="@typey='elasticity_free'">
+                                                <xsl:attribute name="type">elasticity_fixed_free</xsl:attribute>
+                                                <xsl:attribute name="elasticity_displacement_x">
+                                                    <xsl:value-of select="@forcex"/>
+                                                </xsl:attribute>
+                                                <xsl:attribute name="elasticity_force_y">
+                                                    <xsl:value-of select="@forcey"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
                                         </xsl:if>
 
                                         <xsl:attribute name="id">
@@ -558,6 +609,45 @@
                                             <xsl:if test="@current_density_imag">
                                                 <xsl:attribute name="rf_current_density_external_imag">
                                                     <xsl:value-of select="@current_density_imag"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                        </xsl:if>
+
+                                        <!-- Elasticity -->
+                                        <xsl:if test="$physical_field='elasticity'">
+                                            <xsl:if test="@poisson_ratio">
+                                                <xsl:attribute name="elasticity_poisson_ratio">
+                                                    <xsl:value-of select="@poisson_ratio"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:if test="@temp">
+                                                <xsl:attribute name="elasticity_temperature">
+                                                    <xsl:value-of select="@temp"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:if test="@temp_ref">
+                                                <xsl:attribute name="elasticity_temperature_reference">
+                                                    <xsl:value-of select="@temp_ref"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:if test="@young_modulus">
+                                                <xsl:attribute name="elasticity_young_modulus">
+                                                    <xsl:value-of select="@young_modulus"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:if test="@alpha">
+                                                <xsl:attribute name="elasticity_alpha">
+                                                    <xsl:value-of select="@alpha"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:if test="@forcex">
+                                                <xsl:attribute name="elasticity_force_x">
+                                                    <xsl:value-of select="@forcex"/>
+                                                </xsl:attribute>
+                                            </xsl:if>
+                                            <xsl:if test="@forcey">
+                                                <xsl:attribute name="elasticity_force_y">
+                                                    <xsl:value-of select="@forcey"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                         </xsl:if>

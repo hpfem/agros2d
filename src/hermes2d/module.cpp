@@ -961,10 +961,10 @@ ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Mod
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < number_of_solution(); k++)
     {
-        FieldSolutionID fsid(Util::scene()->fieldInfo(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+        FieldSolutionID fsid(Util::scene()->activeViewField(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
     }
-    return new ViewScalarFilter<double>(Util::scene()->fieldInfo(),
+    return new ViewScalarFilter<double>(Util::scene()->activeViewField(),
                                         sln,
                                         get_expression(physicFieldVariable, physicFieldVariableComp));
 }

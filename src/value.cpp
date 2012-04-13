@@ -141,8 +141,6 @@ bool Value::evaluate(bool quiet)
 
 bool Value::evaluate(double time, bool quiet)
 {
-    logMessage("Value::evaluate()");
-
     // eval time
     runPythonExpression(QString("time = %1").arg(time), false);
 
@@ -174,8 +172,6 @@ bool Value::isTimeDep() const
 
 ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin) : QWidget(parent)
 {
-    logMessage("SLineEditValue::SLineEditValue()");
-
     m_minimum = -numeric_limits<double>::max();
     m_minimumSharp = -numeric_limits<double>::max();
     m_maximum = numeric_limits<double>::max();
@@ -242,16 +238,12 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin) :
 
 void ValueLineEdit::setNumber(double value)
 {
-    logMessage("SLineEditValue::setNumber()");
-
     txtLineEdit->setText(QString::number(value));
     evaluate();
 }
 
 double ValueLineEdit::number()
 {
-    logMessage("SLineEditValue::number()");
-
     if (evaluate())
         return m_number;
     else
@@ -260,8 +252,6 @@ double ValueLineEdit::number()
 
 void ValueLineEdit::setValue(Value value)
 {
-    logMessage("SLineEditValue::setValue()");
-
     txtLineEdit->setText(value.text());
 
     delete m_table;
@@ -273,15 +263,11 @@ void ValueLineEdit::setValue(Value value)
 
 Value ValueLineEdit::value()
 {
-    logMessage("SLineEditValue::value()");
-
     return Value(txtLineEdit->text(), m_table->copy());
 }
 
 bool ValueLineEdit::evaluate(bool quiet)
 {
-    logMessage("SLineEditValue::evaluate()");
-
     bool isOk = false;
 
     if (!m_hasNonlin || m_table->size() == 0)
@@ -365,8 +351,6 @@ void ValueLineEdit::setLayoutValue()
 
 void ValueLineEdit::setLabel(const QString &text, QColor color, bool isVisible)
 {
-    logMessage("SLineEditValue::setLabel()");
-
     lblValue->setText(text);
     QPalette palette = lblValue->palette();
     palette.setColor(QPalette::WindowText, color);
@@ -381,8 +365,6 @@ QSize ValueLineEdit::sizeHint() const
 
 void ValueLineEdit::focusInEvent(QFocusEvent *event)
 {
-    logMessage("SLineEditValue::focusInEvent()");
-
     txtLineEdit->setFocus(event->reason());
 }
 
@@ -423,8 +405,6 @@ void ValueLineEdit::doOpenDataTableDialog()
 
 ValueTimeDialog::ValueTimeDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("ValueTimeDialog::ValueTimeDialog()");
-
     setWindowIcon(icon("timefunction"));
     setWindowTitle(tr("Time function"));
 
@@ -453,8 +433,6 @@ void ValueTimeDialog::setValue(Value value)
 
 void ValueTimeDialog::createControls()
 {
-    logMessage("ValueTimeDialog::createControls()");
-
     lblInfoError = new QLabel();
 
     QPalette palette = lblInfoError->palette();
@@ -544,8 +522,6 @@ void ValueTimeDialog::createControls()
 
 void ValueTimeDialog::crossMoved(const QPoint &pos)
 {
-    logMessage("ChartDialog::crossMoved()");
-
     QString info;
     info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
@@ -568,8 +544,6 @@ void ValueTimeDialog::presetsChanged(int index)
 
 void ValueTimeDialog::checkExpression()
 {
-    logMessage("ValueTimeDialog::checkExpression()");
-
     // eval time
     runPythonExpression(QString("time = %1").arg(0.0));
 
@@ -585,8 +559,6 @@ void ValueTimeDialog::checkExpression()
 
 void ValueTimeDialog::plotFunction()
 {
-    logMessage("ValueTimeDialog::plotFunction()");
-
     // plot solution
     int count = 200;
 

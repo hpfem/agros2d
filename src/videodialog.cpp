@@ -26,8 +26,6 @@
 
 VideoDialog::VideoDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
 {
-    logMessage("VideoDialog::VideoDialog()");
-
     m_sceneView = sceneView;
 
     setModal(true);
@@ -53,8 +51,6 @@ VideoDialog::VideoDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(
 
 VideoDialog::~VideoDialog()
 {
-    logMessage("VideoDialog::~VideoDialog()");
-
     // restore previous timestep
     //TODO odkomentovat
     //Util::scene()->activeSceneSolution()->setTimeStep(m_timeStep);
@@ -65,8 +61,6 @@ VideoDialog::~VideoDialog()
 void VideoDialog::showDialog()
 {
     assert(0);
-//    logMessage("VideoDialog::showDialog()");
-
 //    doCommandFFmpeg();
 
 //    txtAnimateFrom->setMaximum(Util::scene()->activeSceneSolution()->timeStepCount());
@@ -81,8 +75,6 @@ void VideoDialog::showDialog()
 
 void VideoDialog::createControls()
 {
-    logMessage("VideoDialog::createControls()");
-
     // tab
     QTabWidget *tabType = new QTabWidget();
     tabType->addTab(createControlsViewport(), icon(""), tr("Viewport"));
@@ -105,8 +97,6 @@ void VideoDialog::createControls()
 
 QWidget *VideoDialog::createControlsFile()
 {
-    logMessage("VideoDialog::createControlsFile()");
-
     QSettings settings;
     QString codec = settings.value("VideoDialog/Codec", "msmpeg4v2").value<QString>();
     QString format = settings.value("VideoDialog/Format", "avi").value<QString>();
@@ -182,8 +172,6 @@ QWidget *VideoDialog::createControlsFile()
 
 QWidget *VideoDialog::createControlsViewport()
 {
-    logMessage("VideoDialog::createControlsViewport()");
-
     // viewport
     lblAnimateTime = new QLabel("0.0");
 
@@ -234,8 +222,6 @@ QWidget *VideoDialog::createControlsViewport()
 
 void VideoDialog::doAnimate()
 {
-    logMessage("VideoDialog::doAnimate()");
-
     if (timerAnimate->isActive())
     {
         btnClose->setEnabled(true);
@@ -256,8 +242,6 @@ void VideoDialog::doAnimate()
 void VideoDialog::doAnimateNextStep()
 {
     assert(0);
-//    logMessage("VideoDialog::doAnimateNextStep()");
-
 //    if (Util::scene()->activeSceneSolution()->timeStep() + 1 < txtAnimateTo->value())
 //    {
 //        doSetTimeStep(Util::scene()->activeSceneSolution()->timeStep() + 2);
@@ -271,8 +255,6 @@ void VideoDialog::doAnimateNextStep()
 void VideoDialog::doSetTimeStep(int index)
 {
     assert(0);
-//    logMessage("VideoDialog::doSetTimeStep()");
-
 //    Util::scene()->sceneSolution()->setTimeStep(index - 1, false);
 //    sldAnimate->setValue(index);
 
@@ -284,23 +266,17 @@ void VideoDialog::doSetTimeStep(int index)
 
 void VideoDialog::doValueFromChanged(int index)
 {
-    logMessage("VideoDialog::doValueFromChanged()");
-
     sldAnimate->setMinimum(txtAnimateFrom->value());
 }
 
 void VideoDialog::doValueToChanged(int index)
 {
-    logMessage("VideoDialog::doValueToChanged()");
-
     sldAnimate->setMaximum(txtAnimateTo->value());
 }
 
 void VideoDialog::doCreateImages()
 {
     assert(0);
-//    logMessage("VideoDialog::doCreateImages()");
-
 //    btnClose->setEnabled(false);
 //    progressBar->setMaximum(Util::scene()->activeSceneSolution()->timeStepCount() - 1);
 //    progressBar->setValue(0);
@@ -320,8 +296,6 @@ void VideoDialog::doCreateImages()
 
 void VideoDialog::doEncodeFFmpeg()
 {
-    logMessage("VideoDialog::doEncodeFFmpeg()");
-
     btnClose->setEnabled(false);
 
     // exec mencoder
@@ -344,8 +318,6 @@ void VideoDialog::doEncodeFFmpeg()
 
 void VideoDialog::doSaveVideo()
 {
-    logMessage("VideoDialog::doSaveVideo()");
-
     QSettings settings;
     QString dir = settings.value("General/LastVideoDir").toString();
 
@@ -364,15 +336,11 @@ void VideoDialog::doSaveVideo()
 
 void VideoDialog::doOpenVideo()
 {
-    logMessage("VideoDialog::doOpenVideo()");
-
     QDesktopServices::openUrl(QUrl::fromLocalFile(outputFile));
 }
 
 void VideoDialog::doCommandFFmpeg()
 {
-    logMessage("VideoDialog::doCommandFFmpeg()");
-
     outputFile = tempProblemDir() + "/video/output." + cmbFormat->itemData(cmbFormat->currentIndex()).toString();
 
     QString ffmpegBinary = "ffmpeg";
@@ -391,8 +359,6 @@ void VideoDialog::doCommandFFmpeg()
 
 void VideoDialog::doVideoCreated(int result)
 {
-    logMessage("VideoDialog::doVideoCreated()");
-
     btnClose->setEnabled(true);
 
     if (result == 0)
@@ -411,8 +377,6 @@ void VideoDialog::doVideoCreated(int result)
 
 void VideoDialog::doClose()
 {
-    logMessage("VideoDialog::doClose()");
-
     QSettings settings;
     settings.setValue("VideoDialog/Codec", cmbCodec->itemData(cmbCodec->currentIndex()).toString());
     settings.setValue("VideoDialog/Format", cmbFormat->itemData(cmbFormat->currentIndex()).toString());

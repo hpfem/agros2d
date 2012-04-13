@@ -327,10 +327,15 @@ namespace Hermes
             for (int boundary_edge_number_i = 0; boundary_edge_number_i < boundary_edge_number_count; boundary_edge_number_i++)
             {
               XMLSubdomains::domain::edges_type::edge_type* edge;
-              if(boundary_edge_number_count == parsed_xml_domain->edges().edge().size())
-                edge = &parsed_xml_domain->edges().edge().at(edge_is.find(boundary_edge_number_i)->second);
-              else
-                edge = &parsed_xml_domain->edges().edge().at(edge_is.find(parsed_xml_domain->subdomains().subdomain().at(subdomains_i).boundary_edges()->i().at(boundary_edge_number_i))->second);
+              for(unsigned int to_find_i = 0; to_find_i < parsed_xml_domain->edges().edge().size(); to_find_i++)
+              {
+                if(parsed_xml_domain->edges().edge().at(to_find_i).i() == parsed_xml_domain->subdomains().subdomain().at(subdomains_i).boundary_edges()->i().at(boundary_edge_number_i))
+                {
+                  edge = &parsed_xml_domain->edges().edge().at(to_find_i);
+                  break;
+                }
+              }
+
               Node* en = meshes[subdomains_i]->peek_edge_node(vertex_vertex_numbers.find(edge->v1())->second, vertex_vertex_numbers.find(edge->v2())->second);
               if (en == NULL)
                 error("Boundary data error (edge %i does not exist)", boundary_edge_number_i);
@@ -354,10 +359,16 @@ namespace Hermes
             for (int inner_edge_number_i = 0; inner_edge_number_i < inner_edge_number_count; inner_edge_number_i++)
             {
               XMLSubdomains::domain::edges_type::edge_type* edge;
-              if(inner_edge_number_count == parsed_xml_domain->edges().edge().size())
-                edge = &parsed_xml_domain->edges().edge().at(edge_is.find(inner_edge_number_i)->second);
-              else
-                edge = &parsed_xml_domain->edges().edge().at(edge_is.find(parsed_xml_domain->subdomains().subdomain().at(subdomains_i).inner_edges()->i().at(inner_edge_number_i))->second);
+
+              for(unsigned int to_find_i = 0; to_find_i < parsed_xml_domain->edges().edge().size(); to_find_i++)
+              {
+                if(parsed_xml_domain->edges().edge().at(to_find_i).i() == parsed_xml_domain->subdomains().subdomain().at(subdomains_i).inner_edges()->i().at(inner_edge_number_i))
+                {
+                  edge = &parsed_xml_domain->edges().edge().at(to_find_i);
+                  break;
+                }
+              }
+
               Node* en = meshes[subdomains_i]->peek_edge_node(vertex_vertex_numbers.find(edge->v1())->second, vertex_vertex_numbers.find(edge->v2())->second);
               if (en == NULL)
                 error("Inner data error (edge %i does not exist)", inner_edge_number_i);
@@ -367,9 +378,6 @@ namespace Hermes
               unsigned int end = edge->marker().find_last_not_of(" \t\n");
               edge->marker().erase(end + 1, edge->marker().length());
               edge->marker().erase(0, begin);
-
-              //TODO added...
-              meshes[subdomains_i]->boundary_markers_conversion.insert_marker(meshes[subdomains_i]->boundary_markers_conversion.min_marker_unused, edge->marker());
 
               en->marker = meshes[subdomains_i]->boundary_markers_conversion.get_internal_marker(edge->marker()).marker;
 
@@ -587,12 +595,14 @@ namespace Hermes
           }
         }
 
-        // save boundary edges markers
+        // save boundary edge markers
         subdomain.boundary_edges().set(XMLSubdomains::subdomain::boundary_edges_type());
+        bool has_inner_edges = false;
         for_all_base_elements(e, meshes[meshes_i])
+        {
           for (unsigned i = 0; i < e->get_num_surf(); i++)
-            // Not internal internal markers.
-            if (meshes[meshes_i]->get_base_edge_node(e, i)->marker)
+          {
+            if (meshes[meshes_i]->get_base_edge_node(e, i)->bnd)
             {
               if(vertices_to_boundaries.find(std::pair<unsigned int, unsigned int>(std::min(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second), std::max(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second))) == vertices_to_boundaries.end())
               {
@@ -602,6 +612,29 @@ namespace Hermes
               }
               subdomain.boundary_edges()->i().push_back(vertices_to_boundaries.find(std::pair<unsigned int, unsigned int>(std::min(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second), std::max(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second)))->second);
             }
+            else
+              has_inner_edges = true;
+          }
+        }
+
+        if(has_inner_edges)
+        {
+          subdomain.inner_edges().set(XMLSubdomains::subdomain::inner_edges_type());
+          for_all_base_elements(e, meshes[meshes_i])
+          for (unsigned i = 0; i < e->get_num_surf(); i++)
+          {
+            if (!meshes[meshes_i]->get_base_edge_node(e, i)->bnd)
+            {
+              if(vertices_to_boundaries.find(std::pair<unsigned int, unsigned int>(std::min(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second), std::max(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second))) == vertices_to_boundaries.end())
+              {
+                unsigned int edge_i = edges.edge().size();
+                vertices_to_boundaries.insert(std::pair<std::pair<unsigned int, unsigned int>, unsigned int>(std::pair<unsigned int, unsigned int>(std::min(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second), std::max(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second)), edge_i));
+                edges.edge().push_back(XMLSubdomains::edge(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second, meshes[meshes_i]->boundary_markers_conversion.get_user_marker(meshes[meshes_i]->get_base_edge_node(e, i)->marker).marker.c_str(), edge_i));
+              }
+              subdomain.inner_edges()->i().push_back(vertices_to_boundaries.find(std::pair<unsigned int, unsigned int>(std::min(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second), std::max(vertices_to_vertices.find(e->vn[i]->id)->second, vertices_to_vertices.find(e->vn[e->next_vert(i)]->id)->second)))->second);
+            }
+          }
+        }
 
         // save curved edges
         for_all_base_elements(e, meshes[meshes_i])
@@ -1032,7 +1065,7 @@ namespace Hermes
           int v2 = parsed_xml_domain->edges().edge().at(edge_i).v2();
 
           // insert into the map.
-          edge_is.insert(std::pair<unsigned int, unsigned int>(parsed_xml_domain->edges().edge().at(edge_i).i(), edge_i));
+          edge_is.insert(std::pair<unsigned int, unsigned int>(edge_i, parsed_xml_domain->edges().edge().at(edge_i).i()));
 
           en = mesh->peek_edge_node(v1, v2);
           if (en == NULL)

@@ -23,15 +23,11 @@
 
 Config::Config() : eleConfig(NULL)
 {
-    logMessage("Config::Config()");
-
     load();
 }
 
 Config::~Config()
 {
-    logMessage("Config::~Config()");
-
     save();
 }
 

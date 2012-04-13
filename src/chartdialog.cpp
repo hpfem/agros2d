@@ -73,8 +73,6 @@ QList<Point> ChartLine::getPoints()
 
 ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("ChartDialog::ChartDialog()");
-
     setWindowIcon(icon("chart"));
     setWindowFlags(Qt::Window);
     setWindowTitle(tr("Chart"));
@@ -98,8 +96,6 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 
 ChartDialog::~ChartDialog()
 {
-    logMessage("ChartDialog::~ChartDialog()");
-
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
     settings.setValue("ChartDialog/StartX", txtStartX->value().text());
@@ -117,8 +113,6 @@ ChartDialog::~ChartDialog()
 void ChartDialog::showDialog()
 {
     assert(0);
-//    logMessage("ChartDialog::showDialog()");
-
 //    fillComboBoxScalarVariable(cmbFieldVariable);
 //    fillComboBoxTimeStep(cmbTimeStep);
 
@@ -150,15 +144,11 @@ void ChartDialog::showDialog()
 
 void ChartDialog::hideEvent(QHideEvent *event)
 {
-    logMessage("ChartDialog::hideEvent()");
-
     doChartLine();
 }
 
 void ChartDialog::createControls()
 {
-    logMessage("ChartDialog::createControls()");
-
     chart = new Chart(this);
 
     // controls
@@ -371,8 +361,6 @@ void ChartDialog::createControls()
 
 void ChartDialog::plotGeometry()
 {
-    logMessage("ChartDialog::plotGeometry()");
-
     if (!txtStartX->evaluate()) return;
     if (!txtStartY->evaluate()) return;
     if (!txtEndX->evaluate()) return;
@@ -479,8 +467,6 @@ void ChartDialog::plotGeometry()
 void ChartDialog::plotTime()
 {
     assert(0); //TODO
-    //    logMessage("ChartDialog::plotTime()");
-
     //    if (!txtPointX->evaluate()) return;
     //    if (!txtPointY->evaluate()) return;
 
@@ -639,8 +625,6 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double *yval, int i
 
 void ChartDialog::doPlot()
 {
-    logMessage("ChartDialog::doPlot()");
-
     if (!Util::problem()->isSolved()) return;
 
     if (tabAnalysisType->currentWidget() == widGeometry)
@@ -653,8 +637,6 @@ void ChartDialog::doPlot()
 void ChartDialog::doFieldVariable(int index)
 {
     //    assert(0); //TODO
-
-    //    logMessage("ChartDialog::doFieldVariable()");
 
     //    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     //    if (!physicFieldVariable)
@@ -680,22 +662,16 @@ void ChartDialog::doFieldVariable(int index)
 
 void ChartDialog::doFieldVariableComp(int index)
 {
-    logMessage("ChartDialog::doFieldVariableComp()");
-
     if (isVisible()) doPlot();
 }
 
 void ChartDialog::doSaveImage()
 {
-    logMessage("ChartDialog::doSaveImage()");
-
     chart->saveImage();
 }
 
 void ChartDialog::doExportData()
 {
-    logMessage("ChartDialog::doExportData()");
-
     QSettings settings;
     QString dir = settings.value("General/LastDataDir").toString();
 
@@ -766,16 +742,12 @@ void ChartDialog::doExportData()
 
 void ChartDialog::doMoved(const QPoint &pos)
 {
-    logMessage("ChartDialog::doMoved()");
-
     QString info;
     info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 void ChartDialog::doChartLine()
 {
-    logMessage("ChartDialog::doChartLine()");
-
     if (isVisible())
     {
         if (tabAnalysisType->currentWidget() == widGeometry)
@@ -811,8 +783,6 @@ void ChartDialog::doChartLine()
 
 void ChartDialog::doTimeStepChanged(int index)
 {
-    logMessage("ChartDialog::doTimeStepChanged()");
-
     if (cmbTimeStep->currentIndex() != -1)
     {
         Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());

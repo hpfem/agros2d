@@ -37,8 +37,6 @@
 
 PreprocessorView::PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *parent): QDockWidget(tr("Preprocessor"), parent)
 {
-    logMessage("PreprocessorView::PreprocessorView()");
-
     this->m_sceneViewGeometry = sceneView;
 
     setMinimumWidth(160);
@@ -77,8 +75,6 @@ PreprocessorView::~PreprocessorView()
 
 void PreprocessorView::createActions()
 {
-    logMessage("PreprocessorView::createActions()");
-
     actProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
     actProperties->setStatusTip(tr("Properties"));
     connect(actProperties, SIGNAL(triggered()), this, SLOT(doProperties()));
@@ -406,8 +402,6 @@ void PreprocessorView::doAddField()
 
 void PreprocessorView::doContextMenu(const QPoint &pos)
 {
-    logMessage("PreprocessorView::doContextMenu()");
-
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     doItemSelected(item, 0);
 
@@ -486,8 +480,6 @@ void PreprocessorView::doItemDoubleClicked(QTreeWidgetItem *item, int role)
 
 void PreprocessorView::doProperties()
 {
-    logMessage("PreprocessorView::doProperties()");
-
     if (trvWidget->currentItem())
     {
         // geometry
@@ -527,8 +519,6 @@ void PreprocessorView::doProperties()
 
 void PreprocessorView::doDelete()
 {
-    logMessage("PreprocessorView::doDelete()");
-
     if (trvWidget->currentItem() != NULL)
     {
         // scene objects

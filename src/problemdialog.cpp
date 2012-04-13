@@ -28,8 +28,6 @@
 
 FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : QDialog(parent)
 {
-    logMessage("FieldSelectDialog::FieldSelectDialog()");
-
     setWindowTitle(tr("Select field"));
     setModal(true);
 
@@ -89,15 +87,11 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
 
 void FieldSelectDialog::doAccept()
 {
-    logMessage("FieldSelectDialog::doAccept()");
-
     accept();
 }
 
 void FieldSelectDialog::doReject()
 {
-    logMessage("FieldSelectDialog::doReject()");
-
     reject();
 }
 
@@ -279,8 +273,6 @@ void FieldWidget::createContent()
 
 void FieldWidget::fillComboBox()
 {
-    logMessage("ProblemDialog::fillComboBox()");
-
     cmbAdaptivityType->clear();
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_None), AdaptivityType_None);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_H), AdaptivityType_H);
@@ -363,8 +355,6 @@ FieldInfo *FieldWidget::fieldInfo()
 
 void FieldWidget::doAnalysisTypeChanged(int index)
 {
-    logMessage("ProblemDialog::doAnalysisTypeChanged()");
-
     txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
 
     doShowEquation();
@@ -380,16 +370,12 @@ void FieldWidget::doShowEquation()
 
 void FieldWidget::doAdaptivityChanged(int index)
 {
-    logMessage("ProblemDialog::doAdaptivityChanged()");
-
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void FieldWidget::doLinearityTypeChanged(int index)
 {
-    logMessage("ProblemDialog::doLinearityTypeChanged()");
-
     txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 }
@@ -551,8 +537,6 @@ ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
 
 int ProblemDialog::showDialog()
 {
-    logMessage("ProblemDialog::showDialog()");
-
     return exec();
 }
 
@@ -581,8 +565,6 @@ void ProblemDialog::createControls()
 
 QWidget *ProblemDialog::createControlsGeneral()
 {
-    logMessage("ProblemDialog::createControlsGeneral()");
-
     // problem
     cmbCoordinateType = new QComboBox();
     txtName = new QLineEdit("");
@@ -691,8 +673,6 @@ QWidget *ProblemDialog::createControlsGeneral()
 
 QWidget *ProblemDialog::createControlsStartupScript()
 {
-    logMessage("ProblemDialog::createControlsStartupScript()");
-
     txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
@@ -706,8 +686,6 @@ QWidget *ProblemDialog::createControlsStartupScript()
 
 QWidget *ProblemDialog::createControlsDescription()
 {
-    logMessage("ProblemDialog::createControlsDescription()");
-
     txtDescription = new QTextEdit(this);
     txtDescription->setAcceptRichText(false);
 
@@ -722,8 +700,6 @@ QWidget *ProblemDialog::createControlsDescription()
 
 void ProblemDialog::fillComboBox()
 {
-    logMessage("ProblemDialog::fillComboBox()");
-
     cmbCoordinateType->clear();
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Planar), CoordinateType_Planar);
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Axisymmetric), CoordinateType_Axisymmetric);
@@ -767,8 +743,6 @@ void ProblemDialog::load()
 
 bool ProblemDialog::save()
 {
-    logMessage("ProblemDialog::save()");
-
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
     {
@@ -804,22 +778,16 @@ bool ProblemDialog::save()
 
 void ProblemDialog::doAccept()
 {
-    logMessage("ProblemDialog::doAccept()");
-
     if (save()) accept();
 }
 
 void ProblemDialog::doReject()
 {
-    logMessage("ProblemDialog::doReject()");
-
     reject();
 }
 
 void ProblemDialog::doOpenXML()
 {
-    logMessage("ProblemDialog::doOpenXML()");
-
     QString fileName;
     //TODO custom
     //    if (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom")
@@ -846,8 +814,6 @@ void ProblemDialog::doOpenXML()
 
 void ProblemDialog::doTransientChanged()
 {
-    logMessage("ProblemDialog::doTransientChanged()");
-
     if (txtTransientTimeStep->evaluate(true) &&
             txtTransientTimeTotal->evaluate(true))
     {

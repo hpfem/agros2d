@@ -460,8 +460,6 @@ void SceneViewPost2D::paintGeometry()
 
 void SceneViewPost2D::paintChartLine()
 {
-    logMessage("SceneViewCommon::paintChartLine()");
-
     loadProjection2d(true);
 
     glColor3d(Util::config()->colorSelected.redF(),
@@ -979,8 +977,6 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
 
     // how to get marker from linearizer?
     /*
-    logMessage("SceneViewCommon::paintPostprocessorSelectedVolume()");
-
     if (!m_post2DHermes->isMeshed()) return;
 
     m_post2DHermes->linInitialMeshView().lock_data();

@@ -349,8 +349,6 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     }
     */
 
-    qDebug() << "linear = " << (m_block->linearityType() == LinearityType_Linear);
-
     // Nonlinear solver
     if ((m_block->linearityType() == LinearityType_Newton) || (m_block->linearityType() == LinearityType_Linear))
     {

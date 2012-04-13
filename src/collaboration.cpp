@@ -32,8 +32,6 @@ static ServerLoginDialog *serverLoginDialog;
 ServerLoginDialog::ServerLoginDialog(QWidget *parent)
     : QDialog(parent), m_userName("")
 {
-    logMessage("ServerLoginDialog::ServerLoginDialog()");
-
     setWindowIcon(icon("collaboration"));
     setWindowTitle(tr("Login"));
 
@@ -53,8 +51,6 @@ ServerLoginDialog::ServerLoginDialog(QWidget *parent)
 
 ServerLoginDialog::~ServerLoginDialog()
 {
-    logMessage("ServerLoginDialog::~ServerLoginDialog()");
-
     QSettings settings;
     settings.setValue("ServerLoginDialog/Geometry", saveGeometry());
 }
@@ -62,15 +58,11 @@ ServerLoginDialog::~ServerLoginDialog()
 int ServerLoginDialog::showDialog()
 {
     lblCaption->setText("");
-    logMessage("ServerLoginDialog::showDialog()");
-
     return exec();
 }
 
 void ServerLoginDialog::createControls()
 {
-    logMessage("ServerLoginDialog::createControls()");
-
     txtUsername = new QLineEdit(this);
     txtPassword = new QLineEdit(this);
     txtPassword->setEchoMode(QLineEdit::Password);
@@ -140,8 +132,6 @@ void ServerLoginDialog::httpContentFinished()
 
 void ServerLoginDialog::doAccept()
 {
-    logMessage("ServerLoginDialog::doAccept()");
-
     if (txtUsername->text().isEmpty())
     {
         QMessageBox::critical(this, "", "Username is empty.");
@@ -158,8 +148,6 @@ void ServerLoginDialog::doAccept()
 
 void ServerLoginDialog::doReject()
 {
-    logMessage("ServerLoginDialog::doReject()");
-
     reject();
 }
 
@@ -167,8 +155,6 @@ void ServerLoginDialog::doReject()
 
 ServerDownloadDialog::ServerDownloadDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("ServerDownloadDialog::ServerDownloadDialog()");
-
     setWindowIcon(icon("collaboration"));
     setWindowTitle(tr("Download from server"));
 
@@ -184,24 +170,18 @@ ServerDownloadDialog::ServerDownloadDialog(QWidget *parent) : QDialog(parent)
 
 ServerDownloadDialog::~ServerDownloadDialog()
 {
-    logMessage("ServerDownloadDialog::~ServerDownloadDialog()");
-
     QSettings settings;
     settings.setValue("ServerDownloadDialog/Geometry", saveGeometry());
 }
 
 int ServerDownloadDialog::showDialog()
 {
-    logMessage("ServerDownloadDialog::showDialog()");
-
     webView->reload();
     return exec();
 }
 
 void ServerDownloadDialog::createControls()
 {
-    logMessage("ServerDownloadDialog::createControls()");
-
     if (!networkAccessManager)
         networkAccessManager = new QNetworkAccessManager();
     networkAccessManager->setCookieJar(new QNetworkCookieJar());
@@ -246,8 +226,6 @@ void ServerDownloadDialog::load(const QString &str)
 
 void ServerDownloadDialog::readFromServerXML(int ID, int version)
 {
-    logMessage("ServerDownloadDialog::readFromServerXML()");
-
     networkReply = networkAccessManager->get(QNetworkRequest(QUrl(QString(Util::config()->collaborationServerURL + "/problem_download.php?type=xml&id=%1&version=%2").
                                                                   arg(QString::number(ID)).
                                                                   arg(QString::number(version)))));
@@ -287,8 +265,6 @@ void ServerDownloadDialog::doLogin()
 
 void ServerDownloadDialog::doClose()
 {
-    logMessage("ServerDownloadDialog::doClose()");
-
     reject();
 }
 
@@ -296,8 +272,6 @@ void ServerDownloadDialog::doClose()
 
 ServerUploadDialog::ServerUploadDialog(QWidget *parent) : QDialog(parent)
 {
-    logMessage("ServerUploadDialog::ServerUploadDialog()");
-
     setWindowIcon(icon(""));
     setWindowTitle(tr("Upload to the server"));
 
@@ -312,16 +286,12 @@ ServerUploadDialog::ServerUploadDialog(QWidget *parent) : QDialog(parent)
 
 ServerUploadDialog::~ServerUploadDialog()
 {
-    logMessage("ServerUploadDialog::~ServerUploadDialog()");
-
     QSettings settings;
     settings.setValue("ServerUploadDialog/Geometry", saveGeometry());
 }
 
 int ServerUploadDialog::showDialog()
 {
-    logMessage("ServerUploadDialog::showDialog()");
-
     if (serverLoginDialog->showDialog() == QDialog::Accepted)
     {
         readFromServerContent();
@@ -332,8 +302,6 @@ int ServerUploadDialog::showDialog()
 void ServerUploadDialog::createControls()
 {
     assert(0); //TODO
-//    logMessage("ServerUploadDialog::createControls()");
-
 //    cmbName = new QComboBox(this);
 //    cmbName->setVisible(false);
 //    txtName = new QLineEdit(this);
@@ -382,8 +350,6 @@ void ServerUploadDialog::createControls()
 
 void ServerUploadDialog::doDocumentChanged()
 {
-    logMessage("ServerUploadDialog::doDocumentChanged()");
-
     cmbName->setVisible(false);
     txtName->setVisible(false);
 
@@ -416,8 +382,6 @@ void ServerUploadDialog::doExistingProblemSelected(int index)
 void ServerUploadDialog::readFromServerContent()
 {
     assert(0); //TODO
-//    logMessage("ServerUploadDialog::readFromServerContent()");
-
 //    QByteArray postData;
 //    postData.append("physicfield=" + QString::fromStdString(Util::scene()->problemInfo()->fieldId()));
 
@@ -427,8 +391,6 @@ void ServerUploadDialog::readFromServerContent()
 
 void ServerUploadDialog::httpContentFinished()
 {
-    logMessage("ServerUploadDialog::httpContentFinished()");
-
     QString content = networkReply->readAll();
     if (content.isEmpty())
     {
@@ -467,8 +429,6 @@ void ServerUploadDialog::httpContentFinished()
 void ServerUploadDialog::uploadToServer()
 {
     assert(0); //TODO
-//    logMessage("ServerUploadDialog::uploadToServer()");
-
 //    QByteArray text = readFileContentByteArray(Util::scene()->problemInfo()->fileName);
 
 //    int id_problem = 0;
@@ -492,8 +452,6 @@ void ServerUploadDialog::uploadToServer()
 
 void ServerUploadDialog::httpFileFinished()
 {
-    logMessage("ServerUploadDialog::httpFileFinished()");
-
     QString content = networkReply->readAll();
 
     if (content.startsWith("Message: "))
@@ -510,14 +468,10 @@ void ServerUploadDialog::httpFileFinished()
 
 void ServerUploadDialog::doUpload()
 {
-    logMessage("ServerUploadDialog::doUpload()");
-
     uploadToServer();
 }
 
 void ServerUploadDialog::doClose()
 {
-    logMessage("ServerUploadDialog::doClose()");
-
     reject();
 }

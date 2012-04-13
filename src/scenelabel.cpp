@@ -28,8 +28,6 @@
 SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)
     : MarkedSceneBasic()
 {
-    logMessage("SceneLabel::SceneLabel()");
-
     this->point = point;
     this->area = area;
     this->polynomialOrder = polynomialOrder;
@@ -42,15 +40,11 @@ SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)
 
 double SceneLabel::distance(const Point &point) const
 {
-    logMessage("SceneLabel::distance()");
-
     return (this->point - point).magnitude();
 }
 
 int SceneLabel::showDialog(QWidget *parent, bool isNew)
 {
-    logMessage("SceneLabel::showDialog()");
-
     SceneLabelDialog *dialog = new SceneLabelDialog(this, parent, isNew);
     return dialog->exec();
 }
@@ -103,10 +97,8 @@ SceneLabel* SceneLabelContainer::atNotNoneHack(int i, FieldInfo* fieldInfo)
 
 // *************************************************************************************************************************************
 
-SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
+SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew) : SceneBasicDialog(parent, isNew)
 {
-    logMessage("DSceneLabel::DSceneLabel()");
-
     m_object = label;
     m_singleLabel = true;
 
@@ -121,7 +113,7 @@ SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNe
     // setMaximumSize(sizeHint());
 }
 
-SceneLabelDialog::SceneLabelDialog(MarkedSceneBasicContainer<SceneMaterial, SceneLabel> labels, QWidget *parent) : DSceneBasic(parent, false)
+SceneLabelDialog::SceneLabelDialog(MarkedSceneBasicContainer<SceneMaterial, SceneLabel> labels, QWidget *parent) : SceneBasicDialog(parent, false)
 {
     m_labels = labels;
     m_object = NULL;
@@ -141,8 +133,6 @@ SceneLabelDialog::SceneLabelDialog(MarkedSceneBasicContainer<SceneMaterial, Scen
 
 QLayout* SceneLabelDialog::createContent()
 {
-    logMessage("DSceneLabel::createContent()");
-
     // markers
     QFormLayout *layoutMaterials = new QFormLayout();
 
@@ -171,7 +161,7 @@ QLayout* SceneLabelDialog::createContent()
     QFormLayout *layout = new QFormLayout();
     layout->addRow(grpMaterials);
 
-    if(m_singleLabel)
+    if (m_singleLabel)
     {
         txtPointX = new ValueLineEdit();
         txtPointY = new ValueLineEdit();
@@ -236,8 +226,6 @@ QLayout* SceneLabelDialog::createContent()
 
 void SceneLabelDialog::fillComboBox()
 {
-    logMessage("DSceneLabel::fillComboBox()");
-
     // markers
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
     {
@@ -258,8 +246,6 @@ void SceneLabelDialog::fillComboBox()
 
 bool SceneLabelDialog::load()
 {
-    logMessage("DSceneLabel::load()");
-
     if(m_singleLabel)
     {
         SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
@@ -303,9 +289,7 @@ bool SceneLabelDialog::load()
 
 bool SceneLabelDialog::save()
 {
-    logMessage("DSceneLabel::save()");
-
-    if(m_singleLabel)
+    if (m_singleLabel)
     {
         if (!txtPointX->evaluate(false)) return false;
         if (!txtPointY->evaluate(false)) return false;
@@ -354,7 +338,7 @@ bool SceneLabelDialog::save()
         {
             foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
             {
-                if(cmbMaterials[fieldInfo]->currentIndex() != -1)
+                if (cmbMaterials[fieldInfo]->currentIndex() != -1)
                     label->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());
 
             }
@@ -367,8 +351,6 @@ bool SceneLabelDialog::save()
 
 void SceneLabelDialog::doMaterialChanged(int index)
 {
-    logMessage("DSceneLabel::doMaterialChanged()");
-
     // for (int i = 0; i < cmbMaterials.length(); i++)
     //     btnMaterials[i]->setEnabled(cmbMaterials[i]->currentIndex() > 0);
 }
@@ -377,8 +359,6 @@ void SceneLabelDialog::doMaterialClicked()
 {
     //TODO
     assert(0);
-    //    logMessage("DSceneLabel::doMaterialClicked()");
-
     //    SceneMaterial *marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
     //    if (marker->showDialog(this) == QDialog::Accepted)
     //    {
@@ -389,15 +369,11 @@ void SceneLabelDialog::doMaterialClicked()
 
 void SceneLabelDialog::doPolynomialOrder(int state)
 {
-    logMessage("DSceneLabel::doPolynomialOrder()");
-
     txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 }
 
 void SceneLabelDialog::doArea(int state)
 {
-    logMessage("DSceneLabel::doArea()");
-
     txtArea->setEnabled(chkArea->isChecked());
 }
 
@@ -406,8 +382,6 @@ void SceneLabelDialog::doArea(int state)
 
 SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneLabelCommandAdd::SceneLabelCommandAdd()");
-
     m_point = point;
     m_markerName = markerName;
     m_area = area;
@@ -416,16 +390,12 @@ SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &ma
 
 void SceneLabelCommandAdd::undo()
 {
-    logMessage("SceneLabelCommandAdd::undo()");
-
     Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
 }
 
 void SceneLabelCommandAdd::redo()
 {
     //assert(0); //TODO
-    //    logMessage("SceneLabelCommandAdd::redo()");
-
     //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
     //    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
     //    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
@@ -433,8 +403,6 @@ void SceneLabelCommandAdd::redo()
 
 SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneLabelCommandRemove::SceneLabelCommandRemove()");
-
     m_point = point;
     m_markerName = markerName;
     m_area = area;
@@ -444,8 +412,6 @@ SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QStri
 void SceneLabelCommandRemove::undo()
 {
    // assert(0);//TODO
-    //    logMessage("SceneLabelCommandRemove::undo()");
-
     //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
     //    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
     //    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
@@ -453,23 +419,17 @@ void SceneLabelCommandRemove::undo()
 
 void SceneLabelCommandRemove::redo()
 {
-    logMessage("SceneLabelCommandRemove::redo()");
-
     Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
 }
 
 SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneLabelCommandEdit::SceneLabelCommandEdit()");
-
     m_point = point;
     m_pointNew = pointNew;
 }
 
 void SceneLabelCommandEdit::undo()
 {
-    logMessage("SceneLabelCommandEdit::undo()");
-
     SceneLabel *label = Util::scene()->getLabel(m_pointNew);
     if (label)
     {
@@ -480,8 +440,6 @@ void SceneLabelCommandEdit::undo()
 
 void SceneLabelCommandEdit::redo()
 {
-    logMessage("SceneLabelCommandEdit::redo()");
-
     SceneLabel *label = Util::scene()->getLabel(m_point);
     if (label)
     {

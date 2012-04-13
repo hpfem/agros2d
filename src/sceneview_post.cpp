@@ -41,8 +41,6 @@ SceneViewPostInterface::SceneViewPostInterface(QWidget *parent): SceneViewCommon
 
 void SceneViewPostInterface::timeStepChanged(bool showViewProgress)
 {
-    logMessage("SceneViewCommon::timeStepChanged()");
-
     if (!Util::problem()->isSolving())
     {
         // QTime time;
@@ -260,8 +258,6 @@ void SceneViewPostInterface::paletteUpdateTexAdjust()
 
 void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
 {
-    logMessage("SceneViewCommon::paintScalarFieldColorBar()");
-
     if (!Util::problem()->isSolved() || !Util::config()->showScalarColorBar) return;
 
     loadProjectionViewPort();

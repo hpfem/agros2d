@@ -30,8 +30,6 @@
 
 ReportDialog::ReportDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
 {
-    logMessage("ReportDialog::ReportDialog()");
-
     m_sceneView = sceneView;
 
     setWindowIcon(icon("browser"));
@@ -51,16 +49,12 @@ ReportDialog::ReportDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialo
 
 ReportDialog::~ReportDialog()
 {
-    logMessage("ReportDialog::~ReportDialog()");
-
     QSettings settings;
     settings.setValue("ReportDialog/Geometry", saveGeometry());
 }
 
 void ReportDialog::createControls()
 {
-    logMessage("ReportDialog::createControls()");
-
     chkDescription = new QCheckBox(tr("Description"));
     chkProblemInformation = new QCheckBox(tr("Problem information"));
     chkStartupScript = new QCheckBox(tr("Startup script"));
@@ -164,8 +158,6 @@ void ReportDialog::createControls()
 
 void ReportDialog::checkPaths()
 {
-    logMessage("ReportDialog::checkPaths()");
-
     bool templateExists = QFile::exists(QString(txtTemplate->text()));
     bool styleSheetExists = QFile::exists(QString(txtStyleSheet->text()));
 
@@ -188,8 +180,6 @@ void ReportDialog::checkPaths()
 
 void ReportDialog::defaultValues()
 {
-    logMessage("ReportDialog::defaultValues()");
-
     chkProblemInformation->setChecked(true);
     chkPhysicalProperties->setChecked(true);
     chkGeometry->setChecked(true);
@@ -211,8 +201,6 @@ void ReportDialog::defaultValues()
 void ReportDialog::setControls()
 {
 //    assert(0); //TODO
-//    logMessage("ReportDialog::setControls()");
-
 //    chkDescription->setDisabled(Util::scene()->problemInfo()->description.isEmpty());
 //    chkDescription->setChecked(!Util::scene()->problemInfo()->description.isEmpty());
 //    chkStartupScript->setDisabled(Util::scene()->problemInfo()->scriptStartup.isEmpty());
@@ -234,8 +222,6 @@ void ReportDialog::setControls()
 
 void ReportDialog::resetControls()
 {
-    logMessage("ReportDialog::resetControls()");
-
     chkFigureGeometry->setChecked(chkGeometry->isChecked());
     chkFigureGeometry->setEnabled(chkGeometry->isChecked());
     chkFigureMesh->setChecked(chkMeshAndSolution->isChecked());
@@ -252,8 +238,6 @@ void ReportDialog::resetControls()
 
 void ReportDialog::showDialog()
 {
-    logMessage("ReportDialog::showDialog()");
-
     setControls();
     show();
     activateWindow();
@@ -262,15 +246,11 @@ void ReportDialog::showDialog()
 
 void ReportDialog::doClose()
 {
-    logMessage("ReportDialog::doClose()");
-
     hide();
 }
 
 void ReportDialog::doShowReport()
 {
-    logMessage("ReportDialog::doShowReport()");
-
     QDir(tempProblemDir()).mkdir("report");
 
     QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
@@ -291,8 +271,6 @@ void ReportDialog::doShowReport()
 
 void ReportDialog::generateIndex()
 {
-    logMessage("ReportDialog::generateIndex()");
-
     QString fileNameTemplate = txtTemplate->text();
     QString fileNameIndex = tempProblemDir() + "/report/report.html";
 
@@ -310,8 +288,6 @@ void ReportDialog::generateIndex()
 
 void ReportDialog::generateFigures()
 {
-    logMessage("ReportDialog::generateFigures()");
-
     bool showRulers = chkFigureShowRulers->isChecked();
     bool showGrid = chkFigureShowGrid->isChecked();
     bool showAxes = chkFigureShowRulers->isChecked();
@@ -328,8 +304,6 @@ void ReportDialog::generateFigures()
 QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 {
     assert(0); //TODO
-//    logMessage("ReportDialog::replaceTemplates()");
-
 //    std::string report;
 //    ctemplate::TemplateDictionary dict("report");
 

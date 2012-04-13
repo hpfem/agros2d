@@ -46,6 +46,9 @@ private:
 
             this->isActive = true;
             this->isUsed = true;
+
+            this->neighElem[0] = -1;
+            this->neighElem[1] = -1;
         }
 
         MeshEdge(int node_1, int node_2, int marker)
@@ -56,6 +59,9 @@ private:
 
             this->isActive = true;
             this->isUsed = true;
+
+            this->neighElem[0] = -1;
+            this->neighElem[1] = -1;
         }
 
         bool contains(int node)
@@ -68,6 +74,7 @@ private:
 
         int node[2], marker;
         bool isActive, isUsed;
+        int neighElem[2];
     };
 
     struct MeshElement

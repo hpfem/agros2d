@@ -65,7 +65,7 @@ public:
 
 // *************************************************************************************************************************************
 
-class SceneEdgeDialog : public DSceneBasic
+class SceneEdgeDialog : public SceneBasicDialog
 {
     Q_OBJECT
 

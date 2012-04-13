@@ -230,8 +230,6 @@ void SceneViewPost3D::resizeGL(int w, int h)
 
 void SceneViewPost3D::paintScalarField3D()
 {
-    logMessage("SceneViewCommon::paintScalarField3D()");
-
     if (!Util::problem()->isSolved()) return;
     if (!m_post3DHermes->scalarIsPrepared()) return;
 
@@ -407,8 +405,6 @@ void SceneViewPost3D::paintScalarField3D()
 
 void SceneViewPost3D::paintScalarField3DSolid()
 {
-    logMessage("SceneViewCommon::paintScalarField3DSolid()");
-
     if (!Util::problem()->isSolved()) return;
     if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid && !m_post3DHermes->scalarIsPrepared()) return;
 

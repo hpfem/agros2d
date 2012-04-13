@@ -29,8 +29,6 @@
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge)
     : MarkedSceneBasic()
 {
-    logMessage("SceneEdge::SceneEdge()");
-
     this->nodeStart = nodeStart;
     this->nodeEnd = nodeEnd;
     this->angle = angle;
@@ -49,15 +47,11 @@ Point SceneEdge::center() const
 
 double SceneEdge::radius() const
 {
-    logMessage("SceneEdge::radius()");
-
     return (center() - nodeStart->point).magnitude();
 }
 
 double SceneEdge::distance(const Point &point) const
 {
-    logMessage("SceneEdge::distance()");
-
     if (isStraight())
     {
         double t = ((point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y)) /
@@ -113,8 +107,6 @@ double SceneEdge::length() const
 
 int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
-    logMessage("SceneEdge::showDialog()");
-
     SceneEdgeDialog *dialog = new SceneEdgeDialog(this, parent, isNew);
     return dialog->exec();
 }
@@ -170,10 +162,8 @@ SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEn
 
 // *************************************************************************************************************************************
 
-SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
+SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) : SceneBasicDialog(parent, isNew)
 {
-    logMessage("DSceneEdge::DSceneEdge()");
-
     m_object = edge;
     m_singleEdge = true;
 
@@ -188,7 +178,7 @@ SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) :
     // setMaximumSize(sizeHint());
 }
 
-SceneEdgeDialog::SceneEdgeDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent) : DSceneBasic(parent, false)
+SceneEdgeDialog::SceneEdgeDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent) : SceneBasicDialog(parent, false)
 {
     m_edges = edges;
     m_object = NULL;
@@ -208,8 +198,6 @@ SceneEdgeDialog::SceneEdgeDialog(MarkedSceneBasicContainer<SceneBoundary, SceneE
 
 QLayout* SceneEdgeDialog::createContent()
 {
-    logMessage("DSceneEdge::createContent()");
-
     // markers
     QFormLayout *layoutBoundaries = new QFormLayout();
 
@@ -291,8 +279,6 @@ QLayout* SceneEdgeDialog::createContent()
 
 void SceneEdgeDialog::fillComboBox()
 {
-    logMessage("DSceneEdge::fillComboBox()");
-
     if(m_singleEdge)
     {
         // start and end nodes
@@ -333,8 +319,6 @@ void SceneEdgeDialog::fillComboBox()
 
 bool SceneEdgeDialog::load()
 {
-    logMessage("DSceneEdge::load()");
-
     if(m_singleEdge)
     {
         SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
@@ -379,8 +363,6 @@ bool SceneEdgeDialog::load()
 
 bool SceneEdgeDialog::save()
 {
-    logMessage("DSceneEdge::save()");
-
     if(m_singleEdge)
     {
         if (!txtAngle->evaluate(false)) return false;
@@ -442,8 +424,6 @@ bool SceneEdgeDialog::save()
 
 void SceneEdgeDialog::doBoundaryChanged(int index)
 {
-    logMessage("DSceneEdge::doBoundaryChanged()");
-
     //TODO - enable detail button
     // foreach (QComboBox* cmbBoundary, cmbBoundaries)
     //    btnBoundary->setEnabled(true);//cmbBoundary->currentIndex() > 0);
@@ -453,8 +433,6 @@ void SceneEdgeDialog::doBoundaryClicked()
 {
     //TODO
     assert(0);
-    //    logMessage("DSceneEdge::doBoundaryClicked()");
-
     //    SceneBoundary *marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     //    if (marker->showDialog(this) == QDialog::Accepted)
     //    {
@@ -465,8 +443,6 @@ void SceneEdgeDialog::doBoundaryClicked()
 
 void SceneEdgeDialog::doNodeChanged()
 {
-    logMessage("DSceneEdge::doNodeChanged()");
-
     SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
     SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
 
@@ -488,8 +464,6 @@ void SceneEdgeDialog::doNodeChanged()
 
 void SceneEdgeDialog::doRefineTowardsEdge(int state)
 {
-    logMessage("DSceneLabel::doRefineTowardsEdge()");
-
     txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
 }
 
@@ -500,8 +474,6 @@ void SceneEdgeDialog::doRefineTowardsEdge(int state)
 SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName,
                                          double angle, int refineTowardsEdge, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneEdgeCommandAdd::SceneEdgeCommandAdd()");
-
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markerName = markerName;
@@ -511,15 +483,11 @@ SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &p
 
 void SceneEdgeCommandAdd::undo()
 {
-    logMessage("SceneEdgeCommandAdd::undo()");
-
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
 void SceneEdgeCommandAdd::redo()
 {
-    logMessage("SceneEdgeCommandAdd::redo()");
-
     //TODO
     SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
     if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
@@ -533,9 +501,7 @@ void SceneEdgeCommandAdd::redo()
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,
                                                double angle, int refineTowardsEdge, QUndoCommand *parent) : QUndoCommand(parent)
-{
-    logMessage("SceneEdgeCommandRemove::SceneEdgeCommandRemove()");
-
+{    
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markerName = markerName;
@@ -546,8 +512,6 @@ SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Po
 void SceneEdgeCommandRemove::undo()
 {
     assert(0); //TODO
-    //    logMessage("SceneEdgeCommandRemove::undo()");
-
     //    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
     //    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
     //    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
@@ -559,16 +523,12 @@ void SceneEdgeCommandRemove::undo()
 
 void SceneEdgeCommandRemove::redo()
 {
-    logMessage("SceneEdgeCommandRemove::redo()");
-
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
                                            double angle, double angleNew, int refineTowardsEdge, int refineTowardsEdgeNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    logMessage("SceneEdgeCommandEdit::SceneEdgeCommandEdit()");
-
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_pointStartNew = pointStartNew;
@@ -581,8 +541,6 @@ SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point 
 
 void SceneEdgeCommandEdit::undo()
 {
-    logMessage("SceneEdgeCommandEdit::undo()");
-
     SceneEdge *edge = Util::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew);
     if (edge)
     {
@@ -596,8 +554,6 @@ void SceneEdgeCommandEdit::undo()
 
 void SceneEdgeCommandEdit::redo()
 {
-    logMessage("SceneEdgeCommandEdit::redo()");
-
     SceneEdge *edge = Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle);
     if (edge)
     {

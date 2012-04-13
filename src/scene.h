@@ -293,9 +293,6 @@ public:
     inline FieldInfo *fieldInfo(std::string name) { return fieldInfo(QString::fromStdString(name)); }
     inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }
 
-    //TODO remove
-    inline FieldInfo *fieldInfo() { if(m_fieldInfos.size() == 0) return NULL;  return *m_fieldInfos.begin(); }
-
     inline QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos() const { return m_couplingInfos; }
     inline CouplingInfo* couplingInfo(FieldInfo* sourceField, FieldInfo* targetField);
     inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; }
