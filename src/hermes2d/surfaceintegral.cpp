@@ -121,7 +121,7 @@ void SurfaceIntegralValue::calculate()
                         bool integrate = false;
                         bool boundary = false;
 
-                        if (e->en[edge]->marker != 0)
+                        if (e->en[edge]->marker != -1) //TODO ??????????
                         {
 //                            if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
 //                            {
