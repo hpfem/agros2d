@@ -587,6 +587,7 @@ void MainWindow::createToolBars()
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(actScriptEditor);
     tlbLeftBar->addAction(actInfo);
+    tlbLeftBar->addAction(Util::scene()->actProblemProperties);
 
     addToolBar(Qt::LeftToolBarArea, tlbLeftBar);
 

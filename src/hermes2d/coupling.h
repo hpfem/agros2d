@@ -80,7 +80,7 @@ public:
     void reload();
 
     /// goes through field infos and adds/removes coupling infos accordingly
-    static void synchronizeCouplings(QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos);
+    static void synchronizeCouplings(const QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos);
 
 private:
     /// module

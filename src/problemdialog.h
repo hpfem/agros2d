@@ -69,6 +69,7 @@ public:
     void save();
     inline int count() { return m_couplingInfos.count(); }
 
+public slots:
     void refresh();
 
 private:
@@ -153,6 +154,26 @@ private:
 private slots:
     void doAccept();
     void deleteField();
+};
+
+class FieldsToobar: public QWidget
+{
+    Q_OBJECT
+public:
+    FieldsToobar(QWidget *parent = 0, Qt::Orientation oriantation = Qt::Vertical);
+
+public slots:
+    void refresh();
+
+private:
+    QActionGroup *actFieldsGroup;
+    QToolBar *tlbFields;
+
+    void createControls(Qt::Orientation oriantation);
+
+private slots:
+    void fieldDialog(QAction *action);
+    void addField();
 };
 
 class ProblemDialog: public QDialog
