@@ -25,8 +25,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
 }
 
 OTHER_FILES += \
-    gen_weakforms.py \
-    xml_parser.py
+    gen_weakforms.py
 
 include(src/weakform.pri)
 
