@@ -61,7 +61,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createScene();
     createPythonEngine(new PythonEngineAgros());
 
-    chartDialog = new ChartDialog(this);
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
     logDialog = new LogDialog(this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
@@ -110,8 +109,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
     sceneViewPost3D->clear();
-
-    connect(chartDialog, SIGNAL(setChartLine(ChartLine)), sceneViewPost2D, SLOT(doSetChartLine(ChartLine)));
 
     QSettings settings;
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
@@ -1243,7 +1240,11 @@ void MainWindow::doMaterialBrowser()
 
 void MainWindow::doChart()
 {
-    chartDialog->showDialog();
+    sceneViewPost2D->actSceneModePost2D->trigger();
+
+    ChartDialog chartDialog(sceneViewPost2D, Util::scene()->activeViewField(), this);
+
+    chartDialog.showDialog();
 }
 
 void MainWindow::doScriptEditor()

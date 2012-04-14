@@ -227,14 +227,6 @@ void SceneViewCommon::doShowRulers()
     refresh();
 }
 
-void SceneViewCommon::doSetChartLine(const ChartLine &chartLine)
-{
-    // set line for chart
-    m_chartLine = chartLine;
-
-    updateGL();
-}
-
 void SceneViewCommon::clear()
 {
     refresh();

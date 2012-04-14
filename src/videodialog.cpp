@@ -44,7 +44,7 @@ VideoDialog::VideoDialog(SceneViewPost2D *sceneView, QWidget *parent) : QDialog(
 
     // timer create images
     timerFile = new QTimer(this);
-    // connect(timerFile, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
+    connect(timerFile, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
 
     createControls();
 

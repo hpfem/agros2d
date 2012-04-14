@@ -82,7 +82,6 @@ public slots:
     void doShowRulers();
     virtual void refresh();
     virtual void clear();
-    void doSetChartLine(const ChartLine &chartLine);
 
 public:
     SceneViewCommon(QWidget *parent = 0);
@@ -134,8 +133,6 @@ protected:
     QMainWindow *m_mainWindow;
 
     QPoint m_lastPos; // last position of cursor
-
-    ChartLine m_chartLine; // line
 
     SceneNode *m_nodeLast;
 

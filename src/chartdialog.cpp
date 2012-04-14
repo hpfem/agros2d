@@ -21,6 +21,7 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "sceneview_post2d.h"
 #include "hermes2d/localpoint.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -71,15 +72,21 @@ QList<Point> ChartLine::getPoints()
 
 // **************************************************************************************************
 
-ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
+ChartDialog::ChartDialog(SceneViewPost2D *sceneView, FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("chart"));
     setWindowFlags(Qt::Window);
     setWindowTitle(tr("Chart"));
 
+    m_fieldInfo = fieldInfo;
+    m_sceneViewPost2D = sceneView;
+
+    connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
+
     createControls();
 
     resize(sizeHint());
+
     QSettings settings;
     restoreGeometry(settings.value("ChartDialog/Geometry", saveGeometry()).toByteArray());
     txtStartX->setValue(settings.value("ChartDialog/StartX", "0").toString());
@@ -112,34 +119,31 @@ ChartDialog::~ChartDialog()
 
 void ChartDialog::showDialog()
 {
-    assert(0);
-//    fillComboBoxScalarVariable(cmbFieldVariable);
-//    fillComboBoxTimeStep(cmbTimeStep);
+    fillComboBoxScalarVariable(m_fieldInfo, cmbFieldVariable);
+    fillComboBoxTimeStep(cmbTimeStep);
 
-//    // correct labels
-//    lblStartX->setText(Util::scene()->problemInfo()->labelX() + ":");
-//    lblStartY->setText(Util::scene()->problemInfo()->labelY() + ":");
-//    lblEndX->setText(Util::scene()->problemInfo()->labelX() + ":");
-//    lblEndY->setText(Util::scene()->problemInfo()->labelY() + ":");
-//    lblPointX->setText(Util::scene()->problemInfo()->labelX() + ":");
-//    lblPointY->setText(Util::scene()->problemInfo()->labelY() + ":");
-//    radAxisX->setText(Util::scene()->problemInfo()->labelX());
-//    radAxisY->setText(Util::scene()->problemInfo()->labelY());
+    // correct labels
+    lblStartX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lblStartY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    lblEndX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lblEndY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    lblPointX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lblPointY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    radAxisX->setText(Util::scene()->problemInfo()->labelX());
+    radAxisY->setText(Util::scene()->problemInfo()->labelY());
 
-//    if (Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient)
-//    {
-//        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
-//    }
-//    else
-//    {
-//        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), false);
-//        tabAnalysisType->setCurrentWidget(widGeometry);
-//    }
+    if (Util::scene()->activeViewField()->analysisType() == AnalysisType_Transient)
+    {
+        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
+    }
+    else
+    {
+        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), false);
+        tabAnalysisType->setCurrentWidget(widGeometry);
+    }
 
-//    show();
-//    activateWindow();
-//    raise();
-//    doChartLine();
+    doChartLine();
+    exec();
 }
 
 void ChartDialog::hideEvent(QHideEvent *event)
@@ -370,7 +374,7 @@ void ChartDialog::plotGeometry()
     doChartLine();
 
     // variable
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
     if (!physicFieldVariable)
         return;
 
@@ -466,97 +470,99 @@ void ChartDialog::plotGeometry()
 
 void ChartDialog::plotTime()
 {
-    assert(0); //TODO
-    //    if (!txtPointX->evaluate()) return;
-    //    if (!txtPointY->evaluate()) return;
+    if (!txtPointX->evaluate()) return;
+    if (!txtPointY->evaluate()) return;
 
-    //    doChartLine();
+    doChartLine();
 
-    //    // variable
-    //    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
-    //    if (!physicFieldVariable)
-    //        return;
+    QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
-    //    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
-    //    if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
+    // variable
+    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    if (!physicFieldVariable)
+        return;
 
-    //    // store timestep
-    //    int timeStep = Util::scene()->sceneSolution()->timeStep();
+    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
+    if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
 
-    //    int count = Util::scene()->sceneSolution()->timeStepCount();
-    //    double *xval = new double[count];
-    //    double *yval = new double[count];
+    // store timestep
+    int timeStep = Util::scene()->activeTimeStep();
 
-    //    // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
-    //    QwtText text("");
-    //    text.setFont(QFont("Helvetica", 10, QFont::Normal));
-    //    text.setText(QString("%1 (%2)").
-    //                 arg(QString::fromStdString(physicFieldVariable->name)).
-    //                 arg(QString::fromStdString(physicFieldVariable->unit)));
-    //    chart->setAxisTitle(QwtPlot::yLeft, text);
+    double *xval = new double[timeLevels.count()];
+    double *yval = new double[timeLevels.count()];
 
-    //    // headers
-    //    QStringList head = headers();
+    // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
+    QwtText text("");
+    text.setFont(QFont("Helvetica", 10, QFont::Normal));
+    text.setText(QString("%1 (%2)").
+                 arg(QString::fromStdString(physicFieldVariable->name)).
+                 arg(QString::fromStdString(physicFieldVariable->unit)));
+    chart->setAxisTitle(QwtPlot::yLeft, text);
 
-    //    // table
-    //    trvTable->clear();
-    //    trvTable->setRowCount(count);
-    //    trvTable->setColumnCount(head.count());
-    //    trvTable->setHorizontalHeaderLabels(head);
+    // headers
+    QStringList head = headers();
 
-    //    // chart
-    //    text.setText(tr("Time (s)"));
-    //    chart->setAxisTitle(QwtPlot::xBottom, text);
+    // table
+    trvTable->clear();
+    trvTable->setRowCount(timeLevels.count());
+    trvTable->setColumnCount(head.count());
+    trvTable->setHorizontalHeaderLabels(head);
 
-    //    // calculate values
-    //    QStringList row;
-    //    for (int i = 0; i<Util::scene()->sceneSolution()->timeStepCount(); i++)
-    //    {
-    //        // change time level
-    //        Util::scene()->sceneSolution()->setTimeStep(i, false);
+    // chart
+    text.setText(tr("Time (s)"));
+    chart->setAxisTitle(QwtPlot::xBottom, text);
 
-    //        Point point(txtPointX->value().number(), txtPointY->value().number());
-    //        LocalPointValue localPointValue(point);
+    // calculate values
+    QStringList row;
+    for (int i = 0; i<timeLevels.count(); i++)
+    {
+        // change time level
+        Util::scene()->setActiveTimeStep(i);
 
-    //        addValue(&localPointValue, yval, i, Util::scene()->sceneSolution()->timeStepCount(),
-    //                 physicFieldVariableComp, physicFieldVariable);
+        Point point(txtPointX->value().number(), txtPointY->value().number());
+        LocalPointValue localPointValue(m_fieldInfo, point);
 
-    //        for (int j = 0; j<row.count(); j++)
-    //            trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
-    //    }
+        addValue(&localPointValue, yval, i, timeLevels.count(),
+                 physicFieldVariableComp, physicFieldVariable);
 
-    //    chart->setData(xval, yval, count);
+        for (int j = 0; j < row.count(); j++)
+            trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
+    }
 
-    //    delete[] xval;
-    //    delete[] yval;
+    chart->setData(xval, yval, timeLevels.count());
 
-    //    // restore previous timestep
-    //    Util::scene()->sceneSolution()->setTimeStep(timeStep);
+    delete[] xval;
+    delete[] yval;
+
+    // restore previous timestep
+    Util::scene()->setActiveTimeStep(timeStep);
+    m_sceneViewPost2D->refresh();
 }
 
 QStringList ChartDialog::headers()
 {
-    assert(0); //TODO
-    //    QStringList head;
+    QStringList head;
 
-    //    head << "x" << "y" << "t";
+    head << "x" << "y" << "t";
 
-    //    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->problemInfo()->module()->local_point.begin();
-    //         it != Util::scene()->problemInfo()->module()->local_point.end(); ++it)
-    //        if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
-    //        {
-    //            // scalar variable
-    //            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
-    //        }
-    //        else
-    //        {
-    //            // vector variable
-    //            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelX().toLower());
-    //            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelY().toLower());
-    //            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
-    //        }
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = m_fieldInfo->module()->local_point.begin();
+         it < m_fieldInfo->module()->local_point.end(); ++it )
+    {
+        if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
+        {
+            // scalar variable
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
+        }
+        else
+        {
+            // vector variable
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelX().toLower());
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelY().toLower());
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
+        }
+    }
 
-    //    return head;
+    return head;
 }
 
 void ChartDialog::addValue(LocalPointValue *localPointValue, double *yval, int i, int N,
@@ -636,33 +642,31 @@ void ChartDialog::doPlot()
 
 void ChartDialog::doFieldVariable(int index)
 {
-    //    assert(0); //TODO
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    if (!physicFieldVariable)
+        return;
 
-    //    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->problemInfo()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
-    //    if (!physicFieldVariable)
-    //        return;
+    cmbFieldVariableComp->clear();
+    if (physicFieldVariable->is_scalar)
+    {
+        cmbFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+    }
+    else
+    {
+        cmbFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+    }
 
-    //    cmbFieldVariableComp->clear();
-    //    if (physicFieldVariable->is_scalar)
-    //    {
-    //        cmbFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
-    //    }
-    //    else
-    //    {
-    //        cmbFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-    //        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-    //        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
-    //    }
+    if (cmbFieldVariableComp->currentIndex() == -1)
+        cmbFieldVariableComp->setCurrentIndex(0);
 
-    //    if (cmbFieldVariableComp->currentIndex() == -1)
-    //        cmbFieldVariableComp->setCurrentIndex(0);
-
-    //    if (isVisible()) doPlot();
+    doPlot();
 }
 
 void ChartDialog::doFieldVariableComp(int index)
 {
-    if (isVisible()) doPlot();
+    doPlot();
 }
 
 void ChartDialog::doSaveImage()

@@ -458,6 +458,15 @@ void SceneViewPost2D::paintGeometry()
     }
 }
 
+void SceneViewPost2D::setChartLine(const ChartLine &chartLine)
+{
+    // set line for chart
+    m_chartLine = chartLine;
+
+    updateGL();
+}
+
+
 void SceneViewPost2D::paintChartLine()
 {
     loadProjection2d(true);
@@ -1091,6 +1100,8 @@ void SceneViewPost2D::setControls()
 
 void SceneViewPost2D::clear()
 {
+    m_chartLine = ChartLine();
+
     m_post2DHermes->clear();
 
     actPostprocessorModeLocalPointValue->trigger();

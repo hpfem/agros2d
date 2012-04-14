@@ -51,7 +51,6 @@ void SceneViewCommon2D::clear()
     m_scale2d = 1.0;
     m_offset2d = Point();
 
-    m_chartLine = ChartLine();
     m_nodeLast = NULL;
 
     SceneViewCommon::clear();

@@ -211,7 +211,6 @@ private:
     TooltipView *tooltipView;
     LogView *logView;
 
-    ChartDialog *chartDialog;
     PythonLabAgros *scriptEditorDialog;
     LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
