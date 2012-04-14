@@ -21,19 +21,22 @@
 
 #include "gui.h"
 #include "scene.h"
-#include "sceneview_common.h"
+#include "sceneview_post2d.h"
 #include "hermes2d/problem.h"
 
-VideoDialog::VideoDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
+VideoDialog::VideoDialog(SceneViewPost2D *sceneView, QWidget *parent) : QDialog(parent)
 {
-    m_sceneView = sceneView;
+    m_sceneViewPost2D = sceneView;
 
     setModal(true);
     setWindowIcon(icon("video"));
     setWindowTitle(tr("Video"));
 
     // store timestep
-    m_timeStep = Util::problem()->timeStep();
+    m_timeStep = Util::scene()->activeTimeStep();
+
+    // time steps
+    m_timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
     // timer animate
     timerAnimate = new QTimer(this);
@@ -52,25 +55,26 @@ VideoDialog::VideoDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(
 VideoDialog::~VideoDialog()
 {
     // restore previous timestep
-    //TODO odkomentovat
-    //Util::scene()->activeSceneSolution()->setTimeStep(m_timeStep);
+    Util::scene()->setActiveTimeStep(m_timeStep);
+    m_sceneViewPost2D->refresh();
 
     delete timerAnimate;
 }
 
 void VideoDialog::showDialog()
 {
-    assert(0);
-//    doCommandFFmpeg();
+    doCommandFFmpeg();
 
-//    txtAnimateFrom->setMaximum(Util::scene()->activeSceneSolution()->timeStepCount());
-//    txtAnimateTo->setMaximum(Util::scene()->activeSceneSolution()->timeStepCount());
-//    txtAnimateTo->setValue(Util::scene()->activeSceneSolution()->timeStepCount());
+    int timeSteps = m_timeLevels.count();
 
-//    doValueFromChanged(txtAnimateFrom->value());
-//    doValueToChanged(txtAnimateTo->value());
+    txtAnimateFrom->setMaximum(timeSteps);
+    txtAnimateTo->setMaximum(timeSteps);
+    txtAnimateTo->setValue(timeSteps);
 
-//    exec();
+    doValueFromChanged(txtAnimateFrom->value());
+    doValueToChanged(txtAnimateTo->value());
+
+    exec();
 }
 
 void VideoDialog::createControls()
@@ -241,27 +245,27 @@ void VideoDialog::doAnimate()
 
 void VideoDialog::doAnimateNextStep()
 {
-    assert(0);
-//    if (Util::scene()->activeSceneSolution()->timeStep() + 1 < txtAnimateTo->value())
-//    {
-//        doSetTimeStep(Util::scene()->activeSceneSolution()->timeStep() + 2);
-//    }
-//    else
-//    {
-//        doAnimate();
-//    }
+    if (Util::scene()->activeTimeStep() + 1 < txtAnimateTo->value())
+    {
+        doSetTimeStep(Util::scene()->activeTimeStep() + 2);
+    }
+    else
+    {
+        doAnimate();
+    }
 }
 
 void VideoDialog::doSetTimeStep(int index)
 {
-    assert(0);
-//    Util::scene()->sceneSolution()->setTimeStep(index - 1, false);
-//    sldAnimate->setValue(index);
+    Util::scene()->setActiveTimeStep(index - 1);
+    m_sceneViewPost2D->refresh();
 
-//    QString time = QString::number(Util::scene()->activeSceneSolution()->time(), 'g');
-//    lblAnimateTime->setText(time + " s");
+    sldAnimate->setValue(index);
 
-//    QApplication::processEvents();
+    QString time = QString::number(m_timeLevels[index - 1], 'g');
+    lblAnimateTime->setText(time + " s");
+
+    QApplication::processEvents();
 }
 
 void VideoDialog::doValueFromChanged(int index)
@@ -276,22 +280,21 @@ void VideoDialog::doValueToChanged(int index)
 
 void VideoDialog::doCreateImages()
 {
-    assert(0);
-//    btnClose->setEnabled(false);
-//    progressBar->setMaximum(Util::scene()->activeSceneSolution()->timeStepCount() - 1);
-//    progressBar->setValue(0);
+    btnClose->setEnabled(false);
+    progressBar->setMaximum(m_timeLevels.count() - 1);
+    progressBar->setValue(0);
 
-//    // create directory
-//    QDir(tempProblemDir()).mkdir("video");
-//    for (int i = 0; i < Util::scene()->activeSceneSolution()->timeStepCount(); i++)
-//    {
-//        progressBar->setValue(i);
-//        Util::scene()->activeSceneSolution()->setTimeStep(i, false);
-//        m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
-//    }
+    // create directory
+    QDir(tempProblemDir()).mkdir("video");
+    for (int i = 0; i < m_timeLevels.count(); i++)
+    {
+        progressBar->setValue(i);
+        Util::scene()->setActiveTimeStep(i);
+        m_sceneViewPost2D->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
+    }
 
-//    btnClose->setEnabled(true);
-//    btnEncodeFFmpeg->setEnabled(true);
+    btnClose->setEnabled(true);
+    btnEncodeFFmpeg->setEnabled(true);
 }
 
 void VideoDialog::doEncodeFFmpeg()
@@ -350,11 +353,11 @@ void VideoDialog::doCommandFFmpeg()
         ffmpegBinary = QApplication::applicationDirPath() + QDir::separator() + "ffmpeg";
 
     commandFFmpeg = QString(Util::config()->commandFFmpeg).
-                    arg(ffmpegBinary).
-                    arg(txtFPS->value()).
-                    arg(tempProblemDir() + "/video/").
-                    arg(cmbCodec->itemData(cmbCodec->currentIndex()).toString()).
-                    arg(outputFile);
+            arg(ffmpegBinary).
+            arg(txtFPS->value()).
+            arg(tempProblemDir() + "/video/").
+            arg(cmbCodec->itemData(cmbCodec->currentIndex()).toString()).
+            arg(outputFile);
 }
 
 void VideoDialog::doVideoCreated(int result)

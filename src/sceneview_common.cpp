@@ -211,7 +211,7 @@ void SceneViewCommon::doShowGrid()
 {
     Util::config()->showGrid = !Util::config()->showGrid;
     Util::config()->save();
-    doInvalidated();
+    refresh();
 }
 
 void SceneViewCommon::doSnapToGrid()
@@ -224,7 +224,7 @@ void SceneViewCommon::doShowRulers()
 {
     Util::config()->showRulers = !Util::config()->showRulers;
     Util::config()->save();
-    doInvalidated();
+    refresh();
 }
 
 void SceneViewCommon::doSetChartLine(const ChartLine &chartLine)
@@ -237,22 +237,16 @@ void SceneViewCommon::doSetChartLine(const ChartLine &chartLine)
 
 void SceneViewCommon::clear()
 {
-    doInvalidated();
+    refresh();
     doZoomBestFit();
 }
 
-void SceneViewCommon::doInvalidated()
+void SceneViewCommon::refresh()
 {
     // resize(((QWidget *) parent())->size());
 
     emit mousePressed();
 
-    paintGL();
-    updateGL();
-}
-
-void SceneViewCommon::refresh()
-{
     paintGL();
     updateGL();
 }

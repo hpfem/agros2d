@@ -193,12 +193,12 @@ SceneViewPost2D::SceneViewPost2D(QWidget *parent) : SceneViewCommon2D(parent),
     createActionsPost2D();
 
     connect(this, SIGNAL(mousePressed(Point)), this, SLOT(selectedPoint(Point)));
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
 
     m_post2DHermes = new Post2DHermes();
 
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
 
     connect(m_post2DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
@@ -1054,7 +1054,7 @@ void SceneViewPost2D::paintPostprocessorSelectedPoint()
     glEnd();
 }
 
-void SceneViewPost2D::doInvalidated()
+void SceneViewPost2D::refresh()
 {
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
@@ -1076,7 +1076,7 @@ void SceneViewPost2D::doInvalidated()
         m_post2DHermes->processSolved();
     }
 
-    SceneViewCommon2D::doInvalidated();
+    SceneViewCommon2D::refresh();
 }
 
 void SceneViewPost2D::setControls()
@@ -1184,7 +1184,7 @@ void SceneViewPost2D::showGroup(QAction *action)
     Util::config()->showContourView = actShowContours->isChecked();
     Util::config()->showVectorView = actShowVectors->isChecked();
 
-    doInvalidated();
+    refresh();
 }
 
 void SceneViewPost2D::selectedPoint(const Point &p)

@@ -63,8 +63,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
-    reportDialog = new ReportDialog(sceneViewPost2D, this);
-    videoDialog = new VideoDialog(sceneViewPost2D, this);
     logDialog = new LogDialog(this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(this);
@@ -91,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
-    connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(doInvalidated()));
+    connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
 
     // postprocessor 2d
@@ -100,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
-    connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(doInvalidated()));
+    connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
@@ -1115,7 +1113,9 @@ void MainWindow::doDocumentSaveGeometry()
 
 void MainWindow::doCreateVideo()
 {
-    videoDialog->showDialog();
+    VideoDialog videoDialog(sceneViewPost2D, this);
+
+    videoDialog.showDialog();
 }
 
 void MainWindow::doCreateMesh()
@@ -1218,7 +1218,7 @@ void MainWindow::doOptions()
     if (configDialog.exec())
     {
         sceneViewPost2D->timeStepChanged(false);
-        sceneViewPost2D->doInvalidated();
+        sceneViewPost2D->refresh();
     }
 
     activateWindow();
@@ -1226,7 +1226,8 @@ void MainWindow::doOptions()
 
 void MainWindow::doReport()
 {
-    reportDialog->showDialog();
+    ReportDialog reportDialog(sceneViewPost2D, this);
+    reportDialog.showDialog();
 }
 
 void MainWindow::doTransform()
@@ -1471,7 +1472,7 @@ void MainWindow::doDocumentExportMeshFile()
     {
         tabLayout->setCurrentWidget(sceneViewPreprocessor);
         Util::config()->showInitialMeshView = true;
-        sceneViewPreprocessor->doInvalidated();
+        sceneViewPreprocessor->refresh();
 
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();

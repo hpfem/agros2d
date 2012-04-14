@@ -147,7 +147,7 @@ void SceneViewPreprocessor::doSelectBasic()
     sceneBasicSelectDialog.exec();
 }
 
-void SceneViewPreprocessor::doInvalidated()
+void SceneViewPreprocessor::refresh()
 {
     // actions
     actSceneViewSelectRegion->setEnabled(actSceneModePreprocessor->isChecked());
@@ -155,7 +155,7 @@ void SceneViewPreprocessor::doInvalidated()
     actOperateOnEdges->setEnabled(actSceneModePreprocessor->isChecked());
     actOperateOnLabels->setEnabled(actSceneModePreprocessor->isChecked());
 
-    SceneViewCommon::doInvalidated();
+    SceneViewCommon::refresh();
 }
 
 void SceneViewPreprocessor::clear()
@@ -193,7 +193,7 @@ void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
     Util::scene()->selectNone();
     m_nodeLast = NULL;
 
-    doInvalidated();
+    refresh();
 
     emit sceneGeometryModeChanged(m_sceneMode);
 }

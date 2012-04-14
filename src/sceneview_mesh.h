@@ -86,7 +86,7 @@ public:
     virtual QString labelView() { return tr("Mesh and polynomial order view"); }
 
 public slots:
-    virtual void doInvalidated();
+    virtual void refresh();
     virtual void clear();
     void exportVTKOrderView(const QString &fileName = QString());
 

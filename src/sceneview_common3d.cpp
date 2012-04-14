@@ -69,7 +69,7 @@ void SceneViewCommon3D::clear()
     m_rotation3d.y = -35.0;
     m_rotation3d.z = 0.0;
 
-    doInvalidated();
+    refresh();
     doZoomBestFit();
 
     SceneViewCommon::clear();

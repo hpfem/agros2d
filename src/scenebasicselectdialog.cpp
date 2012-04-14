@@ -85,7 +85,7 @@ void SceneBasicSelectDialog::doAccept()
     {
         Util::scene()->edges->at(i)->isSelected = (lstEdges->item(i)->checkState() == Qt::Checked);
     }
-    m_sceneView->doInvalidated();
+    m_sceneView->refresh();
     accept();
 }
 

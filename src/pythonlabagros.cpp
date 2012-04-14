@@ -1242,7 +1242,7 @@ void pythonShowGrid(bool show)
 void pythonShowGeometry(bool show)
 {
     currentPythonEngineAgros()->sceneViewGeometry()->actSceneModePreprocessor->trigger();
-    currentPythonEngineAgros()->sceneViewGeometry()->doInvalidated();
+    currentPythonEngineAgros()->sceneViewGeometry()->refresh();
 }
 
 // showinitialmesh(show = {True, False})
@@ -1252,7 +1252,7 @@ void pythonShowInitialMesh(bool show)
     {
         Util::config()->showInitialMeshView = true;
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        currentPythonEngineAgros()->sceneViewMesh()->doInvalidated();
+        currentPythonEngineAgros()->sceneViewMesh()->refresh();
     }
 }
 
@@ -1263,7 +1263,7 @@ void pythonShowSolutionMesh(bool show)
     {
         Util::config()->showSolutionMeshView = true;
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        currentPythonEngineAgros()->sceneViewMesh()->doInvalidated();
+        currentPythonEngineAgros()->sceneViewMesh()->refresh();
     }
 }
 

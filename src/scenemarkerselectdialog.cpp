@@ -117,7 +117,7 @@ void SceneMarkerSelectDialog::doAccept()
                 }
             }
         }
-        m_sceneView->doInvalidated();
+        m_sceneView->refresh();
     }
 
     if (tabWidget->currentWidget() == widVolume)
@@ -136,7 +136,7 @@ void SceneMarkerSelectDialog::doAccept()
                 }
             }
         }
-        m_sceneView->doInvalidated();
+        m_sceneView->refresh();
     }
 
     accept();

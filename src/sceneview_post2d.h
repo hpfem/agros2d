@@ -84,7 +84,7 @@ public slots:
     void selectByMarker();
     void selectPoint();
     void doPostprocessorModeGroup(QAction *action);
-    virtual void doInvalidated();
+    virtual void refresh();
     void setControls();
     virtual void clear();
     void exportVTKScalarView(const QString &fileName = QString());

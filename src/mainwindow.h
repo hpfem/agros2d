@@ -36,11 +36,9 @@ class PythonScriptingConsoleView;
 class TooltipView;
 class LogView;
 
-class HelpDialog;
 class ChartDialog;
 class PythonLabAgros;
 class ReportDialog;
-class VideoDialog;
 class LogDialog;
 class ServerDownloadDialog;
 class SceneTransformDialog;
@@ -213,11 +211,8 @@ private:
     TooltipView *tooltipView;
     LogView *logView;
 
-    HelpDialog *helpDialog;
     ChartDialog *chartDialog;
     PythonLabAgros *scriptEditorDialog;
-    ReportDialog *reportDialog;
-    VideoDialog *videoDialog;
     LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
     SceneTransformDialog *sceneTransformDialog;
