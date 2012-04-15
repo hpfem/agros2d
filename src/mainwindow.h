@@ -27,11 +27,12 @@ class SceneViewPost3D;
 class SceneViewPreprocessor;
 class SceneViewMesh;
 class InfoWidget;
+class SettingsWidget;
 class ResultsView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
-class PreprocessorView;
-class PostprocessorView;
+class PreprocessorWidget;
+class PostprocessorWidget;
 class PythonScriptingConsoleView;
 class TooltipView;
 class LogView;
@@ -84,7 +85,6 @@ private slots:
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
     void doScriptEditorRunCommand();
-    void doInformations();
     void doOptions();
     void doTransform();
     void doReport();
@@ -158,7 +158,6 @@ private:
     QAction *actCopy;
 
     QAction *actOptions;
-    QAction *actInfo;
     QAction *actCreateMesh;
     QAction *actSolve;
     QAction *actSolveAdaptiveStep;
@@ -194,18 +193,23 @@ private:
     // scene mode
     QActionGroup *actSceneModeGroup;
 
-    SceneViewWidget *sceneViewGeometryWidget;
+    SceneViewWidget *sceneViewPreprocessorWidget;
     SceneViewWidget *sceneViewMeshWidget;
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
 
+    QStackedLayout *tabViewLayout;
     SceneViewPreprocessor *sceneViewPreprocessor;
     SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
 
-    PreprocessorView *preprocessorView;
-    PostprocessorView *postprocessorView;
+    QStackedLayout *tabControlsLayout;
+    PreprocessorWidget *preprocessorWidget;
+    PostprocessorWidget *postprocessorWidget;
+    InfoWidget *infoWidget;
+    SettingsWidget *settingsWidget;
+
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;
     TooltipView *tooltipView;
@@ -216,7 +220,6 @@ private:
     ServerDownloadDialog *collaborationDownloadDialog;
     SceneTransformDialog *sceneTransformDialog;
 
-    QStackedLayout *tabLayout;
 
     void setRecentFiles();
 
@@ -224,7 +227,7 @@ private:
     void createToolBox();
     void createMenus();
     void createToolBars();
-    void createScene();
+    void createMain();
     void createViews();   
 };
 

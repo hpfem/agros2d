@@ -34,10 +34,17 @@ public:
     InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
     ~InfoWidget();
 
+    QAction *actInfo;
+
+public slots:
+    void refresh();
+
 private:
     SceneViewPreprocessor *m_sceneViewGeometry;
 
     QWebView *webView;
+
+    void createActions();
 
 private slots:
     void showInfo();

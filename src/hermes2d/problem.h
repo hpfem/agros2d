@@ -93,7 +93,7 @@ class Problem : public QObject
     Q_OBJECT
 
 signals:
-    void timeStepChanged(bool showViewProgress = true);
+    void timeStepChanged();
     void meshed();
     void solved();
 

@@ -28,12 +28,12 @@ class SceneViewPost2D;
 class SceneViewPost3D;
 class SLineEditDouble;
 
-class PostprocessorView : public QDockWidget
+class PostprocessorWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    PostprocessorView(SceneViewPreprocessor *sceneGeometry,
+    PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
                       SceneViewMesh *sceneMesh,
                       SceneViewPost2D *scenePost2D,
                       SceneViewPost3D *scenePost3D,
@@ -50,7 +50,6 @@ private:
 
     QWidget *basic;
     QWidget *postprocessor;
-    QWidget *workspace;
 
     // basic
     QComboBox *cmbFieldInfo;
@@ -94,25 +93,6 @@ private:
     QGroupBox *grpAdaptivity;
     QComboBox *cmbAdaptivityStep;
     QComboBox *cmbAdaptivitySolutionType;
-
-    // grid
-    QLineEdit *txtGridStep;
-    QCheckBox *chkShowGrid;
-    QCheckBox *chkSnapToGrid;
-
-    // general view
-    QCheckBox *chkZoomToMouse;
-    QSpinBox *txtGeometryNodeSize;
-    QSpinBox *txtGeometryEdgeWidth;
-    QSpinBox *txtGeometryLabelSize;
-
-    // scene font
-    QLabel *lblSceneFontExample;
-    QPushButton *btnSceneFont;
-
-    // workspace other
-    QCheckBox *chkShowAxes;
-    QCheckBox *chkShowRulers;
 
     // scalar field
     QCheckBox *chkShowScalarColorBar;
@@ -163,16 +143,7 @@ private:
     SLineEditDouble *txtParticleDragCoefficient;
     SLineEditDouble *txtParticleDragReferenceArea;
 
-    // advanced
-    QCheckBox *chkView3DLighting;
-    QDoubleSpinBox *txtView3DAngle;
-    QCheckBox *chkView3DBackground;
-    QDoubleSpinBox *txtView3DHeight;
-    QCheckBox *chkDeformScalar;
-    QCheckBox *chkDeformContour;
-    QCheckBox *chkDeformVector;
-
-    QToolBox *tbxWorkspace;
+    // toolbar
     QToolBox *tbxPostprocessor;
     QPushButton *btnOK;
 
@@ -184,7 +155,6 @@ private:
     void createControls();
     QWidget *controlsBasic();
     QWidget *controlsPostprocessor();
-    QWidget *controlsWorkspace();
 
     QStackedLayout *widgetsLayout;
     QWidget *mesh;
@@ -211,15 +181,11 @@ private slots:
     void doScalarFieldRangeMinChanged();
     void doScalarFieldRangeMaxChanged();
     void doPaletteFilter(int state);
-    void doWorkspaceDefault();
     void doScalarFieldDefault();
     void doContoursDefault();
     void doVectorFieldDefault();
-    void doAdvancedDefault();
     void doParticleDefault();
     void doOrderDefault();
-    void doSceneFont();
-    void doShowGridChanged();
     void doScalarFieldLog(int state);
 };
 

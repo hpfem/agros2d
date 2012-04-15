@@ -27,7 +27,7 @@
 class SceneViewPreprocessor;
 class FieldsToobar;
 
-class PreprocessorView : public QDockWidget
+class PreprocessorWidget : public QWidget
 {
     Q_OBJECT
 
@@ -37,8 +37,8 @@ public slots:
     void doDelete();
 
 public:
-    PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
-    ~PreprocessorView();
+    PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
+    ~PreprocessorWidget();
 
 protected:
     void keyPressEvent(QKeyEvent *event);

@@ -462,6 +462,7 @@ void FieldsToobar::createControls(Qt::Orientation oriantation)
     }
 
     QVBoxLayout *layoutToolBar = new QVBoxLayout();
+    layoutToolBar->setContentsMargins(2, 2, 2, 2);
     layoutToolBar->addWidget(tlbFields);
 
     setLayout(layoutToolBar);

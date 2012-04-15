@@ -36,7 +36,7 @@
 
 SceneViewPostInterface::SceneViewPostInterface(QWidget *parent): SceneViewCommon(parent)
 {
-    connect(Util::problem(), SIGNAL(timeStepChanged(bool)), this, SLOT(timeStepChanged(bool)));
+    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(timeStepChanged()));
 }
 
 void SceneViewPostInterface::timeStepChanged(bool showViewProgress)
