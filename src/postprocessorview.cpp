@@ -87,15 +87,15 @@ void PostprocessorView::loadBasic()
     Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
-    cmbPost2DScalarFieldVariable->setCurrentIndex(cmbPost2DScalarFieldVariable->findData(Util::config()->scalarVariable));
-    if (cmbPost2DScalarFieldVariable->currentIndex() == -1 && cmbPost2DScalarFieldVariable->count() > 0)
+    cmbPostScalarFieldVariable->setCurrentIndex(cmbPostScalarFieldVariable->findData(Util::config()->scalarVariable));
+    if (cmbPostScalarFieldVariable->currentIndex() == -1 && cmbPostScalarFieldVariable->count() > 0)
     {
         // set first variable
-        cmbPost2DScalarFieldVariable->setCurrentIndex(0);
+        cmbPostScalarFieldVariable->setCurrentIndex(0);
     }
-    Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
-    doScalarFieldVariable(cmbPost2DScalarFieldVariable->currentIndex());
-    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
+    Util::config()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
+    doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
+    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
     // vector field
     cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Util::config()->vectorVariable));
@@ -227,15 +227,15 @@ void PostprocessorView::saveBasic()
     Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
-    Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
-    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
+    Util::config()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
+    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
     Util::config()->scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     Util::config()->scalarRangeMin = txtScalarFieldRangeMin->value();
     Util::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
     Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
     if (physicFieldVariable && physicFieldVariable->id == "custom")
-        physicFieldVariable->expression.scalar = txtPost2DScalarFieldExpression->text().toStdString();
+        physicFieldVariable->expression.scalar = txtPostScalarFieldExpression->text().toStdString();
 
     // vector field
     Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
@@ -405,11 +405,11 @@ QWidget *PostprocessorView::post2DWidget()
     grpShowPost2D->setLayout(layoutShowPost2D);
 
     // layout scalar field
-    cmbPost2DScalarFieldVariable = new QComboBox();
-    connect(cmbPost2DScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
-    cmbPost2DScalarFieldVariableComp = new QComboBox();
-    connect(cmbPost2DScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
-    txtPost2DScalarFieldExpression = new QLineEdit();
+    cmbPostScalarFieldVariable = new QComboBox();
+    connect(cmbPostScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
+    cmbPostScalarFieldVariableComp = new QComboBox();
+    connect(cmbPostScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
+    txtPostScalarFieldExpression = new QLineEdit();
 
     chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
@@ -418,11 +418,11 @@ QWidget *PostprocessorView::post2DWidget()
     layoutScalarField->setColumnMinimumWidth(0, minWidth);
     layoutScalarField->setColumnStretch(1, 1);
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutScalarField->addWidget(cmbPost2DScalarFieldVariable, 0, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPostScalarFieldVariable, 0, 1, 1, 3);
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
-    layoutScalarField->addWidget(cmbPost2DScalarFieldVariableComp, 1, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPostScalarFieldVariableComp, 1, 1, 1, 3);
     layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
-    layoutScalarField->addWidget(txtPost2DScalarFieldExpression, 2, 1, 1, 3);
+    layoutScalarField->addWidget(txtPostScalarFieldExpression, 2, 1, 1, 3);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -1066,7 +1066,7 @@ void PostprocessorView::doFieldInfo(int index)
         FieldInfo *fieldInfo = Util::scene()->fieldInfo(fieldName);
         Util::scene()->setActiveViewField(fieldInfo);
 
-        fillComboBoxScalarVariable(fieldInfo, cmbPost2DScalarFieldVariable);
+        fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
     }
@@ -1077,55 +1077,55 @@ void PostprocessorView::doScalarFieldVariable(int index)
     if (cmbFieldInfo->currentIndex() == -1)
         return;
 
-    PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
+    PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
-    if (cmbPost2DScalarFieldVariable->currentIndex() != -1)
+    if (cmbPostScalarFieldVariable->currentIndex() != -1)
     {
-        QString variableName(cmbPost2DScalarFieldVariable->itemData(index).toString());
+        QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
         physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
     }
 
     // component
-    cmbPost2DScalarFieldVariableComp->clear();
+    cmbPostScalarFieldVariableComp->clear();
     if (physicFieldVariable)
     {        
         if (physicFieldVariable->is_scalar)
         {
-            cmbPost2DScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+            cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
         }
         else
         {
-            cmbPost2DScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-            cmbPost2DScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-            cmbPost2DScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+            cmbPostScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+            cmbPostScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
+            cmbPostScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
         }
     }
 
-    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
-        cmbPost2DScalarFieldVariableComp->setCurrentIndex(cmbPost2DScalarFieldVariableComp->findData(scalarFieldVariableComp));
-    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
-        cmbPost2DScalarFieldVariableComp->setCurrentIndex(0);
+    if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
+        cmbPostScalarFieldVariableComp->setCurrentIndex(cmbPostScalarFieldVariableComp->findData(scalarFieldVariableComp));
+    if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
+        cmbPostScalarFieldVariableComp->setCurrentIndex(0);
 
-    doScalarFieldVariableComp(cmbPost2DScalarFieldVariableComp->currentIndex());
+    doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
 }
 
 void PostprocessorView::doScalarFieldVariableComp(int index)
 {
-    if (cmbPost2DScalarFieldVariable->currentIndex() == -1)
+    if (cmbPostScalarFieldVariable->currentIndex() == -1)
         return;
 
-    txtPost2DScalarFieldExpression->setText("");
+    txtPostScalarFieldExpression->setText("");
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
     // TODO: proc je tu index a cmb..->currentIndex?
-    if (cmbPost2DScalarFieldVariable->currentIndex() != -1 && index != -1)
+    if (cmbPostScalarFieldVariable->currentIndex() != -1 && index != -1)
     {
-        QString variableName(cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString());
+        QString variableName(cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString());
 
         // TODO: not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());
@@ -1135,24 +1135,24 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
 
     if (physicFieldVariable)
     {
-        txtPost2DScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
+        txtPostScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
 
         // expression
-        switch ((PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt())
+        switch ((PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt())
         {
         case PhysicFieldVariableComp_Scalar:
-            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
             break;
         case PhysicFieldVariableComp_Magnitude:
-            txtPost2DScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
+            txtPostScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
                                                     arg(QString::fromStdString(physicFieldVariable->expression.comp_x)).
                                                     arg(QString::fromStdString(physicFieldVariable->expression.comp_y)));
             break;
         case PhysicFieldVariableComp_X:
-            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
             break;
         case PhysicFieldVariableComp_Y:
-            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
             break;
         }
     }
@@ -1189,7 +1189,7 @@ void PostprocessorView::setControls()
         widgetsLayout->setCurrentWidget(post2d);
 
         chkShowPost2DContourView->setEnabled(isSolved && (cmbPost2DContourVariable->count() > 0));
-        chkShowPost2DScalarView->setEnabled(isSolved && (cmbPost2DScalarFieldVariable->count() > 0));
+        chkShowPost2DScalarView->setEnabled(isSolved && (cmbPostScalarFieldVariable->count() > 0));
         chkShowPost2DVectorView->setEnabled(isSolved && (cmbPost2DVectorFieldVariable->count() > 0));
         // if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
         // {
@@ -1206,13 +1206,13 @@ void PostprocessorView::setControls()
         cmbPost2DContourVariable->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
 
         // scalar view
-        cmbPost2DScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        cmbPost2DScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        txtPost2DScalarFieldExpression->setEnabled(false);
+        cmbPostScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
+        cmbPostScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
+        txtPostScalarFieldExpression->setEnabled(false);
         if (chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked())
         {
             doScalarFieldRangeAuto(-1);
-            doScalarFieldVariableComp(cmbPost2DScalarFieldVariableComp->currentIndex());
+            doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
         }
 
         cmbPost2DVectorFieldVariable->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());

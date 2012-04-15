@@ -36,7 +36,10 @@ SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(f
 
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-        m_fieldInfo->module()->update_time_functions(Util::problem()->time());
+    {
+        QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+        m_fieldInfo->module()->update_time_functions(timeLevels[Util::scene()->activeTimeStep()]);
+    }
 
     // solution
     for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)

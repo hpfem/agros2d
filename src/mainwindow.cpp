@@ -1121,7 +1121,7 @@ void MainWindow::doCreateMesh()
     logDialog->show();
 
     // create mesh
-    Util::problem()->solve(SolverMode_Mesh);
+    Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
         // raise mesh viewer
@@ -1140,7 +1140,7 @@ void MainWindow::doSolve()
     logDialog->show();
 
     // solve problem
-    Util::problem()->solve(SolverMode_MeshAndSolve);
+    Util::problem()->solve();
     if (Util::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
@@ -1167,7 +1167,7 @@ void MainWindow::doSolveAdaptiveStep()
     logDialog->show();
 
     // solve problem
-    Util::problem()->solve(SolverMode_SolveAdaptiveStep);
+    Util::problem()->solveAdaptiveStep();
     if (Util::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
@@ -1468,7 +1468,7 @@ void MainWindow::doDocumentExportMeshFile()
     if (commutator)
         Util::config()->deleteHermes2DMeshFile = !commutator;
 
-    Util::problem()->solve(SolverMode_Mesh);
+    Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
         tabLayout->setCurrentWidget(sceneViewPreprocessor);

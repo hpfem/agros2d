@@ -446,7 +446,7 @@ void ChartDialog::plotGeometry()
             if (radAxisX->isChecked()) xval[i] = points.at(i).x;
             if (radAxisY->isChecked()) xval[i] = points.at(i).y;
 
-            addValue(&localPointValue, yval, i, points.length(),
+            addValue(&localPointValue, 0.0, yval, i, points.length(),
                      physicFieldVariableComp, physicFieldVariable);
         }
     }
@@ -522,7 +522,7 @@ void ChartDialog::plotTime()
         Point point(txtPointX->value().number(), txtPointY->value().number());
         LocalPointValue localPointValue(m_fieldInfo, point);
 
-        addValue(&localPointValue, yval, i, timeLevels.count(),
+        addValue(&localPointValue, timeLevels[i], yval, i, timeLevels.count(),
                  physicFieldVariableComp, physicFieldVariable);
 
         for (int j = 0; j < row.count(); j++)
@@ -565,7 +565,7 @@ QStringList ChartDialog::headers()
     return head;
 }
 
-void ChartDialog::addValue(LocalPointValue *localPointValue, double *yval, int i, int N,
+void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double *yval, int i, int N,
                            PhysicFieldVariableComp physicFieldVariableComp,
                            Hermes::Module::LocalVariable *physicFieldVariable)
 {
@@ -576,7 +576,7 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double *yval, int i
                       new QTableWidgetItem(QString("%1").arg(localPointValue->point.y, 0, 'e', 3)));
     // time
     trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 2,
-                      new QTableWidgetItem(QString("%1").arg(Util::problem()->time(), 0, 'e', 3)));
+                      new QTableWidgetItem(QString("%1").arg(time, 0, 'e', 3)));
 
     // counter
     int n = 3;

@@ -412,7 +412,7 @@ void PyProblem::solve()
 {
     Util::scene()->refresh();
 
-    Util::problem()->solve(SolverMode_MeshAndSolve);
+    Util::problem()->solve();
     if (Util::problem()->isSolved())
     {
         currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
@@ -986,7 +986,7 @@ void PyGeometry::removeSelection()
 
 void PyGeometry::mesh()
 {
-    Util::problem()->solve(SolverMode_Mesh);
+    Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();

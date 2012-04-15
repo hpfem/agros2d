@@ -299,13 +299,14 @@ Hermes::Hermes2D::Mesh* Problem::activeMeshInitial()
 
 void Problem::clear()
 {
+    if (Util::problem()->isSolved())
+        Util::scene()->clearSolutions();
     Util::solutionStore()->clearAll();
 
     foreach(Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
-    if (mesh)
-        delete mesh;
+        if (mesh)
+            delete mesh;
     m_meshesInitial.clear();
-
 
     m_timeStep = 0;
     m_isSolved = false;
@@ -404,22 +405,27 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
+    clear();
+
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
     MeshGeneratorTriangle pim;
-    return pim.mesh();
+    if (pim.mesh())
+    {
+        emit meshed();
+        return true;
+    }
+
+    return false;
 }
 
-void Problem::solve(SolverMode solverMode)
+void Problem::solve()
 {
     if (isSolving()) return;
 
     clear();
     m_isSolving = true;
     bool isError = false;
-
-    // clear problem
-    //clear(solverMode == SolverMode_Mesh || solverMode == SolverMode_MeshAndSolve);
 
     // open indicator progress
     Indicator::openProgress();
@@ -431,89 +437,81 @@ void Problem::solve(SolverMode solverMode)
 
     createStructure();
 
-    // Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
+    if (!isMeshed())
+        isError = !mesh();
 
-    isError = !mesh();
     if (!isError)
     {
-        emit meshed();
-
-        Util::scene()->clearSolutions();
-        Util::solutionStore()->clearAll();
-
         assert(isMeshed());
 
         QMap<Block*, Solver<double>* > solvers;
 
-        if (solverMode == SolverMode_MeshAndSolve)
+        // check geometry
+        if (!Util::scene()->checkGeometryAssignement())
+            return;
+
+        if (Util::scene()->fieldInfos().count() == 0)
         {
-            // check geometry
-            if (!Util::scene()->checkGeometryAssignement())
-                return;
+            Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
+            return;
+        }
 
-            if (Util::scene()->fieldInfos().count() == 0)
+        Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+
+        Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
+
+        foreach (Block* block, m_blocks)
+        {
+            solvers[block] = block->prepareSolver();
+        }
+
+        foreach (Block* block, m_blocks)
+        {
+            Solver<double>* solver = solvers[block];
+
+            if (block->isTransient())
             {
-                Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
-                return;
-            }
-
-            Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
-
-            Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
-
-            foreach (Block* block, m_blocks)
-            {
-                solvers[block] = block->prepareSolver();
-            }
-
-            foreach (Block* block, m_blocks)
-            {
-                Solver<double>* solver = solvers[block];
-
-                if (block->isTransient())
+                if (solver->solveInitialTimeStep())
                 {
-                    if (solver->solveInitialTimeStep())
-                    {
-                        for (int i = 0; i < block->numTimeSteps(); i++)
-                            if (!solver->solveTimeStep(block->timeStep()))
-                            {
-                                isError = true;
-                                break; // inner loop
-                            }
-                    }
-                    else
-                    {
-                        isError = true;
-                    }
-
-                    if (isError)
-                        break; // block solver loop
+                    for (int i = 0; i < block->numTimeSteps(); i++)
+                        if (!solver->solveTimeStep(block->timeStep()))
+                        {
+                            isError = true;
+                            break; // inner loop
+                        }
                 }
                 else
                 {
-                    if (block->adaptivityType() == AdaptivityType_None)
+                    isError = true;
+                }
+
+                if (isError)
+                    break; // block solver loop
+            }
+            else
+            {
+                if (block->adaptivityType() == AdaptivityType_None)
+                {
+                    if (!solver->solveSimple())
                     {
-                        if (!solver->solveSimple())
-                        {
-                            isError = true;
-                            break; // block solver loop
-                        }
+                        isError = true;
+                        break; // block solver loop
                     }
-                    else
+                }
+                else
+                {
+                    if (!solver->solveInitialAdaptivityStep(0))
                     {
-                        if (!solver->solveInitialAdaptivityStep(0))
-                        {
-                            isError = true;
-                            break; // block solver loop
-                        }
-                        int adaptStep = 1;
-                        bool continueSolve = true;
-                        while (continueSolve && (adaptStep <= block->adaptivitySteps()))
-                        {
-                            continueSolve = solver->solveAdaptivityStep(0, adaptStep);
-                            cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
-                            adaptStep++;
-                        }
+                        isError = true;
+                        break; // block solver loop
+                    }
+                    int adaptStep = 1;
+                    bool continueSolve = true;
+                    while (continueSolve && (adaptStep <= block->adaptivitySteps()))
+                    {
+                        continueSolve = solver->solveAdaptivityStep(0, adaptStep);
+                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
+                        adaptStep++;
                     }
                 }
             }
@@ -534,14 +532,10 @@ void Problem::solve(SolverMode solverMode)
             Util::scene()->problemInfo()->fileName = "";
         }
 
-        if (solverMode == SolverMode_MeshAndSolve)
+        if (!isError)
         {
-            if (!isError)
-            {
-                m_isSolved = true;
-                emit solved();
-                //TODO emit timeStepChanged(false);
-            }
+            m_isSolved = true;
+            emit solved();
         }
     }
 
@@ -549,6 +543,11 @@ void Problem::solve(SolverMode solverMode)
 
     // close indicator progress
     Indicator::closeProgress();
+}
+
+void Problem::solveAdaptiveStep()
+{
+
 }
 
 //*************************************************************************************************

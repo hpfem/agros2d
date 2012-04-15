@@ -132,13 +132,13 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     {
 
                         // assert(0);
-                                            string problemId = fieldInfo->module()->fieldid + "_" +
-                                                    analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
-                                                    coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
+                        string problemId = fieldInfo->module()->fieldid + "_" +
+                                analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
+                                coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
 
-                                            Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
-                                            custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(),
-                                                                                                                   function);
+                        Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
+                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(),
+                                                                                               function);
                     }
 
                     if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
@@ -301,7 +301,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 
     // Linear solver
     // TODO original linear solver, now not used. We use Newton solver for linear problems instead. It should be put back....
-//    if (m_block->linearityType() == LinearityType_Linear)
+    //    if (m_block->linearityType() == LinearityType_Linear)
     /*
     if(0)
     {
@@ -367,20 +367,14 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             Scalar* coeff_vec = new Scalar[ndof];
             memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
-            QTime time;
-            time.start();
-
-            cout << "solving with nonlinear tolerance " << m_block->nonlinearTolerance() << " and nonlin steps " << m_block->nonlinearSteps() << endl;
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
-
-            Util::log()->printDebug("Solver", QString("elapsed time = %1").arg(time.elapsed()));
 
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
-            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble: %1 s").
-                                      arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")));
-            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - solve: %1 s").
-                                      arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")));
+            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+                                    arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
 
             delete coeff_vec;
         }

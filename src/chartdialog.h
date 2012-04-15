@@ -132,7 +132,7 @@ private:
     void plotTime();
 
     QStringList headers();
-    void addValue(LocalPointValue *localPointValue, double *yval, int i, int N,
+    void addValue(LocalPointValue *localPointValue, double time, double *yval, int i, int N,
                   PhysicFieldVariableComp physicFieldVariableComp,
                   Hermes::Module::LocalVariable *physicFieldVariable);
 

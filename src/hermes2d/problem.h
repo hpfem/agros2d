@@ -109,7 +109,9 @@ public:
     // mesh
     bool mesh();
     // solve
-    void solve(SolverMode solverMode);
+    void solve();
+    void solveAdaptiveStep();
+
     // check geometry
     bool checkGeometry();
 
@@ -118,14 +120,8 @@ public:
     inline QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesInitial() { return m_meshesInitial; }
     inline void setMeshesInitial(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes) { m_meshesInitial = meshes; }
 
-    // time TODO zatim tady, ale asi presunout
-    //void setTimeStep(int timeStep, bool showViewProgress = true) { assert(0); }
-    inline int timeStep() const { return m_timeStep; }
-    int timeStepCount() const { return 0; }
-    double time() const { return 0; }
-
     bool isSolved() const {  return m_isSolved; }
-    bool isMeshed()  const {  return ! m_meshesInitial.isEmpty(); }
+    bool isMeshed()  const {  return !m_meshesInitial.isEmpty(); }
     bool isSolving() const { return m_isSolving; }
 
 //    inline int timeElapsed() const { return m_timeElapsed; }

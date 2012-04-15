@@ -72,9 +72,9 @@ private:
     QRadioButton *radPost3DParticleTracing;
 
     // scalar field
-    QComboBox *cmbPost2DScalarFieldVariable;
-    QComboBox *cmbPost2DScalarFieldVariableComp;
-    QLineEdit *txtPost2DScalarFieldExpression;
+    QComboBox *cmbPostScalarFieldVariable;
+    QComboBox *cmbPostScalarFieldVariableComp;
+    QLineEdit *txtPostScalarFieldExpression;
     QCheckBox *chkScalarFieldRangeAuto;
     QLabel *lblScalarFieldRangeMin;
     QLabel *lblScalarFieldRangeMax;

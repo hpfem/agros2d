@@ -92,7 +92,10 @@ void LocalPointValue::calculate()
 
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-        m_fieldInfo->module()->update_time_functions(Util::problem()->time());
+    {
+        QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+        m_fieldInfo->module()->update_time_functions(timeLevels[Util::scene()->activeTimeStep()]);
+    }
 
     if (Util::problem()->isSolved())
     {
@@ -121,8 +124,7 @@ void LocalPointValue::calculate()
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.get();
 
                 double value;
-                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) &&
-                        Util::problem()->timeStep() == 0)
+                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
                     // const solution at first time step
                     value = m_fieldInfo->initialCondition.number();
                 else
