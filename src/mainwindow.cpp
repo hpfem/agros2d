@@ -140,9 +140,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewPost3D->clear();
 
     QSettings settings;
-    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
-    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
 
     Util::scene()->clear();
 
@@ -194,6 +192,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // DataTableDialog *dataTableDialog = new DataTableDialog(this);
     // dataTableDialog->show();
+
+    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
+    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
+    splitter->restoreState(settings.value("MainWindow/SplitterState").toByteArray());
 }
 
 MainWindow::~MainWindow()
@@ -202,6 +204,7 @@ MainWindow::~MainWindow()
     settings.setValue("MainWindow/Geometry", saveGeometry());
     settings.setValue("MainWindow/State", saveState());
     settings.setValue("MainWindow/RecentFiles", recentFiles);
+    settings.setValue("MainWindow/SplitterState", splitter->saveState());
 
     // remove temp files
     removeDirectory(tempProblemDir());
@@ -709,7 +712,7 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(actScriptEditor);
     tlbLeftBar->addAction(Util::scene()->actProblemProperties);
 
-    QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
+    splitter = new QSplitter(Qt::Horizontal, this);
     splitter->addWidget(viewControls);
     splitter->addWidget(viewWidget);
     splitter->setCollapsible(0, false);
@@ -752,7 +755,7 @@ void MainWindow::createViews()
 
     // tabify dock together
     tabifyDockWidget(tooltipView, logView);
-    tabifyDockWidget(logView, resultsView);
+    tabifyDockWidget(resultsView, consoleView);
 }
 
 void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)

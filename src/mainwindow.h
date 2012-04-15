@@ -220,6 +220,7 @@ private:
     ServerDownloadDialog *collaborationDownloadDialog;
     SceneTransformDialog *sceneTransformDialog;
 
+    QSplitter *splitter;
 
     void setRecentFiles();
 
