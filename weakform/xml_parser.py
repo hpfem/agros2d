@@ -39,7 +39,12 @@ class XmlParser:
         for module_file in self.module_files:        
             self.parse_xml_file(module_file)            
             
-#
+        # create src directory
+        try:
+            os.mkdir(Config.weakform_dir)
+        except:
+            pass
+
         # remove pri file
         try:
             os.remove(Config.weakform_dir + Config.project_file)
