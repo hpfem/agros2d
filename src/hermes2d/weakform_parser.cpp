@@ -183,7 +183,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep.number();
+    pdeltat = Util::scene()->problemInfo()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {
@@ -320,7 +320,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 {
     double result = 0;
 
-    pdeltat = m_fieldInfo->timeStep().number();
+    pdeltat = Util::scene()->problemInfo()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {
@@ -431,7 +431,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 {
     double result = 0;
 
-    pdeltat = m_fieldInfo->timeStep().number();
+    pdeltat = Util::scene()->problemInfo()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {
@@ -511,7 +511,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 {
     double result = 0;
 
-    pdeltat = m_fieldInfo->timeStep().number();
+    pdeltat = Util::scene()->problemInfo()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {

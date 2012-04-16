@@ -477,7 +477,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             }
 
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) &&
+            if ((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (pointNode.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
@@ -526,7 +526,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) &&
+            if ((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (p.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));

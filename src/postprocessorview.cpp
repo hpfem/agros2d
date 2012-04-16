@@ -161,7 +161,7 @@ void PostprocessorWidget::loadAdvanced()
     lblParticleVelocityX->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelX()));
     lblParticleVelocityY->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelY()));
 
-    if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+    if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
         lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
     else
         lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));

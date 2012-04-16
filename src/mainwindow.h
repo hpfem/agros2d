@@ -28,6 +28,7 @@ class SceneViewPreprocessor;
 class SceneViewMesh;
 class InfoWidget;
 class SettingsWidget;
+class ProblemWidget;
 class ResultsView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
@@ -209,6 +210,7 @@ private:
     PostprocessorWidget *postprocessorWidget;
     InfoWidget *infoWidget;
     SettingsWidget *settingsWidget;
+    ProblemWidget *problemWidget;
 
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;

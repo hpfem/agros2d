@@ -159,7 +159,7 @@ QLayout* DSceneNode::createContent()
     lblAngle = new QLabel();
 
     // coordinates must be greater then or equal to 0 (axisymmetric case)
-    if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
+    if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric)
         txtPointX->setMinimum(0.0);
 
     QFormLayout *layout = new QFormLayout();

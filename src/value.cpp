@@ -443,7 +443,7 @@ void ValueTimeDialog::createControls()
     connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(checkExpression()));
 
     txtTimeTotal = new ValueLineEdit();
-    txtTimeTotal->setValue(Util::scene()->problemInfo()->timeTotal);
+    txtTimeTotal->setValue(Util::scene()->problemInfo()->timeTotal());
 
     cmbPresets = new QComboBox();
     cmbPresets->addItem(tr("select a preset..."));

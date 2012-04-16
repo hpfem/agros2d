@@ -100,14 +100,11 @@ void PreprocessorWidget::createMenu()
 
 void PreprocessorWidget::createControls()
 {
-    fieldsToolbar = new FieldsToobar(this, Qt::Vertical);
-
     webView = new QWebView(this);
     webView->setMinimumHeight(250);
 
     QHBoxLayout *layoutInfo = new QHBoxLayout();
     layoutInfo->setMargin(0);
-    layoutInfo->addWidget(fieldsToolbar);
     layoutInfo->addWidget(webView);
 
     QWidget *widgetInfo = new QWidget(this);
@@ -194,9 +191,6 @@ void PreprocessorWidget::doInvalidated()
     setUpdatesEnabled(false);
 
     clearNodes();
-
-    // fields
-    fieldsToolbar->refresh();
 
     // markers
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
@@ -513,20 +507,20 @@ void PreprocessorWidget::showInfo()
     problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
+    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType()).toStdString());
 
-    if (Util::scene()->problemInfo()->frequency > 0)
+    if (Util::scene()->problemInfo()->frequency() > 0)
     {
         problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-        problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
+        problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency()).toStdString() + " Hz");
         problem.ShowSection("FREQUENCY");
     }
-    if (Util::scene()->problemInfo()->timeStep.number() > 0)
+    if (Util::scene()->problemInfo()->timeStep().number() > 0)
     {
         problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-        problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep.number()).toStdString() + " s");
+        problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep().number()).toStdString() + " s");
         problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-        problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal.number()).toStdString() + " s");
+        problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal().number()).toStdString() + " s");
         problem.ShowSection("TRANSIENT");
     }
 

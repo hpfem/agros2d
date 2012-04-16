@@ -64,8 +64,6 @@ private:
     QMenu *mnuPreprocessor;
     QWebView *webView;
 
-    FieldsToobar *fieldsToolbar;
-
     void createActions();
     void createControls();
     void createMenu();

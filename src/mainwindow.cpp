@@ -59,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // FIXME: curve elements from script doesn't work
     readMeshDirtyFix();
 
+    createPythonEngine(new PythonEngineAgros());
+
     // scene
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(this);
@@ -72,8 +74,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     settingsWidget = new SettingsWidget(this);
     // info
     infoWidget = new InfoWidget(sceneViewPreprocessor, this);
-
-    createPythonEngine(new PythonEngineAgros());
+    // info
+    problemWidget = new ProblemWidget(this);
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
     logDialog = new LogDialog(this);
@@ -417,6 +419,7 @@ void MainWindow::createActions()
     actSceneZoomRegion->setCheckable(true);
 
     actSceneModeGroup = new QActionGroup(this);
+    actSceneModeGroup->addAction(problemWidget->actProperties);
     actSceneModeGroup->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
@@ -536,8 +539,6 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(actSolveAdaptiveStep);
     mnuProblem->addAction(Util::scene()->actClearSolutions);
-    mnuProblem->addSeparator();
-    mnuProblem->addAction(Util::scene()->actProblemProperties);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actChart);
@@ -670,6 +671,7 @@ void MainWindow::createMain()
 
     tabControlsLayout = new QStackedLayout();
     tabControlsLayout->setContentsMargins(0, 0, 0, 0);
+    tabControlsLayout->addWidget(problemWidget);
     tabControlsLayout->addWidget(preprocessorWidget);
     tabControlsLayout->addWidget(postprocessorWidget);
     tabControlsLayout->addWidget(settingsWidget);
@@ -697,6 +699,8 @@ void MainWindow::createMain()
     tlbLeftBar->setIconSize(QSize(32, 32));
     tlbLeftBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    tlbLeftBar->addAction(problemWidget->actProperties);
+    tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
@@ -710,7 +714,6 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(actSolveAdaptiveStep);
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(actScriptEditor);
-    tlbLeftBar->addAction(Util::scene()->actProblemProperties);
 
     splitter = new QSplitter(Qt::Horizontal, this);
     splitter->addWidget(viewControls);
@@ -816,9 +819,9 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
 void MainWindow::setRecentFiles()
 {
     // recent files
-    if (Util::scene()->problemInfo()->fileName != "")
+    if (!Util::scene()->problemInfo()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(Util::scene()->problemInfo()->fileName);
+        QFileInfo fileInfo(Util::scene()->problemInfo()->fileName());
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -862,8 +865,10 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::doDocumentNew()
 {
+    assert(0);
+    /*
     ProblemInfo *problemInfo = new ProblemInfo();
-    ProblemDialog problemDialog(problemInfo, true, this);
+    ProblemDialog problemDialog(this);
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();
@@ -880,6 +885,7 @@ void MainWindow::doDocumentNew()
     {
         delete problemInfo;
     }
+    */
 }
 
 void MainWindow::doDocumentOpen(const QString &fileName)
@@ -970,9 +976,9 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(Util::scene()->problemInfo()->fileName))
+    if (QFile::exists(Util::scene()->problemInfo()->fileName()))
     {
-        ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
+        ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName());
         if (result.isError())
             result.showDialog();
     }
@@ -1378,6 +1384,10 @@ void MainWindow::setControls()
     tlbGeometry->setVisible(false);
     tlbPost2D->setVisible(false);
 
+    if (problemWidget->actProperties->isChecked())
+    {
+        tabControlsLayout->setCurrentWidget(problemWidget);
+    }
     if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
     {
         tabViewLayout->setCurrentWidget(sceneViewPreprocessorWidget);
@@ -1518,9 +1528,9 @@ void MainWindow::doDocumentExportMeshFile()
         QFileInfo fileInfo(fileName);
 
         // move mesh file
-        if (!Util::scene()->problemInfo()->fileName.isEmpty())
+        if (!Util::scene()->problemInfo()->fileName().isEmpty())
         {
-            QString sourceFileName = Util::scene()->problemInfo()->fileName;
+            QString sourceFileName = Util::scene()->problemInfo()->fileName();
             sourceFileName.replace("a2d", "mesh");
             if (!fileName.isEmpty())
             {

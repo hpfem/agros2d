@@ -130,8 +130,6 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     // compiled form
                     if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
                     {
-
-                        // assert(0);
                         string problemId = fieldInfo->module()->fieldid + "_" +
                                 analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
                                 coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
@@ -142,7 +140,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     }
 
                     if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
-                        qDebug() << "Cannot find compiled VectorFormEssential().";
+                        Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled VectorFormEssential()."));
 
                     // interpreted form
                     if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
@@ -516,7 +514,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
                                                            msaRef.solutionsNaked(),
                                                            msa.solutionsNaked(),
-                                                           Util::scene()->problemInfo()->matrixSolver);
+                                                           Util::scene()->problemInfo()->matrixSolver());
 
     // output
     if (!isError)

@@ -436,34 +436,40 @@ void FieldDialog::deleteField()
 
 // ********************************************************************************************
 
-FieldsToobar::FieldsToobar(QWidget *parent, Qt::Orientation oriantation) : QWidget(parent)
+FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
 {
-    createControls(oriantation);
+    createControls();
+
+    connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
     refresh();
 }
 
-void FieldsToobar::createControls(Qt::Orientation oriantation)
+void FieldsToobar::createControls()
 {
     actFieldsGroup = new QActionGroup(this);
     connect(actFieldsGroup, SIGNAL(triggered(QAction *)), this, SLOT(fieldDialog(QAction *)));
 
     tlbFields = new QToolBar(this);
     tlbFields->setIconSize(QSize(36, 36));
-    tlbFields->setOrientation(oriantation);
-    if (oriantation == Qt::Horizontal)
-    {
-        tlbFields->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        tlbFields->setStyleSheet("QToolButton { font-size: 8pt; }");
-    }
-    else
-    {
-        tlbFields->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    }
+    tlbFields->setOrientation(Qt::Horizontal);
+    tlbFields->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    tlbFields->setStyleSheet("QToolButton { font-size: 8pt; }");
+
+    // dialog buttons
+    QPushButton *btnAddField = new QPushButton(tr("Add field")); // icon("tabadd")
+    connect(btnAddField, SIGNAL(clicked()), SLOT(addField()));
+
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch();
+    layoutButtons->addWidget(btnAddField);
 
     QVBoxLayout *layoutToolBar = new QVBoxLayout();
-    layoutToolBar->setContentsMargins(2, 2, 2, 2);
+    layoutToolBar->setContentsMargins(0, 1, 0, 0);
     layoutToolBar->addWidget(tlbFields);
+    layoutToolBar->addLayout(layoutButtons);
+    layoutToolBar->addStretch();
 
     setLayout(layoutToolBar);
 }
@@ -487,8 +493,6 @@ void FieldsToobar::refresh()
     QLabel *spacing = new QLabel;
     spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     tlbFields->addWidget(spacing);
-
-    tlbFields->addAction(icon("tabadd"), tr("Add field"), this, SLOT(addField()));
 }
 
 void FieldsToobar::fieldDialog(QAction *action)
@@ -509,7 +513,7 @@ void FieldsToobar::addField()
     if (dialog.showDialog() == QDialog::Accepted)
     {
         // add field
-        FieldInfo *fieldInfo = new FieldInfo(Util::scene()->problemInfo(), dialog.selectedFieldId());
+        FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
 
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
@@ -527,20 +531,16 @@ void FieldsToobar::addField()
 
 // ********************************************************************************************
 
-CouplingsWidget::CouplingsWidget(bool isNewProblem, QWidget *parent) : QWidget(parent), m_isNewProblem(isNewProblem)
+CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
 {
-    if (m_isNewProblem)
-    {
-        m_couplingInfos = QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >();
-    }
-    else
-    {
-        Util::scene()->synchronizeCouplings();
-        m_couplingInfos = Util::scene()->couplingInfos();
-    }
+    Util::scene()->synchronizeCouplings();
+    m_couplingInfos = Util::scene()->couplingInfos();
 
     layoutTable = NULL;
     createContent();
+
+    connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
+
     load();
 }
 
@@ -614,52 +614,70 @@ void CouplingsWidget::refresh()
 
 // ********************************************************************************************
 
-ProblemDialog::ProblemDialog(ProblemInfo *problemInfo,
-                             bool isNewProblem,
-                             QWidget *parent) : QDialog(parent)
+ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
 {
-    m_isNewProblem = isNewProblem;
-    m_problemInfo = problemInfo;
-
-    setWindowTitle(tr("Problem properties"));
-
+    createActions();
     createControls();
 
-    load();
+    refresh();
+
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
     setMinimumSize(sizeHint());
-    // setMaximumSize(sizeHint());
 }
 
-int ProblemDialog::showDialog()
+void ProblemWidget::createActions()
 {
-    return exec();
+    actProperties = new QAction(icon("document-properties"), tr("Properties"), this);
+    actProperties->setShortcut(tr("F12"));
+    actProperties->setStatusTip(tr("Problem properties"));
+    actProperties->setCheckable(true);
 }
 
-void ProblemDialog::createControls()
+void ProblemWidget::createControls()
 {
     // tab
     QTabWidget *tabType = new QTabWidget();
     tabType->addTab(createControlsGeneral(), icon(""), tr("General"));
-    tabType->addTab(createControlsStartupScript(), icon(""), tr("Startup script"));
-    tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
+    tabType->addTab(createControlsScriptAndDescription(), icon(""), tr("Script and description"));
 
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+    // fields toolbar
+    fieldsToolbar = new FieldsToobar(this);
+    QVBoxLayout *layoutFields = new QVBoxLayout();
+    layoutFields->addWidget(fieldsToolbar);
+    layoutFields->addStretch();
+
+    QGroupBox *grpFieldsToolbar = new QGroupBox(tr("Physical fields"));
+    grpFieldsToolbar->setLayout(layoutFields);
+
+    // couplings
+    couplingsWidget = new CouplingsWidget(this);
+
+    QVBoxLayout *layoutCouplings = new QVBoxLayout();
+    layoutCouplings->addWidget(couplingsWidget);
+
+    grpCouplings = new QGroupBox(tr("Couplings"));
+    grpCouplings->setLayout(layoutCouplings);
+
+    // dialog buttons
+    QPushButton *btnOK = new QPushButton(tr("Apply"));
+    connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
+
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch();
+    layoutButtons->addWidget(btnOK);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabType);
+    layout->addWidget(grpFieldsToolbar);
+    layout->addWidget(grpCouplings);
     layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addLayout(layoutButtons);
 
     setLayout(layout);
-
-    setMinimumSize(sizeHint());
-    resize(sizeHint());
 }
 
-QWidget *ProblemDialog::createControlsGeneral()
+QWidget *ProblemWidget::createControlsGeneral()
 {
     // problem
     cmbCoordinateType = new QComboBox();
@@ -699,15 +717,6 @@ QWidget *ProblemDialog::createControlsGeneral()
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
 
-    // couplings
-    couplingsWidget = new CouplingsWidget(m_isNewProblem, this);
-
-    QVBoxLayout *layoutCouplings = new QVBoxLayout();
-    layoutCouplings->addWidget(couplingsWidget);
-
-    grpCouplings = new QGroupBox(tr("Couplings"));
-    grpCouplings->setLayout(layoutCouplings);
-
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
     layoutHarmonicAnalysis->setColumnMinimumWidth(0, minWidth);
@@ -731,31 +740,12 @@ QWidget *ProblemDialog::createControlsGeneral()
     QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
 
-    // left
-    QVBoxLayout *layoutLeft = new QVBoxLayout();
-    layoutLeft->addWidget(grpGeneral);
-    layoutLeft->addWidget(grpCouplings);
-    layoutLeft->addStretch();
-
-    // right
-    QVBoxLayout *layoutRight = new QVBoxLayout();
-    layoutRight->addWidget(grpHarmonicAnalysis);
-    layoutRight->addWidget(grpTransientAnalysis);
-    layoutRight->addStretch();
-
-    // fields toolbar
-    FieldsToobar *fieldsToolbar = new FieldsToobar(this, Qt::Horizontal);
-    QVBoxLayout *layoutFields = new QVBoxLayout();
-    layoutFields->addWidget(fieldsToolbar);
-    connect(Util::scene(), SIGNAL(fieldsChanged()), couplingsWidget, SLOT(refresh()));
-
-    QGroupBox *grpFieldsToolbar = new QGroupBox(tr("Physical fields"));
-    grpFieldsToolbar->setLayout(layoutFields);
-
     // both
-    QHBoxLayout *layoutPanel = new QHBoxLayout();
-    layoutPanel->addLayout(layoutLeft);
-    layoutPanel->addLayout(layoutRight);
+    QVBoxLayout *layoutPanel = new QVBoxLayout();
+    layoutPanel->addWidget(grpGeneral);
+    layoutPanel->addWidget(grpHarmonicAnalysis);
+    layoutPanel->addWidget(grpTransientAnalysis);
+    layoutPanel->addStretch();
 
     // name
     QGridLayout *layoutName = new QGridLayout();
@@ -764,8 +754,8 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addLayout(layoutName);
-    layoutProblem->addWidget(grpFieldsToolbar);
     layoutProblem->addLayout(layoutPanel);
+    layoutProblem->addStretch();
 
     QWidget *widMain = new QWidget();
     widMain->setLayout(layoutProblem);
@@ -773,34 +763,40 @@ QWidget *ProblemDialog::createControlsGeneral()
     return widMain;
 }
 
-QWidget *ProblemDialog::createControlsStartupScript()
+QWidget *ProblemWidget::createControlsScriptAndDescription()
 {
+    // startup script
     txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
     layoutStartup->addWidget(txtStartupScript);
 
-    QWidget *widStartup = new QWidget();
-    widStartup->setLayout(layoutStartup);
+    QGroupBox *grpStartup = new QGroupBox(tr("Startup script"));
+    grpStartup->setLayout(layoutStartup);
 
-    return widStartup;
-}
-
-QWidget *ProblemDialog::createControlsDescription()
-{
+    // description
     txtDescription = new QTextEdit(this);
     txtDescription->setAcceptRichText(false);
 
     QVBoxLayout *layoutDescription = new QVBoxLayout();
     layoutDescription->addWidget(txtDescription);
 
-    QWidget *widDescription = new QWidget();
-    widDescription->setLayout(layoutDescription);
+    QGroupBox *grpDescription = new QGroupBox(tr("Description"));
+    grpDescription->setLayout(layoutDescription);
 
-    return widDescription;
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpStartup, 2);
+    layout->addWidget(grpDescription, 1);
+    layout->addStretch();
+
+    QWidget *widget = new QWidget();
+    widget->setLayout(layout);
+
+    return widget;
 }
 
-void ProblemDialog::fillComboBox()
+void ProblemWidget::fillComboBox()
 {
     cmbCoordinateType->clear();
     cmbCoordinateType->addItem(coordinateTypeString(CoordinateType_Planar), CoordinateType_Planar);
@@ -814,37 +810,62 @@ void ProblemDialog::fillComboBox()
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
 }
 
-void ProblemDialog::load()
+void ProblemWidget::refresh()
 {
     // main
-    txtName->setText(m_problemInfo->name);
-    cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(m_problemInfo->coordinateType));
+    txtName->setText(Util::scene()->problemInfo()->name());
+    cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Util::scene()->problemInfo()->coordinateType()));
     if (cmbCoordinateType->currentIndex() == -1)
         cmbCoordinateType->setCurrentIndex(0);
 
     // mesh type
-    cmbMeshType->setCurrentIndex(cmbMeshType->findData(m_problemInfo->meshType));
+    cmbMeshType->setCurrentIndex(cmbMeshType->findData(Util::scene()->problemInfo()->meshType()));
     // harmonic magnetic
-    txtFrequency->setValue(m_problemInfo->frequency);
+    txtFrequency->setValue(Util::scene()->problemInfo()->frequency());
     // transient
-    txtTransientTimeStep->setValue(m_problemInfo->timeStep);
-    txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
+    txtTransientTimeStep->setValue(Util::scene()->problemInfo()->timeStep());
+    txtTransientTimeTotal->setValue(Util::scene()->problemInfo()->timeTotal());
     // matrix solver
-    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
+    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Util::scene()->problemInfo()->matrixSolver()));
     // startup
-    txtStartupScript->setPlainText(m_problemInfo->startupscript);
+    txtStartupScript->setPlainText(Util::scene()->problemInfo()->startupscript());
     // description
-    txtDescription->setPlainText(m_problemInfo->description);
+    txtDescription->setPlainText(Util::scene()->problemInfo()->description());
 
     // couplings
-    couplingsWidget->load();
-    // grpCouplings->setVisible(couplingsWidget->count() > 0);
+    fieldsToolbar->refresh();
+    couplingsWidget->refresh();
+
+    grpCouplings->setVisible(couplingsWidget->count() > 0);
 
     doTransientChanged();
 }
 
-bool ProblemDialog::save()
+bool ProblemWidget::save()
 {
+    // save properties
+    // Util::scene()->problemInfo()->blockSignals(true);
+
+    Util::scene()->problemInfo()->setName(txtName->text());
+    Util::scene()->problemInfo()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
+    Util::scene()->problemInfo()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
+
+    Util::scene()->problemInfo()->setFrequency(txtFrequency->value());
+
+    Util::scene()->problemInfo()->setTimeStep(txtTransientTimeStep->value());
+    Util::scene()->problemInfo()->setTimeTotal(txtTransientTimeTotal->value());
+
+    Util::scene()->problemInfo()->setDescription(txtDescription->toPlainText());
+
+    // matrix solver
+    Util::scene()->problemInfo()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
+
+    // Util::scene()->problemInfo()->blockSignals(false);
+    Util::scene()->problemInfo()->refresh();
+
+    // save couplings
+    couplingsWidget->save();
+
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
     {
@@ -854,41 +875,21 @@ bool ProblemDialog::save()
             QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
             return false;
         }
+        else
+        {
+            Util::scene()->problemInfo()->setStartupScript(txtStartupScript->toPlainText());
+        }
     }
-
-    // save properties
-    m_problemInfo->name = txtName->text();
-    m_problemInfo->coordinateType = (CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt();
-    m_problemInfo->meshType = (MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt();
-
-    m_problemInfo->frequency = txtFrequency->value();
-
-    m_problemInfo->timeStep = txtTransientTimeStep->value();
-    m_problemInfo->timeTotal = txtTransientTimeTotal->value();
-
-    m_problemInfo->description = txtDescription->toPlainText();
-    m_problemInfo->startupscript = txtStartupScript->toPlainText();
-
-    // matrix solver
-    m_problemInfo->matrixSolver = (Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
-
-    // save couplings
-    couplingsWidget->save();
 
     return true;
 }
 
-void ProblemDialog::doAccept()
+void ProblemWidget::doApply()
 {
-    if (save()) accept();
+    save();
 }
 
-void ProblemDialog::doReject()
-{
-    reject();
-}
-
-void ProblemDialog::doOpenXML()
+void ProblemWidget::doOpenXML()
 {
     QString fileName;
     //TODO custom
@@ -914,7 +915,7 @@ void ProblemDialog::doOpenXML()
     //        QDesktopServices::openUrl(QUrl(fileName));
 }
 
-void ProblemDialog::doTransientChanged()
+void ProblemWidget::doTransientChanged()
 {
     if (txtTransientTimeStep->evaluate(true) &&
             txtTransientTimeTotal->evaluate(true))

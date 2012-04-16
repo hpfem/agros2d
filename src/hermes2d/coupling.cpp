@@ -9,9 +9,6 @@
 CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
     m_sourceField(sourceField), m_targetField(targetField)
 {
-    assert(m_sourceField->problemInfo() == m_targetField->problemInfo());
-    m_problemInfo = m_sourceField->problemInfo();
-
     //TODO in each module should be implicit value
     m_couplingType = CouplingType_Weak;
     m_coupling = NULL;
@@ -211,7 +208,7 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 {
     // std::cout << filename_custom << std::endl;
 
-    CoordinateType coordinateType = sourceField->coordinateType();
+    CoordinateType coordinateType = Util::scene()->problemInfo()->coordinateType();
     Coupling *coupling = new Coupling(coordinateType, couplingType, sourceField->analysisType(), targetField->analysisType());
 
     // open default module

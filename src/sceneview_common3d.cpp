@@ -143,7 +143,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene)
         }
         else
         {
-            if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+            if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
             {
                 glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
             }

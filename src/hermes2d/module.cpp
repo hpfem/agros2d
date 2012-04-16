@@ -916,10 +916,10 @@ mu::Parser *Hermes::Module::Module::get_parser(FieldInfo* fieldInfo)
     parser->DefineConst("PI", M_PI);
 
     // frequency
-    parser->DefineConst("f", fieldInfo->frequency());
+    parser->DefineConst("f", Util::scene()->problemInfo()->frequency());
 
     // timestep
-    parser->DefineConst("dt", fieldInfo->timeStep().number());
+    parser->DefineConst("dt", Util::scene()->problemInfo()->timeStep().number());
 
     for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
         parser->DefineConst(it->first, it->second);
@@ -1266,8 +1266,8 @@ void ViewScalarFilter<Scalar>::initParser(std::string expression)
 
     pars->SetExpr(expression);
 
-    pars->DefineVar(m_fieldInfo->labelX().toLower().toStdString(), &px);
-    pars->DefineVar(m_fieldInfo->labelY().toLower().toStdString(), &py);
+    pars->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
+    pars->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
 
     pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
     pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
@@ -1279,8 +1279,8 @@ void ViewScalarFilter<Scalar>::initParser(std::string expression)
         number << (k+1);
 
         pars->DefineVar("value" + number.str(), &pvalue[k]);
-        pars->DefineVar("d" + m_fieldInfo->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-        pars->DefineVar("d" + m_fieldInfo->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+        pars->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+        pars->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
     }
 
     parser->parser.push_back(pars);

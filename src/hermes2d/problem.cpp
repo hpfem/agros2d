@@ -222,7 +222,7 @@ int Block::numTimeSteps() const
     {
         if(field->fieldInfo()->analysisType() == AnalysisType_Transient)
         {
-            int fieldTimeSteps = floor(field->fieldInfo()->timeTotal().number() / field->fieldInfo()->timeStep().number());
+            int fieldTimeSteps = floor(Util::scene()->problemInfo()->timeTotal().number() / Util::scene()->problemInfo()->timeStep().number());
             if(fieldTimeSteps > timeSteps)
                 timeSteps = fieldTimeSteps;
         }
@@ -240,10 +240,10 @@ double Block::timeStep() const
         if(fieldInfo->analysisType() == AnalysisType_Transient)
         {
             if (step == 0)
-                step = fieldInfo->timeStep().number();
+                step = Util::scene()->problemInfo()->timeStep().number();
 
             //TODO zatim moc nevim
-            assert(step == fieldInfo->timeStep().number());
+            assert(step == Util::scene()->problemInfo()->timeStep().number());
         }
     }
 
@@ -526,10 +526,10 @@ void Problem::solve()
         }
 
         // delete temp file
-        if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
+        if (Util::scene()->problemInfo()->fileName() == tempProblemFileName() + ".a2d")
         {
-            QFile::remove(Util::scene()->problemInfo()->fileName);
-            Util::scene()->problemInfo()->fileName = "";
+            QFile::remove(Util::scene()->problemInfo()->fileName());
+            Util::scene()->problemInfo()->setFileName("");
         }
 
         if (!isError)

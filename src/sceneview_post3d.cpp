@@ -468,7 +468,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         // init normals
         double* normal = new double[3];
 
-        if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+        if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
             for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
@@ -668,7 +668,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         }
 
         // geometry
-        if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+        if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
         {
             glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
