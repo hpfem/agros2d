@@ -22,6 +22,7 @@
 #include "module_agros.h"
 #include "scene.h"
 #include "util.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
 Marker::Marker(FieldInfo *fieldInfo, std::string name)

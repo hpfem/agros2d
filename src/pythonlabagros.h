@@ -26,6 +26,7 @@
 
 #include "util.h"
 #include "scene.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
 class Solution;

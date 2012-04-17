@@ -17,6 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "field.h"
+#include "block.h"
 #include "problem.h"
 #include "solver.h"
 #include "module.h"
@@ -26,6 +28,7 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 #include "module_agros.h"
+#include "solutionstore.h"
 #include "weakform_parser.h"
 #include "logview.h"
 #include "../weakform/src/weakform_factory.h"
@@ -33,10 +36,9 @@
 using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
-void Solver<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block)
+void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 {
     m_block = block;
-    m_progressItemSolve = progressItemSolve;
     m_wf = wf;
     isError = false;
 }

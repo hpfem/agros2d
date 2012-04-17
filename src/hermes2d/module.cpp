@@ -19,6 +19,8 @@
 
 #include "module.h"
 #include "module_agros.h"
+#include "field.h"
+#include "block.h"
 #include "problem.h"
 
 #include "../weakform/src/weakform_factory.h"
@@ -31,6 +33,7 @@
 #include "sceneedge.h"
 #include "hermes2d/solver.h"
 #include "hermes2d/coupling.h"
+#include "hermes2d/solutionstore.h"
 
 #include "mesh/mesh_reader_h2d.h"
 

@@ -40,6 +40,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
+#include "hermes2d/solutionstore.h"
 
 ostream& operator<<(ostream& output, FieldInfo& id)
 {

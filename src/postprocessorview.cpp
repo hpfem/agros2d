@@ -28,7 +28,9 @@
 #include "sceneview_post3d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/solutionstore.h"
 
 const double minWidth = 110;
 

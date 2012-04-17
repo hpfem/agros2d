@@ -24,6 +24,7 @@
 #include "scenemarkerdialog.h"
 
 #include "hermes2d/module_agros.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
 SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)

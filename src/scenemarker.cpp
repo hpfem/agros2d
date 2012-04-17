@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
 template <typename MarkerType>

@@ -26,8 +26,9 @@
 #include "hermes2d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
-#include "hermes2d/solutiontypes.h"
+#include "hermes2d/solutionstore.h"
 
 int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
 {

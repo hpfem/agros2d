@@ -1,5 +1,7 @@
 #include "solutiontypes.h"
 #include "scene.h"
+#include "field.h"
+#include "block.h"
 #include "problem.h"
 #include "module_agros.h"
 using namespace Hermes::Hermes2D;

@@ -56,6 +56,8 @@ SOURCES += util.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
+    hermes2d/field.cpp \
+    hermes2d/block.cpp \
     hermes2d/problem.cpp \
     pythonlab/pythonconsole.cpp \
     pythonlab/pythoncompleter.cpp \
@@ -112,7 +114,8 @@ SOURCES += util.cpp \
     hermes2d/solutiontypes.cpp \
     preprocessorview.cpp \
     infowidget.cpp \
-    settings.cpp
+    settings.cpp \
+    hermes2d/solutionstore.cpp
 
 HEADERS += util.h \
     value.h \
@@ -180,7 +183,10 @@ HEADERS += util.h \
     hermes2d/solutiontypes.h \
     preprocessorview.h \
     infowidget.h \
-    settings.h
+    settings.h \
+    hermes2d/field.h \
+    hermes2d/block.h \
+    hermes2d/solutionstore.h
 
 INCLUDEPATH += . \
     ../lib \

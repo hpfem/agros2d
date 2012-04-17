@@ -22,11 +22,13 @@
 #include "scenebasic.h"
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
+#include "field.h"
 #include "problem.h"
 
 #include "hermes2d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/solutionstore.h"
 
 VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
