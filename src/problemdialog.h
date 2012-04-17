@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class ProblemInfo;
+class ProblemConfig;
 class FieldInfo;
 class CouplingInfo;
 class ScriptEditor;

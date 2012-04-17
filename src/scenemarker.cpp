@@ -22,7 +22,7 @@
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-//#include "heremesmodule.h"
+#include "hermes2d/problem.h"
 
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::add(MarkerType *marker)
@@ -115,7 +115,7 @@ void MarkerContainer<MarkerType>::doFieldsChanged()
 {
     foreach(FieldInfo* fieldInfo, noneMarkers.keys())
     {
-        if(! Util::scene()->fieldInfos().values().contains(fieldInfo)){
+        if(! Util::problem()->fieldInfos().values().contains(fieldInfo)){
             delete noneMarkers[fieldInfo];
             noneMarkers.remove(fieldInfo);
             removeFieldMarkers(fieldInfo);

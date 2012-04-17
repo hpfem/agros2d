@@ -266,7 +266,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             {
                 // assigned boundary conditions
                 QString str;
-                foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                     str = str + QString("%1 (%2), ").
                             arg(QString::fromStdString(edge->getMarker(fieldInfo)->getName())).
                             arg(QString::fromStdString(fieldInfo->module()->name));
@@ -295,7 +295,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             {
                 // assigned materials
                 QString str;
-                foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                     str = str + QString("%1 (%2), ").
                             arg(QString::fromStdString(label->getMarker(fieldInfo)->getName())).
                             arg(QString::fromStdString(fieldInfo->module()->name));
@@ -477,7 +477,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             }
 
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) &&
+            if ((Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (pointNode.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
@@ -526,7 +526,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) &&
+            if ((Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (p.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
@@ -1011,7 +1011,7 @@ void SceneViewPreprocessor::paintGeometry()
 
             // assigned materials
             QString str;
-            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+            foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 str = str + QString("%1, ").
                         arg(QString::fromStdString(label->getMarker(fieldInfo)->getName()));
             if (str.length() > 0)

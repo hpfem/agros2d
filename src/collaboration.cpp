@@ -23,6 +23,7 @@
 #include "scene.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 #include <QtWebKit>
 
@@ -325,7 +326,7 @@ void ServerUploadDialog::createControls()
 //    layoutDialog->addWidget(cmbName, 2, 1, 1, 2);
 //    layoutDialog->addWidget(txtName, 2, 1, 1, 2);
 //    layoutDialog->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-//    layoutDialog->addWidget(new QLabel(QString::fromStdString(Util::scene()->problemInfo()->fieldId())), 3, 1);
+//    layoutDialog->addWidget(new QLabel(QString::fromStdString(Util::problem()->config()->fieldId())), 3, 1);
 //    layoutDialog->addWidget(lblInformation, 5, 1);
 
 //    // dialog buttons
@@ -355,8 +356,8 @@ void ServerUploadDialog::doDocumentChanged()
 
     if (radDocumentExisting->isChecked())
     {
-        if (cmbName->findText(Util::scene()->problemInfo()->name(), Qt::MatchStartsWith) != -1)
-            cmbName->setCurrentIndex(cmbName->findText(Util::scene()->problemInfo()->name(), Qt::MatchStartsWith));
+        if (cmbName->findText(Util::problem()->config()->name(), Qt::MatchStartsWith) != -1)
+            cmbName->setCurrentIndex(cmbName->findText(Util::problem()->config()->name(), Qt::MatchStartsWith));
         else if (cmbName->count() > 0)
             cmbName->setCurrentIndex(0);
 
@@ -367,7 +368,7 @@ void ServerUploadDialog::doDocumentChanged()
     else
     {
         txtName->setVisible(true);
-        txtName->setText(Util::scene()->problemInfo()->name());
+        txtName->setText(Util::problem()->config()->name());
     }
 }
 
@@ -383,7 +384,7 @@ void ServerUploadDialog::readFromServerContent()
 {
     assert(0); //TODO
 //    QByteArray postData;
-//    postData.append("physicfield=" + QString::fromStdString(Util::scene()->problemInfo()->fieldId()));
+//    postData.append("physicfield=" + QString::fromStdString(Util::problem()->config()->fieldId()));
 
 //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problems_xml.php")), postData);
 //    connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
@@ -419,7 +420,7 @@ void ServerUploadDialog::httpContentFinished()
         n = n.nextSibling();
     }
 
-    if (cmbName->findText(Util::scene()->problemInfo()->name(), Qt::MatchStartsWith) != -1)
+    if (cmbName->findText(Util::problem()->config()->name(), Qt::MatchStartsWith) != -1)
     {
         radDocumentExisting->setChecked(true);
         doDocumentChanged();
@@ -429,10 +430,10 @@ void ServerUploadDialog::httpContentFinished()
 void ServerUploadDialog::uploadToServer()
 {
     assert(0); //TODO
-//    QByteArray text = readFileContentByteArray(Util::scene()->problemInfo()->fileName);
+//    QByteArray text = readFileContentByteArray(Util::problem()->config()->fileName);
 
 //    int id_problem = 0;
-//    QString name = Util::scene()->problemInfo()->name;
+//    QString name = Util::problem()->config()->name;
 
 //    if (radDocumentExisting->isChecked())
 //    {
@@ -443,7 +444,7 @@ void ServerUploadDialog::uploadToServer()
 //    QByteArray postData;
 //    postData.append("id_problem=" + QString::number(id_problem) + "&");
 //    postData.append("name=" + name + "&");
-//    postData.append("physicfield=" + QString::fromStdString(Util::scene()->problemInfo()->fieldId()) + "&");
+//    postData.append("physicfield=" + QString::fromStdString(Util::problem()->config()->fieldId()) + "&");
 //    postData.append("content=" + text);
 
 //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Util::config()->collaborationServerURL + "problem_upload.php")), postData);
@@ -456,7 +457,7 @@ void ServerUploadDialog::httpFileFinished()
 
     if (content.startsWith("Message: "))
     {
-        QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Util::scene()->problemInfo()->name()));
+        QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Util::problem()->config()->name()));
         accept();
     }
     else

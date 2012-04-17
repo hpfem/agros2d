@@ -193,7 +193,7 @@ void PreprocessorWidget::doInvalidated()
     clearNodes();
 
     // markers
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         // boundary conditions
         QTreeWidgetItem *fieldBoundaryConditionsNode = new QTreeWidgetItem(boundaryConditionsNode);
@@ -507,24 +507,24 @@ void PreprocessorWidget::showInfo()
     problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType()).toStdString());
+    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::problem()->config()->coordinateType()).toStdString());
 
-    if (Util::scene()->problemInfo()->frequency() > 0)
+    if (Util::problem()->config()->frequency() > 0)
     {
         problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-        problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency()).toStdString() + " Hz");
+        problem.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
         problem.ShowSection("FREQUENCY");
     }
-    if (Util::scene()->problemInfo()->timeStep().number() > 0)
+    if (Util::problem()->config()->timeStep().number() > 0)
     {
         problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-        problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep().number()).toStdString() + " s");
+        problem.SetValue("TIME_STEP", QString::number(Util::problem()->config()->timeStep().number()).toStdString() + " s");
         problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-        problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal().number()).toStdString() + " s");
+        problem.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
         problem.ShowSection("TRANSIENT");
     }
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         ctemplate::TemplateDictionary *field = problem.AddSectionDictionary("FIELD");
 

@@ -25,6 +25,7 @@
 #include "scenemarkerdialog.h"
 
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge)
     : MarkedSceneBasic()
@@ -34,7 +35,7 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int
     this->angle = angle;
     this->refineTowardsEdge = refineTowardsEdge;
 
-    foreach (FieldInfo* field, Util::scene()->fieldInfos())
+    foreach (FieldInfo* field, Util::problem()->fieldInfos())
     {
         this->addMarker(SceneBoundaryContainer::getNone(field));
     }
@@ -204,7 +205,7 @@ QLayout* SceneEdgeDialog::createContent()
     QGroupBox *grpBoundaries = new QGroupBox(tr("Boundary conditions"));
     grpBoundaries->setLayout(layoutBoundaries);
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         QComboBox *cmbBoundary = new QComboBox();
         connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doBoundaryChanged(int)));
@@ -330,7 +331,7 @@ bool SceneEdgeDialog::load()
         txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
         txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
 
-        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
             cmbBoundaries[fieldInfo]->setCurrentIndex(cmbBoundaries[fieldInfo]->findData(sceneEdge->getMarker(fieldInfo)->variant()));
         }
@@ -339,7 +340,7 @@ bool SceneEdgeDialog::load()
     }
     else
     {
-        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
             SceneBoundary* boundary = NULL;
             bool match = true;
@@ -410,7 +411,7 @@ bool SceneEdgeDialog::save()
     {
         foreach (SceneEdge* edge, m_edges.items())
         {
-            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+            foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
             {
                 if(cmbBoundaries[fieldInfo]->currentIndex() != -1)
                     edge->addMarker(cmbBoundaries[fieldInfo]->itemData(cmbBoundaries[fieldInfo]->currentIndex()).value<SceneBoundary *>());

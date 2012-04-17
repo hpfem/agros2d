@@ -26,6 +26,7 @@
 
 #include "util.h"
 #include "scene.h"
+#include "hermes2d/problem.h"
 
 class Solution;
 class SceneViewPreprocessor;
@@ -121,31 +122,31 @@ class PyProblem
         void field(char *fieldId);
 
         // name
-        inline const char *getName() { return Util::scene()->problemInfo()->name().toStdString().c_str(); }
-        void setName(const char *name) { Util::scene()->problemInfo()->setName(QString(name)); }
+        inline const char *getName() { return Util::problem()->config()->name().toStdString().c_str(); }
+        void setName(const char *name) { Util::problem()->config()->setName(QString(name)); }
 
         // coordinate type
-        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType()).toStdString().c_str(); }
+        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Util::problem()->config()->coordinateType()).toStdString().c_str(); }
         void setCoordinateType(const char *coordinateType);
 
         // mesh type
-        inline const char *getMeshType() { return meshTypeToStringKey(Util::scene()->problemInfo()->meshType()).toStdString().c_str(); }
+        inline const char *getMeshType() { return meshTypeToStringKey(Util::problem()->config()->meshType()).toStdString().c_str(); }
         void setMeshType(const char *meshType);
 
         // matrix solver
-        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver()).toStdString().c_str(); }
+        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()).toStdString().c_str(); }
         void setMatrixSolver(const char *matrixSolver);
 
         // frequency
-        inline const double getFrequency() { return Util::scene()->problemInfo()->frequency(); }
+        inline const double getFrequency() { return Util::problem()->config()->frequency(); }
         void setFrequency(const double frequency);
 
         // time step
-        inline const double getTimeStep() { return Util::scene()->problemInfo()->timeStep().number(); }
+        inline const double getTimeStep() { return Util::problem()->config()->timeStep().number(); }
         void setTimeStep(const double timeStep);
 
         // time total
-        inline const double getTimeTotal() { return Util::scene()->problemInfo()->timeTotal().number(); }
+        inline const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
 
         void solve();       
@@ -167,47 +168,47 @@ class PyField
         inline const char *getFieldId() { return m_fieldInfo->fieldId().toStdString().c_str(); }
 
         // analysis type
-        inline const char *getAnalysisType() { return analysisTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
+        inline const char *getAnalysisType() { return analysisTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
         void setAnalysisType(const char *analysisType);
 
         // number of refinements
-        inline const int getNumberOfRefinements() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements; }
+        inline const int getNumberOfRefinements() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements; }
         void setNumberOfRefinements(const int numberOfRefinements);
 
         // polynomial order
-        inline const int getPolynomialOrder() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder; }
+        inline const int getPolynomialOrder() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder; }
         void setPolynomialOrder(const int polynomialOrder);
 
         // linearity type
-        inline const char *getLinearityType() { return linearityTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->linearityType).toStdString().c_str(); }
+        inline const char *getLinearityType() { return linearityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType).toStdString().c_str(); }
         void setLinearityType(const char *linearityType);
 
         // nonlinear tolerance
-        inline const double getNonlinearTolerance() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance; }
+        inline const double getNonlinearTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance; }
         void setNonlinearTolerance(const double nonlinearTolerance);
 
         // nonlinear steps
-        inline const int getNonlinearSteps() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps; }
+        inline const int getNonlinearSteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps; }
         void setNonlinearSteps(const int nonlinearSteps);
 
         // adaptivity type
-        inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType).toStdString().c_str(); }
+        inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType).toStdString().c_str(); }
         void setAdaptivityType(const char *adaptivityType);
 
         // adaptivity tolerance
-        inline const double getAdaptivityTolerance() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance; }
+        inline const double getAdaptivityTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance; }
         void setAdaptivityTolerance(const double adaptivityTolerance);
 
         // adaptivity steps
-        inline const int getAdaptivitySteps() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps; }
+        inline const int getAdaptivitySteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps; }
         void setAdaptivitySteps(const int adaptivitySteps);
 
         // initial condition
-        inline const double getInitialCondition() { return Util::scene()->fieldInfo(m_fieldInfo->fieldId())->initialCondition.number(); }
+        inline const double getInitialCondition() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition.number(); }
         void setInitialCondition(const double initialCondition);
 
         // weak forms
-        inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::scene()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType).toStdString().c_str(); }
+        inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType).toStdString().c_str(); }
         void setWeakForms(const char *weakForms);
 
         // boundaries

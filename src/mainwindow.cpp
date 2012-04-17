@@ -134,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Util::problem(), SIGNAL(meshed()), infoWidget, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(solved()), infoWidget, SLOT(refresh()));
 
-    connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
+    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
     sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
@@ -819,9 +819,9 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
 void MainWindow::setRecentFiles()
 {
     // recent files
-    if (!Util::scene()->problemInfo()->fileName().isEmpty())
+    if (!Util::problem()->config()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(Util::scene()->problemInfo()->fileName());
+        QFileInfo fileInfo(Util::problem()->config()->fileName());
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -976,9 +976,9 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(Util::scene()->problemInfo()->fileName()))
+    if (QFile::exists(Util::problem()->config()->fileName()))
     {
-        ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName());
+        ErrorResult result = Util::scene()->writeToFile(Util::problem()->config()->fileName());
         if (result.isError())
             result.showDialog();
     }
@@ -1449,11 +1449,11 @@ void MainWindow::setControls()
         tabControlsLayout->setCurrentWidget(infoWidget);
     }
 
-    //    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
+    //    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::problem()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
     actChart->setEnabled(Util::problem()->isSolved());
 
-    actSolve->setEnabled(Util::scene()->fieldInfos().count() > 0);
-    actSolveAdaptiveStep->setEnabled(Util::scene()->fieldInfos().count() > 0);
+    actSolve->setEnabled(Util::problem()->fieldInfos().count() > 0);
+    actSolveAdaptiveStep->setEnabled(Util::problem()->fieldInfos().count() > 0);
 
     QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
 
@@ -1528,9 +1528,9 @@ void MainWindow::doDocumentExportMeshFile()
         QFileInfo fileInfo(fileName);
 
         // move mesh file
-        if (!Util::scene()->problemInfo()->fileName().isEmpty())
+        if (!Util::problem()->config()->fileName().isEmpty())
         {
-            QString sourceFileName = Util::scene()->problemInfo()->fileName();
+            QString sourceFileName = Util::problem()->config()->fileName();
             sourceFileName.replace("a2d", "mesh");
             if (!fileName.isEmpty())
             {

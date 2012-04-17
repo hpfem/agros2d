@@ -222,9 +222,9 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
     case PhysicFieldVariableComp_Magnitude:
         return QObject::tr("Magnitude");
     case PhysicFieldVariableComp_X:
-        return Util::scene()->problemInfo()->labelX();
+        return Util::problem()->config()->labelX();
     case PhysicFieldVariableComp_Y:
-        return Util::scene()->problemInfo()->labelY();
+        return Util::problem()->config()->labelY();
     default:
         return QObject::tr("Undefined");
     }

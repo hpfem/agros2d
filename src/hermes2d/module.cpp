@@ -916,10 +916,10 @@ mu::Parser *Hermes::Module::Module::get_parser(FieldInfo* fieldInfo)
     parser->DefineConst("PI", M_PI);
 
     // frequency
-    parser->DefineConst("f", Util::scene()->problemInfo()->frequency());
+    parser->DefineConst("f", Util::problem()->config()->frequency());
 
     // timestep
-    parser->DefineConst("dt", Util::scene()->problemInfo()->timeStep().number());
+    parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
 
     for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
         parser->DefineConst(it->first, it->second);
@@ -1095,7 +1095,7 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMeshesFromFile(const QString &file
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     Hermes::vector<Hermes::Hermes2D::Mesh*> meshes;
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesMap;
-    foreach(FieldInfo* fieldInfo, Util::scene()->fieldInfos())
+    foreach(FieldInfo* fieldInfo, Util::problem()->fieldInfos())
     {
         Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
         meshes.push_back(mesh);
@@ -1266,8 +1266,8 @@ void ViewScalarFilter<Scalar>::initParser(std::string expression)
 
     pars->SetExpr(expression);
 
-    pars->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
-    pars->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
+    pars->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+    pars->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
     pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
     pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
@@ -1279,8 +1279,8 @@ void ViewScalarFilter<Scalar>::initParser(std::string expression)
         number << (k+1);
 
         pars->DefineVar("value" + number.str(), &pvalue[k]);
-        pars->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-        pars->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+        pars->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+        pars->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
     }
 
     parser->parser.push_back(pars);

@@ -70,10 +70,10 @@ QString createPythonFromModel()
     QString str;
 
     // startup script
-    if (!Util::scene()->problemInfo()->startupscript().isEmpty())
+    if (!Util::problem()->config()->startupscript().isEmpty())
     {
         str += "# startup script\n";
-        str += Util::scene()->problemInfo()->startupscript();
+        str += Util::problem()->config()->startupscript();
         str += "\n\n";
     }
 
@@ -81,34 +81,34 @@ QString createPythonFromModel()
     str += "import agros2d\n\n";
     str += "# model\n";
     str += QString("problem = agros2d.problem(clear = True)\n");
-    str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType()));
-    str += QString("problem.name = \"%1\"\n").arg(Util::scene()->problemInfo()->name());
-    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType()));
-    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver()));
+    str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Util::problem()->config()->coordinateType()));
+    str += QString("problem.name = \"%1\"\n").arg(Util::problem()->config()->name());
+    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::problem()->config()->meshType()));
+    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()));
 
-    if (Util::scene()->problemInfo()->frequency() > 0.0)
+    if (Util::problem()->config()->frequency() > 0.0)
         str += QString("problem.frequency = %1\n").
-                arg(Util::scene()->problemInfo()->frequency());
+                arg(Util::problem()->config()->frequency());
 
-    if (Util::scene()->problemInfo()->timeTotal().number() > 0 && Util::scene()->problemInfo()->timeStep().number() > 0)
+    if (Util::problem()->config()->timeTotal().number() > 0 && Util::problem()->config()->timeStep().number() > 0)
         str += QString("problem.time_step = %1\n"
                        "problem.time_total = %2\n").
-                arg(Util::scene()->problemInfo()->timeStep().text()).
-                arg(Util::scene()->problemInfo()->timeTotal().text());
+                arg(Util::problem()->config()->timeStep().text()).
+                arg(Util::problem()->config()->timeTotal().text());
 
     /*
-    if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+    if (Util::problem()->config()->adaptivityType != AdaptivityType_None)
         str += QString(",\n"
                        "            adaptivitytype=\"%1\", adaptivitysteps=%2, adaptivitytolerance=%3").
-                arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
-                arg(Util::scene()->problemInfo()->adaptivitySteps).
-                arg(Util::scene()->problemInfo()->adaptivityTolerance);
+                arg(adaptivityTypeToStringKey(Util::problem()->config()->adaptivityType)).
+                arg(Util::problem()->config()->adaptivitySteps).
+                arg(Util::problem()->config()->adaptivityTolerance);
 
     */
 
     // fields
     str += "\n# fields\n";
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         // str += QString("%1 = agros2d.field(field_id = \"%2\")\n").
         str += QString("%1 = agros2d.field(\"%2\")\n").
@@ -201,10 +201,10 @@ QString createPythonFromModel()
                     arg(edge->nodeEnd->point.x).
                     arg(edge->nodeEnd->point.y);
 
-            if (Util::scene()->fieldInfos().count() > 0)
+            if (Util::problem()->fieldInfos().count() > 0)
             {
                 QString boundaries = ", boundaries = {";
-                foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
                     SceneBoundary *marker = edge->getMarker(fieldInfo);
 
@@ -240,10 +240,10 @@ QString createPythonFromModel()
                     arg(label->point.x).
                     arg(label->point.y);
 
-            if (Util::scene()->fieldInfos().count() > 0)
+            if (Util::problem()->fieldInfos().count() > 0)
             {
                 QString materials = ", materials = {";
-                foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
                     SceneMaterial *marker = label->getMarker(fieldInfo);
 
@@ -358,7 +358,7 @@ PyProblem::PyProblem(bool clearproblem)
 void PyProblem::setCoordinateType(const char *coordinateType)
 {
     if (coordinateTypeStringKeys().contains(QString(coordinateType)))
-        Util::scene()->problemInfo()->setCoordinateType(coordinateTypeFromStringKey(QString(coordinateType)));
+        Util::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString(coordinateType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(coordinateTypeStringKeys())).toStdString());
 }
@@ -366,7 +366,7 @@ void PyProblem::setCoordinateType(const char *coordinateType)
 void PyProblem::setMeshType(const char *meshType)
 {
     if (meshTypeStringKeys().contains(QString(meshType)))
-        Util::scene()->problemInfo()->setMeshType(meshTypeFromStringKey(QString(meshType)));
+        Util::problem()->config()->setMeshType(meshTypeFromStringKey(QString(meshType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(meshTypeStringKeys())).toStdString());
 }
@@ -374,7 +374,7 @@ void PyProblem::setMeshType(const char *meshType)
 void PyProblem::setMatrixSolver(const char *matrixSolver)
 {
     if (matrixSolverTypeStringKeys().contains(QString(matrixSolver)))
-        Util::scene()->problemInfo()->setMatrixSolver(matrixSolverTypeFromStringKey(QString(matrixSolver)));
+        Util::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString(matrixSolver)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
 }
@@ -382,7 +382,7 @@ void PyProblem::setMatrixSolver(const char *matrixSolver)
 void PyProblem::setFrequency(const double frequency)
 {
     if (frequency >= 0.0)
-        Util::scene()->problemInfo()->setFrequency(frequency);
+        Util::problem()->config()->setFrequency(frequency);
     else
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 }
@@ -390,7 +390,7 @@ void PyProblem::setFrequency(const double frequency)
 void PyProblem::setTimeStep(const double timeStep)
 {
     if (timeStep >= 0.0)
-        Util::scene()->problemInfo()->setTimeStep(Value(QString::number(timeStep)));
+        Util::problem()->config()->setTimeStep(Value(QString::number(timeStep)));
     else
         throw invalid_argument(QObject::tr("The time step must be positive.").toStdString());
 }
@@ -398,7 +398,7 @@ void PyProblem::setTimeStep(const double timeStep)
 void PyProblem::setTimeTotal(const double timeTotal)
 {
     if (timeTotal >= 0.0)
-        Util::scene()->problemInfo()->setTimeTotal(Value(QString::number(timeTotal)));
+        Util::problem()->config()->setTimeTotal(Value(QString::number(timeTotal)));
     else
         throw invalid_argument(QObject::tr("The total time must be positive.").toStdString());
 }
@@ -428,14 +428,14 @@ PyField::PyField(char *fieldId)
         mods.append(QString::fromStdString(it->first));
 
     if (mods.contains(QString(fieldId)))
-        if (Util::scene()->hasField(QString(fieldId)))
+        if (Util::problem()->hasField(QString(fieldId)))
         {
-            m_fieldInfo = Util::scene()->fieldInfo(fieldId);
+            m_fieldInfo = Util::problem()->fieldInfo(fieldId);
         }
         else
         {
             m_fieldInfo = new FieldInfo(fieldId);
-            Util::scene()->addField(fieldInfo());
+            Util::problem()->addField(fieldInfo());
         }
     else
         throw invalid_argument(QObject::tr("Invalid field id. Valid keys: %1").arg(stringListToString(mods)).toStdString());
@@ -454,7 +454,7 @@ void PyField::setAnalysisType(const char *analysisType)
         ans.append(QString::fromStdString(it->first));
 
     if (ans.contains(QString(analysisType)))
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(ans)).toStdString());
 }
@@ -462,7 +462,7 @@ void PyField::setAnalysisType(const char *analysisType)
 void PyField::setNumberOfRefinements(const int numberOfRefinements)
 {
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements = numberOfRefinements;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements = numberOfRefinements;
     else
         throw invalid_argument(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
 }
@@ -470,7 +470,7 @@ void PyField::setNumberOfRefinements(const int numberOfRefinements)
 void PyField::setPolynomialOrder(const int polynomialOrder)
 {
     if (polynomialOrder > 0 && polynomialOrder <= 10)
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder = polynomialOrder;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder = polynomialOrder;
     else
         throw invalid_argument(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 }
@@ -478,7 +478,7 @@ void PyField::setPolynomialOrder(const int polynomialOrder)
 void PyField::setLinearityType(const char *linearityType)
 {
     if (linearityTypeStringKeys().contains(QString(linearityType)))
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->linearityType = linearityTypeFromStringKey(QString(linearityType));
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType = linearityTypeFromStringKey(QString(linearityType));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
@@ -486,7 +486,7 @@ void PyField::setLinearityType(const char *linearityType)
 void PyField::setNonlinearTolerance(const double nonlinearTolerance)
 {
     if (nonlinearTolerance > 0.0)
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance = nonlinearTolerance;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance = nonlinearTolerance;
     else
         throw invalid_argument(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
 }
@@ -494,7 +494,7 @@ void PyField::setNonlinearTolerance(const double nonlinearTolerance)
 void PyField::setNonlinearSteps(const int nonlinearSteps)
 {
     if (nonlinearSteps >= 1)
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps = nonlinearSteps;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps = nonlinearSteps;
     else
         throw invalid_argument(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
 }
@@ -502,7 +502,7 @@ void PyField::setNonlinearSteps(const int nonlinearSteps)
 void PyField::setAdaptivityType(const char *adaptivityType)
 {
     if (adaptivityTypeStringKeys().contains(QString(adaptivityType)))
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType));
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityTypeStringKeys())).toStdString());
 }
@@ -510,7 +510,7 @@ void PyField::setAdaptivityType(const char *adaptivityType)
 void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
 {
     if (adaptivityTolerance > 0.0)
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance = adaptivityTolerance;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance = adaptivityTolerance;
     else
         throw invalid_argument(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
 }
@@ -518,7 +518,7 @@ void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
 void PyField::setAdaptivitySteps(const int adaptivitySteps)
 {
     if (adaptivitySteps >= 1)
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps = adaptivitySteps;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps = adaptivitySteps;
     else
         throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
 }
@@ -526,13 +526,13 @@ void PyField::setAdaptivitySteps(const int adaptivitySteps)
 void PyField::setInitialCondition(const double initialCondition)
 {
     // TODO: check
-    Util::scene()->fieldInfo(m_fieldInfo->fieldId())->initialCondition = Value(QString::number(initialCondition));
+    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition = Value(QString::number(initialCondition));
 }
 
 void PyField::setWeakForms(const char *weakForms)
 {
     if (weakFormsTypeStringKeys().contains(QString(weakForms)))
-        Util::scene()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(weakFormsTypeStringKeys())).toStdString());
 }
@@ -540,13 +540,13 @@ void PyField::setWeakForms(const char *weakForms)
 void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 {
     // check boundaries with same name
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
         if (boundary->getName() == name)
             throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
     }
 
-    Hermes::Module::BoundaryType *boundaryType = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
+    Hermes::Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
 
     // browse boundary parameters
     std::map<std::string, Value> values;
@@ -581,7 +581,7 @@ void PyField::removeBoundary(char *name)
 void PyField::addMaterial(char *name, map<char*, double> parameters)
 {
     // check materials with same name
-    foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::scene()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
+    foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
         if (material->getName() == name)
             throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
@@ -591,7 +591,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
     std::map<std::string, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::scene()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
+        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
 
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
@@ -639,8 +639,8 @@ void PyField::localValues(double x, double y, map<string, double> &results)
             else
             {
                 values[it->first->shortname] = it->second.vector.magnitude();
-                values[it->first->shortname + Util::scene()->problemInfo()->labelX().toLower().toStdString()] = it->second.vector.x;
-                values[it->first->shortname + Util::scene()->problemInfo()->labelY().toLower().toStdString()] = it->second.vector.y;
+                values[it->first->shortname + Util::problem()->config()->labelX().toLower().toStdString()] = it->second.vector.x;
+                values[it->first->shortname + Util::problem()->config()->labelY().toLower().toStdString()] = it->second.vector.y;
             }
         }
     }
@@ -783,7 +783,7 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     {
         //qDebug() << "boundary" << (*i).first << ": " << (*i).second;
 
-        foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::scene()->fieldInfo(QString((*i).first))).items())
+        foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
         {
             if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == std::string((*i).second)))
                 sceneEdge->addMarker(sceneBoundary);
@@ -808,7 +808,7 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
     {
         //qDebug() << "material" << (*i).first << ": " << (*i).second;
 
-        foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::scene()->fieldInfo(QString((*i).first))).items())
+        foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
         {
             if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == std::string((*i).second)))
             {
@@ -1101,8 +1101,8 @@ void pythonSolveAdaptiveStep()
 {
     assert(0);
     //    // store adaptivity steps
-    //    int adaptivitySteps = Util::scene()->fieldInfo("TODO")->adaptivitySteps;
-    //    Util::scene()->fieldInfo("TODO")->adaptivitySteps = 1;
+    //    int adaptivitySteps = Util::problem()->fieldInfo("TODO")->adaptivitySteps;
+    //    Util::problem()->fieldInfo("TODO")->adaptivitySteps = 1;
 
     //    // solve
     //    if (Util::scene()->sceneSolution()->isSolved())
@@ -1118,7 +1118,7 @@ void pythonSolveAdaptiveStep()
     //    }
 
     //    // restore adaptivity steps
-    //    Util::scene()->fieldInfo("TODO")->adaptivitySteps = adaptivitySteps;
+    //    Util::problem()->fieldInfo("TODO")->adaptivitySteps = adaptivitySteps;
 }
 
 // mode(mode = {"node", "edge", "label", "postprocessor"})
@@ -1178,13 +1178,13 @@ void pythonShowScalar(char *type, char *variable, char *component, double rangem
     //    // variable
     //    if (QString(variable) == "default")
     //    {
-    //        // sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
+    //        // sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::problem()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
     //    }
     //    else
     //    {
     //        bool ok = false;
-    //        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->fieldInfo("TODO")->module()->variables.begin();
-    //             it < Util::scene()->fieldInfo("TODO")->module()->variables.end(); ++it )
+    //        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::problem()->fieldInfo("TODO")->module()->variables.begin();
+    //             it < Util::problem()->fieldInfo("TODO")->module()->variables.end(); ++it )
     //        {
     //            Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
     //            if (QString::fromStdString(var->id) == QString(variable))
@@ -1195,7 +1195,7 @@ void pythonShowScalar(char *type, char *variable, char *component, double rangem
     //                // variable component
     //                if (QString(component) == "default")
     //                {
-    //                    // sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->fieldInfo("TODO")->module()->view_default_scalar_variable_comp();
+    //                    // sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::problem()->fieldInfo("TODO")->module()->view_default_scalar_variable_comp();
     //                }
     //                else
     //                {
@@ -1296,7 +1296,7 @@ void pythonSetTimeStep(int timestep)
     //    else
     //        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-    //    if (Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient)
+    //    if (Util::problem()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient)
     //        throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
 
     //    if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
@@ -1329,8 +1329,8 @@ void PythonEngineAgros::runPythonHeader()
         PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // startup script
-    if (!Util::scene()->problemInfo()->startupscript().isEmpty())
-        PyRun_String(Util::scene()->problemInfo()->startupscript().toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    if (!Util::problem()->config()->startupscript().isEmpty())
+        PyRun_String(Util::problem()->config()->startupscript().toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 void PythonEngineAgros::doExecutedScript()

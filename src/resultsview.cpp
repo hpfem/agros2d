@@ -90,13 +90,13 @@ void ResultsView::showPoint(const Point &point)
     localPointValues.SetValue("STYLESHEET", style);
     localPointValues.SetValue("LABEL", tr("Local point values").toStdString());
 
-    localPointValues.SetValue("LABELX", Util::scene()->problemInfo()->labelX().toLower().toStdString());
-    localPointValues.SetValue("LABELY", Util::scene()->problemInfo()->labelY().toLower().toStdString());
+    localPointValues.SetValue("LABELX", Util::problem()->config()->labelX().toLower().toStdString());
+    localPointValues.SetValue("LABELY", Util::problem()->config()->labelY().toLower().toStdString());
     localPointValues.SetValue("POINTX", (QString("%1").arg(point.x, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINTY", (QString("%1").arg(point.y, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINT_UNIT", "m");
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");
         field->SetValue("FIELDNAME", fieldInfo->module()->name);
@@ -124,12 +124,12 @@ void ResultsView::showPoint(const Point &point)
                 itemMagnitude->SetValue("UNIT", it->first->unit_html);
                 ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
                 itemX->SetValue("SHORTNAME", it->first->shortname_html);
-                itemX->SetValue("PART", Util::scene()->problemInfo()->labelX().toLower().toStdString());
+                itemX->SetValue("PART", Util::problem()->config()->labelX().toLower().toStdString());
                 itemX->SetValue("VALUE", QString("%1").arg(it->second.vector.x, 0, 'e', 3).toStdString());
                 itemX->SetValue("UNIT", it->first->unit_html);
                 ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
                 itemY->SetValue("SHORTNAME", it->first->shortname_html);
-                itemY->SetValue("PART", Util::scene()->problemInfo()->labelY().toLower().toStdString());
+                itemY->SetValue("PART", Util::problem()->config()->labelY().toLower().toStdString());
                 itemY->SetValue("VALUE", QString("%1").arg(it->second.vector.y, 0, 'e', 3).toStdString());
                 itemY->SetValue("UNIT", it->first->unit_html);
             }
@@ -164,7 +164,7 @@ void ResultsView::showVolumeIntegral()
     volumeIntegrals.SetValue("STYLESHEET", style);
     volumeIntegrals.SetValue("LABEL", tr("Volume integrals").toStdString());
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         ctemplate::TemplateDictionary *field = volumeIntegrals.AddSectionDictionary("FIELD");
         field->SetValue("FIELDNAME", fieldInfo->module()->name);
@@ -209,7 +209,7 @@ void ResultsView::showSurfaceIntegral()
     surfaceIntegrals.SetValue("STYLESHEET", style);
     surfaceIntegrals.SetValue("LABEL", tr("Surface integrals").toStdString());
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
         field->SetValue("FIELDNAME", fieldInfo->module()->name);
@@ -269,8 +269,8 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
     connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     QFormLayout *layoutPoint = new QFormLayout();
-    layoutPoint->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
-    layoutPoint->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
+    layoutPoint->addRow(Util::problem()->config()->labelX() + " (m):", txtPointX);
+    layoutPoint->addRow(Util::problem()->config()->labelY() + " (m):", txtPointY);
 
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);

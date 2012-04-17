@@ -86,8 +86,8 @@ void VolumeIntegralValue::calculate()
 
         for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
         {
-            ((mu::Parser *) *it)->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
-            ((mu::Parser *) *it)->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
+            ((mu::Parser *) *it)->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+            ((mu::Parser *) *it)->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
             for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
             {
@@ -95,8 +95,8 @@ void VolumeIntegralValue::calculate()
                 number << (k+1);
 
                 ((mu::Parser *) *it)->DefineVar("value" + number.str(), &pvalue[k]);
-                ((mu::Parser *) *it)->DefineVar("d" + Util::scene()->problemInfo()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-                ((mu::Parser *) *it)->DefineVar("d" + Util::scene()->problemInfo()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+                ((mu::Parser *) *it)->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+                ((mu::Parser *) *it)->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
 
             }
 

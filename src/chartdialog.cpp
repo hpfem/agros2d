@@ -123,14 +123,14 @@ void ChartDialog::showDialog()
     fillComboBoxTimeStep(cmbTimeStep);
 
     // correct labels
-    lblStartX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lblStartY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    lblEndX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lblEndY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    lblPointX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lblPointY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    radAxisX->setText(Util::scene()->problemInfo()->labelX());
-    radAxisY->setText(Util::scene()->problemInfo()->labelY());
+    lblStartX->setText(Util::problem()->config()->labelX() + ":");
+    lblStartY->setText(Util::problem()->config()->labelY() + ":");
+    lblEndX->setText(Util::problem()->config()->labelX() + ":");
+    lblEndY->setText(Util::problem()->config()->labelY() + ":");
+    lblPointX->setText(Util::problem()->config()->labelX() + ":");
+    lblPointY->setText(Util::problem()->config()->labelY() + ":");
+    radAxisX->setText(Util::problem()->config()->labelX());
+    radAxisY->setText(Util::problem()->config()->labelY());
 
     if (Util::scene()->activeViewField()->analysisType() == AnalysisType_Transient)
     {
@@ -404,8 +404,8 @@ void ChartDialog::plotGeometry()
 
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
-    if (radAxisX->isChecked()) text.setText(Util::scene()->problemInfo()->labelX() + " (m):");
-    if (radAxisY->isChecked()) text.setText(Util::scene()->problemInfo()->labelY() + " (m):");
+    if (radAxisX->isChecked()) text.setText(Util::problem()->config()->labelX() + " (m):");
+    if (radAxisY->isChecked()) text.setText(Util::problem()->config()->labelY() + " (m):");
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
@@ -419,7 +419,7 @@ void ChartDialog::plotGeometry()
     // calculate values
     for (int i = 0; i < points.length(); i++)
     {
-        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
             LocalPointValue localPointValue(fieldInfo, points.at(i));
 
@@ -556,8 +556,8 @@ QStringList ChartDialog::headers()
         else
         {
             // vector variable
-            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelX().toLower());
-            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::scene()->problemInfo()->labelY().toLower());
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::problem()->config()->labelX().toLower());
+            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::problem()->config()->labelY().toLower());
             head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
         }
     }
@@ -654,8 +654,8 @@ void ChartDialog::doFieldVariable(int index)
     else
     {
         cmbFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+        cmbFieldVariableComp->addItem(Util::problem()->config()->labelX(), PhysicFieldVariableComp_X);
+        cmbFieldVariableComp->addItem(Util::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
     }
 
     if (cmbFieldVariableComp->currentIndex() == -1)

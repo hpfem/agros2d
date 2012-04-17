@@ -69,7 +69,7 @@ double Value::value(double key)
 {
     // FIXME
     // if (m_isLinear == -1)
-    //m_isLinear = (Util::scene()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
+    //m_isLinear = (Util::problem()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
 
     m_isLinear = 1;  //TODO nonlinear!!!!!
 
@@ -94,7 +94,7 @@ double Value::derivative(double key)
 
     m_isLinear = 1;  //TODO nonlinear!!!!!
 
-    //m_isLinear = (Util::scene()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
+    //m_isLinear = (Util::problem()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
 
     if (m_isLinear || table->size() == 0)
         return 0.0;
@@ -164,7 +164,7 @@ bool Value::evaluate(double time, bool quiet)
 bool Value::isTimeDep() const
 {
     // FIXME - do it better
-    return Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient
+    return Util::problem()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient
             && m_text.contains("time");
 }
 
@@ -276,7 +276,7 @@ bool ValueLineEdit::evaluate(bool quiet)
 
         //TODO time dependence
         btnEditTimeDep->setVisible(false);
-        //btnEditTimeDep->setVisible(m_hasTimeDep && Util::scene()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient);
+        //btnEditTimeDep->setVisible(m_hasTimeDep && Util::problem()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient);
 
         if (val.evaluate(quiet))
         {
@@ -443,7 +443,7 @@ void ValueTimeDialog::createControls()
     connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(checkExpression()));
 
     txtTimeTotal = new ValueLineEdit();
-    txtTimeTotal->setValue(Util::scene()->problemInfo()->timeTotal());
+    txtTimeTotal->setValue(Util::problem()->config()->timeTotal());
 
     cmbPresets = new QComboBox();
     cmbPresets->addItem(tr("select a preset..."));

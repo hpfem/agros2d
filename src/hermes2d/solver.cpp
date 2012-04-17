@@ -50,7 +50,7 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> Solver<Scalar>::readMesh()
 
     // check that all boundary edges have a marker assigned
     QSet<int> boundaries;
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         Mesh* mesh = meshes[fieldInfo];
         for (int i = 0; i < mesh->get_max_node_id(); i++)
@@ -514,7 +514,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
                                                            msaRef.solutionsNaked(),
                                                            msa.solutionsNaked(),
-                                                           Util::scene()->problemInfo()->matrixSolver());
+                                                           Util::problem()->config()->matrixSolver());
 
     // output
     if (!isError)
@@ -738,7 +738,7 @@ void Solver<Scalar>::solve(SolverConfig config)
     if((config.action == SolverAction_AdaptivityStep))
     {
         //        // project the fine mesh solution onto the coarse mesh.
-        //        Hermes::Hermes2D::OGProjection<Scalar>::project_global(spaceCoarse, solution, solutionCoarse, Util::scene()->problemInfo()->matrixSolver);
+        //        Hermes::Hermes2D::OGProjection<Scalar>::project_global(spaceCoarse, solution, solutionCoarse, Util::problem()->config()->matrixSolver);
 
         //        // calculate element errors and total error estimate.
         //        Hermes::Hermes2D::Adapt<Scalar> adaptivity(spaceCoarse, projNormType);

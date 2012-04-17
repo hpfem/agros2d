@@ -21,6 +21,10 @@
 
 #include "scene.h"
 #include "scenemarker.h"
+#include "scenebasic.h"
+#include "scenenode.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
 #include "module.h"
 #include "module_agros.h"
 #include "coupling.h"
@@ -39,11 +43,11 @@ bool Field::solveInitVariables()
     //
     //
     //    // transient
-    //    if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+    //    if (Util::problem()->config()->analysisType() == AnalysisType_Transient)
     //    {
-    //        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return false;
-    //        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return false;
-    //        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return false;
+    //        if (!Util::problem()->config()->timeStep.evaluate()) return false;
+    //        if (!Util::problem()->config()->timeTotal.evaluate()) return false;
+    //        if (!Util::problem()->config()->initialCondition.evaluate()) return false;
     //    }
 
     if(!Util::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
@@ -61,7 +65,7 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Prog
     foreach (FieldInfo* fi, fieldInfos)
     {
         Field* field = new Field(fi);
-        foreach (CouplingInfo* couplingInfo, Util::scene()->couplingInfos())
+        foreach (CouplingInfo* couplingInfo, Util::problem()->couplingInfos())
         {
             if(couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
             {
@@ -222,7 +226,7 @@ int Block::numTimeSteps() const
     {
         if(field->fieldInfo()->analysisType() == AnalysisType_Transient)
         {
-            int fieldTimeSteps = floor(Util::scene()->problemInfo()->timeTotal().number() / Util::scene()->problemInfo()->timeStep().number());
+            int fieldTimeSteps = floor(Util::problem()->config()->timeTotal().number() / Util::problem()->config()->timeStep().number());
             if(fieldTimeSteps > timeSteps)
                 timeSteps = fieldTimeSteps;
         }
@@ -240,10 +244,10 @@ double Block::timeStep() const
         if(fieldInfo->analysisType() == AnalysisType_Transient)
         {
             if (step == 0)
-                step = Util::scene()->problemInfo()->timeStep().number();
+                step = Util::problem()->config()->timeStep().number();
 
             //TODO zatim moc nevim
-            assert(step == Util::scene()->problemInfo()->timeStep().number());
+            assert(step == Util::problem()->config()->timeStep().number());
         }
     }
 
@@ -278,18 +282,117 @@ ostream& operator<<(ostream& output, const Block& id)
 }
 
 
+
+ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
+{
+}
+
+void ProblemConfig::clear()
+{
+    m_coordinateType = CoordinateType_Planar;
+    m_name = QObject::tr("unnamed");
+    m_fileName = "";
+    m_startupscript = "";
+    m_description = "";
+
+    // matrix solver
+    m_matrixSolver = Hermes::SOLVER_UMFPACK;
+
+    // mesh type
+    m_meshType = MeshType_Triangle;
+
+    // harmonic
+    m_frequency = 0.0;
+
+    // transient
+    m_timeStep = Value("1.0", false);
+    m_timeTotal = Value("1.0", false);
+}
+
+FieldInfo::FieldInfo(QString fieldId)
+{
+    m_module = NULL;
+
+    if (fieldId.isEmpty())
+    {
+        // default
+        // read default field (Util::config() is not set)
+        QSettings settings;
+        m_fieldId = settings.value("General/DefaultPhysicField", "electrostatic").toString();
+
+        bool check = false;
+        std::map<std::string, std::string> modules = availableModules();
+        for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
+            if (m_fieldId.toStdString() == it->first)
+            {
+                check = true;
+                break;
+            }
+        if (!check)
+            m_fieldId = "electrostatic";
+    }
+    else
+    {
+        m_fieldId = fieldId;
+    }
+
+    clear();
+}
+
+FieldInfo::~FieldInfo()
+{
+    if (m_module) delete m_module;
+}
+
+void FieldInfo::clear()
+{
+    // module object
+    setAnalysisType(AnalysisType_SteadyState);
+
+    numberOfRefinements = 1;
+    polynomialOrder = 2;
+    adaptivityType = AdaptivityType_None;
+    adaptivitySteps = 0;
+    adaptivityTolerance = 1.0;
+
+    initialCondition = Value("0.0", false);
+
+    // weakforms
+    weakFormsType = WeakFormsType_Interpreted;
+
+    // linearity
+    linearityType = LinearityType_Linear;
+    nonlinearTolerance = 1e-3;
+    nonlinearSteps = 10;
+}
+
+void FieldInfo::setAnalysisType(AnalysisType analysisType)
+{
+    m_analysisType = analysisType;
+
+    if (m_module) delete m_module;
+    m_module = moduleFactory(m_fieldId.toStdString(),
+                             Util::problem()->config()->coordinateType(),
+                             m_analysisType);
+}
+
 Problem::Problem()
 {
     m_timeStep = 0;
     m_isSolved = false;
     m_isSolving = false;
 
-    m_meshesInitial.clear();
+    m_config = new ProblemConfig();
+
+    connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
 }
 
 Problem::~Problem()
 {
-    clear();
+    clearSolution();
+    clearFieldsAndConfig();
+
+    delete m_config;
 }
 
 Hermes::Hermes2D::Mesh* Problem::activeMeshInitial()
@@ -297,7 +400,7 @@ Hermes::Hermes2D::Mesh* Problem::activeMeshInitial()
     return meshInitial(Util::scene()->activeViewField());
 }
 
-void Problem::clear()
+void Problem::clearSolution()
 {
     if (Util::problem()->isSolved())
         Util::solutionStore()->clearAll();
@@ -313,6 +416,54 @@ void Problem::clear()
     m_isSolving = false;
 }
 
+void Problem::clearFieldsAndConfig()
+{
+    // clear couplings
+    foreach (CouplingInfo* couplingInfo, m_couplingInfos)
+        delete couplingInfo;
+    m_couplingInfos.clear();
+
+    QMapIterator<QString, FieldInfo *> i(m_fieldInfos);
+    while (i.hasNext())
+    {
+        i.next();
+        delete i.value();
+    }
+    m_fieldInfos.clear();
+
+    // clear config
+    m_config->clear();
+}
+
+void Problem::addField(FieldInfo *field)
+{
+    // add to the collection
+    m_fieldInfos[field->fieldId()] = field;
+
+    // couplings
+    synchronizeCouplings();
+
+    emit fieldsChanged();
+}
+
+void Problem::removeField(FieldInfo *field)
+{
+    // first remove references to markers of this field from all edges and labels
+    Util::scene()->edges->removeFieldMarkers(field);
+    Util::scene()->labels->removeFieldMarkers(field);
+
+    // then remove them from lists of markers - here they are really deleted
+    Util::scene()->boundaries->removeFieldMarkers(field);
+    Util::scene()->materials->removeFieldMarkers(field);
+
+    // remove from the collection
+    m_fieldInfos.remove(field->fieldId());
+
+    synchronizeCouplings();
+
+    emit fieldsChanged();
+}
+
 const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
 
 void Problem::createStructure()
@@ -323,11 +474,11 @@ void Problem::createStructure()
     }
     m_blocks.clear();
 
-    Util::scene()->synchronizeCouplings();
+    Util::problem()->synchronizeCouplings();
 
     //copy lists, items will be removed from them
-    QList<FieldInfo *> fieldInfos = Util::scene()->fieldInfos().values();
-    QList<CouplingInfo* > couplingInfos = Util::scene()->couplingInfos().values();
+    QList<FieldInfo *> fieldInfos = Util::problem()->fieldInfos().values();
+    QList<CouplingInfo* > couplingInfos = Util::problem()->couplingInfos().values();
 
     while (!fieldInfos.empty()){
         QList<FieldInfo*> blockFieldInfos;
@@ -405,7 +556,7 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
-    clear();
+    clearSolution();
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
@@ -423,7 +574,7 @@ void Problem::solve()
 {
     if (isSolving()) return;
 
-    clear();
+    clearSolution();
     m_isSolving = true;
     bool isError = false;
 
@@ -450,7 +601,7 @@ void Problem::solve()
         if (!Util::scene()->checkGeometryAssignement())
             return;
 
-        if (Util::scene()->fieldInfos().count() == 0)
+        if (Util::problem()->fieldInfos().count() == 0)
         {
             Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
             return;
@@ -458,7 +609,7 @@ void Problem::solve()
 
         Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
-        Util::scene()->setActiveViewField(Util::scene()->fieldInfos().values().at(0));
+        Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
 
         foreach (Block* block, m_blocks)
         {
@@ -526,10 +677,10 @@ void Problem::solve()
         }
 
         // delete temp file
-        if (Util::scene()->problemInfo()->fileName() == tempProblemFileName() + ".a2d")
+        if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
         {
-            QFile::remove(Util::scene()->problemInfo()->fileName());
-            Util::scene()->problemInfo()->setFileName("");
+            QFile::remove(Util::problem()->config()->fileName());
+            Util::problem()->config()->setFileName("");
         }
 
         if (!isError)
@@ -548,6 +699,11 @@ void Problem::solve()
 void Problem::solveAdaptiveStep()
 {
 
+}
+
+void Problem::synchronizeCouplings()
+{
+    CouplingInfo::synchronizeCouplings(m_fieldInfos, m_couplingInfos);
 }
 
 //*************************************************************************************************
