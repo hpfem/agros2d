@@ -326,7 +326,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glEnd();
 
     // labels
-    for (int i = 1; i < numTicks; i++)
+    for (int i = 1; i < numTicks+1; i++)
     {
         double value = 0.0;
         if (!Util::config()->scalarRangeLog)
