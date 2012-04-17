@@ -3,6 +3,7 @@
 #include "util.h"
 #include "module.h"
 #include "weakform_parser.h"
+#include "hermes2d/problem.h"
 
 #include <dirent.h>
 
@@ -133,9 +134,9 @@ void Coupling::read(std::string filename)
 
 
 //        rapidxml::xml_node<> *source = general->first_node("modules")->first_node("source");
-//        this->sourceField = Util::scene()->fieldInfo(source->first_attribute("id")->value());
+//        this->sourceField = Util::problem()->fieldInfo(source->first_attribute("id")->value());
 //        rapidxml::xml_node<> *object = general->first_node("modules")->first_node("target");
-//        this->targetField = Util::scene()->fieldInfo(object->first_attribute("id")->value());
+//        this->targetField = Util::problem()->fieldInfo(object->first_attribute("id")->value());
 
 
 
@@ -208,7 +209,7 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 {
     // std::cout << filename_custom << std::endl;
 
-    CoordinateType coordinateType = Util::scene()->problemInfo()->coordinateType();
+    CoordinateType coordinateType = Util::problem()->config()->coordinateType();
     Coupling *coupling = new Coupling(coordinateType, couplingType, sourceField->analysisType(), targetField->analysisType());
 
     // open default module

@@ -60,7 +60,7 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
 
     // clear combo
     cmbFieldInfo->clear();
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         cmbFieldInfo->addItem(QString::fromStdString(fieldInfo->module()->name), fieldInfo->fieldId());
 
     cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(fieldId));

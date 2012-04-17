@@ -23,6 +23,7 @@
 #include "sceneedge.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "hermes2d/problem.h"
 
 SceneNode::SceneNode(const Point &point) : SceneBasic()
 {
@@ -159,12 +160,12 @@ QLayout* DSceneNode::createContent()
     lblAngle = new QLabel();
 
     // coordinates must be greater then or equal to 0 (axisymmetric case)
-    if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric)
+    if (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
         txtPointX->setMinimum(0.0);
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
-    layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
+    layout->addRow(Util::problem()->config()->labelX() + " (m):", txtPointX);
+    layout->addRow(Util::problem()->config()->labelY() + " (m):", txtPointY);
     layout->addRow(tr("Distance:"), lblDistance);
     layout->addRow(tr("Angle:"), lblAngle);
 

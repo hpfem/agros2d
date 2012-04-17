@@ -21,6 +21,7 @@
 #include "scenemarkerdialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneedge.h"
@@ -47,10 +48,10 @@ QString SceneBoundary::html()
 {
     //TODO
     QString out;
-    //    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
+    //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
     //    out += "<table>";
     
-    //    Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(type);
+    //    Hermes::Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(type);
     //    if (boundary_type)
     //        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     //        {
@@ -105,11 +106,11 @@ QString SceneMaterial::html()
     //TODO
     QString out;
     
-    //    out += "<h4>" + QString::fromStdString(Util::scene()->problemInfo()->module()->name) + "</h4>";
+    //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
     //    out += "<table>";
     
-    //    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::scene()->problemInfo()->module()->material_type_variables.begin();
-    //         it < Util::scene()->problemInfo()->module()->material_type_variables.end(); ++it )
+    //    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::problem()->config()->module()->material_type_variables.begin();
+    //         it < Util::problem()->config()->module()->material_type_variables.end(); ++it )
     //    {
     //        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
 

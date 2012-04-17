@@ -201,10 +201,10 @@ void ReportDialog::defaultValues()
 void ReportDialog::setControls()
 {
 //    assert(0); //TODO
-//    chkDescription->setDisabled(Util::scene()->problemInfo()->description.isEmpty());
-//    chkDescription->setChecked(!Util::scene()->problemInfo()->description.isEmpty());
-//    chkStartupScript->setDisabled(Util::scene()->problemInfo()->scriptStartup.isEmpty());
-//    chkStartupScript->setChecked(!Util::scene()->problemInfo()->scriptStartup.isEmpty());
+//    chkDescription->setDisabled(Util::problem()->config()->description.isEmpty());
+//    chkDescription->setChecked(!Util::problem()->config()->description.isEmpty());
+//    chkStartupScript->setDisabled(Util::problem()->config()->scriptStartup.isEmpty());
+//    chkStartupScript->setChecked(!Util::problem()->config()->scriptStartup.isEmpty());
 
 //    chkMeshAndSolution->setDisabled(!Util::scene()->sceneSolution()->isSolved());
 //    chkMeshAndSolution->setChecked(Util::scene()->sceneSolution()->isSolved());
@@ -311,13 +311,13 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    dict.SetValue("STYLESHEET", "./style.css");
 
 //    // problem name
-//    dict.SetValue("NAME", Util::scene()->problemInfo()->name.toStdString());
+//    dict.SetValue("NAME", Util::problem()->config()->name.toStdString());
 
 //    // description
 //    if (chkDescription->isChecked())
 //    {
 //        dict.SetValue("DESCRIPTION_LABEL", tr("Description").toStdString());
-//        dict.SetValue("DESCRIPTION", Util::scene()->problemInfo()->description.toStdString());
+//        dict.SetValue("DESCRIPTION", Util::problem()->config()->description.toStdString());
 
 //        dict.ShowSection("DESCRIPTION_SECTION");
 //    }
@@ -327,56 +327,56 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("PROBLEM_LABEL", tr("Problem Information").toStdString());
 //        dict.SetValue("PROBLEM_NAME_LABEL", tr("Name:").toStdString());
-//        dict.SetValue("PROBLEM_NAME", Util::scene()->problemInfo()->name.toStdString());
+//        dict.SetValue("PROBLEM_NAME", Util::problem()->config()->name.toStdString());
 //        dict.SetValue("PROBLEM_DATE_LABEL", tr("Date:").toStdString());
-//        dict.SetValue("PROBLEM_DATE", Util::scene()->problemInfo()->date.toString("dd.MM.yyyy").toStdString());
+//        dict.SetValue("PROBLEM_DATE", Util::problem()->config()->date.toString("dd.MM.yyyy").toStdString());
 //        dict.SetValue("PROBLEM_FILENAME_LABEL", tr("File name:").toStdString());
-//        dict.SetValue("PROBLEM_FILENAME", QFileInfo(Util::scene()->problemInfo()->fileName).fileName().toStdString());
+//        dict.SetValue("PROBLEM_FILENAME", QFileInfo(Util::problem()->config()->fileName).fileName().toStdString());
 //        dict.SetValue("PROBLEM_PROBLEMTYPE_LABEL", tr("Problem type:").toStdString());
-//        dict.SetValue("PROBLEM_PROBLEMTYPE", problemTypeString(Util::scene()->problemInfo()->problemType).toStdString());
+//        dict.SetValue("PROBLEM_PROBLEMTYPE", problemTypeString(Util::problem()->config()->problemType).toStdString());
 //        dict.SetValue("PROBLEM_PHYSICFIELD_LABEL", tr("Physic field:").toStdString());
-//        dict.SetValue("PROBLEM_PHYSICFIELD", Util::scene()->problemInfo()->module()->name);
+//        dict.SetValue("PROBLEM_PHYSICFIELD", Util::problem()->config()->module()->name);
 //        dict.SetValue("PROBLEM_ANALYSISTYPE_LABEL", tr("Analysis type:").toStdString());
-//        dict.SetValue("PROBLEM_ANALYSISTYPE", analysisTypeString(Util::scene()->problemInfo()->analysisType).toStdString());
+//        dict.SetValue("PROBLEM_ANALYSISTYPE", analysisTypeString(Util::problem()->config()->analysisType).toStdString());
 //        dict.SetValue("PROBLEM_NUMBEROFREFINEMENTS_LABEL", tr("Number of refinements:").toStdString());
 //        dict.SetValue("PROBLEM_POLYNOMIALORDER_LABEL", tr("Polynomial order:").toStdString());
-//        dict.SetIntValue("PROBLEM_POLYNOMIALORDER", Util::scene()->problemInfo()->polynomialOrder);
-//        dict.SetIntValue("PROBLEM_NUMBEROFREFINEMENTS", Util::scene()->problemInfo()->numberOfRefinements);
+//        dict.SetIntValue("PROBLEM_POLYNOMIALORDER", Util::problem()->config()->polynomialOrder);
+//        dict.SetIntValue("PROBLEM_NUMBEROFREFINEMENTS", Util::problem()->config()->numberOfRefinements);
 //        dict.SetValue("PROBLEM_NEWTONTOLERANCE_LABEL", tr("Newton solver tolerance:").toStdString());
-//        dict.SetFormattedValue ("PROBLEM_NEWTONTOLERANCE", "%f", Util::scene()->problemInfo()->nonlinearTolerance);
+//        dict.SetFormattedValue ("PROBLEM_NEWTONTOLERANCE", "%f", Util::problem()->config()->nonlinearTolerance);
 //        dict.SetValue("PROBLEM_NEWTONSTEPS_LABEL", tr("Newton solver steps:").toStdString());
-//        dict.SetIntValue("PROBLEM_NEWTONSTEPS", Util::scene()->problemInfo()->nonlinearSteps);
+//        dict.SetIntValue("PROBLEM_NEWTONSTEPS", Util::problem()->config()->nonlinearSteps);
 
 //        // adaptivity
 //        if (Util::scene ()->problemInfo ()->adaptivityType != AdaptivityType_None)
 //        {
 //            dict.SetValue("PROBLEM_ADAPTIVITYTYPE_LABEL", tr("Adaptivity type:").toStdString());
-//            dict.SetValue("PROBLEM_ADAPTIVITYTYPE", adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType).toStdString());
+//            dict.SetValue("PROBLEM_ADAPTIVITYTYPE", adaptivityTypeString(Util::problem()->config()->adaptivityType).toStdString());
 //            dict.SetValue("PROBLEM_ADAPTIVITYSTEPS_LABEL", tr("Adaptivity steps:").toStdString());
-//            dict.SetIntValue("PROBLEM_ADAPTIVITYSTEPS", Util::scene()->problemInfo()->adaptivitySteps);
+//            dict.SetIntValue("PROBLEM_ADAPTIVITYSTEPS", Util::problem()->config()->adaptivitySteps);
 //            dict.SetValue("PROBLEM_ADAPTIVITYTOLERANCE_LABEL", tr("Adaptivity tolerance:").toStdString());
-//            dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%f", Util::scene()->problemInfo()->adaptivityTolerance);
+//            dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%f", Util::problem()->config()->adaptivityTolerance);
 //            dict.SetValue("PROBLEM_MAXDOFS_LABEL", tr("Maximum DOFs:").toStdString());
 
 //            dict.ShowSection("PROBLEM_ADAPTIVITY_SECTION");
 //        }
 
 //        // analysis type
-//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Harmonic)
+//        if (Util::problem()->config()->analysisType() == AnalysisType_Harmonic)
 //        {
 //            dict.SetValue("PROBLEM_FREQUENCY_LABEL", tr("Frequency:").toStdString());
-//            dict.SetFormattedValue("PROBLEM_FREQUENCY", "%f", Util::scene()->problemInfo()->frequency);
+//            dict.SetFormattedValue("PROBLEM_FREQUENCY", "%f", Util::problem()->config()->frequency);
 
 //            dict.ShowSection("PROBLEM_HARMONIC_SECTION");
 //        }
-//        if (Util::scene()->problemInfo()->analysisType() == AnalysisType_Transient)
+//        if (Util::problem()->config()->analysisType() == AnalysisType_Transient)
 //        {
 //            dict.SetValue("PROBLEM_TIMESTEP_LABEL", tr("Time step:").toStdString());
-//            dict.SetIntValue("PROBLEM_TIMESTEP", Util::scene()->problemInfo()->timeStep.number());
+//            dict.SetIntValue("PROBLEM_TIMESTEP", Util::problem()->config()->timeStep.number());
 //            dict.SetValue("PROBLEM_TIMETOTAL_LABEL", tr("Total time:").toStdString());
-//            dict.SetIntValue("PROBLEM_TIMETOTAL", Util::scene()->problemInfo()->timeTotal.number());
+//            dict.SetIntValue("PROBLEM_TIMETOTAL", Util::problem()->config()->timeTotal.number());
 //            dict.SetValue("PROBLEM_INITITALCONDITION_LABEL", tr("Initial condition:").toStdString());
-//            dict.SetFormattedValue("PROBLEM_INITITALCONDITION", "%f", Util::scene()->problemInfo()->initialCondition.number());
+//            dict.SetFormattedValue("PROBLEM_INITITALCONDITION", "%f", Util::problem()->config()->initialCondition.number());
 
 //            dict.ShowSection("PROBLEM_TRANSIENT_SECTION");
 //        }
@@ -388,7 +388,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    if (chkStartupScript->isChecked())
 //    {
 //        dict.SetValue("STARTUPSCRIPT_LABEL", tr("Startup Script").toStdString());
-//        dict.SetValue("STARTUPSCRIPT", Util::scene()->problemInfo()->scriptStartup.toStdString());
+//        dict.SetValue("STARTUPSCRIPT", Util::problem()->config()->scriptStartup.toStdString());
 
 //        dict.ShowSection("STARTUPSCRIPT_SECTION");
 //    }
@@ -406,7 +406,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //            ctemplate::TemplateDictionary *material_dict = dict.AddSectionDictionary("MATERIAL_SECTION");
 //            material_dict->SetValue("MATERIAL_NAME", marker->name);
 
-//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> variables = Util::scene()->problemInfo()->module()->material_type_variables;
+//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> variables = Util::problem()->config()->module()->material_type_variables;
 //            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
 //            {
 //                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
@@ -426,7 +426,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //            ctemplate::TemplateDictionary *boundary_dict = dict.AddSectionDictionary("BOUNDARY_SECTION");
 //            boundary_dict->SetValue("BOUNDARY_NAME", marker->name);
 
-//            Hermes::Module::BoundaryType *boundary_type = Util::scene()->problemInfo()->module()->get_boundary_type(marker->type);
+//            Hermes::Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(marker->type);
 //            if (boundary_type)
 //            {
 //                for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
@@ -446,8 +446,8 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    // geometry
 //    if (chkGeometry->isChecked())
 //    {
-//        dict.SetValue("GEOMETRY_XLABEL", Util::scene()->problemInfo()->labelX().toStdString());
-//        dict.SetValue("GEOMETRY_YLABEL", Util::scene()->problemInfo()->labelY().toStdString());
+//        dict.SetValue("GEOMETRY_XLABEL", Util::problem()->config()->labelX().toStdString());
+//        dict.SetValue("GEOMETRY_YLABEL", Util::problem()->config()->labelY().toStdString());
 
 //        dict.SetValue("GEOMETRY_STARTNODE", tr("Start node").toStdString());
 //        dict.SetValue("GEOMETRY_ENDNODE", tr("End node").toStdString());
@@ -516,7 +516,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //        dict.SetValue("SOLVER_TIMEELAPSED", time.toString("mm:ss.zzz").toStdString());
 
 //        // adaptivity
-//        if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
+//        if (Util::problem()->config()->adaptivityType != AdaptivityType_None)
 //        {
 //            dict.SetValue("SOLVER_ADAPTIVEERROR_LABEL", tr("Adaptive error:").toStdString());
 //            dict.SetFormattedValue("SOLVER_ADAPTIVEERROR", "%f", Util::scene()->sceneSolution()->adaptiveError());
@@ -577,7 +577,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("FIGURE_SCALARVIEW", tempProblemDir().toStdString()+ "/report/scalarview.png");
 //        dict.SetValue("FIGURE_SCALARVIEW_DESCRIPTION", tr("Figure: ").toStdString()
-//                      + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name).toStdString());
+//                      + QString::fromStdString(Util::problem()->config()->module()->view_default_scalar_variable->name).toStdString());
 //        dict.ShowSection("FIGURE_SECTION");
 //    }
 
@@ -585,7 +585,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("FIGURE_CONTOURVIEW", tempProblemDir().toStdString()+ "/report/contourview.png");
 //        dict.SetValue("FIGURE_CONTOURVIEW_DESCRIPTION", tr("Figure: ").toStdString()
-//                      + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_scalar_variable->name).toStdString() + tr(" (contours)").toStdString());
+//                      + QString::fromStdString(Util::problem()->config()->module()->view_default_scalar_variable->name).toStdString() + tr(" (contours)").toStdString());
 //        dict.ShowSection("FIGURE_SECTION");
 //    }
 
@@ -593,7 +593,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("FIGURE_VECTORVIEW", tempProblemDir().toStdString()+ "/report/vectorview.png");
 //        dict.SetValue("FIGURE_VECTORVIEW_DESCRIPTION", tr("Figure: ").toStdString()
-//                      + QString::fromStdString(Util::scene()->problemInfo()->module()->view_default_vector_variable->name).toStdString() + tr(" (vectors)").toStdString());
+//                      + QString::fromStdString(Util::problem()->config()->module()->view_default_vector_variable->name).toStdString() + tr(" (vectors)").toStdString());
 //        dict.ShowSection("FIGURE_SECTION");
 //    }
 

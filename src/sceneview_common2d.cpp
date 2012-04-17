@@ -196,7 +196,7 @@ void SceneViewCommon2D::paintGrid()
     glEnd();
     glDisable(GL_LINE_STIPPLE);
 
-    if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric)
+    if (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
     {
         drawBlend(cornerMin,
                   Point(0, cornerMax.y),
@@ -215,7 +215,7 @@ void SceneViewCommon2D::paintGrid()
     glVertex2d(0, cornerMin.y);
     glVertex2d(0, cornerMax.y);
     // x axis
-    glVertex2d(((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) ? 0 : cornerMin.x), 0);
+    glVertex2d(((Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) ? 0 : cornerMin.x), 0);
     glVertex2d(cornerMax.x, 0);
     glEnd();
 }
@@ -253,7 +253,7 @@ void SceneViewCommon2D::paintAxes()
     glEnd();
 
     renderText(border.x + 38, height() - border.y + 2 + fontMetrics().height() / 3,
-               Util::scene()->problemInfo()->labelX());
+               Util::problem()->config()->labelX());
 
     // y-axis
     glBegin(GL_QUADS);
@@ -269,8 +269,8 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 1, border.y + 35);
     glEnd();
 
-    renderText(border.x + 2 - fontMetrics().width(Util::scene()->problemInfo()->labelY()) / 2, height() - border.y - 38,
-               Util::scene()->problemInfo()->labelY());
+    renderText(border.x + 2 - fontMetrics().width(Util::problem()->config()->labelY()) / 2, height() - border.y - 38,
+               Util::problem()->config()->labelY());
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }

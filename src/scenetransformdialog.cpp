@@ -21,6 +21,7 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "hermes2d/problem.h"
 
 SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 {
@@ -46,12 +47,12 @@ SceneTransformDialog::~SceneTransformDialog()
 
 void SceneTransformDialog::showDialog()
 {
-    lstTranslateX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lstTranslateY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    lstRotateBasePointX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lstRotateBasePointY->setText(Util::scene()->problemInfo()->labelY() + ":");
-    lstScaleBasePointX->setText(Util::scene()->problemInfo()->labelX() + ":");
-    lstScaleBasePointY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    lstTranslateX->setText(Util::problem()->config()->labelX() + ":");
+    lstTranslateY->setText(Util::problem()->config()->labelY() + ":");
+    lstRotateBasePointX->setText(Util::problem()->config()->labelX() + ":");
+    lstRotateBasePointY->setText(Util::problem()->config()->labelY() + ":");
+    lstScaleBasePointX->setText(Util::problem()->config()->labelX() + ":");
+    lstScaleBasePointY->setText(Util::problem()->config()->labelY() + ":");
 
     show();
 }

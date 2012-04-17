@@ -82,7 +82,7 @@ void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbF
 SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
 {
     //TODO - add dialog
-    FieldInfo *field = Util::scene()->fieldInfo(this->fieldid);
+    FieldInfo *field = Util::problem()->fieldInfo(this->fieldid);
 
     return new SceneBoundary(field, tr("new boundary").toStdString(),
                              field->module()->boundary_type_default->id);
@@ -91,7 +91,7 @@ SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
 SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
 {
     //TODO - add dialog
-    FieldInfo *field = Util::scene()->fieldInfo(this->fieldid);
+    FieldInfo *field = Util::problem()->fieldInfo(this->fieldid);
 
     return new SceneMaterial(field, tr("new material").toStdString());
 }
@@ -159,13 +159,13 @@ void deformShapeTemplate(T linVert, int count)
 
 void Hermes::Module::ModuleAgros::deform_shape(double3* linVert, int count)
 {
-    if (Util::scene()->fieldInfo(fieldid)->module()->deformed_shape)
+    if (Util::problem()->fieldInfo(fieldid)->module()->deformed_shape)
         deformShapeTemplate<double3 *>(linVert, count);
 }
 
 void Hermes::Module::ModuleAgros::deform_shape(double4* linVert, int count)
 {
-    if (Util::scene()->fieldInfo(fieldid)->module()->deformed_shape)
+    if (Util::problem()->fieldInfo(fieldid)->module()->deformed_shape)
         deformShapeTemplate<double4 *>(linVert, count);
 }
 

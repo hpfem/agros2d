@@ -102,20 +102,20 @@ void InfoWidget::showInfo()
     problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problem.SetValue("NAME_LABEL", tr("Name:").toStdString());
-    problem.SetValue("NAME", Util::scene()->problemInfo()->name().toStdString());
+    problem.SetValue("NAME", Util::problem()->config()->name().toStdString());
 
     problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType()).toStdString());
+    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::problem()->config()->coordinateType()).toStdString());
 
     problem.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
-    problem.SetValue("MESH_TYPE", meshTypeString(Util::scene()->problemInfo()->meshType()).toStdString());
+    problem.SetValue("MESH_TYPE", meshTypeString(Util::problem()->config()->meshType()).toStdString());
 
     problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-    problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency()).toStdString() + " Hz");
+    problem.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
     problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-    problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep().number()).toStdString() + " s");
+    problem.SetValue("TIME_STEP", QString::number(Util::problem()->config()->timeStep().number()).toStdString() + " s");
     problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-    problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal().number()).toStdString() + " s");
+    problem.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
 
     if (Util::problem()->isMeshed())
     {
@@ -145,7 +145,7 @@ void InfoWidget::showInfo()
         problem.ShowSection("SOLUTION_SECTION");
     }
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         ctemplate::TemplateDictionary *field = problem.AddSectionDictionary("FIELD");
 

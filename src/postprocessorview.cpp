@@ -156,12 +156,12 @@ void PostprocessorWidget::loadAdvanced()
     txtParticleDragReferenceArea->setValue(Util::config()->particleDragReferenceArea);
     txtParticleDragCoefficient->setValue(Util::config()->particleDragCoefficient);
 
-    lblParticlePointX->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelX()));
-    lblParticlePointY->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelY()));
-    lblParticleVelocityX->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelX()));
-    lblParticleVelocityY->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelY()));
+    lblParticlePointX->setText(QString("%1 (m):").arg(Util::problem()->config()->labelX()));
+    lblParticlePointY->setText(QString("%1 (m):").arg(Util::problem()->config()->labelY()));
+    lblParticleVelocityX->setText(QString("%1 (m):").arg(Util::problem()->config()->labelX()));
+    lblParticleVelocityY->setText(QString("%1 (m):").arg(Util::problem()->config()->labelY()));
 
-    if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
+    if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
     else
         lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
@@ -861,9 +861,9 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 void PostprocessorWidget::doFieldInfo(int index)
 {
     QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
-    if (Util::scene()->hasField(fieldName))
+    if (Util::problem()->hasField(fieldName))
     {
-        FieldInfo *fieldInfo = Util::scene()->fieldInfo(fieldName);
+        FieldInfo *fieldInfo = Util::problem()->fieldInfo(fieldName);
         Util::scene()->setActiveViewField(fieldInfo);
 
         fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
@@ -886,7 +886,7 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
         QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
-        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
     }
 
     // component
@@ -900,8 +900,8 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
         else
         {
             cmbPostScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-            cmbPostScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-            cmbPostScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+            cmbPostScalarFieldVariableComp->addItem(Util::problem()->config()->labelX(), PhysicFieldVariableComp_X);
+            cmbPostScalarFieldVariableComp->addItem(Util::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
         }
     }
 
@@ -930,7 +930,7 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
         // TODO: not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());
 
-        physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
     }
 
     if (physicFieldVariable)
@@ -993,9 +993,9 @@ void PostprocessorWidget::setControls()
         chkShowPost2DContourView->setEnabled(isSolved && (cmbPost2DContourVariable->count() > 0));
         chkShowPost2DScalarView->setEnabled(isSolved && (cmbPostScalarFieldVariable->count() > 0));
         chkShowPost2DVectorView->setEnabled(isSolved && (cmbPost2DVectorFieldVariable->count() > 0));
-        // if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
+        // if (Util::problem()->config()->hermes()->hasParticleTracing())
         // {
-        // chkShowParticleTracing->setEnabled(isSolved && (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState));
+        // chkShowParticleTracing->setEnabled(isSolved && (Util::problem()->config()->analysisType == AnalysisType_SteadyState));
         chkShowPost2DParticleView->setEnabled(isSolved);
         // }
         // else

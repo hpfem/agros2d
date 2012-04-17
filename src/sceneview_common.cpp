@@ -398,7 +398,7 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //        Util::scene()->activeSceneSolution()->processRangeVector();
     //        Util::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
     //        Util::scene()ViewSettings.showVectors = true;
-    //        Util::scene()ViewSettings.vectorPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_vector_variable->id;
+    //        Util::scene()ViewSettings.vectorPhysicFieldVariable = Util::problem()->config()->module()->view_default_vector_variable->id;
     //        updateGL();
     //        ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
     //        if (resultVectorView.isError())
@@ -415,15 +415,15 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //        actSceneModePostprocessor->trigger();
 
     //        // last step
-    //        if (Util::scene()->problemInfo()->module()->transient_solutions)
+    //        if (Util::problem()->config()->module()->transient_solutions)
     //            Util::scene()->activeSceneSolution()->setTimeStep(Util::scene()->activeSceneSolution()->timeStepCount() - 1);
 
     //        // scalar field
     //        Util::scene()->activeSceneSolution()->processRangeScalar();
     //        Util::scene()ViewSettings.scalarRangeAuto = true;
-    //        Util::scene()ViewSettings.scalarPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_scalar_variable->id;
-    //        Util::scene()ViewSettings.scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->module()->view_default_scalar_variable_comp();
-    //        Util::scene()ViewSettings.vectorPhysicFieldVariable = Util::scene()->problemInfo()->module()->view_default_vector_variable->id;
+    //        Util::scene()ViewSettings.scalarPhysicFieldVariable = Util::problem()->config()->module()->view_default_scalar_variable->id;
+    //        Util::scene()ViewSettings.scalarPhysicFieldVariableComp = Util::problem()->config()->module()->view_default_scalar_variable_comp();
+    //        Util::scene()ViewSettings.vectorPhysicFieldVariable = Util::problem()->config()->module()->view_default_vector_variable->id;
 
     //        Util::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
     //        updateGL();

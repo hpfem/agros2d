@@ -7,7 +7,7 @@
 #include <rapidxml_utils.cpp>
 
 class FieldInfo;
-class ProblemInfo;
+class ProblemConfig;
 class ParserFormExpression;
 
 //namespace Hermes{
@@ -87,7 +87,7 @@ private:
     Coupling *m_coupling;
 
     /// pointer to problem info
-    ProblemInfo *m_problemInfo;
+    ProblemConfig *m_problemInfo;
 
     FieldInfo* m_sourceField;
     FieldInfo* m_targetField;

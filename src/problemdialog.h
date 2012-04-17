@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class ProblemInfo;
+class ProblemConfig;
 class FieldInfo;
 class CouplingInfo;
 class ScriptEditor;
@@ -86,7 +86,7 @@ class FieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    FieldWidget(const ProblemInfo *problemInfo, FieldInfo *m_fieldInfo, QWidget *parent);
+    FieldWidget(FieldInfo *m_fieldInfo, QWidget *parent);
 
     // equation
     QLabel *equationImage;
@@ -100,8 +100,6 @@ public:
     void refresh();
 
 private:
-    // problem info
-    const ProblemInfo *problemInfo;
     FieldInfo *m_fieldInfo;
 
     // main

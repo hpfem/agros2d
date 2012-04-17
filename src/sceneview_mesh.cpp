@@ -116,7 +116,7 @@ void MeshHermes::processSolved()
     // QTimer::singleShot(0, this, SLOT(processSolutionMesh()));
     // QTimer::singleShot(0, this, SLOT(processOrder()));
 
-    //TODO timedependence rpoblemsm_timeStep * Util::scene()->problemInfo()->module()->number_of_solution())->space);
+    //TODO timedependence rpoblemsm_timeStep * Util::problem()->config()->module()->number_of_solution())->space);
     emit processed();
 }
 

@@ -119,8 +119,8 @@ void FieldSelectDialog::doItemDoubleClicked(QListWidgetItem *item)
 
 // ********************************************************************************************************
 
-FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent)
-    : QWidget(parent), problemInfo(problemInfo), m_fieldInfo(fieldInfo)
+FieldWidget::FieldWidget(FieldInfo *fieldInfo, QWidget *parent)
+    : QWidget(parent), m_fieldInfo(fieldInfo)
 {
     createContent();
     load();
@@ -386,12 +386,12 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
 {
     setWindowTitle(QString::fromStdString(fieldInfo->module()->name));
 
-    fieldWidget = new FieldWidget(Util::scene()->problemInfo(), fieldInfo, this);
+    fieldWidget = new FieldWidget(fieldInfo, this);
 
     // dialog buttons
     QPushButton *btnDeleteField = new QPushButton(tr("Delete field"));
     btnDeleteField->setDefault(false);
-    btnDeleteField->setEnabled(Util::scene()->hasField(fieldInfo->fieldId()));
+    btnDeleteField->setEnabled(Util::problem()->hasField(fieldInfo->fieldId()));
     connect(btnDeleteField, SIGNAL(clicked()), this, SLOT(deleteField()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -429,7 +429,7 @@ void FieldDialog::deleteField()
     if (QMessageBox::question(this, tr("Delete"), tr("Physical field '%1' will be pernamently deleted. Are you sure?").
                               arg(QString::fromStdString(fieldWidget->fieldInfo()->module()->name)), tr("&Yes"), tr("&No")) == 0)
     {
-        Util::scene()->removeField(fieldWidget->fieldInfo());
+        Util::problem()->removeField(fieldWidget->fieldInfo());
         accept();
     }
 }
@@ -440,7 +440,7 @@ FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
 {
     createControls();
 
-    connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
     refresh();
@@ -480,7 +480,7 @@ void FieldsToobar::refresh()
     tlbFields->clear();
     actFieldsGroup->actions().clear();
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         QAction *actField = new QAction(QString::fromStdString(fieldInfo->module()->name), this);
         actField->setIcon(icon(QString::fromStdString("fields/" + fieldInfo->module()->fieldid)));
@@ -497,7 +497,7 @@ void FieldsToobar::refresh()
 
 void FieldsToobar::fieldDialog(QAction *action)
 {
-    FieldInfo *fieldInfo = Util::scene()->fieldInfo(action->data().toString());
+    FieldInfo *fieldInfo = Util::problem()->fieldInfo(action->data().toString());
     if (fieldInfo)
     {
         FieldDialog fieldDialog(fieldInfo, this);
@@ -509,7 +509,7 @@ void FieldsToobar::fieldDialog(QAction *action)
 void FieldsToobar::addField()
 {
     // select field dialog
-    FieldSelectDialog dialog(Util::scene()->fieldInfos().keys(), this);
+    FieldSelectDialog dialog(Util::problem()->fieldInfos().keys(), this);
     if (dialog.showDialog() == QDialog::Accepted)
     {
         // add field
@@ -518,7 +518,7 @@ void FieldsToobar::addField()
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
         {
-            Util::scene()->addField(fieldInfo);
+            Util::problem()->addField(fieldInfo);
 
             refresh();
         }
@@ -533,13 +533,13 @@ void FieldsToobar::addField()
 
 CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
 {
-    Util::scene()->synchronizeCouplings();
-    m_couplingInfos = Util::scene()->couplingInfos();
+    Util::problem()->synchronizeCouplings();
+    m_couplingInfos = Util::problem()->couplingInfos();
 
     layoutTable = NULL;
     createContent();
 
-    connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
 
     load();
 }
@@ -602,12 +602,12 @@ void CouplingsWidget::save()
         }
     }
 
-    Util::scene()->setCouplingInfos(m_couplingInfos);
+    Util::problem()->setCouplingInfos(m_couplingInfos);
 }
 
 void CouplingsWidget::refresh()
 {
-    CouplingInfo::synchronizeCouplings(Util::scene()->fieldInfos(), m_couplingInfos);
+    CouplingInfo::synchronizeCouplings(Util::problem()->fieldInfos(), m_couplingInfos);
 
     createContent();
 }
@@ -813,24 +813,24 @@ void ProblemWidget::fillComboBox()
 void ProblemWidget::refresh()
 {
     // main
-    txtName->setText(Util::scene()->problemInfo()->name());
-    cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Util::scene()->problemInfo()->coordinateType()));
+    txtName->setText(Util::problem()->config()->name());
+    cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Util::problem()->config()->coordinateType()));
     if (cmbCoordinateType->currentIndex() == -1)
         cmbCoordinateType->setCurrentIndex(0);
 
     // mesh type
-    cmbMeshType->setCurrentIndex(cmbMeshType->findData(Util::scene()->problemInfo()->meshType()));
+    cmbMeshType->setCurrentIndex(cmbMeshType->findData(Util::problem()->config()->meshType()));
     // harmonic magnetic
-    txtFrequency->setValue(Util::scene()->problemInfo()->frequency());
+    txtFrequency->setValue(Util::problem()->config()->frequency());
     // transient
-    txtTransientTimeStep->setValue(Util::scene()->problemInfo()->timeStep());
-    txtTransientTimeTotal->setValue(Util::scene()->problemInfo()->timeTotal());
+    txtTransientTimeStep->setValue(Util::problem()->config()->timeStep());
+    txtTransientTimeTotal->setValue(Util::problem()->config()->timeTotal());
     // matrix solver
-    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Util::scene()->problemInfo()->matrixSolver()));
+    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Util::problem()->config()->matrixSolver()));
     // startup
-    txtStartupScript->setPlainText(Util::scene()->problemInfo()->startupscript());
+    txtStartupScript->setPlainText(Util::problem()->config()->startupscript());
     // description
-    txtDescription->setPlainText(Util::scene()->problemInfo()->description());
+    txtDescription->setPlainText(Util::problem()->config()->description());
 
     // couplings
     fieldsToolbar->refresh();
@@ -844,24 +844,24 @@ void ProblemWidget::refresh()
 bool ProblemWidget::save()
 {
     // save properties
-    // Util::scene()->problemInfo()->blockSignals(true);
+    // Util::problem()->config()->blockSignals(true);
 
-    Util::scene()->problemInfo()->setName(txtName->text());
-    Util::scene()->problemInfo()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
-    Util::scene()->problemInfo()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
+    Util::problem()->config()->setName(txtName->text());
+    Util::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
+    Util::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
 
-    Util::scene()->problemInfo()->setFrequency(txtFrequency->value());
+    Util::problem()->config()->setFrequency(txtFrequency->value());
 
-    Util::scene()->problemInfo()->setTimeStep(txtTransientTimeStep->value());
-    Util::scene()->problemInfo()->setTimeTotal(txtTransientTimeTotal->value());
+    Util::problem()->config()->setTimeStep(txtTransientTimeStep->value());
+    Util::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
 
-    Util::scene()->problemInfo()->setDescription(txtDescription->toPlainText());
+    Util::problem()->config()->setDescription(txtDescription->toPlainText());
 
     // matrix solver
-    Util::scene()->problemInfo()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
+    Util::problem()->config()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
 
-    // Util::scene()->problemInfo()->blockSignals(false);
-    Util::scene()->problemInfo()->refresh();
+    // Util::problem()->config()->blockSignals(false);
+    Util::problem()->config()->refresh();
 
     // save couplings
     couplingsWidget->save();
@@ -877,7 +877,7 @@ bool ProblemWidget::save()
         }
         else
         {
-            Util::scene()->problemInfo()->setStartupScript(txtStartupScript->toPlainText());
+            Util::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
         }
     }
 
@@ -895,7 +895,7 @@ void ProblemWidget::doOpenXML()
     //TODO custom
     //    if (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom")
     //    {
-    //        fileName = Util::scene()->problemInfo()->fileName.left(Util::scene()->problemInfo()->fileName.size() - 4) + ".xml";
+    //        fileName = Util::problem()->config()->fileName.left(Util::problem()->config()->fileName.size() - 4) + ".xml";
 
     //        if (!QFile::exists(fileName))
     //            if (QMessageBox::question(this, tr("Custom module file"), tr("Custom module doesn't exist. Could I create it?"),

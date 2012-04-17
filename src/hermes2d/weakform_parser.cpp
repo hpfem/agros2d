@@ -24,6 +24,7 @@
 #include "hermes2d.h"
 #include "module.h"
 #include "module_agros.h"
+#include "problem.h"
 #include "datatable.h"
 
 // **************************************************************************
@@ -85,28 +86,28 @@ void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boun
     parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
 
     // coordinates
-    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelX().toLower().toStdString(), &px);
-    parser->parser[0]->DefineVar(Util::scene()->problemInfo()->labelY().toLower().toStdString(), &py);
+    parser->parser[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+    parser->parser[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
     // current solution
     parser->parser[0]->DefineVar("uval", &puval);
-    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelX().toLower().toStdString() , &pudx);
-    parser->parser[0]->DefineVar("ud" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pudy);
+    parser->parser[0]->DefineVar("ud" + Util::problem()->config()->labelX().toLower().toStdString() , &pudx);
+    parser->parser[0]->DefineVar("ud" + Util::problem()->config()->labelY().toLower().toStdString(), &pudy);
 
     // test function
     parser->parser[0]->DefineVar("vval", &pvval);
-    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pvdx);
-    parser->parser[0]->DefineVar("vd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pvdy);
+    parser->parser[0]->DefineVar("vd" + Util::problem()->config()->labelX().toLower().toStdString(), &pvdx);
+    parser->parser[0]->DefineVar("vd" + Util::problem()->config()->labelY().toLower().toStdString(), &pvdy);
 
     // previous solution
     parser->parser[0]->DefineVar("upval", &pupval);
-    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &pupdx);
-    parser->parser[0]->DefineVar("upd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &pupdy);
+    parser->parser[0]->DefineVar("upd" + Util::problem()->config()->labelX().toLower().toStdString(), &pupdx);
+    parser->parser[0]->DefineVar("upd" + Util::problem()->config()->labelY().toLower().toStdString(), &pupdy);
 
     // solution from previous time level
     parser->parser[0]->DefineVar("uptval", &puptval);
-    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &puptdx);
-    parser->parser[0]->DefineVar("uptd" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &puptdy);
+    parser->parser[0]->DefineVar("uptd" + Util::problem()->config()->labelX().toLower().toStdString(), &puptdx);
+    parser->parser[0]->DefineVar("uptd" + Util::problem()->config()->labelY().toLower().toStdString(), &puptdy);
 
     // time step
     parser->parser[0]->DefineVar("deltat", &pdeltat);
@@ -115,8 +116,8 @@ void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boun
     for(int comp = 0; comp < maxSourceFieldComponents; comp++)
     {
         parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString(), &source[comp]);
-        parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::scene()->problemInfo()->labelX().toLower().toStdString(), &sourcedx[comp]);
-        parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::scene()->problemInfo()->labelY().toLower().toStdString(), &sourcedy[comp]);
+        parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelX().toLower().toStdString(), &sourcedx[comp]);
+        parser->parser[0]->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelY().toLower().toStdString(), &sourcedy[comp]);
     }
 
     parser->setParserVariables(materials, boundary);
@@ -183,7 +184,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep().number();
+    pdeltat = Util::problem()->config()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {
@@ -320,7 +321,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep().number();
+    pdeltat = Util::problem()->config()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {
@@ -431,7 +432,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep().number();
+    pdeltat = Util::problem()->config()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {
@@ -511,7 +512,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 {
     double result = 0;
 
-    pdeltat = Util::scene()->problemInfo()->timeStep().number();
+    pdeltat = Util::problem()->config()->timeStep().number();
 
     for (int i = 0; i < n; i++)
     {

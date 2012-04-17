@@ -42,16 +42,16 @@ SceneViewCommon3D::SceneViewCommon3D(QWidget *parent): SceneViewPostInterface(pa
 void SceneViewCommon3D::createActions()
 {
     // projection
-    actSetProjectionXY = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelY()), this);
-    actSetProjectionXY->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelY()));
+    actSetProjectionXY = new QAction(tr("Projection to %1%2").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelY()), this);
+    actSetProjectionXY->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelY()));
     connect(actSetProjectionXY, SIGNAL(triggered()), this, SLOT(doSetProjectionXY()));
 
-    actSetProjectionXZ = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelZ()), this);
-    actSetProjectionXZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelZ()));
+    actSetProjectionXZ = new QAction(tr("Projection to %1%2").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelZ()), this);
+    actSetProjectionXZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelZ()));
     connect(actSetProjectionXZ, SIGNAL(triggered()), this, SLOT(doSetProjectionXZ()));
 
-    actSetProjectionYZ = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelY()).arg(Util::scene()->problemInfo()->labelZ()), this);
-    actSetProjectionYZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelY()).arg(Util::scene()->problemInfo()->labelZ()));
+    actSetProjectionYZ = new QAction(tr("Projection to %1%2").arg(Util::problem()->config()->labelY()).arg(Util::problem()->config()->labelZ()), this);
+    actSetProjectionYZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::problem()->config()->labelY()).arg(Util::problem()->config()->labelZ()));
     connect(actSetProjectionYZ, SIGNAL(triggered()), this, SLOT(doSetProjectionYZ()));
 }
 
@@ -143,7 +143,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene)
         }
         else
         {
-            if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
+            if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
             {
                 glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
             }

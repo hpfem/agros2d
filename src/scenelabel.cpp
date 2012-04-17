@@ -24,6 +24,7 @@
 #include "scenemarkerdialog.h"
 
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
 
 SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)
     : MarkedSceneBasic()
@@ -32,7 +33,7 @@ SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)
     this->area = area;
     this->polynomialOrder = polynomialOrder;
 
-    foreach (FieldInfo* field, Util::scene()->fieldInfos())
+    foreach (FieldInfo* field, Util::problem()->fieldInfos())
     {
         this->addMarker(SceneMaterialContainer::getNone(field));
     }
@@ -139,7 +140,7 @@ QLayout* SceneLabelDialog::createContent()
     QGroupBox *grpMaterials = new QGroupBox(tr("Materials"));
     grpMaterials->setLayout(layoutMaterials);
 
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         QComboBox *cmbMaterial = new QComboBox();
         connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
@@ -176,13 +177,13 @@ QLayout* SceneLabelDialog::createContent()
         txtPolynomialOrder->setMaximum(10);
 
         // coordinates must be greater then or equal to 0 (axisymmetric case)
-        if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric)
+        if (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
             txtPointX->setMinimum(0.0);
 
         // coordinates
         QFormLayout *layoutCoordinates = new QFormLayout();
-        layoutCoordinates->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
-        layoutCoordinates->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
+        layoutCoordinates->addRow(Util::problem()->config()->labelX() + " (m):", txtPointX);
+        layoutCoordinates->addRow(Util::problem()->config()->labelY() + " (m):", txtPointY);
 
         QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
         grpCoordinates->setLayout(layoutCoordinates);
@@ -196,7 +197,7 @@ QLayout* SceneLabelDialog::createContent()
         layoutPolynomialOrder->addWidget(txtPolynomialOrder);
 
         //TODO
-        //layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
+        //layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::problem()->config()->polynomialOrder)));
         layoutPolynomialOrder->addWidget(new QLabel(tr("Global order TODO is %1.").arg(1)));
 
         // area
@@ -227,7 +228,7 @@ QLayout* SceneLabelDialog::createContent()
 void SceneLabelDialog::fillComboBox()
 {
     // markers
-    foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         cmbMaterials[fieldInfo]->clear();
 
@@ -259,14 +260,14 @@ bool SceneLabelDialog::load()
         chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
         txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 
-        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
             cmbMaterials[fieldInfo]->setCurrentIndex(cmbMaterials[fieldInfo]->findData(sceneLabel->getMarker(fieldInfo)->variant()));
         }
     }
     else
     {
-        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
             SceneMaterial* material = NULL;
             bool match = true;
@@ -327,7 +328,7 @@ bool SceneLabelDialog::save()
         sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
         sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
 
-        foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
             sceneLabel->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());
         }
@@ -336,7 +337,7 @@ bool SceneLabelDialog::save()
     {
         foreach (SceneLabel* label, m_labels.items())
         {
-            foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
+            foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
             {
                 if (cmbMaterials[fieldInfo]->currentIndex() != -1)
                     label->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());

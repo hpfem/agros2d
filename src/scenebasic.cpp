@@ -24,6 +24,7 @@
 
 #include "gui.h"
 
+#include "hermes2d/problem.h"
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
@@ -57,7 +58,7 @@ MarkerType* MarkedSceneBasic<MarkerType>::getMarker(FieldInfo* field)
 template <typename MarkerType>
 MarkerType* MarkedSceneBasic<MarkerType>::getMarker(QString fieldId)
 {
-    getMarker(Util::scene()->fieldInfo(fieldId));
+    getMarker(Util::problem()->fieldInfo(fieldId));
 }
 
 
@@ -90,7 +91,7 @@ void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>*
 template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::removeMarker(QString field)
 {
-    removeMarker(Util::scene()->fieldInfo(field));
+    removeMarker(Util::problem()->fieldInfo(field));
 }
 
 template <typename MarkerType>
@@ -98,11 +99,11 @@ void MarkedSceneBasic<MarkerType>::doFieldsChanged()
 {
     foreach (MarkerType* marker, markers)
     {
-        if(! Util::scene()->fieldInfos().contains(marker->fieldId()))
+        if(! Util::problem()->fieldInfos().contains(marker->fieldId()))
             removeMarker(marker);
     }
 
-    foreach (FieldInfo* fieldInfo, Util::scene()->fieldInfos())
+    foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
     {
         if(! markers.contains(fieldInfo)){
             if(typeid(MarkerType) == typeid(SceneBoundary))
