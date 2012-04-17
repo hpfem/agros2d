@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
-    <general id ="rf_te" name="RF TE waves">
+    <general id ="rf" name="RF waves">
         <description>Solving TE waves in RF field.</description>
         <analyses>
             <analysis id="harmonic" type="harmonic" name="Harmonic" solutions="2" />

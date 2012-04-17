@@ -141,7 +141,6 @@
 		<file alias="fields/electrostatic.png">../resources_source/images/fields/electrostatic.png</file>
 		<file alias="fields/heat.png">../resources_source/images/fields/heat.png</file>
 		<file alias="fields/magnetic.png">../resources_source/images/fields/magnetic.png</file>
-		<file alias="fields/magnetic.png">../resources_source/images/fields/magnetic.png</file>
-  		<file alias="fields/rf.png">../resources_source/images/fields/rf.png</file>     
+  		<file alias="fields/rf.png">../resources_source/images/fields/rf.png</file>
     </qresource>
 </RCC>

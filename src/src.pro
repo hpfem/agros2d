@@ -210,7 +210,8 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/materials/Aluminum.xml \
     ../resources/materials/Iron.xml \
     ../resources/xsd/problem_a2d_xml.xsd \
-    ../resources/xslt/problem_a2d_xml.xsl
+    ../resources/xslt/problem_a2d_xml.xsl \
+    ../resources/modules/rf.xml
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
