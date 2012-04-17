@@ -21,7 +21,7 @@ INCLUDEPATH += ../hermes2d/include \
     ../src/hermes2d
 
 linux-g++|linux-g++-64|linux-g++-32 {
-    # system(python ./gen_weakforms.py)
+    system(python ./gen_weakforms.py)
 }
 
 OTHER_FILES += \
