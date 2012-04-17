@@ -154,7 +154,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
 
     parser->parser[0]->SetExpr(expression);
 
-    if(m_fieldInfo->linearityType == LinearityType_Linear)
+    if(m_fieldInfo->linearityType() == LinearityType_Linear)
     {
         pupval = 0;  // todo: ???
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
@@ -205,7 +205,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdy = u_ext[this->i]->dy[i];
 
         // previous solution
-        if (m_fieldInfo->linearityType != LinearityType_Linear)
+        if (m_fieldInfo->linearityType() != LinearityType_Linear)
         {
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
@@ -293,7 +293,7 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
 
     parser->parser[0]->SetExpr(expression);
 
-    if(m_fieldInfo->linearityType == LinearityType_Linear)
+    if(m_fieldInfo->linearityType() == LinearityType_Linear)
     {
         pupval = 0;  // todo: ???
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materialst = m_fieldInfo->module()->material_type_variables;
@@ -337,7 +337,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pupdx = u_ext[this->j]->dx[i];
         pupdy = u_ext[this->j]->dy[i];
 
-        if (m_fieldInfo->linearityType != LinearityType_Linear)
+        if (m_fieldInfo->linearityType() != LinearityType_Linear)
         {
             Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
             for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)

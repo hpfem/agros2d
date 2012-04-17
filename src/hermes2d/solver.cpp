@@ -130,7 +130,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     Hermes::Hermes2D::EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
                     // compiled form
-                    if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
+                    if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                     {
                         string problemId = fieldInfo->module()->fieldid + "_" +
                                 analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
@@ -141,11 +141,11 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                                                                                                function);
                     }
 
-                    if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
+                    if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                         Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled VectorFormEssential()."));
 
                     // interpreted form
-                    if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
+                    if (!custom_form || fieldInfo->weakFormsType() == WeakFormsType_Interpreted)
                     {
                         {
                             CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
@@ -170,14 +170,14 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
-            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder)));
+            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
 
             int j = 0;
             // set order by element
             foreach(SceneLabel* label, Util::scene()->labels->items()){
                 if (!label->getMarker(fieldInfo)->isNone())
                 {
-                    space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder,
+                    space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder(),
                                                    QString::number(j).toStdString());
                     j++;
                 }
@@ -595,7 +595,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
         for (int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
         {
             // constant initial solution
-            InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition.number());
+            InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition().number());
             multiSolutionArray.setSolution(shared_ptr<Solution<Scalar> >(initial), totalComp);
             totalComp++;
         }

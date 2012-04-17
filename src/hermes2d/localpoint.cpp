@@ -127,7 +127,7 @@ void LocalPointValue::calculate()
                 double value;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
                     // const solution at first time step
-                    value = m_fieldInfo->initialCondition.number();
+                    value = m_fieldInfo->initialCondition().number();
                 else
                     value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
 

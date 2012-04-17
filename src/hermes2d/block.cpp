@@ -58,11 +58,11 @@ bool Block::isTransient() const
 
 AdaptivityType Block::adaptivityType() const
 {
-    AdaptivityType at = m_fields.at(0)->fieldInfo()->adaptivityType;
+    AdaptivityType at = m_fields.at(0)->fieldInfo()->adaptivityType();
 
     foreach (Field *field, m_fields)
     {
-        assert(field->fieldInfo()->adaptivityType == at);
+        assert(field->fieldInfo()->adaptivityType() == at);
     }
 
     return at;
@@ -70,11 +70,11 @@ AdaptivityType Block::adaptivityType() const
 
 int Block::adaptivitySteps() const
 {
-    int as = m_fields.at(0)->fieldInfo()->adaptivitySteps;
+    int as = m_fields.at(0)->fieldInfo()->adaptivitySteps();
 
     foreach (Field *field, m_fields)
     {
-        assert(field->fieldInfo()->adaptivitySteps == as);
+        assert(field->fieldInfo()->adaptivitySteps() == as);
     }
 
     return as;
@@ -82,11 +82,11 @@ int Block::adaptivitySteps() const
 
 double Block::adaptivityTolerance() const
 {
-    double at = m_fields.at(0)->fieldInfo()->adaptivityTolerance;
+    double at = m_fields.at(0)->fieldInfo()->adaptivityTolerance();
 
     foreach (Field *field, m_fields)
     {
-        assert(field->fieldInfo()->adaptivityTolerance == at);
+        assert(field->fieldInfo()->adaptivityTolerance() == at);
     }
 
     return at;
@@ -125,9 +125,9 @@ LinearityType Block::linearityType() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->linearityType == LinearityType_Linear)
+        if(fieldInfo->linearityType() == LinearityType_Linear)
             linear++;
-        if(fieldInfo->linearityType == LinearityType_Newton)
+        if(fieldInfo->linearityType() == LinearityType_Newton)
             newton++;
     }
     assert(linear * newton == 0); // all hard coupled fields has to be solved by the same method
@@ -147,8 +147,8 @@ double Block::nonlinearTolerance() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->nonlinearTolerance < tolerance)
-            tolerance = fieldInfo->nonlinearTolerance;
+        if(fieldInfo->nonlinearTolerance() < tolerance)
+            tolerance = fieldInfo->nonlinearTolerance();
     }
 
     return tolerance;
@@ -161,8 +161,8 @@ int Block::nonlinearSteps() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->nonlinearSteps > steps)
-            steps = fieldInfo->nonlinearSteps;
+        if(fieldInfo->nonlinearSteps() > steps)
+            steps = fieldInfo->nonlinearSteps();
     }
 
     return steps;

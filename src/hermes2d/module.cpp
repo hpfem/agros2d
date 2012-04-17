@@ -196,17 +196,17 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
 
     // compiled form
-    if (field->fieldInfo()->weakFormsType == WeakFormsType_Compiled)
+    if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
         //assert(0);        
         custom_form = factoryForm<Scalar>(type, problemId, area, form, marker);
     }
 
-    if ((custom_form == NULL) && field->fieldInfo()->weakFormsType == WeakFormsType_Compiled)
+    if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
         qDebug() << "Cannot find compiled VectorFormVol().";
 
     // interpreted form
-    if (!custom_form || field->fieldInfo()->weakFormsType == WeakFormsType_Interpreted)
+    if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
     {
         custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression, marker, marker_second);
     }
@@ -1130,7 +1130,7 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
 {
     // refine mesh - global
     if (refineGlobal)
-        for (int i = 0; i < fieldInfo->numberOfRefinements; i++)
+        for (int i = 0; i < fieldInfo->numberOfRefinements(); i++)
             mesh->refine_all_elements(0);
 
     // refine mesh - boundary
@@ -1298,7 +1298,7 @@ double ViewScalarFilter<Scalar>::get_pt_value(double x, double y, int item)
 template <typename Scalar>
 void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 {
-    bool isLinear = (m_fieldInfo->linearityType == LinearityType_Linear);
+    bool isLinear = (m_fieldInfo->linearityType() == LinearityType_Linear);
 
     Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
     int np = quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_TRIANGLE) + quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_QUAD);

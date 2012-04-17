@@ -71,26 +71,26 @@ FieldInfo::~FieldInfo()
 void FieldInfo::clear()
 {
     // module object
-    setAnalysisType(AnalysisType_SteadyState);
+    m_analysisType = AnalysisType_SteadyState;
 
-    numberOfRefinements = 1;
-    polynomialOrder = 2;
-    adaptivityType = AdaptivityType_None;
-    adaptivitySteps = 0;
-    adaptivityTolerance = 1.0;
+    m_numberOfRefinements = 1;
+    m_polynomialOrder = 2;
+    m_adaptivityType = AdaptivityType_None;
+    m_adaptivitySteps = 0;
+    m_adaptivityTolerance = 1.0;
 
-    initialCondition = Value("0.0", false);
+    m_initialCondition = Value("0.0", false);
 
     // weakforms
-    weakFormsType = WeakFormsType_Interpreted;
+    m_weakFormsType = WeakFormsType_Interpreted;
 
     // linearity
-    linearityType = LinearityType_Linear;
-    nonlinearTolerance = 1e-3;
-    nonlinearSteps = 10;
+    m_linearityType = LinearityType_Linear;
+    m_nonlinearTolerance = 1e-3;
+    m_nonlinearSteps = 10;
 }
 
-void FieldInfo::setAnalysisType(AnalysisType analysisType)
+void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 {
     m_analysisType = analysisType;
 

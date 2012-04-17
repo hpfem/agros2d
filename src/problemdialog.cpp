@@ -302,20 +302,20 @@ void FieldWidget::load()
     if (cmbAnalysisType->currentIndex() == -1)
         cmbAnalysisType->setCurrentIndex(0);
     // adaptivity
-    cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType));
-    txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps);
-    txtAdaptivityTolerance->setValue(m_fieldInfo->adaptivityTolerance);
+    cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType()));
+    txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps());
+    txtAdaptivityTolerance->setValue(m_fieldInfo->adaptivityTolerance());
     // weakforms
-    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(m_fieldInfo->weakFormsType));
+    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(m_fieldInfo->weakFormsType()));
     //mesh
-    txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements);
-    txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder);
+    txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements());
+    txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder());
     // transient
-    txtTransientInitialCondition->setValue(m_fieldInfo->initialCondition);
+    txtTransientInitialCondition->setValue(m_fieldInfo->initialCondition());
     // linearity
-    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType));
-    txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps);
-    txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance);
+    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
+    txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps());
+    txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance());
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
@@ -325,20 +325,20 @@ bool FieldWidget::save()
     m_fieldInfo->setAnalysisType((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
 
     // adaptivity
-    m_fieldInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
-    m_fieldInfo->adaptivitySteps = txtAdaptivitySteps->value();
-    m_fieldInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
+    m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
+    m_fieldInfo->setAdaptivitySteps(txtAdaptivitySteps->value());
+    m_fieldInfo->setAdaptivityTolerance(txtAdaptivityTolerance->value());
     // weakforms
-    m_fieldInfo->weakFormsType = (WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt();
+    m_fieldInfo->setWeakFormsType((WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt());
     //mesh
-    m_fieldInfo->numberOfRefinements = txtNumberOfRefinements->value();
-    m_fieldInfo->polynomialOrder = txtPolynomialOrder->value();
+    m_fieldInfo->setNumberOfRefinements(txtNumberOfRefinements->value());
+    m_fieldInfo->setPolynomialOrder(txtPolynomialOrder->value());
     // transient
-    m_fieldInfo->initialCondition = txtTransientInitialCondition->value();
+    m_fieldInfo->setInitialCondition(txtTransientInitialCondition->value());
     // linearity
-    m_fieldInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
-    m_fieldInfo->nonlinearSteps = txtNonlinearSteps->value();
-    m_fieldInfo->nonlinearTolerance = txtNonlinearTolerance->value();
+    m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
+    m_fieldInfo->setNonlinearSteps(txtNonlinearSteps->value());
+    m_fieldInfo->setNonlinearTolerance(txtNonlinearTolerance->value());
 
     return true;
 }
