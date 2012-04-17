@@ -322,7 +322,7 @@ class WeakForm:
             
     def parse_expression(self, expression, without_variables, output):                        
         replaces = { 'PI': 'M_PI',
-                     'f': 'Util::scene()->problemInfo()->frequency',                     
+                     'f': 'Util::problem()->config()->frequency()',
                      'x': 'e->x[i]',
                      'y': 'e->y[i]',
                      'r': 'e->x[i]',
@@ -343,7 +343,7 @@ class WeakForm:
                      'uval': 'u->val[i]',
                      'vval': 'v->val[i]', 
                      'uptval': 'ext->fn[this->i]->val[i]',
-                     'deltat': 'Util::scene()->problemInfo()->timeStep.number()'                       
+                     'deltat': 'Util::problem()->config()->timeStep().number()'                       
                      }            
         
         
