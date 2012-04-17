@@ -26,6 +26,7 @@
 
 #include "util.h"
 #include "scene.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
 class Solution;
@@ -172,43 +173,43 @@ class PyField
         void setAnalysisType(const char *analysisType);
 
         // number of refinements
-        inline const int getNumberOfRefinements() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements; }
+        inline const int getNumberOfRefinements() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements(); }
         void setNumberOfRefinements(const int numberOfRefinements);
 
         // polynomial order
-        inline const int getPolynomialOrder() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder; }
+        inline const int getPolynomialOrder() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder(); }
         void setPolynomialOrder(const int polynomialOrder);
 
         // linearity type
-        inline const char *getLinearityType() { return linearityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType).toStdString().c_str(); }
+        inline const char *getLinearityType() { return linearityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType()).toStdString().c_str(); }
         void setLinearityType(const char *linearityType);
 
         // nonlinear tolerance
-        inline const double getNonlinearTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance; }
+        inline const double getNonlinearTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance(); }
         void setNonlinearTolerance(const double nonlinearTolerance);
 
         // nonlinear steps
-        inline const int getNonlinearSteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps; }
+        inline const int getNonlinearSteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps(); }
         void setNonlinearSteps(const int nonlinearSteps);
 
         // adaptivity type
-        inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType).toStdString().c_str(); }
+        inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
         void setAdaptivityType(const char *adaptivityType);
 
         // adaptivity tolerance
-        inline const double getAdaptivityTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance; }
+        inline const double getAdaptivityTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance(); }
         void setAdaptivityTolerance(const double adaptivityTolerance);
 
         // adaptivity steps
-        inline const int getAdaptivitySteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps; }
+        inline const int getAdaptivitySteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps(); }
         void setAdaptivitySteps(const int adaptivitySteps);
 
         // initial condition
-        inline const double getInitialCondition() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition.number(); }
+        inline const double getInitialCondition() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
         void setInitialCondition(const double initialCondition);
 
         // weak forms
-        inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType).toStdString().c_str(); }
+        inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType()).toStdString().c_str(); }
         void setWeakForms(const char *weakForms);
 
         // boundaries

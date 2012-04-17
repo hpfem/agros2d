@@ -1,5 +1,7 @@
 #include "solutiontypes.h"
 #include "scene.h"
+#include "field.h"
+#include "block.h"
 #include "problem.h"
 #include "module_agros.h"
 using namespace Hermes::Hermes2D;
@@ -30,18 +32,13 @@ SolutionArray<Scalar>::SolutionArray()
     space.reset();
 
     time = 0.0;
-    adaptiveSteps = 0;
-    adaptiveError = 100.0;
 }
 
 template <typename Scalar>
-SolutionArray<Scalar>::SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space,
-                                     double adaptiveError, double adaptiveSteps, double time)
+SolutionArray<Scalar>::SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, double time)
 {
     this->sln = sln;
     this->space = space;
-    this->adaptiveError = adaptiveError;
-    this->adaptiveSteps = adaptiveSteps;
     this->time = time;
 }
 
@@ -70,8 +67,8 @@ void SolutionArray<Scalar>::load(QDomElement element)
     // sln->load(fileNameSolution.toStdString().c_str());
     //space = new Hermes::Hermes2D::Space<Scalar>();
     //space->load(fileNameSpace.toStdString().c_str());
-    adaptiveError = element.attribute("adaptiveerror").toDouble();
-    adaptiveSteps = element.attribute("adaptivesteps").toInt();
+//    adaptiveError = element.attribute("adaptiveerror").toDouble();
+//    adaptiveSteps = element.attribute("adaptivesteps").toInt();
     time = element.attribute("time").toDouble();
 
     // delete solution
@@ -98,8 +95,8 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
     eleSolution.appendChild(textSolution);
     eleSpace.appendChild(textSpace);
 
-    element.setAttribute("adaptiveerror", adaptiveError);
-    element.setAttribute("adaptivesteps", adaptiveSteps);
+//    element.setAttribute("adaptiveerror", adaptiveError);
+//    element.setAttribute("adaptivesteps", adaptiveSteps);
     element.setAttribute("time", time);
     element.appendChild(eleSolution);
     element.appendChild(eleSpace);
@@ -110,6 +107,14 @@ void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
 }
 
 // *********************************************************************************************
+
+template <typename Scalar>
+MultiSolutionArray<Scalar>::MultiSolutionArray()
+{
+    m_assemblyTime = 0;
+    m_solveTime = 0;
+    m_adaptiveError = 100;
+}
 
 template <typename Scalar>
 void MultiSolutionArray<Scalar>::createEmpty(int numComp)
@@ -191,7 +196,7 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
         Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
         newMesh->copy(oldSpace->get_mesh());
         Space<Scalar>* newSpace = oldSpace->dup(newMesh);
-        msa.addComponent(SolutionArray<Scalar>(shared_ptr<Solution<Scalar> >(), shared_ptr<Space<Scalar> >(newSpace), 0, 0, 0));
+        msa.addComponent(SolutionArray<Scalar>(shared_ptr<Solution<Scalar> >(), shared_ptr<Space<Scalar> >(newSpace), 0));
     }
 
     return msa;

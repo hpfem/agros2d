@@ -535,22 +535,22 @@ void PreprocessorWidget::showInfo()
         field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());
 
         field->SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
-        field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType).toStdString());
+        field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType()).toStdString());
 
         field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
-        field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements).toStdString());
+        field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements()).toStdString());
         field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
-        field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder).toStdString());
+        field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder()).toStdString());
 
         field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
-        field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType).toStdString());
+        field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType()).toStdString());
 
-        if (fieldInfo->adaptivityType != AdaptivityType_None)
+        if (fieldInfo->adaptivityType() != AdaptivityType_None)
         {
             field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
-            field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps).toStdString());
+            field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps()).toStdString());
             field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-            field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance).toStdString());
+            field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString());
             field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
         }
     }

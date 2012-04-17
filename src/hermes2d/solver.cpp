@@ -17,6 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "field.h"
+#include "block.h"
 #include "problem.h"
 #include "solver.h"
 #include "module.h"
@@ -26,6 +28,7 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 #include "module_agros.h"
+#include "solutionstore.h"
 #include "weakform_parser.h"
 #include "logview.h"
 #include "../weakform/src/weakform_factory.h"
@@ -33,10 +36,9 @@
 using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
-void Solver<Scalar>::init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block)
+void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 {
     m_block = block;
-    m_progressItemSolve = progressItemSolve;
     m_wf = wf;
     isError = false;
 }
@@ -128,7 +130,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     Hermes::Hermes2D::EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
                     // compiled form
-                    if (fieldInfo->weakFormsType == WeakFormsType_Compiled)
+                    if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                     {
                         string problemId = fieldInfo->module()->fieldid + "_" +
                                 analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
@@ -139,11 +141,11 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                                                                                                function);
                     }
 
-                    if (!custom_form && fieldInfo->weakFormsType == WeakFormsType_Compiled)
+                    if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                         Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled VectorFormEssential()."));
 
                     // interpreted form
-                    if (!custom_form || fieldInfo->weakFormsType == WeakFormsType_Interpreted)
+                    if (!custom_form || fieldInfo->weakFormsType() == WeakFormsType_Interpreted)
                     {
                         {
                             CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
@@ -168,14 +170,14 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
-            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder)));
+            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
 
             int j = 0;
             // set order by element
             foreach(SceneLabel* label, Util::scene()->labels->items()){
                 if (!label->getMarker(fieldInfo)->isNone())
                 {
-                    space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder,
+                    space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder(),
                                                    QString::number(j).toStdString());
                     j++;
                 }
@@ -292,7 +294,6 @@ int DEBUG_COUNTER = 0;
 
 template <typename Scalar>
 bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
-
 {
     // Initialize the FE problem.
     DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
@@ -373,7 +374,8 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
                                     arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
-
+            msa.setAssemblyTime(newton.get_assemble_time());
+            msa.setSolveTime(newton.get_solve_time());
             delete coeff_vec;
         }
         catch(Hermes::Exceptions::Exception e)
@@ -534,6 +536,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     // calculate error estimate for each solution component and the total error estimate.
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
     cout << "ERROR " << error << endl;
+    msa.setAdaptiveError(error);
 
     //    // emit signal
     //    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
@@ -593,7 +596,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
         for (int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
         {
             // constant initial solution
-            InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition.number());
+            InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition().number());
             multiSolutionArray.setSolution(shared_ptr<Solution<Scalar> >(initial), totalComp);
             totalComp++;
         }

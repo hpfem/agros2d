@@ -24,6 +24,7 @@
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "field.h"
 #include "problem.h"
 
 void Hermes::Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)

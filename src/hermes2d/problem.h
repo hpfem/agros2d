@@ -4,94 +4,18 @@
 #include "util.h"
 #include "solutiontypes.h"
 
-template <typename Scalar>
-class WeakFormAgros;
+//template <typename Scalar>
+//class WeakFormAgros;
 
 class FieldInfo;
 class CouplingInfo;
 
-class ProgressDialog;
-class MeshGeneratorTriangle;
-class ProgressItemSolve;
-class ProgressItemSolveAdaptiveStep;
-class ProgressItemProcessView;
+class Field;
 
 class Problem;
 
-template <typename Scalar>
-class Solver;
-
-namespace Hermes
-{
-    namespace Module
-    {
-        struct ModuleAgros;
-    }
-}
-
-class Field
-{
-public:
-    Field(FieldInfo* fieldInfo);
-    bool solveInitVariables();
-    FieldInfo* fieldInfo() { return m_fieldInfo; }
-
-    // mesh
-    void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
-
-public:
-//private:
-    QList<CouplingInfo* > m_couplingSources;
-    FieldInfo* m_fieldInfo;
-
-};
-
-/// represents one or more fields, that are hard-coupled -> produce only 1 weak form
-class Block
-{
-public:
-    Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings, ProgressItemSolve* progressItemSolve, Problem* parent);
-
-    Solver<double>* prepareSolver();
-
-    int numSolutions() const;
-    int offset(Field* field) const;
-
-    LinearityType linearityType() const;
-    bool isTransient() const;
-
-    AdaptivityType adaptivityType() const;
-    int adaptivitySteps() const;
-    double adaptivityTolerance() const;
-
-    // minimal nonlinear tolerance of individual fields
-    double nonlinearTolerance() const;
-
-    //maximal nonlinear steps of individual fields
-    int nonlinearSteps() const;
-
-    double timeStep() const;
-    int numTimeSteps() const;
-
-//    Field* couplingSourceField(Coupling* coupling) const;
-//    Field* couplingTargetField(Coupling* coupling) const;
-
-    bool contains(FieldInfo* fieldInfo) const;
-    Field* field(FieldInfo* fieldInfo) const;
-    inline Problem* parentProblem() const {return m_parentProblem; }
-
-public:
-//private:
-    Problem* m_parentProblem;
-
-    WeakFormAgros<double> *m_wf;
-
-    QList<Field*> m_fields;
-    QList<CouplingInfo*> m_couplings;
-    ProgressItemSolve* m_progressItemSolve;
-};
-
-ostream& operator<<(ostream& output, const Block& id);
+//template <typename Scalar>
+//class Solver;
 
 
 class ProblemConfig : public QObject
@@ -162,53 +86,6 @@ private:
     QString m_startupscript;
     QString m_description;
 };
-
-class FieldInfo
-{
-public:
-    FieldInfo(QString fieldId = "");
-    ~FieldInfo();
-
-    void clear();
-
-    inline Hermes::Module::ModuleAgros *module() const { return m_module; }
-
-    QString fieldId() { return m_fieldId; }
-    AnalysisType analysisType() { return m_analysisType; }
-    void setAnalysisType(AnalysisType analysisType);
-
-    // linearity
-    LinearityType linearityType;
-    double nonlinearTolerance; // percent
-    int nonlinearSteps;
-
-    int numberOfRefinements;
-    int polynomialOrder;
-
-    AdaptivityType adaptivityType;
-    int adaptivitySteps;
-    double adaptivityTolerance; // percent
-
-    // transient
-    Value initialCondition;
-
-    // weakforms
-    WeakFormsType weakFormsType;
-private:
-    /// module
-    Hermes::Module::ModuleAgros *m_module;
-
-    /// pointer to problem info, whose this object is a "subfield"
-    ProblemConfig *m_parent;
-
-    /// unique field info
-    QString m_fieldId;
-
-    // analysis type
-    AnalysisType m_analysisType;
-};
-
-ostream& operator<<(ostream& output, FieldInfo& id);
 
 /// intented as central for solution process
 /// shielded from gui and QT
@@ -285,13 +162,6 @@ public:
     QMap<QString, FieldInfo *> m_fieldInfos;
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
 
-    // progress dialog
-    ProgressDialog *m_progressDialog;
-    MeshGeneratorTriangle *m_progressItemMesh;
-    ProgressItemSolve *m_progressItemSolve;
-    ProgressItemSolveAdaptiveStep *m_progressItemSolveAdaptiveStep;
-    ProgressItemProcessView *m_progressItemProcessView;
-
     int m_timeElapsed;
     bool m_isSolving;
     int m_timeStep;
@@ -299,42 +169,6 @@ public:
 
     // todo: move to Field
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
-};
-
-class SolutionStore
-{
-public:
-    SolutionArray<double> solution(FieldSolutionID solutionID, int component);
-    bool contains(FieldSolutionID solutionID);
-    MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
-    MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
-    void saveSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void removeSolution(FieldSolutionID solutionID);
-    void removeSolution(BlockSolutionID solutionID);
-
-    int lastTimeStep(FieldInfo* fieldInfo, SolutionType solutionType);
-    int lastTimeStep(Block* block, SolutionType solutionType);
-
-    double lastTime(FieldInfo* fieldInfo);
-    double lastTime(Block* block);
-
-    // last adaptive step for given time step. If time step not given, last time step used implicitly
-    int lastAdaptiveStep(FieldInfo* fieldInfo, SolutionType solutionType, int timeStep = -1);
-    int lastAdaptiveStep(Block* block, SolutionType solutionType, int timeStep = -1);
-
-    QList<double> timeLevels(FieldInfo* fieldInfo);
-
-    FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionType solutionType);
-    BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionType solutionType);
-
-    void clearAll();
-    void clearOne(FieldSolutionID solutionID);
-
-private:
-    QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutions;
 };
 
 #endif // PROBLEM_H

@@ -42,15 +42,12 @@ template <typename Scalar>
 struct SolutionArray
 {
     double time;
-    double adaptiveError;
-    int adaptiveSteps;
 
     std::tr1::shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln;
     std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> > space;
 
     SolutionArray();
-    SolutionArray(std::tr1::shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> > space,
-                  double adaptiveError, double adaptiveSteps, double time);
+    SolutionArray(std::tr1::shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, double time);
     ~SolutionArray();
 
     void load(QDomElement element);
@@ -61,6 +58,7 @@ template <typename Scalar>
 class MultiSolutionArray
 {
 public:
+    MultiSolutionArray();
     SolutionArray<Scalar> component(int component);
 
     //add next component
@@ -92,8 +90,22 @@ public:
     void createEmpty(int numComp);
     void setTime(double);
 
+    inline double adaptiveError() { return m_adaptiveError; }
+    void setAdaptiveError(const double ae) { m_adaptiveError = ae; }
+
+    inline double assemblyTime() { return m_assemblyTime; }
+    void setAssemblyTime(const double ae) { m_assemblyTime = ae; }
+
+    inline double solveTime() { return m_solveTime; }
+    void setSolveTime(const double ae) { m_solveTime = ae; }
+
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;
+
+    double m_adaptiveError;
+    double m_assemblyTime;
+    double m_solveTime;
+
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;

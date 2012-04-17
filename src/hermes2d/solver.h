@@ -25,9 +25,8 @@
 #include "solutiontypes.h"
 
 using namespace std::tr1;
-class Block;
 
-class ProgressItemSolve;
+class Block;
 class FieldInfo;
 
 template <typename Scalar>
@@ -39,7 +38,7 @@ template <typename Scalar>
 class Solver
 {
 public:
-    void init(ProgressItemSolve *progressItemSolve, WeakFormAgros<Scalar> *wf, Block* block);
+    void init( WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
     void solve(SolverConfig config);
     void doAdaptivityStep();
@@ -61,7 +60,6 @@ private:
 
     // weak form
     WeakFormAgros<Scalar> *m_wf;
-    ProgressItemSolve *m_progressItemSolve;
 
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMesh();
     void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);

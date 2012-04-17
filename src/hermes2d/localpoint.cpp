@@ -26,8 +26,9 @@
 #include "hermes2d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
-#include "hermes2d/solutiontypes.h"
+#include "hermes2d/solutionstore.h"
 
 int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
 {
@@ -126,7 +127,7 @@ void LocalPointValue::calculate()
                 double value;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
                     // const solution at first time step
-                    value = m_fieldInfo->initialCondition.number();
+                    value = m_fieldInfo->initialCondition().number();
                 else
                     value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
 

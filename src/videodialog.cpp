@@ -23,6 +23,7 @@
 #include "scene.h"
 #include "sceneview_post2d.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/solutionstore.h"
 
 VideoDialog::VideoDialog(SceneViewPost2D *sceneView, QWidget *parent) : QDialog(parent)
 {

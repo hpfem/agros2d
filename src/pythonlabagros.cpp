@@ -118,29 +118,29 @@ QString createPythonFromModel()
                 arg(fieldInfo->fieldId()).
                 arg(analysisTypeToStringKey(fieldInfo->analysisType()));
 
-        if (fieldInfo->numberOfRefinements > 0)
+        if (fieldInfo->numberOfRefinements() > 0)
             str += QString("%1.number_of_refinements = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->numberOfRefinements);
+                    arg(fieldInfo->numberOfRefinements());
 
-        if (fieldInfo->polynomialOrder > 0)
+        if (fieldInfo->polynomialOrder() > 0)
             str += QString("%1.polynomial_order = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->polynomialOrder);
+                    arg(fieldInfo->polynomialOrder());
 
         str += QString("%1.linearity_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
-                arg(linearityTypeToStringKey(fieldInfo->linearityType));
+                arg(linearityTypeToStringKey(fieldInfo->linearityType()));
 
-        if (fieldInfo->linearityType != LinearityType_Linear)
+        if (fieldInfo->linearityType() != LinearityType_Linear)
         {
             str += QString("%1.nonlinear_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->nonlinearTolerance);
+                    arg(fieldInfo->nonlinearTolerance());
 
             str += QString("%1.nonlinear_steps = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->nonlinearSteps);
+                    arg(fieldInfo->nonlinearSteps());
         }
 
         str += "\n";
@@ -462,7 +462,7 @@ void PyField::setAnalysisType(const char *analysisType)
 void PyField::setNumberOfRefinements(const int numberOfRefinements)
 {
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements = numberOfRefinements;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNumberOfRefinements(numberOfRefinements);
     else
         throw invalid_argument(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
 }
@@ -470,7 +470,7 @@ void PyField::setNumberOfRefinements(const int numberOfRefinements)
 void PyField::setPolynomialOrder(const int polynomialOrder)
 {
     if (polynomialOrder > 0 && polynomialOrder <= 10)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder = polynomialOrder;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPolynomialOrder(polynomialOrder);
     else
         throw invalid_argument(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 }
@@ -478,7 +478,7 @@ void PyField::setPolynomialOrder(const int polynomialOrder)
 void PyField::setLinearityType(const char *linearityType)
 {
     if (linearityTypeStringKeys().contains(QString(linearityType)))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType = linearityTypeFromStringKey(QString(linearityType));
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setLinearityType(linearityTypeFromStringKey(QString(linearityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
@@ -486,7 +486,7 @@ void PyField::setLinearityType(const char *linearityType)
 void PyField::setNonlinearTolerance(const double nonlinearTolerance)
 {
     if (nonlinearTolerance > 0.0)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance = nonlinearTolerance;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearTolerance(nonlinearTolerance);
     else
         throw invalid_argument(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
 }
@@ -494,7 +494,7 @@ void PyField::setNonlinearTolerance(const double nonlinearTolerance)
 void PyField::setNonlinearSteps(const int nonlinearSteps)
 {
     if (nonlinearSteps >= 1)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps = nonlinearSteps;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearSteps(nonlinearSteps);
     else
         throw invalid_argument(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
 }
@@ -502,7 +502,7 @@ void PyField::setNonlinearSteps(const int nonlinearSteps)
 void PyField::setAdaptivityType(const char *adaptivityType)
 {
     if (adaptivityTypeStringKeys().contains(QString(adaptivityType)))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivityType));
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityType(adaptivityTypeFromStringKey(QString(adaptivityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityTypeStringKeys())).toStdString());
 }
@@ -510,7 +510,7 @@ void PyField::setAdaptivityType(const char *adaptivityType)
 void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
 {
     if (adaptivityTolerance > 0.0)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance = adaptivityTolerance;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityTolerance(adaptivityTolerance);
     else
         throw invalid_argument(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
 }
@@ -518,7 +518,7 @@ void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
 void PyField::setAdaptivitySteps(const int adaptivitySteps)
 {
     if (adaptivitySteps >= 1)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps = adaptivitySteps;
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivitySteps(adaptivitySteps);
     else
         throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
 }
@@ -526,13 +526,13 @@ void PyField::setAdaptivitySteps(const int adaptivitySteps)
 void PyField::setInitialCondition(const double initialCondition)
 {
     // TODO: check
-    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition = Value(QString::number(initialCondition));
+    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(Value(QString::number(initialCondition)));
 }
 
 void PyField::setWeakForms(const char *weakForms)
 {
     if (weakFormsTypeStringKeys().contains(QString(weakForms)))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType = weakFormsTypeFromStringKey(QString(weakForms));
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setWeakFormsType(weakFormsTypeFromStringKey(QString(weakForms)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(weakFormsTypeStringKeys())).toStdString());
 }

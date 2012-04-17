@@ -23,11 +23,13 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "surfaceintegral.h"
+#include "field.h"
 #include "problem.h"
 
 #include "hermes2d.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/solutionstore.h"
 
 SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
@@ -124,7 +126,7 @@ void SurfaceIntegralValue::calculate()
                         bool integrate = false;
                         bool boundary = false;
 
-                        if (e->en[edge]->marker != 0)
+                        if (e->en[edge]->marker != -1) //TODO ??????????
                         {
 //                            if (e->en[edge]->bnd == 1 && (atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
 //                            {

@@ -3,6 +3,7 @@
 #include "util.h"
 #include "module.h"
 #include "weakform_parser.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
 #include <dirent.h>

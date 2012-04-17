@@ -34,6 +34,7 @@
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
 MeshGeneratorTriangle::MeshGeneratorTriangle() : QObject()

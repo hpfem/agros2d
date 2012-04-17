@@ -40,6 +40,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
+#include "hermes2d/solutionstore.h"
 
 ostream& operator<<(ostream& output, FieldInfo& id)
 {
@@ -1291,32 +1292,32 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                                                         analysisTypeToStringKey(AnalysisType_SteadyState))));
 
         // initial condition
-        field->initialCondition.setText(eleField.toElement().attribute("initial_condition", "0"));
+        field->initialCondition().setText(eleField.toElement().attribute("initial_condition", "0"));
 
         // weakforms
-        field->weakFormsType = weakFormsTypeFromStringKey(eleField.toElement().attribute("weak_forms",
-                                                                                         weakFormsTypeToStringKey(WeakFormsType_Compiled)));
+        field->setWeakFormsType(weakFormsTypeFromStringKey(eleField.toElement().attribute("weak_forms",
+                                                                                         weakFormsTypeToStringKey(WeakFormsType_Compiled))));
 
         // polynomial order
-        field->polynomialOrder = eleField.toElement().attribute("polynomial_order").toInt();
+        field->setPolynomialOrder(eleField.toElement().attribute("polynomial_order").toInt());
 
         // number of refinements
-        field->numberOfRefinements = eleField.toElement().attribute("number_of_refinements").toInt();
+        field->setNumberOfRefinements(eleField.toElement().attribute("number_of_refinements").toInt());
 
         // adaptivity
         QDomNode eleFieldAdaptivity = eleField.toElement().elementsByTagName("adaptivity").at(0);
 
-        field->adaptivityType = adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivity_type"));
-        field->adaptivitySteps = eleFieldAdaptivity.toElement().attribute("adaptivity_steps").toInt();
-        field->adaptivityTolerance = eleFieldAdaptivity.toElement().attribute("adaptivity_tolerance").toDouble();
+        field->setAdaptivityType(adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivity_type")));
+        field->setAdaptivitySteps(eleFieldAdaptivity.toElement().attribute("adaptivity_steps").toInt());
+        field->setAdaptivityTolerance(eleFieldAdaptivity.toElement().attribute("adaptivity_tolerance").toDouble());
 
         // linearity
         QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
 
-        field->linearityType = linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type",
-                                                                                                  linearityTypeToStringKey(LinearityType_Linear)));
-        field->nonlinearSteps = eleFieldLinearity.toElement().attribute("nonlinear_steps", "10").toInt();
-        field->nonlinearTolerance = eleFieldLinearity.toElement().attribute("nonlinear_tolerance", "1e-3").toDouble();
+        field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type",
+                                                                                                  linearityTypeToStringKey(LinearityType_Linear))));
+        field->setNonlinearSteps(eleFieldLinearity.toElement().attribute("nonlinear_steps", "10").toInt());
+        field->setNonlinearTolerance(eleFieldLinearity.toElement().attribute("nonlinear_tolerance", "1e-3").toDouble());
 
         // boundary conditions
         QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);
@@ -1594,28 +1595,28 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         // analysis type
         eleField.setAttribute("analysis_type", analysisTypeToStringKey(fieldInfo->analysisType()));
         // initial condition
-        eleField.setAttribute("initial_condition", fieldInfo->initialCondition.text());
+        eleField.setAttribute("initial_condition", fieldInfo->initialCondition().text());
         // weakforms
-        eleField.setAttribute("weak_forms", weakFormsTypeToStringKey(fieldInfo->weakFormsType));
+        eleField.setAttribute("weak_forms", weakFormsTypeToStringKey(fieldInfo->weakFormsType()));
         // polynomial order
-        eleField.setAttribute("polynomial_order", fieldInfo->polynomialOrder);
+        eleField.setAttribute("polynomial_order", fieldInfo->polynomialOrder());
 
         // number of refinements
-        eleField.setAttribute("number_of_refinements", fieldInfo->numberOfRefinements);
+        eleField.setAttribute("number_of_refinements", fieldInfo->numberOfRefinements());
 
         // adaptivity
         QDomElement eleAdaptivity = doc.createElement("adaptivity");
         eleField.appendChild(eleAdaptivity);
-        eleAdaptivity.setAttribute("adaptivity_type", adaptivityTypeToStringKey(fieldInfo->adaptivityType));
-        eleAdaptivity.setAttribute("adaptivity_steps", fieldInfo->adaptivitySteps);
-        eleAdaptivity.setAttribute("adaptivity_tolerance", fieldInfo->adaptivityTolerance);
+        eleAdaptivity.setAttribute("adaptivity_type", adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
+        eleAdaptivity.setAttribute("adaptivity_steps", fieldInfo->adaptivitySteps());
+        eleAdaptivity.setAttribute("adaptivity_tolerance", fieldInfo->adaptivityTolerance());
 
         // linearity
         QDomElement eleLinearity = doc.createElement("solver");
         eleField.appendChild(eleLinearity);
-        eleLinearity.setAttribute("linearity_type", linearityTypeToStringKey(fieldInfo->linearityType));
-        eleLinearity.setAttribute("nonlinear_steps", fieldInfo->nonlinearSteps);
-        eleLinearity.setAttribute("nonlinear_tolerance", fieldInfo->nonlinearTolerance);
+        eleLinearity.setAttribute("linearity_type", linearityTypeToStringKey(fieldInfo->linearityType()));
+        eleLinearity.setAttribute("nonlinear_steps", fieldInfo->nonlinearSteps());
+        eleLinearity.setAttribute("nonlinear_tolerance", fieldInfo->nonlinearTolerance());
 
         // boundaries
         QDomNode eleBoundaries = doc.createElement("boundaries");

@@ -26,6 +26,7 @@
 
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/field.h"
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge)
     : MarkedSceneBasic()
