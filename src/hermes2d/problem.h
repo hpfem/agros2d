@@ -97,12 +97,13 @@ signals:
     void meshed();
     void solved();
 
+public slots:
+    // clear problem
+    void clear();
+
 public:
     Problem();
     ~Problem();
-
-    // clear problem
-    void clear();
 
     void createStructure();
 

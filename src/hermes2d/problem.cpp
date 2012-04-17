@@ -300,7 +300,7 @@ Hermes::Hermes2D::Mesh* Problem::activeMeshInitial()
 void Problem::clear()
 {
     if (Util::problem()->isSolved())
-        Util::scene()->clearSolutions();
+        Util::solutionStore()->clearAll();
     Util::solutionStore()->clearAll();
 
     foreach(Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)

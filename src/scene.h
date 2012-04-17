@@ -69,6 +69,8 @@ class ProblemInfo : public QObject
 {
     Q_OBJECT
 public:
+    ProblemInfo(QWidget *parent = 0);
+
     inline QString labelX() { return ((m_coordinateType == CoordinateType_Planar) ? "X" : "R");  }
     inline QString labelY() { return ((m_coordinateType == CoordinateType_Planar) ? "Y" : "Z");  }
     inline QString labelZ() { return ((m_coordinateType == CoordinateType_Planar) ? "Z" : "a");  }
@@ -224,7 +226,6 @@ public slots:
     void doNewMaterial();
     void doNewMaterial(QString field);
 
-    void clearSolutions();
     void doFieldsChanged();
 
 signals:
@@ -238,6 +239,8 @@ signals:
     void fileNameChanged(const QString &fileName);
 
 public:
+    Scene();
+    ~Scene();
 
     SceneNodeContainer* nodes;
     SceneEdgeContainer* edges;
@@ -259,9 +262,6 @@ public:
 
     QAction *actClearSolutions;
     QAction *actTransform;
-
-    Scene();
-    ~Scene();
 
     // OBSOLETE - DO NOT USE *************************************************************
     SceneNode *addNode(SceneNode *node);

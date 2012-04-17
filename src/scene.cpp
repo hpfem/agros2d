@@ -41,6 +41,10 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
 
+ProblemInfo::ProblemInfo(QWidget *parent) : QObject(parent)
+{
+}
+
 void ProblemInfo::clear()
 {
     m_coordinateType = CoordinateType_Planar;
@@ -224,6 +228,7 @@ Util::Util()
 {
     m_problem = new Problem();
     m_scene = new Scene();
+    m_scene->connect(m_scene->problemInfo(), SIGNAL(changed()), m_problem, SLOT(clear()));
 
     // script remote
     m_scriptEngineRemote = new ScriptEngineRemote();
@@ -272,10 +277,8 @@ Scene::Scene()
     m_activeViewField = NULL;
     m_activeTimeStep = 0;
 
+    connect(m_problemInfo, SIGNAL(changed()), this, SLOT(clearSolutions()));
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-
-    /// TODO
-    //connect(m_sceneSolution, SIGNAL(solved()), this, SLOT(doInvalidated()));
     connect(this, SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
     boundaries = new SceneBoundaryContainer();
@@ -354,19 +357,13 @@ void Scene::createActions()
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolutions()));
-}
-
-void Scene::clearSolutions()
-{
-    if (Util::problem()->isSolved())
-        Util::solutionStore()->clearAll();
+    // TODO: FIX
 }
 
 SceneNode *Scene::addNode(SceneNode *node)
 {
     // clear solution
-    clearSolutions();
+    Util::problem()->clear();
 
     // check if node doesn't exists
     if(SceneNode* existing = nodes->get(node)){
@@ -383,7 +380,7 @@ SceneNode *Scene::addNode(SceneNode *node)
 void Scene::removeNode(SceneNode *node)
 {
     // clear solution
-    clearSolutions();
+    Util::problem()->clear();
 
     nodes->remove(node);
     // delete node;
@@ -396,11 +393,10 @@ SceneNode *Scene::getNode(const Point &point)
     nodes->get(point);
 }
 
-
 SceneEdge *Scene::addEdge(SceneEdge *edge)
 {
     // clear solution
-    clearSolutions();
+    Util::problem()->clear();
 
     // check if edge doesn't exists
     if (SceneEdge* existing = edges->get(edge)){
@@ -417,7 +413,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 void Scene::removeEdge(SceneEdge *edge)
 {
     // clear solution
-    clearSolutions();
+    Util::problem()->clear();
 
     edges->remove(edge);
     // delete edge;
@@ -433,7 +429,7 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
     // clear solution
-    clearSolutions();
+    Util::problem()->clear();
 
     // check if label doesn't exists
     if(SceneLabel* existing = labels->get(label)){
@@ -450,7 +446,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 void Scene::removeLabel(SceneLabel *label)
 {
     // clear solution
-    clearSolutions();
+    Util::problem()->clear();
 
     labels->remove(label);
     // delete label;
@@ -585,7 +581,7 @@ void Scene::clear()
 
     // TODO: - not good
     if (Util::singleton() && Util::problem())
-        clearSolutions();
+        Util::problem()->clear();
 
     m_problemInfo->clear();
 

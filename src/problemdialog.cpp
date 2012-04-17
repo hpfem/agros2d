@@ -119,8 +119,8 @@ void FieldSelectDialog::doItemDoubleClicked(QListWidgetItem *item)
 
 // ********************************************************************************************************
 
-FieldWidget::FieldWidget(const ProblemInfo *problemInfo, FieldInfo *fieldInfo, QWidget *parent)
-    : QWidget(parent), problemInfo(problemInfo), m_fieldInfo(fieldInfo)
+FieldWidget::FieldWidget(FieldInfo *fieldInfo, QWidget *parent)
+    : QWidget(parent), m_fieldInfo(fieldInfo)
 {
     createContent();
     load();
@@ -386,7 +386,7 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
 {
     setWindowTitle(QString::fromStdString(fieldInfo->module()->name));
 
-    fieldWidget = new FieldWidget(Util::scene()->problemInfo(), fieldInfo, this);
+    fieldWidget = new FieldWidget(fieldInfo, this);
 
     // dialog buttons
     QPushButton *btnDeleteField = new QPushButton(tr("Delete field"));
