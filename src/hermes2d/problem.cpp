@@ -68,6 +68,7 @@ void ProblemConfig::clear()
 Problem::Problem()
 {
     m_timeStep = 0;
+    m_timeElapsed = QTime(0, 0);
     m_isSolved = false;
     m_isSolving = false;
 
@@ -101,6 +102,7 @@ void Problem::clearSolution()
     m_meshesInitial.clear();
 
     m_timeStep = 0;
+    m_timeElapsed = QTime(0, 0);
     m_isSolved = false;
     m_isSolving = false;
 }
@@ -263,6 +265,9 @@ void Problem::solve()
 {
     if (isSolving()) return;
 
+    QTime elapsedTime;
+    elapsedTime.start();
+
     clearSolution();
     m_isSolving = true;
     bool isError = false;
@@ -380,6 +385,8 @@ void Problem::solve()
     }
 
     m_isSolving = false;
+
+    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
 
     // close indicator progress
     Indicator::closeProgress();

@@ -12,12 +12,18 @@ body {
 h1 {
 	padding: 2pt;
 	margin: 0;
-	color: rgb(0, 0, 0);
+    color: rgb(41, 41, 140);
 }
 
 h2 {
 	padding: 1pt;
 	margin: 0;
+    color: rgb(41, 41, 140);
+}
+
+h3 {
+    padding: 1pt;
+    margin: 0;
 }
 
 table, td, tr {

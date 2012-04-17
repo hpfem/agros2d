@@ -40,7 +40,7 @@ void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 {
     m_block = block;
     m_wf = wf;
-    isError = false;
+    isError = false;    
 }
 
 template <typename Scalar>
@@ -374,8 +374,8 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
                                     arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
-            msa.setAssemblyTime(newton.get_assemble_time());
-            msa.setSolveTime(newton.get_solve_time());
+            msa.setAssemblyTime(newton.get_assemble_time() * 1000.0);
+            msa.setSolveTime(newton.get_solve_time() * 1000.0);
             delete coeff_vec;
         }
         catch(Hermes::Exceptions::Exception e)
@@ -439,6 +439,7 @@ bool Solver<Scalar>::solveSimple()
 
         Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
     }
+
 
     return !isError;
 }

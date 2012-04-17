@@ -42,12 +42,21 @@ public slots:
 private:
     SceneViewPreprocessor *m_sceneViewGeometry;
 
+    QPushButton *btnAdaptiveError;
+    QPushButton *btnDOFs;
+
     QWebView *webView;
 
     void createActions();
+    QDialog *createChart(const QString &xlabel, const QString &ylabel,
+                         double *x1, double *y1, int size1,
+                         double *x2, double *y2, int size2);
 
 private slots:
     void showInfo();
+
+    void doAdaptiveError();
+    void doAdaptiveDOFs();
 };
 
 #endif // SCENEINFOVIEW_H

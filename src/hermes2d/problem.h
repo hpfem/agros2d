@@ -149,10 +149,7 @@ public:
     inline CouplingInfo* couplingInfo(FieldInfo* sourceField, FieldInfo* targetField);
     inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; }
 
-//    inline int timeElapsed() const { return m_timeElapsed; }
-//    double adaptiveError() const { return 0; }
-//    int adaptiveSteps() const { return 0; }
-//    inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
+    inline QTime timeElapsed() const { return m_timeElapsed; }
 
 public:
 //private:
@@ -162,7 +159,7 @@ public:
     QMap<QString, FieldInfo *> m_fieldInfos;
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
 
-    int m_timeElapsed;
+    QTime m_timeElapsed;
     bool m_isSolving;
     int m_timeStep;
     bool m_isSolved;

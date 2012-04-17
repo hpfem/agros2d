@@ -52,8 +52,10 @@ public:
     bool solveAdaptivityStep(int timeStep, int adaptivityStep);
 
 private:
-    //FieldInfo *m_fieldInfo;
     Block* m_block;
+
+    // elapsed time
+    double m_elapsedTime;
 
     // error
     bool isError;

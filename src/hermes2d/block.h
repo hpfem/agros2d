@@ -55,7 +55,7 @@ public:
     WeakFormAgros<double> *m_wf;
 
     QList<Field*> m_fields;
-    QList<CouplingInfo*> m_couplings;
+    QList<CouplingInfo*> m_couplings;   
 };
 
 ostream& operator<<(ostream& output, const Block& id);

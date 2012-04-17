@@ -76,9 +76,48 @@
 		<td><b>{{POLYNOMIAL_ORDER_LABEL}}</b></td><td>{{POLYNOMIAL_ORDER}}</td>
 	</tr>	
 </table>
+
+<table class="maintable">
+    {{#MESH_PARAMETERS_SECTION}}
+    <tr><td colspan=2><h3>{{MESH_LABEL}}</h3></td></tr>
+    <tr>
+        <td><b>{{INITIAL_MESH_LABEL}}</b></td><td>{{INITIAL_MESH_NODES}}</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td><td>{{INITIAL_MESH_ELEMENTS}}</td>
+    </tr>
+    {{#MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
+    <tr>
+        <td><b>{{SOLUTION_MESH_LABEL}}</b></td><td>{{SOLUTION_MESH_NODES}}</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td><td>{{SOLUTION_MESH_ELEMENTS}}</td>
+    </tr>
+    {{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
+    {{#MESH_SOLUTION_DOFS_PARAMETERS_SECTION}}
+    <tr>
+        <td><b>{{DOFS_LABEL}}</b></td><td>{{DOFS}}</td>
+    </tr>
+    {{#MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
+    <tr>
+        <td><b>{{ERROR_LABEL}}</b></td><td>{{ERROR}}</td>
+    </tr>
+    {{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
+    {{/MESH_SOLUTION_DOFS_PARAMETERS_SECTION}}
+    {{/MESH_PARAMETERS_SECTION}}
+</table>
+
 </div>
 {{/FIELD}}
 
+<table class="maintable">
+    {{#SOLUTION_PARAMETERS_SECTION}}
+    <tr><td colspan=2><h2>{{SOLUTION_LABEL}}</h2></td></tr>
+    <tr>
+        <td><b>{{SOLUTION_ELAPSED_TIME_LABEL}}</b></td><td>{{SOLUTION_ELAPSED_TIME}}</td>
+    </tr>
+    {{/SOLUTION_PARAMETERS_SECTION}}
+</table>
 </body>
 </html>
 
