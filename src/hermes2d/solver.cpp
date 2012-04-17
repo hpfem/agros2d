@@ -294,7 +294,6 @@ int DEBUG_COUNTER = 0;
 
 template <typename Scalar>
 bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
-
 {
     // Initialize the FE problem.
     DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
@@ -375,7 +374,8 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
                                     arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
-
+            msa.setAssemblyTime(newton.get_assemble_time());
+            msa.setSolveTime(newton.get_solve_time());
             delete coeff_vec;
         }
         catch(Hermes::Exceptions::Exception e)
@@ -536,6 +536,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     // calculate error estimate for each solution component and the total error estimate.
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
     cout << "ERROR " << error << endl;
+    msa.setAdaptiveError(error);
 
     //    // emit signal
     //    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
