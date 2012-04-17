@@ -111,7 +111,8 @@ SOURCES += util.cpp \
     hermes2d/coupling.cpp \
     hermes2d/solutiontypes.cpp \
     preprocessorview.cpp \
-    infowidget.cpp
+    infowidget.cpp \
+    settings.cpp
 
 HEADERS += util.h \
     value.h \
@@ -178,7 +179,8 @@ HEADERS += util.h \
     hermes2d/coupling.h \
     hermes2d/solutiontypes.h \
     preprocessorview.h \
-    infowidget.h
+    infowidget.h \
+    settings.h
 
 INCLUDEPATH += . \
     ../lib \

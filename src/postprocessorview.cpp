@@ -32,11 +32,11 @@
 
 const double minWidth = 110;
 
-PostprocessorView::PostprocessorView(SceneViewPreprocessor *sceneGeometry,
+PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
                                      SceneViewMesh *sceneMesh,
                                      SceneViewPost2D *scenePost2D,
                                      SceneViewPost3D *scenePost3D,
-                                     QWidget *parent) : QDockWidget(tr("View Properties"), parent)
+                                     QWidget *parent) : QWidget(parent)
 {
     m_sceneGeometry = sceneGeometry;
     m_sceneMesh = sceneMesh;
@@ -55,7 +55,7 @@ PostprocessorView::PostprocessorView(SceneViewPreprocessor *sceneGeometry,
     connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));
 }
 
-void PostprocessorView::loadBasic()
+void PostprocessorWidget::loadBasic()
 {
     cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(Util::config()->activeField));
     if (cmbFieldInfo->currentIndex() == -1)
@@ -87,15 +87,15 @@ void PostprocessorView::loadBasic()
     Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
-    cmbPost2DScalarFieldVariable->setCurrentIndex(cmbPost2DScalarFieldVariable->findData(Util::config()->scalarVariable));
-    if (cmbPost2DScalarFieldVariable->currentIndex() == -1 && cmbPost2DScalarFieldVariable->count() > 0)
+    cmbPostScalarFieldVariable->setCurrentIndex(cmbPostScalarFieldVariable->findData(Util::config()->scalarVariable));
+    if (cmbPostScalarFieldVariable->currentIndex() == -1 && cmbPostScalarFieldVariable->count() > 0)
     {
         // set first variable
-        cmbPost2DScalarFieldVariable->setCurrentIndex(0);
+        cmbPostScalarFieldVariable->setCurrentIndex(0);
     }
-    Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
-    doScalarFieldVariable(cmbPost2DScalarFieldVariable->currentIndex());
-    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
+    Util::config()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
+    doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
+    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
     // vector field
     cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Util::config()->vectorVariable));
@@ -112,24 +112,8 @@ void PostprocessorView::loadBasic()
     setControls();
 }
 
-void PostprocessorView::loadAdvanced()
+void PostprocessorWidget::loadAdvanced()
 {
-    // workspace
-    txtGridStep->setText(QString::number(Util::config()->gridStep));
-    chkShowGrid->setChecked(Util::config()->showGrid);
-    chkSnapToGrid->setChecked(Util::config()->snapToGrid);
-
-    lblSceneFontExample->setFont(Util::config()->sceneFont);
-    lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
-
-    chkShowAxes->setChecked(Util::config()->showAxes);
-    chkShowRulers->setChecked(Util::config()->showRulers);
-
-    chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
-    txtGeometryNodeSize->setValue(Util::config()->nodeSize);
-    txtGeometryEdgeWidth->setValue(Util::config()->edgeWidth);
-    txtGeometryLabelSize->setValue(Util::config()->labelSize);
-
     // scalar field
     chkShowScalarColorBar->setChecked(Util::config()->showScalarColorBar);
     cmbPalette->setCurrentIndex(cmbPalette->findData(Util::config()->paletteType));
@@ -177,7 +161,7 @@ void PostprocessorView::loadAdvanced()
     lblParticleVelocityX->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelX()));
     lblParticleVelocityY->setText(QString("%1 (m):").arg(Util::scene()->problemInfo()->labelY()));
 
-    if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+    if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
         lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
     else
         lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
@@ -192,19 +176,9 @@ void PostprocessorView::loadAdvanced()
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
     txtScalarFieldRangeMin->setValue(Util::config()->scalarRangeMin);
     txtScalarFieldRangeMax->setValue(Util::config()->scalarRangeMax);
-
-    // 3d
-    chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
-    txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
-    chkView3DBackground->setChecked(Util::config()->scalarView3DBackground);
-    txtView3DHeight->setValue(Util::config()->scalarView3DHeight);
-    // deform shape
-    chkDeformScalar->setChecked(Util::config()->deformScalar);
-    chkDeformContour->setChecked(Util::config()->deformContour);
-    chkDeformVector->setChecked(Util::config()->deformVector);
 }
 
-void PostprocessorView::saveBasic()
+void PostprocessorWidget::saveBasic()
 {
     // active field
     Util::config()->activeField = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
@@ -227,38 +201,22 @@ void PostprocessorView::saveBasic()
     Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
-    Util::config()->scalarVariable = cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString();
-    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
+    Util::config()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
+    Util::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
     Util::config()->scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     Util::config()->scalarRangeMin = txtScalarFieldRangeMin->value();
     Util::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
     Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
     if (physicFieldVariable && physicFieldVariable->id == "custom")
-        physicFieldVariable->expression.scalar = txtPost2DScalarFieldExpression->text().toStdString();
+        physicFieldVariable->expression.scalar = txtPostScalarFieldExpression->text().toStdString();
 
     // vector field
     Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
 }
 
-void PostprocessorView::saveAdvanced()
+void PostprocessorWidget::saveAdvanced()
 {
-    // workspace
-    Util::config()->showGrid = chkShowGrid->isChecked();
-    Util::config()->gridStep = txtGridStep->text().toDouble();
-    Util::config()->showRulers = chkShowRulers->isChecked();
-    Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
-    Util::config()->snapToGrid = chkSnapToGrid->isChecked();
-
-    Util::config()->sceneFont = lblSceneFontExample->font();
-
-    Util::config()->showAxes = chkShowAxes->isChecked();
-    Util::config()->showRulers = chkShowRulers->isChecked();
-
-    Util::config()->nodeSize = txtGeometryNodeSize->value();
-    Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
-    Util::config()->labelSize = txtGeometryLabelSize->value();
-
     // scalar field
     Util::config()->showScalarColorBar = chkShowScalarColorBar->isChecked();
     Util::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
@@ -304,31 +262,20 @@ void PostprocessorView::saveAdvanced()
     Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
     Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
     Util::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
-    // 3d
-    Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
-    Util::config()->scalarView3DAngle = txtView3DAngle->value();
-    Util::config()->scalarView3DBackground = chkView3DBackground->isChecked();
-    Util::config()->scalarView3DHeight = txtView3DHeight->value();
-    // deform shape
-    Util::config()->deformScalar = chkDeformScalar->isChecked();
-    Util::config()->deformContour = chkDeformContour->isChecked();
-    Util::config()->deformVector = chkDeformVector->isChecked();
 
     // save
     Util::config()->save();
 }
 
-void PostprocessorView::createControls()
+void PostprocessorWidget::createControls()
 {
     // tab widget
     basic = controlsBasic();
     postprocessor = controlsPostprocessor();
-    workspace = controlsWorkspace();
 
     QTabWidget *tabType = new QTabWidget(this);
     tabType->addTab(basic, icon(""), tr("Basic"));
     tabType->addTab(postprocessor, icon(""), tr("Postprocessor"));
-    tabType->addTab(workspace, icon(""), tr("Workspace"));
 
     // dialog buttons
     btnOK = new QPushButton(tr("Apply"));
@@ -338,19 +285,17 @@ void PostprocessorView::createControls()
     layoutButtons->addStretch();
     layoutButtons->addWidget(btnOK);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tabType);
-    layout->addLayout(layoutButtons);
+    QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->setContentsMargins(0, 5, 3, 5);
+    layoutMain->addWidget(tabType);
+    layoutMain->addLayout(layoutButtons);
 
     setControls();
 
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    setWidget(widget);
+    setLayout(layoutMain);
 }
 
-QWidget *PostprocessorView::meshWidget()
+QWidget *PostprocessorWidget::meshWidget()
 {
     // layout mesh
     chkShowInitialMeshView = new QCheckBox(tr("Initial mesh"));
@@ -380,7 +325,7 @@ QWidget *PostprocessorView::meshWidget()
     return widget;
 }
 
-QWidget *PostprocessorView::post2DWidget()
+QWidget *PostprocessorWidget::post2DWidget()
 {
     // layout post2d
     chkShowPost2DContourView = new QCheckBox(tr("Contours"));
@@ -405,11 +350,11 @@ QWidget *PostprocessorView::post2DWidget()
     grpShowPost2D->setLayout(layoutShowPost2D);
 
     // layout scalar field
-    cmbPost2DScalarFieldVariable = new QComboBox();
-    connect(cmbPost2DScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
-    cmbPost2DScalarFieldVariableComp = new QComboBox();
-    connect(cmbPost2DScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
-    txtPost2DScalarFieldExpression = new QLineEdit();
+    cmbPostScalarFieldVariable = new QComboBox();
+    connect(cmbPostScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
+    cmbPostScalarFieldVariableComp = new QComboBox();
+    connect(cmbPostScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
+    txtPostScalarFieldExpression = new QLineEdit();
 
     chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
@@ -418,11 +363,11 @@ QWidget *PostprocessorView::post2DWidget()
     layoutScalarField->setColumnMinimumWidth(0, minWidth);
     layoutScalarField->setColumnStretch(1, 1);
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutScalarField->addWidget(cmbPost2DScalarFieldVariable, 0, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPostScalarFieldVariable, 0, 1, 1, 3);
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
-    layoutScalarField->addWidget(cmbPost2DScalarFieldVariableComp, 1, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPostScalarFieldVariableComp, 1, 1, 1, 3);
     layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
-    layoutScalarField->addWidget(txtPost2DScalarFieldExpression, 2, 1, 1, 3);
+    layoutScalarField->addWidget(txtPostScalarFieldExpression, 2, 1, 1, 3);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -465,7 +410,7 @@ QWidget *PostprocessorView::post2DWidget()
     return widget;
 }
 
-QWidget *PostprocessorView::post3DWidget()
+QWidget *PostprocessorWidget::post3DWidget()
 {
     // layout post3d
     radPost3DNone = new QRadioButton(tr("None"), this);
@@ -507,7 +452,7 @@ QWidget *PostprocessorView::post3DWidget()
     return widget;
 }
 
-QWidget *PostprocessorView::controlsBasic()
+QWidget *PostprocessorWidget::controlsBasic()
 {
     cmbFieldInfo = new QComboBox();
     connect(cmbFieldInfo, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldInfo(int)));
@@ -577,7 +522,7 @@ QWidget *PostprocessorView::controlsBasic()
     return widget;
 }
 
-QWidget *PostprocessorView::controlsPostprocessor()
+QWidget *PostprocessorWidget::controlsPostprocessor()
 {
     // scalar field
     // palette
@@ -913,152 +858,7 @@ QWidget *PostprocessorView::controlsPostprocessor()
     return widget;
 }
 
-QWidget *PostprocessorView::controlsWorkspace()
-{
-    // workspace
-    txtGridStep = new QLineEdit("0.1");
-    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
-    chkShowGrid = new QCheckBox(tr("Show grid"));
-    connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
-    chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
-
-    QGridLayout *layoutGrid = new QGridLayout();
-    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
-    layoutGrid->addWidget(txtGridStep, 0, 1);
-    layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
-    layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
-    layoutGrid->addWidget(chkZoomToMouse, 3, 0, 1, 2);
-
-    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
-    grpGrid->setLayout(layoutGrid);
-
-    lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
-
-    btnSceneFont = new QPushButton(tr("Set font"));
-    connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
-
-    QGridLayout *layoutFont = new QGridLayout();
-    layoutFont->addWidget(lblSceneFontExample, 0, 1);
-    layoutFont->addWidget(btnSceneFont, 0, 2);
-
-    QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
-    grpFont->setLayout(layoutFont);
-
-    // geometry
-    txtGeometryNodeSize = new QSpinBox();
-    txtGeometryNodeSize->setMinimum(1);
-    txtGeometryNodeSize->setMaximum(20);
-    txtGeometryEdgeWidth = new QSpinBox();
-    txtGeometryEdgeWidth->setMinimum(1);
-    txtGeometryEdgeWidth->setMaximum(20);
-    txtGeometryLabelSize = new QSpinBox();
-    txtGeometryLabelSize->setMinimum(1);
-    txtGeometryLabelSize->setMaximum(20);
-
-    QGridLayout *layoutGeometry = new QGridLayout();
-    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
-    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
-    layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 2, 0);
-    layoutGeometry->addWidget(txtGeometryLabelSize, 2, 1);
-
-    QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
-    grpGeometry->setLayout(layoutGeometry);
-
-    // other
-    chkShowRulers = new QCheckBox(tr("Show rulers"));
-    chkShowAxes = new QCheckBox(tr("Show axes"));
-
-    QVBoxLayout *layoutOther = new QVBoxLayout();
-    layoutOther->addWidget(chkShowAxes);
-    layoutOther->addWidget(chkShowRulers);
-
-    QGroupBox *grpOther = new QGroupBox(tr("Other"));
-    grpOther->setLayout(layoutOther);
-
-    QPushButton *btnWorkspaceDefault = new QPushButton(tr("Default"));
-    connect(btnWorkspaceDefault, SIGNAL(clicked()), this, SLOT(doWorkspaceDefault()));
-
-    QVBoxLayout *layoutWorkspace = new QVBoxLayout();
-    layoutWorkspace->addWidget(grpGrid);
-    layoutWorkspace->addWidget(grpFont);
-    layoutWorkspace->addWidget(grpGeometry);
-    layoutWorkspace->addWidget(grpOther);
-    layoutWorkspace->addStretch();
-    layoutWorkspace->addWidget(btnWorkspaceDefault, 0, Qt::AlignLeft);
-
-    QWidget *workspaceWidget = new QWidget();
-    workspaceWidget->setLayout(layoutWorkspace);
-
-    // advanced
-    // layout 3d
-    chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
-    txtView3DAngle = new QDoubleSpinBox(this);
-    txtView3DAngle->setDecimals(1);
-    txtView3DAngle->setSingleStep(1);
-    txtView3DAngle->setMinimum(30);
-    txtView3DAngle->setMaximum(360);
-    chkView3DBackground = new QCheckBox(tr("Gradient background"), this);
-    txtView3DHeight = new QDoubleSpinBox(this);
-    txtView3DHeight->setDecimals(1);
-    txtView3DHeight->setSingleStep(0.1);
-    txtView3DHeight->setMinimum(0.2);
-    txtView3DHeight->setMaximum(10.0);
-
-    QGridLayout *layout3D = new QGridLayout();
-    layout3D->addWidget(new QLabel(tr("Angle:")), 0, 1);
-    layout3D->addWidget(txtView3DAngle, 0, 2);
-    layout3D->addWidget(chkView3DLighting, 0, 3);
-    layout3D->addWidget(new QLabel(tr("Height:")), 1, 1);
-    layout3D->addWidget(txtView3DHeight, 1, 2);
-    layout3D->addWidget(chkView3DBackground, 1, 3);
-
-    QGroupBox *grp3D = new QGroupBox(tr("3D view"));
-    grp3D->setLayout(layout3D);
-
-    // layout deform shape
-    chkDeformScalar = new QCheckBox(tr("Scalar field"), this);
-    chkDeformContour = new QCheckBox(tr("Contours"), this);
-    chkDeformVector = new QCheckBox(tr("Vector field"), this);
-
-    QGridLayout *layoutDeformShape = new QGridLayout();
-    layoutDeformShape->addWidget(chkDeformScalar, 0, 0);
-    layoutDeformShape->addWidget(chkDeformContour, 0, 1);
-    layoutDeformShape->addWidget(chkDeformVector, 0, 2);
-
-    QGroupBox *grpDeformShape = new QGroupBox(tr("Deform shape"));
-    grpDeformShape->setLayout(layoutDeformShape);
-
-    QPushButton *btnAdvancedDefault = new QPushButton(tr("Default"));
-    connect(btnAdvancedDefault, SIGNAL(clicked()), this, SLOT(doAdvancedDefault()));
-
-    // layout postprocessor
-    QVBoxLayout *layoutAdvanced = new QVBoxLayout();
-    layoutAdvanced->addWidget(grp3D);
-    layoutAdvanced->addWidget(grpDeformShape);
-    layoutAdvanced->addStretch();
-    layoutAdvanced->addWidget(btnAdvancedDefault, 0, Qt::AlignLeft);
-
-    QWidget *advancedWidget = new QWidget(this);
-    advancedWidget->setLayout(layoutAdvanced);
-
-    tbxWorkspace = new QToolBox();
-    tbxWorkspace->addItem(workspaceWidget, icon(""), tr("Workspace"));
-    tbxWorkspace->addItem(advancedWidget, icon(""), tr("Advanced"));
-
-    // layout workspace
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tbxWorkspace);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
-}
-
-void PostprocessorView::doFieldInfo(int index)
+void PostprocessorWidget::doFieldInfo(int index)
 {
     QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
     if (Util::scene()->hasField(fieldName))
@@ -1066,66 +866,66 @@ void PostprocessorView::doFieldInfo(int index)
         FieldInfo *fieldInfo = Util::scene()->fieldInfo(fieldName);
         Util::scene()->setActiveViewField(fieldInfo);
 
-        fillComboBoxScalarVariable(fieldInfo, cmbPost2DScalarFieldVariable);
+        fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
     }
 }
 
-void PostprocessorView::doScalarFieldVariable(int index)
+void PostprocessorWidget::doScalarFieldVariable(int index)
 {
     if (cmbFieldInfo->currentIndex() == -1)
         return;
 
-    PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt();
+    PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
-    if (cmbPost2DScalarFieldVariable->currentIndex() != -1)
+    if (cmbPostScalarFieldVariable->currentIndex() != -1)
     {
-        QString variableName(cmbPost2DScalarFieldVariable->itemData(index).toString());
+        QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
         physicFieldVariable = Util::scene()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
     }
 
     // component
-    cmbPost2DScalarFieldVariableComp->clear();
+    cmbPostScalarFieldVariableComp->clear();
     if (physicFieldVariable)
     {        
         if (physicFieldVariable->is_scalar)
         {
-            cmbPost2DScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+            cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
         }
         else
         {
-            cmbPost2DScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-            cmbPost2DScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
-            cmbPost2DScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
+            cmbPostScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+            cmbPostScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
+            cmbPostScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
         }
     }
 
-    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
-        cmbPost2DScalarFieldVariableComp->setCurrentIndex(cmbPost2DScalarFieldVariableComp->findData(scalarFieldVariableComp));
-    if (cmbPost2DScalarFieldVariableComp->currentIndex() == -1)
-        cmbPost2DScalarFieldVariableComp->setCurrentIndex(0);
+    if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
+        cmbPostScalarFieldVariableComp->setCurrentIndex(cmbPostScalarFieldVariableComp->findData(scalarFieldVariableComp));
+    if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
+        cmbPostScalarFieldVariableComp->setCurrentIndex(0);
 
-    doScalarFieldVariableComp(cmbPost2DScalarFieldVariableComp->currentIndex());
+    doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
 }
 
-void PostprocessorView::doScalarFieldVariableComp(int index)
+void PostprocessorWidget::doScalarFieldVariableComp(int index)
 {
-    if (cmbPost2DScalarFieldVariable->currentIndex() == -1)
+    if (cmbPostScalarFieldVariable->currentIndex() == -1)
         return;
 
-    txtPost2DScalarFieldExpression->setText("");
+    txtPostScalarFieldExpression->setText("");
 
     Hermes::Module::LocalVariable *physicFieldVariable = NULL;
 
     // TODO: proc je tu index a cmb..->currentIndex?
-    if (cmbPost2DScalarFieldVariable->currentIndex() != -1 && index != -1)
+    if (cmbPostScalarFieldVariable->currentIndex() != -1 && index != -1)
     {
-        QString variableName(cmbPost2DScalarFieldVariable->itemData(cmbPost2DScalarFieldVariable->currentIndex()).toString());
+        QString variableName(cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString());
 
         // TODO: not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());
@@ -1135,41 +935,41 @@ void PostprocessorView::doScalarFieldVariableComp(int index)
 
     if (physicFieldVariable)
     {
-        txtPost2DScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
+        txtPostScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
 
         // expression
-        switch ((PhysicFieldVariableComp) cmbPost2DScalarFieldVariableComp->itemData(cmbPost2DScalarFieldVariableComp->currentIndex()).toInt())
+        switch ((PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt())
         {
         case PhysicFieldVariableComp_Scalar:
-            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
             break;
         case PhysicFieldVariableComp_Magnitude:
-            txtPost2DScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
+            txtPostScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
                                                     arg(QString::fromStdString(physicFieldVariable->expression.comp_x)).
                                                     arg(QString::fromStdString(physicFieldVariable->expression.comp_y)));
             break;
         case PhysicFieldVariableComp_X:
-            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
             break;
         case PhysicFieldVariableComp_Y:
-            txtPost2DScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
             break;
         }
     }
 }
 
-void PostprocessorView::doScalarFieldRangeAuto(int state)
+void PostprocessorWidget::doScalarFieldRangeAuto(int state)
 {
     txtScalarFieldRangeMin->setEnabled(!chkScalarFieldRangeAuto->isChecked());
     txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());
 }
 
-void PostprocessorView::doPaletteFilter(int state)
+void PostprocessorWidget::doPaletteFilter(int state)
 {
     txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
-void PostprocessorView::setControls()
+void PostprocessorWidget::setControls()
 {
     bool isMeshed = Util::problem()->isMeshed();
     bool isSolved = Util::problem()->isSolved();
@@ -1177,6 +977,7 @@ void PostprocessorView::setControls()
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
         widgetsLayout->setCurrentWidget(mesh);
+        postprocessor->setEnabled(false);
 
         // mesh and order
         chkShowInitialMeshView->setEnabled(isMeshed);
@@ -1187,9 +988,10 @@ void PostprocessorView::setControls()
     if (m_scenePost2D->actSceneModePost2D->isChecked())
     {
         widgetsLayout->setCurrentWidget(post2d);
+        postprocessor->setEnabled(true);
 
         chkShowPost2DContourView->setEnabled(isSolved && (cmbPost2DContourVariable->count() > 0));
-        chkShowPost2DScalarView->setEnabled(isSolved && (cmbPost2DScalarFieldVariable->count() > 0));
+        chkShowPost2DScalarView->setEnabled(isSolved && (cmbPostScalarFieldVariable->count() > 0));
         chkShowPost2DVectorView->setEnabled(isSolved && (cmbPost2DVectorFieldVariable->count() > 0));
         // if (Util::scene()->problemInfo()->hermes()->hasParticleTracing())
         // {
@@ -1206,13 +1008,13 @@ void PostprocessorView::setControls()
         cmbPost2DContourVariable->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
 
         // scalar view
-        cmbPost2DScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        cmbPost2DScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        txtPost2DScalarFieldExpression->setEnabled(false);
+        cmbPostScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
+        cmbPostScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
+        txtPostScalarFieldExpression->setEnabled(false);
         if (chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked())
         {
             doScalarFieldRangeAuto(-1);
-            doScalarFieldVariableComp(cmbPost2DScalarFieldVariableComp->currentIndex());
+            doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
         }
 
         cmbPost2DVectorFieldVariable->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
@@ -1221,6 +1023,7 @@ void PostprocessorView::setControls()
     if (m_scenePost3D->actSceneModePost3D->isChecked())
     {
         widgetsLayout->setCurrentWidget(post3d);
+        postprocessor->setEnabled(true);
 
         // scalar view 3d
         radPost3DNone->setEnabled(isSolved);
@@ -1247,7 +1050,7 @@ void PostprocessorView::setControls()
     }
 }
 
-void PostprocessorView::updateControls()
+void PostprocessorWidget::updateControls()
 {
     fillComboBoxFieldInfo(cmbFieldInfo);
     doFieldInfo(cmbFieldInfo->currentIndex());
@@ -1259,12 +1062,12 @@ void PostprocessorView::updateControls()
     loadAdvanced();
 }
 
-void PostprocessorView::doPostprocessorGroupClicked(QAbstractButton *button)
+void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
 {
     setControls();
 }
 
-void PostprocessorView::doApply()
+void PostprocessorWidget::doApply()
 {
     saveBasic();
     saveAdvanced();
@@ -1288,25 +1091,7 @@ void PostprocessorView::doApply()
     activateWindow();
 }
 
-void PostprocessorView::doWorkspaceDefault()
-{
-    txtGridStep->setText(QString::number(GRIDSTEP));
-    chkShowGrid->setChecked(SHOWGRID);
-    chkSnapToGrid->setChecked(SNAPTOGRID);
-
-    lblSceneFontExample->setFont(FONT);
-    lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
-
-    chkShowAxes->setChecked(SHOWAXES);
-    chkShowRulers->setChecked(SHOWRULERS);
-
-    chkZoomToMouse->setChecked(ZOOMTOMOUSE);
-    txtGeometryNodeSize->setValue(GEOMETRYNODESIZE);
-    txtGeometryEdgeWidth->setValue(GEOMETRYEDGEWIDTH);
-    txtGeometryLabelSize->setValue(GEOMETRYLABELSIZE);
-}
-
-void PostprocessorView::doScalarFieldDefault()
+void PostprocessorWidget::doScalarFieldDefault()
 {
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
     chkPaletteFilter->setChecked(PALETTEFILTER);
@@ -1318,12 +1103,12 @@ void PostprocessorView::doScalarFieldDefault()
     txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 }
 
-void PostprocessorView::doContoursDefault()
+void PostprocessorWidget::doContoursDefault()
 {
     txtContoursCount->setValue(CONTOURSCOUNT);
 }
 
-void PostprocessorView::doVectorFieldDefault()
+void PostprocessorWidget::doVectorFieldDefault()
 {
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
@@ -1331,26 +1116,14 @@ void PostprocessorView::doVectorFieldDefault()
     txtVectorScale->setValue(VECTORSCALE);
 }
 
-void PostprocessorView::doOrderDefault()
+void PostprocessorWidget::doOrderDefault()
 {
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
     chkShowOrderScale->setChecked(SHOWORDERCOLORBAR);
     chkOrderLabel->setChecked(ORDERLABEL);
 }
 
-void PostprocessorView::doAdvancedDefault()
-{
-    chkView3DLighting->setChecked(VIEW3DLIGHTING);
-    txtView3DAngle->setValue(VIEW3DANGLE);
-    chkView3DBackground->setChecked(VIEW3DBACKGROUND);
-    txtView3DHeight->setValue(VIEW3DHEIGHT);
-
-    chkDeformScalar->setChecked(DEFORMSCALAR);
-    chkDeformContour->setChecked(DEFORMCONTOUR);
-    chkDeformVector->setChecked(DEFORMVECTOR);
-}
-
-void PostprocessorView::doParticleDefault()
+void PostprocessorWidget::doParticleDefault()
 {
     txtParticleNumberOfParticles->setValue(PARTICLENUMBEROFPARTICLES);
     txtParticleStartingRadius->setValue(PARTICLESTARTINGRADIUS);
@@ -1371,7 +1144,7 @@ void PostprocessorView::doParticleDefault()
     txtParticleDragCoefficient->setValue(PARTICLEDRAGCOEFFICIENT);
 }
 
-void PostprocessorView::doScalarFieldRangeMinChanged()
+void PostprocessorWidget::doScalarFieldRangeMinChanged()
 {
     lblScalarFieldRangeMinError->clear();
     lblScalarFieldRangeMaxError->clear();
@@ -1391,7 +1164,7 @@ void PostprocessorView::doScalarFieldRangeMinChanged()
     */
 }
 
-void PostprocessorView::doScalarFieldRangeMaxChanged()
+void PostprocessorWidget::doScalarFieldRangeMaxChanged()
 {
     lblScalarFieldRangeMaxError->clear();
     lblScalarFieldRangeMinError->clear();
@@ -1411,23 +1184,7 @@ void PostprocessorView::doScalarFieldRangeMaxChanged()
     */
 }
 
-void PostprocessorView::doSceneFont()
-{
-    bool ok;
-    QFont sceneFont = QFontDialog::getFont(&ok, lblSceneFontExample->font(), this);
-    if (ok)
-    {
-        lblSceneFontExample->setFont(sceneFont);
-        lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
-    }
-}
-
-void PostprocessorView::doShowGridChanged()
-{
-    chkSnapToGrid->setEnabled(chkShowGrid->isChecked());
-}
-
-void PostprocessorView::doScalarFieldLog(int state)
+void PostprocessorWidget::doScalarFieldLog(int state)
 {
     txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }

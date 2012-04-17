@@ -119,7 +119,7 @@ void Post3DHermes::processSolved()
     m_initialMeshIsPrepared = false;
     m_scalarIsPrepared = false;
 
-    // processRangeScalar();
+    processRangeScalar();
     // QTimer::singleShot(0, this, SLOT(processRangeScalar()));
 
     emit processed();
@@ -135,12 +135,12 @@ SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
 {
     createActionsPost3D();
 
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
 
     m_post3DHermes = new Post3DHermes();
 
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
 
     connect(m_post3DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
@@ -468,7 +468,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         // init normals
         double* normal = new double[3];
 
-        if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+        if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
             for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
@@ -668,7 +668,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         }
 
         // geometry
-        if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+        if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
         {
             glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
@@ -798,7 +798,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
     }
 }
 
-void SceneViewPost3D::doInvalidated()
+void SceneViewPost3D::refresh()
 {
     if (m_listScalarField3D != -1) glDeleteLists(m_listScalarField3D, 1);
     if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
@@ -823,7 +823,7 @@ void SceneViewPost3D::doInvalidated()
     actSetProjectionXZ->setEnabled(Util::problem()->isSolved());
     actSetProjectionYZ->setEnabled(Util::problem()->isSolved());
 
-    SceneViewCommon::doInvalidated();
+    SceneViewCommon::refresh();
 }
 
 void SceneViewPost3D::clear()

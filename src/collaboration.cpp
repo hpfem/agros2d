@@ -355,8 +355,8 @@ void ServerUploadDialog::doDocumentChanged()
 
     if (radDocumentExisting->isChecked())
     {
-        if (cmbName->findText(Util::scene()->problemInfo()->name, Qt::MatchStartsWith) != -1)
-            cmbName->setCurrentIndex(cmbName->findText(Util::scene()->problemInfo()->name, Qt::MatchStartsWith));
+        if (cmbName->findText(Util::scene()->problemInfo()->name(), Qt::MatchStartsWith) != -1)
+            cmbName->setCurrentIndex(cmbName->findText(Util::scene()->problemInfo()->name(), Qt::MatchStartsWith));
         else if (cmbName->count() > 0)
             cmbName->setCurrentIndex(0);
 
@@ -367,7 +367,7 @@ void ServerUploadDialog::doDocumentChanged()
     else
     {
         txtName->setVisible(true);
-        txtName->setText(Util::scene()->problemInfo()->name);
+        txtName->setText(Util::scene()->problemInfo()->name());
     }
 }
 
@@ -419,7 +419,7 @@ void ServerUploadDialog::httpContentFinished()
         n = n.nextSibling();
     }
 
-    if (cmbName->findText(Util::scene()->problemInfo()->name, Qt::MatchStartsWith) != -1)
+    if (cmbName->findText(Util::scene()->problemInfo()->name(), Qt::MatchStartsWith) != -1)
     {
         radDocumentExisting->setChecked(true);
         doDocumentChanged();
@@ -456,7 +456,7 @@ void ServerUploadDialog::httpFileFinished()
 
     if (content.startsWith("Message: "))
     {
-        QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Util::scene()->problemInfo()->name));
+        QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Util::scene()->problemInfo()->name()));
         accept();
     }
     else

@@ -43,30 +43,29 @@
 
 void ProblemInfo::clear()
 {
-    coordinateType = CoordinateType_Planar;
-    name = QObject::tr("unnamed");
-    fileName = "";
-    startupscript = "";
-    description = "";
+    m_coordinateType = CoordinateType_Planar;
+    m_name = QObject::tr("unnamed");
+    m_fileName = "";
+    m_startupscript = "";
+    m_description = "";
 
     // matrix solver
-    matrixSolver = Hermes::SOLVER_UMFPACK;
+    m_matrixSolver = Hermes::SOLVER_UMFPACK;
 
     // mesh type
-    meshType = MeshType_Triangle;
+    m_meshType = MeshType_Triangle;
 
     // harmonic
-    frequency = 0.0;
+    m_frequency = 0.0;
 
     // transient
-    timeStep = Value("1.0", false);
-    timeTotal = Value("1.0", false);
+    m_timeStep = Value("1.0", false);
+    m_timeTotal = Value("1.0", false);
 }
 
-FieldInfo::FieldInfo(ProblemInfo* parent, QString fieldId)
+FieldInfo::FieldInfo(QString fieldId)
 {
     m_module = NULL;
-    m_parent = parent;
 
     if (fieldId.isEmpty())
     {
@@ -127,7 +126,7 @@ void FieldInfo::setAnalysisType(AnalysisType analysisType)
 
     if (m_module) delete m_module;
     m_module = moduleFactory(m_fieldId.toStdString(),
-                             coordinateType(),
+                             Util::scene()->problemInfo()->coordinateType(),
                              m_analysisType);
 }
 
@@ -356,11 +355,6 @@ void Scene::createActions()
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
     connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolutions()));
-
-    actProblemProperties = new QAction(icon("document-properties"), tr("Properties"), this);
-    actProblemProperties->setShortcut(tr("F12"));
-    actProblemProperties->setStatusTip(tr("Problem properties"));
-    connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
 }
 
 void Scene::clearSolutions()
@@ -1030,7 +1024,7 @@ void Scene::doDeleteSelected()
 void Scene::doNewBoundary()
 {
     doNewBoundary(Util::scene()->activeViewField()->fieldId());
-    }
+}
 
 void Scene::doNewBoundary(QString field)
 {
@@ -1086,21 +1080,6 @@ void Scene::removeField(FieldInfo *field)
 
     emit fieldsChanged();
     emit invalidated();
-}
-
-void Scene::doProblemProperties()
-{
-    ProblemDialog problemDialog(m_problemInfo,
-                                false, QApplication::activeWindow());
-    if (problemDialog.showDialog() == QDialog::Accepted)
-    {
-        emit invalidated();
-    }
-
-    /*
-    //TODO - allow "no field"
-    FieldInfo *fieldInfo = Util::scene()->fieldInfos().values().at(0);
-    */
 }
 
 void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
@@ -1317,7 +1296,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     clear();
 
-    m_problemInfo->fileName = fileName;
+    m_problemInfo->setFileName(fileName);
     emit fileNameChanged(fileInfo.absoluteFilePath());
 
     blockSignals(true);
@@ -1424,36 +1403,36 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     QDomNode eleProblemInfo = eleDoc.elementsByTagName("problem").at(0);
 
     // name
-    m_problemInfo->name = eleProblemInfo.toElement().attribute("name");
+    m_problemInfo->setName(eleProblemInfo.toElement().attribute("name"));
     // coordinate type
-    m_problemInfo->coordinateType = coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type"));
+    m_problemInfo->setCoordinateType(coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type")));
     // mesh type
-    m_problemInfo->meshType = meshTypeFromStringKey(eleProblemInfo.toElement().attribute("mesh_type",
-                                                                               meshTypeToStringKey(MeshType_Triangle)));
+    m_problemInfo->setMeshType(meshTypeFromStringKey(eleProblemInfo.toElement().attribute("mesh_type",
+                                                                                          meshTypeToStringKey(MeshType_Triangle))));
 
     // harmonic
-    m_problemInfo->frequency = eleProblemInfo.toElement().attribute("frequency", "0").toDouble();
+    m_problemInfo->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
 
     // transient
-    m_problemInfo->timeStep.setText(eleProblemInfo.toElement().attribute("time_step", "1"));
-    m_problemInfo->timeTotal.setText(eleProblemInfo.toElement().attribute("time_total", "1"));
+    m_problemInfo->setTimeStep(Value(eleProblemInfo.toElement().attribute("time_step", "1")));
+    m_problemInfo->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1")));
 
     // matrix solver
-    m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
-                                                                                                     matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK)));
+    m_problemInfo->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
+                                                                                                     matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
 
     // startup script
     QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startup_script").at(0);
-    m_problemInfo->startupscript = eleScriptStartup.toElement().text();
+    m_problemInfo->setStartupScript(eleScriptStartup.toElement().text());
 
     // FIX ME - EOL conversion
     QPlainTextEdit textEdit;
-    textEdit.setPlainText(m_problemInfo->startupscript);
-    m_problemInfo->startupscript = textEdit.toPlainText();
+    textEdit.setPlainText(m_problemInfo->startupscript());
+    m_problemInfo->setStartupScript(textEdit.toPlainText());
 
     // description
     QDomNode eleDescription = eleProblemInfo.toElement().elementsByTagName("description").at(0);
-    m_problemInfo->description = eleDescription.toElement().text();
+    m_problemInfo->setDescription(eleDescription.toElement().text());
 
     // field ***************************************************************************************************************
 
@@ -1463,7 +1442,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         QDomNode eleField = nodeField.toElement();
 
-        FieldInfo *field = new FieldInfo(m_problemInfo, eleField.toElement().attribute("field_id"));
+        FieldInfo *field = new FieldInfo(eleField.toElement().attribute("field_id"));
 
         // analysis type
         field->setAnalysisType(analysisTypeFromStringKey(eleField.toElement().attribute("analysis_type",
@@ -1623,7 +1602,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     synchronizeCouplings();
 
     // run script
-    runPythonScript(m_problemInfo->startupscript);
+    runPythonScript(m_problemInfo->startupscript());
 
     return ErrorResult();
 }
@@ -1649,7 +1628,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         if (fileInfo.absoluteDir() != tempProblemDir())
         {
             settings.setValue("General/LastProblemDir", fileInfo.absoluteFilePath());
-            m_problemInfo->fileName = fileName;
+            m_problemInfo->setFileName(fileName);
         }
     }
 
@@ -1734,30 +1713,30 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleDoc.appendChild(eleProblem);
 
     // name
-    eleProblem.setAttribute("name", m_problemInfo->name);
+    eleProblem.setAttribute("name", m_problemInfo->name());
     // coordinate type
-    eleProblem.setAttribute("coordinate_type", coordinateTypeToStringKey(m_problemInfo->coordinateType));
+    eleProblem.setAttribute("coordinate_type", coordinateTypeToStringKey(m_problemInfo->coordinateType()));
     // mesh type
-    eleProblem.setAttribute("mesh_type", meshTypeToStringKey(m_problemInfo->meshType));
+    eleProblem.setAttribute("mesh_type", meshTypeToStringKey(m_problemInfo->meshType()));
 
     // harmonic
-    eleProblem.setAttribute("frequency", m_problemInfo->frequency);
+    eleProblem.setAttribute("frequency", m_problemInfo->frequency());
 
     // transient
-    eleProblem.setAttribute("time_step", m_problemInfo->timeStep.text());
-    eleProblem.setAttribute("time_total", m_problemInfo->timeTotal.text());
+    eleProblem.setAttribute("time_step", m_problemInfo->timeStep().text());
+    eleProblem.setAttribute("time_total", m_problemInfo->timeTotal().text());
 
     // matrix solver
-    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));
+    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver()));
 
     // startup script
     QDomElement eleScriptStartup = doc.createElement("startup_script");
-    eleScriptStartup.appendChild(doc.createTextNode(m_problemInfo->startupscript));
+    eleScriptStartup.appendChild(doc.createTextNode(m_problemInfo->startupscript()));
     eleProblem.appendChild(eleScriptStartup);
 
     // description
     QDomElement eleDescription = doc.createElement("description");
-    eleDescription.appendChild(doc.createTextNode(m_problemInfo->description));
+    eleDescription.appendChild(doc.createTextNode(m_problemInfo->description()));
     eleProblem.appendChild(eleDescription);
 
     // field ***************************************************************************************************************

@@ -80,11 +80,8 @@ public slots:
     void doShowGrid();
     void doSnapToGrid();
     void doShowRulers();
-    virtual void doInvalidated();
+    virtual void refresh();
     virtual void clear();
-    void doSetChartLine(const ChartLine &chartLine);
-
-    void refresh();
 
 public:
     SceneViewCommon(QWidget *parent = 0);
@@ -136,8 +133,6 @@ protected:
     QMainWindow *m_mainWindow;
 
     QPoint m_lastPos; // last position of cursor
-
-    ChartLine m_chartLine; // line
 
     SceneNode *m_nodeLast;
 

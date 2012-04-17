@@ -36,7 +36,7 @@
 
 SceneViewPostInterface::SceneViewPostInterface(QWidget *parent): SceneViewCommon(parent)
 {
-    connect(Util::problem(), SIGNAL(timeStepChanged(bool)), this, SLOT(timeStepChanged(bool)));
+    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(timeStepChanged()));
 }
 
 void SceneViewPostInterface::timeStepChanged(bool showViewProgress)
@@ -314,7 +314,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     // ticks
     glLineWidth(1.0);
     glBegin(GL_LINES);
-    for (int i = 1; i < numTicks+1; i++)
+    for (int i = 1; i < numTicks; i++)
     {
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
@@ -326,7 +326,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glEnd();
 
     // labels
-    for (int i = 1; i < numTicks+1; i++)
+    for (int i = 1; i < numTicks; i++)
     {
         double value = 0.0;
         if (!Util::config()->scalarRangeLog)

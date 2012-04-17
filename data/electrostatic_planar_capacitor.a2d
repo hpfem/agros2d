@@ -21,11 +21,11 @@
             <label x="0.129936" y="0.239288" polynomial_order="0" id="0" area="0.002"/>
         </labels>
     </geometry>
-    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="0" name="Electrostatic Planar Capacitor" time_total="0" date="2011-07-07">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="0" name="Electrostatic Planar Capacitor" time_total="0">
         <startup_script></startup_script>
         <description>This model is an example.</description>
         <fields>
-            <field field_id="electrostatic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="steadystate">
+            <field field_id="electrostatic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weak_forms="compiled" analysis_type="steadystate">
                 <adaptivity adaptivity_type="hp-adaptivity" adaptivity_tolerance="5" adaptivity_steps="10"/>
                 <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>

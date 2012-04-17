@@ -31,6 +31,7 @@
 #include "tooltipview.h"
 #include "logview.h"
 #include "infowidget.h"
+#include "settings.h"
 #include "preprocessorview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
@@ -58,13 +59,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // FIXME: curve elements from script doesn't work
     readMeshDirtyFix();
 
-    createScene();
     createPythonEngine(new PythonEngineAgros());
 
-    chartDialog = new ChartDialog(this);
+    // scene
+    sceneViewPreprocessor = new SceneViewPreprocessor(this);
+    sceneViewMesh = new SceneViewMesh(this);
+    sceneViewPost2D = new SceneViewPost2D(this);
+    sceneViewPost3D = new SceneViewPost3D(this);
+    // preprocessor
+    preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
+    // postprocessor
+    postprocessorWidget = new PostprocessorWidget(sceneViewPreprocessor, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
+    // settings
+    settingsWidget = new SettingsWidget(this);
+    // info
+    infoWidget = new InfoWidget(sceneViewPreprocessor, this);
+    // info
+    problemWidget = new ProblemWidget(this);
+
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
-    reportDialog = new ReportDialog(sceneViewPost2D, this);
-    videoDialog = new VideoDialog(sceneViewPost2D, this);
     logDialog = new LogDialog(this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(this);
@@ -73,17 +86,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createViews();
     createMenus();
     createToolBars();
+    createMain();
 
-    connect(tabLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
+    connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
     connect(Util::scene()->actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
     connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
-    connect(postprocessorView, SIGNAL(apply()), this, SLOT(setControls()));
+    connect(postprocessorWidget, SIGNAL(apply()), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
 
     // geometry
+    connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPreprocessor, SLOT(clear()));
@@ -91,7 +106,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
-    connect(postprocessorView, SIGNAL(apply()), sceneViewMesh, SLOT(doInvalidated()));
+    connect(settingsWidget, SIGNAL(apply()), sceneViewMesh, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), sceneViewMesh, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
 
     // postprocessor 2d
@@ -100,11 +116,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
-    connect(postprocessorView, SIGNAL(apply()), sceneViewPost2D, SLOT(doInvalidated()));
+    connect(settingsWidget, SIGNAL(apply()), sceneViewPost2D, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), sceneViewPost2D, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
+    connect(settingsWidget, SIGNAL(apply()), sceneViewPost3D, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), sceneViewPost3D, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
+
+    // settings
+
+    // info
+    connect(Util::scene(), SIGNAL(cleared()), infoWidget, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), infoWidget, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(timeStepChanged()), infoWidget, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(meshed()), infoWidget, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(solved()), infoWidget, SLOT(refresh()));
 
     connect(Util::scene(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
@@ -113,12 +141,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewPost2D->clear();
     sceneViewPost3D->clear();
 
-    connect(chartDialog, SIGNAL(setChartLine(ChartLine)), sceneViewPost2D, SLOT(doSetChartLine(ChartLine)));
-
     QSettings settings;
-    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
-    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
 
     Util::scene()->clear();
 
@@ -170,6 +194,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // DataTableDialog *dataTableDialog = new DataTableDialog(this);
     // dataTableDialog->show();
+
+    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
+    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
+    splitter->restoreState(settings.value("MainWindow/SplitterState").toByteArray());
 }
 
 MainWindow::~MainWindow()
@@ -178,6 +206,7 @@ MainWindow::~MainWindow()
     settings.setValue("MainWindow/Geometry", saveGeometry());
     settings.setValue("MainWindow/State", saveState());
     settings.setValue("MainWindow/RecentFiles", recentFiles);
+    settings.setValue("MainWindow/SplitterState", splitter->saveState());
 
     // remove temp files
     removeDirectory(tempProblemDir());
@@ -316,10 +345,6 @@ void MainWindow::createActions()
     actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
-    actInfo = new QAction(icon("scene-info"), tr("Info"), this);
-    actInfo->setShortcut(QKeySequence("Alt+I"));
-    connect(actInfo, SIGNAL(triggered()), this, SLOT(doInformations()));
-
     actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh"), this);
     actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
     actCreateMesh->setStatusTip(tr("Mesh area"));
@@ -394,10 +419,13 @@ void MainWindow::createActions()
     actSceneZoomRegion->setCheckable(true);
 
     actSceneModeGroup = new QActionGroup(this);
+    actSceneModeGroup->addAction(problemWidget->actProperties);
     actSceneModeGroup->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
+    actSceneModeGroup->addAction(infoWidget->actInfo);
+    actSceneModeGroup->addAction(settingsWidget->actSettings);
 }
 
 
@@ -468,10 +496,9 @@ void MainWindow::createMenus()
     mnuProjection->addAction(sceneViewPost3D->actSetProjectionYZ);
 
     QMenu *mnuShowPanels = new QMenu(tr("Panels"), this);
-    mnuShowPanels->addAction(preprocessorView->toggleViewAction());
     mnuShowPanels->addAction(resultsView->toggleViewAction());
-    mnuShowPanels->addAction(postprocessorView->toggleViewAction());
     mnuShowPanels->addAction(consoleView->toggleViewAction());
+    mnuShowPanels->addAction(logView->toggleViewAction());
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
@@ -512,8 +539,6 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(actSolveAdaptiveStep);
     mnuProblem->addAction(Util::scene()->actClearSolutions);
-    mnuProblem->addSeparator();
-    mnuProblem->addAction(Util::scene()->actProblemProperties);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actChart);
@@ -554,43 +579,6 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    // spacing
-    QLabel *spacing = new QLabel;
-    spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    // left toolbar
-    QToolBar *tlbLeftBar = new QToolBar();
-    tlbLeftBar->setObjectName("Left ToolBar");
-    tlbLeftBar->setOrientation(Qt::Vertical);
-    tlbLeftBar->setAllowedAreas(Qt::LeftToolBarArea);
-    // leftToolBar->setMovable(false);
-    // fancy layout
-    tlbLeftBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
-                              "QToolBar:left, QToolBar:right { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
-                              "QToolButton { border: 0px; color: rgba(230, 230, 230, 255); font: bold; font-size: 8pt; width: 65px; }"
-                              "QToolButton:hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:0.5 rgba(160, 160, 160, 255), stop:1 rgba(150, 150, 150, 255)); }"
-                              "QToolButton:checked:hover, QToolButton:checked { border: 0px; color: rgba(30, 30, 30, 255); background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(160, 160, 160, 255), stop:0.5 rgba(220, 220, 220, 255), stop:1 rgba(160, 160, 160, 255)); }");
-    // system layout
-    // leftToolBar->setStyleSheet("QToolButton { font: bold; font-size: 8pt; width: 65px; }");
-
-    tlbLeftBar->setIconSize(QSize(32, 32));
-    tlbLeftBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-    tlbLeftBar->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
-    tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
-    tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
-    tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
-    tlbLeftBar->addWidget(spacing);
-    tlbLeftBar->addAction(actCreateMesh);
-    tlbLeftBar->addAction(actSolve);
-    tlbLeftBar->addAction(actSolveAdaptiveStep);
-    tlbLeftBar->addSeparator();
-    tlbLeftBar->addAction(actScriptEditor);
-    tlbLeftBar->addAction(actInfo);
-    tlbLeftBar->addAction(Util::scene()->actProblemProperties);
-
-    addToolBar(Qt::LeftToolBarArea, tlbLeftBar);
-
     // top toolbar
 #ifdef Q_WS_MAC
     int iconHeight = 24;
@@ -664,62 +652,113 @@ void MainWindow::createToolBars()
     tlbPost2D->addAction(actChart);
 }
 
-void MainWindow::createScene()
+void MainWindow::createMain()
 {
-    sceneViewPreprocessor = new SceneViewPreprocessor(this);
-    sceneViewMesh = new SceneViewMesh(this);
-    sceneViewPost2D = new SceneViewPost2D(this);
-    sceneViewPost3D = new SceneViewPost3D(this);
-
-    sceneViewGeometryWidget = new SceneViewWidget(sceneViewPreprocessor, this);
+    sceneViewPreprocessorWidget = new SceneViewWidget(sceneViewPreprocessor, this);
     sceneViewMeshWidget = new SceneViewWidget(sceneViewMesh, this);
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
     sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
 
-    tabLayout = new QStackedLayout();
-    tabLayout->addWidget(sceneViewGeometryWidget);
-    tabLayout->addWidget(sceneViewMeshWidget);
-    tabLayout->addWidget(sceneViewPost2DWidget);
-    tabLayout->addWidget(sceneViewPost3DWidget);
+    tabViewLayout = new QStackedLayout();
+    tabViewLayout->setContentsMargins(0, 0, 0, 0);
+    tabViewLayout->addWidget(sceneViewPreprocessorWidget);
+    tabViewLayout->addWidget(sceneViewMeshWidget);
+    tabViewLayout->addWidget(sceneViewPost2DWidget);
+    tabViewLayout->addWidget(sceneViewPost3DWidget);
+
+    QWidget *viewWidget = new QWidget();
+    viewWidget->setLayout(tabViewLayout);
+
+    tabControlsLayout = new QStackedLayout();
+    tabControlsLayout->setContentsMargins(0, 0, 0, 0);
+    tabControlsLayout->addWidget(problemWidget);
+    tabControlsLayout->addWidget(preprocessorWidget);
+    tabControlsLayout->addWidget(postprocessorWidget);
+    tabControlsLayout->addWidget(settingsWidget);
+    tabControlsLayout->addWidget(infoWidget);
+
+    QWidget *viewControls = new QWidget();
+    viewControls->setLayout(tabControlsLayout);
+
+    // spacing
+    QLabel *spacing = new QLabel;
+    spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // left toolbar
+    QToolBar *tlbLeftBar = new QToolBar();
+    tlbLeftBar->setOrientation(Qt::Vertical);
+    // fancy layout
+    tlbLeftBar->setStyleSheet("QToolBar { border: 1px solid rgba(200, 200, 200, 255); }"
+                              "QToolBar { background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:1 rgba(120, 120, 120, 255)); }"
+                              "QToolButton { border: 0px; color: rgba(230, 230, 230, 255); font: bold; font-size: 8pt; width: 65px; }"
+                              "QToolButton:hover { border: 0px; background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(70, 70, 70, 255), stop:0.5 rgba(160, 160, 160, 255), stop:1 rgba(150, 150, 150, 255)); }"
+                              "QToolButton:checked:hover, QToolButton:checked { border: 0px; color: rgba(30, 30, 30, 255); background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(160, 160, 160, 255), stop:0.5 rgba(220, 220, 220, 255), stop:1 rgba(160, 160, 160, 255)); }");
+    // system layout
+    // leftToolBar->setStyleSheet("QToolButton { font: bold; font-size: 8pt; width: 65px; }");
+
+    tlbLeftBar->setIconSize(QSize(32, 32));
+    tlbLeftBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    tlbLeftBar->addAction(problemWidget->actProperties);
+    tlbLeftBar->addSeparator();
+    tlbLeftBar->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
+    tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
+    tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
+    tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
+    tlbLeftBar->addSeparator();
+    tlbLeftBar->addAction(settingsWidget->actSettings);
+    tlbLeftBar->addAction(infoWidget->actInfo);
+    tlbLeftBar->addWidget(spacing);
+    tlbLeftBar->addAction(actCreateMesh);
+    tlbLeftBar->addAction(actSolve);
+    tlbLeftBar->addAction(actSolveAdaptiveStep);
+    tlbLeftBar->addSeparator();
+    tlbLeftBar->addAction(actScriptEditor);
+
+    splitter = new QSplitter(Qt::Horizontal, this);
+    splitter->addWidget(viewControls);
+    splitter->addWidget(viewWidget);
+    splitter->setCollapsible(0, false);
+    splitter->setCollapsible(1, false);
+    splitter->setStretchFactor(0, 0);
+    splitter->setStretchFactor(1, 1);
+    QList<int> sizes;
+    sizes << 230 << 0;
+    splitter->setSizes(sizes);
+
+    QHBoxLayout *layoutMain = new QHBoxLayout();
+    layoutMain->setContentsMargins(0, 0, 0, 0);
+    layoutMain->addWidget(tlbLeftBar);
+    layoutMain->addWidget(splitter);
 
     QWidget *main = new QWidget();
-    main->setLayout(tabLayout);
+    main->setLayout(layoutMain);
 
     setCentralWidget(main);
 }
 
 void MainWindow::createViews()
 {
-    preprocessorView = new PreprocessorView(sceneViewPreprocessor, this);
-    preprocessorView->setAllowedAreas(Qt::LeftDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, preprocessorView);
-
-    resultsView = new ResultsView(this);
-    resultsView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::RightDockWidgetArea, resultsView);
-
-    postprocessorView = new PostprocessorView(sceneViewPreprocessor, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
-    postprocessorView->setAllowedAreas(Qt::LeftDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
-
     consoleView = new PythonScriptingConsoleView(currentPythonEngine(), this);
-    consoleView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    consoleView->setAllowedAreas(Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     consoleView->setVisible(false);
-    addDockWidget(Qt::BottomDockWidgetArea, consoleView);
+    addDockWidget(Qt::RightDockWidgetArea, consoleView);
 
     tooltipView = new TooltipView(this);
-    tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
+    tooltipView->setAllowedAreas(Qt::RightDockWidgetArea);
+    addDockWidget(Qt::RightDockWidgetArea, tooltipView);
 
     logView = new LogView(this);
-    logView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::LeftDockWidgetArea, logView);
+    logView->setAllowedAreas(Qt::RightDockWidgetArea);
+    addDockWidget(Qt::RightDockWidgetArea, logView);
+
+    resultsView = new ResultsView(this);
+    resultsView->setAllowedAreas(Qt::RightDockWidgetArea);
+    addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
     // tabify dock together
-    tabifyDockWidget(preprocessorView, postprocessorView);
-
-    // raise scene info view
-    preprocessorView->raise();
+    tabifyDockWidget(tooltipView, logView);
+    tabifyDockWidget(resultsView, consoleView);
 }
 
 void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
@@ -780,9 +819,9 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
 void MainWindow::setRecentFiles()
 {
     // recent files
-    if (Util::scene()->problemInfo()->fileName != "")
+    if (!Util::scene()->problemInfo()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(Util::scene()->problemInfo()->fileName);
+        QFileInfo fileInfo(Util::scene()->problemInfo()->fileName());
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -826,8 +865,10 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::doDocumentNew()
 {
+    assert(0);
+    /*
     ProblemInfo *problemInfo = new ProblemInfo();
-    ProblemDialog problemDialog(problemInfo, true, this);
+    ProblemDialog problemDialog(this);
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();
@@ -844,6 +885,7 @@ void MainWindow::doDocumentNew()
     {
         delete problemInfo;
     }
+    */
 }
 
 void MainWindow::doDocumentOpen(const QString &fileName)
@@ -934,9 +976,9 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(Util::scene()->problemInfo()->fileName))
+    if (QFile::exists(Util::scene()->problemInfo()->fileName()))
     {
-        ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
+        ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName());
         if (result.isError())
             result.showDialog();
     }
@@ -1115,7 +1157,9 @@ void MainWindow::doDocumentSaveGeometry()
 
 void MainWindow::doCreateVideo()
 {
-    videoDialog->showDialog();
+    VideoDialog videoDialog(sceneViewPost2D, this);
+
+    videoDialog.showDialog();
 }
 
 void MainWindow::doCreateMesh()
@@ -1124,7 +1168,7 @@ void MainWindow::doCreateMesh()
     logDialog->show();
 
     // create mesh
-    Util::problem()->solve(SolverMode_Mesh);
+    Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
         // raise mesh viewer
@@ -1143,7 +1187,7 @@ void MainWindow::doSolve()
     logDialog->show();
 
     // solve problem
-    Util::problem()->solve(SolverMode_MeshAndSolve);
+    Util::problem()->solve();
     if (Util::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
@@ -1153,7 +1197,7 @@ void MainWindow::doSolve()
         resultsView->showPoint(point);
 
         // raise postprocessor
-        postprocessorView->raise();
+        postprocessorWidget->raise();
 
         // successful run
         logDialog->close();
@@ -1170,7 +1214,7 @@ void MainWindow::doSolveAdaptiveStep()
     logDialog->show();
 
     // solve problem
-    Util::problem()->solve(SolverMode_SolveAdaptiveStep);
+    Util::problem()->solveAdaptiveStep();
     if (Util::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
@@ -1180,7 +1224,7 @@ void MainWindow::doSolveAdaptiveStep()
         resultsView->showPoint(point);
 
         // raise postprocessor
-        postprocessorView->raise();
+        postprocessorWidget->raise();
 
         // successful run
         logDialog->close();
@@ -1199,26 +1243,13 @@ void MainWindow::doFullScreen()
         showFullScreen();
 }
 
-void MainWindow::doInformations()
-{
-    int w = 450;
-    int h = height() - 80;
-
-    InfoWidget *popup = new InfoWidget(sceneViewPreprocessor, this);
-    popup->resize(w, h);
-    popup->move(pos().x() + 75, pos().y() + 70);
-    popup->setAttribute(Qt::WA_DeleteOnClose);
-
-    popup->show();
-}
-
 void MainWindow::doOptions()
 {
     ConfigDialog configDialog(this);
     if (configDialog.exec())
     {
         sceneViewPost2D->timeStepChanged(false);
-        sceneViewPost2D->doInvalidated();
+        sceneViewPost2D->refresh();
     }
 
     activateWindow();
@@ -1226,7 +1257,8 @@ void MainWindow::doOptions()
 
 void MainWindow::doReport()
 {
-    reportDialog->showDialog();
+    ReportDialog reportDialog(sceneViewPost2D, this);
+    reportDialog.showDialog();
 }
 
 void MainWindow::doTransform()
@@ -1242,7 +1274,11 @@ void MainWindow::doMaterialBrowser()
 
 void MainWindow::doChart()
 {
-    chartDialog->showDialog();
+    sceneViewPost2D->actSceneModePost2D->trigger();
+
+    ChartDialog chartDialog(sceneViewPost2D, Util::scene()->activeViewField(), this);
+
+    chartDialog.showDialog();
 }
 
 void MainWindow::doScriptEditor()
@@ -1320,7 +1356,7 @@ void MainWindow::doTimeStepChanged(int index)
     if (cmbTimeStep->currentIndex() != -1)
     {
         Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
-        postprocessorView->updateControls();
+        postprocessorWidget->updateControls();
     }
 }
 
@@ -1348,9 +1384,15 @@ void MainWindow::setControls()
     tlbGeometry->setVisible(false);
     tlbPost2D->setVisible(false);
 
+    if (problemWidget->actProperties->isChecked())
+    {
+        tabControlsLayout->setCurrentWidget(problemWidget);
+    }
     if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewGeometryWidget);
+        tabViewLayout->setCurrentWidget(sceneViewPreprocessorWidget);
+        tabControlsLayout->setCurrentWidget(preprocessorWidget);
+
         Util::scene()->actTransform->setEnabled(true);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomIn()));
@@ -1358,23 +1400,22 @@ void MainWindow::setControls()
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomBestFit()));
         sceneViewPreprocessor->actSceneZoomRegion = actSceneZoomRegion;
 
-        preprocessorView->raise();
         tlbGeometry->setVisible(true);
     }
     if (sceneViewMesh->actSceneModeMesh->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewMeshWidget);
+        tabViewLayout->setCurrentWidget(sceneViewMeshWidget);
+        tabControlsLayout->setCurrentWidget(postprocessorWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomBestFit()));
         sceneViewPost2D->actSceneZoomRegion = actSceneZoomRegion;
-
-        postprocessorView->raise();
     }
     if (sceneViewPost2D->actSceneModePost2D->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewPost2DWidget);
+        tabViewLayout->setCurrentWidget(sceneViewPost2DWidget);
+        tabControlsLayout->setCurrentWidget(postprocessorWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost2D, SLOT(doZoomOut()));
@@ -1384,12 +1425,12 @@ void MainWindow::setControls()
         // hide transform dialog
         sceneTransformDialog->hide();
 
-        postprocessorView->raise();
         tlbPost2D->setVisible(true);
     }
     if (sceneViewPost3D->actSceneModePost3D->isChecked())
     {
-        tabLayout->setCurrentWidget(sceneViewPost3DWidget);
+        tabViewLayout->setCurrentWidget(sceneViewPost3DWidget);
+        tabControlsLayout->setCurrentWidget(postprocessorWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomOut()));
@@ -1398,8 +1439,14 @@ void MainWindow::setControls()
 
         // hide transform dialog
         sceneTransformDialog->hide();
-
-        postprocessorView->raise();
+    }
+    if (settingsWidget->actSettings->isChecked())
+    {
+        tabControlsLayout->setCurrentWidget(settingsWidget);
+    }
+    if (infoWidget->actInfo->isChecked())
+    {
+        tabControlsLayout->setCurrentWidget(infoWidget);
     }
 
     //    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::scene()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
@@ -1408,7 +1455,7 @@ void MainWindow::setControls()
     actSolve->setEnabled(Util::scene()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(Util::scene()->fieldInfos().count() > 0);
 
-    QTimer::singleShot(0, postprocessorView, SLOT(updateControls()));
+    QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
 
     // set current timestep
     //    cmbTimeStep->setCurrentIndex(Util::problem()->timeStep());
@@ -1466,12 +1513,12 @@ void MainWindow::doDocumentExportMeshFile()
     if (commutator)
         Util::config()->deleteHermes2DMeshFile = !commutator;
 
-    Util::problem()->solve(SolverMode_Mesh);
+    Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
-        tabLayout->setCurrentWidget(sceneViewPreprocessor);
+        tabViewLayout->setCurrentWidget(sceneViewPreprocessor);
         Util::config()->showInitialMeshView = true;
-        sceneViewPreprocessor->doInvalidated();
+        sceneViewPreprocessor->refresh();
 
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();
@@ -1481,9 +1528,9 @@ void MainWindow::doDocumentExportMeshFile()
         QFileInfo fileInfo(fileName);
 
         // move mesh file
-        if (!Util::scene()->problemInfo()->fileName.isEmpty())
+        if (!Util::scene()->problemInfo()->fileName().isEmpty())
         {
-            QString sourceFileName = Util::scene()->problemInfo()->fileName;
+            QString sourceFileName = Util::scene()->problemInfo()->fileName();
             sourceFileName.replace("a2d", "mesh");
             if (!fileName.isEmpty())
             {

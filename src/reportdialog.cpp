@@ -239,9 +239,9 @@ void ReportDialog::resetControls()
 void ReportDialog::showDialog()
 {
     setControls();
-    show();
     activateWindow();
     raise();
+    exec();
 }
 
 void ReportDialog::doClose()

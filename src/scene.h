@@ -48,7 +48,7 @@ class SceneMaterialContainer;
 
 class ScriptEngineRemote;
 
-class ProblemDialog;
+class ProblemWidget;
 class SceneTransformDialog;
 class ProgressItemSolve;
 class CouplingInfo;
@@ -65,40 +65,77 @@ namespace Hermes
     }
 }
 
-class ProblemInfo
+class ProblemInfo : public QObject
 {
+    Q_OBJECT
 public:
-    QString name;
-    QString fileName;
-    CoordinateType coordinateType;
-
-    // harmonic
-    double frequency;
-
-    // transient
-    Value timeStep;
-    Value timeTotal;
-
-    // matrix solver
-    Hermes::MatrixSolverType matrixSolver;
-
-    // mesh type
-    MeshType meshType;
-
-    QString startupscript;
-    QString description;
-
-    inline QString labelX() { return ((coordinateType == CoordinateType_Planar) ? "X" : "R");  }
-    inline QString labelY() { return ((coordinateType == CoordinateType_Planar) ? "Y" : "Z");  }
-    inline QString labelZ() { return ((coordinateType == CoordinateType_Planar) ? "Z" : "a");  }
+    inline QString labelX() { return ((m_coordinateType == CoordinateType_Planar) ? "X" : "R");  }
+    inline QString labelY() { return ((m_coordinateType == CoordinateType_Planar) ? "Y" : "Z");  }
+    inline QString labelZ() { return ((m_coordinateType == CoordinateType_Planar) ? "Z" : "a");  }
 
     void clear();
+
+    inline QString name() const { return m_name; }
+    void setName(const QString &name) { m_name = name; }
+
+    inline QString fileName() const { return m_fileName; }
+    void setFileName(const QString &fileName) { m_fileName = fileName; emit changed(); }
+
+    inline CoordinateType coordinateType() const { return m_coordinateType; }
+    void setCoordinateType(const CoordinateType coordinateType) { m_coordinateType = coordinateType; emit changed(); }
+
+    inline double frequency() const { return m_frequency; }
+    void setFrequency(const double frequency) { m_frequency = frequency; emit changed(); }
+
+    inline Value timeStep() const { return m_timeStep; }
+    void setTimeStep(const Value &timeStep) { m_timeStep = timeStep; emit changed(); }
+
+    inline Value timeTotal() const { return m_timeTotal; }
+    void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
+
+    inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
+    void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
+
+    inline MeshType meshType() const { return m_meshType; }
+    void setMeshType(const MeshType meshType) { m_meshType = meshType; emit changed(); }
+
+    inline QString startupscript() const { return m_startupscript; }
+    void setStartupScript(const QString &startupscript) { m_startupscript = startupscript; emit changed(); }
+
+    inline QString description() const { return m_description; }
+    void setDescription(const QString &description) { m_description = description; }
+
+    void refresh() { emit changed(); }
+
+signals:
+    void changed();
+
+private:
+    QString m_name;
+    QString m_fileName;
+    CoordinateType m_coordinateType;
+
+    // harmonic
+    double m_frequency;
+
+    // transient
+    Value m_timeStep;
+    Value m_timeTotal;
+
+    // matrix solver
+    Hermes::MatrixSolverType m_matrixSolver;
+
+    // mesh type
+    MeshType m_meshType;
+
+    QString m_startupscript;
+    QString m_description;
 };
 
 class FieldInfo
 {
 public:
-    FieldInfo(ProblemInfo* parent, QString fieldId = "");
+    FieldInfo(QString fieldId = "");
     ~FieldInfo();
 
     void clear();
@@ -108,21 +145,6 @@ public:
     QString fieldId() { return m_fieldId; }
     AnalysisType analysisType() { return m_analysisType; }
     void setAnalysisType(AnalysisType analysisType);
-
-    QString name() { return m_parent->name; }
-    QString fileName() { return m_parent->fileName; }
-    CoordinateType coordinateType() { return m_parent->coordinateType; }
-    double frequency() { return m_parent->frequency; }
-    Value timeStep() {return m_parent->timeStep; }
-    Value timeTotal() {return m_parent->timeTotal; }
-
-    QString labelX() { return m_parent->labelX();  }
-    QString labelY() { return m_parent->labelY();  }
-    QString labelZ() { return m_parent->labelZ();  }
-
-    inline ProblemInfo* problemInfo() { return m_parent; }
-
-//    int numberOfSolutions() const;
 
     // linearity
     LinearityType linearityType;
@@ -203,7 +225,6 @@ public slots:
     void doNewMaterial(QString field);
 
     void clearSolutions();
-    void doProblemProperties();
     void doFieldsChanged();
 
 signals:
@@ -236,7 +257,6 @@ public:
     QAction *actNewMaterial;
     QMap<QString, QAction*> actNewMaterials;
 
-    QAction *actProblemProperties;
     QAction *actClearSolutions;
     QAction *actTransform;
 
@@ -305,8 +325,6 @@ public:
     void removeField(FieldInfo *field);
 
     inline void refresh() { emit invalidated(); }
-//    inline SceneSolution<double> *sceneSolution(FieldInfo* fieldInfo) const { return m_sceneSolutions[fieldInfo]; }
-
 
     // clears all solutions and remove them
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }

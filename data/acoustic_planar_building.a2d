@@ -163,14 +163,14 @@
         </labels>
     </geometry>
     <problem frequency="500" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1e-4" time_total="10e-2" name="Acoustic Building" date="2011-04-08">
-        <description>This model is an example.</description>
+        <description/>
         <startup_script/>
         <fields>
-            <field field_id="acoustic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weakforms="interpreted" analysis_type="harmonic">
+            <field field_id="acoustic" initial_condition="0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="harmonic">
                 <adaptivity adaptivity_type="disabled" max_dofs="60000" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver nonlinear_steps="10" linearity_type="linear" nonlinear_tolerance="1e-3"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="1e-3"/>
                 <boundaries>
-                    <boundary id="1" name="Wall">
+                    <boundary type="acoustic_matched_boundary" id="1" name="Wall">
                         <edge edge="0"/>
                         <edge edge="1"/>
                         <edge edge="2"/>

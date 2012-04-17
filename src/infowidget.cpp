@@ -42,19 +42,46 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     // setWindowFlags(Qt::Popup | Qt::Dialog);
     setAttribute(Qt::WA_DeleteOnClose);
 
+    createActions();
+
     // problem information
     webView = new QWebView(this);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(webView);
+    QVBoxLayout *layoutMain = new QVBoxLayout(this);
+    layoutMain->setContentsMargins(0, 5, 3, 5);
+    layoutMain->addWidget(webView);
 
-    setLayout(layout);
+    setLayout(layoutMain);
 
-    QTimer::singleShot(0, this, SLOT(showInfo()));
+    refresh();
 }
+
+/*
+int w = 450;
+int h = height() - 80;
+
+InfoWidget *popup = new InfoWidget(sceneViewPreprocessor, this);
+popup->resize(w, h);
+popup->move(pos().x() + 75, pos().y() + 70);
+popup->setAttribute(Qt::WA_DeleteOnClose);
+
+popup->show();
+*/
 
 InfoWidget::~InfoWidget()
 {
+}
+
+void InfoWidget::createActions()
+{
+    actInfo = new QAction(icon("scene-info"), tr("Info"), this);
+    actInfo->setShortcut(QKeySequence("Alt+I"));
+    actInfo->setCheckable(true);
+}
+
+void InfoWidget::refresh()
+{
+    QTimer::singleShot(0, this, SLOT(showInfo()));
 }
 
 void InfoWidget::showInfo()
@@ -75,46 +102,46 @@ void InfoWidget::showInfo()
     problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problem.SetValue("NAME_LABEL", tr("Name:").toStdString());
-    problem.SetValue("NAME", Util::scene()->problemInfo()->name.toStdString());
+    problem.SetValue("NAME", Util::scene()->problemInfo()->name().toStdString());
 
     problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
+    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType()).toStdString());
 
     problem.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
-    problem.SetValue("MESH_TYPE", meshTypeString(Util::scene()->problemInfo()->meshType).toStdString());
+    problem.SetValue("MESH_TYPE", meshTypeString(Util::scene()->problemInfo()->meshType()).toStdString());
 
     problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-    problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
+    problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency()).toStdString() + " Hz");
     problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-    problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep.number()).toStdString() + " s");
+    problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep().number()).toStdString() + " s");
     problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-    problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal.number()).toStdString() + " s");
+    problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal().number()).toStdString() + " s");
 
     if (Util::problem()->isMeshed())
     {
         problem.SetValue("SOLUTION_INFORMATION_LABEL", tr("Mesh and solution informations").toStdString());
 
         //TODO
-//        problem.SetValue("INITIAL_MESH_LABEL", tr("Initial mesh").toStdString());
-//        problem.SetValue("INITIAL_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-//        problem.SetValue("INITIAL_MESH_NODES", QString::number(Util::problem()->meshInitial()->get_num_nodes()).toStdString());
-//        problem.SetValue("INITIAL_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-//        problem.SetValue("INITIAL_MESH_ELEMENTS", QString::number(Util::problem()->meshInitial()->get_num_active_elements()).toStdString());
+        //        problem.SetValue("INITIAL_MESH_LABEL", tr("Initial mesh").toStdString());
+        //        problem.SetValue("INITIAL_MESH_NODES_LABEL", tr("Nodes:").toStdString());
+        //        problem.SetValue("INITIAL_MESH_NODES", QString::number(Util::problem()->meshInitial()->get_num_nodes()).toStdString());
+        //        problem.SetValue("INITIAL_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
+        //        problem.SetValue("INITIAL_MESH_ELEMENTS", QString::number(Util::problem()->meshInitial()->get_num_active_elements()).toStdString());
 
 
-//        if (Util::problem()->isSolved())
-//        {
-//            if (Util::scene()->sceneSolution()->space() && (Util::scene()->sceneSolution()->space()->get_num_dofs() > 0))
-//            {
-//                QTime time = milisecondsToTime(Util::problem()->timeElapsed());
-//                problem.SetValue("ELAPSED_TIME_LABEL", tr("Elapsed time:").toStdString());
-//                problem.SetValue("ELAPSED_TIME", time.toString("mm:ss.zzz").toStdString());
+        //        if (Util::problem()->isSolved())
+        //        {
+        //            if (Util::scene()->sceneSolution()->space() && (Util::scene()->sceneSolution()->space()->get_num_dofs() > 0))
+        //            {
+        //                QTime time = milisecondsToTime(Util::problem()->timeElapsed());
+        //                problem.SetValue("ELAPSED_TIME_LABEL", tr("Elapsed time:").toStdString());
+        //                problem.SetValue("ELAPSED_TIME", time.toString("mm:ss.zzz").toStdString());
 
-//                problem.SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
-//                problem.SetValue("DOFS", QString::number(Util::scene()->sceneSolution()->space()->get_num_dofs()).toStdString());
-//            }
-//            problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
-//        }
+        //                problem.SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
+        //                problem.SetValue("DOFS", QString::number(Util::scene()->sceneSolution()->space()->get_num_dofs()).toStdString());
+        //            }
+        //            problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
+        //        }
         problem.ShowSection("SOLUTION_SECTION");
     }
 

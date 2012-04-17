@@ -26,6 +26,8 @@ class Chart;
 class SLineEditDouble;
 class ValueLineEdit;
 class LocalPointValue;
+class FieldInfo;
+class SceneViewPost2D;
 
 namespace Hermes
 {
@@ -71,7 +73,7 @@ public slots:
     void doPlot();
 
 public:
-    ChartDialog(QWidget *parent = 0);
+    ChartDialog(SceneViewPost2D *sceneView, FieldInfo *fieldInfo, QWidget *parent = 0);
     ~ChartDialog();
 
     void showDialog();
@@ -80,6 +82,9 @@ protected:
     void hideEvent(QHideEvent *event);
 
 private:
+    FieldInfo *m_fieldInfo;
+    SceneViewPost2D *m_sceneViewPost2D;
+
     QTabWidget* tabOutput;
     QTabWidget* tabAnalysisType;
 
@@ -127,7 +132,7 @@ private:
     void plotTime();
 
     QStringList headers();
-    void addValue(LocalPointValue *localPointValue, double *yval, int i, int N,
+    void addValue(LocalPointValue *localPointValue, double time, double *yval, int i, int N,
                   PhysicFieldVariableComp physicFieldVariableComp,
                   Hermes::Module::LocalVariable *physicFieldVariable);
 

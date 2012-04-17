@@ -70,7 +70,7 @@ class SceneViewPost3D : public SceneViewCommon3D
     Q_OBJECT
 
 public slots:
-    virtual void doInvalidated();
+    virtual void refresh();
     virtual void clear();
 
 public:

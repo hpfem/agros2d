@@ -127,20 +127,20 @@
             <label x="0.862434" y="1.22563" polynomial_order="0" id="14" area="0"/>
         </labels>
     </geometry>
-    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="0" name="Heat Transfer Planar Building Detail" time_total="0" date="2000-01-01">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="0" name="Heat Transfer Planar Building Detail" time_total="0">
         <startup_script></startup_script>
         <description>This model is an example.</description>
         <fields>
-            <field field_id="heat" initial_condition="0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="steadystate">
+            <field field_id="heat" initial_condition="0" polynomial_order="2" number_of_refinements="0" weak_forms="compiled" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
-                    <boundary heat_convection_external_temperature="-15" heat_convection_heat_transfer_coefficient="25" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Exterior" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_external_temperature="-15" heat_convection_heat_transfer_coefficient="25" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" heat_temperature="0" id="1" name="Exterior" heat_radiation_ambient_temperature="0">
                         <edge edge="8"/>
                         <edge edge="32"/>
                         <edge edge="33"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="21" heat_convection_heat_transfer_coefficient="4" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Interior" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_external_temperature="21" heat_convection_heat_transfer_coefficient="4" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" heat_temperature="0" id="2" name="Interior" heat_radiation_ambient_temperature="0">
                         <edge edge="1"/>
                         <edge edge="2"/>
                         <edge edge="7"/>
@@ -151,7 +151,7 @@
                         <edge edge="23"/>
                         <edge edge="24"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="3" name="Border" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" heat_temperature="0" id="3" name="Border" heat_radiation_ambient_temperature="0">
                         <edge edge="34"/>
                         <edge edge="35"/>
                         <edge edge="36"/>
@@ -168,48 +168,48 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material heat_volume_heat="0" heat_conductivity="0.418" id="1" name="Zdici prvky SENDWIX tl. 240 kontakt">
+                    <material heat_volume_heat="0" heat_conductivity="0.418" heat_density="0" heat_specific_heat="0" id="1" name="Zdici prvky SENDWIX tl. 240 kontakt">
                         <label label="1"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.042" id="2" name="Izolace Rockwool Fasrock L">
+                    <material heat_volume_heat="0" heat_conductivity="0.042" heat_density="0" heat_specific_heat="0" id="2" name="Izolace Rockwool Fasrock L">
                         <label label="0"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.036" id="3" name="Flexibilni pena">
+                    <material heat_volume_heat="0" heat_conductivity="0.036" heat_density="0" heat_specific_heat="0" id="3" name="Flexibilni pena">
                         <label label="8"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="1.01" id="4" name="Naslapna vrstva podlahy">
+                    <material heat_volume_heat="0" heat_conductivity="1.01" heat_density="0" heat_specific_heat="0" id="4" name="Naslapna vrstva podlahy">
                         <label label="12"/>
                         <label label="13"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.037" id="5" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm">
+                    <material heat_volume_heat="0" heat_conductivity="0.037" heat_density="0" heat_specific_heat="0" id="5" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm">
                         <label label="3"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="1.58" id="6" name="Stropní konstrukce Rector tl. 200 mm">
+                    <material heat_volume_heat="0" heat_conductivity="1.58" heat_density="0" heat_specific_heat="0" id="6" name="Stropní konstrukce Rector tl. 200 mm">
                         <label label="4"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.671" id="7" name="Vapenopiskovy preklad Sendwix 2DF">
+                    <material heat_volume_heat="0" heat_conductivity="0.671" heat_density="0" heat_specific_heat="0" id="7" name="Vapenopiskovy preklad Sendwix 2DF">
                         <label label="6"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.57" id="8" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm">
+                    <material heat_volume_heat="0" heat_conductivity="0.57" heat_density="0" heat_specific_heat="0" id="8" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm">
                         <label label="10"/>
                         <label label="11"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.57" id="9" name="Tenkovrstva silikonova omitka Cermix 2 mm">
+                    <material heat_volume_heat="0" heat_conductivity="0.57" heat_density="0" heat_specific_heat="0" id="9" name="Tenkovrstva silikonova omitka Cermix 2 mm">
                         <label label="9"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.47" id="10" name="Jednovrstva omitka Cemix 073 tl. 8 mm">
+                    <material heat_volume_heat="0" heat_conductivity="0.47" heat_density="0" heat_specific_heat="0" id="10" name="Jednovrstva omitka Cemix 073 tl. 8 mm">
                         <label label="5"/>
                         <label label="14"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.14" id="11" name="Sklo">
+                    <material heat_volume_heat="0" heat_conductivity="0.14" heat_density="0" heat_specific_heat="0" id="11" name="Sklo">
                         <label label="7"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="1.23" id="12" name="Betonovy zaklad">
+                    <material heat_volume_heat="0" heat_conductivity="1.23" heat_density="0" heat_specific_heat="0" id="12" name="Betonovy zaklad">
                         <label label="2"/>
                     </material>
                 </materials>
             </field>
         </fields>
     </problem>
-    <config SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ShowContourView="0" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ActiveField="" SceneViewSettings_VectorNumber="50" SceneViewSettings_ShowParticleView="0" SceneViewSettings_VectorVariable="heat_heat_flux" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ScalarVariable="heat_temperature" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ScalarRangeMin="-14.96693447039138" SceneViewSettings_VectorProportional="1" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_ScalarRangeMax="20.96163878258879" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ContourVariable="heat_temperature" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_VectorColor="1" SceneViewSettings_ShowPost3D="2" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ScalarVariableComp="1"/>
+    <config SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ShowContourView="0" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ActiveField="" SceneViewSettings_VectorNumber="50" SceneViewSettings_ShowParticleView="0" SceneViewSettings_VectorVariable="heat_heat_flux" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ScalarVariable="heat_temperature" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ScalarRangeMin="-14.96329104079571" SceneViewSettings_VectorProportional="1" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_ScalarRangeMax="20.96389974951993" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ContourVariable="heat_temperature" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_VectorColor="1" SceneViewSettings_ShowPost3D="2" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ScalarVariableComp="1"/>
 </document>

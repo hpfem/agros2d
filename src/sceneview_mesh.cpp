@@ -131,8 +131,8 @@ SceneViewMesh::SceneViewMesh(QWidget *parent): SceneViewCommon2D(parent),
 
     m_meshHermes = new MeshHermes();
 
-    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(doInvalidated()));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
 
     connect(m_meshHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
@@ -155,7 +155,7 @@ void SceneViewMesh::createActionsMesh()
     connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(exportVTKOrderView()));
 }
 
-void SceneViewMesh::doInvalidated()
+void SceneViewMesh::refresh()
 {
     if (m_listInitialMesh != -1) glDeleteLists(m_listInitialMesh, 1);
     if (m_listSolutionMesh != -1) glDeleteLists(m_listSolutionMesh, 1);
@@ -177,7 +177,7 @@ void SceneViewMesh::doInvalidated()
     if (Util::problem()->isSolved())
         m_meshHermes->processSolved();
 
-    SceneViewCommon::doInvalidated();
+    SceneViewCommon::refresh();
 }
 
 void SceneViewMesh::clear()

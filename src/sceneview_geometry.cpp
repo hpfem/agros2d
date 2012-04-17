@@ -147,7 +147,7 @@ void SceneViewPreprocessor::doSelectBasic()
     sceneBasicSelectDialog.exec();
 }
 
-void SceneViewPreprocessor::doInvalidated()
+void SceneViewPreprocessor::refresh()
 {
     // actions
     actSceneViewSelectRegion->setEnabled(actSceneModePreprocessor->isChecked());
@@ -155,7 +155,7 @@ void SceneViewPreprocessor::doInvalidated()
     actOperateOnEdges->setEnabled(actSceneModePreprocessor->isChecked());
     actOperateOnLabels->setEnabled(actSceneModePreprocessor->isChecked());
 
-    SceneViewCommon::doInvalidated();
+    SceneViewCommon::refresh();
 }
 
 void SceneViewPreprocessor::clear()
@@ -193,7 +193,7 @@ void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
     Util::scene()->selectNone();
     m_nodeLast = NULL;
 
-    doInvalidated();
+    refresh();
 
     emit sceneGeometryModeChanged(m_sceneMode);
 }
@@ -477,7 +477,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             }
 
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) &&
+            if ((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (pointNode.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
@@ -526,7 +526,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) &&
+            if ((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (p.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));

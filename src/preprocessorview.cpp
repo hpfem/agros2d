@@ -35,7 +35,7 @@
 #include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
-PreprocessorView::PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *parent): QDockWidget(tr("Preprocessor"), parent)
+PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)
 {
     this->m_sceneViewGeometry = sceneView;
 
@@ -66,13 +66,13 @@ PreprocessorView::PreprocessorView(SceneViewPreprocessor *sceneView, QWidget *pa
     splitter->restoreState(settings.value("PreprocessorView/SplitterState").toByteArray());
 }
 
-PreprocessorView::~PreprocessorView()
+PreprocessorWidget::~PreprocessorWidget()
 {
     QSettings settings;
     settings.setValue("PreprocessorView/SplitterState", splitter->saveState());
 }
 
-void PreprocessorView::createActions()
+void PreprocessorWidget::createActions()
 {
     actProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
     actProperties->setStatusTip(tr("Properties"));
@@ -83,7 +83,7 @@ void PreprocessorView::createActions()
     connect(actDelete, SIGNAL(triggered()), this, SLOT(doDelete()));
 }
 
-void PreprocessorView::createMenu()
+void PreprocessorWidget::createMenu()
 {
     mnuPreprocessor->clear();
 
@@ -98,16 +98,13 @@ void PreprocessorView::createMenu()
     mnuPreprocessor->addAction(actProperties);
 }
 
-void PreprocessorView::createControls()
+void PreprocessorWidget::createControls()
 {
-    fieldsToolbar = new FieldsToobar(this, Qt::Vertical);
-
     webView = new QWebView(this);
     webView->setMinimumHeight(250);
 
     QHBoxLayout *layoutInfo = new QHBoxLayout();
     layoutInfo->setMargin(0);
-    layoutInfo->addWidget(fieldsToolbar);
     layoutInfo->addWidget(webView);
 
     QWidget *widgetInfo = new QWidget(this);
@@ -134,7 +131,11 @@ void PreprocessorView::createControls()
     main->setLayout(layoutMain);
     */
 
-    setWidget(splitter);
+    QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->setContentsMargins(0, 5, 3, 5);
+    layoutMain->addWidget(splitter);
+
+    setLayout(layoutMain);
 
     // boundary conditions
     boundaryConditionsNode = new QTreeWidgetItem(trvWidget);
@@ -170,7 +171,7 @@ void PreprocessorView::createControls()
     labelsNode->setIcon(0, icon("scenelabel"));
 }
 
-void PreprocessorView::keyPressEvent(QKeyEvent *event)
+void PreprocessorWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Delete:
@@ -181,7 +182,7 @@ void PreprocessorView::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void PreprocessorView::doInvalidated()
+void PreprocessorWidget::doInvalidated()
 {
     // script speed improvement
     if (scriptIsRunning()) return;
@@ -190,9 +191,6 @@ void PreprocessorView::doInvalidated()
     setUpdatesEnabled(false);
 
     clearNodes();
-
-    // fields
-    fieldsToolbar->refresh();
 
     // markers
     foreach (FieldInfo *fieldInfo, Util::scene()->fieldInfos())
@@ -293,7 +291,7 @@ void PreprocessorView::doInvalidated()
     QTimer::singleShot(0, this, SLOT(showInfo()));
 }
 
-void PreprocessorView::clearNodes()
+void PreprocessorWidget::clearNodes()
 {
     blockSignals(true);
 
@@ -336,7 +334,7 @@ void PreprocessorView::clearNodes()
     blockSignals(false);
 }
 
-void PreprocessorView::doContextMenu(const QPoint &pos)
+void PreprocessorWidget::doContextMenu(const QPoint &pos)
 {
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     doItemSelected(item, 0);
@@ -345,7 +343,7 @@ void PreprocessorView::doContextMenu(const QPoint &pos)
     mnuPreprocessor->exec(QCursor::pos());
 }
 
-void PreprocessorView::doItemSelected(QTreeWidgetItem *item, int role)
+void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
 {
     createMenu();
 
@@ -409,12 +407,12 @@ void PreprocessorView::doItemSelected(QTreeWidgetItem *item, int role)
     }
 }
 
-void PreprocessorView::doItemDoubleClicked(QTreeWidgetItem *item, int role)
+void PreprocessorWidget::doItemDoubleClicked(QTreeWidgetItem *item, int role)
 {
     doProperties();
 }
 
-void PreprocessorView::doProperties()
+void PreprocessorWidget::doProperties()
 {
     if (trvWidget->currentItem())
     {
@@ -453,7 +451,7 @@ void PreprocessorView::doProperties()
     }
 }
 
-void PreprocessorView::doDelete()
+void PreprocessorWidget::doDelete()
 {
     if (trvWidget->currentItem() != NULL)
     {
@@ -491,7 +489,7 @@ void PreprocessorView::doDelete()
     }
 }
 
-void PreprocessorView::showInfo()
+void PreprocessorWidget::showInfo()
 {
     // stylesheet
     std::string style;
@@ -509,20 +507,20 @@ void PreprocessorView::showInfo()
     problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType).toStdString());
+    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::scene()->problemInfo()->coordinateType()).toStdString());
 
-    if (Util::scene()->problemInfo()->frequency > 0)
+    if (Util::scene()->problemInfo()->frequency() > 0)
     {
         problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-        problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency).toStdString() + " Hz");
+        problem.SetValue("FREQUENCY", QString::number(Util::scene()->problemInfo()->frequency()).toStdString() + " Hz");
         problem.ShowSection("FREQUENCY");
     }
-    if (Util::scene()->problemInfo()->timeStep.number() > 0)
+    if (Util::scene()->problemInfo()->timeStep().number() > 0)
     {
         problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-        problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep.number()).toStdString() + " s");
+        problem.SetValue("TIME_STEP", QString::number(Util::scene()->problemInfo()->timeStep().number()).toStdString() + " s");
         problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-        problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal.number()).toStdString() + " s");
+        problem.SetValue("TIME_TOTAL", QString::number(Util::scene()->problemInfo()->timeTotal().number()).toStdString() + " s");
         problem.ShowSection("TRANSIENT");
     }
 

@@ -393,13 +393,6 @@ QString transformXML(const QString &fileName, const QString &stylesheetFileName)
 // xml validation
 ErrorResult validateXML(const QString &fileName, const QString &schemaFileName);
 
-enum SolverMode
-{
-    SolverMode_Mesh,
-    SolverMode_MeshAndSolve,
-    SolverMode_SolveAdaptiveStep
-};
-
 enum CoordinateType
 {
     CoordinateType_Undefined,

@@ -31,7 +31,7 @@ signals:
 
 public slots:
     virtual void clear();
-    virtual void doInvalidated();
+    virtual void refresh();
     void doSceneGeometryModeSet(QAction *action);
     void doSelectBasic();
     void doSceneObjectProperties();

@@ -51,7 +51,6 @@ void SceneViewCommon2D::clear()
     m_scale2d = 1.0;
     m_offset2d = Point();
 
-    m_chartLine = ChartLine();
     m_nodeLast = NULL;
 
     SceneViewCommon::clear();
@@ -197,7 +196,7 @@ void SceneViewCommon2D::paintGrid()
     glEnd();
     glDisable(GL_LINE_STIPPLE);
 
-    if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric)
+    if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric)
     {
         drawBlend(cornerMin,
                   Point(0, cornerMax.y),
@@ -216,7 +215,7 @@ void SceneViewCommon2D::paintGrid()
     glVertex2d(0, cornerMin.y);
     glVertex2d(0, cornerMax.y);
     // x axis
-    glVertex2d(((Util::scene()->problemInfo()->coordinateType == CoordinateType_Axisymmetric) ? 0 : cornerMin.x), 0);
+    glVertex2d(((Util::scene()->problemInfo()->coordinateType() == CoordinateType_Axisymmetric) ? 0 : cornerMin.x), 0);
     glVertex2d(cornerMax.x, 0);
     glEnd();
 }

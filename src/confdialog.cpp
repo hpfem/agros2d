@@ -83,20 +83,6 @@ void ConfigDialog::load()
     if (Util::config()->showExperimentalFeatures)
         chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
 
-    // colors
-    colorBackground->setColor(Util::config()->colorBackground);
-    colorGrid->setColor(Util::config()->colorGrid);
-    colorCross->setColor(Util::config()->colorCross);
-    colorNodes->setColor(Util::config()->colorNodes);
-    colorEdges->setColor(Util::config()->colorEdges);
-    colorLabels->setColor(Util::config()->colorLabels);
-    colorContours->setColor(Util::config()->colorContours);
-    colorVectors->setColor(Util::config()->colorVectors);
-    colorInitialMesh->setColor(Util::config()->colorInitialMesh);
-    colorSolutionMesh->setColor(Util::config()->colorSolutionMesh);
-    colorHighlighted->setColor(Util::config()->colorHighlighted);
-    colorSelected->setColor(Util::config()->colorSelected);
-
     // adaptivity
     txtMaxDOFs->setValue(Util::config()->maxDofs);
     //chkIsoOnly->setChecked(Util::config()->isoOnly);
@@ -171,20 +157,6 @@ void ConfigDialog::save()
     if (Util::config()->showExperimentalFeatures)
         Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
 
-    // color
-    Util::config()->colorBackground = colorBackground->color();
-    Util::config()->colorGrid = colorGrid->color();
-    Util::config()->colorCross = colorCross->color();
-    Util::config()->colorNodes = colorNodes->color();
-    Util::config()->colorEdges = colorEdges->color();
-    Util::config()->colorLabels = colorLabels->color();
-    Util::config()->colorContours = colorContours->color();
-    Util::config()->colorVectors = colorVectors->color();
-    Util::config()->colorInitialMesh = colorInitialMesh->color();
-    Util::config()->colorSolutionMesh = colorSolutionMesh->color();
-    Util::config()->colorHighlighted = colorHighlighted->color();
-    Util::config()->colorSelected = colorSelected->color();
-
     // adaptivity
     Util::config()->maxDofs = txtMaxDOFs->value();
     //Util::config()->isoOnly = chkIsoOnly->isChecked();
@@ -215,7 +187,6 @@ void ConfigDialog::createControls()
 
     panMain = createMainWidget();
     panSolver = createSolverWidget();
-    panColors = createColorsWidget();
     panGlobalScriptWidget = createGlobalScriptWidget();
 
     // List View
@@ -244,11 +215,6 @@ void ConfigDialog::createControls()
     itemSolver->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemSolver->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemColors = new QListWidgetItem(icon("options-colors"), tr("Colors"), lstView);
-    itemColors->setTextAlignment(Qt::AlignHCenter);
-    itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    itemColors->setSizeHint(sizeItem);
-
     QListWidgetItem *itemGlobalScript = new QListWidgetItem(icon("options-python"), tr("Python"), lstView);
     itemGlobalScript->setTextAlignment(Qt::AlignHCenter);
     itemGlobalScript->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -256,7 +222,6 @@ void ConfigDialog::createControls()
 
     pages->addWidget(panMain);
     pages->addWidget(panSolver);
-    pages->addWidget(panColors);
     pages->addWidget(panGlobalScriptWidget);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
@@ -495,70 +460,6 @@ QWidget *ConfigDialog::createSolverWidget()
     return solverWidget;
 }
 
-QWidget *ConfigDialog::createColorsWidget()
-{
-    QWidget *colorsWidget = new QWidget(this);
-
-    // colors
-    colorBackground = new ColorButton(this);
-    colorGrid = new ColorButton(this);
-    colorCross = new ColorButton(this);
-
-    colorNodes = new ColorButton(this);
-    colorEdges = new ColorButton(this);
-    colorLabels = new ColorButton(this);
-    colorContours = new ColorButton(this);
-    colorVectors = new ColorButton(this);
-    colorInitialMesh = new ColorButton(this);
-    colorSolutionMesh = new ColorButton(this);
-
-    colorHighlighted = new ColorButton(this);
-    colorSelected = new ColorButton(this);
-
-    QGridLayout *layoutColors = new QGridLayout();
-    layoutColors->addWidget(new QLabel(tr("Background:")), 0, 0);
-    layoutColors->addWidget(new QLabel(tr("Grid:")), 1, 0);
-    layoutColors->addWidget(new QLabel(tr("Cross:")), 2, 0);
-    layoutColors->addWidget(new QLabel(tr("Nodes:")), 3, 0);
-    layoutColors->addWidget(new QLabel(tr("Edges:")), 4, 0);
-    layoutColors->addWidget(new QLabel(tr("Labels:")), 5, 0);
-    layoutColors->addWidget(new QLabel(tr("Contours:")), 6, 0);
-    layoutColors->addWidget(new QLabel(tr("Vectors:")), 7, 0);
-    layoutColors->addWidget(new QLabel(tr("Initial mesh:")), 8, 0);
-    layoutColors->addWidget(new QLabel(tr("Solution mesh:")), 9, 0);
-    layoutColors->addWidget(new QLabel(tr("Highlighted elements:")), 10, 0);
-    layoutColors->addWidget(new QLabel(tr("Selected elements:")), 11, 0);
-
-    layoutColors->addWidget(colorBackground, 0, 1);
-    layoutColors->addWidget(colorGrid, 1, 1);
-    layoutColors->addWidget(colorCross, 2, 1);
-    layoutColors->addWidget(colorNodes, 3, 1);
-    layoutColors->addWidget(colorEdges, 4, 1);
-    layoutColors->addWidget(colorLabels, 5, 1);
-    layoutColors->addWidget(colorContours, 6, 1);
-    layoutColors->addWidget(colorVectors, 7, 1);
-    layoutColors->addWidget(colorInitialMesh, 8, 1);
-    layoutColors->addWidget(colorSolutionMesh, 9, 1);
-    layoutColors->addWidget(colorHighlighted, 10, 1);
-    layoutColors->addWidget(colorSelected, 11, 1);
-
-    // default
-    QPushButton *btnDefault = new QPushButton(tr("Default"));
-    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doColorsDefault()));
-
-    QGroupBox *grpColor = new QGroupBox(tr("Colors"));
-    grpColor->setLayout(layoutColors);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpColor);
-    layout->addStretch();
-    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
-
-    colorsWidget->setLayout(layout);
-
-    return colorsWidget;
-}
-
 QWidget *ConfigDialog::createGlobalScriptWidget()
 {
     QWidget *viewWidget = new QWidget(this);
@@ -637,57 +538,3 @@ void ConfigDialog::doCommandsDefault()
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
 }
 
-void ConfigDialog::doColorsDefault()
-{
-    colorBackground->setColor(COLORBACKGROUND);
-    colorGrid->setColor(COLORGRID);
-    colorCross->setColor(COLORCROSS);
-    colorNodes->setColor(COLORNODES);
-    colorEdges->setColor(COLOREDGES);
-    colorLabels->setColor(COLORLABELS);
-    colorContours->setColor(COLORCONTOURS);
-    colorVectors->setColor(COLORVECTORS);
-    colorInitialMesh->setColor(COLORINITIALMESH);
-    colorSolutionMesh->setColor(COLORSOLUTIONMESH);
-    colorHighlighted->setColor(COLORHIGHLIGHTED);
-    colorSelected->setColor(COLORSELECTED);
-}
-
-// *******************************************************************************************************
-
-ColorButton::ColorButton(QWidget *parent) : QPushButton(parent)
-{
-    setAutoFillBackground(false);
-    setCursor(Qt::PointingHandCursor);
-    connect(this, SIGNAL(clicked()), this, SLOT(doClicked()));
-}
-
-ColorButton::~ColorButton()
-{
-}
-
-void ColorButton::setColor(const QColor &color)
-{
-    m_color = color;
-    repaint();
-}
-
-void ColorButton::paintEvent(QPaintEvent *event)
-{
-    QPushButton::paintEvent(event);
-
-    QPainter painter(this);
-    painter.setPen(m_color);
-    painter.setBrush(m_color);
-    painter.drawRect(rect());
-}
-
-void ColorButton::doClicked()
-{
-    QColor color = QColorDialog::getColor(m_color);
-
-    if (color.isValid())
-    {
-        setColor(color);
-    }
-}

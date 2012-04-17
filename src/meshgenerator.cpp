@@ -77,9 +77,9 @@ bool MeshGeneratorTriangle::mesh()
         else
         {
             // copy triangle files
-            if ((!Util::config()->deleteTriangleMeshFiles) && (!Util::scene()->problemInfo()->fileName.isEmpty()))
+            if ((!Util::config()->deleteTriangleMeshFiles) && (!Util::scene()->problemInfo()->fileName().isEmpty()))
             {
-                QFileInfo fileInfoOrig(Util::scene()->problemInfo()->fileName);
+                QFileInfo fileInfoOrig(Util::scene()->problemInfo()->fileName());
 
                 QFile::copy(tempProblemFileName() + ".poly", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".poly");
                 QFile::copy(tempProblemFileName() + ".node", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".node");
@@ -110,9 +110,9 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Util::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
-            if ((!Util::config()->deleteHermes2DMeshFile) && (!Util::scene()->problemInfo()->fileName.isEmpty()))
+            if ((!Util::config()->deleteHermes2DMeshFile) && (!Util::scene()->problemInfo()->fileName().isEmpty()))
             {
-                QFileInfo fileInfoOrig(Util::scene()->problemInfo()->fileName);
+                QFileInfo fileInfoOrig(Util::scene()->problemInfo()->fileName());
 
                 QFile::copy(tempProblemFileName() + ".mesh", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".mesh");
             }
@@ -136,13 +136,13 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
         else
         {
             m_isError = true;
-            QFile::remove(Util::scene()->problemInfo()->fileName + ".mesh");
+            QFile::remove(Util::scene()->problemInfo()->fileName() + ".mesh");
         }
     }
     else
     {
         m_isError = true;
-        QString errorMessage = readFileContent(Util::scene()->problemInfo()->fileName + ".triangle.out");
+        QString errorMessage = readFileContent(Util::scene()->problemInfo()->fileName() + ".triangle.out");
         Util::log()->printError(tr("Mesh generator"), errorMessage);
     }
 }
@@ -449,14 +449,14 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
                &n, &node[0], &node[1], &node[2], &node[3], &node[4], &node[5], &marker);
         assert(marker > 0);
 
-        if (Util::scene()->problemInfo()->meshType == MeshType_Triangle ||
-                Util::scene()->problemInfo()->meshType == MeshType_QuadJoin ||
-                Util::scene()->problemInfo()->meshType == MeshType_QuadRoughDivision)
+        if (Util::scene()->problemInfo()->meshType() == MeshType_Triangle ||
+                Util::scene()->problemInfo()->meshType() == MeshType_QuadJoin ||
+                Util::scene()->problemInfo()->meshType() == MeshType_QuadRoughDivision)
         {
             elementList.append(MeshElement(node[0], node[1], node[2], marker - 1)); // marker conversion from triangle, where it starts from 1
         }
 
-        if (Util::scene()->problemInfo()->meshType == MeshType_QuadFineDivision)
+        if (Util::scene()->problemInfo()->meshType() == MeshType_QuadFineDivision)
         {
             // add additional node
             nodeList.append(Point((nodeList[node[0]].x + nodeList[node[1]].x + nodeList[node[2]].x) / 3.0,
@@ -516,7 +516,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
     // heterogeneous mesh
     // element division
-    if (Util::scene()->problemInfo()->meshType == MeshType_QuadFineDivision)
+    if (Util::scene()->problemInfo()->meshType() == MeshType_QuadFineDivision)
     {
         for (int i = 0; i < edgeCountLinear; i++)
         {
@@ -537,7 +537,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         }
     }
 
-    if (Util::scene()->problemInfo()->meshType == MeshType_QuadRoughDivision)
+    if (Util::scene()->problemInfo()->meshType() == MeshType_QuadRoughDivision)
     {
         for (int i = 0; i < elementCountLinear; i++)
         {
@@ -579,7 +579,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         }
     }
 
-    if (Util::scene()->problemInfo()->meshType == MeshType_QuadJoin)
+    if (Util::scene()->problemInfo()->meshType() == MeshType_QuadJoin)
     {
         for (int i = 0; i < elementCountLinear; i++)
         {

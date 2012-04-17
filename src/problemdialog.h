@@ -32,7 +32,7 @@ class ValueLineEdit;
 
 class FieldInfo;
 
-class ProblemDialog;
+class ProblemWidget;
 
 class FieldSelectDialog : public QDialog
 {
@@ -61,7 +61,7 @@ class CouplingsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    CouplingsWidget(bool isNewProblem, QWidget *parent);
+    CouplingsWidget(QWidget *parent);
 
     void createContent();
 
@@ -80,8 +80,6 @@ private:
 
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
     QMap<CouplingInfo*, QComboBox*> m_comboBoxes;
-
-    bool m_isNewProblem;
 };
 
 class FieldWidget : public QWidget
@@ -160,7 +158,7 @@ class FieldsToobar: public QWidget
 {
     Q_OBJECT
 public:
-    FieldsToobar(QWidget *parent = 0, Qt::Orientation oriantation = Qt::Vertical);
+    FieldsToobar(QWidget *parent = 0);
 
 public slots:
     void refresh();
@@ -169,34 +167,27 @@ private:
     QActionGroup *actFieldsGroup;
     QToolBar *tlbFields;
 
-    void createControls(Qt::Orientation oriantation);
+    void createControls();
 
 private slots:
     void fieldDialog(QAction *action);
     void addField();
 };
 
-class ProblemDialog: public QDialog
+class ProblemWidget: public QWidget
 {
     Q_OBJECT
 public:
-    ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent = 0);
+    ProblemWidget(QWidget *parent = 0);
 
-    int showDialog();
-    ProblemInfo* problemInfo() {return m_problemInfo;}
-
-private slots:
-    void doTransientChanged();
-    void doAccept();
-    void doReject();
-    void doOpenXML();
+    QAction *actProperties;
 
 private:
     bool m_isNewProblem;
-    ProblemInfo *m_problemInfo;
 
     QDialogButtonBox *buttonBox;
 
+    FieldsToobar *fieldsToolbar;
     CouplingsWidget *couplingsWidget;
 
     QLineEdit *txtName;
@@ -221,14 +212,19 @@ private:
     // couplings
     QGroupBox *grpCouplings;
 
+    void createActions();
     void createControls();
     QWidget *createControlsGeneral();
-    QWidget *createControlsStartupScript();    
-    QWidget *createControlsDescription();
+    QWidget *createControlsScriptAndDescription();
 
     void fillComboBox();
 
-    void load();
+private slots:
+    void doTransientChanged();
+    void doApply();
+    void doOpenXML();
+
+    void refresh();
     bool save();
 };
 

@@ -70,10 +70,10 @@ QString createPythonFromModel()
     QString str;
 
     // startup script
-    if (!Util::scene()->problemInfo()->startupscript.isEmpty())
+    if (!Util::scene()->problemInfo()->startupscript().isEmpty())
     {
         str += "# startup script\n";
-        str += Util::scene()->problemInfo()->startupscript;
+        str += Util::scene()->problemInfo()->startupscript();
         str += "\n\n";
     }
 
@@ -81,20 +81,20 @@ QString createPythonFromModel()
     str += "import agros2d\n\n";
     str += "# model\n";
     str += QString("problem = agros2d.problem(clear = True)\n");
-    str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType));
-    str += QString("problem.name = \"%1\"\n").arg(Util::scene()->problemInfo()->name);
-    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType));
-    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver));
+    str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType()));
+    str += QString("problem.name = \"%1\"\n").arg(Util::scene()->problemInfo()->name());
+    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::scene()->problemInfo()->meshType()));
+    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver()));
 
-    if (Util::scene()->problemInfo()->frequency > 0.0)
+    if (Util::scene()->problemInfo()->frequency() > 0.0)
         str += QString("problem.frequency = %1\n").
-                arg(Util::scene()->problemInfo()->frequency);
+                arg(Util::scene()->problemInfo()->frequency());
 
-    if (Util::scene()->problemInfo()->timeTotal.number() > 0 && Util::scene()->problemInfo()->timeStep.number() > 0)
+    if (Util::scene()->problemInfo()->timeTotal().number() > 0 && Util::scene()->problemInfo()->timeStep().number() > 0)
         str += QString("problem.time_step = %1\n"
                        "problem.time_total = %2\n").
-                arg(Util::scene()->problemInfo()->timeStep.text()).
-                arg(Util::scene()->problemInfo()->timeTotal.text());
+                arg(Util::scene()->problemInfo()->timeStep().text()).
+                arg(Util::scene()->problemInfo()->timeTotal().text());
 
     /*
     if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
@@ -358,7 +358,7 @@ PyProblem::PyProblem(bool clearproblem)
 void PyProblem::setCoordinateType(const char *coordinateType)
 {
     if (coordinateTypeStringKeys().contains(QString(coordinateType)))
-        Util::scene()->problemInfo()->coordinateType = coordinateTypeFromStringKey(QString(coordinateType));
+        Util::scene()->problemInfo()->setCoordinateType(coordinateTypeFromStringKey(QString(coordinateType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(coordinateTypeStringKeys())).toStdString());
 }
@@ -366,7 +366,7 @@ void PyProblem::setCoordinateType(const char *coordinateType)
 void PyProblem::setMeshType(const char *meshType)
 {
     if (meshTypeStringKeys().contains(QString(meshType)))
-        Util::scene()->problemInfo()->meshType = meshTypeFromStringKey(QString(meshType));
+        Util::scene()->problemInfo()->setMeshType(meshTypeFromStringKey(QString(meshType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(meshTypeStringKeys())).toStdString());
 }
@@ -374,7 +374,7 @@ void PyProblem::setMeshType(const char *meshType)
 void PyProblem::setMatrixSolver(const char *matrixSolver)
 {
     if (matrixSolverTypeStringKeys().contains(QString(matrixSolver)))
-        Util::scene()->problemInfo()->matrixSolver = matrixSolverTypeFromStringKey(QString(matrixSolver));
+        Util::scene()->problemInfo()->setMatrixSolver(matrixSolverTypeFromStringKey(QString(matrixSolver)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
 }
@@ -382,7 +382,7 @@ void PyProblem::setMatrixSolver(const char *matrixSolver)
 void PyProblem::setFrequency(const double frequency)
 {
     if (frequency >= 0.0)
-        Util::scene()->problemInfo()->frequency = frequency;
+        Util::scene()->problemInfo()->setFrequency(frequency);
     else
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 }
@@ -390,7 +390,7 @@ void PyProblem::setFrequency(const double frequency)
 void PyProblem::setTimeStep(const double timeStep)
 {
     if (timeStep >= 0.0)
-        Util::scene()->problemInfo()->timeStep = Value(QString::number(timeStep));
+        Util::scene()->problemInfo()->setTimeStep(Value(QString::number(timeStep)));
     else
         throw invalid_argument(QObject::tr("The time step must be positive.").toStdString());
 }
@@ -398,7 +398,7 @@ void PyProblem::setTimeStep(const double timeStep)
 void PyProblem::setTimeTotal(const double timeTotal)
 {
     if (timeTotal >= 0.0)
-        Util::scene()->problemInfo()->timeTotal = Value(QString::number(timeTotal));
+        Util::scene()->problemInfo()->setTimeTotal(Value(QString::number(timeTotal)));
     else
         throw invalid_argument(QObject::tr("The total time must be positive.").toStdString());
 }
@@ -412,7 +412,7 @@ void PyProblem::solve()
 {
     Util::scene()->refresh();
 
-    Util::problem()->solve(SolverMode_MeshAndSolve);
+    Util::problem()->solve();
     if (Util::problem()->isSolved())
     {
         currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
@@ -434,7 +434,7 @@ PyField::PyField(char *fieldId)
         }
         else
         {
-            m_fieldInfo = new FieldInfo(Util::scene()->problemInfo(), fieldId);
+            m_fieldInfo = new FieldInfo(fieldId);
             Util::scene()->addField(fieldInfo());
         }
     else
@@ -986,7 +986,7 @@ void PyGeometry::removeSelection()
 
 void PyGeometry::mesh()
 {
-    Util::problem()->solve(SolverMode_Mesh);
+    Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
@@ -1242,7 +1242,7 @@ void pythonShowGrid(bool show)
 void pythonShowGeometry(bool show)
 {
     currentPythonEngineAgros()->sceneViewGeometry()->actSceneModePreprocessor->trigger();
-    currentPythonEngineAgros()->sceneViewGeometry()->doInvalidated();
+    currentPythonEngineAgros()->sceneViewGeometry()->refresh();
 }
 
 // showinitialmesh(show = {True, False})
@@ -1252,7 +1252,7 @@ void pythonShowInitialMesh(bool show)
     {
         Util::config()->showInitialMeshView = true;
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        currentPythonEngineAgros()->sceneViewMesh()->doInvalidated();
+        currentPythonEngineAgros()->sceneViewMesh()->refresh();
     }
 }
 
@@ -1263,7 +1263,7 @@ void pythonShowSolutionMesh(bool show)
     {
         Util::config()->showSolutionMeshView = true;
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        currentPythonEngineAgros()->sceneViewMesh()->doInvalidated();
+        currentPythonEngineAgros()->sceneViewMesh()->refresh();
     }
 }
 
@@ -1329,8 +1329,8 @@ void PythonEngineAgros::runPythonHeader()
         PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // startup script
-    if (!Util::scene()->problemInfo()->startupscript.isEmpty())
-        PyRun_String(Util::scene()->problemInfo()->startupscript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    if (!Util::scene()->problemInfo()->startupscript().isEmpty())
+        PyRun_String(Util::scene()->problemInfo()->startupscript().toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 void PythonEngineAgros::doExecutedScript()

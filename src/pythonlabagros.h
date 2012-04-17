@@ -121,31 +121,31 @@ class PyProblem
         void field(char *fieldId);
 
         // name
-        inline const char *getName() { return Util::scene()->problemInfo()->name.toStdString().c_str(); }
-        void setName(const char *name) { Util::scene()->problemInfo()->name = QString(name); }
+        inline const char *getName() { return Util::scene()->problemInfo()->name().toStdString().c_str(); }
+        void setName(const char *name) { Util::scene()->problemInfo()->setName(QString(name)); }
 
         // coordinate type
-        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType).toStdString().c_str(); }
+        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Util::scene()->problemInfo()->coordinateType()).toStdString().c_str(); }
         void setCoordinateType(const char *coordinateType);
 
         // mesh type
-        inline const char *getMeshType() { return meshTypeToStringKey(Util::scene()->problemInfo()->meshType).toStdString().c_str(); }
+        inline const char *getMeshType() { return meshTypeToStringKey(Util::scene()->problemInfo()->meshType()).toStdString().c_str(); }
         void setMeshType(const char *meshType);
 
         // matrix solver
-        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver).toStdString().c_str(); }
+        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Util::scene()->problemInfo()->matrixSolver()).toStdString().c_str(); }
         void setMatrixSolver(const char *matrixSolver);
 
         // frequency
-        inline const double getFrequency() { return Util::scene()->problemInfo()->frequency; }
+        inline const double getFrequency() { return Util::scene()->problemInfo()->frequency(); }
         void setFrequency(const double frequency);
 
         // time step
-        inline const double getTimeStep() { return Util::scene()->problemInfo()->timeStep.number(); }
+        inline const double getTimeStep() { return Util::scene()->problemInfo()->timeStep().number(); }
         void setTimeStep(const double timeStep);
 
         // time total
-        inline const double getTimeTotal() { return Util::scene()->problemInfo()->timeTotal.number(); }
+        inline const double getTimeTotal() { return Util::scene()->problemInfo()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
 
         void solve();       

@@ -84,10 +84,11 @@ public slots:
     void selectByMarker();
     void selectPoint();
     void doPostprocessorModeGroup(QAction *action);
-    virtual void doInvalidated();
+    virtual void refresh();
     void setControls();
     virtual void clear();
     void exportVTKScalarView(const QString &fileName = QString());
+    void setChartLine(const ChartLine &chartLine);
 
 public:
     SceneViewPost2D(QWidget *parent = 0);
@@ -138,6 +139,9 @@ protected:
 private:
     // selected point
     Point m_selectedPoint;
+
+    // chart line
+    ChartLine m_chartLine; // line
 
     // gl lists
     int m_listContours;

@@ -25,7 +25,6 @@
 struct SceneViewSettings;
 class ScriptEditor;
 
-class ColorButton;
 class SLineEditDouble;
 class ValueLineEdit;
 
@@ -40,7 +39,6 @@ private slots:
     void doClearApplicationLog();
     void doAdaptivityDefault();
     void doCommandsDefault();
-    void doColorsDefault();
 
     void doAccept();
     void doReject();
@@ -51,7 +49,6 @@ private:
     QWidget *panMain;
     QWidget *panView;
     QWidget *panSolver;
-    QWidget *panColors;
     QWidget *panGlobalScriptWidget;
 
     // main
@@ -100,20 +97,6 @@ private:
     QLabel *lblSceneFontExample;
     QPushButton *btnSceneFont;
 
-    // colors
-    ColorButton *colorBackground;
-    ColorButton *colorGrid;
-    ColorButton *colorCross;
-    ColorButton *colorNodes;
-    ColorButton *colorEdges;
-    ColorButton *colorLabels;
-    ColorButton *colorContours;
-    ColorButton *colorVectors;
-    ColorButton *colorInitialMesh;
-    ColorButton *colorSolutionMesh;
-    ColorButton *colorHighlighted;
-    ColorButton *colorSelected;
-
     // adaptivity
     QLabel *lblMaxDofs;
     QSpinBox *txtMaxDOFs;
@@ -146,27 +129,5 @@ private:
     void fillComboBoxPhysicField(QComboBox *cmbPhysicField);
 };
 
-// *************************************************************************
-
-class ColorButton : public QPushButton
-{
-    Q_OBJECT
-
-public:
-    ColorButton(QWidget *parent = 0);
-    ~ColorButton();
-
-    inline QColor color() { return m_color; }
-    void setColor(const QColor &color);
-
-protected:
-    void paintEvent(QPaintEvent *event);
-
-private slots:
-    void doClicked();
-
-private:
-    QColor m_color;
-};
 
 #endif // OPTIONSDIALOG_H

@@ -69,7 +69,7 @@ void SceneViewCommon3D::clear()
     m_rotation3d.y = -35.0;
     m_rotation3d.z = 0.0;
 
-    doInvalidated();
+    refresh();
     doZoomBestFit();
 
     SceneViewCommon::clear();
@@ -143,7 +143,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene)
         }
         else
         {
-            if (Util::scene()->problemInfo()->coordinateType == CoordinateType_Planar)
+            if (Util::scene()->problemInfo()->coordinateType() == CoordinateType_Planar)
             {
                 glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
             }
