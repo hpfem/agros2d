@@ -26,6 +26,7 @@
 #include "scene.h"
 #include "hermes2d.h"
 #include "module.h"
+#include "problem.h"
 
 </includes>
 
