@@ -1,49 +1,65 @@
+import agros2d
+
 # model
-newdocument(name="Tube", type="axisymmetric",
-            physicfield="current", analysistype="steadystate",
-            numberofrefinements=1, polynomialorder=4,
-            nonlineartolerance=0.001, nonlinearsteps=10)
+problem = agros2d.problem(clear = True)
+problem.coordinate_type = "axisymmetric"
+problem.name = "Tube"
+problem.mesh_type = "triangle"
+problem.matrix_solver = "umfpack"
 
-# boundaries
-addboundary("Neumann", "current_inward_current_flow", {"Jn" : 0})
-addboundary("Ground", "current_potential", {"V" : 0})
-addboundary("Voltage", "current_potential", {"V" : 10})
-addboundary("Inlet", "current_inward_current_flow", {"Jn" : -3e9})
+# fields
+current = agros2d.field("current")
+current.analysis_type = "steadystate"
+current.number_of_refinements = 1
+current.polynomial_order = 4
+current.linearity_type = "linear"
+current.weak_forms = "compiled"
+current.nonlineartolerance = 0.001
+current.nonlinearsteps = 10
 
-# materials
-addmaterial("Copper", {"gamma" : 5.7e7})
+current.add_boundary("Neumann", "current_inward_current_flow", {"Jn" : 0})
+current.add_boundary("Ground", "current_potential", {"V" : 0})
+current.add_boundary("Matched boundary", "current_impedance", {"Z0" : 1.25*343})
+current.add_boundary("Voltage", "current_potential", {"V" : 10})
+current.add_boundary("Inlet", "current_inward_current_flow", {"Jn" : -3e9})
+current.add_material("Copper", {"gamma" : 5.7e7})
+
+# geometry
+geometry = agros2d.geometry()
 
 # edges
-addedge(0, 0.45, 0, 0, boundary="Neumann")
-addedge(0, 0, 0.2, 0, boundary="Ground")
-addedge(0.2, 0, 0.2, 0.15, boundary="Inlet")
-addedge(0.2, 0.15, 0.35, 0.45, boundary="Neumann")
-addedge(0.35, 0.45, 0, 0.45, boundary="Voltage")
+geometry.add_edge(0, 0.45, 0, 0, boundaries = {"Neumann"})
+geometry.add_edge(0, 0, 0.2, 0, boundaries = {"Ground"})
+geometry.add_edge(0.2, 0, 0.2, 0.15, boundaries = {"Inlet"})
+geometry.add_edge(0.2, 0.15, 0.35, 0.45, boundaries = {"Neumann"})
+geometry.add_edge(0.35, 0.45, 0, 0.45, boundaries = {"Voltage"})
 
 # labels
-addlabel(0.0933957, 0.350253, material="Copper")
+geometry.add_label(0.0933957, 0.350253, materials = {"Copper"})
 
-# solve
-zoombestfit()
-solve()
+
+geometry.zoom_best_fit()
+
+# solve problem
+problem.solve()
 
 # point value
-point = pointresult(0.213175, 0.25045)
-testV = test("Scalar potential", point["V"], 5.566438)
-testE = test("Electric field", point["E"], 32.059116)
-testEr = test("Electric field - r", point["Er"], -11.088553)
-testEz = test("Electric field - z", point["Ez"], -30.080408)
-testJ = test("Current density", point["J"], 1.82737e9)
-testJr = test("Current density - r", point["Jr"], -6.320475e8)
-testJz = test("Current density - z", point["Jz"], -1.714583e9)
-testpj = test("Losses", point["pj"], 5.858385e10)	
+point = current.local_values(0.213175, 0.25045)
+testV = current.test("Scalar potential", point["V"], 5.566438)
+testE = current.test("Electric field", point["E"], 32.059116)
+testEr = current.test("Electric field - r", point["Er"], -11.088553)
+testEz = current.test("Electric field - z", point["Ez"], -30.080408)
+testJ = current.test("Current density", point["J"], 1.82737e9)
+testJr = current.test("Current density - r", point["Jr"], -6.320475e8)
+testJz = current.test("Current density - z", point["Jz"], -1.714583e9)
+testpj = current.test("Losses", point["pj"], 5.858385e10)	
 
 # volume integral
-volume = volumeintegral([0])
-testPj = test("Losses", volume["Pj"], 4.542019e9)
+volume = current.volume_integrals([0])
+testPj = current.test("Losses", volume["Pj"], 4.542019e9)
 
 # surface integral
-surface = surfaceintegral([1])
-testI = test("Current", surface["I"], -2.166256e8)
+surface = current.surface_integrals([1])
+testI = current.test("Current", surface["I"], -2.166256e8)
 
 print("Test: Current field - axisymmetric: " + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))
