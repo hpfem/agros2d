@@ -22,14 +22,17 @@ public:
         catch(std::exception& e)
         {
             qCritical() << "Exception thrown: " << e.what() << endl;
+            assert(0);
         }
         catch(Hermes::Exceptions::Exception& e)
         {
             qCritical() << "Hermes exception thrown: " << e.getMsg() << endl;
+            assert(0);
         }
         catch(...)
         {
             qCritical() << "Unknown exception thrown" << endl;
+            assert(0);
         }
 
         return false;

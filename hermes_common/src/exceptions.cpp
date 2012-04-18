@@ -187,9 +187,9 @@ namespace Hermes
     {
       char * msg =  new char[55 + strlen(name)];
       if (value>allowed)
-        sprintf(msg, "Variable %s is %f but maximum allowed value is %f", name, value, allowed);
+        sprintf(msg, "Variable %s is %g but maximum allowed value is %g", name, value, allowed);
       else
-        sprintf(msg, "Variable %s is %f but minimum allowed value is %f", name, value, allowed);
+        sprintf(msg, "Variable %s is %g but minimum allowed value is %g", name, value, allowed);
       message = msg;
       this->value = value;
       this->allowed = allowed;
