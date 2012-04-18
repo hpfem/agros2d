@@ -405,6 +405,7 @@ void PyProblem::setTimeTotal(const double timeTotal)
 
 void PyProblem::clear()
 {
+    Util::problem()->clearFieldsAndConfig();
     Util::scene()->clear();
 }
 

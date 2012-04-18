@@ -482,9 +482,9 @@ void FieldsToobar::refresh()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        QAction *actField = new QAction(QString::fromStdString(fieldInfo->module()->name), this);
-        actField->setIcon(icon(QString::fromStdString("fields/" + fieldInfo->module()->fieldid)));
-        actField->setData(QString::fromStdString(fieldInfo->module()->fieldid));
+        QAction *actField = new QAction(fieldInfo->module() ? QString::fromStdString(fieldInfo->module()->name) : fieldInfo->fieldId(), this);
+        actField->setIcon(icon("fields/" + fieldInfo->fieldId()));
+        actField->setData(fieldInfo->fieldId());
 
         actFieldsGroup->addAction(actField);
         tlbFields->addAction(actField);

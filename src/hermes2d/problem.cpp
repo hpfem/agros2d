@@ -40,6 +40,7 @@
 
 ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
 {
+    clear();
 }
 
 void ProblemConfig::clear()
@@ -109,6 +110,8 @@ void Problem::clearSolution()
 
 void Problem::clearFieldsAndConfig()
 {
+    clearSolution();
+
     // clear couplings
     foreach (CouplingInfo* couplingInfo, m_couplingInfos)
         delete couplingInfo;

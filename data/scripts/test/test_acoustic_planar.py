@@ -1,56 +1,72 @@
-# model
-newdocument(name="Acoustic", type="planar",
-            physicfield="acoustic", analysistype="harmonic",
-            numberofrefinements=3, polynomialorder=2,
-            nonlineartolerance=0.001, nonlinearsteps=10,
-            frequency=2000)
-cc
-# boundaries
-addboundary("Source", "acoustic_pressure", {"pr" : 0.01, "pi" : 0})
-addboundary("Wall", "acoustic_normal_acceleration", {"anr" : 0, "ani" : 0})
-addboundary("Matched boundary", "acoustic_impedance", {"Z0" : 1.25*343})
+import agros2d
 
-# materials
-addmaterial("Vzduch", {"rho" : 1.25, "vel" : 343})
+# model
+problem = agros2d.problem(clear = True)
+problem.coordinate_type = "planar"
+problem.name = "Acoustic"
+problem.mesh_type = "triangle"
+problem.matrix_solver = "umfpack"
+problem.frequency = 2000
+
+# fields
+acoustic = agros2d.field("acoustic")
+acoustic.analysis_type = "harmonic"
+acoustic.number_of_refinements = 3
+acoustic.polynomial_order = 2
+acoustic.linearity_type = "linear"
+acoustic.weak_forms = "compiled"
+acoustic.nonlinear_tolerance = 0.001
+acoustic.nonlinear_steps = 10
+
+acoustic.add_boundary("Source", "acoustic_pressure", {"pr" : 0.01, "pi" : 0})
+acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"anr" : 0, "ani" : 0})
+acoustic.add_boundary("Matched boundary", "acoustic_impedance", {"Z0" : 1.25*343})
+
+acoustic.add_material("Vzduch", {"vel" : 343, "acoustic_permittivity" : 1.25})
+
+# geometry
+geometry = agros2d.geometry()
 
 # edges
-addedge(-0.4, 0.05, 0.1, 0.2, boundary="Matched boundary")
-addedge(0.1, -0.2, -0.4, -0.05, boundary="Matched boundary")
-addedge(-0.4, 0.05, -0.4, -0.05, boundary="Matched boundary")
-addedge(-0.18, -0.06, -0.17, -0.05, boundary="Source", angle=90)
-addedge(-0.17, -0.05, -0.18, -0.04, boundary="Source", angle=90)
-addedge(-0.18, -0.04, -0.19, -0.05, boundary="Source", angle=90)
-addedge(-0.19, -0.05, -0.18, -0.06, boundary="Source", angle=90)
-addedge(0.1, -0.2, 0.1, 0.2, boundary="Matched boundary", angle=90)
-addedge(0.03, 0.1, -0.04, -0.05, boundary="Wall", angle=90)
-addedge(-0.04, -0.05, 0.08, -0.04, boundary="Wall")
-addedge(0.08, -0.04, 0.03, 0.1, boundary="Wall")
+geometry.add_edge(-0.4, 0.05, 0.1, 0.2, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(-0.4, 0.05, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(-0.18, -0.06, -0.17, -0.05, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(-0.17, -0.05, -0.18, -0.04, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(-0.18, -0.04, -0.19, -0.05, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(-0.19, -0.05, -0.18, -0.06, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(0.1, -0.2, 0.1, 0.2, boundaries = {"acoustic" : "Matched boundary"}, angle=90)
+geometry.add_edge(0.03, 0.1, -0.04, -0.05, boundaries = {"acoustic" : "Wall"}, angle=90)
+geometry.add_edge(-0.04, -0.05, 0.08, -0.04, boundaries = {"acoustic" : "Wall"})
+geometry.add_edge(0.08, -0.04, 0.03, 0.1, boundaries = {"acoustic" : "Wall"})
 
 # labels
-addlabel(-0.0814934, 0.0707097, material="Vzduch")
-addlabel(-0.181474, -0.0504768, material="none")
-addlabel(0.0314514, 0.0411749, material="none")
+geometry.add_label(-0.0814934, 0.0707097, materials = {"acoustic" : "Vzduch"})
+geometry.add_label(-0.181474, -0.0504768)
+geometry.add_label(0.0314514, 0.0411749)
 
-# solve
-zoombestfit()
-solve()
+geometry.zoom_best_fit()
+
+# solve problem
+problem.solve()
 
 # point valueqtcreator 2.2 ppa
-point = pointresult(-0.084614, 0.053416)
-testp = test("Acoustic pressure", point["p"], 0.003064)
-testp_real = test("Acoustic pressure - real", point["pr"], 0.002322)
-testp_imag = test("Acoustic pressure - imag", point["pi"], 0.001999)
-# testSPL = test("Acoustic sound level", point["SPL"], 40.695085)
+point = acoustic.local_values(-0.084614, 0.053416)
+testp = acoustic.test("Acoustic pressure", point["p"], 0.003064)
+testp_real = acoustic.test("Acoustic pressure - real", point["pr"], 0.002322)
+testp_imag = acoustic.test("Acoustic pressure - imag", point["pi"], 0.001999)
+# testSPL = acoustic.test("Acoustic sound level", point["SPL"], 40.695085)
 
 # volume integral
-volume = volumeintegral([0])
-# testPv_real = test("Pressure - real", volume["p_real"], -1.915211e-5)
-# testPv_imag = test("Pressure - imag", volume["p_imag"], -1.918928e-5)
+volume = acoustic.volume_integrals([0])
+# testPv_real = acoustic.test("Pressure - real", volume["p_real"], -1.915211e-5)
+# testPv_imag = acoustic.test("Pressure - imag", volume["p_imag"], -1.918928e-5)
 
 # surface integral 
-surface = surfaceintegral([7])
-# testPs_real = test("Pressure - real", surface["p_real"], 3.079084e-4)
-# testPs_imag = test("Pressure - imag", surface["p_imag"], 4.437581e-5)
+surface = acoustic.surface_integrals([0])
+# testPs_real = acoustic.test("Pressure - real", surface["p_real"], 3.079084e-4)
+# testPs_imag = acoustic.test("Pressure - imag", surface["p_imag"], 4.437581e-5)
 
 # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
 print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag))
