@@ -14,8 +14,8 @@ electrostatic.number_of_refinements = 1
 electrostatic.polynomial_order = 3
 electrostatic.linearity_type = "linear"
 electrostatic.weak_forms = "compiled"
-electrostatic.nonlineartolerance = 0.001
-electrostatic.nonlinearsteps = 10
+electrostatic.nonlinear_tolerance = 0.001
+electrostatic.nonlinear_steps = 10
 
 electrostatic.add_boundary("Source electrode", "electrostatic_potential", {"electrostatic_potential" : 10})
 electrostatic.add_boundary("Ground electrode", "electrostatic_potential", {"electrostatic_potential" : 0})

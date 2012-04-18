@@ -6,6 +6,7 @@ problem.coordinate_type = "planar"
 problem.name = "Acoustic"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
+problem.frequency = 2000
 
 # fields
 acoustic = agros2d.field("acoustic")
@@ -14,10 +15,8 @@ acoustic.number_of_refinements = 3
 acoustic.polynomial_order = 2
 acoustic.linearity_type = "linear"
 acoustic.weak_forms = "compiled"
-acoustic.nonlineartolerance = 0.001
-acoustic.nonlinearsteps = 10
-acoustic.frequency = 2000
-
+acoustic.nonlinear_tolerance = 0.001
+acoustic.nonlinear_steps = 10
 
 acoustic.add_boundary("Source", "acoustic_pressure", {"pr" : 0.01, "pi" : 0})
 acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"anr" : 0, "ani" : 0})
@@ -25,39 +24,27 @@ acoustic.add_boundary("Matched boundary", "acoustic_impedance", {"Z0" : 1.25*343
 
 acoustic.add_material("Vzduch", {"vel" : 343, "acoustic_permittivity" : 1.25})
 
-
 # geometry
 geometry = agros2d.geometry()
 
 # edges
-geometry.add_edge(-0.4, 0.05, 0.1, 0.2, boundaries = {"Matched boundary"})
-
-geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"Matched boundary"})
-
-geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"Matched boundary"})
-
-geometry.add_edge(-0.4, 0.05, -0.4, -0.05, boundaries = {"Matched boundary"})
-
-geometry.add_edge(-0.18, -0.06, -0.17, -0.05, boundaries = {"Source"}, angle=90)
-
-geometry.add_edge(-0.17, -0.05, -0.18, -0.04, boundaries = {"Source"}, angle=90)
-
-geometry.add_edge(-0.18, -0.04, -0.19, -0.05, boundaries = {"Source"}, angle=90)
-
-geometry.add_edge(-0.19, -0.05, -0.18, -0.06, boundaries = {"Source"}, angle=90)
-
-geometry.add_edge(0.1, -0.2, 0.1, 0.2, boundaries = {"Matched boundary"}, angle=90)
-
-geometry.add_edge(0.03, 0.1, -0.04, -0.05, boundaries = {"Wall"}, angle=90)
-
-geometry.add_edge(-0.04, -0.05, 0.08, -0.04, boundaries = {"Wall"})
-
-geometry.add_edge(0.08, -0.04, 0.03, 0.1, boundaries = {"Wall"})
+geometry.add_edge(-0.4, 0.05, 0.1, 0.2, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(-0.4, 0.05, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
+geometry.add_edge(-0.18, -0.06, -0.17, -0.05, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(-0.17, -0.05, -0.18, -0.04, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(-0.18, -0.04, -0.19, -0.05, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(-0.19, -0.05, -0.18, -0.06, boundaries = {"acoustic" : "Source"}, angle=90)
+geometry.add_edge(0.1, -0.2, 0.1, 0.2, boundaries = {"acoustic" : "Matched boundary"}, angle=90)
+geometry.add_edge(0.03, 0.1, -0.04, -0.05, boundaries = {"acoustic" : "Wall"}, angle=90)
+geometry.add_edge(-0.04, -0.05, 0.08, -0.04, boundaries = {"acoustic" : "Wall"})
+geometry.add_edge(0.08, -0.04, 0.03, 0.1, boundaries = {"acoustic" : "Wall"})
 
 # labels
-geometry.add_label(-0.0814934, 0.0707097, materials = {"Vzduch"})
-geometry.add_label(-0.181474, -0.0504768, materials = {"none"})
-geometry.add_label(0.0314514, 0.0411749, materials = {"none"})
+geometry.add_label(-0.0814934, 0.0707097, materials = {"acoustic" : "Vzduch"})
+geometry.add_label(-0.181474, -0.0504768)
+geometry.add_label(0.0314514, 0.0411749)
 
 geometry.zoom_best_fit()
 
