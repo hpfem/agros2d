@@ -46,9 +46,8 @@ geometry.add_label(0.019, 0.021, materials = {"electrostatic" : "Dielectric n.1"
 geometry.add_label(0.0379, 0.051, materials = {"electrostatic" : "Dielectric n.2"})
 geometry.add_label(0.0284191, 0.123601, materials = {"electrostatic" : "Air"})
 
-
 # solve
-geometry.zoombestfit()
+geometry.zoom_best_fit()
 problem.solve()
 
 # point value
