@@ -8,20 +8,33 @@
 #include "util.h"
 #include "mainwindow.h"
 
-//TODO attemp to redefine notify
+class MyApplication : public QApplication {
+public:
+    MyApplication(int& argc, char ** argv) :
+    QApplication(argc, argv) { }
+    virtual ~MyApplication() { }
 
-//class MyApplication : public QApplication
-//{
-//public:
-//    bool notify(QObject *, QEvent *);
-//    MyApplication(int argc, char **argv) : QApplication(argc, argv) {}
-//};
+    // reimplemented from QApplication so we can throw exceptions in slots
+    virtual bool notify(QObject * receiver, QEvent * event) {
+        try {
+            return QApplication::notify(receiver, event);
+        }
+        catch(std::exception& e)
+        {
+            qCritical() << "Exception thrown: " << e.what() << endl;
+        }
+        catch(Hermes::Exceptions::Exception& e)
+        {
+            qCritical() << "Hermes exception thrown: " << e.getMsg() << endl;
+        }
+        catch(...)
+        {
+            qCritical() << "Unknown exception thrown" << endl;
+        }
 
-//bool MyApplication::notify(QObject *, QEvent *)
-//{
-//    cout << "notify" << endl;
-//}
-
+        return false;
+    }
+};
 
 
 int main(int argc, char *argv[])
@@ -37,7 +50,7 @@ int main(int argc, char *argv[])
     // register message handler
     // TODO: qInstallMsgHandler(logOutput);
 
-    QApplication a(argc, argv);
+    MyApplication a(argc, argv);
 
 #ifdef VERSION_BETA
     bool beta = true;
