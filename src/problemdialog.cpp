@@ -607,6 +607,7 @@ void CouplingsWidget::save()
 
 void CouplingsWidget::refresh()
 {
+    m_couplingInfos = Util::problem()->couplingInfos();
     CouplingInfo::synchronizeCouplings(Util::problem()->fieldInfos(), m_couplingInfos);
 
     createContent();
