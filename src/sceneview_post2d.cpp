@@ -956,27 +956,33 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
               0.5);
 
     // triangles
-    for (int i = 0; i < Util::problem()->activeMeshInitial()->get_num_active_elements(); i++)
+    for (int i = 0, max = Util::problem()->activeMeshInitial()->get_max_element_id(); i < max; i++)
     {
-        Hermes::Hermes2D::Element *element = Util::problem()->activeMeshInitial()->get_element(i);
-        if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
+        Hermes::Hermes2D::Element *element;
+        if ((element = Util::problem()->activeMeshInitial()->get_element_fast(i))->used)
         {
-            if (element->is_triangle())
+            if (element->active)
             {
-                glBegin(GL_TRIANGLES);
-                glVertex2d(element->vn[0]->x, element->vn[0]->y);
-                glVertex2d(element->vn[1]->x, element->vn[1]->y);
-                glVertex2d(element->vn[2]->x, element->vn[2]->y);
-                glEnd();
-            }
-            else
-            {
-                glBegin(GL_QUADS);
-                glVertex2d(element->vn[0]->x, element->vn[0]->y);
-                glVertex2d(element->vn[1]->x, element->vn[1]->y);
-                glVertex2d(element->vn[2]->x, element->vn[2]->y);
-                glVertex2d(element->vn[3]->x, element->vn[3]->y);
-                glEnd();
+                if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
+                {
+                    if (element->is_triangle())
+                    {
+                        glBegin(GL_TRIANGLES);
+                        glVertex2d(element->vn[0]->x, element->vn[0]->y);
+                        glVertex2d(element->vn[1]->x, element->vn[1]->y);
+                        glVertex2d(element->vn[2]->x, element->vn[2]->y);
+                        glEnd();
+                    }
+                    else
+                    {
+                        glBegin(GL_QUADS);
+                        glVertex2d(element->vn[0]->x, element->vn[0]->y);
+                        glVertex2d(element->vn[1]->x, element->vn[1]->y);
+                        glVertex2d(element->vn[2]->x, element->vn[2]->y);
+                        glVertex2d(element->vn[3]->x, element->vn[3]->y);
+                        glEnd();
+                    }
+                }
             }
         }
     }

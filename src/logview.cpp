@@ -174,7 +174,7 @@ LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent)
     restoreGeometry(settings.value("LogDialog/Geometry", saveGeometry()).toByteArray());
 }
 
-LogDialog::~LogDialog2()
+LogDialog::~LogDialog()
 {
     QSettings settings;
     settings.setValue("LogDialog/Geometry", saveGeometry());

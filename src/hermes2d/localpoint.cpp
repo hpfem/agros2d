@@ -34,24 +34,29 @@ int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
 {
     assert(mesh);
 
-    for (int i = 0; i < mesh->get_num_active_elements(); i++)
+    for (int i = 0, max = mesh->get_max_element_id(); i < max; i++)
     {
-        Hermes::Hermes2D::Element *element = mesh->get_element_fast(i);
+        Hermes::Hermes2D::Element *element;
+        if ((element = mesh->get_element_fast(i))->used)
+        {
+            if (element->active)
+            {
+                bool inElement = false;
+                int j;
+                int npol = (element->is_triangle()) ? 3 : 4;
 
-        bool inElement = false;
-        int j;
-        int npol = (element->is_triangle()) ? 3 : 4;
+                for (int i = 0, j = npol-1; i < npol; j = i++) {
+                    if ((((element->vn[i]->y <= point.y) && (point.y < element->vn[j]->y)) ||
+                         ((element->vn[j]->y <= point.y) && (point.y < element->vn[i]->y))) &&
+                            (point.x < (element->vn[j]->x - element->vn[i]->x) * (point.y - element->vn[i]->y)
+                             / (element->vn[j]->y - element->vn[i]->y) + element->vn[i]->x))
+                        inElement = !inElement;
+                }
 
-        for (int i = 0, j = npol-1; i < npol; j = i++) {
-            if ((((element->vn[i]->y <= point.y) && (point.y < element->vn[j]->y)) ||
-                 ((element->vn[j]->y <= point.y) && (point.y < element->vn[i]->y))) &&
-                    (point.x < (element->vn[j]->x - element->vn[i]->x) * (point.y - element->vn[i]->y)
-                     / (element->vn[j]->y - element->vn[i]->y) + element->vn[i]->x))
-                inElement = !inElement;
+                if (inElement)
+                    return i;
+            }
         }
-
-        if (inElement)
-            return i;
     }
 
     return -1;
@@ -121,7 +126,7 @@ void LocalPointValue::calculate()
 
             for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
             {
-                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());                
+                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.get();
 
                 double value;

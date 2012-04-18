@@ -52,7 +52,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     // dialog buttons
     btnAdaptiveError = new QPushButton(tr("Adaptive error"));
     connect(btnAdaptiveError, SIGNAL(clicked()), SLOT(doAdaptiveError()));
-    btnDOFs = new QPushButton(tr("DOFs"));
+    btnDOFs = new QPushButton(tr("Number of DOFs"));
     connect(btnDOFs, SIGNAL(clicked()), SLOT(doAdaptiveDOFs()));
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
@@ -96,6 +96,7 @@ void InfoWidget::createActions()
 void InfoWidget::refresh()
 {
     btnAdaptiveError->setEnabled(Util::problem()->isSolved());
+    btnDOFs->setEnabled(Util::problem()->isSolved());
 
     QTimer::singleShot(0, this, SLOT(showInfo()));
 }
@@ -231,7 +232,7 @@ void InfoWidget::showInfo()
 
             if (Util::problem()->isSolved())
             {
-                field->SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
+                field->SetValue("DOFS_LABEL", tr("Number of DOFs:").toStdString());
                 field->SetValue("DOFS", tr("%1").arg(DOFs).toStdString());
                 field->SetValue("ERROR_LABEL", tr("Error:").toStdString());
                 field->SetValue("ERROR", tr("%1 %").arg(error).toStdString());

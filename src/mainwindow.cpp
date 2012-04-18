@@ -852,27 +852,23 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::doDocumentNew()
 {
-    assert(0);
-    /*
-    ProblemInfo *problemInfo = new ProblemInfo();
-    ProblemDialog problemDialog(this);
-    if (problemDialog.showDialog() == QDialog::Accepted)
+    FieldSelectDialog dialog(QList<QString>(), this);
+    if (dialog.showDialog() == QDialog::Accepted)
     {
+        Util::problem()->clearFieldsAndConfig();
         Util::scene()->clear();
-        Util::scene()->setProblemInfo(problemInfo);
-        Util::scene()->refresh();
 
-        sceneViewPreprocessor->actOperateOnNodes->trigger();
+        // add field
+        FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
+
+        Util::problem()->addField(fieldInfo);
+
+        problemWidget->actProperties->trigger();
         sceneViewPreprocessor->doZoomBestFit();
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
         sceneViewPost3D->doZoomBestFit();
     }
-    else
-    {
-        delete problemInfo;
-    }
-    */
 }
 
 void MainWindow::doDocumentOpen(const QString &fileName)
