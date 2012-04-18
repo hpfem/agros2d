@@ -158,7 +158,7 @@ LogView::LogView(QWidget *parent) : QDockWidget(tr("Applicaton log"), parent)
 
 // *******************************************************************************************************
 
-LogDialog2::LogDialog2(QWidget *parent, const QString &title) : QDialog(parent)
+LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent)
 {
     setModal(true);
 
@@ -174,13 +174,13 @@ LogDialog2::LogDialog2(QWidget *parent, const QString &title) : QDialog(parent)
     restoreGeometry(settings.value("LogDialog/Geometry", saveGeometry()).toByteArray());
 }
 
-LogDialog2::~LogDialog2()
+LogDialog::~LogDialog2()
 {
     QSettings settings;
     settings.setValue("LogDialog/Geometry", saveGeometry());
 }
 
-void LogDialog2::createControls()
+void LogDialog::createControls()
 {
     logWidget = new LogWidget(this);
 

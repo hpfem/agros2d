@@ -39,7 +39,6 @@
 #include "pythonlabagros.h"
 #include "reportdialog.h"
 #include "videodialog.h"
-#include "logdialog.h"
 #include "problemdialog.h"
 #include "collaboration.h"
 #include "resultsview.h"
@@ -78,7 +77,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     problemWidget = new ProblemWidget(this);
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
-    logDialog = new LogDialog(this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(this);
 
@@ -392,14 +390,6 @@ void MainWindow::createActions()
     actMaterialBrowser->setStatusTip(tr("Material browser"));
     connect(actMaterialBrowser, SIGNAL(triggered()), this, SLOT(doMaterialBrowser()));
 
-    actProgressLog = new QAction(icon("log"), tr("Progress &log"), this);
-    actProgressLog->setStatusTip(tr("Show progress log"));
-    connect(actProgressLog, SIGNAL(triggered()), this, SLOT(doProgressLog()));
-
-    actApplicationLog = new QAction(icon("log"), tr("Application &log"), this);
-    actApplicationLog->setStatusTip(tr("Show application log"));
-    connect(actApplicationLog, SIGNAL(triggered()), this, SLOT(doApplicationLog()));
-
     // zoom actions (geometry, post2d and post3d)
     // scene - zoom
     actSceneZoomIn = new QAction(icon("zoom-in"), tr("Zoom in"), this);
@@ -551,9 +541,6 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
-    mnuTools->addSeparator();
-    mnuTools->addAction(actApplicationLog);
-    mnuTools->addAction(actProgressLog);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -1164,7 +1151,7 @@ void MainWindow::doCreateVideo()
 
 void MainWindow::doCreateMesh()
 {
-    LogDialog2 *logDialog = new LogDialog2(this, tr("Mesh"));
+    LogDialog *logDialog = new LogDialog(this, tr("Mesh"));
     logDialog->show();
 
     // create mesh
@@ -1183,7 +1170,7 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doSolve()
 {
-    LogDialog2 *logDialog = new LogDialog2(this, tr("Solver"));
+    LogDialog *logDialog = new LogDialog(this, tr("Solver"));
     logDialog->show();
 
     // solve problem
@@ -1210,7 +1197,7 @@ void MainWindow::doSolve()
 
 void MainWindow::doSolveAdaptiveStep()
 {
-    LogDialog2 *logDialog = new LogDialog2(this, tr("Adaptive step"));
+    LogDialog *logDialog = new LogDialog(this, tr("Adaptive step"));
     logDialog->show();
 
     // solve problem
@@ -1560,16 +1547,6 @@ void MainWindow::doDocumentExportMeshFile()
     Util::config()->deleteHermes2DMeshFile = commutator;
 
     setControls();
-}
-
-void MainWindow::doProgressLog()
-{
-    logDialog->loadProgressLog();
-}
-
-void MainWindow::doApplicationLog()
-{
-    logDialog->loadApplicationLog();
 }
 
 void MainWindow::doLoadBackground()

@@ -83,12 +83,12 @@ private:
      LogWidget *logWidget;
 };
 
-class LogDialog2 : public QDialog
+class LogDialog : public QDialog
 {
     Q_OBJECT
 public:
-    LogDialog2(QWidget *parent = 0, const QString &title = tr("Progress..."));
-    ~LogDialog2();
+    LogDialog(QWidget *parent = 0, const QString &title = tr("Progress..."));
+    ~LogDialog();
 
 private:
      LogWidget *logWidget;

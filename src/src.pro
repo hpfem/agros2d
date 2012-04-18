@@ -90,7 +90,6 @@ SOURCES += util.cpp \
     tooltipview.cpp \
     logview.cpp \
     scenebasicselectdialog.cpp \
-    logdialog.cpp \
     postprocessorview.cpp \
     style/stylehelper.cpp \
     style/styleanimator.cpp \
@@ -158,7 +157,6 @@ HEADERS += util.h \
     tooltipview.h \
     logview.h \
     scenebasicselectdialog.h \
-    logdialog.h \
     postprocessorview.h \
     style/stylehelper.h \
     style/styleanimator.h \
