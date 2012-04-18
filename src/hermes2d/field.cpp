@@ -71,7 +71,7 @@ FieldInfo::~FieldInfo()
 void FieldInfo::clear()
 {
     // module object
-    m_analysisType = AnalysisType_SteadyState;
+    setAnalysisType(AnalysisType_SteadyState);
 
     m_numberOfRefinements = 1;
     m_polynomialOrder = 2;
