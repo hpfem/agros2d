@@ -27,12 +27,13 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_zoomer.h>
 #include <qwt_plot_panner.h>
-#include <qwt_plot_printfilter.h>
 #include <qwt_counter.h>
 #include <qwt_legend.h>
 #include <qwt_text.h>
 #include <qwt_plot.h>
 #include <qwt_scale_engine.h>
+#include <qwt_plot_renderer.h>
+#include "qwt_plot_magnifier.h"
 
 #include "util.h"
 
@@ -88,7 +89,6 @@ public:
 
     inline QwtPlotCurve *curve() { return m_curve; }
     void saveImage(const QString &fileName = "");
-    QImage image() const;
 
 public slots:
    void setData(double *xval, double *yval, int count);

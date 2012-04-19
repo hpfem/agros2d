@@ -386,7 +386,7 @@ void ChartInfoWidget::setDataCurve(double *x, double *y, int size, QColor color)
     curve->setCurveAttribute(QwtPlotCurve::Inverted);
     curve->setYAxis(QwtPlot::yLeft);
     curve->attach(chart);
-    curve->setData(x, y, size);
+    curve->setSamples(x, y, size);
 }
 
 void ChartInfoWidget::setXLabel(const QString &xlabel)
