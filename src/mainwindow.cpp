@@ -492,10 +492,13 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
+    mnuView->addAction(problemWidget->actProperties);
     mnuView->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     mnuView->addAction(sceneViewMesh->actSceneModeMesh);
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
+    mnuView->addAction(settingsWidget->actSettings);
+    mnuView->addAction(infoWidget->actInfo);
     mnuView->addSeparator();
     mnuView->addAction(actSceneZoomBestFit);
     mnuView->addAction(actSceneZoomIn);
