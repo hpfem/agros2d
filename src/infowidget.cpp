@@ -52,7 +52,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     // dialog buttons
     btnAdaptiveError = new QPushButton(tr("Adaptive error"));
     connect(btnAdaptiveError, SIGNAL(clicked()), SLOT(doAdaptiveError()));
-    btnDOFs = new QPushButton(tr("DOFs"));
+    btnDOFs = new QPushButton(tr("Number of DOFs"));
     connect(btnDOFs, SIGNAL(clicked()), SLOT(doAdaptiveDOFs()));
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
@@ -96,6 +96,7 @@ void InfoWidget::createActions()
 void InfoWidget::refresh()
 {
     btnAdaptiveError->setEnabled(Util::problem()->isSolved());
+    btnDOFs->setEnabled(Util::problem()->isSolved());
 
     QTimer::singleShot(0, this, SLOT(showInfo()));
 }
@@ -231,7 +232,7 @@ void InfoWidget::showInfo()
 
             if (Util::problem()->isSolved())
             {
-                field->SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
+                field->SetValue("DOFS_LABEL", tr("Number of DOFs:").toStdString());
                 field->SetValue("DOFS", tr("%1").arg(DOFs).toStdString());
                 field->SetValue("ERROR_LABEL", tr("Error:").toStdString());
                 field->SetValue("ERROR", tr("%1 %").arg(error).toStdString());
@@ -278,74 +279,6 @@ void InfoWidget::showInfo()
     setFocus();
 }
 
-QDialog *InfoWidget::createChart(const QString &xlabel, const QString &ylabel,
-                                 double *x1, double *y1, int size1,
-                                 double *x2 = NULL, double *y2 = NULL, int size2 = 0)
-{
-    Chart *chartError = new Chart(this);
-
-    // curves
-    QwtPlotCurve *curve1 = new QwtPlotCurve();
-    curve1->setRenderHint(QwtPlotItem::RenderAntialiased);
-    curve1->setPen(QPen(Qt::blue));
-    curve1->setCurveAttribute(QwtPlotCurve::Inverted);
-    curve1->setYAxis(QwtPlot::yLeft);
-    curve1->attach(chartError);
-    curve1->setData(x1, y1, size1);
-
-    // curves
-    if (size2 > 0)
-    {
-        QwtPlotCurve *curve2 = new QwtPlotCurve();
-        curve2->setRenderHint(QwtPlotItem::RenderAntialiased);
-        curve2->setPen(QPen(Qt::red));
-        curve2->setCurveAttribute(QwtPlotCurve::Inverted);
-        curve2->setYAxis(QwtPlot::yLeft);
-        curve2->attach(chartError);
-        curve2->setData(x2, y2, size2);
-    }
-
-    // labels
-    QwtText textErrorLeft(ylabel);
-    textErrorLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
-    chartError->setAxisTitle(QwtPlot::yLeft, textErrorLeft);
-
-    QwtText textErrorBottom(xlabel);
-    textErrorBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
-    chartError->setAxisTitle(QwtPlot::xBottom, textErrorBottom);
-
-    // legend
-    /*
-    QwtLegend *legend = new QwtLegend();
-    legend->setFrameStyle(QFrame::Box | QFrame::Sunken);
-    chart->insertLegend(legend, QwtPlot::BottomLegend);
-    */
-
-    QDialog *chartDialog = new QDialog(this);
-    chartDialog->setAttribute(Qt::WA_DeleteOnClose);
-
-    // dialog buttons
-    QPushButton *btnSaveImage = new QPushButton(tr("Save image"));
-    // connect(btnSaveImage, SIGNAL(clicked()), chartDialog, SLOT(doSaveImage()));
-    QPushButton *btnSaveData = new QPushButton(tr("Save data"));
-    // connect(btnSaveData, SIGNAL(clicked()), chartDialog, SLOT(doSaveData()));
-    QPushButton *btnClose = new QPushButton(tr("Close"));
-    connect(btnClose, SIGNAL(clicked()), chartDialog, SLOT(close()));
-
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
-    layoutButtons->addWidget(btnSaveImage);
-    layoutButtons->addWidget(btnSaveData);
-    layoutButtons->addWidget(btnClose);
-
-    QVBoxLayout *layoutChart = new QVBoxLayout();
-    layoutChart->addWidget(chartError);
-    layoutChart->addLayout(layoutButtons);
-
-    chartDialog->setLayout(layoutChart);
-
-    return chartDialog;
-}
 
 void InfoWidget::doAdaptiveError()
 {
@@ -369,9 +302,12 @@ void InfoWidget::doAdaptiveError()
     double xerrorval[2] = { 1, adaptiveSteps };
     double yerrorval[2] = { fieldInfo->adaptivityTolerance(), fieldInfo->adaptivityTolerance() };
 
-    QDialog *chartDialog = createChart(tr("Steps (-)"), tr("Error (%)"),
-                                       xval, yval, adaptiveSteps,
-                                       xerrorval, yerrorval, 2);
+    ChartInfoWidget *chartDialog = new ChartInfoWidget(this);
+    chartDialog->setXLabel(tr("Error (%)"));
+    chartDialog->setYLabel(tr("DOFs (-)"));
+    chartDialog->setDataCurve(xval, yval, adaptiveSteps);
+    chartDialog->setDataCurve(xerrorval, yerrorval, 2, Qt::red);
+
     chartDialog->exec();
 
     delete [] xval;
@@ -397,9 +333,79 @@ void InfoWidget::doAdaptiveDOFs()
         yval[i] = Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces())));
     }
 
-    QDialog *chartDialog = createChart(tr("Steps (-)"), tr("DOFs (-)"), xval, yval, adaptiveSteps);
+    ChartInfoWidget *chartDialog = new ChartInfoWidget(this);
+    chartDialog->setXLabel(tr("Steps (-)"));
+    chartDialog->setYLabel(tr("DOFs (-)"));
+    chartDialog->setDataCurve(xval, yval, adaptiveSteps);
+
     chartDialog->exec();
 
     delete [] xval;
     delete [] yval;
 }
+
+ChartInfoWidget::ChartInfoWidget(QWidget *parent)
+{
+    setAttribute(Qt::WA_DeleteOnClose);
+
+    createControls();
+}
+
+void ChartInfoWidget::createControls()
+{
+    chart = new Chart(this);
+
+    // dialog buttons
+    QPushButton *btnSaveImage = new QPushButton(tr("Save image"));
+    connect(btnSaveImage, SIGNAL(clicked()), this, SLOT(saveImage()));
+    // TODO: add export data
+    // QPushButton *btnSaveData = new QPushButton(tr("Save data"));
+    // connect(btnSaveData, SIGNAL(clicked()), this, SLOT(saveData()));
+    QPushButton *btnClose = new QPushButton(tr("Close"));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch();
+    layoutButtons->addWidget(btnSaveImage);
+    // layoutButtons->addWidget(btnSaveData);
+    layoutButtons->addWidget(btnClose);
+
+    QVBoxLayout *layoutChart = new QVBoxLayout();
+    layoutChart->addWidget(chart);
+    layoutChart->addLayout(layoutButtons);
+
+    setLayout(layoutChart);
+}
+
+void ChartInfoWidget::setDataCurve(double *x, double *y, int size, QColor color)
+{
+    // curves
+    QwtPlotCurve *curve = new QwtPlotCurve();
+    curve->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curve->setPen(QPen(color));
+    curve->setCurveAttribute(QwtPlotCurve::Inverted);
+    curve->setYAxis(QwtPlot::yLeft);
+    curve->attach(chart);
+    curve->setSamples(x, y, size);
+}
+
+void ChartInfoWidget::setXLabel(const QString &xlabel)
+{
+    QwtText textErrorBottom(xlabel);
+    textErrorBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chart->setAxisTitle(QwtPlot::xBottom, textErrorBottom);
+}
+
+void ChartInfoWidget::setYLabel(const QString &ylabel)
+{
+    // labels
+    QwtText textErrorLeft(ylabel);
+    textErrorLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chart->setAxisTitle(QwtPlot::yLeft, textErrorLeft);
+}
+
+void ChartInfoWidget::saveImage()
+{
+    chart->saveImage();
+}
+

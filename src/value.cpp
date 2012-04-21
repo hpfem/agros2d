@@ -474,7 +474,6 @@ void ValueTimeDialog::createControls()
 
     // chart picker
     picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                               QwtPicker::PointSelection | QwtPicker::DragSelection,
                                QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
                                chart->canvas());
     picker->setRubberBandPen(QColor(Qt::green));

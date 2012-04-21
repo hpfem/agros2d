@@ -90,7 +90,6 @@ SOURCES += util.cpp \
     tooltipview.cpp \
     logview.cpp \
     scenebasicselectdialog.cpp \
-    logdialog.cpp \
     postprocessorview.cpp \
     style/stylehelper.cpp \
     style/styleanimator.cpp \
@@ -158,7 +157,6 @@ HEADERS += util.h \
     tooltipview.h \
     logview.h \
     scenebasicselectdialog.h \
-    logdialog.h \
     postprocessorview.h \
     style/stylehelper.h \
     style/styleanimator.h \
@@ -245,8 +243,8 @@ linux-g++|linux-g++-64|linux-g++-32 {
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     # qwt
-    INCLUDEPATH += /usr/include/qwt-qt4
-    LIBS += -lqwt-qt4
+    INCLUDEPATH += /usr/include/qwt
+    LIBS += -lqwt
 
     # mumps
     contains(DEFINES, WITH_MUMPS) {

@@ -174,7 +174,7 @@ void DataTableDialog::createControls()
     chartValueCurveDots->setStyle(QwtPlotCurve::NoCurve);
     chartValueCurveDots->setCurveAttribute(QwtPlotCurve::Inverted);
     chartValueCurveDots->setYAxis(QwtPlot::yLeft);
-    chartValueCurveDots->setSymbol(QwtSymbol(QwtSymbol::Diamond, Qt::red, QPen(Qt::blue, 1), QSize(10,10)));
+    chartValueCurveDots->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::red), QColor(Qt::blue), QSize(7, 7)));
     chartValueCurveDots->attach(chartValue);
 
     chartDerivative = new Chart(this);
@@ -191,7 +191,7 @@ void DataTableDialog::createControls()
     chartDerivativeCurveDots->setStyle(QwtPlotCurve::NoCurve);
     chartDerivativeCurveDots->setCurveAttribute(QwtPlotCurve::Inverted);
     chartDerivativeCurveDots->setYAxis(QwtPlot::yLeft);
-    chartDerivativeCurveDots->setSymbol(QwtSymbol(QwtSymbol::Diamond, Qt::red, QPen(Qt::blue, 1), QSize(10,10)));
+    chartDerivativeCurveDots->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::red), QColor(Qt::blue), QSize(7, 7)));
     chartDerivativeCurveDots->attach(chartDerivative);
 
     QGridLayout *chartLayout = new QGridLayout();
@@ -270,8 +270,8 @@ void DataTableDialog::doPlot()
     double *derivatives = new double[count];
 
     m_table->get(keys, values, derivatives);
-    chartValueCurveDots->setData(keys, values, count);
-    chartDerivativeCurveDots->setData(keys, derivatives, count);
+    chartValueCurveDots->setSamples(keys, values, count);
+    chartDerivativeCurveDots->setSamples(keys, derivatives, count);
 
     delete [] keys;
     delete [] values;

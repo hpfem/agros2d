@@ -54,12 +54,12 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
     loadAdvanced();
 
     connect(this, SIGNAL(apply()), m_scenePost2D, SLOT(timeStepChanged()));
-    connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));
+    connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));    
 }
 
 void PostprocessorWidget::loadBasic()
 {
-    cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(Util::config()->activeField));
+    // cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(Util::config()->activeField));
     if (cmbFieldInfo->currentIndex() == -1)
         cmbFieldInfo->setCurrentIndex(0);
     doFieldInfo(cmbFieldInfo->currentIndex());

@@ -182,8 +182,8 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
 
     // store variable
     SolutionType solutionType = (SolutionType) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
-//    if (adaptivityStep == -1)
-//        adaptivityStep = lastAdaptiveStep;
+    //    if (adaptivityStep == -1)
+    //        adaptivityStep = lastAdaptiveStep;
 
     // clear combo
     cmbFieldVariable->clear();
@@ -201,10 +201,10 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
         cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionType_Reference)), SolutionType_Reference);
     }
 
-//    for(int step = 0; step <= lastAdaptiveStep; step++)
-//    {
-//        cmbFieldVariable->addItem(QString::number(step), step);
-//    }
+    //    for(int step = 0; step <= lastAdaptiveStep; step++)
+    //    {
+    //        cmbFieldVariable->addItem(QString::number(step), step);
+    //    }
 
     cmbFieldVariable->setCurrentIndex(solutionType);
     cmbFieldVariable->blockSignals(false);
@@ -215,12 +215,15 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
 Chart::Chart(QWidget *parent) : QwtPlot(parent)
 {
     //  chart style
-    clear();
     setAutoReplot(false);
-    setMargin(5);
     setTitle("");
-    setCanvasBackground(QColor(Qt::white));
     setMinimumSize(420, 260);
+
+    // panning with the left mouse button
+    // (void) new QwtPlotPanner(canvas());
+
+    // zoom in/out with the wheel
+    // (void) new QwtPlotMagnifier(canvas());
 
     // legend
     /*
@@ -229,11 +232,15 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
     insertLegend(legend, QwtPlot::BottomLegend);
     */
 
+    // canvas
+    QPalette canvasPalette(Qt::white);
+    canvasPalette.setColor(QPalette::Foreground, QColor(0, 0, 0));
+    canvas()->setPalette(canvasPalette);
+
     // grid
     QwtPlotGrid *grid = new QwtPlotGrid;
-    grid->enableXMin(true);
     grid->setMajPen(QPen(Qt::darkGray, 0, Qt::DotLine));
-    grid->setMinPen(QPen(Qt::gray, 0 , Qt::DotLine));
+    grid->setMinPen(QPen(Qt::gray, 0, Qt::DotLine));
     grid->enableX(true);
     grid->enableY(true);
     grid->enableXMin(true);
@@ -255,7 +262,7 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
 
     // curve
     m_curve = new QwtPlotCurve();
-    m_curve->setRenderHint(QwtPlotItem::RenderAntialiased);
+    m_curve->setRenderHint(QwtPlotCurve::RenderAntialiased);
     m_curve->setPen(QPen(Qt::blue));
     m_curve->setCurveAttribute(QwtPlotCurve::Inverted);
     m_curve->setYAxis(QwtPlot::yLeft);
@@ -275,7 +282,30 @@ void Chart::saveImage(const QString &fileName)
     QString fileNameTemp;
     if (fileName.isEmpty())
     {
-        fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, tr("PNG files (*.png)"));
+        const QList<QByteArray> imageFormats = QImageWriter::supportedImageFormats();
+
+        QStringList filter;
+        filter += "PDF Documents (*.pdf)";
+#ifndef QWT_NO_SVG
+        filter += "SVG Documents (*.svg)";
+#endif
+        filter += "Postscript Documents (*.ps)";
+
+        if (imageFormats.size() > 0)
+        {
+            QString imageFilter("Images (");
+            for ( int i = 0; i < imageFormats.size(); i++ )
+            {
+                if ( i > 0 )
+                    imageFilter += " ";
+                imageFilter += "*.";
+                imageFilter += imageFormats[i];
+            }
+            imageFilter += ")";
+
+            filter += imageFilter;
+        }
+        fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, filter.join(";;"));
 
         QFileInfo fileInfo(fileNameTemp);
         if (!fileNameTemp.isEmpty() && fileInfo.absoluteDir() != tempProblemDir())
@@ -288,28 +318,16 @@ void Chart::saveImage(const QString &fileName)
 
     if (!fileNameTemp.isEmpty())
     {
-        QFileInfo fileInfo(fileNameTemp);
-        if (fileInfo.suffix().toLower() != "png") fileNameTemp += ".png";
+        // QFileInfo fileInfo(fileNameTemp);
+        // if (fileInfo.suffix().toLower() != "png") fileNameTemp += ".png";
 
-        QImage imageChart = image();
-        imageChart.save(fileNameTemp, "PNG");
+        QwtPlotRenderer renderer;
+
+        renderer.setDiscardFlag(QwtPlotRenderer::DiscardBackground, false);
+        renderer.setLayoutFlag(QwtPlotRenderer::KeepFrames, true);
+
+        renderer.renderDocument(this, fileNameTemp, QSizeF(300, 200), 85);
     }
-}
-
-QImage Chart::image() const
-{
-    QPixmap pixmap(width(), height());
-    pixmap.fill(Qt::white); // Qt::transparent
-
-    QwtPlotPrintFilter filter;
-    int options = QwtPlotPrintFilter::PrintAll;
-    options &= ~QwtPlotPrintFilter::PrintBackground;
-    options |= QwtPlotPrintFilter::PrintFrameWithScales;
-    filter.setOptions(options);
-
-    print(pixmap, filter);
-
-    return pixmap.toImage();
 }
 
 void Chart::setData(double *xval, double *yval, int count)
@@ -317,7 +335,7 @@ void Chart::setData(double *xval, double *yval, int count)
     const bool doReplot = autoReplot();
     setAutoReplot(false);
 
-    m_curve->setData(xval, yval, count);
+    m_curve->setSamples(xval, yval, count);
 
     setAutoReplot(doReplot);
 

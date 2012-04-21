@@ -41,7 +41,6 @@ class LogView;
 class ChartDialog;
 class PythonLabAgros;
 class ReportDialog;
-class LogDialog;
 class ServerDownloadDialog;
 class SceneTransformDialog;
 class SceneViewWidget;
@@ -80,7 +79,6 @@ private slots:
     void doCreateMesh();
     void doSolve();
     void doSolveAdaptiveStep();
-    void doProgressLog();
 
     void doChart();
     void doScriptEditor();
@@ -92,7 +90,6 @@ private slots:
     void doMaterialBrowser();
     void doCreateVideo();
     void doFullScreen();
-    void doApplicationLog();
 
     void doCut();
     void doCopy();
@@ -162,7 +159,6 @@ private:
     QAction *actCreateMesh;
     QAction *actSolve;
     QAction *actSolveAdaptiveStep;
-    QAction *actProgressLog;
     QAction *actChart;
     QAction *actFullScreen;
     QAction *actPostprocessorView;
@@ -173,7 +169,6 @@ private:
     QAction *actReport;
     QAction *actMaterialBrowser;
     QAction *actCreateVideo;
-    QAction *actApplicationLog;
 
     QAction *actHelp;
     QAction *actHelpShortCut;
@@ -218,7 +213,6 @@ private:
     LogView *logView;
 
     PythonLabAgros *scriptEditorDialog;
-    LogDialog *logDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
     SceneTransformDialog *sceneTransformDialog;
 

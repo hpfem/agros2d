@@ -352,12 +352,11 @@ void ChartDialog::createControls()
 
     // chart picker
     picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                               QwtPicker::PointSelection | QwtPicker::DragSelection,
                                QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
                                chart->canvas());
     picker->setRubberBandPen(QColor(Qt::green));
     picker->setRubberBand(QwtPicker::CrossRubberBand);
-    picker->setTrackerMode(QwtPicker::ActiveOnly);
+    picker->setTrackerMode(QwtPicker::AlwaysOn);
     picker->setTrackerPen(QColor(Qt::black));
 
     connect(picker, SIGNAL(moved(const QPoint &)), SLOT(doMoved(const QPoint &)));
@@ -389,7 +388,7 @@ void ChartDialog::plotGeometry()
 
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
-    text.setFont(QFont("Helvetica", 10, QFont::Normal));
+    text.setFont(QFont("Helvetica", 10, QFont::Bold));
     text.setText(QString("%1 (%2)").
                  arg(QString::fromStdString(physicFieldVariable->name)).
                  arg(QString::fromStdString(physicFieldVariable->unit)));
@@ -406,8 +405,8 @@ void ChartDialog::plotGeometry()
 
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
-    if (radAxisX->isChecked()) text.setText(Util::problem()->config()->labelX() + " (m):");
-    if (radAxisY->isChecked()) text.setText(Util::problem()->config()->labelY() + " (m):");
+    if (radAxisX->isChecked()) text.setText(Util::problem()->config()->labelX() + " (m)");
+    if (radAxisY->isChecked()) text.setText(Util::problem()->config()->labelY() + " (m)");
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
@@ -495,7 +494,7 @@ void ChartDialog::plotTime()
 
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
-    text.setFont(QFont("Helvetica", 10, QFont::Normal));
+    text.setFont(QFont("Helvetica", 10, QFont::Bold));
     text.setText(QString("%1 (%2)").
                  arg(QString::fromStdString(physicFieldVariable->name)).
                  arg(QString::fromStdString(physicFieldVariable->unit)));
@@ -749,7 +748,9 @@ void ChartDialog::doExportData()
 void ChartDialog::doMoved(const QPoint &pos)
 {
     QString info;
-    info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
+    info.sprintf("x=%g, y=%g",
+        chart->invTransform(QwtPlot::xBottom, pos.x()),
+        chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 void ChartDialog::doChartLine()

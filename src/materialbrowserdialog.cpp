@@ -104,9 +104,8 @@ void MaterialBrowserDialog::createControls()
 
     // chart picker
     QwtPlotPicker *picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                               QwtPicker::PointSelection | QwtPicker::DragSelection,
-                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-                               chartValue->canvas());
+                                              QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
+                                              chartValue->canvas());
     picker->setRubberBandPen(QColor(Qt::green));
     picker->setRubberBand(QwtPicker::CrossRubberBand);
     picker->setTrackerMode(QwtPicker::ActiveOnly);

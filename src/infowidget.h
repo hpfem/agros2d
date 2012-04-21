@@ -26,6 +26,25 @@
 
 class SceneViewPreprocessor;
 
+class ChartInfoWidget : public QDialog
+{
+    Q_OBJECT
+public:
+    ChartInfoWidget(QWidget *parent);
+
+    void createControls();
+    void setDataCurve(double *x, double *y, int size, QColor color = Qt::blue);
+
+    void setXLabel(const QString &xlabel);
+    void setYLabel(const QString &ylabel);
+
+private:
+    Chart *chart;
+
+private slots:
+    void saveImage();
+};
+
 class InfoWidget : public QWidget
 {
     Q_OBJECT

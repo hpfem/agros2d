@@ -39,7 +39,6 @@
 #include "pythonlabagros.h"
 #include "reportdialog.h"
 #include "videodialog.h"
-#include "logdialog.h"
 #include "problemdialog.h"
 #include "collaboration.h"
 #include "resultsview.h"
@@ -78,7 +77,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     problemWidget = new ProblemWidget(this);
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
-    logDialog = new LogDialog(this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(this);
 
@@ -392,14 +390,6 @@ void MainWindow::createActions()
     actMaterialBrowser->setStatusTip(tr("Material browser"));
     connect(actMaterialBrowser, SIGNAL(triggered()), this, SLOT(doMaterialBrowser()));
 
-    actProgressLog = new QAction(icon("log"), tr("Progress &log"), this);
-    actProgressLog->setStatusTip(tr("Show progress log"));
-    connect(actProgressLog, SIGNAL(triggered()), this, SLOT(doProgressLog()));
-
-    actApplicationLog = new QAction(icon("log"), tr("Application &log"), this);
-    actApplicationLog->setStatusTip(tr("Show application log"));
-    connect(actApplicationLog, SIGNAL(triggered()), this, SLOT(doApplicationLog()));
-
     // zoom actions (geometry, post2d and post3d)
     // scene - zoom
     actSceneZoomIn = new QAction(icon("zoom-in"), tr("Zoom in"), this);
@@ -502,10 +492,13 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
+    mnuView->addAction(problemWidget->actProperties);
     mnuView->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     mnuView->addAction(sceneViewMesh->actSceneModeMesh);
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
+    mnuView->addAction(settingsWidget->actSettings);
+    mnuView->addAction(infoWidget->actInfo);
     mnuView->addSeparator();
     mnuView->addAction(actSceneZoomBestFit);
     mnuView->addAction(actSceneZoomIn);
@@ -551,9 +544,6 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
-    mnuTools->addSeparator();
-    mnuTools->addAction(actApplicationLog);
-    mnuTools->addAction(actProgressLog);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -865,27 +855,23 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::doDocumentNew()
 {
-    assert(0);
-    /*
-    ProblemInfo *problemInfo = new ProblemInfo();
-    ProblemDialog problemDialog(this);
-    if (problemDialog.showDialog() == QDialog::Accepted)
+    FieldSelectDialog dialog(QList<QString>(), this);
+    if (dialog.showDialog() == QDialog::Accepted)
     {
+        Util::problem()->clearFieldsAndConfig();
         Util::scene()->clear();
-        Util::scene()->setProblemInfo(problemInfo);
-        Util::scene()->refresh();
 
-        sceneViewPreprocessor->actOperateOnNodes->trigger();
+        // add field
+        FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
+
+        Util::problem()->addField(fieldInfo);
+
+        problemWidget->actProperties->trigger();
         sceneViewPreprocessor->doZoomBestFit();
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
         sceneViewPost3D->doZoomBestFit();
     }
-    else
-    {
-        delete problemInfo;
-    }
-    */
 }
 
 void MainWindow::doDocumentOpen(const QString &fileName)
@@ -1164,7 +1150,7 @@ void MainWindow::doCreateVideo()
 
 void MainWindow::doCreateMesh()
 {
-    LogDialog2 *logDialog = new LogDialog2(this, tr("Mesh"));
+    LogDialog *logDialog = new LogDialog(this, tr("Mesh"));
     logDialog->show();
 
     // create mesh
@@ -1183,7 +1169,7 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doSolve()
 {
-    LogDialog2 *logDialog = new LogDialog2(this, tr("Solver"));
+    LogDialog *logDialog = new LogDialog(this, tr("Solver"));
     logDialog->show();
 
     // solve problem
@@ -1210,7 +1196,7 @@ void MainWindow::doSolve()
 
 void MainWindow::doSolveAdaptiveStep()
 {
-    LogDialog2 *logDialog = new LogDialog2(this, tr("Adaptive step"));
+    LogDialog *logDialog = new LogDialog(this, tr("Adaptive step"));
     logDialog->show();
 
     // solve problem
@@ -1560,16 +1546,6 @@ void MainWindow::doDocumentExportMeshFile()
     Util::config()->deleteHermes2DMeshFile = commutator;
 
     setControls();
-}
-
-void MainWindow::doProgressLog()
-{
-    logDialog->loadProgressLog();
-}
-
-void MainWindow::doApplicationLog()
-{
-    logDialog->loadApplicationLog();
 }
 
 void MainWindow::doLoadBackground()

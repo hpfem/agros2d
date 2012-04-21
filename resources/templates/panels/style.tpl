@@ -24,6 +24,7 @@ h2 {
 h3 {
     padding: 1pt;
     margin: 0;
+    color: rgb(41, 41, 140);
 }
 
 table, td, tr {
