@@ -61,6 +61,16 @@ FieldInfo::FieldInfo(QString fieldId)
     }
 
     clear();
+
+    // set first analysis as default
+    /*
+    std::map<std::string, std::string> analyses = availableAnalyses(m_fieldId.toStdString());
+    if (analyses.size() > 0)
+    {
+        qDebug() << QString::fromStdString(analyses.begin()->first);
+        setAnalysisType(analysisTypeFromStringKey(QString::fromStdString(analyses.begin()->second)));
+    }
+    */
 }
 
 FieldInfo::~FieldInfo()
@@ -71,7 +81,7 @@ FieldInfo::~FieldInfo()
 void FieldInfo::clear()
 {
     // module object
-    m_analysisType = AnalysisType_SteadyState;
+    setAnalysisType(AnalysisType_SteadyState);
 
     m_numberOfRefinements = 1;
     m_polynomialOrder = 2;

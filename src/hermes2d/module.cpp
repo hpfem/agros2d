@@ -937,8 +937,8 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
 {
     switch (physicFieldVariableComp)
     {
-    // case PhysicFieldVariableComp_Undefined:
-    //    return "";
+    case PhysicFieldVariableComp_Undefined:
+        return "";
     case PhysicFieldVariableComp_Scalar:
         return physicFieldVariable->expression.scalar;
     case PhysicFieldVariableComp_X:
