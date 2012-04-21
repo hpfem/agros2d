@@ -832,11 +832,16 @@ namespace Hermes
         int counter = 0;
         double min_elem_area = 1e30;
         Element* e;
-        for_all_base_elements(e, meshes[0])
+        for_all_base_elements_with_unused(e, meshes[0])
         {
-          areas[counter] = e->get_area();
-          if(areas[counter] < min_elem_area) min_elem_area = areas[counter];
-          //printf("base_element[%d].area = %g\n", counter, areas[counter]);
+          if(!e->used)
+            areas[counter] = 0;
+          else
+          {
+            areas[counter] = e->get_area();
+            if(areas[counter] < min_elem_area)
+              min_elem_area = areas[counter];
+          }
           counter++;
         }
         // take one mesh at a time and compare element areas to the areas[] array
@@ -848,12 +853,15 @@ namespace Hermes
         for (int i = 1; i < n; i++)
         {
           counter = 0;
-          for_all_base_elements(e, meshes[i])
+          for_all_base_elements_with_unused(e, meshes[i])
           {
-            if(fabs(areas[counter] - e->get_area()) > tolerance && areas[counter] != 0)
+            if(e->used)
             {
-              printf("counter = %d, area_1 = %g, area_2 = %g.\n", counter, areas[counter], e->get_area());
-              error("Meshes not compatible in Traverse::begin().");
+              if(fabs(areas[counter] - e->get_area()) > tolerance && areas[counter] != 0)
+              {
+                printf("counter = %d, area_1 = %g, area_2 = %g.\n", counter, areas[counter], e->get_area());
+                error("Meshes not compatible in Traverse::begin().");
+              }
             }
             counter++;
           }
