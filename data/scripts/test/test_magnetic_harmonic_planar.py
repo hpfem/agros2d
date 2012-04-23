@@ -1,86 +1,100 @@
+import agros2d
+
 # model
-newdocument(name="Magnetic harmonic - planar", type="planar",
-                        physicfield="magnetic", analysistype="harmonic",
-                        frequency=50,
-                        numberofrefinements=1, polynomialorder=3,
-                        nonlineartolerance=0.001, nonlinearsteps=10)
+problem = agros2d.problem(clear = True)
+problem.coordinate_type = "planar"
+problem.name = "Magnetic harmonic - planar"
+problem.mesh_type = "triangle"
+problem.matrix_solver = "umfpack"
+problem.frequency = 50
 
-# boundaries
-addboundary("A = 0", "magnetic_potential", {"Ar" : 0})
+# fields
+magnetic = agros2d.field("magnetic")
+magnetic.analysis_type = "harmonic"
+magnetic.number_of_refinements = 1
+magnetic.polynomial_order = 3
+magnetic.linearity_type = "linear"
+magnetic.weak_forms = "compiled"
 
-# materials
-addmaterial("Air", {"mur" : 1})
-addmaterial("Cond 1", {"mur" : 1, "Jer" : 2e7, "gamma" : 5.7e7})
-addmaterial("Cond 2", {"mur" : 1, "Jer" : 3e7, "gamma" : 5.7e7})
-addmaterial("Magnet", {"mur" : 1.1, "Brm" : 0.1, "Bra" : 20})
+
+magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+
+magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
+magnetic.add_material("Cond 1", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 2e7, "magnetic_conductivity" : 5.7e7}) 
+magnetic.add_material("Cond 2", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 3e7, "magnetic_conductivity" : 5.7e7}) 
+magnetic.add_material("Magnet", {"magnetic_permeability" : 1.1, "magnetic_remanence" : 0.1, "magnetic_remanence_angle" : 20})    
+
+# geometry
+geometry = agros2d.geometry()
 
 # edges
-addedge(-0.075, 0.06, 0.075, 0.06, boundary="A = 0")
-addedge(0.075, 0.06, 0.075, -0.06, boundary="A = 0")
-addedge(0.075, -0.06, -0.075, -0.06, boundary="A = 0")
-addedge(-0.075, -0.06, -0.075, 0.06, boundary="A = 0")
-addedge(-0.015, -0.01, -0.015, 0.01)
-addedge(-0.015, 0.01, -0.005, 0.01)
-addedge(-0.015, -0.01, -0.005, -0.01)
-addedge(-0.005, -0.01, -0.005, 0.01)
-addedge(0.005, 0.02, 0.005, 0)
-addedge(0.005, 0, 0.015, 0)
-addedge(0.015, 0, 0.015, 0.02)
-addedge(0.015, 0.02, 0.005, 0.02)
-addedge(0.01, -0.01, 0.03, -0.01)
-addedge(0.03, -0.03, 0.01, -0.03)
-addedge(0.01, -0.01, 0.01, -0.03)
-addedge(0.03, -0.01, 0.03, -0.03)
+geometry.add_edge(-0.075, 0.06, 0.075, 0.06, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0.075, 0.06, 0.075, -0.06, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0.075, -0.06, -0.075, -0.06, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(-0.075, -0.06, -0.075, 0.06, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(-0.015, -0.01, -0.015, 0.01)
+geometry.add_edge(-0.015, 0.01, -0.005, 0.01)
+geometry.add_edge(-0.015, -0.01, -0.005, -0.01)
+geometry.add_edge(-0.005, -0.01, -0.005, 0.01)
+geometry.add_edge(0.005, 0.02, 0.005, 0)
+geometry.add_edge(0.005, 0, 0.015, 0)
+geometry.add_edge(0.015, 0, 0.015, 0.02)
+geometry.add_edge(0.015, 0.02, 0.005, 0.02)
+geometry.add_edge(0.01, -0.01, 0.03, -0.01)
+geometry.add_edge(0.03, -0.03, 0.01, -0.03)
+geometry.add_edge(0.01, -0.01, 0.01, -0.03)
+geometry.add_edge(0.03, -0.01, 0.03, -0.03)
 
 # labels
-addlabel(0.035349, 0.036683, area=0, material="Air")
-addlabel(0.00778124, 0.00444642, area=1e-05, material="Cond 1")
-addlabel(-0.0111161, -0.00311249, area=1e-05, material="Cond 2")
-addlabel(0.016868, -0.0186625, area=0, material="Magnet")
+geometry.add_label(0.035349, 0.036683, materials = {"magnetic" : "Air"}, area=0)
+geometry.add_label(0.00778124, 0.00444642, materials = {"magnetic" : "Cond 1"}, area=1e-05)
+geometry.add_label(-0.0111161, -0.00311249, materials = {"magnetic" : "Cond 2"}, area=1e-05)
+geometry.add_label(0.016868, -0.0186625, materials = {"magnetic" : "Magnet"}, area=0)
 
-# solve
-zoombestfit()
-solve()
+geometry.zoom_best_fit()
+
+# solve problem
+problem.solve()
 
 # point value
-point = pointresult(0.012448, 0.016473)
+point = magnetic.local_values(0.012448, 0.016473)
 #print(point)
-testA = test("Magnetic potential", point["A"], 0.001087)
-testA_real = test("Magnetic potential - real", point["Ar"], 3.391642e-4)
-testA_imag = test("Magnetic potential - imag", point["Ai"], -0.001033)
-testB = test("Flux density", point["B"], 0.038197)
-testBx_real = test("Flux density - x - real", point["Brx"], -0.004274)
-testBx_imag = test("Flux density - x - imag", point["Bix"], 0.02868)
-testBy_real = test("Flux density - y - real", point["Bry"], 0.003269)
-testBy_imag = test("Flux density - y - imag", point["Biy"], -0.024707)
-testH = test("Magnetic field", point["H"], 30351.803874)
-testHx_real = test("Magnetic field - x - real", point["Hrx"], -3400.886351)
-testHx_imag = test("Magnetic field - x - imag", point["Hix"], 22823.176772)
-testHy_real = test("Magnetic field - y - real", point["Hry"], 2613.37651)
-testHy_imag = test("Magnetic field - y - imag", point["Hiy"], -19543.255504)
-testwm = test("Energy density", point["wm"], 289.413568)
-testpj = test("Losses density ", point["pj"], 3.435114e5)
-testJit_real = test("Current density - induced transform - real", point["Jitr"], -1.849337e7)
-testJit_imag = test("Current density - induced transform - imag", point["Jiti"], -6.073744e6)
-testJ_real = test("Current density - total - real", point["Jr"], 1.50663e6)
-testJ_imag = test("Current density - total - imag", point["Ji"], -6.073744e6)
-#testFx_real = test("Lorentz force - y - real", point["Fx_real"], 1.442159e5)
-#testFx_imag = test("Lorentz force - x - imag", point["Fx_imag"], 56947.557678)
-#testFy_real = test("Lorentz force - y - real", point["Fy_real"], 1.677588e5)
-#testFy_imag = test("Lorentz force - y - imag", point["Fy_imag"], 69168.050723)
+testA = agros2d.test("Magnetic potential", point["A"], 0.001087)
+testA_real = agros2d.test("Magnetic potential - real", point["Ar"], 3.391642e-4)
+testA_imag = agros2d.test("Magnetic potential - imag", point["Ai"], -0.001033)
+testB = agros2d.test("Flux density", point["B"], 0.038197)
+testBx_real = agros2d.test("Flux density - x - real", point["Brx"], -0.004274)
+testBx_imag = agros2d.test("Flux density - x - imag", point["Bix"], 0.02868)
+testBy_real = agros2d.test("Flux density - y - real", point["Bry"], 0.003269)
+testBy_imag = agros2d.test("Flux density - y - imag", point["Biy"], -0.024707)
+testH = agros2d.test("Magnetic field", point["H"], 30351.803874)
+testHx_real = agros2d.test("Magnetic field - x - real", point["Hrx"], -3400.886351)
+testHx_imag = agros2d.test("Magnetic field - x - imag", point["Hix"], 22823.176772)
+testHy_real = agros2d.test("Magnetic field - y - real", point["Hry"], 2613.37651)
+testHy_imag = agros2d.test("Magnetic field - y - imag", point["Hiy"], -19543.255504)
+testwm = agros2d.test("Energy density", point["wm"], 289.413568)
+testpj = agros2d.test("Losses density ", point["pj"], 3.435114e5)
+testJit_real = agros2d.test("Current density - induced transform - real", point["Jitr"], -1.849337e7)
+testJit_imag = agros2d.test("Current density - induced transform - imag", point["Jiti"], -6.073744e6)
+testJ_real = agros2d.test("Current density - total - real", point["Jr"], 1.50663e6)
+testJ_imag = agros2d.test("Current density - total - imag", point["Ji"], -6.073744e6)
+#testFx_real = agros2d.test("Lorentz force - y - real", point["Fx_real"], 1.442159e5)
+#testFx_imag = agros2d.test("Lorentz force - x - imag", point["Fx_imag"], 56947.557678)
+#testFy_real = agros2d.test("Lorentz force - y - real", point["Fy_real"], 1.677588e5)
+#testFy_imag = agros2d.test("Lorentz force - y - imag", point["Fy_imag"], 69168.050723)
 
 # volume integral
-volume = volumeintegral([1])
-testIe_real = test("Current - external - real", volume["Ier"], 4000.0)
-testIe_imag = test("Current - external - imag", volume["Iei"], 0.0)
-testIit_real = test("Current - induced transform - real", volume["Iitr"], -4104.701323)
-testIit_imag = test("Current - induced transform - imag", volume["Iiti"], -1381.947299)
-testIr = test("Current - real", volume["Ir"], -104.701323)
-testIi = test("Current - imag", volume["Ii"], -1381.947299)
-testWm = test("Energy", volume["Wm"], 0.042927)
-testPj = test("Losses", volume["Pj"], 90.542962)
-#testFLx = test("Lorentz force - x", volume["Fx"], -11.228229)
-#testFLy = test("Lorentz force - y", volume["Fy"], -4.995809)
+volume = magnetic.volume_integrals([1])
+testIe_real = agros2d.test("Current - external - real", volume["Ier"], 4000.0)
+testIe_imag = agros2d.test("Current - external - imag", volume["Iei"], 0.0)
+testIit_real = agros2d.test("Current - induced transform - real", volume["Iitr"], -4104.701323)
+testIit_imag = agros2d.test("Current - induced transform - imag", volume["Iiti"], -1381.947299)
+testIr = agros2d.test("Current - real", volume["Ir"], -104.701323)
+testIi = agros2d.test("Current - imag", volume["Ii"], -1381.947299)
+testWm = agros2d.test("Energy", volume["Wm"], 0.042927)
+testPj = agros2d.test("Losses", volume["Pj"], 90.542962)
+#testFLx = agros2d.test("Lorentz force - x", volume["Fx"], -11.228229)
+#testFLy = agros2d.test("Lorentz force - y", volume["Fy"], -4.995809)
 
 print("Test: Magnetic harmonic - planar: " + str(testA and testA_real and testA_imag
                                                  and testB and testBx_real and testBx_imag and testBy_real and testBy_imag
