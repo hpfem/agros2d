@@ -44,7 +44,7 @@ void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 }
 
 template <typename Scalar>
-QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> Solver<Scalar>::readMesh()
+QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
 {
     // load the mesh file
     cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
@@ -100,13 +100,13 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> Solver<Scalar>::readMesh()
 template <typename Scalar>
 void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionArray<Scalar>& msa)
 {
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
+    Hermes::vector<shared_ptr<Space<Scalar> > > space;
 
     cout << "---- createSpace()" << endl;
     // essential boundary conditions
-    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs;
+    Hermes::vector<EssentialBCs<double> *> bcs;
     for (int i = 0; i < m_block->numSolutions(); i++)
-        bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
+        bcs.push_back(new EssentialBCs<double>());
 
     foreach(Field* field, m_block->m_fields)
     {
@@ -121,13 +121,13 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                 //printf(" ---- chci typ %s\n", boundary->getType().data());
                 Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
 
-                cout << " ---- bdr type " << boundary_type->id.data() << ", " << boundary_type->name.data() << endl;
+                //cout << " ---- bdr type " << boundary_type->id.data() << ", " << boundary_type->name.data() << endl;
                 for (Hermes::vector<ParserFormEssential *>::iterator it = boundary_type->essential.begin();
                      it < boundary_type->essential.end(); ++it)
                 {
                     ParserFormEssential *form = ((ParserFormEssential *) *it);
 
-                    Hermes::Hermes2D::EssentialBoundaryCondition<Scalar> *custom_form = NULL;
+                    EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
                     // compiled form
                     if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
@@ -136,9 +136,8 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                                 analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
                                 coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
 
-                        Hermes::Hermes2D::ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
-                        custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(),
-                                                                                               function);
+                        ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
+                        custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                     }
 
                     if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
@@ -151,15 +150,14 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                             CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
                                                                                                     form->expression,
                                                                                                     boundary);
-                            custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(),
-                                                                                                   function);
+                            custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                         }
                     }
 
                     if (custom_form)
                     {
                         bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
-                        cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
+//                        cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                     }
                 }
             }
@@ -170,7 +168,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         // create space
         for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
         {
-            space.push_back(shared_ptr<Space<Scalar> >(new Hermes::Hermes2D::H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
+            space.push_back(shared_ptr<Space<Scalar> >(new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
 
             int j = 0;
             // set order by element
