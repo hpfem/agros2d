@@ -61,6 +61,8 @@
                     <boundary type="heat_temperature" heat_temperature="300" id="1" name="T=300K">
                         <edge edge="0"/>
                         <edge edge="1"/>
+                    </boundary>
+                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0">
                         <edge edge="2"/>
                         <edge edge="3"/>
                         <edge edge="4"/>
@@ -68,7 +70,6 @@
                         <edge edge="6"/>
                         <edge edge="7"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0"/>
                 </boundaries>
                 <materials>
                     <material heat_volume_heat="0" heat_conductivity="385" id="1" name="new material">

@@ -286,7 +286,8 @@ void WeakFormAgros<Scalar>::registerForms()
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->getMarker(fieldInfo);
             cout << "registering label " << labelNum << ", material " << material << ", name " << material->getName() << ", marker for hermes " << labelNum + 1 << endl;
 
-            if (material && material != Util::scene()->materials->getNone(fieldInfo))
+            assert(material);
+            if (material != Util::scene()->materials->getNone(fieldInfo))
             {
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
                      it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
@@ -309,15 +310,16 @@ void WeakFormAgros<Scalar>::registerForms()
                     for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
                          it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
                     {
+                        SceneMaterial* material2 = Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField());
+                        assert(material2);
+                        if(material2 != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+                        {
+                            registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                         m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
 
-                        registerForm(WFType_VecVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
-                                     m_block->offset(field), m_block->offset(field), material,
-                                     Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
-
-                         registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
-                                      m_block->offset(field), m_block->offset(field), material,
-                                      Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
-
+                            registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                         m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
+                        }
                     }
                 }
             }
