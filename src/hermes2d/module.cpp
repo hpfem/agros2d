@@ -168,10 +168,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    //    cout << "pridavam vektorovou formu, i: " << form->i << ", areas: "; /* ", j: " << form->j <<*/
-    //    for(int i = 0; i < form->areas.size(); i++)
-    //        cout << form->areas.at(i) << ", ";
-    //    cout << endl;
+    cout << "addForm : pridavam formu typu " << type << ", i: " << form->i <<  /*", j: " << form->j <<*/ ", areas: ";
+    for(int i = 0; i < form->areas.size(); i++)
+        cout << form->areas.at(i) << ", ";
+    cout << endl;
     if(type == WFType_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
     else if(type == WFType_MatSurf)
@@ -259,6 +259,7 @@ void WeakFormAgros<Scalar>::registerForms()
         for (int edgeNum = 0; edgeNum<Util::scene()->edges->count(); edgeNum++)
         {
             SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->getMarker(fieldInfo);
+            cout << "registerForms : registering edge " << edgeNum << endl;
 
             if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
             {
@@ -284,9 +285,10 @@ void WeakFormAgros<Scalar>::registerForms()
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->getMarker(fieldInfo);
-            cout << "registering label " << labelNum << ", material " << material << ", name " << material->getName() << ", marker for hermes " << labelNum + 1 << endl;
+            cout << "registerForms : registering label " << labelNum << ", material " << material << ", name " << material->getName() << endl;
 
-            if (material && material != Util::scene()->materials->getNone(fieldInfo))
+            assert(material);
+            if (material != Util::scene()->materials->getNone(fieldInfo))
             {
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
                      it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
@@ -309,15 +311,16 @@ void WeakFormAgros<Scalar>::registerForms()
                     for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
                          it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
                     {
+                        SceneMaterial* material2 = Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField());
+                        assert(material2);
+                        if(material2 != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+                        {
+                            registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                         m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
 
-                        registerForm(WFType_VecVol, field, QString::number(labelNum + 1).toStdString(), (ParserFormExpression *) *it,
-                                     m_block->offset(field), m_block->offset(field), material,
-                                     Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
-
-                        registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
-                                     m_block->offset(field), m_block->offset(field), material,
-                                     Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
-
+                            registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                         m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
+                        }
                     }
                 }
             }
@@ -343,6 +346,7 @@ void WeakFormAgros<Scalar>::registerForms()
                     && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
             {
 
+                cout << "hard coupling form on marker " << labelNum << endl;
                 for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
                      it < coupling->weakform_matrix_volume.end(); ++it)
                 {

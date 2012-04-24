@@ -10,6 +10,8 @@
             <node x="0.15" y="0.25" id="5"/>
             <node x="0.1" y="-0.25" id="6"/>
             <node x="0.15" y="-0.25" id="7"/>
+            <node x="0.3" y="0.25" id="8"/>
+            <node x="0.3" y="-0.25" id="9"/>
         </nodes>
         <edges>
             <edge end="2" refine_towards="0" id="0" start="3" angle="0"/>
@@ -22,11 +24,15 @@
             <edge end="2" refine_towards="0" id="7" start="7" angle="0"/>
             <edge end="4" refine_towards="0" id="8" start="6" angle="0"/>
             <edge end="7" refine_towards="0" id="9" start="5" angle="0"/>
+            <edge end="8" refine_towards="0" id="10" start="3" angle="0"/>
+            <edge end="9" refine_towards="0" id="11" start="8" angle="0"/>
+            <edge end="2" refine_towards="0" id="12" start="9" angle="0"/>
         </edges>
         <labels>
             <label x="0.103556" y="-0.00186029" polynomial_order="0" id="0" area="0"/>
             <label x="0.0497159" y="0.00460215" polynomial_order="0" id="1" area="0"/>
             <label x="0.204343" y="0.00622128" polynomial_order="0" id="2" area="0"/>
+            <label x="0.276729" y="-0.08041810000000001" polynomial_order="0" id="3" area="0"/>
         </labels>
     </geometry>
     <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1.0" name="unnamed" time_total="1.0">
@@ -54,13 +60,34 @@
                     </material>
                 </materials>
             </field>
+            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed" elasticity_displacement_y="0">
+                        <edge edge="10"/>
+                    </boundary>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_fixed_free" id="2" elasticity_displacement_x="0" name="free-fixed" elasticity_displacement_y="0">
+                        <edge edge="0"/>
+                        <edge edge="11"/>
+                    </boundary>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_free" id="3" elasticity_displacement_x="0" name="free" elasticity_displacement_y="0">
+                        <edge edge="12"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="300" elasticity_poisson_ratio="0.33" elasticity_young_modulus="70e9" elasticity_alpha="23e-6" elasticity_temperature_reference="300" id="1" name="new material">
+                        <label label="3"/>
+                    </material>
+                </materials>
+            </field>
             <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary type="heat_temperature" heat_temperature="300" id="1" name="T=300K">
-                        <edge edge="0"/>
                         <edge edge="1"/>
+                        <edge edge="11"/>
                     </boundary>
                     <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0">
                         <edge edge="2"/>
@@ -69,6 +96,8 @@
                         <edge edge="5"/>
                         <edge edge="6"/>
                         <edge edge="7"/>
+                        <edge edge="10"/>
+                        <edge edge="12"/>
                     </boundary>
                 </boundaries>
                 <materials>
@@ -76,6 +105,7 @@
                         <label label="0"/>
                         <label label="1"/>
                         <label label="2"/>
+                        <label label="3"/>
                     </material>
                 </materials>
             </field>
