@@ -8,6 +8,9 @@
         </modules>
     </general>
 
+    <constants>
+    </constants>
+
     <volume>
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="steadystate"  targetanalysis="steadystate" >

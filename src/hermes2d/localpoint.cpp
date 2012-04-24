@@ -84,7 +84,7 @@ void LocalPointValue::initParser()
         return;
 
     // parser variables
-    parser->parser.push_back(m_fieldInfo->module()->get_parser(m_fieldInfo));
+    parser->parser.push_back(m_fieldInfo->module()->get_parser());
 
     // init material variables
     parser->initParserMaterialVariables();

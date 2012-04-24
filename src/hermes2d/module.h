@@ -381,8 +381,7 @@ struct Module
     Module(CoordinateType problemType, AnalysisType analysisType);
     ~Module();
 
-    // parser  TODO move this method to FieldInfo???
-    mu::Parser *get_parser(FieldInfo* fieldInfo);
+    mu::Parser *get_parser();
 
     // read form xml
     void read(std::string filename);
@@ -441,6 +440,7 @@ public:
     std::map<std::string, double> parser_variables;
 
     Parser(FieldInfo *fieldInfo);
+    Parser(CouplingInfo *fieldInfo);
     ~Parser();
 
     //not used at all
@@ -460,6 +460,7 @@ public:
 
 private:
     FieldInfo* m_fieldInfo;
+    CouplingInfo* m_couplingInfo;
 };
 
 template <typename Scalar>
