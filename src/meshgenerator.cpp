@@ -515,6 +515,11 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         elementList[i].neigh[2] = ele_3;
     }
 
+    fileNode.close();
+    fileEdge.close();
+    fileEle.close();
+    fileNeigh.close();
+
     // heterogeneous mesh
     // element division
     if (Util::problem()->config()->meshType() == MeshType_QuadFineDivision)
@@ -837,6 +842,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         QDomElement eleInnerEdges = doc.createElement("inner_edges");
         eleSubdomain.appendChild(eleInnerEdges);
 
+        QList<int> unassignedEdges;
         for (int i = 0; i < edgeList.count(); i++)
         {
             QDomElement eleEdge = doc.createElement("i");
@@ -847,12 +853,12 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
             if (edgeList[i].isUsed && edgeList[i].marker != -1)
             {
                 int numNeighWithField = 0;
-                for(int neigh_i = 0; neigh_i < 2; neigh_i++)
+                for (int neigh_i = 0; neigh_i < 2; neigh_i++)
                 {
                     int neigh = edgeList[i].neighElem[neigh_i];
-                    if(neigh != -1)
+                    if (neigh != -1)
                     {
-                        if(Util::scene()->labels->at(elementList[neigh].marker)->getMarker(fieldInfo)
+                        if (Util::scene()->labels->at(elementList[neigh].marker)->getMarker(fieldInfo)
                                 != SceneMaterialContainer::getNone(fieldInfo))
                             numNeighWithField++;
                     }
@@ -862,16 +868,17 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
                 bool hasFieldBoundaryCondition = (Util::scene()->edges->at(edgeList[i].marker)->getMarker(fieldInfo)
                                                   != SceneBoundaryContainer::getNone(fieldInfo));
 
-                if(numNeighWithField == 1)
+                if (numNeighWithField == 1)
                 {
                     // edge is on "boundary" of the field, should have boundary condition prescribed
 
-                    // todo: instead of assert put some warning and stop calculation, as if boundary condition is not assigned at all
-                    assert(hasFieldBoundaryCondition);
+                    if (!hasFieldBoundaryCondition)
+                        if (!unassignedEdges.contains(edgeList[i].marker))
+                            unassignedEdges.append(edgeList[i].marker);
 
                     eleBoundaryEdges.appendChild(eleEdge);
                 }
-                else if(numNeighWithField == 2)
+                else if (numNeighWithField == 2)
                 {
                     // todo: we could enforce not to have boundary conditions prescribed inside:
                     // assert(!hasFieldBoundaryCondition);
@@ -880,17 +887,23 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
                 }
             }
         }
-    }
 
+        // not assigned boundary
+        if (unassignedEdges.count() > 0)
+        {
+            QString list;
+            foreach (int index, unassignedEdges)
+                list += QString::number(index) + ", ";
+
+            Util::log()->printError(tr("Mesh generator"), tr("Boundary condition is not assigned on following edges %1.").arg(list.left(list.count() - 2)));
+
+            return false;
+        }
+    }
 
     nodeList.clear();
     edgeList.clear();
     elementList.clear();
-
-    fileNode.close();
-    fileEdge.close();
-    fileEle.close();
-    fileNeigh.close();
 
     // save to file
     QFile file(tempProblemFileName() + ".xml");

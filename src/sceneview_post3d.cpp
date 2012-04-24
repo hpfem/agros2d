@@ -94,6 +94,25 @@ void Post3DHermes::processRangeScalar()
 
     if (Util::problem()->isSolved() && Util::config()->scalarVariable != "")
     {
+        bool contains = false;
+        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
+            it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+        {
+            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+            if (variable->id == Util::config()->scalarVariable.toStdString())
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->scalarVariable == "" || !contains)
+        {
+            // default values
+            Util::config()->scalarVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
+            Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->view_default_scalar_variable_comp();
+        }
+
         Util::log()->printMessage(tr("Post3DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
         processInitialMesh();

@@ -17,9 +17,9 @@ current.weak_forms = "compiled"
 
 current.add_boundary("Neumann", "current_inward_current_flow", {"current_inward_current_flow" : 0})
 current.add_boundary("Ground", "current_potential", {"current_potential" : 0})
-current.add_boundary("Matched boundary", "current_impedance", {"current_impedance" : 1.25*343})
 current.add_boundary("Voltage", "current_potential", {"current_potential" : 10})
 current.add_boundary("Inlet", "current_inward_current_flow", {"current_inward_current_flow" : -3e9})
+
 current.add_material("Copper", {"current_conductivity" : 5.7e7})
 
 # geometry
@@ -42,7 +42,7 @@ geometry.zoom_best_fit()
 problem.solve()
 
 # point value
-point = agros2d.local_values(0.213175, 0.25045)
+point = current.local_values(0.213175, 0.25045)
 testV = agros2d.test("Scalar potential", point["V"], 5.566438)
 testE = agros2d.test("Electric field", point["E"], 32.059116)
 testEr = agros2d.test("Electric field - r", point["Er"], -11.088553)

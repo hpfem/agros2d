@@ -58,7 +58,19 @@ void Post2DHermes::processRangeContour()
 
     if (Util::problem()->isSolved())
     {
-        if (Util::config()->contourVariable == "")
+        bool contains = false;
+        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
+            it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+        {
+            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+            if (variable->id == Util::config()->contourVariable.toStdString())
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->contourVariable == "" || !contains)
         {
             // default values
             Util::config()->contourVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
@@ -99,7 +111,19 @@ void Post2DHermes::processRangeScalar()
 
     if (Util::problem()->isSolved())
     {
-        if (Util::config()->scalarVariable == "")
+        bool contains = false;
+        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
+            it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+        {
+            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+            if (variable->id == Util::config()->scalarVariable.toStdString())
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->scalarVariable == "" || !contains)
         {
             // default values
             Util::config()->scalarVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
@@ -138,7 +162,19 @@ void Post2DHermes::processRangeVector()
 
     if (Util::problem()->isSolved())
     {
-        if (Util::config()->vectorVariable == "")
+        bool contains = false;
+        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
+            it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+        {
+            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+            if (variable->id == Util::config()->vectorVariable.toStdString())
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->vectorVariable == "" || !contains)
         {
             // default values
             Util::config()->vectorVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_vector_variable->id);

@@ -17,12 +17,15 @@ magnetic.linearity_type = "linear"
 magnetic.weak_forms = "compiled"
 
 
-magnetic.add_boundary("Cu", "magnetic_potential", {"magnetic_potential_real" : 0})
-magnetic.add_material("Cu", {"magnetic_permeability" : 1, "Jer" : 2e6}) 
+magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+
+magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 2e6}) 
 magnetic.add_material("Fe", {"magnetic_permeability" : 300}) 
 magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
 magnetic.add_material("Magnet", {"magnetic_permeability" : 1.1, "magnetic_remanence" : 0.6, "magnetic_remanence_angle" : 90}) 
 
+# geometry
+geometry = agros2d.geometry()
 
 # edges
 geometry.add_edge(0.01, 0.01, 0.01, 0)
@@ -80,11 +83,11 @@ testHz = agros2d.test("Magnetic intensity - z", point["Hrz"], 494.39852)
 testwm = agros2d.test("Energy density", point["wm"], 50.704118)
 
 # volume integral
-volume = agros2d.volume_integrals([1)
+volume = magnetic.volume_integrals([1])
 testWm = agros2d.test("Energy", volume["Wm"], 0.002273)
 
 # surface integral
-surface = surfaceintegral([12, 13, 14, 15])
+surface = magnetic.surface_integrals([12, 13, 14, 15])
 #testFz = agros2d.test("Maxwell force - z", surface["Fy"], 0.368232)
 
 print("Test: Magnetic steady state - axisymmetric: " + str(point and testA

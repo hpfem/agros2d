@@ -58,7 +58,7 @@ testEy = agros2d.test("Electric field - y", point["Ey"], -0.470999)
 testJ = agros2d.test("Current density", point["J"], 48692.830437)
 testJx = agros2d.test("Current density - x", point["Jx"], -12352.691339)
 testJy = agros2d.test("Current density - y", point["Jy"], -47099.923064)
-testpj = agros2d.test("Losses", point["Pj"], 23709.917359)
+testpj = agros2d.test("Losses", point["pj"], 23709.917359)
 
 # volume integral
 volume = current.volume_integrals([0, 1, 2])

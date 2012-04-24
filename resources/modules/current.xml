@@ -94,7 +94,7 @@
                                                        axi_z="- gamma * dz1" />
             </localvariable>
             <localvariable id="current_joule_losses" name="Joule losses" type="scalar"
-                           shortname="Pj" shortname_html="&lt;i&gt;P&lt;/i&gt;&lt;sub&gt;j&lt;/sub&gt;" shortname_latex="P_{j}"
+                           shortname="pj" shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;j&lt;/sub&gt;" shortname_latex="p_{j}"
                            unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}">
                 <expression analysistype="steadystate" planar="gamma * (dx1 * dx1 + dy1 * dy1)"
                                                        axi="gamma * (dr1 * dr1 + dz1 * dz1)" />
