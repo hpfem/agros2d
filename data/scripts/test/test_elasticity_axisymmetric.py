@@ -2,7 +2,7 @@ import agros2d
 
 # model
 problem = agros2d.problem(clear = True)
-problem.coordinate_type = "elasticity"
+problem.coordinate_type = "axisymmetric"
 problem.name = "unnamed"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
@@ -16,8 +16,8 @@ elasticity.linearity_type = "linear"
 elasticity.weak_forms = "compiled"
 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
-elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_displacement_y" : 0})
-elasticity.add_boundary("Load", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_displacement_y" : -10000})
+elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})
+elasticity.add_boundary("Load", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : -10000})
 
 elasticity.add_material("Material 1", {"elasticity_young_modulus" : 2e+11, "elasticity_poisson_ratio" : 0.33, "elasticity_force_x" : 0, "elasticity_force_y" : 0, "elasticity_alpha" : 1e-7, "elasticity_temperature" :  30, "elasticity_temperature_reference" : 30})
 elasticity.add_material("Material 2", {"elasticity_young_modulus" : 1e+11, "elasticity_poisson_ratio" : 0.33, "elasticity_force_x" : 0, "elasticity_force_y" : 30000, "elasticity_alpha" : 1.2e-5, "elasticity_temperature" :  20.5, "elasticity_temperature_reference" : 20})

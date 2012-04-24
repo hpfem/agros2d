@@ -54,7 +54,7 @@ testFz = agros2d.test("Heat flux - z", point["Fz"], -2.363101e5)
 
 # volume integral
 volume = heat.volume_integrals([0])
-testTavg = agros2d.test("Average temperature", volume["T"], 0.949673)
+testTavg = agros2d.test("Temperature", volume["T"], 0.949673)
 
 # surface integral
 surface = heat.surface_integrals([1])

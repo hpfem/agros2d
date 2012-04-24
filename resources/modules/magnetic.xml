@@ -458,13 +458,9 @@
                 <expression analysistype="transient" planar="Jer"
                                                      axi="Jer" />
             </volumeintegral>
-            <volumeintegral id="magnetic_current_external_real" name="Current - ext. - imag" shortname="Iei" unit="A">
-                <expression analysistype="steadystate" planar="Jei"
-                                                       axi="Jei" />
+            <volumeintegral id="magnetic_current_external_imag" name="Current - ext. - imag" shortname="Iei" unit="A">
                 <expression analysistype="harmonic" planar="Jei"
                                                     axi="Jei" />
-                <expression analysistype="transient" planar="Jei"
-                                                     axi="Jei" />
             </volumeintegral>
             <volumeintegral id="magnetic_current_induced_transform_real" name="Current - ind. transform - real" shortname="Iitr" unit="A">
                 <expression analysistype="harmonic" planar="2 * PI * f * gamma * value2"

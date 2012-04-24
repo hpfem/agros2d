@@ -11,7 +11,7 @@ problem.matrix_solver = "umfpack"
 electrostatic = agros2d.field("electrostatic")
 electrostatic.analysis_type = "steadystate"
 electrostatic.number_of_refinements = 1
-electrostatic.polynomial_order = 3
+electrostatic.polynomial_order = 5
 electrostatic.linearity_type = "linear"
 electrostatic.weak_forms = "compiled"
 
@@ -21,7 +21,7 @@ electrostatic.add_boundary("Ground electrode", "electrostatic_potential", {"elec
 electrostatic.add_boundary("Neumann BC", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
 
 electrostatic.add_material("Air", {"electrostatic_charge_density" : 0, "electrostatic_permittivity" : 1})
-electrostatic.add_material("Dielectric n.1", {"electrostatic_charge_density" : 1e-05, "electrostatic_permittivity" : 10})
+electrostatic.add_material("Dielectric n.1", {"electrostatic_charge_density" : 1e-5, "electrostatic_permittivity" : 10})
 electrostatic.add_material("Dielectric n.2", {"electrostatic_charge_density" : 0, "electrostatic_permittivity" : 3})
 
 # geometry
@@ -31,14 +31,14 @@ geometry = agros2d.geometry()
 geometry.add_edge(0, 0.2, 0, 0.08, boundaries = {"electrostatic" : "Neumann BC"})
 geometry.add_edge(0.01, 0.08, 0.01, 0, boundaries = {"electrostatic" : "Source electrode"})
 geometry.add_edge(0.01, 0, 0.03, 0, boundaries = {"electrostatic" : "Neumann BC"})
-geometry.add_edge(0.03, 0, 0.03, 0.08, boundaries = {})
-geometry.add_edge(0.03, 0.08, 0.05, 0.08, boundaries = {})
+geometry.add_edge(0.03, 0, 0.03, 0.08)
+geometry.add_edge(0.03, 0.08, 0.05, 0.08)
 geometry.add_edge(0.05, 0, 0.03, 0, boundaries = {"electrostatic" : "Neumann BC"})
 geometry.add_edge(0.05, 0.08, 0.05, 0, boundaries = {"electrostatic" : "Ground electrode"})
 geometry.add_edge(0.06, 0, 0.06, 0.08, boundaries = {"electrostatic" : "Ground electrode"})
 geometry.add_edge(0.05, 0.08, 0.06, 0.08, boundaries = {"electrostatic" : "Ground electrode"})
 geometry.add_edge(0.06, 0, 0.2, 0, boundaries = {"electrostatic" : "Neumann BC"})
-geometry.add_edge(0.01, 0.08, 0.03, 0.08, boundaries = {})
+geometry.add_edge(0.01, 0.08, 0.03, 0.08)
 geometry.add_edge(0.01, 0.08, 0, 0.08, boundaries = {"electrostatic" : "Source electrode"})
 geometry.add_edge(0.2, 0, 0, 0.2, boundaries = {"electrostatic" : "Neumann BC"}, angle=90)
 

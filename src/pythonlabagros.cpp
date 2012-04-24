@@ -846,21 +846,25 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
             throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
         }
 
-        bool assigned = false;
-        foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
+        if (std::string((*i).second) != "none")
         {
-            if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == std::string((*i).second)))
-            {
-                assigned = true;
-                sceneLabel->addMarker(sceneMaterial);
-                break;
-            }
-        }
 
-        if (!assigned)
-        {
-            delete sceneLabel;
-            throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(std::string((*i).second))).toStdString());
+            bool assigned = false;
+            foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
+            {
+                if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == std::string((*i).second)))
+                {
+                    assigned = true;
+                    sceneLabel->addMarker(sceneMaterial);
+                    break;
+                }
+            }
+
+            if (!assigned)
+            {
+                delete sceneLabel;
+                throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(std::string((*i).second))).toStdString());
+            }
         }
     }
 

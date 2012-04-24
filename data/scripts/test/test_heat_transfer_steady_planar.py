@@ -15,7 +15,6 @@ heat.polynomial_order = 3
 heat.linearity_type = "linear"
 heat.weak_forms = "compiled"
 
-
 heat.add_boundary("T inner", "heat_temperature", {"heat_temperature" : -15})
 heat.add_boundary("T outer", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 20, "heat_convection_external_temperature" : 20})
 heat.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_convection_external_temperature" : 0})
@@ -58,7 +57,7 @@ testFy = agros2d.test("Heat flux - y", point["Fy"], -242.793731)
 
 # volume integral
 volume = heat.volume_integrals([0])
-testTavg = agros2d.test("Average temperature", volume["T"], -0.023972)
+testTavg = agros2d.test("Temperature", volume["T"], -0.023972)
 
 # surface integral
 surface = heat.surface_integrals([0, 6, 7])

@@ -15,8 +15,8 @@ acoustic.polynomial_order = 2
 acoustic.linearity_type = "linear"
 acoustic.weak_forms = "compiled"
 
-acoustic.add_boundary("Wall", "acoustic_normal_accelerationy", {"acoustic_normal_acceleration_real" : 0, "acoustic_normal_acceleration_imag" : 0})
-acoustic.add_boundary("Source acceleration", "acoustic_normal_accelerationy", {"acoustic_normal_acceleration_real" : 10, "acoustic_normal_acceleration_imag" : 0})
+acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 0, "acoustic_normal_acceleration_imag" : 0})
+acoustic.add_boundary("Source acceleration", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 10, "acoustic_normal_acceleration_imag" : 0})
 acoustic.add_boundary("Matched boundary", "acoustic_impedance", {"acoustic_impedance" : 1.25*343})
 acoustic.add_boundary("Source pressure", "acoustic_pressure", {"acoustic_pressure_real" : 0.2, "acoustic_pressure_imag" : 0})
 acoustic.add_material("Air", {"acoustic_density" : 1.25, "acoustic_speed" : 343})
@@ -31,7 +31,7 @@ geometry.add_edge(0.25, 0, 0, 0, boundaries = {"acoustic" : "Source acceleration
 geometry.add_edge(0, 0, 0, 0.7, boundaries = {"acoustic" : "Wall"})
 geometry.add_edge(0, 1, 0, 1.5, boundaries = {"acoustic" : "Wall"})
 geometry.add_edge(0, 0.7, 0.15, 0.85, boundaries = {"acoustic" : "Wall"}, angle=90)
-geometry.add_edge(0.15, 0.85, 0, 1, boundaries = {"Wall"}, angle=90)
+geometry.add_edge(0.15, 0.85, 0, 1, boundaries = {"acoustic" : "Wall"}, angle=90)
 geometry.add_edge(0.35, 1.15, 0.65, 1, boundaries = {"acoustic" : "Matched boundary"})
 geometry.add_edge(0.65, 1, 0.35, 0.9, boundaries = {"acoustic" : "Matched boundary"})
 geometry.add_edge(0.35, 1.15, 0.35, 0.9, boundaries = {"acoustic" : "Matched boundary"})
@@ -67,4 +67,4 @@ surface = acoustic.surface_integrals([0])
 #testPs_imag = agros2d.test("Pressure - imag", surface["p_imag"], -0.324708)
 
 # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
-print("Test: Acoustics - planar: " + str(testp and testp_real and testp_imag))
+print("Test: Acoustics - axisymmetric: " + str(testp and testp_real and testp_imag))
