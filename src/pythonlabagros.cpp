@@ -548,17 +548,27 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     }
 
     Hermes::Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
+    if (!boundaryType)
+        throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(QString::fromStdString(type)).toStdString());
 
     // browse boundary parameters
     std::map<std::string, Value> values;
-    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+    for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
+        bool assigned = false;
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
             if (variable->id == std::string((*i).first))
+            {
+                assigned = true;
                 values[variable->id] = Value(QString::number((*i).second));
+                break;
+            }
         }
+
+        if (!assigned)
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString(std::string((*i).first))).toStdString());
     }
 
     Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), std::string(name), std::string(type), values));
@@ -594,12 +604,20 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
     {
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
 
+        bool assigned = false;
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
             if (variable->id == std::string((*i).first))
+            {
+                assigned = true;
                 values[variable->id] = Value(QString::number((*i).second));
+                break;
+            }
         }
+
+        if (!assigned)
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString(std::string((*i).first))).toStdString());
     }
 
     Util::scene()->addMaterial(new SceneMaterial(fieldInfo(), std::string(name), values));
@@ -780,14 +798,29 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle, refinement);
 
     // boundaries
-    for( map<char*, char*>::iterator i=boundaries.begin(); i!=boundaries.end(); ++i)
+    for (map<char*, char*>::iterator i = boundaries.begin(); i != boundaries.end(); ++i)
     {
-        //qDebug() << "boundary" << (*i).first << ": " << (*i).second;
+        if (!Util::problem()->hasField(QString((*i).first)))
+        {
+            delete sceneEdge;
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        }
 
+        bool assigned = false;
         foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
         {
             if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == std::string((*i).second)))
+            {
+                assigned = true;
                 sceneEdge->addMarker(sceneBoundary);
+                break;
+            }
+        }
+
+        if (!assigned)
+        {
+            delete sceneEdge;
+            throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString::fromStdString(std::string((*i).second))).toStdString());
         }
     }
 
@@ -805,16 +838,29 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
     SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area, order);
 
     // materials
-    for( map<char*, char*>::iterator i=materials.begin(); i!=materials.end(); ++i)
+    for( map<char*, char*>::iterator i = materials.begin(); i != materials.end(); ++i)
     {
-        //qDebug() << "material" << (*i).first << ": " << (*i).second;
+        if (!Util::problem()->hasField(QString((*i).first)))
+        {
+            delete sceneLabel;
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        }
 
+        bool assigned = false;
         foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
         {
             if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == std::string((*i).second)))
             {
+                assigned = true;
                 sceneLabel->addMarker(sceneMaterial);
+                break;
             }
+        }
+
+        if (!assigned)
+        {
+            delete sceneLabel;
+            throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(std::string((*i).second))).toStdString());
         }
     }
 
