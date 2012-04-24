@@ -30,9 +30,9 @@
                 <quantity id="rf_te_current_density_external_imag" />
 
                 <matrix i="1" j="1" planar="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * uval * vval"
-                                    axi="" symmetric="1" />
-                <matrix i="2" j="2" planar="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * uval * vval"
-                                    axi="" symmetric="1" />
+                                    axi="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * epsr * EPS0 * uval * vval" symmetric="1" />
+                <matrix i="2" j="2" planar="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * epsr * EPS0 * uval * vval"
+                                    axi="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * uval * vval" symmetric="1" />
                 <vector i="1" j="1" planar="- 1 / (mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * upval * vval - Jer * vval"
                                     axi="- 1 / (mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * epsr * EPS0 * upval * vval - r * Jer * vval" />
                 <vector i="2" j="2" planar="- 1 / (mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * upval * vval - Jei * vval"
@@ -93,7 +93,7 @@
                                         axi="uval * vval" symmetric="1" />
                 </boundary>
 
-                <boundary id="acoustic_matched_boundary" name="Matched boundary" >
+                <boundary id="rf_te_matched_boundary" name="Matched boundary" >
                 </boundary>
             </weakform>
         </weakforms>
