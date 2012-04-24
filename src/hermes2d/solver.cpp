@@ -536,21 +536,12 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 
     // calculate error estimate for each solution component and the total error estimate.
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
-    cout << "ERROR " << error << endl;
+    // cout << "ERROR " << error << endl;
+    // set adaptive error
     msa.setAdaptiveError(error);
 
-    //    // emit signal
-    //    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%").
-    //                                     arg(error, 0, 'f', 3).
-    //                                     arg(i + 1).
-    //                                     arg(maxAdaptivitySteps).
-    //                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space)).
-    //                                     arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaceReference)), false, 1);
-    //    // add error to the list
-    //    m_progressItemSolve->addAdaptivityError(error, Hermes::Hermes2D::Space<Scalar>::get_num_dofs(space));
-
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
-    cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
+    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
 
     double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked());
     if (adapt)
@@ -562,11 +553,13 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
                                       Util::config()->strategy,
                                       Util::config()->meshRegularity);
 
-        cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
-        cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
+        // cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
+        // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
+        // store solution
         Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionType_NonExisting), msaNew);
     }
+
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
                               arg(error).

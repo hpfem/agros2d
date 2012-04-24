@@ -112,6 +112,8 @@ public:
     Problem();
     ~Problem();
 
+    QAction *actClearSolutions;
+
     inline ProblemConfig *config() { return m_config; }
 
     void createStructure();
@@ -151,8 +153,7 @@ public:
 
     inline QTime timeElapsed() const { return m_timeElapsed; }
 
-public:
-//private:
+private:
     ProblemConfig *m_config;
     QList<Block*> m_blocks;
 

@@ -531,7 +531,8 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(actSolveAdaptiveStep);
-    mnuProblem->addAction(Util::scene()->actClearSolutions);
+    mnuProblem->addSeparator();
+    mnuProblem->addAction(Util::problem()->actClearSolutions);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actChart);

@@ -128,7 +128,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WFType type, const std::string &prob
     else if(type == WFType_VecVol)
         return factoryVectorFormVol<Scalar>(problemId, form->i, form->j, area, (SceneMaterial*) marker);
     else if(type == WFType_VecSurf)
-       return factoryVectorFormSurf<Scalar>(problemId, form->i, form->j, area, (SceneBoundary*) marker);
+        return factoryVectorFormSurf<Scalar>(problemId, form->i, form->j, area, (SceneBoundary*) marker);
     else
         assert(0);
 }
@@ -198,7 +198,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
     // compiled form
     if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
-        //assert(0);        
+        //assert(0);
         custom_form = factoryForm<Scalar>(type, problemId, area, form, marker);
     }
 
@@ -218,7 +218,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
     if(marker_second && couplingInfo)
     {
         // TODO at the present moment, it is impossible to have more sources !
-        assert(field->m_couplingSources.size() <= 1);        
+        assert(field->m_couplingSources.size() <= 1);
 
         solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionType_Finer);
         assert(solutionID.group->module()->number_of_solution() <= maxSourceFieldComponents);
@@ -314,9 +314,9 @@ void WeakFormAgros<Scalar>::registerForms()
                                      m_block->offset(field), m_block->offset(field), material,
                                      Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
 
-                         registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
-                                      m_block->offset(field), m_block->offset(field), material,
-                                      Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
+                        registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
+                                     m_block->offset(field), m_block->offset(field), material,
+                                     Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField()), couplingInfo);
 
                     }
                 }
@@ -1322,16 +1322,15 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
 
     SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
-    // warning: check this, lienearity...
-    //    if (isLinear)
-    //        parser->setParserVariables(material, NULL);
+    if (isLinear)
+        parser->setParserVariables(material, NULL);
 
     for (int i = 0; i < np; i++)
     {
         px = x[i];
         py = y[i];
 
-        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
+        for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
         {
             pvalue[k] = value[k][i];
             pdx[k] = dudx[k][i];
@@ -1339,11 +1338,9 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
         }
 
 
-        // FIXME
-        // warning: check this, lienearity...
-        //        if (!isLinear)
-        parser->setParserVariables(material, NULL,
-                                   pvalue[0], pdx[0], pdy[0]);
+        if (!isLinear)
+            parser->setParserVariables(material, NULL,
+                                       pvalue[0], pdx[0], pdy[0]);
 
         // parse expression
         try

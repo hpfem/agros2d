@@ -247,10 +247,6 @@ void Scene::createActions()
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
-
-    actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
-    actClearSolutions->setStatusTip(tr("Clear solutions"));
-    // TODO: FIX
 }
 
 SceneNode *Scene::addNode(SceneNode *node)
@@ -459,7 +455,6 @@ bool Scene::checkGeometryAssignement()
 void Scene::clear()
 {
     blockSignals(true);
-
 
     m_undoStack->clear();
 

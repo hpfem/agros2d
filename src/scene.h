@@ -133,7 +133,6 @@ public:
     QAction *actNewMaterial;
     QMap<QString, QAction*> actNewMaterials;
 
-    QAction *actClearSolutions;
     QAction *actTransform;
 
     // OBSOLETE - DO NOT USE *************************************************************
@@ -200,8 +199,6 @@ public:
     void addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent);
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
-
-   // void createSolutions();
 
 private:
     QUndoStack *m_undoStack;
