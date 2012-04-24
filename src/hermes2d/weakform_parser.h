@@ -29,6 +29,7 @@ class Parser;
 class Boundary;
 class Material;
 class FieldInfo;
+class CouplingInfo;
 
 struct ParserFormEssential
 {
@@ -98,17 +99,21 @@ public:
     mutable double sourcedx[maxSourceFieldComponents];
     mutable double sourcedy[maxSourceFieldComponents];
 
-    ParserForm(FieldInfo *fieldInfo);
+    void initParserForm(FieldInfo *fieldInfo);
+    void initParserForm(CouplingInfo *couplingInfo);
     ~ParserForm();
 
     void initParser(Hermes::vector<Material *> materials, Boundary *boundary);
 
 protected:
     FieldInfo *m_fieldInfo;
+    CouplingInfo *m_couplingInfo;
 };
 
 // **********************************************************************************************
 
+// todo: number of parameters of constructors has grown due to slightly different behaviour for standard and coupling forms
+// it might be done more correctly by employing polymorphism/templates, but the code might not be more readable....
 template<typename Scalar>
 class CustomParserMatrixFormVol : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public ParserForm
 {
@@ -117,6 +122,8 @@ public:
                               std::string area,
                               Hermes::Hermes2D::SymFlag sym,
                               std::string expression,
+                              FieldInfo *fieldInfo,
+                              CouplingInfo *couplingInfo,
                               Material *material1,
                               Material *material2);
 
@@ -127,7 +134,11 @@ public:
 
     CustomParserMatrixFormVol<Scalar>* clone();
 
+    LinearityType linearityType() const;
+
 private:
+    FieldInfo *m_fieldInfo;
+    CouplingInfo *m_couplingInfo;
     Material *m_material1;
     Material *m_material2;
 };
@@ -137,7 +148,10 @@ class CustomParserVectorFormVol : public Hermes::Hermes2D::VectorFormVol<Scalar>
 {
 public:
     CustomParserVectorFormVol(unsigned int i, unsigned int j,
-                              std::string area, std::string expression,
+                              std::string area,
+                              std::string expression,
+                              FieldInfo *fieldInfo,
+                              CouplingInfo *couplingInfo,
                               Material *material1,
                               Material *material2);
 
@@ -148,7 +162,11 @@ public:
 
     CustomParserVectorFormVol<Scalar>* clone();
 
+    LinearityType linearityType() const;
+
 private:
+    FieldInfo *m_fieldInfo;
+    CouplingInfo *m_couplingInfo;
     Material *m_material1;
     Material *m_material2;
 

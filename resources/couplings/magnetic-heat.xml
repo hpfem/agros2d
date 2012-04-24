@@ -8,6 +8,10 @@
         </modules>
     </general>
 
+    <constants>
+        <constant id="MU0" value="1.2566371e-06" />
+    </constants>
+
     <volume>
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="harmonic"  targetanalysis="steadystate" >

@@ -135,7 +135,9 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WFType type, const std::string &prob
 
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, const std::string &area,
-                                                  Hermes::Hermes2D::SymFlag sym, string expression, Marker* marker, Material* markerSecond)
+                                                  Hermes::Hermes2D::SymFlag sym, string expression, FieldInfo *fieldInfo,
+                                                  CouplingInfo *couplingInfo,
+                                                  Marker* marker, Material* markerSecond)
 {
     //    cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
     if(type == WFType_MatVol)
@@ -143,6 +145,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
                                                      area,
                                                      sym,
                                                      expression,
+                                                     fieldInfo,
+                                                     couplingInfo,
                                                      (SceneMaterial*) marker,
                                                      markerSecond);
     else if(type == WFType_MatSurf)
@@ -154,6 +158,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
         return new CustomParserVectorFormVol<Scalar>(i, j,
                                                      area,
                                                      expression,
+                                                     fieldInfo,
+                                                     couplingInfo,
                                                      (SceneMaterial*) marker,
                                                      markerSecond);
     else if(type == WFType_VecSurf)
@@ -208,14 +214,16 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
     // interpreted form
     if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
     {
-        custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression, marker, marker_second);
+        FieldInfo* fieldInfo = couplingInfo ? NULL : field->fieldInfo();
+        custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression,
+                                                fieldInfo, couplingInfo, marker, marker_second);
     }
 
     //Decide what solution to push, implicitly none
     FieldSolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
 
     // weak coupling, push solutions
-    if(marker_second && couplingInfo)
+    if(marker_second && couplingInfo->isWeak())
     {
         // TODO at the present moment, it is impossible to have more sources !
         assert(field->m_couplingSources.size() <= 1);        
@@ -305,7 +313,7 @@ void WeakFormAgros<Scalar>::registerForms()
                                  m_block->offset(field), m_block->offset(field), material);
                 }
 
-
+                // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
                     for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
@@ -326,7 +334,6 @@ void WeakFormAgros<Scalar>::registerForms()
             }
         }
     }
-
 
     // hard coupling
     foreach(CouplingInfo* couplingInfo, m_block->m_couplings)
@@ -352,7 +359,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 {
                     registerForm(WFType_MatVol, sourceField, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
-                                 sourceMaterial, targetMaterial);
+                                 sourceMaterial, targetMaterial, couplingInfo);
                 }
 
                 for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
@@ -360,7 +367,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 {
                     registerForm(WFType_VecVol, sourceField, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
-                                 sourceMaterial, targetMaterial);
+                                 sourceMaterial, targetMaterial, couplingInfo);
 
                 }
             }
@@ -915,7 +922,7 @@ int Hermes::Module::Module::number_of_solution() const
     return 0;
 }
 
-mu::Parser *Hermes::Module::Module::get_parser(FieldInfo* fieldInfo)
+mu::Parser *Hermes::Module::Module::get_parser()
 {
     mu::Parser *parser = new mu::Parser();
 
@@ -1159,7 +1166,12 @@ Hermes::Hermes2D::GeomType convertProblemType(CoordinateType problemType)
 
 // *********************************************************************************************************************************************
 
-Parser::Parser(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
+Parser::Parser(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo), m_couplingInfo(NULL)
+{
+
+}
+
+Parser::Parser(CouplingInfo *couplingInfo) : m_fieldInfo(NULL), m_couplingInfo(couplingInfo)
 {
 
 }
@@ -1175,6 +1187,7 @@ Parser::~Parser()
 
 void Parser::setParserVariables(Material* material, Boundary *boundary, double value, double dx, double dy)
 {
+    assert(m_couplingInfo == NULL);
     Hermes::vector<Material *> materials;
     if(material)
         materials.push_back(material);
@@ -1182,7 +1195,11 @@ void Parser::setParserVariables(Material* material, Boundary *boundary, double v
 }
 
 void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boundary *boundary, double value, double dx, double dy)
-{    
+{
+    // todo: ??? je to zmatecne, jak je to nekdy volano s fieldInfo, nekddy couplingInfo...
+//    if(materialMarkers.size() > 1)
+//        assert(m_couplingInfo);
+
     //TODO zkontrolovat volani value, proc u boundary neni derivace, ...
     if (materialMarkers.size())
     {
@@ -1269,7 +1286,7 @@ ViewScalarFilter<Scalar>::~ViewScalarFilter()
 template <typename Scalar>
 void ViewScalarFilter<Scalar>::initParser(std::string expression)
 {
-    mu::Parser *pars = m_fieldInfo->module()->get_parser(m_fieldInfo);
+    mu::Parser *pars = m_fieldInfo->module()->get_parser();
 
     pars->SetExpr(expression);
 

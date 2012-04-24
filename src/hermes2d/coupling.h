@@ -24,6 +24,9 @@ struct Coupling{
     Coupling(CoordinateType coordinateType, CouplingType couplingType, AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis);
     ~Coupling();
 
+    // constants
+    std::map<std::string, double> constants;
+
     // weak forms
     Hermes::vector<ParserFormExpression *> weakform_matrix_volume;
     Hermes::vector<ParserFormExpression *> weakform_vector_volume;
@@ -81,6 +84,8 @@ public:
 
     /// goes through field infos and adds/removes coupling infos accordingly
     static void synchronizeCouplings(const QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos);
+
+    LinearityType linearityType();
 
 private:
     /// module

@@ -41,6 +41,12 @@ void CouplingInfo::reload()
     m_coupling = couplingFactory(m_sourceField, m_targetField, m_couplingType);
 }
 
+LinearityType CouplingInfo::linearityType()
+{
+    assert(sourceField()->linearityType() == targetField()->linearityType());
+    return sourceField()->linearityType();
+}
+
 bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
 {
     DIR *dp;
@@ -109,6 +115,27 @@ void Coupling::clear()
 {
 }
 
+mu::Parser* Coupling::getParser()
+{
+    mu::Parser *parser = new mu::Parser();
+
+    // pi
+    parser->DefineConst("PI", M_PI);
+
+    // frequency
+    parser->DefineConst("f", Util::problem()->config()->frequency());
+
+    // timestep
+    parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
+
+    for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
+        parser->DefineConst(it->first, it->second);
+
+    parser->EnableOptimizer(true);
+
+    return parser;
+}
+
 void Coupling::read(std::string filename)
 {
     std::cout << "reading coupling: " << filename << std::endl << std::flush;
@@ -150,6 +177,12 @@ void Coupling::read(std::string filename)
 
         //TODO temporary
         //m_analysisType = AnalysisType_SteadyState;
+
+        // constants
+        for (rapidxml::xml_node<> *constant = doc.first_node("coupling")->first_node("constants")->first_node("constant");
+             constant; constant = constant->next_sibling())
+            constants[constant->first_attribute("id")->value()] = atof(constant->first_attribute("value")->value());
+
 
         for (rapidxml::xml_node<> *weakform = doc.first_node("coupling")->first_node("volume")->first_node("weakforms")->first_node("weakform");
              weakform; weakform = weakform->next_sibling())
