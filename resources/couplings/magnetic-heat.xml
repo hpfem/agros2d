@@ -16,7 +16,7 @@
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="harmonic"  targetanalysis="steadystate" >
                 <vector i="1" j="1" planar="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * vval"
-                                    axi="- gamma * f*f * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * r * vval" />
+                                    axi="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="harmonic"  targetanalysis="steadystate" >
