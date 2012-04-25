@@ -50,10 +50,10 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
     // boundary conditions, materials and geometry information
     createControls();
 
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doInvalidated()));
-    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(doInvalidated()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
 
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
     connect(trvWidget, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
@@ -136,39 +136,6 @@ void PreprocessorWidget::createControls()
     layoutMain->addWidget(splitter);
 
     setLayout(layoutMain);
-
-    // boundary conditions
-    boundaryConditionsNode = new QTreeWidgetItem(trvWidget);
-    boundaryConditionsNode->setIcon(0, icon("sceneedgemarker"));
-    boundaryConditionsNode->setText(0, tr("Boundary conditions"));
-    boundaryConditionsNode->setExpanded(true);
-
-    // materials
-    materialsNode = new QTreeWidgetItem(trvWidget);
-    materialsNode->setIcon(0, icon("scenelabelmarker"));
-    materialsNode->setText(0, tr("Materials"));
-    materialsNode->setExpanded(true);
-
-    // geometry
-    geometryNode = new QTreeWidgetItem(trvWidget);
-    // geometryNode->setIcon(0, icon("geometry"));
-    geometryNode->setText(0, tr("Geometry"));
-    geometryNode->setExpanded(false);
-
-    // nodes
-    nodesNode = new QTreeWidgetItem(geometryNode);
-    nodesNode->setText(0, tr("Nodes"));
-    nodesNode->setIcon(0, icon("scenenode"));
-
-    // edges
-    edgesNode = new QTreeWidgetItem(geometryNode);
-    edgesNode->setText(0, tr("Edges"));
-    edgesNode->setIcon(0, icon("sceneedge"));
-
-    // labels
-    labelsNode = new QTreeWidgetItem(geometryNode);
-    labelsNode->setText(0, tr("Labels"));
-    labelsNode->setIcon(0, icon("scenelabel"));
 }
 
 void PreprocessorWidget::keyPressEvent(QKeyEvent *event)
@@ -182,7 +149,7 @@ void PreprocessorWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void PreprocessorWidget::doInvalidated()
+void PreprocessorWidget::refresh()
 {
     // script speed improvement
     if (scriptIsRunning()) return;
@@ -190,38 +157,26 @@ void PreprocessorWidget::doInvalidated()
     blockSignals(true);
     setUpdatesEnabled(false);
 
-    clearNodes();
+    trvWidget->clear();
 
     // markers
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        // boundary conditions
-        QTreeWidgetItem *fieldBoundaryConditionsNode = new QTreeWidgetItem(boundaryConditionsNode);
-        fieldBoundaryConditionsNode->setText(0, QString::fromStdString(fieldInfo->module()->name));
-        fieldBoundaryConditionsNode->setExpanded(true);
-
-        QList<QTreeWidgetItem *> listMarkes;
-        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
-        {
-            QTreeWidgetItem *item = new QTreeWidgetItem(fieldBoundaryConditionsNode);
-
-            item->setText(0, QString::fromStdString(boundary->getName()));
-            item->setIcon(0, icon("scene-edgemarker"));
-            item->setData(0, Qt::UserRole, boundary->variant());
-
-            listMarkes.append(item);
-        }
-        boundaryConditionsNode->addChildren(listMarkes);
+        // field
+        QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
+        fieldNode->setText(0, QString::fromStdString(fieldInfo->module()->name));
+        fieldNode->setExpanded(true);
 
         // materials
-        QTreeWidgetItem *fieldMaterialsNode = new QTreeWidgetItem(materialsNode);
-        fieldMaterialsNode->setText(0, QString::fromStdString(fieldInfo->module()->name));
-        fieldMaterialsNode->setExpanded(true);
+        QTreeWidgetItem *materialsNode = new QTreeWidgetItem(fieldNode);
+        materialsNode->setIcon(0, icon("scenelabelmarker"));
+        materialsNode->setText(0, tr("Materials"));
+        materialsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMaterials;
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem(fieldMaterialsNode);
+            QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
 
             item->setText(0, QString::fromStdString(material->getName()));
             item->setIcon(0, icon("scene-labelmarker"));
@@ -230,10 +185,38 @@ void PreprocessorWidget::doInvalidated()
             listMaterials.append(item);
         }
         materialsNode->addChildren(listMaterials);
+
+        // boundary conditions
+        QTreeWidgetItem *boundaryConditionsNode = new QTreeWidgetItem(fieldNode);
+        boundaryConditionsNode->setIcon(0, icon("sceneedgemarker"));
+        boundaryConditionsNode->setText(0, tr("Boundary conditions"));
+        boundaryConditionsNode->setExpanded(true);
+
+        QList<QTreeWidgetItem *> listMarkes;
+        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
+        {
+            QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
+
+            item->setText(0, QString::fromStdString(boundary->getName()));
+            item->setIcon(0, icon("scene-edgemarker"));
+            item->setData(0, Qt::UserRole, boundary->variant());
+
+            listMarkes.append(item);
+        }
+        boundaryConditionsNode->addChildren(listMarkes);
     }
 
     // geometry
+    QTreeWidgetItem *geometryNode = new QTreeWidgetItem(trvWidget);
+    // geometryNode->setIcon(0, icon("geometry"));
+    geometryNode->setText(0, tr("Geometry"));
+    geometryNode->setExpanded(false);
+
     // nodes
+    QTreeWidgetItem *nodesNode = new QTreeWidgetItem(geometryNode);
+    nodesNode->setText(0, tr("Nodes"));
+    nodesNode->setIcon(0, icon("scenenode"));
+
     QList<QTreeWidgetItem *> listNodes;
     for (int i = 0; i<Util::scene()->nodes->length(); i++)
     {
@@ -251,6 +234,10 @@ void PreprocessorWidget::doInvalidated()
     nodesNode->addChildren(listNodes);
 
     // edges
+    QTreeWidgetItem *edgesNode = new QTreeWidgetItem(geometryNode);
+    edgesNode->setText(0, tr("Edges"));
+    edgesNode->setIcon(0, icon("sceneedge"));
+
     QList<QTreeWidgetItem *> listEdges;
     for (int i = 0; i<Util::scene()->edges->length(); i++)
     {
@@ -269,6 +256,10 @@ void PreprocessorWidget::doInvalidated()
     edgesNode->addChildren(listEdges);
 
     // labels
+    QTreeWidgetItem *labelsNode = new QTreeWidgetItem(geometryNode);
+    labelsNode->setText(0, tr("Labels"));
+    labelsNode->setIcon(0, icon("scenelabel"));
+
     QList<QTreeWidgetItem *> listLabels;
     for (int i = 0; i<Util::scene()->labels->length(); i++)
     {
@@ -289,49 +280,6 @@ void PreprocessorWidget::doInvalidated()
     blockSignals(false);
 
     QTimer::singleShot(0, this, SLOT(showInfo()));
-}
-
-void PreprocessorWidget::clearNodes()
-{
-    blockSignals(true);
-
-    // boundary conditions
-    while (boundaryConditionsNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = boundaryConditionsNode->child(0);
-        boundaryConditionsNode->removeChild(item);
-        delete item;
-    }
-
-    // materials
-    while (materialsNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = materialsNode->child(0);
-        materialsNode->removeChild(item);
-        delete item;
-    }
-
-    // geometry
-    while (nodesNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = nodesNode->child(0);
-        nodesNode->removeChild(item);
-        delete item;
-    }
-    while (edgesNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = edgesNode->child(0);
-        edgesNode->removeChild(item);
-        delete item;
-    }
-    while (labelsNode->childCount() > 0)
-    {
-        QTreeWidgetItem *item = labelsNode->child(0);
-        labelsNode->removeChild(item);
-        delete item;
-    }
-
-    blockSignals(false);
 }
 
 void PreprocessorWidget::doContextMenu(const QPoint &pos)
@@ -422,7 +370,7 @@ void PreprocessorWidget::doProperties()
             if (objectBasic->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneViewGeometry->refresh();
-                doInvalidated();
+                refresh();
             }
             return;
         }
@@ -433,7 +381,7 @@ void PreprocessorWidget::doProperties()
             if (objectBoundary->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneViewGeometry->refresh();
-                doInvalidated();
+                refresh();
             }
             return;
         }
@@ -444,7 +392,7 @@ void PreprocessorWidget::doProperties()
             if (objectMaterial->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneViewGeometry->refresh();
-                doInvalidated();
+                refresh();
             }
             return;
         }
@@ -453,7 +401,7 @@ void PreprocessorWidget::doProperties()
 
 void PreprocessorWidget::doDelete()
 {
-    if (trvWidget->currentItem() != NULL)
+    if (trvWidget->currentItem())
     {
         // scene objects
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic*>())
@@ -463,26 +411,27 @@ void PreprocessorWidget::doDelete()
                 Util::scene()->nodes->remove(node);
             }
 
-            if (SceneEdge *edge = dynamic_cast<SceneEdge *>(objectBasic))
+            else if (SceneEdge *edge = dynamic_cast<SceneEdge *>(objectBasic))
             {
                 Util::scene()->edges->remove(edge);
             }
 
-            if (SceneLabel *label = dynamic_cast<SceneLabel *>(objectBasic))
+            else if (SceneLabel *label = dynamic_cast<SceneLabel *>(objectBasic))
             {
                 Util::scene()->labels->remove(label);
             }
         }
-        // edge marker
-        if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
-        {
-            Util::scene()->removeBoundary(objectBoundary);
-        }
 
         // label marker
-        if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
+        else if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
             Util::scene()->removeMaterial(objectMaterial);
+        }
+
+        // edge marker
+        else if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
+        {
+            Util::scene()->removeBoundary(objectBoundary);
         }
 
         m_sceneViewGeometry->refresh();

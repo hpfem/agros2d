@@ -259,7 +259,7 @@ void WeakFormAgros<Scalar>::registerForms()
 {
     qDebug() << "registerForms";
 
-    foreach(Field* field, m_block->m_fields)
+    foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
@@ -336,7 +336,7 @@ void WeakFormAgros<Scalar>::registerForms()
     }
 
     // hard coupling
-    foreach(CouplingInfo* couplingInfo, m_block->m_couplings)
+    foreach (CouplingInfo* couplingInfo, m_block->couplings())
     {
         assert(couplingInfo->isHard());
         Coupling* coupling = couplingInfo->coupling();

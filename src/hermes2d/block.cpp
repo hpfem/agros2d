@@ -8,8 +8,8 @@
 #include "module.h"
 #include "module_agros.h"
 
-Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings, Problem* parent) :
-    m_couplings(couplings), m_parentProblem(parent)
+Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
+    m_couplings(couplings)
 {
     foreach (FieldInfo* fi, fieldInfos)
     {

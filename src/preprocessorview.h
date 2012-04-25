@@ -32,7 +32,7 @@ class PreprocessorWidget : public QWidget
     Q_OBJECT
 
 public slots:
-    void doInvalidated();
+    void refresh();
     void doProperties();
     void doDelete();
 
@@ -50,14 +50,6 @@ private:
 
     QTreeWidget *trvWidget;
 
-    QTreeWidgetItem *boundaryConditionsNode;
-    QTreeWidgetItem *materialsNode;
-
-    QTreeWidgetItem *geometryNode;
-    QTreeWidgetItem *nodesNode;
-    QTreeWidgetItem *edgesNode;
-    QTreeWidgetItem *labelsNode;
-
     QAction *actProperties;
     QAction *actDelete;
     
@@ -68,8 +60,6 @@ private:
     void createControls();
     void createMenu();
     void createToolBar();
-
-    void clearNodes();
 
 private slots:
     void doContextMenu(const QPoint &pos);

@@ -18,7 +18,7 @@ class WeakFormAgros;
 class Block
 {
 public:
-    Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings, Problem* parent);
+    Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings);
 
     Solver<double>* prepareSolver();
 
@@ -46,12 +46,11 @@ public:
 
     bool contains(FieldInfo* fieldInfo) const;
     Field* field(FieldInfo* fieldInfo) const;
-    inline Problem* parentProblem() const {return m_parentProblem; }
 
-public:
-//private:
-    Problem* m_parentProblem;
+    inline QList<Field*> fields() const { return m_fields; }
+    inline QList<CouplingInfo*> couplings() const { return m_couplings; }
 
+private:
     WeakFormAgros<double> *m_wf;
 
     QList<Field*> m_fields;

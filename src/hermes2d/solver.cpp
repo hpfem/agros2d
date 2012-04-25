@@ -108,7 +108,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
     for (int i = 0; i < m_block->numSolutions(); i++)
         bcs.push_back(new EssentialBCs<double>());
 
-    foreach(Field* field, m_block->m_fields)
+    foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         int index = 0;
@@ -271,7 +271,7 @@ Hermes::vector<shared_ptr<Space<Scalar> > > Solver<Scalar>::createCoarseSpace()
 {
     Hermes::vector<shared_ptr<Space<Scalar> > > space;
 
-    foreach(Field* field, m_block->m_fields)
+    foreach(Field* field, m_block->fields())
     {
         MultiSolutionArray<Scalar> multiSolution = Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Normal));
         for(int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
@@ -583,7 +583,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
     createSpace(meshes, multiSolutionArray);
 
     int totalComp = 0;
-    foreach(Field* field, m_block->m_fields)
+    foreach(Field* field, m_block->fields())
     {
         for (int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
         {
@@ -622,7 +622,7 @@ bool Solver<Scalar>::solveTimeStep(double timeStep)
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
 
     // update timedep values
-    foreach(Field* field, m_block->m_fields)
+    foreach(Field* field, m_block->fields())
         field->fieldInfo()->module()->update_time_functions(actualTime);
 
     m_wf->set_current_time(actualTime);

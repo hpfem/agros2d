@@ -247,7 +247,7 @@ void Problem::createStructure()
         }
 
         // now all hard-coupled fields are here, create block
-        m_blocks.append(new Block(blockFieldInfos, blockCouplingInfos, this));
+        m_blocks.append(new Block(blockFieldInfos, blockCouplingInfos));
     }
 
 }

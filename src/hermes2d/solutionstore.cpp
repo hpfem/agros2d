@@ -35,7 +35,7 @@ bool SolutionStore::contains(FieldSolutionID solutionID)
 MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
 {
     MultiSolutionArray<double> msa;
-    foreach(Field *field, solutionID.group->m_fields)
+    foreach(Field *field, solutionID.group->fields())
     {
         msa.append(multiSolution(solutionID.fieldSolutionID(field->fieldInfo())));
     }
@@ -65,7 +65,7 @@ void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionAr
 
 void SolutionStore::saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
-    foreach(Field* field, solutionID.group->m_fields)
+    foreach(Field* field, solutionID.group->fields())
     {
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
@@ -75,7 +75,7 @@ void SolutionStore::saveSolution(BlockSolutionID solutionID, MultiSolutionArray<
 
 void SolutionStore::replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
-    foreach(Field* field, solutionID.group->m_fields)
+    foreach(Field* field, solutionID.group->fields())
     {
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
@@ -85,7 +85,7 @@ void SolutionStore::replaceSolution(BlockSolutionID solutionID, MultiSolutionArr
 
 void SolutionStore::removeSolution(BlockSolutionID solutionID)
 {
-    foreach(Field* field, solutionID.group->m_fields)
+    foreach(Field* field, solutionID.group->fields())
     {
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         removeSolution(fieldSID);
@@ -106,9 +106,9 @@ int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionType solutionType)
 
 int SolutionStore::lastTimeStep(Block *block, SolutionType solutionType)
 {
-    int timeStep = lastTimeStep(block->m_fields.at(0)->fieldInfo(), solutionType);
+    int timeStep = lastTimeStep(block->fields().at(0)->fieldInfo(), solutionType);
 
-    foreach(Field* field, block->m_fields)
+    foreach(Field* field, block->fields())
     {
         assert(lastTimeStep(field->fieldInfo(), solutionType) == timeStep);
     }
@@ -137,9 +137,9 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
 
 double SolutionStore::lastTime(Block *block)
 {
-    double time = lastTime(block->m_fields.at(0)->fieldInfo());
+    double time = lastTime(block->fields().at(0)->fieldInfo());
 
-    foreach(Field* field, block->m_fields)
+    foreach(Field* field, block->fields())
     {
         assert(lastTime(field->fieldInfo()) == time);
     }
@@ -165,9 +165,9 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionType solutionT
 
 int SolutionStore::lastAdaptiveStep(Block *block, SolutionType solutionType, int timeStep)
 {
-    int adaptiveStep = lastAdaptiveStep(block->m_fields.at(0)->fieldInfo(), solutionType, timeStep);
+    int adaptiveStep = lastAdaptiveStep(block->fields().at(0)->fieldInfo(), solutionType, timeStep);
 
-    foreach(Field* field, block->m_fields)
+    foreach(Field* field, block->fields())
     {
         assert(lastAdaptiveStep(field->fieldInfo(), solutionType, timeStep) == adaptiveStep);
     }
@@ -204,11 +204,11 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo,
 
 BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
 {
-    FieldSolutionID fsid = lastTimeAndAdaptiveSolution(block->m_fields.at(0)->fieldInfo(), solutionType);
+    FieldSolutionID fsid = lastTimeAndAdaptiveSolution(block->fields().at(0)->fieldInfo(), solutionType);
     BlockSolutionID bsid = fsid.blockSolutionID(block);
 
 
-    foreach(Field* field, block->m_fields)
+    foreach(Field* field, block->fields())
     {
         assert(bsid == lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType).blockSolutionID(block));
     }

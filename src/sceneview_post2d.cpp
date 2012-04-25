@@ -210,9 +210,9 @@ void Post2DHermes::processSolved()
     m_scalarIsPrepared = false;
     m_vectorIsPrepared = false;
 
-    // processRangeContour();
+    processRangeContour();
     processRangeScalar();
-    // processRangeVector();
+    processRangeVector();
     //    QTimer::singleShot(0, this, SLOT(processRangeContour()));
     //    QTimer::singleShot(0, this, SLOT(processRangeScalar()));
     //    QTimer::singleShot(0, this, SLOT(processRangeVector()));
