@@ -325,9 +325,6 @@ void WeakFormAgros<Scalar>::registerForms()
                         {
                             registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                          m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
-
-                            registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
-                                         m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
                         }
                     }
                 }
