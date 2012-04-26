@@ -32,5 +32,9 @@ execfile("test_elasticity_axisymmetric.py")
 # execfile("test_rf_planar.py")
 # execfile("test_rf_axisymmetric.py")
 
+# coupling
+execfile("test_coupling_1_planar.py")
+
 # scripting
 # execfile("test_scripting.py")
+
