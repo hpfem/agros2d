@@ -1,47 +1,90 @@
 import agros2d
 
-U = 1e3
-J = 3e7
-Q = 1e4
+problem = agros2d.problem(clear = True)
+problem.coordinate_type = "axisymmetric"
+problem.name = "Induction heating"
+problem.mesh_type = "triangle"
+problem.matrix_solver = "umfpack"
+problem.frequency = 1e3
 
-problem = agros2d.Problem("planar", name = "Test", time_step = 10, time_total = 60)
+magnetic = agros2d.field("magnetic")
+magnetic.analysis_type = "harmonic"
+# FIXME! harmonicmagnetic.analysis_type = "harmonic"
+magnetic.number_of_refinements = 2
+magnetic.polynomial_order = 3
+magnetic.linearity_type = "linear"
+magnetic.weak_forms = "compiled"
+magnetic.nonlinear_tolerance = 0.001
+magnetic.nonlinear_steps = 10
 
-electrostatic = agros2d.Field(problem, "electrostatic", "steadystate")
+magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+#magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+#magnetic.add_boundary("A = 0", "potential", {"magnetic_potential_real" : 0})
+#magnetic.set_boundary("Dirichlet", "magnetic_potential", {"magnetic_potential_real" : 0})
+# FIXME! magnetic.set_boundary("A = 0", "potential", {"magnetic_potential_real" : 0})
+# FIXME! magnetic.set_boundary("A = 0", "magnetic_potential", {"potential_real" : 0})
+#agnetic.add_boundary("Test", "magnetic_potential", {"magnetic_potential_real" : 0})
+#agnetic.remove_boundary("Test")
 
-electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
-electrostatic.add_boundary("Dirichlet", "electrostatic_surface_charge_density")
-electrostatic.set_boundary("Dirichlet", "electrostatic_potential", {"electrostatic_potential" : 1.4*U})
-electrostatic.set_boundary("Dirichlet", parameters = {"electrostatic_potential" : U/2.0})
+magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e7})
+#magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e6})
+#magnetic.add_material("Cu", {"permeability" : 1, "magnetic_current_density_external_real" : 1e6})
+#magnetic.set_material("Copper", {"permeability" : 1.1})
+# FIXME! magnetic.set_material("Cu", {"permeability" : 1.1})
+#magnetic.add_material("Test", {"magnetic_permeability" : 1})
+#magnetic.remove_material("Test")
+magnetic.add_material("Fe", {"magnetic_permeability" : 500, "magnetic_conductivity" : 1e5})
+magnetic.add_material("Air", {"magnetic_permeability" : 1})
 
-electrostatic.add_boundary("Test", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
-electrostatic.remove_boundary("Test")
+heat = agros2d.field("heat")
+heat.analysis_type = "steadystate"
+heat.initial_condition = 20
 
-electrostatic.add_material("Dieletric", {"electrostatic_permittivity" : 7, "electrostatic_charge_density" : 0})
-electrostatic.add_material("Conductor", {"electrostatic_permittivity" : 15, "electrostatic_charge_density" : J})
-electrostatic.set_material("Conductor", {"electrostatic_permittivity" : 5})
+heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_heat_transfer_coefficient" : 10, "heat_convection_external_temperature" : 20})
+heat.add_boundary("Flux", "heat_heat_flux", {"heat_heat_flux" : 0})
 
-heat = agros2d.Field(problem, "heat", "steadystate")
+heat.add_material("Fe", {"heat_conductivity" : 60, "heat_volume_heat" : 0})
 
-heat.add_boundary("Dirichlet", "heat_temperature", {"heat_temperature" : 20})
-heat.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_heat_transfer_coefficient" : 5, "external_temperature": 20})
-heat.set_boundary("Neumann", parameters = {"heat_heat_transfer_coefficient" : 2})
+geometry = agros2d.geometry()
 
-heat.add_material("Conductor", {"heat_volume_heat" : Q, "heat_density" : 8700, "heat_conductivity" : 385, "heat_specific_heat" : 430})
-heat.set_material("Conductor", {"heat_volume_heat" : Q/3.0})
+#geometry.add_node(0, 0)
+#geometry.remove_node(0)
 
-geometry = agros2d.Geometry(problem)
-geometry.add_node(-1, -1)
-geometry.add_node(0, 0)
-geometry.remove_node(0)
+geometry.add_edge(0, -0.1, 0.05, -0.1, boundaries = {"heat" : "Convection"})
+geometry.add_edge(0.05, -0.1, 0.05, 0.1, boundaries = {"heat" : "Convection"})
+geometry.add_edge(0.05, 0.1, 0, 0.1, boundaries = {"heat" : "Convection"})
+geometry.add_edge(0, 0.1, 0, -0.1, boundaries = {"magnetic" : "A = 0", "heat" : "Flux"})
 
-geometry.add_edge(0, 0, 1, 0, boundaries = {"electrostatic" : "Dirichlet", "heat" : "Dirichlet"})
-geometry.add_edge(1, 0, 1, 1, boundaries = {"electrostatic" : "Neumann", "heat" : "Neumann"})
-geometry.add_edge(1, 1, 0, 1, boundaries = {"electrostatic" : "Neumann", "heat" : "Neumann"})
-geometry.add_edge(0, 1, 0, 0, boundaries = {"electrostatic" : "Dirichlet", "heat" : "Dirichlet"})
-geometry.add_edge(0, 1, 1, 0, angle = 45, refinement = 2)
-geometry.add_label(.25, .25, materials = {"electrostatic" : "Conductor", "heat" : "Conductor"})
-geometry.add_label(.75, .75, materials = {"electrostatic" : "Dieletric", "heat" : "Conductor"})
+geometry.add_edge(0.06, -0.1, 0.08, -0.1)
+geometry.add_edge(0.08, -0.1, 0.08, 0.1)
+geometry.add_edge(0.08, 0.1, 0.06, 0.1)
+geometry.add_edge(0.06, 0.1, 0.06, -0.1)
 
+geometry.add_edge(0, -0.5, 0.5, -0.5, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0.5, -0.5, 0.5, 0.5, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0.5, 0.5, 0, 0.5, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0, 0.5, 0, 0.1, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0, -0.1, 0, -0.5, boundaries = {"magnetic" : "A = 0"})
+
+geometry.add_label(0.025, 0, materials = {"magnetic" : "Fe", "heat" : "Fe"})
+geometry.add_label(0.07, 0, materials = {"magnetic" : "Cu"})
+geometry.add_label(0.25, 0, materials = {"magnetic" : "Air"})
+
+geometry.zoom_best_fit()
+
+geometry.mesh()
+problem.solve()
+
+local_values = magnetic.local_values(0, 0.025)
+print(local_values)
+
+surface_integrals = heat.surface_integrals([0, 1, 2])
+print(surface_integrals)
+
+volume_integrals = magnetic.volume_integrals([0, 1, 2])
+print(volume_integrals)
+
+"""
 geometry.select_nodes([0])
 geometry.select_nodes()
 geometry.select_edges([1, 2, 3])
@@ -59,19 +102,4 @@ geometry.zoom_best_fit()
 
 #geometry.select_labels()
 #geometry.remove_selection()
-
-# mesh geometry
-geometry.mesh()
-
-# solve problem
-problem.solve()
-
-local_values = electrostatic.local_values(0, 0)
-print(local_values)
-#print(results["we"])
-
-surface_integrals = electrostatic.surface_integrals([1,2])
-print(surface_integrals)
-
-volume_integrals = electrostatic.volume_integrals()
-print(volume_integrals)
+"""

@@ -577,9 +577,14 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 {
     SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString(name));
+    if (sceneBoundary == NULL)
+        throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+
+    // todo: (Franta) check with defined types
     if (std::string(type) != "")
         sceneBoundary->setType(std::string(type));
 
+    // todo: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneBoundary->setValue(std::string((*i).first), Value(QString::number((*i).second)));
 }
@@ -627,6 +632,10 @@ void PyField::setMaterial(char *name, map<char*, double> parameters)
 {
     SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString(name));
 
+    if (sceneMaterial == NULL)
+        throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+
+    // todo: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneMaterial->setValue(std::string((*i).first), Value(QString::number((*i).second)));
 }
