@@ -34,7 +34,8 @@ void readPixmap(QLabel *lblEquation, const QString &name)
     QPixmap pixmap;
     pixmap.load(name);
     lblEquation->setPixmap(pixmap);
-    lblEquation->setMaximumHeight(pixmap.height());
+    lblEquation->setMaximumSize(pixmap.size());
+    lblEquation->setMinimumSize(pixmap.size());
 }
 
 QLabel *createLabel(const QString &label, const QString &toolTip)
