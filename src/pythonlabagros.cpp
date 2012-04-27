@@ -785,6 +785,44 @@ void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
     results = values;
 }
 
+void PyField::postprocessor2D(map<char*, bool> views, map<char*, char*> parameters)
+{
+    // todo: (Franta) list of opinions
+    if (views.empty())
+        qDebug() << "...";
+
+    // views
+    for( map<char*, bool>::iterator i = views.begin(); i != views.end(); ++i)
+    {
+        SceneViewPost2DShow view = sceneViewPost2DShowFromStringKey(QString((*i).first));
+
+        switch (view)
+        {
+        case SceneViewPost2DShow_ScalarView:
+            Util::config()->showScalarView = (*i).second;
+            break;
+        case SceneViewPost2DShow_ParticleTracing:
+            Util::config()->showParticleView = (*i).second;
+            break;
+        case SceneViewPost2DShow_ContourView:
+            Util::config()->showContourView = (*i).second;
+            break;
+        case SceneViewPost2DShow_VectorView:
+            Util::config()->showVectorView = (*i).second;
+            break;
+        default:
+            throw invalid_argument(QObject::tr("Postprocessor view '%1' doesn't exist.").arg(QString((*i).first)).toStdString());
+        }
+    }
+
+    // todo: (Franta) parameters of postprocessor views
+    // parameters
+    //for( map<char*, char*>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    //    throw invalid_argument(QObject::tr("%1").arg(QString((*i).first)).toStdString());
+
+    currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+}
+
 void PyGeometry::addNode(double x, double y)
 {
     Util::scene()->addNode(new SceneNode(Point(x, y)));

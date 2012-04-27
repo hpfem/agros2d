@@ -75,6 +75,7 @@ geometry.zoom_best_fit()
 geometry.mesh()
 problem.solve()
 
+"""
 local_values = magnetic.local_values(0, 0.025)
 print(local_values)
 
@@ -83,6 +84,9 @@ print(surface_integrals)
 
 volume_integrals = magnetic.volume_integrals([0, 1, 2])
 print(volume_integrals)
+"""
+
+magnetic.postprocessor_2d({"scalar" : False, "contours" : True, "vectors" : True})
 
 """
 geometry.select_nodes([0])

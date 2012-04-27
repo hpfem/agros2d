@@ -150,7 +150,7 @@ class PyProblem
         inline const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
 
-        void solve();       
+        void solve();
 };
 
 // field
@@ -222,11 +222,17 @@ class PyField
         void setMaterial(char *name, map<char*, double> parameters);
         void removeMaterial(char *name);
 
+        // solve
         void solve() { assert(0); qDebug() << "Not now :)"; }
 
+        // local values, integrals
         void localValues(double x, double y, map<string, double> &results);
         void surfaceIntegrals(vector<int> edges, map<string, double> &results);
         void volumeIntegrals(vector<int> labels, map<string, double> &results);
+
+        // postprocessing
+        void postprocessor2D(map<char*, bool> views, map<char*, char*> parameters);
+        void postprocessor3D(map<char*, bool> views) {}
 };
 
 // geometry

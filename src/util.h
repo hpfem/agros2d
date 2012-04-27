@@ -521,6 +521,16 @@ enum PaletteOrderType
     PaletteOrder_BWDesc
 };
 
+enum SceneViewPost2DShow
+{
+    SceneViewPost2DShow_Undefined,
+    SceneViewPost2DShow_None,
+    SceneViewPost2DShow_ScalarView,
+    SceneViewPost2DShow_ParticleTracing,
+    SceneViewPost2DShow_ContourView,
+    SceneViewPost2DShow_VectorView
+};
+
 enum SceneViewPost3DShow
 {
     SceneViewPost3DShow_Undefined,
@@ -618,6 +628,9 @@ Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolv
 QStringList linearityTypeStringKeys();
 QString linearityTypeToStringKey(LinearityType linearityType);
 LinearityType linearityTypeFromStringKey(const QString &linearityType);
+
+QString sceneViewPost2DShowToStringKey(SceneViewPost2DShow sceneViewPost2DShow);
+SceneViewPost2DShow sceneViewPost2DShowFromStringKey(const QString &sceneViewPost2DShow);
 
 QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow);
 SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow);

@@ -1,6 +1,7 @@
 from libcpp.vector cimport vector
 from libcpp.map cimport map
 from libcpp.pair cimport pair
+from libcpp cimport bool
 from cython.operator cimport preincrement as incr, dereference as deref
 
 cdef extern from "<string>" namespace "std":
@@ -97,6 +98,9 @@ cdef extern from "../../src/pythonlabagros.h":
         void localValues(double x, double y, map[string, double] results) except +
         void surfaceIntegrals(vector[int], map[string, double] results) except +
         void volumeIntegrals(vector[int], map[string, double] results) except +
+
+        void postprocessor2D(map[char*, bool], map[char*, char*]) except +
+        void postprocessor3D(map[char*, bool]) except +
 
     # PyGeometry
     cdef cppclass PyGeometry:
@@ -424,6 +428,24 @@ cdef class __Field__:
             incr(it)
 
         return out
+
+    # postprocessor
+    def postprocessor_2d(self, views = {}, parameters = {}):
+        cdef map[char*, bool] views_map
+        cdef pair[char*, bool] view
+        for key in views:
+            view.first = key
+            view.second = views[key]
+            views_map.insert(view)
+
+        cdef map[char*, char*] parameters_map
+        cdef pair[char*, char*] parameter
+        for key in parameters:
+            parameter.first = key
+            parameter.second = parameters[key]
+            parameters_map.insert(parameter)
+
+        self.thisptr.postprocessor2D(views_map, parameters_map)
 
 # Geometry
 cdef class __Geometry__:

@@ -31,6 +31,7 @@
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
+static QHash<SceneViewPost2DShow, QString> sceneViewPost2DShowList;
 static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList;
 static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
@@ -76,6 +77,9 @@ QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values();
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
+QString sceneViewPost2DShowToStringKey(SceneViewPost2DShow sceneViewPost2DShow) { return sceneViewPost2DShowList[sceneViewPost2DShow]; }
+SceneViewPost2DShow sceneViewPost2DShowFromStringKey(const QString &sceneViewPost2DShow) { return sceneViewPost2DShowList.key(sceneViewPost2DShow); }
+
 QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow) { return sceneViewPost3DShowList[sceneViewPost3DShow]; }
 SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow) { return sceneViewPost3DShowList.key(sceneViewPost3DShow); }
 
@@ -117,6 +121,14 @@ void initLists()
     modeList.insert(Mode_0, "mode_0");
     modeList.insert(Mode_01, "mode_01");
     modeList.insert(Mode_02, "mode_02");
+
+    // post2d
+    sceneViewPost2DShowList.insert(SceneViewPost2DShow_Undefined, "");
+    sceneViewPost2DShowList.insert(SceneViewPost2DShow_None, "none");
+    sceneViewPost2DShowList.insert(SceneViewPost2DShow_ScalarView, "scalar");
+    sceneViewPost2DShowList.insert(SceneViewPost2DShow_ParticleTracing, "particle_tracing");
+    sceneViewPost2DShowList.insert(SceneViewPost2DShow_ContourView, "contours");
+    sceneViewPost2DShowList.insert(SceneViewPost2DShow_VectorView, "vectors");
 
     // post3d
     sceneViewPost3DShowList.insert(SceneViewPost3DShow_Undefined, "");
