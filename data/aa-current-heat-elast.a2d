@@ -58,7 +58,7 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="300" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="1e-5" elasticity_temperature_reference="300" id="1" name="struct">
+                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature_difference="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="1e-5" elasticity_temperature_reference="300" id="1" name="struct">
                         <label label="0"/>
                     </material>
                 </materials>

@@ -37,13 +37,13 @@
                     <boundary elasticity_force_x="10000" elasticity_force_y="0" type="elasticity_free_free" id="4" elasticity_displacement_x="0" name="loadFx" elasticity_displacement_y="0"/>
                 </boundaries>
                 <materials>
-                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="300" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="1e-5" elasticity_temperature_reference="300" id="1" name="new material">
+                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature_difference="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="1e7" elasticity_alpha="1e-5" elasticity_temperature_reference="300" id="1" name="new material">
                         <label label="0"/>
                     </material>
                 </materials>
             </field>
             <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
-                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <adaptivity adaptivity_type="disabled" aTrdaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary type="heat_temperature" heat_temperature="400" id="1" name="t=400">

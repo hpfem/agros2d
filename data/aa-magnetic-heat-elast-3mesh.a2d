@@ -62,7 +62,7 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature="300" elasticity_poisson_ratio="0.33" elasticity_young_modulus="208e9" elasticity_alpha="15e-6" elasticity_temperature_reference="300" id="1" name="steel">
+                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_temperature_difference="0" elasticity_poisson_ratio="0.33" elasticity_young_modulus="208e9" elasticity_alpha="15e-6" elasticity_temperature_reference="300" id="1" name="steel">
                         <label label="3"/>
                     </material>
                 </materials>
