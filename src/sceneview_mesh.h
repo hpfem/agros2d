@@ -87,6 +87,7 @@ public:
 
 public slots:
     virtual void refresh();
+    void setControls();
     virtual void clear();
     void exportVTKOrderView(const QString &fileName = QString());
 

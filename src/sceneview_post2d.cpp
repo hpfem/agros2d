@@ -56,7 +56,7 @@ void Post2DHermes::processRangeContour()
 {
     m_contourIsPrepared = false;
 
-    if (Util::problem()->isSolved())
+    if (Util::problem()->isSolved() && Util::config()->showContourView)
     {
         bool contains = false;
         for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
@@ -109,7 +109,7 @@ void Post2DHermes::processRangeScalar()
 {
     m_scalarIsPrepared = false;
 
-    if (Util::problem()->isSolved())
+    if (Util::problem()->isSolved() && Util::config()->showScalarView)
     {
         bool contains = false;
         for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
@@ -160,7 +160,7 @@ void Post2DHermes::processRangeVector()
 {
     m_vectorIsPrepared = false;
 
-    if (Util::problem()->isSolved())
+    if (Util::problem()->isSolved() && Util::config()->showVectorView)
     {
         bool contains = false;
         for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
@@ -1148,6 +1148,8 @@ void SceneViewPost2D::clear()
     m_post2DHermes->clear();
 
     actPostprocessorModeLocalPointValue->trigger();
+
+    setControls();
 
     SceneViewCommon2D::clear();
 }

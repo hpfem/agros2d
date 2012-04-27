@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewPost3D = new SceneViewPost3D(this);
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
+    connect(Util::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
     // postprocessor
     postprocessorWidget = new PostprocessorWidget(sceneViewPreprocessor, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
     // settings
@@ -95,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(postprocessorWidget, SIGNAL(apply()), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
 
-    // geometry
+    // preprocessor
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
@@ -119,11 +120,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost3D, SLOT(clear()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPost3D, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), sceneViewPost3D, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
-    // settings
+    // problem
 
     // info
     connect(Util::scene(), SIGNAL(cleared()), infoWidget, SLOT(refresh()));
