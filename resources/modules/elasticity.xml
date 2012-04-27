@@ -12,13 +12,13 @@
     <macros />
 
     <volume>
-        <quantity id="elasticity_young_modulus" shortname="E" />
-        <quantity id="elasticity_poisson_ratio" shortname="nu" />
-        <quantity id="elasticity_force_x" shortname="fx" />
-        <quantity id="elasticity_force_y" shortname="fy" />
-        <quantity id="elasticity_alpha" shortname="alpha" />
-        <quantity id="elasticity_temperature" shortname="T" />
-        <quantity id="elasticity_temperature_reference" shortname="Tr" />
+        <quantity id="elasticity_young_modulus" shortname="st_E" />
+        <quantity id="elasticity_poisson_ratio" shortname="st_nu" />
+        <quantity id="elasticity_force_x" shortname="st_fx" />
+        <quantity id="elasticity_force_y" shortname="st_fy" />
+        <quantity id="elasticity_alpha" shortname="st_alpha" />
+        <quantity id="elasticity_temperature_difference" shortname="st_dT" />
+        <quantity id="elasticity_temperature_reference" shortname="" />
 
         <weakforms>
             <weakform analysistype="steadystate">
@@ -27,45 +27,45 @@
                 <quantity id="elasticity_force_x" />
                 <quantity id="elasticity_force_y" />
                 <quantity id="elasticity_alpha" />
-                <quantity id="elasticity_temperature" />
+                <quantity id="elasticity_temperature_difference" />
                 <quantity id="elasticity_temperature_reference" />
 
-                <matrix i="1" j="1" planar="(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udx * vdx)
-                                            + (E / (2.0*(1.0 + nu))) * (udy * vdy)"
-                                    axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +
-                                         (E / (2.0*(1.0 + nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" />
-                <matrix i="1" j="2" planar="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udy * vdx)
-                                            + (E / (2.0*(1.0 + nu))) * (udx * vdy)"
-                                    axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * udz * vdr + udz * vval) +
-                                            (E / (2.0*(1.0 + nu))) * r * udr * vdz" />
-                <matrix i="2" j="1" planar="(E / (2.0*(1.0 + nu))) * (udy * vdx)
-                                            + ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (udx * vdy)"
-                                    axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * udr * vdz + uval * vdz) +
-                                             (E / (2.0*(1.0 + nu))) * r * udz * vdr"/>
-                <matrix i="2" j="2" planar="(E / (2.0*(1.0 + nu))) * (udx * vdx)
-                                            + (((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (udy * vdy)"
-                                    axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * udz * vdz +
-                                         r * (E / (2.0*(1.0 + nu))) * (udr * vdr + 2 * udz * vdz)" />
-                <vector i="1" j="1" planar="(((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updx * vdx)
-                                            + (E / (2.0*(1.0 + nu))) * (updy * vdy)
-                                            - fx * vval - ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
-                                    axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * updr * vdr + upval * vdr + updr * vval + upval * vval / (r + 1e-12)) +
-                                         (E / (2.0*(1.0 + nu))) * (2 * r * updr * vdr + 2 * upval * vval / (r + 1e-12) + r * updz * vdz)
-                                         - r * fx * vval - r * ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * (vdr + vval / r)" />
-                <vector i="1" j="2" planar="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updy * vdx)
-                                            + (E / (2.0*(1.0 + nu))) * (updx * vdy)"
-                                    axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * updz * vdr + updz * vval) +
-                                            (E / (2.0*(1.0 + nu))) * r * updr * vdz" />
-                <vector i="2" j="1" planar="(E / (2.0*(1.0 + nu))) * (updy * vdx)
-                                            + ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (updx * vdy)"
-                                    axi="((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * (r * updr * vdz + upval * vdz) +
-                                           (E / (2.0*(1.0 + nu))) * r * updz * vdr" />
-                <vector i="2" j="2" planar="(E / (2.0*(1.0 + nu))) * (updx * vdx)
-                                            + (((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) + 2*(E / (2.0*(1.0 + nu)))) * (updy * vdy)
-                                            - fy * vval - ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"
-                                    axi="r * ((E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu))) * updz * vdz +
-                                         r * (E / (2.0*(1.0 + nu))) * (updr * vdr + 2 * updz * vdz)
-                                         - r * fy * vval - r * ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdz" />
+                <matrix i="1" j="1" planar="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)
+                                            + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)"
+                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +
+                                         (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" />
+                <matrix i="1" j="2" planar="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)
+                                            + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)"
+                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) +
+                                            (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" />
+                <matrix i="2" j="1" planar="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx)
+                                            + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)"
+                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) +
+                                             (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr"/>
+                <matrix i="2" j="2" planar="(st_E / (2.0*(1.0 + st_nu))) * (udx * vdx)
+                                            + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udy * vdy)"
+                                    axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +
+                                         r * (st_E / (2.0*(1.0 + st_nu))) * (udr * vdr + 2 * udz * vdz)" />
+                <vector i="1" j="1" planar="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updx * vdx)
+                                            + (st_E / (2.0*(1.0 + st_nu))) * (updy * vdy)
+                                            - st_fx * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdx"
+                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdr + upval * vdr + updr * vval + upval * vval / (r + 1e-12)) +
+                                         (st_E / (2.0*(1.0 + st_nu))) * (2 * r * updr * vdr + 2 * upval * vval / (r + 1e-12) + r * updz * vdz)
+                                         - r * st_fx * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * (vdr + vval / r)" />
+                <vector i="1" j="2" planar="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updy * vdx)
+                                            + (st_E / (2.0*(1.0 + st_nu))) * (updx * vdy)"
+                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updz * vdr + updz * vval) +
+                                            (st_E / (2.0*(1.0 + st_nu))) * r * updr * vdz" />
+                <vector i="2" j="1" planar="(st_E / (2.0*(1.0 + st_nu))) * (updy * vdx)
+                                            + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updx * vdy)"
+                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdz + upval * vdz) +
+                                           (st_E / (2.0*(1.0 + st_nu))) * r * updz * vdr" />
+                <vector i="2" j="2" planar="(st_E / (2.0*(1.0 + st_nu))) * (updx * vdx)
+                                            + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updy * vdy)
+                                            - st_fy * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdy"
+                                    axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * updz * vdz +
+                                         r * (st_E / (2.0*(1.0 + st_nu))) * (updr * vdr + 2 * updz * vdz)
+                                         - r * st_fy * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" />
             </weakform>
         </weakforms>
     </volume>
@@ -73,8 +73,8 @@
     <surface>
         <quantity id="elasticity_displacement_x" shortname="dx" />
         <quantity id="elasticity_displacement_y" shortname="dy" />
-        <quantity id="elasticity_force_x" shortname="fx" />
-        <quantity id="elasticity_force_y" shortname="fy" />
+        <quantity id="elasticity_force_x" shortname="st_fx" />
+        <quantity id="elasticity_force_y" shortname="st_fy" />
 
         <weakforms>
             <weakform analysistype="steadystate" default="elasticity_fixed_fixed">
@@ -94,16 +94,16 @@
 
                     <essential i="1" planar="dx"
                                      axi="dx" />
-                    <vector i="2" j="2" planar="-fy * vval"
-                                        axi="-fy * r * vval" />
+                    <vector i="2" j="2" planar="-st_fy * vval"
+                                        axi="-st_fy * r * vval" />
                 </boundary>
 
                 <boundary id="elasticity_free_fixed" name="Free - fixed">
                     <quantity id="elasticity_force_x" />
                     <quantity id="elasticity_displacement_y" />
 
-                    <vector i="1" j="1" planar="-fx * vval"
-                                        axi="-fx * r * vval" />
+                    <vector i="1" j="1" planar="-st_fx * vval"
+                                        axi="-st_fx * r * vval" />
                     <essential i="2" planar="dy"
                                      axi="dy" />
                 </boundary>
@@ -112,10 +112,10 @@
                     <quantity id="elasticity_force_x" />
                     <quantity id="elasticity_force_y" />
 
-                    <vector i="1" j="1" planar="-fx * vval"
-                                        axi="-fx * r * vval" />
-                    <vector i="2" j="2" planar="-fy * vval"
-                                        axi="-fy * r * vval" />
+                    <vector i="1" j="1" planar="-st_fx * vval"
+                                        axi="-st_fx * r * vval" />
+                    <vector i="2" j="2" planar="-st_fy * vval"
+                                        axi="-st_fy * r * vval" />
                 </boundary>
             </weakform>
         </weakforms>
@@ -139,8 +139,8 @@
                 <quantity id="elasticity_alpha" name="Temperature coefficient"
                           shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
                           unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}" />
-                <quantity id="elasticity_temperature" name="Temperature"
-                          shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+                <quantity id="elasticity_temperature_difference" name="Temperature difference"
+                          shortname="dT" shortname_html="&lt;i&gt;dT&lt;/i&gt;" shortname_latex="dT"
                           unit="K" unit_html="K" unit_latex="K" />
                 <quantity id="elasticity_temperature_reference" name="Reference emperature"
                           shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
@@ -178,40 +178,40 @@
             <localvariable id="elasticity_young_modulus" name="Young modulus" type="scalar"
                            shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
                            unit="Pa" unit_html="Pa" unit_latex="Pa" >
-                <expression analysistype="steadystate" planar="E"
-                                                       axi="E" />
+                <expression analysistype="steadystate" planar="st_E"
+                                                       axi="st_E" />
             </localvariable>
             <localvariable id="elasticity_poisson_ratio" name="Poisson ratio" type="scalar"
                            shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;" shortname_latex="\nu"
                            unit="-" unit_html="-" unit_latex="-" >
-                <expression analysistype="steadystate" planar="nu"
-                                                       axi="nu" />
+                <expression analysistype="steadystate" planar="st_nu"
+                                                       axi="st_nu" />
             </localvariable>
             <localvariable id="elasticity_inner_force" name="Inner force" type="vector"
                            shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;" shortname_latex="f"
                            unit="N" unit_html="N" unit_latex="N" >
-                <expression analysistype="steadystate" planar_x="fx"
-                                                       planar_y="fy"
-                                                       axi_r="fx"
-                                                       axi_z="fy" />
+                <expression analysistype="steadystate" planar_x="st_fx"
+                                                       planar_y="st_fy"
+                                                       axi_r="st_fx"
+                                                       axi_z="st_fy" />
             </localvariable>
             <localvariable id="elasticity_alpha" name="Temperature coefficient" type="scalar"
                            shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
                            unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}" >
-                <expression analysistype="steadystate" planar="alpha"
-                                                       axi="alpha" />
+                <expression analysistype="steadystate" planar="st_alpha"
+                                                       axi="st_alpha" />
             </localvariable>
-            <localvariable id="elasticity_temperature" name="Temperature" type="scalar"
-                           shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
+            <localvariable id="elasticity_temperature_difference" name="Temperature difference" type="scalar"
+                           shortname="dT" shortname_html="&lt;i&gt;dT&lt;/i&gt;" shortname_latex="dT"
                            unit="K" unit_html="K" unit_latex="K" >
-                <expression analysistype="steadystate" planar="T"
-                                                       axi="T" />
+                <expression analysistype="steadystate" planar="st_dT"
+                                                       axi="st_dT" />
             </localvariable>
             <localvariable id="elasticity_temperature_reference" name="Reference temperature" type="scalar"
                            shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
                            unit="K" unit_html="K" unit_latex="K" >
-                <expression analysistype="steadystate" planar="Tr"
-                                                       axi="Tr" />
+                <expression analysistype="steadystate" planar=""
+                                                       axi="" />
             </localvariable>
         </localvariables>
 
@@ -256,10 +256,3 @@
     </postprocessor>
 </module>
 
-
-<!--
-termoclen...
-            <vector i="1" planar="fx * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdx"
-                          axi="fr * r * vval" />
-            <vector i="2" planar="fy * vval + ((3*(E * nu) / ((1.0 + nu) * (1.0 - 2.0*nu)) + 2*E / (2.0*(1.0 + nu))) * alpha * (T - Tr)) * vdy"
-                          axi="fz * r * vval" />-->
