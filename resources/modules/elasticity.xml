@@ -140,7 +140,7 @@
                           shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
                           unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}" />
                 <quantity id="elasticity_temperature_difference" name="Temperature difference"
-                          shortname="dT" shortname_html="&lt;i&gt;dT&lt;/i&gt;" shortname_latex="dT"
+                          shortname="dT" shortname_html="&Delta;&lt;i&gt;T&lt;/i&gt;" shortname_latex="\triangle T"
                           unit="K" unit_html="K" unit_latex="K" />
                 <quantity id="elasticity_temperature_reference" name="Reference emperature"
                           shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
@@ -202,7 +202,7 @@
                                                        axi="st_alpha" />
             </localvariable>
             <localvariable id="elasticity_temperature_difference" name="Temperature difference" type="scalar"
-                           shortname="dT" shortname_html="&lt;i&gt;dT&lt;/i&gt;" shortname_latex="dT"
+                           shortname="dT" shortname_html="&Delta;&lt;i&gt;T&lt;/i&gt;" shortname_latex="\triangle T"
                            unit="K" unit_html="K" unit_latex="K" >
                 <expression analysistype="steadystate" planar="st_dT"
                                                        axi="st_dT" />
