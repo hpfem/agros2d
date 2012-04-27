@@ -107,7 +107,6 @@ public slots:
     void clearSolution();
     void clearFieldsAndConfig();
 
-
 public:
     Problem();
     ~Problem();

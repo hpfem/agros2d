@@ -180,6 +180,9 @@ public:
 
     QAction *actProperties;
 
+public slots:
+    void refresh();
+
 private:
     bool m_isNewProblem;
 
@@ -222,7 +225,6 @@ private slots:
     void doApply();
     void doOpenXML();
 
-    void refresh();
     bool save();
 };
 

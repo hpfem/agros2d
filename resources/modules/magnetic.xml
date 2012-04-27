@@ -205,10 +205,10 @@
             <group name="Permanent magnet">
                 <quantity id="magnetic_remanence" name="Remanent flux density"
                 shortname="Brm" shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;rm&lt;/sub&gt;"
-                unit="T" />
+                unit_html="T" unit="T" />
                 <quantity id="magnetic_remanence_angle" name="Remanent flux density - angle"
                 shortname="Bra" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;&lt;sub&gt;rm&lt;/sub&gt;"
-                unit="deg." />
+                unit_html="deg." unit="deg." />
             </group>
             <group name="Velocity">
                 <quantity id="magnetic_velocity_x" name="Velocity - x"

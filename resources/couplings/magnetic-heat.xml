@@ -15,35 +15,35 @@
     <volume>
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="harmonic"  targetanalysis="steadystate" >
-                <vector i="1" j="1" planar="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * vval"
-                                    axi="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * r * vval" />
+                <vector i="1" j="1" planar="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * vval"
+                                    axi="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="harmonic"  targetanalysis="steadystate" >
-                <matrix i="3" j="1" planar ="gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (uval * uval) * vval"
-                                    axi = "gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (uval * uval) * r * vval" />
-                <matrix i="3" j="2" planar ="gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (udx * udx + udy * udy) * vval"
-                                    axi = "gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (udr * udr + udz * udz) * r * vval" />
-                <vector i="3" j="2" planar ="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * vval"
-                                    axi = "- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * r * vval" />
-                <vector i="3" j="1" planar ="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * vval"
-                                    axi = "- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * r * vval" />
+                <matrix i="3" j="1" planar ="0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * vval"
+                                    axi = "0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * r * vval" />
+                <matrix i="3" j="2" planar ="0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (udx * udx + udy * udy) * vval"
+                                    axi = "0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (udr * udr + udz * udz) * r * vval" />
+                <vector i="3" j="2" planar ="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
+                                    axi = "- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
+                <vector i="3" j="1" planar ="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
+                                    axi = "- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
             </weakform>
 
             <weakform couplingtype="weak" sourceanalysis="harmonic"  targetanalysis="transient" >
-                <vector i="1" j="1" planar="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * vval"
-                                    axi="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (source0 * source0 + source1 * source1) * r * vval" />
+                <vector i="1" j="1" planar="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * vval"
+                                    axi="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="harmonic"  targetanalysis="transient" >
-                <matrix i="3" j="1" planar ="gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (uval * uval) * vval"
-                                    axi = "gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (uval * uval) * r * vval" />
-                <matrix i="3" j="2" planar ="gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (udx * udx + udy * udy) * vval"
-                                    axi = "gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (udr * udr + udz * udz) * r * vval" />
-                <vector i="3" j="2" planar ="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * vval"
-                                    axi = "- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * r * vval" />
-                <vector i="3" j="1" planar ="- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * vval"
-                                    axi = "- gamma * (2 * PI * f) * (2 * PI * f) * (mur * MU0) * (mur * MU0) * (upval * upval) * r * vval" />
+                <matrix i="3" j="1" planar ="0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * vval"
+                                    axi = "0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * r * vval" />
+                <matrix i="3" j="2" planar ="0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (udx * udx + udy * udy) * vval"
+                                    axi = "0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (udr * udr + udz * udz) * r * vval" />
+                <vector i="3" j="2" planar ="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
+                                    axi = "- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
+                <vector i="3" j="1" planar ="- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
+                                    axi = "- 0.5 * gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
             </weakform>
 
         </weakforms>

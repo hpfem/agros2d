@@ -1474,7 +1474,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-
     QDomDocument doc;
 
     // xml version

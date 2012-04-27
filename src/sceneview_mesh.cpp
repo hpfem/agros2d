@@ -167,9 +167,7 @@ void SceneViewMesh::refresh()
 
     m_meshHermes->clear();
 
-    // actions
-    actSceneModeMesh->setEnabled(Util::problem()->isMeshed());
-    actExportVTKOrder->setEnabled(Util::problem()->isSolved());
+    setControls();
 
     if (Util::problem()->isMeshed())
         m_meshHermes->processMeshed();
@@ -180,9 +178,18 @@ void SceneViewMesh::refresh()
     SceneViewCommon::refresh();
 }
 
+void SceneViewMesh::setControls()
+{
+    // actions
+    actSceneModeMesh->setEnabled(Util::problem()->isMeshed());
+    actExportVTKOrder->setEnabled(Util::problem()->isSolved());
+}
+
 void SceneViewMesh::clear()
 {
     m_meshHermes->clear();
+
+    setControls();
 
     SceneViewCommon2D::clear();
 }
