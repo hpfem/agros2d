@@ -18,7 +18,7 @@
         <quantity id="elasticity_force_y" shortname="st_fy" />
         <quantity id="elasticity_alpha" shortname="st_alpha" />
         <quantity id="elasticity_temperature_difference" shortname="st_dT" />
-        <quantity id="elasticity_temperature_reference" shortname="" />
+        <quantity id="elasticity_temperature_reference" shortname="st_Tr" />
 
         <weakforms>
             <weakform analysistype="steadystate">
@@ -210,8 +210,8 @@
             <localvariable id="elasticity_temperature_reference" name="Reference temperature" type="scalar"
                            shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
                            unit="K" unit_html="K" unit_latex="K" >
-                <expression analysistype="steadystate" planar=""
-                                                       axi="" />
+                <expression analysistype="steadystate" planar="st_Tr"
+                                                       axi="st_Tr" />
             </localvariable>
         </localvariables>
 
