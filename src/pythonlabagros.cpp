@@ -1107,24 +1107,28 @@ void PyViewConfig::setField(char* variable)
 
 void PyViewMesh::activate()
 {
-    currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+    if (Util::problem()->isMeshed())
+        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
 }
 
 void PyViewMesh::refresh()
 {
-    currentPythonEngineAgros()->sceneViewMesh()->refresh();
+    if (Util::problem()->isMeshed())
+        currentPythonEngineAgros()->sceneViewMesh()->refresh();
 }
 
 // ****************************************************************************************************
 
 void PyViewPost2D::activate()
 {
-    currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
 }
 
 void PyViewPost2D::refresh()
 {
-    currentPythonEngineAgros()->sceneViewPost2D()->refresh();
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost2D()->refresh();
 }
 
 void PyViewPost2D::setContourShow(int show)
@@ -1166,12 +1170,14 @@ void PyViewPost2D::setContourVariable(char* variable)
 
 void PyViewPost3D::activate()
 {
-    currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
 }
 
 void PyViewPost3D::refresh()
 {
-    currentPythonEngineAgros()->sceneViewPost3D()->refresh();
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost3D()->refresh();
 }
 
 // ****************************************************************************************************
