@@ -23,7 +23,7 @@ heat.add_boundary("Convection", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_c
 heat.add_material("Material", {"heat_conductivity" : 52, "heat_volume_heat" : 6e6})   
              
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0.02, 0, 0.1, 0, boundaries = {"heat" : "Temperature"})

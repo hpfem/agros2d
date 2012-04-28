@@ -25,7 +25,7 @@ magnetic.add_material("Air", {"magnetic_permeability" : 1})
 magnetic.add_material("Magnet", {"magnetic_permeability" : 1.1, "magnetic_remanence" : 0.6, "magnetic_remanence_angle" : 90}) 
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0.01, 0.01, 0.01, 0)

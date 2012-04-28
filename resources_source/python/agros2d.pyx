@@ -103,6 +103,8 @@ cdef extern from "../../src/pythonlabagros.h":
     cdef cppclass PyGeometry:
         PyGeometry()
 
+        void activate()
+
         void addNode(double, double) except +
         void addEdge(double, double, double, double, double, int, map[char*, char*]) except +
         void addLabel(double, double, double, int, map[char*, char*]) except +
@@ -143,18 +145,25 @@ cdef extern from "../../src/pythonlabagros.h":
         void setField(char *fieldid) except +
         char *getField()
 
-        void refreshMesh()
-        void refreshPost2D()
-        void refreshPost3D()
+    # PyViewMesh
+    cdef cppclass PyViewMesh:
+        void activate()
+        void refresh()
 
-    # PyViewContour
-    cdef cppclass PyViewContour:
-        void setShow(bool show) except +
-        bool getShow()
-        void setCount(int show) except +
-        int getCount()
-        void setVariable(char *variable) except +
-        char *getVariable()
+    cdef cppclass PyViewPost2D:
+        void activate()
+        void refresh()
+
+        void setContourShow(bool show) except +
+        bool getContourShow()
+        void setContourCount(int show) except +
+        int getContourCount()
+        void setContourVariable(char *variable) except +
+        char *getContourVariable()
+
+    cdef cppclass PyViewPost3D:
+        void activate()
+        void refresh()
 
     char *pyVersion()
     void pyQuit()
@@ -434,6 +443,9 @@ cdef class __Geometry__:
     def __dealloc__(self):
         del self.thisptr
 
+    def activate(self):
+        self.thisptr.activate()
+
     # add_node(x, y)
     def add_node(self, double x, double y):
         self.thisptr.addNode(x, y)
@@ -576,58 +588,81 @@ cdef class __ViewConfig__:
     def __dealloc__(self):
         del self.thisptr
 
-    def __refreshMesh__(self):
-        self.thisptr.refreshMesh()
-
-    def __refreshPost2D__(self):
-        self.thisptr.refreshPost2D()
-
-    def __refreshPost3D__(self):
-        self.thisptr.refreshPost3D()
-
     property field:
         def __get__(self):
             return self.thisptr.getField()
         def __set__(self, fieldid):
             self.thisptr.setField(fieldid)
 
-cdef class __ViewContour__:
-    cdef PyViewContour *thisptr
+cdef class __ViewMesh__:
+    cdef PyViewMesh *thisptr
 
     def __cinit__(self):
-        self.thisptr = new PyViewContour()
+        self.thisptr = new PyViewMesh()
     def __dealloc__(self):
         del self.thisptr
 
-    property show:
+    def activate(self):
+        self.thisptr.activate()
+
+    def refresh(self):
+        self.thisptr.refresh()
+
+cdef class __ViewPost2D__:
+    cdef PyViewPost2D *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new PyViewPost2D()
+    def __dealloc__(self):
+        del self.thisptr
+
+    def activate(self):
+        self.thisptr.activate()
+
+    def refresh(self):
+        self.thisptr.refresh()
+
+    property contour_show:
         def __get__(self):
-            return self.thisptr.getShow()
+            return self.thisptr.getContourShow()
         def __set__(self, show):
-            self.thisptr.setShow(show)
+            self.thisptr.setContourShow(show)
 
-    property count:
+    property contour_count:
         def __get__(self):
-            return self.thisptr.getCount()
+            return self.thisptr.getContourCount()
         def __set__(self, count):
-            self.thisptr.setCount(count)
+            self.thisptr.setContourCount(count)
 
-    property variable:
+    property contour_variable:
         def __get__(self):
-            return self.thisptr.getVariable()
+            return self.thisptr.getContourVariable()
         def __set__(self, variable):
-            self.thisptr.setVariable(variable)
+            self.thisptr.setContourVariable(variable)
 
-# private problem
+cdef class __ViewPost3D__:
+    cdef PyViewPost3D *thisptr
+
+    def activate(self):
+        self.thisptr.activate()
+
+    def refresh(self):
+        self.thisptr.refresh()
+
+    def __cinit__(self):
+        self.thisptr = new PyViewPost3D()
+    def __dealloc__(self):
+        del self.thisptr
+
+# problem
 __problem__ = __Problem__()
 def problem(int clear = False):
     if (clear):
         __problem__.clear()
     return __problem__
 
-# private geometry
-__geometry__ = __Geometry__()
-def geometry():
-    return __geometry__
+# geometry
+geometry = __Geometry__()
 
 # field
 def field(char *field_id):
@@ -636,20 +671,6 @@ def field(char *field_id):
 # config
 # class __Config__:
 # config = __Config__()
-
-class __ViewMesh__:
-    def refresh(self):
-        view.config.__refreshMesh__()
-
-class __ViewPost2D__:
-    contour = __ViewContour__()
-
-    def refresh(self):
-        view.config.__refreshPost2D__()
-
-class __ViewPost3D__:
-    def refresh(self):
-        view.config.__refreshPost3D__()
 
 class __View__:
     config = __ViewConfig__()

@@ -27,7 +27,7 @@ rf.add_boundary("Surface current", "rf_te_surface_current", {"rf_te_surface_curr
 rf.add_material("Air", {"rf_te_permittivity" : 1, "rf_te_permeability" : 1, "rf_te_conductivity" : 3e-2})
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(-0.01, 0.02286, -0.01, 0, 0, boundaries = {"rf" : "Surface current"})

@@ -22,7 +22,7 @@ acoustic.add_boundary("Source pressure", "acoustic_pressure", {"acoustic_pressur
 acoustic.add_material("Air", {"acoustic_density" : 1.25, "acoustic_speed" : 343})
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0, 1.5, 1.05, 1.25, boundaries = {"acoustic" : "Wall"})

@@ -785,6 +785,11 @@ void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
     results = values;
 }
 
+void PyGeometry::activate()
+{
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+}
+
 void PyGeometry::addNode(double x, double y)
 {
     Util::scene()->addNode(new SceneNode(Point(x, y)));
@@ -987,7 +992,7 @@ void PyGeometry::selectLabels(vector<int> labels)
 
 void PyGeometry::selectNodePoint(double x, double y)
 {
-    SceneNode *node = currentPythonEngineAgros()->sceneViewGeometry()->findClosestNode(Point(x, y));
+    SceneNode *node = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestNode(Point(x, y));
     if (node)
     {
         node->isSelected = true;
@@ -997,7 +1002,7 @@ void PyGeometry::selectNodePoint(double x, double y)
 
 void PyGeometry::selectEdgePoint(double x, double y)
 {
-    SceneEdge *edge = currentPythonEngineAgros()->sceneViewGeometry()->findClosestEdge(Point(x, y));
+    SceneEdge *edge = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestEdge(Point(x, y));
     if (edge)
     {
         edge->isSelected = true;
@@ -1007,7 +1012,7 @@ void PyGeometry::selectEdgePoint(double x, double y)
 
 void PyGeometry::selectLabelPoint(double x, double y)
 {
-    SceneLabel *label = currentPythonEngineAgros()->sceneViewGeometry()->findClosestLabel(Point(x, y));
+    SceneLabel *label = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestLabel(Point(x, y));
     if (label)
     {
         label->isSelected = true;
@@ -1064,22 +1069,22 @@ char *PyGeometry::meshFileName()
 
 void PyGeometry::zoomBestFit()
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
 }
 
 void PyGeometry::zoomIn()
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomIn();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomIn();
 }
 
 void PyGeometry::zoomOut()
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomOut();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomOut();
 }
 
 void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // ****************************************************************************************************
@@ -1098,29 +1103,36 @@ void PyViewConfig::setField(char* variable)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Util::problem()->fieldInfos().keys())).toStdString());
 }
 
-void PyViewConfig::refreshMesh()
+// ****************************************************************************************************
+
+void PyViewMesh::activate()
+{
+    currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+}
+
+void PyViewMesh::refresh()
 {
     currentPythonEngineAgros()->sceneViewMesh()->refresh();
 }
 
-void PyViewConfig::refreshPost2D()
+// ****************************************************************************************************
+
+void PyViewPost2D::activate()
+{
+    currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+}
+
+void PyViewPost2D::refresh()
 {
     currentPythonEngineAgros()->sceneViewPost2D()->refresh();
 }
 
-void PyViewConfig::refreshPost3D()
-{
-    currentPythonEngineAgros()->sceneViewPost3D()->refresh();
-}
-
-// ****************************************************************************************************
-
-void PyViewContour::setShow(int show)
+void PyViewPost2D::setContourShow(int show)
 {
     Util::config()->showContourView = show;
 }
 
-void PyViewContour::setCount(int count)
+void PyViewPost2D::setContourCount(int count)
 {
     if (count > 0)
         Util::config()->contoursCount = count;
@@ -1128,7 +1140,7 @@ void PyViewContour::setCount(int count)
         throw invalid_argument(QObject::tr("Contour count must be positive.").toStdString());
 }
 
-void PyViewContour::setVariable(char* variable)
+void PyViewPost2D::setContourVariable(char* variable)
 {
     QStringList list;
     for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
@@ -1148,6 +1160,18 @@ void PyViewContour::setVariable(char* variable)
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+// ****************************************************************************************************
+
+void PyViewPost3D::activate()
+{
+    currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
+}
+
+void PyViewPost3D::refresh()
+{
+    currentPythonEngineAgros()->sceneViewPost3D()->refresh();
 }
 
 // ****************************************************************************************************
@@ -1196,9 +1220,9 @@ void pyCloseDocument()
     // sceneView()->doDefaultValues();
     Util::scene()->refresh();
 
-    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModePreprocessor->trigger();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewMesh()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewPost2D()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewPost3D()->doZoomBestFit();
@@ -1251,7 +1275,7 @@ void PythonEngineAgros::doExecutedScript()
 {
     Util::scene()->refresh();
 
-    if (m_sceneViewGeometry) m_sceneViewGeometry->updateGL();
+    if (m_sceneViewPreprocessor) m_sceneViewPreprocessor->updateGL();
     if (Util::problem()->isSolved())
     {
         if (m_sceneViewMesh) m_sceneViewMesh->updateGL();

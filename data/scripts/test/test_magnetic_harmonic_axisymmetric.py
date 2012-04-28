@@ -1,4 +1,4 @@
-Ximport agros2d
+import agros2d
 
 # model
 problem = agros2d.problem(clear = True)
@@ -22,7 +22,7 @@ magnetic.add_material("Iron", {"magnetic_permeability" : 50, "magnetic_conductiv
 magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0, -0.17, 0.15, -0.17, boundaries = {"magnetic" : "A = 0"})

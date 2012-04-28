@@ -23,7 +23,7 @@ current.add_boundary("Inlet", "current_inward_current_flow", {"current_inward_cu
 current.add_material("Copper", {"current_conductivity" : 5.7e7})
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0, 0.45, 0, 0, boundaries = {"current" : "Neumann"})

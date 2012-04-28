@@ -40,10 +40,10 @@ class PythonEngineAgros : public PythonEngine
     Q_OBJECT
 public:
     PythonEngineAgros() : PythonEngine(),
-        m_sceneViewGeometry(NULL), m_sceneViewMesh(NULL), m_sceneViewPost2D(NULL), m_sceneViewPost3D(NULL) {}
+        m_sceneViewPreprocessor(NULL), m_sceneViewMesh(NULL), m_sceneViewPost2D(NULL), m_sceneViewPost3D(NULL) {}
 
-    inline void setSceneViewGeometry(SceneViewPreprocessor *sceneViewGeometry) { assert(sceneViewGeometry); m_sceneViewGeometry = sceneViewGeometry; }
-    inline SceneViewPreprocessor *sceneViewGeometry() { assert(m_sceneViewGeometry); return m_sceneViewGeometry; }
+    inline void setSceneViewGeometry(SceneViewPreprocessor *sceneViewGeometry) { assert(sceneViewGeometry); m_sceneViewPreprocessor = sceneViewGeometry; }
+    inline SceneViewPreprocessor *sceneViewPreprocessor() { assert(m_sceneViewPreprocessor); return m_sceneViewPreprocessor; }
     inline void setSceneViewMesh(SceneViewMesh *sceneViewMesh) { assert(sceneViewMesh); m_sceneViewMesh = sceneViewMesh; }
     inline SceneViewMesh *sceneViewMesh() { assert(m_sceneViewMesh); return m_sceneViewMesh; }
     inline void setSceneViewPost2D(SceneViewPost2D *sceneViewPost2D) { assert(sceneViewPost2D); m_sceneViewPost2D = sceneViewPost2D; }
@@ -59,7 +59,7 @@ private slots:
     void doExecutedScript();
 
 private:
-    SceneViewPreprocessor *m_sceneViewGeometry;
+    SceneViewPreprocessor *m_sceneViewPreprocessor;
     SceneViewMesh *m_sceneViewMesh;
     SceneViewPost2D *m_sceneViewPost2D;
     SceneViewPost3D *m_sceneViewPost3D;
@@ -238,6 +238,8 @@ class PyGeometry
         PyGeometry() {}
         ~PyGeometry() {}
 
+        void activate();
+
         // elements
         void addNode(double x, double y);
         void addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries);
@@ -288,21 +290,34 @@ struct PyViewConfig
     // TODO: setActiveTimeStep
     // TODO: setActiveAdaptivityStep
     // TODO: setActiveSolutionType
-
-    void refreshMesh();
-    void refreshPost2D();
-    void refreshPost3D();
 };
 
-// contours
-struct PyViewContour
+// view mesh
+struct PyViewMesh
 {
-    void setShow(int show);
-    inline int getShow() const { return Util::config()->showContourView; }
-    void setCount(int count);
-    inline int getCount() const { return Util::config()->contoursCount; }
-    void setVariable(char* variable);
-    inline char* getVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
+    void activate();
+    void refresh();
+};
+
+
+// post2d
+struct PyViewPost2D
+{
+    void activate();
+    void refresh();
+
+    void setContourShow(int show);
+    inline int getContourShow() const { return Util::config()->showContourView; }
+    void setContourCount(int count);
+    inline int getContourCount() const { return Util::config()->contoursCount; }
+    void setContourVariable(char* variable);
+    inline char* getContourVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
+};
+
+struct PyViewPost3D
+{
+    void activate();
+    void refresh();
 };
 
 // functions
