@@ -58,16 +58,6 @@ void ConfigDialog::load()
     // check version
     chkCheckVersion->setChecked(Util::config()->checkVersion);
 
-    // show convergence chart
-    chkShowConvergenceChart->setChecked(Util::config()->showConvergenceChart);
-
-    // show nonlinear chart
-    chkShowNonlinearChart->setChecked(Util::config()->showNonlinearChart);
-
-    // logs
-    chkEnabledApplicationLog->setChecked(Util::config()->enabledApplicationLog);
-    chkEnabledProgressLog->setChecked(Util::config()->enabledProgressLog);
-
     // show result in line edit value widget
     chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
 
@@ -131,16 +121,6 @@ void ConfigDialog::save()
 
     // check version
     Util::config()->checkVersion = chkCheckVersion->isChecked();
-
-    // show convergence chart
-    Util::config()->showConvergenceChart = chkShowConvergenceChart->isChecked();
-
-    // show nonlinear chart
-    Util::config()->showNonlinearChart = chkShowNonlinearChart->isChecked();
-
-    // logs
-    Util::config()->enabledApplicationLog = chkEnabledApplicationLog->isChecked();
-    Util::config()->enabledProgressLog = chkEnabledProgressLog->isChecked();
 
     // show result in line edit value widget
     Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
@@ -277,25 +257,6 @@ QWidget *ConfigDialog::createMainWidget()
     QGroupBox *grpCollaboration = new QGroupBox(tr("Collaboration"));
     grpCollaboration->setLayout(layoutCollaboration);
 
-    // logs
-    chkEnabledApplicationLog = new QCheckBox(tr("Enabled application log"));
-    chkEnabledProgressLog = new QCheckBox(tr("Enabled progress log"));
-
-    cmdClearApplicationLog = new QPushButton(mainWidget);
-    cmdClearApplicationLog->setText(tr("Clear application log"));
-    connect(cmdClearApplicationLog, SIGNAL(clicked()), this, SLOT(doClearApplicationLog()));
-
-    QGridLayout *layoutClearButtons = new QGridLayout();
-    layoutClearButtons->addWidget(cmdClearApplicationLog, 0, 0);
-
-    QVBoxLayout *layoutLogs = new QVBoxLayout();
-    layoutLogs->addWidget(chkEnabledProgressLog);
-    layoutLogs->addWidget(chkEnabledApplicationLog);
-    layoutLogs->addLayout(layoutClearButtons);
-
-    QGroupBox *grpLogs = new QGroupBox(tr("Logs"));
-    grpLogs->setLayout(layoutLogs);
-
     // other
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
     chkCheckVersion = new QCheckBox(tr("Check new version during startup"));
@@ -314,7 +275,6 @@ QWidget *ConfigDialog::createMainWidget()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
     layout->addWidget(grpCollaboration);
-    layout->addWidget(grpLogs);
     layout->addWidget(grpOther);
     layout->addStretch();
 
@@ -330,16 +290,12 @@ QWidget *ConfigDialog::createSolverWidget()
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
     if (Util::config()->showExperimentalFeatures)
         chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
-    chkShowConvergenceChart = new QCheckBox(tr("Show convergence chart after solving"));
-    chkShowNonlinearChart = new QCheckBox(tr("Show nonlinear chart after solving"));
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
     if (Util::config()->showExperimentalFeatures)
         layoutSolver->addWidget(chkSaveWithSolution);
-    layoutSolver->addWidget(chkShowConvergenceChart);
-    layoutSolver->addWidget(chkShowNonlinearChart);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
@@ -508,17 +464,6 @@ void ConfigDialog::doAccept()
 void ConfigDialog::doReject()
 {
     reject();
-}
-
-void ConfigDialog::doClearApplicationLog()
-{
-    if (QMessageBox::question(this, tr("Delete"), tr("Are you sure that you want to permanently delete the application logfile?"), tr("&Yes"), tr("&No")) == 0)
-    {
-        QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-        QFile::remove(location + "/app.log");
-
-        QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Application log was cleared successfully."));
-    }
 }
 
 void ConfigDialog::doAdaptivityDefault()

@@ -31,6 +31,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
+#include "pythonlabagros.h"
 
 const double minWidth = 110;
 
@@ -111,7 +112,10 @@ void PostprocessorWidget::loadBasic()
     // transient view
     // cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
-    setControls();
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
+
+    refresh();
 }
 
 void PostprocessorWidget::loadAdvanced()
@@ -292,7 +296,7 @@ void PostprocessorWidget::createControls()
     layoutMain->addWidget(tabType);
     layoutMain->addLayout(layoutButtons);
 
-    setControls();
+    refresh();
 
     setLayout(layoutMain);
 }
@@ -331,11 +335,11 @@ QWidget *PostprocessorWidget::post2DWidget()
 {
     // layout post2d
     chkShowPost2DContourView = new QCheckBox(tr("Contours"));
-    connect(chkShowPost2DContourView, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(chkShowPost2DContourView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DVectorView = new QCheckBox(tr("Vectors"));
-    connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DScalarView = new QCheckBox(tr("Scalar view"));
-    connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DParticleView = new QCheckBox(tr("Particle tracing"));
 
     QGridLayout *layoutPost2D = new QGridLayout();
@@ -971,20 +975,17 @@ void PostprocessorWidget::doPaletteFilter(int state)
     txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
-void PostprocessorWidget::setControls()
+void PostprocessorWidget::refresh()
 {
-    bool isMeshed = Util::problem()->isMeshed();
-    bool isSolved = Util::problem()->isSolved();
-
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
         widgetsLayout->setCurrentWidget(mesh);
         postprocessor->setEnabled(false);
 
         // mesh and order
-        chkShowInitialMeshView->setEnabled(isMeshed);
-        chkShowSolutionMeshView->setEnabled(isSolved);
-        chkShowOrderView->setEnabled(isSolved);
+        chkShowInitialMeshView->setEnabled(Util::problem()->isMeshed());
+        chkShowSolutionMeshView->setEnabled(Util::problem()->isSolved());
+        chkShowOrderView->setEnabled(Util::problem()->isSolved());
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -992,13 +993,13 @@ void PostprocessorWidget::setControls()
         widgetsLayout->setCurrentWidget(post2d);
         postprocessor->setEnabled(true);
 
-        chkShowPost2DContourView->setEnabled(isSolved && (cmbPost2DContourVariable->count() > 0));
-        chkShowPost2DScalarView->setEnabled(isSolved && (cmbPostScalarFieldVariable->count() > 0));
-        chkShowPost2DVectorView->setEnabled(isSolved && (cmbPost2DVectorFieldVariable->count() > 0));
+        chkShowPost2DContourView->setEnabled(Util::problem()->isSolved() && (cmbPost2DContourVariable->count() > 0));
+        chkShowPost2DScalarView->setEnabled(Util::problem()->isSolved() && (cmbPostScalarFieldVariable->count() > 0));
+        chkShowPost2DVectorView->setEnabled(Util::problem()->isSolved() && (cmbPost2DVectorFieldVariable->count() > 0));
         // if (Util::problem()->config()->hermes()->hasParticleTracing())
         // {
-        // chkShowParticleTracing->setEnabled(isSolved && (Util::problem()->config()->analysisType == AnalysisType_SteadyState));
-        chkShowPost2DParticleView->setEnabled(isSolved);
+        // chkShowParticleTracing->setEnabled(Util::problem()->isSolved() && (Util::problem()->config()->analysisType == AnalysisType_SteadyState));
+        chkShowPost2DParticleView->setEnabled(Util::problem()->isSolved());
         // }
         // else
         // {
@@ -1028,16 +1029,16 @@ void PostprocessorWidget::setControls()
         postprocessor->setEnabled(true);
 
         // scalar view 3d
-        radPost3DNone->setEnabled(isSolved);
-        radPost3DScalarField3D->setEnabled(isSolved);
-        radPost3DScalarField3DSolid->setEnabled(isSolved);
-        radPost3DModel->setEnabled(isSolved);
+        radPost3DNone->setEnabled(Util::problem()->isSolved());
+        radPost3DScalarField3D->setEnabled(Util::problem()->isSolved());
+        radPost3DScalarField3DSolid->setEnabled(Util::problem()->isSolved());
+        radPost3DModel->setEnabled(Util::problem()->isSolved());
         radPost3DParticleTracing->setEnabled(chkShowPost2DParticleView->isEnabled());
     }
 
     grpTransient->setVisible(false);
     grpAdaptivity->setVisible(false);
-    if (isSolved)
+    if (Util::problem()->isSolved())
     {
         // transient group
         int timeSteps = Util::solutionStore()->timeLevels(Util::scene()->activeViewField()).count();
@@ -1066,7 +1067,7 @@ void PostprocessorWidget::updateControls()
 
 void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
 {
-    setControls();
+    refresh();
 }
 
 void PostprocessorWidget::doApply()

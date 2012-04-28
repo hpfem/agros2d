@@ -99,9 +99,6 @@ cdef extern from "../../src/pythonlabagros.h":
         void surfaceIntegrals(vector[int], map[string, double] results) except +
         void volumeIntegrals(vector[int], map[string, double] results) except +
 
-        void postprocessor2D(map[char*, bool], map[char*, char*]) except +
-        void postprocessor3D(map[char*, bool]) except +
-
     # PyGeometry
     cdef cppclass PyGeometry:
         PyGeometry()
@@ -141,6 +138,24 @@ cdef extern from "../../src/pythonlabagros.h":
         void zoomOut()
         void zoomRegion(double, double, double, double)
 
+    # PyViewConfig
+    cdef cppclass PyViewConfig:
+        void setField(char *fieldid) except +
+        char *getField()
+
+        void refreshMesh()
+        void refreshPost2D()
+        void refreshPost3D()
+
+    # PyViewContour
+    cdef cppclass PyViewContour:
+        void setShow(bool show) except +
+        bool getShow()
+        void setCount(int show) except +
+        int getCount()
+        void setVariable(char *variable) except +
+        char *getVariable()
+
     char *pyVersion()
     void pyQuit()
 
@@ -152,26 +167,6 @@ cdef extern from "../../src/pythonlabagros.h":
     void pyCloseDocument()
 
     void pySaveImage(char *str, int w, int h) except +
-
-
-    char *pythonSolutionFileName() except +
-
-    void pythonSolve()
-    void pythonSolveAdaptiveStep()
-
-    void pythonMode(char *str) except +
-    void pythonPostprocessorMode(char *str) except +
-
-    void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax) except +
-    void pythonShowGrid(int show)
-    void pythonShowGeometry(int show)
-    void pythonShowInitialMesh(int show)
-    void pythonShowSolutionMesh(int show)
-    void pythonShowContours(int show)
-    void pythonShowVectors(int show)
-
-    void pythonSetTimeStep(int timestep) except +
-    int pythonTimeStepCount()
 
 # Problem
 cdef class __Problem__:
@@ -429,31 +424,12 @@ cdef class __Field__:
 
         return out
 
-    # postprocessor
-    def postprocessor_2d(self, views = {}, parameters = {}):
-        cdef map[char*, bool] views_map
-        cdef pair[char*, bool] view
-        for key in views:
-            view.first = key
-            view.second = views[key]
-            views_map.insert(view)
-
-        cdef map[char*, char*] parameters_map
-        cdef pair[char*, char*] parameter
-        for key in parameters:
-            parameter.first = key
-            parameter.second = parameters[key]
-            parameters_map.insert(parameter)
-
-        self.thisptr.postprocessor2D(views_map, parameters_map)
-
 # Geometry
 cdef class __Geometry__:
     cdef PyGeometry *thisptr
 
     # Geometry()
     def __cinit__(self):
-        # todo - more problems
         self.thisptr = new PyGeometry()
     def __dealloc__(self):
         del self.thisptr
@@ -591,7 +567,56 @@ cdef class __Geometry__:
     def zoom_region(self, double x1, double y1, double x2, double y2):
         self.thisptr.zoomRegion(x1, y1, x2, y2)
 
-# TODO - more problems?
+# View
+cdef class __ViewConfig__:
+    cdef PyViewConfig *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new PyViewConfig()
+    def __dealloc__(self):
+        del self.thisptr
+
+    def __refreshMesh__(self):
+        self.thisptr.refreshMesh()
+
+    def __refreshPost2D__(self):
+        self.thisptr.refreshPost2D()
+
+    def __refreshPost3D__(self):
+        self.thisptr.refreshPost3D()
+
+    property field:
+        def __get__(self):
+            return self.thisptr.getField()
+        def __set__(self, fieldid):
+            self.thisptr.setField(fieldid)
+
+cdef class __ViewContour__:
+    cdef PyViewContour *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new PyViewContour()
+    def __dealloc__(self):
+        del self.thisptr
+
+    property show:
+        def __get__(self):
+            return self.thisptr.getShow()
+        def __set__(self, show):
+            self.thisptr.setShow(show)
+
+    property count:
+        def __get__(self):
+            return self.thisptr.getCount()
+        def __set__(self, count):
+            self.thisptr.setCount(count)
+
+    property variable:
+        def __get__(self):
+            return self.thisptr.getVariable()
+        def __set__(self, variable):
+            self.thisptr.setVariable(variable)
+
 # private problem
 __problem__ = __Problem__()
 def problem(int clear = False):
@@ -599,7 +624,6 @@ def problem(int clear = False):
         __problem__.clear()
     return __problem__
 
-# TODO - more geometries?
 # private geometry
 __geometry__ = __Geometry__()
 def geometry():
@@ -608,6 +632,33 @@ def geometry():
 # field
 def field(char *field_id):
     return __Field__(field_id)
+
+# config
+# class __Config__:
+# config = __Config__()
+
+class __ViewMesh__:
+    def refresh(self):
+        view.config.__refreshMesh__()
+
+class __ViewPost2D__:
+    contour = __ViewContour__()
+
+    def refresh(self):
+        view.config.__refreshPost2D__()
+
+class __ViewPost3D__:
+    def refresh(self):
+        view.config.__refreshPost3D__()
+
+class __View__:
+    config = __ViewConfig__()
+
+    mesh = __ViewMesh__()
+    post2d = __ViewPost2D__()
+    post3d = __ViewPost3D__()
+
+view = __View__()
 
 # version()
 def version():
@@ -636,47 +687,3 @@ def close_document():
 
 def save_image(char *str, int w = 0, int h = 0):
     pySaveImage(str, w, h)
-
-
-# solver
-
-def solutionfilename():
-    return pythonSolutionFileName()
-
-def solveadaptivestep():
-    pythonSolveAdaptiveStep()
-
-# postprocessor
-
-def mode(char *str):
-    pythonMode(str)
-
-def postprocessormode(char *str):
-    pythonPostprocessorMode(str)
-
-def showscalar(char *type, char *variable = "default", char *component = "default", double rangemin = -123456, double rangemax = -123456):
-    pythonShowScalar(type, variable, component, rangemin, rangemax)
-
-def showgrid(int show):
-    pythonShowGrid(int(show))
-
-def showgeometry(int show):
-    pythonShowGeometry(int(show))
-
-def showinitialmesh(int show):
-    pythonShowInitialMesh(int(show))
-
-def showsolutionmesh(int show):
-    pythonShowSolutionMesh(int(show))
-
-def showcontours(int show):
-    pythonShowContours(int(show))
-
-def showvectors(int show):
-    pythonShowVectors(int(show))
-
-def timestep(int timestep):
-    pythonSetTimeStep(timestep)
-
-def timestepcount():
-    return pythonTimeStepCount()

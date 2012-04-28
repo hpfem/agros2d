@@ -170,7 +170,7 @@ signals:
 
 public slots:
     void updateControls();
-    void setControls();
+    void refresh();
 
 private slots:
     void doFieldInfo(int index);

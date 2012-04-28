@@ -229,10 +229,6 @@ class PyField
         void localValues(double x, double y, map<string, double> &results);
         void surfaceIntegrals(vector<int> edges, map<string, double> &results);
         void volumeIntegrals(vector<int> labels, map<string, double> &results);
-
-        // postprocessing
-        void postprocessor2D(map<char*, bool> views, map<char*, char*> parameters);
-        void postprocessor3D(map<char*, bool> views) {}
 };
 
 // geometry
@@ -284,6 +280,31 @@ class PyGeometry
         void zoomRegion(double x1, double y1, double x2, double y2);
 };
 
+// view
+struct PyViewConfig
+{
+    void setField(char* variable);
+    inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
+    // TODO: setActiveTimeStep
+    // TODO: setActiveAdaptivityStep
+    // TODO: setActiveSolutionType
+
+    void refreshMesh();
+    void refreshPost2D();
+    void refreshPost3D();
+};
+
+// contours
+struct PyViewContour
+{
+    void setShow(int show);
+    inline int getShow() const { return Util::config()->showContourView; }
+    void setCount(int count);
+    inline int getCount() const { return Util::config()->contoursCount; }
+    void setVariable(char* variable);
+    inline char* getVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
+};
+
 // functions
 char *pyVersion();
 void pyQuit();
@@ -296,26 +317,5 @@ void pySaveDocument(char *str);
 void pyCloseDocument();
 
 void pySaveImage(char *str, int w, int h);
-
-// ************************************************************************************
-
-// cython functions
-char *pythonSolutionFileName();
-
-void pythonSolveAdaptiveStep();
-
-void pythonMode(char *str);
-void pythonPostprocessorMode(char *str);
-
-void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax);
-void pythonShowGrid(bool show);
-void pythonShowGeometry(bool show);
-void pythonShowInitialMesh(bool show);
-void pythonShowSolutionMesh(bool show);
-void pythonShowContours(bool show);
-void pythonShowVectors(bool show);
-
-void pythonSetTimeStep(int timestep);
-int pythonTimeStepCount();
 
 #endif // PYTHONLABAGROS_H

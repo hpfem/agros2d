@@ -64,10 +64,6 @@ void Config::loadWorkspace()
     collaborationServerURL = settings.value("General/CollaborationServerURL", QString("http://agros2d.org/collaboration/")).toString();
 
     checkVersion = settings.value("General/CheckVersion", true).toBool();
-    showConvergenceChart = settings.value("General/ShowConvergenceChart", true).toBool();
-    showNonlinearChart = settings.value("General/ShowNonlinearChart", true).toBool();
-    enabledApplicationLog = settings.value("General/EnabledApplicationLog", true).toBool();
-    enabledProgressLog = settings.value("General/EnabledProgressLog", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
     if (showExperimentalFeatures)
         saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
@@ -254,22 +250,21 @@ void Config::saveWorkspace()
     settings.setValue("General/CollaborationServerURL", collaborationServerURL);
 
     settings.setValue("General/CheckVersion", checkVersion);
-    settings.setValue("General/ShowConvergenceChart", showConvergenceChart);
-    settings.setValue("General/ShowNonlinearChart", showNonlinearChart);
-    settings.setValue("General/EnabledApplicationLog", enabledApplicationLog);
-    settings.setValue("General/EnabledProgressLog", enabledProgressLog);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
     if (showExperimentalFeatures)
         settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
     else
         saveProblemWithSolution = false;
 
-    // zoom
-    settings.setValue("General/ZoomToMouse", zoomToMouse);
-
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", deleteTriangleMeshFiles);
     settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermes2DMeshFile);
+
+    // font
+    settings.setValue("SceneViewSettings/SceneFont", sceneFont);
+
+    // zoom
+    settings.setValue("General/ZoomToMouse", zoomToMouse);
 
     // colors
     settings.setValue("SceneViewSettings/ColorBackground", colorBackground);
@@ -290,9 +285,6 @@ void Config::saveWorkspace()
     settings.setValue("SceneViewSettings/EdgeWidth", edgeWidth);
     settings.setValue("SceneViewSettings/LabelSize", labelSize);
 
-    // font
-    settings.setValue("SceneViewSettings/SceneFont", sceneFont);
-
     // mesh
     settings.setValue("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);
     settings.setValue("SceneViewSettings/MeshCurvilinearElements", curvilinearElements);
@@ -300,9 +292,6 @@ void Config::saveWorkspace()
     // grid
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);
     settings.setValue("SceneViewSettings/GridStep", gridStep);
-
-    // scene font
-    settings.setValue("SceneViewSettings/SceneFont", sceneFont);
 
     // rulers
     settings.setValue("SceneViewSettings/ShowRulers", showRulers);

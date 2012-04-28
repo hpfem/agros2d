@@ -620,9 +620,9 @@ ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
     createActions();
     createControls();
 
-    refresh();
+    updateControls();
 
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(updateControls()));
 
     setMinimumSize(sizeHint());
 }
@@ -811,7 +811,7 @@ void ProblemWidget::fillComboBox()
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
 }
 
-void ProblemWidget::refresh()
+void ProblemWidget::updateControls()
 {
     // main
     txtName->setText(Util::problem()->config()->name());

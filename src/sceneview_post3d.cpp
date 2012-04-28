@@ -139,7 +139,7 @@ void Post3DHermes::processSolved()
     m_initialMeshIsPrepared = false;
     m_scalarIsPrepared = false;
 
-    processRangeScalar();
+    // processRangeScalar();
     // QTimer::singleShot(0, this, SLOT(processRangeScalar()));
 
     emit processed();

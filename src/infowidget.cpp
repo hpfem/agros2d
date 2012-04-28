@@ -67,6 +67,9 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     setLayout(layoutMain);
 
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(refresh()));
+
     refresh();
 }
 
