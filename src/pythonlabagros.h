@@ -306,12 +306,25 @@ struct PyViewPost2D
     void activate();
     void refresh();
 
-    void setContourShow(int show);
+    void setContourShow(int show); // todo: (Franta)
     inline int getContourShow() const { return Util::config()->showContourView; }
     void setContourCount(int count);
     inline int getContourCount() const { return Util::config()->contoursCount; }
     void setContourVariable(char* variable);
     inline char* getContourVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
+
+    void setVectorShow(int show);
+    inline int getVectorShow() const { return Util::config()->showVectorView; }
+    void setVectorCount(int count);
+    inline int getVectorCount() const { return Util::config()->vectorCount; }
+    void setVectorScale(double scale);
+    inline int getVectorScale() const { return Util::config()->vectorScale; }
+    void setVectorVariable(char* variable);
+    inline char* getVectorVariable() const { return const_cast<char*>(Util::config()->vectorVariable.toStdString().c_str()); }
+    void setVectorProportional(int show);
+    inline int getVectorProportional() const { return Util::config()->vectorProportional; }
+    void setVectorColor(int show);
+    inline int getVectorColor() const { return Util::config()->vectorColor; }
 };
 
 struct PyViewPost3D

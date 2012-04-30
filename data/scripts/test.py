@@ -45,7 +45,7 @@ heat.add_boundary("Flux", "heat_heat_flux", {"heat_heat_flux" : 0})
 
 heat.add_material("Fe", {"heat_conductivity" : 60, "heat_volume_heat" : 0})
 
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 #geometry.add_node(0, 0)
 #geometry.remove_node(0)
@@ -86,7 +86,22 @@ volume_integrals = magnetic.volume_integrals([0, 1, 2])
 print(volume_integrals)
 """
 
-magnetic.postprocessor_2d({"scalar" : False, "contours" : True, "vectors" : True})
+#magnetic.postprocessor_2d({"scalar" : False, "contours" : True, "vectors" : True})
+
+view = agros2d.view
+view.post2d.contour_show = True
+#view.post2d.contour_variable = ""
+#view.post2d.contour_count = 15
+
+view.post2d.vector_show = True
+#view.post2d.vector_variable = ""
+#view.post2d.vector_count = 50
+#view.post2d.vector_scale = 1.0
+#view.post2d.vector_proportional = True
+#view.post2d.vector_color = True
+
+#view.post2d.activate
+#view.post2d.refresh
 
 """
 geometry.select_nodes([0])

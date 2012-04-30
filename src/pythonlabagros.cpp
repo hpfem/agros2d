@@ -1138,10 +1138,10 @@ void PyViewPost2D::setContourShow(int show)
 
 void PyViewPost2D::setContourCount(int count)
 {
-    if (count > 0)
+    if (count > 0 && count <= 100)
         Util::config()->contoursCount = count;
     else
-        throw invalid_argument(QObject::tr("Contour count must be positive.").toStdString());
+        throw invalid_argument(QObject::tr("Contour count must be in the range from 1 to 100.").toStdString());
 }
 
 void PyViewPost2D::setContourVariable(char* variable)
@@ -1151,7 +1151,7 @@ void PyViewPost2D::setContourVariable(char* variable)
          it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
     {
         Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
-        if (var->is_scalar)
+        if (var->is_scalar) // todo: (Franta) why
         {
             list.append(QString::fromStdString(var->id));
 
@@ -1164,6 +1164,57 @@ void PyViewPost2D::setContourVariable(char* variable)
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setVectorShow(int show)
+{
+    Util::config()->showVectorView = show;
+}
+
+void PyViewPost2D::setVectorCount(int count)
+{
+    if (count > 0 && count <= 500)
+        Util::config()->vectorCount = count;
+    else
+        throw invalid_argument(QObject::tr("Vector count must be in the range from 1 to 500.").toStdString());
+}
+
+void PyViewPost2D::setVectorScale(double scale)
+{
+    // todo: (Franta) change range
+    if (scale > 0.0 && scale <= 20.0)
+        Util::config()->vectorScale = scale;
+    else
+        throw invalid_argument(QObject::tr("Vector scale must be in the range from 0.0 to 20.0.").toStdString());
+}
+
+void PyViewPost2D::setVectorVariable(char* variable)
+{
+    QStringList list;
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
+        it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+
+        list.append(QString::fromStdString(var->id));
+        if (var->id == std::string(variable))
+        {
+            Util::config()->vectorVariable = QString(variable);
+            return;
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setVectorProportional(int show)
+{
+    Util::config()->vectorProportional = show;
+}
+
+void PyViewPost2D::setVectorColor(int show)
+{
+    Util::config()->vectorColor = show;
 }
 
 // ****************************************************************************************************

@@ -156,10 +156,24 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void setContourShow(bool show) except +
         bool getContourShow()
-        void setContourCount(int show) except +
+        void setContourCount(int count) except +
         int getContourCount()
         void setContourVariable(char *variable) except +
         char *getContourVariable()
+
+        void setVectorShow(bool show) except +
+        bool getVectorShow()
+        void setVectorCount(int count) except +
+        int getVectorCount()
+        void setVectorScale(double scale) except +
+        int getVectorScale()
+        void setVectorVariable(char *variable) except +
+        char *getVectorVariable()
+        void setVectorProportional(bool show) except +
+        bool getVectorProportional()
+        void setVectorColor(bool show) except +
+        bool getVectorColor()
+
 
     cdef cppclass PyViewPost3D:
         void activate()
@@ -639,6 +653,42 @@ cdef class __ViewPost2D__:
             return self.thisptr.getContourVariable()
         def __set__(self, variable):
             self.thisptr.setContourVariable(variable)
+
+    property vector_show:
+        def __get__(self):
+            return self.thisptr.getVectorShow()
+        def __set__(self, show):
+            self.thisptr.setVectorShow(show)
+
+    property vector_count:
+        def __get__(self):
+            return self.thisptr.getVectorCount()
+        def __set__(self, count):
+            self.thisptr.setVectorCount(count)
+
+    property vector_scale:
+        def __get__(self):
+            return self.thisptr.getVectorScale()
+        def __set__(self, count):
+            self.thisptr.setVectorScale(count)
+
+    property vector_variable:
+        def __get__(self):
+            return self.thisptr.getVectorVariable()
+        def __set__(self, variable):
+            self.thisptr.setVectorVariable(variable)
+
+    property vector_proportional:
+        def __get__(self):
+            return self.thisptr.getVectorProportional()
+        def __set__(self, show):
+            self.thisptr.setVectorProportional(show)
+
+    property vector_color:
+        def __get__(self):
+            return self.thisptr.getVectorColor()
+        def __set__(self, show):
+            self.thisptr.setVectorColor(show)
 
 cdef class __ViewPost3D__:
     cdef PyViewPost3D *thisptr
