@@ -1131,6 +1131,51 @@ void PyViewPost2D::refresh()
         currentPythonEngineAgros()->sceneViewPost2D()->refresh();
 }
 
+void PyViewPost2D::setScalarViewShow(int show)
+{
+    Util::config()->showScalarView = show;
+}
+
+void PyViewPost2D::setScalarViewVariable(char* variable)
+{
+    QStringList list;
+
+    // scalar variables
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
+         it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+
+        list.append(QString::fromStdString(var->id));
+        if (var->id == std::string(variable))
+        {
+            Util::config()->scalarVariable = QString(variable);
+            return;
+        }
+    }
+
+    // vector variables
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
+         it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+
+        list.append(QString::fromStdString(var->id));
+        if (var->id == std::string(variable))
+        {
+            Util::config()->vectorVariable = QString(variable);
+            return;
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setScalarViewVariableComp(char* component)
+{
+    // todo: (Franta)
+}
+
 void PyViewPost2D::setContourShow(int show)
 {
     Util::config()->showContourView = show;

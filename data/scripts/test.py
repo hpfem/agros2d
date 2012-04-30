@@ -89,6 +89,9 @@ print(volume_integrals)
 #magnetic.postprocessor_2d({"scalar" : False, "contours" : True, "vectors" : True})
 
 view = agros2d.view
+view.post2d.scalar_view_show = False
+view.post2d.scalar_view_variable = "heat_heat_flux"
+
 view.post2d.contour_show = True
 #view.post2d.contour_variable = ""
 #view.post2d.contour_count = 15

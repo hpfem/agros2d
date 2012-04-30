@@ -306,6 +306,15 @@ struct PyViewPost2D
     void activate();
     void refresh();
 
+    // scalar view
+    void setScalarViewShow(int show);
+    inline int getScalarViewShow() const { return Util::config()->showScalarView; }
+    void setScalarViewVariable(char* variable);
+    inline char* getScalarViewVariable() const { return const_cast<char*>(Util::config()->scalarVariable.toStdString().c_str()); }
+    void setScalarViewVariableComp(char* component);
+    inline char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Util::config()->scalarVariableComp).toStdString().c_str()); }
+
+    // contour
     void setContourShow(int show); // todo: (Franta)
     inline int getContourShow() const { return Util::config()->showContourView; }
     void setContourCount(int count);
@@ -313,6 +322,7 @@ struct PyViewPost2D
     void setContourVariable(char* variable);
     inline char* getContourVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
 
+    // vector
     void setVectorShow(int show);
     inline int getVectorShow() const { return Util::config()->showVectorView; }
     void setVectorCount(int count);

@@ -154,6 +154,13 @@ cdef extern from "../../src/pythonlabagros.h":
         void activate()
         void refresh()
 
+        void setScalarViewShow(bool show) except +
+        bool getScalarViewShow()
+        void setScalarViewVariable(char *variable) except +
+        char *getScalarViewVariable()
+        void setScalarViewVariableComp(char *component) except +
+        char *getScalarViewVariableComp()
+
         void setContourShow(bool show) except +
         bool getContourShow()
         void setContourCount(int count) except +
@@ -635,6 +642,24 @@ cdef class __ViewPost2D__:
 
     def refresh(self):
         self.thisptr.refresh()
+
+    property scalar_view_show:
+        def __get__(self):
+            return self.thisptr.getScalarViewShow()
+        def __set__(self, show):
+            self.thisptr.setScalarViewShow(show)
+
+    property scalar_view_variable:
+        def __get__(self):
+            return self.thisptr.getScalarViewVariable()
+        def __set__(self, variable):
+            self.thisptr.setScalarViewVariable(variable)
+
+    property scalar_view_component:
+        def __get__(self):
+            return self.thisptr.getScalarViewVariableComp()
+        def __set__(self, component):
+            self.thisptr.setScalarViewVariableComp(component)
 
     property contour_show:
         def __get__(self):
