@@ -297,6 +297,22 @@ struct PyViewMesh
 {
     void activate();
     void refresh();
+
+    // mesh
+    void setInitialMeshViewShow(int show);
+    inline int getInitialMeshViewShow() const { return Util::config()->showInitialMeshView; }
+    void setSolutionMeshViewShow(int show);
+    inline int getSolutionMeshViewShow() const { return Util::config()->showSolutionMeshView; }
+
+    // polynomial order
+    void setOrderViewShow(int show);
+    inline int getOrderViewShow() const { return Util::config()->showOrderView; }
+    void setOrderViewColorBar(int show);
+    inline int getOrderViewColorBar() const { return Util::config()->showOrderColorBar; }
+    void setOrderViewLabel(int show);
+    inline int getOrderViewLabel() const { return Util::config()->orderLabel; }
+    void setOrderViewPalette(char* palette);
+    inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Util::config()->orderPaletteOrderType).toStdString().c_str()); }
 };
 
 
@@ -341,7 +357,7 @@ struct PyViewPost2D
     inline double getScalarViewRangeMax() const { return Util::config()->scalarRangeMax; }
 
     // contour
-    void setContourShow(int show); // todo: (Franta)
+    void setContourShow(int show);
     inline int getContourShow() const { return Util::config()->showContourView; }
     void setContourCount(int count);
     inline int getContourCount() const { return Util::config()->contoursCount; }

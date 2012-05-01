@@ -118,8 +118,14 @@ view.post2d.vector_show = True
 #view.post2d.vector_proportional = True
 #view.post2d.vector_color = True
 
-#view.post2d.activate
-#view.post2d.refresh
+view.mesh.activate
+view.mesh.initial_mesh_view_show = True
+view.mesh.solution_mesh_view_show = True
+
+view.mesh.order_view_show = True
+#view.mesh.order_view_color_bar = True
+#view.mesh.order_view_label = True
+#view.mesh.order_view_palette = "jet"
 
 """
 geometry.select_nodes([0])

@@ -150,6 +150,21 @@ cdef extern from "../../src/pythonlabagros.h":
         void activate()
         void refresh()
 
+        void setInitialMeshViewShow(int show)  except +
+        int getInitialMeshViewShow()
+        void setSolutionMeshViewShow(int show) except +
+        int getSolutionMeshViewShow()
+
+        void setOrderViewShow(int show) except +
+        int getOrderViewShow()
+        void setOrderViewColorBar(int show) except +
+        int getOrderViewColorBar()
+        void setOrderViewLabel(int show) except +
+        int getOrderViewLabel()
+        void setOrderViewPalette(char *palette) except +
+        char* getOrderViewPalette()
+
+    # PyViewPost2D
     cdef cppclass PyViewPost2D:
         void activate()
         void refresh()
@@ -207,7 +222,7 @@ cdef extern from "../../src/pythonlabagros.h":
         void setVectorColor(bool show) except +
         bool getVectorColor()
 
-
+    # PyViewPost3D
     cdef cppclass PyViewPost3D:
         void activate()
         void refresh()
@@ -654,6 +669,42 @@ cdef class __ViewMesh__:
 
     def refresh(self):
         self.thisptr.refresh()
+
+    property solution_mesh_view_show:
+        def __get__(self):
+            return self.thisptr.getSolutionMeshViewShow()
+        def __set__(self, show):
+            self.thisptr.setSolutionMeshViewShow(show)
+
+    property initial_mesh_view_show:
+        def __get__(self):
+            return self.thisptr.getInitialMeshViewShow()
+        def __set__(self, show):
+            self.thisptr.setInitialMeshViewShow(show)
+
+    property order_view_show:
+        def __get__(self):
+            return self.thisptr.getOrderViewShow()
+        def __set__(self, show):
+            self.thisptr.setOrderViewShow(show)
+
+    property order_view_color_bar:
+        def __get__(self):
+            return self.thisptr.getOrderViewColorBar()
+        def __set__(self, show):
+            self.thisptr.setOrderViewColorBar(show)
+
+    property order_view_label:
+        def __get__(self):
+            return self.thisptr.getOrderViewLabel()
+        def __set__(self, show):
+            self.thisptr.setOrderViewLabel(show)
+
+    property order_view_palette:
+        def __get__(self):
+            return self.thisptr.getOrderViewPalette()
+        def __set__(self, palette):
+            self.thisptr.setOrderViewPalette(palette)
 
 cdef class __ViewPost2D__:
     cdef PyViewPost2D *thisptr

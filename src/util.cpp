@@ -42,6 +42,7 @@ static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 static QHash<PaletteType, QString> paletteTypeList;
 static QHash<PaletteQuality, QString> paletteQualityList;
 static QHash<PaletteQuality, double> paletteQualityValueList;
+static QHash<PaletteOrderType, QString> paletteOrderTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -93,6 +94,9 @@ PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { retu
 
 double paletteQualityValueToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
 PaletteQuality paletteQualityFromDouble(const double paletteQuality) { return paletteQualityValueList.key(paletteQuality); }
+
+QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
+PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType) { return paletteOrderTypeList.key(paletteType); }
 
 void initLists()
 {
@@ -196,6 +200,21 @@ void initLists()
     paletteQualityValueList.insert(Palette_Fine, 0.0001);
     paletteQualityValueList.insert(Palette_Finer, 0.0006);
     paletteQualityValueList.insert(Palette_ExtraFine, 0.00001);
+
+    // PaletteOrderType
+    paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
+    paletteOrderTypeList.insert(PaletteOrder_Jet, "jet");
+    paletteOrderTypeList.insert(PaletteOrder_Copper, "copper");
+    paletteOrderTypeList.insert(PaletteOrder_Hot, "hot");
+    paletteOrderTypeList.insert(PaletteOrder_Bone, "bone");
+    paletteOrderTypeList.insert(PaletteOrder_Pink, "pink");
+    paletteOrderTypeList.insert(PaletteOrder_Spring, "spring");
+    paletteOrderTypeList.insert(PaletteOrder_Summer, "summer");
+    paletteOrderTypeList.insert(PaletteOrder_Autumn, "autumn");
+    paletteOrderTypeList.insert(PaletteOrder_Winter, "winter");
+    paletteOrderTypeList.insert(PaletteOrder_HSV, "hsv");
+    paletteOrderTypeList.insert(PaletteOrder_BWAsc, "bw_ascending");
+    paletteOrderTypeList.insert(PaletteOrder_BWDesc, "bw_descending");
 }
 
 QString stringListToString(const QStringList &list)

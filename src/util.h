@@ -648,6 +648,9 @@ PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality);
 double paletteQualityValueToDouble(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromDouble(const double paletteQuality);
 
+QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
+PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
+
 // constants
 const QString IMAGEROOT = "../resources_source/images";
 const QString LANGUAGEROOT = "/resources/lang";

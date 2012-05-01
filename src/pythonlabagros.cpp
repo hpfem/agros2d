@@ -1117,6 +1117,36 @@ void PyViewMesh::refresh()
         currentPythonEngineAgros()->sceneViewMesh()->refresh();
 }
 
+void PyViewMesh::setInitialMeshViewShow(int show)
+{
+    Util::config()->showInitialMeshView = show;
+}
+
+void PyViewMesh::setSolutionMeshViewShow(int show)
+{
+    Util::config()->showSolutionMeshView = show;
+}
+
+void PyViewMesh::setOrderViewShow(int show)
+{
+    Util::config()->showOrderView = show;
+}
+
+void PyViewMesh::setOrderViewColorBar(int show)
+{
+    Util::config()->showOrderColorBar = show;
+}
+
+void PyViewMesh::setOrderViewLabel(int show)
+{
+    Util::config()->orderLabel = show;
+}
+
+void PyViewMesh::setOrderViewPalette(char* palette)
+{
+    Util::config()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+}
+
 // ****************************************************************************************************
 
 void PyViewPost2D::activate()
