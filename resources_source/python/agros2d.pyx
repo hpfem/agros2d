@@ -150,17 +150,17 @@ cdef extern from "../../src/pythonlabagros.h":
         void activate()
         void refresh()
 
-        void setInitialMeshViewShow(int show)  except +
-        int getInitialMeshViewShow()
-        void setSolutionMeshViewShow(int show) except +
-        int getSolutionMeshViewShow()
+        void setInitialMeshViewShow(bool show)  except +
+        bool getInitialMeshViewShow()
+        void setSolutionMeshViewShow(bool show) except +
+        bool getSolutionMeshViewShow()
 
-        void setOrderViewShow(int show) except +
-        int getOrderViewShow()
-        void setOrderViewColorBar(int show) except +
-        int getOrderViewColorBar()
-        void setOrderViewLabel(int show) except +
-        int getOrderViewLabel()
+        void setOrderViewShow(bool show) except +
+        bool getOrderViewShow()
+        void setOrderViewColorBar(bool show) except +
+        bool getOrderViewColorBar()
+        void setOrderViewLabel(bool show) except +
+        bool getOrderViewLabel()
         void setOrderViewPalette(char *palette) except +
         char* getOrderViewPalette()
 
