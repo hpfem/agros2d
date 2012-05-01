@@ -182,8 +182,7 @@ private slots:
     void doScalarFieldRangeMaxChanged();
     void doPaletteFilter(int state);
     void doScalarFieldDefault();
-    void doContoursDefault();
-    void doVectorFieldDefault();
+    void doContoursVectorsDefault();
     void doParticleDefault();
     void doOrderDefault();
     void doScalarFieldLog(int state);

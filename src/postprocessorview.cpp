@@ -659,8 +659,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     txtVectorScale->setMinimum(0);
     txtVectorScale->setMaximum(20);
 
-    // QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
-    // connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
+    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
+    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
 
     QGridLayout *gridLayoutContours = new QGridLayout();
     gridLayoutContours->setColumnMinimumWidth(0, minWidth);
@@ -686,7 +686,7 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     layoutContoursVectors->addWidget(grpContours);
     layoutContoursVectors->addWidget(grpVectors);
     layoutContoursVectors->addStretch();
-    // layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
+    layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
 
     QWidget *contoursVectorsWidget = new QWidget();
     contoursVectorsWidget->setLayout(layoutContoursVectors);
@@ -1106,13 +1106,9 @@ void PostprocessorWidget::doScalarFieldDefault()
     txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 }
 
-void PostprocessorWidget::doContoursDefault()
+void PostprocessorWidget::doContoursVectorsDefault()
 {
     txtContoursCount->setValue(CONTOURSCOUNT);
-}
-
-void PostprocessorWidget::doVectorFieldDefault()
-{
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
     txtVectorCount->setValue(VECTORNUMBER);
