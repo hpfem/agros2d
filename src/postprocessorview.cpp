@@ -308,22 +308,52 @@ QWidget *PostprocessorWidget::meshWidget()
     chkShowSolutionMeshView = new QCheckBox(tr("Solution mesh"));
     chkShowOrderView = new QCheckBox(tr("Polynomial order"));
 
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->addWidget(chkShowInitialMeshView, 0, 0);
-    layoutMesh->addWidget(chkShowSolutionMeshView, 1, 0);
-    layoutMesh->addWidget(chkShowOrderView, 0, 1);
+    // layout order
+    cmbOrderPaletteOrder = new QComboBox();
+    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
+    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
+    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
+    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
+    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
+    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
+    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
+    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
+    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
+    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
+    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
+    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
+    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
+    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
-    QHBoxLayout *layoutShowMesh = new QHBoxLayout();
-    layoutShowMesh->addLayout(layoutMesh);
-    layoutShowMesh->addStretch();
+    chkShowOrderScale = new QCheckBox(tr("Show order scale"), this);
+    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
 
-    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh and polynomial order"));
-    grpShowMesh->setLayout(layoutShowMesh);
+    QHBoxLayout *gridLayoutMesh = new QHBoxLayout();
+    gridLayoutMesh->addWidget(chkShowInitialMeshView);
+    gridLayoutMesh->addWidget(chkShowSolutionMeshView);
+
+    QGridLayout *gridLayoutOrder = new QGridLayout();
+    gridLayoutOrder->addWidget(chkShowOrderView, 0, 0);
+    gridLayoutOrder->addWidget(new QLabel(tr("Order palette:")), 1, 0);
+    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 1, 1);
+    gridLayoutOrder->addWidget(chkShowOrderScale, 2, 0, 1, 2);
+    gridLayoutOrder->addWidget(chkOrderLabel, 3, 0, 1, 2);
+
+    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh"));
+    grpShowMesh->setLayout(gridLayoutMesh);
+
+    QGroupBox *grpShowOrder = new QGroupBox(tr("Polynomial order"));
+    grpShowOrder->setLayout(gridLayoutOrder);
+
+    //QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
+    //connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->addWidget(grpShowMesh);
+    layout->addWidget(grpShowOrder);
     layout->addStretch();
+    //layout->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -691,47 +721,6 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     QWidget *contoursVectorsWidget = new QWidget();
     contoursVectorsWidget->setLayout(layoutContoursVectors);
 
-    // polynomial order
-    // palette
-    cmbOrderPaletteOrder = new QComboBox();
-    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
-    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
-    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
-    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
-    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
-    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
-    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
-    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
-    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
-    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
-    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
-    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
-    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
-    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
-
-    // scale
-    chkShowOrderScale = new QCheckBox(tr("Show scale"), this);
-    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
-
-    QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
-    connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
-
-    QGridLayout *gridLayoutOrder = new QGridLayout();
-    gridLayoutOrder->setColumnMinimumWidth(0, minWidth);
-    gridLayoutOrder->setColumnStretch(1, 1);
-    gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
-    gridLayoutOrder->addWidget(chkShowOrderScale, 1, 0, 1, 2);
-    gridLayoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
-
-    QVBoxLayout *layoutOrder = new QVBoxLayout();
-    layoutOrder->addLayout(gridLayoutOrder);
-    layoutOrder->addStretch();
-    layoutOrder->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
-
-    QWidget *orderWidget = new QWidget();
-    orderWidget->setLayout(layoutOrder);
-
     // particle tracing
     chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
     txtParticleNumberOfParticles = new QSpinBox(this);
@@ -851,7 +840,6 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     tbxPostprocessor = new QToolBox();
     tbxPostprocessor->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
     tbxPostprocessor->addItem(contoursVectorsWidget, icon(""), tr("Contours and vectors"));
-    tbxPostprocessor->addItem(orderWidget, icon(""), tr("Polynomial order"));
     tbxPostprocessor->addItem(particleWidget, icon(""), tr("Particle tracing"));
 
     // layout postprocessor
