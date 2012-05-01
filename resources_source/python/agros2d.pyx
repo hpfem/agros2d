@@ -160,6 +160,32 @@ cdef extern from "../../src/pythonlabagros.h":
         char *getScalarViewVariable()
         void setScalarViewVariableComp(char *component) except +
         char *getScalarViewVariableComp()
+        void setScalarViewPalette(char *palette) except +
+        char *getScalarViewPalette()
+        void setScalarViewPaletteQuality(char *quality) except +
+        char *getScalarViewPaletteQuality()
+
+        void setScalarViewPaletteSteps(int steps) except +
+        int getScalarViewPaletteSteps()
+        void setScalarViewPaletteFilter(bool filter) except +
+        bool getScalarViewPaletteFilter()
+
+        void setScalarViewRangeLog(bool log) except +
+        bool getScalarViewRangeLog()
+        void setScalarViewRangeBase(double base) except +
+        double getScalarViewRangeBase()
+
+        void setScalarViewColorBar(int show) except +
+        int getScalarViewColorBar()
+        void setScalarViewDecimalPlace(int place) except +
+        int getScalarViewDecimalPlace()
+
+        void setScalarViewRangeAuto(int autoRange) except +
+        int getScalarViewRangeAuto()
+        void setScalarViewRangeMin(double min) except +
+        double getScalarViewRangeMin()
+        void setScalarViewRangeMax(double max) except +
+        double getScalarViewRangeMax()
 
         void setContourShow(bool show) except +
         bool getContourShow()
@@ -643,6 +669,7 @@ cdef class __ViewPost2D__:
     def refresh(self):
         self.thisptr.refresh()
 
+    # scalar view
     property scalar_view_show:
         def __get__(self):
             return self.thisptr.getScalarViewShow()
@@ -661,6 +688,73 @@ cdef class __ViewPost2D__:
         def __set__(self, component):
             self.thisptr.setScalarViewVariableComp(component)
 
+    property scalar_view_palette:
+        def __get__(self):
+            return self.thisptr.getScalarViewPalette()
+        def __set__(self, palette):
+            self.thisptr.setScalarViewPalette(palette)
+
+    property scalar_view_palette_quality:
+        def __get__(self):
+            return self.thisptr.getScalarViewPaletteQuality()
+        def __set__(self, quality):
+            self.thisptr.setScalarViewPaletteQuality(quality)
+
+    property scalar_view_palette_steps:
+        def __get__(self):
+            return self.thisptr.getScalarViewPaletteSteps()
+        def __set__(self, steps):
+            self.thisptr.setScalarViewPaletteSteps(steps)
+
+    property scalar_view_palette_filter:
+        def __get__(self):
+            return self.thisptr.getScalarViewPaletteFilter()
+        def __set__(self, filter):
+            self.thisptr.setScalarViewPaletteFilter(filter)
+
+    property scalar_view_log_scale:
+        def __get__(self):
+            return self.thisptr.getScalarViewRangeLog()
+        def __set__(self, log):
+            self.thisptr.setScalarViewRangeLog(log)
+
+    property scalar_view_log_base:
+        def __get__(self):
+            return self.thisptr.getScalarViewRangeBase()
+        def __set__(self, base):
+            self.thisptr.setScalarViewRangeBase(base)
+
+    property scalar_view_color_bar:
+        def __get__(self):
+            return self.thisptr.getScalarViewColorBar()
+        def __set__(self, show):
+            self.thisptr.setScalarViewColorBar(show)
+
+    property scalar_view_decimal_place:
+        def __get__(self):
+            return self.thisptr.getScalarViewDecimalPlace()
+        def __set__(self, place):
+            self.thisptr.setScalarViewDecimalPlace(place)
+
+    property scalar_view_auto_range:
+        def __get__(self):
+            return self.thisptr.getScalarViewRangeAuto()
+        def __set__(self, range_auto):
+            self.thisptr.setScalarViewRangeAuto(range_auto)
+
+    property scalar_view_range_min:
+        def __get__(self):
+            return self.thisptr.getScalarViewRangeMin()
+        def __set__(self, min):
+            self.thisptr.setScalarViewRangeMin(min)
+
+    property scalar_view_range_max:
+        def __get__(self):
+            return self.thisptr.getScalarViewRangeMax()
+        def __set__(self, max):
+            self.thisptr.setScalarViewRangeMax(max)
+
+    # contour
     property contour_show:
         def __get__(self):
             return self.thisptr.getContourShow()
@@ -679,6 +773,7 @@ cdef class __ViewPost2D__:
         def __set__(self, variable):
             self.thisptr.setContourVariable(variable)
 
+    # vector
     property vector_show:
         def __get__(self):
             return self.thisptr.getVectorShow()

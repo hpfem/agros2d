@@ -314,6 +314,32 @@ struct PyViewPost2D
     void setScalarViewVariableComp(char* component);
     inline char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Util::config()->scalarVariableComp).toStdString().c_str()); }
 
+    void setScalarViewPalette(char* palette);
+    inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Util::config()->paletteType).toStdString().c_str()); }
+    void setScalarViewPaletteQuality(char* quality);
+    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
+    void setScalarViewPaletteSteps(int steps);
+    inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
+    void setScalarViewPaletteFilter(int filter);
+    inline int getScalarViewPaletteFilter() const { return Util::config()->paletteFilter; }
+
+    void setScalarViewRangeLog(int log);
+    inline int getScalarViewRangeLog() const { return Util::config()->scalarRangeLog; }
+    void setScalarViewRangeBase(double base);
+    inline double getScalarViewRangeBase() const { return Util::config()->scalarRangeBase; }
+
+    void setScalarViewColorBar(int show);
+    inline int getScalarViewColorBar() const { return Util::config()->showScalarColorBar; }
+    void setScalarViewDecimalPlace(int place);
+    inline int getScalarViewDecimalPlace() const { return Util::config()->scalarDecimalPlace; }
+
+    void setScalarViewRangeAuto(int autoRange);
+    inline int getScalarViewRangeAuto() const { return Util::config()->scalarRangeAuto; }
+    void setScalarViewRangeMin(double min);
+    inline double getScalarViewRangeMin() const { return Util::config()->scalarRangeMin; }
+    void setScalarViewRangeMax(double max);
+    inline double getScalarViewRangeMax() const { return Util::config()->scalarRangeMax; }
+
     // contour
     void setContourShow(int show); // todo: (Franta)
     inline int getContourShow() const { return Util::config()->showContourView; }

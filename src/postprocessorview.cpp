@@ -55,7 +55,7 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
     loadAdvanced();
 
     connect(this, SIGNAL(apply()), m_scenePost2D, SLOT(timeStepChanged()));
-    connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));    
+    connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));
 }
 
 void PostprocessorWidget::loadBasic()
@@ -549,14 +549,14 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // quality
     cmbLinearizerQuality = new QComboBox();
-    cmbLinearizerQuality->addItem(tr("Extremely coarse"), 0.01);
-    cmbLinearizerQuality->addItem(tr("Extra coarse"), 0.007);
-    cmbLinearizerQuality->addItem(tr("Coarser"), 0.003);
-    cmbLinearizerQuality->addItem(tr("Coarse"), 0.001);
-    cmbLinearizerQuality->addItem(tr("Normal"), LINEARIZER_QUALITY);
-    cmbLinearizerQuality->addItem(tr("Fine"), 0.0001);
-    cmbLinearizerQuality->addItem(tr("Finer"), 0.0006);
-    cmbLinearizerQuality->addItem(tr("Extra fine"), 0.00001);
+    cmbLinearizerQuality->addItem(tr("Extremely coarse"), paletteQualityValueToDouble(Palette_ExtremelyCoarse));
+    cmbLinearizerQuality->addItem(tr("Extra coarse"), paletteQualityValueToDouble(Palette_ExtraCoarse));
+    cmbLinearizerQuality->addItem(tr("Coarser"), paletteQualityValueToDouble(Palette_Coarser));
+    cmbLinearizerQuality->addItem(tr("Coarse"), paletteQualityValueToDouble(Palette_Coarse));
+    cmbLinearizerQuality->addItem(tr("Normal"), paletteQualityValueToDouble(Palette_Normal));
+    cmbLinearizerQuality->addItem(tr("Fine"), paletteQualityValueToDouble(Palette_Fine));
+    cmbLinearizerQuality->addItem(tr("Finer"), paletteQualityValueToDouble(Palette_Finer));
+    cmbLinearizerQuality->addItem(tr("Extra fine"), paletteQualityValueToDouble(Palette_ExtraFine));
 
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
@@ -898,7 +898,7 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
     // component
     cmbPostScalarFieldVariableComp->clear();
     if (physicFieldVariable)
-    {        
+    {
         if (physicFieldVariable->is_scalar)
         {
             cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);

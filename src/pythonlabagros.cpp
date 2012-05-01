@@ -1174,6 +1174,70 @@ void PyViewPost2D::setScalarViewVariable(char* variable)
 void PyViewPost2D::setScalarViewVariableComp(char* component)
 {
     // todo: (Franta)
+    Util::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+}
+
+void PyViewPost2D::setScalarViewPalette(char* palette)
+{
+    // todo: (Franta)
+    Util::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+}
+
+void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
+{
+    // todo: (Franta)
+    Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+}
+
+void PyViewPost2D::setScalarViewPaletteSteps(int steps)
+{
+    if (steps >= 5 && steps <= 100)
+        Util::config()->paletteSteps = steps;
+    else
+        throw invalid_argument(QObject::tr("Palette steps must be in the range from 5 to 100.").toStdString());
+}
+
+void PyViewPost2D::setScalarViewPaletteFilter(int filter)
+{
+    Util::config()->paletteFilter = filter;
+}
+
+void PyViewPost2D::setScalarViewRangeLog(int log)
+{
+    Util::config()->scalarRangeLog = log;
+}
+
+void PyViewPost2D::setScalarViewRangeBase(double base)
+{
+    Util::config()->scalarRangeBase = base;
+}
+
+void PyViewPost2D::setScalarViewColorBar(int show)
+{
+    Util::config()->showScalarColorBar = show;
+}
+
+void PyViewPost2D::setScalarViewDecimalPlace(int place)
+{
+    if (place >= 0 && place <= 10)
+        Util::config()->scalarDecimalPlace = place;
+    else
+        throw invalid_argument(QObject::tr("Decimal place must be in the range from 0 to 10.").toStdString());
+}
+
+void PyViewPost2D::setScalarViewRangeAuto(int autoRange)
+{
+    Util::config()->scalarRangeAuto = autoRange;
+}
+
+void PyViewPost2D::setScalarViewRangeMin(double min)
+{
+    Util::config()->scalarRangeMin = min;
+}
+
+void PyViewPost2D::setScalarViewRangeMax(double max)
+{
+    Util::config()->scalarRangeMax = max;
 }
 
 void PyViewPost2D::setContourShow(int show)

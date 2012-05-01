@@ -503,6 +503,18 @@ enum PaletteType
     Palette_BWDesc
 };
 
+enum PaletteQuality
+{
+    Palette_ExtremelyCoarse,
+    Palette_ExtraCoarse,
+    Palette_Coarser,
+    Palette_Coarse,
+    Palette_Normal,
+    Palette_Fine,
+    Palette_Finer,
+    Palette_ExtraFine
+};
+
 enum PaletteOrderType
 {
     PaletteOrder_Hermes,
@@ -624,9 +636,17 @@ LinearityType linearityTypeFromStringKey(const QString &linearityType);
 QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow);
 SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow);
 
-
 QString modeToStringKey(Mode teMode);
 Mode modeFromStringKey(const QString &teMode);
+
+QString paletteTypeToStringKey(PaletteType paletteType);
+PaletteType paletteTypeFromStringKey(const QString &paletteType);
+
+QString paletteQualityToStringKey(PaletteQuality paletteQuality);
+PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality);
+
+double paletteQualityValueToDouble(PaletteQuality paletteQuality);
+PaletteQuality paletteQualityFromDouble(const double paletteQuality);
 
 // constants
 const QString IMAGEROOT = "../resources_source/images";

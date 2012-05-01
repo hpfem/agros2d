@@ -89,8 +89,23 @@ print(volume_integrals)
 #magnetic.postprocessor_2d({"scalar" : False, "contours" : True, "vectors" : True})
 
 view = agros2d.view
-view.post2d.scalar_view_show = False
+view.post2d.scalar_view_show = True
 view.post2d.scalar_view_variable = "heat_heat_flux"
+# FIXME! view.post2d.scalar_view_component = "magnitude"
+#view.post2d.scalar_view_palette = "winter"
+#view.post2d.scalar_view_palette_quality = "coarse"
+#view.post2d.scalar_view_palette_steps = 20
+#view.post2d.scalar_view_palette_filter = True
+
+#view.post2d.scalar_view_log_scale = True
+#view.post2d.scalar_view_log_base = 5
+
+#view.post2d.scalar_view_color_bar = False
+#view.post2d.scalar_view_decimal_place = 3
+
+#view.post2d.scalar_view_auto_range = False
+#view.post2d.scalar_view_range_min = 0
+#view.post2d.scalar_view_range_max = 1
 
 view.post2d.contour_show = True
 #view.post2d.contour_variable = ""
