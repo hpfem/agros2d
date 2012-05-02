@@ -16,15 +16,15 @@
     <macros />
         
     <volume>
-        <quantity id="magnetic_permeability" shortname="mur" />
-        <quantity id="magnetic_conductivity" shortname="gamma" />
-        <quantity id="magnetic_remanence" shortname="Brm" />
-        <quantity id="magnetic_remanence_angle" shortname="Bra" />
-        <quantity id="magnetic_velocity_x" shortname="vx" />
-        <quantity id="magnetic_velocity_y" shortname="vy" />
-        <quantity id="magnetic_velocity_angular" shortname="va" />
-        <quantity id="magnetic_current_density_external_real" shortname="Jer" />
-        <quantity id="magnetic_current_density_external_imag" shortname="Jei" />
+        <quantity id="magnetic_permeability" shortname="ma_mur" />
+        <quantity id="magnetic_conductivity" shortname="ma_gamma" />
+        <quantity id="magnetic_remanence" shortname="mu_Brm" />
+        <quantity id="magnetic_remanence_angle" shortname="ma_Bra" />
+        <quantity id="magnetic_velocity_x" shortname="ma_vx" />
+        <quantity id="magnetic_velocity_y" shortname="ma_vy" />
+        <quantity id="magnetic_velocity_angular" shortname="ma_va" />
+        <quantity id="magnetic_current_density_external_real" shortname="ma_Jer" />
+        <quantity id="magnetic_current_density_external_imag" shortname="ma_Jei" />
 
         <weakforms>
             <weakform analysistype="steadystate">
@@ -37,19 +37,19 @@
                 <quantity id="magnetic_velocity_angular" />
                 <quantity id="magnetic_current_density_external_real" />
 
-                <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                           gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                    axi="1 / (mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
-                                        gamma * uval * vy * vdz" />
+                <matrix i="1" j="1" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                           ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+                                    axi="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
+                                        ma_gamma * uval * ma_vy * vdz" />
 
-                <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
-                                           gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
-                                           Jer * vval -
-                                           Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
-                                    axi="1 / (mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
-                                        gamma * upval * vy * vdz -
-                                        Jer * vval +
-                                        Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
+                <vector i="1" j="1" planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
+                                           ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy) -
+                                           ma_Jer * vval -
+                                           mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)"
+                                    axi="1 / (ma_mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
+                                        ma_gamma * upval * ma_vy * vdz -
+                                        ma_Jer * vval +
+                                        mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
             </weakform>
 
             <weakform analysistype="transient">
@@ -62,18 +62,18 @@
                 <quantity id="magnetic_velocity_angular" />
                 <quantity id="magnetic_current_density_external_real" />
 
-                <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                            gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                    axi="1 / (mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
-                                         gamma * uval * vy * vdz" symmetric="1" />
-                <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
-                                      gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy) -
-                                      Jer * vval -
-                                      Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
-                                    axi="1 / (mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
-                                        gamma * upval * vy * vdz -
-                                        Jer * vval +
-                                        Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
+                <matrix i="1" j="1" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                            ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+                                    axi="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
+                                         ma_gamma * uval * ma_vy * vdz" symmetric="1" />
+                <vector i="1" j="1" planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
+                                      ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy) -
+                                      ma_Jer * vval -
+                                      mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)"
+                                    axi="1 / (ma_mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) -
+                                        ma_gamma * upval * ma_vy * vdz -
+                                        ma_Jer * vval +
+                                        mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
             </weakform>
 
             <weakform analysistype="harmonic">
@@ -87,38 +87,38 @@
                 <quantity id="magnetic_current_density_external_real" />
                 <quantity id="magnetic_current_density_external_imag" />
 
-                <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                            gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                    axi="1 / (mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
-                                         gamma * uval * vy * vdz" />
-                <vector i="1" j="1" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
-                                            gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy)
-                                              - Jer * vval
-                                              - Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
-                                    axi="1 / (mur * MU0) * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) -
-                                         gamma * upval * vy * vdz
-                                              -Jer * vval
-                                              + Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
+                <matrix i="1" j="1" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                            ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+                                    axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
+                                         ma_gamma * uval * ma_vy * vdz" />
+                <vector i="1" j="1" planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
+                                            ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)
+                                              - ma_Jer * vval
+                                              - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)"
+                                    axi="1 / (ma_mur * MU0) * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) -
+                                         ma_gamma * upval * ma_vy * vdz
+                                              -ma_Jer * vval
+                                              + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
 
-                <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                            gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                    axi="1 / (mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
-                                         gamma * uval * vy * vdz" />
-                <vector i="2" j="2" planar="1 / (mur * MU0) * (updx * vdx + updy * vdy) -
-                                            gamma * upval * ((vx - y * va) * vdx + (vy + x * va) * vdy)
-                                            - Jei * vval"
-                                    axi="1 / (mur * MU0) * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) -
-                                            gamma * upval * vy * vdz
-                                            - Jei * vval" />
+                <matrix i="2" j="2" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                            ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+                                    axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
+                                         ma_gamma * uval * ma_vy * vdz" />
+                <vector i="2" j="2" planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
+                                            ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)
+                                            - ma_Jei * vval"
+                                    axi="1 / (ma_mur * MU0) * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) -
+                                            ma_gamma * upval * ma_vy * vdz
+                                            - ma_Jei * vval" />
 
-                <matrix i="1" j="2" planar="- 2 * PI * f * gamma * uval * vval"
-                                    axi="- 2 * PI * f * gamma * uval * vval" />
-                <matrix i="2" j="1" planar="2 * PI * f * gamma * uval * vval"
-                                    axi="2 * PI * f * gamma * uval * vval" />
-                <vector i="1" j="2" planar="- 2 * PI * f * gamma * upval * vval"
-                                    axi="- 2 * PI * f * gamma * upval * vval" />
-                <vector i="2" j="1" planar="2 * PI * f * gamma * upval * vval"
-                                    axi="2 * PI * f * gamma * upval * vval" />
+                <matrix i="1" j="2" planar="- 2 * PI * f * ma_gamma * uval * vval"
+                                    axi="- 2 * PI * f * ma_gamma * uval * vval" />
+                <matrix i="2" j="1" planar="2 * PI * f * ma_gamma * uval * vval"
+                                    axi="2 * PI * f * ma_gamma * uval * vval" />
+                <vector i="1" j="2" planar="- 2 * PI * f * ma_gamma * upval * vval"
+                                    axi="- 2 * PI * f * ma_gamma * upval * vval" />
+                <vector i="2" j="1" planar="2 * PI * f * ma_gamma * upval * vval"
+                                    axi="2 * PI * f * ma_gamma * upval * vval" />
             </weakform>
         </weakforms>
     </volume>
@@ -283,140 +283,140 @@
                                                     axi_z="dr2 + value2 / (r + 1e-12)" />
             </localvariable>
             <localvariable id="magnetic_magnetic_field" name="Magnetic field" shortname="H" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" type="scalar">
-                <expression analysistype="harmonic" planar="sqrt(dy1^2 + dx1^2 + dy2^2 + dx2^2) / (mur * MU0)"
-                                                    axi="sqrt(dz1^2 + (dr1 + value1 / (r + 1e-12))^2 + dz2^2 + (dr2 + value2 / (r + 1e-12))^2) / (mur * MU0)" />
+                <expression analysistype="harmonic" planar="sqrt(dy1^2 + dx1^2 + dy2^2 + dx2^2) / (ma_mur * MU0)"
+                                                    axi="sqrt(dz1^2 + (dr1 + value1 / (r + 1e-12))^2 + dz2^2 + (dr2 + value2 / (r + 1e-12))^2) / (ma_mur * MU0)" />
             </localvariable>
             <localvariable id="magnetic_magnetic_field_real" name="Magnetic field - real" shortname="Hr" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" type="vector">
-                <expression analysistype="steadystate" planar_x="dy1 / (mur * MU0)"
-                                                       planar_y="- dx1 / (mur * MU0)"
-                                                       axi_r="- dz1 / (mur * MU0)"
-                                                       axi_z="(dr1 + value1 / (r + 1e-12)) / (mur * MU0)" />
-                <expression analysistype="harmonic" planar_x="dy1 / (mur * MU0)"
-                                                    planar_y="- dx1 / (mur * MU0)"
-                                                    axi_r="- dz1 / (mur * MU0)"
-                                                    axi_z="(dr1 + value1 / (r + 1e-12)) / (mur * MU0)" />
-                <expression analysistype="transient" planar_x="dy1 / (mur * MU0)"
-                                                     planar_y="- dx1 / (mur * MU0)"
-                                                     axi_r="- dz1 / (mur * MU0)"
-                                                     axi_z="(dr1 + value1 / (r + 1e-12)) / (mur * MU0)" />
+                <expression analysistype="steadystate" planar_x="dy1 / (ma_mur * MU0)"
+                                                       planar_y="- dx1 / (ma_mur * MU0)"
+                                                       axi_r="- dz1 / (ma_mur * MU0)"
+                                                       axi_z="(dr1 + value1 / (r + 1e-12)) / (ma_mur * MU0)" />
+                <expression analysistype="harmonic" planar_x="dy1 / (ma_mur * MU0)"
+                                                    planar_y="- dx1 / (ma_mur * MU0)"
+                                                    axi_r="- dz1 / (ma_mur * MU0)"
+                                                    axi_z="(dr1 + value1 / (r + 1e-12)) / (ma_mur * MU0)" />
+                <expression analysistype="transient" planar_x="dy1 / (ma_mur * MU0)"
+                                                     planar_y="- dx1 / (ma_mur * MU0)"
+                                                     axi_r="- dz1 / (ma_mur * MU0)"
+                                                     axi_z="(dr1 + value1 / (r + 1e-12)) / (ma_mur * MU0)" />
             </localvariable>
             <localvariable id="magnetic_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" type="vector">
-                <expression analysistype="harmonic" planar_x="dy2 / (mur * MU0)"
-                                                    planar_y="- dx2 / (mur * MU0)"
-                                                    axi_r="- dz2 / (mur * MU0)"
-                                                    axi_z="(dr2 + value2 / (r + 1e-12)) / (mur * MU0)" />
+                <expression analysistype="harmonic" planar_x="dy2 / (ma_mur * MU0)"
+                                                    planar_y="- dx2 / (ma_mur * MU0)"
+                                                    axi_r="- dz2 / (ma_mur * MU0)"
+                                                    axi_z="(dr2 + value2 / (r + 1e-12)) / (ma_mur * MU0)" />
             </localvariable>
             <localvariable id="magnetic_energy_density" name="Energy density" shortname="wm" unit="J/m3" unit_html="J.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="J \cdot m^{-3}" type="scalar">
-                <expression analysistype="steadystate" planar="0.5 * (dy1^2 + dx1^2) / (mur * MU0)"
-                                                       axi="0.5 * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (mur * MU0)" />
-                <expression analysistype="harmonic" planar="0.25*(dy1^2 + dx1^2 + dy2^2 + dx2^2) / (mur * MU0)"
-                                                    axi="0.25*(dz1^2 + (dr1 + value1 / (r + 1e-12))^2 + dz2^2 + (dr2 + value2 / (r + 1e-12))^2) / (mur * MU0)" />
-                <expression analysistype="transient" planar="0.5 * (dy1^2 + dx1^2) / (mur * MU0)"
-                                                     axi="0.5 * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (mur * MU0)" />
+                <expression analysistype="steadystate" planar="0.5 * (dy1^2 + dx1^2) / (ma_mur * MU0)"
+                                                       axi="0.5 * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (ma_mur * MU0)" />
+                <expression analysistype="harmonic" planar="0.25*(dy1^2 + dx1^2 + dy2^2 + dx2^2) / (ma_mur * MU0)"
+                                                    axi="0.25*(dz1^2 + (dr1 + value1 / (r + 1e-12))^2 + dz2^2 + (dr2 + value2 / (r + 1e-12))^2) / (ma_mur * MU0)" />
+                <expression analysistype="transient" planar="0.5 * (dy1^2 + dx1^2) / (ma_mur * MU0)"
+                                                     axi="0.5 * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2) / (ma_mur * MU0)" />
             </localvariable>
             <localvariable id="magnetic_permeability" name="Permeability" shortname="mur" unit="-" type="scalar">
-                <expression analysistype="steadystate" planar="mur" axi="mur" />
-                <expression analysistype="harmonic" planar="mur" axi="mur" />
-                <expression analysistype="transient" planar="mur" axi="mur" />
+                <expression analysistype="steadystate" planar="ma_mur" axi="ma_mur" />
+                <expression analysistype="harmonic" planar="ma_mur" axi="ma_mur" />
+                <expression analysistype="transient" planar="ma_mur" axi="ma_mur" />
             </localvariable>
             <localvariable id="magnetic_conductivity" name="Conductivity" shortname="gamma" unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" type="scalar">
-                <expression analysistype="steadystate" planar="gamma" axi="gamma" />
-                <expression analysistype="harmonic" planar="gamma" axi="gamma" />
-                <expression analysistype="transient" planar="gamma" axi="gamma" />
+                <expression analysistype="steadystate" planar="ma_gamma" axi="ma_gamma" />
+                <expression analysistype="harmonic" planar="ma_gamma" axi="ma_gamma" />
+                <expression analysistype="transient" planar="ma_gamma" axi="ma_gamma" />
             </localvariable>
             <localvariable id="magnetic_remanence" name="Remanent flux density" shortname="Brm" unit="T" type="vector">
-                <expression analysistype="steadystate" planar_x="Brm * cos((Bra/180*PI))"
-                                                       planar_y="Brm * sin((Bra/180*PI))"
-                                                       axi_r="Brm * cos((Bra/180*PI))"
-                                                       axi_z="Brm * sin((Bra/180*PI))" />
-                <expression analysistype="harmonic" planar_x="Brm * cos((Bra/180*PI))"
-                                                    planar_y="Brm * sin((Bra/180*PI))"
-                                                    axi_r="Brm * cos((Bra/180*PI))"
-                                                    axi_z="Brm * sin((Bra/180*PI))" />
-                <expression analysistype="transient" planar_x="Brm * cos((Bra/180*PI))"
-                                                     planar_y="Brm * sin((Bra/180*PI))"
-                                                     axi_r="Brm * cos((Bra/180*PI))"
-                                                     axi_z="Brm * sin((Bra/180*PI))" />
+                <expression analysistype="steadystate" planar_x="mu_Brm * cos((ma_Bra/180*PI))"
+                                                       planar_y="mu_Brm * sin((ma_Bra/180*PI))"
+                                                       axi_r="mu_Brm * cos((ma_Bra/180*PI))"
+                                                       axi_z="mu_Brm * sin((ma_Bra/180*PI))" />
+                <expression analysistype="harmonic" planar_x="mu_Brm * cos((ma_Bra/180*PI))"
+                                                    planar_y="mu_Brm * sin((ma_Bra/180*PI))"
+                                                    axi_r="mu_Brm * cos((ma_Bra/180*PI))"
+                                                    axi_z="mu_Brm * sin((ma_Bra/180*PI))" />
+                <expression analysistype="transient" planar_x="mu_Brm * cos((ma_Bra/180*PI))"
+                                                     planar_y="mu_Brm * sin((ma_Bra/180*PI))"
+                                                     axi_r="mu_Brm * cos((ma_Bra/180*PI))"
+                                                     axi_z="mu_Brm * sin((ma_Bra/180*PI))" />
             </localvariable>
             <localvariable id="magnetic_velocity" name="Velocity" shortname="v" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" type="vector">
-                <expression analysistype="steadystate" planar_x="vx - va * y"
-                                                       planar_y="vy + va * x"
+                <expression analysistype="steadystate" planar_x="ma_vx - ma_va * y"
+                                                       planar_y="ma_vy + ma_va * x"
                                                        axi_r="0"
-                                                       axi_z="vy" />
-                <expression analysistype="harmonic" planar_x="vx - va * y"
-                                                    planar_y="vy + va * x"
+                                                       axi_z="ma_vy" />
+                <expression analysistype="harmonic" planar_x="ma_vx - ma_va * y"
+                                                    planar_y="ma_vy + ma_va * x"
                                                     axi_r="0"
-                                                    axi_z="vy" />
-                <expression analysistype="transient" planar_x="vx - va * y"
-                                                     planar_y="vy + va * x"
+                                                    axi_z="ma_vy" />
+                <expression analysistype="transient" planar_x="ma_vx - ma_va * y"
+                                                     planar_y="ma_vy + ma_va * x"
                                                      axi_r="0"
-                                                     axi_z="vy" />
+                                                     axi_z="ma_vy" />
             </localvariable>
             <localvariable id="magnetic_current_density_external" name="Current dens. - ext." shortname="Je" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="steadystate" planar="Jer"
-                                                       axi="Jer" />
-                <expression analysistype="harmonic" planar="sqrt(Jer^2+Jei^2)"
-                                                    axi="sqrt(Jer^2+Jei^2)" />
-                <expression analysistype="transient" planar="Jer"
-                                                     axi="Jer" />
+                <expression analysistype="steadystate" planar="ma_Jer"
+                                                       axi="ma_Jer" />
+                <expression analysistype="harmonic" planar="sqrt(ma_Jer^2+ma_Jei^2)"
+                                                    axi="sqrt(ma_Jer^2+ma_Jei^2)" />
+                <expression analysistype="transient" planar="ma_Jer"
+                                                     axi="ma_Jer" />
             </localvariable>
             <localvariable id="magnetic_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="Jer"
-                                                    axi="Jer" />
+                <expression analysistype="harmonic" planar="ma_Jer"
+                                                    axi="ma_Jer" />
             </localvariable>
             <localvariable id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="Jei"
-                                                    axi="Jei" />
+                <expression analysistype="harmonic" planar="ma_Jei"
+                                                    axi="ma_Jei" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_velocity" name="Current dens. - ind. velocity" shortname="Jiv" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="sqrt((- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1))^2+(- gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2))^2)"
-                                                    axi="sqrt((- gamma * (vy * dz1))^2+(- gamma * (vy * dz2))^2)" />
+                <expression analysistype="harmonic" planar="sqrt((- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))^2+(- ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2))^2)"
+                                                    axi="sqrt((- ma_gamma * (ma_vy * dz1))^2+(- ma_gamma * (ma_vy * dz2))^2)" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_velocity_real" name="Current dens. - ind. velocity - real" shortname="Jivr" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="steadystate" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                       axi="- gamma * (vy * dz1)" />
-                <expression analysistype="harmonic" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                    axi="- gamma * (vy * dz1)" />
-                <expression analysistype="transient" planar="- gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                     axi="- gamma * (vy * dz1)" />
+                <expression analysistype="steadystate" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"
+                                                       axi="- ma_gamma * (ma_vy * dz1)" />
+                <expression analysistype="harmonic" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"
+                                                    axi="- ma_gamma * (ma_vy * dz1)" />
+                <expression analysistype="transient" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"
+                                                     axi="- ma_gamma * (ma_vy * dz1)" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_velocity_imag" name="Current dens. - ind. velocity - imag" shortname="Jivi" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="- gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2)"
-                                                    axi="- gamma * (vy * dz2)" />
+                <expression analysistype="harmonic" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2)"
+                                                    axi="- ma_gamma * (ma_vy * dz2)" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_transform" name="Current dens. - ind. transform" shortname="Jit" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="sqrt((2 * PI * f * gamma * value2)^2+(- 2 * PI * f * gamma * value1)^2)"
-                                                    axi="sqrt((2 * PI * f * gamma * value2)^2+(- 2 * PI * f * gamma * value1)^2)" />
+                <expression analysistype="harmonic" planar="sqrt((2 * PI * f * ma_gamma * value2)^2+(- 2 * PI * f * ma_gamma * value1)^2)"
+                                                    axi="sqrt((2 * PI * f * ma_gamma * value2)^2+(- 2 * PI * f * ma_gamma * value1)^2)" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_transform_real" name="Current dens. - ind. transform - real" shortname="Jitr" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="2 * PI * f * gamma * value2"
-                                                    axi="2 * PI * f * gamma * value2" />
+                <expression analysistype="harmonic" planar="2 * PI * f * ma_gamma * value2"
+                                                    axi="2 * PI * f * ma_gamma * value2" />
             </localvariable>
             <localvariable id="magnetic_current_density_induced_transform_imag" name="Current dens. - ind. transform - imag" shortname="Jiti" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="- 2 * PI * f * gamma * value1"
-                                                    axi="- 2 * PI * f * gamma * value1" />
+                <expression analysistype="harmonic" planar="- 2 * PI * f * ma_gamma * value1"
+                                                    axi="- 2 * PI * f * ma_gamma * value1" />
             </localvariable>
             <localvariable id="magnetic_current_density_total" name="Current dens. - total" shortname="J" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="sqrt((Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2)^2+(Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1)^2)"
-                                                    axi="sqrt((Jer - gamma * (vy * dz1) + 2 * PI * f * gamma * value2)^2+(Jei - gamma * (vy * dz2) - 2 * PI * f * gamma * value1)^2)" />
+                <expression analysistype="harmonic" planar="sqrt((ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * value2)^2+(ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * value1)^2)"
+                                                    axi="sqrt((ma_Jer - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * value2)^2+(ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * value1)^2)" />
             </localvariable>
             <localvariable id="magnetic_current_density_total_real" name="Current dens. - total - real" shortname="Jr" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="steadystate" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                       axi="Jer - gamma * (vy * dz1)" />
-                <expression analysistype="harmonic" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2"
-                                                    axi="Jer - gamma * (vy * dz1) + 2 * PI * f * gamma * value2" />
-                <expression analysistype="transient" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                     axi="Jer - gamma * (vy * dz1)" />
+                <expression analysistype="steadystate" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"
+                                                       axi="ma_Jer - ma_gamma * (ma_vy * dz1)" />
+                <expression analysistype="harmonic" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * value2"
+                                                    axi="ma_Jer - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * value2" />
+                <expression analysistype="transient" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"
+                                                     axi="ma_Jer - ma_gamma * (ma_vy * dz1)" />
             </localvariable>
             <localvariable id="magnetic_current_density_total_imag" name="Current dens. - total - imag" shortname="Ji" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" type="scalar">
-                <expression analysistype="harmonic" planar="Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1"
-                                                    axi="Jei - gamma * (vy * dz2) - 2 * PI * f * gamma * value1" />
+                <expression analysistype="harmonic" planar="ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * value1"
+                                                    axi="ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * value1" />
             </localvariable>
             <localvariable id="magnetic_losses_density" name="Losses density" shortname="pj" unit="W/m3" type="scalar">
-                <expression analysistype="steadystate" planar="((gamma > 0.0) ? Jer^2 / gamma : 0.0) + gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)^2"
-                                                       axi="((gamma > 0.0) ? Jer^2 / gamma : 0.0) + gamma * (vy * dz1)^2"/>
-                <expression analysistype="harmonic" planar="(gamma > 0.0) ? 0.5 * ((Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2)^2 + (Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1)^2) / gamma : 0.0"
-                                                    axi="(gamma > 0.0) ? 0.5 * ((Jer - gamma * (vy * dz1) + 2 * PI * f * gamma * value2)^2 + (Jei - gamma * (vy * dz2) - 2 * PI * f * gamma * value1)^2) / gamma : 0.0" />
+                <expression analysistype="steadystate" planar="((ma_gamma > 0.0) ? ma_Jer^2 / ma_gamma : 0.0) + ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)^2"
+                                                       axi="((ma_gamma > 0.0) ? ma_Jer^2 / ma_gamma : 0.0) + ma_gamma * (ma_vy * dz1)^2"/>
+                <expression analysistype="harmonic" planar="(ma_gamma > 0.0) ? 0.5 * ((ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * value2)^2 + (ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * value1)^2) / ma_gamma : 0.0"
+                                                    axi="(ma_gamma > 0.0) ? 0.5 * ((ma_Jer - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * value2)^2 + (ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * value1)^2) / ma_gamma : 0.0" />
             </localvariable>
         </localvariables>
 
@@ -451,50 +451,50 @@
                                                      axi="1.0" />
             </volumeintegral>
             <volumeintegral id="magnetic_current_external_real" name="Current - ext. - real" shortname="Ier" unit="A">
-                <expression analysistype="steadystate" planar="Jer"
-                                                       axi="Jer" />
-                <expression analysistype="harmonic" planar="Jer"
-                                                    axi="Jer" />
-                <expression analysistype="transient" planar="Jer"
-                                                     axi="Jer" />
+                <expression analysistype="steadystate" planar="ma_Jer"
+                                                       axi="ma_Jer" />
+                <expression analysistype="harmonic" planar="ma_Jer"
+                                                    axi="ma_Jer" />
+                <expression analysistype="transient" planar="ma_Jer"
+                                                     axi="ma_Jer" />
             </volumeintegral>
             <volumeintegral id="magnetic_current_external_imag" name="Current - ext. - imag" shortname="Iei" unit="A">
-                <expression analysistype="harmonic" planar="Jei"
-                                                    axi="Jei" />
+                <expression analysistype="harmonic" planar="ma_Jei"
+                                                    axi="ma_Jei" />
             </volumeintegral>
             <volumeintegral id="magnetic_current_induced_transform_real" name="Current - ind. transform - real" shortname="Iitr" unit="A">
-                <expression analysistype="harmonic" planar="2 * PI * f * gamma * value2"
-                                                    axi="2 * PI * f * gamma * value2" />
+                <expression analysistype="harmonic" planar="2 * PI * f * ma_gamma * value2"
+                                                    axi="2 * PI * f * ma_gamma * value2" />
             </volumeintegral>
             <volumeintegral id="magnetic_current_induced_transform_imag" name="Current - ind. transform - imag" shortname="Iiti" unit="A">
-                <expression analysistype="harmonic" planar="- 2 * PI * f * gamma * value1"
-                                                    axi="- 2 * PI * f * gamma * value1" />
+                <expression analysistype="harmonic" planar="- 2 * PI * f * ma_gamma * value1"
+                                                    axi="- 2 * PI * f * ma_gamma * value1" />
             </volumeintegral>
             <volumeintegral id="magnetic_current_total_real" name="Current - total - real" shortname="Ir" unit="A">
-                <expression analysistype="steadystate" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                       axi="Jer - gamma * (vy * dz1)" />
-                <expression analysistype="harmonic" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2"
-                                                    axi="Jer - gamma * (vy * dz1) + 2 * PI * f * gamma * value2" />
-                <expression analysistype="transient" planar="Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1)"
-                                                     axi="Jer - gamma * (vy * dz1)" />
+                <expression analysistype="steadystate" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"
+                                                       axi="ma_Jer - ma_gamma * (ma_vy * dz1)" />
+                <expression analysistype="harmonic" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * value2"
+                                                    axi="ma_Jer - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * value2" />
+                <expression analysistype="transient" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"
+                                                     axi="ma_Jer - ma_gamma * (ma_vy * dz1)" />
             </volumeintegral>
             <volumeintegral id="magnetic_current_total_imag" name="Current - total - imag" shortname="Ii" unit="A">
-                <expression analysistype="harmonic" planar="Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1"
-                                                    axi="Jei - gamma * (vy * dz2) - 2 * PI * f * gamma * value1" />
+                <expression analysistype="harmonic" planar="ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * value1"
+                                                    axi="ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * value1" />
             </volumeintegral>
             <volumeintegral id="magnetic_energy" name="Energy" shortname="Wm" unit="J">
-                <expression analysistype="steadystate" planar="0.5 / (mur * MU0) * (dx1 * dx1 + dy1 * dy1)"
-                                                       axi="2.0 * PI * r * 0.5 / (mur * MU0) * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2)" />
-                <expression analysistype="harmonic" planar="0.25 * ((dx1^2 + dy1^2) + (dx2^2 + dy2^2)) / (mur * MU0)"
-                                                    axi="2 * PI * r * 0.25 / (mur * MU0) * ((dz1^2 + (dr1 + value1 / (r + 1e-12))^2) +
+                <expression analysistype="steadystate" planar="0.5 / (ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1)"
+                                                       axi="2.0 * PI * r * 0.5 / (ma_mur * MU0) * (dz1^2 + (dr1 + value1 / (r + 1e-12))^2)" />
+                <expression analysistype="harmonic" planar="0.25 * ((dx1^2 + dy1^2) + (dx2^2 + dy2^2)) / (ma_mur * MU0)"
+                                                    axi="2 * PI * r * 0.25 / (ma_mur * MU0) * ((dz1^2 + (dr1 + value1 / (r + 1e-12))^2) +
                                                                                             (dz2^2 + (dr2 + value2 / (r + 1e-12))^2))" />
             </volumeintegral>
             <volumeintegral id="magnetic_losses" name="Power losses" shortname="Pj" unit="W">
-                <expression analysistype="steadystate" planar="(gamma > 0.0) ? 1.0 / gamma * (Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1))^2 : 0.0"
-                                                       axi="(gamma > 0.0) ? 1.0 / gamma * (Jer - gamma * (vy * dz1))^2 : 0.0" />
-                <expression analysistype="harmonic" planar="(gamma > 0.0) ? 0.5 / gamma * ((Jei - gamma * ((vx - va * y) * dx2 + (vy + va * x) * dy2) - 2 * PI * f * gamma * value1)^2 + (Jer - gamma * ((vx - va * y) * dx1 + (vy + va * x) * dy1) + 2 * PI * f * gamma * value2)^2) : 0.0"
-                                                    axi="(gamma > 0.0) ? 2 * PI * r * 0.5 / gamma * ((Jei - gamma * ((vx - va * z) * dr2 + (vy + va * r) * dz2) - 2 * PI * f * gamma * value1)^2 +
-                                                                                                     (Jer - gamma * ((vx - va * z) * dr1 + (vy + va * r) * dz1) + 2 * PI * f * gamma * value2)^2) : 0.0" />
+                <expression analysistype="steadystate" planar="(ma_gamma > 0.0) ? 1.0 / ma_gamma * (ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))^2 : 0.0"
+                                                       axi="(ma_gamma > 0.0) ? 1.0 / ma_gamma * (ma_Jer - ma_gamma * (ma_vy * dz1))^2 : 0.0" />
+                <expression analysistype="harmonic" planar="(ma_gamma > 0.0) ? 0.5 / ma_gamma * ((ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * value1)^2 + (ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * value2)^2) : 0.0"
+                                                    axi="(ma_gamma > 0.0) ? 2 * PI * r * 0.5 / ma_gamma * ((ma_Jei - ma_gamma * ((ma_vx - ma_va * z) * dr2 + (ma_vy + ma_va * r) * dz2) - 2 * PI * f * ma_gamma * value1)^2 +
+                                                                                                     (ma_Jer - ma_gamma * ((ma_vx - ma_va * z) * dr1 + (ma_vy + ma_va * r) * dz1) + 2 * PI * f * ma_gamma * value2)^2) : 0.0" />
             </volumeintegral>
         </volumeintegrals>
 
@@ -521,20 +521,20 @@
 
 
 
-<!--            <matrix i="1" j="1" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                        gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
-                                     gamma * uval * vy * vdz" />
-            <vector i="1" j="1" planar="Jer * vval + Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdx + cos((Bra/180*PI)) * vdy)"
-                                axi="Jer * vval - Brm / (mur * MU0) * (- sin((Bra/180*PI)) * vdr + cos((Bra/180*PI)) * vdz)" />
+<!--            <matrix i="1" j="1" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                        ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+                                axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
+                                     ma_gamma * uval * ma_vy * vdz" />
+            <vector i="1" j="1" planar="ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)"
+                                axi="ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
 
-            <matrix i="2" j="2" planar="1 / (mur * MU0) * (udx * vdx + udy * vdy) -
-                                        gamma * uval * ((vx - y * va) * vdx + (vy + x * va) * vdy)"
-                                axi="1 / (mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
-                                     gamma * uval * vy * vdz" />
-            <vector i="2" j="2" planar="Jei * vval" axi="Jei * vval" />
+            <matrix i="2" j="2" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                        ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+                                axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12) -
+                                     ma_gamma * uval * ma_vy * vdz" />
+            <vector i="2" j="2" planar="ma_Jei * vval" axi="ma_Jei * vval" />
 
-            <matrix i="1" j="2" planar="- 2 * PI * f * gamma * uval * vval"
-                                axi="- 2 * PI * f * gamma * uval * vval" />
-            <matrix i="2" j="1" planar="2 * PI * f * gamma * uval * vval"
-                                axi="2 * PI * f * gamma * uval * vval" />-->
+            <matrix i="1" j="2" planar="- 2 * PI * f * ma_gamma * uval * vval"
+                                axi="- 2 * PI * f * ma_gamma * uval * vval" />
+            <matrix i="2" j="1" planar="2 * PI * f * ma_gamma * uval * vval"
+                                axi="2 * PI * f * ma_gamma * uval * vval" />-->

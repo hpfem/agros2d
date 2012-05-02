@@ -15,11 +15,11 @@
     <macros />
 
     <volume>
-        <quantity id="rf_te_permittivity" shortname="epsr" />
-        <quantity id="rf_te_permeability" shortname="mur" />
-        <quantity id="rf_te_conductivity" shortname="gamma" />
-        <quantity id="rf_te_current_density_external_real" shortname="Jer" />
-        <quantity id="rf_te_current_density_external_imag" shortname="Jei" />
+        <quantity id="rf_te_permittivity" shortname="rf_esr" />
+        <quantity id="rf_te_permeability" shortname="rf_mur" />
+        <quantity id="rf_te_conductivity" shortname="rf_gamma" />
+        <quantity id="rf_te_current_density_external_real" shortname="rf_Jer" />
+        <quantity id="rf_te_current_density_external_imag" shortname="rf_Jei" />
         
         <weakforms>
             <weakform analysistype="harmonic">
@@ -29,14 +29,14 @@
                 <quantity id="rf_te_current_density_external_real" />
                 <quantity id="rf_te_current_density_external_imag" />
 
-                <matrix i="1" j="1" planar="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * uval * vval"
-                                    axi="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * epsr * EPS0 * uval * vval" symmetric="1" />
-                <matrix i="2" j="2" planar="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * epsr * EPS0 * uval * vval"
-                                    axi="- 1 / (mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * uval * vval" symmetric="1" />
-                <vector i="1" j="1" planar="- 1 / (mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * upval * vval - Jer * vval"
-                                    axi="- 1 / (mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * epsr * EPS0 * upval * vval - r * Jer * vval" />
-                <vector i="2" j="2" planar="- 1 / (mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * epsr * EPS0 * upval * vval - Jei * vval"
-                                    axi="- 1 / (mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * epsr * EPS0 * upval * vval - r * Jei * vval" />
+                <matrix i="1" j="1" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                    axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval" symmetric="1" />
+                <matrix i="2" j="2" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                    axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval" symmetric="1" />
+                <vector i="1" j="1" planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jer * vval"
+                                    axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jer * vval" />
+                <vector i="2" j="2" planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jei * vval"
+                                    axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jei * vval" />
             </weakform>
         </weakforms>
     </volume>
@@ -166,42 +166,42 @@
             <localvariable id="rf_te_displacement_real" name="Displacement - real" type="scalar"
                            shortname="Dr" shortname_html="&lt;i&gt;D&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="D_{r}"
                            unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" >
-                <expression analysistype="harmonic" planar="epsr * EPS0 * value1"
-                                                    axi="epsr * EPS0 * value1" />
+                <expression analysistype="harmonic" planar="rf_esr * EPS0 * value1"
+                                                    axi="rf_esr * EPS0 * value1" />
             </localvariable>
             <localvariable id="rf_te_displacement_imag" name="Displacement - imag" type="scalar"
                            shortname="Di" shortname_html="&lt;i&gt;D&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="D_{i}"
                            unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" >
-                <expression analysistype="harmonic" planar="epsr * EPS0 * value2"
-                                                    axi="epsr * EPS0 * value2" />
+                <expression analysistype="harmonic" planar="rf_esr * EPS0 * value2"
+                                                    axi="rf_esr * EPS0 * value2" />
             </localvariable>
             <localvariable id="rf_te_surface_current_real" name="Current density - real" type="scalar"
                            shortname="Jr" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="J_{r}"
                            unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" >
-                <expression analysistype="harmonic" planar="gamma * value1"
-                                                    axi="gamma * value1" />
+                <expression analysistype="harmonic" planar="rf_gamma * value1"
+                                                    axi="rf_gamma * value1" />
             </localvariable>
             <localvariable id="rf_te_surface_current_imag" name="Current density - imag" type="scalar"
                            shortname="Ji" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="J_{i}"
                            unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" >
-                <expression analysistype="harmonic" planar="gamma * value2"
-                                                    axi="gamma * value2" />
+                <expression analysistype="harmonic" planar="rf_gamma * value2"
+                                                    axi="rf_gamma * value2" />
             </localvariable>
             <localvariable id="rf_te_magnetic_field_real" name="Magnetic field - real" type="vector"
                            shortname="Hr" shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="H_{r}"
                            unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" >
-                <expression analysistype="harmonic" planar_x="- 1.0 / (2.0 * PI * f * mur * MU0) * dy2"
-                                                    planar_y="1.0 / (2.0 * PI * f * mur * MU0) * dx2"
-                                                    axi_r="- 1.0 / (2.0 * PI * f * mur * MU0) * dz2"
-                                                    axi_z="1.0 / (2.0 * PI * f * mur * MU0) * dr2" />
+                <expression analysistype="harmonic" planar_x="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dy2"
+                                                    planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx2"
+                                                    axi_r="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dz2"
+                                                    axi_z="1.0 / (2.0 * PI * f * rf_mur * MU0) * dr2" />
             </localvariable>
             <localvariable id="rf_te_magnetic_field_imag" name="Magnetic field - imag" type="vector"
                            shortname="Hi" shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="H_{i}"
                            unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" >
-                <expression analysistype="harmonic" planar_x="1.0 / (2.0 * PI * f * mur * MU0) * dy1"
-                                                    planar_y="1.0 / (2.0 * PI * f * mur * MU0) * dx1"
-                                                    axi_r="1.0 / (2.0 * PI * f * mur * MU0) * dz1"
-                                                    axi_z="1.0 / (2.0 * PI * f * mur * MU0) * dr1" />
+                <expression analysistype="harmonic" planar_x="1.0 / (2.0 * PI * f * rf_mur * MU0) * dy1"
+                                                    planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx1"
+                                                    axi_r="1.0 / (2.0 * PI * f * rf_mur * MU0) * dz1"
+                                                    axi_z="1.0 / (2.0 * PI * f * rf_mur * MU0) * dr1" />
             </localvariable>
             <localvariable id="rf_te_flux_density_real" name="Flux density - real" type="vector"
                            shortname="Br" shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="B_{r}"
@@ -222,28 +222,28 @@
             <localvariable id="rf_te_poynting_vector" name="Poyting vector" type="vector"
                            shortname="N" shortname_html="&lt;i&gt;N&lt;/i&gt;" shortname_latex="N"
                            unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" >
-                <expression analysistype="harmonic" planar_x="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dx1 - value1 * dx2)"
-                                                    planar_y="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dy1 - value1 * dy2)"
-                                                    axi_r="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dr1 - value1 * dr2)"
-                                                    axi_z="0.5 / (2.0 * PI * f * mur * MU0) * (value2 * dz1 - value1 * dz2)" />
+                <expression analysistype="harmonic" planar_x="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dx1 - value1 * dx2)"
+                                                    planar_y="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dy1 - value1 * dy2)"
+                                                    axi_r="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dr1 - value1 * dr2)"
+                                                    axi_z="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dz1 - value1 * dz2)" />
             </localvariable>
             <localvariable id="rf_te_permittivity" name="Permittivity" type="scalar"
                            shortname="epsr" shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="\varepsilon_{r}"
                            unit="-" unit_html="-" unit_latex="-" >
-                <expression analysistype="harmonic" planar="epsr"
-                                                    axi="epsr" />
+                <expression analysistype="harmonic" planar="rf_esr"
+                                                    axi="rf_esr" />
             </localvariable>
             <localvariable id="rf_te_permeability" name="Permeability" type="scalar"
                            shortname="mur" shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="\mu_{r}"
                            unit="-" unit_html="-" unit_latex="-" >
-                <expression analysistype="harmonic" planar="mur"
-                                                    axi="mur" />
+                <expression analysistype="harmonic" planar="rf_mur"
+                                                    axi="rf_mur" />
             </localvariable>
             <localvariable id="rf_te_conductivity" name="Conductivity" type="scalar"
                            shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
                            unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" >
-                <expression analysistype="harmonic" planar="gamma"
-                                                    axi="gamma" />
+                <expression analysistype="harmonic" planar="rf_gamma"
+                                                    axi="rf_gamma" />
             </localvariable>
         </localvariables>
 

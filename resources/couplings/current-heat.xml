@@ -14,15 +14,15 @@
     <volume>
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="steadystate"  targetanalysis="steadystate" >
-                <vector i="1" j="1" planar="- gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
-                                    axi="- gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval" />
+                <vector i="1" j="1" planar="- cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
+                                    axi="- cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="steadystate"  targetanalysis="steadystate" >
-                <matrix i="2" j="1" planar ="gamma * (udx * udx + udy * udy) * vval"
-                                    axi = "gamma * (udr * udr + udz * udz) * r * vval" />
-                <vector i="2" j="1" planar ="- gamma * (updx * updx + updy * updy) * vval"
-                                    axi = "- gamma * (updr * updr + updz * updz) * r * vval" />
+                <matrix i="2" j="1" planar ="cu_gamma * (udx * udx + udy * udy) * vval"
+                                    axi = "cu_gamma * (udr * udr + udz * udz) * r * vval" />
+                <vector i="2" j="1" planar ="- cu_gamma * (updx * updx + updy * updy) * vval"
+                                    axi = "- cu_gamma * (updr * updr + updz * updz) * r * vval" />
             </weakform>
 
         </weakforms>

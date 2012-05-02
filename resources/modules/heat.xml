@@ -15,20 +15,20 @@
     <macros />
 
     <volume>
-        <quantity id="heat_conductivity" shortname="lambda" />
-        <quantity id="heat_volume_heat" shortname="p" />
-        <quantity id="heat_density" shortname="rho" />
-        <quantity id="heat_specific_heat" shortname="cp" />
+        <quantity id="heat_conductivity" shortname="he_lambda" />
+        <quantity id="heat_volume_heat" shortname="he_p" />
+        <quantity id="heat_density" shortname="he_rho" />
+        <quantity id="heat_specific_heat" shortname="he_cp" />
         
         <weakforms>
             <weakform analysistype="steadystate">
                 <quantity id="heat_conductivity" />
                 <quantity id="heat_volume_heat" />
 
-                <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy)"
-                                    axi="dlambda * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
-                <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval"
-                                    axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval" />
+                <matrix i="1" j="1" planar="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)"
+                                    axi="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
+                <vector i="1" j="1" planar="he_lambda * (updx * vdx + updy * vdy) - he_p * vval"
+                                    axi="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval" />
             </weakform>
 
             <weakform analysistype="transient">
@@ -37,10 +37,10 @@
                 <quantity id="heat_density" />
                 <quantity id="heat_specific_heat" />
 
-                <matrix i="1" j="1" planar="dlambda * uval * (updx * vdx + updy * vdy) + lambda * (udx * vdx + udy * vdy) + dlambda * uval * upval * vval / deltat + rho * cp * uval * vval / deltat"
-                                    axi="dlambda * r * uval * (updr * vdr + updz * vdz) + lambda * r * (udr * vdr + udz * vdz) + dlambda * r * uval * upval * vval / deltat + r * rho * cp * uval * vval / deltat" symmetric="1" />
-                <vector i="1" j="1" planar="lambda * (updx * vdx + updy * vdy) - p * vval + rho * cp * (upval - uptval) * vval / deltat"
-                                    axi="lambda * r * (updr * vdr + updz * vdz) - p * r * vval + r * rho * cp * (upval - uptval) * vval / deltat" />
+                <matrix i="1" j="1" planar="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + dhe_lambda * uval * upval * vval / deltat + he_rho * he_cp * uval * vval / deltat"
+                                    axi="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + dhe_lambda * r * uval * upval * vval / deltat + r * he_rho * he_cp * uval * vval / deltat" symmetric="1" />
+                <vector i="1" j="1" planar="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat"
+                                    axi="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat" />
             </weakform>
         </weakforms>
     </volume>
@@ -154,14 +154,14 @@
             <localvariable id="heat_heat_flux" name="Heat flux" format="%5.3e" type="vector"
                            shortname="F" shortname_html="&lt;i&gt;F&lt;/i&gt;" shortname_latex="F"
                            unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="W \cdot m^{-2}" >
-                <expression analysistype="steadystate" planar_x="- lambda * dx1"
-                                                       planar_y="- lambda * dy1"
-                                                       axi_r="- lambda * dr1"
-                                                       axi_z="- lambda * dz1" />
-                <expression analysistype="transient" planar_x="- lambda * dx1"
-                                                     planar_y="- lambda * dy1"
-                                                     axi_r="- lambda * dr1"
-                                                     axi_z="- lambda * dz1" />
+                <expression analysistype="steadystate" planar_x="- he_lambda * dx1"
+                                                       planar_y="- he_lambda * dy1"
+                                                       axi_r="- he_lambda * dr1"
+                                                       axi_z="- he_lambda * dz1" />
+                <expression analysistype="transient" planar_x="- he_lambda * dx1"
+                                                     planar_y="- he_lambda * dy1"
+                                                     axi_r="- he_lambda * dr1"
+                                                     axi_z="- he_lambda * dz1" />
             </localvariable>
             <localvariable id="heat_temperature_gradient" name="Temperature gradient" type="vector"
                            shortname="G" shortname_html="&lt;i&gt;G&lt;/i&gt;" shortname_latex="G"
@@ -178,30 +178,30 @@
             <localvariable id="heat_conductivity" name="Thermal conductivity" type="scalar"
                            shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;" shortname_latex="\lamda"
                            unit="W/m.K" unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="W \cdot m^{-1} \cdot K^{-1}" >
-                <expression analysistype="steadystate" planar="lambda"
-                                                       axi="lambda" />
-                <expression analysistype="transient" planar="lambda"
-                                                     axi="lambda" />
+                <expression analysistype="steadystate" planar="he_lambda"
+                                                       axi="he_lambda" />
+                <expression analysistype="transient" planar="he_lambda"
+                                                     axi="he_lambda" />
             </localvariable>
             <localvariable id="heat_volume_heat" name="Volume heat" type="scalar"
                            shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;" shortname_latex="p"
                            unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" >
-                <expression analysistype="steadystate" planar="p"
-                                                       axi="p" />
-                <expression analysistype="transient" planar="p"
-                                                     axi="p" />
+                <expression analysistype="steadystate" planar="he_p"
+                                                       axi="he_p" />
+                <expression analysistype="transient" planar="he_p"
+                                                     axi="he_p" />
             </localvariable>
             <localvariable id="heat_density" name="Density" type="scalar"
                            shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
                            unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}" >
-                <expression analysistype="transient" planar="rho"
-                                                     axi="rho" />
+                <expression analysistype="transient" planar="he_rho"
+                                                     axi="he_rho" />
             </localvariable>
             <localvariable id="heat_specific_heat" name="Specific heat" type="scalar"
                            shortname="cp" shortname_html="&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;P&lt;/sub&gt;" shortname_latex="c_{P}"
                            unit="J/kg.K" unit_html="J.kg&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="J \cdot kg^{-1} \cdot K^{-1}" >
-                <expression analysistype="transient" planar="cp"
-                                                     axi="cp" />
+                <expression analysistype="transient" planar="he_cp"
+                                                     axi="he_cp" />
             </localvariable>
         </localvariables>
 
@@ -271,10 +271,10 @@
             <surfaceintegral id="heat_heat_flux" name="Heat flux"
                              shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;" shortname_latex="f"
                              unit="W" unit_html="W" unit_latex="W" >
-                <expression analysistype="steadystate" planar="- lambda * (tany * dx1 - tanx * dy1)"
-                                                       axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
-                <expression analysistype="transient" planar="- lambda * (tany * dx1 - tanx * dy1)"
-                                                     axi="- 2.0 * PI * r * lambda * (tanz * dr1 - tanr * dz1)" />
+                <expression analysistype="steadystate" planar="- he_lambda * (tany * dx1 - tanx * dy1)"
+                                                       axi="- 2.0 * PI * r * he_lambda * (tanz * dr1 - tanr * dz1)" />
+                <expression analysistype="transient" planar="- he_lambda * (tany * dx1 - tanx * dy1)"
+                                                     axi="- 2.0 * PI * r * he_lambda * (tanz * dr1 - tanr * dz1)" />
             </surfaceintegral>
         </surfaceintegrals>
     </postprocessor>

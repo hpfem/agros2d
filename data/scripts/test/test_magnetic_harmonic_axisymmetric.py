@@ -1,4 +1,4 @@
-Ximport agros2d
+import agros2d
 
 # model
 problem = agros2d.problem(clear = True)

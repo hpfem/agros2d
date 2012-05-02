@@ -14,22 +14,22 @@
     <macros />
 
     <volume>
-        <quantity id="acoustic_density" shortname="rho" />
-        <quantity id="acoustic_speed" shortname="vel" />
+        <quantity id="acoustic_density" shortname="ac_rho" />
+        <quantity id="acoustic_speed" shortname="ac_vel" />
         
         <weakforms>
             <weakform analysistype="harmonic">
                 <quantity id="acoustic_density" />
                 <quantity id="acoustic_speed" />
 
-                <matrix i="1" j="1" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * uval * vval"
-                                    axi="1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" symmetric="1" />
-                <matrix i="2" j="2" planar="1 / rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * uval * vval"
-                                    axi="1 / rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * uval * vval" symmetric="1" />
-                <vector i="1" j="1" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho * vel * vel) * upval * vval"
-                                    axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * upval * vval" />
-                <vector i="2" j="2" planar="1 / rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (rho *vel * vel) * upval * vval"
-                                    axi="1 / rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (rho * vel * vel) * upval * vval" />
+                <matrix i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                                    axi="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1" />
+                <matrix i="2" j="2" planar="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                                    axi="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1" />
+                <vector i="1" j="1" planar="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval"
+                                    axi="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
+                <vector i="2" j="2" planar="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho *ac_vel * ac_vel) * upval * vval"
+                                    axi="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
             </weakform>
         </weakforms>
     </volume>
@@ -140,30 +140,30 @@
             <localvariable id="acoustic_local_acceleration_real" name="Local acceleration - real" type="vector"
                            shortname="ar" shortname_html="&lt;i&gt;a&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="a_{r}"
                            unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}">
-                <expression analysistype="harmonic" planar_x="- dx1 / rho"
-                                                    planar_y="- dy1 / rho"
-                                                    axi_r="- dr1 / rho"
-                                                    axi_z="- dz1 / rho" />
+                <expression analysistype="harmonic" planar_x="- dx1 / ac_rho"
+                                                    planar_y="- dy1 / ac_rho"
+                                                    axi_r="- dr1 / ac_rho"
+                                                    axi_z="- dz1 / ac_rho" />
             </localvariable>
             <localvariable id="acoustic_local_acceleration_imag" name="Local acceleration - imag" type="vector"
                            shortname="ai" shortname_html="&lt;i&gt;a&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;" shortname_latex="a_{i}"
                            unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}">
-                <expression analysistype="harmonic" planar_x="- dx2 / rho"
-                                                    planar_y="- dy2 / rho"
-                                                    axi_r="- dr2 / rho"
-                                                    axi_z="- dz2 / rho" />
+                <expression analysistype="harmonic" planar_x="- dx2 / ac_rho"
+                                                    planar_y="- dy2 / ac_rho"
+                                                    axi_r="- dr2 / ac_rho"
+                                                    axi_z="- dz2 / ac_rho" />
             </localvariable>
             <localvariable id="acoustic_density" name="Mass density" type="scalar"
                            shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
                            unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}">
-                <expression analysistype="harmonic" planar="rho"
-                                                    axi="rho" />
+                <expression analysistype="harmonic" planar="ac_rho"
+                                                    axi="ac_rho" />
             </localvariable>
             <localvariable id="acoustic_speed" name="Speed of sound" type="scalar"
                            shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_latex="c"
                            unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}">
-                <expression analysistype="harmonic" planar="vel"
-                                                    axi="vel" />
+                <expression analysistype="harmonic" planar="ac_vel"
+                                                    axi="ac_vel" />
             </localvariable>
         </localvariables>
 
