@@ -40,10 +40,10 @@ class PythonEngineAgros : public PythonEngine
     Q_OBJECT
 public:
     PythonEngineAgros() : PythonEngine(),
-        m_sceneViewGeometry(NULL), m_sceneViewMesh(NULL), m_sceneViewPost2D(NULL), m_sceneViewPost3D(NULL) {}
+        m_sceneViewPreprocessor(NULL), m_sceneViewMesh(NULL), m_sceneViewPost2D(NULL), m_sceneViewPost3D(NULL) {}
 
-    inline void setSceneViewGeometry(SceneViewPreprocessor *sceneViewGeometry) { assert(sceneViewGeometry); m_sceneViewGeometry = sceneViewGeometry; }
-    inline SceneViewPreprocessor *sceneViewGeometry() { assert(m_sceneViewGeometry); return m_sceneViewGeometry; }
+    inline void setSceneViewGeometry(SceneViewPreprocessor *sceneViewGeometry) { assert(sceneViewGeometry); m_sceneViewPreprocessor = sceneViewGeometry; }
+    inline SceneViewPreprocessor *sceneViewPreprocessor() { assert(m_sceneViewPreprocessor); return m_sceneViewPreprocessor; }
     inline void setSceneViewMesh(SceneViewMesh *sceneViewMesh) { assert(sceneViewMesh); m_sceneViewMesh = sceneViewMesh; }
     inline SceneViewMesh *sceneViewMesh() { assert(m_sceneViewMesh); return m_sceneViewMesh; }
     inline void setSceneViewPost2D(SceneViewPost2D *sceneViewPost2D) { assert(sceneViewPost2D); m_sceneViewPost2D = sceneViewPost2D; }
@@ -59,7 +59,7 @@ private slots:
     void doExecutedScript();
 
 private:
-    SceneViewPreprocessor *m_sceneViewGeometry;
+    SceneViewPreprocessor *m_sceneViewPreprocessor;
     SceneViewMesh *m_sceneViewMesh;
     SceneViewPost2D *m_sceneViewPost2D;
     SceneViewPost3D *m_sceneViewPost3D;
@@ -150,7 +150,7 @@ class PyProblem
         inline const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
 
-        void solve();       
+        void solve();
 };
 
 // field
@@ -222,8 +222,10 @@ class PyField
         void setMaterial(char *name, map<char*, double> parameters);
         void removeMaterial(char *name);
 
+        // solve
         void solve() { assert(0); qDebug() << "Not now :)"; }
 
+        // local values, integrals
         void localValues(double x, double y, map<string, double> &results);
         void surfaceIntegrals(vector<int> edges, map<string, double> &results);
         void volumeIntegrals(vector<int> labels, map<string, double> &results);
@@ -235,6 +237,8 @@ class PyGeometry
     public:
         PyGeometry() {}
         ~PyGeometry() {}
+
+        void activate();
 
         // elements
         void addNode(double x, double y);
@@ -278,6 +282,109 @@ class PyGeometry
         void zoomRegion(double x1, double y1, double x2, double y2);
 };
 
+// view
+struct PyViewConfig
+{
+    void setField(char* variable);
+    inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
+    // TODO: setActiveTimeStep
+    // TODO: setActiveAdaptivityStep
+    // TODO: setActiveSolutionType
+};
+
+// view mesh
+struct PyViewMesh
+{
+    void activate();
+    void refresh();
+
+    // mesh
+    void setInitialMeshViewShow(int show);
+    inline int getInitialMeshViewShow() const { return Util::config()->showInitialMeshView; }
+    void setSolutionMeshViewShow(int show);
+    inline int getSolutionMeshViewShow() const { return Util::config()->showSolutionMeshView; }
+
+    // polynomial order
+    void setOrderViewShow(int show);
+    inline int getOrderViewShow() const { return Util::config()->showOrderView; }
+    void setOrderViewColorBar(int show);
+    inline int getOrderViewColorBar() const { return Util::config()->showOrderColorBar; }
+    void setOrderViewLabel(int show);
+    inline int getOrderViewLabel() const { return Util::config()->orderLabel; }
+    void setOrderViewPalette(char* palette);
+    inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Util::config()->orderPaletteOrderType).toStdString().c_str()); }
+};
+
+
+// post2d
+struct PyViewPost2D
+{
+    void activate();
+    void refresh();
+
+    // scalar view
+    void setScalarViewShow(int show);
+    inline int getScalarViewShow() const { return Util::config()->showScalarView; }
+    void setScalarViewVariable(char* variable);
+    inline char* getScalarViewVariable() const { return const_cast<char*>(Util::config()->scalarVariable.toStdString().c_str()); }
+    void setScalarViewVariableComp(char* component);
+    inline char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Util::config()->scalarVariableComp).toStdString().c_str()); }
+
+    void setScalarViewPalette(char* palette);
+    inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Util::config()->paletteType).toStdString().c_str()); }
+    void setScalarViewPaletteQuality(char* quality);
+    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
+    void setScalarViewPaletteSteps(int steps);
+    inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
+    void setScalarViewPaletteFilter(int filter);
+    inline int getScalarViewPaletteFilter() const { return Util::config()->paletteFilter; }
+
+    void setScalarViewRangeLog(int log);
+    inline int getScalarViewRangeLog() const { return Util::config()->scalarRangeLog; }
+    void setScalarViewRangeBase(double base);
+    inline double getScalarViewRangeBase() const { return Util::config()->scalarRangeBase; }
+
+    void setScalarViewColorBar(int show);
+    inline int getScalarViewColorBar() const { return Util::config()->showScalarColorBar; }
+    void setScalarViewDecimalPlace(int place);
+    inline int getScalarViewDecimalPlace() const { return Util::config()->scalarDecimalPlace; }
+
+    void setScalarViewRangeAuto(int autoRange);
+    inline int getScalarViewRangeAuto() const { return Util::config()->scalarRangeAuto; }
+    void setScalarViewRangeMin(double min);
+    inline double getScalarViewRangeMin() const { return Util::config()->scalarRangeMin; }
+    void setScalarViewRangeMax(double max);
+    inline double getScalarViewRangeMax() const { return Util::config()->scalarRangeMax; }
+
+    // contour
+    void setContourShow(int show);
+    inline int getContourShow() const { return Util::config()->showContourView; }
+    void setContourCount(int count);
+    inline int getContourCount() const { return Util::config()->contoursCount; }
+    void setContourVariable(char* variable);
+    inline char* getContourVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
+
+    // vector
+    void setVectorShow(int show);
+    inline int getVectorShow() const { return Util::config()->showVectorView; }
+    void setVectorCount(int count);
+    inline int getVectorCount() const { return Util::config()->vectorCount; }
+    void setVectorScale(double scale);
+    inline int getVectorScale() const { return Util::config()->vectorScale; }
+    void setVectorVariable(char* variable);
+    inline char* getVectorVariable() const { return const_cast<char*>(Util::config()->vectorVariable.toStdString().c_str()); }
+    void setVectorProportional(int show);
+    inline int getVectorProportional() const { return Util::config()->vectorProportional; }
+    void setVectorColor(int show);
+    inline int getVectorColor() const { return Util::config()->vectorColor; }
+};
+
+struct PyViewPost3D
+{
+    void activate();
+    void refresh();
+};
+
 // functions
 char *pyVersion();
 void pyQuit();
@@ -290,26 +397,5 @@ void pySaveDocument(char *str);
 void pyCloseDocument();
 
 void pySaveImage(char *str, int w, int h);
-
-// ************************************************************************************
-
-// cython functions
-char *pythonSolutionFileName();
-
-void pythonSolveAdaptiveStep();
-
-void pythonMode(char *str);
-void pythonPostprocessorMode(char *str);
-
-void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax);
-void pythonShowGrid(bool show);
-void pythonShowGeometry(bool show);
-void pythonShowInitialMesh(bool show);
-void pythonShowSolutionMesh(bool show);
-void pythonShowContours(bool show);
-void pythonShowVectors(bool show);
-
-void pythonSetTimeStep(int timestep);
-int pythonTimeStepCount();
 
 #endif // PYTHONLABAGROS_H

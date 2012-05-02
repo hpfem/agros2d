@@ -31,7 +31,7 @@ magnetic.add_material("Air", {})   #, 0, 0, 1, 0, 0, 0, 0, 0, 0
 magnetic.add_material("Copper", {})  #  1e6/4, 0, 1, 57e6, 0, 0, 0, 0, 0
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 
 # edges

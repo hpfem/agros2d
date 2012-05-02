@@ -43,7 +43,7 @@ magnetic.add_material("Steel", {"magnetic_conductivity" : 3e5, "magnetic_current
 
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0.3, 0.6, 0, 0.6, boundaries = {"heat" : "Radiation"})

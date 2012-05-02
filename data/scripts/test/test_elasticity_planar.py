@@ -25,7 +25,7 @@ elasticity.add_material("Material 2", {"elasticity_young_modulus" : 1e11, "elast
 elasticity.add_material("Material 3", {"elasticity_young_modulus" : 1e11, "elasticity_poisson_ratio" : 0.33, "elasticity_force_x" : 0, "elasticity_force_y" : 0, "elasticity_alpha" : 1e-6, "elasticity_temperature_difference" : 10, "elasticity_temperature_reference" : 20})
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(1.4, 0.2, 1.6, 0.2, boundaries = {"elasticity" : "Load"})

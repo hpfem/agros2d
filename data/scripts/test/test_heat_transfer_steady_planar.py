@@ -23,7 +23,7 @@ heat.add_material("Material 1", {"heat_conductivity" : 2, "heat_volume_heat" : 0
 heat.add_material("Material 2", {"heat_conductivity" : 10, "heat_volume_heat" : 70000}) 
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0.1, 0.15, 0, 0.15, boundaries = {"heat" : "T outer"})

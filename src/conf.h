@@ -36,10 +36,6 @@ public:
     QString defaultPhysicField;
 
     bool checkVersion;
-    bool showConvergenceChart;
-    bool showNonlinearChart;
-    bool enabledApplicationLog;
-    bool enabledProgressLog;
     bool lineEditValueShowResult;
     bool saveProblemWithSolution;
 

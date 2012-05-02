@@ -181,11 +181,9 @@ public:
     QAction *actProperties;
 
 public slots:
-    void refresh();
+    void updateControls();
 
 private:
-    bool m_isNewProblem;
-
     QDialogButtonBox *buttonBox;
 
     FieldsToobar *fieldsToolbar;

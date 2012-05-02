@@ -31,6 +31,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
+#include "pythonlabagros.h"
 
 const double minWidth = 110;
 
@@ -54,7 +55,7 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
     loadAdvanced();
 
     connect(this, SIGNAL(apply()), m_scenePost2D, SLOT(timeStepChanged()));
-    connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));    
+    connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));
 }
 
 void PostprocessorWidget::loadBasic()
@@ -111,7 +112,10 @@ void PostprocessorWidget::loadBasic()
     // transient view
     // cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
-    setControls();
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
+
+    refresh();
 }
 
 void PostprocessorWidget::loadAdvanced()
@@ -292,7 +296,7 @@ void PostprocessorWidget::createControls()
     layoutMain->addWidget(tabType);
     layoutMain->addLayout(layoutButtons);
 
-    setControls();
+    refresh();
 
     setLayout(layoutMain);
 }
@@ -304,22 +308,52 @@ QWidget *PostprocessorWidget::meshWidget()
     chkShowSolutionMeshView = new QCheckBox(tr("Solution mesh"));
     chkShowOrderView = new QCheckBox(tr("Polynomial order"));
 
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->addWidget(chkShowInitialMeshView, 0, 0);
-    layoutMesh->addWidget(chkShowSolutionMeshView, 1, 0);
-    layoutMesh->addWidget(chkShowOrderView, 0, 1);
+    // layout order
+    cmbOrderPaletteOrder = new QComboBox();
+    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
+    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
+    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
+    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
+    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
+    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
+    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
+    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
+    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
+    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
+    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
+    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
+    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
+    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
-    QHBoxLayout *layoutShowMesh = new QHBoxLayout();
-    layoutShowMesh->addLayout(layoutMesh);
-    layoutShowMesh->addStretch();
+    chkShowOrderScale = new QCheckBox(tr("Show order scale"), this);
+    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
 
-    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh and polynomial order"));
-    grpShowMesh->setLayout(layoutShowMesh);
+    QHBoxLayout *gridLayoutMesh = new QHBoxLayout();
+    gridLayoutMesh->addWidget(chkShowInitialMeshView);
+    gridLayoutMesh->addWidget(chkShowSolutionMeshView);
+
+    QGridLayout *gridLayoutOrder = new QGridLayout();
+    gridLayoutOrder->addWidget(chkShowOrderView, 0, 0);
+    gridLayoutOrder->addWidget(new QLabel(tr("Order palette:")), 1, 0);
+    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 1, 1);
+    gridLayoutOrder->addWidget(chkShowOrderScale, 2, 0, 1, 2);
+    gridLayoutOrder->addWidget(chkOrderLabel, 3, 0, 1, 2);
+
+    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh"));
+    grpShowMesh->setLayout(gridLayoutMesh);
+
+    QGroupBox *grpShowOrder = new QGroupBox(tr("Polynomial order"));
+    grpShowOrder->setLayout(gridLayoutOrder);
+
+    //QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
+    //connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->addWidget(grpShowMesh);
+    layout->addWidget(grpShowOrder);
     layout->addStretch();
+    //layout->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -331,11 +365,11 @@ QWidget *PostprocessorWidget::post2DWidget()
 {
     // layout post2d
     chkShowPost2DContourView = new QCheckBox(tr("Contours"));
-    connect(chkShowPost2DContourView, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(chkShowPost2DContourView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DVectorView = new QCheckBox(tr("Vectors"));
-    connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DScalarView = new QCheckBox(tr("Scalar view"));
-    connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(setControls()));
+    connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DParticleView = new QCheckBox(tr("Particle tracing"));
 
     QGridLayout *layoutPost2D = new QGridLayout();
@@ -545,14 +579,14 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // quality
     cmbLinearizerQuality = new QComboBox();
-    cmbLinearizerQuality->addItem(tr("Extremely coarse"), 0.01);
-    cmbLinearizerQuality->addItem(tr("Extra coarse"), 0.007);
-    cmbLinearizerQuality->addItem(tr("Coarser"), 0.003);
-    cmbLinearizerQuality->addItem(tr("Coarse"), 0.001);
-    cmbLinearizerQuality->addItem(tr("Normal"), LINEARIZER_QUALITY);
-    cmbLinearizerQuality->addItem(tr("Fine"), 0.0001);
-    cmbLinearizerQuality->addItem(tr("Finer"), 0.0006);
-    cmbLinearizerQuality->addItem(tr("Extra fine"), 0.00001);
+    cmbLinearizerQuality->addItem(tr("Extremely coarse"), paletteQualityValueToDouble(Palette_ExtremelyCoarse));
+    cmbLinearizerQuality->addItem(tr("Extra coarse"), paletteQualityValueToDouble(Palette_ExtraCoarse));
+    cmbLinearizerQuality->addItem(tr("Coarser"), paletteQualityValueToDouble(Palette_Coarser));
+    cmbLinearizerQuality->addItem(tr("Coarse"), paletteQualityValueToDouble(Palette_Coarse));
+    cmbLinearizerQuality->addItem(tr("Normal"), paletteQualityValueToDouble(Palette_Normal));
+    cmbLinearizerQuality->addItem(tr("Fine"), paletteQualityValueToDouble(Palette_Fine));
+    cmbLinearizerQuality->addItem(tr("Finer"), paletteQualityValueToDouble(Palette_Finer));
+    cmbLinearizerQuality->addItem(tr("Extra fine"), paletteQualityValueToDouble(Palette_ExtraFine));
 
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
@@ -655,8 +689,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     txtVectorScale->setMinimum(0);
     txtVectorScale->setMaximum(20);
 
-    // QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
-    // connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
+    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
+    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
 
     QGridLayout *gridLayoutContours = new QGridLayout();
     gridLayoutContours->setColumnMinimumWidth(0, minWidth);
@@ -682,51 +716,10 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     layoutContoursVectors->addWidget(grpContours);
     layoutContoursVectors->addWidget(grpVectors);
     layoutContoursVectors->addStretch();
-    // layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
+    layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
 
     QWidget *contoursVectorsWidget = new QWidget();
     contoursVectorsWidget->setLayout(layoutContoursVectors);
-
-    // polynomial order
-    // palette
-    cmbOrderPaletteOrder = new QComboBox();
-    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
-    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
-    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
-    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
-    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
-    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
-    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
-    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
-    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
-    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
-    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
-    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
-    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
-    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
-
-    // scale
-    chkShowOrderScale = new QCheckBox(tr("Show scale"), this);
-    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
-
-    QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
-    connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
-
-    QGridLayout *gridLayoutOrder = new QGridLayout();
-    gridLayoutOrder->setColumnMinimumWidth(0, minWidth);
-    gridLayoutOrder->setColumnStretch(1, 1);
-    gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
-    gridLayoutOrder->addWidget(chkShowOrderScale, 1, 0, 1, 2);
-    gridLayoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
-
-    QVBoxLayout *layoutOrder = new QVBoxLayout();
-    layoutOrder->addLayout(gridLayoutOrder);
-    layoutOrder->addStretch();
-    layoutOrder->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
-
-    QWidget *orderWidget = new QWidget();
-    orderWidget->setLayout(layoutOrder);
 
     // particle tracing
     chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
@@ -847,7 +840,6 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     tbxPostprocessor = new QToolBox();
     tbxPostprocessor->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
     tbxPostprocessor->addItem(contoursVectorsWidget, icon(""), tr("Contours and vectors"));
-    tbxPostprocessor->addItem(orderWidget, icon(""), tr("Polynomial order"));
     tbxPostprocessor->addItem(particleWidget, icon(""), tr("Particle tracing"));
 
     // layout postprocessor
@@ -894,7 +886,7 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
     // component
     cmbPostScalarFieldVariableComp->clear();
     if (physicFieldVariable)
-    {        
+    {
         if (physicFieldVariable->is_scalar)
         {
             cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
@@ -971,20 +963,17 @@ void PostprocessorWidget::doPaletteFilter(int state)
     txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
-void PostprocessorWidget::setControls()
+void PostprocessorWidget::refresh()
 {
-    bool isMeshed = Util::problem()->isMeshed();
-    bool isSolved = Util::problem()->isSolved();
-
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
         widgetsLayout->setCurrentWidget(mesh);
         postprocessor->setEnabled(false);
 
         // mesh and order
-        chkShowInitialMeshView->setEnabled(isMeshed);
-        chkShowSolutionMeshView->setEnabled(isSolved);
-        chkShowOrderView->setEnabled(isSolved);
+        chkShowInitialMeshView->setEnabled(Util::problem()->isMeshed());
+        chkShowSolutionMeshView->setEnabled(Util::problem()->isSolved());
+        chkShowOrderView->setEnabled(Util::problem()->isSolved());
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -992,13 +981,13 @@ void PostprocessorWidget::setControls()
         widgetsLayout->setCurrentWidget(post2d);
         postprocessor->setEnabled(true);
 
-        chkShowPost2DContourView->setEnabled(isSolved && (cmbPost2DContourVariable->count() > 0));
-        chkShowPost2DScalarView->setEnabled(isSolved && (cmbPostScalarFieldVariable->count() > 0));
-        chkShowPost2DVectorView->setEnabled(isSolved && (cmbPost2DVectorFieldVariable->count() > 0));
+        chkShowPost2DContourView->setEnabled(Util::problem()->isSolved() && (cmbPost2DContourVariable->count() > 0));
+        chkShowPost2DScalarView->setEnabled(Util::problem()->isSolved() && (cmbPostScalarFieldVariable->count() > 0));
+        chkShowPost2DVectorView->setEnabled(Util::problem()->isSolved() && (cmbPost2DVectorFieldVariable->count() > 0));
         // if (Util::problem()->config()->hermes()->hasParticleTracing())
         // {
-        // chkShowParticleTracing->setEnabled(isSolved && (Util::problem()->config()->analysisType == AnalysisType_SteadyState));
-        chkShowPost2DParticleView->setEnabled(isSolved);
+        // chkShowParticleTracing->setEnabled(Util::problem()->isSolved() && (Util::problem()->config()->analysisType == AnalysisType_SteadyState));
+        chkShowPost2DParticleView->setEnabled(Util::problem()->isSolved());
         // }
         // else
         // {
@@ -1028,16 +1017,16 @@ void PostprocessorWidget::setControls()
         postprocessor->setEnabled(true);
 
         // scalar view 3d
-        radPost3DNone->setEnabled(isSolved);
-        radPost3DScalarField3D->setEnabled(isSolved);
-        radPost3DScalarField3DSolid->setEnabled(isSolved);
-        radPost3DModel->setEnabled(isSolved);
+        radPost3DNone->setEnabled(Util::problem()->isSolved());
+        radPost3DScalarField3D->setEnabled(Util::problem()->isSolved());
+        radPost3DScalarField3DSolid->setEnabled(Util::problem()->isSolved());
+        radPost3DModel->setEnabled(Util::problem()->isSolved());
         radPost3DParticleTracing->setEnabled(chkShowPost2DParticleView->isEnabled());
     }
 
     grpTransient->setVisible(false);
     grpAdaptivity->setVisible(false);
-    if (isSolved)
+    if (Util::problem()->isSolved())
     {
         // transient group
         int timeSteps = Util::solutionStore()->timeLevels(Util::scene()->activeViewField()).count();
@@ -1066,7 +1055,7 @@ void PostprocessorWidget::updateControls()
 
 void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
 {
-    setControls();
+    refresh();
 }
 
 void PostprocessorWidget::doApply()
@@ -1105,13 +1094,9 @@ void PostprocessorWidget::doScalarFieldDefault()
     txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
 }
 
-void PostprocessorWidget::doContoursDefault()
+void PostprocessorWidget::doContoursVectorsDefault()
 {
     txtContoursCount->setValue(CONTOURSCOUNT);
-}
-
-void PostprocessorWidget::doVectorFieldDefault()
-{
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
     txtVectorCount->setValue(VECTORNUMBER);

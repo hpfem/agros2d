@@ -36,7 +36,6 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void doClearApplicationLog();
     void doAdaptivityDefault();
     void doCommandsDefault();
 
@@ -61,12 +60,6 @@ private:
     QCheckBox *chkDeleteTriangleMeshFiles;
     QCheckBox *chkDeleteHermes2DMeshFile;
 
-    // clear application log
-    QPushButton *cmdClearApplicationLog;
-
-    // clear command history
-    QPushButton *cmdClearCommandHistory;
-
     // show result in line edit value widget
     QCheckBox *chkLineEditValueShowResult;
 
@@ -75,16 +68,6 @@ private:
 
     // check version
     QCheckBox *chkCheckVersion;
-
-    // show convergence chart
-    QCheckBox *chkShowConvergenceChart;
-
-    // show nonlinear chart
-    QCheckBox *chkShowNonlinearChart;
-
-    // logs
-    QCheckBox *chkEnabledApplicationLog;
-    QCheckBox *chkEnabledProgressLog;
 
     // experimental features
     QCheckBox *chkExperimentalFeatures;

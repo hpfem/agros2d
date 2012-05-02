@@ -26,7 +26,7 @@ current.add_material("mat 2", {"current_conductivity" : 1e5})
 current.add_material("mat 3", {"current_conductivity" : 1e3})
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0, 0, 0.6, 0, boundaries = {"current" : "Zero"})

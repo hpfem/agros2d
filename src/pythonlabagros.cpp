@@ -577,9 +577,14 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 {
     SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString(name));
+    if (sceneBoundary == NULL)
+        throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+
+    // todo: (Franta) check with defined types
     if (std::string(type) != "")
         sceneBoundary->setType(std::string(type));
 
+    // todo: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneBoundary->setValue(std::string((*i).first), Value(QString::number((*i).second)));
 }
@@ -627,6 +632,10 @@ void PyField::setMaterial(char *name, map<char*, double> parameters)
 {
     SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString(name));
 
+    if (sceneMaterial == NULL)
+        throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+
+    // todo: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneMaterial->setValue(std::string((*i).first), Value(QString::number((*i).second)));
 }
@@ -774,6 +783,11 @@ void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
     }
 
     results = values;
+}
+
+void PyGeometry::activate()
+{
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 }
 
 void PyGeometry::addNode(double x, double y)
@@ -978,7 +992,7 @@ void PyGeometry::selectLabels(vector<int> labels)
 
 void PyGeometry::selectNodePoint(double x, double y)
 {
-    SceneNode *node = currentPythonEngineAgros()->sceneViewGeometry()->findClosestNode(Point(x, y));
+    SceneNode *node = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestNode(Point(x, y));
     if (node)
     {
         node->isSelected = true;
@@ -988,7 +1002,7 @@ void PyGeometry::selectNodePoint(double x, double y)
 
 void PyGeometry::selectEdgePoint(double x, double y)
 {
-    SceneEdge *edge = currentPythonEngineAgros()->sceneViewGeometry()->findClosestEdge(Point(x, y));
+    SceneEdge *edge = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestEdge(Point(x, y));
     if (edge)
     {
         edge->isSelected = true;
@@ -998,7 +1012,7 @@ void PyGeometry::selectEdgePoint(double x, double y)
 
 void PyGeometry::selectLabelPoint(double x, double y)
 {
-    SceneLabel *label = currentPythonEngineAgros()->sceneViewGeometry()->findClosestLabel(Point(x, y));
+    SceneLabel *label = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestLabel(Point(x, y));
     if (label)
     {
         label->isSelected = true;
@@ -1055,23 +1069,308 @@ char *PyGeometry::meshFileName()
 
 void PyGeometry::zoomBestFit()
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
 }
 
 void PyGeometry::zoomIn()
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomIn();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomIn();
 }
 
 void PyGeometry::zoomOut()
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomOut();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomOut();
 }
 
 void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 {
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
+
+// ****************************************************************************************************
+
+void PyViewConfig::setField(char* variable)
+{
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    {
+        if (fieldInfo->fieldId() == QString(variable))
+        {
+            Util::scene()->setActiveViewField(fieldInfo);
+            return;
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Util::problem()->fieldInfos().keys())).toStdString());
+}
+
+// ****************************************************************************************************
+
+void PyViewMesh::activate()
+{
+    if (Util::problem()->isMeshed())
+        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+}
+
+void PyViewMesh::refresh()
+{
+    if (Util::problem()->isMeshed())
+        currentPythonEngineAgros()->sceneViewMesh()->refresh();
+}
+
+void PyViewMesh::setInitialMeshViewShow(int show)
+{
+    Util::config()->showInitialMeshView = show;
+}
+
+void PyViewMesh::setSolutionMeshViewShow(int show)
+{
+    Util::config()->showSolutionMeshView = show;
+}
+
+void PyViewMesh::setOrderViewShow(int show)
+{
+    Util::config()->showOrderView = show;
+}
+
+void PyViewMesh::setOrderViewColorBar(int show)
+{
+    Util::config()->showOrderColorBar = show;
+}
+
+void PyViewMesh::setOrderViewLabel(int show)
+{
+    Util::config()->orderLabel = show;
+}
+
+void PyViewMesh::setOrderViewPalette(char* palette)
+{
+    Util::config()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+}
+
+// ****************************************************************************************************
+
+void PyViewPost2D::activate()
+{
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+}
+
+void PyViewPost2D::refresh()
+{
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost2D()->refresh();
+}
+
+void PyViewPost2D::setScalarViewShow(int show)
+{
+    Util::config()->showScalarView = show;
+}
+
+void PyViewPost2D::setScalarViewVariable(char* variable)
+{
+    QStringList list;
+
+    // scalar variables
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
+         it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+
+        list.append(QString::fromStdString(var->id));
+        if (var->id == std::string(variable))
+        {
+            Util::config()->scalarVariable = QString(variable);
+            return;
+        }
+    }
+
+    // vector variables
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
+         it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+
+        list.append(QString::fromStdString(var->id));
+        if (var->id == std::string(variable))
+        {
+            Util::config()->vectorVariable = QString(variable);
+            return;
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setScalarViewVariableComp(char* component)
+{
+    // todo: (Franta)
+    Util::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+}
+
+void PyViewPost2D::setScalarViewPalette(char* palette)
+{
+    // todo: (Franta)
+    Util::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+}
+
+void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
+{
+    // todo: (Franta)
+    Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+}
+
+void PyViewPost2D::setScalarViewPaletteSteps(int steps)
+{
+    if (steps >= 5 && steps <= 100)
+        Util::config()->paletteSteps = steps;
+    else
+        throw invalid_argument(QObject::tr("Palette steps must be in the range from 5 to 100.").toStdString());
+}
+
+void PyViewPost2D::setScalarViewPaletteFilter(int filter)
+{
+    Util::config()->paletteFilter = filter;
+}
+
+void PyViewPost2D::setScalarViewRangeLog(int log)
+{
+    Util::config()->scalarRangeLog = log;
+}
+
+void PyViewPost2D::setScalarViewRangeBase(double base)
+{
+    Util::config()->scalarRangeBase = base;
+}
+
+void PyViewPost2D::setScalarViewColorBar(int show)
+{
+    Util::config()->showScalarColorBar = show;
+}
+
+void PyViewPost2D::setScalarViewDecimalPlace(int place)
+{
+    if (place >= 0 && place <= 10)
+        Util::config()->scalarDecimalPlace = place;
+    else
+        throw invalid_argument(QObject::tr("Decimal place must be in the range from 0 to 10.").toStdString());
+}
+
+void PyViewPost2D::setScalarViewRangeAuto(int autoRange)
+{
+    Util::config()->scalarRangeAuto = autoRange;
+}
+
+void PyViewPost2D::setScalarViewRangeMin(double min)
+{
+    Util::config()->scalarRangeMin = min;
+}
+
+void PyViewPost2D::setScalarViewRangeMax(double max)
+{
+    Util::config()->scalarRangeMax = max;
+}
+
+void PyViewPost2D::setContourShow(int show)
+{
+    Util::config()->showContourView = show;
+}
+
+void PyViewPost2D::setContourCount(int count)
+{
+    if (count > 0 && count <= 100)
+        Util::config()->contoursCount = count;
+    else
+        throw invalid_argument(QObject::tr("Contour count must be in the range from 1 to 100.").toStdString());
+}
+
+void PyViewPost2D::setContourVariable(char* variable)
+{
+    QStringList list;
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
+         it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+        if (var->is_scalar) // todo: (Franta) why
+        {
+            list.append(QString::fromStdString(var->id));
+
+            if (var->id == std::string(variable))
+            {
+                Util::config()->contourVariable = QString(variable);
+                return;
+            }
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setVectorShow(int show)
+{
+    Util::config()->showVectorView = show;
+}
+
+void PyViewPost2D::setVectorCount(int count)
+{
+    if (count > 0 && count <= 500)
+        Util::config()->vectorCount = count;
+    else
+        throw invalid_argument(QObject::tr("Vector count must be in the range from 1 to 500.").toStdString());
+}
+
+void PyViewPost2D::setVectorScale(double scale)
+{
+    // todo: (Franta) change range
+    if (scale > 0.0 && scale <= 20.0)
+        Util::config()->vectorScale = scale;
+    else
+        throw invalid_argument(QObject::tr("Vector scale must be in the range from 0.0 to 20.0.").toStdString());
+}
+
+void PyViewPost2D::setVectorVariable(char* variable)
+{
+    QStringList list;
+    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
+        it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+    {
+        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
+
+        list.append(QString::fromStdString(var->id));
+        if (var->id == std::string(variable))
+        {
+            Util::config()->vectorVariable = QString(variable);
+            return;
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setVectorProportional(int show)
+{
+    Util::config()->vectorProportional = show;
+}
+
+void PyViewPost2D::setVectorColor(int show)
+{
+    Util::config()->vectorColor = show;
+}
+
+// ****************************************************************************************************
+
+void PyViewPost3D::activate()
+{
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
+}
+
+void PyViewPost3D::refresh()
+{
+    if (Util::problem()->isSolved())
+        currentPythonEngineAgros()->sceneViewPost3D()->refresh();
+}
+
+// ****************************************************************************************************
 
 char *pyVersion()
 {
@@ -1117,9 +1416,9 @@ void pyCloseDocument()
     // sceneView()->doDefaultValues();
     Util::scene()->refresh();
 
-    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModePreprocessor->trigger();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
-    currentPythonEngineAgros()->sceneViewGeometry()->doZoomBestFit();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewMesh()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewPost2D()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewPost3D()->doZoomBestFit();
@@ -1147,222 +1446,6 @@ char *pythonSolutionFileName()
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 }
 
-// solveAdaptiveStep()
-void pythonSolveAdaptiveStep()
-{
-    assert(0);
-    //    // store adaptivity steps
-    //    int adaptivitySteps = Util::problem()->fieldInfo("TODO")->adaptivitySteps;
-    //    Util::problem()->fieldInfo("TODO")->adaptivitySteps = 1;
-
-    //    // solve
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //        Util::scene()->sceneSolution()->solve(SolverMode_SolveAdaptiveStep);
-    //    else
-    //        Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
-
-    //    // refresh
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //    {
-    //        // sceneView()->actSceneModePostprocessor->trigger();
-    //        Util::scene()->refresh();
-    //    }
-
-    //    // restore adaptivity steps
-    //    Util::problem()->fieldInfo("TODO")->adaptivitySteps = adaptivitySteps;
-}
-
-// mode(mode = {"node", "edge", "label", "postprocessor"})
-void pythonMode(char *str)
-{
-    assert(0);
-    //    if (QString(str) == "node")
-    //        // sceneView()->actSceneModeNode->trigger();
-    //    else if (QString(str) == "edge")
-    //        // sceneView()->actSceneModeEdge->trigger();
-    //    else if (QString(str) == "label")
-    //        // sceneView()->actSceneModeLabel->trigger();
-    //    else if (QString(str) == "postprocessor")
-    //        if (Util::scene()->sceneSolution()->isSolved())
-    //            // sceneView()->actSceneModePostprocessor->trigger();
-    //        else
-    //            throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-    //    else
-    //        throw invalid_argument(QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString());
-
-    //    // sceneView()->doInvalidated();
-}
-
-// postprocessormode(mode = {"point", "surface", "volume"})
-void pythonPostprocessorMode(char *str)
-{
-    assert(0);
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //        // sceneView()->actSceneModePostprocessor->trigger();
-    //    else
-    //        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-
-    //    if (QString(str) == "point")
-    //        // sceneView()->actPostprocessorModeLocalPointValue->trigger();
-    //    else if (QString(str) == "surface")
-    //        // sceneView()->actPostprocessorModeSurfaceIntegral->trigger();
-    //    else if (QString(str) == "volume")
-    //        // sceneView()->actPostprocessorModeVolumeIntegral->trigger();
-    //    else
-    //        throw invalid_argument(QObject::tr("Postprocessor mode '%1' is not implemented.").arg(QString(str)).toStdString());
-
-    //    // sceneView()->doInvalidated();
-}
-
-// showscalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
-void pythonShowScalar(char *type, char *variable, char *component, double rangemin, double rangemax)
-{
-    assert(0);
-
-    //    // type
-    //    SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
-    //    if (postprocessorShow != SceneViewPostprocessorShow_Undefined)
-    //        // sceneView()->sceneViewSettings().postprocessorShow = postprocessorShow;
-    //    else
-    //        throw invalid_argument(QObject::tr("View type '%1' is not implemented.").arg(QString(type)).toStdString());
-
-    //    // variable
-    //    if (QString(variable) == "default")
-    //    {
-    //        // sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::problem()->fieldInfo("TODO")->module()->view_default_scalar_variable->id;
-    //    }
-    //    else
-    //    {
-    //        bool ok = false;
-    //        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::problem()->fieldInfo("TODO")->module()->variables.begin();
-    //             it < Util::problem()->fieldInfo("TODO")->module()->variables.end(); ++it )
-    //        {
-    //            Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
-    //            if (QString::fromStdString(var->id) == QString(variable))
-    //            {
-    //                // sceneView()->sceneViewSettings().scalarPhysicFieldVariable = QString(variable).toStdString();
-    //                ok = true;
-
-    //                // variable component
-    //                if (QString(component) == "default")
-    //                {
-    //                    // sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::problem()->fieldInfo("TODO")->module()->view_default_scalar_variable_comp();
-    //                }
-    //                else
-    //                {
-    //                    PhysicFieldVariableComp comp = physicFieldVariableCompFromStringKey(QString(component));
-    //                    if (comp == PhysicFieldVariableComp_Undefined)
-    //                        throw invalid_argument(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
-    //                    if (!var->is_scalar && comp == PhysicFieldVariableComp_Scalar)
-    //                        throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
-
-    //                    // sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = comp;
-    //                }
-    //            }
-    //        }
-
-    //        if (!ok)
-    //            throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
-    //    }
-
-    //    // range
-    //    if (rangemin != -123456)
-    //    {
-    //        // sceneView()->sceneViewSettings().scalarRangeAuto = false;
-    //        // sceneView()->sceneViewSettings().scalarRangeMin = rangemin;
-    //    }
-    //    else
-    //    {
-    //        // sceneView()->sceneViewSettings().scalarRangeAuto = true;
-    //    }
-    //    if (rangemax != -123456)
-    //        // sceneView()->sceneViewSettings().scalarRangeMax = rangemax;
-
-    //    // sceneView()->doInvalidated();
-    //    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
-}
-
-// showgrid(show = {True, False})
-void pythonShowGrid(bool show)
-{
-    Util::config()->showGrid = show;
-    // sceneView()->doInvalidated();
-}
-
-// showgeometry(show = {True, False})
-void pythonShowGeometry(bool show)
-{
-    currentPythonEngineAgros()->sceneViewGeometry()->actSceneModePreprocessor->trigger();
-    currentPythonEngineAgros()->sceneViewGeometry()->refresh();
-}
-
-// showinitialmesh(show = {True, False})
-void pythonShowInitialMesh(bool show)
-{
-    if (Util::problem()->isMeshed())
-    {
-        Util::config()->showInitialMeshView = true;
-        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        currentPythonEngineAgros()->sceneViewMesh()->refresh();
-    }
-}
-
-// showsolutionmesh(show = {True, False})
-void pythonShowSolutionMesh(bool show)
-{
-    if (Util::problem()->isSolved())
-    {
-        Util::config()->showSolutionMeshView = true;
-        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        currentPythonEngineAgros()->sceneViewMesh()->refresh();
-    }
-}
-
-// showcontours(show = {True, False})
-void pythonShowContours(bool show)
-{
-    assert(0);
-    //    // sceneView()->sceneViewSettings().showContours = show;
-
-    //    // sceneView()->doInvalidated();
-    //    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
-}
-
-// showvectors(show = {True, False})
-void pythonShowVectors(bool show)
-{
-    assert(0);
-    //    // sceneView()->sceneViewSettings().showVectors = show;
-
-    //    // sceneView()->doInvalidated();
-    //    Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStep(), false);
-}
-
-// settimestep(level)
-void pythonSetTimeStep(int timestep)
-{
-    assert(0); //TODO:
-    //    if (Util::scene()->sceneSolution()->isSolved())
-    //        // sceneView()->actSceneModePostprocessor->trigger();
-    //    else
-    //        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-
-    //    if (Util::problem()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient)
-    //        throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
-
-    //    if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
-    //        throw out_of_range(QObject::tr("Time step must be between 0 and %1.").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
-
-    //    Util::scene()->sceneSolution()->setTimeStep(timestep, false);
-}
-
-// timestepcount()
-int pythonTimeStepCount()
-{
-    assert(0);
-    //    return Util::scene()->sceneSolution()->timeStepCount();
-}
-
 // *******************************************************************************************
 
 void PythonEngineAgros::addCustomExtensions()
@@ -1388,7 +1471,7 @@ void PythonEngineAgros::doExecutedScript()
 {
     Util::scene()->refresh();
 
-    if (m_sceneViewGeometry) m_sceneViewGeometry->updateGL();
+    if (m_sceneViewPreprocessor) m_sceneViewPreprocessor->updateGL();
     if (Util::problem()->isSolved())
     {
         if (m_sceneViewMesh) m_sceneViewMesh->updateGL();

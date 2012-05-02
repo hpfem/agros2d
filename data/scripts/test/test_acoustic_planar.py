@@ -25,7 +25,7 @@ acoustic.add_boundary("Matched boundary", "acoustic_impedance", {"acoustic_imped
 acoustic.add_material("Vzduch", {"acoustic_speed" : 343, "acoustic_density" : 1.25})
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(-0.4, 0.05, 0.1, 0.2, boundaries = {"acoustic" : "Matched boundary"})

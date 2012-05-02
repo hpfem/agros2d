@@ -31,7 +31,7 @@
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
-static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList;
+static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList; // FIXME: deprecated - DO NOT USE
 static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<SolutionType, QString> solutionTypeList;
@@ -39,6 +39,10 @@ static QHash<AnalysisType, QString> analysisTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
+static QHash<PaletteType, QString> paletteTypeList;
+static QHash<PaletteQuality, QString> paletteQualityList;
+static QHash<PaletteQuality, double> paletteQualityValueList;
+static QHash<PaletteOrderType, QString> paletteOrderTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -82,6 +86,18 @@ SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPos
 QString modeToStringKey(Mode mode) { return modeList[mode]; }
 Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
 
+QString paletteTypeToStringKey(PaletteType paletteType) { return paletteTypeList[paletteType]; }
+PaletteType paletteTypeFromStringKey(const QString &paletteType) { return paletteTypeList.key(paletteType); }
+
+QString paletteQualityToStringKey(PaletteQuality paletteQuality) { return paletteQualityList[paletteQuality]; }
+PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { return paletteQualityList.key(paletteQuality); }
+
+double paletteQualityValueToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
+PaletteQuality paletteQualityFromDouble(const double paletteQuality) { return paletteQualityValueList.key(paletteQuality); }
+
+QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
+PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType) { return paletteOrderTypeList.key(paletteType); }
+
 void initLists()
 {
     // coordinate list
@@ -119,6 +135,7 @@ void initLists()
     modeList.insert(Mode_02, "mode_02");
 
     // post3d
+    // FIXME: deprecated - DO NOT USE
     sceneViewPost3DShowList.insert(SceneViewPost3DShow_Undefined, "");
     sceneViewPost3DShowList.insert(SceneViewPost3DShow_None, "none");
     sceneViewPost3DShowList.insert(SceneViewPost3DShow_ScalarView3D, "scalar");
@@ -150,6 +167,54 @@ void initLists()
     linearityTypeList.insert(LinearityType_Linear, "linear");
     linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
+
+    // PaletteType
+    paletteTypeList.insert(Palette_Jet, "jet");
+    paletteTypeList.insert(Palette_Copper, "copper");
+    paletteTypeList.insert(Palette_Hot, "hot");
+    paletteTypeList.insert(Palette_Bone, "bone");
+    paletteTypeList.insert(Palette_Pink, "pink");
+    paletteTypeList.insert(Palette_Spring, "spring");
+    paletteTypeList.insert(Palette_Summer, "summer");
+    paletteTypeList.insert(Palette_Autumn, "autumn");
+    paletteTypeList.insert(Palette_Winter, "winter");
+    paletteTypeList.insert(Palette_HSV, "hsv");
+    paletteTypeList.insert(Palette_BWAsc, "bw_ascending");
+    paletteTypeList.insert(Palette_BWDesc, "bw_descending");
+
+    // PaletteQuality
+    paletteQualityList.insert(Palette_ExtremelyCoarse, "extremely_coarse");
+    paletteQualityList.insert(Palette_ExtraCoarse, "extra_coarse");
+    paletteQualityList.insert(Palette_Coarser, "coarser");
+    paletteQualityList.insert(Palette_Coarse, "coarse");
+    paletteQualityList.insert(Palette_Normal, "normal");
+    paletteQualityList.insert(Palette_Fine, "fine");
+    paletteQualityList.insert(Palette_Finer, "finer");
+    paletteQualityList.insert(Palette_ExtraFine, "extra_fine");
+
+    paletteQualityValueList.insert(Palette_ExtremelyCoarse, 0.01);
+    paletteQualityValueList.insert(Palette_ExtraCoarse, 0.007);
+    paletteQualityValueList.insert(Palette_Coarser, 0.003);
+    paletteQualityValueList.insert(Palette_Coarse, 0.001);
+    paletteQualityValueList.insert(Palette_Normal, LINEARIZER_QUALITY);
+    paletteQualityValueList.insert(Palette_Fine, 0.0001);
+    paletteQualityValueList.insert(Palette_Finer, 0.0006);
+    paletteQualityValueList.insert(Palette_ExtraFine, 0.00001);
+
+    // PaletteOrderType
+    paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
+    paletteOrderTypeList.insert(PaletteOrder_Jet, "jet");
+    paletteOrderTypeList.insert(PaletteOrder_Copper, "copper");
+    paletteOrderTypeList.insert(PaletteOrder_Hot, "hot");
+    paletteOrderTypeList.insert(PaletteOrder_Bone, "bone");
+    paletteOrderTypeList.insert(PaletteOrder_Pink, "pink");
+    paletteOrderTypeList.insert(PaletteOrder_Spring, "spring");
+    paletteOrderTypeList.insert(PaletteOrder_Summer, "summer");
+    paletteOrderTypeList.insert(PaletteOrder_Autumn, "autumn");
+    paletteOrderTypeList.insert(PaletteOrder_Winter, "winter");
+    paletteOrderTypeList.insert(PaletteOrder_HSV, "hsv");
+    paletteOrderTypeList.insert(PaletteOrder_BWAsc, "bw_ascending");
+    paletteOrderTypeList.insert(PaletteOrder_BWDesc, "bw_descending");
 }
 
 QString stringListToString(const QStringList &list)

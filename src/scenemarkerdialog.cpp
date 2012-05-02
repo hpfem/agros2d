@@ -155,18 +155,22 @@ void SceneFieldWidget::createContent()
     layout = new QVBoxLayout();
     setLayout(layout);
 
-    // add custom widget
-    addCustomWidget(layout);
-
     // equation
     equationImage = new QLabel();
     equationImage->setMinimumHeight(fontMetrics().height()*2.2);
-    equationImage->setMinimumWidth(250);
+    equationImage->setMinimumWidth(300);
 
-    QGridLayout *layoutEquation = new QGridLayout();
-    layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
-    layoutEquation->addWidget(equationImage, 0, 1, 1, 1, Qt::AlignRight);
-    layout->addLayout(layoutEquation);
+    QHBoxLayout *layoutEquation = new QHBoxLayout();
+    layoutEquation->addWidget(equationImage);
+    layoutEquation->addStretch();
+
+    QGroupBox *grpEquation = new QGroupBox(tr("Equation"));
+    grpEquation->setLayout(layoutEquation);
+
+    layout->addWidget(grpEquation);
+
+    // add custom widget
+    addCustomWidget(layout);
 
     for (std::map<std::string, Hermes::vector<Hermes::Module::DialogUI::Row> >::iterator it = ui->groups.begin(); it != ui->groups.end(); ++it)
     {
@@ -203,7 +207,9 @@ void SceneFieldWidget::createContent()
         // widget layout
         if (it->first == "")
         {
-            layout->addLayout(layoutGroup);
+            QGroupBox *grpGroup = new QGroupBox(tr("Parameters"));
+            grpGroup->setLayout(layoutGroup);
+            layout->addWidget(grpGroup);
         }
         else
         {
@@ -302,7 +308,7 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     readPixmap(equationImage, fileName);
 
     // sizehint
-    setMinimumSize(sizeHint());
+    // setMinimumSize(sizeHint());
 }
 
 void SceneFieldWidgetBoundary::load()

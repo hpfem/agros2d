@@ -29,7 +29,7 @@ heat.add_material("Fe", {"heat_conductivity" : 60, "heat_volume_heat" : 0, "heat
 heat.add_material("Brass", {"heat_conductivity" : 100, "heat_volume_heat" : 0, "heat_density" : 8400, "heat_specific_heat" : 378}) 
 
 # geometry
-geometry = agros2d.geometry()
+geometry = agros2d.geometry
 
 # edges
 geometry.add_edge(0, 0.18, 0.035, 0.18, 0, boundaries = {"heat" : "Convection"})
