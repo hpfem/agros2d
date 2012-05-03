@@ -18,9 +18,9 @@
             <weakform analysistype="steadystate">
                 <quantity id="current_conductivity" />
 
-                <matrix i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)"
+                <matrix_form i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)"
                                     axi="cu_gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
-                <vector i="1" j="1" planar="cu_gamma * (updx * vdx + updy * vdy)"
+                <vector_form i="1" j="1" planar="cu_gamma * (updx * vdx + updy * vdy)"
                                     axi="cu_gamma * r * (updr * vdr + updz * vdz)" />
             </weakform>
         </weakforms>
@@ -42,7 +42,7 @@
                 <boundary id="current_inward_current_flow" name="Current density">
                     <quantity id="current_inward_current_flow" />
 
-                    <vector i="1" j="1" planar="- Jn * vval"
+                    <vector_form i="1" j="1" planar="- Jn * vval"
                                         axi="- Jn * r * vval" />
                 </boundary>
             </weakform>

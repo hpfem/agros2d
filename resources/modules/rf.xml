@@ -29,13 +29,13 @@
                 <quantity id="rf_te_current_density_external_real" />
                 <quantity id="rf_te_current_density_external_imag" />
 
-                <matrix i="1" j="1" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                <matrix_form i="1" j="1" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
                                     axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval" symmetric="1" />
-                <matrix i="2" j="2" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                <matrix_form i="2" j="2" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
                                     axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval" symmetric="1" />
-                <vector i="1" j="1" planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jer * vval"
+                <vector_form i="1" j="1" planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jer * vval"
                                     axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jer * vval" />
-                <vector i="2" j="2" planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jei * vval"
+                <vector_form i="2" j="2" planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jei * vval"
                                     axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jei * vval" />
             </weakform>
         </weakforms>
@@ -67,9 +67,9 @@
                     <quantity id="rf_te_magnetic_field_real" />
                     <quantity id="rf_te_magnetic_field_imag" />
 
-                    <vector i="1" j="1" planar="Hr * vval"
+                    <vector_form i="1" j="1" planar="Hr * vval"
                                         axi="Hr * r * vval" />
-                    <vector i="2" j="2" planar="Hi * vval"
+                    <vector_form i="2" j="2" planar="Hi * vval"
                                         axi="Hi * r * vval" />
                 </boundary>
 
@@ -77,9 +77,9 @@
                     <quantity id="rf_te_surface_current_real" />
                     <quantity id="rf_te_surface_current_imag" />
 
-                    <vector i="1" j="1" planar="- 2 * PI * f * Ji * vval"
+                    <vector_form i="1" j="1" planar="- 2 * PI * f * Ji * vval"
                                         axi="- 2 * PI * f * Ji * r * vval" />
-                    <vector i="2" j="2" planar="2 * PI * f * Jr * vval"
+                    <vector_form i="2" j="2" planar="2 * PI * f * Jr * vval"
                                         axi="2 * PI * f * Jr * r * vval" />
                 </boundary>
 
@@ -87,9 +87,9 @@
                     <quantity id="rf_te_port_power" />
                     <quantity id="rf_te_port_phase" />
 
-                    <matrix i="1" j="2" planar="uval * vval"
+                    <matrix_form i="1" j="2" planar="uval * vval"
                                         axi="uval * vval" symmetric="1" />
-                    <matrix i="2" j="1" planar="uval * vval"
+                    <matrix_form i="2" j="1" planar="uval * vval"
                                         axi="uval * vval" symmetric="1" />
                 </boundary>
 

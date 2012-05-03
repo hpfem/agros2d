@@ -222,9 +222,9 @@ void Coupling::read(std::string filename)
                         weakform_matrix_volume.push_back(new ParserFormExpression(matrix, m_coordinateType));
                 }
 
-                for (rapidxml::xml_node<> *vector = weakform->first_node("vector");
+                for (rapidxml::xml_node<> *vector = weakform->first_node("vector_variable");
                      vector; vector = vector->next_sibling())
-                    if (std::string(vector->name()) == "vector")
+                    if (std::string(vector->name()) == "vector_variable")
                         weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
             }
         }

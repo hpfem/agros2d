@@ -22,9 +22,9 @@
                 <quantity id="electrostatic_permittivity" />
                 <quantity id="electrostatic_charge_density" />
 
-                <matrix i="1" j="1" planar="el_epsr * EPS0 * (udx * vdx + udy * vdy)"
+                <matrix_form i="1" j="1" planar="el_epsr * EPS0 * (udx * vdx + udy * vdy)"
                                     axi="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" symmetric="1" />
-                <vector i="1" j="1" planar="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"
+                <vector_form i="1" j="1" planar="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"
                                     axi="el_epsr * EPS0 * r * (updr * vdr + updz * vdz) - el_rho * r * vval" />
             </weakform>
         </weakforms>
@@ -46,7 +46,7 @@
                 <boundary id="electrostatic_surface_charge_density" name="Surface charge density">
                     <quantity id="electrostatic_surface_charge_density" />
 
-                    <vector i="1" j="1" planar="sigma * vval"
+                    <vector_form i="1" j="1" planar="sigma * vval"
                                         axi="sigma * r * vval" />
                 </boundary>
             </weakform>

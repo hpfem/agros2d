@@ -26,6 +26,8 @@
 #include <rapidxml.cpp>
 #include <rapidxml_utils.cpp>
 
+#include "../../resources_source/classes/module_xml.h"
+
 extern double actualTime;
 
 class Marker;

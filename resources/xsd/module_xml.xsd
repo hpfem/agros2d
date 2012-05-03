@@ -205,7 +205,7 @@
       <xs:attribute name="id" use="required" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="vector">
+  <xs:element name="vector_form">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="default"/>
@@ -246,8 +246,8 @@
         <xs:sequence>
           <xs:element maxOccurs="unbounded" ref="quantity"/>
           <xs:choice maxOccurs="unbounded">
-            <xs:element ref="matrix"/>
-            <xs:element ref="vector"/>
+            <xs:element ref="matrix_form"/>
+            <xs:element ref="vector_form"/>
           </xs:choice>
         </xs:sequence>
       </xs:choice>
@@ -259,9 +259,9 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="quantity"/>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="matrix"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="matrix_form"/>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element ref="vector"/>
+          <xs:element ref="vector_form"/>
           <xs:element ref="essential"/>
         </xs:choice>
       </xs:sequence>
@@ -284,7 +284,7 @@
       <xs:attribute name="name"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="matrix">
+  <xs:element name="matrix_form">
     <xs:complexType>
       <xs:attribute name="axi" use="required"/>
       <xs:attribute name="i" use="required" type="xs:integer"/>

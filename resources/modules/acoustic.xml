@@ -22,13 +22,13 @@
                 <quantity id="acoustic_density" />
                 <quantity id="acoustic_speed" />
 
-                <matrix i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                <matrix_form i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
                                     axi="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1" />
-                <matrix i="2" j="2" planar="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                <matrix_form i="2" j="2" planar="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
                                     axi="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1" />
-                <vector i="1" j="1" planar="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval"
+                <vector_form i="1" j="1" planar="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval"
                                     axi="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
-                <vector i="2" j="2" planar="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho *ac_vel * ac_vel) * upval * vval"
+                <vector_form i="2" j="2" planar="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho *ac_vel * ac_vel) * upval * vval"
                                     axi="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
             </weakform>
         </weakforms>
@@ -57,22 +57,22 @@
                     <quantity id="acoustic_normal_acceleration_real" />
                     <quantity id="acoustic_normal_acceleration_imag" />
 
-                    <vector i="1" j="1" planar="- anr * vval"
+                    <vector_form i="1" j="1" planar="- anr * vval"
                                         axi="- anr * r * vval" />
-                    <vector i="2" j="2" planar="- ani * vval"
+                    <vector_form i="2" j="2" planar="- ani * vval"
                                         axi="- ani * r * vval" />
                 </boundary>
 
                 <boundary id="acoustic_impedance" name="Impedance boundary condition">
                     <quantity id="acoustic_impedance" />
 
-                    <matrix i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval"
+                    <matrix_form i="1" j="2" planar="- 2 * PI * f / Z0 * uval * vval"
                                         axi="- r * 2 * PI * f / Z0 * uval * vval" symmetric="1" />
-                    <matrix i="2" j="1" planar="2 * PI * f / Z0 * uval * vval"
+                    <matrix_form i="2" j="1" planar="2 * PI * f / Z0 * uval * vval"
                                         axi="r * 2 * PI * f / Z0 * uval * vval" symmetric="1" />
-                    <vector i="1" j="2" planar="- 2 * PI * f / Z0 * upval * vval"
+                    <vector_form i="1" j="2" planar="- 2 * PI * f / Z0 * upval * vval"
                                         axi="- r * 2 * PI * f / Z0 * upval * vval" />
-                    <vector i="2" j="1" planar="2 * PI * f / Z0 * upval * vval"
+                    <vector_form i="2" j="1" planar="2 * PI * f / Z0 * upval * vval"
                                         axi="r * 2 * PI * f / Z0 * upval * vval" />
                 </boundary>
             </weakform>
