@@ -6,7 +6,7 @@ CONFIG += staticlib
 CONFIG += debug
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
-DEFINES += "NUM_THREADS=4"
+# DEFINES += "NUM_THREADS=4"
 
 INCLUDEPATH += include \
                include/adapt \

@@ -178,6 +178,9 @@ public:
     QString commandTriangle;
     QString commandFFmpeg;
 
+    // number of threads
+    int numberOfThreads;
+
     // global script
     QString globalScript;
 
@@ -203,7 +206,7 @@ private:
     void writeConfig(const QString &key, bool value);
     void writeConfig(const QString &key, int value);
     void writeConfig(const QString &key, double value);
-    void writeConfig(const QString &key, const QString &value);
+    void writeConfig(const QString &key, const QString &value);   
 };
 
 #endif // CONFIG_H

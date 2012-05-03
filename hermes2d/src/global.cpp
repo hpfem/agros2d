@@ -23,6 +23,8 @@
 #include "integrals/h1.h"
 #include "discrete_problem.h"
 
+#include <iostream>
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -44,8 +46,15 @@ namespace Hermes
 
     template<typename Scalar>
     int Global<Scalar>::Hermes_omp_get_max_threads()
-    { 
-      return NUM_THREADS;
+    {
+        char *pPath = getenv("NUM_THREADS");
+        if (pPath)
+        {
+            if (atoi(pPath) > 0)
+                return atoi(pPath);
+        }
+
+        return omp_get_max_threads();
     }
 
     template<typename Scalar>

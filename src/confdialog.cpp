@@ -65,6 +65,12 @@ void ConfigDialog::load()
     txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
     chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
 
+    // number of threads
+    chkNumOfThreads->setChecked(Util::config()->numberOfThreads > 0);
+    txtNumOfThreads->setValue(Util::config()->numberOfThreads);
+    connect(chkNumOfThreads, SIGNAL(stateChanged(int)), this, SLOT(numOfThreadsChecked(int)));
+    numOfThreadsChecked(chkNumOfThreads->isChecked());
+
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteTriangleMeshFiles);
     chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermes2DMeshFile);
@@ -128,6 +134,9 @@ void ConfigDialog::save()
     // mesh
     Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
     Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
+
+    // number of threads
+    Util::config()->numberOfThreads = chkNumOfThreads->isChecked() ? txtNumOfThreads->value() : 0;
 
     // delete files
     Util::config()->deleteTriangleMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
@@ -291,9 +300,17 @@ QWidget *ConfigDialog::createSolverWidget()
     if (Util::config()->showExperimentalFeatures)
         chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
 
-    QVBoxLayout *layoutSolver = new QVBoxLayout();
-    layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
-    layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
+    chkNumOfThreads = new QCheckBox(tr("Enable threads settings"));
+    txtNumOfThreads = new QSpinBox(this);
+    txtNumOfThreads->setMinimum(0);
+    txtNumOfThreads->setMaximum(omp_get_max_threads());
+
+    QGridLayout *layoutSolver = new QGridLayout();
+    layoutSolver->addWidget(chkDeleteTriangleMeshFiles, 0, 0, 1, 2);
+    layoutSolver->addWidget(chkDeleteHermes2DMeshFile, 1, 0, 1, 2);
+    layoutSolver->addWidget(chkNumOfThreads, 2, 0, 1, 2);
+    layoutSolver->addWidget(new QLabel(tr("Number of threads:")), 3, 0);
+    layoutSolver->addWidget(txtNumOfThreads, 3, 2);
     if (Util::config()->showExperimentalFeatures)
         layoutSolver->addWidget(chkSaveWithSolution);
 
@@ -482,4 +499,10 @@ void ConfigDialog::doCommandsDefault()
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
 }
+
+void ConfigDialog::numOfThreadsChecked(int state)
+{
+    txtNumOfThreads->setEnabled(chkNumOfThreads->isChecked());
+}
+
 

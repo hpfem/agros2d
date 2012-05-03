@@ -225,6 +225,12 @@ void Config::loadAdvanced()
         commandTriangle = COMMANDS_TRIANGLE;
     commandFFmpeg = settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString();
 
+    // number of threads
+    numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
+    if (numberOfThreads > omp_get_max_threads())
+        numberOfThreads = omp_get_max_threads();
+    setenv("NUM_THREADS", QString::number(numberOfThreads).toStdString().c_str(), true);
+
     // global script
     globalScript = settings.value("Python/GlobalScript", "").toString();
 }
@@ -404,6 +410,10 @@ void Config::saveAdvanced()
     // command argument
     settings.setValue("Commands/Triangle", commandTriangle);
     settings.setValue("Commands/FFmpeg", commandFFmpeg);
+
+    // number of threads
+    settings.setValue("Parallel/NumberOfThreads", numberOfThreads);
+    setenv("NUM_THREADS", QString::number(numberOfThreads).toStdString().c_str(), true);
 
     // global script
     settings.setValue("Python/GlobalScript", globalScript);

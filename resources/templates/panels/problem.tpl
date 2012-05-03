@@ -116,6 +116,9 @@
     <tr>
         <td><b>{{SOLUTION_ELAPSED_TIME_LABEL}}</b></td><td>{{SOLUTION_ELAPSED_TIME}}</td>
     </tr>
+    <tr>
+        <td><b>{{NUM_THREADS_LABEL}}</b></td><td>{{NUM_THREADS}}</td>
+    </tr>
     {{/SOLUTION_PARAMETERS_SECTION}}
 </table>
 </body>

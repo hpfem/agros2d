@@ -38,6 +38,7 @@ private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void doAdaptivityDefault();
     void doCommandsDefault();
+    void numOfThreadsChecked(int state);
 
     void doAccept();
     void doReject();
@@ -93,6 +94,10 @@ private:
     QLabel *lblStrategy;
     QComboBox *cmbMeshRegularity;
     QComboBox *cmbProjNormType;
+
+    // threads
+    QCheckBox *chkNumOfThreads;
+    QSpinBox *txtNumOfThreads;
 
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentFFmpeg;
