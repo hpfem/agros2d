@@ -673,9 +673,11 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
             constants[constant->first_attribute("id")->value()] = atof(constant->first_attribute("value")->value());
 
         // macros
+        /*
         for (rapidxml::xml_node<> *macro = doc.first_node("module")->first_node("macros")->first_node("macro");
              macro; macro = macro->next_sibling())
             macros[macro->first_attribute("id")->value()] = macro->first_attribute("expression")->value();
+        */
 
         // surface weakforms
         Hermes::vector<Hermes::Module::BoundaryTypeVariable> boundary_type_variables_tmp;

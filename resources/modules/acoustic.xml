@@ -104,7 +104,7 @@
                     unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="m \cdot s^{-2}" />
                 <quantity id="acoustic_impedance" name="Impedance boundary condition"
                     shortname="Z0" shortname_html="&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;" shortname_latex="Z_{0}"
-                    unit="Pa·s/m" unit_html="Pa.s.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Pa \cdot s \cdot m^{-1}" />
+                    unit="Pa.s/m" unit_html="Pa.s.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Pa \cdot s \cdot m^{-1}" />
             </group>
         </surface>
     </preprocessor>

@@ -107,7 +107,6 @@ class XmlParser:
     def parse_xml_file(self, filename):
          # constants definitions
          coordinate_types = ['planar', 'axi']; 
-         weakform_types = ['matrix', 'vector', 'essential']              
          # opens file and initializes xml parser            
          ds_module = md.parse(Config.modules_dir + filename)
                      
@@ -137,8 +136,8 @@ class XmlParser:
              volume = Volume()                 
              volume.name =  ds_weakform.analysistype      
              i  = 0
-             n  = len(ds_weakform.matrix)
-             for ds_matrix in ds_weakform.matrix + ds_weakform.vector:                 
+             n  = len(ds_weakform.matrix_form)
+             for ds_matrix in ds_weakform.matrix_form + ds_weakform.vector_form:                 
                  for coordinate_type in coordinate_types:                                          
                          weakform = WeakForm()                            
                          weakform.integral_type = 'vol'                     
@@ -176,10 +175,10 @@ class XmlParser:
                     quantity = Quantity()      
                     quantity.id = ds_quantity.id                    
                     weakform.quantities.append(quantity)                 
-                 n_essential = len(ds_boundary.essential)
-                 n_vector = n_essential + len(ds_boundary.vector)
+                 n_essential = len(ds_boundary.essential_form)
+                 n_vector = n_essential + len(ds_boundary.vector_form)
                  i = 0                 
-                 for ds_vector in ds_boundary.essential + ds_boundary.vector + ds_boundary.matrix:                     
+                 for ds_vector in ds_boundary.essential_form + ds_boundary.vector_form + ds_boundary.matrix_form:                     
                      for coordinate_type in coordinate_types:                         
                          weakform = WeakForm()
                          if (i < n_essential) :
@@ -652,6 +651,6 @@ class Module:
             weakform_pri_file.close()
 
 if __name__ == '__main__':    
-    #parser = XmlParser(['heat', 'electrostatic', 'magnetic', 'current', 'acoustic', 'elasticity', 'rf_te'])        
-    parser = XmlParser(['heat'])    
+    parser = XmlParser(['heat', 'electrostatic', 'magnetic', 'current', 'acoustic', 'elasticity', 'rf'])
+    #parser = XmlParser(['heat'])    
     parser.process()
