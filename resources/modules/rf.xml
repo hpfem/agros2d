@@ -57,9 +57,9 @@
                     <quantity id="rf_te_electric_field_real" />
                     <quantity id="rf_te_electric_field_imag" />
 
-                    <essential i="1" planar="Er"
+                    <essential_form i="1" planar="Er"
                                      axi="Er" />
-                    <essential i="2" planar="Ei"
+                    <essential_form i="2" planar="Ei"
                                      axi="Ei" />
                 </boundary>
 
@@ -248,12 +248,12 @@
         </localvariables>
 
         <view>
-            <scalar>
+            <scalar_view>
                 <default analysistype="harmonic" id="rf_te_electric_field_real"/>
-            </scalar>
-            <vector>
+            </scalar_view>
+            <vector_view>
                 <default analysistype="harmonic" id="rf_te_electric_field_real"/>
-            </vector>
+            </vector_view>
         </view>
 
         <volumeintegrals>

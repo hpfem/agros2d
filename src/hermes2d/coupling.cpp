@@ -215,16 +215,16 @@ void Coupling::read(std::string filename)
 //                material_type_variables_tmp.clear();
 
                 // weakforms
-                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix");
+                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix_form");
                      matrix; matrix = matrix->next_sibling())
                 {
                     if (std::string(matrix->name()) == "matrix")
                         weakform_matrix_volume.push_back(new ParserFormExpression(matrix, m_coordinateType));
                 }
 
-                for (rapidxml::xml_node<> *vector = weakform->first_node("vector_variable");
+                for (rapidxml::xml_node<> *vector = weakform->first_node("vector_form");
                      vector; vector = vector->next_sibling())
-                    if (std::string(vector->name()) == "vector_variable")
+                    if (std::string(vector->name()) == "vector_form")
                         weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
             }
         }

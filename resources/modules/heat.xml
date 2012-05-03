@@ -58,7 +58,7 @@
                 <boundary id="heat_temperature" name="Temperature">
                     <quantity id="heat_temperature" />
 
-                    <essential i="1" planar="T"
+                    <essential_form i="1" planar="T"
                                      axi="T" />
                 </boundary>
 
@@ -80,7 +80,7 @@
                 <boundary id="heat_temperature" name="Temperature">
                     <quantity id="heat_temperature" />
 
-                    <essential i="1" planar="T"
+                    <essential_form i="1" planar="T"
                                      axi="T" />
                 </boundary>
 
@@ -206,14 +206,14 @@
         </localvariables>
 
         <view>
-            <scalar>
+            <scalar_view>
                 <default analysistype="steadystate" id="heat_temperature" />
                 <default analysistype="transient" id="heat_temperature" />
-            </scalar>
-            <vector>
+            </scalar_view>
+            <vector_view>
                 <default analysistype="steadystate" id="heat_heat_flux" />
                 <default analysistype="transient" id="heat_heat_flux" />
-            </vector>
+            </vector_view>
         </view>
 
         <volumeintegrals>

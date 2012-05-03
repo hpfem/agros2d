@@ -483,20 +483,20 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
             }
 
     // weakform
-    for (rapidxml::xml_node<> *node_matrix = node->first_node("matrix");
+    for (rapidxml::xml_node<> *node_matrix = node->first_node("matrix_form");
          node_matrix; node_matrix = node_matrix->next_sibling())
-        if (std::string(node_matrix->name()) == "matrix")
+        if (std::string(node_matrix->name()) == "matrix_form")
             weakform_matrix_surface.push_back(new ParserFormExpression(node_matrix, problem_type));
 
-    for (rapidxml::xml_node<> *node_vector = node->first_node("vector");
+    for (rapidxml::xml_node<> *node_vector = node->first_node("vector_form");
          node_vector; node_vector = node_vector->next_sibling())
-        if (std::string(node_vector->name()) == "vector")
+        if (std::string(node_vector->name()) == "vector_form")
             weakform_vector_surface.push_back(new ParserFormExpression(node_vector, problem_type));
 
     // essential
-    for (rapidxml::xml_node<> *node_essential = node->first_node("essential");
+    for (rapidxml::xml_node<> *node_essential = node->first_node("essential_form");
          node_essential; node_essential = node_essential->next_sibling())
-        if (std::string(node_essential->name()) == "essential")
+        if (std::string(node_essential->name()) == "essential_form")
             essential.push_back(new ParserFormEssential(node_essential, problem_type));
 }
 
@@ -727,16 +727,16 @@ void Hermes::Module::Module::read(std::string filename)
                 material_type_variables_tmp.clear();
 
                 // weakforms
-                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix");
+                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix_form");
                      matrix; matrix = matrix->next_sibling())
                 {
-                    if (std::string(matrix->name()) == "matrix")
+                    if (std::string(matrix->name()) == "matrix_form")
                         weakform_matrix_volume.push_back(new ParserFormExpression(matrix, m_coordinateType));
                 }
 
-                for (rapidxml::xml_node<> *vector = weakform->first_node("vector");
+                for (rapidxml::xml_node<> *vector = weakform->first_node("vector_form");
                      vector; vector = vector->next_sibling())
-                    if (std::string(vector->name()) == "vector")
+                    if (std::string(vector->name()) == "vector_form")
                         weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
             }
         }
@@ -773,14 +773,14 @@ void Hermes::Module::Module::read(std::string filename)
         rapidxml::xml_node<> *view = doc.first_node("module")->first_node("postprocessor")->first_node("view");
 
         // scalar variables default
-        rapidxml::xml_node<> *view_scalar = view->first_node("scalar");
+        rapidxml::xml_node<> *view_scalar = view->first_node("scalar_view");
         for (rapidxml::xml_node<> *view_scalar_default = view_scalar->first_node("default");
              view_scalar_default; view_scalar_default = view_scalar_default->next_sibling())
             if (view_scalar_default->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
                 view_default_scalar_variable = get_variable(view_scalar_default->first_attribute("id")->value());
 
         // vector variables default
-        rapidxml::xml_node<> *view_vector = view->first_node("vector");
+        rapidxml::xml_node<> *view_vector = view->first_node("vector_view");
         for (rapidxml::xml_node<> *view_vector_default = view_vector->first_node("default");
              view_vector_default; view_vector_default = view_vector_default->next_sibling())
             if (view_vector_default->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))

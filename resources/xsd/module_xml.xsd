@@ -111,15 +111,22 @@
   <xs:element name="view">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="scalar"/>
-        <xs:element ref="vector"/>
+        <xs:element ref="scalar_view"/>
+        <xs:element ref="vector_view"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="scalar">
+  <xs:element name="scalar_view">
     <xs:complexType>
       <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="default"/>
+        <xs:element maxOccurs="unbounded" minOccurs="1" ref="default"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vector_view">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="1" ref="default"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -207,9 +214,6 @@
   </xs:element>
   <xs:element name="vector_form">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="default"/>
-      </xs:sequence>
       <xs:attribute name="axi"/>
       <xs:attribute name="i" type="xs:integer"/>
       <xs:attribute name="j" type="xs:integer"/>
@@ -262,14 +266,14 @@
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="matrix_form"/>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element ref="vector_form"/>
-          <xs:element ref="essential"/>
+          <xs:element ref="essential_form"/>
         </xs:choice>
       </xs:sequence>
       <xs:attribute name="id" use="required" type="xs:NCName"/>
       <xs:attribute name="name" use="required"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="essential">
+  <xs:element name="essential_form">
     <xs:complexType>
       <xs:attribute name="axi" use="required" type="xs:NCName"/>
       <xs:attribute name="i" use="required" type="xs:integer"/>

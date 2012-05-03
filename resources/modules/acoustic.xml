@@ -47,9 +47,9 @@
                     <quantity id="acoustic_pressure_real" />
                     <quantity id="acoustic_pressure_imag" />
 
-                    <essential i="1" planar="pr"
+                    <essential_form i="1" planar="pr"
                                      axi="pr" />
-                    <essential i="2" planar="pi"
+                    <essential_form i="2" planar="pi"
                                      axi="pi" />
                 </boundary>
 
@@ -168,12 +168,12 @@
         </localvariables>
 
         <view>
-            <scalar>
+            <scalar_view>
                 <default analysistype ="harmonic" id="acoustic_pressure_real" />
-            </scalar>
-            <vector>
+            </scalar_view>
+            <vector_view>
                 <default analysistype ="harmonic" id="acoustic_local_acceleration_real" />
-            </vector>
+            </vector_view>
         </view>
 
         <volumeintegrals>

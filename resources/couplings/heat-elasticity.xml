@@ -14,39 +14,39 @@
     <volume>
         <weakforms>
             <weakform couplingtype="weak" sourceanalysis="steadystate"  targetanalysis="steadystate" >
-                <vector i="1" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
+                <vector_form i="1" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * (vdr + vval / r)" />
-                <vector i="2" j="2" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
+                <vector_form i="2" j="2" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdz" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="steadystate"  targetanalysis="steadystate" >
-                <matrix i="2" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
+                <matrix_form i="2" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
                                     axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * (vdr + vval / r)" />
-                <matrix i="3" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
+                <matrix_form i="3" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
                                     axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdz" />
-                <vector i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
+                <vector_form i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
-                <vector i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
+                <vector_form i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
             </weakform>
 
 
             <weakform couplingtype="weak" sourceanalysis="transient"  targetanalysis="steadystate" >
-                <vector i="1" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
+                <vector_form i="1" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * (vdr + vval / r)" />
-                <vector i="2" j="2" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
+                <vector_form i="2" j="2" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdz" />
             </weakform>
 
             <weakform couplingtype="hard" sourceanalysis="transient"  targetanalysis="steadystate" >
-                <matrix i="2" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
+                <matrix_form i="2" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
                                     axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * (vdr + vval / r)" />
-                <matrix i="3" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
+                <matrix_form i="3" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
                                     axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdz" />
-                <vector i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
+                <vector_form i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
-                <vector i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
+                <vector_form i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
                                     axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
             </weakform>
 

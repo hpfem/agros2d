@@ -35,7 +35,7 @@
                 <boundary id="current_potential" name="Fixed voltage">
                     <quantity id="current_potential" />
 
-                    <essential i="1" planar="V"
+                    <essential_form i="1" planar="V"
                                      axi="V" />
                 </boundary>
 
@@ -108,12 +108,12 @@
         </localvariables>
 
         <view>
-            <scalar>
+            <scalar_view>
                 <default analysistype="steadystate" id="current_potential" />
-            </scalar>
-            <vector>
+            </scalar_view>
+            <vector_view>
                 <default analysistype="steadystate" id="current_current_density" />
-            </vector>
+            </vector_view>
         </view>
 
         <volumeintegrals>

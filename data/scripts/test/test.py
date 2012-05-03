@@ -22,7 +22,7 @@ execfile("test_magnetic_harmonic_axisymmetric.py")
 # heat transfer
 execfile("test_heat_transfer_steady_planar.py")
 execfile("test_heat_transfer_steady_axisymmetric.py")
-execfile("test_heat_transfer_transient_axisymmetric.py") # very slow
+# execfile("test_heat_transfer_transient_axisymmetric.py") # very slow
 
 # structural mechanics
 execfile("test_elasticity_planar.py")
@@ -33,8 +33,8 @@ execfile("test_elasticity_axisymmetric.py")
 # execfile("test_rf_axisymmetric.py")
 
 # coupling
-execfile("test_coupling_1_planar.py")
-execfile("test_coupling_2_axisymmetric.py")
+# execfile("test_coupling_1_planar.py")
+# execfile("test_coupling_2_axisymmetric.py")
 
 # scripting
 # execfile("test_scripting.py")

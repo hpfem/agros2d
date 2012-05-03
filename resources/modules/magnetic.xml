@@ -134,7 +134,7 @@
                 <boundary id="magnetic_potential" name="Magnetic potential">
                     <quantity id="magnetic_potential_real" />
 
-                    <essential i="1" planar="Ar"
+                    <essential_form i="1" planar="Ar"
                                      axi="Ar" />
                 </boundary>
 
@@ -150,7 +150,7 @@
                 <boundary id="magnetic_potential" name="Magnetic potential">
                     <quantity id="magnetic_potential_real" />
 
-                    <essential i="1" planar="Ar"
+                    <essential_form i="1" planar="Ar"
                                      axi="Ar" />
                 </boundary>
 
@@ -167,9 +167,9 @@
                     <quantity id="magnetic_potential_real" />
                     <quantity id="magnetic_potential_imag" />
 
-                    <essential i="1" planar="Ar"
+                    <essential_form i="1" planar="Ar"
                                      axi="Ar" />
-                    <essential i="2" planar="Ai"
+                    <essential_form i="2" planar="Ai"
                                      axi="Ai" />
                 </boundary>
 
@@ -421,16 +421,16 @@
         </localvariables>
 
         <view>
-            <scalar>
+            <scalar_view>
                 <default analysistype="steadystate" id="magnetic_flux_density_real" />
                 <default analysistype="transient" id="magnetic_flux_density" />
                 <default analysistype="harmonic" id="magnetic_flux_density_real" />
-            </scalar>
-            <vector>
+            </scalar_view>
+            <vector_view>
                 <default analysistype="steadystate" id="magnetic_flux_density_real" />
                 <default analysistype="transient" id="magnetic_flux_density" />
                 <default analysistype="harmonic" id="magnetic_flux_density_real" />
-            </vector>
+            </vector_view>
         </view>
 
         <volumeintegrals>

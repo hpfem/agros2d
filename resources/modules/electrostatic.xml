@@ -39,7 +39,7 @@
                 <boundary id="electrostatic_potential" name="Fixed voltage">
                     <quantity id="electrostatic_potential" />
 
-                    <essential i="1" planar="V"
+                    <essential_form i="1" planar="V"
                                      axi="V" />
                 </boundary>
 
@@ -121,12 +121,12 @@
         </localvariables>
 
         <view>
-            <scalar>
+            <scalar_view>
                 <default analysistype="steadystate" id="electrostatic_potential" />
-            </scalar>
-            <vector>
+            </scalar_view>
+            <vector_view>
                 <default analysistype="steadystate" id="electrostatic_electric_field" />
-            </vector>
+            </vector_view>
         </view>
 
         <volumeintegrals>
