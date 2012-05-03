@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module_xml.xsd">
     <general id="acoustic" name="Acoustics">
         <description>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</description>
         <analyses>
@@ -10,9 +10,7 @@
     <constants>
         <constant id="P0" value="20e-6" />
     </constants>
-
-    <macros />
-
+    
     <volume>
         <quantity id="acoustic_density" shortname="ac_rho" />
         <quantity id="acoustic_speed" shortname="ac_vel" />

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module_xml.xsd">
     <general id="electrostatic" name="Electrostatic field">
         <description>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</description>
         <analyses>
@@ -10,9 +10,7 @@
     <constants>
         <constant id="EPS0" value="8.854e-12" />
     </constants>
-
-    <macros />
-
+    
     <volume>
         <quantity id="electrostatic_permittivity" shortname="el_epsr" />
         <quantity id="electrostatic_charge_density" shortname="el_rho" />

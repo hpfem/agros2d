@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module_xml.xsd">
     <general id="magnetic" name="Magnetic field">
         <description>Magnetic field ...</description>
         <analyses>
@@ -12,9 +12,7 @@
     <constants>
         <constant id="MU0" value="1.2566371e-06" />
     </constants>
-
-    <macros />
-        
+            
     <volume>
         <quantity id="magnetic_permeability" shortname="ma_mur" />
         <quantity id="magnetic_conductivity" shortname="ma_gamma" />

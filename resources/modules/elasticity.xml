@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module_xml.xsd">
     <general id ="elasticity" name="Structural analysis" deformed_shape="1">
         <description>Structural analysis is the determination of the effects of loads on physical structures and their components.</description>
         <analyses>
@@ -8,9 +8,7 @@
     </general>
 
     <constants />
-
-    <macros />
-
+    
     <volume>
         <quantity id="elasticity_young_modulus" shortname="st_E" />
         <quantity id="elasticity_poisson_ratio" shortname="st_nu" />
