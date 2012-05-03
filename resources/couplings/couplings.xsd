@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <xs:element name="coupling">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="general"/>
+        <xs:element ref="volume"/>
+      </xs:sequence>      
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="general">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="description"/>
+        <xs:element ref="modules"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="modules">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="source"/>
+        <xs:element ref="target"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="source">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="target">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="volume">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="weakforms"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="weakforms">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="weakform"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="weakform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="matrix"/>
+        <xs:element maxOccurs="unbounded" ref="vector"/>
+      </xs:sequence>
+      <xs:attribute name="couplingtype" use="required" type="xs:NCName"/>
+      <xs:attribute name="sourceanalysis" use="required" type="xs:NCName"/>
+      <xs:attribute name="targetanalysis" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="matrix">
+    <xs:complexType>
+      <xs:attribute name="axi" use="required"/>
+      <xs:attribute name="i" use="required" type="xs:integer"/>
+      <xs:attribute name="j" use="required" type="xs:integer"/>
+      <xs:attribute name="planar" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vector">
+    <xs:complexType>
+      <xs:attribute name="axi" use="required"/>
+      <xs:attribute name="i" use="required" type="xs:integer"/>
+      <xs:attribute name="j" use="required" type="xs:integer"/>
+      <xs:attribute name="planar" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
