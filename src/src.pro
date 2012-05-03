@@ -114,7 +114,8 @@ SOURCES += util.cpp \
     preprocessorview.cpp \
     infowidget.cpp \
     settings.cpp \
-    hermes2d/solutionstore.cpp
+    hermes2d/solutionstore.cpp \
+    ../resources_source/classes/module_xml.cpp
 
 HEADERS += util.h \
     value.h \

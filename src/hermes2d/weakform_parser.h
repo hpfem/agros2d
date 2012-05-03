@@ -34,7 +34,7 @@ class CouplingInfo;
 struct ParserFormEssential
 {
     ParserFormEssential() : i(0), expression("") {}
-    ParserFormEssential(rapidxml::xml_node<> *node, CoordinateType problem_type);
+    ParserFormEssential(int i, std::string expr) : i(i), expression(expr) {}
 
     // position
     int i;
@@ -47,7 +47,7 @@ struct ParserFormEssential
 struct ParserFormExpression
 {
     ParserFormExpression() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expression("") {}
-    ParserFormExpression(rapidxml::xml_node<> *node, CoordinateType problem_type);
+    ParserFormExpression(int i, int j, Hermes::Hermes2D::SymFlag sym, string expr) : i(i), j(j), sym(sym), expression(expr) {}
 
     // position
     int i;

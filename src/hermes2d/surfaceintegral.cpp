@@ -65,7 +65,7 @@ void SurfaceIntegralValue::initParser()
     {
         mu::Parser *pars = m_fieldInfo->module()->get_parser();
 
-        pars->SetExpr(((Hermes::Module::Integral *) *it)->expression.scalar);
+        pars->SetExpr(((Hermes::Module::Integral *) *it)->expr.scalar);
 
         parser->parser.push_back(pars);
 

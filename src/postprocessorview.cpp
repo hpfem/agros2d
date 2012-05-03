@@ -215,7 +215,7 @@ void PostprocessorWidget::saveBasic()
 
     Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
     if (physicFieldVariable && physicFieldVariable->id == "custom")
-        physicFieldVariable->expression.scalar = txtPostScalarFieldExpression->text().toStdString();
+        physicFieldVariable->expr.scalar = txtPostScalarFieldExpression->text().toStdString();
 
     // vector field
     Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
@@ -935,18 +935,18 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
         switch ((PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt())
         {
         case PhysicFieldVariableComp_Scalar:
-            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.scalar));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expr.scalar));
             break;
         case PhysicFieldVariableComp_Magnitude:
             txtPostScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
-                                                    arg(QString::fromStdString(physicFieldVariable->expression.comp_x)).
-                                                    arg(QString::fromStdString(physicFieldVariable->expression.comp_y)));
+                                                    arg(QString::fromStdString(physicFieldVariable->expr.comp_x)).
+                                                    arg(QString::fromStdString(physicFieldVariable->expr.comp_y)));
             break;
         case PhysicFieldVariableComp_X:
-            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_x));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expr.comp_x));
             break;
         case PhysicFieldVariableComp_Y:
-            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expression.comp_y));
+            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expr.comp_y));
             break;
         }
     }

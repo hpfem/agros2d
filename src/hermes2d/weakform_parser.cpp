@@ -29,48 +29,6 @@
 #include "problem.h"
 #include "datatable.h"
 
-// **************************************************************************
-
-ParserFormEssential::ParserFormEssential(rapidxml::xml_node<> *node, CoordinateType problem_type) : expression("")
-{
-    i = atoi(node->first_attribute("i")->value());
-
-    if (problem_type == CoordinateType_Planar)
-    {
-        if (node->first_attribute("planar"))
-            expression = node->first_attribute("planar")->value();
-    }
-    else
-    {
-        if (node->first_attribute("axi"))
-            expression = node->first_attribute("axi")->value();
-    }
-}
-
-
-
-ParserFormExpression::ParserFormExpression(rapidxml::xml_node<> *node, CoordinateType problem_type)
-{
-    i = atoi(node->first_attribute("i")->value());
-    j = atoi(node->first_attribute("j")->value());
-
-    sym = Hermes::Hermes2D::HERMES_NONSYM;
-    if (node->first_attribute("symmetric"))
-        if (atoi(node->first_attribute("symmetric")->value()))
-            sym = Hermes::Hermes2D::HERMES_SYM;
-
-    if (problem_type == CoordinateType_Planar)
-    {
-        if (node->first_attribute("planar"))
-            expression = node->first_attribute("planar")->value();
-    }
-    else
-    {
-        if (node->first_attribute("axi"))
-            expression = node->first_attribute("axi")->value();
-    }
-}
-
 void ParserForm::initParserForm(FieldInfo *fieldInfo)
 {
     m_fieldInfo = fieldInfo;

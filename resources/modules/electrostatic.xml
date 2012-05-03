@@ -15,8 +15,8 @@
         <quantity id="electrostatic_permittivity" shortname="el_epsr" />
         <quantity id="electrostatic_charge_density" shortname="el_rho" />
 
-        <weakforms>
-            <weakform analysistype="steadystate">
+        <weakforms_volume>
+            <weakform_volume analysistype="steadystate">
                 <quantity id="electrostatic_permittivity" />
                 <quantity id="electrostatic_charge_density" />
 
@@ -24,16 +24,16 @@
                                     axi="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" symmetric="1" />
                 <vector_form i="1" j="1" planar="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"
                                     axi="el_epsr * EPS0 * r * (updr * vdr + updz * vdz) - el_rho * r * vval" />
-            </weakform>
-        </weakforms>
+            </weakform_volume>
+        </weakforms_volume>
     </volume>
 
     <surface>
         <quantity id="electrostatic_potential" shortname="V" />
         <quantity id="electrostatic_surface_charge_density" shortname="sigma" />
 
-        <weakforms>
-            <weakform analysistype="steadystate" default="electrostatic_potential">
+        <weakforms_surface>
+            <weakform_surface analysistype="steadystate" default="electrostatic_potential">
                 <boundary id="electrostatic_potential" name="Fixed voltage">
                     <quantity id="electrostatic_potential" />
 
@@ -47,12 +47,12 @@
                     <vector_form i="1" j="1" planar="sigma * vval"
                                         axi="sigma * r * vval" />
                 </boundary>
-            </weakform>
-        </weakforms>
+            </weakform_surface>
+        </weakforms_surface>
     </surface>
 
     <preprocessor>
-        <volume>
+        <gui type="volume">
             <group>
                 <quantity id="electrostatic_permittivity" name="Permittivity"
                           shortname="epsr" shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="\varepsilon_{r}"
@@ -61,8 +61,8 @@
                           shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
                           unit="C/m3" unit_html="C.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="C \cdot m^{-3}" />
             </group>
-        </volume>
-        <surface>
+        </gui>
+        <gui type="surface">
             <group>
                 <quantity id="electrostatic_potential" name="Fixed voltage"
                           shortname="V" shortname_html="&lt;i&gt;&amp;phi;&lt;/i&gt;" shortname_latex="\phi"
@@ -71,7 +71,7 @@
                           shortname="sigma" shortname_html="&lt;i&gt;&amp;sigma;&lt;/i&gt;" shortname_latex="\sigma"
                           unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" />
             </group>
-        </surface>
+        </gui>
     </preprocessor>
 
     <postprocessor>

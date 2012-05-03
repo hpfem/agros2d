@@ -215,6 +215,7 @@ void Coupling::read(std::string filename)
 //                material_type_variables_tmp.clear();
 
                 // weakforms
+                /*
                 for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix_form");
                      matrix; matrix = matrix->next_sibling())
                 {
@@ -226,6 +227,7 @@ void Coupling::read(std::string filename)
                      vector; vector = vector->next_sibling())
                     if (std::string(vector->name()) == "vector_form")
                         weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
+                */
             }
         }
 

@@ -44,68 +44,62 @@
 
 #include <dirent.h>
 
+#include "../../resources_source/classes/module_xml.h"
+
 double actualTime;
 
 std::map<std::string, std::string> availableModules()
 {
     static std::map<std::string, std::string> modules;
-
+    
     // read modules
     if (modules.size() == 0)
     {
         DIR *dp;
         if ((dp = opendir((datadir()+ MODULEROOT).toStdString().c_str())) == NULL)
             error("Modules dir '%s' doesn't exists", (datadir() + MODULEROOT).toStdString().c_str());
-
+        
         struct dirent *dirp;
         while ((dirp = readdir(dp)) != NULL)
         {
             std::string filename = dirp->d_name;
-
+            
             // skip current and parent dir
             if (filename == "." || filename == "..")
                 continue;
-
+            
             if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
             {
-                // read name
-                rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
-
-                // parse xml
-                rapidxml::xml_document<> doc;
-                doc.parse<0>(file_data.data());
+                std::auto_ptr<module> module_xsd = module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
+                module *mod = module_xsd.get();
 
                 // module name
-                modules[filename.substr(0, filename.size() - 4)] =
-                        QObject::tr(doc.first_node("module")->first_node("general")->first_attribute("name")->value()).toStdString();
+                modules[filename.substr(0, filename.size() - 4)] = mod->general().name();
             }
         }
         closedir(dp);
     }
-
+    
     // custom module
     // modules["custom"] = "Custom field";
-
+    
     return modules;
 }
 
 std::map<std::string, std::string> availableAnalyses(std::string fieldId)
 {
     std::map<std::string, std::string> analyses;
-
-    // read module
-    rapidxml::file<> file_data((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId + ".xml").c_str());
-
-    // parse xml
-    rapidxml::xml_document<> doc;
-    doc.parse<0>(file_data.data());
-
-    for (rapidxml::xml_node<> *analysis = doc.first_node("module")->first_node("general")->first_node("analyses")->first_node("analysis");
-         analysis; analysis = analysis->next_sibling())
+    
+    std::auto_ptr<module> module_xsd = module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId + ".xml").c_str());
+    module *mod = module_xsd.get();
+    
+    for (int i = 0; i < mod->general().analyses().analysis().size(); i++)
     {
-        analyses[analysis->first_attribute("id")->value()] = analysis->first_attribute("name")->value();
-    }
+        analysis an = mod->general().analyses().analysis().at(i);
 
+        analyses[an.id()] = an.name();
+    }
+    
     return analyses;
 }
 
@@ -198,19 +192,19 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
     string problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
             analysisTypeToStringKey(field->fieldInfo()->module()->get_analysis_type()).toStdString()  + "_" +
             coordinateTypeToStringKey(field->fieldInfo()->module()->get_coordinate_type()).toStdString();
-
+    
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
-
+    
     // compiled form
     if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
         //assert(0);
         custom_form = factoryForm<Scalar>(type, problemId, area, form, marker);
     }
-
+    
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
         qDebug() << "Cannot find compiled VectorFormVol().";
-
+    
     // interpreted form
     if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
     {
@@ -218,16 +212,16 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
         custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression,
                                                 fieldInfo, couplingInfo, marker, marker_second);
     }
-
+    
     //Decide what solution to push, implicitly none
     FieldSolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
-
+    
     // weak coupling, push solutions
     if(marker_second && couplingInfo->isWeak())
     {
         // TODO at the present moment, it is impossible to have more sources !
         assert(field->m_couplingSources.size() <= 1);
-
+        
         solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionType_Finer);
         assert(solutionID.group->module()->number_of_solution() <= maxSourceFieldComponents);
     }
@@ -237,7 +231,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
             solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Finer);
         }
     }
-
+    
     if(solutionID.solutionType != SolutionType_NonExisting)
     {
         for(int comp = 0; comp < solutionID.group->module()->number_of_solution(); comp++)
@@ -245,12 +239,12 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, string area,
             custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.get());
         }
     }
-
+    
     if (custom_form)
     {
         addForm(type, custom_form);
     }
-
+    
 }
 
 
@@ -258,28 +252,28 @@ template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms()
 {
     qDebug() << "registerForms";
-
+    
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-
+        
         // boundary conditions
         for (int edgeNum = 0; edgeNum<Util::scene()->edges->count(); edgeNum++)
         {
             SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->getMarker(fieldInfo);
             cout << "registerForms : registering edge " << edgeNum << endl;
-
+            
             if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
             {
                 Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
-
+                
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
                      it < boundary_type->weakform_matrix_surface.end(); ++it)
                 {
                     registerForm(WFType_MatSurf, field, QString::number(edgeNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 }
-
+                
                 for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
                      it < boundary_type->weakform_vector_surface.end(); ++it)
                 {
@@ -288,13 +282,13 @@ void WeakFormAgros<Scalar>::registerForms()
                 }
             }
         }
-
+        
         // materials
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->getMarker(fieldInfo);
             cout << "registerForms : registering label " << labelNum << ", material " << material << ", name " << material->getName() << endl;
-
+            
             assert(material);
             if (material != Util::scene()->materials->getNone(fieldInfo))
             {
@@ -303,16 +297,16 @@ void WeakFormAgros<Scalar>::registerForms()
                 {
                     registerForm(WFType_MatVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
-
+                    
                 }
-
+                
                 for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_vector_volume.begin();
                      it < fieldInfo->module()->weakform_vector_volume.end(); ++it)
                 {
                     registerForm(WFType_VecVol, field, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(field), m_block->offset(field), material);
                 }
-
+                
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
@@ -331,7 +325,7 @@ void WeakFormAgros<Scalar>::registerForms()
             }
         }
     }
-
+    
     // hard coupling
     foreach (CouplingInfo* couplingInfo, m_block->couplings())
     {
@@ -339,17 +333,17 @@ void WeakFormAgros<Scalar>::registerForms()
         Coupling* coupling = couplingInfo->coupling();
         Field* sourceField = m_block->field(couplingInfo->sourceField());
         Field* targetField = m_block->field(couplingInfo->targetField());
-
-
+        
+        
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
             SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->getMarker(sourceField->fieldInfo());
             SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->getMarker(targetField->fieldInfo());
-
+            
             if (sourceMaterial && (sourceMaterial != Util::scene()->materials->getNone(sourceField->fieldInfo()))
                     && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
             {
-
+                
                 cout << "hard coupling form on marker " << labelNum << endl;
                 for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
                      it < coupling->weakform_matrix_volume.end(); ++it)
@@ -358,14 +352,14 @@ void WeakFormAgros<Scalar>::registerForms()
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
                 }
-
+                
                 for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
                      it < coupling->weakform_vector_volume.end(); ++it)
                 {
                     registerForm(WFType_VecVol, sourceField, QString::number(labelNum).toStdString(), (ParserFormExpression *) *it,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
-
+                    
                 }
             }
         }
@@ -374,75 +368,44 @@ void WeakFormAgros<Scalar>::registerForms()
 
 // ***********************************************************************************************
 
-Hermes::Module::LocalVariable::Expression::Expression(rapidxml::xml_node<> *node, CoordinateType problemType)
+Hermes::Module::LocalVariable::LocalVariable(localvariable lv,
+                                             CoordinateType coordinateType, AnalysisType analysisType)
 {
-    if (problemType == CoordinateType_Planar)
+    id = lv.id();
+    name = lv.name();
+    shortname = lv.shortname();
+    shortname_html = (lv.shortname_html().present()) ? lv.shortname_html().get() : shortname;
+    unit = lv.unit();
+    unit_html = (lv.unit_html().present()) ? lv.unit_html().get() : unit;
+    
+    is_scalar = (lv.type() == "scalar");
+    
+    for (int i = 0; i < lv.expression().size(); i++)
     {
-        if (node->first_attribute("planar"))
-            scalar = node->first_attribute("planar")->value();
-        if (node->first_attribute("planar_x"))
-            comp_x = node->first_attribute("planar_x")->value();
-        if (node->first_attribute("planar_y"))
-            comp_y = node->first_attribute("planar_y")->value();
-    }
-    else
-    {
-        if (node->first_attribute("axi"))
-            scalar = node->first_attribute("axi")->value();
-        if (node->first_attribute("axi_r"))
-            comp_x = node->first_attribute("axi_r")->value();
-        if (node->first_attribute("axi_z"))
-            comp_y = node->first_attribute("axi_z")->value();
-    }
-}
-
-// ***********************************************************************************************
-
-Hermes::Module::LocalVariable::LocalVariable(rapidxml::xml_node<> *node,
-                                             CoordinateType problemType, AnalysisType analysisType)
-{
-    id = node->first_attribute("id")->value();
-    name = node->first_attribute("name")->value();
-    shortname = node->first_attribute("shortname")->value();
-    shortname_html = (node->first_attribute("shortname_html")) ? node->first_attribute("shortname_html")->value() : shortname;
-    unit = node->first_attribute("unit")->value();
-    unit_html = (node->first_attribute("unit_html")) ? node->first_attribute("unit_html")->value() : unit;
-
-    is_scalar = (std::string(node->first_attribute("type")->value()) == "scalar");
-
-    for (rapidxml::xml_node<> *expr = node->first_node("expression");
-         expr; expr = expr->next_sibling())
-        if (expr->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(analysisType))
-            expression = Expression(expr, problemType);
-}
-
-// ***********************************************************************************************
-
-Hermes::Module::Integral::Expression::Expression(rapidxml::xml_node<> *node, CoordinateType problemType)
-{
-    if (node)
-    {
-        if (problemType == CoordinateType_Planar)
+        expression exp = lv.expression().at(i);
+        if (exp.analysistype() == Hermes::analysis_type_tostring(analysisType))
         {
-            if (node->first_attribute("planar"))
-                scalar = node->first_attribute("planar")->value();
-        }
-        else
-        {
-            if (node->first_attribute("axi"))
-                scalar = node->first_attribute("axi")->value();
+            if (coordinateType == CoordinateType_Planar)
+                expr = Expression(is_scalar ? exp.planar().get() : "",
+                                  is_scalar ? "" : exp.planar_x().get(),
+                                  is_scalar ? "" : exp.planar_y().get());
+            else
+                expr = Expression(is_scalar ? exp.axi().get() : "",
+                                  is_scalar ? "" : exp.axi_r().get(),
+                                  is_scalar ? "" : exp.axi_z().get());
         }
     }
 }
 
 // ***********************************************************************************************
 
-Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(rapidxml::xml_node<> *node)
+Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(quantity quant)
 {
-    id = node->first_attribute("id")->value();
-    shortname = node->first_attribute("shortname")->value();
-    if (node->first_attribute("default"))
-        default_value = atoi(node->first_attribute("default")->value());
+    id = quant.id();
+    if (quant.shortname().present())
+        shortname = quant.shortname().get();
+    if (quant.default_().present())
+        default_value = quant.default_().get();
     else
         default_value = 0.0;
 }
@@ -458,54 +421,65 @@ Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(std::string id, std::
 // ***********************************************************************************************
 
 Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
-                                           rapidxml::xml_node<> *node,
+                                           boundary bdy,
                                            CoordinateType problem_type)
 {
-    id = node->first_attribute("id")->value();
-    name = QObject::tr(node->first_attribute("name")->value()).toStdString();
-
+    id = bdy.id();
+    name = bdy.name();
+    
     // variables
-    for (rapidxml::xml_node<> *variable = node->first_node("quantity");
-         variable; variable = variable->next_sibling())
-        if (std::string(variable->name()) == "quantity")
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable>::iterator it = boundary_type_variables.begin();
-                 it < boundary_type_variables.end(); ++it )
+    for (int i = 0; i < bdy.quantity().size(); i++)
+    {
+        quantity qty = bdy.quantity().at(i);
+        
+        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable>::iterator it = boundary_type_variables.begin();
+             it < boundary_type_variables.end(); ++it )
+        {
+            Hermes::Module::BoundaryTypeVariable old = (Hermes::Module::BoundaryTypeVariable) *it;
+            
+            if (old.id == qty.id())
             {
-                Hermes::Module::BoundaryTypeVariable old = (Hermes::Module::BoundaryTypeVariable) *it;
-
-                if (old.id == variable->first_attribute("id")->value())
-                {
-                    Hermes::Module::BoundaryTypeVariable *var = new Hermes::Module::BoundaryTypeVariable(
-                                old.id, old.shortname, old.default_value);
-
-                    variables.push_back(var);
-                }
+                Hermes::Module::BoundaryTypeVariable *var = new Hermes::Module::BoundaryTypeVariable(
+                            old.id, old.shortname, old.default_value);
+                
+                variables.push_back(var);
             }
-
+        }
+    }
+    
     // weakform
-    for (rapidxml::xml_node<> *node_matrix = node->first_node("matrix_form");
-         node_matrix; node_matrix = node_matrix->next_sibling())
-        if (std::string(node_matrix->name()) == "matrix_form")
-            weakform_matrix_surface.push_back(new ParserFormExpression(node_matrix, problem_type));
-
-    for (rapidxml::xml_node<> *node_vector = node->first_node("vector_form");
-         node_vector; node_vector = node_vector->next_sibling())
-        if (std::string(node_vector->name()) == "vector_form")
-            weakform_vector_surface.push_back(new ParserFormExpression(node_vector, problem_type));
-
+    for (int i = 0; i < bdy.matrix_form().size(); i++)
+    {
+        matrix_form form = bdy.matrix_form().at(i);
+        weakform_matrix_surface.push_back(new ParserFormExpression(form.i(), form.j(),
+                                                                   form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
+                                                                   (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+    }
+    
+    for (int i = 0; i < bdy.vector_form().size(); i++)
+    {
+        vector_form form = bdy.vector_form().at(i);
+        weakform_vector_surface.push_back(new ParserFormExpression(form.i(), form.j(),
+                                                                   Hermes::Hermes2D::HERMES_NONSYM,
+                                                                   (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+    }
+    
     // essential
-    for (rapidxml::xml_node<> *node_essential = node->first_node("essential_form");
-         node_essential; node_essential = node_essential->next_sibling())
-        if (std::string(node_essential->name()) == "essential_form")
-            essential.push_back(new ParserFormEssential(node_essential, problem_type));
+    for (int i = 0; i < bdy.essential_form().size(); i++)
+    {
+        essential_form form = bdy.essential_form().at(i);
+        essential.push_back(new ParserFormEssential(form.i(),
+                                                    (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+    }
 }
 
-Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(rapidxml::xml_node<> *node)
+Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(quantity quant)
 {
-    id = node->first_attribute("id")->value();
-    shortname = node->first_attribute("shortname")->value();
-    if (node->first_attribute("default"))
-        default_value = atoi(node->first_attribute("default")->value());
+    id = quant.id();
+    if (quant.shortname().present())
+        shortname = quant.shortname().get();
+    if (quant.default_().present())
+        default_value = quant.default_().get();
     else
         default_value = 0.0;
 }
@@ -522,80 +496,66 @@ Hermes::Module::BoundaryType::~BoundaryType()
 {
     // essential
     essential.clear();
-
+    
     // variables
     for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
         delete *it;
     variables.clear();
-
+    
     // volume weak form
     for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_matrix_surface.begin(); it < weakform_matrix_surface.end(); ++it)
         delete *it;
     weakform_matrix_surface.clear();
-
+    
     for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_surface.begin(); it < weakform_vector_surface.end(); ++it)
         delete *it;
     weakform_vector_surface.clear();
-
+    
     for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_surface.begin(); it < weakform_vector_surface.end(); ++it)
         delete *it;
     weakform_vector_surface.clear();
-}
-
-// ***********************************************************************************************
-
-Hermes::Module::Integral::Integral(rapidxml::xml_node<> *node, CoordinateType coordinateType, AnalysisType analysisType)
-{
-    id = node->first_attribute("id")->value();
-    name = QObject::tr(node->first_attribute("name")->value()).toStdString();
-    shortname = node->first_attribute("shortname")->value();
-    shortname_html = (node->first_attribute("shortname_html")) ? node->first_attribute("shortname_html")->value() : shortname;
-    unit = node->first_attribute("unit")->value();
-    unit_html = (node->first_attribute("unit_html")) ? node->first_attribute("unit_html")->value() : unit;
-
-    for (rapidxml::xml_node<> *expr = node->first_node("expression");
-         expr; expr = expr->next_sibling())
-        if (expr->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(analysisType))
-            expression = Expression(expr, coordinateType);
 }
 
 // ***********************************************************************************************
 
 // dialog row UI
-Hermes::Module::DialogUI::Row::Row(rapidxml::xml_node<> *quantity)
+Hermes::Module::DialogUI::Row::Row(quantity qty)
 {
-    id = quantity->first_attribute("id")->value();
+    id = qty.id();
+    name = (qty.name().present()) ? qty.name().get() : "";
 
-    nonlin = (quantity->first_attribute("nonlin")) ? atoi(quantity->first_attribute("nonlin")->value()) : false;
-    timedep = (quantity->first_attribute("timedep")) ? atoi(quantity->first_attribute("timedep")->value()) : false;
+    nonlin = (qty.nonlin().present()) ? qty.nonlin().get() : false;
+    timedep = (qty.timedep().present()) ? qty.timedep().get() : false;
+    
+    shortname = (qty.shortname().present()) ? qty.shortname().get() : "";
+    shortname_html = (qty.shortname_html().present()) ? qty.shortname_html().get() : "";
 
-    shortname = quantity->first_attribute("shortname")->value();
-    shortname_html = (quantity->first_attribute("shortname_html")) ? quantity->first_attribute("shortname_html")->value() : "";
-    name = quantity->first_attribute("name")->value();
-
-    unit = quantity->first_attribute("unit")->value();
-    unit_html = (quantity->first_attribute("unit_html")) ? quantity->first_attribute("unit_html")->value() : "";
-    unit_latex = (quantity->first_attribute("unit_latex")) ? quantity->first_attribute("unit_latex")->value() : "";
-
-    default_value = (quantity->first_attribute("default")) ? atof(quantity->first_attribute("default")->value()) : 0.0;
-    condition = (quantity->first_attribute("condition")) ? quantity->first_attribute("condition")->value() : "";
+    unit = (qty.unit().present()) ? qty.unit().get() : "";
+    unit_html = (qty.unit_html().present()) ? qty.unit_html().get() : "";
+    unit_latex = (qty.unit_latex().present()) ? qty.unit_latex().get() : "";
+    
+    default_value = (qty.default_().present()) ? qty.default_().get() : 0.0;
+    condition = (qty.condition().present()) ? qty.condition().get() : "0.0";
 }
 
 // dialog UI
-Hermes::Module::DialogUI::DialogUI(rapidxml::xml_node<> *node)
+Hermes::Module::DialogUI::DialogUI(gui ui)
 {
-    for (rapidxml::xml_node<> *group = node->first_node("group");
-         group; group = group->next_sibling())
+    for (int i = 0; i < ui.group().size(); i++)
     {
+        group grp = ui.group().at(i);
+
         // group name
-        std::string name = (group->first_attribute("name")) ? group->first_attribute("name")->value() : "";
-
+        std::string name = (grp.name().present()) ? grp.name().get() : "";
+        
         Hermes::vector<DialogUI::Row> materials;
-        for (rapidxml::xml_node<> *quantity = group->first_node("quantity");
-             quantity; quantity = quantity->next_sibling())
+        for (int i = 0; i < grp.quantity().size(); i++)
+        {
+            quantity quant = grp.quantity().at(i);
             // append material
-            materials.push_back(DialogUI::Row(quantity));
-
+            materials.push_back(DialogUI::Row(quant));
+        }
+        
         groups[name] = materials;
     }
 }
@@ -611,7 +571,7 @@ Hermes::Module::ModuleDeprecated::ModuleDeprecated(CoordinateType problemType, A
 {
     m_coordinateType = problemType;
     m_analysisType = analysisType;
-
+    
     clear();
 }
 
@@ -623,138 +583,149 @@ Hermes::Module::ModuleDeprecated::~ModuleDeprecated()
 void Hermes::Module::ModuleDeprecated::read(std::string filename)
 {
     std::cout << "reading module: " << filename << std::endl << std::flush;
-
-    // module_xsd = new XMLMesh
-
+    
     clear();
-
+    
     if (ifstream(filename.c_str()))
     {
         // save current locale
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
 
-        rapidxml::file<> file_data(filename.c_str());
-
-        // parse document
-        rapidxml::xml_document<> doc;
-        doc.parse<0>(file_data.data());
+        module_xsd = module_(filename.c_str());
+        module *mod = module_xsd.get();
 
         // problem
-        rapidxml::xml_node<> *general = doc.first_node("module")->first_node("general");
-        fieldid = general->first_attribute("id")->value();
-        name = QObject::tr(general->first_attribute("name")->value()).toStdString(); // FIXME - Qt dependence
-        deformed_shape = general->first_attribute("deformed_shape") ? atoi(general->first_attribute("deformed_shape")->value()) : 0;
-        description = general->first_node("description")->value();
-
+        fieldid = mod->general().id();
+        name = mod->general().name();
+        deformed_shape = mod->general().deformed_shape();
+        description = mod->general().description();
+        
         // analyses
         steady_state_solutions = 0;
         harmonic_solutions = 0;
         transient_solutions = 0;
-        for (rapidxml::xml_node<> *analysis = doc.first_node("module")->first_node("general")->first_node("analyses")->first_node("analysis");
-             analysis; analysis = analysis->next_sibling())
+        
+        for (int i = 0; i < mod->general().analyses().analysis().size(); i++)
         {
+            analysis an = mod->general().analyses().analysis().at(i);
+            
             // FIXME
-            analyses[analysis->first_attribute("id")->value()] = analysis->first_attribute("type")->value();
-
-            if (std::string(analysis->first_attribute("type")->value()) == QString("steadystate").toStdString())
-                steady_state_solutions = atoi(analysis->first_attribute("solutions")->value());
-
-            if (std::string(analysis->first_attribute("type")->value()) == QString("harmonic").toStdString())
-                harmonic_solutions = atoi(analysis->first_attribute("solutions")->value());
-
-            if (std::string(analysis->first_attribute("type")->value()) == QString("transient").toStdString())
-                transient_solutions = atoi(analysis->first_attribute("solutions")->value());
+            analyses[an.id()] = an.type();
+            
+            if (an.type() == QString("steadystate").toStdString())
+                steady_state_solutions = an.solutions();
+            
+            if (an.type() == QString("harmonic").toStdString())
+                harmonic_solutions = an.solutions();
+            
+            if (an.type() == QString("transient").toStdString())
+                transient_solutions = an.solutions();
         }
-
+        
         // constants
-        for (rapidxml::xml_node<> *constant = doc.first_node("module")->first_node("constants")->first_node("constant");
-             constant; constant = constant->next_sibling())
-            constants[constant->first_attribute("id")->value()] = atof(constant->first_attribute("value")->value());
-
+        for (int i = 0; i < mod->constants().constant().size(); i++)
+        {
+            constant cnst = mod->constants().constant().at(i);
+            constants[cnst.id()] = cnst.value();
+        }
+        
         // macros
         /*
         for (rapidxml::xml_node<> *macro = doc.first_node("module")->first_node("macros")->first_node("macro");
              macro; macro = macro->next_sibling())
             macros[macro->first_attribute("id")->value()] = macro->first_attribute("expression")->value();
         */
-
+        
         // surface weakforms
         Hermes::vector<Hermes::Module::BoundaryTypeVariable> boundary_type_variables_tmp;
-        for (rapidxml::xml_node<> *quantity = doc.first_node("module")->first_node("surface")->first_node("quantity");
-             quantity; quantity = quantity->next_sibling())
-            if (std::string(quantity->name()) == "quantity")
-                boundary_type_variables_tmp.push_back(Hermes::Module::BoundaryTypeVariable(quantity));
-
-        for (rapidxml::xml_node<> *weakform = doc.first_node("module")->first_node("surface")->first_node("weakforms")->first_node("weakform");
-             weakform; weakform = weakform->next_sibling())
+        for (int i = 0; i < mod->surface().quantity().size(); i++)
         {
-            if (std::string(weakform->name()) == "weakform" && weakform->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
-                for (rapidxml::xml_node<> *boundary = weakform->first_node("boundary");
-                     boundary; boundary = boundary->next_sibling())
-                    boundary_types.push_back(new Hermes::Module::BoundaryType(boundary_type_variables_tmp, boundary, m_coordinateType));
-
+            quantity quant = mod->surface().quantity().at(i);
+            boundary_type_variables_tmp.push_back(Hermes::Module::BoundaryTypeVariable(quant));
+        }
+        
+        for (int i = 0; i < mod->surface().weakforms_surface().weakform_surface().size(); i++)
+        {
+            weakform_surface wf = mod->surface().weakforms_surface().weakform_surface().at(i);
+            
+            if (wf.analysistype() == analysis_type_tostring(m_analysisType))
+                for (int i = 0; i < wf.boundary().size(); i++)
+                {
+                    boundary bdy = wf.boundary().at(i);
+                    boundary_types.push_back(new Hermes::Module::BoundaryType(boundary_type_variables_tmp, bdy, m_coordinateType));
+                }
+            
             // default
-            boundary_type_default = get_boundary_type(weakform->first_attribute("default")->value());
+            boundary_type_default = get_boundary_type(wf.default_().get());
         }
         boundary_type_variables_tmp.clear();
-
+        
         // volumetric weakforms
         Hermes::vector<Hermes::Module::MaterialTypeVariable> material_type_variables_tmp;
-        for (rapidxml::xml_node<> *quantity = doc.first_node("module")->first_node("volume")->first_node("quantity");
-             quantity; quantity = quantity->next_sibling())
-            if (std::string(quantity->name()) == "quantity")
-                material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quantity));
-
-        for (rapidxml::xml_node<> *weakform = doc.first_node("module")->first_node("volume")->first_node("weakforms")->first_node("weakform");
-             weakform; weakform = weakform->next_sibling())
+        for (int i = 0; i < mod->volume().quantity().size(); i++)
         {
-            if (weakform->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
+            quantity quant = mod->volume().quantity().at(i);
+            material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quant));
+        }
+
+        for (int i = 0; i < mod->volume().weakforms_volume().weakform_volume().size(); i++)
+        {
+            weakform_volume wf = mod->volume().weakforms_volume().weakform_volume().at(i);
+
+            if (wf.analysistype() == analysis_type_tostring(m_analysisType))
             {
-                // quantities
-                for (rapidxml::xml_node<> *quantity = weakform->first_node("quantity");
-                     quantity; quantity = quantity->next_sibling())
+                for (int i = 0; i < wf.quantity().size(); i++)
                 {
-                    if (std::string(quantity->name()) == "quantity")
-                        for (Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
-                             it < material_type_variables_tmp.end(); ++it )
+                    quantity qty = wf.quantity().at(i);
+
+                    for (Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
+                         it < material_type_variables_tmp.end(); ++it )
+                    {
+                        Hermes::Module::MaterialTypeVariable old = (Hermes::Module::MaterialTypeVariable) *it;
+                        if (old.id == qty.id())
                         {
-                            Hermes::Module::MaterialTypeVariable old = (Hermes::Module::MaterialTypeVariable) *it;
-                            if (old.id == quantity->first_attribute("id")->value())
-                            {
-                                Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
-                                            old.id, old.shortname, old.default_value);
-                                material_type_variables.push_back(var);
-                            }
+                            Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
+                                        old.id, old.shortname, old.default_value);
+                            material_type_variables.push_back(var);
                         }
+                    }
                 }
                 material_type_variables_tmp.clear();
 
-                // weakforms
-                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix_form");
-                     matrix; matrix = matrix->next_sibling())
+                // weakform
+                for (int i = 0; i < wf.matrix_form().size(); i++)
                 {
-                    if (std::string(matrix->name()) == "matrix_form")
-                        weakform_matrix_volume.push_back(new ParserFormExpression(matrix, m_coordinateType));
+                    matrix_form form = wf.matrix_form().at(i);
+                    weakform_matrix_volume.push_back(new ParserFormExpression(form.i(), form.j(),
+                                                                              form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
+                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
                 }
 
-                for (rapidxml::xml_node<> *vector = weakform->first_node("vector_form");
-                     vector; vector = vector->next_sibling())
-                    if (std::string(vector->name()) == "vector_form")
-                        weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
+                for (int i = 0; i < wf.vector_form().size(); i++)
+                {
+                    vector_form form = wf.vector_form().at(i);
+                    weakform_vector_volume.push_back(new ParserFormExpression(form.i(), form.j(),
+                                                                              Hermes::Hermes2D::HERMES_NONSYM,
+                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
+                }
             }
         }
 
         // local variables
-        for (rapidxml::xml_node<> *localvariable = doc.first_node("module")->first_node("postprocessor")->first_node("localvariables")->first_node("localvariable");
-             localvariable; localvariable = localvariable->next_sibling())
+        for (int i = 0; i < mod->postprocessor().localvariables().localvariable().size(); i++)
         {
+            localvariable lv = mod->postprocessor().localvariables().localvariable().at(i);
+
             // HACK
-            for (rapidxml::xml_node<> *expr = localvariable->first_node("expression");
-                 expr; expr = expr->next_sibling())
-                if (expr->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
+            for (int i = 0; i < lv.expression().size(); i++)
+            {
+                expression expr = lv.expression().at(i);
+                if (expr.analysistype() == Hermes::analysis_type_tostring(m_analysisType))
                 {
-                    Hermes::Module::LocalVariable *var = new Hermes::Module::LocalVariable(localvariable, m_coordinateType, m_analysisType);
+                    Hermes::Module::LocalVariable *var = new Hermes::Module::LocalVariable(lv,
+                                                                                           m_coordinateType,
+                                                                                           m_analysisType);
                     variables.push_back(var);
 
                     // HACK - local point
@@ -765,6 +736,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
                     if (!var->is_scalar)
                         view_vector_variables.push_back(var);
                 }
+            }
         }
 
         // custom local variable
@@ -773,38 +745,89 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         //customLocalVariable->expression.scalar = "value1";
         //view_scalar_variables.push_back(customLocalVariable);
 
-        // scalar variables
-        rapidxml::xml_node<> *view = doc.first_node("module")->first_node("postprocessor")->first_node("view");
-
         // scalar variables default
-        rapidxml::xml_node<> *view_scalar = view->first_node("scalar_view");
-        for (rapidxml::xml_node<> *view_scalar_default = view_scalar->first_node("default");
-             view_scalar_default; view_scalar_default = view_scalar_default->next_sibling())
-            if (view_scalar_default->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
-                view_default_scalar_variable = get_variable(view_scalar_default->first_attribute("id")->value());
+        for (int i = 0; i < mod->postprocessor().view().scalar_view().default_().size(); i++)
+        {
+            default_ def = mod->postprocessor().view().scalar_view().default_().at(i);
+            if (def.analysistype() == analysis_type_tostring(m_analysisType))
+                view_default_scalar_variable = get_variable(def.id());
+        }
 
         // vector variables default
-        rapidxml::xml_node<> *view_vector = view->first_node("vector_view");
-        for (rapidxml::xml_node<> *view_vector_default = view_vector->first_node("default");
-             view_vector_default; view_vector_default = view_vector_default->next_sibling())
-            if (view_vector_default->first_attribute("analysistype")->value() == analysis_type_tostring(m_analysisType))
-                view_default_vector_variable = get_variable(view_vector_default->first_attribute("id")->value());
+        for (int i = 0; i < mod->postprocessor().view().vector_view().default_().size(); i++)
+        {
+            default_ def = mod->postprocessor().view().vector_view().default_().at(i);
+            if (def.analysistype() == analysis_type_tostring(m_analysisType))
+                view_default_vector_variable = get_variable(def.id());
+        }
 
         // volume integral
-        for (rapidxml::xml_node<> *volumeintegral = doc.first_node("module")->first_node("postprocessor")->first_node("volumeintegrals")->first_node("volumeintegral");
-             volumeintegral; volumeintegral = volumeintegral->next_sibling())
-            volume_integral.push_back(new Hermes::Module::Integral(volumeintegral, m_coordinateType, m_analysisType));
+        for (int i = 0; i < mod->postprocessor().volumeintegrals().volumeintegral().size(); i++)
+        {
+            volumeintegral vol = mod->postprocessor().volumeintegrals().volumeintegral().at(i);
+
+            Hermes::Module::Integral *volint = new Hermes::Module::Integral();
+
+            volint->id = vol.id();
+            volint->name = vol.name();
+            volint->shortname = vol.shortname();
+            volint->shortname_html = (vol.shortname_html().present()) ? vol.shortname_html().get() : vol.unit();
+            volint->unit = vol.unit();
+            volint->unit_html = (vol.unit_html().present()) ? vol.unit_html().get() : vol.unit();
+
+            for (int i = 0; i < vol.expression().size(); i++)
+            {
+                expression exp = vol.expression().at(i);
+                if (exp.analysistype() == Hermes::analysis_type_tostring(m_analysisType))
+                {
+                    if (m_coordinateType == CoordinateType_Planar)
+                        volint->expr.scalar = exp.planar().get();
+                    else
+                        volint->expr.scalar = exp.axi().get();
+                }
+            }
+
+            volume_integral.push_back(volint);
+        }
 
         // surface integral
-        for (rapidxml::xml_node<> *surfaceintegral = doc.first_node("module")->first_node("postprocessor")->first_node("surfaceintegrals")->first_node("surfaceintegral");
-             surfaceintegral; surfaceintegral = surfaceintegral->next_sibling())
-            surface_integral.push_back(new Hermes::Module::Integral(surfaceintegral, m_coordinateType, m_analysisType));
+        for (int i = 0; i < mod->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
+        {
+            surfaceintegral vol = mod->postprocessor().surfaceintegrals().surfaceintegral().at(i);
+
+            Hermes::Module::Integral *volint = new Hermes::Module::Integral();
+
+            volint->id = vol.id();
+            volint->name = vol.name();
+            volint->shortname = vol.shortname();
+            volint->shortname_html = (vol.shortname_html().present()) ? vol.shortname_html().get() : vol.unit();
+            volint->unit = vol.unit();
+            volint->unit_html = (vol.unit_html().present()) ? vol.unit_html().get() : vol.unit();
+
+            for (int i = 0; i < vol.expression().size(); i++)
+            {
+                expression exp = vol.expression().at(i);
+                if (exp.analysistype() == Hermes::analysis_type_tostring(m_analysisType))
+                {
+                    if (m_coordinateType == CoordinateType_Planar)
+                        volint->expr.scalar = exp.planar().get();
+                    else
+                        volint->expr.scalar = exp.axi().get();
+                }
+            }
+
+            surface_integral.push_back(volint);
+        }
 
         // preprocessor
-        rapidxml::xml_node<> *materialui = doc.first_node("module")->first_node("preprocessor")->first_node("volume");
-        material_ui = Hermes::Module::DialogUI(materialui);
-        rapidxml::xml_node<> *boundaryui = doc.first_node("module")->first_node("preprocessor")->first_node("surface");
-        boundary_ui = Hermes::Module::DialogUI(boundaryui);
+        for (int i = 1; i < mod->preprocessor().gui().size(); i++)
+        {
+            gui ui = mod->preprocessor().gui().at(i);
+            if (ui.type() == "volume")
+                material_ui = Hermes::Module::DialogUI(ui);
+            else if (ui.type() == "surface")
+                boundary_ui = Hermes::Module::DialogUI(ui);
+        }
 
         // set system locale
         setlocale(LC_NUMERIC, plocale);
@@ -945,27 +968,27 @@ mu::Parser *Hermes::Module::ModuleDeprecated::get_parser()
 }
 
 std::string Hermes::Module::ModuleDeprecated::get_expression(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                   PhysicFieldVariableComp physicFieldVariableComp)
+                                                             PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariableComp)
     {
     case PhysicFieldVariableComp_Undefined:
         return "";
     case PhysicFieldVariableComp_Scalar:
-        return physicFieldVariable->expression.scalar;
+        return physicFieldVariable->expr.scalar;
     case PhysicFieldVariableComp_X:
-        return physicFieldVariable->expression.comp_x;
+        return physicFieldVariable->expr.comp_x;
     case PhysicFieldVariableComp_Y:
-        return physicFieldVariable->expression.comp_y;
+        return physicFieldVariable->expr.comp_y;
     case PhysicFieldVariableComp_Magnitude:
-        return "sqrt((" + physicFieldVariable->expression.comp_x + ") * (" + physicFieldVariable->expression.comp_x + ") + (" + physicFieldVariable->expression.comp_y + ") * (" + physicFieldVariable->expression.comp_y + "))";
+        return "sqrt((" + physicFieldVariable->expr.comp_x + ") * (" + physicFieldVariable->expr.comp_x + ") + (" + physicFieldVariable->expr.comp_y + ") * (" + physicFieldVariable->expr.comp_y + "))";
     default:
         error("Unknown type.");
     }
 }
 
 ViewScalarFilter<double> *Hermes::Module::ModuleDeprecated::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                                     PhysicFieldVariableComp physicFieldVariableComp)
+                                                                               PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
     /*
@@ -1198,8 +1221,8 @@ void Parser::setParserVariables(Material* material, Boundary *boundary, double v
 void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boundary *boundary, double value, double dx, double dy)
 {
     // todo: ??? je to zmatecne, jak je to nekdy volano s fieldInfo, nekddy couplingInfo...
-//    if(materialMarkers.size() > 1)
-//        assert(m_couplingInfo);
+    //    if(materialMarkers.size() > 1)
+    //        assert(m_couplingInfo);
 
     //TODO zkontrolovat volani value, proc u boundary neni derivace, ...
     if (materialMarkers.size())

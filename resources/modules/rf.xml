@@ -19,8 +19,8 @@
         <quantity id="rf_te_current_density_external_real" shortname="rf_Jer" />
         <quantity id="rf_te_current_density_external_imag" shortname="rf_Jei" />
         
-        <weakforms>
-            <weakform analysistype="harmonic">
+        <weakforms_volume>
+            <weakform_volume analysistype="harmonic">
                 <quantity id="rf_te_permittivity" />
                 <quantity id="rf_te_permeability" />
                 <quantity id="rf_te_conductivity" />
@@ -35,8 +35,8 @@
                                     axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jer * vval" />
                 <vector_form i="2" j="2" planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jei * vval"
                                     axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jei * vval" />
-            </weakform>
-        </weakforms>
+            </weakform_volume>
+        </weakforms_volume>
     </volume>
 
     <surface>
@@ -49,8 +49,8 @@
         <quantity id="rf_te_port_power" shortname="P" />
         <quantity id="rf_te_port_phase" shortname="alpha" />
     	
-        <weakforms>
-            <weakform analysistype="harmonic" default="rf_electric_field">
+        <weakforms_surface>
+            <weakform_surface analysistype="harmonic" default="rf_electric_field">
                 <boundary id="rf_te_electric_field" name="Electric field">
                     <quantity id="rf_te_electric_field_real" />
                     <quantity id="rf_te_electric_field_imag" />
@@ -93,12 +93,12 @@
 
                 <boundary id="rf_te_matched_boundary" name="Matched boundary" >
                 </boundary>
-            </weakform>
-        </weakforms>
+            </weakform_surface>
+        </weakforms_surface>
     </surface>
 
     <preprocessor>
-        <volume>
+        <gui type="volume">
             <group>
                 <quantity id="rf_te_permittivity" name="Permittivity"
                           shortname="epsr" shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="\varepsilon_{r}"
@@ -116,8 +116,8 @@
                           shortname="Jei" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i,ext&lt;/sub&gt;"
                           unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}"/>
             </group>
-        </volume>
-        <surface>
+        </gui>
+        <gui type="surface">
             <group>
                 <quantity id="rf_te_electric_field_real" name="Electric field - real"
                           shortname="Er" shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="E_{r}"
@@ -144,7 +144,7 @@
                           shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
                           unit="deg." unit_html="deg." unit_latex="deg."/>
             </group>
-        </surface>
+        </gui>
     </preprocessor>
 
     <postprocessor>

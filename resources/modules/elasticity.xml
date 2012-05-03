@@ -18,8 +18,8 @@
         <quantity id="elasticity_temperature_difference" shortname="st_dT" />
         <quantity id="elasticity_temperature_reference" shortname="st_Tr" />
 
-        <weakforms>
-            <weakform analysistype="steadystate">
+        <weakforms_volume>
+            <weakform_volume analysistype="steadystate">
                 <quantity id="elasticity_young_modulus" />
                 <quantity id="elasticity_poisson_ratio" />
                 <quantity id="elasticity_force_x" />
@@ -64,8 +64,8 @@
                                     axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * updz * vdz +
                                          r * (st_E / (2.0*(1.0 + st_nu))) * (updr * vdr + 2 * updz * vdz)
                                          - r * st_fy * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" />
-            </weakform>
-        </weakforms>
+            </weakform_volume>
+        </weakforms_volume>
     </volume>
     	
     <surface>
@@ -74,8 +74,8 @@
         <quantity id="elasticity_force_x" shortname="st_fx" />
         <quantity id="elasticity_force_y" shortname="st_fy" />
 
-        <weakforms>
-            <weakform analysistype="steadystate" default="elasticity_fixed_fixed">
+        <weakforms_surface>
+            <weakform_surface analysistype="steadystate" default="elasticity_fixed_fixed">
                 <boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
                     <quantity id="elasticity_displacement_x" />
                     <quantity id="elasticity_displacement_y" />
@@ -115,12 +115,12 @@
                     <vector_form i="2" j="2" planar="-st_fy * vval"
                                         axi="-st_fy * r * vval" />
                 </boundary>
-            </weakform>
-        </weakforms>
+            </weakform_surface>
+        </weakforms_surface>
     </surface>
 
     <preprocessor>
-        <volume>
+        <gui type="volume">
             <group>
                 <quantity id="elasticity_young_modulus" name="Young modulus"
                           shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
@@ -144,8 +144,8 @@
                           shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
                           unit="K" unit_html="K" unit_latex="K" />
             </group>
-        </volume>
-        <surface>
+        </gui>
+        <gui type="surface">
             <group>
                 <quantity id="elasticity_displacement_x" name="Fixed - x"
                 shortname="dx" shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;" shortname_latex="\delta_\mathrm{x}"
@@ -160,7 +160,7 @@
                 shortname="fy" shortname_html="&lt;i&gt;F&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;" shortname_latex="F_\mathrm{y}"
                 unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
             </group>
-        </surface>
+        </gui>
     </preprocessor>
 
     <postprocessor>

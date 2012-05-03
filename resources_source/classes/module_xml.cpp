@@ -91,30 +91,6 @@ constants (::std::auto_ptr< constants_type > x)
   this->constants_.set (x);
 }
 
-const module::macros_type& module::
-macros () const
-{
-  return this->macros_.get ();
-}
-
-module::macros_type& module::
-macros ()
-{
-  return this->macros_.get ();
-}
-
-void module::
-macros (const macros_type& x)
-{
-  this->macros_.set (x);
-}
-
-void module::
-macros (::std::auto_ptr< macros_type > x)
-{
-  this->macros_.set (x);
-}
-
 const module::volume_type& module::
 volume () const
 {
@@ -551,22 +527,28 @@ macro (::std::auto_ptr< macro_type > x)
 // macro
 // 
 
-const macro::expression_type& macro::
+const macro::expression_optional& macro::
 expression () const
 {
-  return this->expression_.get ();
+  return this->expression_;
 }
 
-macro::expression_type& macro::
+macro::expression_optional& macro::
 expression ()
 {
-  return this->expression_.get ();
+  return this->expression_;
 }
 
 void macro::
 expression (const expression_type& x)
 {
   this->expression_.set (x);
+}
+
+void macro::
+expression (const expression_optional& x)
+{
+  this->expression_ = x;
 }
 
 void macro::
@@ -603,52 +585,68 @@ id (::std::auto_ptr< id_type > x)
 // preprocessor
 // 
 
-const preprocessor::volume_type& preprocessor::
-volume () const
+const preprocessor::gui_sequence& preprocessor::
+gui () const
 {
-  return this->volume_.get ();
+  return this->gui_;
 }
 
-preprocessor::volume_type& preprocessor::
-volume ()
+preprocessor::gui_sequence& preprocessor::
+gui ()
 {
-  return this->volume_.get ();
-}
-
-void preprocessor::
-volume (const volume_type& x)
-{
-  this->volume_.set (x);
+  return this->gui_;
 }
 
 void preprocessor::
-volume (::std::auto_ptr< volume_type > x)
+gui (const gui_sequence& s)
 {
-  this->volume_.set (x);
+  this->gui_ = s;
 }
 
-const preprocessor::surface_type& preprocessor::
-surface () const
+
+// gui
+// 
+
+const gui::group_sequence& gui::
+group () const
 {
-  return this->surface_.get ();
+  return this->group_;
 }
 
-preprocessor::surface_type& preprocessor::
-surface ()
+gui::group_sequence& gui::
+group ()
 {
-  return this->surface_.get ();
+  return this->group_;
 }
 
-void preprocessor::
-surface (const surface_type& x)
+void gui::
+group (const group_sequence& s)
 {
-  this->surface_.set (x);
+  this->group_ = s;
 }
 
-void preprocessor::
-surface (::std::auto_ptr< surface_type > x)
+const gui::type_type& gui::
+type () const
 {
-  this->surface_.set (x);
+  return this->type_.get ();
+}
+
+gui::type_type& gui::
+type ()
+{
+  return this->type_.get ();
+}
+
+void gui::
+type (const type_type& x)
+{
+  this->type_.set (x);
+}
+
+void gui::
+type (::std::auto_ptr< type_type > x)
+{
+  this->type_.set (x);
 }
 
 
@@ -1567,6 +1565,36 @@ shortname_html (::std::auto_ptr< shortname_html_type > x)
   this->shortname_html_.set (x);
 }
 
+const surfaceintegral::shortname_latex_optional& surfaceintegral::
+shortname_latex () const
+{
+  return this->shortname_latex_;
+}
+
+surfaceintegral::shortname_latex_optional& surfaceintegral::
+shortname_latex ()
+{
+  return this->shortname_latex_;
+}
+
+void surfaceintegral::
+shortname_latex (const shortname_latex_type& x)
+{
+  this->shortname_latex_.set (x);
+}
+
+void surfaceintegral::
+shortname_latex (const shortname_latex_optional& x)
+{
+  this->shortname_latex_ = x;
+}
+
+void surfaceintegral::
+shortname_latex (::std::auto_ptr< shortname_latex_type > x)
+{
+  this->shortname_latex_.set (x);
+}
+
 const surfaceintegral::unit_type& surfaceintegral::
 unit () const
 {
@@ -1673,87 +1701,33 @@ quantity (const quantity_sequence& s)
   this->quantity_ = s;
 }
 
-const volume::weakforms_optional& volume::
-weakforms () const
+const volume::weakforms_volume_type& volume::
+weakforms_volume () const
 {
-  return this->weakforms_;
+  return this->weakforms_volume_.get ();
 }
 
-volume::weakforms_optional& volume::
-weakforms ()
+volume::weakforms_volume_type& volume::
+weakforms_volume ()
 {
-  return this->weakforms_;
-}
-
-void volume::
-weakforms (const weakforms_type& x)
-{
-  this->weakforms_.set (x);
+  return this->weakforms_volume_.get ();
 }
 
 void volume::
-weakforms (const weakforms_optional& x)
+weakforms_volume (const weakforms_volume_type& x)
 {
-  this->weakforms_ = x;
+  this->weakforms_volume_.set (x);
 }
 
 void volume::
-weakforms (::std::auto_ptr< weakforms_type > x)
+weakforms_volume (::std::auto_ptr< weakforms_volume_type > x)
 {
-  this->weakforms_.set (x);
-}
-
-const volume::group_sequence& volume::
-group () const
-{
-  return this->group_;
-}
-
-volume::group_sequence& volume::
-group ()
-{
-  return this->group_;
-}
-
-void volume::
-group (const group_sequence& s)
-{
-  this->group_ = s;
+  this->weakforms_volume_.set (x);
 }
 
 
 // surface
 // 
-
-const surface::group_optional& surface::
-group () const
-{
-  return this->group_;
-}
-
-surface::group_optional& surface::
-group ()
-{
-  return this->group_;
-}
-
-void surface::
-group (const group_type& x)
-{
-  this->group_.set (x);
-}
-
-void surface::
-group (const group_optional& x)
-{
-  this->group_ = x;
-}
-
-void surface::
-group (::std::auto_ptr< group_type > x)
-{
-  this->group_.set (x);
-}
 
 const surface::quantity_sequence& surface::
 quantity () const
@@ -1773,34 +1747,210 @@ quantity (const quantity_sequence& s)
   this->quantity_ = s;
 }
 
-const surface::weakforms_optional& surface::
-weakforms () const
+const surface::weakforms_surface_type& surface::
+weakforms_surface () const
 {
-  return this->weakforms_;
+  return this->weakforms_surface_.get ();
 }
 
-surface::weakforms_optional& surface::
-weakforms ()
+surface::weakforms_surface_type& surface::
+weakforms_surface ()
 {
-  return this->weakforms_;
-}
-
-void surface::
-weakforms (const weakforms_type& x)
-{
-  this->weakforms_.set (x);
+  return this->weakforms_surface_.get ();
 }
 
 void surface::
-weakforms (const weakforms_optional& x)
+weakforms_surface (const weakforms_surface_type& x)
 {
-  this->weakforms_ = x;
+  this->weakforms_surface_.set (x);
 }
 
 void surface::
-weakforms (::std::auto_ptr< weakforms_type > x)
+weakforms_surface (::std::auto_ptr< weakforms_surface_type > x)
 {
-  this->weakforms_.set (x);
+  this->weakforms_surface_.set (x);
+}
+
+
+// weakforms_surface
+// 
+
+const weakforms_surface::group_optional& weakforms_surface::
+group () const
+{
+  return this->group_;
+}
+
+weakforms_surface::group_optional& weakforms_surface::
+group ()
+{
+  return this->group_;
+}
+
+void weakforms_surface::
+group (const group_type& x)
+{
+  this->group_.set (x);
+}
+
+void weakforms_surface::
+group (const group_optional& x)
+{
+  this->group_ = x;
+}
+
+void weakforms_surface::
+group (::std::auto_ptr< group_type > x)
+{
+  this->group_.set (x);
+}
+
+const weakforms_surface::weakform_surface_sequence& weakforms_surface::
+weakform_surface () const
+{
+  return this->weakform_surface_;
+}
+
+weakforms_surface::weakform_surface_sequence& weakforms_surface::
+weakform_surface ()
+{
+  return this->weakform_surface_;
+}
+
+void weakforms_surface::
+weakform_surface (const weakform_surface_sequence& s)
+{
+  this->weakform_surface_ = s;
+}
+
+
+// weakform_surface
+// 
+
+const weakform_surface::boundary_sequence& weakform_surface::
+boundary () const
+{
+  return this->boundary_;
+}
+
+weakform_surface::boundary_sequence& weakform_surface::
+boundary ()
+{
+  return this->boundary_;
+}
+
+void weakform_surface::
+boundary (const boundary_sequence& s)
+{
+  this->boundary_ = s;
+}
+
+const weakform_surface::quantity_sequence& weakform_surface::
+quantity () const
+{
+  return this->quantity_;
+}
+
+weakform_surface::quantity_sequence& weakform_surface::
+quantity ()
+{
+  return this->quantity_;
+}
+
+void weakform_surface::
+quantity (const quantity_sequence& s)
+{
+  this->quantity_ = s;
+}
+
+const weakform_surface::matrix_form_sequence& weakform_surface::
+matrix_form () const
+{
+  return this->matrix_form_;
+}
+
+weakform_surface::matrix_form_sequence& weakform_surface::
+matrix_form ()
+{
+  return this->matrix_form_;
+}
+
+void weakform_surface::
+matrix_form (const matrix_form_sequence& s)
+{
+  this->matrix_form_ = s;
+}
+
+const weakform_surface::vector_form_sequence& weakform_surface::
+vector_form () const
+{
+  return this->vector_form_;
+}
+
+weakform_surface::vector_form_sequence& weakform_surface::
+vector_form ()
+{
+  return this->vector_form_;
+}
+
+void weakform_surface::
+vector_form (const vector_form_sequence& s)
+{
+  this->vector_form_ = s;
+}
+
+const weakform_surface::analysistype_type& weakform_surface::
+analysistype () const
+{
+  return this->analysistype_.get ();
+}
+
+weakform_surface::analysistype_type& weakform_surface::
+analysistype ()
+{
+  return this->analysistype_.get ();
+}
+
+void weakform_surface::
+analysistype (const analysistype_type& x)
+{
+  this->analysistype_.set (x);
+}
+
+void weakform_surface::
+analysistype (::std::auto_ptr< analysistype_type > x)
+{
+  this->analysistype_.set (x);
+}
+
+const weakform_surface::default_optional& weakform_surface::
+default_ () const
+{
+  return this->default__;
+}
+
+weakform_surface::default_optional& weakform_surface::
+default_ ()
+{
+  return this->default__;
+}
+
+void weakform_surface::
+default_ (const default_type& x)
+{
+  this->default__.set (x);
+}
+
+void weakform_surface::
+default_ (const default_optional& x)
+{
+  this->default__ = x;
+}
+
+void weakform_surface::
+default_ (::std::auto_ptr< default_type > x)
+{
+  this->default__.set (x);
 }
 
 
@@ -2061,118 +2211,6 @@ void default_::
 id (::std::auto_ptr< id_type > x)
 {
   this->id_.set (x);
-}
-
-
-// vector_form
-// 
-
-const vector_form::axi_optional& vector_form::
-axi () const
-{
-  return this->axi_;
-}
-
-vector_form::axi_optional& vector_form::
-axi ()
-{
-  return this->axi_;
-}
-
-void vector_form::
-axi (const axi_type& x)
-{
-  this->axi_.set (x);
-}
-
-void vector_form::
-axi (const axi_optional& x)
-{
-  this->axi_ = x;
-}
-
-void vector_form::
-axi (::std::auto_ptr< axi_type > x)
-{
-  this->axi_.set (x);
-}
-
-const vector_form::i_optional& vector_form::
-i () const
-{
-  return this->i_;
-}
-
-vector_form::i_optional& vector_form::
-i ()
-{
-  return this->i_;
-}
-
-void vector_form::
-i (const i_type& x)
-{
-  this->i_.set (x);
-}
-
-void vector_form::
-i (const i_optional& x)
-{
-  this->i_ = x;
-}
-
-const vector_form::j_optional& vector_form::
-j () const
-{
-  return this->j_;
-}
-
-vector_form::j_optional& vector_form::
-j ()
-{
-  return this->j_;
-}
-
-void vector_form::
-j (const j_type& x)
-{
-  this->j_.set (x);
-}
-
-void vector_form::
-j (const j_optional& x)
-{
-  this->j_ = x;
-}
-
-const vector_form::planar_optional& vector_form::
-planar () const
-{
-  return this->planar_;
-}
-
-vector_form::planar_optional& vector_form::
-planar ()
-{
-  return this->planar_;
-}
-
-void vector_form::
-planar (const planar_type& x)
-{
-  this->planar_.set (x);
-}
-
-void vector_form::
-planar (const planar_optional& x)
-{
-  this->planar_ = x;
-}
-
-void vector_form::
-planar (::std::auto_ptr< planar_type > x)
-{
-  this->planar_.set (x);
 }
 
 
@@ -2516,155 +2554,429 @@ unit_latex (::std::auto_ptr< unit_latex_type > x)
 }
 
 
-// weakforms
+// weakforms_volume
 // 
 
-const weakforms::weakform_sequence& weakforms::
-weakform () const
+const weakforms_volume::weakform_volume_sequence& weakforms_volume::
+weakform_volume () const
 {
-  return this->weakform_;
+  return this->weakform_volume_;
 }
 
-weakforms::weakform_sequence& weakforms::
-weakform ()
+weakforms_volume::weakform_volume_sequence& weakforms_volume::
+weakform_volume ()
 {
-  return this->weakform_;
+  return this->weakform_volume_;
 }
 
-void weakforms::
-weakform (const weakform_sequence& s)
+void weakforms_volume::
+weakform_volume (const weakform_volume_sequence& s)
 {
-  this->weakform_ = s;
+  this->weakform_volume_ = s;
 }
 
 
-// weakform
+// weakform_volume
 // 
 
-const weakform::boundary_sequence& weakform::
-boundary () const
-{
-  return this->boundary_;
-}
-
-weakform::boundary_sequence& weakform::
-boundary ()
-{
-  return this->boundary_;
-}
-
-void weakform::
-boundary (const boundary_sequence& s)
-{
-  this->boundary_ = s;
-}
-
-const weakform::quantity_sequence& weakform::
+const weakform_volume::quantity_sequence& weakform_volume::
 quantity () const
 {
   return this->quantity_;
 }
 
-weakform::quantity_sequence& weakform::
+weakform_volume::quantity_sequence& weakform_volume::
 quantity ()
 {
   return this->quantity_;
 }
 
-void weakform::
+void weakform_volume::
 quantity (const quantity_sequence& s)
 {
   this->quantity_ = s;
 }
 
-const weakform::matrix_form_sequence& weakform::
+const weakform_volume::matrix_form_sequence& weakform_volume::
 matrix_form () const
 {
   return this->matrix_form_;
 }
 
-weakform::matrix_form_sequence& weakform::
+weakform_volume::matrix_form_sequence& weakform_volume::
 matrix_form ()
 {
   return this->matrix_form_;
 }
 
-void weakform::
+void weakform_volume::
 matrix_form (const matrix_form_sequence& s)
 {
   this->matrix_form_ = s;
 }
 
-const weakform::vector_form_sequence& weakform::
+const weakform_volume::vector_form_sequence& weakform_volume::
 vector_form () const
 {
   return this->vector_form_;
 }
 
-weakform::vector_form_sequence& weakform::
+weakform_volume::vector_form_sequence& weakform_volume::
 vector_form ()
 {
   return this->vector_form_;
 }
 
-void weakform::
+void weakform_volume::
 vector_form (const vector_form_sequence& s)
 {
   this->vector_form_ = s;
 }
 
-const weakform::analysistype_type& weakform::
+const weakform_volume::analysistype_type& weakform_volume::
 analysistype () const
 {
   return this->analysistype_.get ();
 }
 
-weakform::analysistype_type& weakform::
+weakform_volume::analysistype_type& weakform_volume::
 analysistype ()
 {
   return this->analysistype_.get ();
 }
 
-void weakform::
+void weakform_volume::
 analysistype (const analysistype_type& x)
 {
   this->analysistype_.set (x);
 }
 
-void weakform::
+void weakform_volume::
 analysistype (::std::auto_ptr< analysistype_type > x)
 {
   this->analysistype_.set (x);
 }
 
-const weakform::default_optional& weakform::
-default_ () const
+
+// group
+// 
+
+const group::quantity_sequence& group::
+quantity () const
 {
-  return this->default__;
+  return this->quantity_;
 }
 
-weakform::default_optional& weakform::
-default_ ()
+group::quantity_sequence& group::
+quantity ()
 {
-  return this->default__;
+  return this->quantity_;
 }
 
-void weakform::
-default_ (const default_type& x)
+void group::
+quantity (const quantity_sequence& s)
 {
-  this->default__.set (x);
+  this->quantity_ = s;
 }
 
-void weakform::
-default_ (const default_optional& x)
+const group::name_optional& group::
+name () const
 {
-  this->default__ = x;
+  return this->name_;
 }
 
-void weakform::
-default_ (::std::auto_ptr< default_type > x)
+group::name_optional& group::
+name ()
 {
-  this->default__.set (x);
+  return this->name_;
+}
+
+void group::
+name (const name_type& x)
+{
+  this->name_.set (x);
+}
+
+void group::
+name (const name_optional& x)
+{
+  this->name_ = x;
+}
+
+void group::
+name (::std::auto_ptr< name_type > x)
+{
+  this->name_.set (x);
+}
+
+
+// matrix_form
+// 
+
+const matrix_form::i_type& matrix_form::
+i () const
+{
+  return this->i_.get ();
+}
+
+matrix_form::i_type& matrix_form::
+i ()
+{
+  return this->i_.get ();
+}
+
+void matrix_form::
+i (const i_type& x)
+{
+  this->i_.set (x);
+}
+
+const matrix_form::j_type& matrix_form::
+j () const
+{
+  return this->j_.get ();
+}
+
+matrix_form::j_type& matrix_form::
+j ()
+{
+  return this->j_.get ();
+}
+
+void matrix_form::
+j (const j_type& x)
+{
+  this->j_.set (x);
+}
+
+const matrix_form::axi_type& matrix_form::
+axi () const
+{
+  return this->axi_.get ();
+}
+
+matrix_form::axi_type& matrix_form::
+axi ()
+{
+  return this->axi_.get ();
+}
+
+void matrix_form::
+axi (const axi_type& x)
+{
+  this->axi_.set (x);
+}
+
+void matrix_form::
+axi (::std::auto_ptr< axi_type > x)
+{
+  this->axi_.set (x);
+}
+
+const matrix_form::planar_type& matrix_form::
+planar () const
+{
+  return this->planar_.get ();
+}
+
+matrix_form::planar_type& matrix_form::
+planar ()
+{
+  return this->planar_.get ();
+}
+
+void matrix_form::
+planar (const planar_type& x)
+{
+  this->planar_.set (x);
+}
+
+void matrix_form::
+planar (::std::auto_ptr< planar_type > x)
+{
+  this->planar_.set (x);
+}
+
+const matrix_form::symmetric_optional& matrix_form::
+symmetric () const
+{
+  return this->symmetric_;
+}
+
+matrix_form::symmetric_optional& matrix_form::
+symmetric ()
+{
+  return this->symmetric_;
+}
+
+void matrix_form::
+symmetric (const symmetric_type& x)
+{
+  this->symmetric_.set (x);
+}
+
+void matrix_form::
+symmetric (const symmetric_optional& x)
+{
+  this->symmetric_ = x;
+}
+
+
+// vector_form
+// 
+
+const vector_form::i_type& vector_form::
+i () const
+{
+  return this->i_.get ();
+}
+
+vector_form::i_type& vector_form::
+i ()
+{
+  return this->i_.get ();
+}
+
+void vector_form::
+i (const i_type& x)
+{
+  this->i_.set (x);
+}
+
+const vector_form::j_type& vector_form::
+j () const
+{
+  return this->j_.get ();
+}
+
+vector_form::j_type& vector_form::
+j ()
+{
+  return this->j_.get ();
+}
+
+void vector_form::
+j (const j_type& x)
+{
+  this->j_.set (x);
+}
+
+const vector_form::planar_type& vector_form::
+planar () const
+{
+  return this->planar_.get ();
+}
+
+vector_form::planar_type& vector_form::
+planar ()
+{
+  return this->planar_.get ();
+}
+
+void vector_form::
+planar (const planar_type& x)
+{
+  this->planar_.set (x);
+}
+
+void vector_form::
+planar (::std::auto_ptr< planar_type > x)
+{
+  this->planar_.set (x);
+}
+
+const vector_form::axi_type& vector_form::
+axi () const
+{
+  return this->axi_.get ();
+}
+
+vector_form::axi_type& vector_form::
+axi ()
+{
+  return this->axi_.get ();
+}
+
+void vector_form::
+axi (const axi_type& x)
+{
+  this->axi_.set (x);
+}
+
+void vector_form::
+axi (::std::auto_ptr< axi_type > x)
+{
+  this->axi_.set (x);
+}
+
+
+// essential_form
+// 
+
+const essential_form::i_type& essential_form::
+i () const
+{
+  return this->i_.get ();
+}
+
+essential_form::i_type& essential_form::
+i ()
+{
+  return this->i_.get ();
+}
+
+void essential_form::
+i (const i_type& x)
+{
+  this->i_.set (x);
+}
+
+const essential_form::axi_type& essential_form::
+axi () const
+{
+  return this->axi_.get ();
+}
+
+essential_form::axi_type& essential_form::
+axi ()
+{
+  return this->axi_.get ();
+}
+
+void essential_form::
+axi (const axi_type& x)
+{
+  this->axi_.set (x);
+}
+
+void essential_form::
+axi (::std::auto_ptr< axi_type > x)
+{
+  this->axi_.set (x);
+}
+
+const essential_form::planar_type& essential_form::
+planar () const
+{
+  return this->planar_.get ();
+}
+
+essential_form::planar_type& essential_form::
+planar ()
+{
+  return this->planar_.get ();
+}
+
+void essential_form::
+planar (const planar_type& x)
+{
+  this->planar_.set (x);
+}
+
+void essential_form::
+planar (::std::auto_ptr< planar_type > x)
+{
+  this->planar_.set (x);
 }
 
 
@@ -2792,240 +3104,6 @@ name (::std::auto_ptr< name_type > x)
 }
 
 
-// essential_form
-// 
-
-const essential_form::axi_type& essential_form::
-axi () const
-{
-  return this->axi_.get ();
-}
-
-essential_form::axi_type& essential_form::
-axi ()
-{
-  return this->axi_.get ();
-}
-
-void essential_form::
-axi (const axi_type& x)
-{
-  this->axi_.set (x);
-}
-
-void essential_form::
-axi (::std::auto_ptr< axi_type > x)
-{
-  this->axi_.set (x);
-}
-
-const essential_form::i_type& essential_form::
-i () const
-{
-  return this->i_.get ();
-}
-
-essential_form::i_type& essential_form::
-i ()
-{
-  return this->i_.get ();
-}
-
-void essential_form::
-i (const i_type& x)
-{
-  this->i_.set (x);
-}
-
-const essential_form::planar_type& essential_form::
-planar () const
-{
-  return this->planar_.get ();
-}
-
-essential_form::planar_type& essential_form::
-planar ()
-{
-  return this->planar_.get ();
-}
-
-void essential_form::
-planar (const planar_type& x)
-{
-  this->planar_.set (x);
-}
-
-void essential_form::
-planar (::std::auto_ptr< planar_type > x)
-{
-  this->planar_.set (x);
-}
-
-
-// group
-// 
-
-const group::quantity_sequence& group::
-quantity () const
-{
-  return this->quantity_;
-}
-
-group::quantity_sequence& group::
-quantity ()
-{
-  return this->quantity_;
-}
-
-void group::
-quantity (const quantity_sequence& s)
-{
-  this->quantity_ = s;
-}
-
-const group::name_optional& group::
-name () const
-{
-  return this->name_;
-}
-
-group::name_optional& group::
-name ()
-{
-  return this->name_;
-}
-
-void group::
-name (const name_type& x)
-{
-  this->name_.set (x);
-}
-
-void group::
-name (const name_optional& x)
-{
-  this->name_ = x;
-}
-
-void group::
-name (::std::auto_ptr< name_type > x)
-{
-  this->name_.set (x);
-}
-
-
-// matrix_form
-// 
-
-const matrix_form::axi_type& matrix_form::
-axi () const
-{
-  return this->axi_.get ();
-}
-
-matrix_form::axi_type& matrix_form::
-axi ()
-{
-  return this->axi_.get ();
-}
-
-void matrix_form::
-axi (const axi_type& x)
-{
-  this->axi_.set (x);
-}
-
-void matrix_form::
-axi (::std::auto_ptr< axi_type > x)
-{
-  this->axi_.set (x);
-}
-
-const matrix_form::i_type& matrix_form::
-i () const
-{
-  return this->i_.get ();
-}
-
-matrix_form::i_type& matrix_form::
-i ()
-{
-  return this->i_.get ();
-}
-
-void matrix_form::
-i (const i_type& x)
-{
-  this->i_.set (x);
-}
-
-const matrix_form::j_type& matrix_form::
-j () const
-{
-  return this->j_.get ();
-}
-
-matrix_form::j_type& matrix_form::
-j ()
-{
-  return this->j_.get ();
-}
-
-void matrix_form::
-j (const j_type& x)
-{
-  this->j_.set (x);
-}
-
-const matrix_form::planar_type& matrix_form::
-planar () const
-{
-  return this->planar_.get ();
-}
-
-matrix_form::planar_type& matrix_form::
-planar ()
-{
-  return this->planar_.get ();
-}
-
-void matrix_form::
-planar (const planar_type& x)
-{
-  this->planar_.set (x);
-}
-
-void matrix_form::
-planar (::std::auto_ptr< planar_type > x)
-{
-  this->planar_.set (x);
-}
-
-const matrix_form::symmetric_optional& matrix_form::
-symmetric () const
-{
-  return this->symmetric_;
-}
-
-matrix_form::symmetric_optional& matrix_form::
-symmetric ()
-{
-  return this->symmetric_;
-}
-
-void matrix_form::
-symmetric (const symmetric_type& x)
-{
-  this->symmetric_.set (x);
-}
-
-void matrix_form::
-symmetric (const symmetric_optional& x)
-{
-  this->symmetric_ = x;
-}
-
-
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
 #include <xsd/cxx/tree/type-factory-map.hxx>
@@ -3043,7 +3121,6 @@ namespace _xsd
 module::
 module (const general_type& general,
         const constants_type& constants,
-        const macros_type& macros,
         const volume_type& volume,
         const surface_type& surface,
         const preprocessor_type& preprocessor,
@@ -3051,7 +3128,6 @@ module (const general_type& general,
 : ::xml_schema::type (),
   general_ (general, ::xml_schema::flags (), this),
   constants_ (constants, ::xml_schema::flags (), this),
-  macros_ (macros, ::xml_schema::flags (), this),
   volume_ (volume, ::xml_schema::flags (), this),
   surface_ (surface, ::xml_schema::flags (), this),
   preprocessor_ (preprocessor, ::xml_schema::flags (), this),
@@ -3062,7 +3138,6 @@ module (const general_type& general,
 module::
 module (::std::auto_ptr< general_type >& general,
         ::std::auto_ptr< constants_type >& constants,
-        ::std::auto_ptr< macros_type >& macros,
         ::std::auto_ptr< volume_type >& volume,
         ::std::auto_ptr< surface_type >& surface,
         ::std::auto_ptr< preprocessor_type >& preprocessor,
@@ -3070,7 +3145,6 @@ module (::std::auto_ptr< general_type >& general,
 : ::xml_schema::type (),
   general_ (general, ::xml_schema::flags (), this),
   constants_ (constants, ::xml_schema::flags (), this),
-  macros_ (macros, ::xml_schema::flags (), this),
   volume_ (volume, ::xml_schema::flags (), this),
   surface_ (surface, ::xml_schema::flags (), this),
   preprocessor_ (preprocessor, ::xml_schema::flags (), this),
@@ -3085,7 +3159,6 @@ module (const module& x,
 : ::xml_schema::type (x, f, c),
   general_ (x.general_, f, this),
   constants_ (x.constants_, f, this),
-  macros_ (x.macros_, f, this),
   volume_ (x.volume_, f, this),
   surface_ (x.surface_, f, this),
   preprocessor_ (x.preprocessor_, f, this),
@@ -3100,7 +3173,6 @@ module (const ::xercesc::DOMElement& e,
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   general_ (f, this),
   constants_ (f, this),
-  macros_ (f, this),
   volume_ (f, this),
   surface_ (f, this),
   preprocessor_ (f, this),
@@ -3147,20 +3219,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!constants_.present ())
       {
         this->constants_.set (r);
-        continue;
-      }
-    }
-
-    // macros
-    //
-    if (n.name () == "macros" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< macros_type > r (
-        macros_traits::create (i, f, this));
-
-      if (!macros_.present ())
-      {
-        this->macros_.set (r);
         continue;
       }
     }
@@ -3235,13 +3293,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "constants",
-      "");
-  }
-
-  if (!macros_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "macros",
       "");
   }
 
@@ -3912,10 +3963,9 @@ macros::
 //
 
 macro::
-macro (const expression_type& expression,
-       const id_type& id)
+macro (const id_type& id)
 : ::xml_schema::type (),
-  expression_ (expression, ::xml_schema::flags (), this),
+  expression_ (::xml_schema::flags (), this),
   id_ (id, ::xml_schema::flags (), this)
 {
 }
@@ -3974,13 +4024,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     }
   }
 
-  if (!expression_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "expression",
-      "");
-  }
-
   if (!id_.present ())
   {
     throw ::xsd::cxx::tree::expected_attribute< char > (
@@ -4005,20 +4048,9 @@ macro::
 //
 
 preprocessor::
-preprocessor (const volume_type& volume,
-              const surface_type& surface)
+preprocessor ()
 : ::xml_schema::type (),
-  volume_ (volume, ::xml_schema::flags (), this),
-  surface_ (surface, ::xml_schema::flags (), this)
-{
-}
-
-preprocessor::
-preprocessor (::std::auto_ptr< volume_type >& volume,
-              ::std::auto_ptr< surface_type >& surface)
-: ::xml_schema::type (),
-  volume_ (volume, ::xml_schema::flags (), this),
-  surface_ (surface, ::xml_schema::flags (), this)
+  gui_ (::xml_schema::flags (), this)
 {
 }
 
@@ -4027,8 +4059,7 @@ preprocessor (const preprocessor& x,
               ::xml_schema::flags f,
               ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  volume_ (x.volume_, f, this),
-  surface_ (x.surface_, f, this)
+  gui_ (x.gui_, f, this)
 {
 }
 
@@ -4037,8 +4068,7 @@ preprocessor (const ::xercesc::DOMElement& e,
               ::xml_schema::flags f,
               ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  volume_ (f, this),
-  surface_ (f, this)
+  gui_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -4057,49 +4087,18 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // volume
+    // gui
     //
-    if (n.name () == "volume" && n.namespace_ ().empty ())
+    if (n.name () == "gui" && n.namespace_ ().empty ())
     {
-      ::std::auto_ptr< volume_type > r (
-        volume_traits::create (i, f, this));
+      ::std::auto_ptr< gui_type > r (
+        gui_traits::create (i, f, this));
 
-      if (!volume_.present ())
-      {
-        this->volume_.set (r);
-        continue;
-      }
-    }
-
-    // surface
-    //
-    if (n.name () == "surface" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< surface_type > r (
-        surface_traits::create (i, f, this));
-
-      if (!surface_.present ())
-      {
-        this->surface_.set (r);
-        continue;
-      }
+      this->gui_.push_back (r);
+      continue;
     }
 
     break;
-  }
-
-  if (!volume_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "volume",
-      "");
-  }
-
-  if (!surface_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "surface",
-      "");
   }
 }
 
@@ -4112,6 +4111,102 @@ _clone (::xml_schema::flags f,
 
 preprocessor::
 ~preprocessor ()
+{
+}
+
+// gui
+//
+
+gui::
+gui (const type_type& type)
+: ::xml_schema::type (),
+  group_ (::xml_schema::flags (), this),
+  type_ (type, ::xml_schema::flags (), this)
+{
+}
+
+gui::
+gui (const gui& x,
+     ::xml_schema::flags f,
+     ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  group_ (x.group_, f, this),
+  type_ (x.type_, f, this)
+{
+}
+
+gui::
+gui (const ::xercesc::DOMElement& e,
+     ::xml_schema::flags f,
+     ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  group_ (f, this),
+  type_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
+    this->parse (p, f);
+  }
+}
+
+void gui::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // group
+    //
+    if (n.name () == "group" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< group_type > r (
+        group_traits::create (i, f, this));
+
+      this->group_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "type" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< type_type > r (
+        type_traits::create (i, f, this));
+
+      this->type_.set (r);
+      continue;
+    }
+  }
+
+  if (!type_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "type",
+      "");
+  }
+}
+
+gui* gui::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class gui (*this, f, c);
+}
+
+gui::
+~gui ()
 {
 }
 
@@ -5201,6 +5296,7 @@ surfaceintegral (const id_type& id,
   name_ (name, ::xml_schema::flags (), this),
   shortname_ (shortname, ::xml_schema::flags (), this),
   shortname_html_ (::xml_schema::flags (), this),
+  shortname_latex_ (::xml_schema::flags (), this),
   unit_ (unit, ::xml_schema::flags (), this),
   unit_html_ (::xml_schema::flags (), this),
   unit_latex_ (::xml_schema::flags (), this)
@@ -5217,6 +5313,7 @@ surfaceintegral (const surfaceintegral& x,
   name_ (x.name_, f, this),
   shortname_ (x.shortname_, f, this),
   shortname_html_ (x.shortname_html_, f, this),
+  shortname_latex_ (x.shortname_latex_, f, this),
   unit_ (x.unit_, f, this),
   unit_html_ (x.unit_html_, f, this),
   unit_latex_ (x.unit_latex_, f, this)
@@ -5233,6 +5330,7 @@ surfaceintegral (const ::xercesc::DOMElement& e,
   name_ (f, this),
   shortname_ (f, this),
   shortname_html_ (f, this),
+  shortname_latex_ (f, this),
   unit_ (f, this),
   unit_html_ (f, this),
   unit_latex_ (f, this)
@@ -5310,6 +5408,15 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       continue;
     }
 
+    if (n.name () == "shortname_latex" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< shortname_latex_type > r (
+        shortname_latex_traits::create (i, f, this));
+
+      this->shortname_latex_.set (r);
+      continue;
+    }
+
     if (n.name () == "unit" && n.namespace_ ().empty ())
     {
       ::std::auto_ptr< unit_type > r (
@@ -5383,11 +5490,18 @@ surfaceintegral::
 //
 
 volume::
-volume ()
+volume (const weakforms_volume_type& weakforms_volume)
 : ::xml_schema::type (),
   quantity_ (::xml_schema::flags (), this),
-  weakforms_ (::xml_schema::flags (), this),
-  group_ (::xml_schema::flags (), this)
+  weakforms_volume_ (weakforms_volume, ::xml_schema::flags (), this)
+{
+}
+
+volume::
+volume (::std::auto_ptr< weakforms_volume_type >& weakforms_volume)
+: ::xml_schema::type (),
+  quantity_ (::xml_schema::flags (), this),
+  weakforms_volume_ (weakforms_volume, ::xml_schema::flags (), this)
 {
 }
 
@@ -5397,8 +5511,7 @@ volume (const volume& x,
         ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   quantity_ (x.quantity_, f, this),
-  weakforms_ (x.weakforms_, f, this),
-  group_ (x.group_, f, this)
+  weakforms_volume_ (x.weakforms_volume_, f, this)
 {
 }
 
@@ -5408,8 +5521,7 @@ volume (const ::xercesc::DOMElement& e,
         ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   quantity_ (f, this),
-  weakforms_ (f, this),
-  group_ (f, this)
+  weakforms_volume_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -5439,32 +5551,28 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       continue;
     }
 
-    // weakforms
+    // weakforms_volume
     //
-    if (n.name () == "weakforms" && n.namespace_ ().empty ())
+    if (n.name () == "weakforms_volume" && n.namespace_ ().empty ())
     {
-      ::std::auto_ptr< weakforms_type > r (
-        weakforms_traits::create (i, f, this));
+      ::std::auto_ptr< weakforms_volume_type > r (
+        weakforms_volume_traits::create (i, f, this));
 
-      if (!this->weakforms_)
+      if (!weakforms_volume_.present ())
       {
-        this->weakforms_.set (r);
+        this->weakforms_volume_.set (r);
         continue;
       }
     }
 
-    // group
-    //
-    if (n.name () == "group" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< group_type > r (
-        group_traits::create (i, f, this));
-
-      this->group_.push_back (r);
-      continue;
-    }
-
     break;
+  }
+
+  if (!weakforms_volume_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "weakforms_volume",
+      "");
   }
 }
 
@@ -5484,11 +5592,18 @@ volume::
 //
 
 surface::
-surface ()
+surface (const weakforms_surface_type& weakforms_surface)
 : ::xml_schema::type (),
-  group_ (::xml_schema::flags (), this),
   quantity_ (::xml_schema::flags (), this),
-  weakforms_ (::xml_schema::flags (), this)
+  weakforms_surface_ (weakforms_surface, ::xml_schema::flags (), this)
+{
+}
+
+surface::
+surface (::std::auto_ptr< weakforms_surface_type >& weakforms_surface)
+: ::xml_schema::type (),
+  quantity_ (::xml_schema::flags (), this),
+  weakforms_surface_ (weakforms_surface, ::xml_schema::flags (), this)
 {
 }
 
@@ -5497,9 +5612,8 @@ surface (const surface& x,
          ::xml_schema::flags f,
          ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  group_ (x.group_, f, this),
   quantity_ (x.quantity_, f, this),
-  weakforms_ (x.weakforms_, f, this)
+  weakforms_surface_ (x.weakforms_surface_, f, this)
 {
 }
 
@@ -5508,9 +5622,8 @@ surface (const ::xercesc::DOMElement& e,
          ::xml_schema::flags f,
          ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  group_ (f, this),
   quantity_ (f, this),
-  weakforms_ (f, this)
+  weakforms_surface_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -5520,6 +5633,100 @@ surface (const ::xercesc::DOMElement& e,
 }
 
 void surface::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // quantity
+    //
+    if (n.name () == "quantity" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< quantity_type > r (
+        quantity_traits::create (i, f, this));
+
+      this->quantity_.push_back (r);
+      continue;
+    }
+
+    // weakforms_surface
+    //
+    if (n.name () == "weakforms_surface" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< weakforms_surface_type > r (
+        weakforms_surface_traits::create (i, f, this));
+
+      if (!weakforms_surface_.present ())
+      {
+        this->weakforms_surface_.set (r);
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!weakforms_surface_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "weakforms_surface",
+      "");
+  }
+}
+
+surface* surface::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class surface (*this, f, c);
+}
+
+surface::
+~surface ()
+{
+}
+
+// weakforms_surface
+//
+
+weakforms_surface::
+weakforms_surface ()
+: ::xml_schema::type (),
+  group_ (::xml_schema::flags (), this),
+  weakform_surface_ (::xml_schema::flags (), this)
+{
+}
+
+weakforms_surface::
+weakforms_surface (const weakforms_surface& x,
+                   ::xml_schema::flags f,
+                   ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  group_ (x.group_, f, this),
+  weakform_surface_ (x.weakform_surface_, f, this)
+{
+}
+
+weakforms_surface::
+weakforms_surface (const ::xercesc::DOMElement& e,
+                   ::xml_schema::flags f,
+                   ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  group_ (f, this),
+  weakform_surface_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void weakforms_surface::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -5543,6 +5750,102 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // weakform_surface
+    //
+    if (n.name () == "weakform_surface" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< weakform_surface_type > r (
+        weakform_surface_traits::create (i, f, this));
+
+      this->weakform_surface_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+weakforms_surface* weakforms_surface::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class weakforms_surface (*this, f, c);
+}
+
+weakforms_surface::
+~weakforms_surface ()
+{
+}
+
+// weakform_surface
+//
+
+weakform_surface::
+weakform_surface (const analysistype_type& analysistype)
+: ::xml_schema::type (),
+  boundary_ (::xml_schema::flags (), this),
+  quantity_ (::xml_schema::flags (), this),
+  matrix_form_ (::xml_schema::flags (), this),
+  vector_form_ (::xml_schema::flags (), this),
+  analysistype_ (analysistype, ::xml_schema::flags (), this),
+  default__ (::xml_schema::flags (), this)
+{
+}
+
+weakform_surface::
+weakform_surface (const weakform_surface& x,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  boundary_ (x.boundary_, f, this),
+  quantity_ (x.quantity_, f, this),
+  matrix_form_ (x.matrix_form_, f, this),
+  vector_form_ (x.vector_form_, f, this),
+  analysistype_ (x.analysistype_, f, this),
+  default__ (x.default__, f, this)
+{
+}
+
+weakform_surface::
+weakform_surface (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  boundary_ (f, this),
+  quantity_ (f, this),
+  matrix_form_ (f, this),
+  vector_form_ (f, this),
+  analysistype_ (f, this),
+  default__ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
+    this->parse (p, f);
+  }
+}
+
+void weakform_surface::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // boundary
+    //
+    if (n.name () == "boundary" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< boundary_type > r (
+        boundary_traits::create (i, f, this));
+
+      this->boundary_.push_back (r);
+      continue;
+    }
+
     // quantity
     //
     if (n.name () == "quantity" && n.namespace_ ().empty ())
@@ -5554,33 +5857,73 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       continue;
     }
 
-    // weakforms
+    // matrix_form
     //
-    if (n.name () == "weakforms" && n.namespace_ ().empty ())
+    if (n.name () == "matrix_form" && n.namespace_ ().empty ())
     {
-      ::std::auto_ptr< weakforms_type > r (
-        weakforms_traits::create (i, f, this));
+      ::std::auto_ptr< matrix_form_type > r (
+        matrix_form_traits::create (i, f, this));
 
-      if (!this->weakforms_)
-      {
-        this->weakforms_.set (r);
-        continue;
-      }
+      this->matrix_form_.push_back (r);
+      continue;
+    }
+
+    // vector_form
+    //
+    if (n.name () == "vector_form" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< vector_form_type > r (
+        vector_form_traits::create (i, f, this));
+
+      this->vector_form_.push_back (r);
+      continue;
     }
 
     break;
   }
+
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "analysistype" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< analysistype_type > r (
+        analysistype_traits::create (i, f, this));
+
+      this->analysistype_.set (r);
+      continue;
+    }
+
+    if (n.name () == "default" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< default_type > r (
+        default_traits::create (i, f, this));
+
+      this->default__.set (r);
+      continue;
+    }
+  }
+
+  if (!analysistype_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "analysistype",
+      "");
+  }
 }
 
-surface* surface::
+weakform_surface* weakform_surface::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class surface (*this, f, c);
+  return new class weakform_surface (*this, f, c);
 }
 
-surface::
-~surface ()
+weakform_surface::
+~weakform_surface ()
 {
 }
 
@@ -5822,102 +6165,6 @@ default_::
 {
 }
 
-// vector_form
-//
-
-vector_form::
-vector_form ()
-: ::xml_schema::type (),
-  axi_ (::xml_schema::flags (), this),
-  i_ (::xml_schema::flags (), this),
-  j_ (::xml_schema::flags (), this),
-  planar_ (::xml_schema::flags (), this)
-{
-}
-
-vector_form::
-vector_form (const vector_form& x,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  axi_ (x.axi_, f, this),
-  i_ (x.i_, f, this),
-  j_ (x.j_, f, this),
-  planar_ (x.planar_, f, this)
-{
-}
-
-vector_form::
-vector_form (const ::xercesc::DOMElement& e,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  axi_ (f, this),
-  i_ (f, this),
-  j_ (f, this),
-  planar_ (f, this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
-    this->parse (p, f);
-  }
-}
-
-void vector_form::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  while (p.more_attributes ())
-  {
-    const ::xercesc::DOMAttr& i (p.next_attribute ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    if (n.name () == "axi" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< axi_type > r (
-        axi_traits::create (i, f, this));
-
-      this->axi_.set (r);
-      continue;
-    }
-
-    if (n.name () == "i" && n.namespace_ ().empty ())
-    {
-      this->i_.set (i_traits::create (i, f, this));
-      continue;
-    }
-
-    if (n.name () == "j" && n.namespace_ ().empty ())
-    {
-      this->j_.set (j_traits::create (i, f, this));
-      continue;
-    }
-
-    if (n.name () == "planar" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< planar_type > r (
-        planar_traits::create (i, f, this));
-
-      this->planar_.set (r);
-      continue;
-    }
-  }
-}
-
-vector_form* vector_form::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class vector_form (*this, f, c);
-}
-
-vector_form::
-~vector_form ()
-{
-}
-
 // quantity
 //
 
@@ -6114,31 +6361,31 @@ quantity::
 {
 }
 
-// weakforms
+// weakforms_volume
 //
 
-weakforms::
-weakforms ()
+weakforms_volume::
+weakforms_volume ()
 : ::xml_schema::type (),
-  weakform_ (::xml_schema::flags (), this)
+  weakform_volume_ (::xml_schema::flags (), this)
 {
 }
 
-weakforms::
-weakforms (const weakforms& x,
-           ::xml_schema::flags f,
-           ::xml_schema::container* c)
+weakforms_volume::
+weakforms_volume (const weakforms_volume& x,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  weakform_ (x.weakform_, f, this)
+  weakform_volume_ (x.weakform_volume_, f, this)
 {
 }
 
-weakforms::
-weakforms (const ::xercesc::DOMElement& e,
-           ::xml_schema::flags f,
-           ::xml_schema::container* c)
+weakforms_volume::
+weakforms_volume (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  weakform_ (f, this)
+  weakform_volume_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -6147,7 +6394,7 @@ weakforms (const ::xercesc::DOMElement& e,
   }
 }
 
-void weakforms::
+void weakforms_volume::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -6157,14 +6404,14 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // weakform
+    // weakform_volume
     //
-    if (n.name () == "weakform" && n.namespace_ ().empty ())
+    if (n.name () == "weakform_volume" && n.namespace_ ().empty ())
     {
-      ::std::auto_ptr< weakform_type > r (
-        weakform_traits::create (i, f, this));
+      ::std::auto_ptr< weakform_volume_type > r (
+        weakform_volume_traits::create (i, f, this));
 
-      this->weakform_.push_back (r);
+      this->weakform_volume_.push_back (r);
       continue;
     }
 
@@ -6172,58 +6419,52 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   }
 }
 
-weakforms* weakforms::
+weakforms_volume* weakforms_volume::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class weakforms (*this, f, c);
+  return new class weakforms_volume (*this, f, c);
 }
 
-weakforms::
-~weakforms ()
+weakforms_volume::
+~weakforms_volume ()
 {
 }
 
-// weakform
+// weakform_volume
 //
 
-weakform::
-weakform (const analysistype_type& analysistype)
+weakform_volume::
+weakform_volume (const analysistype_type& analysistype)
 : ::xml_schema::type (),
-  boundary_ (::xml_schema::flags (), this),
   quantity_ (::xml_schema::flags (), this),
   matrix_form_ (::xml_schema::flags (), this),
   vector_form_ (::xml_schema::flags (), this),
-  analysistype_ (analysistype, ::xml_schema::flags (), this),
-  default__ (::xml_schema::flags (), this)
+  analysistype_ (analysistype, ::xml_schema::flags (), this)
 {
 }
 
-weakform::
-weakform (const weakform& x,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
+weakform_volume::
+weakform_volume (const weakform_volume& x,
+                 ::xml_schema::flags f,
+                 ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  boundary_ (x.boundary_, f, this),
   quantity_ (x.quantity_, f, this),
   matrix_form_ (x.matrix_form_, f, this),
   vector_form_ (x.vector_form_, f, this),
-  analysistype_ (x.analysistype_, f, this),
-  default__ (x.default__, f, this)
+  analysistype_ (x.analysistype_, f, this)
 {
 }
 
-weakform::
-weakform (const ::xercesc::DOMElement& e,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
+weakform_volume::
+weakform_volume (const ::xercesc::DOMElement& e,
+                 ::xml_schema::flags f,
+                 ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  boundary_ (f, this),
   quantity_ (f, this),
   matrix_form_ (f, this),
   vector_form_ (f, this),
-  analysistype_ (f, this),
-  default__ (f, this)
+  analysistype_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -6232,7 +6473,7 @@ weakform (const ::xercesc::DOMElement& e,
   }
 }
 
-void weakform::
+void weakform_volume::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -6241,17 +6482,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xercesc::DOMElement& i (p.cur_element ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
-
-    // boundary
-    //
-    if (n.name () == "boundary" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< boundary_type > r (
-        boundary_traits::create (i, f, this));
-
-      this->boundary_.push_back (r);
-      continue;
-    }
 
     // quantity
     //
@@ -6303,15 +6533,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       this->analysistype_.set (r);
       continue;
     }
-
-    if (n.name () == "default" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< default_type > r (
-        default_traits::create (i, f, this));
-
-      this->default__.set (r);
-      continue;
-    }
   }
 
   if (!analysistype_.present ())
@@ -6322,15 +6543,477 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   }
 }
 
-weakform* weakform::
+weakform_volume* weakform_volume::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class weakform (*this, f, c);
+  return new class weakform_volume (*this, f, c);
 }
 
-weakform::
-~weakform ()
+weakform_volume::
+~weakform_volume ()
+{
+}
+
+// group
+//
+
+group::
+group ()
+: ::xml_schema::type (),
+  quantity_ (::xml_schema::flags (), this),
+  name_ (::xml_schema::flags (), this)
+{
+}
+
+group::
+group (const group& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  quantity_ (x.quantity_, f, this),
+  name_ (x.name_, f, this)
+{
+}
+
+group::
+group (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  quantity_ (f, this),
+  name_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
+    this->parse (p, f);
+  }
+}
+
+void group::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // quantity
+    //
+    if (n.name () == "quantity" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< quantity_type > r (
+        quantity_traits::create (i, f, this));
+
+      this->quantity_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "name" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< name_type > r (
+        name_traits::create (i, f, this));
+
+      this->name_.set (r);
+      continue;
+    }
+  }
+}
+
+group* group::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class group (*this, f, c);
+}
+
+group::
+~group ()
+{
+}
+
+// matrix_form
+//
+
+matrix_form::
+matrix_form (const i_type& i,
+             const j_type& j,
+             const axi_type& axi,
+             const planar_type& planar)
+: ::xml_schema::type (),
+  i_ (i, ::xml_schema::flags (), this),
+  j_ (j, ::xml_schema::flags (), this),
+  axi_ (axi, ::xml_schema::flags (), this),
+  planar_ (planar, ::xml_schema::flags (), this),
+  symmetric_ (::xml_schema::flags (), this)
+{
+}
+
+matrix_form::
+matrix_form (const matrix_form& x,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  i_ (x.i_, f, this),
+  j_ (x.j_, f, this),
+  axi_ (x.axi_, f, this),
+  planar_ (x.planar_, f, this),
+  symmetric_ (x.symmetric_, f, this)
+{
+}
+
+matrix_form::
+matrix_form (const ::xercesc::DOMElement& e,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  i_ (f, this),
+  j_ (f, this),
+  axi_ (f, this),
+  planar_ (f, this),
+  symmetric_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+    this->parse (p, f);
+  }
+}
+
+void matrix_form::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "i" && n.namespace_ ().empty ())
+    {
+      this->i_.set (i_traits::create (i, f, this));
+      continue;
+    }
+
+    if (n.name () == "j" && n.namespace_ ().empty ())
+    {
+      this->j_.set (j_traits::create (i, f, this));
+      continue;
+    }
+
+    if (n.name () == "axi" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< axi_type > r (
+        axi_traits::create (i, f, this));
+
+      this->axi_.set (r);
+      continue;
+    }
+
+    if (n.name () == "planar" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< planar_type > r (
+        planar_traits::create (i, f, this));
+
+      this->planar_.set (r);
+      continue;
+    }
+
+    if (n.name () == "symmetric" && n.namespace_ ().empty ())
+    {
+      this->symmetric_.set (symmetric_traits::create (i, f, this));
+      continue;
+    }
+  }
+
+  if (!i_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "i",
+      "");
+  }
+
+  if (!j_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "j",
+      "");
+  }
+
+  if (!axi_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "axi",
+      "");
+  }
+
+  if (!planar_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "planar",
+      "");
+  }
+}
+
+matrix_form* matrix_form::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class matrix_form (*this, f, c);
+}
+
+matrix_form::
+~matrix_form ()
+{
+}
+
+// vector_form
+//
+
+vector_form::
+vector_form (const i_type& i,
+             const j_type& j,
+             const planar_type& planar,
+             const axi_type& axi)
+: ::xml_schema::type (),
+  i_ (i, ::xml_schema::flags (), this),
+  j_ (j, ::xml_schema::flags (), this),
+  planar_ (planar, ::xml_schema::flags (), this),
+  axi_ (axi, ::xml_schema::flags (), this)
+{
+}
+
+vector_form::
+vector_form (const vector_form& x,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  i_ (x.i_, f, this),
+  j_ (x.j_, f, this),
+  planar_ (x.planar_, f, this),
+  axi_ (x.axi_, f, this)
+{
+}
+
+vector_form::
+vector_form (const ::xercesc::DOMElement& e,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  i_ (f, this),
+  j_ (f, this),
+  planar_ (f, this),
+  axi_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+    this->parse (p, f);
+  }
+}
+
+void vector_form::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "i" && n.namespace_ ().empty ())
+    {
+      this->i_.set (i_traits::create (i, f, this));
+      continue;
+    }
+
+    if (n.name () == "j" && n.namespace_ ().empty ())
+    {
+      this->j_.set (j_traits::create (i, f, this));
+      continue;
+    }
+
+    if (n.name () == "planar" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< planar_type > r (
+        planar_traits::create (i, f, this));
+
+      this->planar_.set (r);
+      continue;
+    }
+
+    if (n.name () == "axi" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< axi_type > r (
+        axi_traits::create (i, f, this));
+
+      this->axi_.set (r);
+      continue;
+    }
+  }
+
+  if (!i_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "i",
+      "");
+  }
+
+  if (!j_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "j",
+      "");
+  }
+
+  if (!planar_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "planar",
+      "");
+  }
+
+  if (!axi_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "axi",
+      "");
+  }
+}
+
+vector_form* vector_form::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class vector_form (*this, f, c);
+}
+
+vector_form::
+~vector_form ()
+{
+}
+
+// essential_form
+//
+
+essential_form::
+essential_form (const i_type& i,
+                const axi_type& axi,
+                const planar_type& planar)
+: ::xml_schema::type (),
+  i_ (i, ::xml_schema::flags (), this),
+  axi_ (axi, ::xml_schema::flags (), this),
+  planar_ (planar, ::xml_schema::flags (), this)
+{
+}
+
+essential_form::
+essential_form (const essential_form& x,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  i_ (x.i_, f, this),
+  axi_ (x.axi_, f, this),
+  planar_ (x.planar_, f, this)
+{
+}
+
+essential_form::
+essential_form (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  i_ (f, this),
+  axi_ (f, this),
+  planar_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+    this->parse (p, f);
+  }
+}
+
+void essential_form::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "i" && n.namespace_ ().empty ())
+    {
+      this->i_.set (i_traits::create (i, f, this));
+      continue;
+    }
+
+    if (n.name () == "axi" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< axi_type > r (
+        axi_traits::create (i, f, this));
+
+      this->axi_.set (r);
+      continue;
+    }
+
+    if (n.name () == "planar" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< planar_type > r (
+        planar_traits::create (i, f, this));
+
+      this->planar_.set (r);
+      continue;
+    }
+  }
+
+  if (!i_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "i",
+      "");
+  }
+
+  if (!axi_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "axi",
+      "");
+  }
+
+  if (!planar_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "planar",
+      "");
+  }
+}
+
+essential_form* essential_form::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class essential_form (*this, f, c);
+}
+
+essential_form::
+~essential_form ()
 {
 }
 
@@ -6492,341 +7175,6 @@ boundary::
 {
 }
 
-// essential_form
-//
-
-essential_form::
-essential_form (const axi_type& axi,
-                const i_type& i,
-                const planar_type& planar)
-: ::xml_schema::type (),
-  axi_ (axi, ::xml_schema::flags (), this),
-  i_ (i, ::xml_schema::flags (), this),
-  planar_ (planar, ::xml_schema::flags (), this)
-{
-}
-
-essential_form::
-essential_form (const essential_form& x,
-                ::xml_schema::flags f,
-                ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  axi_ (x.axi_, f, this),
-  i_ (x.i_, f, this),
-  planar_ (x.planar_, f, this)
-{
-}
-
-essential_form::
-essential_form (const ::xercesc::DOMElement& e,
-                ::xml_schema::flags f,
-                ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  axi_ (f, this),
-  i_ (f, this),
-  planar_ (f, this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
-    this->parse (p, f);
-  }
-}
-
-void essential_form::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  while (p.more_attributes ())
-  {
-    const ::xercesc::DOMAttr& i (p.next_attribute ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    if (n.name () == "axi" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< axi_type > r (
-        axi_traits::create (i, f, this));
-
-      this->axi_.set (r);
-      continue;
-    }
-
-    if (n.name () == "i" && n.namespace_ ().empty ())
-    {
-      this->i_.set (i_traits::create (i, f, this));
-      continue;
-    }
-
-    if (n.name () == "planar" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< planar_type > r (
-        planar_traits::create (i, f, this));
-
-      this->planar_.set (r);
-      continue;
-    }
-  }
-
-  if (!axi_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "axi",
-      "");
-  }
-
-  if (!i_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "i",
-      "");
-  }
-
-  if (!planar_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "planar",
-      "");
-  }
-}
-
-essential_form* essential_form::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class essential_form (*this, f, c);
-}
-
-essential_form::
-~essential_form ()
-{
-}
-
-// group
-//
-
-group::
-group ()
-: ::xml_schema::type (),
-  quantity_ (::xml_schema::flags (), this),
-  name_ (::xml_schema::flags (), this)
-{
-}
-
-group::
-group (const group& x,
-       ::xml_schema::flags f,
-       ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  quantity_ (x.quantity_, f, this),
-  name_ (x.name_, f, this)
-{
-}
-
-group::
-group (const ::xercesc::DOMElement& e,
-       ::xml_schema::flags f,
-       ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  quantity_ (f, this),
-  name_ (f, this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
-    this->parse (p, f);
-  }
-}
-
-void group::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  for (; p.more_elements (); p.next_element ())
-  {
-    const ::xercesc::DOMElement& i (p.cur_element ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    // quantity
-    //
-    if (n.name () == "quantity" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< quantity_type > r (
-        quantity_traits::create (i, f, this));
-
-      this->quantity_.push_back (r);
-      continue;
-    }
-
-    break;
-  }
-
-  while (p.more_attributes ())
-  {
-    const ::xercesc::DOMAttr& i (p.next_attribute ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    if (n.name () == "name" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< name_type > r (
-        name_traits::create (i, f, this));
-
-      this->name_.set (r);
-      continue;
-    }
-  }
-}
-
-group* group::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class group (*this, f, c);
-}
-
-group::
-~group ()
-{
-}
-
-// matrix_form
-//
-
-matrix_form::
-matrix_form (const axi_type& axi,
-             const i_type& i,
-             const j_type& j,
-             const planar_type& planar)
-: ::xml_schema::type (),
-  axi_ (axi, ::xml_schema::flags (), this),
-  i_ (i, ::xml_schema::flags (), this),
-  j_ (j, ::xml_schema::flags (), this),
-  planar_ (planar, ::xml_schema::flags (), this),
-  symmetric_ (::xml_schema::flags (), this)
-{
-}
-
-matrix_form::
-matrix_form (const matrix_form& x,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  axi_ (x.axi_, f, this),
-  i_ (x.i_, f, this),
-  j_ (x.j_, f, this),
-  planar_ (x.planar_, f, this),
-  symmetric_ (x.symmetric_, f, this)
-{
-}
-
-matrix_form::
-matrix_form (const ::xercesc::DOMElement& e,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  axi_ (f, this),
-  i_ (f, this),
-  j_ (f, this),
-  planar_ (f, this),
-  symmetric_ (f, this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
-    this->parse (p, f);
-  }
-}
-
-void matrix_form::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  while (p.more_attributes ())
-  {
-    const ::xercesc::DOMAttr& i (p.next_attribute ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    if (n.name () == "axi" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< axi_type > r (
-        axi_traits::create (i, f, this));
-
-      this->axi_.set (r);
-      continue;
-    }
-
-    if (n.name () == "i" && n.namespace_ ().empty ())
-    {
-      this->i_.set (i_traits::create (i, f, this));
-      continue;
-    }
-
-    if (n.name () == "j" && n.namespace_ ().empty ())
-    {
-      this->j_.set (j_traits::create (i, f, this));
-      continue;
-    }
-
-    if (n.name () == "planar" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< planar_type > r (
-        planar_traits::create (i, f, this));
-
-      this->planar_.set (r);
-      continue;
-    }
-
-    if (n.name () == "symmetric" && n.namespace_ ().empty ())
-    {
-      this->symmetric_.set (symmetric_traits::create (i, f, this));
-      continue;
-    }
-  }
-
-  if (!axi_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "axi",
-      "");
-  }
-
-  if (!i_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "i",
-      "");
-  }
-
-  if (!j_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "j",
-      "");
-  }
-
-  if (!planar_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_attribute< char > (
-      "planar",
-      "");
-  }
-}
-
-matrix_form* matrix_form::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class matrix_form (*this, f, c);
-}
-
-matrix_form::
-~matrix_form ()
-{
-}
-
 #include <ostream>
 
 #include <xsd/cxx/tree/std-ostream-map.hxx>
@@ -6843,7 +7191,6 @@ operator<< (::std::ostream& o, const module& i)
 {
   o << ::std::endl << "general: " << i.general ();
   o << ::std::endl << "constants: " << i.constants ();
-  o << ::std::endl << "macros: " << i.macros ();
   o << ::std::endl << "volume: " << i.volume ();
   o << ::std::endl << "surface: " << i.surface ();
   o << ::std::endl << "preprocessor: " << i.preprocessor ();
@@ -6920,7 +7267,11 @@ operator<< (::std::ostream& o, const macros& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const macro& i)
 {
-  o << ::std::endl << "expression: " << i.expression ();
+  if (i.expression ())
+  {
+    o << ::std::endl << "expression: " << *i.expression ();
+  }
+
   o << ::std::endl << "id: " << i.id ();
   return o;
 }
@@ -6928,8 +7279,27 @@ operator<< (::std::ostream& o, const macro& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const preprocessor& i)
 {
-  o << ::std::endl << "volume: " << i.volume ();
-  o << ::std::endl << "surface: " << i.surface ();
+  for (preprocessor::gui_const_iterator
+       b (i.gui ().begin ()), e (i.gui ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "gui: " << *b;
+  }
+
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const gui& i)
+{
+  for (gui::group_const_iterator
+       b (i.group ().begin ()), e (i.group ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "group: " << *b;
+  }
+
+  o << ::std::endl << "type: " << i.type ();
   return o;
 }
 
@@ -7114,6 +7484,11 @@ operator<< (::std::ostream& o, const surfaceintegral& i)
     o << ::std::endl << "shortname_html: " << *i.shortname_html ();
   }
 
+  if (i.shortname_latex ())
+  {
+    o << ::std::endl << "shortname_latex: " << *i.shortname_latex ();
+  }
+
   o << ::std::endl << "unit: " << i.unit ();
   if (i.unit_html ())
   {
@@ -7138,29 +7513,13 @@ operator<< (::std::ostream& o, const volume& i)
     o << ::std::endl << "quantity: " << *b;
   }
 
-  if (i.weakforms ())
-  {
-    o << ::std::endl << "weakforms: " << *i.weakforms ();
-  }
-
-  for (volume::group_const_iterator
-       b (i.group ().begin ()), e (i.group ().end ());
-       b != e; ++b)
-  {
-    o << ::std::endl << "group: " << *b;
-  }
-
+  o << ::std::endl << "weakforms_volume: " << i.weakforms_volume ();
   return o;
 }
 
 ::std::ostream&
 operator<< (::std::ostream& o, const surface& i)
 {
-  if (i.group ())
-  {
-    o << ::std::endl << "group: " << *i.group ();
-  }
-
   for (surface::quantity_const_iterator
        b (i.quantity ().begin ()), e (i.quantity ().end ());
        b != e; ++b)
@@ -7168,9 +7527,63 @@ operator<< (::std::ostream& o, const surface& i)
     o << ::std::endl << "quantity: " << *b;
   }
 
-  if (i.weakforms ())
+  o << ::std::endl << "weakforms_surface: " << i.weakforms_surface ();
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const weakforms_surface& i)
+{
+  if (i.group ())
   {
-    o << ::std::endl << "weakforms: " << *i.weakforms ();
+    o << ::std::endl << "group: " << *i.group ();
+  }
+
+  for (weakforms_surface::weakform_surface_const_iterator
+       b (i.weakform_surface ().begin ()), e (i.weakform_surface ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "weakform_surface: " << *b;
+  }
+
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const weakform_surface& i)
+{
+  for (weakform_surface::boundary_const_iterator
+       b (i.boundary ().begin ()), e (i.boundary ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "boundary: " << *b;
+  }
+
+  for (weakform_surface::quantity_const_iterator
+       b (i.quantity ().begin ()), e (i.quantity ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "quantity: " << *b;
+  }
+
+  for (weakform_surface::matrix_form_const_iterator
+       b (i.matrix_form ().begin ()), e (i.matrix_form ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "matrix_form: " << *b;
+  }
+
+  for (weakform_surface::vector_form_const_iterator
+       b (i.vector_form ().begin ()), e (i.vector_form ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "vector_form: " << *b;
+  }
+
+  o << ::std::endl << "analysistype: " << i.analysistype ();
+  if (i.default_ ())
+  {
+    o << ::std::endl << "default: " << *i.default_ ();
   }
 
   return o;
@@ -7218,32 +7631,6 @@ operator<< (::std::ostream& o, const default_& i)
 {
   o << ::std::endl << "analysistype: " << i.analysistype ();
   o << ::std::endl << "id: " << i.id ();
-  return o;
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const vector_form& i)
-{
-  if (i.axi ())
-  {
-    o << ::std::endl << "axi: " << *i.axi ();
-  }
-
-  if (i.i ())
-  {
-    o << ::std::endl << "i: " << *i.i ();
-  }
-
-  if (i.j ())
-  {
-    o << ::std::endl << "j: " << *i.j ();
-  }
-
-  if (i.planar ())
-  {
-    o << ::std::endl << "planar: " << *i.planar ();
-  }
-
   return o;
 }
 
@@ -7310,43 +7697,36 @@ operator<< (::std::ostream& o, const quantity& i)
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const weakforms& i)
+operator<< (::std::ostream& o, const weakforms_volume& i)
 {
-  for (weakforms::weakform_const_iterator
-       b (i.weakform ().begin ()), e (i.weakform ().end ());
+  for (weakforms_volume::weakform_volume_const_iterator
+       b (i.weakform_volume ().begin ()), e (i.weakform_volume ().end ());
        b != e; ++b)
   {
-    o << ::std::endl << "weakform: " << *b;
+    o << ::std::endl << "weakform_volume: " << *b;
   }
 
   return o;
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const weakform& i)
+operator<< (::std::ostream& o, const weakform_volume& i)
 {
-  for (weakform::boundary_const_iterator
-       b (i.boundary ().begin ()), e (i.boundary ().end ());
-       b != e; ++b)
-  {
-    o << ::std::endl << "boundary: " << *b;
-  }
-
-  for (weakform::quantity_const_iterator
+  for (weakform_volume::quantity_const_iterator
        b (i.quantity ().begin ()), e (i.quantity ().end ());
        b != e; ++b)
   {
     o << ::std::endl << "quantity: " << *b;
   }
 
-  for (weakform::matrix_form_const_iterator
+  for (weakform_volume::matrix_form_const_iterator
        b (i.matrix_form ().begin ()), e (i.matrix_form ().end ());
        b != e; ++b)
   {
     o << ::std::endl << "matrix_form: " << *b;
   }
 
-  for (weakform::vector_form_const_iterator
+  for (weakform_volume::vector_form_const_iterator
        b (i.vector_form ().begin ()), e (i.vector_form ().end ());
        b != e; ++b)
   {
@@ -7354,11 +7734,58 @@ operator<< (::std::ostream& o, const weakform& i)
   }
 
   o << ::std::endl << "analysistype: " << i.analysistype ();
-  if (i.default_ ())
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const group& i)
+{
+  for (group::quantity_const_iterator
+       b (i.quantity ().begin ()), e (i.quantity ().end ());
+       b != e; ++b)
   {
-    o << ::std::endl << "default: " << *i.default_ ();
+    o << ::std::endl << "quantity: " << *b;
   }
 
+  if (i.name ())
+  {
+    o << ::std::endl << "name: " << *i.name ();
+  }
+
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const matrix_form& i)
+{
+  o << ::std::endl << "i: " << i.i ();
+  o << ::std::endl << "j: " << i.j ();
+  o << ::std::endl << "axi: " << i.axi ();
+  o << ::std::endl << "planar: " << i.planar ();
+  if (i.symmetric ())
+  {
+    o << ::std::endl << "symmetric: " << *i.symmetric ();
+  }
+
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const vector_form& i)
+{
+  o << ::std::endl << "i: " << i.i ();
+  o << ::std::endl << "j: " << i.j ();
+  o << ::std::endl << "planar: " << i.planar ();
+  o << ::std::endl << "axi: " << i.axi ();
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const essential_form& i)
+{
+  o << ::std::endl << "i: " << i.i ();
+  o << ::std::endl << "axi: " << i.axi ();
+  o << ::std::endl << "planar: " << i.planar ();
   return o;
 }
 
@@ -7395,48 +7822,6 @@ operator<< (::std::ostream& o, const boundary& i)
 
   o << ::std::endl << "id: " << i.id ();
   o << ::std::endl << "name: " << i.name ();
-  return o;
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const essential_form& i)
-{
-  o << ::std::endl << "axi: " << i.axi ();
-  o << ::std::endl << "i: " << i.i ();
-  o << ::std::endl << "planar: " << i.planar ();
-  return o;
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const group& i)
-{
-  for (group::quantity_const_iterator
-       b (i.quantity ().begin ()), e (i.quantity ().end ());
-       b != e; ++b)
-  {
-    o << ::std::endl << "quantity: " << *b;
-  }
-
-  if (i.name ())
-  {
-    o << ::std::endl << "name: " << *i.name ();
-  }
-
-  return o;
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const matrix_form& i)
-{
-  o << ::std::endl << "axi: " << i.axi ();
-  o << ::std::endl << "i: " << i.i ();
-  o << ::std::endl << "j: " << i.j ();
-  o << ::std::endl << "planar: " << i.planar ();
-  if (i.symmetric ())
-  {
-    o << ::std::endl << "symmetric: " << *i.symmetric ();
-  }
-
   return o;
 }
 
@@ -7912,17 +8297,6 @@ operator<< (::xercesc::DOMElement& e, const module& i)
     s << i.constants ();
   }
 
-  // macros
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "macros",
-        e));
-
-    s << i.macros ();
-  }
-
   // volume
   //
   {
@@ -8172,13 +8546,14 @@ operator<< (::xercesc::DOMElement& e, const macro& i)
 
   // expression
   //
+  if (i.expression ())
   {
     ::xercesc::DOMAttr& a (
       ::xsd::cxx::xml::dom::create_attribute (
         "expression",
         e));
 
-    a << i.expression ();
+    a << *i.expression ();
   }
 
   // id
@@ -8198,26 +8573,49 @@ operator<< (::xercesc::DOMElement& e, const preprocessor& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
 
-  // volume
+  // gui
   //
+  for (preprocessor::gui_const_iterator
+       b (i.gui ().begin ()), n (i.gui ().end ());
+       b != n; ++b)
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "volume",
+        "gui",
         e));
 
-    s << i.volume ();
+    s << *b;
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const gui& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // group
+  //
+  for (gui::group_const_iterator
+       b (i.group ().begin ()), n (i.group ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "group",
+        e));
+
+    s << *b;
   }
 
-  // surface
+  // type
   //
   {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "surface",
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "type",
         e));
 
-    s << i.surface ();
+    a << i.type ();
   }
 }
 
@@ -8710,6 +9108,18 @@ operator<< (::xercesc::DOMElement& e, const surfaceintegral& i)
     a << *i.shortname_html ();
   }
 
+  // shortname_latex
+  //
+  if (i.shortname_latex ())
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "shortname_latex",
+        e));
+
+    a << *i.shortname_latex ();
+  }
+
   // unit
   //
   {
@@ -8765,30 +9175,15 @@ operator<< (::xercesc::DOMElement& e, const volume& i)
     s << *b;
   }
 
-  // weakforms
+  // weakforms_volume
   //
-  if (i.weakforms ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "weakforms",
+        "weakforms_volume",
         e));
 
-    s << *i.weakforms ();
-  }
-
-  // group
-  //
-  for (volume::group_const_iterator
-       b (i.group ().begin ()), n (i.group ().end ());
-       b != n; ++b)
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "group",
-        e));
-
-    s << *b;
+    s << i.weakforms_volume ();
   }
 }
 
@@ -8796,18 +9191,6 @@ void
 operator<< (::xercesc::DOMElement& e, const surface& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
-
-  // group
-  //
-  if (i.group ())
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "group",
-        e));
-
-    s << *i.group ();
-  }
 
   // quantity
   //
@@ -8823,16 +9206,132 @@ operator<< (::xercesc::DOMElement& e, const surface& i)
     s << *b;
   }
 
-  // weakforms
+  // weakforms_surface
   //
-  if (i.weakforms ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "weakforms",
+        "weakforms_surface",
         e));
 
-    s << *i.weakforms ();
+    s << i.weakforms_surface ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const weakforms_surface& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // group
+  //
+  if (i.group ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "group",
+        e));
+
+    s << *i.group ();
+  }
+
+  // weakform_surface
+  //
+  for (weakforms_surface::weakform_surface_const_iterator
+       b (i.weakform_surface ().begin ()), n (i.weakform_surface ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "weakform_surface",
+        e));
+
+    s << *b;
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const weakform_surface& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // boundary
+  //
+  for (weakform_surface::boundary_const_iterator
+       b (i.boundary ().begin ()), n (i.boundary ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "boundary",
+        e));
+
+    s << *b;
+  }
+
+  // quantity
+  //
+  for (weakform_surface::quantity_const_iterator
+       b (i.quantity ().begin ()), n (i.quantity ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "quantity",
+        e));
+
+    s << *b;
+  }
+
+  // matrix_form
+  //
+  for (weakform_surface::matrix_form_const_iterator
+       b (i.matrix_form ().begin ()), n (i.matrix_form ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "matrix_form",
+        e));
+
+    s << *b;
+  }
+
+  // vector_form
+  //
+  for (weakform_surface::vector_form_const_iterator
+       b (i.vector_form ().begin ()), n (i.vector_form ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "vector_form",
+        e));
+
+    s << *b;
+  }
+
+  // analysistype
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "analysistype",
+        e));
+
+    a << i.analysistype ();
+  }
+
+  // default
+  //
+  if (i.default_ ())
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "default",
+        e));
+
+    a << *i.default_ ();
   }
 }
 
@@ -8950,60 +9449,6 @@ operator<< (::xercesc::DOMElement& e, const default_& i)
         e));
 
     a << i.id ();
-  }
-}
-
-void
-operator<< (::xercesc::DOMElement& e, const vector_form& i)
-{
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // axi
-  //
-  if (i.axi ())
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "axi",
-        e));
-
-    a << *i.axi ();
-  }
-
-  // i
-  //
-  if (i.i ())
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "i",
-        e));
-
-    a << *i.i ();
-  }
-
-  // j
-  //
-  if (i.j ())
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "j",
-        e));
-
-    a << *i.j ();
-  }
-
-  // planar
-  //
-  if (i.planar ())
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "planar",
-        e));
-
-    a << *i.planar ();
   }
 }
 
@@ -9157,19 +9602,19 @@ operator<< (::xercesc::DOMElement& e, const quantity& i)
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const weakforms& i)
+operator<< (::xercesc::DOMElement& e, const weakforms_volume& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
 
-  // weakform
+  // weakform_volume
   //
-  for (weakforms::weakform_const_iterator
-       b (i.weakform ().begin ()), n (i.weakform ().end ());
+  for (weakforms_volume::weakform_volume_const_iterator
+       b (i.weakform_volume ().begin ()), n (i.weakform_volume ().end ());
        b != n; ++b)
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "weakform",
+        "weakform_volume",
         e));
 
     s << *b;
@@ -9177,27 +9622,13 @@ operator<< (::xercesc::DOMElement& e, const weakforms& i)
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const weakform& i)
+operator<< (::xercesc::DOMElement& e, const weakform_volume& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
 
-  // boundary
-  //
-  for (weakform::boundary_const_iterator
-       b (i.boundary ().begin ()), n (i.boundary ().end ());
-       b != n; ++b)
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "boundary",
-        e));
-
-    s << *b;
-  }
-
   // quantity
   //
-  for (weakform::quantity_const_iterator
+  for (weakform_volume::quantity_const_iterator
        b (i.quantity ().begin ()), n (i.quantity ().end ());
        b != n; ++b)
   {
@@ -9211,7 +9642,7 @@ operator<< (::xercesc::DOMElement& e, const weakform& i)
 
   // matrix_form
   //
-  for (weakform::matrix_form_const_iterator
+  for (weakform_volume::matrix_form_const_iterator
        b (i.matrix_form ().begin ()), n (i.matrix_form ().end ());
        b != n; ++b)
   {
@@ -9225,7 +9656,7 @@ operator<< (::xercesc::DOMElement& e, const weakform& i)
 
   // vector_form
   //
-  for (weakform::vector_form_const_iterator
+  for (weakform_volume::vector_form_const_iterator
        b (i.vector_form ().begin ()), n (i.vector_form ().end ());
        b != n; ++b)
   {
@@ -9247,17 +9678,188 @@ operator<< (::xercesc::DOMElement& e, const weakform& i)
 
     a << i.analysistype ();
   }
+}
 
-  // default
+void
+operator<< (::xercesc::DOMElement& e, const group& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // quantity
   //
-  if (i.default_ ())
+  for (group::quantity_const_iterator
+       b (i.quantity ().begin ()), n (i.quantity ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "quantity",
+        e));
+
+    s << *b;
+  }
+
+  // name
+  //
+  if (i.name ())
   {
     ::xercesc::DOMAttr& a (
       ::xsd::cxx::xml::dom::create_attribute (
-        "default",
+        "name",
         e));
 
-    a << *i.default_ ();
+    a << *i.name ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const matrix_form& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // i
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "i",
+        e));
+
+    a << i.i ();
+  }
+
+  // j
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "j",
+        e));
+
+    a << i.j ();
+  }
+
+  // axi
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "axi",
+        e));
+
+    a << i.axi ();
+  }
+
+  // planar
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "planar",
+        e));
+
+    a << i.planar ();
+  }
+
+  // symmetric
+  //
+  if (i.symmetric ())
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "symmetric",
+        e));
+
+    a << *i.symmetric ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const vector_form& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // i
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "i",
+        e));
+
+    a << i.i ();
+  }
+
+  // j
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "j",
+        e));
+
+    a << i.j ();
+  }
+
+  // planar
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "planar",
+        e));
+
+    a << i.planar ();
+  }
+
+  // axi
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "axi",
+        e));
+
+    a << i.axi ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const essential_form& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // i
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "i",
+        e));
+
+    a << i.i ();
+  }
+
+  // axi
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "axi",
+        e));
+
+    a << i.axi ();
+  }
+
+  // planar
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "planar",
+        e));
+
+    a << i.planar ();
   }
 }
 
@@ -9342,139 +9944,6 @@ operator<< (::xercesc::DOMElement& e, const boundary& i)
         e));
 
     a << i.name ();
-  }
-}
-
-void
-operator<< (::xercesc::DOMElement& e, const essential_form& i)
-{
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // axi
-  //
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "axi",
-        e));
-
-    a << i.axi ();
-  }
-
-  // i
-  //
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "i",
-        e));
-
-    a << i.i ();
-  }
-
-  // planar
-  //
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "planar",
-        e));
-
-    a << i.planar ();
-  }
-}
-
-void
-operator<< (::xercesc::DOMElement& e, const group& i)
-{
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // quantity
-  //
-  for (group::quantity_const_iterator
-       b (i.quantity ().begin ()), n (i.quantity ().end ());
-       b != n; ++b)
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "quantity",
-        e));
-
-    s << *b;
-  }
-
-  // name
-  //
-  if (i.name ())
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "name",
-        e));
-
-    a << *i.name ();
-  }
-}
-
-void
-operator<< (::xercesc::DOMElement& e, const matrix_form& i)
-{
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // axi
-  //
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "axi",
-        e));
-
-    a << i.axi ();
-  }
-
-  // i
-  //
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "i",
-        e));
-
-    a << i.i ();
-  }
-
-  // j
-  //
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "j",
-        e));
-
-    a << i.j ();
-  }
-
-  // planar
-  //
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "planar",
-        e));
-
-    a << i.planar ();
-  }
-
-  // symmetric
-  //
-  if (i.symmetric ())
-  {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
-        "symmetric",
-        e));
-
-    a << *i.symmetric ();
   }
 }
 

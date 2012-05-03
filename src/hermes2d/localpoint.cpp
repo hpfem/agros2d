@@ -166,14 +166,14 @@ void LocalPointValue::calculate()
                     PointValue pointValue;
                     if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
                     {
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.scalar);
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.scalar);
                         pointValue.scalar = parser->parser[0]->Eval();
                     }
                     else
                     {
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_x);
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.comp_x);
                         pointValue.vector.x = parser->parser[0]->Eval();
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expression.comp_y);
+                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.comp_y);
                         pointValue.vector.y = parser->parser[0]->Eval();
                     }
                     values[*it] = pointValue;

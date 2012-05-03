@@ -18,8 +18,8 @@
         <quantity id="heat_density" shortname="he_rho" />
         <quantity id="heat_specific_heat" shortname="he_cp" />
         
-        <weakforms>
-            <weakform analysistype="steadystate">
+        <weakforms_volume>
+            <weakform_volume analysistype="steadystate">
                 <quantity id="heat_conductivity" />
                 <quantity id="heat_volume_heat" />
 
@@ -27,9 +27,9 @@
                                     axi="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
                 <vector_form i="1" j="1" planar="he_lambda * (updx * vdx + updy * vdy) - he_p * vval"
                                     axi="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval" />
-            </weakform>
+            </weakform_volume>
 
-            <weakform analysistype="transient">
+            <weakform_volume analysistype="transient">
                 <quantity id="heat_conductivity" />
                 <quantity id="heat_volume_heat" />
                 <quantity id="heat_density" />
@@ -39,8 +39,8 @@
                                     axi="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + dhe_lambda * r * uval * upval * vval / deltat + r * he_rho * he_cp * uval * vval / deltat" symmetric="1" />
                 <vector_form i="1" j="1" planar="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat"
                                     axi="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat" />
-            </weakform>
-        </weakforms>
+            </weakform_volume>
+        </weakforms_volume>
     </volume>
 
     <surface>
@@ -51,8 +51,8 @@
         <quantity id="heat_radiation_emissivity" shortname="eps"/>
         <quantity id="heat_radiation_ambient_temperature" shortname="Ta" />
 
-        <weakforms>
-            <weakform analysistype="steadystate" default="heat_temperature">
+        <weakforms_surface>
+            <weakform_surface analysistype="steadystate" default="heat_temperature">
                 <boundary id="heat_temperature" name="Temperature">
                     <quantity id="heat_temperature" />
 
@@ -72,9 +72,9 @@
                     <vector_form i="1" j="1" planar="((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
                                         axi="r * ((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
                 </boundary>
-            </weakform>
+            </weakform_surface>
         
-            <weakform analysistype="transient" default="heat_temperature">
+            <weakform_surface analysistype="transient" default="heat_temperature">
                 <boundary id="heat_temperature" name="Temperature">
                     <quantity id="heat_temperature" />
 
@@ -94,12 +94,12 @@
                     <vector_form i="1" j="1" planar="((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval"
                                         axi="r * ((- ff - h * Te - SIGMA0 * eps * Ta*Ta*Ta*Ta) + h * upval + SIGMA0 * eps * upval*upval*upval*upval) * vval" />
                 </boundary>
-            </weakform>
-        </weakforms>
+            </weakform_surface>
+        </weakforms_surface>
     </surface>
 
     <preprocessor>
-        <volume>
+        <gui type="volume">
             <group>
                 <quantity id="heat_conductivity" nonlin="1" name="Thermal conductivity" default="385" condition="value > 0"
                     shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;" shortname_latex="\lambda"
@@ -114,8 +114,8 @@
                     shortname="cp" shortname_html="&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;P&lt;/sub&gt;" shortname_latex="c_{P}"
                     unit="J/kg.K" unit_html="J.kg&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="J \cdot kg^{-1} \cdot K^{-1}" />
             </group>
-        </volume>
-        <surface>
+        </gui>
+        <gui type="surface">
             <group>
                 <quantity id="heat_temperature" name="Temperature"
                     shortname="T" shortname_html="&lt;i&gt;T&lt;/i&gt;" shortname_latex="T"
@@ -136,7 +136,7 @@
                     shortname="Ta" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;a&lt;/sub&gt;" shortname_latex="T_\mathrm{a}"
                     unit="K" unit_html="K" unit_latex="K" />
             </group>
-        </surface>
+        </gui>
     </preprocessor>
 
     <postprocessor>

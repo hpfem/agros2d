@@ -23,12 +23,13 @@
 #include "util.h"
 #include "hermes2d.h"
 
-#include <rapidxml.cpp>
-#include <rapidxml_utils.cpp>
-
-#include "../../resources_source/classes/module_xml.h"
-
 extern double actualTime;
+
+class module;
+class quantity;
+class boundary;
+class localvariable;
+class gui;
 
 class Marker;
 
@@ -154,7 +155,6 @@ struct LocalVariable
     {
         Expression(std::string scalar = "", std::string comp_x = "", std::string comp_y = "")
             : scalar(scalar), comp_x(comp_x), comp_y(comp_y) {}
-        Expression(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
         // expressions
         std::string scalar;
@@ -163,8 +163,8 @@ struct LocalVariable
     };
 
     LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "", std::string unit_html = "")
-        : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expression(Expression()) {}
-    LocalVariable(rapidxml::xml_node<> *variable, CoordinateType problemType, AnalysisType analysisType);
+        : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expr(Expression()) {}
+    LocalVariable(localvariable lv, CoordinateType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -181,7 +181,7 @@ struct LocalVariable
     bool is_scalar;
 
     // expressions
-    Expression expression;
+    Expression expr;
 };
 
 // material property
@@ -190,7 +190,7 @@ struct MaterialTypeVariable
     MaterialTypeVariable() : id(""), shortname(""), default_value(0) {}
     MaterialTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
-    MaterialTypeVariable(rapidxml::xml_node<> *node);
+    MaterialTypeVariable(quantity quant);
 
     // id
     std::string id;
@@ -206,7 +206,7 @@ struct BoundaryTypeVariable
     BoundaryTypeVariable() : id(""), shortname(""), default_value(0) {}
     BoundaryTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
-    BoundaryTypeVariable(rapidxml::xml_node<> *node);
+    BoundaryTypeVariable(quantity quant);
 
     // id
     std::string id;
@@ -221,7 +221,7 @@ struct BoundaryType
 {
     BoundaryType() : id(""), name("") {}
     BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
-                 rapidxml::xml_node<> *node,
+                 boundary bdy,
                  CoordinateType problem_type);
     ~BoundaryType();
 
@@ -247,14 +247,12 @@ struct Integral
     struct Expression
     {
         Expression() : scalar("") {}
-        Expression(rapidxml::xml_node<> *node, CoordinateType problem_type);
 
         // expressions
         std::string scalar;
     };
 
-    Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expression(Expression()) {}
-    Integral(rapidxml::xml_node<> *node, CoordinateType coordinateType, AnalysisType analysisType);
+    Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expr(Expression()) {}
 
     // id
     std::string id;
@@ -268,14 +266,14 @@ struct Integral
     std::string unit_html;
 
     // expressions
-    Expression expression;
+    Expression expr;
 };
 
 // dialog UI
 struct DialogUI
 {
     DialogUI() {}
-    DialogUI(rapidxml::xml_node<> *node);
+    DialogUI(gui ui);
 
     struct Row
     {
@@ -285,7 +283,7 @@ struct DialogUI
             : id(id), nonlin(nonlin), timedep(timedep), name(name), shortname(shortname), shortname_html(shortname_html),
               unit(unit), unit_html(unit_html), unit_latex(unit_latex),
               default_value(default_value), condition(condition) {}
-        Row(rapidxml::xml_node<> *quantity);
+        Row(quantity qty);
 
         std::string id;
 
@@ -422,7 +420,7 @@ private:
     CoordinateType m_coordinateType;
     AnalysisType m_analysisType;
 
-    // module *module_xsd;
+    std::auto_ptr<module> module_xsd;
 };
 
 }

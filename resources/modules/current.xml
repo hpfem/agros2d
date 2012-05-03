@@ -12,24 +12,24 @@
     <volume>
         <quantity id="current_conductivity" shortname="cu_gamma" />
         
-        <weakforms>
-            <weakform analysistype="steadystate">
+        <weakforms_volume>
+            <weakform_volume analysistype="steadystate">
                 <quantity id="current_conductivity" />
 
                 <matrix_form i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)"
                                     axi="cu_gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
                 <vector_form i="1" j="1" planar="cu_gamma * (updx * vdx + updy * vdy)"
                                     axi="cu_gamma * r * (updr * vdr + updz * vdz)" />
-            </weakform>
-        </weakforms>
+            </weakform_volume>
+        </weakforms_volume>
     </volume>
 
     <surface>
         <quantity id="current_potential" shortname="V" />
         <quantity id="current_inward_current_flow" shortname="Jn" />
     	
-        <weakforms>
-            <weakform analysistype="steadystate" default="current_potential">
+        <weakforms_surface>
+            <weakform_surface analysistype="steadystate" default="current_potential">
                 <boundary id="current_potential" name="Fixed voltage">
                     <quantity id="current_potential" />
 
@@ -43,19 +43,19 @@
                     <vector_form i="1" j="1" planar="- Jn * vval"
                                         axi="- Jn * r * vval" />
                 </boundary>
-            </weakform>
-        </weakforms>
+            </weakform_surface>
+        </weakforms_surface>
     </surface>
 
     <preprocessor>
-        <volume>
+        <gui type="volume">
             <group>
                 <quantity id="current_conductivity" name="Conductivity"
                           shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
                           unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" />
             </group>
-        </volume>
-        <surface>
+        </gui>
+        <gui type="surface">
             <group>
                 <quantity id="current_potential"  name="Fixed voltage"
                 shortname="V" shortname_html="&lt;i&gt;&amp;phi;&lt;/i&gt;" shortname_latex="\phi"
@@ -64,7 +64,7 @@
                 shortname="Jn" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;n&lt;/sub&gt;" shortname_latex="J_\mathrm{n}"
                 unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
             </group>
-        </surface>
+        </gui>
     </preprocessor>
 
     <postprocessor>

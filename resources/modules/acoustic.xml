@@ -15,8 +15,8 @@
         <quantity id="acoustic_density" shortname="ac_rho" />
         <quantity id="acoustic_speed" shortname="ac_vel" />
         
-        <weakforms>
-            <weakform analysistype="harmonic">
+        <weakforms_volume>
+            <weakform_volume analysistype="harmonic">
                 <quantity id="acoustic_density" />
                 <quantity id="acoustic_speed" />
 
@@ -28,8 +28,8 @@
                                     axi="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
                 <vector_form i="2" j="2" planar="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho *ac_vel * ac_vel) * upval * vval"
                                     axi="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
-            </weakform>
-        </weakforms>
+            </weakform_volume>
+        </weakforms_volume>
     </volume>
 
     <surface>
@@ -39,8 +39,8 @@
         <quantity id="acoustic_normal_acceleration_imag" shortname="ani" />
         <quantity id="acoustic_impedance" shortname="Z0" />
  
-        <weakforms>
-            <weakform analysistype="harmonic" default="acoustic_pressure">
+        <weakforms_surface>
+            <weakform_surface analysistype="harmonic" default="acoustic_pressure">
                 <boundary id="acoustic_pressure" name="Pressure">
                     <quantity id="acoustic_pressure_real" />
                     <quantity id="acoustic_pressure_imag" />
@@ -73,12 +73,12 @@
                     <vector_form i="2" j="1" planar="2 * PI * f / Z0 * upval * vval"
                                         axi="r * 2 * PI * f / Z0 * upval * vval" />
                 </boundary>
-            </weakform>
-        </weakforms>
+            </weakform_surface>
+        </weakforms_surface>
     </surface>
 
     <preprocessor>
-        <volume>
+        <gui type="volume">
             <group>
                 <quantity id="acoustic_density" name="Mass density"
                     shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
@@ -87,8 +87,8 @@
                     shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;" shortname_latex="c"
                     unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
             </group>
-        </volume>
-        <surface>
+        </gui>
+        <gui type="surface">
             <group>
                 <quantity id="acoustic_pressure_real" name="Pressure - real"
                     shortname="pr" shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;" shortname_latex="p_{r}"
@@ -106,7 +106,7 @@
                     shortname="Z0" shortname_html="&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;" shortname_latex="Z_{0}"
                     unit="Pa.s/m" unit_html="Pa.s.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="Pa \cdot s \cdot m^{-1}" />
             </group>
-        </surface>
+        </gui>
     </preprocessor>
 
     <postprocessor>

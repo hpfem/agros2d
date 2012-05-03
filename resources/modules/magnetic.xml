@@ -24,8 +24,8 @@
         <quantity id="magnetic_current_density_external_real" shortname="ma_Jer" />
         <quantity id="magnetic_current_density_external_imag" shortname="ma_Jei" />
 
-        <weakforms>
-            <weakform analysistype="steadystate">
+        <weakforms_volume>
+            <weakform_volume analysistype="steadystate">
                 <quantity id="magnetic_permeability" />
                 <quantity id="magnetic_conductivity" />
                 <quantity id="magnetic_remanence" />
@@ -48,9 +48,9 @@
                                         ma_gamma * upval * ma_vy * vdz -
                                         ma_Jer * vval +
                                         mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
-            </weakform>
+            </weakform_volume>
 
-            <weakform analysistype="transient">
+            <weakform_volume analysistype="transient">
                 <quantity id="magnetic_permeability" />
                 <quantity id="magnetic_conductivity" />
                 <quantity id="magnetic_remanence" />
@@ -72,9 +72,9 @@
                                         ma_gamma * upval * ma_vy * vdz -
                                         ma_Jer * vval +
                                         mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
-            </weakform>
+            </weakform_volume>
 
-            <weakform analysistype="harmonic">
+            <weakform_volume analysistype="harmonic">
                 <quantity id="magnetic_permeability" />
                 <quantity id="magnetic_conductivity" />
                 <quantity id="magnetic_remanence" />
@@ -117,8 +117,8 @@
                                     axi="- 2 * PI * f * ma_gamma * upval * vval" />
                 <vector_form i="2" j="1" planar="2 * PI * f * ma_gamma * upval * vval"
                                     axi="2 * PI * f * ma_gamma * upval * vval" />
-            </weakform>
-        </weakforms>
+            </weakform_volume>
+        </weakforms_volume>
     </volume>
 
     <surface>
@@ -127,8 +127,8 @@
         <quantity id="magnetic_surface_current_real" shortname="Jr" />
         <quantity id="magnetic_surface_current_imag" shortname="Ji" />
 
-        <weakforms>
-            <weakform analysistype="steadystate" default="magnetic_potential">
+        <weakforms_surface>
+            <weakform_surface analysistype="steadystate" default="magnetic_potential">
                 <boundary id="magnetic_potential" name="Magnetic potential">
                     <quantity id="magnetic_potential_real" />
 
@@ -142,9 +142,9 @@
                     <vector_form i="1" j="1" planar="-Jr * vval"
                                         axi="-Jr * vval" />
                 </boundary>
-            </weakform>
+            </weakform_surface>
 
-            <weakform analysistype="transient" default="magnetic_potential">
+            <weakform_surface analysistype="transient" default="magnetic_potential">
                 <boundary id="magnetic_potential" name="Magnetic potential">
                     <quantity id="magnetic_potential_real" />
 
@@ -158,9 +158,9 @@
                     <vector_form i="1" j="1" planar="-Jr * vval"
                                         axi="-Jr * vval" />
                 </boundary>
-            </weakform>
+            </weakform_surface>
 
-            <weakform analysistype="harmonic" default="magnetic_potential">
+            <weakform_surface analysistype="harmonic" default="magnetic_potential">
                 <boundary id="magnetic_potential" name="Magnetic potential">
                     <quantity id="magnetic_potential_real" />
                     <quantity id="magnetic_potential_imag" />
@@ -178,12 +178,12 @@
                     <vector_form i="1" j="1" planar="-Jr * vval" axi="-Jr * vval" />
                     <vector_form i="2" j="2" planar="-Ji * vval" axi="-Ji * vval" />
                 </boundary>
-            </weakform>
-        </weakforms>
+            </weakform_surface>
+        </weakforms_surface>
     </surface>
 
     <preprocessor>
-        <volume>
+        <gui type="volume">
             <group name="Material properties">
                 <quantity id="magnetic_permeability" name="Permeability"
                 shortname="mur" shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
@@ -219,8 +219,8 @@
                 shortname="va" shortname_html="&lt;i&gt;&amp;omega;&lt;/i&gt;"
                 unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
             </group>
-        </volume>
-        <surface>
+        </gui>
+        <gui type="surface">
             <group>
                 <quantity id="magnetic_potential_real" name="Vector potential - real"
                 shortname="Ar" shortname_html="&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
@@ -235,7 +235,7 @@
                 shortname="Ji" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
                 unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="A \cdot m^{-1}" />
             </group>
-        </surface>
+        </gui>
     </preprocessor>
 
     <postprocessor>

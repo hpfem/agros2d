@@ -6,14 +6,14 @@ CONFIG = += staticlib
 
 SOURCES += dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
-    muparser/muParserBase.cpp \
-    muparser/muParserBytecode.cpp \
-    muparser/muParserCallback.cpp \
     muparser/muParser.cpp \
-    muparser/muParserError.cpp \
-    muparser/muParserInt.cpp \
+    muparser/muParserBase.cpp \
     muparser/muParserTest.cpp \
     muparser/muParserTokenReader.cpp \
+    muparser/muParserBytecode.cpp \
+    muparser/muParserCallback.cpp \
+    muparser/muParserError.cpp \
+    muparser/muParserInt.cpp \
     rapidxml/rapidxml.cpp \
     rapidxml/rapidxml_utils.cpp \
     ctemplate/base/arena.cc \
