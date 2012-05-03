@@ -310,7 +310,7 @@ struct DialogUI
 };
 
 // basic module
-struct Module
+struct ModuleDeprecated
 {
     // id
     std::string fieldid;
@@ -380,8 +380,8 @@ struct Module
     DialogUI boundary_ui;
 
     // default contructor
-    Module(CoordinateType problemType, AnalysisType analysisType);
-    ~Module();
+    ModuleDeprecated(CoordinateType problemType, AnalysisType analysisType);
+    ~ModuleDeprecated();
 
     mu::Parser *get_parser();
 
@@ -421,6 +421,8 @@ struct Module
 private:
     CoordinateType m_coordinateType;
     AnalysisType m_analysisType;
+
+    // module *module_xsd;
 };
 
 }

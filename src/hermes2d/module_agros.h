@@ -36,11 +36,11 @@ namespace Module
 
 class LocalVariable;
 
-struct ModuleAgros : public QObject, public Module
+struct ModuleAgros : public QObject, public ModuleDeprecated
 {
     Q_OBJECT
 public:
-    ModuleAgros(CoordinateType problemType, AnalysisType analysisType) : Module(problemType, analysisType) {}
+    ModuleAgros(CoordinateType problemType, AnalysisType analysisType) : ModuleDeprecated(problemType, analysisType) {}
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxContourVariable(QComboBox *cmbFieldVariable);

@@ -607,7 +607,7 @@ void Hermes::Module::DialogUI::clear()
 
 // ***********************************************************************************************
 
-Hermes::Module::Module::Module(CoordinateType problemType, AnalysisType analysisType)
+Hermes::Module::ModuleDeprecated::ModuleDeprecated(CoordinateType problemType, AnalysisType analysisType)
 {
     m_coordinateType = problemType;
     m_analysisType = analysisType;
@@ -615,14 +615,16 @@ Hermes::Module::Module::Module(CoordinateType problemType, AnalysisType analysis
     clear();
 }
 
-Hermes::Module::Module::~Module()
+Hermes::Module::ModuleDeprecated::~ModuleDeprecated()
 {
     clear();
 }
 
-void Hermes::Module::Module::read(std::string filename)
+void Hermes::Module::ModuleDeprecated::read(std::string filename)
 {
     std::cout << "reading module: " << filename << std::endl << std::flush;
+
+    // module_xsd = new XMLMesh
 
     clear();
 
@@ -807,7 +809,7 @@ void Hermes::Module::Module::read(std::string filename)
     }
 }
 
-void Hermes::Module::Module::clear()
+void Hermes::Module::ModuleDeprecated::clear()
 {
     // general information
     fieldid = "";
@@ -867,7 +869,7 @@ void Hermes::Module::Module::clear()
     boundary_ui.clear();
 }
 
-Hermes::Module::LocalVariable *Hermes::Module::Module::get_variable(std::string id)
+Hermes::Module::LocalVariable *Hermes::Module::ModuleDeprecated::get_variable(std::string id)
 {
     for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
     {
@@ -877,7 +879,7 @@ Hermes::Module::LocalVariable *Hermes::Module::Module::get_variable(std::string 
     return NULL;
 }
 
-Hermes::Module::BoundaryType *Hermes::Module::Module::get_boundary_type(std::string id)
+Hermes::Module::BoundaryType *Hermes::Module::ModuleDeprecated::get_boundary_type(std::string id)
 {
     for(Hermes::vector<Hermes::Module::BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it )
     {
@@ -887,7 +889,7 @@ Hermes::Module::BoundaryType *Hermes::Module::Module::get_boundary_type(std::str
     return NULL;
 }
 
-Hermes::Module::BoundaryTypeVariable *Hermes::Module::Module::get_boundary_type_variable(std::string id)
+Hermes::Module::BoundaryTypeVariable *Hermes::Module::ModuleDeprecated::get_boundary_type_variable(std::string id)
 {
     for(Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type_variables.begin(); it < boundary_type_variables.end(); ++it )
     {
@@ -897,7 +899,7 @@ Hermes::Module::BoundaryTypeVariable *Hermes::Module::Module::get_boundary_type_
     return NULL;
 }
 
-Hermes::Module::MaterialTypeVariable *Hermes::Module::Module::get_material_type_variable(std::string id)
+Hermes::Module::MaterialTypeVariable *Hermes::Module::ModuleDeprecated::get_material_type_variable(std::string id)
 {
     for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it )
     {
@@ -907,7 +909,7 @@ Hermes::Module::MaterialTypeVariable *Hermes::Module::Module::get_material_type_
     return NULL;
 }
 
-int Hermes::Module::Module::number_of_solution() const
+int Hermes::Module::ModuleDeprecated::number_of_solution() const
 {
     if (m_analysisType == AnalysisType_SteadyState)
         return steady_state_solutions;
@@ -919,7 +921,7 @@ int Hermes::Module::Module::number_of_solution() const
     return 0;
 }
 
-mu::Parser *Hermes::Module::Module::get_parser()
+mu::Parser *Hermes::Module::ModuleDeprecated::get_parser()
 {
     mu::Parser *parser = new mu::Parser();
 
@@ -940,7 +942,7 @@ mu::Parser *Hermes::Module::Module::get_parser()
     return parser;
 }
 
-std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable *physicFieldVariable,
+std::string Hermes::Module::ModuleDeprecated::get_expression(Hermes::Module::LocalVariable *physicFieldVariable,
                                                    PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariableComp)
@@ -960,7 +962,7 @@ std::string Hermes::Module::Module::get_expression(Hermes::Module::LocalVariable
     }
 }
 
-ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
+ViewScalarFilter<double> *Hermes::Module::ModuleDeprecated::view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
@@ -980,7 +982,7 @@ ViewScalarFilter<double> *Hermes::Module::Module::view_scalar_filter(Hermes::Mod
                                         get_expression(physicFieldVariable, physicFieldVariableComp));
 }
 
-bool Hermes::Module::Module::solve_init_variables()
+bool Hermes::Module::ModuleDeprecated::solve_init_variables()
 {
     //TODO moved to problem, remove this method
     assert(0); //TODO
@@ -1016,7 +1018,7 @@ bool Hermes::Module::Module::solve_init_variables()
     //    return true;
 }
 
-Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
+Hermes::vector<SolutionArray<double> *> Hermes::Module::ModuleDeprecated::solve(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
 {
     assert(0);
     //    if (!solve_init_variables())
@@ -1030,7 +1032,7 @@ Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solve(ProgressIt
     //    return solutionArrayList;
 }
 
-Hermes::vector<SolutionArray<double> *> Hermes::Module::Module::solveAdaptiveStep(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
+Hermes::vector<SolutionArray<double> *> Hermes::Module::ModuleDeprecated::solveAdaptiveStep(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
 {
     assert(0); //TODO
     //    if (!solve_init_variables())
