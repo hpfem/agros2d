@@ -14,10 +14,10 @@ DEFINES += VERSION_YEAR=2012
 DEFINES += VERSION_MONTH=2
 DEFINES += VERSION_DAY=26
 
-DEFINES += NO_THREADS
 DEFINES += WEAKFORM_FACTORY
 
 QMAKE_LFLAGS += -fopenmp
+QMAKE_CXXFLAGS += -fopenmp
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)

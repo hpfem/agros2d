@@ -6,7 +6,9 @@ CONFIG += staticlib
 CONFIG += debug
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
-# DEFINES += "NUM_THREADS=4"
+
+QMAKE_LFLAGS += -fopenmp
+QMAKE_CXXFLAGS += -fopenmp
 
 INCLUDEPATH += include \
                include/adapt \
