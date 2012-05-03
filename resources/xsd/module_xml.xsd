@@ -5,8 +5,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="general"/>
-        <xs:element ref="constants"/>
-        <xs:element ref="macros"/>
+        <xs:element ref="constants"/>        
         <xs:element ref="volume"/>
         <xs:element ref="surface"/>
         <xs:element ref="preprocessor"/>
@@ -63,7 +62,7 @@
   </xs:element>
   <xs:element name="macro">
     <xs:complexType>
-      <xs:attribute name="expression" use="required"/>
+      <xs:attribute name="expression" use="optional"/>
       <xs:attribute name="id" use="required"/>
     </xs:complexType>
   </xs:element>
@@ -169,6 +168,7 @@
       <xs:attribute name="name" use="required"/>
       <xs:attribute name="shortname" use="required" type="xs:NCName"/>
       <xs:attribute name="shortname_html"/>
+      <xs:attribute name="shortname_latex"/>
       <xs:attribute name="unit" use="required" type="xs:NCName"/>
       <xs:attribute name="unit_html"/>
       <xs:attribute name="unit_latex"/>

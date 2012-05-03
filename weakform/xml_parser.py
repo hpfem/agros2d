@@ -571,14 +571,14 @@ class Module:
                             weakform.constants = self.constants                                        
                             part_module.weakforms.append(weakform)               
         
-        print len(part_modules)
         
-        for part_module in part_modules:
-            print "--------------------------"                            
-            print part_module.id
-            print "--------------------------"                
-            for weakform in part_module.weakforms:
-                print weakform.id, weakform.type, weakform.integral_type
+        
+#        for part_module in part_modules:
+#            print "--------------------------"                            
+#            print part_module.id
+#            print "--------------------------"                
+#            for weakform in part_module.weakforms:
+#                print weakform.id, weakform.type, weakform.integral_type
             
         return part_modules;
         

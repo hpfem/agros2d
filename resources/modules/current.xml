@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module_xml.xsd">
     <general id ="current" name="Current field">
         <description>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.</description>
         <analyses>
@@ -8,9 +8,7 @@
     </general>
 
     <constants />
-
-    <macros />
-
+    
     <volume>
         <quantity id="current_conductivity" shortname="cu_gamma" />
         
@@ -73,7 +71,7 @@
         <localvariables>
             <localvariable id="current_potential" name="Scalar potential" type="scalar"
                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
-                           unit="V" unit_hmtl="V" unit_latex="V">
+                           unit="V" unit_html="V" unit_latex="V">
                 <expression analysistype="steadystate" planar="value1"
                                                        axi="value1" />
             </localvariable>
