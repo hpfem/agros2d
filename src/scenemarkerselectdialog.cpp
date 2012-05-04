@@ -52,7 +52,7 @@ void SceneMarkerSelectDialog::createControls()
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::scene()->activeViewField()).items())
     {
         QListWidgetItem *item = new QListWidgetItem(lstSurface);
-        item->setText(QString::fromStdString(boundary->getName()));
+        item->setText(boundary->getName());
         item->setCheckState(Qt::Unchecked);
         item->setData(Qt::UserRole, boundary->variant());
         lstSurface->addItem(item);
@@ -69,7 +69,7 @@ void SceneMarkerSelectDialog::createControls()
     foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::scene()->activeViewField()).items())
     {
         QListWidgetItem *item = new QListWidgetItem(lstVolume);
-        item->setText(QString::fromStdString(material->getName()));
+        item->setText(material->getName());
         item->setCheckState(Qt::Unchecked);
         item->setData(Qt::UserRole, material->variant());
         lstVolume->addItem(item);

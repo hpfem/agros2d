@@ -81,8 +81,8 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
                 {
                     XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-                    if ((wf.sourceanalysis() == Hermes::analysis_type_tostring(sourceField->analysisType())) &&
-                        (wf.targetanalysis() == Hermes::analysis_type_tostring(targetField->analysisType())))
+                    if ((wf.sourceanalysis() == analysisTypeToStringKey(sourceField->analysisType()).toStdString()) &&
+                        (wf.targetanalysis() == analysisTypeToStringKey(targetField->analysisType()).toStdString()))
                     {
                         return true;
                     }
@@ -184,9 +184,9 @@ void Coupling::read(std::string filename)
         {
             XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-            if ((wf.couplingtype() == Hermes::coupling_type_tostring(m_couplingType)) &&
-                (wf.sourceanalysis() == Hermes::analysis_type_tostring(m_sourceFieldAnalysis)) &&
-                (wf.targetanalysis() == Hermes::analysis_type_tostring(m_targetFieldAnalysis)))
+            if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
+                (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceFieldAnalysis).toStdString()) &&
+                (wf.targetanalysis() == analysisTypeToStringKey(m_targetFieldAnalysis).toStdString()))
             {
 
 //            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))

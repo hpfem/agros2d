@@ -45,9 +45,9 @@ FieldInfo::FieldInfo(QString fieldId)
         m_fieldId = settings.value("General/DefaultPhysicField", "electrostatic").toString();
 
         bool check = false;
-        std::map<std::string, std::string> modules = availableModules();
-        for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
-            if (m_fieldId.toStdString() == it->first)
+        std::map<QString, QString> modules = availableModules();
+        for (std::map<QString, QString>::iterator it = modules.begin(); it != modules.end(); ++it)
+            if (m_fieldId == it->first)
             {
                 check = true;
                 break;
@@ -64,7 +64,7 @@ FieldInfo::FieldInfo(QString fieldId)
 
     // set first analysis as default
     /*
-    std::map<std::string, std::string> analyses = availableAnalyses(m_fieldId.toStdString());
+    std::map<QString, QString> analyses = availableAnalyses(m_fieldId.toStdString());
     if (analyses.size() > 0)
     {
         qDebug() << QString::fromStdString(analyses.begin()->first);

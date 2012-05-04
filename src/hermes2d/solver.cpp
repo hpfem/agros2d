@@ -132,7 +132,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     // compiled form
                     if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                     {
-                        string problemId = fieldInfo->module()->fieldid + "_" +
+                        string problemId = fieldInfo->module()->fieldid.toStdString() + "_" +
                                 analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
                                 coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
 

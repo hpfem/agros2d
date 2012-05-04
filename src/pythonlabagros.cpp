@@ -147,19 +147,19 @@ QString createPythonFromModel()
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const std::map<std::string, Value> values = boundary->getValues();
-            for (std::map<std::string, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const std::map<QString, Value> values = boundary->getValues();
+            for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 variables += QString("\"%1\" : %2, ").
-                        arg(QString::fromStdString(it->first)).
+                        arg(it->first).
                         arg(it->second.toString());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
             str += QString("%1.add_boundary(\"%2\", \"%3\", %4)\n").
                     arg(fieldInfo->fieldId()).
-                    arg(QString::fromStdString(boundary->getName())).
-                    arg(QString::fromStdString(boundary->getType())).
+                    arg(boundary->getName()).
+                    arg(boundary->getType()).
                     arg(variables);
         }
 
@@ -167,18 +167,18 @@ QString createPythonFromModel()
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const std::map<std::string, Value> values = material->getValues();
-            for (std::map<std::string, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const std::map<QString, Value> values = material->getValues();
+            for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 variables += QString("\"%1\" : %2, ").
-                        arg(QString::fromStdString(it->first)).
+                        arg(it->first).
                         arg(it->second.toString());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
             str += QString("%1.add_material(\"%2\", %3)\n").
                     arg(fieldInfo->fieldId()).
-                    arg(QString::fromStdString(material->getName())).
+                    arg(material->getName()).
                     arg(variables);
         }
 
@@ -212,7 +212,7 @@ QString createPythonFromModel()
                     {
                         boundaries += QString("\"%1\" : \"%2\", ").
                                 arg(fieldInfo->fieldId()).
-                                arg(QString::fromStdString(marker->getName()));
+                                arg(marker->getName());
                     }
                 }
                 boundaries = (boundaries.endsWith(", ") ? boundaries.left(boundaries.length() - 2) : boundaries) + "}";
@@ -249,7 +249,7 @@ QString createPythonFromModel()
 
                     materials += QString("\"%1\" : \"%2\", ").
                             arg(fieldInfo->fieldId()).
-                            arg(QString::fromStdString(marker->getName()));
+                            arg(marker->getName());
                 }
                 materials = (materials.endsWith(", ") ? materials.left(materials.length() - 2) : materials) + "}";
                 str += materials;
@@ -424,9 +424,9 @@ void PyProblem::solve()
 PyField::PyField(char *fieldId)
 {
     QStringList mods;
-    std::map<std::string, std::string> modules = availableModules();
-    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
-        mods.append(QString::fromStdString(it->first));
+    std::map<QString, QString> modules = availableModules();
+    for (std::map<QString, QString>::iterator it = modules.begin(); it != modules.end(); ++it)
+        mods.append(it->first);
 
     if (mods.contains(QString(fieldId)))
         if (Util::problem()->hasField(QString(fieldId)))
@@ -450,9 +450,9 @@ FieldInfo *PyField::fieldInfo()
 void PyField::setAnalysisType(const char *analysisType)
 {
     QStringList ans;
-    std::map<std::string, std::string> analyses = availableAnalyses(m_fieldInfo->fieldId().toStdString());
-    for (std::map<std::string, std::string>::iterator it = analyses.begin(); it != analyses.end(); ++it)
-        ans.append(QString::fromStdString(it->first));
+    std::map<QString, QString> analyses = availableAnalyses(m_fieldInfo->fieldId());
+    for (std::map<QString, QString>::iterator it = analyses.begin(); it != analyses.end(); ++it)
+        ans.append(it->first);
 
     if (ans.contains(QString(analysisType)))
         Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
@@ -547,19 +547,19 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
             throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
     }
 
-    Hermes::Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(std::string(type));
+    Hermes::Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(QString(type));
     if (!boundaryType)
-        throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(QString::fromStdString(type)).toStdString());
+        throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
 
     // browse boundary parameters
-    std::map<std::string, Value> values;
+    std::map<QString, Value> values;
     for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-            if (variable->id == std::string((*i).first))
+            if (variable->id == QString((*i).first))
             {
                 assigned = true;
                 values[variable->id] = Value(QString::number((*i).second));
@@ -568,25 +568,25 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
         }
 
         if (!assigned)
-            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString(std::string((*i).first))).toStdString());
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
     }
 
-    Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), std::string(name), std::string(type), values));
+    Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), name, type, values));
 }
 
 void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 {
     SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString(name));
     if (sceneBoundary == NULL)
-        throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+        throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(name).toStdString());
 
     // todo: (Franta) check with defined types
-    if (std::string(type) != "")
-        sceneBoundary->setType(std::string(type));
+    if (QString(type) != "")
+        sceneBoundary->setType(QString(type));
 
     // todo: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
-        sceneBoundary->setValue(std::string((*i).first), Value(QString::number((*i).second)));
+        sceneBoundary->setValue(QString((*i).first), Value(QString::number((*i).second)));
 }
 
 void PyField::removeBoundary(char *name)
@@ -604,7 +604,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
     }
 
     // browse material parameters
-    std::map<std::string, Value> values;
+    std::map<QString, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
         Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
@@ -613,7 +613,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
         for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
         {
             Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
-            if (variable->id == std::string((*i).first))
+            if (variable->id == QString((*i).first))
             {
                 assigned = true;
                 values[variable->id] = Value(QString::number((*i).second));
@@ -622,10 +622,10 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
         }
 
         if (!assigned)
-            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString(std::string((*i).first))).toStdString());
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
     }
 
-    Util::scene()->addMaterial(new SceneMaterial(fieldInfo(), std::string(name), values));
+    Util::scene()->addMaterial(new SceneMaterial(fieldInfo(), QString(name), values));
 }
 
 void PyField::setMaterial(char *name, map<char*, double> parameters)
@@ -633,11 +633,11 @@ void PyField::setMaterial(char *name, map<char*, double> parameters)
     SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString(name));
 
     if (sceneMaterial == NULL)
-        throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+        throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(name).toStdString());
 
     // todo: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
-        sceneMaterial->setValue(std::string((*i).first), Value(QString::number((*i).second)));
+        sceneMaterial->setValue(QString((*i).first), Value(QString::number((*i).second)));
 }
 
 void PyField::removeMaterial(char *name)
@@ -645,9 +645,9 @@ void PyField::removeMaterial(char *name)
     Util::scene()->removeMaterial(Util::scene()->getMaterial(QString(name)));
 }
 
-void PyField::localValues(double x, double y, map<string, double> &results)
+void PyField::localValues(double x, double y, map<std::string, double> &results)
 {
-    map<string, double> values;
+    map<std::string, double> values;
 
     if (Util::problem()->isSolved())
     {
@@ -662,13 +662,13 @@ void PyField::localValues(double x, double y, map<string, double> &results)
         {
             if (it->first->is_scalar)
             {
-                values[it->first->shortname] = it->second.scalar;
+                values[it->first->shortname.toStdString()] = it->second.scalar;
             }
             else
             {
-                values[it->first->shortname] = it->second.vector.magnitude();
-                values[it->first->shortname + Util::problem()->config()->labelX().toLower().toStdString()] = it->second.vector.x;
-                values[it->first->shortname + Util::problem()->config()->labelY().toLower().toStdString()] = it->second.vector.y;
+                values[it->first->shortname.toStdString()] = it->second.vector.magnitude();
+                values[it->first->shortname.toStdString() + Util::problem()->config()->labelX().toLower().toStdString()] = it->second.vector.x;
+                values[it->first->shortname.toStdString() + Util::problem()->config()->labelY().toLower().toStdString()] = it->second.vector.y;
             }
         }
     }
@@ -680,9 +680,9 @@ void PyField::localValues(double x, double y, map<string, double> &results)
     results = values;
 }
 
-void PyField::surfaceIntegrals(vector<int> edges, map<string, double> &results)
+void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &results)
 {
-    map<string, double> values;
+    map<std::string, double> values;
 
     if (Util::problem()->isSolved())
     {
@@ -717,7 +717,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<string, double> &results)
         SurfaceIntegralValue surfaceIntegral(fieldInfo());
         for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
         {
-            values[it->first->shortname] = it->second;
+            values[it->first->shortname.toStdString()] = it->second;
         }
     }
     else
@@ -728,9 +728,9 @@ void PyField::surfaceIntegrals(vector<int> edges, map<string, double> &results)
     results = values;
 }
 
-void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
+void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &results)
 {
-    map<string, double> values;
+    map<std::string, double> values;
 
     if (Util::problem()->isSolved())
     {
@@ -745,7 +745,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
             {
                 if ((*it >= 0) && (*it < Util::scene()->labels->length()))
                 {
-                    qDebug() << QString::number(*it) << QString::fromStdString(Util::scene()->labels->at(*it)->getMarker(m_fieldInfo)->getName());
+                    qDebug() << QString::number(*it) << Util::scene()->labels->at(*it)->getMarker(m_fieldInfo)->getName();
 
                     if (Util::scene()->labels->at(*it)->getMarker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
                     {
@@ -774,7 +774,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<string, double> &results)
         VolumeIntegralValue volumeIntegral(fieldInfo());
         for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
         {
-            values[it->first->shortname] = it->second;
+            values[it->first->shortname.toStdString()] = it->second;
         }
     }
     else
@@ -823,7 +823,7 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
         bool assigned = false;
         foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
         {
-            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == std::string((*i).second)))
+            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == QString((*i).second)))
             {
                 assigned = true;
                 sceneEdge->addMarker(sceneBoundary);
@@ -834,7 +834,7 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
         if (!assigned)
         {
             delete sceneEdge;
-            throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString::fromStdString(std::string((*i).second))).toStdString());
+            throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString((*i).second)).toStdString());
         }
     }
 
@@ -860,13 +860,13 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
             throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
         }
 
-        if (std::string((*i).second) != "none")
+        if (QString((*i).second) != "none")
         {
 
             bool assigned = false;
             foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
             {
-                if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == std::string((*i).second)))
+                if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == QString((*i).second)))
                 {
                     assigned = true;
                     sceneLabel->addMarker(sceneMaterial);
@@ -877,7 +877,7 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
             if (!assigned)
             {
                 delete sceneLabel;
-                throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(std::string((*i).second))).toStdString());
+                throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString((*i).second)).toStdString());
             }
         }
     }
@@ -1176,8 +1176,8 @@ void PyViewPost2D::setScalarViewVariable(char* variable)
     {
         Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
 
-        list.append(QString::fromStdString(var->id));
-        if (var->id == std::string(variable))
+        list.append(var->id);
+        if (var->id == QString(variable))
         {
             Util::config()->scalarVariable = QString(variable);
             return;
@@ -1190,8 +1190,8 @@ void PyViewPost2D::setScalarViewVariable(char* variable)
     {
         Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
 
-        list.append(QString::fromStdString(var->id));
-        if (var->id == std::string(variable))
+        list.append(var->id);
+        if (var->id == QString(variable))
         {
             Util::config()->vectorVariable = QString(variable);
             return;
@@ -1292,9 +1292,9 @@ void PyViewPost2D::setContourVariable(char* variable)
         Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
         if (var->is_scalar) // todo: (Franta) why
         {
-            list.append(QString::fromStdString(var->id));
+            list.append(var->id);
 
-            if (var->id == std::string(variable))
+            if (var->id == QString(variable))
             {
                 Util::config()->contourVariable = QString(variable);
                 return;
@@ -1331,12 +1331,12 @@ void PyViewPost2D::setVectorVariable(char* variable)
 {
     QStringList list;
     for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
-        it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+         it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
     {
         Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
 
-        list.append(QString::fromStdString(var->id));
-        if (var->id == std::string(variable))
+        list.append(var->id);
+        if (var->id == QString(variable))
         {
             Util::config()->vectorVariable = QString(variable);
             return;

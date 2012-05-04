@@ -375,7 +375,7 @@ void ChartDialog::plotGeometry()
     doChartLine();
 
     // variable
-    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 
@@ -390,8 +390,8 @@ void ChartDialog::plotGeometry()
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Bold));
     text.setText(QString("%1 (%2)").
-                 arg(QString::fromStdString(physicFieldVariable->name)).
-                 arg(QString::fromStdString(physicFieldVariable->unit)));
+                 arg(physicFieldVariable->name).
+                 arg(physicFieldVariable->unit));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
     // headers
@@ -479,7 +479,7 @@ void ChartDialog::plotTime()
     QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
     // variable
-    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 
@@ -496,8 +496,8 @@ void ChartDialog::plotTime()
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Bold));
     text.setText(QString("%1 (%2)").
-                 arg(QString::fromStdString(physicFieldVariable->name)).
-                 arg(QString::fromStdString(physicFieldVariable->unit)));
+                 arg(physicFieldVariable->name).
+                 arg(physicFieldVariable->unit));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
     // headers
@@ -552,14 +552,14 @@ QStringList ChartDialog::headers()
         if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
         {
             // scalar variable
-            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
+            head.append(((Hermes::Module::LocalVariable *) *it)->shortname);
         }
         else
         {
             // vector variable
-            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::problem()->config()->labelX().toLower());
-            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname) + Util::problem()->config()->labelY().toLower());
-            head.append(QString::fromStdString(((Hermes::Module::LocalVariable *) *it)->shortname));
+            head.append(((Hermes::Module::LocalVariable *) *it)->shortname + Util::problem()->config()->labelX().toLower());
+            head.append(((Hermes::Module::LocalVariable *) *it)->shortname + Util::problem()->config()->labelY().toLower());
+            head.append(((Hermes::Module::LocalVariable *) *it)->shortname);
         }
     }
 
@@ -643,7 +643,7 @@ void ChartDialog::doPlot()
 
 void ChartDialog::doFieldVariable(int index)
 {
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString().toStdString());
+    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 

@@ -29,8 +29,8 @@
 #include "scenelabel.h"
 #include "gui.h"
 
-SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, std::string name, std::string type,
-                             std::map<std::string, Value> values)
+SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, QString name, QString type,
+                             std::map<QString, Value> values)
     : Boundary(fieldInfo, name, type, values)
 {
 
@@ -86,8 +86,8 @@ SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary(NULL, "none")
 
 // *************************************************************************************************************************************
 
-SceneMaterial::SceneMaterial(FieldInfo *fieldInfo, std::string name,
-                             std::map<std::string, Value> values) : Material(fieldInfo, name, values)
+SceneMaterial::SceneMaterial(FieldInfo *fieldInfo, QString name,
+                             std::map<QString, Value> values) : Material(fieldInfo, name, values)
 {
 
 }
@@ -172,7 +172,7 @@ void SceneFieldWidget::createContent()
     // add custom widget
     addCustomWidget(layout);
 
-    for (std::map<std::string, Hermes::vector<Hermes::Module::DialogUI::Row> >::iterator it = ui->groups.begin(); it != ui->groups.end(); ++it)
+    for (std::map<QString, Hermes::vector<Hermes::Module::DialogUI::Row> >::iterator it = ui->groups.begin(); it != ui->groups.end(); ++it)
     {
         // group layout
         QGridLayout *layoutGroup = new QGridLayout();
@@ -186,13 +186,13 @@ void SceneFieldWidget::createContent()
             Hermes::Module::DialogUI::Row material = *itv;
 
             // id
-            ids.append(QString::fromStdString(material.id));
+            ids.append(material.id);
 
             // label
             labels.append(new QLabel(QString("%1 (%2):").
-                                     arg(QString::fromStdString(material.shortname_html)).
-                                     arg(QString::fromStdString(material.unit_html))));
-            labels.at(labels.count() - 1)->setToolTip((QString::fromStdString(material.name)));
+                                     arg(material.shortname_html).
+                                     arg(material.unit_html)));
+            labels.at(labels.count() - 1)->setToolTip(material.name);
             labels.at(labels.count() - 1)->setMinimumWidth(100);
 
             // text edit
@@ -213,7 +213,7 @@ void SceneFieldWidget::createContent()
         }
         else
         {
-            QGroupBox *grpGroup = new QGroupBox(QString::fromStdString(it->first));
+            QGroupBox *grpGroup = new QGroupBox(it->first);
             grpGroup->setLayout(layoutGroup);
             layout->addWidget(grpGroup);
         }
@@ -232,14 +232,14 @@ SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Hermes::Module::DialogUI *ui,
 void SceneFieldWidgetMaterial::load()
 {
     for (int j = 0; j < ids.count(); j++)
-        values.at(j)->setValue(material->getValue(ids.at(j).toStdString()));
+        values.at(j)->setValue(material->getValue(ids.at(j)));
 }
 
 bool SceneFieldWidgetMaterial::save()
 {
     for (int j = 0; j < ids.count(); j++)
         if (values.at(j)->evaluate())
-            material->setValue(ids.at(j).toStdString(), values.at(j)->value());
+            material->setValue(ids.at(j), values.at(j)->value());
         else
             return false;
 
@@ -289,12 +289,12 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
 
-    Hermes::Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->get_boundary_type(comboBox->itemData(index).toString().toStdString());
+    Hermes::Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->get_boundary_type(comboBox->itemData(index).toString());
     for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     {
         Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
 
-        int i = ids.indexOf(QString::fromStdString(variable->id));
+        int i = ids.indexOf(variable->id);
 
         if (i >= 0)
             values.at(i)->setEnabled(true);
@@ -314,22 +314,22 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
 void SceneFieldWidgetBoundary::load()
 {
     // load type
-    comboBox->setCurrentIndex(comboBox->findData(QString::fromStdString(boundary->getType())));
+    comboBox->setCurrentIndex(comboBox->findData(boundary->getType()));
 
     // load variables
     for (int i = 0; i < ids.count(); i++)
-        values.at(i)->setValue(boundary->getValue(ids.at(i).toStdString()));
+        values.at(i)->setValue(boundary->getValue(ids.at(i)));
 }
 
 bool SceneFieldWidgetBoundary::save()
 {
     // save type
-    boundary->setType(comboBox->itemData(comboBox->currentIndex()).toString().toStdString());
+    boundary->setType(comboBox->itemData(comboBox->currentIndex()).toString());
 
     // save variables
     for (int i = 0; i < ids.count(); i++)
         if (values.at(i)->evaluate())
-            boundary->setValue(ids.at(i).toStdString(), values.at(i)->value());
+            boundary->setValue(ids.at(i), values.at(i)->value());
         else
             return false;
 
@@ -342,7 +342,7 @@ SceneBoundaryDialog::SceneBoundaryDialog(SceneBoundary *boundary, QWidget *paren
     : QDialog(parent), boundary(boundary)
 {
     setWindowIcon(icon("scene-edgemarker"));
-    setWindowTitle(tr("Boundary condition - %1").arg(QString::fromStdString(boundary->getFieldInfo()->module()->name)));
+    setWindowTitle(tr("Boundary condition - %1").arg(boundary->getFieldInfo()->module()->name));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -385,7 +385,7 @@ void SceneBoundaryDialog::createContent()
 
 void SceneBoundaryDialog::load()
 {
-    txtName->setText(QString::fromStdString(boundary->getName()));
+    txtName->setText(boundary->getName());
 
     // load variables
     fieldWidget->load();
@@ -396,7 +396,7 @@ bool SceneBoundaryDialog::save()
     // find name duplicities
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
     {
-        if (QString::fromStdString(boundary->getName()) == txtName->text())
+        if (boundary->getName() == txtName->text())
         {
             if (boundary == boundary)
                 continue;
@@ -405,7 +405,7 @@ bool SceneBoundaryDialog::save()
             return false;
         }
     }
-    boundary->setName(txtName->text().toStdString());
+    boundary->setName(txtName->text());
 
     // save variables
     if (!fieldWidget->save())
@@ -441,7 +441,7 @@ SceneMaterialDialog::SceneMaterialDialog(SceneMaterial *material, QWidget *paren
     : QDialog(parent), material(material)
 {
     setWindowIcon(icon("scene-labelmarker"));
-    setWindowTitle(tr("Material - %1").arg(QString::fromStdString(material->getFieldInfo()->module()->name)));
+    setWindowTitle(tr("Material - %1").arg(material->getFieldInfo()->module()->name));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -485,7 +485,7 @@ void SceneMaterialDialog::createContent()
 
 void SceneMaterialDialog::load()
 {
-    txtName->setText(QString::fromStdString(material->getName()));
+    txtName->setText(material->getName());
 
     // load variables
     fieldWidget->load();
@@ -496,7 +496,7 @@ bool SceneMaterialDialog::save()
     // find name duplicities
     foreach (SceneMaterial *material, Util::scene()->materials->items())
     {
-        if (material->getName() == txtName->text().toStdString())
+        if (material->getName() == txtName->text())
         {
             if (material == material)
                 continue;
@@ -505,7 +505,7 @@ bool SceneMaterialDialog::save()
             return false;
         }
     }
-    material->setName(txtName->text().toStdString());
+    material->setName(txtName->text());
 
     // save variables
     if (!fieldWidget->save())

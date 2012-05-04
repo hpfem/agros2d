@@ -36,6 +36,7 @@ static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<SolutionType, QString> solutionTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
+static QHash<CouplingType, QString> couplingTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
@@ -51,6 +52,10 @@ CoordinateType coordinateTypeFromStringKey(const QString &coordinateType) { retu
 QStringList analysisTypeStringKeys() { return analysisTypeList.values(); }
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
+
+QStringList couplingTypeStringKeys() { return couplingTypeList.values(); }
+QString couplingTypeToStringKey(CouplingType couplingType) { return couplingTypeList[couplingType]; }
+CouplingType couplingTypeFromStringKey(const QString &couplingType) { return couplingTypeList.key(couplingType); }
 
 QStringList weakFormsTypeStringKeys() { return weakFormsTypeList.values(); }
 QString weakFormsTypeToStringKey(WeakFormsType weakFormsType) { return weakFormsTypeList[weakFormsType]; }
@@ -110,6 +115,12 @@ void initLists()
     analysisTypeList.insert(AnalysisType_SteadyState, "steadystate");
     analysisTypeList.insert(AnalysisType_Transient, "transient");
     analysisTypeList.insert(AnalysisType_Harmonic, "harmonic");
+
+    // coupling type
+    couplingTypeList.insert(CouplingType_Undefined, "");
+    couplingTypeList.insert(CouplingType_Hard, "hard");
+    couplingTypeList.insert(CouplingType_Weak, "weak");
+    couplingTypeList.insert(CouplingType_None, "none");
 
     // WeakForms Type
     weakFormsTypeList.insert(WeakFormsType_Undefined, "");

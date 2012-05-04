@@ -65,7 +65,7 @@ void SurfaceIntegralValue::initParser()
     {
         mu::Parser *pars = m_fieldInfo->module()->get_parser();
 
-        pars->SetExpr(((Hermes::Module::Integral *) *it)->expr.scalar);
+        pars->SetExpr(((Hermes::Module::Integral *) *it)->expr.scalar.toStdString());
 
         parser->parser.push_back(pars);
 
@@ -220,10 +220,10 @@ void SurfaceIntegralValue::calculate()
                                 }
                                 catch (mu::Parser::exception_type &e)
                                 {
-                                    std::cout << "Surface integral: " << ((Hermes::Module::LocalVariable *) *it)->name <<
+                                    qDebug() << "Surface integral: " << ((Hermes::Module::LocalVariable *) *it)->name <<
                                                  " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
                                                  ((Hermes::Module::LocalVariable *) *it)->name << " - " <<
-                                                 parser->parser[n]->GetExpr() << " - " << e.GetMsg() << std::endl;
+                                                 QString::fromStdString(parser->parser[n]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                                 }
 
                                 n++;

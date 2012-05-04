@@ -221,7 +221,7 @@ QLayout* SceneEdgeDialog::createContent()
         layoutBoundary->addWidget(cmbBoundary);
         layoutBoundary->addWidget(btnBoundary);
 
-        layoutBoundaries->addRow(QString::fromStdString(fieldInfo->module()->name),
+        layoutBoundaries->addRow(fieldInfo->module()->name,
                                  layoutBoundary);
     }
 
@@ -307,13 +307,13 @@ void SceneEdgeDialog::fillComboBox()
         cmbBoundaries[fieldInfo]->clear();
 
         // none marker
-        cmbBoundaries[fieldInfo]->addItem(QString::fromStdString(Util::scene()->boundaries->getNone(fieldInfo)->getName()),
+        cmbBoundaries[fieldInfo]->addItem(Util::scene()->boundaries->getNone(fieldInfo)->getName(),
                                   Util::scene()->boundaries->getNone(fieldInfo)->variant());
 
         // real markers
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
-            cmbBoundaries[fieldInfo]->addItem(QString::fromStdString(boundary->getName()),
+            cmbBoundaries[fieldInfo]->addItem(boundary->getName(),
                                       boundary->variant());
         }
     }

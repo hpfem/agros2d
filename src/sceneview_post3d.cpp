@@ -99,7 +99,7 @@ void Post3DHermes::processRangeScalar()
             it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
         {
             Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-            if (variable->id == Util::config()->scalarVariable.toStdString())
+            if (variable->id == Util::config()->scalarVariable)
             {
                 contains = true;
                 break;
@@ -109,7 +109,7 @@ void Post3DHermes::processRangeScalar()
         if (Util::config()->scalarVariable == "" || !contains)
         {
             // default values
-            Util::config()->scalarVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
+            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->view_default_scalar_variable->id;
             Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->view_default_scalar_variable_comp();
         }
 
@@ -117,7 +117,7 @@ void Post3DHermes::processRangeScalar()
 
         processInitialMesh();
 
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
@@ -214,10 +214,10 @@ void SceneViewPost3D::paintGL()
     {
         if (Util::problem()->isSolved())
         {
-            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable);
             if (localVariable)
             {
-                QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
+                QString text = Util::config()->scalarVariable != "" ? localVariable->name : "";
                 if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
                     text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
                 emit labelCenter(text);

@@ -38,8 +38,8 @@ void Hermes::Module::ModuleAgros::fillComboBoxContourVariable(QComboBox *cmbFiel
     {
         Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
         if (variable->is_scalar)
-            cmbFieldVariable->addItem(QString::fromStdString(variable->name),
-                                      QString::fromStdString(variable->id));
+            cmbFieldVariable->addItem(variable->name,
+                                      variable->id);
     }
 }
 
@@ -53,8 +53,8 @@ void Hermes::Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, Herm
     for(Hermes::vector<LocalVariable *>::iterator it = list.begin(); it < list.end(); ++it )
     {
         Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-        cmbFieldVariable->addItem(QString::fromStdString(variable->name),
-                                  QString::fromStdString(variable->id));
+        cmbFieldVariable->addItem(variable->name,
+                                  variable->id);
     }
 }
 
@@ -63,8 +63,8 @@ void Hermes::Module::ModuleAgros::fillComboBoxBoundaryCondition(QComboBox *cmbFi
     for(Hermes::vector<Hermes::Module::BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it )
     {
         Hermes::Module::BoundaryType *boundary = ((Hermes::Module::BoundaryType *) *it);
-        cmbFieldVariable->addItem(QString::fromStdString(boundary->name),
-                                  QString::fromStdString(boundary->id));
+        cmbFieldVariable->addItem(boundary->name,
+                                  boundary->id);
     }
 }
 
@@ -75,8 +75,8 @@ void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbF
         Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
         //        cmbFieldVariable->addItem(QString::fromStdString(material->name),
         //                                  QString::fromStdString(material->id));
-        cmbFieldVariable->addItem(QString::fromStdString(material->id),
-                                  QString::fromStdString(material->id));
+        cmbFieldVariable->addItem(material->id,
+                                  material->id);
     }
 }
 
@@ -85,7 +85,7 @@ SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
     //TODO - add dialog
     FieldInfo *field = Util::problem()->fieldInfo(this->fieldid);
 
-    return new SceneBoundary(field, tr("new boundary").toStdString(),
+    return new SceneBoundary(field, tr("new boundary"),
                              field->module()->boundary_type_default->id);
 }
 
@@ -94,7 +94,7 @@ SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
     //TODO - add dialog
     FieldInfo *field = Util::problem()->fieldInfo(this->fieldid);
 
-    return new SceneMaterial(field, tr("new material").toStdString());
+    return new SceneMaterial(field, tr("new material"));
 }
 
 //SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
@@ -206,9 +206,9 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType coordi
     {
         ifstream ifile_custom(filename_custom.c_str());
         if (!ifile_custom)
-            module->read(datadir().toStdString() + "/resources/custom.xml");
+            module->read(datadir() + "/resources/custom.xml");
         else
-            module->read(filename_custom);
+            module->read(QString::fromStdString(filename_custom));
 
         return module;
     }
@@ -218,7 +218,7 @@ Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType coordi
     ifstream ifile_default(filename_default.c_str());
     if (ifile_default)
     {
-        module->read(filename_default);
+        module->read(QString::fromStdString(filename_default));
         return module;
     }
 

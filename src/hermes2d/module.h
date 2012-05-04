@@ -119,7 +119,7 @@ public:
 
 private:
     //marker_second has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WFType type, Field* field, string area, ParserFormExpression* form, int offsetI, int offsetJ,
+    void registerForm(WFType type, Field* field, QString area, ParserFormExpression* form, int offsetI, int offsetJ,
                       Marker* marker, SceneMaterial* marker_second = NULL, CouplingInfo* couplingInfo = NULL);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
@@ -129,25 +129,6 @@ private:
 namespace Hermes
 {
 
-inline std::string analysis_type_tostring(AnalysisType analysisType)
-{
-    if (analysisType == AnalysisType_SteadyState)
-        return "steadystate";
-    else if (analysisType == AnalysisType_Harmonic)
-        return "harmonic";
-    else if (analysisType == AnalysisType_Transient)
-        return "transient";
-}
-
-inline std::string coupling_type_tostring(CouplingType couplingType)
-{
-    if (couplingType == CouplingType_Hard)
-        return "hard";
-    else if (couplingType == CouplingType_Weak)
-        return "weak";
-    else if (couplingType == CouplingType_None)
-        return "none";
-}
 
 namespace Module
 {
@@ -156,29 +137,39 @@ struct LocalVariable
 {
     struct Expression
     {
-        Expression(std::string scalar = "", std::string comp_x = "", std::string comp_y = "")
+        Expression(const QString &scalar = "", const QString &comp_x = "", const QString &comp_y = "")
             : scalar(scalar), comp_x(comp_x), comp_y(comp_y) {}
 
         // expressions
-        std::string scalar;
-        std::string comp_x;
-        std::string comp_y;
+        QString scalar;
+        QString comp_x;
+        QString comp_y;
     };
 
-    LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "", std::string unit_html = "")
-        : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expr(Expression()) {}
+    LocalVariable(const QString &id = "",
+                  const QString &name = "",
+                  const QString &shortname = "",
+                  const QString &unit = "",
+                  const QString &unit_html = "")
+        : id(id),
+          name(name),
+          shortname(shortname),
+          unit(unit),
+          unit_html(unit),
+          is_scalar(true),
+          expr(Expression()) {}
     LocalVariable(XMLModule::localvariable lv, CoordinateType problemType, AnalysisType analysisType);
 
     // id
-    std::string id;
+    QString id;
     // name
-    std::string name;
+    QString name;
     // short name
-    std::string shortname;
-    std::string shortname_html;
+    QString shortname;
+    QString shortname_html;
     // unit
-    std::string unit;
-    std::string unit_html;
+    QString unit;
+    QString unit_html;
 
     // is scalar variable
     bool is_scalar;
@@ -191,14 +182,14 @@ struct LocalVariable
 struct MaterialTypeVariable
 {
     MaterialTypeVariable() : id(""), shortname(""), default_value(0) {}
-    MaterialTypeVariable(std::string id, std::string shortname,
+    MaterialTypeVariable(const QString &id, QString shortname,
                          double default_value = 0);
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
-    std::string id;
+    QString id;
     // short name
-    std::string shortname;
+    QString shortname;
     // default value
     double default_value;
 };
@@ -207,14 +198,14 @@ struct MaterialTypeVariable
 struct BoundaryTypeVariable
 {
     BoundaryTypeVariable() : id(""), shortname(""), default_value(0) {}
-    BoundaryTypeVariable(std::string id, std::string shortname,
+    BoundaryTypeVariable(const QString &id, QString shortname,
                          double default_value = 0);
     BoundaryTypeVariable(XMLModule::quantity quant);
 
     // id
-    std::string id;
+    QString id;
     // short name
-    std::string shortname;
+    QString shortname;
     // default value
     double default_value;
 };
@@ -229,9 +220,9 @@ struct BoundaryType
     ~BoundaryType();
 
     // id
-    std::string id;
+    QString id;
     // name
-    std::string name;
+    QString name;
 
     // variables
     Hermes::vector<BoundaryTypeVariable *> variables;
@@ -252,21 +243,21 @@ struct Integral
         Expression() : scalar("") {}
 
         // expressions
-        std::string scalar;
+        QString scalar;
     };
 
     Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expr(Expression()) {}
 
     // id
-    std::string id;
+    QString id;
     // name
-    std::string name;
+    QString name;
     // short name
-    std::string shortname;
-    std::string shortname_html;
+    QString shortname;
+    QString shortname_html;
     // unit
-    std::string unit;
-    std::string unit_html;
+    QString unit;
+    QString unit_html;
 
     // expressions
     Expression expr;
@@ -280,32 +271,32 @@ struct DialogUI
 
     struct Row
     {
-        Row(std::string id, bool nonlin, bool timedep, std::string name, std::string shortname, std::string shortname_html,
-                 std::string unit, std::string unit_html, std::string unit_latex,
-                 double default_value, std::string condition)
+        Row(const QString &id, bool nonlin, bool timedep, QString name, QString shortname, QString shortname_html,
+                 QString unit, QString unit_html, QString unit_latex,
+                 double default_value, QString condition)
             : id(id), nonlin(nonlin), timedep(timedep), name(name), shortname(shortname), shortname_html(shortname_html),
               unit(unit), unit_html(unit_html), unit_latex(unit_latex),
               default_value(default_value), condition(condition) {}
         Row(XMLModule::quantity qty);
 
-        std::string id;
+        QString id;
 
         bool nonlin;
         bool timedep;
 
-        std::string name;
-        std::string shortname;
-        std::string shortname_html;
+        QString name;
+        QString shortname;
+        QString shortname_html;
 
-        std::string unit;
-        std::string unit_html;
-        std::string unit_latex;
+        QString unit;
+        QString unit_html;
+        QString unit_latex;
 
         double default_value;
-        std::string condition;
+        QString condition;
     };
 
-    std::map<std::string, Hermes::vector<Row> > groups;
+    std::map<QString, Hermes::vector<Row> > groups;
 
     void clear();
 };
@@ -314,25 +305,25 @@ struct DialogUI
 struct ModuleDeprecated
 {
     // id
-    std::string fieldid;
+    QString fieldid;
     // name
-    std::string name;
+    QString name;
     // deformed shape
     bool deformed_shape;
     // description
-    std::string description;
+    QString description;
 
     // analyses
-    std::map<std::string, std::string> analyses;
+    std::map<QString, QString> analyses;
     int steady_state_solutions;
     int harmonic_solutions;
     int transient_solutions;
 
     // constants
-    std::map<std::string, double> constants;
+    std::map<QString, double> constants;
 
     // macros
-    std::map<std::string, std::string> macros;
+    std::map<QString, QString> macros;
 
     // material type
     Hermes::vector<MaterialTypeVariable *> material_type_variables;
@@ -387,7 +378,7 @@ struct ModuleDeprecated
     mu::Parser *get_parser();
 
     // read form xml
-    void read(std::string filename);
+    void read(const QString &filename);
     // clear
     void clear();
 
@@ -395,13 +386,13 @@ struct ModuleDeprecated
     inline AnalysisType get_analysis_type() const { return m_analysisType; }
 
     // variable by name
-    LocalVariable *get_variable(std::string fieldid);
-    BoundaryType *get_boundary_type(std::string fieldid);
-    BoundaryTypeVariable *get_boundary_type_variable(std::string fieldid);
-    MaterialTypeVariable *get_material_type_variable(std::string fieldid);
+    LocalVariable *get_variable(const QString &fieldid);
+    BoundaryType *get_boundary_type(const QString &fieldid);
+    BoundaryTypeVariable *get_boundary_type_variable(const QString &fieldid);
+    MaterialTypeVariable *get_material_type_variable(const QString &fieldid);
 
     // expression
-    std::string get_expression(LocalVariable *physicFieldVariable,
+    QString get_expression(LocalVariable *physicFieldVariable,
                                PhysicFieldVariableComp physicFieldVariableComp);
 
     int number_of_solution() const;
@@ -430,9 +421,9 @@ private:
 }
 
 // available modules
-std::map<std::string, std::string> availableModules();
+std::map<QString, QString> availableModules();
 // available analyses
-std::map<std::string, std::string> availableAnalyses(std::string fieldId);
+std::map<QString, QString> availableAnalyses(const QString &fieldId);
 
 
 /// TODO not good - contains fieldInfo, but may receive more materials (related to different fields
@@ -442,7 +433,7 @@ class Parser
 public:
     // parser
     Hermes::vector<mu::Parser *> parser;
-    std::map<std::string, double> parser_variables;
+    std::map<QString, double> parser_variables;
 
     Parser(FieldInfo *fieldInfo);
     Parser(CouplingInfo *fieldInfo);
@@ -474,7 +465,7 @@ class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
 public:
     ViewScalarFilter(FieldInfo *fieldInfo,
                      Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
-                     std::string expression);
+                     QString expression);
     ~ViewScalarFilter();
 
     double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
@@ -492,7 +483,7 @@ protected:
 
     Parser *parser;
 
-    void initParser(std::string expression);
+    void initParser(const QString &expression);
     void precalculate(int order, int mask);
 
 private:

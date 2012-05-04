@@ -43,8 +43,8 @@ class DialogUI;
 class SceneBoundary : public Boundary
 {
 public:
-    SceneBoundary(FieldInfo *getFieldInfo, std::string name = "", std::string type = "",
-                  std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    SceneBoundary(FieldInfo *getFieldInfo, QString name = "", QString type = "",
+                  std::map<QString, Value> values = (std::map<QString, Value>()));
 
     int showDialog(QWidget *parent);
 
@@ -131,8 +131,8 @@ private slots:
 class SceneMaterial : public Material
 {
 public:
-    SceneMaterial(FieldInfo *getFieldInfo, std::string name,
-                  std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    SceneMaterial(FieldInfo *getFieldInfo, QString name,
+                  std::map<QString, Value> values = (std::map<QString, Value>()));
 
     int showDialog(QWidget *parent);
 

@@ -70,7 +70,7 @@ template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
 {
     foreach (MarkerType *item, data)
-        if (item->getName() == name.toStdString())
+        if (item->getName() == name)
             return item;
 
     return NULL;

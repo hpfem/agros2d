@@ -63,7 +63,7 @@ void Post2DHermes::processRangeContour()
             it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
         {
             Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-            if (variable->id == Util::config()->contourVariable.toStdString())
+            if (variable->id == Util::config()->contourVariable)
             {
                 contains = true;
                 break;
@@ -73,22 +73,22 @@ void Post2DHermes::processRangeContour()
         if (Util::config()->contourVariable == "" || !contains)
         {
             // default values
-            Util::config()->contourVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
+            Util::config()->contourVariable = Util::scene()->activeViewField()->module()->view_default_scalar_variable->id;
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
 
-        std::string variableName = Util::config()->contourVariable.toStdString();
+        QString variableName = Util::config()->contourVariable;
         Hermes::Module::LocalVariable* variable = Util::scene()->activeViewField()->module()->get_variable(variableName);
-        if(!variable)
-            cout << "error, trying to get variable " << variableName << " from module " << Util::scene()->activeViewField()->fieldId().toStdString() << endl;
+        if (!variable)
+            qDebug() << "error, trying to get variable " << variableName << " from module " << Util::scene()->activeViewField()->fieldId();
 
         ViewScalarFilter<double> *slnContourView = NULL;
         if (variable->is_scalar)
-            slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString()),
+            slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable),
                                                                                             PhysicFieldVariableComp_Scalar);
         else
-            slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable.toStdString()),
+            slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable),
                                                                                             PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.process_solution(slnContourView,
@@ -116,7 +116,7 @@ void Post2DHermes::processRangeScalar()
             it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
         {
             Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-            if (variable->id == Util::config()->scalarVariable.toStdString())
+            if (variable->id == Util::config()->scalarVariable)
             {
                 contains = true;
                 break;
@@ -126,13 +126,13 @@ void Post2DHermes::processRangeScalar()
         if (Util::config()->scalarVariable == "" || !contains)
         {
             // default values
-            Util::config()->scalarVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
+            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->view_default_scalar_variable->id;
             Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->view_default_scalar_variable_comp();
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
@@ -167,7 +167,7 @@ void Post2DHermes::processRangeVector()
             it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
         {
             Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-            if (variable->id == Util::config()->vectorVariable.toStdString())
+            if (variable->id == Util::config()->vectorVariable)
             {
                 contains = true;
                 break;
@@ -177,15 +177,15 @@ void Post2DHermes::processRangeVector()
         if (Util::config()->vectorVariable == "" || !contains)
         {
             // default values
-            Util::config()->vectorVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_vector_variable->id);
+            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->view_default_vector_variable->id;
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
 
-        ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable.toStdString()),
+        ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_X);
 
-        ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable.toStdString()),
+        ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
@@ -436,10 +436,10 @@ void SceneViewPost2D::paintGL()
     {
         if (Util::config()->showScalarView)
         {
-            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable);
             if (localVariable)
             {
-                QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
+                QString text = Util::config()->scalarVariable != "" ? localVariable->name : "";
                 if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
                     text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
                 emit labelCenter(text);
@@ -1179,7 +1179,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,

@@ -97,9 +97,9 @@ void ParserForm::initParser(Hermes::vector<Material *> materials, Boundary *boun
 
     parser->setParserVariables(materials, boundary);
 
-    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+    for (std::map<QString, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
     {
-        parser->parser[0]->DefineVar(it->first, &it->second);
+        parser->parser[0]->DefineVar(it->first.toStdString(), &it->second);
     }
 }
 
