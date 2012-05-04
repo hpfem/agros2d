@@ -538,7 +538,9 @@ void Module::DialogUI::clear()
 // ***********************************************************************************************
 
 Module::BasicModule::BasicModule(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType) :
-    m_coordinateType(problemType), m_analysisType(analysisType)
+    m_coordinateType(problemType), m_analysisType(analysisType),
+    m_materialUI(NULL), m_boundaryUI(NULL),
+    m_defaultViewScalarVariable(NULL), m_defaultViewVectorVariable(NULL), m_boundaryTypeDefault(NULL)
 {
     clear();
 
@@ -785,7 +787,7 @@ void Module::BasicModule::read(const QString &filename)
     }
 
     // preprocessor
-    for (int i = 1; i < mod->preprocessor().gui().size(); i++)
+    for (int i = 0; i < mod->preprocessor().gui().size(); i++)
     {
         XMLModule::gui ui = mod->preprocessor().gui().at(i);
         if (ui.type() == "volume")
@@ -818,6 +820,7 @@ void Module::BasicModule::clear()
     for (QList<BoundaryType *>::iterator it = m_boundaryTypes.begin(); it < m_boundaryTypes.end(); ++it)
         delete *it;
     m_boundaryTypes.clear();
+    m_boundaryTypeDefault = NULL;
 
     // material types
     for (QList<MaterialTypeVariable *>::iterator it = m_materialTypeVariables.begin(); it < m_materialTypeVariables.end(); ++it)
@@ -906,7 +909,7 @@ Module::MaterialTypeVariable *Module::BasicModule::materialTypeVariable(const QS
     return NULL;
 }
 
-mu::Parser *Module::BasicModule::expressionParser()
+mu::Parser *Module::BasicModule::expressionParser(const QString &expr)
 {
     mu::Parser *parser = new mu::Parser();
 
@@ -918,6 +921,9 @@ mu::Parser *Module::BasicModule::expressionParser()
 
     // timestep
     parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
+
+    if (!expr.isEmpty())
+        parser->SetExpr(expr.toStdString());
 
     QMapIterator<QString, double> iConstant(m_constants);
     while (iConstant.hasNext())

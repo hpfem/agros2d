@@ -60,12 +60,9 @@ SurfaceIntegralValue::~SurfaceIntegralValue()
 
 void SurfaceIntegralValue::initParser()
 {
-    mu::Parser *pars = m_fieldInfo->module()->expressionParser();
-
     foreach (Module::Integral *integral, m_fieldInfo->module()->surfaceIntegrals())
     {
-        pars->SetExpr(integral->expr.scalar.toStdString());
-        parser->parser.push_back(pars);
+        parser->parser.push_back(m_fieldInfo->module()->expressionParser(integral->expr.scalar));
 
         values[integral] = 0.0;
     }

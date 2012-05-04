@@ -334,7 +334,7 @@ struct BasicModule
     inline DialogUI *materialUI() { return m_materialUI; }
     inline DialogUI *boundaryUI() { return m_boundaryUI; }
 
-    mu::Parser *expressionParser();
+    mu::Parser *expressionParser(const QString &expr = "");
 
     inline virtual void updateTimeFunctions(double time) {}
 

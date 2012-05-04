@@ -147,8 +147,7 @@ bool Value::evaluate(double time, bool quiet)
     runPythonExpression(QString("time = %1").arg(time), false);
 
     // eval expression
-    ExpressionResult expressionResult;
-    expressionResult = runPythonExpression(m_text);
+    ExpressionResult expressionResult = runPythonExpression(m_text);
     if (expressionResult.error.isEmpty())
     {
         m_number = expressionResult.value;
