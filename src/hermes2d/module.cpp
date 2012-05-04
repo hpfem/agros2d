@@ -70,10 +70,8 @@ std::map<std::string, std::string> availableModules()
             
             if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
             {                
-                qDebug() << QString::fromStdString(filename);
                 std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
                 XMLModule::module *mod = module_xsd.get();
-                qDebug() << QString::fromStdString(filename) << "OK";
 
                 // module name
                 modules[filename.substr(0, filename.size() - 4)] = mod->general().name();
