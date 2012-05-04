@@ -799,7 +799,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
             volint->id = vol.id();
             volint->name = vol.name();
             volint->shortname = vol.shortname();
-            volint->shortname_html = (vol.shortname_html().present()) ? vol.shortname_html().get() : vol.unit();
+            volint->shortname_html = (vol.shortname_html().present()) ? vol.shortname_html().get() : vol.shortname();
             volint->unit = vol.unit();
             volint->unit_html = (vol.unit_html().present()) ? vol.unit_html().get() : vol.unit();
 
