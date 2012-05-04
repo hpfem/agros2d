@@ -118,7 +118,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 
             if (boundary && (!boundary->isNone()))
             {
-                Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
+                Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
 
                 foreach (ParserFormEssential *form, boundary_type->essential)
                 {
@@ -127,9 +127,9 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     // compiled form
                     if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                     {
-                        string problemId = fieldInfo->module()->fieldid.toStdString() + "_" +
-                                analysisTypeToStringKey(fieldInfo->module()->get_analysis_type()).toStdString()  + "_" +
-                                coordinateTypeToStringKey(fieldInfo->module()->get_coordinate_type()).toStdString();
+                        string problemId = fieldInfo->fieldId().toStdString() + "_" +
+                                analysisTypeToStringKey(fieldInfo->module()->analysisType()).toStdString()  + "_" +
+                                coordinateTypeToStringKey(fieldInfo->module()->coordinateType()).toStdString();
 
                         ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
                         custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
@@ -161,7 +161,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 
 
         // create space
-        for (int i = 0; i < fieldInfo->module()->number_of_solution(); i++)
+        for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
             space.push_back(shared_ptr<Space<Scalar> >(new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
 
@@ -269,7 +269,7 @@ Hermes::vector<shared_ptr<Space<Scalar> > > Solver<Scalar>::createCoarseSpace()
     foreach(Field* field, m_block->fields())
     {
         MultiSolutionArray<Scalar> multiSolution = Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Normal));
-        for(int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
+        for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             Space<Scalar>* oldSpace = multiSolution.component(comp).space.get();
             Mesh* mesh = new Mesh();
@@ -580,7 +580,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
     int totalComp = 0;
     foreach(Field* field, m_block->fields())
     {
-        for (int comp = 0; comp < field->fieldInfo()->module()->number_of_solution(); comp++)
+        for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             // constant initial solution
             InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition().number());
@@ -618,7 +618,7 @@ bool Solver<Scalar>::solveTimeStep(double timeStep)
 
     // update timedep values
     foreach(Field* field, m_block->fields())
-        field->fieldInfo()->module()->update_time_functions(actualTime);
+        field->fieldInfo()->module()->updateTimeFunctions(actualTime);
 
     m_wf->set_current_time(actualTime);
 

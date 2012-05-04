@@ -40,11 +40,11 @@ SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(f
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
         QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-        m_fieldInfo->module()->update_time_functions(timeLevels[Util::scene()->activeTimeStep()]);
+        m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
     }
 
     // solution
-    for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+    for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
     {
         FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
@@ -60,9 +60,9 @@ SurfaceIntegralValue::~SurfaceIntegralValue()
 
 void SurfaceIntegralValue::initParser()
 {
-    mu::Parser *pars = m_fieldInfo->module()->get_parser();
+    mu::Parser *pars = m_fieldInfo->module()->expressionParser();
 
-    foreach (Hermes::Module::Integral *integral, m_fieldInfo->module()->surface_integral)
+    foreach (Module::Integral *integral, m_fieldInfo->module()->surfaceIntegrals())
     {
         pars->SetExpr(integral->expr.scalar.toStdString());
         parser->parser.push_back(pars);
@@ -80,13 +80,13 @@ void SurfaceIntegralValue::calculate()
         double py;
         double ptanx;
         double ptany;
-        double *pvalue = new double[m_fieldInfo->module()->number_of_solution()];
-        double *pdx = new double[m_fieldInfo->module()->number_of_solution()];
-        double *pdy = new double[m_fieldInfo->module()->number_of_solution()];
+        double *pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
+        double *pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
+        double *pdy = new double[m_fieldInfo->module()->numberOfSolutions()];
 
-        double **value = new double*[m_fieldInfo->module()->number_of_solution()];
-        double **dudx = new double*[m_fieldInfo->module()->number_of_solution()];
-        double **dudy = new double*[m_fieldInfo->module()->number_of_solution()];
+        double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
 
         foreach (mu::Parser *pars, parser->parser)
         {
@@ -95,7 +95,7 @@ void SurfaceIntegralValue::calculate()
             pars->DefineVar("tan" + Util::problem()->config()->labelX().toLower().toStdString(), &ptanx);
             pars->DefineVar("tan" + Util::problem()->config()->labelY().toLower().toStdString(), &ptany);
 
-            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
                 std::stringstream number;
                 number << (k+1);
@@ -109,7 +109,7 @@ void SurfaceIntegralValue::calculate()
         Hermes::Hermes2D::Element *e;
         Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
-        for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             sln[k]->set_quad_2d(quad);
 
         Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
@@ -153,7 +153,7 @@ void SurfaceIntegralValue::calculate()
                             Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                             int o = 0;
-                            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
                             {
                                 o += sln[k]->get_fn_order();
                                 sln[k]->set_active_element(e);
@@ -169,7 +169,7 @@ void SurfaceIntegralValue::calculate()
                             double3 *pt = quad2d->get_points(eo, Hermes::Hermes2D::HERMES_MODE_TRIANGLE);
                             double3 *tan = ru->get_tangent(edge);
 
-                            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
                             {
                                 sln[k]->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                                 // value
@@ -189,7 +189,7 @@ void SurfaceIntegralValue::calculate()
 
                             // parse expression
                             int n = 0;
-                            foreach (Hermes::Module::Integral *integral, m_fieldInfo->module()->surface_integral)
+                            foreach (Module::Integral *integral, m_fieldInfo->module()->surfaceIntegrals())
                             {
                                 double result = 0.0;
 
@@ -203,7 +203,7 @@ void SurfaceIntegralValue::calculate()
                                         ptanx = tan[i][0];
                                         ptany = tan[i][1];
 
-                                        for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+                                        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
                                         {
                                             pvalue[k] = value[k][i];
                                             pdx[k] = dudx[k][i];

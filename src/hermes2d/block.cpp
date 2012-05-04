@@ -98,7 +98,7 @@ int Block::numSolutions() const
 
     foreach (Field *field, m_fields)
     {
-        num += field->fieldInfo()->module()->number_of_solution();
+        num += field->fieldInfo()->module()->numberOfSolutions();
     }
 
     return num;
@@ -113,7 +113,7 @@ int Block::offset(Field *fieldParam) const
         if(field == fieldParam)
             return offset;
         else
-            offset += field->fieldInfo()->module()->number_of_solution();
+            offset += field->fieldInfo()->module()->numberOfSolutions();
     }
 
     assert(0);

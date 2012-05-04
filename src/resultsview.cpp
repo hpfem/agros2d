@@ -103,12 +103,12 @@ void ResultsView::showPoint(const Point &point)
         if (value.values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");
-            field->SetValue("FIELDNAME", fieldInfo->module()->name.toStdString());
+            field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
+            for (std::map<Module::LocalVariable *, PointValue>::iterator it = value.values.begin();
                  it != value.values.end(); ++it)
             {
-                if (it->first->is_scalar)
+                if (it->first->isScalar)
                 {
                     // scalar variable
                     ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
@@ -174,9 +174,9 @@ void ResultsView::showVolumeIntegral()
         if (volumeIntegralValue.values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = volumeIntegrals.AddSectionDictionary("FIELD");
-            field->SetValue("FIELDNAME", fieldInfo->module()->name.toStdString());
+            field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
+            for (std::map<Module::Integral *, double>::iterator it = volumeIntegralValue.values.begin();
                  it != volumeIntegralValue.values.end(); ++it)
             {
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
@@ -222,9 +222,9 @@ void ResultsView::showSurfaceIntegral()
         if (surfaceIntegralValue.values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
-            field->SetValue("FIELDNAME", fieldInfo->module()->name.toStdString());
+            field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin();
+            for (std::map<Module::Integral *, double>::iterator it = surfaceIntegralValue.values.begin();
                  it != surfaceIntegralValue.values.end(); ++it)
             {
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");

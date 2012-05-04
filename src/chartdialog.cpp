@@ -375,7 +375,7 @@ void ChartDialog::plotGeometry()
     doChartLine();
 
     // variable
-    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 
@@ -479,7 +479,7 @@ void ChartDialog::plotTime()
     QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
     // variable
-    Hermes::Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 
@@ -543,12 +543,11 @@ void ChartDialog::plotTime()
 QStringList ChartDialog::headers()
 {
     QStringList head;
-
     head << "x" << "y" << "t";
 
-    foreach (Hermes::Module::LocalVariable *variable, m_fieldInfo->module()->local_point)
+    foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
     {
-        if (variable->is_scalar)
+        if (variable->isScalar)
         {
             // scalar variable
             head.append(variable->shortname);
@@ -567,7 +566,7 @@ QStringList ChartDialog::headers()
 
 void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double *yval, int i, int N,
                            PhysicFieldVariableComp physicFieldVariableComp,
-                           Hermes::Module::LocalVariable *physicFieldVariable)
+                           Module::LocalVariable *physicFieldVariable)
 {
     // coordinates
     trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 0,
@@ -583,12 +582,12 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double
 
     // local variables
     // FIXME - wrong order!!!
-    for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = localPointValue->values.begin(); it != localPointValue->values.end(); ++it)
+    for (std::map<Module::LocalVariable *, PointValue>::iterator it = localPointValue->values.begin(); it != localPointValue->values.end(); ++it)
     {
         // chart
         if (it->first->id == physicFieldVariable->id)
         {
-            if (physicFieldVariable->is_scalar)
+            if (physicFieldVariable->isScalar)
             {
                 // scalar variable
                 yval[i] = it->second.scalar;
@@ -606,7 +605,7 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double
         }
 
         // table
-        if (it->first->is_scalar)
+        if (it->first->isScalar)
         {
             // scalar variable
             trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
@@ -642,12 +641,12 @@ void ChartDialog::doPlot()
 
 void ChartDialog::doFieldVariable(int index)
 {
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 
     cmbFieldVariableComp->clear();
-    if (physicFieldVariable->is_scalar)
+    if (physicFieldVariable->isScalar)
     {
         cmbFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
     }

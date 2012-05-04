@@ -270,7 +270,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                     str = str + QString("%1 (%2), ").
                             arg(edge->getMarker(fieldInfo)->getName()).
-                            arg(fieldInfo->module()->name);
+                            arg(fieldInfo->name());
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
@@ -299,7 +299,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                     str = str + QString("%1 (%2), ").
                             arg(label->getMarker(fieldInfo)->getName()).
-                            arg(fieldInfo->module()->name);
+                            arg(fieldInfo->name());
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 

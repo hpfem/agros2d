@@ -156,7 +156,7 @@ QLayout* SceneLabelDialog::createContent()
         layoutMaterial->addWidget(cmbMaterial);
         layoutMaterial->addWidget(btnMaterial);
 
-        layoutMaterials->addRow(fieldInfo->module()->name,
+        layoutMaterials->addRow(fieldInfo->name(),
                                 layoutMaterial);
     }
 

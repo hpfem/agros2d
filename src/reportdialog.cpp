@@ -406,10 +406,10 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //            ctemplate::TemplateDictionary *material_dict = dict.AddSectionDictionary("MATERIAL_SECTION");
 //            material_dict->SetValue("MATERIAL_NAME", marker->name);
 
-//            Hermes::vector<Hermes::Module::MaterialTypeVariable *> variables = Util::problem()->config()->module()->material_type_variables;
-//            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
+//            Hermes::vector<Module::MaterialTypeVariable *> variables = Util::problem()->config()->module()->material_type_variables;
+//            for (Hermes::vector<Module::MaterialTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
 //            {
-//                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+//                Module::MaterialTypeVariable *variable = ((Module::MaterialTypeVariable *) *it);
 //                ctemplate::TemplateDictionary *material_key_dict = material_dict->AddSectionDictionary("MATERIAL_KEY_SECTION");
 
 //                //material_key_dict->SetValue("MATERIAL_KEY", variable->name);
@@ -426,12 +426,12 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //            ctemplate::TemplateDictionary *boundary_dict = dict.AddSectionDictionary("BOUNDARY_SECTION");
 //            boundary_dict->SetValue("BOUNDARY_NAME", marker->name);
 
-//            Hermes::Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(marker->type);
+//            Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(marker->type);
 //            if (boundary_type)
 //            {
-//                for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+//                for (Hermes::vector<Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
 //                {
-//                    Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+//                    Module::BoundaryTypeVariable *variable = ((Module::BoundaryTypeVariable *) *it);
 //                    ctemplate::TemplateDictionary *boundary_key_dict = boundary_dict->AddSectionDictionary("BOUNDARY_KEY_SECTION");
 
 //                    //boundary_key_dict->SetValue("BOUNDARY_KEY", variable->name);

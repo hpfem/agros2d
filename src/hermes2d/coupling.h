@@ -7,8 +7,8 @@ class FieldInfo;
 class ProblemConfig;
 class ParserFormExpression;
 
-//namespace Hermes{
-//namespace Module{
+// namespace Module
+// {
 
 struct Coupling
 {
@@ -44,16 +44,11 @@ private:
 
 };
 
-
-//// available couplings
-//QMap<QPair<FieldInfo*, FieldInfo*>, CouplingInfo* > availableCouplings();
-
 bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField);
 
 // coupling factory
 Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType coupling_type,
                                            std::string filename_custom = "");
-
 
 class CouplingInfo
 {
@@ -100,11 +95,9 @@ private:
 
     /// coupling type
     CouplingType m_couplingType;
-
 };
 
+//}
 
-//}
-//}
 
 #endif // COUPLING_H

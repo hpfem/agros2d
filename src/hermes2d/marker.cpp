@@ -72,7 +72,6 @@ QString Marker::fieldId()
 Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
                    std::map<QString, Value> values) : Marker(fieldInfo, name)
 {
-    qDebug() << "boundary constructor, name: " << name << ", type: " << type;
     // name and type
     setType(type);
     this->values = values;
@@ -82,14 +81,12 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
     {
         if (this->values.size() == 0)
         {
-            Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(type);
-            foreach (Hermes::Module::BoundaryTypeVariable *variable, boundary_type->variables)
+            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(type);
+            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables)
                 this->values[variable->id] = Value(QString::number(variable->default_value));
         }
     }
 }
-
-
 
 Material::Material(FieldInfo *fieldInfo, QString name,
                    std::map<QString, Value> values) : Marker(fieldInfo, name)
@@ -102,7 +99,7 @@ Material::Material(FieldInfo *fieldInfo, QString name,
     {
         if (this->values.size() == 0)
         {
-            foreach (Hermes::Module::MaterialTypeVariable *variable, fieldInfo->module()->material_type_variables)
+            foreach (Module::MaterialTypeVariable *variable, fieldInfo->module()->materialTypeVariables())
                 this->values[variable->id] = Value(QString::number(variable->default_value));
         }
     }

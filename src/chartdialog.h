@@ -29,12 +29,9 @@ class LocalPointValue;
 class FieldInfo;
 class SceneViewPost2D;
 
-namespace Hermes
+namespace Module
 {
-    namespace Module
-    {
-        struct LocalVariable;
-    }
+    struct LocalVariable;
 }
 
 class QwtPlotPicker;
@@ -134,7 +131,7 @@ private:
     QStringList headers();
     void addValue(LocalPointValue *localPointValue, double time, double *yval, int i, int N,
                   PhysicFieldVariableComp physicFieldVariableComp,
-                  Hermes::Module::LocalVariable *physicFieldVariable);
+                  Module::LocalVariable *physicFieldVariable);
 
 private slots:
     void doFieldVariable(int index);

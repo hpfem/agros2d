@@ -164,11 +164,11 @@ void Coupling::read(std::string filename)
 
 
         // volumetric weakforms
-//        Hermes::vector<Hermes::Module::MaterialTypeVariable> material_type_variables_tmp;
+//        Hermes::vector<Module::MaterialTypeVariable> material_type_variables_tmp;
 //        for (rapidxml::xml_node<> *quantity = doc.first_node("module")->first_node("volume")->first_node("quantity");
 //             quantity; quantity = quantity->next_sibling())
 //            if (std::string(quantity->name()) == "quantity")
-//                material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quantity));
+//                material_type_variables_tmp.push_back(Module::MaterialTypeVariable(quantity));
 
         //TODO temporary
         //m_analysisType = AnalysisType_SteadyState;
@@ -196,13 +196,13 @@ void Coupling::read(std::string filename)
 //                     quantity; quantity = quantity->next_sibling())
 //                {
 //                    if (std::string(quantity->name()) == "quantity")
-//                        for (Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
+//                        for (Hermes::vector<Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
 //                             it < material_type_variables_tmp.end(); ++it )
 //                        {
-//                            Hermes::Module::MaterialTypeVariable old = (Hermes::Module::MaterialTypeVariable) *it;
+//                            Module::MaterialTypeVariable old = (Module::MaterialTypeVariable) *it;
 //                            if (old.id == quantity->first_attribute("id")->value())
 //                            {
-//                                Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
+//                                Module::MaterialTypeVariable *var = new Module::MaterialTypeVariable(
 //                                            old.id, old.shortname, old.default_value);
 //                                material_type_variables.push_back(var);
 //                            }

@@ -54,7 +54,7 @@ ParserForm::~ParserForm()
 void ParserForm::initParser(QList<Material *> materials, Boundary *boundary)
 {
     if(m_fieldInfo)
-        parser->parser.push_back(m_fieldInfo->module()->get_parser());
+        parser->parser.push_back(m_fieldInfo->module()->expressionParser());
     else if(m_couplingInfo)
         parser->parser.push_back(m_couplingInfo->coupling()->getParser());
     else
@@ -142,7 +142,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
         pupval = 0;  // todo: ???
         if(m_fieldInfo)
         {
-            foreach (Hermes::Module::MaterialTypeVariable *variable, m_fieldInfo->module()->material_type_variables)
+            foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
             {
                 Value value = m_material1->getValue(variable->id);
 
@@ -193,7 +193,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         {
             if(m_fieldInfo)
             {
-                foreach (Hermes::Module::MaterialTypeVariable *variable, m_fieldInfo->module()->material_type_variables)
+                foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
                 {
                     Value value = m_material1->getValue(variable->id);
 
@@ -307,7 +307,7 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
         pupval = 0;  // todo: ???
         if(m_fieldInfo)
         {
-            foreach (Hermes::Module::MaterialTypeVariable *variable, m_fieldInfo->module()->material_type_variables)
+            foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
             {
                 Value value = m_material1->getValue(variable->id);
 
@@ -351,7 +351,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         {
             if(m_fieldInfo)
             {
-                foreach (Hermes::Module::MaterialTypeVariable *variable, m_fieldInfo->module()->material_type_variables)
+                foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
                 {
                     Value value = m_material1->getValue(variable->id);
 

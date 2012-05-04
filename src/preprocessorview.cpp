@@ -164,7 +164,7 @@ void PreprocessorWidget::refresh()
     {
         // field
         QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-        fieldNode->setText(0, fieldInfo->module()->name);
+        fieldNode->setText(0, fieldInfo->name());
         fieldNode->setExpanded(true);
 
         // materials
@@ -477,8 +477,8 @@ void PreprocessorWidget::showInfo()
     {
         ctemplate::TemplateDictionary *field = problem.AddSectionDictionary("FIELD");
 
-        field->SetValue("PHYSICAL_FIELDID", fieldInfo->module()->fieldid.toStdString());
-        field->SetValue("PHYSICAL_FIELD", fieldInfo->module()->name.toStdString());
+        field->SetValue("PHYSICAL_FIELDID", fieldInfo->fieldId().toStdString());
+        field->SetValue("PHYSICAL_FIELD", fieldInfo->name().toStdString());
 
         field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
         field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());

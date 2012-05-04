@@ -345,7 +345,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     }
 
     // variable
-    Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable);
+    Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
     if (localVariable)
     {
         QString str = QString("%1 (%2)").

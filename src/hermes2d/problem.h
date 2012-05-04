@@ -17,7 +17,6 @@ class Problem;
 //template <typename Scalar>
 //class Solver;
 
-
 class ProblemConfig : public QObject
 {
     Q_OBJECT

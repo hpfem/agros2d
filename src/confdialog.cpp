@@ -454,9 +454,12 @@ void ConfigDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->blockSignals(true);
 
     cmbPhysicField->clear();
-    std::map<QString, QString> modules = availableModules();
-    for (std::map<QString, QString>::iterator it = modules.begin(); it != modules.end(); ++it)
-        cmbPhysicField->addItem(it->second, it->first);
+    QMapIterator<QString, QString> it(availableModules());
+    while (it.hasNext())
+    {
+        it.next();
+        cmbPhysicField->addItem(it.value(), it.key());
+    }
 
     // unblock signals
     cmbPhysicField->blockSignals(false);

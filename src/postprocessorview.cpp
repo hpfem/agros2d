@@ -213,7 +213,7 @@ void PostprocessorWidget::saveBasic()
     Util::config()->scalarRangeMin = txtScalarFieldRangeMin->value();
     Util::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable);
+    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
     if (physicFieldVariable && physicFieldVariable->id == "custom")
         physicFieldVariable->expr.scalar = txtPostScalarFieldExpression->text();
 
@@ -873,21 +873,21 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
 
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
-    Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+    Module::LocalVariable *physicFieldVariable = NULL;
 
     if (cmbPostScalarFieldVariable->currentIndex() != -1)
     {
         QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
-        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->get_variable(variableName);
+        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
     }
 
     // component
     cmbPostScalarFieldVariableComp->clear();
     if (physicFieldVariable)
     {
-        if (physicFieldVariable->is_scalar)
+        if (physicFieldVariable->isScalar)
         {
             cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
         }
@@ -914,7 +914,7 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
 
     txtPostScalarFieldExpression->setText("");
 
-    Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+    Module::LocalVariable *physicFieldVariable = NULL;
 
     // TODO: proc je tu index a cmb..->currentIndex?
     if (cmbPostScalarFieldVariable->currentIndex() != -1 && index != -1)
@@ -924,7 +924,7 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
         // TODO: not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());
 
-        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->get_variable(variableName);
+        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
     }
 
     if (physicFieldVariable)

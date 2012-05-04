@@ -423,12 +423,9 @@ void PyProblem::solve()
 
 PyField::PyField(char *fieldId)
 {
-    QStringList mods;
-    std::map<QString, QString> modules = availableModules();
-    for (std::map<QString, QString>::iterator it = modules.begin(); it != modules.end(); ++it)
-        mods.append(it->first);
+    QMap<QString, QString> modules = availableModules();
 
-    if (mods.contains(QString(fieldId)))
+    if (modules.keys().contains(QString(fieldId)))
         if (Util::problem()->hasField(QString(fieldId)))
         {
             m_fieldInfo = Util::problem()->fieldInfo(fieldId);
@@ -439,7 +436,7 @@ PyField::PyField(char *fieldId)
             Util::problem()->addField(fieldInfo());
         }
     else
-        throw invalid_argument(QObject::tr("Invalid field id. Valid keys: %1").arg(stringListToString(mods)).toStdString());
+        throw invalid_argument(QObject::tr("Invalid field id. Valid keys: %1").arg(stringListToString(modules.keys())).toStdString());
 }
 
 FieldInfo *PyField::fieldInfo()
@@ -449,15 +446,19 @@ FieldInfo *PyField::fieldInfo()
 
 void PyField::setAnalysisType(const char *analysisType)
 {
-    QStringList ans;
-    std::map<QString, QString> analyses = availableAnalyses(m_fieldInfo->fieldId());
-    for (std::map<QString, QString>::iterator it = analyses.begin(); it != analyses.end(); ++it)
-        ans.append(it->first);
-
-    if (ans.contains(QString(analysisType)))
+    if (availableAnalyses(m_fieldInfo->fieldId()).contains(analysisTypeFromStringKey(QString(analysisType))))
+    {
         Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
+    }
     else
-        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(ans)).toStdString());
+    {
+        QStringList list;
+        QList<AnalysisType> analyses = availableAnalyses(m_fieldInfo->fieldId()).keys();
+        foreach (AnalysisType analysis, analyses)
+            list.append(analysisTypeToStringKey(analysis));
+
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+    }
 }
 
 void PyField::setNumberOfRefinements(const int numberOfRefinements)
@@ -547,7 +548,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
             throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
     }
 
-    Hermes::Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->get_boundary_type(QString(type));
+    Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(QString(type));
     if (!boundaryType)
         throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
 
@@ -556,7 +557,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
-        foreach (Hermes::Module::BoundaryTypeVariable *variable, boundaryType->variables)
+        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables)
         {
             if (variable->id == QString((*i).first))
             {
@@ -606,10 +607,10 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
     std::map<QString, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        QList<Hermes::Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
+        QList<Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
 
         bool assigned = false;
-        foreach (Hermes::Module::MaterialTypeVariable *variable, materials)
+        foreach (Module::MaterialTypeVariable *variable, materials)
         {
             if (variable->id == QString((*i).first))
             {
@@ -656,9 +657,9 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
         Point point(x, y);
 
         LocalPointValue value(fieldInfo(), point);
-        for (std::map<Hermes::Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
+        for (std::map<Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
         {
-            if (it->first->is_scalar)
+            if (it->first->isScalar)
             {
                 values[it->first->shortname.toStdString()] = it->second.scalar;
             }
@@ -713,7 +714,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
         }
 
         SurfaceIntegralValue surfaceIntegral(fieldInfo());
-        for (std::map<Hermes::Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
+        for (std::map<Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
         {
             values[it->first->shortname.toStdString()] = it->second;
         }
@@ -770,7 +771,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
         }
 
         VolumeIntegralValue volumeIntegral(fieldInfo());
-        for (std::map<Hermes::Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
+        for (std::map<Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
         {
             values[it->first->shortname.toStdString()] = it->second;
         }
@@ -1169,7 +1170,7 @@ void PyViewPost2D::setScalarViewVariable(char* var)
     QStringList list;
 
     // scalar variables
-    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
+    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
     {
         list.append(variable->id);
         if (variable->id == QString(var))
@@ -1180,7 +1181,7 @@ void PyViewPost2D::setScalarViewVariable(char* var)
     }
 
     // vector variables
-    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_vector_variables)
+    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
     {
         list.append(variable->id);
         if (variable->id == QString(var))
@@ -1278,9 +1279,9 @@ void PyViewPost2D::setContourCount(int count)
 void PyViewPost2D::setContourVariable(char* var)
 {
     QStringList list;
-    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
+    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
     {
-        if (variable->is_scalar)
+        if (variable->isScalar)
         {
             list.append(variable->id);
 
@@ -1320,7 +1321,7 @@ void PyViewPost2D::setVectorScale(double scale)
 void PyViewPost2D::setVectorVariable(char* var)
 {
     QStringList list;
-    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_vector_variables)
+    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
     {
         list.append(variable->id);
         if (variable->id == QString(var))

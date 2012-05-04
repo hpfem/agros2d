@@ -3,12 +3,9 @@
 
 #include "util.h"
 
-namespace Hermes
+namespace Module
 {
-    namespace Module
-    {
-        struct ModuleAgros;
-    }
+    struct ModuleAgros;
 }
 
 class ProblemConfig;
@@ -19,12 +16,12 @@ class FieldInfo : public QObject
     Q_OBJECT
 
 public:
-    FieldInfo(QString fieldId = "");
+    FieldInfo(QString fieldId = "", const AnalysisType analysisType = AnalysisType_Undefined);
     ~FieldInfo();
 
     void clear();
 
-    inline Hermes::Module::ModuleAgros *module() const { return m_module; }
+    inline Module::ModuleAgros *module() const { return m_module; }
 
     QString fieldId() const { return m_fieldId; }
     AnalysisType analysisType() const { return m_analysisType; }
@@ -60,12 +57,17 @@ public:
     inline WeakFormsType weakFormsType() const { return m_weakFormsType; }
     void setWeakFormsType(const WeakFormsType wft) { m_weakFormsType = wft; emit changed(); }
 
+    // module
+    QString name();
+    // description
+    QString description();
+
 signals:
     void changed();
 
 private:
     /// module
-    Hermes::Module::ModuleAgros *m_module;
+    Module::ModuleAgros *m_module;
 
     /// pointer to problem info, whose this object is a "subfield"
     ProblemConfig *m_parent;

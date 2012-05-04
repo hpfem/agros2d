@@ -28,12 +28,9 @@ class Parser;
 class SceneMaterial;
 class FieldInfo;
 
-namespace Hermes
+namespace Module
 {
-    namespace Module
-    {
-        struct LocalVariable;
-    }
+    struct LocalVariable;
 }
 
 int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point);
@@ -68,7 +65,7 @@ public:
     Point point;
 
     // variables
-    std::map<Hermes::Module::LocalVariable *, PointValue> values;
+    std::map<Module::LocalVariable *, PointValue> values;
 
     LocalPointValue(FieldInfo *fieldInfo, const Point &point);
     ~LocalPointValue();

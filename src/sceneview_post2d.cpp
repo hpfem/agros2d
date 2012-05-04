@@ -59,7 +59,7 @@ void Post2DHermes::processRangeContour()
     if (Util::problem()->isSolved() && Util::config()->showContourView)
     {
         bool contains = false;
-        foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
         {
             if (variable->id == Util::config()->contourVariable)
             {
@@ -71,22 +71,22 @@ void Post2DHermes::processRangeContour()
         if (Util::config()->contourVariable == "" || !contains)
         {
             // default values
-            Util::config()->contourVariable = Util::scene()->activeViewField()->module()->view_default_scalar_variable->id;
+            Util::config()->contourVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id;
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
 
         QString variableName = Util::config()->contourVariable;
-        Hermes::Module::LocalVariable* variable = Util::scene()->activeViewField()->module()->get_variable(variableName);
+        Module::LocalVariable* variable = Util::scene()->activeViewField()->module()->localVariable(variableName);
         if (!variable)
             qDebug() << "error, trying to get variable " << variableName << " from module " << Util::scene()->activeViewField()->fieldId();
 
         ViewScalarFilter<double> *slnContourView = NULL;
-        if (variable->is_scalar)
-            slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable),
+        if (variable->isScalar)
+            slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
                                                                                             PhysicFieldVariableComp_Scalar);
         else
-            slnContourView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->contourVariable),
+            slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
                                                                                             PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.process_solution(slnContourView,
@@ -95,7 +95,7 @@ void Post2DHermes::processRangeContour()
 
         // deformed shape
         if (Util::config()->deformContour)
-            Util::scene()->activeViewField()->module()->deform_shape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
+            Util::scene()->activeViewField()->module()->deformShape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
 
         delete slnContourView;
 
@@ -110,7 +110,7 @@ void Post2DHermes::processRangeScalar()
     if (Util::problem()->isSolved() && Util::config()->showScalarView)
     {
         bool contains = false;
-        foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
         {
             if (variable->id == Util::config()->scalarVariable)
             {
@@ -122,13 +122,13 @@ void Post2DHermes::processRangeScalar()
         if (Util::config()->scalarVariable == "" || !contains)
         {
             // default values
-            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->view_default_scalar_variable->id;
-            Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->view_default_scalar_variable_comp();
+            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id;
+            Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->defaultViewScalarVariableComp();
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable),
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
@@ -137,7 +137,7 @@ void Post2DHermes::processRangeScalar()
 
         // deformed shape
         if (Util::config()->deformScalar)
-            Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
+            Util::scene()->activeViewField()->module()->deformShape(m_linScalarView.get_vertices(),
                                                                      m_linScalarView.get_num_vertices());
 
         if (Util::config()->scalarRangeAuto)
@@ -159,7 +159,7 @@ void Post2DHermes::processRangeVector()
     if (Util::problem()->isSolved() && Util::config()->showVectorView)
     {
         bool contains = false;
-        foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_vector_variables)
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
         {
             if (variable->id == Util::config()->vectorVariable)
             {
@@ -171,15 +171,15 @@ void Post2DHermes::processRangeVector()
         if (Util::config()->vectorVariable == "" || !contains)
         {
             // default values
-            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->view_default_vector_variable->id;
+            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->defaultViewVectorVariable()->id;
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
 
-        ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable),
+        ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_X);
 
-        ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->vectorVariable),
+        ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
@@ -188,7 +188,7 @@ void Post2DHermes::processRangeVector()
 
         // deformed shape
         if (Util::config()->deformVector)
-            Util::scene()->activeViewField()->module()->deform_shape(m_vecVectorView.get_vertices(),
+            Util::scene()->activeViewField()->module()->deformShape(m_vecVectorView.get_vertices(),
                                                                      m_vecVectorView.get_num_vertices());
 
         delete slnVectorXView;
@@ -430,7 +430,7 @@ void SceneViewPost2D::paintGL()
     {
         if (Util::config()->showScalarView)
         {
-            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable);
+            Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
             if (localVariable)
             {
                 QString text = Util::config()->scalarVariable != "" ? localVariable->name : "";
@@ -1173,7 +1173,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable),
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,

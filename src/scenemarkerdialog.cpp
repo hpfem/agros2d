@@ -52,11 +52,11 @@ QString SceneBoundary::html()
     //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
     //    out += "<table>";
     
-    //    Hermes::Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(type);
+    //    Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(type);
     //    if (boundary_type)
-    //        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+    //        for (Hermes::vector<Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
     //        {
-    //            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+    //            Module::BoundaryTypeVariable *variable = ((Module::BoundaryTypeVariable *) *it);
 
     //            out += "<tr>";
     ////            out += QString("<td>%1 (%2):</td>").
@@ -110,10 +110,10 @@ QString SceneMaterial::html()
     //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
     //    out += "<table>";
     
-    //    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = Util::problem()->config()->module()->material_type_variables.begin();
+    //    for (Hermes::vector<Module::MaterialTypeVariable *>::iterator it = Util::problem()->config()->module()->material_type_variables.begin();
     //         it < Util::problem()->config()->module()->material_type_variables.end(); ++it )
     //    {
-    //        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
+    //        Module::MaterialTypeVariable *material = ((Module::MaterialTypeVariable *) *it);
 
     //        out += "<tr>";
     ////        out += QString("<td>%1 (%2)</td>").
@@ -144,7 +144,7 @@ SceneMaterialNone::SceneMaterialNone() : SceneMaterial(NULL, "none")
 // *************************************************************************************************************************************
 
 
-SceneFieldWidget::SceneFieldWidget(Hermes::Module::DialogUI *ui, QWidget *parent)
+SceneFieldWidget::SceneFieldWidget(Module::DialogUI *ui, QWidget *parent)
     : QWidget(parent), ui(ui)
 {
 }
@@ -172,7 +172,7 @@ void SceneFieldWidget::createContent()
     // add custom widget
     addCustomWidget(layout);
 
-    QMapIterator<QString, QList<Hermes::Module::DialogUI::Row> > i(ui->groups);
+    QMapIterator<QString, QList<Module::DialogUI::DialogRow> > i(ui->groups);
     while (i.hasNext())
     {
         i.next();
@@ -181,9 +181,9 @@ void SceneFieldWidget::createContent()
         QGridLayout *layoutGroup = new QGridLayout();
 
         // variables
-        QList<Hermes::Module::DialogUI::Row> variables = i.value();
+        QList<Module::DialogUI::DialogRow> variables = i.value();
 
-        foreach (Hermes::Module::DialogUI::Row material, variables)
+        foreach (Module::DialogUI::DialogRow material, variables)
         {
             // id
             ids.append(material.id);
@@ -224,7 +224,7 @@ void SceneFieldWidget::createContent()
 
 // *************************************************************************************************************************************
 
-SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Hermes::Module::DialogUI *ui, SceneMaterial *material, QWidget *parent)
+SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMaterial *material, QWidget *parent)
     : SceneFieldWidget(ui, parent), material(material)
 {
 }
@@ -258,7 +258,7 @@ void SceneFieldWidgetMaterial::refresh()
 
 // *************************************************************************************************************************************
 
-SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Hermes::Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent)
+SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent)
     : SceneFieldWidget(ui, parent), boundary(boundary)
 {
 }
@@ -289,8 +289,8 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
 
-    Hermes::Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->get_boundary_type(comboBox->itemData(index).toString());
-    foreach (Hermes::Module::BoundaryTypeVariable *variable, boundary_type->variables)
+    Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->boundaryType(comboBox->itemData(index).toString());
+    foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables)
     {
         int i = ids.indexOf(variable->id);
 
@@ -340,7 +340,7 @@ SceneBoundaryDialog::SceneBoundaryDialog(SceneBoundary *boundary, QWidget *paren
     : QDialog(parent), boundary(boundary)
 {
     setWindowIcon(icon("scene-edgemarker"));
-    setWindowTitle(tr("Boundary condition - %1").arg(boundary->getFieldInfo()->module()->name));
+    setWindowTitle(tr("Boundary condition - %1").arg(boundary->getFieldInfo()->name()));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -374,7 +374,7 @@ void SceneBoundaryDialog::createDialog()
 
 void SceneBoundaryDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetBoundary(&boundary->getFieldInfo()->module()->boundary_ui, boundary, this);
+    fieldWidget = new SceneFieldWidgetBoundary(boundary->getFieldInfo()->module()->boundaryUI(), boundary, this);
     fieldWidget->createContent();
     fieldWidget->setMinimumSize(sizeHint());
 
@@ -439,7 +439,7 @@ SceneMaterialDialog::SceneMaterialDialog(SceneMaterial *material, QWidget *paren
     : QDialog(parent), material(material)
 {
     setWindowIcon(icon("scene-labelmarker"));
-    setWindowTitle(tr("Material - %1").arg(material->getFieldInfo()->module()->name));
+    setWindowTitle(tr("Material - %1").arg(material->getFieldInfo()->name()));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -474,7 +474,7 @@ void SceneMaterialDialog::createDialog()
 
 void SceneMaterialDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetMaterial(&material->getFieldInfo()->module()->material_ui, material, this);
+    fieldWidget = new SceneFieldWidgetMaterial(material->getFieldInfo()->module()->materialUI(), material, this);
     fieldWidget->createContent();
     fieldWidget->setMinimumSize(sizeHint());
 

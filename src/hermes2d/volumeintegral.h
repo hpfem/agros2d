@@ -27,12 +27,9 @@ class SceneMaterial;
 class Parser;
 class FieldInfo;
 
-namespace Hermes
+namespace Module
 {
-    namespace Module
-    {
-        struct Integral;
-    }
+    struct Integral;
 }
 
 class VolumeIntegralValue
@@ -48,7 +45,7 @@ protected:
 
 public:
     // variables
-    std::map<Hermes::Module::Integral *, double> values;
+    std::map<Module::Integral *, double> values;
 
     VolumeIntegralValue(FieldInfo *m_fieldInfo);
     ~VolumeIntegralValue();

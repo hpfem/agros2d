@@ -221,7 +221,7 @@ QLayout* SceneEdgeDialog::createContent()
         layoutBoundary->addWidget(cmbBoundary);
         layoutBoundary->addWidget(btnBoundary);
 
-        layoutBoundaries->addRow(fieldInfo->module()->name,
+        layoutBoundaries->addRow(fieldInfo->name(),
                                  layoutBoundary);
     }
 
