@@ -325,7 +325,7 @@ struct PyViewPost2D
     // scalar view
     void setScalarViewShow(int show);
     inline int getScalarViewShow() const { return Util::config()->showScalarView; }
-    void setScalarViewVariable(char* variable);
+    void setScalarViewVariable(char* var);
     inline char* getScalarViewVariable() const { return const_cast<char*>(Util::config()->scalarVariable.toStdString().c_str()); }
     void setScalarViewVariableComp(char* component);
     inline char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Util::config()->scalarVariableComp).toStdString().c_str()); }
@@ -361,7 +361,7 @@ struct PyViewPost2D
     inline int getContourShow() const { return Util::config()->showContourView; }
     void setContourCount(int count);
     inline int getContourCount() const { return Util::config()->contoursCount; }
-    void setContourVariable(char* variable);
+    void setContourVariable(char* var);
     inline char* getContourVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
 
     // vector
@@ -371,7 +371,7 @@ struct PyViewPost2D
     inline int getVectorCount() const { return Util::config()->vectorCount; }
     void setVectorScale(double scale);
     inline int getVectorScale() const { return Util::config()->vectorScale; }
-    void setVectorVariable(char* variable);
+    void setVectorVariable(char* var);
     inline char* getVectorVariable() const { return const_cast<char*>(Util::config()->vectorVariable.toStdString().c_str()); }
     void setVectorProportional(int show);
     inline int getVectorProportional() const { return Util::config()->vectorProportional; }

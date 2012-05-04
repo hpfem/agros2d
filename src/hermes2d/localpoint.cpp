@@ -158,32 +158,29 @@ void LocalPointValue::calculate()
             parser->setParserVariables(tmpMaterial, NULL, pvalue[0], pdx[0], pdy[0]);
 
             // parse expression
-            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = m_fieldInfo->module()->local_point.begin();
-                 it < m_fieldInfo->module()->local_point.end(); ++it )
+            foreach (Hermes::Module::LocalVariable *variable, m_fieldInfo->module()->local_point)
             {
                 try
                 {
                     PointValue pointValue;
-                    if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
+                    if (variable->is_scalar)
                     {
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.scalar.toStdString());
+                        parser->parser[0]->SetExpr(variable->expr.scalar.toStdString());
                         pointValue.scalar = parser->parser[0]->Eval();
                     }
                     else
                     {
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.comp_x.toStdString());
+                        parser->parser[0]->SetExpr(variable->expr.comp_x.toStdString());
                         pointValue.vector.x = parser->parser[0]->Eval();
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.comp_y.toStdString());
+                        parser->parser[0]->SetExpr(variable->expr.comp_y.toStdString());
                         pointValue.vector.y = parser->parser[0]->Eval();
                     }
-                    values[*it] = pointValue;
+                    values[variable] = pointValue;
 
                 }
                 catch (mu::Parser::exception_type &e)
                 {
-                    qDebug() << "Local value: " << ((Hermes::Module::LocalVariable *) *it)->name <<
-                                " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
-                                ((Hermes::Module::LocalVariable *) *it)->name << " - " <<
+                    qDebug() << "Local value: " << variable->name << " (" << variable->id << ") " << variable->name << " - " <<
                                 QString::fromStdString(parser->parser[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                 }
             }

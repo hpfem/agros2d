@@ -216,7 +216,7 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, QString area
     FieldSolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
     
     // weak coupling, push solutions
-    if(marker_second && couplingInfo->isWeak())
+    if (marker_second && couplingInfo->isWeak())
     {
         // TODO at the present moment, it is impossible to have more sources !
         assert(field->m_couplingSources.size() <= 1);
@@ -224,16 +224,17 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, QString area
         solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionType_Finer);
         assert(solutionID.group->module()->number_of_solution() <= maxSourceFieldComponents);
     }
-    else{
+    else
+    {
         if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
         {
             solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Finer);
         }
     }
     
-    if(solutionID.solutionType != SolutionType_NonExisting)
+    if (solutionID.solutionType != SolutionType_NonExisting)
     {
-        for(int comp = 0; comp < solutionID.group->module()->number_of_solution(); comp++)
+        for (int comp = 0; comp < solutionID.group->module()->number_of_solution(); comp++)
         {
             custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.get());
         }
@@ -266,19 +267,13 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
                 
-                for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_matrix_surface.begin();
-                     it < boundary_type->weakform_matrix_surface.end(); ++it)
-                {
-                    registerForm(WFType_MatSurf, field, QString::number(edgeNum), (ParserFormExpression *) *it,
+                foreach (ParserFormExpression *expression, boundary_type->weakform_matrix_surface)
+                    registerForm(WFType_MatSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
-                }
                 
-                for (Hermes::vector<ParserFormExpression *>::iterator it = boundary_type->weakform_vector_surface.begin();
-                     it < boundary_type->weakform_vector_surface.end(); ++it)
-                {
-                    registerForm(WFType_VecSurf, field, QString::number(edgeNum), (ParserFormExpression *) *it,
+                foreach (ParserFormExpression *expression, boundary_type->weakform_vector_surface)
+                    registerForm(WFType_VecSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
-                }
             }
         }
         
@@ -291,32 +286,25 @@ void WeakFormAgros<Scalar>::registerForms()
             assert(material);
             if (material != Util::scene()->materials->getNone(fieldInfo))
             {
-                for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_matrix_volume.begin();
-                     it < fieldInfo->module()->weakform_matrix_volume.end(); ++it)
-                {
-                    registerForm(WFType_MatVol, field, QString::number(labelNum), (ParserFormExpression *) *it,
+                foreach (ParserFormExpression *expression, fieldInfo->module()->weakform_matrix_volume)
+                    registerForm(WFType_MatVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
-                    
-                }
-                
-                for (Hermes::vector<ParserFormExpression *>::iterator it = fieldInfo->module()->weakform_vector_volume.begin();
-                     it < fieldInfo->module()->weakform_vector_volume.end(); ++it)
-                {
-                    registerForm(WFType_VecVol, field, QString::number(labelNum), (ParserFormExpression *) *it,
+
+                foreach (ParserFormExpression *expression, fieldInfo->module()->weakform_vector_volume)
+                    registerForm(WFType_VecVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
-                }
-                
+
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
-                    for (Hermes::vector<ParserFormExpression *>::iterator it = couplingInfo->coupling()->weakform_vector_volume.begin();
-                         it < couplingInfo->coupling()->weakform_vector_volume.end(); ++it)
+                    foreach (ParserFormExpression *expression, couplingInfo->coupling()->weakform_vector_volume)
                     {
                         SceneMaterial* material2 = Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField());
                         assert(material2);
-                        if(material2 != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+
+                        if (material2 != Util::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
-                            registerForm(WFType_VecVol, field, QString::number(labelNum), (ParserFormExpression *) *it,
+                            registerForm(WFType_VecVol, field, QString::number(labelNum), expression,
                                          m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
                         }
                     }
@@ -344,22 +332,17 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 
                 cout << "hard coupling form on marker " << labelNum << endl;
-                for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_matrix_volume.begin();
-                     it < coupling->weakform_matrix_volume.end(); ++it)
-                {
-                    registerForm(WFType_MatVol, sourceField, QString::number(labelNum), (ParserFormExpression *) *it,
+
+                foreach (ParserFormExpression *pars, coupling->weakform_matrix_volume)
+                    registerForm(WFType_MatVol, sourceField, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
-                }
                 
-                for (Hermes::vector<ParserFormExpression *>::iterator it = coupling->weakform_vector_volume.begin();
-                     it < coupling->weakform_vector_volume.end(); ++it)
-                {
-                    registerForm(WFType_VecVol, sourceField, QString::number(labelNum), (ParserFormExpression *) *it,
+                foreach (ParserFormExpression *pars, coupling->weakform_vector_volume)
+                    registerForm(WFType_VecVol, sourceField, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->number_of_solution(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
                     
-                }
             }
         }
     }
@@ -419,7 +402,7 @@ Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(const QString &id, QS
 
 // ***********************************************************************************************
 
-Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
+Hermes::Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_variables,
                                            XMLModule::boundary bdy,
                                            CoordinateType problem_type)
 {
@@ -431,17 +414,14 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     {
         XMLModule::quantity qty = bdy.quantity().at(i);
         
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable>::iterator it = boundary_type_variables.begin();
-             it < boundary_type_variables.end(); ++it )
+        foreach (Hermes::Module::BoundaryTypeVariable old, boundary_type_variables)
         {
-            Hermes::Module::BoundaryTypeVariable old = (Hermes::Module::BoundaryTypeVariable) *it;
-            
             if (old.id.toStdString() == qty.id())
             {
                 Hermes::Module::BoundaryTypeVariable *var = new Hermes::Module::BoundaryTypeVariable(
                             old.id, old.shortname, old.default_value);
                 
-                variables.push_back(var);
+                variables.append(var);
             }
         }
     }
@@ -450,7 +430,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     for (int i = 0; i < bdy.matrix_form().size(); i++)
     {
         XMLModule::matrix_form form = bdy.matrix_form().at(i);
-        weakform_matrix_surface.push_back(new ParserFormExpression(form.i(), form.j(),
+        weakform_matrix_surface.append(new ParserFormExpression(form.i(), form.j(),
                                                                    form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
                                                                    (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
     }
@@ -458,7 +438,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     for (int i = 0; i < bdy.vector_form().size(); i++)
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
-        weakform_vector_surface.push_back(new ParserFormExpression(form.i(), form.j(),
+        weakform_vector_surface.append(new ParserFormExpression(form.i(), form.j(),
                                                                    Hermes::Hermes2D::HERMES_NONSYM,
                                                                    (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
     }
@@ -467,7 +447,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     for (int i = 0; i < bdy.essential_form().size(); i++)
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
-        essential.push_back(new ParserFormEssential(form.i(),
+        essential.append(new ParserFormEssential(form.i(),
                                                     (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
     }
 }
@@ -497,21 +477,21 @@ Hermes::Module::BoundaryType::~BoundaryType()
     essential.clear();
     
     // variables
-    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
-        delete *it;
+    foreach (Hermes::Module::BoundaryTypeVariable *variable, variables)
+        delete variable;
     variables.clear();
     
     // volume weak form
-    for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_matrix_surface.begin(); it < weakform_matrix_surface.end(); ++it)
-        delete *it;
+    foreach (ParserFormExpression *expression, weakform_matrix_surface)
+        delete expression;
     weakform_matrix_surface.clear();
     
-    for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_surface.begin(); it < weakform_vector_surface.end(); ++it)
-        delete *it;
+    foreach (ParserFormExpression *expression, weakform_vector_surface)
+        delete expression;
     weakform_vector_surface.clear();
     
-    for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_surface.begin(); it < weakform_vector_surface.end(); ++it)
-        delete *it;
+    foreach (ParserFormExpression *expression, weakform_vector_surface)
+        delete expression;
     weakform_vector_surface.clear();
 }
 
@@ -547,12 +527,13 @@ Hermes::Module::DialogUI::DialogUI(XMLModule::gui ui)
         // group name
         QString name = (grp.name().present()) ? QString::fromStdString(grp.name().get()) : "";
         
-        Hermes::vector<DialogUI::Row> materials;
+        QList<DialogUI::Row> materials;
         for (int i = 0; i < grp.quantity().size(); i++)
         {
             XMLModule::quantity quant = grp.quantity().at(i);
+
             // append material
-            materials.push_back(DialogUI::Row(quant));
+            materials.append(DialogUI::Row(quant));
         }
         
         groups[name] = materials;
@@ -637,11 +618,11 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
         */
         
         // surface weakforms
-        Hermes::vector<Hermes::Module::BoundaryTypeVariable> boundary_type_variables_tmp;
+        QList<Hermes::Module::BoundaryTypeVariable> boundary_type_variables_tmp;
         for (int i = 0; i < mod->surface().quantity().size(); i++)
         {
             XMLModule::quantity quant = mod->surface().quantity().at(i);
-            boundary_type_variables_tmp.push_back(Hermes::Module::BoundaryTypeVariable(quant));
+            boundary_type_variables_tmp.append(Hermes::Module::BoundaryTypeVariable(quant));
         }
         
         for (int i = 0; i < mod->surface().weakforms_surface().weakform_surface().size(); i++)
@@ -652,7 +633,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                 for (int i = 0; i < wf.boundary().size(); i++)
                 {
                     XMLModule::boundary bdy = wf.boundary().at(i);
-                    boundary_types.push_back(new Hermes::Module::BoundaryType(boundary_type_variables_tmp, bdy, m_coordinateType));
+                    boundary_types.append(new Hermes::Module::BoundaryType(boundary_type_variables_tmp, bdy, m_coordinateType));
                 }
             
             // default
@@ -661,11 +642,11 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
         boundary_type_variables_tmp.clear();
         
         // volumetric weakforms
-        Hermes::vector<Hermes::Module::MaterialTypeVariable> material_type_variables_tmp;
+        QList<Hermes::Module::MaterialTypeVariable> material_type_variables_tmp;
         for (int i = 0; i < mod->volume().quantity().size(); i++)
         {
             XMLModule::quantity quant = mod->volume().quantity().at(i);
-            material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quant));
+            material_type_variables_tmp.append(Hermes::Module::MaterialTypeVariable(quant));
         }
 
         for (int i = 0; i < mod->volume().weakforms_volume().weakform_volume().size(); i++)
@@ -678,7 +659,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                 {
                     XMLModule::quantity qty = wf.quantity().at(i);
 
-                    for (Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
+                    for (QList<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
                          it < material_type_variables_tmp.end(); ++it )
                     {
                         Hermes::Module::MaterialTypeVariable old = (Hermes::Module::MaterialTypeVariable) *it;
@@ -686,7 +667,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                         {
                             Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
                                         old.id, old.shortname, old.default_value);
-                            material_type_variables.push_back(var);
+                            material_type_variables.append(var);
                         }
                     }
                 }
@@ -696,7 +677,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                 for (int i = 0; i < wf.matrix_form().size(); i++)
                 {
                     XMLModule::matrix_form form = wf.matrix_form().at(i);
-                    weakform_matrix_volume.push_back(new ParserFormExpression(form.i(), form.j(),
+                    weakform_matrix_volume.append(new ParserFormExpression(form.i(), form.j(),
                                                                               form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
                                                                               (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
                 }
@@ -704,7 +685,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                 for (int i = 0; i < wf.vector_form().size(); i++)
                 {
                     XMLModule::vector_form form = wf.vector_form().at(i);
-                    weakform_vector_volume.push_back(new ParserFormExpression(form.i(), form.j(),
+                    weakform_vector_volume.append(new ParserFormExpression(form.i(), form.j(),
                                                                               Hermes::Hermes2D::HERMES_NONSYM,
                                                                               (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
                 }
@@ -725,15 +706,15 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                     Hermes::Module::LocalVariable *var = new Hermes::Module::LocalVariable(lv,
                                                                                            m_coordinateType,
                                                                                            m_analysisType);
-                    variables.push_back(var);
+                    variables.append(var);
 
                     // HACK - local point
-                    local_point.push_back(var);
+                    local_point.append(var);
                     // HACK - scalar view
-                    view_scalar_variables.push_back(var);
+                    view_scalar_variables.append(var);
                     // HACK - vector view
                     if (!var->is_scalar)
-                        view_vector_variables.push_back(var);
+                        view_vector_variables.append(var);
                 }
             }
         }
@@ -742,7 +723,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
         //TODO
         //Hermes::Module::LocalVariable *customLocalVariable = new Hermes::Module::LocalVariable("custom", "Custom", "custom", "-");
         //customLocalVariable->expression.scalar = "value1";
-        //view_scalar_variables.push_back(customLocalVariable);
+        //view_scalar_variables.append(customLocalVariable);
 
         // scalar variables default
         for (int i = 0; i < mod->postprocessor().view().scalar_view().default_().size(); i++)
@@ -786,7 +767,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                 }
             }
 
-            volume_integral.push_back(volint);
+            volume_integral.append(volint);
         }
 
         // surface integral
@@ -815,7 +796,7 @@ void Hermes::Module::ModuleDeprecated::read(const QString &filename)
                 }
             }
 
-            surface_integral.push_back(volint);
+            surface_integral.append(volint);
         }
 
         // preprocessor
@@ -850,18 +831,18 @@ void Hermes::Module::ModuleDeprecated::clear()
     macros.clear();
 
     // boundary types
-    for (Hermes::vector<BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it)
+    for (QList<BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it)
         delete *it;
     boundary_types.clear();
 
     // material types
-    for (Hermes::vector<MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it)
+    for (QList<MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it)
         delete *it;
     material_type_variables.clear();
 
     // variables
-    for (Hermes::vector<LocalVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
-        delete *it;
+    foreach (Hermes::Module::LocalVariable *variable, variables)
+        delete variable;
     variables.clear();
 
     // scalar and vector variables
@@ -881,11 +862,11 @@ void Hermes::Module::ModuleDeprecated::clear()
     volume_integral.clear();
 
     // volume weak form
-    for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_matrix_volume.begin(); it < weakform_matrix_volume.end(); ++it)
+    for (QList<ParserFormExpression *>::iterator it = weakform_matrix_volume.begin(); it < weakform_matrix_volume.end(); ++it)
         delete *it;
     weakform_matrix_volume.clear();
 
-    for (Hermes::vector<ParserFormExpression *>::iterator it = weakform_vector_volume.begin(); it < weakform_vector_volume.end(); ++it)
+    for (QList<ParserFormExpression *>::iterator it = weakform_vector_volume.begin(); it < weakform_vector_volume.end(); ++it)
         delete *it;
     weakform_vector_volume.clear();
 
@@ -895,17 +876,16 @@ void Hermes::Module::ModuleDeprecated::clear()
 
 Hermes::Module::LocalVariable *Hermes::Module::ModuleDeprecated::get_variable(const QString &id)
 {
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
-    {
-        if (((Hermes::Module::LocalVariable *) *it)->id == id)
-            return *it;
-    }
+    foreach (Hermes::Module::LocalVariable *variable, variables)
+        if (variable->id == id)
+            return variable;
+
     return NULL;
 }
 
 Hermes::Module::BoundaryType *Hermes::Module::ModuleDeprecated::get_boundary_type(const QString &id)
 {
-    for(Hermes::vector<Hermes::Module::BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it )
+    for(QList<Hermes::Module::BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it )
     {
         if (((Hermes::Module::BoundaryType *) *it)->id == id)
             return *it;
@@ -915,7 +895,7 @@ Hermes::Module::BoundaryType *Hermes::Module::ModuleDeprecated::get_boundary_typ
 
 Hermes::Module::BoundaryTypeVariable *Hermes::Module::ModuleDeprecated::get_boundary_type_variable(const QString &id)
 {
-    for(Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type_variables.begin(); it < boundary_type_variables.end(); ++it )
+    for(QList<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type_variables.begin(); it < boundary_type_variables.end(); ++it )
     {
         if (((Hermes::Module::BoundaryTypeVariable *) *it)->id == id)
             return *it;
@@ -925,7 +905,7 @@ Hermes::Module::BoundaryTypeVariable *Hermes::Module::ModuleDeprecated::get_boun
 
 Hermes::Module::MaterialTypeVariable *Hermes::Module::ModuleDeprecated::get_material_type_variable(const QString &id)
 {
-    for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it )
+    for(QList<Hermes::Module::MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it )
     {
         if (((Hermes::Module::MaterialTypeVariable *) *it)->id == id)
             return *it;
@@ -1042,43 +1022,43 @@ bool Hermes::Module::ModuleDeprecated::solve_init_variables()
     //    return true;
 }
 
-Hermes::vector<SolutionArray<double> *> Hermes::Module::ModuleDeprecated::solve(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
+QList<SolutionArray<double> *> Hermes::Module::ModuleDeprecated::solve(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
 {
     assert(0);
     //    if (!solve_init_variables())
-    //        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
+    //        return QList<SolutionArray<double> *>(); //TODO PK <double>
 
     //    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
     //    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
 
-    //    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(); //TODO PK <double>
+    //    QList<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(); //TODO PK <double>
     //    return solutionArrayList;
 }
 
-Hermes::vector<SolutionArray<double> *> Hermes::Module::ModuleDeprecated::solveAdaptiveStep(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
+QList<SolutionArray<double> *> Hermes::Module::ModuleDeprecated::solveAdaptiveStep(ProgressItemSolve *progressItemSolve)  //TODO PK <double>
 {
     assert(0); //TODO
     //    if (!solve_init_variables())
-    //        return Hermes::vector<SolutionArray<double> *>(); //TODO PK <double>
+    //        return QList<SolutionArray<double> *>(); //TODO PK <double>
 
     //    WeakFormAgros<double> wf(number_of_solution()); //TODO PK <double>
 
     //    SolverAgros<double> solutionAgros(progressItemSolve, &wf);
 
-    //    Hermes::vector<const Hermes::Hermes2D::Space<double> *> space;
-    //    Hermes::vector<Hermes::Hermes2D::Solution<double> *> solution;
+    //    QList<const Hermes::Hermes2D::Space<double> *> space;
+    //    QList<Hermes::Hermes2D::Solution<double> *> solution;
 
     //    for (int i = 0; i < Util::scene()->fiedInfo(id)->module()->number_of_solution(); i++)
     //    {
     //        int n = i + (Util::scene()->sceneSolution()->timeStepCount() - 1) * m_fieldInfo->module()->number_of_solution();
     //        // space
-    //        space.push_back(Util::scene()->sceneSolution()->sln(n)->get_space());
+    //        space.append(Util::scene()->sceneSolution()->sln(n)->get_space());
     //        // solution
-    //        solution.push_back(Util::scene()->sceneSolution()->sln(n));
+    //        solution.append(Util::scene()->sceneSolution()->sln(n));
     //    }
 
-    //    Hermes::vector<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(space, solution);
+    //    QList<SolutionArray<double> *> solutionArrayList = solutionAgros.solve(space, solution);
     //    return solutionArrayList;
 }
 
@@ -1202,7 +1182,7 @@ Parser::Parser(CouplingInfo *couplingInfo) : m_fieldInfo(NULL), m_couplingInfo(c
 Parser::~Parser()
 {
     // delete parser
-    for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+    for (QList<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
         delete *it;
 
     parser.clear();
@@ -1211,13 +1191,13 @@ Parser::~Parser()
 void Parser::setParserVariables(Material* material, Boundary *boundary, double value, double dx, double dy)
 {
     assert(m_couplingInfo == NULL);
-    Hermes::vector<Material *> materials;
+    QList<Material *> materials;
     if(material)
-        materials.push_back(material);
+        materials.append(material);
     setParserVariables(materials, boundary, value, dx, dy);
 }
 
-void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boundary *boundary, double value, double dx, double dy)
+void Parser::setParserVariables(QList<Material *> materialMarkers, Boundary *boundary, double value, double dx, double dy)
 {
     // todo: ??? je to zmatecne, jak je to nekdy volano s fieldInfo, nekddy couplingInfo...
     //    if(materialMarkers.size() > 1)
@@ -1226,10 +1206,10 @@ void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boun
     //TODO zkontrolovat volani value, proc u boundary neni derivace, ...
     if (materialMarkers.size())
     {
-        for(Hermes::vector<Material *>::iterator markerIter = materialMarkers.begin(); markerIter != materialMarkers.end(); ++markerIter)
+        for(QList<Material *>::iterator markerIter = materialMarkers.begin(); markerIter != materialMarkers.end(); ++markerIter)
         {
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = (*markerIter)->getFieldInfo()->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+            QList<Hermes::Module::MaterialTypeVariable *> materials = (*markerIter)->getFieldInfo()->module()->material_type_variables;
+            for (QList<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
             {
                 Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
                 parser_variables[variable->shortname] = (*markerIter)->getValue(variable->id).value(value);
@@ -1241,7 +1221,7 @@ void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boun
     if (boundary)
     {
         Hermes::Module::BoundaryType *boundary_type = m_fieldInfo->module()->get_boundary_type(boundary->getType());
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+        for (QList<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
         {
             Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
             parser_variables[variable->shortname] = boundary->getValue(variable->id).value(0.0);
@@ -1253,8 +1233,8 @@ void Parser::setParserVariables(Hermes::vector<Material *> materialMarkers, Boun
 
 void Parser::initParserMaterialVariables()
 {
-    Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
-    for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+    QList<Hermes::Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->material_type_variables;
+    for (QList<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
     {
         Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
         parser_variables[variable->shortname] = 0.0;
@@ -1262,14 +1242,14 @@ void Parser::initParserMaterialVariables()
 
     // set material variables
     for (std::map<QString, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
-        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+        for (QList<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
             ((mu::Parser *) *it)->DefineVar(itv->first.toStdString(), &itv->second);
 }
 
 //void Parser::initParserBoundaryVariables(Boundary *boundary)
 //{
 //    Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
-//    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+//    for (QList<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
 //    {
 //        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
 //        parser_variables[variable->shortname] = 0.0;
@@ -1277,7 +1257,7 @@ void Parser::initParserMaterialVariables()
 
 //    // set material variables
 //    for (std::map<QString, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
-//        for (Hermes::vector<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
+//        for (QList<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
 //            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
 //}
 
@@ -1330,7 +1310,7 @@ void ViewScalarFilter<Scalar>::initParser(const QString &expression)
         pars->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
     }
 
-    parser->parser.push_back(pars);
+    parser->parser.append(pars);
 }
 
 template <typename Scalar>

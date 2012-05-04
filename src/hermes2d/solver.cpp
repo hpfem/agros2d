@@ -118,15 +118,10 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 
             if (boundary && (!boundary->isNone()))
             {
-                //printf(" ---- chci typ %s\n", boundary->getType().data());
                 Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
 
-                //cout << " ---- bdr type " << boundary_type->id.data() << ", " << boundary_type->name.data() << endl;
-                for (Hermes::vector<ParserFormEssential *>::iterator it = boundary_type->essential.begin();
-                     it < boundary_type->essential.end(); ++it)
+                foreach (ParserFormEssential *form, boundary_type->essential)
                 {
-                    ParserFormEssential *form = ((ParserFormEssential *) *it);
-
                     EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
                     // compiled form

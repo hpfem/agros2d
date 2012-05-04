@@ -59,10 +59,8 @@ void Post2DHermes::processRangeContour()
     if (Util::problem()->isSolved() && Util::config()->showContourView)
     {
         bool contains = false;
-        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
-            it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+        foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
         {
-            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
             if (variable->id == Util::config()->contourVariable)
             {
                 contains = true;
@@ -112,10 +110,8 @@ void Post2DHermes::processRangeScalar()
     if (Util::problem()->isSolved() && Util::config()->showScalarView)
     {
         bool contains = false;
-        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
-            it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+        foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
         {
-            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
             if (variable->id == Util::config()->scalarVariable)
             {
                 contains = true;
@@ -163,10 +159,8 @@ void Post2DHermes::processRangeVector()
     if (Util::problem()->isSolved() && Util::config()->showVectorView)
     {
         bool contains = false;
-        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
-            it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+        foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_vector_variables)
         {
-            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
             if (variable->id == Util::config()->vectorVariable)
             {
                 contains = true;

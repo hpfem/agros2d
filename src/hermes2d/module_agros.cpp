@@ -34,13 +34,9 @@ void Hermes::Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbField
 
 void Hermes::Module::ModuleAgros::fillComboBoxContourVariable(QComboBox *cmbFieldVariable)
 {
-    for(Hermes::vector<LocalVariable *>::iterator it = view_scalar_variables.begin(); it < view_scalar_variables.end(); ++it )
-    {
-        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-        if (variable->is_scalar)
-            cmbFieldVariable->addItem(variable->name,
-                                      variable->id);
-    }
+    foreach (Hermes::Module::LocalVariable *variable, view_scalar_variables)
+        cmbFieldVariable->addItem(variable->name,
+                                  variable->id);
 }
 
 void Hermes::Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
@@ -48,36 +44,25 @@ void Hermes::Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbField
     fillComboBox(cmbFieldVariable, view_vector_variables);
 }
 
-void Hermes::Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list)
+void Hermes::Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, QList<Hermes::Module::LocalVariable *> list)
 {
-    for(Hermes::vector<LocalVariable *>::iterator it = list.begin(); it < list.end(); ++it )
-    {
-        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
+    foreach (Hermes::Module::LocalVariable *variable, list)
         cmbFieldVariable->addItem(variable->name,
                                   variable->id);
-    }
 }
 
 void Hermes::Module::ModuleAgros::fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable)
 {
-    for(Hermes::vector<Hermes::Module::BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it )
-    {
-        Hermes::Module::BoundaryType *boundary = ((Hermes::Module::BoundaryType *) *it);
+    foreach (Hermes::Module::BoundaryType *boundary, boundary_types)
         cmbFieldVariable->addItem(boundary->name,
-                                  boundary->id);
-    }
+                                  boundary->id);    
 }
 
 void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable)
 {
-    for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it )
-    {
-        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
-        //        cmbFieldVariable->addItem(QString::fromStdString(material->name),
-        //                                  QString::fromStdString(material->id));
+    foreach (Hermes::Module::MaterialTypeVariable *material, material_type_variables)
         cmbFieldVariable->addItem(material->id,
                                   material->id);
-    }
 }
 
 SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()

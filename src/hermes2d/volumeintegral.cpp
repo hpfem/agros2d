@@ -59,16 +59,14 @@ VolumeIntegralValue::~VolumeIntegralValue()
 
 void VolumeIntegralValue::initParser()
 {
-    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = m_fieldInfo->module()->volume_integral.begin();
-         it < m_fieldInfo->module()->volume_integral.end(); ++it )
+    mu::Parser *pars = m_fieldInfo->module()->get_parser();
+
+    foreach (Hermes::Module::Integral *integral, m_fieldInfo->module()->volume_integral)
     {
-        mu::Parser *pars = m_fieldInfo->module()->get_parser();
-
-        pars->SetExpr(((Hermes::Module::Integral *) *it)->expr.scalar.toStdString());
-
+        pars->SetExpr(integral->expr.scalar.toStdString());
         parser->parser.push_back(pars);
 
-        values[*it] = 0.0;
+        values[integral] = 0.0;
     }
 }
 
@@ -86,19 +84,19 @@ void VolumeIntegralValue::calculate()
         double **dudx = new double*[m_fieldInfo->module()->number_of_solution()];
         double **dudy = new double*[m_fieldInfo->module()->number_of_solution()];
 
-        for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
+        foreach (mu::Parser *pars, parser->parser)
         {
-            ((mu::Parser *) *it)->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-            ((mu::Parser *) *it)->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+            pars->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+            pars->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
             for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
             {
                 std::stringstream number;
                 number << (k+1);
 
-                ((mu::Parser *) *it)->DefineVar("value" + number.str(), &pvalue[k]);
-                ((mu::Parser *) *it)->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-                ((mu::Parser *) *it)->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+                pars->DefineVar("value" + number.str(), &pvalue[k]);
+                pars->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+                pars->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
 
             }
 
@@ -162,8 +160,7 @@ void VolumeIntegralValue::calculate()
 
                         // parse expression
                         int n = 0;
-                        for (Hermes::vector<Hermes::Module::Integral *>::iterator it = m_fieldInfo->module()->volume_integral.begin();
-                             it < m_fieldInfo->module()->volume_integral.end(); ++it )
+                        foreach (Hermes::Module::Integral *integral, m_fieldInfo->module()->volume_integral)
                         {
                             double result = 0.0;
 
@@ -197,13 +194,11 @@ void VolumeIntegralValue::calculate()
                                     }
                                 }
 
-                                values[*it] += result;
+                                values[integral] += result;
                             }
                             catch (mu::Parser::exception_type &e)
                             {
-                                qDebug() << "Volume integral: " << ((Hermes::Module::LocalVariable *) *it)->name <<
-                                             " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
-                                             ((Hermes::Module::LocalVariable *) *it)->name << " - '" <<
+                                qDebug() << "Volume integral: " << integral->name << " (" << integral->id << ") " << integral->name << " - '" <<
                                              QString::fromStdString(parser->parser[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
                             }
 

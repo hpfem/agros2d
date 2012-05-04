@@ -115,7 +115,7 @@ public:
     void registerForms();
 
 //    // previous solution
-//    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
+//    QList<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
     //marker_second has to be specified for coupling forms. couplingInfo only for weak couplings
@@ -214,7 +214,7 @@ struct BoundaryTypeVariable
 struct BoundaryType
 {
     BoundaryType() : id(""), name("") {}
-    BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
+    BoundaryType(QList<BoundaryTypeVariable> boundary_type_variables,
                  XMLModule::boundary bdy,
                  CoordinateType problem_type);
     ~BoundaryType();
@@ -225,14 +225,14 @@ struct BoundaryType
     QString name;
 
     // variables
-    Hermes::vector<BoundaryTypeVariable *> variables;
+    QList<BoundaryTypeVariable *> variables;
 
     // weakform
-    Hermes::vector<ParserFormExpression *> weakform_matrix_surface;
-    Hermes::vector<ParserFormExpression *> weakform_vector_surface;
+    QList<ParserFormExpression *> weakform_matrix_surface;
+    QList<ParserFormExpression *> weakform_vector_surface;
 
     // essential
-    Hermes::vector<ParserFormEssential *> essential;
+    QList<ParserFormEssential *> essential;
 };
 
 // surface and volume integral value
@@ -296,7 +296,7 @@ struct DialogUI
         QString condition;
     };
 
-    std::map<QString, Hermes::vector<Row> > groups;
+    QMap<QString, QList<Row> > groups;
 
     void clear();
 };
@@ -326,26 +326,26 @@ struct ModuleDeprecated
     std::map<QString, QString> macros;
 
     // material type
-    Hermes::vector<MaterialTypeVariable *> material_type_variables;
+    QList<MaterialTypeVariable *> material_type_variables;
 
     // boundary conditions
-    Hermes::vector<BoundaryTypeVariable *> boundary_type_variables;
-    Hermes::vector<BoundaryType *> boundary_types;
+    QList<BoundaryTypeVariable *> boundary_type_variables;
+    QList<BoundaryType *> boundary_types;
 
     // default boundary condition
     BoundaryType *boundary_type_default;
 
     // weak forms
-    Hermes::vector<ParserFormExpression *> weakform_matrix_volume;
-    Hermes::vector<ParserFormExpression *> weakform_vector_volume;
+    QList<ParserFormExpression *> weakform_matrix_volume;
+    QList<ParserFormExpression *> weakform_vector_volume;
 
     // all physical variables
-    Hermes::vector<LocalVariable *> variables;
+    QList<LocalVariable *> variables;
 
     // view
     // scalar and vector variables
-    Hermes::vector<LocalVariable *> view_scalar_variables;
-    Hermes::vector<LocalVariable *> view_vector_variables;
+    QList<LocalVariable *> view_scalar_variables;
+    QList<LocalVariable *> view_vector_variables;
 
     // default variables
     LocalVariable *view_default_scalar_variable;
@@ -359,13 +359,13 @@ struct ModuleDeprecated
     LocalVariable *view_default_vector_variable;
 
     // local point variables
-    Hermes::vector<LocalVariable *> local_point;
+    QList<LocalVariable *> local_point;
 
     // surface integrals
-    Hermes::vector<Integral *> surface_integral;
+    QList<Integral *> surface_integral;
 
     // volume integrals
-    Hermes::vector<Integral *> volume_integral;
+    QList<Integral *> volume_integral;
 
     // material and boundary UI
     DialogUI material_ui;
@@ -397,8 +397,8 @@ struct ModuleDeprecated
 
     int number_of_solution() const;
 
-    Hermes::vector<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);
-    Hermes::vector<SolutionArray<double> *> solveAdaptiveStep(ProgressItemSolve *progressItemSolve);
+    QList<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);
+    QList<SolutionArray<double> *> solveAdaptiveStep(ProgressItemSolve *progressItemSolve);
     bool solve_init_variables();
 
     inline virtual void update_time_functions(double time) {}
@@ -432,7 +432,7 @@ class Parser
 {
 public:
     // parser
-    Hermes::vector<mu::Parser *> parser;
+    QList<mu::Parser *> parser;
     std::map<QString, double> parser_variables;
 
     Parser(FieldInfo *fieldInfo);
@@ -448,7 +448,7 @@ public:
 
     // can be called with more materials - coupling - does not use m_fieldInfo, takes fieldInfo from materials
     //TODO bad
-    void setParserVariables(Hermes::vector<Material *> materials, Boundary *boundary,
+    void setParserVariables(QList<Material *> materials, Boundary *boundary,
                             double value = 0.0, double dx = 0.0, double dy = 0.0);
 
     void setParserVariables(Material* materials, Boundary *boundary,

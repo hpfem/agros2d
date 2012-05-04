@@ -83,11 +83,8 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
         if (this->values.size() == 0)
         {
             Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(type);
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-            {
-                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+            foreach (Hermes::Module::BoundaryTypeVariable *variable, boundary_type->variables)
                 this->values[variable->id] = Value(QString::number(variable->default_value));
-            }
         }
     }
 }
@@ -105,12 +102,8 @@ Material::Material(FieldInfo *fieldInfo, QString name,
     {
         if (this->values.size() == 0)
         {
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = fieldInfo->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            foreach (Hermes::Module::MaterialTypeVariable *variable, fieldInfo->module()->material_type_variables)
                 this->values[variable->id] = Value(QString::number(variable->default_value));
-            }
         }
     }
 }

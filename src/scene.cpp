@@ -1331,11 +1331,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                         type);
 
             Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type);
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
-                 it < boundary_type->variables.end(); ++it)
-            {
-                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
 
+            foreach (Hermes::Module::BoundaryTypeVariable *variable, boundary_type->variables)
+            {
                 qDebug() << "setting variable " << variable->id << " to " << element.toElement().attribute(variable->id, "0");
                 boundary->setValue(variable->id,
                                    Value(element.toElement().attribute(variable->id, "0")));
@@ -1372,11 +1370,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             // read marker
             SceneMaterial *material = new SceneMaterial(field,
                                                         name);
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = field->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
 
+            foreach (Hermes::Module::MaterialTypeVariable *variable, field->module()->material_type_variables)
+            {
                 material->setValue(variable->id,
                                    Value(element.toElement().attribute(variable->id,
                                                                        QString::number(variable->default_value))));

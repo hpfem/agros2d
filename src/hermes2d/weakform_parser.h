@@ -100,7 +100,7 @@ public:
     void initParserForm(CouplingInfo *couplingInfo);
     ~ParserForm();
 
-    void initParser(Hermes::vector<Material *> materials, Boundary *boundary);
+    void initParser(QList<Material *> materials, Boundary *boundary);
 
 protected:
     FieldInfo *m_fieldInfo;

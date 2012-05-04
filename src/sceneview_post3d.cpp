@@ -95,10 +95,8 @@ void Post3DHermes::processRangeScalar()
     if (Util::problem()->isSolved() && Util::config()->showScalarView)
     {
         bool contains = false;
-        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
-            it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+        foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
         {
-            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
             if (variable->id == Util::config()->scalarVariable)
             {
                 contains = true;

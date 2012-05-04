@@ -546,20 +546,19 @@ QStringList ChartDialog::headers()
 
     head << "x" << "y" << "t";
 
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = m_fieldInfo->module()->local_point.begin();
-         it < m_fieldInfo->module()->local_point.end(); ++it )
+    foreach (Hermes::Module::LocalVariable *variable, m_fieldInfo->module()->local_point)
     {
-        if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
+        if (variable->is_scalar)
         {
             // scalar variable
-            head.append(((Hermes::Module::LocalVariable *) *it)->shortname);
+            head.append(variable->shortname);
         }
         else
         {
             // vector variable
-            head.append(((Hermes::Module::LocalVariable *) *it)->shortname + Util::problem()->config()->labelX().toLower());
-            head.append(((Hermes::Module::LocalVariable *) *it)->shortname + Util::problem()->config()->labelY().toLower());
-            head.append(((Hermes::Module::LocalVariable *) *it)->shortname);
+            head.append(variable->shortname + Util::problem()->config()->labelX().toLower());
+            head.append(variable->shortname + Util::problem()->config()->labelY().toLower());
+            head.append(variable->shortname);
         }
     }
 

@@ -172,19 +172,19 @@ void SceneFieldWidget::createContent()
     // add custom widget
     addCustomWidget(layout);
 
-    for (std::map<QString, Hermes::vector<Hermes::Module::DialogUI::Row> >::iterator it = ui->groups.begin(); it != ui->groups.end(); ++it)
+    QMapIterator<QString, QList<Hermes::Module::DialogUI::Row> > i(ui->groups);
+    while (i.hasNext())
     {
+        i.next();
+
         // group layout
         QGridLayout *layoutGroup = new QGridLayout();
 
         // variables
-        Hermes::vector<Hermes::Module::DialogUI::Row> variables = it->second;
+        QList<Hermes::Module::DialogUI::Row> variables = i.value();
 
-        for (Hermes::vector<Hermes::Module::DialogUI::Row>::iterator
-             itv = variables.begin(); itv < variables.end(); ++itv)
+        foreach (Hermes::Module::DialogUI::Row material, variables)
         {
-            Hermes::Module::DialogUI::Row material = *itv;
-
             // id
             ids.append(material.id);
 
@@ -205,7 +205,7 @@ void SceneFieldWidget::createContent()
         }
 
         // widget layout
-        if (it->first == "")
+        if (i.key() == "")
         {
             QGroupBox *grpGroup = new QGroupBox(tr("Parameters"));
             grpGroup->setLayout(layoutGroup);
@@ -213,7 +213,7 @@ void SceneFieldWidget::createContent()
         }
         else
         {
-            QGroupBox *grpGroup = new QGroupBox(it->first);
+            QGroupBox *grpGroup = new QGroupBox(i.key());
             grpGroup->setLayout(layoutGroup);
             layout->addWidget(grpGroup);
         }
@@ -290,10 +290,8 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
         values.at(i)->setEnabled(false);
 
     Hermes::Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->get_boundary_type(comboBox->itemData(index).toString());
-    for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
+    foreach (Hermes::Module::BoundaryTypeVariable *variable, boundary_type->variables)
     {
-        Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-
         int i = ids.indexOf(variable->id);
 
         if (i >= 0)
@@ -462,7 +460,7 @@ void SceneMaterialDialog::createDialog()
     // name
     layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
     layout->addWidget(txtName, 0, 2);
-        
+
     // content
     createContent();
     

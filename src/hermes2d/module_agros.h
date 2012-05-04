@@ -58,7 +58,7 @@ public:
     void deform_shape(double4* linVert, int count);
 
 private:
-    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list);
+    void fillComboBox(QComboBox *cmbFieldVariable, QList<LocalVariable *> list);
 };
 
 }

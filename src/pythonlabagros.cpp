@@ -556,9 +556,8 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
-        for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundaryType->variables.begin(); it < boundaryType->variables.end(); ++it)
+        foreach (Hermes::Module::BoundaryTypeVariable *variable, boundaryType->variables)
         {
-            Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
             if (variable->id == QString((*i).first))
             {
                 assigned = true;
@@ -607,12 +606,11 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
     std::map<QString, Value> values;
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
+        QList<Hermes::Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->material_type_variables;
 
         bool assigned = false;
-        for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
+        foreach (Hermes::Module::MaterialTypeVariable *variable, materials)
         {
-            Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
             if (variable->id == QString((*i).first))
             {
                 assigned = true;
@@ -1166,34 +1164,28 @@ void PyViewPost2D::setScalarViewShow(int show)
     Util::config()->showScalarView = show;
 }
 
-void PyViewPost2D::setScalarViewVariable(char* variable)
+void PyViewPost2D::setScalarViewVariable(char* var)
 {
     QStringList list;
 
     // scalar variables
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
-         it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
     {
-        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
-
-        list.append(var->id);
-        if (var->id == QString(variable))
+        list.append(variable->id);
+        if (variable->id == QString(var))
         {
-            Util::config()->scalarVariable = QString(variable);
+            Util::config()->scalarVariable = QString(var);
             return;
         }
     }
 
     // vector variables
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
-         it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_vector_variables)
     {
-        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
-
-        list.append(var->id);
-        if (var->id == QString(variable))
+        list.append(variable->id);
+        if (variable->id == QString(var))
         {
-            Util::config()->vectorVariable = QString(variable);
+            Util::config()->vectorVariable = QString(var);
             return;
         }
     }
@@ -1283,20 +1275,18 @@ void PyViewPost2D::setContourCount(int count)
         throw invalid_argument(QObject::tr("Contour count must be in the range from 1 to 100.").toStdString());
 }
 
-void PyViewPost2D::setContourVariable(char* variable)
+void PyViewPost2D::setContourVariable(char* var)
 {
     QStringList list;
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
-         it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_scalar_variables)
     {
-        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
-        if (var->is_scalar) // todo: (Franta) why
+        if (variable->is_scalar)
         {
-            list.append(var->id);
+            list.append(variable->id);
 
-            if (var->id == QString(variable))
+            if (variable->id == QString(var))
             {
-                Util::config()->contourVariable = QString(variable);
+                Util::config()->contourVariable = QString(var);
                 return;
             }
         }
@@ -1327,18 +1317,15 @@ void PyViewPost2D::setVectorScale(double scale)
         throw invalid_argument(QObject::tr("Vector scale must be in the range from 0.0 to 20.0.").toStdString());
 }
 
-void PyViewPost2D::setVectorVariable(char* variable)
+void PyViewPost2D::setVectorVariable(char* var)
 {
     QStringList list;
-    for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_vector_variables.begin();
-         it < Util::scene()->activeViewField()->module()->view_vector_variables.end(); ++it )
+    foreach (Hermes::Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->view_vector_variables)
     {
-        Hermes::Module::LocalVariable *var = ((Hermes::Module::LocalVariable *) *it);
-
-        list.append(var->id);
-        if (var->id == QString(variable))
+        list.append(variable->id);
+        if (variable->id == QString(var))
         {
-            Util::config()->vectorVariable = QString(variable);
+            Util::config()->vectorVariable = QString(var);
             return;
         }
     }
