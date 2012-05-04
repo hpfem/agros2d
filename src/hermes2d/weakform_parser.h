@@ -20,9 +20,6 @@
 #ifndef WEAKFORM_PARSER_H
 #define WEAKFORM_PARSER_H
 
-#include <rapidxml.cpp>
-#include <rapidxml_utils.cpp>
-
 #include "util.h"
 
 class Parser;

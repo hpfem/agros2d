@@ -1,159 +1,161 @@
 <?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module_xml.xsd">
-    <general id ="current" name="Current field">
-        <description>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.</description>
-        <analyses>
-            <analysis id="steadystate" type="steadystate" name="Steady state" solutions="1" />
-        </analyses>
-    </general>
+<module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
 
-    <constants />
+    <module:general id ="current" name="Current field">
+        <module:description>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.</module:description>
+        <module:analyses>
+            <module:analysis id="steadystate" type="steadystate" name="Steady state" solutions="1" />
+        </module:analyses>
+    </module:general>
+
+    <module:constants />
     
-    <volume>
-        <quantity id="current_conductivity" shortname="cu_gamma" />
+    <module:volume>
+        <module:quantity id="current_conductivity" shortname="cu_gamma" />
         
-        <weakforms_volume>
-            <weakform_volume analysistype="steadystate">
-                <quantity id="current_conductivity" />
+        <module:weakforms_volume>
+            <module:weakform_volume analysistype="steadystate">
+                <module:quantity id="current_conductivity" />
 
-                <matrix_form i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)"
+                <module:matrix_form i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)"
                                     axi="cu_gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
-                <vector_form i="1" j="1" planar="cu_gamma * (updx * vdx + updy * vdy)"
+                <module:vector_form i="1" j="1" planar="cu_gamma * (updx * vdx + updy * vdy)"
                                     axi="cu_gamma * r * (updr * vdr + updz * vdz)" />
-            </weakform_volume>
-        </weakforms_volume>
-    </volume>
+            </module:weakform_volume>
+        </module:weakforms_volume>
+    </module:volume>
 
-    <surface>
-        <quantity id="current_potential" shortname="V" />
-        <quantity id="current_inward_current_flow" shortname="Jn" />
+    <module:surface>
+        <module:quantity id="current_potential" shortname="V" />
+        <module:quantity id="current_inward_current_flow" shortname="Jn" />
     	
-        <weakforms_surface>
-            <weakform_surface analysistype="steadystate" default="current_potential">
-                <boundary id="current_potential" name="Fixed voltage">
-                    <quantity id="current_potential" />
+        <module:weakforms_surface>
+            <module:weakform_surface analysistype="steadystate" default="current_potential">
+                <module:boundary id="current_potential" name="Fixed voltage">
+                    <module:quantity id="current_potential" />
 
-                    <essential_form i="1" planar="V"
+                    <module:essential_form i="1" planar="V"
                                      axi="V" />
-                </boundary>
+                </module:boundary>
 
-                <boundary id="current_inward_current_flow" name="Current density">
-                    <quantity id="current_inward_current_flow" />
+                <module:boundary id="current_inward_current_flow" name="Current density">
+                    <module:quantity id="current_inward_current_flow" />
 
-                    <vector_form i="1" j="1" planar="- Jn * vval"
+                    <module:vector_form i="1" j="1" planar="- Jn * vval"
                                         axi="- Jn * r * vval" />
-                </boundary>
-            </weakform_surface>
-        </weakforms_surface>
-    </surface>
+                </module:boundary>
+            </module:weakform_surface>
+        </module:weakforms_surface>
+    </module:surface>
 
-    <preprocessor>
-        <gui type="volume">
-            <group>
-                <quantity id="current_conductivity" name="Conductivity"
+    <module:preprocessor>
+        <module:gui type="volume">
+            <module:group>
+                <module:quantity id="current_conductivity" name="Conductivity"
                           shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
                           unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}" />
-            </group>
-        </gui>
-        <gui type="surface">
-            <group>
-                <quantity id="current_potential"  name="Fixed voltage"
+            </module:group>
+        </module:gui>
+        <module:gui type="surface">
+            <module:group>
+                <module:quantity id="current_potential"  name="Fixed voltage"
                 shortname="V" shortname_html="&lt;i&gt;&amp;phi;&lt;/i&gt;" shortname_latex="\phi"
                 unit="V" unit_html="V" unit_latex="V" />
-                <quantity id="current_inward_current_flow" name="Current density"
+                <module:quantity id="current_inward_current_flow" name="Current density"
                 shortname="Jn" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;n&lt;/sub&gt;" shortname_latex="J_\mathrm{n}"
                 unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
-            </group>
-        </gui>
-    </preprocessor>
+            </module:group>
+        </module:gui>
+    </module:preprocessor>
 
-    <postprocessor>
-        <localvariables>
-            <localvariable id="current_potential" name="Scalar potential" type="scalar"
+    <module:postprocessor>
+        <module:localvariables>
+            <module:localvariable id="current_potential" name="Scalar potential" type="scalar"
                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
                            unit="V" unit_html="V" unit_latex="V">
-                <expression analysistype="steadystate" planar="value1"
+                <module:expression analysistype="steadystate" planar="value1"
                                                        axi="value1" />
-            </localvariable>
-            <localvariable id="current_electric_field" name="Electric field" type="vector"
+            </module:localvariable>
+            <module:localvariable id="current_electric_field" name="Electric field" type="vector"
                            shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
                            unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="V \cdot m^{-1}">
-                <expression analysistype="steadystate" planar_x="- dx1"
+                <module:expression analysistype="steadystate" planar_x="- dx1"
                                                        planar_y="- dy1"
                                                        axi_r="- dr1"
                                                        axi_z="- dz1" />
-            </localvariable>
-            <localvariable id="current_current_density" name="Current density" type="vector"
+            </module:localvariable>
+            <module:localvariable id="current_current_density" name="Current density" type="vector"
                            shortname="J" shortname_html="&lt;i&gt;J&lt;/i&gt;" shortname_latex="J"
                            unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}">
-                <expression analysistype="steadystate" planar_x="- cu_gamma * dx1"
+                <module:expression analysistype="steadystate" planar_x="- cu_gamma * dx1"
                                                        planar_y="- cu_gamma * dy1"
                                                        axi_r="- cu_gamma * dr1"
                                                        axi_z="- cu_gamma * dz1" />
-            </localvariable>
-            <localvariable id="current_joule_losses" name="Joule losses" type="scalar"
+            </module:localvariable>
+            <module:localvariable id="current_joule_losses" name="Joule losses" type="scalar"
                            shortname="pj" shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;j&lt;/sub&gt;" shortname_latex="p_{j}"
                            unit="W/m3" unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}">
-                <expression analysistype="steadystate" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"
+                <module:expression analysistype="steadystate" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"
                                                        axi="cu_gamma * (dr1 * dr1 + dz1 * dz1)" />
-            </localvariable>
-            <localvariable id="current_conductivity" name="Conductivity" type="scalar"
+            </module:localvariable>
+            <module:localvariable id="current_conductivity" name="Conductivity" type="scalar"
                            shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
                            unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}">
-                <expression analysistype="steadystate" planar="cu_gamma"
+                <module:expression analysistype="steadystate" planar="cu_gamma"
                                                        axi="cu_gamma" />
-            </localvariable>
-        </localvariables>
+            </module:localvariable>
+        </module:localvariables>
 
-        <view>
-            <scalar_view>
-                <default analysistype="steadystate" id="current_potential" />
-            </scalar_view>
-            <vector_view>
-                <default analysistype="steadystate" id="current_current_density" />
-            </vector_view>
-        </view>
+        <module:view>
+            <module:scalar_view>
+                <module:default analysistype="steadystate" id="current_potential" />
+            </module:scalar_view>
+            <module:vector_view>
+                <module:default analysistype="steadystate" id="current_current_density" />
+            </module:vector_view>
+        </module:view>
 
-        <volumeintegrals>
-            <volumeintegral id="current_volume" name="Volume"
+        <module:volumeintegrals>
+            <module:volumeintegral id="current_volume" name="Volume"
                             shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
                             unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
-                <expression analysistype="steadystate" planar="1.0"
+                <module:expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
-            </volumeintegral>
-            <volumeintegral id="current_cross_section" name="Cross section"
+            </module:volumeintegral>
+            <module:volumeintegral id="current_cross_section" name="Cross section"
                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
-                <expression analysistype="steadystate" planar="1.0"
+                <module:expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
-            </volumeintegral>
-            <volumeintegral id="current_joule_losses" name="Joule losses"
+            </module:volumeintegral>
+            <module:volumeintegral id="current_joule_losses" name="Joule losses"
                             shortname="Pj" shortname_html="&lt;i&gt;P&lt;/i&gt;&lt;sub&gt;j&lt;/sub&gt;" shortname_latex="P_{j}"
                             unit="W" unit_html="W" unit_latex="W">
-                <expression analysistype="steadystate" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"
+                <module:expression analysistype="steadystate" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"
                                                        axi="2.0 * PI * r * cu_gamma * (dr1 * dr1 + dz1 * dz1)" />
-            </volumeintegral>
-        </volumeintegrals>
+            </module:volumeintegral>
+        </module:volumeintegrals>
 
-        <surfaceintegrals>
-            <surfaceintegral id="current_length" name="Length"
+        <module:surfaceintegrals>
+            <module:surfaceintegral id="current_length" name="Length"
                              shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;" shortname_latex="l"
                              unit="m" unit_html="m" unit_latex="m">
-                <expression analysistype="steadystate" planar="1.0"
+                <module:expression analysistype="steadystate" planar="1.0"
                                                        axi="1.0" />
-            </surfaceintegral>
-            <surfaceintegral id="current_surface" name="Surface"
+            </module:surfaceintegral> 
+            <module:surfaceintegral id="current_surface" name="Surface"
                              shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
                              unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
-                <expression analysistype="steadystate" planar="1.0"
+                <module:expression analysistype="steadystate" planar="1.0"
                                                        axi="2.0 * PI * r" />
-            </surfaceintegral>
-            <surfaceintegral id="current_current" name="Current"
+            </module:surfaceintegral> 
+            <module:surfaceintegral id="current_current" name="Current"
                              shortname="I" shortname_html="&lt;i&gt;I&lt;/i&gt;" shortname_latex="I"
                              unit="A" unit_html="A" unit_latex="A">
-                <expression analysistype="steadystate" planar="cu_gamma * (tanx * dy1 - tany * dx1)"
+                <module:expression analysistype="steadystate" planar="cu_gamma * (tanx * dy1 - tany * dx1)"
                                                        axi="2.0 * PI * r * cu_gamma * (tanr * dz1 - tanz * dr1)" />
-            </surfaceintegral>
-        </surfaceintegrals>
-    </postprocessor>
-</module>
+            </module:surfaceintegral> 
+        </module:surfaceintegrals>
+    </module:postprocessor>
+</module:module>

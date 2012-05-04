@@ -1,55 +1,71 @@
 <?xml version="1.0"?>
-<coupling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module.xsd">
-    <general id ="heat-elasticity" name="Thermoelasticity">
-        <description>Heat plus elasticity</description>
-        <modules>
-            <source id="heat" />
-            <target id="elasticity" />
-        </modules>
-    </general>
+<coupling:coupling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="XMLCoupling ../xsd/coupling_xml.xsd"
+	xmlns:coupling="XMLCoupling">
 
-    <constants>
-    </constants>
+	<coupling:general id="heat-elasticity" name="Thermoelasticity">
+		<coupling:description>Heat plus elasticity</coupling:description>
+		<coupling:modules>
+			<coupling:source id="heat" />
+			<coupling:target id="elasticity" />
+		</coupling:modules>
+	</coupling:general>
 
-    <volume>
-        <weakforms>
-            <weakform couplingtype="weak" sourceanalysis="steadystate"  targetanalysis="steadystate" >
-                <vector_form i="1" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * (vdr + vval / r)" />
-                <vector_form i="2" j="2" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdz" />
-            </weakform>
+	<coupling:constants />
 
-            <weakform couplingtype="hard" sourceanalysis="steadystate"  targetanalysis="steadystate" >
-                <matrix_form i="2" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
-                                    axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * (vdr + vval / r)" />
-                <matrix_form i="3" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
-                                    axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdz" />
-                <vector_form i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
-                <vector_form i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
-            </weakform>
+	<coupling:volume>
+		<coupling:weakforms_volume>
+			<coupling:weakform_volume couplingtype="weak"
+				sourceanalysis="steadystate" targetanalysis="steadystate">
+				<coupling:vector_form i="1" j="1"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * (vdr + vval / r)" />
+				<coupling:vector_form i="2" j="2"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdz" />
+			</coupling:weakform_volume>
 
+			<coupling:weakform_volume couplingtype="hard"
+				sourceanalysis="steadystate" targetanalysis="steadystate">
+				<coupling:matrix_form i="2" j="1"
+					planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
+					axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * (vdr + vval / r)" />
+				<coupling:matrix_form i="3" j="1"
+					planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
+					axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdz" />
+				<coupling:vector_form i="2" j="1"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
+				<coupling:vector_form i="3" j="1"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
+			</coupling:weakform_volume>
 
-            <weakform couplingtype="weak" sourceanalysis="transient"  targetanalysis="steadystate" >
-                <vector_form i="1" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * (vdr + vval / r)" />
-                <vector_form i="2" j="2" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdz" />
-            </weakform>
+			<coupling:weakform_volume couplingtype="weak"
+				sourceanalysis="transient" targetanalysis="steadystate">
+				<coupling:vector_form i="1" j="1"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdx"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * (vdr + vval / r)" />
+				<coupling:vector_form i="2" j="2"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdy"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source0 - st_Tr)) * vdz" />
+			</coupling:weakform_volume>
 
-            <weakform couplingtype="hard" sourceanalysis="transient"  targetanalysis="steadystate" >
-                <matrix_form i="2" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
-                                    axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * (vdr + vval / r)" />
-                <matrix_form i="3" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
-                                    axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdz" />
-                <vector_form i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
-                <vector_form i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
-                                    axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
-            </weakform>
-
-        </weakforms>
-    </volume>
-</coupling>
+			<coupling:weakform_volume couplingtype="hard"
+				sourceanalysis="transient" targetanalysis="steadystate">
+				<coupling:matrix_form i="2" j="1"
+					planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdx"
+					axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * (vdr + vval / r)" />
+				<coupling:matrix_form i="3" j="1"
+					planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdy"
+					axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (uval - st_Tr)) * vdz" />
+				<coupling:vector_form i="2" j="1"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
+				<coupling:vector_form i="3" j="1"
+					planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
+					axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
+			</coupling:weakform_volume>
+		</coupling:weakforms_volume>
+	</coupling:volume>
+</coupling:coupling>

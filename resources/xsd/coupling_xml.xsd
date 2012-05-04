@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="XMLCoupling"
+	xmlns:coupling="XMLCoupling">
+
+	<element name="coupling">
+		<complexType>
+			<sequence>
+				<element ref="coupling:general" maxOccurs="1" />
+				<element ref="coupling:constants" maxOccurs="1" />
+				<element ref="coupling:volume" maxOccurs="1" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="general">
+		<complexType>
+			<sequence>
+				<element ref="coupling:description" />
+				<element ref="coupling:modules" />
+			</sequence>
+			<attribute name="id" use="required" type="string" />
+			<attribute name="name" use="required" type="string" />
+		</complexType>
+	</element>
+
+	<element name="constants">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" maxOccurs="unbounded" ref="coupling:constant" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="constant">
+		<complexType>
+			<attribute name="id" use="required" type="string" />
+			<attribute name="value" use="required" type="double" />
+		</complexType>
+	</element>
+
+	<element name="description" type="string" />
+	<element name="modules">
+		<complexType>
+			<sequence>
+				<element ref="coupling:source" />
+				<element ref="coupling:target" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="source">
+		<complexType>
+			<attribute name="id" use="required" type="string" />
+		</complexType>
+	</element>
+	<element name="target">
+
+		<complexType>
+			<attribute name="id" use="required" type="string" />
+		</complexType>
+	</element>
+
+	<element name="volume">
+		<complexType>
+			<sequence>
+				<element ref="coupling:weakforms_volume" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="weakforms_volume">
+		<complexType>
+			<sequence>
+				<element minOccurs="1" maxOccurs="unbounded" ref="coupling:weakform_volume" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="weakform_surface">
+		<complexType>
+			<sequence>
+				<element minOccurs="1" maxOccurs="unbounded" ref="coupling:matrix_form" />
+				<element minOccurs="1" maxOccurs="unbounded" ref="coupling:vector_form" />
+			</sequence>
+			<attribute name="couplingtype" use="required" type="string" />
+			<attribute name="sourceanalysis" use="required" type="string" />
+			<attribute name="targetanalysis" use="required" type="string" />
+		</complexType>
+	</element>
+	<element name="weakforms_surface">
+		<complexType>
+			<sequence>
+				<element minOccurs="1" maxOccurs="unbounded" ref="coupling:weakform_surface" />
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="weakform_volume">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" maxOccurs="unbounded" ref="coupling:matrix_form" />
+				<element maxOccurs="unbounded" ref="coupling:vector_form" />
+			</sequence>
+			<attribute name="couplingtype" use="required" type="string" />
+			<attribute name="sourceanalysis" use="required" type="string" />
+			<attribute name="targetanalysis" use="required" type="string" />
+		</complexType>
+	</element>
+	<element name="matrix_form">
+		<complexType>
+			<attribute name="i" use="required" type="integer" />
+			<attribute name="j" use="required" type="integer" />
+			<attribute name="planar" use="required" type="string" />
+			<attribute name="axi" use="required" type="string" />
+		</complexType>
+	</element>
+	<element name="vector_form">
+		<complexType>
+			<attribute name="i" use="required" type="integer" />
+			<attribute name="j" use="required" type="integer" />
+			<attribute name="planar" use="required" type="string" />
+			<attribute name="axi" use="required" type="string" />
+		</complexType>
+	</element>
+</schema>

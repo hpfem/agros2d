@@ -8,6 +8,8 @@
 
 #include <dirent.h>
 
+#include "../../resources_source/classes/coupling_xml.h"
+
 CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
     m_sourceField(sourceField), m_targetField(targetField)
 {
@@ -65,25 +67,22 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
         if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
         {
             // read name
-            rapidxml::file<> file_data((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + filename).c_str());
-
-            // parse xml
-            rapidxml::xml_document<> doc;
-            doc.parse<0>(file_data.data());
+            std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + filename).c_str());
+            XMLCoupling::coupling *coup = couplings_xsd.get();
 
             // module name
-            QString sourceFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("source")->first_attribute("id")->value());
-            QString targetFieldStr(doc.first_node("coupling")->first_node("general")->first_node("modules")->first_node("target")->first_attribute("id")->value());
+            QString sourceFieldStr(QString::fromStdString(coup->general().modules().source().id()));
+            QString targetFieldStr(QString::fromStdString(coup->general().modules().target().id()));
 
-            if((sourceFieldStr == sourceField->fieldId()) && (targetFieldStr == targetField->fieldId()))
+            if ((sourceFieldStr == sourceField->fieldId()) && (targetFieldStr == targetField->fieldId()))
             {
                 //check whether coupling is available for values of source and target fields such as analysis type
-                for (rapidxml::xml_node<> *weakform = doc.first_node("coupling")->first_node("volume")->first_node("weakforms")->first_node("weakform");
-                     weakform; weakform = weakform->next_sibling())
+                for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
                 {
+                    XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-                    if ((weakform->first_attribute("sourceanalysis")->value() == Hermes::analysis_type_tostring(sourceField->analysisType())) &&
-                        (weakform->first_attribute("targetanalysis")->value() == Hermes::analysis_type_tostring(targetField->analysisType())))
+                    if ((wf.sourceanalysis() == Hermes::analysis_type_tostring(sourceField->analysisType())) &&
+                        (wf.targetanalysis() == Hermes::analysis_type_tostring(targetField->analysisType())))
                     {
                         return true;
                     }
@@ -148,17 +147,13 @@ void Coupling::read(std::string filename)
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
 
-        rapidxml::file<> file_data(filename.c_str());
-
-        // parse document
-        rapidxml::xml_document<> doc;
-        doc.parse<0>(file_data.data());
+        std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_(filename.c_str());
+        XMLCoupling::coupling *coup = couplings_xsd.get();
 
         // problem
-        rapidxml::xml_node<> *general = doc.first_node("coupling")->first_node("general");
-        id = general->first_attribute("id")->value();
-        name = QObject::tr(general->first_attribute("name")->value()).toStdString(); // FIXME: Qt dependence
-        description = general->first_node("description")->value();
+        id = coup->general().id();
+        name = coup->general().name();
+        description = coup->general().description();
 
 
 //        rapidxml::xml_node<> *source = general->first_node("modules")->first_node("source");
@@ -179,18 +174,19 @@ void Coupling::read(std::string filename)
         //m_analysisType = AnalysisType_SteadyState;
 
         // constants
-        for (rapidxml::xml_node<> *constant = doc.first_node("coupling")->first_node("constants")->first_node("constant");
-             constant; constant = constant->next_sibling())
-            constants[constant->first_attribute("id")->value()] = atof(constant->first_attribute("value")->value());
-
-
-        for (rapidxml::xml_node<> *weakform = doc.first_node("coupling")->first_node("volume")->first_node("weakforms")->first_node("weakform");
-             weakform; weakform = weakform->next_sibling())
+        for (int i = 0; i < coup->constants().constant().size(); i++)
         {
+            XMLCoupling::constant cnst = coup->constants().constant().at(i);
+            constants[cnst.id()] = cnst.value();
+        }
 
-            if ((weakform->first_attribute("couplingtype")->value() == Hermes::coupling_type_tostring(m_couplingType)) &&
-                (weakform->first_attribute("sourceanalysis")->value() == Hermes::analysis_type_tostring(m_sourceFieldAnalysis)) &&
-                (weakform->first_attribute("targetanalysis")->value() == Hermes::analysis_type_tostring(m_targetFieldAnalysis)))
+        for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
+        {
+            XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
+
+            if ((wf.couplingtype() == Hermes::coupling_type_tostring(m_couplingType)) &&
+                (wf.sourceanalysis() == Hermes::analysis_type_tostring(m_sourceFieldAnalysis)) &&
+                (wf.targetanalysis() == Hermes::analysis_type_tostring(m_targetFieldAnalysis)))
             {
 
 //            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))

@@ -14,8 +14,6 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     muparser/muParserCallback.cpp \
     muparser/muParserError.cpp \
     muparser/muParserInt.cpp \
-    rapidxml/rapidxml.cpp \
-    rapidxml/rapidxml_utils.cpp \
     ctemplate/base/arena.cc \
     ctemplate/htmlparser/htmlparser.cc \
     ctemplate/htmlparser/htmlparser_cpp.h \

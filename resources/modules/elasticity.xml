@@ -1,256 +1,286 @@
 <?xml version="1.0"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="module_xml.xsd">
-    <general id ="elasticity" name="Structural analysis" deformed_shape="1">
-        <description>Structural analysis is the determination of the effects of loads on physical structures and their components.</description>
-        <analyses>
-            <analysis id="steadystate" type="steadystate" name="Steady state" solutions="2" />
-        </analyses>
-    </general>
+<module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
 
-    <constants />
-    
-    <volume>
-        <quantity id="elasticity_young_modulus" shortname="st_E" />
-        <quantity id="elasticity_poisson_ratio" shortname="st_nu" />
-        <quantity id="elasticity_force_x" shortname="st_fx" />
-        <quantity id="elasticity_force_y" shortname="st_fy" />
-        <quantity id="elasticity_alpha" shortname="st_alpha" />
-        <quantity id="elasticity_temperature_difference" shortname="st_dT" />
-        <quantity id="elasticity_temperature_reference" shortname="st_Tr" />
+	<module:general id="elasticity" name="Structural analysis"
+		deformed_shape="1">
+		<module:description>Structural analysis is the determination of the
+			effects of loads on physical structures and their components.
+		</module:description>
+		<module:analyses>
+			<module:analysis id="steadystate" type="steadystate"
+				name="Steady state" solutions="2" />
+		</module:analyses>
+	</module:general>
 
-        <weakforms_volume>
-            <weakform_volume analysistype="steadystate">
-                <quantity id="elasticity_young_modulus" />
-                <quantity id="elasticity_poisson_ratio" />
-                <quantity id="elasticity_force_x" />
-                <quantity id="elasticity_force_y" />
-                <quantity id="elasticity_alpha" />
-                <quantity id="elasticity_temperature_difference" />
-                <quantity id="elasticity_temperature_reference" />
+	<module:constants />
 
-                <matrix_form i="1" j="1" planar="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)
+	<module:volume>
+		<module:quantity id="elasticity_young_modulus"
+			shortname="st_E" />
+		<module:quantity id="elasticity_poisson_ratio"
+			shortname="st_nu" />
+		<module:quantity id="elasticity_force_x" shortname="st_fx" />
+		<module:quantity id="elasticity_force_y" shortname="st_fy" />
+		<module:quantity id="elasticity_alpha" shortname="st_alpha" />
+		<module:quantity id="elasticity_temperature_difference"
+			shortname="st_dT" />
+		<module:quantity id="elasticity_temperature_reference"
+			shortname="st_Tr" />
+
+		<module:weakforms_volume>
+			<module:weakform_volume analysistype="steadystate">
+				<module:quantity id="elasticity_young_modulus" />
+				<module:quantity id="elasticity_poisson_ratio" />
+				<module:quantity id="elasticity_force_x" />
+				<module:quantity id="elasticity_force_y" />
+				<module:quantity id="elasticity_alpha" />
+				<module:quantity id="elasticity_temperature_difference" />
+				<module:quantity id="elasticity_temperature_reference" />
+
+				<module:matrix_form i="1" j="1"
+					planar="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)
                                             + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)"
-                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +
+					axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +
                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" />
-                <matrix_form i="1" j="2" planar="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)
+				<module:matrix_form i="1" j="2"
+					planar="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)
                                             + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)"
-                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) +
+					axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) +
                                             (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" />
-                <matrix_form i="2" j="1" planar="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx)
+				<module:matrix_form i="2" j="1"
+					planar="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx)
                                             + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)"
-                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) +
-                                             (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr"/>
-                <matrix_form i="2" j="2" planar="(st_E / (2.0*(1.0 + st_nu))) * (udx * vdx)
+					axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) +
+                                             (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr" />
+				<module:matrix_form i="2" j="2"
+					planar="(st_E / (2.0*(1.0 + st_nu))) * (udx * vdx)
                                             + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udy * vdy)"
-                                    axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +
+					axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +
                                          r * (st_E / (2.0*(1.0 + st_nu))) * (udr * vdr + 2 * udz * vdz)" />
-                <vector_form i="1" j="1" planar="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updx * vdx)
+				<module:vector_form i="1" j="1"
+					planar="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updx * vdx)
                                             + (st_E / (2.0*(1.0 + st_nu))) * (updy * vdy)
                                             - st_fx * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdx"
-                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdr + upval * vdr + updr * vval + upval * vval / (r + 1e-12)) +
+					axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdr + upval * vdr + updr * vval + upval * vval / (r + 1e-12)) +
                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * updr * vdr + 2 * upval * vval / (r + 1e-12) + r * updz * vdz)
                                          - r * st_fx * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * (vdr + vval / r)" />
-                <vector_form i="1" j="2" planar="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updy * vdx)
+				<module:vector_form i="1" j="2"
+					planar="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updy * vdx)
                                             + (st_E / (2.0*(1.0 + st_nu))) * (updx * vdy)"
-                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updz * vdr + updz * vval) +
+					axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updz * vdr + updz * vval) +
                                             (st_E / (2.0*(1.0 + st_nu))) * r * updr * vdz" />
-                <vector_form i="2" j="1" planar="(st_E / (2.0*(1.0 + st_nu))) * (updy * vdx)
+				<module:vector_form i="2" j="1"
+					planar="(st_E / (2.0*(1.0 + st_nu))) * (updy * vdx)
                                             + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updx * vdy)"
-                                    axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdz + upval * vdz) +
+					axi="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdz + upval * vdz) +
                                            (st_E / (2.0*(1.0 + st_nu))) * r * updz * vdr" />
-                <vector_form i="2" j="2" planar="(st_E / (2.0*(1.0 + st_nu))) * (updx * vdx)
+				<module:vector_form i="2" j="2"
+					planar="(st_E / (2.0*(1.0 + st_nu))) * (updx * vdx)
                                             + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updy * vdy)
                                             - st_fy * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdy"
-                                    axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * updz * vdz +
+					axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * updz * vdz +
                                          r * (st_E / (2.0*(1.0 + st_nu))) * (updr * vdr + 2 * updz * vdz)
                                          - r * st_fy * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" />
-            </weakform_volume>
-        </weakforms_volume>
-    </volume>
-    	
-    <surface>
-        <quantity id="elasticity_displacement_x" shortname="dx" />
-        <quantity id="elasticity_displacement_y" shortname="dy" />
-        <quantity id="elasticity_force_x" shortname="st_fx" />
-        <quantity id="elasticity_force_y" shortname="st_fy" />
+			</module:weakform_volume>
+		</module:weakforms_volume>
+	</module:volume>
 
-        <weakforms_surface>
-            <weakform_surface analysistype="steadystate" default="elasticity_fixed_fixed">
-                <boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
-                    <quantity id="elasticity_displacement_x" />
-                    <quantity id="elasticity_displacement_y" />
+	<module:surface>
+		<module:quantity id="elasticity_displacement_x"
+			shortname="dx" />
+		<module:quantity id="elasticity_displacement_y"
+			shortname="dy" />
+		<module:quantity id="elasticity_force_x" shortname="st_fx" />
+		<module:quantity id="elasticity_force_y" shortname="st_fy" />
 
-                    <essential_form i="1" planar="dx"
-                                     axi="dx" />
-                    <essential_form i="2" planar="dy"
-                                     axi="dy" />
-                </boundary>
+		<module:weakforms_surface>
+			<module:weakform_surface analysistype="steadystate"
+				default="elasticity_fixed_fixed">
+				<module:boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
+					<module:quantity id="elasticity_displacement_x" />
+					<module:quantity id="elasticity_displacement_y" />
 
-                <boundary id="elasticity_fixed_free" name="Fixed - free">
-                    <quantity id="elasticity_displacement_x" />
-                    <quantity id="elasticity_force_y" />
+					<module:essential_form i="1" planar="dx" axi="dx" />
+					<module:essential_form i="2" planar="dy" axi="dy" />
+				</module:boundary>
 
-                    <essential_form i="1" planar="dx"
-                                     axi="dx" />
-                    <vector_form i="2" j="2" planar="-st_fy * vval"
-                                        axi="-st_fy * r * vval" />
-                </boundary>
+				<module:boundary id="elasticity_fixed_free" name="Fixed - free">
+					<module:quantity id="elasticity_displacement_x" />
+					<module:quantity id="elasticity_force_y" />
 
-                <boundary id="elasticity_free_fixed" name="Free - fixed">
-                    <quantity id="elasticity_force_x" />
-                    <quantity id="elasticity_displacement_y" />
+					<module:essential_form i="1" planar="dx" axi="dx" />
+					<module:vector_form i="2" j="2" planar="-st_fy * vval"
+						axi="-st_fy * r * vval" />
+				</module:boundary>
 
-                    <vector_form i="1" j="1" planar="-st_fx * vval"
-                                        axi="-st_fx * r * vval" />
-                    <essential_form i="2" planar="dy"
-                                     axi="dy" />
-                </boundary>
+				<module:boundary id="elasticity_free_fixed" name="Free - fixed">
+					<module:quantity id="elasticity_force_x" />
+					<module:quantity id="elasticity_displacement_y" />
 
-                <boundary id="elasticity_free_free" name="Free - Free">
-                    <quantity id="elasticity_force_x" />
-                    <quantity id="elasticity_force_y" />
+					<module:vector_form i="1" j="1" planar="-st_fx * vval"
+						axi="-st_fx * r * vval" />
+					<module:essential_form i="2" planar="dy" axi="dy" />
+				</module:boundary>
 
-                    <vector_form i="1" j="1" planar="-st_fx * vval"
-                                        axi="-st_fx * r * vval" />
-                    <vector_form i="2" j="2" planar="-st_fy * vval"
-                                        axi="-st_fy * r * vval" />
-                </boundary>
-            </weakform_surface>
-        </weakforms_surface>
-    </surface>
+				<module:boundary id="elasticity_free_free" name="Free - Free">
+					<module:quantity id="elasticity_force_x" />
+					<module:quantity id="elasticity_force_y" />
 
-    <preprocessor>
-        <gui type="volume">
-            <group>
-                <quantity id="elasticity_young_modulus" name="Young modulus"
-                          shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
-                          unit="Pa" unit_html="Pa" unit_latex="Pa" />
-                <quantity id="elasticity_poisson_ratio" name="Poisson ratio"
-                          shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;" shortname_latex="\nu"
-                          unit="-" unit_html="-" unit_latex="-" />
-                <quantity id="elasticity_force_x" name="Force - x"
-                          shortname="fx" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;" shortname_latex="f_{x}"
-                          unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
-                <quantity id="elasticity_force_y" name="Force - y"
-                          shortname="fy" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;" shortname_latex="f_{y}"
-                          unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="N \cdot m^{-3}" />
-                <quantity id="elasticity_alpha" name="Temperature coefficient"
-                          shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
-                          unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}" />
-                <quantity id="elasticity_temperature_difference" name="Temperature difference"
-                          shortname="dT" shortname_html="D&lt;i&gt;T&lt;/i&gt;" shortname_latex="\triangle T"
-                          unit="K" unit_html="K" unit_latex="K" />
-                <quantity id="elasticity_temperature_reference" name="Reference emperature"
-                          shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
-                          unit="K" unit_html="K" unit_latex="K" />
-            </group>
-        </gui>
-        <gui type="surface">
-            <group>
-                <quantity id="elasticity_displacement_x" name="Fixed - x"
-                shortname="dx" shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;" shortname_latex="\delta_\mathrm{x}"
-                unit="m" unit_html="m" unit_latex="m" />
-                <quantity id="elasticity_displacement_y" name="Fixed - y"
-                shortname="dy" shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;" shortname_latex="\delta_\mathrm{y}"
-                unit="m" unit_html="m" unit_latex="m" />
-                <quantity id="elasticity_force_x" name="Free - x"
-                shortname="fx" shortname_html="&lt;i&gt;F&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;" shortname_latex="F_\mathrm{x}"
-                unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
-                <quantity id="elasticity_force_y" name="Free - y"
-                shortname="fy" shortname_html="&lt;i&gt;F&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;" shortname_latex="F_\mathrm{y}"
-                unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="N \cdot m^{-2}" />
-            </group>
-        </gui>
-    </preprocessor>
+					<module:vector_form i="1" j="1" planar="-st_fx * vval"
+						axi="-st_fx * r * vval" />
+					<module:vector_form i="2" j="2" planar="-st_fy * vval"
+						axi="-st_fy * r * vval" />
+				</module:boundary>
+			</module:weakform_surface>
+		</module:weakforms_surface>
+	</module:surface>
 
-    <postprocessor>
-        <localvariables>
-            <localvariable id="elasticity_displacement" name="Displacement" type="vector"
-                           shortname="d" shortname_html="&lt;i&gt;d&lt;/i&gt;" shortname_latex="d"
-                           unit="m" unit_html="m" unit_latex="m">
-                <expression analysistype="steadystate" planar_x="value1"
-                                                       planar_y="value2"
-                                                       axi_r="value1"
-                                                       axi_z="value2" />
-            </localvariable>
-            <localvariable id="elasticity_young_modulus" name="Young modulus" type="scalar"
-                           shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;" shortname_latex="E"
-                           unit="Pa" unit_html="Pa" unit_latex="Pa" >
-                <expression analysistype="steadystate" planar="st_E"
-                                                       axi="st_E" />
-            </localvariable>
-            <localvariable id="elasticity_poisson_ratio" name="Poisson ratio" type="scalar"
-                           shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;" shortname_latex="\nu"
-                           unit="-" unit_html="-" unit_latex="-" >
-                <expression analysistype="steadystate" planar="st_nu"
-                                                       axi="st_nu" />
-            </localvariable>
-            <localvariable id="elasticity_inner_force" name="Inner force" type="vector"
-                           shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;" shortname_latex="f"
-                           unit="N" unit_html="N" unit_latex="N" >
-                <expression analysistype="steadystate" planar_x="st_fx"
-                                                       planar_y="st_fy"
-                                                       axi_r="st_fx"
-                                                       axi_z="st_fy" />
-            </localvariable>
-            <localvariable id="elasticity_alpha" name="Temperature coefficient" type="scalar"
-                           shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
-                           unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}" >
-                <expression analysistype="steadystate" planar="st_alpha"
-                                                       axi="st_alpha" />
-            </localvariable>
-            <localvariable id="elasticity_temperature_difference" name="Temperature difference" type="scalar"
-                           shortname="dT" shortname_html="D&lt;i&gt;T&lt;/i&gt;" shortname_latex="\triangle T"
-                           unit="K" unit_html="K" unit_latex="K" >
-                <expression analysistype="steadystate" planar="st_dT"
-                                                       axi="st_dT" />
-            </localvariable>
-            <localvariable id="elasticity_temperature_reference" name="Reference temperature" type="scalar"
-                           shortname="Tr" shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;" shortname_latex="T_{ref}"
-                           unit="K" unit_html="K" unit_latex="K" >
-                <expression analysistype="steadystate" planar="st_Tr"
-                                                       axi="st_Tr" />
-            </localvariable>
-        </localvariables>
+	<module:preprocessor>
+		<module:gui type="volume">
+			<module:group>
+				<module:quantity id="elasticity_young_modulus" name="Young modulus"
+					shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
+					shortname_latex="E" unit="Pa" unit_html="Pa" unit_latex="Pa" />
+				<module:quantity id="elasticity_poisson_ratio" name="Poisson ratio"
+					shortname="nu" shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;"
+					shortname_latex="\nu" unit="-" unit_html="-" unit_latex="-" />
+				<module:quantity id="elasticity_force_x" name="Force - x"
+					shortname="fx" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+					shortname_latex="f_{x}" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;"
+					unit_latex="N \cdot m^{-3}" />
+				<module:quantity id="elasticity_force_y" name="Force - y"
+					shortname="fy" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+					shortname_latex="f_{y}" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;"
+					unit_latex="N \cdot m^{-3}" />
+				<module:quantity id="elasticity_alpha" name="Temperature coefficient"
+					shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;"
+					shortname_latex="\alpha" unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;"
+					unit_latex="K^{-1}" />
+				<module:quantity id="elasticity_temperature_difference"
+					name="Temperature difference" shortname="dT" shortname_html="D&lt;i&gt;T&lt;/i&gt;"
+					shortname_latex="\triangle T" unit="K" unit_html="K" unit_latex="K" />
+				<module:quantity id="elasticity_temperature_reference"
+					name="Reference emperature" shortname="Tr"
+					shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;"
+					shortname_latex="T_{ref}" unit="K" unit_html="K" unit_latex="K" />
+			</module:group>
+		</module:gui>
+		<module:gui type="surface">
+			<module:group>
+				<module:quantity id="elasticity_displacement_x"
+					name="Fixed - x" shortname="dx"
+					shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+					shortname_latex="\delta_\mathrm{x}" unit="m" unit_html="m"
+					unit_latex="m" />
+				<module:quantity id="elasticity_displacement_y"
+					name="Fixed - y" shortname="dy"
+					shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+					shortname_latex="\delta_\mathrm{y}" unit="m" unit_html="m"
+					unit_latex="m" />
+				<module:quantity id="elasticity_force_x" name="Free - x"
+					shortname="fx" shortname_html="&lt;i&gt;F&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+					shortname_latex="F_\mathrm{x}" unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;"
+					unit_latex="N \cdot m^{-2}" />
+				<module:quantity id="elasticity_force_y" name="Free - y"
+					shortname="fy" shortname_html="&lt;i&gt;F&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+					shortname_latex="F_\mathrm{y}" unit="N/m2" unit_html="N.m&lt;sup&gt;-2&lt;/sup&gt;"
+					unit_latex="N \cdot m^{-2}" />
+			</module:group>
+		</module:gui>
+	</module:preprocessor>
 
-        <view>
-            <scalar_view>
-                <default analysistype="steadystate" id="elasticity_displacement" />
-            </scalar_view>
-            <vector_view>
-                <default analysistype="steadystate" id="elasticity_displacement" />
-            </vector_view>
-        </view>
+	<module:postprocessor>
+		<module:localvariables>
+			<module:localvariable id="elasticity_displacement"
+				name="Displacement" type="vector" shortname="d" shortname_html="&lt;i&gt;d&lt;/i&gt;"
+				shortname_latex="d" unit="m" unit_html="m" unit_latex="m">
+				<module:expression analysistype="steadystate"
+					planar_x="value1" planar_y="value2" axi_r="value1" axi_z="value2" />
+			</module:localvariable>
+			<module:localvariable id="elasticity_young_modulus"
+				name="Young modulus" type="scalar" shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
+				shortname_latex="E" unit="Pa" unit_html="Pa" unit_latex="Pa">
+				<module:expression analysistype="steadystate"
+					planar="st_E" axi="st_E" />
+			</module:localvariable>
+			<module:localvariable id="elasticity_poisson_ratio"
+				name="Poisson ratio" type="scalar" shortname="nu"
+				shortname_html="&lt;i&gt;&amp;nu;&lt;/i&gt;" shortname_latex="\nu"
+				unit="-" unit_html="-" unit_latex="-">
+				<module:expression analysistype="steadystate"
+					planar="st_nu" axi="st_nu" />
+			</module:localvariable>
+			<module:localvariable id="elasticity_inner_force"
+				name="Inner force" type="vector" shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;"
+				shortname_latex="f" unit="N" unit_html="N" unit_latex="N">
+				<module:expression analysistype="steadystate"
+					planar_x="st_fx" planar_y="st_fy" axi_r="st_fx" axi_z="st_fy" />
+			</module:localvariable>
+			<module:localvariable id="elasticity_alpha"
+				name="Temperature coefficient" type="scalar" shortname="alpha"
+				shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;" shortname_latex="\alpha"
+				unit="1/K" unit_html="K&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="K^{-1}">
+				<module:expression analysistype="steadystate"
+					planar="st_alpha" axi="st_alpha" />
+			</module:localvariable>
+			<module:localvariable id="elasticity_temperature_difference"
+				name="Temperature difference" type="scalar" shortname="dT"
+				shortname_html="D&lt;i&gt;T&lt;/i&gt;" shortname_latex="\triangle T"
+				unit="K" unit_html="K" unit_latex="K">
+				<module:expression analysistype="steadystate"
+					planar="st_dT" axi="st_dT" />
+			</module:localvariable>
+			<module:localvariable id="elasticity_temperature_reference"
+				name="Reference temperature" type="scalar" shortname="Tr"
+				shortname_html="&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt;"
+				shortname_latex="T_{ref}" unit="K" unit_html="K" unit_latex="K">
+				<module:expression analysistype="steadystate"
+					planar="st_Tr" axi="st_Tr" />
+			</module:localvariable>
+		</module:localvariables>
 
-        <volumeintegrals>
-            <volumeintegral id="elasticity_volume" name="Volume"
-                            shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
-                            unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}" >
-                <expression analysistype="steadystate" planar="1.0"
-                                                       axi="2.0 * PI * r" />
-            </volumeintegral>
-            <volumeintegral id="elasticity_cross_section" name="Cross section"
-                            shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
-                            unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}" >
-                <expression analysistype="steadystate" planar="1.0"
-                                                       axi="1.0" />
-            </volumeintegral>
-        </volumeintegrals>
+		<module:view>
+			<module:scalar_view>
+				<module:default analysistype="steadystate"
+					id="elasticity_displacement" />
+			</module:scalar_view>
+			<module:vector_view>
+				<module:default analysistype="steadystate"
+					id="elasticity_displacement" />
+			</module:vector_view>
+		</module:view>
 
-        <surfaceintegrals>
-            <surfaceintegral id="elasticity_length" name="Length"
-                             shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;" shortname_latex="l"
-                             unit="m" unit_html="m" unit_latex="m" >
-                <expression analysistype="steadystate" planar="1.0"
-                                                       axi="1.0" />
-            </surfaceintegral>
-            <surfaceintegral id="elasticity_surface" name="Surface"
-                             shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
-                             unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}" >
-                <expression analysistype="steadystate" planar="1.0"
-                                                       axi="2.0 * PI * r" />
-            </surfaceintegral>
-        </surfaceintegrals>
-    </postprocessor>
-</module>
+		<module:volumeintegrals>
+			<module:volumeintegral id="elasticity_volume" name="Volume"
+				shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
+				unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
+				<module:expression analysistype="steadystate"
+					planar="1.0" axi="2.0 * PI * r" />
+			</module:volumeintegral>
+			<module:volumeintegral id="elasticity_cross_section" name="Cross section"
+				shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;" shortname_latex="S"
+				unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;" unit_latex="m^{2}">
+				<module:expression analysistype="steadystate"
+					planar="1.0" axi="1.0" />
+			</module:volumeintegral>
+		</module:volumeintegrals>
+
+		<module:surfaceintegrals>
+			<module:surfaceintegral id="elasticity_length"
+				name="Length" shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"
+				shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
+				<module:expression analysistype="steadystate"
+					planar="1.0" axi="1.0" />
+			</module:surfaceintegral>
+			<module:surfaceintegral id="elasticity_surface"
+				name="Surface" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
+				shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
+				unit_latex="m^{2}">
+				<module:expression analysistype="steadystate"
+					planar="1.0" axi="2.0 * PI * r" />
+			</module:surfaceintegral>
+		</module:surfaceintegrals>
+	</module:postprocessor>
+</module:module>
 

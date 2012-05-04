@@ -69,9 +69,11 @@ std::map<std::string, std::string> availableModules()
                 continue;
             
             if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
-            {
-                std::auto_ptr<module> module_xsd = module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
-                module *mod = module_xsd.get();
+            {                
+                qDebug() << QString::fromStdString(filename);
+                std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename).c_str());
+                XMLModule::module *mod = module_xsd.get();
+                qDebug() << QString::fromStdString(filename) << "OK";
 
                 // module name
                 modules[filename.substr(0, filename.size() - 4)] = mod->general().name();
@@ -90,12 +92,12 @@ std::map<std::string, std::string> availableAnalyses(std::string fieldId)
 {
     std::map<std::string, std::string> analyses;
     
-    std::auto_ptr<module> module_xsd = module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId + ".xml").c_str());
-    module *mod = module_xsd.get();
+    std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId + ".xml").c_str());
+    XMLModule::module *mod = module_xsd.get();
     
     for (int i = 0; i < mod->general().analyses().analysis().size(); i++)
     {
-        analysis an = mod->general().analyses().analysis().at(i);
+        XMLModule::analysis an = mod->general().analyses().analysis().at(i);
 
         analyses[an.id()] = an.name();
     }
@@ -108,7 +110,6 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
     Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block)
 {
 }
-
 
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WFType type, const std::string &problemId,
@@ -368,7 +369,7 @@ void WeakFormAgros<Scalar>::registerForms()
 
 // ***********************************************************************************************
 
-Hermes::Module::LocalVariable::LocalVariable(localvariable lv,
+Hermes::Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
                                              CoordinateType coordinateType, AnalysisType analysisType)
 {
     id = lv.id();
@@ -382,7 +383,7 @@ Hermes::Module::LocalVariable::LocalVariable(localvariable lv,
     
     for (int i = 0; i < lv.expression().size(); i++)
     {
-        expression exp = lv.expression().at(i);
+        XMLModule::expression exp = lv.expression().at(i);
         if (exp.analysistype() == Hermes::analysis_type_tostring(analysisType))
         {
             if (coordinateType == CoordinateType_Planar)
@@ -399,7 +400,7 @@ Hermes::Module::LocalVariable::LocalVariable(localvariable lv,
 
 // ***********************************************************************************************
 
-Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(quantity quant)
+Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
 {
     id = quant.id();
     if (quant.shortname().present())
@@ -421,7 +422,7 @@ Hermes::Module::MaterialTypeVariable::MaterialTypeVariable(std::string id, std::
 // ***********************************************************************************************
 
 Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
-                                           boundary bdy,
+                                           XMLModule::boundary bdy,
                                            CoordinateType problem_type)
 {
     id = bdy.id();
@@ -430,7 +431,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     // variables
     for (int i = 0; i < bdy.quantity().size(); i++)
     {
-        quantity qty = bdy.quantity().at(i);
+        XMLModule::quantity qty = bdy.quantity().at(i);
         
         for (Hermes::vector<Hermes::Module::BoundaryTypeVariable>::iterator it = boundary_type_variables.begin();
              it < boundary_type_variables.end(); ++it )
@@ -450,7 +451,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     // weakform
     for (int i = 0; i < bdy.matrix_form().size(); i++)
     {
-        matrix_form form = bdy.matrix_form().at(i);
+        XMLModule::matrix_form form = bdy.matrix_form().at(i);
         weakform_matrix_surface.push_back(new ParserFormExpression(form.i(), form.j(),
                                                                    form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
                                                                    (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
@@ -458,7 +459,7 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     
     for (int i = 0; i < bdy.vector_form().size(); i++)
     {
-        vector_form form = bdy.vector_form().at(i);
+        XMLModule::vector_form form = bdy.vector_form().at(i);
         weakform_vector_surface.push_back(new ParserFormExpression(form.i(), form.j(),
                                                                    Hermes::Hermes2D::HERMES_NONSYM,
                                                                    (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
@@ -467,13 +468,13 @@ Hermes::Module::BoundaryType::BoundaryType(Hermes::vector<BoundaryTypeVariable> 
     // essential
     for (int i = 0; i < bdy.essential_form().size(); i++)
     {
-        essential_form form = bdy.essential_form().at(i);
+        XMLModule::essential_form form = bdy.essential_form().at(i);
         essential.push_back(new ParserFormEssential(form.i(),
                                                     (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
     }
 }
 
-Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(quantity quant)
+Hermes::Module::BoundaryTypeVariable::BoundaryTypeVariable(XMLModule::quantity quant)
 {
     id = quant.id();
     if (quant.shortname().present())
@@ -519,7 +520,7 @@ Hermes::Module::BoundaryType::~BoundaryType()
 // ***********************************************************************************************
 
 // dialog row UI
-Hermes::Module::DialogUI::Row::Row(quantity qty)
+Hermes::Module::DialogUI::Row::Row(XMLModule::quantity qty)
 {
     id = qty.id();
     name = (qty.name().present()) ? qty.name().get() : "";
@@ -539,11 +540,11 @@ Hermes::Module::DialogUI::Row::Row(quantity qty)
 }
 
 // dialog UI
-Hermes::Module::DialogUI::DialogUI(gui ui)
+Hermes::Module::DialogUI::DialogUI(XMLModule::gui ui)
 {
     for (int i = 0; i < ui.group().size(); i++)
     {
-        group grp = ui.group().at(i);
+        XMLModule::group grp = ui.group().at(i);
 
         // group name
         std::string name = (grp.name().present()) ? grp.name().get() : "";
@@ -551,7 +552,7 @@ Hermes::Module::DialogUI::DialogUI(gui ui)
         Hermes::vector<DialogUI::Row> materials;
         for (int i = 0; i < grp.quantity().size(); i++)
         {
-            quantity quant = grp.quantity().at(i);
+            XMLModule::quantity quant = grp.quantity().at(i);
             // append material
             materials.push_back(DialogUI::Row(quant));
         }
@@ -592,8 +593,8 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
 
-        module_xsd = module_(filename.c_str());
-        module *mod = module_xsd.get();
+        module_xsd = XMLModule::module_(filename.c_str());
+        XMLModule::module *mod = module_xsd.get();
 
         // problem
         fieldid = mod->general().id();
@@ -608,7 +609,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         
         for (int i = 0; i < mod->general().analyses().analysis().size(); i++)
         {
-            analysis an = mod->general().analyses().analysis().at(i);
+            XMLModule::analysis an = mod->general().analyses().analysis().at(i);
             
             // FIXME
             analyses[an.id()] = an.type();
@@ -626,7 +627,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         // constants
         for (int i = 0; i < mod->constants().constant().size(); i++)
         {
-            constant cnst = mod->constants().constant().at(i);
+            XMLModule::constant cnst = mod->constants().constant().at(i);
             constants[cnst.id()] = cnst.value();
         }
         
@@ -641,18 +642,18 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         Hermes::vector<Hermes::Module::BoundaryTypeVariable> boundary_type_variables_tmp;
         for (int i = 0; i < mod->surface().quantity().size(); i++)
         {
-            quantity quant = mod->surface().quantity().at(i);
+            XMLModule::quantity quant = mod->surface().quantity().at(i);
             boundary_type_variables_tmp.push_back(Hermes::Module::BoundaryTypeVariable(quant));
         }
         
         for (int i = 0; i < mod->surface().weakforms_surface().weakform_surface().size(); i++)
         {
-            weakform_surface wf = mod->surface().weakforms_surface().weakform_surface().at(i);
+            XMLModule::weakform_surface wf = mod->surface().weakforms_surface().weakform_surface().at(i);
             
             if (wf.analysistype() == analysis_type_tostring(m_analysisType))
                 for (int i = 0; i < wf.boundary().size(); i++)
                 {
-                    boundary bdy = wf.boundary().at(i);
+                    XMLModule::boundary bdy = wf.boundary().at(i);
                     boundary_types.push_back(new Hermes::Module::BoundaryType(boundary_type_variables_tmp, bdy, m_coordinateType));
                 }
             
@@ -665,19 +666,19 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         Hermes::vector<Hermes::Module::MaterialTypeVariable> material_type_variables_tmp;
         for (int i = 0; i < mod->volume().quantity().size(); i++)
         {
-            quantity quant = mod->volume().quantity().at(i);
+            XMLModule::quantity quant = mod->volume().quantity().at(i);
             material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quant));
         }
 
         for (int i = 0; i < mod->volume().weakforms_volume().weakform_volume().size(); i++)
         {
-            weakform_volume wf = mod->volume().weakforms_volume().weakform_volume().at(i);
+            XMLModule::weakform_volume wf = mod->volume().weakforms_volume().weakform_volume().at(i);
 
             if (wf.analysistype() == analysis_type_tostring(m_analysisType))
             {
                 for (int i = 0; i < wf.quantity().size(); i++)
                 {
-                    quantity qty = wf.quantity().at(i);
+                    XMLModule::quantity qty = wf.quantity().at(i);
 
                     for (Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
                          it < material_type_variables_tmp.end(); ++it )
@@ -696,7 +697,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
                 // weakform
                 for (int i = 0; i < wf.matrix_form().size(); i++)
                 {
-                    matrix_form form = wf.matrix_form().at(i);
+                    XMLModule::matrix_form form = wf.matrix_form().at(i);
                     weakform_matrix_volume.push_back(new ParserFormExpression(form.i(), form.j(),
                                                                               form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
                                                                               (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
@@ -704,7 +705,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
 
                 for (int i = 0; i < wf.vector_form().size(); i++)
                 {
-                    vector_form form = wf.vector_form().at(i);
+                    XMLModule::vector_form form = wf.vector_form().at(i);
                     weakform_vector_volume.push_back(new ParserFormExpression(form.i(), form.j(),
                                                                               Hermes::Hermes2D::HERMES_NONSYM,
                                                                               (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
@@ -715,12 +716,12 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         // local variables
         for (int i = 0; i < mod->postprocessor().localvariables().localvariable().size(); i++)
         {
-            localvariable lv = mod->postprocessor().localvariables().localvariable().at(i);
+            XMLModule::localvariable lv = mod->postprocessor().localvariables().localvariable().at(i);
 
             // HACK
             for (int i = 0; i < lv.expression().size(); i++)
             {
-                expression expr = lv.expression().at(i);
+                XMLModule::expression expr = lv.expression().at(i);
                 if (expr.analysistype() == Hermes::analysis_type_tostring(m_analysisType))
                 {
                     Hermes::Module::LocalVariable *var = new Hermes::Module::LocalVariable(lv,
@@ -748,7 +749,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         // scalar variables default
         for (int i = 0; i < mod->postprocessor().view().scalar_view().default_().size(); i++)
         {
-            default_ def = mod->postprocessor().view().scalar_view().default_().at(i);
+            XMLModule::default_ def = mod->postprocessor().view().scalar_view().default_().at(i);
             if (def.analysistype() == analysis_type_tostring(m_analysisType))
                 view_default_scalar_variable = get_variable(def.id());
         }
@@ -756,7 +757,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         // vector variables default
         for (int i = 0; i < mod->postprocessor().view().vector_view().default_().size(); i++)
         {
-            default_ def = mod->postprocessor().view().vector_view().default_().at(i);
+            XMLModule::default_ def = mod->postprocessor().view().vector_view().default_().at(i);
             if (def.analysistype() == analysis_type_tostring(m_analysisType))
                 view_default_vector_variable = get_variable(def.id());
         }
@@ -764,7 +765,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         // volume integral
         for (int i = 0; i < mod->postprocessor().volumeintegrals().volumeintegral().size(); i++)
         {
-            volumeintegral vol = mod->postprocessor().volumeintegrals().volumeintegral().at(i);
+            XMLModule::volumeintegral vol = mod->postprocessor().volumeintegrals().volumeintegral().at(i);
 
             Hermes::Module::Integral *volint = new Hermes::Module::Integral();
 
@@ -777,7 +778,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
 
             for (int i = 0; i < vol.expression().size(); i++)
             {
-                expression exp = vol.expression().at(i);
+                XMLModule::expression exp = vol.expression().at(i);
                 if (exp.analysistype() == Hermes::analysis_type_tostring(m_analysisType))
                 {
                     if (m_coordinateType == CoordinateType_Planar)
@@ -793,7 +794,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         // surface integral
         for (int i = 0; i < mod->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
         {
-            surfaceintegral vol = mod->postprocessor().surfaceintegrals().surfaceintegral().at(i);
+            XMLModule::surfaceintegral vol = mod->postprocessor().surfaceintegrals().surfaceintegral().at(i);
 
             Hermes::Module::Integral *volint = new Hermes::Module::Integral();
 
@@ -806,7 +807,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
 
             for (int i = 0; i < vol.expression().size(); i++)
             {
-                expression exp = vol.expression().at(i);
+                XMLModule::expression exp = vol.expression().at(i);
                 if (exp.analysistype() == Hermes::analysis_type_tostring(m_analysisType))
                 {
                     if (m_coordinateType == CoordinateType_Planar)
@@ -822,7 +823,7 @@ void Hermes::Module::ModuleDeprecated::read(std::string filename)
         // preprocessor
         for (int i = 1; i < mod->preprocessor().gui().size(); i++)
         {
-            gui ui = mod->preprocessor().gui().at(i);
+            XMLModule::gui ui = mod->preprocessor().gui().at(i);
             if (ui.type() == "volume")
                 material_ui = Hermes::Module::DialogUI(ui);
             else if (ui.type() == "surface")

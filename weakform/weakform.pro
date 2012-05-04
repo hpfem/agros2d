@@ -16,7 +16,6 @@ INCLUDEPATH += ../hermes2d/include \
     ../hermes_common/include \
     ../lib/muparser \
     ../lib/dxflib \
-    ../lib/rapidxml \
     ../src/ \
     ../src/hermes2d
 

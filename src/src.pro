@@ -115,7 +115,8 @@ SOURCES += util.cpp \
     infowidget.cpp \
     settings.cpp \
     hermes2d/solutionstore.cpp \
-    ../resources_source/classes/module_xml.cpp
+    ../resources_source/classes/module_xml.cpp \
+    ../resources_source/classes/coupling_xml.cpp
 
 HEADERS += util.h \
     value.h \

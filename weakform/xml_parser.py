@@ -132,7 +132,7 @@ class XmlParser:
             quantity.unit = ds_quantity.unit
             module.quantities.append(quantity)
         
-         for ds_weakform in ds_module.volume.weakforms.weakform:
+         for ds_weakform in ds_module.volume.weakforms_volume.weakform_volume:
              volume = Volume()                 
              volume.name =  ds_weakform.analysistype      
              i  = 0
@@ -169,7 +169,7 @@ class XmlParser:
             quantity.unit = ds_quantity.unit
             surface.quantities.append(quantity)            
                     
-         for ds_weakform in ds_module.surface.weakforms.weakform:             
+         for ds_weakform in ds_module.surface.weakforms_surface.weakform_surface:             
              for ds_boundary in ds_weakform.boundary:                 
                  for ds_quantity in ds_boundary.quantity:
                     quantity = Quantity()      

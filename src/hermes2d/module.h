@@ -25,11 +25,14 @@
 
 extern double actualTime;
 
+namespace XMLModule
+{
 class module;
 class quantity;
 class boundary;
 class localvariable;
 class gui;
+}
 
 class Marker;
 
@@ -164,7 +167,7 @@ struct LocalVariable
 
     LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "", std::string unit_html = "")
         : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expr(Expression()) {}
-    LocalVariable(localvariable lv, CoordinateType problemType, AnalysisType analysisType);
+    LocalVariable(XMLModule::localvariable lv, CoordinateType problemType, AnalysisType analysisType);
 
     // id
     std::string id;
@@ -190,7 +193,7 @@ struct MaterialTypeVariable
     MaterialTypeVariable() : id(""), shortname(""), default_value(0) {}
     MaterialTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
-    MaterialTypeVariable(quantity quant);
+    MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
     std::string id;
@@ -206,7 +209,7 @@ struct BoundaryTypeVariable
     BoundaryTypeVariable() : id(""), shortname(""), default_value(0) {}
     BoundaryTypeVariable(std::string id, std::string shortname,
                          double default_value = 0);
-    BoundaryTypeVariable(quantity quant);
+    BoundaryTypeVariable(XMLModule::quantity quant);
 
     // id
     std::string id;
@@ -221,7 +224,7 @@ struct BoundaryType
 {
     BoundaryType() : id(""), name("") {}
     BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
-                 boundary bdy,
+                 XMLModule::boundary bdy,
                  CoordinateType problem_type);
     ~BoundaryType();
 
@@ -273,7 +276,7 @@ struct Integral
 struct DialogUI
 {
     DialogUI() {}
-    DialogUI(gui ui);
+    DialogUI(XMLModule::gui ui);
 
     struct Row
     {
@@ -283,7 +286,7 @@ struct DialogUI
             : id(id), nonlin(nonlin), timedep(timedep), name(name), shortname(shortname), shortname_html(shortname_html),
               unit(unit), unit_html(unit_html), unit_latex(unit_latex),
               default_value(default_value), condition(condition) {}
-        Row(quantity qty);
+        Row(XMLModule::quantity qty);
 
         std::string id;
 
@@ -420,7 +423,7 @@ private:
     CoordinateType m_coordinateType;
     AnalysisType m_analysisType;
 
-    std::auto_ptr<module> module_xsd;
+    std::auto_ptr<XMLModule::module> module_xsd;
 };
 
 }

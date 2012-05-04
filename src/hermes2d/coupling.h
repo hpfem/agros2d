@@ -3,9 +3,6 @@
 #include "util.h"
 #include "hermes2d.h"
 
-#include <rapidxml.cpp>
-#include <rapidxml_utils.cpp>
-
 class FieldInfo;
 class ProblemConfig;
 class ParserFormExpression;
@@ -13,7 +10,8 @@ class ParserFormExpression;
 //namespace Hermes{
 //namespace Module{
 
-struct Coupling{
+struct Coupling
+{
     // id
     std::string id;
     // name
