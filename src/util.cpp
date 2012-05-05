@@ -179,6 +179,11 @@ void initLists()
     linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
 
+    // CouplingType
+    couplingTypeList.insert(CouplingType_None, "none");
+    couplingTypeList.insert(CouplingType_Weak, "weak");
+    couplingTypeList.insert(CouplingType_Hard, "hard");
+
     // PaletteType
     paletteTypeList.insert(Palette_Jet, "jet");
     paletteTypeList.insert(Palette_Copper, "copper");

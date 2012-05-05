@@ -22,8 +22,7 @@ CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
 
 CouplingInfo::~CouplingInfo()
 {
-    //    cout << "DESTRUCTOR !!!!!!!!!!!!!!!!" << endl;
-    if(m_coupling)
+    if (m_coupling)
         delete m_coupling;
 }
 
@@ -31,7 +30,7 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 {
     m_couplingType = couplingType;
 
-    //    cout << "set type " << couplingTypeString(m_couplingType).toStdString() << endl;
+    qDebug() << "set type " << couplingTypeString(m_couplingType).toStdString();
     reload();
 }
 
