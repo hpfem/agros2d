@@ -143,7 +143,7 @@ void Coupling::read(const QString &filename)
 {
     assert(QFile::exists(filename));
 
-    qDebug() << "reading coupling: " << filename;
+    // qDebug() << "reading coupling: " << filename;
 
     clear();
 
