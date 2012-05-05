@@ -56,7 +56,7 @@ void ParserForm::initParser(QList<Material *> materials, Boundary *boundary)
     if(m_fieldInfo)
         parser->parser.push_back(m_fieldInfo->module()->expressionParser());
     else if(m_couplingInfo)
-        parser->parser.push_back(m_couplingInfo->coupling()->getParser());
+        parser->parser.push_back(m_couplingInfo->coupling()->expressionParser());
     else
         assert(0);
 

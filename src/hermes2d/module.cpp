@@ -287,7 +287,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
-                    foreach (ParserFormExpression *expression, couplingInfo->coupling()->weakform_vector_volume)
+                    foreach (ParserFormExpression *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
                     {
                         SceneMaterial* material2 = Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField());
                         assert(material2);
@@ -321,14 +321,14 @@ void WeakFormAgros<Scalar>::registerForms()
                     && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
             {
                 
-                cout << "hard coupling form on marker " << labelNum << endl;
+                qDebug() << "hard coupling form on marker " << labelNum;
 
-                foreach (ParserFormExpression *pars, coupling->weakform_matrix_volume)
+                foreach (ParserFormExpression *pars, coupling->wfMatrixVolumeExpression())
                     registerForm(WFType_MatVol, sourceField, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
                 
-                foreach (ParserFormExpression *pars, coupling->weakform_vector_volume)
+                foreach (ParserFormExpression *pars, coupling->wfVectorVolumeExpression())
                     registerForm(WFType_VecVol, sourceField, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
@@ -421,15 +421,14 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     {
         XMLModule::matrix_form form = bdy.matrix_form().at(i);
         m_wfMatrixSurface.append(new ParserFormExpression(form.i(), form.j(),
-                                                          form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
-                                                          (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                          (problem_type == CoordinateType_Planar) ? form.planar() : form.axi(),
+                                                          form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
     }
     
     for (int i = 0; i < bdy.vector_form().size(); i++)
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
         m_wfVectorSurface.append(new ParserFormExpression(form.i(), form.j(),
-                                                          Hermes::Hermes2D::HERMES_NONSYM,
                                                           (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
     }
     
@@ -570,7 +569,7 @@ void Module::BasicModule::read(const QString &filename)
     m_fieldid = QString::fromStdString(mod->general().id());
     m_name = QString::fromStdString(mod->general().name());
     m_hasDeformableShape = mod->general().deformed_shape();
-    n_description = QString::fromStdString(mod->general().description());
+    m_description = QString::fromStdString(mod->general().description());
 
     // analyses
     m_numberOfSolutions = 0;
@@ -665,15 +664,14 @@ void Module::BasicModule::read(const QString &filename)
             {
                 XMLModule::matrix_form form = wf.matrix_form().at(i);
                 m_wfMatrixVolumeExpression.append(new ParserFormExpression(form.i(), form.j(),
-                                                                           form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM,
-                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi(),
+                                                                           form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
             }
 
             for (int i = 0; i < wf.vector_form().size(); i++)
             {
                 XMLModule::vector_form form = wf.vector_form().at(i);
                 m_wfVectorVolumeExpression.append(new ParserFormExpression(form.i(), form.j(),
-                                                                           Hermes::Hermes2D::HERMES_NONSYM,
                                                                            (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
             }
         }
@@ -805,7 +803,7 @@ void Module::BasicModule::clear()
     // general information
     m_fieldid = "";
     m_name = "";
-    n_description = "";
+    m_description = "";
 
     // analyses
     m_analyses.clear();
@@ -925,7 +923,7 @@ mu::Parser *Module::BasicModule::expressionParser(const QString &expr)
     if (!expr.isEmpty())
         parser->SetExpr(expr.toStdString());
 
-    QMapIterator<QString, double> iConstant(m_constants);
+    QMapIterator<QString, double> iConstant(constants());
     while (iConstant.hasNext())
     {
         iConstant.next();
@@ -939,7 +937,7 @@ mu::Parser *Module::BasicModule::expressionParser(const QString &expr)
 }
 
 QString Module::BasicModule::expression(Module::LocalVariable *physicFieldVariable,
-                                   PhysicFieldVariableComp physicFieldVariableComp)
+                                        PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariableComp)
     {
@@ -959,7 +957,7 @@ QString Module::BasicModule::expression(Module::LocalVariable *physicFieldVariab
 }
 
 ViewScalarFilter<double> *Module::BasicModule::viewScalarFilter(Module::LocalVariable *physicFieldVariable,
-                                                           PhysicFieldVariableComp physicFieldVariableComp)
+                                                                PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
     /*

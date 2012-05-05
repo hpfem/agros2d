@@ -566,7 +566,7 @@ void CouplingsWidget::createContent()
     int line = 0;
     foreach (CouplingInfo *couplingInfo, m_couplingInfos)
     {
-        layoutTable->addWidget(new QLabel(/*tr(*/QString::fromStdString(couplingInfo->coupling()->name)/*)*/), line, 0);
+        layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
         m_comboBoxes[couplingInfo] = new QComboBox();
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
         line++;

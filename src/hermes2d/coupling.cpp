@@ -22,7 +22,7 @@ CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
 
 CouplingInfo::~CouplingInfo()
 {
-//    cout << "DESTRUCTOR !!!!!!!!!!!!!!!!" << endl;
+    //    cout << "DESTRUCTOR !!!!!!!!!!!!!!!!" << endl;
     if(m_coupling)
         delete m_coupling;
 }
@@ -31,7 +31,7 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 {
     m_couplingType = couplingType;
 
-//    cout << "set type " << couplingTypeString(m_couplingType).toStdString() << endl;
+    //    cout << "set type " << couplingTypeString(m_couplingType).toStdString() << endl;
     reload();
 }
 
@@ -51,51 +51,44 @@ LinearityType CouplingInfo::linearityType()
 
 bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
 {
-    DIR *dp;
-    if ((dp = opendir((datadir()+ COUPLINGROOT).toStdString().c_str())) == NULL)
+    QDir dir(datadir() + COUPLINGROOT);
+    if (!dir.exists())
         error("Couplings dir '%s' doesn't exists", (datadir() + COUPLINGROOT).toStdString().c_str());
 
-    struct dirent *dirp;
-    while ((dirp = readdir(dp)) != NULL)
+    QStringList filter;
+    filter << "*.xml";
+    QStringList list = dir.entryList(filter);
+
+    foreach (QString filename, list)
     {
-        std::string filename = dirp->d_name;
+        // read name
+        std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + "/" + filename).toStdString().c_str());
+        XMLCoupling::coupling *coup = couplings_xsd.get();
 
-        // skip current and parent dir
-        if (filename == "." || filename == "..")
-            continue;
+        // module name
+        QString sourceFieldStr(QString::fromStdString(coup->general().modules().source().id()));
+        QString targetFieldStr(QString::fromStdString(coup->general().modules().target().id()));
 
-        if (filename.substr(filename.size() - 4, filename.size() - 1) == ".xml")
+        if ((sourceFieldStr == sourceField->fieldId()) && (targetFieldStr == targetField->fieldId()))
         {
-            // read name
-            std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + filename).c_str());
-            XMLCoupling::coupling *coup = couplings_xsd.get();
-
-            // module name
-            QString sourceFieldStr(QString::fromStdString(coup->general().modules().source().id()));
-            QString targetFieldStr(QString::fromStdString(coup->general().modules().target().id()));
-
-            if ((sourceFieldStr == sourceField->fieldId()) && (targetFieldStr == targetField->fieldId()))
+            // check whether coupling is available for values of source and target fields such as analysis type
+            for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
             {
-                //check whether coupling is available for values of source and target fields such as analysis type
-                for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
-                {
-                    XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
+                XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-                    if ((wf.sourceanalysis() == analysisTypeToStringKey(sourceField->analysisType()).toStdString()) &&
+                if ((wf.sourceanalysis() == analysisTypeToStringKey(sourceField->analysisType()).toStdString()) &&
                         (wf.targetanalysis() == analysisTypeToStringKey(targetField->analysisType()).toStdString()))
-                    {
-                        return true;
-                    }
+                {
+                    return true;
                 }
             }
         }
     }
-    closedir(dp);
 
     return false;
 }
 
-Coupling::Coupling(CoordinateType coordinateType, CouplingType couplingType, AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis)
+Coupling::Coupling(const QString &couplingId, CoordinateType coordinateType, CouplingType couplingType, AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis)
 {
     m_coordinateType = coordinateType;
     m_couplingType = couplingType;
@@ -103,6 +96,12 @@ Coupling::Coupling(CoordinateType coordinateType, CouplingType couplingType, Ana
     m_targetFieldAnalysis = targetFieldAnalysis;
 
     clear();
+
+    // read coupling description
+    QString filename = (datadir() + COUPLINGROOT + "/" + couplingId + ".xml");
+    assert(QFile::exists(filename));
+
+    read(filename);
 }
 
 Coupling::~Coupling()
@@ -112,9 +111,13 @@ Coupling::~Coupling()
 
 void Coupling::clear()
 {
+    m_constants.clear();
+
+    m_wfMatrixVolumeExpression.clear();
+    m_wfVectorVolumeExpression.clear();
 }
 
-mu::Parser* Coupling::getParser()
+mu::Parser* Coupling::expressionParser()
 {
     mu::Parser *parser = new mu::Parser();
 
@@ -127,135 +130,104 @@ mu::Parser* Coupling::getParser()
     // timestep
     parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
 
-    for (std::map<std::string, double>::iterator it = constants.begin(); it != constants.end(); ++it)
-        parser->DefineConst(it->first, it->second);
+    QMapIterator<QString, double> it(m_constants);
+    while (it.hasNext())
+    {
+        it.next();
+        parser->DefineConst(it.key().toStdString(), it.value());
+    }
 
     parser->EnableOptimizer(true);
 
     return parser;
 }
 
-void Coupling::read(std::string filename)
+void Coupling::read(const QString &filename)
 {
-    std::cout << "reading coupling: " << filename << std::endl << std::flush;
+    assert(QFile::exists(filename));
+
+    qDebug() << "reading coupling: " << filename;
 
     clear();
 
-    if (ifstream(filename.c_str()))
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_(filename.toStdString().c_str());
+    XMLCoupling::coupling *coup = couplings_xsd.get();
+
+    // problem
+    m_couplingId = QString::fromStdString(coup->general().id());
+    m_name = QString::fromStdString(coup->general().name());
+    m_description = QString::fromStdString(coup->general().description());
+
+    // constants
+    for (int i = 0; i < coup->constants().constant().size(); i++)
     {
-        // save current locale
-        char *plocale = setlocale (LC_NUMERIC, "");
-        setlocale (LC_NUMERIC, "C");
+        XMLCoupling::constant cnst = coup->constants().constant().at(i);
+        m_constants[QString::fromStdString(cnst.id())] = cnst.value();
+    }
 
-        std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_(filename.c_str());
-        XMLCoupling::coupling *coup = couplings_xsd.get();
+    // volume weakforms
+    for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-        // problem
-        id = coup->general().id();
-        name = coup->general().name();
-        description = coup->general().description();
-
-
-//        rapidxml::xml_node<> *source = general->first_node("modules")->first_node("source");
-//        this->sourceField = Util::problem()->fieldInfo(source->first_attribute("id")->value());
-//        rapidxml::xml_node<> *object = general->first_node("modules")->first_node("target");
-//        this->targetField = Util::problem()->fieldInfo(object->first_attribute("id")->value());
-
-
-
-        // volumetric weakforms
-//        Hermes::vector<Module::MaterialTypeVariable> material_type_variables_tmp;
-//        for (rapidxml::xml_node<> *quantity = doc.first_node("module")->first_node("volume")->first_node("quantity");
-//             quantity; quantity = quantity->next_sibling())
-//            if (std::string(quantity->name()) == "quantity")
-//                material_type_variables_tmp.push_back(Module::MaterialTypeVariable(quantity));
-
-        //TODO temporary
-        //m_analysisType = AnalysisType_SteadyState;
-
-        // constants
-        for (int i = 0; i < coup->constants().constant().size(); i++)
-        {
-            XMLCoupling::constant cnst = coup->constants().constant().at(i);
-            constants[cnst.id()] = cnst.value();
-        }
-
-        for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
-        {
-            XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
-
-            if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
+        if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
                 (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceFieldAnalysis).toStdString()) &&
                 (wf.targetanalysis() == analysisTypeToStringKey(m_targetFieldAnalysis).toStdString()))
+        {
+            // matrix form
+            for (int i = 0; i < wf.matrix_form().size(); i++)
             {
+                XMLCoupling::matrix_form form = wf.matrix_form().at(i);
+                m_wfMatrixVolumeExpression.push_back(new ParserFormExpression(form.i(), form.j(),
+                                                                          (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
+            }
 
-//            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
-//            {
-                // quantities
-//                for (rapidxml::xml_node<> *quantity = weakform->first_node("quantity");
-//                     quantity; quantity = quantity->next_sibling())
-//                {
-//                    if (std::string(quantity->name()) == "quantity")
-//                        for (Hermes::vector<Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
-//                             it < material_type_variables_tmp.end(); ++it )
-//                        {
-//                            Module::MaterialTypeVariable old = (Module::MaterialTypeVariable) *it;
-//                            if (old.id == quantity->first_attribute("id")->value())
-//                            {
-//                                Module::MaterialTypeVariable *var = new Module::MaterialTypeVariable(
-//                                            old.id, old.shortname, old.default_value);
-//                                material_type_variables.push_back(var);
-//                            }
-//                        }
-//                }
-//                material_type_variables_tmp.clear();
-
-                // weakforms
-                /*
-                for (rapidxml::xml_node<> *matrix = weakform->first_node("matrix_form");
-                     matrix; matrix = matrix->next_sibling())
-                {
-                    if (std::string(matrix->name()) == "matrix")
-                        weakform_matrix_volume.push_back(new ParserFormExpression(matrix, m_coordinateType));
-                }
-
-                for (rapidxml::xml_node<> *vector = weakform->first_node("vector_form");
-                     vector; vector = vector->next_sibling())
-                    if (std::string(vector->name()) == "vector_form")
-                        weakform_vector_volume.push_back(new ParserFormExpression(vector, m_coordinateType));
-                */
+            // vector form
+            for (int i = 0; i < wf.vector_form().size(); i++)
+            {
+                XMLCoupling::vector_form form = wf.vector_form().at(i);
+                m_wfVectorVolumeExpression.push_back(new ParserFormExpression(form.i(), form.j(),
+                                                                          (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
             }
         }
-
-        // set system locale
-        setlocale(LC_NUMERIC, plocale);
     }
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
 }
 
 
 
 // ****************************************************************************************************
 
-Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType couplingType,
-                                           std::string filename_custom)
+Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType couplingType)
 {
-    // std::cout << filename_custom << std::endl;
+    // open coupling
+    QString couplingId = sourceField->fieldId() + "-" + targetField->fieldId();
+    QString filename = (datadir() + COUPLINGROOT + "/" + couplingId + ".xml");
 
-    CoordinateType coordinateType = Util::problem()->config()->coordinateType();
-    Coupling *coupling = new Coupling(coordinateType, couplingType, sourceField->analysisType(), targetField->analysisType());
-
-    // open default module
-    std::string filename_default = (datadir() + COUPLINGROOT + "/" + sourceField->fieldId() + "-" +
-                                    targetField->fieldId() + ".xml").toStdString();
-    ifstream ifile_default(filename_default.c_str());
-    if (ifile_default)
+    if (QFile::exists(filename))
     {
-        coupling->read(filename_default);
+        CoordinateType coordinateType = Util::problem()->config()->coordinateType();
+        Coupling *coupling = new Coupling(couplingId,
+                                          coordinateType,
+                                          couplingType,
+                                          sourceField->analysisType(),
+                                          targetField->analysisType());
+
         return coupling;
     }
+    else
+    {
+        qDebug() << "Coupling doesn't exists.";
+        return NULL;
+    }
 
-    std::cout << "Coupling doesn't exists." << std::endl;
-    return NULL;
+
 }
 
 void CouplingInfo::synchronizeCouplings(const QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos)

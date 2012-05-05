@@ -102,7 +102,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 {
     Hermes::vector<shared_ptr<Space<Scalar> > > space;
 
-    cout << "---- createSpace()" << endl;
+    qDebug() << "---- createSpace()";
     // essential boundary conditions
     Hermes::vector<EssentialBCs<double> *> bcs;
     for (int i = 0; i < m_block->numSolutions(); i++)
@@ -617,7 +617,7 @@ bool Solver<Scalar>::solveTimeStep(double timeStep)
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
 
     // update timedep values
-    foreach(Field* field, m_block->fields())
+    foreach (Field* field, m_block->fields())
         field->fieldInfo()->module()->updateTimeFunctions(actualTime);
 
     m_wf->set_current_time(actualTime);

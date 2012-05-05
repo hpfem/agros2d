@@ -12,43 +12,58 @@ class ParserFormExpression;
 
 struct Coupling
 {
-    // id
-    std::string id;
-    // name
-    std::string name;
-    // description
-    std::string description;
-
-    Coupling(CoordinateType coordinateType, CouplingType couplingType, AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis);
+    Coupling(const QString &couplingId,
+             CoordinateType coordinateType, CouplingType couplingType,
+             AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis);
     ~Coupling();
 
+    // id
+    inline QString couplingId() const { return m_couplingId; }
+    // name
+    inline QString name() const { return m_name; }
+    // description
+    inline QString description() const { return m_description; }
+
     // constants
-    std::map<std::string, double> constants;
+    inline QMap<QString, double> constants() const { return m_constants; }
 
     // weak forms
-    Hermes::vector<ParserFormExpression *> weakform_matrix_volume;
-    Hermes::vector<ParserFormExpression *> weakform_vector_volume;
+    inline QList<ParserFormExpression *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
+    inline QList<ParserFormExpression *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
 
-    mu::Parser *getParser();
+    mu::Parser *expressionParser();
 
-    void read(std::string filename);
-    void clear();
-
-    inline CoordinateType get_coordinate_type() const { return m_coordinateType; }
+    inline CoordinateType coordinateType() const { return m_coordinateType; }
 
 private:
     CouplingType m_couplingType;
     CoordinateType m_coordinateType;
+
     AnalysisType m_sourceFieldAnalysis;
     AnalysisType m_targetFieldAnalysis;
 
+    // id
+    QString m_couplingId;
+    // name
+    QString m_name;
+    // description
+    QString m_description;
+
+    // constants
+    QMap<QString, double> m_constants;
+
+    // weak forms
+    QList<ParserFormExpression *> m_wfMatrixVolumeExpression;
+    QList<ParserFormExpression *> m_wfVectorVolumeExpression;
+
+    void read(const QString &filename);
+    void clear();
 };
 
 bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField);
 
 // coupling factory
-Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType coupling_type,
-                                           std::string filename_custom = "");
+Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType couplingType);
 
 class CouplingInfo
 {
@@ -58,7 +73,7 @@ public:
 
     inline Coupling *coupling() const { return m_coupling; }
 
-    QString couplingId() { if(m_coupling) return QString::fromStdString(m_coupling->id); return "None"; }
+    QString couplingId() { if (m_coupling) return m_coupling->couplingId(); return "none"; }
     CouplingType couplingType() { return m_couplingType; }
     inline bool isHard() { return m_couplingType == CouplingType_Hard;}
     inline bool isWeak() { return m_couplingType == CouplingType_Weak;}
@@ -89,9 +104,6 @@ private:
 
     FieldInfo* m_sourceField;
     FieldInfo* m_targetField;
-
-//    /// unique coupling info
-//    QString m_couplingId;
 
     /// coupling type
     CouplingType m_couplingType;

@@ -44,7 +44,7 @@ struct ParserFormEssential
 struct ParserFormExpression
 {
     ParserFormExpression() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expression("") {}
-    ParserFormExpression(int i, int j, Hermes::Hermes2D::SymFlag sym, string expr) : i(i), j(j), sym(sym), expression(expr) {}
+    ParserFormExpression(int i, int j, string expr, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM) : i(i), j(j), expression(expr), sym(sym) {}
 
     // position
     int i;

@@ -278,10 +278,10 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
                     PyArg_Parse(result, "d", &expressionResult.value);
                     if (fabs(expressionResult.value) < EPS_ZERO)
                         expressionResult.value = 0.0;
-                    Py_DECREF(result);
-                }
+                    Py_XDECREF(result);
 
-                PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                    PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                }
             }
         }
     }

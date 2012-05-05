@@ -303,7 +303,7 @@ struct BasicModule
     // deformed shape
     inline bool hasDeformableShape() const { return m_hasDeformableShape; }
     // description
-    inline QString description() const { return n_description; }
+    inline QString description() const { return m_description; }
 
     // analyses
     inline QMap<AnalysisType, QString> analyses() const { m_analyses; }
@@ -400,7 +400,7 @@ private:
     // deformed shape
     bool m_hasDeformableShape;
     // description
-    QString n_description;
+    QString m_description;
 
     // analyses
     QMap<AnalysisType, QString> m_analyses;
