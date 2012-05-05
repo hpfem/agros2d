@@ -39,17 +39,18 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
     lstFields->setIconSize(QSize(32, 32));
     lstFields->setMinimumHeight(36*8);
 
-    std::map<std::string, std::string> modules = availableModules();
-    for (std::map<std::string, std::string>::iterator it = modules.begin();
-         it != modules.end(); ++it)
+    QMapIterator<QString, QString> it(availableModules());
+    while (it.hasNext())
     {
+        it.next();
+
         // add only missing fields
-        if (!fields.contains(QString::fromStdString(it->first)))
+        if (!fields.contains(it.key()))
         {
             QListWidgetItem *item = new QListWidgetItem(lstFields);
-            item->setIcon(icon("fields/" + QString::fromStdString(it->first)));
-            item->setText(QString::fromStdString(it->second));
-            item->setData(Qt::UserRole, QString::fromStdString(it->first));
+            item->setIcon(icon("fields/" + it.key()));
+            item->setText(it.value());
+            item->setData(Qt::UserRole, it.key());
 
             lstFields->addItem(item);
         }
@@ -290,9 +291,12 @@ void FieldWidget::fillComboBox()
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
     }
 
-    std::map<std::string, std::string> analyses = availableAnalyses(m_fieldInfo->fieldId().toStdString());
-    for (std::map<std::string, std::string>::iterator it = analyses.begin(); it != analyses.end(); ++it)
-        cmbAnalysisType->addItem(QString::fromStdString(it->second), analysisTypeFromStringKey(QString::fromStdString(it->first)));
+    QMapIterator<AnalysisType, QString> it(availableAnalyses(m_fieldInfo->fieldId()));
+    while (it.hasNext())
+    {
+        it.next();
+        cmbAnalysisType->addItem(it.value(), it.key());
+    }
 }
 
 void FieldWidget::load()
@@ -384,7 +388,7 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent)
 {
-    setWindowTitle(QString::fromStdString(fieldInfo->module()->name));
+    setWindowTitle(fieldInfo->name());
 
     fieldWidget = new FieldWidget(fieldInfo, this);
 
@@ -427,7 +431,7 @@ void FieldDialog::doAccept()
 void FieldDialog::deleteField()
 {
     if (QMessageBox::question(this, tr("Delete"), tr("Physical field '%1' will be pernamently deleted. Are you sure?").
-                              arg(QString::fromStdString(fieldWidget->fieldInfo()->module()->name)), tr("&Yes"), tr("&No")) == 0)
+                              arg(fieldWidget->fieldInfo()->name()), tr("&Yes"), tr("&No")) == 0)
     {
         Util::problem()->removeField(fieldWidget->fieldInfo());
         accept();
@@ -482,7 +486,7 @@ void FieldsToobar::refresh()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        QAction *actField = new QAction(fieldInfo->module() ? QString::fromStdString(fieldInfo->module()->name) : fieldInfo->fieldId(), this);
+        QAction *actField = new QAction(fieldInfo->module() ? fieldInfo->name() : fieldInfo->fieldId(), this);
         actField->setIcon(icon("fields/" + fieldInfo->fieldId()));
         actField->setData(fieldInfo->fieldId());
 

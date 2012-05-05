@@ -25,7 +25,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
-Marker::Marker(FieldInfo *fieldInfo, std::string name)
+Marker::Marker(FieldInfo *fieldInfo, QString name)
     : fieldInfo(fieldInfo), name(name)
 {
     m_isNone = false;
@@ -36,27 +36,27 @@ Marker::~Marker()
     values.clear();
 }
 
-Value Marker::getValue(std::string id)
+Value Marker::getValue(QString id)
 {
-    if (!id.empty())
+    if (!id.isEmpty())
         return values[id];
 
     return Value();
 }
 
-const map<string, Value> Marker::getValues() const
+const map<QString, Value> Marker::getValues() const
 {
     return values;
 }
 
-void Marker::evaluate(std::string id, double time)
+void Marker::evaluate(QString id, double time)
 {
     values[id].evaluate(time);
 }
 
 bool Marker::evaluateAllVariables()
 {
-    for (std::map<std::string, Value>::iterator it = values.begin(); it != values.end(); ++it)
+    for (std::map<QString, Value>::iterator it = values.begin(); it != values.end(); ++it)
     {
         if (!it->second.evaluate())
             return false;
@@ -69,10 +69,9 @@ QString Marker::fieldId()
     return fieldInfo->fieldId();
 }
 
-Boundary::Boundary(FieldInfo *fieldInfo, std::string name, std::string type,
-                   std::map<std::string, Value> values) : Marker(fieldInfo, name)
+Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
+                   std::map<QString, Value> values) : Marker(fieldInfo, name)
 {
-    cout << "boundary constructor, name: " << name << ", type: " << type << endl;
     // name and type
     setType(type);
     this->values = values;
@@ -82,20 +81,15 @@ Boundary::Boundary(FieldInfo *fieldInfo, std::string name, std::string type,
     {
         if (this->values.size() == 0)
         {
-            Hermes::Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(type);
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-            {
-                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
+            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(type);
+            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables)
                 this->values[variable->id] = Value(QString::number(variable->default_value));
-            }
         }
     }
 }
 
-
-
-Material::Material(FieldInfo *fieldInfo, std::string name,
-                   std::map<std::string, Value> values) : Marker(fieldInfo, name)
+Material::Material(FieldInfo *fieldInfo, QString name,
+                   std::map<QString, Value> values) : Marker(fieldInfo, name)
 {
     // name and type
     this->values = values;
@@ -105,12 +99,8 @@ Material::Material(FieldInfo *fieldInfo, std::string name,
     {
         if (this->values.size() == 0)
         {
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = fieldInfo->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+            foreach (Module::MaterialTypeVariable *variable, fieldInfo->module()->materialTypeVariables())
                 this->values[variable->id] = Value(QString::number(variable->default_value));
-            }
         }
     }
 }

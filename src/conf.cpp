@@ -50,15 +50,7 @@ void Config::loadWorkspace()
     language = settings.value("General/Language", QLocale::system().name()).toString();
     defaultPhysicField = settings.value("General/DefaultPhysicField", "electrostatics").toString();
 
-    bool check = false;
-    std::map<std::string, std::string> modules = availableModules();
-    for (std::map<std::string, std::string>::iterator it = modules.begin(); it != modules.end(); ++it)
-        if (defaultPhysicField.toStdString() == it->first)
-        {
-            check = true;
-            break;
-        }
-    if (!check)
+    if (!availableModules().keys().contains(defaultPhysicField))
         defaultPhysicField = "electrostatic";
 
     collaborationServerURL = settings.value("General/CollaborationServerURL", QString("http://agros2d.org/collaboration/")).toString();

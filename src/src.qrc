@@ -58,6 +58,7 @@
         <file alias="zoom-in.png">../resources_source/images/zoom-in.png</file>
         <file alias="zoom-out.png">../resources_source/images/zoom-out.png</file>
         <file alias="zoom-original.png">../resources_source/images/zoom-original.png</file>
+        <file alias="showhide.png">../resources_source/images/showhide.png</file>
         <file alias="script.png">../resources_source/images/script.png</file>
         <file alias="script-create.png">../resources_source/images/script-create.png</file>
         <file alias="script-python.png">../resources_source/images/script-python.png</file>

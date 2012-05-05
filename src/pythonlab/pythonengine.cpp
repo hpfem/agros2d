@@ -280,11 +280,10 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
                         expressionResult.value = 0.0;
                     Py_DECREF(result);
                 }
+
+                PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
             }
         }
-
-        if (returnValue)
-            PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
     }
     else
     {

@@ -242,7 +242,7 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, F
     assert(block->contains(fieldInfo));
     MultiSolutionArray<Scalar> msa;
     int offset = block->offset(block->field(fieldInfo));
-    int numSol = fieldInfo->module()->number_of_solution();
+    int numSol = fieldInfo->module()->numberOfSolutions();
     for(int comp = offset; comp < offset + numSol; comp++)
     {
         msa.addComponent(this->component(comp));

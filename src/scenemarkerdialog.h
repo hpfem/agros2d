@@ -32,19 +32,16 @@ class SceneMaterial;
 Q_DECLARE_METATYPE(SceneBoundary *)
 Q_DECLARE_METATYPE(SceneMaterial *)
 
-namespace Hermes
-{
 namespace Module
 {
-class DialogUI;
-}
+    class DialogUI;
 }
 
 class SceneBoundary : public Boundary
 {
 public:
-    SceneBoundary(FieldInfo *getFieldInfo, std::string name = "", std::string type = "",
-                  std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    SceneBoundary(FieldInfo *getFieldInfo, QString name = "", QString type = "",
+                  std::map<QString, Value> values = (std::map<QString, Value>()));
 
     int showDialog(QWidget *parent);
 
@@ -70,9 +67,9 @@ class SceneFieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    SceneFieldWidget(Hermes::Module::DialogUI *ui, QWidget *parent);
+    SceneFieldWidget(Module::DialogUI *ui, QWidget *parent);
 
-    Hermes::Module::DialogUI *ui;
+    Module::DialogUI *ui;
 
     // layout
     QVBoxLayout *layout;
@@ -99,7 +96,7 @@ class SceneFieldWidgetMaterial : public SceneFieldWidget
 public:
     SceneMaterial *material;
 
-    SceneFieldWidgetMaterial(Hermes::Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
+    SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
 
     void addCustomWidget(QVBoxLayout *layout) {}
     void refresh();
@@ -113,7 +110,7 @@ class SceneFieldWidgetBoundary : public SceneFieldWidget
 public:
     SceneBoundary *boundary;
 
-    SceneFieldWidgetBoundary(Hermes::Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent);
+    SceneFieldWidgetBoundary(Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent);
 
     QComboBox *comboBox;
 
@@ -131,8 +128,8 @@ private slots:
 class SceneMaterial : public Material
 {
 public:
-    SceneMaterial(FieldInfo *getFieldInfo, std::string name,
-                  std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    SceneMaterial(FieldInfo *getFieldInfo, QString name,
+                  std::map<QString, Value> values = (std::map<QString, Value>()));
 
     int showDialog(QWidget *parent);
 

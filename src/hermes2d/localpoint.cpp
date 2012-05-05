@@ -67,8 +67,8 @@ LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : m_f
     parser = new Parser(fieldInfo);
     initParser();
 
-    for (std::map<std::string, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
-        parser->parser[0]->DefineVar(it->first, &it->second);
+    for (std::map<QString, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
+        parser->parser[0]->DefineVar(it->first.toStdString(), &it->second);
 
     calculate();
 }
@@ -84,7 +84,7 @@ void LocalPointValue::initParser()
         return;
 
     // parser variables
-    parser->parser.push_back(m_fieldInfo->module()->get_parser());
+    parser->parser.push_back(m_fieldInfo->module()->expressionParser());
 
     // init material variables
     parser->initParserMaterialVariables();
@@ -100,7 +100,7 @@ void LocalPointValue::calculate()
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
         QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-        m_fieldInfo->module()->update_time_functions(timeLevels[Util::scene()->activeTimeStep()]);
+        m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
     }
 
     if (Util::problem()->isSolved())
@@ -119,12 +119,12 @@ void LocalPointValue::calculate()
             parser->parser[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
             parser->parser[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
-            double *pvalue = new double[m_fieldInfo->module()->number_of_solution()];
-            double *pdx = new double[m_fieldInfo->module()->number_of_solution()];
-            double *pdy = new double[m_fieldInfo->module()->number_of_solution()];
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->number_of_solution()); //TODO PK <double>
+            double *pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
+            double *pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
+            double *pdy = new double[m_fieldInfo->module()->numberOfSolutions()];
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions()); //TODO PK <double>
 
-            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
                 FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.get();
@@ -158,33 +158,30 @@ void LocalPointValue::calculate()
             parser->setParserVariables(tmpMaterial, NULL, pvalue[0], pdx[0], pdy[0]);
 
             // parse expression
-            for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = m_fieldInfo->module()->local_point.begin();
-                 it < m_fieldInfo->module()->local_point.end(); ++it )
+            foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
             {
                 try
                 {
                     PointValue pointValue;
-                    if (((Hermes::Module::LocalVariable *) *it)->is_scalar)
+                    if (variable->isScalar)
                     {
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.scalar);
+                        parser->parser[0]->SetExpr(variable->expr.scalar.toStdString());
                         pointValue.scalar = parser->parser[0]->Eval();
                     }
                     else
                     {
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.comp_x);
+                        parser->parser[0]->SetExpr(variable->expr.comp_x.toStdString());
                         pointValue.vector.x = parser->parser[0]->Eval();
-                        parser->parser[0]->SetExpr(((Hermes::Module::LocalVariable *) *it)->expr.comp_y);
+                        parser->parser[0]->SetExpr(variable->expr.comp_y.toStdString());
                         pointValue.vector.y = parser->parser[0]->Eval();
                     }
-                    values[*it] = pointValue;
+                    values[variable] = pointValue;
 
                 }
                 catch (mu::Parser::exception_type &e)
                 {
-                    std::cout << "Local value: " << ((Hermes::Module::LocalVariable *) *it)->name <<
-                                 " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
-                                 ((Hermes::Module::LocalVariable *) *it)->name << " - " <<
-                                 parser->parser[0]->GetExpr() << " - " << e.GetMsg() << std::endl;
+                    qDebug() << "Local value: " << variable->name << " (" << variable->id << ") " << variable->name << " - " <<
+                                QString::fromStdString(parser->parser[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                 }
             }
 

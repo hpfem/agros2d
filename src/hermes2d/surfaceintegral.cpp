@@ -40,11 +40,11 @@ SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(f
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
         QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-        m_fieldInfo->module()->update_time_functions(timeLevels[Util::scene()->activeTimeStep()]);
+        m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
     }
 
     // solution
-    for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+    for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
     {
         FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
@@ -60,16 +60,11 @@ SurfaceIntegralValue::~SurfaceIntegralValue()
 
 void SurfaceIntegralValue::initParser()
 {
-    for (Hermes::vector<Hermes::Module::Integral *>::iterator it = m_fieldInfo->module()->surface_integral.begin();
-         it < m_fieldInfo->module()->surface_integral.end(); ++it )
+    foreach (Module::Integral *integral, m_fieldInfo->module()->surfaceIntegrals())
     {
-        mu::Parser *pars = m_fieldInfo->module()->get_parser();
+        parser->parser.push_back(m_fieldInfo->module()->expressionParser(integral->expr.scalar));
 
-        pars->SetExpr(((Hermes::Module::Integral *) *it)->expr.scalar);
-
-        parser->parser.push_back(pars);
-
-        values[*it] = 0.0;
+        values[integral] = 0.0;
     }
 }
 
@@ -82,36 +77,36 @@ void SurfaceIntegralValue::calculate()
         double py;
         double ptanx;
         double ptany;
-        double *pvalue = new double[m_fieldInfo->module()->number_of_solution()];
-        double *pdx = new double[m_fieldInfo->module()->number_of_solution()];
-        double *pdy = new double[m_fieldInfo->module()->number_of_solution()];
+        double *pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
+        double *pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
+        double *pdy = new double[m_fieldInfo->module()->numberOfSolutions()];
 
-        double **value = new double*[m_fieldInfo->module()->number_of_solution()];
-        double **dudx = new double*[m_fieldInfo->module()->number_of_solution()];
-        double **dudy = new double*[m_fieldInfo->module()->number_of_solution()];
+        double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
 
-        for (Hermes::vector<mu::Parser *>::iterator it = parser->parser.begin(); it < parser->parser.end(); ++it )
+        foreach (mu::Parser *pars, parser->parser)
         {
-            ((mu::Parser *) *it)->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-            ((mu::Parser *) *it)->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
-            ((mu::Parser *) *it)->DefineVar("tan" + Util::problem()->config()->labelX().toLower().toStdString(), &ptanx);
-            ((mu::Parser *) *it)->DefineVar("tan" + Util::problem()->config()->labelY().toLower().toStdString(), &ptany);
+            pars->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+            pars->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+            pars->DefineVar("tan" + Util::problem()->config()->labelX().toLower().toStdString(), &ptanx);
+            pars->DefineVar("tan" + Util::problem()->config()->labelY().toLower().toStdString(), &ptany);
 
-            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
                 std::stringstream number;
                 number << (k+1);
 
-                ((mu::Parser *) *it)->DefineVar("value" + number.str(), &pvalue[k]);
-                ((mu::Parser *) *it)->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-                ((mu::Parser *) *it)->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+                pars->DefineVar("value" + number.str(), &pvalue[k]);
+                pars->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+                pars->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
             }
         }
 
         Hermes::Hermes2D::Element *e;
         Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
-        for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             sln[k]->set_quad_2d(quad);
 
         Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
@@ -155,7 +150,7 @@ void SurfaceIntegralValue::calculate()
                             Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                             int o = 0;
-                            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
                             {
                                 o += sln[k]->get_fn_order();
                                 sln[k]->set_active_element(e);
@@ -171,7 +166,7 @@ void SurfaceIntegralValue::calculate()
                             double3 *pt = quad2d->get_points(eo, Hermes::Hermes2D::HERMES_MODE_TRIANGLE);
                             double3 *tan = ru->get_tangent(edge);
 
-                            for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
                             {
                                 sln[k]->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                                 // value
@@ -191,8 +186,7 @@ void SurfaceIntegralValue::calculate()
 
                             // parse expression
                             int n = 0;
-                            for (Hermes::vector<Hermes::Module::Integral *>::iterator it = m_fieldInfo->module()->surface_integral.begin();
-                                 it < m_fieldInfo->module()->surface_integral.end(); ++it )
+                            foreach (Module::Integral *integral, m_fieldInfo->module()->surfaceIntegrals())
                             {
                                 double result = 0.0;
 
@@ -206,7 +200,7 @@ void SurfaceIntegralValue::calculate()
                                         ptanx = tan[i][0];
                                         ptany = tan[i][1];
 
-                                        for (int k = 0; k < m_fieldInfo->module()->number_of_solution(); k++)
+                                        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
                                         {
                                             pvalue[k] = value[k][i];
                                             pdx[k] = dudx[k][i];
@@ -216,14 +210,12 @@ void SurfaceIntegralValue::calculate()
                                         result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * parser->parser[n]->Eval();
                                     }
 
-                                    values[*it] += result;
+                                    values[integral] += result;
                                 }
                                 catch (mu::Parser::exception_type &e)
                                 {
-                                    std::cout << "Surface integral: " << ((Hermes::Module::LocalVariable *) *it)->name <<
-                                                 " (" << ((Hermes::Module::LocalVariable *) *it)->id << ") " <<
-                                                 ((Hermes::Module::LocalVariable *) *it)->name << " - " <<
-                                                 parser->parser[n]->GetExpr() << " - " << e.GetMsg() << std::endl;
+                                    qDebug() << "Surface integral: " << integral->name << " (" << integral->id << ") " << integral->name << " - " <<
+                                                 QString::fromStdString(parser->parser[n]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                                 }
 
                                 n++;

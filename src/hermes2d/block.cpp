@@ -98,7 +98,7 @@ int Block::numSolutions() const
 
     foreach (Field *field, m_fields)
     {
-        num += field->fieldInfo()->module()->number_of_solution();
+        num += field->fieldInfo()->module()->numberOfSolutions();
     }
 
     return num;
@@ -113,7 +113,7 @@ int Block::offset(Field *fieldParam) const
         if(field == fieldParam)
             return offset;
         else
-            offset += field->fieldInfo()->module()->number_of_solution();
+            offset += field->fieldInfo()->module()->numberOfSolutions();
     }
 
     assert(0);
@@ -166,41 +166,6 @@ int Block::nonlinearSteps() const
     }
 
     return steps;
-}
-
-int Block::numTimeSteps() const
-{
-    int timeSteps = 0;
-    foreach(Field* field, m_fields)
-    {
-        if(field->fieldInfo()->analysisType() == AnalysisType_Transient)
-        {
-            int fieldTimeSteps = floor(Util::problem()->config()->timeTotal().number() / Util::problem()->config()->timeStep().number());
-            if(fieldTimeSteps > timeSteps)
-                timeSteps = fieldTimeSteps;
-        }
-    }
-    return timeSteps;
-}
-
-double Block::timeStep() const
-{
-    double step = 0;
-
-    foreach (Field* field, m_fields)
-    {
-        FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->analysisType() == AnalysisType_Transient)
-        {
-            if (step == 0)
-                step = Util::problem()->config()->timeStep().number();
-
-            //TODO zatim moc nevim
-            assert(step == Util::problem()->config()->timeStep().number());
-        }
-    }
-
-    return step;
 }
 
 bool Block::contains(FieldInfo *fieldInfo) const

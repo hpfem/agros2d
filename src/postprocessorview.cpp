@@ -213,9 +213,9 @@ void PostprocessorWidget::saveBasic()
     Util::config()->scalarRangeMin = txtScalarFieldRangeMin->value();
     Util::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
-    Hermes::Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
     if (physicFieldVariable && physicFieldVariable->id == "custom")
-        physicFieldVariable->expr.scalar = txtPostScalarFieldExpression->text().toStdString();
+        physicFieldVariable->expr.scalar = txtPostScalarFieldExpression->text();
 
     // vector field
     Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
@@ -873,21 +873,21 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
 
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
-    Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+    Module::LocalVariable *physicFieldVariable = NULL;
 
     if (cmbPostScalarFieldVariable->currentIndex() != -1)
     {
         QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
-        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
     }
 
     // component
     cmbPostScalarFieldVariableComp->clear();
     if (physicFieldVariable)
     {
-        if (physicFieldVariable->is_scalar)
+        if (physicFieldVariable->isScalar)
         {
             cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
         }
@@ -914,7 +914,7 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
 
     txtPostScalarFieldExpression->setText("");
 
-    Hermes::Module::LocalVariable *physicFieldVariable = NULL;
+    Module::LocalVariable *physicFieldVariable = NULL;
 
     // TODO: proc je tu index a cmb..->currentIndex?
     if (cmbPostScalarFieldVariable->currentIndex() != -1 && index != -1)
@@ -924,7 +924,7 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
         // TODO: not good - relies on variable names begining with module name
         std::string fieldName(variableName.split("_")[0].toStdString());
 
-        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->get_variable(variableName.toStdString());
+        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
     }
 
     if (physicFieldVariable)
@@ -935,18 +935,18 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
         switch ((PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt())
         {
         case PhysicFieldVariableComp_Scalar:
-            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expr.scalar));
+            txtPostScalarFieldExpression->setText(physicFieldVariable->expr.scalar);
             break;
         case PhysicFieldVariableComp_Magnitude:
             txtPostScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
-                                                    arg(QString::fromStdString(physicFieldVariable->expr.comp_x)).
-                                                    arg(QString::fromStdString(physicFieldVariable->expr.comp_y)));
+                                                    arg(physicFieldVariable->expr.comp_x).
+                                                    arg(physicFieldVariable->expr.comp_y));
             break;
         case PhysicFieldVariableComp_X:
-            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expr.comp_x));
+            txtPostScalarFieldExpression->setText(physicFieldVariable->expr.comp_x);
             break;
         case PhysicFieldVariableComp_Y:
-            txtPostScalarFieldExpression->setText(QString::fromStdString(physicFieldVariable->expr.comp_y));
+            txtPostScalarFieldExpression->setText(physicFieldVariable->expr.comp_y);
             break;
         }
     }

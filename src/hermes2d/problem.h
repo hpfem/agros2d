@@ -17,7 +17,6 @@ class Problem;
 //template <typename Scalar>
 //class Solver;
 
-
 class ProblemConfig : public QObject
 {
     Q_OBJECT
@@ -47,6 +46,8 @@ public:
 
     inline Value timeTotal() const { return m_timeTotal; }
     void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
+
+    inline int numTimeSteps() const { return floor(timeTotal().number() / timeStep().number()); }
 
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
     void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }

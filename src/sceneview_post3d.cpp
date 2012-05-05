@@ -95,11 +95,9 @@ void Post3DHermes::processRangeScalar()
     if (Util::problem()->isSolved() && Util::config()->showScalarView)
     {
         bool contains = false;
-        for (Hermes::vector<Hermes::Module::LocalVariable *>::iterator it = Util::scene()->activeViewField()->module()->view_scalar_variables.begin();
-            it < Util::scene()->activeViewField()->module()->view_scalar_variables.end(); ++it )
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
         {
-            Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-            if (variable->id == Util::config()->scalarVariable.toStdString())
+            if (variable->id == Util::config()->scalarVariable)
             {
                 contains = true;
                 break;
@@ -109,15 +107,15 @@ void Post3DHermes::processRangeScalar()
         if (Util::config()->scalarVariable == "" || !contains)
         {
             // default values
-            Util::config()->scalarVariable = QString::fromStdString(Util::scene()->activeViewField()->module()->view_default_scalar_variable->id);
-            Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->view_default_scalar_variable_comp();
+            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id;
+            Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->defaultViewScalarVariableComp();
         }
 
         Util::log()->printMessage(tr("Post3DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
         processInitialMesh();
 
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->view_scalar_filter(Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString()),
+        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
@@ -126,7 +124,7 @@ void Post3DHermes::processRangeScalar()
 
         // deformed shape
         if (Util::config()->deformScalar)
-            Util::scene()->activeViewField()->module()->deform_shape(m_linScalarView.get_vertices(),
+            Util::scene()->activeViewField()->module()->deformShape(m_linScalarView.get_vertices(),
                                                                      m_linScalarView.get_num_vertices());
         delete slnScalarView;
 
@@ -214,10 +212,10 @@ void SceneViewPost3D::paintGL()
     {
         if (Util::problem()->isSolved())
         {
-            Hermes::Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->get_variable(Util::config()->scalarVariable.toStdString());
+            Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
             if (localVariable)
             {
-                QString text = Util::config()->scalarVariable != "" ? QString::fromStdString(localVariable->name) : "";
+                QString text = Util::config()->scalarVariable != "" ? localVariable->name : "";
                 if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
                     text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
                 emit labelCenter(text);

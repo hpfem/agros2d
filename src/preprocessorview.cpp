@@ -164,7 +164,7 @@ void PreprocessorWidget::refresh()
     {
         // field
         QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-        fieldNode->setText(0, QString::fromStdString(fieldInfo->module()->name));
+        fieldNode->setText(0, fieldInfo->name());
         fieldNode->setExpanded(true);
 
         // materials
@@ -178,7 +178,7 @@ void PreprocessorWidget::refresh()
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
 
-            item->setText(0, QString::fromStdString(material->getName()));
+            item->setText(0, material->getName());
             item->setIcon(0, icon("scene-labelmarker"));
             item->setData(0, Qt::UserRole, material->variant());
 
@@ -197,7 +197,7 @@ void PreprocessorWidget::refresh()
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
-            item->setText(0, QString::fromStdString(boundary->getName()));
+            item->setText(0, boundary->getName());
             item->setIcon(0, icon("scene-edgemarker"));
             item->setData(0, Qt::UserRole, boundary->variant());
 
@@ -477,8 +477,8 @@ void PreprocessorWidget::showInfo()
     {
         ctemplate::TemplateDictionary *field = problem.AddSectionDictionary("FIELD");
 
-        field->SetValue("PHYSICAL_FIELDID", fieldInfo->module()->fieldid);
-        field->SetValue("PHYSICAL_FIELD", fieldInfo->module()->name);
+        field->SetValue("PHYSICAL_FIELDID", fieldInfo->fieldId().toStdString());
+        field->SetValue("PHYSICAL_FIELD", fieldInfo->name().toStdString());
 
         field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
         field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());

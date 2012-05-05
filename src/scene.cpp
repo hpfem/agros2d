@@ -101,7 +101,7 @@ void DxfFilter::addCircle(const DL_CircleData& c)
 // ************************************************************************************************************************
 
 NewMarkerAction::NewMarkerAction(QIcon icon, QObject* parent, QString field) :
-    QAction(icon, tr(availableModules()[field.toStdString()].c_str()), parent),
+    QAction(icon, availableModules()[field], parent),
     field(field)
 {
     setStatusTip(tr("New boundary condition"));
@@ -225,12 +225,14 @@ void Scene::createActions()
     actNewBoundary->setStatusTip(tr("New boundary condition"));
     connect(actNewBoundary, SIGNAL(triggered()), this, SLOT(doNewBoundary()));
 
-    std::map<std::string, std::string> modules = availableModules();
+    QMapIterator<QString, QString> iEdge(availableModules());
+    while (iEdge.hasNext())
+    {
+        iEdge.next();
 
-    for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter){
-        NewMarkerAction* action = new NewMarkerAction(icon("scene-edgemarker"), this, iter->first.c_str());
+        NewMarkerAction* action = new NewMarkerAction(icon("scene-edgemarker"), this, iEdge.key());
         connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewBoundary(QString)));
-        actNewBoundaries[iter->first.c_str()] = action;
+        actNewBoundaries[iEdge.key()] = action;
     }
 
     actNewMaterial = new QAction(icon("scene-labelmarker"), tr("New &material..."), this);
@@ -238,11 +240,14 @@ void Scene::createActions()
     actNewMaterial->setStatusTip(tr("New material"));
     connect(actNewMaterial, SIGNAL(triggered()), this, SLOT(doNewMaterial()));
 
-    for(std::map<std::string, std::string>::iterator iter = modules.begin(); iter!= modules.end(); ++iter)
+    QMapIterator<QString, QString> iLabel(availableModules());
+    while (iLabel.hasNext())
     {
-        NewMarkerAction* action = new NewMarkerAction(icon("scene-labelmarker"), this, iter->first.c_str());
+        iLabel.next();
+
+        NewMarkerAction* action = new NewMarkerAction(icon("scene-labelmarker"), this, iLabel.key());
         connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewMaterial(QString)));
-        actNewMaterials[iter->first.c_str()] = action;
+        actNewMaterials[iLabel.key()] = action;
     }
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
@@ -1291,7 +1296,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
         // weakforms
         field->setWeakFormsType(weakFormsTypeFromStringKey(eleField.toElement().attribute("weak_forms",
-                                                                                         weakFormsTypeToStringKey(WeakFormsType_Compiled))));
+                                                                                          weakFormsTypeToStringKey(WeakFormsType_Compiled))));
 
         // polynomial order
         field->setPolynomialOrder(eleField.toElement().attribute("polynomial_order").toInt());
@@ -1310,7 +1315,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
 
         field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type",
-                                                                                                  linearityTypeToStringKey(LinearityType_Linear))));
+                                                                                                   linearityTypeToStringKey(LinearityType_Linear))));
         field->setNonlinearSteps(eleFieldLinearity.toElement().attribute("nonlinear_steps", "10").toInt());
         field->setNonlinearTolerance(eleFieldLinearity.toElement().attribute("nonlinear_tolerance", "1e-3").toDouble());
 
@@ -1323,23 +1328,15 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QString name = element.toElement().attribute("name");
             QString type = element.toElement().attribute("type");
 
-            cout << "reading bc " << name.toStdString() << ", type " << type.toStdString() << endl;
-
             // read marker
             SceneBoundary *boundary = new SceneBoundary(field,
-                                                        name.toStdString(),
-                                                        type.toStdString());
+                                                        name,
+                                                        type);
 
-            Hermes::Module::BoundaryType *boundary_type = field->module()->get_boundary_type(type.toStdString());
-            for (Hermes::vector<Hermes::Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin();
-                 it < boundary_type->variables.end(); ++it)
-            {
-                Hermes::Module::BoundaryTypeVariable *variable = ((Hermes::Module::BoundaryTypeVariable *) *it);
-
-                cout << "setting variable " << variable->id << " to " <<  (element.toElement().attribute(QString::fromStdString(variable->id), "0")).toStdString() << endl;
+            Module::BoundaryType *boundary_type = field->module()->boundaryType(type);
+            foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables)
                 boundary->setValue(variable->id,
-                                   Value(element.toElement().attribute(QString::fromStdString(variable->id), "0")));
-            }
+                                   Value(element.toElement().attribute(variable->id, "0")));
 
             Util::scene()->addBoundary(boundary);
 
@@ -1371,14 +1368,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
             // read marker
             SceneMaterial *material = new SceneMaterial(field,
-                                                        name.toStdString());
-            Hermes::vector<Hermes::Module::MaterialTypeVariable *> materials = field->module()->material_type_variables;
-            for (Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-            {
-                Hermes::Module::MaterialTypeVariable *variable = ((Hermes::Module::MaterialTypeVariable *) *it);
+                                                        name);
 
+            foreach (Module::MaterialTypeVariable *variable, field->module()->materialTypeVariables())
+            {
                 material->setValue(variable->id,
-                                   Value(element.toElement().attribute(QString::fromStdString(variable->id),
+                                   Value(element.toElement().attribute(variable->id,
                                                                        QString::number(variable->default_value))));
             }
 
@@ -1639,7 +1634,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         {
             QDomElement eleBoundary = doc.createElement("boundary");
 
-            eleBoundary.setAttribute("name", QString::fromStdString(boundary->getName()));
+            eleBoundary.setAttribute("name", boundary->getName());
             if (boundary->getType() == "")
                 eleBoundary.setAttribute("type", "none");
 
@@ -1647,11 +1642,11 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             {
                 // write marker
                 eleBoundary.setAttribute("id", iboundary);
-                eleBoundary.setAttribute("type", QString::fromStdString(boundary->getType()));
+                eleBoundary.setAttribute("type", boundary->getType());
 
-                const std::map<std::string, Value> values = boundary->getValues();
-                for (std::map<std::string, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
-                    eleBoundary.setAttribute(QString::fromStdString(it->first), it->second.toString());
+                const std::map<QString, Value> values = boundary->getValues();
+                for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                    eleBoundary.setAttribute(it->first, it->second.toString());
 
                 // add edges
                 foreach (SceneEdge *edge, edges->items())
@@ -1681,11 +1676,11 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
             // write marker
             eleMaterial.setAttribute("id", imaterial);
-            eleMaterial.setAttribute("name", QString::fromStdString(material->getName()));\
+            eleMaterial.setAttribute("name", material->getName());
 
-            const std::map<std::string, Value> values = material->getValues();
-            for (std::map<std::string, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
-                eleMaterial.setAttribute(QString::fromStdString(it->first), it->second.toString());
+            const std::map<QString, Value> values = material->getValues();
+            for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                eleMaterial.setAttribute(it->first, it->second.toString());
 
             // add labels
             foreach (SceneLabel *label, labels->items())

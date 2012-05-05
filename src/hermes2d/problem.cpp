@@ -325,8 +325,8 @@ void Problem::solve()
             {
                 if (solver->solveInitialTimeStep())
                 {
-                    for (int i = 0; i < block->numTimeSteps(); i++)
-                        if (!solver->solveTimeStep(block->timeStep()))
+                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
+                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
                         {
                             isError = true;
                             break; // inner loop

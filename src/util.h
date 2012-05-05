@@ -427,6 +427,7 @@ enum LinearityType
 
 enum CouplingType
 {
+    CouplingType_Undefined,
     CouplingType_None,
     CouplingType_Weak,
     CouplingType_Hard
@@ -561,11 +562,11 @@ enum SolutionType
 
 // captions
 QString analysisTypeString(AnalysisType analysisType);
+QString couplingTypeString(CouplingType couplingType);
 QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString coordinateTypeString(CoordinateType coordinateType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
-QString couplingTypeString(CouplingType couplingType);
 QString weakFormsTypeString(WeakFormsType weakFormsType);
 QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);
@@ -603,6 +604,10 @@ CoordinateType coordinateTypeFromStringKey(const QString &coordinateType);
 QStringList analysisTypeStringKeys();
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);
+
+QStringList couplingTypeStringKeys();
+QString couplingTypeToStringKey(CouplingType couplingType);
+CouplingType couplingTypeFromStringKey(const QString &couplingType);
 
 QStringList weakFormsTypeStringKeys();
 QString weakFormsTypeToStringKey(WeakFormsType weakFormsType);

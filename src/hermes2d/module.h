@@ -83,8 +83,8 @@ public:
 
     Hermes::Hermes2D::MeshFunction<Scalar>* clone()
     {
-      InitialCondition<Scalar>* ic = new InitialCondition<Scalar>(this->mesh, this->constant_value);
-      return ic;
+        InitialCondition<Scalar>* ic = new InitialCondition<Scalar>(this->mesh, this->constant_value);
+        return ic;
     }
 
 private:
@@ -114,40 +114,17 @@ public:
 
     void registerForms();
 
-//    // previous solution
-//    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
+    //    // previous solution
+    //    QList<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
     //marker_second has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WFType type, Field* field, string area, ParserFormExpression* form, int offsetI, int offsetJ,
+    void registerForm(WFType type, Field* field, QString area, ParserFormExpression* form, int offsetI, int offsetJ,
                       Marker* marker, SceneMaterial* marker_second = NULL, CouplingInfo* couplingInfo = NULL);
     void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;
 };
-
-namespace Hermes
-{
-
-inline std::string analysis_type_tostring(AnalysisType analysisType)
-{
-    if (analysisType == AnalysisType_SteadyState)
-        return "steadystate";
-    else if (analysisType == AnalysisType_Harmonic)
-        return "harmonic";
-    else if (analysisType == AnalysisType_Transient)
-        return "transient";
-}
-
-inline std::string coupling_type_tostring(CouplingType couplingType)
-{
-    if (couplingType == CouplingType_Hard)
-        return "hard";
-    else if (couplingType == CouplingType_Weak)
-        return "weak";
-    else if (couplingType == CouplingType_None)
-        return "none";
-}
 
 namespace Module
 {
@@ -156,32 +133,42 @@ struct LocalVariable
 {
     struct Expression
     {
-        Expression(std::string scalar = "", std::string comp_x = "", std::string comp_y = "")
+        Expression(const QString &scalar = "", const QString &comp_x = "", const QString &comp_y = "")
             : scalar(scalar), comp_x(comp_x), comp_y(comp_y) {}
 
         // expressions
-        std::string scalar;
-        std::string comp_x;
-        std::string comp_y;
+        QString scalar;
+        QString comp_x;
+        QString comp_y;
     };
 
-    LocalVariable(std::string id = "", std::string name = "", std::string shortname = "", std::string unit = "", std::string unit_html = "")
-        : id(id), name(name), shortname(shortname), unit(unit), unit_html(unit), is_scalar(true), expr(Expression()) {}
+    LocalVariable(const QString &id = "",
+                  const QString &name = "",
+                  const QString &shortname = "",
+                  const QString &unit = "",
+                  const QString &unit_html = "")
+        : id(id),
+          name(name),
+          shortname(shortname),
+          unit(unit),
+          unit_html(unit),
+          isScalar(true),
+          expr(Expression()) {}
     LocalVariable(XMLModule::localvariable lv, CoordinateType problemType, AnalysisType analysisType);
 
     // id
-    std::string id;
+    QString id;
     // name
-    std::string name;
+    QString name;
     // short name
-    std::string shortname;
-    std::string shortname_html;
+    QString shortname;
+    QString shortname_html;
     // unit
-    std::string unit;
-    std::string unit_html;
+    QString unit;
+    QString unit_html;
 
     // is scalar variable
-    bool is_scalar;
+    bool isScalar;
 
     // expressions
     Expression expr;
@@ -191,14 +178,14 @@ struct LocalVariable
 struct MaterialTypeVariable
 {
     MaterialTypeVariable() : id(""), shortname(""), default_value(0) {}
-    MaterialTypeVariable(std::string id, std::string shortname,
+    MaterialTypeVariable(const QString &id, QString shortname,
                          double default_value = 0);
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
-    std::string id;
+    QString id;
     // short name
-    std::string shortname;
+    QString shortname;
     // default value
     double default_value;
 };
@@ -207,14 +194,14 @@ struct MaterialTypeVariable
 struct BoundaryTypeVariable
 {
     BoundaryTypeVariable() : id(""), shortname(""), default_value(0) {}
-    BoundaryTypeVariable(std::string id, std::string shortname,
+    BoundaryTypeVariable(const QString &id, QString shortname,
                          double default_value = 0);
     BoundaryTypeVariable(XMLModule::quantity quant);
 
     // id
-    std::string id;
+    QString id;
     // short name
-    std::string shortname;
+    QString shortname;
     // default value
     double default_value;
 };
@@ -223,25 +210,25 @@ struct BoundaryTypeVariable
 struct BoundaryType
 {
     BoundaryType() : id(""), name("") {}
-    BoundaryType(Hermes::vector<BoundaryTypeVariable> boundary_type_variables,
+    BoundaryType(QList<BoundaryTypeVariable> boundary_type_variables,
                  XMLModule::boundary bdy,
                  CoordinateType problem_type);
     ~BoundaryType();
 
     // id
-    std::string id;
+    QString id;
     // name
-    std::string name;
+    QString name;
 
     // variables
-    Hermes::vector<BoundaryTypeVariable *> variables;
+    QList<BoundaryTypeVariable *> variables;
 
     // weakform
-    Hermes::vector<ParserFormExpression *> weakform_matrix_surface;
-    Hermes::vector<ParserFormExpression *> weakform_vector_surface;
+    QList<ParserFormExpression *> m_wfMatrixSurface;
+    QList<ParserFormExpression *> m_wfVectorSurface;
 
     // essential
-    Hermes::vector<ParserFormEssential *> essential;
+    QList<ParserFormEssential *> essential;
 };
 
 // surface and volume integral value
@@ -252,21 +239,21 @@ struct Integral
         Expression() : scalar("") {}
 
         // expressions
-        std::string scalar;
+        QString scalar;
     };
 
     Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expr(Expression()) {}
 
     // id
-    std::string id;
+    QString id;
     // name
-    std::string name;
+    QString name;
     // short name
-    std::string shortname;
-    std::string shortname_html;
+    QString shortname;
+    QString shortname_html;
     // unit
-    std::string unit;
-    std::string unit_html;
+    QString unit;
+    QString unit_html;
 
     // expressions
     Expression expr;
@@ -278,162 +265,204 @@ struct DialogUI
     DialogUI() {}
     DialogUI(XMLModule::gui ui);
 
-    struct Row
+    struct DialogRow
     {
-        Row(std::string id, bool nonlin, bool timedep, std::string name, std::string shortname, std::string shortname_html,
-                 std::string unit, std::string unit_html, std::string unit_latex,
-                 double default_value, std::string condition)
-            : id(id), nonlin(nonlin), timedep(timedep), name(name), shortname(shortname), shortname_html(shortname_html),
-              unit(unit), unit_html(unit_html), unit_latex(unit_latex),
-              default_value(default_value), condition(condition) {}
-        Row(XMLModule::quantity qty);
+        DialogRow(XMLModule::quantity qty);
 
-        std::string id;
+        QString id;
 
         bool nonlin;
         bool timedep;
 
-        std::string name;
-        std::string shortname;
-        std::string shortname_html;
+        QString name;
+        QString shortname;
+        QString shortname_html;
 
-        std::string unit;
-        std::string unit_html;
-        std::string unit_latex;
+        QString unit;
+        QString unit_html;
+        QString unit_latex;
 
         double default_value;
-        std::string condition;
+        QString condition;
     };
 
-    std::map<std::string, Hermes::vector<Row> > groups;
+    QMap<QString, QList<DialogRow> > groups;
 
     void clear();
 };
 
-// basic module
-struct ModuleDeprecated
+// basic xml module
+struct BasicModule
 {
-    // id
-    std::string fieldid;
+    // default contructor
+    BasicModule(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType);
+    ~BasicModule();
+
     // name
-    std::string name;
+    inline QString name() const { return m_name; }
     // deformed shape
-    bool deformed_shape;
+    inline bool hasDeformableShape() const { return m_hasDeformableShape; }
     // description
-    std::string description;
+    inline QString description() const { return n_description; }
 
     // analyses
-    std::map<std::string, std::string> analyses;
-    int steady_state_solutions;
-    int harmonic_solutions;
-    int transient_solutions;
+    inline QMap<AnalysisType, QString> analyses() const { m_analyses; }
 
     // constants
-    std::map<std::string, double> constants;
+    inline QMap<QString, double> constants() const { return m_constants; }
 
     // macros
-    std::map<std::string, std::string> macros;
+    inline QMap<QString, QString> macros() const { return m_macros; }
 
-    // material type
-    Hermes::vector<MaterialTypeVariable *> material_type_variables;
+    // material type variable
+    inline QList<MaterialTypeVariable *> materialTypeVariables() const { return m_materialTypeVariables; }
 
-    // boundary conditions
-    Hermes::vector<BoundaryTypeVariable *> boundary_type_variables;
-    Hermes::vector<BoundaryType *> boundary_types;
-
+    // boundary type and type variable
+    inline QList<BoundaryTypeVariable *> boundaryTypeVariables() const { return m_boundaryTypeVariables; }
+    inline QList<BoundaryType *> boundaryTypes() const { return m_boundaryTypes; }
     // default boundary condition
-    BoundaryType *boundary_type_default;
+    BoundaryType *boundaryTypeDefault() const { return m_boundaryTypeDefault; }
 
     // weak forms
-    Hermes::vector<ParserFormExpression *> weakform_matrix_volume;
-    Hermes::vector<ParserFormExpression *> weakform_vector_volume;
+    inline QList<ParserFormExpression *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
+    inline QList<ParserFormExpression *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
 
     // all physical variables
-    Hermes::vector<LocalVariable *> variables;
+    QList<LocalVariable *> variables;
 
-    // view
-    // scalar and vector variables
-    Hermes::vector<LocalVariable *> view_scalar_variables;
-    Hermes::vector<LocalVariable *> view_vector_variables;
+    // material and boundary user interface
+    inline DialogUI *materialUI() { return m_materialUI; }
+    inline DialogUI *boundaryUI() { return m_boundaryUI; }
 
-    // default variables
-    LocalVariable *view_default_scalar_variable;
-    inline PhysicFieldVariableComp view_default_scalar_variable_comp()
+    mu::Parser *expressionParser(const QString &expr = "");
+
+    inline virtual void updateTimeFunctions(double time) {}
+
+    virtual inline void deformShape(double3* linVert, int count) {}
+    virtual inline void deformShape(double4* linVert, int count) {}
+
+    // coordinate and analysis type
+    inline CoordinateType coordinateType() { return m_coordinateType; }
+    inline AnalysisType analysisType() { return m_analysisType; }
+
+    // number of solutions
+    inline int numberOfSolutions() const { return m_numberOfSolutions; }
+
+    // scalar filter
+    ViewScalarFilter<double> *viewScalarFilter(Module::LocalVariable *physicFieldVariable,
+                                               PhysicFieldVariableComp physicFieldVariableComp);
+
+    // variable by name
+    LocalVariable *localVariable(const QString &m_fieldid);
+    BoundaryType *boundaryType(const QString &m_fieldid);
+    BoundaryTypeVariable *boundaryTypeVariable(const QString &m_fieldid);
+    MaterialTypeVariable *materialTypeVariable(const QString &m_fieldid);
+
+    // get expression
+    QString expression(LocalVariable *physicFieldVariable,
+                       PhysicFieldVariableComp physicFieldVariableComp);
+
+    // local point variables
+    inline QList<LocalVariable *> localPointVariables() const { return m_localPointVariables; }
+
+    // surface integrals
+    inline QList<Integral *> surfaceIntegrals() const { return m_surfaceIntegrals; }
+
+    // volume integrals
+    inline QList<Integral *> volumeIntegrals() const { return m_volumeIntegrals; }
+
+    // view scalar and vector variables
+    inline QList<LocalVariable *> viewScalarVariables() const { return m_viewScalarVariables; }
+    inline QList<LocalVariable *> viewVectorVariables() const { return m_viewVectorVariables; }
+
+    // default view variables
+    inline LocalVariable *defaultViewScalarVariable() const { return m_defaultViewScalarVariable; }
+    inline PhysicFieldVariableComp defaultViewScalarVariableComp()
     {
-        if (view_default_scalar_variable)
-            return view_default_scalar_variable->is_scalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+        if (m_defaultViewScalarVariable)
+            return m_defaultViewScalarVariable->isScalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
         else
             return PhysicFieldVariableComp_Undefined;
     }
-    LocalVariable *view_default_vector_variable;
+    inline LocalVariable *defaultViewVectorVariable() const { return m_defaultViewVectorVariable; }
 
-    // local point variables
-    Hermes::vector<LocalVariable *> local_point;
-
-    // surface integrals
-    Hermes::vector<Integral *> surface_integral;
-
-    // volume integrals
-    Hermes::vector<Integral *> volume_integral;
-
-    // material and boundary UI
-    DialogUI material_ui;
-    DialogUI boundary_ui;
-
-    // default contructor
-    ModuleDeprecated(CoordinateType problemType, AnalysisType analysisType);
-    ~ModuleDeprecated();
-
-    mu::Parser *get_parser();
-
-    // read form xml
-    void read(std::string filename);
-    // clear
-    void clear();
-
-    inline CoordinateType get_coordinate_type() const { return m_coordinateType; }
-    inline AnalysisType get_analysis_type() const { return m_analysisType; }
-
-    // variable by name
-    LocalVariable *get_variable(std::string fieldid);
-    BoundaryType *get_boundary_type(std::string fieldid);
-    BoundaryTypeVariable *get_boundary_type_variable(std::string fieldid);
-    MaterialTypeVariable *get_material_type_variable(std::string fieldid);
-
-    // expression
-    std::string get_expression(LocalVariable *physicFieldVariable,
-                               PhysicFieldVariableComp physicFieldVariableComp);
-
-    int number_of_solution() const;
-
-    Hermes::vector<SolutionArray<double> *> solve(ProgressItemSolve *progressItemSolve);
-    Hermes::vector<SolutionArray<double> *> solveAdaptiveStep(ProgressItemSolve *progressItemSolve);
-    bool solve_init_variables();
-
-    inline virtual void update_time_functions(double time) {}
-
-
-    ViewScalarFilter<double> *view_scalar_filter(Hermes::Module::LocalVariable *physicFieldVariable,
-                                                 PhysicFieldVariableComp physicFieldVariableComp);
-
-    virtual inline void deform_shape(double3* linVert, int count) {}
-    virtual inline void deform_shape(double4* linVert, int count) {}
+protected:
+    // id
+    QString m_fieldid;
 
 private:
+    // coordinate and analysis type
     CoordinateType m_coordinateType;
     AnalysisType m_analysisType;
 
+    // name
+    QString m_name;
+    // deformed shape
+    bool m_hasDeformableShape;
+    // description
+    QString n_description;
+
+    // analyses
+    QMap<AnalysisType, QString> m_analyses;
+
+    // constants
+    QMap<QString, double> m_constants;
+
+    // macros
+    QMap<QString, QString> m_macros;
+
+    // number of solutions
+    int m_numberOfSolutions;
+
+    // material type
+    QList<MaterialTypeVariable *> m_materialTypeVariables;
+
+    // boundary conditions
+    QList<BoundaryTypeVariable *> m_boundaryTypeVariables;
+    QList<BoundaryType *> m_boundaryTypes;
+    // default boundary condition
+    BoundaryType *m_boundaryTypeDefault;
+
+    // local point variables
+    QList<LocalVariable *> m_localPointVariables;
+
+    // surface integrals
+    QList<Integral *> m_surfaceIntegrals;
+
+    // volume integrals
+    QList<Integral *> m_volumeIntegrals;
+
+    // material and boundary user interface
+    DialogUI *m_materialUI;
+    DialogUI *m_boundaryUI;
+
+    // view scalar and vector variables
+    QList<LocalVariable *> m_viewScalarVariables;
+    QList<LocalVariable *> m_viewVectorVariables;
+
+    // default variables
+    LocalVariable *m_defaultViewScalarVariable;
+    LocalVariable *m_defaultViewVectorVariable;
+
+    // weak forms
+    QList<ParserFormExpression *> m_wfMatrixVolumeExpression;
+    QList<ParserFormExpression *> m_wfVectorVolumeExpression;
+
+    // read form xml
+    void read(const QString &filename);
+    // clear
+    void clear();
+
+    // xml module description
     std::auto_ptr<XMLModule::module> module_xsd;
 };
 
 }
-}
 
 // available modules
-std::map<std::string, std::string> availableModules();
+QMap<QString, QString> availableModules();
 // available analyses
-std::map<std::string, std::string> availableAnalyses(std::string fieldId);
-
+QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId);
 
 /// TODO not good - contains fieldInfo, but may receive more materials (related to different fields
 /// TODO fieldInfo shoud be removed, but other things depend on it
@@ -441,8 +470,8 @@ class Parser
 {
 public:
     // parser
-    Hermes::vector<mu::Parser *> parser;
-    std::map<std::string, double> parser_variables;
+    QList<mu::Parser *> parser;
+    std::map<QString, double> parser_variables;
 
     Parser(FieldInfo *fieldInfo);
     Parser(CouplingInfo *fieldInfo);
@@ -457,7 +486,7 @@ public:
 
     // can be called with more materials - coupling - does not use m_fieldInfo, takes fieldInfo from materials
     //TODO bad
-    void setParserVariables(Hermes::vector<Material *> materials, Boundary *boundary,
+    void setParserVariables(QList<Material *> materials, Boundary *boundary,
                             double value = 0.0, double dx = 0.0, double dy = 0.0);
 
     void setParserVariables(Material* materials, Boundary *boundary,
@@ -474,7 +503,7 @@ class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
 public:
     ViewScalarFilter(FieldInfo *fieldInfo,
                      Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
-                     std::string expression);
+                     QString expression);
     ~ViewScalarFilter();
 
     double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
@@ -492,7 +521,7 @@ protected:
 
     Parser *parser;
 
-    void initParser(std::string expression);
+    void initParser(const QString &expression);
     void precalculate(int order, int mask);
 
 private:

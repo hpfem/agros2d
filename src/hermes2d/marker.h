@@ -27,22 +27,22 @@ class FieldInfo;
 class Marker
 {
 public:
-    Marker(FieldInfo *fieldInfo, std::string name);
+    Marker(FieldInfo *fieldInfo, QString name);
     virtual ~Marker();
 
     /// value of one individual variable
-    Value getValue(std::string id);
+    Value getValue(QString id);
 
     /// get all values
-    const map<string, Value> getValues() const;
+    const map<QString, Value> getValues() const;
 
-    void setValue(string name, Value value) { values[name] = value; }
+    void setValue(QString name, Value value) { values[name] = value; }
 
     /// return name
-    std::string getName() {return name; }
+    QString getName() {return name; }
 
     /// set name
-    void setName(string paramName) { name = paramName; }
+    void setName(QString paramName) { name = paramName; }
 
     FieldInfo *getFieldInfo() { return fieldInfo; }
 
@@ -50,7 +50,7 @@ public:
     QString fieldId();
 
     /// ????
-    void evaluate(std::string id, double time);
+    void evaluate(QString id, double time);
 
     /// returns true if all OK
     bool evaluateAllVariables();
@@ -59,14 +59,14 @@ public:
     void setNone() {m_isNone = true;}
 
 private:
-    std::string name;
+    QString name;
     bool m_isNone;
 
 protected:
     FieldInfo *fieldInfo;
 
     /// variables - the way to customize boundary "template", given by the type parameter
-    std::map<std::string, Value> values;
+    std::map<QString, Value> values;
 
 private:
     /// we don't want those objects to be copied since we compare pointers
@@ -79,18 +79,18 @@ private:
 class Boundary : public Marker
 {
 public:
-    Boundary(FieldInfo *fieldInfo, std::string name = "", std::string type = "",
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    Boundary(FieldInfo *fieldInfo, QString name = "", QString type = "",
+             std::map<QString, Value> values = (std::map<QString, Value>()));
 
     /// get type
-    const std::string getType() const {return type;}
+    const QString getType() const {return type;}
 
     /// set type
-    void setType(string p_type) { type = p_type; }
+    void setType(QString p_type) { type = p_type; }
 
 private:
     /// type of boundary condition, taken from respective module
-    std::string type;
+    QString type;
 
 
 };
@@ -99,8 +99,8 @@ private:
 class Material : public Marker
 {
 public:
-    Material(FieldInfo *fieldInfo, std::string name,
-             std::map<std::string, Value> values = (std::map<std::string, Value>()));
+    Material(FieldInfo *fieldInfo, QString name,
+             std::map<QString, Value> values = (std::map<QString, Value>()));
 };
 
 

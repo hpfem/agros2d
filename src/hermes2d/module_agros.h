@@ -29,18 +29,15 @@ class SceneMaterial;
 //class SceneBoundaryContainer;
 //class SceneMaterialContainer;
 
-namespace Hermes
-{
 namespace Module
 {
-
 class LocalVariable;
 
-struct ModuleAgros : public QObject, public ModuleDeprecated
+struct ModuleAgros : public QObject, public BasicModule
 {
     Q_OBJECT
 public:
-    ModuleAgros(CoordinateType problemType, AnalysisType analysisType) : ModuleDeprecated(problemType, analysisType) {}
+    ModuleAgros(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType) : BasicModule(fieldId, problemType, analysisType) {}
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
     void fillComboBoxContourVariable(QComboBox *cmbFieldVariable);
@@ -54,37 +51,36 @@ public:
 //    SceneBoundaryContainer boundaries();
 //    SceneMaterialContainer materials();
 
-    void deform_shape(double3* linVert, int count);
-    void deform_shape(double4* linVert, int count);
+    void deformShape(double3* linVert, int count);
+    void deformShape(double4* linVert, int count);
 
 private:
-    void fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list);
+    void fillComboBox(QComboBox *cmbFieldVariable, QList<LocalVariable *> list);
 };
 
-}
 }
 
 // module factory
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType problem_type, AnalysisType analysis_type,
-                                           std::string filename_custom = "");
+Module::ModuleAgros *moduleFactory(const QString &fieldId, CoordinateType problem_type, AnalysisType analysis_type);
 
-
-struct ModuleMagnetic : public Hermes::Module::ModuleAgros
+struct ModuleMagnetic : public Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    ModuleMagnetic(CoordinateType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
+    ModuleMagnetic(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType)
+        : Module::ModuleAgros(fieldId, problemType, analysisType) {}
 
-    void update_time_functions(double time);
+    void updateTimeFunctions(double time);
 };
 
-struct ModuleHeat : public Hermes::Module::ModuleAgros
+struct ModuleHeat : public Module::ModuleAgros
 {
     Q_OBJECT
 public:
-    ModuleHeat(CoordinateType problemType, AnalysisType analysisType) : Hermes::Module::ModuleAgros(problemType, analysisType) {}
+    ModuleHeat(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType)
+        : Module::ModuleAgros(fieldId, problemType, analysisType) {}
 
-    void update_time_functions(double time);
+    void updateTimeFunctions(double time);
 };
 
 #endif // MODULE_AGROS_H

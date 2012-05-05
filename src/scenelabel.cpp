@@ -156,7 +156,7 @@ QLayout* SceneLabelDialog::createContent()
         layoutMaterial->addWidget(cmbMaterial);
         layoutMaterial->addWidget(btnMaterial);
 
-        layoutMaterials->addRow(QString::fromStdString(fieldInfo->module()->name),
+        layoutMaterials->addRow(fieldInfo->name(),
                                 layoutMaterial);
     }
 
@@ -234,13 +234,13 @@ void SceneLabelDialog::fillComboBox()
         cmbMaterials[fieldInfo]->clear();
 
         // none marker
-        cmbMaterials[fieldInfo]->addItem(QString::fromStdString(Util::scene()->materials->getNone(fieldInfo)->getName()),
+        cmbMaterials[fieldInfo]->addItem(Util::scene()->materials->getNone(fieldInfo)->getName(),
                                   Util::scene()->materials->getNone(fieldInfo)->variant());
 
         // real markers
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
-            cmbMaterials[fieldInfo]->addItem(QString::fromStdString(material->getName()),
+            cmbMaterials[fieldInfo]->addItem(material->getName(),
                                      material->variant());
         }
     }

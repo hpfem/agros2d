@@ -157,7 +157,7 @@ void InfoWidget::showInfo()
     {
         ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD");
 
-        field->SetValue("PHYSICAL_FIELD", fieldInfo->module()->name);
+        field->SetValue("PHYSICAL_FIELD", fieldInfo->name().toStdString());
 
         field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
         field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());

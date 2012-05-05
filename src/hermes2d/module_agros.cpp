@@ -27,77 +27,62 @@
 #include "field.h"
 #include "problem.h"
 
-void Hermes::Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
+void Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
-    fillComboBox(cmbFieldVariable, view_scalar_variables);
+    fillComboBox(cmbFieldVariable, viewScalarVariables());
 }
 
-void Hermes::Module::ModuleAgros::fillComboBoxContourVariable(QComboBox *cmbFieldVariable)
+void Module::ModuleAgros::fillComboBoxContourVariable(QComboBox *cmbFieldVariable)
 {
-    for(Hermes::vector<LocalVariable *>::iterator it = view_scalar_variables.begin(); it < view_scalar_variables.end(); ++it )
-    {
-        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-        if (variable->is_scalar)
-            cmbFieldVariable->addItem(QString::fromStdString(variable->name),
-                                      QString::fromStdString(variable->id));
-    }
+    foreach (Module::LocalVariable *variable, viewScalarVariables())
+        cmbFieldVariable->addItem(variable->name,
+                                  variable->id);
 }
 
-void Hermes::Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
+void Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 {
-    fillComboBox(cmbFieldVariable, view_vector_variables);
+    fillComboBox(cmbFieldVariable, viewVectorVariables());
 }
 
-void Hermes::Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, Hermes::vector<Hermes::Module::LocalVariable *> list)
+void Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, QList<Module::LocalVariable *> list)
 {
-    for(Hermes::vector<LocalVariable *>::iterator it = list.begin(); it < list.end(); ++it )
-    {
-        Hermes::Module::LocalVariable *variable = ((Hermes::Module::LocalVariable *) *it);
-        cmbFieldVariable->addItem(QString::fromStdString(variable->name),
-                                  QString::fromStdString(variable->id));
-    }
+    foreach (Module::LocalVariable *variable, list)
+        cmbFieldVariable->addItem(variable->name,
+                                  variable->id);
 }
 
-void Hermes::Module::ModuleAgros::fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable)
+void Module::ModuleAgros::fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable)
 {
-    for(Hermes::vector<Hermes::Module::BoundaryType *>::iterator it = boundary_types.begin(); it < boundary_types.end(); ++it )
-    {
-        Hermes::Module::BoundaryType *boundary = ((Hermes::Module::BoundaryType *) *it);
-        cmbFieldVariable->addItem(QString::fromStdString(boundary->name),
-                                  QString::fromStdString(boundary->id));
-    }
+    foreach (Module::BoundaryType *boundary, boundaryTypes())
+        cmbFieldVariable->addItem(boundary->name,
+                                  boundary->id);    
 }
 
-void Hermes::Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable)
+void Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable)
 {
-    for(Hermes::vector<Hermes::Module::MaterialTypeVariable *>::iterator it = material_type_variables.begin(); it < material_type_variables.end(); ++it )
-    {
-        Hermes::Module::MaterialTypeVariable *material = ((Hermes::Module::MaterialTypeVariable *) *it);
-        //        cmbFieldVariable->addItem(QString::fromStdString(material->name),
-        //                                  QString::fromStdString(material->id));
-        cmbFieldVariable->addItem(QString::fromStdString(material->id),
-                                  QString::fromStdString(material->id));
-    }
+    foreach (Module::MaterialTypeVariable *material, materialTypeVariables())
+        cmbFieldVariable->addItem(material->id,
+                                  material->id);
 }
 
-SceneBoundary *Hermes::Module::ModuleAgros::newBoundary()
+SceneBoundary *Module::ModuleAgros::newBoundary()
 {
-    //TODO - add dialog
-    FieldInfo *field = Util::problem()->fieldInfo(this->fieldid);
+    // TODO: add dialog
+    FieldInfo *field = Util::problem()->fieldInfo(this->m_fieldid);
 
-    return new SceneBoundary(field, tr("new boundary").toStdString(),
-                             field->module()->boundary_type_default->id);
+    return new SceneBoundary(field, tr("new boundary"),
+                             field->module()->boundaryTypeDefault()->id);
 }
 
-SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
+SceneMaterial *Module::ModuleAgros::newMaterial()
 {
-    //TODO - add dialog
-    FieldInfo *field = Util::problem()->fieldInfo(this->fieldid);
+    // TODO: add dialog
+    FieldInfo *field = Util::problem()->fieldInfo(this->m_fieldid);
 
-    return new SceneMaterial(field, tr("new material").toStdString());
+    return new SceneMaterial(field, tr("new material"));
 }
 
-//SceneBoundaryContainer Hermes::Module::ModuleAgros::boundaries()
+//SceneBoundaryContainer Module::ModuleAgros::boundaries()
 //{
 //    //TODO - how to cast???
 //    MarkerContainer<SceneBoundary> boundaries = Util::scene()->boundaries->filter(QString::fromStdString(fieldid));
@@ -109,7 +94,7 @@ SceneMaterial *Hermes::Module::ModuleAgros::newMaterial()
 //    return boundaryContainer;
 //}
 
-//SceneMaterialContainer Hermes::Module::ModuleAgros::materials()
+//SceneMaterialContainer Module::ModuleAgros::materials()
 //{
 //    //TODO - how to cast???
 //    MarkerContainer<SceneMaterial> materials = Util::scene()->materials->filter(QString::fromStdString(fieldid));
@@ -158,70 +143,45 @@ void deformShapeTemplate(T linVert, int count)
     }
 }
 
-void Hermes::Module::ModuleAgros::deform_shape(double3* linVert, int count)
+void Module::ModuleAgros::deformShape(double3* linVert, int count)
 {
-    if (Util::problem()->fieldInfo(fieldid)->module()->deformed_shape)
+    if (Util::problem()->fieldInfo(m_fieldid)->module()->hasDeformableShape())
         deformShapeTemplate<double3 *>(linVert, count);
 }
 
-void Hermes::Module::ModuleAgros::deform_shape(double4* linVert, int count)
+void Module::ModuleAgros::deformShape(double4* linVert, int count)
 {
-    if (Util::problem()->fieldInfo(fieldid)->module()->deformed_shape)
+    if (Util::problem()->fieldInfo(m_fieldid)->module()->hasDeformableShape())
         deformShapeTemplate<double4 *>(linVert, count);
 }
 
 // ***************************************************************************************
 
-void ModuleMagnetic::update_time_functions(double time)
+void ModuleMagnetic::updateTimeFunctions(double time)
 {
     // update materials
-    foreach (SceneMaterial *material, Util::scene()->materials->items())
-        material->evaluate("magnetic_current_density_external_real", time);
+    // foreach (SceneMaterial *material, Util::scene()->materials->items())
+    //     material->evaluate("magnetic_current_density_external_real", time);
 }
 
-void ModuleHeat::update_time_functions(double time)
+void ModuleHeat::updateTimeFunctions(double time)
 {
     // update materials
-    foreach (SceneMaterial *material, Util::scene()->materials->items())
-        material->evaluate("heat_volume_heat", time);
+    // foreach (SceneMaterial *material, Util::scene()->materials->items())
+    //     material->evaluate("heat_volume_heat", time);
 }
 
 // ****************************************************************************************************
 
-Hermes::Module::ModuleAgros *moduleFactory(std::string id, CoordinateType coordinate_type, AnalysisType analysis_type,
-                                           std::string filename_custom)
+Module::ModuleAgros *moduleFactory(const QString &fieldId, CoordinateType coordinate_type, AnalysisType analysis_type)
 {
-    // std::cout << filename_custom << std::endl;
-
-    Hermes::Module::ModuleAgros *module = NULL;
-    if (id == "heat")
-        module = new ModuleHeat(coordinate_type, analysis_type);
-    else if (id == "magnetic")
-        module = new ModuleMagnetic(coordinate_type, analysis_type);
+    Module::ModuleAgros *module = NULL;
+    if (fieldId == "heat")
+        module = new ModuleHeat(fieldId, coordinate_type, analysis_type);
+    else if (fieldId == "magnetic")
+        module = new ModuleMagnetic(fieldId, coordinate_type, analysis_type);
     else
-        module = new Hermes::Module::ModuleAgros(coordinate_type, analysis_type);
+        module = new Module::ModuleAgros(fieldId, coordinate_type, analysis_type);
 
-    // try to open custom module
-    if (id == "custom")
-    {
-        ifstream ifile_custom(filename_custom.c_str());
-        if (!ifile_custom)
-            module->read(datadir().toStdString() + "/resources/custom.xml");
-        else
-            module->read(filename_custom);
-
-        return module;
-    }
-
-    // open default module
-    std::string filename_default = (datadir() + MODULEROOT + "/" + QString::fromStdString(id) + ".xml").toStdString();
-    ifstream ifile_default(filename_default.c_str());
-    if (ifile_default)
-    {
-        module->read(filename_default);
-        return module;
-    }
-
-    std::cout << "Module doesn't exists." << std::endl;
-    return NULL;
+    return module;
 }

@@ -38,12 +38,9 @@ class VolumeIntegralValue;
 
 class SceneViewCommon;
 
-namespace Hermes
+namespace Module
 {
-    namespace Module
-    {
-        struct LocalVariable;
-    }
+    struct LocalVariable;
 }
 
 class SceneViewCommon;

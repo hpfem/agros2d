@@ -38,9 +38,6 @@ public:
     //maximal nonlinear steps of individual fields
     int nonlinearSteps() const;
 
-    double timeStep() const;
-    int numTimeSteps() const;
-
 //    Field* couplingSourceField(Coupling* coupling) const;
 //    Field* couplingTargetField(Coupling* coupling) const;
 

@@ -81,8 +81,8 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
                 {
                     XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-                    if ((wf.sourceanalysis() == Hermes::analysis_type_tostring(sourceField->analysisType())) &&
-                        (wf.targetanalysis() == Hermes::analysis_type_tostring(targetField->analysisType())))
+                    if ((wf.sourceanalysis() == analysisTypeToStringKey(sourceField->analysisType()).toStdString()) &&
+                        (wf.targetanalysis() == analysisTypeToStringKey(targetField->analysisType()).toStdString()))
                     {
                         return true;
                     }
@@ -164,11 +164,11 @@ void Coupling::read(std::string filename)
 
 
         // volumetric weakforms
-//        Hermes::vector<Hermes::Module::MaterialTypeVariable> material_type_variables_tmp;
+//        Hermes::vector<Module::MaterialTypeVariable> material_type_variables_tmp;
 //        for (rapidxml::xml_node<> *quantity = doc.first_node("module")->first_node("volume")->first_node("quantity");
 //             quantity; quantity = quantity->next_sibling())
 //            if (std::string(quantity->name()) == "quantity")
-//                material_type_variables_tmp.push_back(Hermes::Module::MaterialTypeVariable(quantity));
+//                material_type_variables_tmp.push_back(Module::MaterialTypeVariable(quantity));
 
         //TODO temporary
         //m_analysisType = AnalysisType_SteadyState;
@@ -184,9 +184,9 @@ void Coupling::read(std::string filename)
         {
             XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-            if ((wf.couplingtype() == Hermes::coupling_type_tostring(m_couplingType)) &&
-                (wf.sourceanalysis() == Hermes::analysis_type_tostring(m_sourceFieldAnalysis)) &&
-                (wf.targetanalysis() == Hermes::analysis_type_tostring(m_targetFieldAnalysis)))
+            if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
+                (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceFieldAnalysis).toStdString()) &&
+                (wf.targetanalysis() == analysisTypeToStringKey(m_targetFieldAnalysis).toStdString()))
             {
 
 //            if (weakform->first_attribute("analysistype")->value() == Hermes::analysis_type_tostring(m_analysisType))
@@ -196,13 +196,13 @@ void Coupling::read(std::string filename)
 //                     quantity; quantity = quantity->next_sibling())
 //                {
 //                    if (std::string(quantity->name()) == "quantity")
-//                        for (Hermes::vector<Hermes::Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
+//                        for (Hermes::vector<Module::MaterialTypeVariable>::iterator it = material_type_variables_tmp.begin();
 //                             it < material_type_variables_tmp.end(); ++it )
 //                        {
-//                            Hermes::Module::MaterialTypeVariable old = (Hermes::Module::MaterialTypeVariable) *it;
+//                            Module::MaterialTypeVariable old = (Module::MaterialTypeVariable) *it;
 //                            if (old.id == quantity->first_attribute("id")->value())
 //                            {
-//                                Hermes::Module::MaterialTypeVariable *var = new Hermes::Module::MaterialTypeVariable(
+//                                Module::MaterialTypeVariable *var = new Module::MaterialTypeVariable(
 //                                            old.id, old.shortname, old.default_value);
 //                                material_type_variables.push_back(var);
 //                            }
