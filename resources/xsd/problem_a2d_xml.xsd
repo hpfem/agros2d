@@ -134,6 +134,18 @@
                   </xsd:all>
                 </xsd:complexType>
               </xsd:element>
+              <xsd:element name="couplings">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="coupling" minOccurs="0" maxOccurs="unbounded">
+                      <xsd:complexType>
+                        <xsd:attribute name="name" type="xsd:string" />
+                        <xsd:attribute name="type" type="xsd:string" />
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
             </xsd:all>
             <xsd:attribute name="coordinate_type" type="xsd:string" />
             <xsd:attribute name="frequency" type="xsd:int" />

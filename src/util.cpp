@@ -39,6 +39,7 @@ static QHash<AnalysisType, QString> analysisTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
+static QHash<CouplingType, QString> couplingTypeList;
 static QHash<PaletteType, QString> paletteTypeList;
 static QHash<PaletteQuality, QString> paletteQualityList;
 static QHash<PaletteQuality, double> paletteQualityValueList;
@@ -79,6 +80,9 @@ LinearityType linearityTypeFromStringKey(const QString &linearityType) { return 
 QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values(); }
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
+
+QString couplingTypeToStringKey(CouplingType couplingType) { return couplingTypeList[couplingType]; }
+CouplingType couplingTypeFromStringKey(const QString &couplingType) { return couplingTypeList.key(couplingType); }
 
 QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow) { return sceneViewPost3DShowList[sceneViewPost3DShow]; }
 SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow) { return sceneViewPost3DShowList.key(sceneViewPost3DShow); }
@@ -167,6 +171,11 @@ void initLists()
     linearityTypeList.insert(LinearityType_Linear, "linear");
     linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
+
+    // CouplingType
+    couplingTypeList.insert(CouplingType_None, "none");
+    couplingTypeList.insert(CouplingType_Weak, "weak");
+    couplingTypeList.insert(CouplingType_Hard, "hard");
 
     // PaletteType
     paletteTypeList.insert(Palette_Jet, "jet");

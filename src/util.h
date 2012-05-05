@@ -632,6 +632,9 @@ QStringList linearityTypeStringKeys();
 QString linearityTypeToStringKey(LinearityType linearityType);
 LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
+QString couplingTypeToStringKey(CouplingType couplingType);
+CouplingType couplingTypeFromStringKey(const QString &couplingType);
+
 // FIXME: deprecated - DO NOT USE
 QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow);
 SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow);

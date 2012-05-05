@@ -1410,6 +1410,25 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         nodeField = nodeField.nextSibling();
     }
 
+    // coupling
+    QDomNode eleCouplings = eleProblemInfo.toElement().elementsByTagName("couplings").at(0);
+    QDomNode nodeCoupling = eleCouplings.firstChild();
+    while (!nodeCoupling.isNull())
+    {
+        QDomElement element = nodeCoupling.toElement();
+
+        foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+        {
+            if (couplingInfo->coupling()->name == element.toElement().attribute("name").toStdString())
+            {
+                qDebug() << "call for coupling type set";
+                couplingInfo->setCouplingType(couplingTypeFromStringKey(element.toElement().attribute("type")));
+            }
+        }
+
+        nodeCoupling = nodeCoupling.nextSibling();
+    }
+
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
     Util::config()->loadPostprocessor(&config);
@@ -1686,6 +1705,16 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         }
     }
 
+    // coupling
+    QDomNode eleCouplings = doc.createElement("couplings");
+    eleProblem.appendChild(eleCouplings);
+    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+    {
+        QDomElement eleCoupling = doc.createElement("coupling");
+        eleCoupling.setAttribute("name", QString::fromStdString(couplingInfo->coupling()->name));
+        eleCoupling.setAttribute("type", couplingTypeToStringKey(couplingInfo->couplingType()));
+        eleCouplings.appendChild(eleCoupling);
+    }
 
     //    if (settings.value("Solver/SaveProblemWithSolution", false).value<bool>())
     //    {

@@ -31,7 +31,7 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 {
     m_couplingType = couplingType;
 
-//    cout << "set type " << couplingTypeString(m_couplingType).toStdString() << endl;
+    cout << "set type " << couplingTypeString(m_couplingType).toStdString() << endl;
     reload();
 }
 
