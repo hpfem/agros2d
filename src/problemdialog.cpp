@@ -486,9 +486,45 @@ void FieldsToobar::refresh()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
+        QString hint = tr("<h3>%1</h3>"
+                          "<table>").arg(fieldInfo->name());
+        hint += tr("<tr><td><b>Analysis:</b></td><td>%1</td></tr>"
+                   "<tr><td><b>Weak forms:</b></td><td>%2</td></tr>"
+                   "<tr><td><b>Number of refinements:</b></td><td>%3</td></tr>"
+                   "<tr><td><b>Polynomial order:</b></td><td>%4</td></tr>")
+                .arg(analysisTypeString(fieldInfo->analysisType()))
+                .arg(weakFormsTypeString(fieldInfo->weakFormsType()))
+                .arg(fieldInfo->numberOfRefinements())
+                .arg(fieldInfo->polynomialOrder());
+
+        // adaptivity
+        hint += tr("<tr><td><b>Adaptivity:</b></td><td>%1</td></tr>")
+                .arg(adaptivityTypeString(fieldInfo->adaptivityType()));
+        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+        {
+            hint += tr("<tr><td><b>&nbsp;&nbsp;&nbsp;Steps:</b></td><td>%1</td></tr>"
+                       "<tr><td><b>&nbsp;&nbsp;&nbsp;Tolerance:</b></td><td>%2</td></tr>")
+                    .arg(fieldInfo->adaptivitySteps())
+                    .arg(fieldInfo->adaptivityTolerance());
+        }
+
+        // linearity
+        hint += tr("<tr><td><b>Solution type:</b></td><td>%1</td></tr>")
+                .arg(linearityTypeString(fieldInfo->linearityType()));
+        if (fieldInfo->linearityType() != LinearityType_Linear)
+        {
+            hint += tr("<tr><td><b>&nbsp;&nbsp;&nbsp;Steps:</b></td><td>%1</td></tr>"
+                       "<tr><td><b>&nbsp;&nbsp;&nbsp;Tolerance:</b></td><td>%2</td></tr>")
+                    .arg(fieldInfo->nonlinearSteps())
+                    .arg(fieldInfo->nonlinearTolerance());
+        }
+
+        hint += tr("</table>");
+
         QAction *actField = new QAction(fieldInfo->module() ? fieldInfo->name() : fieldInfo->fieldId(), this);
         actField->setIcon(icon("fields/" + fieldInfo->fieldId()));
         actField->setData(fieldInfo->fieldId());
+        actField->setToolTip(hint);
 
         actFieldsGroup->addAction(actField);
         tlbFields->addAction(actField);

@@ -138,22 +138,6 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
     problemInfo.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
 
-
-    //        if (Util::problem()->isSolved())
-    //        {
-    //            if (Util::scene()->sceneSolution()->space() && (Util::scene()->sceneSolution()->space()->get_num_dofs() > 0))
-    //            {
-    //                QTime time = milisecondsToTime(Util::problem()->timeElapsed());
-    //                problem.SetValue("ELAPSED_TIME_LABEL", tr("Elapsed time:").toStdString());
-    //                problem.SetValue("ELAPSED_TIME", time.toString("mm:ss.zzz").toStdString());
-
-    //                problem.SetValue("DOFS_LABEL", tr("DOFs:").toStdString());
-    //                problem.SetValue("DOFS", QString::number(Util::scene()->sceneSolution()->space()->get_num_dofs()).toStdString());
-    //            }
-    //            problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
-    //        }
-    // problemInfo.ShowSection("SOLUTION_SECTION");
-
     if (Util::problem()->fieldInfos().count() > 0)
     {
         problemInfo.SetValue("PHYSICAL_FIELD_MAIN_LABEL", tr("Physical fields").toStdString());
