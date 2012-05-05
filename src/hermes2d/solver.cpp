@@ -347,7 +347,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         Hermes::TimePeriod timer;
 
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-        NewtonSolver<Scalar> newton(&dp, Hermes::SOLVER_UMFPACK);
+        NewtonSolver<Scalar> newton(&dp, Util::problem()->config()->matrixSolver());
         newton.attach_timer(&timer);
 
         //newton.set_max_allowed_residual_norm(1e15);

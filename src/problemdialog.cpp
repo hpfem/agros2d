@@ -843,6 +843,12 @@ void ProblemWidget::fillComboBox()
     cmbMeshType->addItem(meshTypeString(MeshType_QuadJoin), MeshType_QuadJoin);
 
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
+#ifdef WITH_MUMPS
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_MUMPS), Hermes::SOLVER_MUMPS);
+#endif
+#ifdef WITH_SUPERLU
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
+#endif
 }
 
 void ProblemWidget::updateControls()

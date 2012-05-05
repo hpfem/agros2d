@@ -3,9 +3,13 @@ TARGET = ../build/hermes2d/lib/hermes2d
 TEMPLATE = lib
 OBJECTS_DIR = ../build/hermes2d
 CONFIG += staticlib
-CONFIG += debug
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
+
+# set 'HERMES_DEBUG' in qtcreator
+contains(CONFIG, HERMES_DEBUG) {
+    CONFIG += debug
+}
 
 QMAKE_LFLAGS += -fopenmp
 QMAKE_CXXFLAGS += -fopenmp
@@ -139,17 +143,27 @@ linux-g++|linux-g++-64|linux-g++-32 {
     DEFINES += HAVE_FMEMOPEN
     DEFINES += HAVE_LOG2
 
-    INCLUDEPATH += /usr/include/suitesparse
-    # INCLUDEPATH += /usr/include/superlu
+    INCLUDEPATH += /usr/include/suitesparse   
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
     LIBS += -lxerces-c
     LIBS += -lstdc++
-    # LIBS += -ldmumps_seq
-    # LIBS += -lsuperlu
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
+
+    # mumps
+    contains(CONFIG, WITH_MUMPS) {
+        DEFINES += WITH_MUMPS
+        LIBS += -ldmumps_seq
+        LIBS += -lzmumps_seq
+    }
+    # superlu
+    contains(CONFIG, WITH_SUPERLU) {
+        DEFINES += WITH_SUPERLU
+        INCLUDEPATH += /usr/include/superlu
+        LIBS += -lsuperlu
+    }
 }
 
 win32-msvc2008 {

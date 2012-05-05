@@ -250,17 +250,21 @@ linux-g++|linux-g++-64|linux-g++-32 {
     LIBS += -lqwt
 
     # mumps
-    contains(DEFINES, WITH_MUMPS) {
+    contains(CONFIG, WITH_MUMPS) {
+        DEFINES += WITH_MUMPS
         LIBS += -ldmumps_seq
+        LIBS += -lzmumps_seq
     }
     # superlu
-    contains(DEFINES, WITH_SUPERLU) {
+    contains(CONFIG, WITH_SUPERLU) {
+        DEFINES += WITH_SUPERLU
         INCLUDEPATH += /usr/include/superlu
         LIBS += -lsuperlu
     }
 
     # unity
-    contains(DEFINES, WITH_UNITY) {
+    contains(CONFIG, WITH_UNITY) {
+        DEFINES += WITH_UNITY
         INCLUDEPATH += /usr/include/unity/unity
         INCLUDEPATH += /usr/include/glib-2.0
         INCLUDEPATH += /usr/lib/x86_64-linux-gnu/glib-2.0/include
