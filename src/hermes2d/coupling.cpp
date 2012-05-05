@@ -30,7 +30,7 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 {
     m_couplingType = couplingType;
 
-    qDebug() << "set type " << couplingTypeString(m_couplingType).toStdString();
+    qDebug() << "set type " << couplingTypeString(m_couplingType);
     reload();
 }
 
@@ -258,6 +258,5 @@ void CouplingInfo::synchronizeCouplings(const QMap<QString, FieldInfo *>& fieldI
             couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
         }
     }
-
 }
 
