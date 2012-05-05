@@ -27,6 +27,13 @@ h3 {
     color: rgb(41, 41, 140);
 }
 
+h4 {
+    padding: 3pt 0pt 0pt 1pt;
+    margin: 0;
+	font-size: 80%;
+    color: rgb(41, 41, 140);
+}
+
 table, td, tr {
 	font-size: 93%;		
 	padding: 1pt 0pt 0pt 1pt;

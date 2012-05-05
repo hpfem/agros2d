@@ -29,14 +29,12 @@ CouplingInfo::~CouplingInfo()
 void CouplingInfo::setCouplingType(CouplingType couplingType)
 {
     m_couplingType = couplingType;
-
-    qDebug() << "set type " << couplingTypeString(m_couplingType);
     reload();
 }
 
 void CouplingInfo::reload()
 {
-    if(m_coupling)
+    if (m_coupling)
         delete m_coupling;
 
     m_coupling = couplingFactory(m_sourceField, m_targetField, m_couplingType);

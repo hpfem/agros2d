@@ -30,6 +30,7 @@
 #include "scenemarkerdialog.h"
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
+#include "hermes2d/coupling.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
@@ -153,119 +154,146 @@ void InfoWidget::showInfo()
     //        }
     // problemInfo.ShowSection("SOLUTION_SECTION");
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    if (Util::problem()->fieldInfos().count() > 0)
     {
-        ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD");
+        problemInfo.SetValue("PHYSICAL_FIELD_MAIN_LABEL", tr("Physical fields").toStdString());
 
-        field->SetValue("PHYSICAL_FIELD", fieldInfo->name().toStdString());
-
-        field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
-        field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());
-
-        field->SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
-        field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType()).toStdString());
-
-        if (fieldInfo->analysisType() == AnalysisType_Transient)
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
-            field->SetValue("INITIAL_CONDITION_LABEL", tr("Initial condition:").toStdString());
-            field->SetValue("INITIAL_CONDITION", QString::number(fieldInfo->initialCondition().number()).toStdString());
-            field->ShowSection("INITIAL_CONDITION_SECTION");
-        }
+            ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD_SECTION");
 
-        field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
-        field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements()).toStdString());
-        field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
-        field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder()).toStdString());
+            field->SetValue("PHYSICAL_FIELD_LABEL", fieldInfo->name().toStdString());
 
-        field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
-        field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType()).toStdString());
+            field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
+            field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());
 
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
-        {
-            field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
-            field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps()).toStdString());
-            field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-            field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString() + "%");
-            field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
-        }
+            field->SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
+            field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType()).toStdString());
 
-        field->SetValue("LINEARITY_TYPE_LABEL", tr("Solution type:").toStdString());
-        field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType()).toStdString());
-
-        if (fieldInfo->linearityType() != LinearityType_Linear)
-        {
-            field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
-            field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->nonlinearSteps()).toStdString());
-            field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-            field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString() + "%");
-            field->ShowSection("SOLVER_PARAMETERS_SECTION");
-        }
-
-        int solutionMeshNodes = 0;
-        int solutionMeshElements = 0;
-        int DOFs = 0;
-        int error = 0;
-
-        if (Util::problem()->isSolved())
-        {
-            int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
-            int adaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionType_Normal);
-            MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionType_Normal));
-
-            solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
-            solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
-            DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces())));
-            error = msa.adaptiveError();
-        }
-
-        if (Util::problem()->isMeshed())
-        {
-            field->SetValue("MESH_LABEL", tr("Mesh parameters").toStdString());
-            field->SetValue("INITIAL_MESH_LABEL", tr("Initial mesh:").toStdString());
-            field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(Util::problem()->meshInitial(fieldInfo)->get_num_nodes()).toStdString());
-            field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(Util::problem()->meshInitial(fieldInfo)->get_num_active_elements()).toStdString());
-
-            if (Util::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
+            if (fieldInfo->analysisType() == AnalysisType_Transient)
             {
-                field->SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh:").toStdString());
-                field->SetValue("SOLUTION_MESH_NODES", tr("%1 nodes").arg(solutionMeshNodes).toStdString());
-                field->SetValue("SOLUTION_MESH_ELEMENTS", tr("%1 elements").arg(solutionMeshElements).toStdString());
-                field->ShowSection("MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION");
+                field->SetValue("INITIAL_CONDITION_LABEL", tr("Initial condition:").toStdString());
+                field->SetValue("INITIAL_CONDITION", QString::number(fieldInfo->initialCondition().number()).toStdString());
+                field->ShowSection("INITIAL_CONDITION_SECTION");
             }
+
+            field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
+            field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements()).toStdString());
+            field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
+            field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder()).toStdString());
+
+            field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
+            field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType()).toStdString());
+
+            if (fieldInfo->adaptivityType() != AdaptivityType_None)
+            {
+                field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
+                field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps()).toStdString());
+                field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
+                field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString() + "%");
+                field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
+            }
+
+            field->SetValue("LINEARITY_TYPE_LABEL", tr("Solution type:").toStdString());
+            field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType()).toStdString());
+
+            if (fieldInfo->linearityType() != LinearityType_Linear)
+            {
+                field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
+                field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->nonlinearSteps()).toStdString());
+                field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
+                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString() + "%");
+                field->ShowSection("SOLVER_PARAMETERS_SECTION");
+            }
+
+            int solutionMeshNodes = 0;
+            int solutionMeshElements = 0;
+            int DOFs = 0;
+            int error = 0;
 
             if (Util::problem()->isSolved())
             {
-                field->SetValue("DOFS_LABEL", tr("Number of DOFs:").toStdString());
-                field->SetValue("DOFS", tr("%1").arg(DOFs).toStdString());
-                field->SetValue("ERROR_LABEL", tr("Error:").toStdString());
-                field->SetValue("ERROR", tr("%1 %").arg(error).toStdString());
-                field->ShowSection("MESH_SOLUTION_DOFS_PARAMETERS_SECTION");
+                int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
+                int adaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionType_Normal);
+                MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionType_Normal));
+
+                solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
+                solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
+                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces())));
+                error = msa.adaptiveError();
             }
 
-            field->ShowSection("MESH_PARAMETERS_SECTION");
+            if (Util::problem()->isMeshed())
+            {
+                field->SetValue("MESH_LABEL", tr("Mesh parameters").toStdString());
+                field->SetValue("INITIAL_MESH_LABEL", tr("Initial mesh:").toStdString());
+                field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(Util::problem()->meshInitial(fieldInfo)->get_num_nodes()).toStdString());
+                field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(Util::problem()->meshInitial(fieldInfo)->get_num_active_elements()).toStdString());
+
+                if (Util::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
+                {
+                    field->SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh:").toStdString());
+                    field->SetValue("SOLUTION_MESH_NODES", tr("%1 nodes").arg(solutionMeshNodes).toStdString());
+                    field->SetValue("SOLUTION_MESH_ELEMENTS", tr("%1 elements").arg(solutionMeshElements).toStdString());
+                    field->ShowSection("MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION");
+                }
+
+                if (Util::problem()->isSolved())
+                {
+                    field->SetValue("DOFS_LABEL", tr("Number of DOFs:").toStdString());
+                    field->SetValue("DOFS", tr("%1").arg(DOFs).toStdString());
+                    field->SetValue("ERROR_LABEL", tr("Error:").toStdString());
+                    field->SetValue("ERROR", tr("%1 %").arg(error).toStdString());
+                    field->ShowSection("MESH_SOLUTION_DOFS_PARAMETERS_SECTION");
+                }
+
+                field->ShowSection("MESH_PARAMETERS_SECTION");
+            }
+
+            //        if (Util::problem()->isMeshed())
+            //        {
+            //            if (Util::problem()->isSolved())
+            //            {
+            //                if (fieldInfo->adaptivityType != AdaptivityType_None)
+            //                {
+            //                    problem.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
+            //                    problem.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
+            //                    problem.SetValue("ADAPTIVITY_ERROR", QString::number(Util::problem()->adaptiveError(), 'f', 3).toStdString());
+
+            //                    problem.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
+            //                    problem.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
+            //                    problem.SetValue("SOLUTION_MESH_NODES", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
+            //                    problem.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
+            //                    problem.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
+
+            //                    problem.ShowSection("ADAPTIVITY_SECTION");
+            //                }
+            //                problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
+            //            }
+            //        }
         }
 
-        //        if (Util::problem()->isMeshed())
-        //        {
-        //            if (Util::problem()->isSolved())
-        //            {
-        //                if (fieldInfo->adaptivityType != AdaptivityType_None)
-        //                {
-        //                    problem.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
-        //                    problem.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
-        //                    problem.SetValue("ADAPTIVITY_ERROR", QString::number(Util::problem()->adaptiveError(), 'f', 3).toStdString());
+        problemInfo.ShowSection("FIELD");
+    }
 
-        //                    problem.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
-        //                    problem.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-        //                    problem.SetValue("SOLUTION_MESH_NODES", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
-        //                    problem.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-        //                    problem.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
+    if (Util::problem()->couplingInfos().count() > 0)
+    {
+        problemInfo.SetValue("COUPLING_MAIN_LABEL", tr("Coupled fields").toStdString());
 
-        //                    problem.ShowSection("ADAPTIVITY_SECTION");
-        //                }
-        //                problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
-        //            }
-        //        }
+        foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+        {
+            ctemplate::TemplateDictionary *couplingSection = problemInfo.AddSectionDictionary("COUPLING_SECTION");
+
+            couplingSection->SetValue("COUPLING_LABEL", couplingInfo->coupling()->name().toStdString());
+
+            couplingSection->SetValue("COUPLING_SOURCE_LABEL", tr("Source:").toStdString());
+            couplingSection->SetValue("COUPLING_SOURCE", couplingInfo->sourceField()->name().toStdString());
+            couplingSection->SetValue("COUPLING_TARGET_LABEL", tr("Target:").toStdString());
+            couplingSection->SetValue("COUPLING_TARGET", couplingInfo->targetField()->name().toStdString());
+            couplingSection->SetValue("COUPLING_TYPE_LABEL", tr("Coupling type:").toStdString());
+            couplingSection->SetValue("COUPLING_TYPE", tr("%1").arg(couplingTypeString(couplingInfo->couplingType())).toStdString());
+        }
+        problemInfo.ShowSection("COUPLING");
     }
 
     if (Util::problem()->isSolved())

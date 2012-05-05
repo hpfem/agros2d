@@ -33,8 +33,10 @@
 </div>
 
 {{#FIELD}}
+<h2>{{PHYSICAL_FIELD_MAIN_LABEL}}</h2>
+{{#FIELD_SECTION}}
 <div class="section">
-<h2>{{PHYSICAL_FIELD}}</h2>
+<h4>{{PHYSICAL_FIELD_LABEL}}</h4>
 <table class="maintable">
 	<tr>
 		<td><b>{{ANALYSIS_TYPE_LABEL}}</b></td><td>{{ANALYSIS_TYPE}}</td>
@@ -106,9 +108,29 @@
     {{/MESH_SOLUTION_DOFS_PARAMETERS_SECTION}}
     {{/MESH_PARAMETERS_SECTION}}
 </table>
-
 </div>
+{{/FIELD_SECTION}}
 {{/FIELD}}
+
+{{#COUPLING}}
+<div class="section">
+<h2>{{COUPLING_MAIN_LABEL}}</h2>
+{{#COUPLING_SECTION}}
+<h4>{{COUPLING_LABEL}}</h4>
+<table class="maintable">
+	<tr>
+		<td><b>{{COUPLING_SOURCE_LABEL}}</b></td><td>{{COUPLING_SOURCE}}</td>
+	<tr>
+	</tr>
+		<td><b>{{COUPLING_TARGET_LABEL}}</b></td><td>{{COUPLING_TARGET}}</td>
+	<tr>
+	</tr>
+		<td><b>{{COUPLING_TYPE_LABEL}}</b></td><td>{{COUPLING_TYPE}}</td>		
+	</tr>
+</table>
+{{/COUPLING_SECTION}}
+</div>
+{{/COUPLING}}
 
 <table class="maintable">
     {{#SOLUTION_PARAMETERS_SECTION}}

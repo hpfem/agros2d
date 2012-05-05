@@ -73,7 +73,7 @@ public:
 
     inline Coupling *coupling() const { return m_coupling; }
 
-    QString couplingId() { if (m_coupling) return m_coupling->couplingId(); return "none"; }
+    QString couplingId() { if (m_coupling) return m_coupling->couplingId(); return "None"; }
     CouplingType couplingType() { return m_couplingType; }
     inline bool isHard() { return m_couplingType == CouplingType_Hard;}
     inline bool isWeak() { return m_couplingType == CouplingType_Weak;}

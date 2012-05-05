@@ -591,20 +591,14 @@ void CouplingsWidget::fillComboBox()
 void CouplingsWidget::load()
 {
     foreach (CouplingInfo *couplingInfo, m_couplingInfos)
-    {
-        m_comboBoxes[couplingInfo]->setCurrentIndex(couplingInfo->couplingType());
-    }
+        m_comboBoxes[couplingInfo]->setCurrentIndex(m_comboBoxes[couplingInfo]->findData(couplingInfo->couplingType()));
 }
 
 void CouplingsWidget::save()
 {
-    foreach(CouplingInfo *couplingInfo, m_couplingInfos)
-    {
-        if(m_comboBoxes.contains(couplingInfo))
-        {
+    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
+        if (m_comboBoxes.contains(couplingInfo))
             couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
-        }
-    }
 
     Util::problem()->setCouplingInfos(m_couplingInfos);
 }
@@ -892,6 +886,8 @@ bool ProblemWidget::save()
 void ProblemWidget::doApply()
 {
     save();
+
+    emit apply();
 }
 
 void ProblemWidget::doOpenXML()
