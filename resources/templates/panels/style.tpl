@@ -22,15 +22,9 @@ h2 {
 }
 
 h3 {
-    padding: 1pt;
+    padding: 1pt 0pt 0pt 1pt;
     margin: 0;
-    color: rgb(41, 41, 140);
-}
-
-h4 {
-    padding: 3pt 0pt 0pt 1pt;
-    margin: 0;
-	font-size: 80%;
+	font-size: 90%;
     color: rgb(41, 41, 140);
 }
 

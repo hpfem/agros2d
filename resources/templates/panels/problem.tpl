@@ -36,7 +36,7 @@
 <h2>{{PHYSICAL_FIELD_MAIN_LABEL}}</h2>
 {{#FIELD_SECTION}}
 <div class="section">
-<h4>{{PHYSICAL_FIELD_LABEL}}</h4>
+<h3>{{PHYSICAL_FIELD_LABEL}}</h3>
 <table class="maintable">
 	<tr>
 		<td><b>{{ANALYSIS_TYPE_LABEL}}</b></td><td>{{ANALYSIS_TYPE}}</td>
@@ -115,9 +115,11 @@
 {{#COUPLING}}
 <div class="section">
 <h2>{{COUPLING_MAIN_LABEL}}</h2>
-{{#COUPLING_SECTION}}
-<h4>{{COUPLING_LABEL}}</h4>
 <table class="maintable">
+	{{#COUPLING_SECTION}}
+	<tr>
+		<td colspan=2><h3>{{COUPLING_LABEL}}</h3></td>
+	<tr>
 	<tr>
 		<td><b>{{COUPLING_SOURCE_LABEL}}</b></td><td>{{COUPLING_SOURCE}}</td>
 	<tr>
@@ -127,8 +129,8 @@
 	</tr>
 		<td><b>{{COUPLING_TYPE_LABEL}}</b></td><td>{{COUPLING_TYPE}}</td>		
 	</tr>
+	{{/COUPLING_SECTION}}
 </table>
-{{/COUPLING_SECTION}}
 </div>
 {{/COUPLING}}
 
