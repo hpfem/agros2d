@@ -198,6 +198,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
     splitter->restoreState(settings.value("MainWindow/SplitterState").toByteArray());
+    // show/hide control panel
+    actHideControlPanel->setChecked(settings.value("MainWindow/ControlPanel", true).toBool());
+    doHideControlPanel();
 }
 
 MainWindow::~MainWindow()
@@ -207,6 +210,7 @@ MainWindow::~MainWindow()
     settings.setValue("MainWindow/State", saveState());
     settings.setValue("MainWindow/RecentFiles", recentFiles);
     settings.setValue("MainWindow/SplitterState", splitter->saveState());
+    settings.setValue("MainWindow/ControlPanel", actHideControlPanel->isChecked());
 
     // remove temp files
     removeDirectory(tempProblemDir());
@@ -418,6 +422,10 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
     actSceneModeGroup->addAction(infoWidget->actInfo);
     actSceneModeGroup->addAction(settingsWidget->actSettings);
+
+    actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
+    actHideControlPanel->setCheckable(true);
+    connect(actHideControlPanel, SIGNAL(triggered()), this, SLOT(doHideControlPanel()));
 }
 
 
@@ -501,6 +509,8 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
     mnuView->addAction(settingsWidget->actSettings);
     mnuView->addAction(infoWidget->actInfo);
+    mnuView->addSeparator();
+    mnuView->addAction(actHideControlPanel);
     mnuView->addSeparator();
     mnuView->addAction(actSceneZoomBestFit);
     mnuView->addAction(actSceneZoomIn);
@@ -599,6 +609,8 @@ void MainWindow::createToolBars()
     tlbView->setFixedHeight(iconHeight);
     tlbView->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
+    tlbView->addAction(actHideControlPanel);
+    tlbView->addSeparator();
     tlbView->addAction(actSceneZoomBestFit);
     tlbView->addAction(actSceneZoomRegion);
     tlbView->addAction(actSceneZoomIn);
@@ -670,7 +682,7 @@ void MainWindow::createMain()
     tabControlsLayout->addWidget(settingsWidget);
     tabControlsLayout->addWidget(infoWidget);
 
-    QWidget *viewControls = new QWidget();
+    viewControls = new QWidget();
     viewControls->setLayout(tabControlsLayout);
 
     // spacing
@@ -1493,6 +1505,11 @@ void MainWindow::doAbout()
 {
     AboutDialog about(this);
     about.exec();
+}
+
+void MainWindow::doHideControlPanel()
+{
+    viewControls->setVisible(actHideControlPanel->isChecked());
 }
 
 void MainWindow::doDocumentExportMeshFile()

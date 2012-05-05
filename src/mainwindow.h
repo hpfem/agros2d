@@ -89,6 +89,8 @@ private slots:
     void doReport();
     void doMaterialBrowser();
     void doCreateVideo();
+
+    void doHideControlPanel();
     void doFullScreen();
 
     void doCut();
@@ -151,6 +153,8 @@ private:
     QAction *actLoadBackground;
     QActionGroup *actDocumentOpenRecentGroup;
 
+    QAction *actHideControlPanel;
+
     QAction *actUndo;
     QAction *actRedo;
     QAction *actCopy;
@@ -200,6 +204,7 @@ private:
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
 
+    QWidget *viewControls;
     QStackedLayout *tabControlsLayout;
     PreprocessorWidget *preprocessorWidget;
     PostprocessorWidget *postprocessorWidget;
