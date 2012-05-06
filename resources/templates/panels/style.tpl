@@ -33,7 +33,11 @@ table, td, tr {
 	padding: 1pt 0pt 0pt 1pt;
 	/*border: 1pt solid black;*/
 }
- 
+
+td {
+	width: 160px;
+}
+
 td.description {
 	width: 150px;
 }

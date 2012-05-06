@@ -427,6 +427,7 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
+    actHideControlPanel->setShortcut(tr("Alt+0"));
     actHideControlPanel->setCheckable(true);
     connect(actHideControlPanel, SIGNAL(triggered()), this, SLOT(doHideControlPanel()));
 }
@@ -1109,7 +1110,16 @@ void MainWindow::doDocumentSaveImage()
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "png") fileName += ".png";
 
-        ErrorResult result = sceneViewPost2D->saveImageToFile(fileName);
+        ErrorResult result;
+        if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
+            result = sceneViewPreprocessor->saveImageToFile(fileName);
+        else if (sceneViewMesh->actSceneModeMesh->isChecked())
+            result = sceneViewPost2D->saveImageToFile(fileName);
+        else if (sceneViewPost2D->actSceneModePost2D->isChecked())
+            result = sceneViewPost2D->saveImageToFile(fileName);
+        else if (sceneViewPost3D->actSceneModePost3D->isChecked())
+            result = sceneViewPost3D->saveImageToFile(fileName);
+
         if (result.isError())
             result.showDialog();
 
@@ -1346,7 +1356,16 @@ void MainWindow::doCut()
 void MainWindow::doCopy()
 {
     // copy image to clipboard
-    QPixmap pixmap = sceneViewPost2D->renderScenePixmap();
+    QPixmap pixmap;
+    if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
+        pixmap = sceneViewPreprocessor->renderScenePixmap();
+    else if (sceneViewMesh->actSceneModeMesh->isChecked())
+        pixmap = sceneViewPost2D->renderScenePixmap();
+    else if (sceneViewPost2D->actSceneModePost2D->isChecked())
+        pixmap = sceneViewPost2D->renderScenePixmap();
+    else if (sceneViewPost3D->actSceneModePost3D->isChecked())
+        pixmap = sceneViewPost3D->renderScenePixmap();
+
     QApplication::clipboard()->setImage(pixmap.toImage());
 }
 
@@ -1577,10 +1596,10 @@ void MainWindow::doLoadBackground()
     if (imageLoaderDialog.exec() == QDialog::Accepted)
     {
         sceneViewPreprocessor->loadBackgroundImage(imageLoaderDialog.fileName(),
-                                             imageLoaderDialog.position().x(),
-                                             imageLoaderDialog.position().y(),
-                                             imageLoaderDialog.position().width(),
-                                             imageLoaderDialog.position().height());
+                                                   imageLoaderDialog.position().x(),
+                                                   imageLoaderDialog.position().y(),
+                                                   imageLoaderDialog.position().width(),
+                                                   imageLoaderDialog.position().height());
         sceneViewPreprocessor->refresh();
     }
 }

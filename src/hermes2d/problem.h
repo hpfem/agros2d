@@ -137,18 +137,21 @@ public:
     bool isSolving() const { return m_isSolving; }
 
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
-    inline FieldInfo *fieldInfo(QString name) { assert(m_fieldInfos.contains(name)); return m_fieldInfos[name]; }
-    inline FieldInfo *fieldInfo(std::string name) { return fieldInfo(QString::fromStdString(name)); }
+    inline FieldInfo *fieldInfo(const QString &fieldId) { assert(m_fieldInfos.contains(fieldId));
+                                                          return m_fieldInfos[fieldId]; }
+    inline FieldInfo *fieldInfo(const std::string &name) { return fieldInfo(QString::fromStdString(name)); }
     inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }
-
-    bool hasField(QString field) { return m_fieldInfos.contains(field); }
+    inline bool hasField(const QString &fieldId) { return m_fieldInfos.contains(fieldId); }
     void addField(FieldInfo *field);
     void removeField(FieldInfo *field);
 
-    // FIXME: MOVE to couplings ???
     void synchronizeCouplings();
     inline QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos() const { return m_couplingInfos; }
-    inline CouplingInfo* couplingInfo(FieldInfo* sourceField, FieldInfo* targetField);
+    inline CouplingInfo* couplingInfo(FieldInfo* sourceField, FieldInfo* targetField) { assert (m_couplingInfos.contains(QPair<FieldInfo*, FieldInfo* >(sourceField, targetField)));
+                                                                                        return m_couplingInfos[QPair<FieldInfo*, FieldInfo* >(sourceField, targetField)]; }
+    inline CouplingInfo* couplingInfo(const QString &sourceFieldId, const QString &targetFieldId) { return couplingInfo(fieldInfo(sourceFieldId), fieldInfo(targetFieldId)); }
+    inline bool hasCoupling(FieldInfo* sourceField, FieldInfo* targetField) { return (m_couplingInfos.contains(QPair<FieldInfo*, FieldInfo* >(sourceField, targetField))); }
+    inline bool hasCoupling(const QString &sourceFieldId, const QString &targetFieldId) { return hasCoupling(fieldInfo(sourceFieldId), fieldInfo(targetFieldId)); }
     inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; }
 
     inline QTime timeElapsed() const { return m_timeElapsed; }

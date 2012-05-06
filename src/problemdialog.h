@@ -67,7 +67,6 @@ public:
 
     void load();
     void save();
-    inline int count() { return m_couplingInfos.count(); }
 
 public slots:
     void refresh();
@@ -77,8 +76,6 @@ private:
     void fillComboBox();
 
     QGridLayout *layoutTable;
-
-    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
     QMap<CouplingInfo*, QComboBox*> m_comboBoxes;
 };
 

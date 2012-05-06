@@ -310,7 +310,7 @@ QWidget *ConfigDialog::createSolverWidget()
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile, 1, 0, 1, 2);
     layoutSolver->addWidget(chkNumOfThreads, 2, 0, 1, 2);
     layoutSolver->addWidget(new QLabel(tr("Number of threads:")), 3, 0);
-    layoutSolver->addWidget(txtNumOfThreads, 3, 2);
+    layoutSolver->addWidget(txtNumOfThreads, 3, 1);
     if (Util::config()->showExperimentalFeatures)
         layoutSolver->addWidget(chkSaveWithSolution);
 

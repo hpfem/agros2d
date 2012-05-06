@@ -574,7 +574,6 @@ void FieldsToobar::addField()
 CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
 {
     Util::problem()->synchronizeCouplings();
-    m_couplingInfos = Util::problem()->couplingInfos();
 
     layoutTable = NULL;
     createContent();
@@ -588,8 +587,6 @@ void CouplingsWidget::createContent()
 {
     if (layoutTable)
     {
-        save();
-
         delete layoutTable;
         qDeleteAll(this->children());
     }
@@ -600,7 +597,7 @@ void CouplingsWidget::createContent()
 
     m_comboBoxes.clear();
     int line = 0;
-    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
+    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
     {
         layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
         m_comboBoxes[couplingInfo] = new QComboBox();
@@ -626,23 +623,22 @@ void CouplingsWidget::fillComboBox()
 
 void CouplingsWidget::load()
 {
-    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
+    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
         m_comboBoxes[couplingInfo]->setCurrentIndex(m_comboBoxes[couplingInfo]->findData(couplingInfo->couplingType()));
 }
 
 void CouplingsWidget::save()
 {
-    foreach (CouplingInfo *couplingInfo, m_couplingInfos)
+    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
         if (m_comboBoxes.contains(couplingInfo))
             couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
 
-    Util::problem()->setCouplingInfos(m_couplingInfos);
+    Util::problem()->setCouplingInfos(Util::problem()->couplingInfos());
 }
 
 void CouplingsWidget::refresh()
 {
-    m_couplingInfos = Util::problem()->couplingInfos();
-    CouplingInfo::synchronizeCouplings(Util::problem()->fieldInfos(), m_couplingInfos);
+    Util::problem()->synchronizeCouplings();
 
     createContent();
 }
@@ -877,7 +873,7 @@ void ProblemWidget::updateControls()
     fieldsToolbar->refresh();
     couplingsWidget->refresh();
 
-    grpCouplings->setVisible(couplingsWidget->count() > 0);
+    grpCouplings->setVisible(Util::problem()->couplingInfos().count() > 0);
 
     doTransientChanged();
 }

@@ -1405,6 +1405,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         nodeField = nodeField.nextSibling();
     }
 
+    // couplings
+    Util::problem()->synchronizeCouplings();
+
     // coupling
     QDomNode eleCouplings = eleProblemInfo.toElement().elementsByTagName("couplings").at(0);
     QDomNode nodeCoupling = eleCouplings.firstChild();
@@ -1412,13 +1415,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         QDomElement element = nodeCoupling.toElement();
 
-        foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+        if (Util::problem()->hasCoupling(element.toElement().attribute("source_fieldid"),
+                                         element.toElement().attribute("target_fieldid")))
         {
-            if (couplingInfo->coupling()->name() == element.toElement().attribute("name"))
-            {
-                qDebug() << "call for coupling type set";
-                couplingInfo->setCouplingType(couplingTypeFromStringKey(element.toElement().attribute("type")));
-            }
+            CouplingInfo *couplingInfo = Util::problem()->couplingInfo(element.toElement().attribute("source_fieldid"),
+                                                                       element.toElement().attribute("target_fieldid"));
+            couplingInfo->setCouplingType(couplingTypeFromStringKey(element.toElement().attribute("type")));
         }
 
         nodeCoupling = nodeCoupling.nextSibling();
@@ -1450,9 +1452,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     }
     */
 
-    // couplings
-    Util::problem()->synchronizeCouplings();
-
     // run script
     runPythonScript(Util::problem()->config()->startupscript());
 
@@ -1462,17 +1461,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 ErrorResult Scene::writeToFile(const QString &fileName)
 {
     QSettings settings;
-
-    // custom form
-    /*
-        if (Util::problem()->config()->fieldId() == "custom")
-            if (!QFile::exists(Util::problem()->config()->fileName.left(Util::problem()->config()->fileName.size() - 4) + ".xml"))
-            {
-                QFile::remove(fileName.left(fileName.size() - 4) + ".xml");
-                QFile::copy(Util::problem()->config()->fileName.left(Util::problem()->config()->fileName.size() - 4) + ".xml",
-                            fileName.left(fileName.size() - 4) + ".xml");
-            }
-        */
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
     {
@@ -1706,7 +1694,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
     {
         QDomElement eleCoupling = doc.createElement("coupling");
-        eleCoupling.setAttribute("name", couplingInfo->coupling()->name());
+        eleCoupling.setAttribute("id", couplingInfo->couplingId());
+        eleCoupling.setAttribute("source_fieldid", couplingInfo->sourceField()->fieldId());
+        eleCoupling.setAttribute("target_fieldid", couplingInfo->targetField()->fieldId());
         eleCoupling.setAttribute("type", couplingTypeToStringKey(couplingInfo->couplingType()));
         eleCouplings.appendChild(eleCoupling);
     }
@@ -1744,8 +1734,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
         emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
-
-    emit invalidated();
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

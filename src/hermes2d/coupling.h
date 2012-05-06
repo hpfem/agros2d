@@ -67,8 +67,13 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 
 class CouplingInfo
 {
+
+signals:
+    void invalidated();
+
 public:
-    CouplingInfo(FieldInfo* sourceField, FieldInfo* targetField);
+    CouplingInfo(FieldInfo* sourceField, FieldInfo* targetField,
+                 CouplingType couplingType = CouplingType_Weak);
     ~CouplingInfo();
 
     inline Coupling *coupling() const { return m_coupling; }
@@ -89,9 +94,6 @@ public:
 
     /// reloads the Coupling ("module"). Should be called when couplingType or AnalysisType of either fields changes
     void reload();
-
-    /// goes through field infos and adds/removes coupling infos accordingly
-    static void synchronizeCouplings(const QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos);
 
     LinearityType linearityType();
 

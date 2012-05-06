@@ -10,13 +10,11 @@
 
 #include "../../resources_source/classes/coupling_xml.h"
 
-CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField) :
-    m_sourceField(sourceField), m_targetField(targetField)
+// TODO: in each module should be implicit value
+CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField,
+                           CouplingType couplingType) :
+    m_sourceField(sourceField), m_targetField(targetField), m_couplingType(couplingType), m_coupling(NULL)
 {
-    //TODO in each module should be implicit value
-    m_couplingType = CouplingType_Weak;
-    m_coupling = NULL;
-
     reload();
 }
 
@@ -226,35 +224,3 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 
 
 }
-
-void CouplingInfo::synchronizeCouplings(const QMap<QString, FieldInfo *>& fieldInfos, QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* >& couplingInfos)
-{
-    // add missing
-    foreach (FieldInfo* sourceField, fieldInfos)
-    {
-        foreach (FieldInfo* targetField, fieldInfos)
-        {
-            if(sourceField == targetField)
-                continue;
-            QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
-            if (isCouplingAvailable(sourceField, targetField)){
-                if (!couplingInfos.contains(fieldInfosPair))
-                {
-                    couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
-                }
-            }
-        }
-    }
-
-    // remove extra
-    foreach (CouplingInfo* couplingInfo, couplingInfos)
-    {
-        if(! (fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
-              fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
-              isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
-        {
-            couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
-        }
-    }
-}
-

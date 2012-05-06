@@ -44,7 +44,7 @@ public:
 
     QAction *actSceneModePreprocessor;
 
-    QActionGroup *actSceneModeGeometryGroup;
+    QActionGroup *actOperateGroup;
     QAction *actOperateOnNodes;
     QAction *actOperateOnEdges;
     QAction *actOperateOnLabels;

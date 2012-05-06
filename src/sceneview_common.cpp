@@ -163,8 +163,9 @@ void SceneViewCommon::setupViewport(int w, int h)
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
 {
-    QPixmap pixmap = renderPixmap(w, h, useContext);
-
+    QPixmap pixmap = renderPixmap((w == 0) ? width() : w,
+                                  (h == 0) ? height() : h,
+                                  useContext);
     resizeGL(width(), height());
 
     return pixmap;
