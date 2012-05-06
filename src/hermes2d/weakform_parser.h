@@ -62,7 +62,9 @@ const int maxSourceFieldComponents = 2;
 class ParserForm
 {
 public:
-    mutable Parser *parser;
+    // parser
+    mutable mu::Parser *parser;
+    mutable QMap<std::string, double> parserVariables;
 
     // coordinates
     mutable double px;
@@ -91,20 +93,29 @@ public:
     // time step
     mutable double pdeltat;
 
-    //coupled field
+    // coupled field
     mutable double source[maxSourceFieldComponents];
     mutable double sourcedx[maxSourceFieldComponents];
     mutable double sourcedy[maxSourceFieldComponents];
 
-    void initParserForm(FieldInfo *fieldInfo);
-    void initParserForm(CouplingInfo *couplingInfo);
+    // TODO: not good
+    ParserForm(FieldInfo *fieldInfo = NULL, CouplingInfo *couplingInfo = NULL);
     ~ParserForm();
 
-    void initParser(QList<Material *> materials, Boundary *boundary);
+    void initParserField(const std::string &expr);
+    void initParserCoupling(const std::string &expr);
+
+    void setMaterialToParser(Material * material);
+    void setMaterialsToParser(QList<Material *> materials);
+    void setBoundaryToParser(Boundary * boundary);
+    void setBoundariesToParser(QList<Boundary *> boundaries);
 
 protected:
     FieldInfo *m_fieldInfo;
     CouplingInfo *m_couplingInfo;
+
+private:
+    void initParser();
 };
 
 // **********************************************************************************************
@@ -121,8 +132,8 @@ public:
                               std::string expression,
                               FieldInfo *fieldInfo,
                               CouplingInfo *couplingInfo,
-                              Material *material1,
-                              Material *material2);
+                              Material *materialSource,
+                              Material *materialTarget);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -134,10 +145,8 @@ public:
     LinearityType linearityType() const;
 
 private:
-    FieldInfo *m_fieldInfo;
-    CouplingInfo *m_couplingInfo;
-    Material *m_material1;
-    Material *m_material2;
+    Material *m_materialSource;
+    Material *m_materialTarget;
 };
 
 template<typename Scalar>
@@ -149,8 +158,8 @@ public:
                               std::string expression,
                               FieldInfo *fieldInfo,
                               CouplingInfo *couplingInfo,
-                              Material *material1,
-                              Material *material2);
+                              Material *materialSource,
+                              Material *materialTarget);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -162,10 +171,8 @@ public:
     LinearityType linearityType() const;
 
 private:
-    FieldInfo *m_fieldInfo;
-    CouplingInfo *m_couplingInfo;
-    Material *m_material1;
-    Material *m_material2;
+    Material *m_materialSource;
+    Material *m_materialTarget;
 
     unsigned int j;
 };

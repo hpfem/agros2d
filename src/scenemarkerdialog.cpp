@@ -30,7 +30,7 @@
 #include "gui.h"
 
 SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, QString name, QString type,
-                             std::map<QString, Value> values)
+                             QMap<QString, Value> values)
     : Boundary(fieldInfo, name, type, values)
 {
 
@@ -87,7 +87,7 @@ SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary(NULL, "none")
 // *************************************************************************************************************************************
 
 SceneMaterial::SceneMaterial(FieldInfo *fieldInfo, QString name,
-                             std::map<QString, Value> values) : Material(fieldInfo, name, values)
+                             QMap<QString, Value> values) : Material(fieldInfo, name, values)
 {
 
 }

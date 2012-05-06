@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "hermes2d.h"
+#include "post_values.h"
 
 class Parser;
 
@@ -56,25 +57,25 @@ struct PointValue
     SceneMaterial *material;
 };
 
-class LocalPointValue
+class LocalPointValue : public PostprocessorValue
 {
 public:
-    Parser *parser;
-
     // point
     Point point;
-
-    // variables
-    std::map<Module::LocalVariable *, PointValue> values;
 
     LocalPointValue(FieldInfo *fieldInfo, const Point &point);
     ~LocalPointValue();
 
-    void initParser();
+    // variables
+    QMap<Module::LocalVariable *, PointValue> values() const { return m_values; }
+
     void calculate();
 
 private:
-    FieldInfo *m_fieldInfo;
+    // variables
+    QMap<Module::LocalVariable *, PointValue> m_values;
+
+    void initParser();
 };
 
 #endif // LOCALPOINT_H

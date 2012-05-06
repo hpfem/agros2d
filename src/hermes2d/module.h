@@ -91,18 +91,6 @@ private:
     double constant_value;
 };
 
-
-//template <typename Scalar>
-//class ViewScalarFilter;
-
-enum WFType
-{
-    WFType_MatVol,
-    WFType_MatSurf,
-    WFType_VecVol,
-    WFType_VecSurf
-};
-
 template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
@@ -118,10 +106,10 @@ public:
     //    QList<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
-    //marker_second has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WFType type, Field* field, QString area, ParserFormExpression* form, int offsetI, int offsetJ,
-                      Marker* marker, SceneMaterial* marker_second = NULL, CouplingInfo* couplingInfo = NULL);
-    void addForm(WFType type, Hermes::Hermes2D::Form<Scalar>* form);
+    // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
+    void registerForm(WeakForm type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
+                      Marker *marker, SceneMaterial *materialTarget = NULL, CouplingInfo *couplingInfo = NULL);
+    void addForm(WeakForm type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;
 };
@@ -466,12 +454,13 @@ QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId);
 
 /// TODO not good - contains fieldInfo, but may receive more materials (related to different fields
 /// TODO fieldInfo shoud be removed, but other things depend on it
+/*
 class Parser
 {
 public:
     // parser
     QList<mu::Parser *> parser;
-    std::map<QString, double> parser_variables;
+    QMap<QString, double> parserVariables;
 
     Parser(FieldInfo *fieldInfo);
     Parser(CouplingInfo *fieldInfo);
@@ -496,37 +485,7 @@ private:
     FieldInfo* m_fieldInfo;
     CouplingInfo* m_couplingInfo;
 };
-
-template <typename Scalar>
-class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
-{
-public:
-    ViewScalarFilter(FieldInfo *fieldInfo,
-                     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
-                     QString expression);
-    ~ViewScalarFilter();
-
-    double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
-
-    ViewScalarFilter<Scalar>* clone();
-
-protected:
-    typename Hermes::Hermes2D::Function<Scalar>::Node* node;
-
-    double px;
-    double py;
-    double *pvalue;
-    double *pdx;
-    double *pdy;
-
-    Parser *parser;
-
-    void initParser(const QString &expression);
-    void precalculate(int order, int mask);
-
-private:
-    FieldInfo *m_fieldInfo;
-};
+*/
 
 // mesh fix
 void readMeshDirtyFix();

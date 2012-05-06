@@ -44,7 +44,7 @@ Value Marker::getValue(QString id)
     return Value();
 }
 
-const map<QString, Value> Marker::getValues() const
+const QMap<QString, Value> Marker::getValues() const
 {
     return values;
 }
@@ -56,11 +56,10 @@ void Marker::evaluate(QString id, double time)
 
 bool Marker::evaluateAllVariables()
 {
-    for (std::map<QString, Value>::iterator it = values.begin(); it != values.end(); ++it)
-    {
-        if (!it->second.evaluate())
+    foreach (Value value, values)
+        if (!value.evaluate())
             return false;
-    }
+
     return true;
 }
 
@@ -70,7 +69,7 @@ QString Marker::fieldId()
 }
 
 Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
-                   std::map<QString, Value> values) : Marker(fieldInfo, name)
+                   QMap<QString, Value> values) : Marker(fieldInfo, name)
 {
     // name and type
     setType(type);
@@ -89,7 +88,7 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
 }
 
 Material::Material(FieldInfo *fieldInfo, QString name,
-                   std::map<QString, Value> values) : Marker(fieldInfo, name)
+                   QMap<QString, Value> values) : Marker(fieldInfo, name)
 {
     // name and type
     this->values = values;

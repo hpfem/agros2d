@@ -33,6 +33,7 @@ static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
 static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList; // FIXME: deprecated - DO NOT USE
 static QHash<WeakFormsType, QString> weakFormsTypeList;
+static QHash<WeakForm, QString> weakFormList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<SolutionType, QString> solutionTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
@@ -60,6 +61,10 @@ CouplingType couplingTypeFromStringKey(const QString &couplingType) { return cou
 QStringList weakFormsTypeStringKeys() { return weakFormsTypeList.values(); }
 QString weakFormsTypeToStringKey(WeakFormsType weakFormsType) { return weakFormsTypeList[weakFormsType]; }
 WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType) { return weakFormsTypeList.key(weakFormsType); }
+
+QStringList weakFormStringKeys() { return weakFormList.values(); }
+QString weakFormToStringKey(WeakForm weakForm) { return weakFormList[weakForm]; }
+WeakForm weakFormFromStringKey(const QString &weakForm) { return weakFormList.key(weakForm); }
 
 QStringList meshTypeStringKeys() { return meshTypeList.values(); }
 QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
@@ -126,6 +131,11 @@ void initLists()
     weakFormsTypeList.insert(WeakFormsType_Undefined, "");
     weakFormsTypeList.insert(WeakFormsType_Interpreted, "interpreted");
     weakFormsTypeList.insert(WeakFormsType_Compiled, "compiled");
+
+    weakFormList.insert(WeakForm_MatVol, "matvol");
+    weakFormList.insert(WeakForm_MatSurf, "matsur");
+    weakFormList.insert(WeakForm_VecVol, "vecvol");
+    weakFormList.insert(WeakForm_VecSurf, "vecsur");
 
     // Mesh Type
     meshTypeList.insert(MeshType_Triangle, "triangle");
@@ -339,6 +349,24 @@ QString weakFormsTypeString(WeakFormsType weakFormsType)
         return QObject::tr("Compiled");
     default:
         std::cerr << "Weak forms type '" + QString::number(weakFormsType).toStdString() + "' is not implemented. weakFormsTypeString(WeakFormsType weakFormsType)" << endl;
+        throw;
+    }
+}
+
+QString weakFormString(WeakForm weakForm)
+{
+    switch (weakForm)
+    {
+    case WeakForm_MatVol:
+        return QObject::tr("Matrix volume");
+    case WeakForm_MatSurf:
+        return QObject::tr("Matrix surface");
+    case WeakForm_VecVol:
+        return QObject::tr("Vector volume");
+    case WeakForm_VecSurf:
+        return QObject::tr("Vector surface");
+    default:
+        std::cerr << "Weak form '" + QString::number(weakForm).toStdString() + "' is not implemented. weakFormString(WeakForm weakForm)" << endl;
         throw;
     }
 }

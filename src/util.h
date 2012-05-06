@@ -440,6 +440,14 @@ enum WeakFormsType
     WeakFormsType_Compiled
 };
 
+enum WeakForm
+{
+    WeakForm_MatVol,
+    WeakForm_MatSurf,
+    WeakForm_VecVol,
+    WeakForm_VecSurf
+};
+
 enum MeshType
 {
     MeshType_Triangle,
@@ -568,6 +576,7 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
 QString coordinateTypeString(CoordinateType coordinateType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
 QString weakFormsTypeString(WeakFormsType weakFormsType);
+QString weakFormString(WeakForm weakForm);
 QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
@@ -612,6 +621,10 @@ CouplingType couplingTypeFromStringKey(const QString &couplingType);
 QStringList weakFormsTypeStringKeys();
 QString weakFormsTypeToStringKey(WeakFormsType weakFormsType);
 WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType);
+
+QStringList weakFormStringKeys();
+QString weakFormToStringKey(WeakForm weakForm);
+WeakForm weakFormFromStringKey(const QString &weakForm);
 
 QStringList meshTypeStringKeys();
 QString meshTypeToStringKey(MeshType meshType);

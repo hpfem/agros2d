@@ -1632,9 +1632,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
                 eleBoundary.setAttribute("id", iboundary);
                 eleBoundary.setAttribute("type", boundary->getType());
 
-                const std::map<QString, Value> values = boundary->getValues();
-                for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
-                    eleBoundary.setAttribute(it->first, it->second.toString());
+                const QMap<QString, Value> values = boundary->getValues();
+                for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                    eleBoundary.setAttribute(it.key(), it.value().toString());
 
                 // add edges
                 foreach (SceneEdge *edge, edges->items())
@@ -1666,9 +1666,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             eleMaterial.setAttribute("id", imaterial);
             eleMaterial.setAttribute("name", material->getName());
 
-            const std::map<QString, Value> values = material->getValues();
-            for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
-                eleMaterial.setAttribute(it->first, it->second.toString());
+            const QMap<QString, Value> values = material->getValues();
+            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                eleMaterial.setAttribute(it.key(), it.value().toString());
 
             // add labels
             foreach (SceneLabel *label, labels->items())
