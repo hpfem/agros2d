@@ -288,3 +288,13 @@ void SceneNodeCommandEdit::redo()
     }
 }
 
+bool SceneNode::isOutsideArea() const
+{
+    return  (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
+            (this->point.x < - EPS_ZERO);
+}
+
+bool SceneNode::isError()
+{
+    return (this->isLyingOnEdges() || !this->isConnected() || this->isOutsideArea());
+}

@@ -196,6 +196,12 @@ public:
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
 
+    void checkEdge(SceneEdge *edge);
+    void checkNode(SceneNode *node);
+    void checkNodeConnect(SceneNode *node);
+    void checkGeometry();
+    ErrorResult checkGeometryResult();
+
     void addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent);
 
     inline QUndoStack *undoStack() const { return m_undoStack; }

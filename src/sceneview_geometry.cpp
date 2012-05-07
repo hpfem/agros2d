@@ -381,6 +381,15 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             {
                 Util::scene()->transformTranslate(dp, false);
             }
+            foreach (SceneNode *node, Util::scene()->nodes->items())
+            {
+                Util::scene()->checkNode(node);
+            }
+
+            foreach (SceneEdge *edge, Util::scene()->edges->items())
+            {
+                Util::scene()->checkEdge(edge);
+            }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
@@ -410,6 +419,15 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             else
             {
                 Util::scene()->transformTranslate(dp, false);
+            }
+            foreach (SceneNode *node, Util::scene()->nodes->items())
+            {
+                Util::scene()->checkNode(node);
+            }
+
+            foreach (SceneEdge *edge, Util::scene()->edges->items())
+            {
+                Util::scene()->checkEdge(edge);
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
@@ -510,10 +528,10 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                         SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0, 0); //TODO - do it better
                         SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
                         if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
-                                                                                                  edge->nodeEnd->point,
-                                                                                                  "TODO",
-                                                                                                  edge->angle,
-                                                                                                  edge->refineTowardsEdge));
+                                                                                                        edge->nodeEnd->point,
+                                                                                                        "TODO",
+                                                                                                        edge->angle,
+                                                                                                        edge->refineTowardsEdge));
                     }
 
                     m_nodeLast->isSelected = false;
@@ -538,9 +556,9 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                 SceneLabel *label = new SceneLabel(p, 0, 0); //TODO - do it better
                 SceneLabel *labelAdded = Util::scene()->addLabel(label);
                 if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point,
-                                                                                             "TODO",
-                                                                                             label->area,
-                                                                                             label->polynomialOrder));
+                                                                                                   "TODO",
+                                                                                                   label->area,
+                                                                                                   label->polynomialOrder));
                 updateGL();
             }
         }
@@ -606,7 +624,7 @@ void SceneViewPreprocessor::mouseReleaseEvent(QMouseEvent *event)
         actSceneViewSelectRegion->setData(false);
     }
 
-    m_selectRegion = false;    
+    m_selectRegion = false;
     updateGL();
 
     // move by mouse - select none
@@ -892,6 +910,13 @@ void SceneViewPreprocessor::paintGeometry()
                   Util::config()->colorEdges.blueF());
         glLineWidth(Util::config()->edgeWidth);
 
+        if (edge->isError())
+        {
+            glColor3d(Util::config()->colorCrossed.redF(),
+                      Util::config()->colorCrossed.greenF(),
+                      Util::config()->colorCrossed.blueF());
+            glLineWidth(Util::config()->edgeWidth);
+        }
         if (edge->isHighlighted)
         {
             glColor3d(Util::config()->colorHighlighted.redF(),
@@ -948,7 +973,7 @@ void SceneViewPreprocessor::paintGeometry()
         glVertex2d(node->point.x, node->point.y);
         glEnd();
 
-        if ((node->isSelected) || (node->isHighlighted))
+        if ((node->isSelected) || (node->isHighlighted) || node->isError() )
         {
             glPointSize(Util::config()->nodeSize - 2.0);
 

@@ -282,8 +282,18 @@ void Problem::solve()
     // open indicator progress
     Indicator::openProgress();
 
+
+    // control geometry
+    ErrorResult result = Util::scene()->checkGeometryResult();
+    if (result.isError())
+    {
+        result.showDialog();
+        m_isSolving = false;
+        return;
+    }
+
     // save problem
-    ErrorResult result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
+    result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
     if (result.isError())
         result.showDialog();
 

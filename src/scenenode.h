@@ -31,6 +31,13 @@ class SceneNode : public SceneBasic
 public:
     SceneNode(const Point &point);
 
+    // geometry editor
+    QList<SceneEdge *> connectedEdges;
+    bool isConnected() const { return connectedEdges.length() > 0; }
+    QList<SceneEdge *> lyingEdges;
+    bool isLyingOnEdges() const { return lyingEdges.length() > 0; }
+    bool isOutsideArea() const;
+    bool isError();
     double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);

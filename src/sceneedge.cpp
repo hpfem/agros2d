@@ -402,7 +402,7 @@ bool SceneEdgeDialog::save()
         sceneEdge->nodeEnd = nodeEnd;
         sceneEdge->angle = txtAngle->number();
         sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
-
+        Util::scene()->checkEdge(sceneEdge);
         foreach (QComboBox* cmbBoundary, cmbBoundaries)
         {
             sceneEdge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
@@ -565,4 +565,14 @@ void SceneEdgeCommandEdit::redo()
         edge->refineTowardsEdge = m_refineTowardsEdge;
         Util::scene()->refresh();
     }
+}
+
+bool SceneEdge::isOutsideArea() const
+{
+    return (nodeStart->isOutsideArea() || nodeEnd->isOutsideArea());
+}
+
+bool SceneEdge::isError() const
+{
+    return (this->isLyingNode() || this->isOutsideArea() || isCrossed());
 }
