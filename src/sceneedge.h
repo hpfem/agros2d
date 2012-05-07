@@ -33,7 +33,15 @@ public:
     double angle;
     int refineTowardsEdge;
 
+
     SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge);
+
+    bool isCrossed() const { return crossedEdges.length() > 0; }
+    QList<SceneEdge *> crossedEdges;
+    bool isLyingNode() const { return lyingNodes.length() > 0; }
+    QList<SceneNode *> lyingNodes;
+    bool isOutsideArea() const;
+    bool isError() const;
 
     Point center() const;
     double radius() const;
