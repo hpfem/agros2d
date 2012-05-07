@@ -40,6 +40,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/coupling.h"
 
 // current python engine agros
 PythonEngineAgros *currentPythonEngineAgros()
@@ -401,6 +402,37 @@ void PyProblem::setTimeTotal(const double timeTotal)
         Util::problem()->config()->setTimeTotal(Value(QString::number(timeTotal)));
     else
         throw invalid_argument(QObject::tr("The total time must be positive.").toStdString());
+}
+
+char *PyProblem::getCouplingType(const char *sourceField, const char *targetField)
+{
+    if (Util::problem()->hasCoupling(QString(sourceField),
+                                     QString(targetField)))
+    {
+        CouplingInfo *couplingInfo = Util::problem()->couplingInfo(QString(sourceField),
+                                                                   QString(targetField));
+
+        return const_cast<char*>(couplingTypeToStringKey(couplingInfo->couplingType()).toStdString().c_str());
+    }
+    else
+        throw invalid_argument(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(QString(sourceField)).arg(QString(targetField)).toStdString());
+}
+
+void PyProblem::setCouplingType(const char *sourceField, const char *targetField, const char *type)
+{
+    if (Util::problem()->hasCoupling(QString(sourceField),
+                                     QString(targetField)))
+    {
+        CouplingInfo *couplingInfo = Util::problem()->couplingInfo(QString(sourceField),
+                                                                   QString(targetField));
+
+        if (couplingTypeStringKeys().contains(QString(type)))
+            couplingInfo->setCouplingType(couplingTypeFromStringKey(QString(type)));
+        else
+            throw invalid_argument(QObject::tr("Invalid coupling type key. Valid keys: %1").arg(stringListToString(couplingTypeStringKeys())).toStdString());
+    }
+    else
+        throw invalid_argument(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(QString(sourceField)).arg(QString(targetField)).toStdString());
 }
 
 void PyProblem::clear()

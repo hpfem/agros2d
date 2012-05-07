@@ -57,7 +57,6 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
 
 void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
-    cout << "$$$$$$$$  Saving solution " << solutionID << ", now solutions: " << m_multiSolutions.size() << ", time " << multiSolution.component(0).time << endl;
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
     m_multiSolutions[solutionID] = multiSolution;

@@ -147,8 +147,12 @@ class PyProblem
         void setTimeStep(const double timeStep);
 
         // time total
-        inline const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }
+        const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
+
+        // coupling
+        char *getCouplingType(const char *sourceField, const char *targetField);
+        void setCouplingType(const char *sourceField, const char *targetField, const char *type);
 
         void solve();
 };

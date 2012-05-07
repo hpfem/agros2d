@@ -44,6 +44,9 @@ cdef extern from "../../src/pythonlabagros.h":
         double getTimeTotal()
         void setTimeTotal(double timeTotal) except +
 
+        char *getCouplingType(char *sourceField, char *targetField) except +
+        void setCouplingType(char *sourceField, char *targetField, char *type) except +
+
         void solve()
 
     # PyField
@@ -302,6 +305,12 @@ cdef class __Problem__:
             return self.thisptr.getTimeTotal()
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
+
+    # coupling type
+    def get_coupling_type(self, source_field, target_field):
+        return self.thisptr.getCouplingType(source_field, target_field)
+    def set_coupling_type(self, source_field, target_field, type):
+            self.thisptr.setCouplingType(source_field, target_field, type)
 
     # solve
     def solve(self):
