@@ -22,6 +22,7 @@
 #include "field.h"
 #include "block.h"
 #include "problem.h"
+#include "logview.h"
 
 #include "../weakform/src/weakform_factory.h"
 
@@ -34,6 +35,7 @@
 #include "hermes2d/solver.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
+#include "hermes2d/post_values.h"
 
 #include "mesh/mesh_reader_h2d.h"
 
@@ -101,30 +103,29 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *factoryForm(WFType type, const QString &problemId,
+Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakForm type, const QString &problemId,
                                             const QString &area, ParserFormExpression *form,
                                             Marker* marker)
 {
-    if(type == WFType_MatVol)
+    if(type == WeakForm_MatVol)
         return factoryMatrixFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker);
-    else if(type == WFType_MatSurf)
+    else if(type == WeakForm_MatSurf)
         return factoryMatrixFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker);
-    else if(type == WFType_VecVol)
+    else if(type == WeakForm_VecVol)
         return factoryVectorFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker);
-    else if(type == WFType_VecSurf)
+    else if(type == WeakForm_VecSurf)
         return factoryVectorFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker);
     else
         assert(0);
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, const QString &area,
+Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WeakForm type, int i, int j, const QString &area,
                                                   Hermes::Hermes2D::SymFlag sym, string expression, FieldInfo *fieldInfo,
                                                   CouplingInfo *couplingInfo,
                                                   Marker* marker, Material* markerSecond)
 {
-    //    cout << "factory form (" << i << ", " << j << "), area: " << area << " -> " << expression << ", marker " << marker->getName() <<  endl;
-    if(type == WFType_MatVol)
+    if (type == WeakForm_MatVol)
         return new CustomParserMatrixFormVol<Scalar>(i, j,
                                                      area.toStdString(),
                                                      sym,
@@ -133,12 +134,12 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
                                                      couplingInfo,
                                                      (SceneMaterial*) marker,
                                                      markerSecond);
-    else if(type == WFType_MatSurf)
+    else if (type == WeakForm_MatSurf)
         return new CustomParserMatrixFormSurf<Scalar>(i, j,
                                                       area.toStdString(),
                                                       expression,
                                                       (SceneBoundary*) marker);
-    else if(type == WFType_VecVol)
+    else if (type == WeakForm_VecVol)
         return new CustomParserVectorFormVol<Scalar>(i, j,
                                                      area.toStdString(),
                                                      expression,
@@ -146,7 +147,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
                                                      couplingInfo,
                                                      (SceneMaterial*) marker,
                                                      markerSecond);
-    else if(type == WFType_VecSurf)
+    else if (type == WeakForm_VecSurf)
         return new CustomParserVectorFormSurf<Scalar>(i, j,
                                                       area.toStdString(),
                                                       expression,
@@ -156,27 +157,27 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WFType type, int i, int j, con
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::addForm(WFType type, Hermes::Hermes2D::Form<Scalar> *form)
+void WeakFormAgros<Scalar>::addForm(WeakForm type, Hermes::Hermes2D::Form<Scalar> *form)
 {
     cout << "addForm : pridavam formu typu " << type << ", i: " << form->i <<  /*", j: " << form->j <<*/ ", areas: ";
     for(int i = 0; i < form->areas.size(); i++)
         cout << form->areas.at(i) << ", ";
     cout << endl;
-    if(type == WFType_MatVol)
+    if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
-    else if(type == WFType_MatSurf)
+    else if(type == WeakForm_MatSurf)
         add_matrix_form_surf((Hermes::Hermes2D::MatrixFormSurf<Scalar>*) form);
-    else if(type == WFType_VecVol)
+    else if(type == WeakForm_VecVol)
         add_vector_form((Hermes::Hermes2D::VectorFormVol<Scalar>*) form);
-    else if(type == WFType_VecSurf)
+    else if(type == WeakForm_VecSurf)
         add_vector_form_surf((Hermes::Hermes2D::VectorFormSurf<Scalar>*) form);
     else
         assert(0);
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
-                                         Marker* marker, SceneMaterial* marker_second, CouplingInfo* couplingInfo)
+void WeakFormAgros<Scalar>::registerForm(WeakForm type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
+                                         Marker* marker, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze sdruzeni
     string problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
@@ -188,26 +189,26 @@ void WeakFormAgros<Scalar>::registerForm(WFType type, Field* field, QString area
     // compiled form
     if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
-        //assert(0);
         custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker);
     }
     
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
-        qDebug() << "Cannot find compiled VectorFormVol().";
+        Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2).").
+                                  arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)));
     
     // interpreted form
     if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
     {
-        FieldInfo* fieldInfo = couplingInfo ? NULL : field->fieldInfo();
+        FieldInfo *fieldInfo = couplingInfo ? NULL : field->fieldInfo();
         custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression,
-                                                fieldInfo, couplingInfo, marker, marker_second);
+                                                fieldInfo, couplingInfo, marker, materialTarget);
     }
     
-    //Decide what solution to push, implicitly none
+    // decide what solution to push, implicitly none
     FieldSolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
     
     // weak coupling, push solutions
-    if (marker_second && couplingInfo->isWeak())
+    if (materialTarget && couplingInfo->isWeak())
     {
         // TODO at the present moment, it is impossible to have more sources !
         assert(field->m_couplingSources.size() <= 1);
@@ -259,11 +260,11 @@ void WeakFormAgros<Scalar>::registerForms()
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
                 
                 foreach (ParserFormExpression *expression, boundary_type->m_wfMatrixSurface)
-                    registerForm(WFType_MatSurf, field, QString::number(edgeNum), expression,
+                    registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 
                 foreach (ParserFormExpression *expression, boundary_type->m_wfVectorSurface)
-                    registerForm(WFType_VecSurf, field, QString::number(edgeNum), expression,
+                    registerForm(WeakForm_VecSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
             }
         }
@@ -277,11 +278,11 @@ void WeakFormAgros<Scalar>::registerForms()
             if (material != Util::scene()->materials->getNone(fieldInfo))
             {
                 foreach (ParserFormExpression *expression, fieldInfo->module()->wfMatrixVolumeExpression())
-                    registerForm(WFType_MatVol, field, QString::number(labelNum), expression,
+                    registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
 
                 foreach (ParserFormExpression *expression, fieldInfo->module()->wfVectorVolumeExpression())
-                    registerForm(WFType_VecVol, field, QString::number(labelNum), expression,
+                    registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
 
                 // weak coupling
@@ -294,7 +295,7 @@ void WeakFormAgros<Scalar>::registerForms()
 
                         if (material2 != Util::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
-                            registerForm(WFType_VecVol, field, QString::number(labelNum), expression,
+                            registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
                                          m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
                         }
                     }
@@ -324,12 +325,12 @@ void WeakFormAgros<Scalar>::registerForms()
                 qDebug() << "hard coupling form on marker " << labelNum;
 
                 foreach (ParserFormExpression *pars, coupling->wfMatrixVolumeExpression())
-                    registerForm(WFType_MatVol, sourceField, QString::number(labelNum), pars,
+                    registerForm(WeakForm_MatVol, sourceField, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
                 
                 foreach (ParserFormExpression *pars, coupling->wfVectorVolumeExpression())
-                    registerForm(WFType_VecVol, sourceField, QString::number(labelNum), pars,
+                    registerForm(WeakForm_VecVol, sourceField, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
 
@@ -578,15 +579,8 @@ void Module::BasicModule::read(const QString &filename)
     {
         XMLModule::analysis an = mod->general().analyses().analysis().at(i);
 
-        // TODO: not good
-        m_analyses[analysisTypeFromStringKey(QString::fromStdString(an.id()))] = QString::fromStdString(an.type());
-
-        if (an.type() == QString("steadystate").toStdString())
-            m_numberOfSolutions = an.solutions();
-        else if (an.type() == QString("harmonic").toStdString())
-            m_numberOfSolutions = an.solutions();
-        else if (an.type() == QString("transient").toStdString())
-            m_numberOfSolutions = an.solutions();
+        if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
+            m_numberOfSolutions = an.solutions();       
     }
 
     // constants
@@ -704,12 +698,6 @@ void Module::BasicModule::read(const QString &filename)
         }
     }
 
-    // custom local variable
-    //TODO
-    //Module::LocalVariable *customLocalVariable = new Module::LocalVariable("custom", "Custom", "custom", "-");
-    //customLocalVariable->expression.scalar = "value1";
-    //view_scalar_variables.append(customLocalVariable);
-
     // scalar variables default
     for (int i = 0; i < mod->postprocessor().view().scalar_view().default_().size(); i++)
     {
@@ -731,57 +719,71 @@ void Module::BasicModule::read(const QString &filename)
     {
         XMLModule::volumeintegral vol = mod->postprocessor().volumeintegrals().volumeintegral().at(i);
 
-        Module::Integral *volint = new Module::Integral();
-
-        volint->id = QString::fromStdString(vol.id());
-        volint->name = QString::fromStdString(vol.name());
-        volint->shortname = QString::fromStdString(vol.shortname());
-        volint->shortname_html = (vol.shortname_html().present()) ? QString::fromStdString(vol.shortname_html().get()) : volint->shortname;
-        volint->unit = QString::fromStdString(vol.unit());
-        volint->unit_html = (vol.unit_html().present()) ? QString::fromStdString(vol.unit_html().get()) : volint->unit;
-
+        QString expr;
         for (int i = 0; i < vol.expression().size(); i++)
         {
             XMLModule::expression exp = vol.expression().at(i);
             if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
             {
                 if (m_coordinateType == CoordinateType_Planar)
-                    volint->expr.scalar = QString::fromStdString(exp.planar().get());
+                    expr = QString::fromStdString(exp.planar().get());
                 else
-                    volint->expr.scalar = QString::fromStdString(exp.axi().get());
+                    expr = QString::fromStdString(exp.axi().get());
             }
         }
+        expr = expr.trimmed();
 
-        m_volumeIntegrals.append(volint);
+        // new integral
+        if (!expr.isEmpty())
+        {
+            Module::Integral *volint = new Module::Integral();
+
+            volint->id = QString::fromStdString(vol.id());
+            volint->name = QString::fromStdString(vol.name());
+            volint->shortname = QString::fromStdString(vol.shortname());
+            volint->shortname_html = (vol.shortname_html().present()) ? QString::fromStdString(vol.shortname_html().get()) : volint->shortname;
+            volint->unit = QString::fromStdString(vol.unit());
+            volint->unit_html = (vol.unit_html().present()) ? QString::fromStdString(vol.unit_html().get()) : volint->unit;
+            volint->expression = expr;
+
+            m_volumeIntegrals.append(volint);
+        }
     }
 
     // surface integral
     for (int i = 0; i < mod->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
     {
-        XMLModule::surfaceintegral vol = mod->postprocessor().surfaceintegrals().surfaceintegral().at(i);
+        XMLModule::surfaceintegral sur = mod->postprocessor().surfaceintegrals().surfaceintegral().at(i);
 
-        Module::Integral *volint = new Module::Integral();
-
-        volint->id = QString::fromStdString(vol.id());
-        volint->name = QString::fromStdString(vol.name());
-        volint->shortname = QString::fromStdString(vol.shortname());
-        volint->shortname_html = (vol.shortname_html().present()) ? QString::fromStdString(vol.shortname_html().get()) : volint->shortname;
-        volint->unit = QString::fromStdString(vol.unit());
-        volint->unit_html = (vol.unit_html().present()) ? QString::fromStdString(vol.unit_html().get()) : volint->unit;
-
-        for (int i = 0; i < vol.expression().size(); i++)
+        QString expr;
+        for (int i = 0; i < sur.expression().size(); i++)
         {
-            XMLModule::expression exp = vol.expression().at(i);
+            XMLModule::expression exp = sur.expression().at(i);
             if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
             {
                 if (m_coordinateType == CoordinateType_Planar)
-                    volint->expr.scalar = QString::fromStdString(exp.planar().get());
+                    expr = QString::fromStdString(exp.planar().get());
                 else
-                    volint->expr.scalar = QString::fromStdString(exp.axi().get());
+                    expr = QString::fromStdString(exp.axi().get());
             }
         }
+        expr = expr.trimmed();
 
-        m_surfaceIntegrals.append(volint);
+        // new integral
+        if (!expr.isEmpty())
+        {
+            Module::Integral *surint = new Module::Integral();
+
+            surint->id = QString::fromStdString(sur.id());
+            surint->name = QString::fromStdString(sur.name());
+            surint->shortname = QString::fromStdString(sur.shortname());
+            surint->shortname_html = (sur.shortname_html().present()) ? QString::fromStdString(sur.shortname_html().get()) : surint->shortname;
+            surint->unit = QString::fromStdString(sur.unit());
+            surint->unit_html = (sur.unit_html().present()) ? QString::fromStdString(sur.unit_html().get()) : surint->unit;
+            surint->expression = expr;
+
+            m_surfaceIntegrals.append(surint);
+        }
     }
 
     // preprocessor
@@ -804,9 +806,6 @@ void Module::BasicModule::clear()
     m_fieldid = "";
     m_name = "";
     m_description = "";
-
-    // analyses
-    m_analyses.clear();
 
     // constants
     m_constants.clear();
@@ -923,12 +922,12 @@ mu::Parser *Module::BasicModule::expressionParser(const QString &expr)
     if (!expr.isEmpty())
         parser->SetExpr(expr.toStdString());
 
-    QMapIterator<QString, double> iConstant(constants());
-    while (iConstant.hasNext())
+    QMapIterator<QString, double> itConstant(constants());
+    while (itConstant.hasNext())
     {
-        iConstant.next();
+        itConstant.next();
 
-        parser->DefineConst(iConstant.key().toStdString(), iConstant.value());
+        parser->DefineConst(itConstant.key().toStdString(), itConstant.value());
     }
 
     parser->EnableOptimizer(true);
@@ -1073,244 +1072,6 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
 
             i++;
         }
-}
-
-// return geom type
-Hermes::Hermes2D::GeomType convertProblemType(CoordinateType problemType)
-{
-    return (problemType == CoordinateType_Planar ? Hermes::Hermes2D::HERMES_PLANAR : Hermes::Hermes2D::HERMES_AXISYM_Y);
-}
-
-// *********************************************************************************************************************************************
-
-Parser::Parser(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo), m_couplingInfo(NULL)
-{
-
-}
-
-Parser::Parser(CouplingInfo *couplingInfo) : m_fieldInfo(NULL), m_couplingInfo(couplingInfo)
-{
-
-}
-
-Parser::~Parser()
-{
-    // delete parser
-    for (QList<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
-        delete *it;
-
-    parser.clear();
-}
-
-void Parser::setParserVariables(Material* material, Boundary *boundary, double value, double dx, double dy)
-{
-    assert(m_couplingInfo == NULL);
-    QList<Material *> materials;
-    if(material)
-        materials.append(material);
-    setParserVariables(materials, boundary, value, dx, dy);
-}
-
-void Parser::setParserVariables(QList<Material *> materialMarkers, Boundary *boundary, double value, double dx, double dy)
-{
-    // todo: ??? je to zmatecne, jak je to nekdy volano s fieldInfo, nekddy couplingInfo...
-    //    if(materialMarkers.size() > 1)
-    //        assert(m_couplingInfo);
-
-    //TODO zkontrolovat volani value, proc u boundary neni derivace, ...
-    if (materialMarkers.size())
-    {
-        foreach (Material *material, materialMarkers)
-        {
-            QList<Module::MaterialTypeVariable *> materials = material->getFieldInfo()->module()->materialTypeVariables();
-            foreach (Module::MaterialTypeVariable *variable, materials)
-            {
-                parser_variables[variable->shortname] = material->getValue(variable->id).value(value);
-                parser_variables["d" + variable->shortname] = material->getValue(variable->id).derivative(value);
-            }
-        }
-    }
-
-    if (boundary)
-    {
-        Module::BoundaryType *boundaryType = m_fieldInfo->module()->boundaryType(boundary->getType());
-        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables)
-        {
-            parser_variables[variable->shortname] = boundary->getValue(variable->id).value(0.0);
-            //cout << "setParserVariables: shortname: " << variable->shortname << ", id: " << variable->id << ", value: " << boundary->getValue(variable->id).value(0.0) << endl;
-        }
-    }
-
-}
-
-void Parser::initParserMaterialVariables()
-{
-    QList<Module::MaterialTypeVariable *> materials = m_fieldInfo->module()->materialTypeVariables();
-    for (QList<Module::MaterialTypeVariable *>::iterator it = materials.begin(); it < materials.end(); ++it)
-    {
-        Module::MaterialTypeVariable *variable = ((Module::MaterialTypeVariable *) *it);
-        parser_variables[variable->shortname] = 0.0;
-    }
-
-    // set material variables
-    for (std::map<QString, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
-        for (QList<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
-            ((mu::Parser *) *it)->DefineVar(itv->first.toStdString(), &itv->second);
-}
-
-//void Parser::initParserBoundaryVariables(Boundary *boundary)
-//{
-//    Module::BoundaryType *boundary_type = fieldInfo->module()->get_boundary_type(boundary->getType());
-//    for (QList<Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-//    {
-//        Module::BoundaryTypeVariable *variable = ((Module::BoundaryTypeVariable *) *it);
-//        parser_variables[variable->shortname] = 0.0;
-//    }
-
-//    // set material variables
-//    for (std::map<QString, double>::iterator itv = parser_variables.begin(); itv != parser_variables.end(); ++itv)
-//        for (QList<mu::Parser *>::iterator it = parser.begin(); it < parser.end(); ++it)
-//            ((mu::Parser *) *it)->DefineVar(itv->first, &itv->second);
-//}
-
-// *********************************************************************************************************************************************
-
-template <typename Scalar>
-ViewScalarFilter<Scalar>::ViewScalarFilter(FieldInfo *fieldInfo,
-                                           Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
-                                           QString expression)
-    : Hermes::Hermes2D::Filter<Scalar>(sln), m_fieldInfo(fieldInfo)
-{
-    parser = new Parser(fieldInfo);
-    initParser(expression);
-
-    // init material variables
-    parser->initParserMaterialVariables();
-}
-
-template <typename Scalar>
-ViewScalarFilter<Scalar>::~ViewScalarFilter()
-{
-    delete parser;
-
-    delete [] pvalue;
-    delete [] pdx;
-    delete [] pdy;
-}
-
-template <typename Scalar>
-void ViewScalarFilter<Scalar>::initParser(const QString &expression)
-{
-    mu::Parser *pars = m_fieldInfo->module()->expressionParser();
-
-    pars->SetExpr(expression.toStdString());
-
-    pars->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-    pars->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
-
-    pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
-    pdx = new double[Hermes::Hermes2D::Filter<Scalar>::num];
-    pdy = new double[Hermes::Hermes2D::Filter<Scalar>::num];
-
-    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-    {
-        std::stringstream number;
-        number << (k+1);
-
-        pars->DefineVar("value" + number.str(), &pvalue[k]);
-        pars->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-        pars->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
-    }
-
-    parser->parser.append(pars);
-}
-
-template <typename Scalar>
-double ViewScalarFilter<Scalar>::get_pt_value(double x, double y, int item)
-{
-    return 0.0;
-}
-
-template <typename Scalar>
-void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
-{
-    bool isLinear = (m_fieldInfo->linearityType() == LinearityType_Linear);
-
-    Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
-    int np = quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_TRIANGLE) + quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_QUAD);
-    node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
-
-    double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
-    double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
-    double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
-
-    for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
-    {
-        Hermes::Hermes2D::Filter<Scalar>::sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
-        Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
-        value[k] = Hermes::Hermes2D::Filter<Scalar>::sln[k]->get_fn_values();
-    }
-
-    Hermes::Hermes2D::Filter<Scalar>::update_refmap();
-
-    double *x = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_x(order);
-    double *y = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_phys_y(order);
-    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<Scalar>::refmap->get_active_element();
-
-    SceneMaterial *material = Util::scene()->labels->at(atoi(Hermes::Hermes2D::MeshFunction<Scalar>::mesh->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
-    if (isLinear)
-        parser->setParserVariables(material, NULL);
-
-    for (int i = 0; i < np; i++)
-    {
-        px = x[i];
-        py = y[i];
-
-        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
-        {
-            pvalue[k] = value[k][i];
-            pdx[k] = dudx[k][i];
-            pdy[k] = dudy[k][i];
-        }
-
-
-        if (!isLinear)
-            parser->setParserVariables(material, NULL,
-                                       pvalue[0], pdx[0], pdy[0]);
-
-        // parse expression
-        try
-        {
-            node->values[0][0][i] = parser->parser[0]->Eval();
-        }
-        catch (mu::Parser::exception_type &e)
-        {
-            std::cout << "Scalar view: " << e.GetMsg() << std::endl;
-        }
-    }
-
-    delete [] value;
-    delete [] dudx;
-    delete [] dudy;
-
-    if (Hermes::Hermes2D::Function<Scalar>::nodes->present(order))
-    {
-        assert(Hermes::Hermes2D::Function<Scalar>::nodes->get(order) == Hermes::Hermes2D::Function<Scalar>::cur_node);
-        ::free(Hermes::Hermes2D::Function<Scalar>::nodes->get(order));
-    }
-    Hermes::Hermes2D::Function<Scalar>::nodes->add(node, order);
-    Hermes::Hermes2D::Function<Scalar>::cur_node = node;
-}
-
-template <typename Scalar>
-ViewScalarFilter<Scalar>* ViewScalarFilter<Scalar>::clone()
-{
-    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> slns;
-
-    for (int i = 0; i < this->num; i++)
-        slns.push_back(this->sln[i]);
-
-    return new ViewScalarFilter(m_fieldInfo, slns, QString::fromStdString(parser->parser[0]->GetExpr()));
 }
 
 template class WeakFormAgros<double>;

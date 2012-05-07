@@ -30,11 +30,8 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/solutionstore.h"
 
-VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
+VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo) : PostprocessorIntegralValue(fieldInfo)
 {
-    parser = new Parser(fieldInfo);
-    initParser();
-
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
@@ -49,22 +46,14 @@ VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo) : m_fieldInfo(fie
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
     }
 
+    initParser(m_fieldInfo->module()->volumeIntegrals());
+
     calculate();
 }
 
 VolumeIntegralValue::~VolumeIntegralValue()
 {
-    delete parser;
-}
-
-void VolumeIntegralValue::initParser()
-{
-    foreach (Module::Integral *integral, m_fieldInfo->module()->volumeIntegrals())
-    {
-        parser->parser.push_back(m_fieldInfo->module()->expressionParser(integral->expr.scalar));
-
-        values[integral] = 0.0;
-    }
+    qDeleteAll(parsers);
 }
 
 void VolumeIntegralValue::calculate()
@@ -81,7 +70,7 @@ void VolumeIntegralValue::calculate()
         double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
         double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
 
-        foreach (mu::Parser *pars, parser->parser)
+        foreach (mu::Parser *pars, parsers)
         {
             pars->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
             pars->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
@@ -96,8 +85,6 @@ void VolumeIntegralValue::calculate()
                 pars->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
 
             }
-
-            parser->initParserMaterialVariables();
         }
 
         Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
@@ -111,11 +98,10 @@ void VolumeIntegralValue::calculate()
         {
             if (label->isSelected)
             {
-                SceneMaterial *material = label->getMarker(m_fieldInfo);
                 int index = Util::scene()->labels->items().indexOf(label);
 
-                parser->setParserVariables(material, NULL,
-                                           pvalue[0], pdx[0], pdy[0]);
+                SceneMaterial *material = label->getMarker(m_fieldInfo);
+                setMaterialToParsers(material);
 
                 for_all_active_elements(e, mesh)
                 {
@@ -182,21 +168,21 @@ void VolumeIntegralValue::calculate()
 
                                     if (ru->is_jacobian_const())
                                     {
-                                        result += pt[i][2] * ru->get_const_jacobian() * parser->parser[n]->Eval();
+                                        result += pt[i][2] * ru->get_const_jacobian() * parsers[n]->Eval();
                                     }
                                     else
                                     {
                                         double* jac = ru->get_jacobian(o);
-                                        result += pt[i][2] * jac[i] * parser->parser[n]->Eval();
+                                        result += pt[i][2] * jac[i] * parsers[n]->Eval();
                                     }
                                 }
 
-                                values[integral] += result;
+                                m_values[integral] += result;
                             }
                             catch (mu::Parser::exception_type &e)
                             {
                                 qDebug() << "Volume integral: " << integral->name << " (" << integral->id << ") " << integral->name << " - '" <<
-                                             QString::fromStdString(parser->parser[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
+                                             QString::fromStdString(parsers[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
                             }
 
                             n++;

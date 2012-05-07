@@ -188,8 +188,8 @@
 					<module:quantity id="magnetic_potential_real" />
 					<module:quantity id="magnetic_potential_imag" />
 
-					<module:essential_form i="1" planar="Ar" axi="Ar" />
-					<module:essential_form i="2" planar="Ai" axi="Ai" />
+                    <module:essential_form i="1" planar="Ar" axi="Ar" />
+                    <module:essential_form i="2" planar="Ai" axi="Ai" />
 				</module:boundary>
 
 				<module:boundary id="magnetic_surface_current" name="Surface current">

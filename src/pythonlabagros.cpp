@@ -147,12 +147,12 @@ QString createPythonFromModel()
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const std::map<QString, Value> values = boundary->getValues();
-            for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QMap<QString, Value> values = boundary->getValues();
+            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 variables += QString("\"%1\" : %2, ").
-                        arg(it->first).
-                        arg(it->second.toString());
+                        arg(it.key()).
+                        arg(it.value().toString());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -167,12 +167,12 @@ QString createPythonFromModel()
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const std::map<QString, Value> values = material->getValues();
-            for (std::map<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QMap<QString, Value> values = material->getValues();
+            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 variables += QString("\"%1\" : %2, ").
-                        arg(it->first).
-                        arg(it->second.toString());
+                        arg(it.key()).
+                        arg(it.value().toString());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -553,7 +553,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
         throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
 
     // browse boundary parameters
-    std::map<QString, Value> values;
+    QMap<QString, Value> values;
     for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
@@ -604,8 +604,8 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
     }
 
     // browse material parameters
-    std::map<QString, Value> values;
-    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+    QMap<QString, Value> values;
+    for (std::map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
 
@@ -657,17 +657,20 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
         Point point(x, y);
 
         LocalPointValue value(fieldInfo(), point);
-        for (std::map<Module::LocalVariable *, PointValue>::iterator it = value.values.begin(); it != value.values.end(); ++it)
+        QMapIterator<Module::LocalVariable *, PointValue> it(value.values());
+        while (it.hasNext())
         {
-            if (it->first->isScalar)
+            it.next();
+
+            if (it.key()->isScalar)
             {
-                values[it->first->shortname.toStdString()] = it->second.scalar;
+                values[it.key()->shortname.toStdString()] = it.value().scalar;
             }
             else
             {
-                values[it->first->shortname.toStdString()] = it->second.vector.magnitude();
-                values[it->first->shortname.toStdString() + Util::problem()->config()->labelX().toLower().toStdString()] = it->second.vector.x;
-                values[it->first->shortname.toStdString() + Util::problem()->config()->labelY().toLower().toStdString()] = it->second.vector.y;
+                values[it.key()->shortname.toStdString()] = it.value().vector.magnitude();
+                values[it.key()->shortname.toStdString() + Util::problem()->config()->labelX().toLower().toStdString()] = it.value().vector.x;
+                values[it.key()->shortname.toStdString() + Util::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
             }
         }
     }
@@ -713,10 +716,13 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        SurfaceIntegralValue surfaceIntegral(fieldInfo());
-        for (std::map<Module::Integral *, double>::iterator it = surfaceIntegral.values.begin(); it != surfaceIntegral.values.end(); ++it)
+        SurfaceIntegralValue surfaceIntegralValue(fieldInfo());
+        QMapIterator<Module::Integral *, double> it(surfaceIntegralValue.values());
+        while (it.hasNext())
         {
-            values[it->first->shortname.toStdString()] = it->second;
+            it.next();
+
+            values[it.key()->shortname.toStdString()] = it.value();
         }
     }
     else
@@ -770,10 +776,13 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        VolumeIntegralValue volumeIntegral(fieldInfo());
-        for (std::map<Module::Integral *, double>::iterator it = volumeIntegral.values.begin(); it != volumeIntegral.values.end(); ++it)
+        VolumeIntegralValue volumeIntegralValue(fieldInfo());
+        QMapIterator<Module::Integral *, double> it(volumeIntegralValue.values());
+        while (it.hasNext())
         {
-            values[it->first->shortname.toStdString()] = it->second;
+            it.next();
+
+            values[it.key()->shortname.toStdString()] = it.value();
         }
     }
     else

@@ -34,7 +34,7 @@ public:
     Value getValue(QString id);
 
     /// get all values
-    const map<QString, Value> getValues() const;
+    const QMap<QString, Value> getValues() const;
 
     void setValue(QString name, Value value) { values[name] = value; }
 
@@ -66,7 +66,7 @@ protected:
     FieldInfo *fieldInfo;
 
     /// variables - the way to customize boundary "template", given by the type parameter
-    std::map<QString, Value> values;
+    QMap<QString, Value> values;
 
 private:
     /// we don't want those objects to be copied since we compare pointers
@@ -80,7 +80,7 @@ class Boundary : public Marker
 {
 public:
     Boundary(FieldInfo *fieldInfo, QString name = "", QString type = "",
-             std::map<QString, Value> values = (std::map<QString, Value>()));
+             QMap<QString, Value> values = (QMap<QString, Value>()));
 
     /// get type
     const QString getType() const {return type;}
@@ -100,7 +100,7 @@ class Material : public Marker
 {
 public:
     Material(FieldInfo *fieldInfo, QString name,
-             std::map<QString, Value> values = (std::map<QString, Value>()));
+             QMap<QString, Value> values = (QMap<QString, Value>()));
 };
 
 

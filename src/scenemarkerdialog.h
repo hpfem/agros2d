@@ -41,7 +41,7 @@ class SceneBoundary : public Boundary
 {
 public:
     SceneBoundary(FieldInfo *getFieldInfo, QString name = "", QString type = "",
-                  std::map<QString, Value> values = (std::map<QString, Value>()));
+                  QMap<QString, Value> values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 
@@ -129,7 +129,7 @@ class SceneMaterial : public Material
 {
 public:
     SceneMaterial(FieldInfo *getFieldInfo, QString name,
-                  std::map<QString, Value> values = (std::map<QString, Value>()));
+                  QMap<QString, Value> values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 

@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "hermes2d.h"
+#include "post_values.h"
 
 class SceneMaterial;
 class Parser;
@@ -32,26 +33,16 @@ namespace Module
     struct Integral;
 }
 
-class VolumeIntegralValue
+class VolumeIntegralValue : public PostprocessorIntegralValue
 {
 protected:
-    // parser
-    Parser *parser;
-
     Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
 
-    void initParser();
     void calculate();
 
 public:
-    // variables
-    std::map<Module::Integral *, double> values;
-
     VolumeIntegralValue(FieldInfo *m_fieldInfo);
     ~VolumeIntegralValue();
-
-private:
-    FieldInfo *m_fieldInfo;
 };
 
 #endif // VOLUMEINTEGRAL_H

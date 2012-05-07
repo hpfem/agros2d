@@ -582,47 +582,48 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double
 
     // local variables
     // FIXME - wrong order!!!
-    for (std::map<Module::LocalVariable *, PointValue>::iterator it = localPointValue->values.begin(); it != localPointValue->values.end(); ++it)
+    for (QMap<Module::LocalVariable *, PointValue>::iterator it = localPointValue->values().begin();
+         it != localPointValue->values().end(); ++it)
     {
         // chart
-        if (it->first->id == physicFieldVariable->id)
+        if (it.key()->id == physicFieldVariable->id)
         {
             if (physicFieldVariable->isScalar)
             {
                 // scalar variable
-                yval[i] = it->second.scalar;
+                yval[i] = it.value().scalar;
             }
             else
             {
                 // vector variable
                 if (physicFieldVariableComp == PhysicFieldVariableComp_X)
-                    yval[i] = it->second.vector.x;
+                    yval[i] = it.value().vector.x;
                 else if (physicFieldVariableComp == PhysicFieldVariableComp_Y)
-                    yval[i] = it->second.vector.y;
+                    yval[i] = it.value().vector.y;
                 else
-                    yval[i] = it->second.vector.magnitude();
+                    yval[i] = it.value().vector.magnitude();
             }
         }
 
         // table
-        if (it->first->isScalar)
+        if (it.key()->isScalar)
         {
             // scalar variable
             trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it->second.scalar, 0, 'e', 3)));
+                              new QTableWidgetItem(QString("%1").arg(it.value().scalar, 0, 'e', 3)));
             n++;
         }
         else
         {
             // vector variable
             trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it->second.vector.x, 0, 'e', 3)));
+                              new QTableWidgetItem(QString("%1").arg(it.value().vector.x, 0, 'e', 3)));
             n++;
             trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it->second.vector.y, 0, 'e', 3)));
+                              new QTableWidgetItem(QString("%1").arg(it.value().vector.y, 0, 'e', 3)));
             n++;
             trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it->second.vector.magnitude(), 0, 'e', 3)));
+                              new QTableWidgetItem(QString("%1").arg(it.value().vector.magnitude(), 0, 'e', 3)));
             n++;
         }
     }

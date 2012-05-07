@@ -62,38 +62,32 @@ int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
     return -1;
 }
 
-LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : m_fieldInfo(fieldInfo), point(point)
+LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : PostprocessorValue(fieldInfo), point(point)
 {
-    parser = new Parser(fieldInfo);
-    initParser();
+    // parser variables
+    parsers.push_back(m_fieldInfo->module()->expressionParser());
 
-    for (std::map<QString, double>::iterator it = parser->parser_variables.begin(); it != parser->parser_variables.end(); ++it)
-        parser->parser[0]->DefineVar(it->first.toStdString(), &it->second);
+    initParser();
 
     calculate();
 }
 
 LocalPointValue::~LocalPointValue()
 {
-    delete parser;
 }
 
 void LocalPointValue::initParser()
 {
-    if (!m_fieldInfo)
-        return;
-
     // parser variables
-    parser->parser.push_back(m_fieldInfo->module()->expressionParser());
+    parsers.push_back(m_fieldInfo->module()->expressionParser());
 
     // init material variables
-    parser->initParserMaterialVariables();
+    // parser->initParserMaterialVariables();
 }
 
 void LocalPointValue::calculate()
 {
-    values.clear();
-
+    m_values.clear();
     this->point = point;
 
     // update time functions
@@ -116,8 +110,8 @@ void LocalPointValue::calculate()
             // set variables
             double px = point.x;
             double py = point.y;
-            parser->parser[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-            parser->parser[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+            parsers[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+            parsers[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
             double *pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
             double *pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
@@ -148,14 +142,13 @@ void LocalPointValue::calculate()
                 std::stringstream number;
                 number << (k+1);
 
-                parser->parser[0]->DefineVar("value" + number.str(), &pvalue[k]);
-                parser->parser[0]->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-                parser->parser[0]->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+                parsers[0]->DefineVar("value" + number.str(), &pvalue[k]);
+                parsers[0]->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+                parsers[0]->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
             }
 
             // set material variables
-            // FIXME
-            parser->setParserVariables(tmpMaterial, NULL, pvalue[0], pdx[0], pdy[0]);
+            setMaterialToParsers(tmpMaterial);
 
             // parse expression
             foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
@@ -165,23 +158,23 @@ void LocalPointValue::calculate()
                     PointValue pointValue;
                     if (variable->isScalar)
                     {
-                        parser->parser[0]->SetExpr(variable->expr.scalar.toStdString());
-                        pointValue.scalar = parser->parser[0]->Eval();
+                        parsers[0]->SetExpr(variable->expr.scalar.toStdString());
+                        pointValue.scalar = parsers[0]->Eval();
                     }
                     else
                     {
-                        parser->parser[0]->SetExpr(variable->expr.comp_x.toStdString());
-                        pointValue.vector.x = parser->parser[0]->Eval();
-                        parser->parser[0]->SetExpr(variable->expr.comp_y.toStdString());
-                        pointValue.vector.y = parser->parser[0]->Eval();
+                        parsers[0]->SetExpr(variable->expr.comp_x.toStdString());
+                        pointValue.vector.x = parsers[0]->Eval();
+                        parsers[0]->SetExpr(variable->expr.comp_y.toStdString());
+                        pointValue.vector.y = parsers[0]->Eval();
                     }
-                    values[variable] = pointValue;
+                    m_values[variable] = pointValue;
 
                 }
                 catch (mu::Parser::exception_type &e)
                 {
                     qDebug() << "Local value: " << variable->name << " (" << variable->id << ") " << variable->name << " - " <<
-                                QString::fromStdString(parser->parser[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
+                                QString::fromStdString(parsers[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                 }
             }
 

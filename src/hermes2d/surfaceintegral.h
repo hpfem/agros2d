@@ -21,6 +21,7 @@
 #define SURFACEINTEGRAL_H
 
 #include "util.h"
+#include "post_values.h"
 
 class SceneMaterial;
 class Parser;
@@ -31,26 +32,16 @@ namespace Module
     struct Integral;
 }
 
-class SurfaceIntegralValue
+class SurfaceIntegralValue : public PostprocessorIntegralValue
 {
 protected:
-    // parser
-    Parser *parser;
-
     Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
 
-    void initParser();
     void calculate();
 
 public:
-    // variables
-    std::map<Module::Integral *, double> values;
-
     SurfaceIntegralValue(FieldInfo *fieldInfo);
     ~SurfaceIntegralValue();
-
-private:
-    FieldInfo *m_fieldInfo;
 };
 
 #endif // SURFACEINTEGRAL_H
