@@ -1,0 +1,99 @@
+// This file is part of Agros2D.
+//
+// Agros2D is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// Agros2D is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+//
+// hp-FEM group (http://hpfem.org/)
+// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
+// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+
+#ifndef POST_VALUES_H
+#define POST_VALUES_H
+
+#include "util.h"
+#include "hermes2d.h"
+
+class FieldInfo;
+class CouplingInfo;
+class Material;
+class SceneLabelContainer;
+
+namespace Module
+{
+    struct Integral;
+}
+
+class PostprocessorValue
+{
+public:
+    PostprocessorValue(FieldInfo *fieldInfo)  : m_fieldInfo(fieldInfo) {}
+    ~PostprocessorValue();
+
+    void setMaterialToParsers(Material *material);
+
+protected:
+    FieldInfo *m_fieldInfo;
+
+    // parser
+    QMap<std::string, double> parserVariables;
+    QList<mu::Parser *> parsers;
+};
+
+class PostprocessorIntegralValue : public PostprocessorValue
+{
+public:
+    PostprocessorIntegralValue(FieldInfo *fieldInfo) : PostprocessorValue(fieldInfo) {}
+
+    inline QMap<Module::Integral*, double> values() const { return m_values; }
+
+    void initParser(QList<Module::Integral *> list);
+
+protected:
+    // variables
+    QMap<Module::Integral*, double> m_values;
+};
+
+template <typename Scalar>
+class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
+{
+public:
+    ViewScalarFilter(FieldInfo *fieldInfo,
+                     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
+                     QString expression);
+    ~ViewScalarFilter();
+
+    double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
+
+    ViewScalarFilter<Scalar>* clone();
+
+protected:
+    typename Hermes::Hermes2D::Function<Scalar>::Node* node;
+
+    double px;
+    double py;
+    double *pvalue;
+    double *pdx;
+    double *pdy;
+
+    mu::Parser *parser;
+
+    void initParser(const QString &expression);
+    void precalculate(int order, int mask);
+
+private:
+    FieldInfo *m_fieldInfo;
+
+    QMap<std::string, double> parserVariables;
+};
+
+#endif // POST_VALUES_H

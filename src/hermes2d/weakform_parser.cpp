@@ -53,6 +53,15 @@ void ParserForm::initParserCoupling(const std::string &expr)
     parser = m_couplingInfo->coupling()->expressionParser();
     parser->SetExpr(expr);
     initParser();
+
+    // coupling
+    // FIXME: maxSourceFieldComponents not good
+    for (int comp = 0; comp < maxSourceFieldComponents; comp++)
+    {
+        parser->DefineVar("source" + QString().setNum(comp).toStdString(), &source[comp]);
+        parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelX().toLower().toStdString(), &sourcedx[comp]);
+        parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelY().toLower().toStdString(), &sourcedy[comp]);
+    }
 }
 
 void ParserForm::initParser()
@@ -83,14 +92,6 @@ void ParserForm::initParser()
 
     // time step
     parser->DefineVar("deltat", &pdeltat);
-
-    // coupling
-    for(int comp = 0; comp < maxSourceFieldComponents; comp++)
-    {
-        parser->DefineVar("source" + QString().setNum(comp).toStdString(), &source[comp]);
-        parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelX().toLower().toStdString(), &sourcedx[comp]);
-        parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelY().toLower().toStdString(), &sourcedy[comp]);
-    }
 }
 
 void ParserForm::setMaterialToParser(Material *material)

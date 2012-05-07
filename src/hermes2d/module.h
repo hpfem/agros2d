@@ -222,15 +222,7 @@ struct BoundaryType
 // surface and volume integral value
 struct Integral
 {
-    struct Expression
-    {
-        Expression() : scalar("") {}
-
-        // expressions
-        QString scalar;
-    };
-
-    Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expr(Expression()) {}
+    Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expression("") {}
 
     // id
     QString id;
@@ -243,8 +235,8 @@ struct Integral
     QString unit;
     QString unit_html;
 
-    // expressions
-    Expression expr;
+    // expression
+    QString expression;
 };
 
 // dialog UI
@@ -293,10 +285,7 @@ struct BasicModule
     // description
     inline QString description() const { return m_description; }
 
-    // analyses
-    inline QMap<AnalysisType, QString> analyses() const { m_analyses; }
-
-    // constants
+      // constants
     inline QMap<QString, double> constants() const { return m_constants; }
 
     // macros
@@ -390,9 +379,6 @@ private:
     // description
     QString m_description;
 
-    // analyses
-    QMap<AnalysisType, QString> m_analyses;
-
     // constants
     QMap<QString, double> m_constants;
 
@@ -452,41 +438,6 @@ QMap<QString, QString> availableModules();
 // available analyses
 QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId);
 
-/// TODO not good - contains fieldInfo, but may receive more materials (related to different fields
-/// TODO fieldInfo shoud be removed, but other things depend on it
-/*
-class Parser
-{
-public:
-    // parser
-    QList<mu::Parser *> parser;
-    QMap<QString, double> parserVariables;
-
-    Parser(FieldInfo *fieldInfo);
-    Parser(CouplingInfo *fieldInfo);
-    ~Parser();
-
-    //not used at all
-    //void initParserBoundaryVariables(Boundary *boundary);
-
-    // should be called only for postprocessing - uses m_fieldInfo!
-    //TODO bad
-    void initParserMaterialVariables();
-
-    // can be called with more materials - coupling - does not use m_fieldInfo, takes fieldInfo from materials
-    //TODO bad
-    void setParserVariables(QList<Material *> materials, Boundary *boundary,
-                            double value = 0.0, double dx = 0.0, double dy = 0.0);
-
-    void setParserVariables(Material* materials, Boundary *boundary,
-                            double value = 0.0, double dx = 0.0, double dy = 0.0);
-
-private:
-    FieldInfo* m_fieldInfo;
-    CouplingInfo* m_couplingInfo;
-};
-*/
-
 // mesh fix
 void readMeshDirtyFix();
 
@@ -495,8 +446,5 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMeshesFromFile(const QString &file
 void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh);
 
 void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
-
-// return geom type
-Hermes::Hermes2D::GeomType convertProblemType(CoordinateType problemType);
 
 #endif // HERMES_FIELD_H

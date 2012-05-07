@@ -95,11 +95,8 @@ double Block::adaptivityTolerance() const
 int Block::numSolutions() const
 {
     int num = 0;
-
     foreach (Field *field, m_fields)
-    {
         num += field->fieldInfo()->module()->numberOfSolutions();
-    }
 
     return num;
 }
@@ -110,7 +107,7 @@ int Block::offset(Field *fieldParam) const
 
     foreach (Field* field, m_fields)
     {
-        if(field == fieldParam)
+        if (field == fieldParam)
             return offset;
         else
             offset += field->fieldInfo()->module()->numberOfSolutions();
