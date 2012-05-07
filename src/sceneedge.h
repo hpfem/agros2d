@@ -73,13 +73,35 @@ public:
 
 // *************************************************************************************************************************************
 
+class SceneEdgeMarker : public QGroupBox
+{
+    Q_OBJECT
+
+public:
+    SceneEdgeMarker(SceneEdge *edge, FieldInfo *fieldInfo, QWidget *parent);
+
+    void load();
+    bool save();
+    void fillComboBox();
+
+private:
+    FieldInfo *m_fieldInfo;
+    SceneEdge *m_edge;
+
+    QComboBox *cmbBoundary;
+    QPushButton *btnBoundary;
+
+private slots:
+    void doBoundaryChanged(int index);
+    void doBoundaryClicked();
+};
+
 class SceneEdgeDialog : public SceneBasicDialog
 {
     Q_OBJECT
 
 public:
     SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew);
-    SceneEdgeDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent);
 
 protected:
     QLayout *createContent();
@@ -89,27 +111,41 @@ protected:
 
 private:
     QLabel *lblEquation;
-    QComboBox *cmbNodeStart;
-    QComboBox *cmbNodeEnd;
     ValueLineEdit *txtAngle;
     QLabel *lblLength;
     QCheckBox *chkRefineTowardsEdge;
     QSpinBox *txtRefineTowardsEdge;
 
-    bool m_singleEdge;
-    MarkedSceneBasicContainer<SceneBoundary, SceneEdge> m_edges;
-    QMap<FieldInfo*, QComboBox *> cmbBoundaries;
-    QMap<FieldInfo*, QPushButton *> btnBoundaries;
+    QList<SceneEdgeMarker *> m_edgeMarkers;
 
     void fillComboBox();
 
 private slots:
-    void doBoundaryChanged(int index);
-    void doBoundaryClicked();
-    void doNodeChanged();
+    void doAngleChanged();
     void doRefineTowardsEdge(int state);
 };
 
+class SceneEdgeSelectDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    SceneEdgeSelectDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent);
+
+protected:
+    void load();
+    bool save();
+
+private:
+    MarkedSceneBasicContainer<SceneBoundary, SceneEdge> m_edges;
+    QMap<FieldInfo*, QComboBox *> cmbBoundaries;
+
+    void fillComboBox();
+
+private slots:
+    void doAccept();
+    void doReject();
+};
 
 // undo framework *******************************************************************************************************************
 

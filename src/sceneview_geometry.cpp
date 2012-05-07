@@ -108,9 +108,8 @@ void SceneViewPreprocessor::doSceneObjectProperties()
     {
         if (Util::scene()->selectedCount() > 1)
         {
-            SceneEdgeDialog *dialog = new SceneEdgeDialog(Util::scene()->edges->selected(), this);
+            SceneEdgeSelectDialog *dialog = new SceneEdgeSelectDialog(Util::scene()->edges->selected(), this);
             dialog->exec();
-
         }
         if (Util::scene()->selectedCount() == 1)
         {
@@ -125,9 +124,8 @@ void SceneViewPreprocessor::doSceneObjectProperties()
     {
         if (Util::scene()->selectedCount() > 1)
         {
-            SceneLabelDialog *dialog = new SceneLabelDialog( Util::scene()->labels->selected(), this);
+            SceneLabelSelectDialog *dialog = new SceneLabelSelectDialog(Util::scene()->labels->selected(), this);
             dialog->exec();
-
         }
         if (Util::scene()->selectedCount() == 1)
         {

@@ -166,7 +166,7 @@ public:
 
 // *************************************************************************************************************************************
 
-class SceneBasicDialog: public QDialog
+class SceneBasicDialog : public QDialog
 {
     Q_OBJECT
 

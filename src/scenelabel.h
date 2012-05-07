@@ -58,16 +58,28 @@ public:
 
 // *************************************************************************************************************************************
 
-/*
-class SceneLabelDialog : public DSceneBasic
+class SceneLabelMarker : public QGroupBox
 {
     Q_OBJECT
 
+public:
+    SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWidget *parent);
+
+    void load();
+    bool save();
+    void fillComboBox();
+
 private:
-    QComboBox *cmbMaterials;
-    QPushButton * btnMaterials;
-}
-*/
+    FieldInfo *m_fieldInfo;
+    SceneLabel *m_label;
+
+    QComboBox *cmbMaterial;
+    QPushButton *btnMaterial;
+
+private slots:
+    void doMaterialChanged(int index);
+    void doMaterialClicked();
+};
 
 class SceneLabelDialog : public SceneBasicDialog
 {
@@ -75,7 +87,7 @@ class SceneLabelDialog : public SceneBasicDialog
 
 public:
     SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew = false);
-    SceneLabelDialog(MarkedSceneBasicContainer<SceneMaterial, SceneLabel> labels, QWidget *parent);
+
 protected:
     QLayout *createContent();
 
@@ -90,20 +102,36 @@ private:
     QCheckBox *chkArea;
     QCheckBox *chkPolynomialOrder;
 
-    bool m_singleLabel;
-    MarkedSceneBasicContainer<SceneMaterial, SceneLabel> m_labels;
-    QMap<FieldInfo*, QComboBox *> cmbMaterials;
-    QMap<FieldInfo*, QPushButton *> btnMaterials;
+    QList<SceneLabelMarker *> m_labelMarkers;
 
     void fillComboBox();
 
 private slots:
-    void doMaterialChanged(int index);
-    void doMaterialClicked();
     void doArea(int);
     void doPolynomialOrder(int);
 };
 
+class SceneLabelSelectDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    SceneLabelSelectDialog(MarkedSceneBasicContainer<SceneMaterial, SceneLabel> labels, QWidget *parent);
+
+protected:
+    void load();
+    bool save();
+
+private:
+    MarkedSceneBasicContainer<SceneMaterial, SceneLabel> m_labels;
+    QMap<FieldInfo*, QComboBox *> cmbMaterials;
+
+    void fillComboBox();
+
+private slots:
+    void doAccept();
+    void doReject();
+};
 
 // undo framework *******************************************************************************************************************
 
