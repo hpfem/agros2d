@@ -363,7 +363,7 @@ void Scene::removeEdge(SceneEdge *edge)
     edge->nodeStart->connectedEdges.removeOne(edge);
     edge->nodeEnd->connectedEdges.removeOne(edge);
 
-    emit invalidated();
+    emit invalidated();    
 }
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
@@ -592,7 +592,7 @@ void Scene::deleteSelected()
     labels->selected().deleteWithUndo(tr("Remove label"));
 
     m_undoStack->endMacro();
-
+    checkGeometry();
     emit invalidated();
 }
 

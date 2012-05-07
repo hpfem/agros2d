@@ -704,7 +704,7 @@ void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Delete:
     {
-        Util::scene()->deleteSelected();
+        Util::scene()->deleteSelected();        
     }
         break;
     case Qt::Key_Space:
@@ -973,9 +973,14 @@ void SceneViewPreprocessor::paintGeometry()
         glVertex2d(node->point.x, node->point.y);
         glEnd();
 
-        if ((node->isSelected) || (node->isHighlighted) || node->isError() )
+        if ((node->isSelected) || (node->isHighlighted) || (node->isError()) )
         {
             glPointSize(Util::config()->nodeSize - 2.0);
+
+            if (node->isError())
+                glColor3d(Util::config()->colorCrossed.redF(),
+                          Util::config()->colorCrossed.greenF(),
+                          Util::config()->colorCrossed.blueF());
 
             if (node->isHighlighted)
                 glColor3d(Util::config()->colorHighlighted.redF(),
