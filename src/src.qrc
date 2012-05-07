@@ -41,7 +41,9 @@
         <file alias="scene-label.png">../resources_source/images/scene-label.png</file>
         <file alias="scene-model.png">../resources_source/images/scene-model.png</file>
         <file alias="scene-edgemarker.png">../resources_source/images/scene-edgemarker.png</file>
+        <file alias="scene-edgemarker-notused.png">../resources_source/images/scene-edgemarker-notused.png</file>
         <file alias="scene-labelmarker.png">../resources_source/images/scene-labelmarker.png</file>
+        <file alias="scene-labelmarker-notused.png">../resources_source/images/scene-labelmarker-notused.png</file>
         <file alias="scene-info.png">../resources_source/images/scene-info.png</file>
         <file alias="scene-geometry.png">../resources_source/images/scene-geometry.png</file>
         <file alias="scene-post2d.png">../resources_source/images/scene-post2d.png</file>

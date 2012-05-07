@@ -179,7 +179,9 @@ void PreprocessorWidget::refresh()
             QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
 
             item->setText(0, material->getName());
-            item->setIcon(0, icon("scene-labelmarker"));
+            item->setIcon(0, (Util::scene()->labels->haveMarker(material).count() > 0) ? icon("scene-labelmarker") : icon("scene-labelmarker-notused"));
+            if (Util::scene()->labels->haveMarker(material).count() == 0)
+                item->setForeground(0, QBrush(Qt::gray));
             item->setData(0, Qt::UserRole, material->variant());
 
             listMaterials.append(item);
@@ -197,8 +199,12 @@ void PreprocessorWidget::refresh()
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
-            item->setText(0, boundary->getName());
-            item->setIcon(0, icon("scene-edgemarker"));
+            Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
+
+            item->setText(0, QString("%1 (%2)").arg(boundary->getName()).arg(boundary_type->name));
+            item->setIcon(0, (Util::scene()->edges->haveMarker(boundary).count() > 0) ? icon("scene-edgemarker") : icon("scene-edgemarker-notused"));
+            if (Util::scene()->edges->haveMarker(boundary).count() == 0)
+                item->setForeground(0, QBrush(Qt::gray));
             item->setData(0, Qt::UserRole, boundary->variant());
 
             listMarkes.append(item);
