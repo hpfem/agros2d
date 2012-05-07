@@ -24,20 +24,22 @@
 		<td class="unit">{{POINT_UNIT}}</td>
 	</tr>
 	<tr>
-		<td>&nbsp;</td>
+		<td class="description">&nbsp;</td>
 		<td class="quantity">{{LABELY}}</td>
 		<td>{{POINTY}}</td>
 		<td class="unit">{{POINT_UNIT}}</td>
 	</tr>
 </table>
 {{#FIELD}}
+
 <h3>{{FIELDNAME}}</h3>
 <table class="maintable">
 	{{#ITEM}}
 	<tr>
 		<td class="description"><b>{{NAME}}<b></td>
 		<td class="quantity">{{SHORTNAME}}<sub>{{PART}}</sub></td>
-		<td class="unit">{{VALUE}}</td><td>{{UNIT}}</td>
+		<td>{{VALUE}}</td>
+		<td class="unit">{{UNIT}}</td>
 	</tr>
 	{{/ITEM}}
 </table>

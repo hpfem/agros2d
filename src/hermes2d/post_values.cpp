@@ -168,9 +168,11 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
             pdy[k] = dudy[k][i];
         }
 
+        /*
         if (!isLinear)
             for (QMap<std::string, double>::iterator it = parserVariables.begin(); it != parserVariables.end(); ++it)
                 parserVariables[it.key()] = material->getValue(QString::fromStdString(it.key())).value(0.0); // TODO: 0.0
+        */
 
         // parse expression
         try

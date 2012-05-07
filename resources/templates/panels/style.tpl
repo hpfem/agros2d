@@ -39,14 +39,15 @@ td {
 }
 
 td.description {
-	width: 150px;
+	width: 230px;
 }
 
 td.quantity {
-	width: 50px;	
+	width: 60px;	
 }
 
 td.unit {	
+	width: 60px;
 }
 
 .maintable {

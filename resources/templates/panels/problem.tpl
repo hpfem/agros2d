@@ -81,7 +81,7 @@
 
 <table class="maintable">
     {{#MESH_PARAMETERS_SECTION}}
-    <tr><td colspan=2><h3>{{MESH_LABEL}}</h3></td></tr>
+    <tr><td colspan=2><h4>{{MESH_LABEL}}</h4></td></tr>
     <tr>
         <td><b>{{INITIAL_MESH_LABEL}}</b></td><td>{{INITIAL_MESH_NODES}}</td>
     </tr>
