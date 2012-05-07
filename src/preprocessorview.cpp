@@ -159,18 +159,24 @@ void PreprocessorWidget::refresh()
 
     trvWidget->clear();
 
+
+
     // markers
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         // field
         QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
         fieldNode->setText(0, fieldInfo->name());
+        QFont fnt = fieldNode->font(0);
+        fnt.setBold(true);
+        fieldNode->setFont(0, fnt);
         fieldNode->setExpanded(true);
 
         // materials
         QTreeWidgetItem *materialsNode = new QTreeWidgetItem(fieldNode);
         materialsNode->setIcon(0, icon("scenelabelmarker"));
         materialsNode->setText(0, tr("Materials"));
+        materialsNode->setForeground(0, QBrush(Qt::darkBlue));
         materialsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMaterials;
@@ -192,6 +198,7 @@ void PreprocessorWidget::refresh()
         QTreeWidgetItem *boundaryConditionsNode = new QTreeWidgetItem(fieldNode);
         boundaryConditionsNode->setIcon(0, icon("sceneedgemarker"));
         boundaryConditionsNode->setText(0, tr("Boundary conditions"));
+        boundaryConditionsNode->setForeground(0, QBrush(Qt::darkBlue));
         boundaryConditionsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMarkes;
@@ -216,12 +223,16 @@ void PreprocessorWidget::refresh()
     QTreeWidgetItem *geometryNode = new QTreeWidgetItem(trvWidget);
     // geometryNode->setIcon(0, icon("geometry"));
     geometryNode->setText(0, tr("Geometry"));
+    QFont fnt = geometryNode->font(0);
+    fnt.setBold(true);
+    geometryNode->setFont(0, fnt);
     geometryNode->setExpanded(false);
 
     // nodes
     QTreeWidgetItem *nodesNode = new QTreeWidgetItem(geometryNode);
     nodesNode->setText(0, tr("Nodes"));
     nodesNode->setIcon(0, icon("scenenode"));
+    nodesNode->setForeground(0, QBrush(Qt::darkBlue));
 
     QList<QTreeWidgetItem *> listNodes;
     for (int i = 0; i<Util::scene()->nodes->length(); i++)
@@ -243,6 +254,7 @@ void PreprocessorWidget::refresh()
     QTreeWidgetItem *edgesNode = new QTreeWidgetItem(geometryNode);
     edgesNode->setText(0, tr("Edges"));
     edgesNode->setIcon(0, icon("sceneedge"));
+    edgesNode->setForeground(0, QBrush(Qt::darkBlue));
 
     QList<QTreeWidgetItem *> listEdges;
     for (int i = 0; i<Util::scene()->edges->length(); i++)
@@ -265,6 +277,7 @@ void PreprocessorWidget::refresh()
     QTreeWidgetItem *labelsNode = new QTreeWidgetItem(geometryNode);
     labelsNode->setText(0, tr("Labels"));
     labelsNode->setIcon(0, icon("scenelabel"));
+    labelsNode->setForeground(0, QBrush(Qt::darkBlue));
 
     QList<QTreeWidgetItem *> listLabels;
     for (int i = 0; i<Util::scene()->labels->length(); i++)
