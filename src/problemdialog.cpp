@@ -529,10 +529,11 @@ void FieldsToobar::refresh()
         actFieldsGroup->addAction(actField);
         tlbFields->addAction(actField);
     }
+
     // spacing
     QLabel *spacing = new QLabel;
     spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    tlbFields->addWidget(spacing);
+    tlbFields->addWidget(spacing);   
 }
 
 void FieldsToobar::fieldDialog(QAction *action)
@@ -542,7 +543,10 @@ void FieldsToobar::fieldDialog(QAction *action)
     {
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
-            refresh();
+        {
+            refresh();            
+            emit changed();
+        }
     }
 }
 
@@ -561,6 +565,7 @@ void FieldsToobar::addField()
             Util::problem()->addField(fieldInfo);
 
             refresh();
+            emit changed();
         }
         else
         {
@@ -653,6 +658,8 @@ ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
     updateControls();
 
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(updateControls()));
+    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(updateControls()));
+    connect(fieldsToolbar, SIGNAL(changed()), this, SLOT(updateControls()));
 
     setMinimumSize(sizeHint());
 }
@@ -754,7 +761,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     layoutHarmonicAnalysis->addWidget(new QLabel(tr("Frequency (Hz):")), 0, 0);
     layoutHarmonicAnalysis->addWidget(txtFrequency, 0, 1);
 
-    QGroupBox *grpHarmonicAnalysis = new QGroupBox(tr("Harmonic analysis"));
+    grpHarmonicAnalysis = new QGroupBox(tr("Harmonic analysis"));
     grpHarmonicAnalysis->setLayout(layoutHarmonicAnalysis);
 
     // harmonic analysis
@@ -768,7 +775,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 2, 0);
     layoutTransientAnalysis->addWidget(lblTransientSteps, 2, 1);
 
-    QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
+    grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
 
     // both
@@ -857,15 +864,25 @@ void ProblemWidget::updateControls()
 
     // mesh type
     cmbMeshType->setCurrentIndex(cmbMeshType->findData(Util::problem()->config()->meshType()));
+
     // harmonic magnetic
+    grpHarmonicAnalysis->setVisible(Util::problem()->isHarmonic());
     txtFrequency->setValue(Util::problem()->config()->frequency());
+    // txtFrequency->setEnabled(Util::problem()->isHarmonic());
+
     // transient
+    grpTransientAnalysis->setVisible(Util::problem()->isTransient());
     txtTransientTimeStep->setValue(Util::problem()->config()->timeStep());
+    // txtTransientTimeStep->setEnabled(Util::problem()->isTransient());
     txtTransientTimeTotal->setValue(Util::problem()->config()->timeTotal());
+    // txtTransientTimeTotal->setEnabled(Util::problem()->isTransient());
+
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Util::problem()->config()->matrixSolver()));
+
     // startup
     txtStartupScript->setPlainText(Util::problem()->config()->startupscript());
+
     // description
     txtDescription->setPlainText(Util::problem()->config()->description());
 

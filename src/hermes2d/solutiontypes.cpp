@@ -25,6 +25,17 @@ BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
     return BlockSolutionID(block, timeStep, adaptivityStep, solutionType);
 }
 
+QString FieldSolutionID::toString()
+{
+    QString str = QString("%1_%2_%3_%4.sol").
+            arg(group->fieldId()).
+            arg(timeStep).
+            arg(adaptivityStep).
+            arg(solutionTypeToStringKey(solutionType));
+
+    return str;
+}
+
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
 {

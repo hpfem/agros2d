@@ -152,8 +152,12 @@ private slots:
 class FieldsToobar: public QWidget
 {
     Q_OBJECT
+
 public:
     FieldsToobar(QWidget *parent = 0);
+
+signals:
+    void changed();
 
 public slots:
     void refresh();
@@ -195,9 +199,11 @@ private:
     QComboBox *cmbMatrixSolver;
 
     // harmonic
+    QGroupBox *grpHarmonicAnalysis;
     SLineEditDouble *txtFrequency;
 
     // transient
+    QGroupBox *grpTransientAnalysis;
     ValueLineEdit *txtTransientTimeStep;
     ValueLineEdit *txtTransientTimeTotal;
     QLabel *lblTransientSteps;

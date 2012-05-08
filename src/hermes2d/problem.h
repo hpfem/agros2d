@@ -136,6 +136,9 @@ public:
     bool isMeshed()  const {  return !m_meshesInitial.isEmpty(); }
     bool isSolving() const { return m_isSolving; }
 
+    bool isTransient() const;
+    bool isHarmonic() const;
+
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
     inline FieldInfo *fieldInfo(const QString &fieldId) { assert(m_fieldInfos.contains(fieldId));
                                                           return m_fieldInfos[fieldId]; }

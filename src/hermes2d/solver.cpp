@@ -433,7 +433,7 @@ bool Solver<Scalar>::solveSimple()
         solutionID.group = m_block;
         solutionID.timeStep = 0;
 
-        Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
+        Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
     }
 
 
@@ -459,7 +459,7 @@ bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
     createNewSolutions(msa);
 
     BlockSolutionID solutionID(m_block, timeStep, 0, SolutionType_NonExisting);
-    Util::solutionStore()->saveSolution(solutionID, msa);
+    Util::solutionStore()->addSolution(solutionID, msa);
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
 
@@ -519,8 +519,8 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     if (!isError)
     {
         Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
-        Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Normal), msa);
-        Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference), msaRef);
+        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Normal), msa);
+        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference), msaRef);
     }
 
     MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
@@ -553,7 +553,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
         // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
         // store solution
-        Util::solutionStore()->saveSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionType_NonExisting), msaNew);
+        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionType_NonExisting), msaNew);
     }
 
 
@@ -593,7 +593,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
     }
 
     BlockSolutionID solutionID(m_block, 0, 0, SolutionType_Normal);
-    Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
+    Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
     return true;
 }
@@ -638,7 +638,7 @@ bool Solver<Scalar>::solveTimeStep(double timeStep)
         solutionID.group = m_block;
         solutionID.timeStep = previousSolutionID.timeStep + 1;
 
-        Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
+        Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
     }
 
     return !isError;
@@ -783,7 +783,7 @@ void Solver<Scalar>::solve(SolverConfig config)
         solutionID.group = m_block;
         solutionID.timeStep = lastTimeStep + 1;
 
-        Util::solutionStore()->saveSolution(solutionID, multiSolutionArray);
+        Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
         //        foreach (Field* field, m_block->m_fields)
         //        {

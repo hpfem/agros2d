@@ -95,13 +95,31 @@ Hermes::Hermes2D::Mesh* Problem::activeMeshInitial()
     return meshInitial(Util::scene()->activeViewField());
 }
 
+bool Problem::isTransient() const
+{
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        if (fieldInfo->analysisType() == AnalysisType_Transient)
+            return true;
+
+    return false;
+}
+
+bool Problem::isHarmonic() const
+{
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        if (fieldInfo->analysisType() == AnalysisType_Harmonic)
+            return true;
+
+    return false;
+}
+
 void Problem::clearSolution()
 {
     if (Util::problem()->isSolved())
         Util::solutionStore()->clearAll();
     Util::solutionStore()->clearAll();
 
-    foreach(Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
+    foreach (Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
         if (mesh)
             delete mesh;
     m_meshesInitial.clear();
@@ -166,10 +184,8 @@ const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
 
 void Problem::createStructure()
 {
-    foreach(Block* block, m_blocks)
-    {
+    foreach (Block* block, m_blocks)
         delete block;
-    }
     m_blocks.clear();
 
     Util::problem()->synchronizeCouplings();
@@ -184,20 +200,20 @@ void Problem::createStructure()
 
         //first find one field, that is not weakly coupled and dependent on other fields
         bool dependent;
-        foreach (FieldInfo* fi, fieldInfos)
+        foreach (FieldInfo* fieldInfo, fieldInfos)
         {
             dependent = false;
 
-            foreach (CouplingInfo* ci, couplingInfos)
+            foreach (CouplingInfo* couplingInfo, couplingInfos)
             {
-                if(ci->isWeak() && (ci->targetField() == fi) && fieldInfos.contains(ci->sourceField()))
+                if (couplingInfo->isWeak() && (couplingInfo->targetField() == fieldInfo) && fieldInfos.contains(couplingInfo->sourceField()))
                     dependent = true;
             }
 
             // this field is not weakly dependent, we can put it into this block
-            if(! dependent){
-                blockFieldInfos.push_back(fi);
-                fieldInfos.removeOne(fi);
+            if (!dependent){
+                blockFieldInfos.push_back(fieldInfo);
+                fieldInfos.removeOne(fieldInfo);
                 break;
             }
         }
