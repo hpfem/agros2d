@@ -24,20 +24,27 @@
 #include "scenebasic.h"
 
 class SceneLabelCommandRemove;
+class FieldInfo;
 
 class SceneLabel : public MarkedSceneBasic<SceneMaterial>
 {
 public:
-    Point point;
-    double area;
+    SceneLabel(const Point &m_point, double m_area);
 
-    SceneLabel(const Point &point, double area);
+    inline Point point() const { return m_point; }
+    inline void setPoint(const Point &point) { m_point = point; }
+    inline double area() const { return m_area; }
+    inline void setArea(double area) { m_area = area; }
 
-    double distance(const Point &point) const;
+    double distance(const Point &m_point) const;
 
     SceneLabelCommandRemove* getRemoveCommand();
 
     int showDialog(QWidget *parent, bool isNew = false);
+
+private:
+    Point m_point;
+    double m_area;
 };
 
 class SceneLabelContainer : public MarkedSceneBasicContainer<SceneMaterial, SceneLabel>

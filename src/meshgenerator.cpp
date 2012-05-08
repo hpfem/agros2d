@@ -185,8 +185,8 @@ bool MeshGeneratorTriangle::writeToTriangle()
     {
         outNodes += QString("%1  %2  %3  %4\n").
                 arg(i).
-                arg(Util::scene()->nodes->at(i)->point.x, 0, 'f', 10).
-                arg(Util::scene()->nodes->at(i)->point.y, 0, 'f', 10).
+                arg(Util::scene()->nodes->at(i)->point().x, 0, 'f', 10).
+                arg(Util::scene()->nodes->at(i)->point().y, 0, 'f', 10).
                 arg(0);
         nodesCount++;
     }
@@ -196,13 +196,13 @@ bool MeshGeneratorTriangle::writeToTriangle()
     int edgesCount = 0;
     for (int i = 0; i<Util::scene()->edges->length(); i++)
     {
-        if (Util::scene()->edges->at(i)->angle == 0)
+        if (Util::scene()->edges->at(i)->angle() == 0)
         {
             // line
             outEdges += QString("%1  %2  %3  %4\n").
                     arg(edgesCount).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart)).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd)).
+                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart())).
+                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd())).
                     arg(i+1);
             edgesCount++;
         }
@@ -212,11 +212,11 @@ bool MeshGeneratorTriangle::writeToTriangle()
             // add pseudo nodes
             Point center = Util::scene()->edges->at(i)->center();
             double radius = Util::scene()->edges->at(i)->radius();
-            double startAngle = atan2(center.y - Util::scene()->edges->at(i)->nodeStart->point.y,
-                                      center.x - Util::scene()->edges->at(i)->nodeStart->point.x) - M_PI;
+            double startAngle = atan2(center.y - Util::scene()->edges->at(i)->nodeStart()->point().y,
+                                      center.x - Util::scene()->edges->at(i)->nodeStart()->point().x) - M_PI;
 
             int segments = Util::scene()->edges->at(i)->segments();
-            double theta = deg2rad(Util::scene()->edges->at(i)->angle) / double(segments);
+            double theta = deg2rad(Util::scene()->edges->at(i)->angle()) / double(segments);
 
             int nodeStartIndex = 0;
             int nodeEndIndex = 0;
@@ -230,12 +230,12 @@ bool MeshGeneratorTriangle::writeToTriangle()
                 nodeEndIndex = nodesCount+1;
                 if (j == 0)
                 {
-                    nodeStartIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart);
+                    nodeStartIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart());
                     nodeEndIndex = nodesCount;
                 }
                 if (j == segments - 1)
                 {
-                    nodeEndIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd);
+                    nodeEndIndex = Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd());
                 }
                 if ((j > 0) && (j < segments))
                 {
@@ -272,8 +272,8 @@ bool MeshGeneratorTriangle::writeToTriangle()
             outHoles += QString("%1  %2  %3\n").
                     arg(holesCount).
                     // arg(Util::scene()->labels->items().indexOf(label) + 1).
-                    arg(label->point.x, 0, 'f', 10).
-                    arg(label->point.y, 0, 'f', 10);
+                    arg(label->point().x, 0, 'f', 10).
+                    arg(label->point().y, 0, 'f', 10);
 
             holesCount++;
         }
@@ -288,11 +288,11 @@ bool MeshGeneratorTriangle::writeToTriangle()
         {
             outLabels += QString("%1  %2  %3  %4  %5\n").
                     arg(labelsCount).
-                    arg(label->point.x, 0, 'f', 10).
-                    arg(label->point.y, 0, 'f', 10).
+                    arg(label->point().x, 0, 'f', 10).
+                    arg(label->point().y, 0, 'f', 10).
                     // arg(labelsCount + 1). // triangle returns zero region number for areas without marker, markers must start from 1
                     arg(Util::scene()->labels->items().indexOf(label) + 1).
-                    arg(label->area);
+                    arg(label->area());
             labelsCount++;
         }
     }
@@ -698,13 +698,13 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
             if (edgeList[i].marker != -1)
             {
                 // curve
-                if (Util::scene()->edges->at(edgeList[i].marker)->angle > 0.0)
+                if (Util::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
                 {
                     countCurves++;
                     int segments = Util::scene()->edges->at(edgeList[i].marker)->segments();
 
                     // subdivision angle and chord
-                    double theta = deg2rad(Util::scene()->edges->at(edgeList[i].marker)->angle) / double(segments);
+                    double theta = deg2rad(Util::scene()->edges->at(edgeList[i].marker)->angle()) / double(segments);
                     double chord = 2 * Util::scene()->edges->at(edgeList[i].marker)->radius() * sin(theta / 2.0);
 
                     // length of short chord
@@ -734,7 +734,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
             if (edgeList[i].marker != -1)
             {
                 // curve
-                if (Util::scene()->edges->at(edgeList[i].marker)->angle > 0.0)
+                if (Util::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
                 {
                     // angle
                     Point center = Util::scene()->edges->at(edgeList[i].marker)->center();

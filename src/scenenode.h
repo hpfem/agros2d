@@ -29,24 +29,29 @@ class QDomElement;
 class SceneNode : public SceneBasic
 {
 public:
-    SceneNode(const Point &point);
+    SceneNode(const Point &m_point);
+
+    inline Point point() const { return m_point; }
+    inline void setPoint(const Point &point) { m_point = point; }
 
     // geometry editor
-    QList<SceneEdge *> connectedEdges;
-    bool isConnected() const { return connectedEdges.length() > 0; }
-    QList<SceneEdge *> lyingEdges;
-    bool isLyingOnEdges() const { return lyingEdges.length() > 0; }
+    bool isConnected() const { return m_connectedEdges.length() > 0; }
+    inline QList<SceneEdge *> &connectedEdges() { return m_connectedEdges; } // TODO: make const
+    bool isLyingOnEdges() const { return m_lyingEdges.length() > 0; }
+    inline QList<SceneEdge *> &lyingEdges() { return m_lyingEdges; }  // TODO: make const
     bool isOutsideArea() const;
     bool isError();
-    double distance(const Point &point) const;
+    double distance(const Point &m_point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 
     SceneNodeCommandRemove* getRemoveCommand();
-//    QDomElement* getQDomElement(const QDomDocument& document, int nodeNumber) const;
 
-public: //TODO
-    Point point;
+private:
+    Point m_point;
+
+    QList<SceneEdge *> m_connectedEdges;
+    QList<SceneEdge *> m_lyingEdges;
 };
 
 class SceneNodeContainer : public SceneBasicContainer<SceneNode>

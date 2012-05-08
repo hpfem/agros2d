@@ -235,18 +235,21 @@ void PreprocessorWidget::refresh()
     nodesNode->setForeground(0, QBrush(Qt::darkBlue));
 
     QList<QTreeWidgetItem *> listNodes;
-    for (int i = 0; i<Util::scene()->nodes->length(); i++)
+    int inode = 0;
+    foreach (SceneNode *node, Util::scene()->nodes->items())
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("%1 - [%2; %3]").
-                      arg(i).
-                      arg(Util::scene()->nodes->at(i)->point.x, 0, 'e', 2).
-                      arg(Util::scene()->nodes->at(i)->point.y, 0, 'e', 2));
+                      arg(inode).
+                      arg(node->point().x, 0, 'e', 2).
+                      arg(node->point().y, 0, 'e', 2));
         item->setIcon(0, icon("scene-node"));
-        item->setData(0, Qt::UserRole, Util::scene()->nodes->at(i)->variant());
+        item->setData(0, Qt::UserRole, node->variant());
 
         listNodes.append(item);
+
+        inode++;
     }
     nodesNode->addChildren(listNodes);
 
@@ -257,19 +260,22 @@ void PreprocessorWidget::refresh()
     edgesNode->setForeground(0, QBrush(Qt::darkBlue));
 
     QList<QTreeWidgetItem *> listEdges;
-    for (int i = 0; i<Util::scene()->edges->length(); i++)
+    int iedge = 0;
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("%1 - %2 m").
-                      arg(i).
-                      arg((Util::scene()->edges->at(i)->angle < EPS_ZERO) ?
-                              sqrt(Hermes::sqr(Util::scene()->edges->at(i)->nodeEnd->point.x - Util::scene()->edges->at(i)->nodeStart->point.x) + Hermes::sqr(Util::scene()->edges->at(i)->nodeEnd->point.y - Util::scene()->edges->at(i)->nodeStart->point.y)) :
-                              Util::scene()->edges->at(i)->radius() * Util::scene()->edges->at(i)->angle / 180.0 * M_PI, 0, 'e', 2));
+                      arg(iedge).
+                      arg((edge->angle() < EPS_ZERO) ?
+                              sqrt(Hermes::sqr(edge->nodeEnd()->point().x - edge->nodeStart()->point().x) + Hermes::sqr(edge->nodeEnd()->point().y - edge->nodeStart()->point().y)) :
+                              edge->radius() * edge->angle() / 180.0 * M_PI, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
-        item->setData(0, Qt::UserRole, Util::scene()->edges->at(i)->variant());
+        item->setData(0, Qt::UserRole, edge->variant());
 
         listEdges.append(item);
+
+        iedge++;
     }
     edgesNode->addChildren(listEdges);
 
@@ -280,16 +286,16 @@ void PreprocessorWidget::refresh()
     labelsNode->setForeground(0, QBrush(Qt::darkBlue));
 
     QList<QTreeWidgetItem *> listLabels;
-    for (int i = 0; i<Util::scene()->labels->length(); i++)
+    foreach (SceneLabel *label, Util::scene()->labels->items())
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("%1 - [%2; %3]").
-                      arg(i).
-                      arg(Util::scene()->labels->at(i)->point.x, 0, 'e', 2).
-                      arg(Util::scene()->labels->at(i)->point.y, 0, 'e', 2));
+                      arg(inode).
+                      arg(label->point().x, 0, 'e', 2).
+                      arg(label->point().y, 0, 'e', 2));
         item->setIcon(0, icon("scene-label"));
-        item->setData(0, Qt::UserRole, Util::scene()->labels->at(i)->variant());
+        item->setData(0, Qt::UserRole, label->variant());
 
         listLabels.append(item);
     }

@@ -28,11 +28,8 @@
 #include "hermes2d/problem.h"
 
 SceneLabel::SceneLabel(const Point &point, double area)
-    : MarkedSceneBasic()
+    : MarkedSceneBasic(), m_point(point), m_area(area)
 {
-    this->point = point;
-    this->area = area;
-
     foreach (FieldInfo* field, Util::problem()->fieldInfos())
     {
         this->addMarker(SceneMaterialContainer::getNone(field));
@@ -41,7 +38,7 @@ SceneLabel::SceneLabel(const Point &point, double area)
 
 double SceneLabel::distance(const Point &point) const
 {
-    return (this->point - point).magnitude();
+    return (this->point() - point).magnitude();
 }
 
 int SceneLabel::showDialog(QWidget *parent, bool isNew)
@@ -53,7 +50,7 @@ int SceneLabel::showDialog(QWidget *parent, bool isNew)
 SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
 {
     // TODO: undo
-    return new SceneLabelCommandRemove(point, "TODO", area);
+    return new SceneLabelCommandRemove(m_point, "TODO", m_area);
 }
 
 
@@ -63,7 +60,7 @@ SceneLabel* SceneLabelContainer::get(SceneLabel *label) const
 {
     foreach (SceneLabel *labelCheck, data)
     {
-        if (labelCheck->point == label->point)
+        if (labelCheck->point() == label->point())
         {
             return labelCheck;
         }
@@ -76,7 +73,7 @@ SceneLabel* SceneLabelContainer::get(const Point& point) const
 {
     foreach (SceneLabel *labelCheck, data)
     {
-        if (labelCheck->point == point)
+        if (labelCheck->point() == point)
             return labelCheck;
     }
 
@@ -276,10 +273,10 @@ bool SceneLabelDialog::load()
 {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
-    txtPointX->setNumber(sceneLabel->point.x);
-    txtPointY->setNumber(sceneLabel->point.y);
-    txtArea->setNumber(sceneLabel->area);
-    chkArea->setChecked(sceneLabel->area > 0.0);
+    txtPointX->setNumber(sceneLabel->point().x);
+    txtPointY->setNumber(sceneLabel->point().y);
+    txtArea->setNumber(sceneLabel->area());
+    chkArea->setChecked(sceneLabel->area() > 0.0);
     txtArea->setEnabled(chkArea->isChecked());
 
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
@@ -299,7 +296,7 @@ bool SceneLabelDialog::save()
     Point point(txtPointX->number(), txtPointY->number());
 
     // check if label doesn't exists
-    if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || m_isNew))
+    if (Util::scene()->getLabel(point) && ((sceneLabel->point() != point) || m_isNew))
     {
         QMessageBox::warning(this, "Label", "Label already exists.");
         return false;
@@ -315,14 +312,14 @@ bool SceneLabelDialog::save()
 
     if (!m_isNew)
     {
-        if (sceneLabel->point != point)
+        if (sceneLabel->point() != point)
         {
-            Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
+            Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point(), point));
         }
     }
 
-    sceneLabel->point = point;
-    sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
+    sceneLabel->setPoint(point);
+    sceneLabel->setArea(chkArea->isChecked() ? txtArea->number() : 0.0);
 
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
         labelMarker->save();
@@ -487,7 +484,7 @@ void SceneLabelCommandEdit::undo()
     SceneLabel *label = Util::scene()->getLabel(m_pointNew);
     if (label)
     {
-        label->point = m_point;
+        label->setPoint(m_point);
         Util::scene()->refresh();
     }
 }
@@ -497,7 +494,7 @@ void SceneLabelCommandEdit::redo()
     SceneLabel *label = Util::scene()->getLabel(m_point);
     if (label)
     {
-        label->point = m_pointNew;
+        label->setPoint(m_pointNew);
         Util::scene()->refresh();
     }
 }

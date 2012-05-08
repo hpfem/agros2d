@@ -384,17 +384,17 @@ void SceneViewPost3D::paintScalarField3D()
             if (edge->isStraight())
             {
                 glBegin(GL_LINES);
-                glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, 0.0);
-                glVertex3d(edge->nodeEnd->point.x, edge->nodeEnd->point.y, 0.0);
+                glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, 0.0);
+                glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, 0.0);
                 glEnd();
             }
             else
             {
                 Point center = edge->center();
                 double radius = edge->radius();
-                double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+                double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                drawArc(center, radius, startAngle, edge->angle, edge->angle/2);
+                drawArc(center, radius, startAngle, edge->angle(), edge->angle()/2);
             }
 
             glDisable(GL_LINE_STIPPLE);
@@ -702,20 +702,20 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
-                        glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, - depth/2.0 + j*depth);
-                        glVertex3d(edge->nodeEnd->point.x, edge->nodeEnd->point.y, - depth/2.0 + j*depth);
+                        glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, - depth/2.0 + j*depth);
+                        glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, - depth/2.0 + j*depth);
                         glEnd();
                     }
                     else
                     {
                         Point center = edge->center();
                         double radius = edge->radius();
-                        double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                        double theta = edge->angle / double(edge->angle/2 - 1);
+                        double theta = edge->angle() / double(edge->angle()/2 - 1);
 
                         glBegin(GL_LINE_STRIP);
-                        for (int i = 0; i < edge->angle/2; i++)
+                        for (int i = 0; i < edge->angle()/2; i++)
                         {
                             double arc = (startAngle + i*theta)/180.0*M_PI;
 
@@ -733,8 +733,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
             glBegin(GL_LINES);
             foreach (SceneNode *node, Util::scene()->nodes->items())
             {
-                glVertex3d(node->point.x, node->point.y,  depth/2.0);
-                glVertex3d(node->point.x, node->point.y, -depth/2.0);
+                glVertex3d(node->point().x, node->point().y,  depth/2.0);
+                glVertex3d(node->point().x, node->point().y, -depth/2.0);
             }
             glEnd();
 
@@ -756,20 +756,20 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
-                        glVertex3d(edge->nodeStart->point.x * cos(j*phi/180.0*M_PI), edge->nodeStart->point.y, edge->nodeStart->point.x * sin(j*phi/180.0*M_PI));
-                        glVertex3d(edge->nodeEnd->point.x * cos(j*phi/180.0*M_PI), edge->nodeEnd->point.y, edge->nodeEnd->point.x * sin(j*phi/180.0*M_PI));
+                        glVertex3d(edge->nodeStart()->point().x * cos(j*phi/180.0*M_PI), edge->nodeStart()->point().y, edge->nodeStart()->point().x * sin(j*phi/180.0*M_PI));
+                        glVertex3d(edge->nodeEnd()->point().x * cos(j*phi/180.0*M_PI), edge->nodeEnd()->point().y, edge->nodeEnd()->point().x * sin(j*phi/180.0*M_PI));
                         glEnd();
                     }
                     else
                     {
                         Point center = edge->center();
                         double radius = edge->radius();
-                        double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                        double theta = edge->angle / double(edge->angle/2 - 1);
+                        double theta = edge->angle() / double(edge->angle()/2 - 1);
 
                         glBegin(GL_LINE_STRIP);
-                        for (int i = 0; i < edge->angle/2; i++)
+                        for (int i = 0; i < edge->angle()/2; i++)
                         {
                             double arc = (startAngle + i*theta)/180.0*M_PI;
 
@@ -792,8 +792,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 glBegin(GL_LINE_STRIP);
                 for (int j = 0; j < count; j++)
                 {
-                    glVertex3d(node->point.x * cos((j+0)*step/180.0*M_PI), node->point.y, node->point.x * sin((j+0)*step/180.0*M_PI));
-                    glVertex3d(node->point.x * cos((j+1)*step/180.0*M_PI), node->point.y, node->point.x * sin((j+1)*step/180.0*M_PI));
+                    glVertex3d(node->point().x * cos((j+0)*step/180.0*M_PI), node->point().y, node->point().x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(node->point().x * cos((j+1)*step/180.0*M_PI), node->point().y, node->point().x * sin((j+1)*step/180.0*M_PI));
                 }
                 glEnd();
             }

@@ -260,7 +260,8 @@ SceneNode *Scene::addNode(SceneNode *node)
     Util::problem()->clearSolution();
 
     // check if node doesn't exists
-    if(SceneNode* existing = nodes->get(node)){
+    if (SceneNode* existing = nodes->get(node))
+    {
         delete node;
         return existing;
     }
@@ -283,12 +284,12 @@ void Scene::removeNode(SceneNode *node)
 
     // clear lying nodes
     foreach (SceneEdge *edge, edges->items())
-        edge->lyingNodes.removeOne(node);
+        edge->lyingNodes().removeOne(node);
 
     // remove all edges connected to this node
     foreach (SceneEdge *edge, edges->items())
     {
-        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
+        if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
         {
             // ToDo: add markers
             //            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, edge->markers,
@@ -324,18 +325,18 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 
     this->checkEdge(edge);
 
-    edge->nodeStart->connectedEdges.append(edge);
-    edge->nodeEnd->connectedEdges.append(edge);
+    edge->nodeStart()->connectedEdges().append(edge);
+    edge->nodeEnd()->connectedEdges().append(edge);
 
     foreach(SceneNode *node, nodes->items())
     {
-        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
+        if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
             continue;
 
-        if (edge->distance(node->point) < EPS_ZERO)
+        if (edge->distance(node->point()) < EPS_ZERO)
         {
-            node->lyingEdges.append(edge);
-            edge->lyingNodes.append(node);
+            node->lyingEdges().append(edge);
+            edge->lyingNodes().append(node);
         }
     }
 
@@ -351,17 +352,17 @@ void Scene::removeEdge(SceneEdge *edge)
     Util::problem()->clearSolution();
 
     // clear crosses
-    foreach(SceneEdge *edgeCheck, edge->crossedEdges)
-        edgeCheck->crossedEdges.removeOne(edge);
+    foreach(SceneEdge *edgeCheck, edge->crossedEdges())
+        edgeCheck->crossedEdges().removeOne(edge);
 
     // clear lying edges
     foreach (SceneNode *node, nodes->items())
-        node->lyingEdges.removeOne(edge);
+        node->lyingEdges().removeOne(edge);
 
     edges->items().removeOne(edge);
 
-    edge->nodeStart->connectedEdges.removeOne(edge);
-    edge->nodeEnd->connectedEdges.removeOne(edge);
+    edge->nodeStart()->connectedEdges().removeOne(edge);
+    edge->nodeEnd()->connectedEdges().removeOne(edge);
 
     emit invalidated();    
 }
@@ -619,8 +620,8 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
     {
         if (edge->isSelected())
         {
-            edge->nodeStart->setSelected(true);
-            edge->nodeEnd->setSelected(true);
+            edge->nodeStart()->setSelected(true);
+            edge->nodeEnd()->setSelected(true);
             selectedEdges.append(edge);
         }
     }
@@ -634,14 +635,14 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
             Point newPoint;
             if (mode == SceneTransformMode_Translate)
             {
-                newPoint = node->point + point;
+                newPoint = node->point() + point;
                 // projection of the point to the real axis of the displacement vector
-                pair.first = node->point.x * cos(point.angle()) + node->point.y * sin(point.angle());
+                pair.first = node->point().x * cos(point.angle()) + node->point().y * sin(point.angle());
             }
             else if (mode == SceneTransformMode_Rotate)
             {
-                double distanceNode = (node->point - point).magnitude();
-                double angleNode = (node->point - point).angle()/M_PI*180;
+                double distanceNode = (node->point() - point).magnitude();
+                double angleNode = (node->point() - point).angle()/M_PI*180;
 
                 newPoint = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
 
@@ -650,9 +651,9 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
             }
             else if (mode == SceneTransformMode_Scale)
             {
-                newPoint = point + (node->point - point) * scaleFactor;
+                newPoint = point + (node->point() - point) * scaleFactor;
                 //
-                pair.first = ((abs(scaleFactor) > 1) ? 1.0 : -1.0) * (node->point - point).magnitude();
+                pair.first = ((abs(scaleFactor) > 1) ? 1.0 : -1.0) * (node->point() - point).magnitude();
             }
 
             SceneNode *obstructNode = getNode(newPoint);
@@ -674,24 +675,24 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
         Point newPoint;
         if (mode == SceneTransformMode_Translate)
         {
-            newPoint = node->point + point;
+            newPoint = node->point() + point;
         }
         else if (mode == SceneTransformMode_Rotate)
         {
-            double distanceNode = (node->point - point).magnitude();
-            double angleNode = (node->point - point).angle()/M_PI*180;
+            double distanceNode = (node->point() - point).magnitude();
+            double angleNode = (node->point() - point).angle()/M_PI*180;
 
             newPoint = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
         }
         else if (mode == SceneTransformMode_Scale)
         {
-            newPoint = point + (node->point - point) * scaleFactor;
+            newPoint = point + (node->point() - point) * scaleFactor;
         }
 
         if (!copy)
         {
-            m_undoStack->push(new SceneNodeCommandEdit(node->point, newPoint));
-            node->point = newPoint;
+            m_undoStack->push(new SceneNodeCommandEdit(node->point(), newPoint));
+            node->setPoint(newPoint);
         }
         else
         {
@@ -699,7 +700,7 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
             SceneNode *nodeAdded = addNode(nodeNew);
 
             if (nodeAdded == nodeNew)
-                m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
+                m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point()));
 
             nodeAdded->setSelected(true);
             node->setSelected(false);
@@ -710,8 +711,8 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
     {
         if (edge->isSelected())
         {
-            edge->nodeStart->setSelected(false);
-            edge->nodeEnd->setSelected(false);
+            edge->nodeStart()->setSelected(false);
+            edge->nodeEnd()->setSelected(false);
             // this->checkEdge(edge);
 
             // add new edge
@@ -721,25 +722,25 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
                 Point newPointEnd;
                 if (mode == SceneTransformMode_Translate)
                 {
-                    newPointStart = edge->nodeStart->point + point;
-                    newPointEnd = edge->nodeEnd->point + point;
+                    newPointStart = edge->nodeStart()->point() + point;
+                    newPointEnd = edge->nodeEnd()->point() + point;
                 }
                 else if (mode == SceneTransformMode_Rotate)
                 {
-                    double distanceNodeStart = (edge->nodeStart->point - point).magnitude();
-                    double angleNodeStart = (edge->nodeStart->point - point).angle()/M_PI*180;
+                    double distanceNodeStart = (edge->nodeStart()->point() - point).magnitude();
+                    double angleNodeStart = (edge->nodeStart()->point() - point).angle()/M_PI*180;
 
                     newPointStart = point + Point(distanceNodeStart * cos((angleNodeStart + angle)/180.0*M_PI), distanceNodeStart * sin((angleNodeStart + angle)/180.0*M_PI));
 
-                    double distanceNodeEnd = (edge->nodeEnd->point - point).magnitude();
-                    double angleNodeEnd = (edge->nodeEnd->point - point).angle()/M_PI*180;
+                    double distanceNodeEnd = (edge->nodeEnd()->point() - point).magnitude();
+                    double angleNodeEnd = (edge->nodeEnd()->point() - point).angle()/M_PI*180;
 
                     newPointEnd = point + Point(distanceNodeEnd * cos((angleNodeEnd + angle)/180.0*M_PI), distanceNodeEnd * sin((angleNodeEnd + angle)/180.0*M_PI));
                 }
                 else if (mode == SceneTransformMode_Scale)
                 {
-                    newPointStart = point + (edge->nodeStart->point - point) * scaleFactor;
-                    newPointEnd = point + (edge->nodeEnd->point - point) * scaleFactor;
+                    newPointStart = point + (edge->nodeStart()->point() - point) * scaleFactor;
+                    newPointEnd = point + (edge->nodeEnd()->point() - point) * scaleFactor;
                 }
 
                 // add new edge
@@ -748,14 +749,14 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
                 if (newNodeStart && newNodeEnd)
                 {
                     SceneEdge *newEdge = new SceneEdge(newNodeStart, newNodeEnd,
-                                                       edge->angle);
+                                                       edge->angle());
                     addEdge(newEdge);
 
                     // TODO: undo
-                    m_undoStack->push(new SceneEdgeCommandAdd(newEdge->nodeStart->point,
-                                                              newEdge->nodeEnd->point,
+                    m_undoStack->push(new SceneEdgeCommandAdd(newEdge->nodeStart()->point(),
+                                                              newEdge->nodeEnd()->point(),
                                                               "TODO",
-                                                              newEdge->angle));
+                                                              newEdge->angle()));
                 }
             }
         }
@@ -778,14 +779,14 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
             Point newPoint;
             if (mode == SceneTransformMode_Translate)
             {
-                newPoint = label->point + point;
+                newPoint = label->point() + point;
                 // projection of the point to the real axis of the displacement vector
-                pair.first = label->point.x * cos(point.angle()) + label->point.y * sin(point.angle());
+                pair.first = label->point().x * cos(point.angle()) + label->point().y * sin(point.angle());
             }
             else if (mode == SceneTransformMode_Rotate)
             {
-                double distanceLabel = (label->point - point).magnitude();
-                double angleLabel = (label->point - point).angle()/M_PI*180;
+                double distanceLabel = (label->point() - point).magnitude();
+                double angleLabel = (label->point() - point).angle()/M_PI*180;
 
                 newPoint = point + Point(distanceLabel * cos((angleLabel + angle)/180.0*M_PI), distanceLabel * sin((angleLabel + angle)/180.0*M_PI));
 
@@ -794,8 +795,8 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
             }
             else if (mode == SceneTransformMode_Scale)
             {
-                newPoint = point + (label->point - point) * scaleFactor;
-                pair.first = ((abs(scaleFactor) > 1) ? 1.0 : -1.0) * (label->point - point).magnitude();
+                newPoint = point + (label->point() - point) * scaleFactor;
+                pair.first = ((abs(scaleFactor) > 1) ? 1.0 : -1.0) * (label->point() - point).magnitude();
             }
 
             SceneLabel *obstructLabel = getLabel(newPoint);
@@ -816,36 +817,36 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
         Point newPoint;
         if (mode == SceneTransformMode_Translate)
         {
-            newPoint = label->point + point;
+            newPoint = label->point() + point;
         }
         else if (mode == SceneTransformMode_Rotate)
         {
-            double distanceLabel = (label->point - point).magnitude();
-            double angleLabel = (label->point - point).angle()/M_PI*180;
+            double distanceLabel = (label->point() - point).magnitude();
+            double angleLabel = (label->point() - point).angle()/M_PI*180;
 
             newPoint = point + Point(distanceLabel * cos((angleLabel + angle)/180.0*M_PI), distanceLabel * sin((angleLabel + angle)/180.0*M_PI));
         }
         else if (mode == SceneTransformMode_Scale)
         {
-            newPoint = point + (label->point - point) * scaleFactor;
+            newPoint = point + (label->point() - point) * scaleFactor;
         }
 
         if (!copy)
         {
-            m_undoStack->push(new SceneLabelCommandEdit(label->point, newPoint));
-            label->point = newPoint;
+            m_undoStack->push(new SceneLabelCommandEdit(label->point(), newPoint));
+            label->setPoint(newPoint);
         }
         else
         {
             SceneLabel *labelNew = new SceneLabel(newPoint,
-                                                  label->area);
+                                                  label->area());
             SceneLabel *labelAdded = addLabel(labelNew);
 
             if (labelAdded == labelNew)
                 // TODO: undo
-                m_undoStack->push(new SceneLabelCommandAdd(labelNew->point,
+                m_undoStack->push(new SceneLabelCommandAdd(labelNew->point(),
                                                            "TODO",
-                                                           labelNew->area));
+                                                           labelNew->area()));
 
             labelAdded->setSelected(true);
             label->setSelected(false);
@@ -902,7 +903,7 @@ void Scene::doNewNode(const Point &point)
     if (node->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneNode *nodeAdded = addNode(node);
-        if (nodeAdded == node) m_undoStack->push(new SceneNodeCommandAdd(node->point));
+        if (nodeAdded == node) m_undoStack->push(new SceneNodeCommandAdd(node->point()));
     }
     else
         delete node;
@@ -916,10 +917,10 @@ void Scene::doNewEdge()
         SceneEdge *edgeAdded = addEdge(edge);
         if (edgeAdded == edge)
             // TODO: undo
-            m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
-                                                      edge->nodeEnd->point,
+            m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart()->point(),
+                                                      edge->nodeEnd()->point(),
                                                       "TODO",
-                                                      edge->angle));
+                                                      edge->angle()));
     }
     else
         delete edge;
@@ -932,9 +933,9 @@ void Scene::doNewLabel(const Point &point)
     {
         SceneLabel *labelAdded = addLabel(label);
         // TODO: undo
-        if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point,
+        if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point(),
                                                                             "TODO",
-                                                                            label->area));
+                                                                            label->area()));
     }
     else
         delete label;
@@ -1098,26 +1099,26 @@ void Scene::writeToDxf(const QString &fileName)
     dw->sectionEntities();
 
     // edges
-    for (int i = 0; i<edges->length(); i++)
+    foreach (SceneEdge *edge, edges->items())
     {
-        if (fabs(edges->at(i)->angle) < EPS_ZERO)
+        if (fabs(edge->angle()) < EPS_ZERO)
         {
             // line
-            double x1 = edges->at(i)->nodeStart->point.x;
-            double y1 = edges->at(i)->nodeStart->point.y;
-            double x2 = edges->at(i)->nodeEnd->point.x;
-            double y2 = edges->at(i)->nodeEnd->point.y;
+            double x1 = edge->nodeStart()->point().x;
+            double y1 = edge->nodeStart()->point().y;
+            double x2 = edge->nodeEnd()->point().x;
+            double y2 = edge->nodeEnd()->point().y;
 
             dxf->writeLine(*dw, DL_LineData(x1, y1, 0.0, x2, y2, 0.0), DL_Attributes("main", 256, -1, "BYLAYER"));
         }
         else
         {
             // arc
-            double cx = edges->at(i)->center().x;
-            double cy = edges->at(i)->center().y;
-            double radius = edges->at(i)->radius();
-            double angle1 = atan2(cy - edges->at(i)->nodeStart->point.y, cx - edges->at(i)->nodeStart->point.x)/M_PI*180.0 + 180.0;
-            double angle2 = atan2(cy - edges->at(i)->nodeEnd->point.y, cx - edges->at(i)->nodeEnd->point.x)/M_PI*180.0 + 180.0;
+            double cx = edge->center().x;
+            double cy = edge->center().y;
+            double radius = edge->radius();
+            double angle1 = atan2(cy - edge->nodeStart()->point().y, cx - edge->nodeStart()->point().x)/M_PI*180.0 + 180.0;
+            double angle2 = atan2(cy - edge->nodeEnd()->point().y, cx - edge->nodeEnd()->point().x)/M_PI*180.0 + 180.0;
 
             while (angle1 < 0.0) angle1 += 360.0;
             while (angle1 >= 360.0) angle1 -= 360.0;
@@ -1252,7 +1253,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         QDomElement element = nodeNode.toElement();
 
-        Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
+        Point point = Point(element.attribute("x").toDouble(),
+                            element.attribute("y").toDouble());
 
         addNode(new SceneNode(point));
         nodeNode = nodeNode.nextSibling();
@@ -1268,7 +1270,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         SceneNode *nodeFrom = nodes->at(element.attribute("start").toInt());
         SceneNode *nodeTo = nodes->at(element.attribute("end").toInt());
         double angle = element.attribute("angle", "0").toDouble();
-        int refineTowardsEdge = element.attribute("refine_towards", "0").toInt();
 
         SceneEdge *edge = new SceneEdge(nodeFrom, nodeTo, angle);
         addEdge(edge);
@@ -1550,8 +1551,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomElement eleNode = doc.createElement("node");
 
         eleNode.setAttribute("id", inode);
-        eleNode.setAttribute("x", node->point.x);
-        eleNode.setAttribute("y", node->point.y);
+        eleNode.setAttribute("x", node->point().x);
+        eleNode.setAttribute("y", node->point().y);
 
         eleNodes.appendChild(eleNode);
 
@@ -1567,9 +1568,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomElement eleEdge = doc.createElement("edge");
 
         eleEdge.setAttribute("id", iedge);
-        eleEdge.setAttribute("start", nodes->items().indexOf(edge->nodeStart));
-        eleEdge.setAttribute("end", nodes->items().indexOf(edge->nodeEnd));
-        eleEdge.setAttribute("angle", edge->angle);
+        eleEdge.setAttribute("start", nodes->items().indexOf(edge->nodeStart()));
+        eleEdge.setAttribute("end", nodes->items().indexOf(edge->nodeEnd()));
+        eleEdge.setAttribute("angle", edge->angle());
 
         eleEdges.appendChild(eleEdge);
 
@@ -1585,9 +1586,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         QDomElement eleLabel = doc.createElement("label");
 
         eleLabel.setAttribute("id", ilabel);
-        eleLabel.setAttribute("x", label->point.x);
-        eleLabel.setAttribute("y", label->point.y);
-        eleLabel.setAttribute("area", label->area);
+        eleLabel.setAttribute("x", label->point().x);
+        eleLabel.setAttribute("y", label->point().y);
+        eleLabel.setAttribute("area", label->area());
 
         eleLabels.appendChild(eleLabel);
 
@@ -1798,30 +1799,30 @@ void Scene::checkNodeConnect(SceneNode *node)
     bool isConnected = false;
     foreach (SceneNode *nodeCheck, this->nodes->items())
     {
-        if ((nodeCheck->distance(node->point) < EPS_ZERO) && (nodeCheck != node))
+        if ((nodeCheck->distance(node->point()) < EPS_ZERO) && (nodeCheck != node))
         {
             isConnected = true;
-            foreach(SceneEdge *edgeCheck, node->connectedEdges)
+            foreach (SceneEdge *edgeCheck, node->connectedEdges())
             {
 
                 SceneNode * nodeStart;
                 SceneNode * nodeEnd;
-                if (edgeCheck->nodeStart->point == node->point)
+                if (edgeCheck->nodeStart()->point() == node->point())
                 {
                     nodeStart = nodeCheck;
-                    nodeEnd = edgeCheck->nodeEnd;
+                    nodeEnd = edgeCheck->nodeEnd();
                 }
-                if (edgeCheck->nodeEnd->point == node->point)
+                if (edgeCheck->nodeEnd()->point() == node->point())
                 {
-                    nodeStart = edgeCheck->nodeStart;
+                    nodeStart = edgeCheck->nodeStart();
                     nodeEnd = nodeCheck;
                 }
 
-                double edgeAngle = edgeCheck->angle;
+                double edgeAngle = edgeCheck->angle();
                 removeEdge(edgeCheck);
                 SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, 0.0);
-                edge->angle = edgeAngle;
-                edge->lyingNodes.clear();
+                edge->setAngle(edgeAngle);
+                edge->lyingNodes().clear();
             }
         }
     }
@@ -1836,22 +1837,22 @@ void Scene::checkNode(SceneNode *node)
 // control if node is not lying on the edge
 {
 
-    foreach (SceneEdge *edge, node->lyingEdges)
+    foreach (SceneEdge *edge, node->lyingEdges())
     {
-        edge->lyingNodes.removeOne(node);
+        edge->lyingNodes().removeOne(node);
     }
 
-    node->lyingEdges.clear();
+    node->lyingEdges().clear();
 
     foreach (SceneEdge *edge, edges->items())
     {
-        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
+        if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
             continue;
 
-        if ((edge->distance(node->point) < EPS_ZERO))
+        if ((edge->distance(node->point()) < EPS_ZERO))
         {
-            node->lyingEdges.append(edge);
-            edge->lyingNodes.append(node);
+            node->lyingEdges().append(edge);
+            edge->lyingNodes().append(node);
         }
 
     }
@@ -1861,12 +1862,12 @@ void Scene::checkEdge(SceneEdge *edge)
 {
     // clear all crossings
 
-    foreach (SceneEdge *edgeCheck, edge->crossedEdges)
+    foreach (SceneEdge *edgeCheck, edge->crossedEdges())
     {
-        edgeCheck->crossedEdges.removeOne(edge);
+        edgeCheck->crossedEdges().removeOne(edge);
     }
 
-    edge->crossedEdges.clear();
+    edge->crossedEdges().clear();
 
     foreach (SceneEdge *edgeCheck, this->edges->items())
     {
@@ -1876,24 +1877,24 @@ void Scene::checkEdge(SceneEdge *edge)
 
             // ToDo: Improve
             // ToDo: Add check of crossings of two arcs
-            if (edge->angle > 0)
-                intersects = intersection(edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
-                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle,
-                                          edge->nodeStart->point, edge->nodeEnd->point,
-                                          edge->center(), edge->radius(), edge->angle);
+            if (edge->angle() > 0)
+                intersects = intersection(edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle(),
+                                          edge->nodeStart()->point(), edge->nodeEnd()->point(),
+                                          edge->center(), edge->radius(), edge->angle());
 
             else
-                intersects = intersection(edge->nodeStart->point, edge->nodeEnd->point,
-                                          edgeCheck->center(), edge->radius(), edge->angle,
-                                          edgeCheck->nodeStart->point, edgeCheck->nodeEnd->point,
-                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle);
+                intersects = intersection(edge->nodeStart()->point(), edge->nodeEnd()->point(),
+                                          edgeCheck->center(), edge->radius(), edge->angle(),
+                                          edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle());
 
-            edgeCheck->crossedEdges.removeOne(edge);
+            edgeCheck->crossedEdges().removeOne(edge);
 
             if (intersects.count() > 0)
             {
-                edgeCheck->crossedEdges.append(edge);
-                edge->crossedEdges.append(edgeCheck);
+                edgeCheck->crossedEdges().append(edge);
+                edge->crossedEdges().append(edgeCheck);
 
             }
         }
@@ -1921,7 +1922,7 @@ ErrorResult Scene::checkGeometryResult()
         QSet<int> nodes;
         foreach (SceneNode *node, this->nodes->items())
         {
-            if (node->point.x < - EPS_ZERO)
+            if (node->point().x < - EPS_ZERO)
                 nodes.insert(this->nodes->items().indexOf(node));
         }
 
@@ -1942,7 +1943,7 @@ ErrorResult Scene::checkGeometryResult()
 
     foreach (SceneEdge *edge, this->edges->items())
     {
-        if (edge->crossedEdges.count() != 0)
+        if (edge->crossedEdges().count() != 0)
         {
             return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
         }

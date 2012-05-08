@@ -29,12 +29,9 @@
 #include "hermes2d/field.h"
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
-    : MarkedSceneBasic()
+    : MarkedSceneBasic(),
+      m_nodeStart(nodeStart), m_nodeEnd(nodeEnd), m_angle(angle)
 {
-    this->nodeStart = nodeStart;
-    this->nodeEnd = nodeEnd;
-    this->angle = angle;
-
     foreach (FieldInfo* field, Util::problem()->fieldInfos())
     {
         this->addMarker(SceneBoundaryContainer::getNone(field));
@@ -43,26 +40,26 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
 
 Point SceneEdge::center() const
 {
-    return centerPoint(nodeStart->point, nodeEnd->point, angle);
+    return centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
 }
 
 double SceneEdge::radius() const
 {
-    return (center() - nodeStart->point).magnitude();
+    return (center() - m_nodeStart->point()).magnitude();
 }
 
 double SceneEdge::distance(const Point &point) const
 {
     if (isStraight())
     {
-        double t = ((point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y)) /
-                ((nodeEnd->point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (nodeEnd->point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y));
+        double t = ((point.x-m_nodeStart->point().x)*(m_nodeEnd->point().x-m_nodeStart->point().x) + (point.y-m_nodeStart->point().y)*(m_nodeEnd->point().y-m_nodeStart->point().y)) /
+                ((m_nodeEnd->point().x-m_nodeStart->point().x)*(m_nodeEnd->point().x-m_nodeStart->point().x) + (m_nodeEnd->point().y-m_nodeStart->point().y)*(m_nodeEnd->point().y-m_nodeStart->point().y));
 
         if (t > 1.0) t = 1.0;
         if (t < 0.0) t = 0.0;
 
-        double x = nodeStart->point.x + t*(nodeEnd->point.x-nodeStart->point.x);
-        double y = nodeStart->point.y + t*(nodeEnd->point.y-nodeStart->point.y);
+        double x = m_nodeStart->point().x + t*(m_nodeEnd->point().x-m_nodeStart->point().x);
+        double y = m_nodeStart->point().y + t*(m_nodeEnd->point().y-m_nodeStart->point().y);
 
         return sqrt(Hermes::sqr(point.x-x) + Hermes::sqr(point.y-y));
     }
@@ -77,12 +74,12 @@ double SceneEdge::distance(const Point &point) const
 
         Point t = (point - c) / distance;
         double l = ((point - c) - t * R).magnitude();
-        double z = (t.angle() - (nodeStart->point - c).angle())/M_PI*180.0;
+        double z = (t.angle() - (m_nodeStart->point() - c).angle())/M_PI*180.0;
         if (z < 0) z = z + 360.0; // interval (0, 360)
-        if ((z > 0) && (z < angle)) return l;
+        if ((z > 0) && (z < m_angle)) return l;
 
-        double a = (point - nodeStart->point).magnitude();
-        double b = (point - nodeEnd->point).magnitude();
+        double a = (point - m_nodeStart->point()).magnitude();
+        double b = (point - m_nodeEnd->point()).magnitude();
 
         return qMin(a, b);
     }
@@ -91,7 +88,7 @@ double SceneEdge::distance(const Point &point) const
 int SceneEdge::segments() const
 {
     double division = 40.0;
-    int segments = angle/division + 1;
+    int segments = m_angle/division + 1;
     if (segments < Util::config()->angleSegmentsCount)
         segments = Util::config()->angleSegmentsCount; // minimum segments
 
@@ -101,9 +98,9 @@ int SceneEdge::segments() const
 double SceneEdge::length() const
 {
     if (isStraight())
-        return (nodeEnd->point - nodeStart->point).magnitude();
+        return (m_nodeEnd->point() - m_nodeStart->point()).magnitude();
     else
-        return radius() * angle / 180.0 * M_PI;
+        return radius() * m_angle / 180.0 * M_PI;
 }
 
 int SceneEdge::showDialog(QWidget *parent, bool isNew)
@@ -115,7 +112,7 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
 {
     // TODO: undo
-    return new SceneEdgeCommandRemove(nodeStart->point, nodeEnd->point, "TODO", angle);
+    return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), "TODO", m_angle);
 }
 
 //************************************************************************************************
@@ -124,11 +121,11 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
 {
     foreach (SceneEdge *edge, data)
     {
-        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
+        if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
         {
             // TODO: undo
-            Util::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, "TODO",
-                                                                        edge->angle));
+            Util::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart()->point(), edge->nodeEnd()->point(), "TODO",
+                                                                        edge->angle()));
             remove(edge);
         }
     }
@@ -139,10 +136,10 @@ SceneEdge* SceneEdgeContainer::get(SceneEdge* edge) const
 {
     foreach (SceneEdge *edgeCheck, data)
     {
-        if (((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) &&
-              (fabs(edgeCheck->angle - edge->angle) < EPS_ZERO)) ||
-             (((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart))) &&
-             (fabs(edgeCheck->angle + edge->angle) < EPS_ZERO)))
+        if (((((edgeCheck->nodeStart() == edge->nodeStart()) && (edgeCheck->nodeEnd() == edge->nodeEnd())) &&
+              (fabs(edgeCheck->angle() - edge->angle()) < EPS_ZERO)) ||
+             (((edgeCheck->nodeStart() == edge->nodeEnd()) && (edgeCheck->nodeEnd() == edge->nodeStart()))) &&
+             (fabs(edgeCheck->angle() + edge->angle()) < EPS_ZERO)))
         {
             return edgeCheck;
         }
@@ -155,7 +152,7 @@ SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEn
 {
     foreach (SceneEdge *edgeCheck, data)
     {
-        if (((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) && (edgeCheck->angle == angle))
+        if (((edgeCheck->nodeStart()->point() == pointStart) && (edgeCheck->nodeEnd()->point() == pointEnd)) && (edgeCheck->angle() == angle))
             return edgeCheck;
     }
 
@@ -321,7 +318,7 @@ bool SceneEdgeDialog::load()
 {
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
-    txtAngle->setNumber(sceneEdge->angle);
+    txtAngle->setNumber(sceneEdge->angle());
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->load();
@@ -340,12 +337,12 @@ bool SceneEdgeDialog::save()
     if (!m_isNew)
     {
         // TODO: swap
-        Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point,
-                                                                  sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point,
-                                                                  sceneEdge->angle, txtAngle->number()));
+        Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
+                                                                  sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
+                                                                  sceneEdge->angle(), txtAngle->number()));
     }
 
-    sceneEdge->angle = txtAngle->number();
+    sceneEdge->setAngle(txtAngle->number());
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->save();
@@ -362,13 +359,13 @@ void SceneEdgeDialog::doAngleChanged()
     if (txtAngle->number() < EPS_ZERO)
     {
         // line
-        lblLength->setText(QString("%1 m").arg(sqrt(Hermes::sqr(sceneEdge->nodeEnd->point.x - sceneEdge->nodeStart->point.x) + Hermes::sqr(sceneEdge->nodeEnd->point.y - sceneEdge->nodeStart->point.y))));
+        lblLength->setText(QString("%1 m").arg(sqrt(Hermes::sqr(sceneEdge->nodeEnd()->point().x - sceneEdge->nodeStart()->point().x) + Hermes::sqr(sceneEdge->nodeEnd()->point().y - sceneEdge->nodeStart()->point().y))));
     }
     else
     {
         // arc
-        SceneEdge edge(sceneEdge->nodeStart, sceneEdge->nodeEnd, txtAngle->number());
-        lblLength->setText(QString("%1 m").arg(edge.radius() * edge.angle / 180.0 * M_PI));
+        SceneEdge edge(sceneEdge->nodeStart(), sceneEdge->nodeEnd(), txtAngle->number());
+        lblLength->setText(QString("%1 m").arg(edge.radius() * edge.angle() / 180.0 * M_PI));
     }
 }
 
@@ -540,9 +537,9 @@ void SceneEdgeCommandEdit::undo()
     SceneEdge *edge = Util::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew);
     if (edge)
     {
-        edge->nodeStart = Util::scene()->getNode(m_pointStart);
-        edge->nodeEnd = Util::scene()->getNode(m_pointEnd);
-        edge->angle = m_angle;
+        edge->setNodeStart(Util::scene()->getNode(m_pointStart));
+        edge->setNodeEnd(Util::scene()->getNode(m_pointEnd));
+        edge->setAngle(m_angle);
         Util::scene()->refresh();
     }
 }
@@ -552,16 +549,16 @@ void SceneEdgeCommandEdit::redo()
     SceneEdge *edge = Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle);
     if (edge)
     {
-        edge->nodeStart = Util::scene()->getNode(m_pointStartNew);
-        edge->nodeEnd = Util::scene()->getNode(m_pointEndNew);
-        edge->angle = m_angleNew;
+        edge->setNodeStart(Util::scene()->getNode(m_pointStartNew));
+        edge->setNodeEnd(Util::scene()->getNode(m_pointEndNew));
+        edge->setAngle(m_angleNew);
         Util::scene()->refresh();
     }
 }
 
 bool SceneEdge::isOutsideArea() const
 {
-    return (nodeStart->isOutsideArea() || nodeEnd->isOutsideArea());
+    return (m_nodeStart->isOutsideArea() || m_nodeEnd->isOutsideArea());
 }
 
 bool SceneEdge::isError() const

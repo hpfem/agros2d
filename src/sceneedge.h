@@ -28,16 +28,19 @@ class SceneEdgeCommandRemove;
 class SceneEdge : public MarkedSceneBasic<SceneBoundary>
 {
 public:
-    SceneNode *nodeStart;
-    SceneNode *nodeEnd;
-    double angle;
+    SceneEdge(SceneNode *m_nodeStart, SceneNode *m_nodeEnd, double m_angle);
 
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle);
+    inline SceneNode *nodeStart() const { return m_nodeStart; }
+    inline void setNodeStart(SceneNode *nodeStart) { m_nodeStart = nodeStart; }
+    inline SceneNode *nodeEnd() const { return m_nodeEnd; }
+    inline void setNodeEnd(SceneNode *nodeEnd) { m_nodeEnd = nodeEnd; }
+    inline double angle() const { return m_angle; }
+    inline void setAngle(double angle) { m_angle = angle; }
 
-    bool isCrossed() const { return crossedEdges.length() > 0; }
-    QList<SceneEdge *> crossedEdges;
-    bool isLyingNode() const { return lyingNodes.length() > 0; }
-    QList<SceneNode *> lyingNodes;
+    bool isCrossed() const { return m_crossedEdges.length() > 0; }
+    inline QList<SceneEdge *> &crossedEdges() { return m_crossedEdges; } // TODO: make const
+    bool isLyingNode() const { return m_lyingNodes.length() > 0; }
+    QList<SceneNode *> &lyingNodes() { return m_lyingNodes; } // TODO: make const
     bool isOutsideArea() const;
     bool isError() const;
 
@@ -46,11 +49,19 @@ public:
     double distance(const Point &point) const;
     int segments() const; // needed by mesh generator
     double length() const;
-    bool isStraight() const { return (fabs(angle) < EPS_ZERO); }
+    bool isStraight() const { return (fabs(m_angle) < EPS_ZERO); }
 
     SceneEdgeCommandRemove* getRemoveCommand();
 
     int showDialog(QWidget *parent, bool isNew = false);
+
+private:
+    SceneNode *m_nodeStart;
+    SceneNode *m_nodeEnd;
+    double m_angle;
+
+    QList<SceneEdge *> m_crossedEdges;
+    QList<SceneNode *> m_lyingNodes;
 };
 
 // *************************************************************************************************************************************

@@ -205,18 +205,18 @@ void SceneViewPreprocessor::selectRegion(const Point &start, const Point &end)
     {
     case SceneGeometryMode_OperateOnNodes:
         foreach (SceneNode *node, Util::scene()->nodes->items())
-            if (node->point.x >= start.x && node->point.x <= end.x && node->point.y >= start.y && node->point.y <= end.y)
+            if (node->point().x >= start.x && node->point().x <= end.x && node->point().y >= start.y && node->point().y <= end.y)
                 node->setSelected(true);
         break;
     case SceneGeometryMode_OperateOnEdges:
         foreach (SceneEdge *edge, Util::scene()->edges->items())
-            if (edge->nodeStart->point.x >= start.x && edge->nodeStart->point.x <= end.x && edge->nodeStart->point.y >= start.y && edge->nodeStart->point.y <= end.y &&
-                    edge->nodeEnd->point.x >= start.x && edge->nodeEnd->point.x <= end.x && edge->nodeEnd->point.y >= start.y && edge->nodeEnd->point.y <= end.y)
+            if (edge->nodeStart()->point().x >= start.x && edge->nodeStart()->point().x <= end.x && edge->nodeStart()->point().y >= start.y && edge->nodeStart()->point().y <= end.y &&
+                    edge->nodeEnd()->point().x >= start.x && edge->nodeEnd()->point().x <= end.x && edge->nodeEnd()->point().y >= start.y && edge->nodeEnd()->point().y <= end.y)
                 edge->setSelected(true);
         break;
     case SceneGeometryMode_OperateOnLabels:
         foreach (SceneLabel *label, Util::scene()->labels->items())
-            if (label->point.x >= start.x && label->point.x <= end.x && label->point.y >= start.y && label->point.y <= end.y)
+            if (label->point().x >= start.x && label->point().x <= end.x && label->point().y >= start.y && label->point().y <= end.y)
                 label->setSelected(true);
         break;
     }
@@ -251,8 +251,8 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 Util::scene()->highlightNone();
                 node->setHighlighted(true);
                 setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
-                           arg(node->point.x, 0, 'g', 3).
-                           arg(node->point.y, 0, 'g', 3).
+                           arg(node->point().x, 0, 'g', 3).
+                           arg(node->point().y, 0, 'g', 3).
                            arg(Util::scene()->nodes->items().indexOf(node)));
                 updateGL();
             }
@@ -275,12 +275,12 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 Util::scene()->highlightNone();
                 edge->setHighlighted(true);
                 setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Angle:</b> %6 deg.<br/><b>Refine towards edge:</b> %7<br/><b>Index:</b> %8").
-                           arg(edge->nodeStart->point.x, 0, 'g', 3).
-                           arg(edge->nodeStart->point.y, 0, 'g', 3).
-                           arg(edge->nodeEnd->point.x, 0, 'g', 3).
-                           arg(edge->nodeEnd->point.y, 0, 'g', 3).
+                           arg(edge->nodeStart()->point().x, 0, 'g', 3).
+                           arg(edge->nodeStart()->point().y, 0, 'g', 3).
+                           arg(edge->nodeEnd()->point().x, 0, 'g', 3).
+                           arg(edge->nodeEnd()->point().y, 0, 'g', 3).
                            arg(str).
-                           arg(edge->angle, 0, 'f', 0).                           
+                           arg(edge->angle(), 0, 'f', 0).
                            arg(Util::scene()->edges->items().indexOf(edge)));
                 updateGL();
             }
@@ -303,10 +303,10 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 Util::scene()->highlightNone();
                 label->setHighlighted(true);
                 setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Triangle area:</b> %4 m<sup>2</sup><br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
-                           arg(label->point.x, 0, 'g', 3).
-                           arg(label->point.y, 0, 'g', 3).
+                           arg(label->point().x, 0, 'g', 3).
+                           arg(label->point().y, 0, 'g', 3).
                            arg(str).
-                           arg(label->area, 0, 'g', 3).                           
+                           arg(label->area(), 0, 'g', 3).                           
                            arg(Util::scene()->labels->items().indexOf(label)));
                 updateGL();
             }
@@ -361,7 +361,8 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 {
                     foreach (SceneNode *node, Util::scene()->nodes->items())
                         if (node->isSelected())
-                            node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                            node->setPoint(Point(node->point().x + (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep,
+                                                 node->point().y));
                     len.x = 0;
                 }
 
@@ -369,7 +370,8 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 {
                     foreach (SceneNode *node, Util::scene()->nodes->items())
                         if (node->isSelected())
-                            node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                            node->setPoint(Point(node->point().x,
+                                                 node->point().y + (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep));
                     len.y = 0;
                 }
             }
@@ -502,7 +504,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             {
                 SceneNode *node = new SceneNode(pointNode);
                 SceneNode *nodeAdded = Util::scene()->addNode(node);
-                if (nodeAdded == node) Util::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point));
+                if (nodeAdded == node) Util::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point()));
                 updateGL();
             }
         }
@@ -524,10 +526,10 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                         SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0);
                         SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
                         // TODO: undo
-                        if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
-                                                                                                        edge->nodeEnd->point,
+                        if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart()->point(),
+                                                                                                        edge->nodeEnd()->point(),
                                                                                                         "TODO",
-                                                                                                        edge->angle));
+                                                                                                        edge->angle()));
                     }
 
                     m_nodeLast->setSelected(false);
@@ -552,9 +554,9 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                 SceneLabel *label = new SceneLabel(p, 0);
                 SceneLabel *labelAdded = Util::scene()->addLabel(label);
                 // TODO: undo
-                if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point,
+                if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point(),
                                                                                                    "TODO",
-                                                                                                   label->area));
+                                                                                                   label->area()));
                 updateGL();
             }
         }
@@ -928,20 +930,20 @@ void SceneViewPreprocessor::paintGeometry()
             glLineWidth(Util::config()->edgeWidth + 2.0);
         }
 
-        if (fabs(edge->angle) < EPS_ZERO)
+        if (fabs(edge->angle()) < EPS_ZERO)
         {
             glBegin(GL_LINES);
-            glVertex2d(edge->nodeStart->point.x, edge->nodeStart->point.y);
-            glVertex2d(edge->nodeEnd->point.x, edge->nodeEnd->point.y);
+            glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+            glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
             glEnd();
         }
         else
         {
             Point center = edge->center();
             double radius = edge->radius();
-            double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-            drawArc(center, radius, startAngle, edge->angle, edge->angle/2.0);
+            drawArc(center, radius, startAngle, edge->angle(), edge->angle()/2.0);
         }
 
         glDisable(GL_LINE_STIPPLE);
@@ -957,7 +959,7 @@ void SceneViewPreprocessor::paintGeometry()
         glPointSize(Util::config()->nodeSize);
 
         glBegin(GL_POINTS);
-        glVertex2d(node->point.x, node->point.y);
+        glVertex2d(node->point().x, node->point().y);
         glEnd();
 
         glColor3d(Util::config()->colorBackground.redF(),
@@ -966,7 +968,7 @@ void SceneViewPreprocessor::paintGeometry()
         glPointSize(Util::config()->nodeSize - 2.0);
 
         glBegin(GL_POINTS);
-        glVertex2d(node->point.x, node->point.y);
+        glVertex2d(node->point().x, node->point().y);
         glEnd();
 
         if ((node->isSelected()) || (node->isHighlighted()) || (node->isError()) )
@@ -988,7 +990,7 @@ void SceneViewPreprocessor::paintGeometry()
                           Util::config()->colorSelected.blueF());
 
             glBegin(GL_POINTS);
-            glVertex2d(node->point.x, node->point.y);
+            glVertex2d(node->point().x, node->point().y);
             glEnd();
         }
     }
@@ -1003,7 +1005,7 @@ void SceneViewPreprocessor::paintGeometry()
                   Util::config()->colorLabels.blueF());
         glPointSize(Util::config()->labelSize);
         glBegin(GL_POINTS);
-        glVertex2d(label->point.x, label->point.y);
+        glVertex2d(label->point().x, label->point().y);
         glEnd();
 
         glColor3d(Util::config()->colorBackground.redF(),
@@ -1011,7 +1013,7 @@ void SceneViewPreprocessor::paintGeometry()
                   Util::config()->colorBackground.blueF());
         glPointSize(Util::config()->labelSize - 2.0);
         glBegin(GL_POINTS);
-        glVertex2d(label->point.x, label->point.y);
+        glVertex2d(label->point().x, label->point().y);
         glEnd();
 
         if ((label->isSelected()) || (label->isHighlighted()))
@@ -1027,7 +1029,7 @@ void SceneViewPreprocessor::paintGeometry()
 
             glPointSize(Util::config()->labelSize - 2.0);
             glBegin(GL_POINTS);
-            glVertex2d(label->point.x, label->point.y);
+            glVertex2d(label->point().x, label->point().y);
             glEnd();
         }
         glLineWidth(1.0);
@@ -1048,18 +1050,18 @@ void SceneViewPreprocessor::paintGeometry()
             point.x = 2.0/width()*aspect()*fontMetrics().width(str)/m_scale2d/2.0;
             point.y = 2.0/height()*fontMetrics().height()/m_scale2d;
 
-            renderTextPos(label->point.x-point.x, label->point.y-point.y, str, false);
+            renderTextPos(label->point().x-point.x, label->point().y-point.y, str, false);
         }
 
         // area size
         if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (Util::config()->showInitialMeshView))
         {
-            double radius = sqrt(label->area/M_PI);
+            double radius = sqrt(label->area()/M_PI);
             glColor3d(0, 0.95, 0.9);
             glBegin(GL_LINE_LOOP);
             for (int i = 0; i<360; i = i + 10)
             {
-                glVertex2d(label->point.x + radius*cos(i/180.0*M_PI), label->point.y + radius*sin(i/180.0*M_PI));
+                glVertex2d(label->point().x + radius*cos(i/180.0*M_PI), label->point().y + radius*sin(i/180.0*M_PI));
             }
             glEnd();
         }
@@ -1105,10 +1107,10 @@ void SceneViewPreprocessor::paintEdgeLine()
             // check for crossing
             foreach (SceneEdge *edge, Util::scene()->edges->items())
             {
-                QList<Point> intersects = intersection(p, m_nodeLast->point,
-                                                       m_nodeLast->point, 0, 0,
-                                                       edge->nodeStart->point, edge->nodeEnd->point,
-                                                       edge->center(), edge->radius(), edge->angle);
+                QList<Point> intersects = intersection(p, m_nodeLast->point(),
+                                                       m_nodeLast->point(), 0, 0,
+                                                       edge->nodeStart()->point(), edge->nodeEnd()->point(),
+                                                       edge->center(), edge->radius(), edge->angle());
 
                 foreach (Point intersect, intersects)
                 {
@@ -1129,7 +1131,7 @@ void SceneViewPreprocessor::paintEdgeLine()
             glLineWidth(Util::config()->edgeWidth);
 
             glBegin(GL_LINES);
-            glVertex2d(m_nodeLast->point.x, m_nodeLast->point.y);
+            glVertex2d(m_nodeLast->point().x, m_nodeLast->point().y);
             glVertex2d(p.x, p.y);
             glEnd();
 

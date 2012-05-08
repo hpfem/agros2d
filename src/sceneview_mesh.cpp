@@ -293,20 +293,20 @@ void SceneViewMesh::paintGeometry()
                   Util::config()->colorEdges.blueF());
         glLineWidth(Util::config()->edgeWidth);
 
-        if (fabs(edge->angle) < EPS_ZERO)
+        if (fabs(edge->angle()) < EPS_ZERO)
         {
             glBegin(GL_LINES);
-            glVertex2d(edge->nodeStart->point.x, edge->nodeStart->point.y);
-            glVertex2d(edge->nodeEnd->point.x, edge->nodeEnd->point.y);
+            glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+            glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
             glEnd();
         }
         else
         {
             Point center = edge->center();
             double radius = edge->radius();
-            double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-            drawArc(center, radius, startAngle, edge->angle, edge->angle/2.0);
+            drawArc(center, radius, startAngle, edge->angle(), edge->angle()/2.0);
         }
 
         glLineWidth(1.0);

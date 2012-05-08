@@ -25,14 +25,13 @@
 #include "scenemarkerdialog.h"
 #include "hermes2d/problem.h"
 
-SceneNode::SceneNode(const Point &point) : SceneBasic()
+SceneNode::SceneNode(const Point &point) : SceneBasic(), m_point(point)
 {
-    this->point = point;
 }
 
 double SceneNode::distance(const Point &point) const
 {
-    return (this->point - point).magnitude();
+    return (this->point() - point).magnitude();
 }
 
 int SceneNode::showDialog(QWidget *parent, bool isNew)
@@ -43,7 +42,7 @@ int SceneNode::showDialog(QWidget *parent, bool isNew)
 
 SceneNodeCommandRemove* SceneNode::getRemoveCommand()
 {
-    return new SceneNodeCommandRemove(this->point);
+    return new SceneNodeCommandRemove(this->point());
 }
 
 //void SceneNode::getQDomElement(const QDomDocument &document, int number)
@@ -68,7 +67,7 @@ SceneNode* SceneNodeContainer::get(SceneNode *node) const
 {
     foreach (SceneNode *nodeCheck, data)
     {
-        if (nodeCheck->point == node->point)
+        if (nodeCheck->point() == node->point())
         {
             return nodeCheck;
         }
@@ -81,7 +80,7 @@ SceneNode* SceneNodeContainer::get(const Point &point) const
 {
     foreach (SceneNode *nodeCheck, data)
     {
-        if (nodeCheck->point == point)
+        if (nodeCheck->point() == point)
             return nodeCheck;
     }
 
@@ -103,10 +102,10 @@ RectPoint SceneNodeContainer::boundingBox() const
 
     foreach (SceneNode *node, data)
     {
-        min.x = qMin(min.x, node->point.x);
-        max.x = qMax(max.x, node->point.x);
-        min.y = qMin(min.y, node->point.y);
-        max.y = qMax(max.y, node->point.y);
+        min.x = qMin(min.x, node->point().x);
+        max.x = qMax(max.x, node->point().x);
+        min.y = qMin(min.y, node->point().y);
+        max.y = qMax(max.y, node->point().y);
     }
 
     return RectPoint(min, max);
@@ -176,8 +175,8 @@ bool DSceneNode::load()
 {
     SceneNode *sceneNode = dynamic_cast<SceneNode *>(m_object);
 
-    txtPointX->setNumber(sceneNode->point.x);
-    txtPointY->setNumber(sceneNode->point.y);
+    txtPointX->setNumber(sceneNode->point().x);
+    txtPointY->setNumber(sceneNode->point().y);
 
     doEditingFinished();
 
@@ -194,7 +193,7 @@ bool DSceneNode::save()
     Point point(txtPointX->number(), txtPointY->number());
 
     // check if node doesn't exists
-    if (Util::scene()->getNode(point) && ((sceneNode->point != point) || m_isNew))
+    if (Util::scene()->getNode(point) && ((sceneNode->point() != point) || m_isNew))
     {
         QMessageBox::warning(this, tr("Node"), tr("Node already exists."));
         return false;
@@ -202,13 +201,13 @@ bool DSceneNode::save()
 
     if (!m_isNew)
     {
-        if (sceneNode->point != point)
+        if (sceneNode->point() != point)
         {
-            Util::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point, point));
+            Util::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point(), point));
         }
     }
 
-    sceneNode->point = point;
+    sceneNode->setPoint(point);
 
     return true;
 }
@@ -273,7 +272,7 @@ void SceneNodeCommandEdit::undo()
     SceneNode *node = Util::scene()->getNode(m_pointNew);
     if (node)
     {
-        node->point = m_point;
+        node->setPoint(m_point);
         Util::scene()->refresh();
     }
 }
@@ -283,7 +282,7 @@ void SceneNodeCommandEdit::redo()
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
-        node->point = m_pointNew;
+        node->setPoint(m_pointNew);
         Util::scene()->refresh();
     }
 }
@@ -291,7 +290,7 @@ void SceneNodeCommandEdit::redo()
 bool SceneNode::isOutsideArea() const
 {
     return  (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
-            (this->point.x < - EPS_ZERO);
+            (this->point().x < - EPS_ZERO);
 }
 
 bool SceneNode::isError()

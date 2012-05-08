@@ -197,10 +197,10 @@ QString createPythonFromModel()
         foreach (SceneEdge *edge, Util::scene()->edges->items())
         {
             str += QString("geometry.add_edge(%1, %2, %3, %4").
-                    arg(edge->nodeStart->point.x).
-                    arg(edge->nodeStart->point.y).
-                    arg(edge->nodeEnd->point.x).
-                    arg(edge->nodeEnd->point.y);
+                    arg(edge->nodeStart()->point().x).
+                    arg(edge->nodeStart()->point().y).
+                    arg(edge->nodeEnd()->point().x).
+                    arg(edge->nodeEnd()->point().y);
 
             if (Util::problem()->fieldInfos().count() > 0)
             {
@@ -220,8 +220,8 @@ QString createPythonFromModel()
                 str += boundaries;
             }
 
-            if (edge->angle > 0.0)
-                str += ", angle = " + QString::number(edge->angle);
+            if (edge->angle() > 0.0)
+                str += ", angle = " + QString::number(edge->angle());
 
             // TODO: if (edge->refineTowardsEdge > 0) str += ", refinement = " + QString::number(edge->refineTowardsEdge);
 
@@ -237,8 +237,8 @@ QString createPythonFromModel()
         foreach (SceneLabel *label, Util::scene()->labels->items())
         {
             str += QString("geometry.add_label(%1, %2").
-                    arg(label->point.x).
-                    arg(label->point.y);
+                    arg(label->point().x).
+                    arg(label->point().y);
 
             if (Util::problem()->fieldInfos().count() > 0)
             {
@@ -255,8 +255,8 @@ QString createPythonFromModel()
                 str += materials;
             }
 
-            if (label->area > 0.0)
-                str += ", area = " + QString::number(label->area);
+            if (label->area() > 0.0)
+                str += ", area = " + QString::number(label->area());
 
             // TODO: if (label->polynomialOrder > 0) str += ", order = " + QString::number(label->polynomialOrder);
 
