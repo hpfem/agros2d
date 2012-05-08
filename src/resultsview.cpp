@@ -110,33 +110,33 @@ void ResultsView::showPoint(const Point &point)
             {
                 it.next();
 
-                if (it.key()->isScalar)
+                if (it.key()->isScalar())
                 {
                     // scalar variable
                     ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                    item->SetValue("NAME", it.key()->name.toStdString());
-                    item->SetValue("SHORTNAME", it.key()->shortname_html.toStdString());
+                    item->SetValue("NAME", it.key()->name().toStdString());
+                    item->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
                     item->SetValue("VALUE", QString("%1").arg(it.value().scalar, 0, 'e', 3).toStdString());
-                    item->SetValue("UNIT", it.key()->unit_html.toStdString());
+                    item->SetValue("UNIT", it.key()->unitHtml().toStdString());
                 }
                 else
                 {
                     // vector variable
                     ctemplate::TemplateDictionary *itemMagnitude = field->AddSectionDictionary("ITEM");
-                    itemMagnitude->SetValue("NAME", it.key()->name.toStdString());
-                    itemMagnitude->SetValue("SHORTNAME", it.key()->shortname_html.toStdString());
+                    itemMagnitude->SetValue("NAME", it.key()->name().toStdString());
+                    itemMagnitude->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
                     itemMagnitude->SetValue("VALUE", QString("%1").arg(it.value().vector.magnitude(), 0, 'e', 3).toStdString());
-                    itemMagnitude->SetValue("UNIT", it.key()->unit_html.toStdString());
+                    itemMagnitude->SetValue("UNIT", it.key()->unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
-                    itemX->SetValue("SHORTNAME", it.key()->shortname_html.toStdString());
+                    itemX->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
                     itemX->SetValue("PART", Util::problem()->config()->labelX().toLower().toStdString());
                     itemX->SetValue("VALUE", QString("%1").arg(it.value().vector.x, 0, 'e', 3).toStdString());
-                    itemX->SetValue("UNIT", it.key()->unit_html.toStdString());
+                    itemX->SetValue("UNIT", it.key()->unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
-                    itemY->SetValue("SHORTNAME", it.key()->shortname_html.toStdString());
+                    itemY->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
                     itemY->SetValue("PART", Util::problem()->config()->labelY().toLower().toStdString());
                     itemY->SetValue("VALUE", QString("%1").arg(it.value().vector.y, 0, 'e', 3).toStdString());
-                    itemY->SetValue("UNIT", it.key()->unit_html.toStdString());
+                    itemY->SetValue("UNIT", it.key()->unitHtml().toStdString());
                 }
             }
         }
@@ -184,10 +184,10 @@ void ResultsView::showVolumeIntegral()
                 it.next();
 
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                item->SetValue("NAME", it.key()->name.toStdString());
-                item->SetValue("SHORTNAME", it.key()->shortname_html.toStdString());
+                item->SetValue("NAME", it.key()->name().toStdString());
+                item->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
                 item->SetValue("VALUE", QString("%1").arg(it.value(), 0, 'e', 3).toStdString());
-                item->SetValue("UNIT", it.key()->unit_html.toStdString());
+                item->SetValue("UNIT", it.key()->unitHtml().toStdString());
             }
         }
     }
@@ -234,10 +234,10 @@ void ResultsView::showSurfaceIntegral()
                 it.next();
 
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                item->SetValue("NAME", it.key()->name.toStdString());
-                item->SetValue("SHORTNAME", it.key()->shortname_html.toStdString());
+                item->SetValue("NAME", it.key()->name().toStdString());
+                item->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
                 item->SetValue("VALUE", QString("%1").arg(it.value(), 0, 'e', 3).toStdString());
-                item->SetValue("UNIT", it.key()->unit_html.toStdString());
+                item->SetValue("UNIT", it.key()->unitHtml().toStdString());
             }
         }
     }

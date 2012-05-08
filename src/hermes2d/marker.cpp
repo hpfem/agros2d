@@ -81,8 +81,8 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
         if (this->values.size() == 0)
         {
             Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(type);
-            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables)
-                this->values[variable->id] = Value(QString::number(variable->default_value));
+            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+                this->values[variable->id()] = Value(QString::number(variable->defaultValue()));
         }
     }
 }
@@ -99,7 +99,7 @@ Material::Material(FieldInfo *fieldInfo, QString name,
         if (this->values.size() == 0)
         {
             foreach (Module::MaterialTypeVariable *variable, fieldInfo->module()->materialTypeVariables())
-                this->values[variable->id] = Value(QString::number(variable->default_value));
+                this->values[variable->id()] = Value(QString::number(variable->defaultValue()));
         }
     }
 }

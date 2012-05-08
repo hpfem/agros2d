@@ -35,8 +35,8 @@ void Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable
 void Module::ModuleAgros::fillComboBoxContourVariable(QComboBox *cmbFieldVariable)
 {
     foreach (Module::LocalVariable *variable, viewScalarVariables())
-        cmbFieldVariable->addItem(variable->name,
-                                  variable->id);
+        cmbFieldVariable->addItem(variable->name(),
+                                  variable->id());
 }
 
 void Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
@@ -47,22 +47,22 @@ void Module::ModuleAgros::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable
 void Module::ModuleAgros::fillComboBox(QComboBox *cmbFieldVariable, QList<Module::LocalVariable *> list)
 {
     foreach (Module::LocalVariable *variable, list)
-        cmbFieldVariable->addItem(variable->name,
-                                  variable->id);
+        cmbFieldVariable->addItem(variable->name(),
+                                  variable->id());
 }
 
 void Module::ModuleAgros::fillComboBoxBoundaryCondition(QComboBox *cmbFieldVariable)
 {
     foreach (Module::BoundaryType *boundary, boundaryTypes())
-        cmbFieldVariable->addItem(boundary->name,
-                                  boundary->id);    
+        cmbFieldVariable->addItem(boundary->name(),
+                                  boundary->id());
 }
 
 void Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbFieldVariable)
 {
     foreach (Module::MaterialTypeVariable *material, materialTypeVariables())
-        cmbFieldVariable->addItem(material->id,
-                                  material->id);
+        cmbFieldVariable->addItem(material->id(),
+                                  material->id());
 }
 
 SceneBoundary *Module::ModuleAgros::newBoundary()
@@ -71,7 +71,7 @@ SceneBoundary *Module::ModuleAgros::newBoundary()
     FieldInfo *field = Util::problem()->fieldInfo(this->m_fieldid);
 
     return new SceneBoundary(field, tr("new boundary"),
-                             field->module()->boundaryTypeDefault()->id);
+                             field->module()->boundaryTypeDefault()->id());
 }
 
 SceneMaterial *Module::ModuleAgros::newMaterial()

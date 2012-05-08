@@ -101,7 +101,7 @@ void SurfaceIntegralValue::calculate()
         Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
         for (int i = 0; i<Util::scene()->edges->length(); i++)
         {
-            if (Util::scene()->edges->at(i)->isSelected)
+            if (Util::scene()->edges->at(i)->isSelected())
             {
                 for_all_active_elements(e, mesh)
                 {
@@ -193,7 +193,7 @@ void SurfaceIntegralValue::calculate()
                                 }
                                 catch (mu::Parser::exception_type &e)
                                 {
-                                    qDebug() << "Surface integral: " << integral->name << " (" << integral->id << ") " << integral->name << " - " <<
+                                    qDebug() << "Surface integral: " << integral->name() << " (" << integral->id() << ") " << integral->name() << " - " <<
                                                 QString::fromStdString(parsers[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
                                 }
 

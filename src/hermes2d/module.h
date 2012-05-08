@@ -121,122 +121,206 @@ struct LocalVariable
 {
     struct Expression
     {
-        Expression(const QString &scalar = "", const QString &comp_x = "", const QString &comp_y = "")
-            : scalar(scalar), comp_x(comp_x), comp_y(comp_y) {}
+        Expression(const QString &scalar = "", const QString &compX = "", const QString &compY = "")
+            : m_scalar(scalar), m_compX(compX), m_compY(compY) {}
 
         // expressions
-        QString scalar;
-        QString comp_x;
-        QString comp_y;
+        inline QString scalar() const { return m_scalar; }
+        inline QString compX() const { return m_compX; }
+        inline QString compY() const { return m_compY; }
+
+    private:
+        // expressions
+        QString m_scalar;
+        QString m_compX;
+        QString m_compY;
     };
 
     LocalVariable(const QString &id = "",
                   const QString &name = "",
                   const QString &shortname = "",
                   const QString &unit = "",
-                  const QString &unit_html = "")
-        : id(id),
-          name(name),
-          shortname(shortname),
-          unit(unit),
-          unit_html(unit),
-          isScalar(true),
-          expr(Expression()) {}
+                  const QString &unitHtml = "")
+        : m_id(id),
+          m_name(name),
+          m_shortname(shortname),
+          m_unit(unit),
+          m_unitHtml(unitHtml),
+          m_isScalar(true),
+          m_expression(Expression()) {}
     LocalVariable(XMLModule::localvariable lv, CoordinateType problemType, AnalysisType analysisType);
 
     // id
-    QString id;
+    inline QString id() const { return m_id; }
     // name
-    QString name;
+    inline QString name() const { return m_name; }
     // short name
-    QString shortname;
-    QString shortname_html;
+    inline QString shortname() const { return m_shortname; }
+    inline QString shortnameHtml() const { return m_shortnameHtml; }
     // unit
-    QString unit;
-    QString unit_html;
+    inline QString unit() const { return m_unit; }
+    inline QString unitHtml() const { return m_unitHtml; }
 
     // is scalar variable
-    bool isScalar;
+    inline bool isScalar() const { return m_isScalar; }
 
     // expressions
-    Expression expr;
+    inline Expression expression() const { return m_expression; }
+
+private:
+    // id
+    QString m_id;
+    // name
+    QString m_name;
+    // short name
+    QString m_shortname;
+    QString m_shortnameHtml;
+    // unit
+    QString m_unit;
+    QString m_unitHtml;
+
+    // is scalar variable
+    bool m_isScalar;
+
+    // expressions
+    Expression m_expression;
 };
 
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : id(""), shortname(""), default_value(0) {}
-    MaterialTypeVariable(const QString &id, QString shortname,
-                         double default_value = 0);
+    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0) {}
+    MaterialTypeVariable(const QString &m_id, QString m_shortname,
+                         double m_defaultValue = 0);
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
-    QString id;
+    inline QString id() const { return m_id; }
     // short name
-    QString shortname;
+    inline QString shortname() const { return m_shortname; }
     // default value
-    double default_value;
+    inline double defaultValue() const { return m_defaultValue; }
+
+private:
+    // id
+    QString m_id;
+    // short name
+    QString m_shortname;
+    // default value
+    double m_defaultValue;
 };
 
 // boundary condition type variable
 struct BoundaryTypeVariable
 {
-    BoundaryTypeVariable() : id(""), shortname(""), default_value(0) {}
-    BoundaryTypeVariable(const QString &id, QString shortname,
-                         double default_value = 0);
+    BoundaryTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0) {}
+    BoundaryTypeVariable(const QString &m_id, QString m_shortname,
+                         double m_defaultValue = 0);
     BoundaryTypeVariable(XMLModule::quantity quant);
 
     // id
-    QString id;
+    inline QString id() const { return m_id; }
     // short name
-    QString shortname;
+    inline QString shortname() const { return m_shortname; }
     // default value
-    double default_value;
+    inline double defaultValue() const { return m_defaultValue; }
+
+private:
+    // id
+    QString m_id;
+    // short name
+    QString m_shortname;
+    // default value
+    double m_defaultValue;
 };
 
 // boundary condition type
 struct BoundaryType
 {
-    BoundaryType() : id(""), name("") {}
+    BoundaryType() : m_id(""), m_name("") {}
     BoundaryType(QList<BoundaryTypeVariable> boundary_type_variables,
                  XMLModule::boundary bdy,
                  CoordinateType problem_type);
     ~BoundaryType();
 
     // id
-    QString id;
+    inline QString id() const { return m_id; }
     // name
-    QString name;
+    inline QString name() const { return m_name; }
 
     // variables
-    QList<BoundaryTypeVariable *> variables;
+    inline QList<BoundaryTypeVariable *> variables() const { return m_variables; }
+
+    // weakform
+    inline QList<ParserFormExpression *> wfMatrixSurface() const { return m_wfMatrixSurface; }
+    inline QList<ParserFormExpression *> wfVectorSurface() const { return m_wfVectorSurface; }
+
+    // essential
+    inline QList<ParserFormEssential *> essential() const { return m_essential; }
+
+private:
+    // id
+    QString m_id;
+    // name
+    QString m_name;
+
+    // variables
+    QList<BoundaryTypeVariable *> m_variables;
 
     // weakform
     QList<ParserFormExpression *> m_wfMatrixSurface;
     QList<ParserFormExpression *> m_wfVectorSurface;
 
     // essential
-    QList<ParserFormEssential *> essential;
+    QList<ParserFormEssential *> m_essential;
 };
 
 // surface and volume integral value
 struct Integral
 {
-    Integral() : id(""), name(""), shortname(""), shortname_html(""), unit(""), unit_html(""), expression("") {}
+    Integral(const QString &id = "",
+                      const QString &name = "",
+                      const QString &shortname = "",
+                      const QString &shortnameHtml = "",
+                      const QString &unit = "",
+                      const QString &unitHtml = "",
+                      const QString &expression = "")
+            : m_id(id),
+              m_name(name),
+              m_shortname(shortname),
+              m_shortnameHtml(shortnameHtml),
+              m_unit(unit),
+              m_unitHtml(unitHtml),
+              m_expression(expression) {}
 
     // id
-    QString id;
+    inline QString id() const { return m_id; }
     // name
-    QString name;
+    inline QString name() const { return m_name; }
     // short name
-    QString shortname;
-    QString shortname_html;
+    inline QString shortname() const { return m_shortname; }
+    inline QString shortnameHtml() const { return m_shortnameHtml; }
     // unit
-    QString unit;
-    QString unit_html;
+    inline QString unit() const { return m_unit; }
+    inline QString unitHtml() const { return m_unitHtml; }
+
+    // expressions
+    inline QString expression() const { return m_expression; }
+
+private:
+    // id
+    QString m_id;
+    // name
+    QString m_name;
+    // short name
+    QString m_shortname;
+    QString m_shortnameHtml;
+    // unit
+    QString m_unit;
+    QString m_unitHtml;
 
     // expression
-    QString expression;
+    QString m_expression;
 };
 
 // dialog UI
@@ -249,26 +333,45 @@ struct DialogUI
     {
         DialogRow(XMLModule::quantity qty);
 
-        QString id;
+        inline QString id() const { return m_id; }
 
-        bool nonlin;
-        bool timedep;
+        inline bool nonlin() const { return m_nonlin; }
+        inline bool timedep() const { return m_timedep; }
 
-        QString name;
-        QString shortname;
-        QString shortname_html;
+        inline QString name() const { return m_name; }
+        inline QString shortname() const { return m_shortname; }
+        inline QString shortnameHtml() const { return m_shortnameHtml; }
 
-        QString unit;
-        QString unit_html;
-        QString unit_latex;
+        inline QString unit() const { return m_unit; }
+        inline QString unitHtml() const { return m_unitHtml; }
+        inline QString unitLatex() const { return m_unitLatex; }
 
-        double default_value;
-        QString condition;
+        inline double defaultValue() const { return m_defaultValue; }
+        inline QString condition() const { return m_condition; }
+
+    private:
+        QString m_id;
+
+        bool m_nonlin;
+        bool m_timedep;
+
+        QString m_name;
+        QString m_shortname;
+        QString m_shortnameHtml;
+
+        QString m_unit;
+        QString m_unitHtml;
+        QString m_unitLatex;
+
+        double m_defaultValue;
+        QString m_condition;
     };
 
-    QMap<QString, QList<DialogRow> > groups;
-
+    inline QMap<QString, QList<DialogRow> > groups() const { return m_groups; }
     void clear();
+
+private:
+    QMap<QString, QList<DialogRow> > m_groups;
 };
 
 // basic xml module
@@ -357,7 +460,7 @@ struct BasicModule
     inline PhysicFieldVariableComp defaultViewScalarVariableComp()
     {
         if (m_defaultViewScalarVariable)
-            return m_defaultViewScalarVariable->isScalar ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+            return m_defaultViewScalarVariable->isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
         else
             return PhysicFieldVariableComp_Undefined;
     }

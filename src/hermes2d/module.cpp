@@ -259,11 +259,11 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
                 
-                foreach (ParserFormExpression *expression, boundary_type->m_wfMatrixSurface)
+                foreach (ParserFormExpression *expression, boundary_type->wfMatrixSurface())
                     registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 
-                foreach (ParserFormExpression *expression, boundary_type->m_wfVectorSurface)
+                foreach (ParserFormExpression *expression, boundary_type->wfVectorSurface())
                     registerForm(WeakForm_VecSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
             }
@@ -344,14 +344,14 @@ void WeakFormAgros<Scalar>::registerForms()
 Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
                                      CoordinateType coordinateType, AnalysisType analysisType)
 {
-    id = QString::fromStdString(lv.id());
-    name = QString::fromStdString(lv.name());
-    shortname = QString::fromStdString(lv.shortname());
-    shortname_html = (lv.shortname_html().present()) ? QString::fromStdString(lv.shortname_html().get()) : shortname;
-    unit = QString::fromStdString(lv.unit());
-    unit_html = (lv.unit_html().present()) ? QString::fromStdString(lv.unit_html().get()) : unit;
+    m_id = QString::fromStdString(lv.id());
+    m_name = QString::fromStdString(lv.name());
+    m_shortname = QString::fromStdString(lv.shortname());
+    m_shortnameHtml = (lv.shortname_html().present()) ? QString::fromStdString(lv.shortname_html().get()) : m_shortname;
+    m_unit = QString::fromStdString(lv.unit());
+    m_unitHtml = (lv.unit_html().present()) ? QString::fromStdString(lv.unit_html().get()) : m_unit;
     
-    isScalar = (lv.type() == "scalar");
+    m_isScalar = (lv.type() == "scalar");
     
     for (int i = 0; i < lv.expression().size(); i++)
     {
@@ -359,13 +359,13 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
         if (exp.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
         {
             if (coordinateType == CoordinateType_Planar)
-                expr = Expression(isScalar ? QString::fromStdString(exp.planar().get()) : "",
-                                  isScalar ? "" : QString::fromStdString(exp.planar_x().get()),
-                                  isScalar ? "" : QString::fromStdString(exp.planar_y().get()));
+                m_expression = Expression(m_isScalar ? QString::fromStdString(exp.planar().get()) : "",
+                                  m_isScalar ? "" : QString::fromStdString(exp.planar_x().get()),
+                                  m_isScalar ? "" : QString::fromStdString(exp.planar_y().get()));
             else
-                expr = Expression(isScalar ? QString::fromStdString(exp.axi().get()) : "",
-                                  isScalar ? "" : QString::fromStdString(exp.axi_r().get()),
-                                  isScalar ? "" : QString::fromStdString(exp.axi_z().get()));
+                m_expression = Expression(m_isScalar ? QString::fromStdString(exp.axi().get()) : "",
+                                  m_isScalar ? "" : QString::fromStdString(exp.axi_r().get()),
+                                  m_isScalar ? "" : QString::fromStdString(exp.axi_z().get()));
         }
     }
 }
@@ -374,21 +374,21 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
 
 Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
 {
-    id = QString::fromStdString(quant.id());
+    m_id = QString::fromStdString(quant.id());
     if (quant.shortname().present())
-        shortname = QString::fromStdString(quant.shortname().get());
+        m_shortname = QString::fromStdString(quant.shortname().get());
     if (quant.default_().present())
-        default_value = quant.default_().get();
+        m_defaultValue = quant.default_().get();
     else
-        default_value = 0.0;
+        m_defaultValue = 0.0;
 }
 
 Module::MaterialTypeVariable::MaterialTypeVariable(const QString &id, QString shortname,
                                                    double default_value)
 {
-    this->id = id;
-    this->shortname = shortname;
-    this->default_value = default_value;
+    this->m_id = id;
+    this->m_shortname = shortname;
+    this->m_defaultValue = default_value;
 }
 
 // ***********************************************************************************************
@@ -397,8 +397,8 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
                                    XMLModule::boundary bdy,
                                    CoordinateType problem_type)
 {
-    id = QString::fromStdString(bdy.id());
-    name = QString::fromStdString(bdy.name());
+    m_id = QString::fromStdString(bdy.id());
+    m_name = QString::fromStdString(bdy.name());
     
     // variables
     for (int i = 0; i < bdy.quantity().size(); i++)
@@ -407,12 +407,12 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
         
         foreach (Module::BoundaryTypeVariable old, boundary_type_variables)
         {
-            if (old.id.toStdString() == qty.id())
+            if (old.id().toStdString() == qty.id())
             {
                 Module::BoundaryTypeVariable *var = new Module::BoundaryTypeVariable(
-                            old.id, old.shortname, old.default_value);
+                            old.id(), old.shortname(), old.defaultValue());
                 
-                variables.append(var);
+                m_variables.append(var);
             }
         }
     }
@@ -437,39 +437,39 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     for (int i = 0; i < bdy.essential_form().size(); i++)
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
-        essential.append(new ParserFormEssential(form.i(),
+        m_essential.append(new ParserFormEssential(form.i(),
                                                  (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
     }
 }
 
 Module::BoundaryTypeVariable::BoundaryTypeVariable(XMLModule::quantity quant)
 {
-    id = QString::fromStdString(quant.id());
+    m_id = QString::fromStdString(quant.id());
     if (quant.shortname().present())
-        shortname = QString::fromStdString(quant.shortname().get());
+        m_shortname = QString::fromStdString(quant.shortname().get());
     if (quant.default_().present())
-        default_value = quant.default_().get();
+        m_defaultValue = quant.default_().get();
     else
-        default_value = 0.0;
+        m_defaultValue = 0.0;
 }
 
 Module::BoundaryTypeVariable::BoundaryTypeVariable(const QString &id, QString shortname,
-                                                   double default_value)
+                                                   double defaultValue)
 {
-    this->id = id;
-    this->shortname = shortname;
-    this->default_value = default_value;
+    this->m_id = id;
+    this->m_shortname = shortname;
+    this->m_defaultValue = defaultValue;
 }
 
 Module::BoundaryType::~BoundaryType()
 {
     // essential
-    essential.clear();
+    m_essential.clear();
     
     // variables
-    foreach (Module::BoundaryTypeVariable *variable, variables)
+    foreach (Module::BoundaryTypeVariable *variable, m_variables)
         delete variable;
-    variables.clear();
+    m_variables.clear();
     
     // volume weak form
     foreach (ParserFormExpression *expression, m_wfMatrixSurface)
@@ -490,21 +490,21 @@ Module::BoundaryType::~BoundaryType()
 // dialog row UI
 Module::DialogUI::DialogRow::DialogRow(XMLModule::quantity qty)
 {
-    id = QString::fromStdString(qty.id());
-    name = (qty.name().present()) ? QString::fromStdString(qty.name().get()) : "";
+    m_id = QString::fromStdString(qty.id());
+    m_name = (qty.name().present()) ? QString::fromStdString(qty.name().get()) : "";
 
-    nonlin = (qty.nonlin().present()) ? qty.nonlin().get() : false;
-    timedep = (qty.timedep().present()) ? qty.timedep().get() : false;
+    m_nonlin = (qty.nonlin().present()) ? qty.nonlin().get() : false;
+    m_timedep = (qty.timedep().present()) ? qty.timedep().get() : false;
     
-    shortname = (qty.shortname().present()) ? QString::fromStdString(qty.shortname().get()) : "";
-    shortname_html = (qty.shortname_html().present()) ? QString::fromStdString(qty.shortname_html().get()) : "";
+    m_shortname = (qty.shortname().present()) ? QString::fromStdString(qty.shortname().get()) : "";
+    m_shortnameHtml = (qty.shortname_html().present()) ? QString::fromStdString(qty.shortname_html().get()) : "";
 
-    unit = (qty.unit().present()) ? QString::fromStdString(qty.unit().get()) : "";
-    unit_html = (qty.unit_html().present()) ? QString::fromStdString(qty.unit_html().get()) : "";
-    unit_latex = (qty.unit_latex().present()) ? QString::fromStdString(qty.unit_latex().get()) : "";
+    m_unit = (qty.unit().present()) ? QString::fromStdString(qty.unit().get()) : "";
+    m_unitHtml = (qty.unit_html().present()) ? QString::fromStdString(qty.unit_html().get()) : "";
+    m_unitLatex = (qty.unit_latex().present()) ? QString::fromStdString(qty.unit_latex().get()) : "";
     
-    default_value = (qty.default_().present()) ? qty.default_().get() : 0.0;
-    condition = (qty.condition().present()) ? QString::fromStdString(qty.condition().get()) : "0.0";
+    m_defaultValue = (qty.default_().present()) ? qty.default_().get() : 0.0;
+    m_condition = (qty.condition().present()) ? QString::fromStdString(qty.condition().get()) : "0.0";
 }
 
 // dialog UI
@@ -526,13 +526,13 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
             materials.append(DialogUI::DialogRow(quant));
         }
         
-        groups[name] = materials;
+        m_groups[name] = materials;
     }
 }
 
 void Module::DialogUI::clear()
 {
-    groups.clear();
+    m_groups.clear();
 }
 
 // ***********************************************************************************************
@@ -643,10 +643,10 @@ void Module::BasicModule::read(const QString &filename)
                      it < material_type_variables_tmp.end(); ++it )
                 {
                     Module::MaterialTypeVariable old = (Module::MaterialTypeVariable) *it;
-                    if (old.id.toStdString() == qty.id())
+                    if (old.id().toStdString() == qty.id())
                     {
                         Module::MaterialTypeVariable *var = new Module::MaterialTypeVariable(
-                                    old.id, old.shortname, old.default_value);
+                                    old.id(), old.shortname(), old.defaultValue());
                         m_materialTypeVariables.append(var);
                     }
                 }
@@ -692,7 +692,7 @@ void Module::BasicModule::read(const QString &filename)
                 // HACK - scalar view
                 m_viewScalarVariables.append(var);
                 // HACK - vector view
-                if (!var->isScalar)
+                if (!var->isScalar())
                     m_viewVectorVariables.append(var);
             }
         }
@@ -736,15 +736,14 @@ void Module::BasicModule::read(const QString &filename)
         // new integral
         if (!expr.isEmpty())
         {
-            Module::Integral *volint = new Module::Integral();
-
-            volint->id = QString::fromStdString(vol.id());
-            volint->name = QString::fromStdString(vol.name());
-            volint->shortname = QString::fromStdString(vol.shortname());
-            volint->shortname_html = (vol.shortname_html().present()) ? QString::fromStdString(vol.shortname_html().get()) : volint->shortname;
-            volint->unit = QString::fromStdString(vol.unit());
-            volint->unit_html = (vol.unit_html().present()) ? QString::fromStdString(vol.unit_html().get()) : volint->unit;
-            volint->expression = expr;
+            Module::Integral *volint = new Module::Integral(
+                        QString::fromStdString(vol.id()),
+                        QString::fromStdString(vol.name()),
+                        QString::fromStdString(vol.shortname()),
+                        (vol.shortname_html().present()) ? QString::fromStdString(vol.shortname_html().get()) : QString::fromStdString(vol.shortname()),
+                        QString::fromStdString(vol.unit()),
+                        (vol.unit_html().present()) ? QString::fromStdString(vol.unit_html().get()) : QString::fromStdString(vol.unit()),
+                        expr);
 
             m_volumeIntegrals.append(volint);
         }
@@ -772,15 +771,14 @@ void Module::BasicModule::read(const QString &filename)
         // new integral
         if (!expr.isEmpty())
         {
-            Module::Integral *surint = new Module::Integral();
-
-            surint->id = QString::fromStdString(sur.id());
-            surint->name = QString::fromStdString(sur.name());
-            surint->shortname = QString::fromStdString(sur.shortname());
-            surint->shortname_html = (sur.shortname_html().present()) ? QString::fromStdString(sur.shortname_html().get()) : surint->shortname;
-            surint->unit = QString::fromStdString(sur.unit());
-            surint->unit_html = (sur.unit_html().present()) ? QString::fromStdString(sur.unit_html().get()) : surint->unit;
-            surint->expression = expr;
+            Module::Integral *surint = new Module::Integral(
+                        QString::fromStdString(sur.id()),
+                        QString::fromStdString(sur.name()),
+                        QString::fromStdString(sur.shortname()),
+                        (sur.shortname_html().present()) ? QString::fromStdString(sur.shortname_html().get()) : QString::fromStdString(sur.shortname()),
+                        QString::fromStdString(sur.unit()),
+                        (sur.unit_html().present()) ? QString::fromStdString(sur.unit_html().get()) : QString::fromStdString(sur.unit()),
+                        expr);
 
             m_surfaceIntegrals.append(surint);
         }
@@ -873,7 +871,7 @@ void Module::BasicModule::clear()
 Module::LocalVariable *Module::BasicModule::localVariable(const QString &id)
 {
     foreach (Module::LocalVariable *variable, variables)
-        if (variable->id == id)
+        if (variable->id() == id)
             return variable;
 
     return NULL;
@@ -882,7 +880,7 @@ Module::LocalVariable *Module::BasicModule::localVariable(const QString &id)
 Module::BoundaryType *Module::BasicModule::boundaryType(const QString &id)
 {
     foreach (Module::BoundaryType *boundaryType, m_boundaryTypes)
-        if (boundaryType->id == id)
+        if (boundaryType->id() == id)
             return boundaryType;
 
     return NULL;
@@ -891,7 +889,7 @@ Module::BoundaryType *Module::BasicModule::boundaryType(const QString &id)
 Module::BoundaryTypeVariable *Module::BasicModule::boundaryTypeVariable(const QString &id)
 {
     foreach (Module::BoundaryTypeVariable *variable, m_boundaryTypeVariables)
-        if (variable->id == id)
+        if (variable->id() == id)
             return variable;
 
     return NULL;
@@ -900,7 +898,7 @@ Module::BoundaryTypeVariable *Module::BasicModule::boundaryTypeVariable(const QS
 Module::MaterialTypeVariable *Module::BasicModule::materialTypeVariable(const QString &id)
 {
     foreach (Module::MaterialTypeVariable *variable, m_materialTypeVariables)
-        if (variable->id == id)
+        if (variable->id() == id)
             return variable;
 
     return NULL;
@@ -943,13 +941,13 @@ QString Module::BasicModule::expression(Module::LocalVariable *physicFieldVariab
     case PhysicFieldVariableComp_Undefined:
         return "";
     case PhysicFieldVariableComp_Scalar:
-        return physicFieldVariable->expr.scalar;
+        return physicFieldVariable->expression().scalar();
     case PhysicFieldVariableComp_X:
-        return physicFieldVariable->expr.comp_x;
+        return physicFieldVariable->expression().compX();
     case PhysicFieldVariableComp_Y:
-        return physicFieldVariable->expr.comp_y;
+        return physicFieldVariable->expression().compY();
     case PhysicFieldVariableComp_Magnitude:
-        return "sqrt((" + physicFieldVariable->expr.comp_x + ") * (" + physicFieldVariable->expr.comp_x + ") + (" + physicFieldVariable->expr.comp_y + ") * (" + physicFieldVariable->expr.comp_y + "))";
+        return "sqrt((" + physicFieldVariable->expression().compX() + ") * (" + physicFieldVariable->expression().compX() + ") + (" + physicFieldVariable->expression().compY() + ") * (" + physicFieldVariable->expression().compY() + "))";
     default:
         error("Unknown type.");
     }

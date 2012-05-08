@@ -98,7 +98,7 @@ void Post3DHermes::processRangeScalar()
         bool contains = false;
         foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
         {
-            if (variable->id == Util::config()->scalarVariable)
+            if (variable->id() == Util::config()->scalarVariable)
             {
                 contains = true;
                 break;
@@ -108,7 +108,7 @@ void Post3DHermes::processRangeScalar()
         if (Util::config()->scalarVariable == "" || !contains)
         {
             // default values
-            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id;
+            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
             Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->defaultViewScalarVariableComp();
         }
 
@@ -216,7 +216,7 @@ void SceneViewPost3D::paintGL()
             Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
             if (localVariable)
             {
-                QString text = Util::config()->scalarVariable != "" ? localVariable->name : "";
+                QString text = Util::config()->scalarVariable != "" ? localVariable->name() : "";
                 if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
                     text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
                 emit labelCenter(text);

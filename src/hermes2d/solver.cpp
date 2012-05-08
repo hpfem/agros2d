@@ -120,7 +120,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
             {
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
 
-                foreach (ParserFormEssential *form, boundary_type->essential)
+                foreach (ParserFormEssential *form, boundary_type->essential())
                 {
                     EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 

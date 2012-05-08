@@ -48,16 +48,21 @@ class SceneBasic
 {
 
 public:
-    bool isSelected;
-    bool isHighlighted;
-
     SceneBasic();
-    void setSelected(bool value = true) { isSelected = value; }
-    void setHighlighted(bool value = true) { isHighlighted = value; }
+
+    void setSelected(bool value = true) { m_isSelected = value; }
+    inline bool isSelected() const { return m_isSelected; }
+
+    void setHighlighted(bool value = true) { m_isHighlighted = value; }
+    inline bool isHighlighted() const { return m_isHighlighted; }
 
     virtual int showDialog(QWidget *parent, bool isNew = false) = 0;
 
     QVariant variant();
+
+private:
+    bool m_isSelected;
+    bool m_isHighlighted;
 };
 
 template <typename BasicType>
@@ -144,11 +149,11 @@ public:
     /// removes markers corresponding to field from all members
     void removeFieldMarkers(FieldInfo* field);
 
-    /// adds none markers for new fields and removes markers from fields that have been deleted
-    void doFieldsChanged();
-
     /// add missing field markers
     void addMissingFieldMarkers(FieldInfo* field);
+
+    /// adds none markers for new fields and removes markers from fields that have been deleted
+    void doFieldsChanged();
 
     /// Filters for elements that has given marker
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> haveMarker(MarkerType *marker);
@@ -163,7 +168,6 @@ public:
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlited();
 };
 
-
 // *************************************************************************************************************************************
 
 class SceneBasicDialog : public QDialog
@@ -174,7 +178,7 @@ public:
     SceneBasicDialog(QWidget *parent, bool isNew = false);
 
 protected:
-    bool isNew;
+    bool m_isNew;
     SceneBasic *m_object;
     QDialogButtonBox *buttonBox;
 
@@ -188,6 +192,7 @@ protected slots:
     void evaluated(bool isError);
 
 private:    
+
     QVBoxLayout *layout;
 
 private slots:

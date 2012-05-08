@@ -31,8 +31,8 @@
 
 SceneBasic::SceneBasic()
 {
-    isSelected = false;
-    isHighlighted = false;
+    setSelected(false);
+    m_isHighlighted = false;
 }
 
 QVariant SceneBasic::variant()
@@ -202,7 +202,7 @@ MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicCont
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> list;
     foreach (MarkedSceneBasicType* item, this->data)
     {
-        if (item->isSelected)
+        if (item->isSelected())
             list.data.push_back(item);
     }
 
@@ -215,7 +215,7 @@ MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicCont
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> list;
     foreach (MarkedSceneBasicType* item, this->data)
     {
-        if (item->isHighlighted)
+        if (item->isHighlighted())
             list.data.push_back(item);
     }
 
@@ -299,7 +299,7 @@ template class MarkedSceneBasicContainer<SceneMaterial, SceneLabel>;
 
 SceneBasicDialog::SceneBasicDialog(QWidget *parent, bool isNew) : QDialog(parent)
 {
-    this->isNew = isNew;
+    this->m_isNew = isNew;
     layout = new QVBoxLayout();
 }
 

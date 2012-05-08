@@ -115,7 +115,7 @@ void SceneViewPreprocessor::doSceneObjectProperties()
         {
             for (int i = 0; i < Util::scene()->edges->length(); i++)
             {
-                if (Util::scene()->edges->at(i)->isSelected)
+                if (Util::scene()->edges->at(i)->isSelected())
                     Util::scene()->edges->at(i)->showDialog(this);
             }
         }
@@ -131,7 +131,7 @@ void SceneViewPreprocessor::doSceneObjectProperties()
         {
             for (int i = 0; i < Util::scene()->labels->length(); i++)
             {
-                if (Util::scene()->labels->at(i)->isSelected)
+                if (Util::scene()->labels->at(i)->isSelected())
                     Util::scene()->labels->at(i)->showDialog(this);
             }
         }
@@ -206,18 +206,18 @@ void SceneViewPreprocessor::selectRegion(const Point &start, const Point &end)
     case SceneGeometryMode_OperateOnNodes:
         foreach (SceneNode *node, Util::scene()->nodes->items())
             if (node->point.x >= start.x && node->point.x <= end.x && node->point.y >= start.y && node->point.y <= end.y)
-                node->isSelected = true;
+                node->setSelected(true);
         break;
     case SceneGeometryMode_OperateOnEdges:
         foreach (SceneEdge *edge, Util::scene()->edges->items())
             if (edge->nodeStart->point.x >= start.x && edge->nodeStart->point.x <= end.x && edge->nodeStart->point.y >= start.y && edge->nodeStart->point.y <= end.y &&
                     edge->nodeEnd->point.x >= start.x && edge->nodeEnd->point.x <= end.x && edge->nodeEnd->point.y >= start.y && edge->nodeEnd->point.y <= end.y)
-                edge->isSelected = true;
+                edge->setSelected(true);
         break;
     case SceneGeometryMode_OperateOnLabels:
         foreach (SceneLabel *label, Util::scene()->labels->items())
             if (label->point.x >= start.x && label->point.x <= end.x && label->point.y >= start.y && label->point.y <= end.y)
-                label->isSelected = true;
+                label->setSelected(true);
         break;
     }
 }
@@ -249,7 +249,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             if (node)
             {
                 Util::scene()->highlightNone();
-                node->isHighlighted = true;
+                node->setHighlighted(true);
                 setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
                            arg(node->point.x, 0, 'g', 3).
                            arg(node->point.y, 0, 'g', 3).
@@ -273,7 +273,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     str = str.left(str.length() - 2);
 
                 Util::scene()->highlightNone();
-                edge->isHighlighted = true;
+                edge->setHighlighted(true);
                 setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Angle:</b> %6 deg.<br/><b>Refine towards edge:</b> %7<br/><b>Index:</b> %8").
                            arg(edge->nodeStart->point.x, 0, 'g', 3).
                            arg(edge->nodeStart->point.y, 0, 'g', 3).
@@ -301,7 +301,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     str = str.left(str.length() - 2);
 
                 Util::scene()->highlightNone();
-                label->isHighlighted = true;
+                label->setHighlighted(true);
                 setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Triangle area:</b> %4 m<sup>2</sup><br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
                            arg(label->point.x, 0, 'g', 3).
                            arg(label->point.y, 0, 'g', 3).
@@ -324,7 +324,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             if (node)
             {
                 Util::scene()->highlightNone();
-                node->isHighlighted = true;
+                node->setHighlighted(true);
                 updateGL();
             }
         }
@@ -360,7 +360,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 if (fabs(len.x) > Util::config()->gridStep)
                 {
                     foreach (SceneNode *node, Util::scene()->nodes->items())
-                        if (node->isSelected)
+                        if (node->isSelected())
                             node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.x = 0;
                 }
@@ -368,7 +368,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 if (fabs(len.y) > Util::config()->gridStep)
                 {
                     foreach (SceneNode *node, Util::scene()->nodes->items())
-                        if (node->isSelected)
+                        if (node->isSelected())
                             node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.y = 0;
                 }
@@ -515,7 +515,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                 if (m_nodeLast == NULL)
                 {
                     m_nodeLast = node;
-                    m_nodeLast->isSelected = true;
+                    m_nodeLast->setSelected(true);
                 }
                 else
                 {
@@ -530,7 +530,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                                                                                                         edge->angle));
                     }
 
-                    m_nodeLast->isSelected = false;
+                    m_nodeLast->setSelected(false);
                     m_nodeLast = NULL;
                 }
 
@@ -574,7 +574,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             SceneNode *node = findClosestNode(p);
             if (node)
             {
-                node->isSelected = !node->isSelected;
+                node->setSelected(!node->isSelected());
                 updateGL();
             }
         }
@@ -585,7 +585,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             SceneEdge *edge = findClosestEdge(p);
             if (edge)
             {
-                edge->isSelected = !edge->isSelected;
+                edge->setSelected(!edge->isSelected());
                 updateGL();
             }
         }
@@ -596,7 +596,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             SceneLabel *label = findClosestLabel(p);
             if (label)
             {
-                label->isSelected = !label->isSelected;
+                label->setSelected(!label->isSelected());
                 updateGL();
             }
         }
@@ -648,7 +648,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
                 SceneNode *node = findClosestNode(p);
                 if (node)
                 {
-                    node->isSelected = true;
+                    node->setSelected(true);
                     updateGL();
                     if (node->showDialog(this) == QDialog::Accepted)
                     {
@@ -662,7 +662,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
                 SceneEdge *edge = findClosestEdge(p);
                 if (edge)
                 {
-                    edge->isSelected = true;
+                    edge->setSelected(true);
                     updateGL();
                     if (edge->showDialog(this) == QDialog::Accepted)
                     {
@@ -676,7 +676,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
                 SceneLabel *label = findClosestLabel(p);
                 if (label)
                 {
-                    label->isSelected = true;
+                    label->setSelected(true);
                     updateGL();
                     if (label->showDialog(this) == QDialog::Accepted)
                     {
@@ -913,14 +913,14 @@ void SceneViewPreprocessor::paintGeometry()
                       Util::config()->colorCrossed.blueF());
             glLineWidth(Util::config()->edgeWidth);
         }
-        if (edge->isHighlighted)
+        if (edge->isHighlighted())
         {
             glColor3d(Util::config()->colorHighlighted.redF(),
                       Util::config()->colorHighlighted.greenF(),
                       Util::config()->colorHighlighted.blueF());
             glLineWidth(Util::config()->edgeWidth + 2.0);
         }
-        if (edge->isSelected)
+        if (edge->isSelected())
         {
             glColor3d(Util::config()->colorSelected.redF(),
                       Util::config()->colorSelected.greenF(),
@@ -969,7 +969,7 @@ void SceneViewPreprocessor::paintGeometry()
         glVertex2d(node->point.x, node->point.y);
         glEnd();
 
-        if ((node->isSelected) || (node->isHighlighted) || (node->isError()) )
+        if ((node->isSelected()) || (node->isHighlighted()) || (node->isError()) )
         {
             glPointSize(Util::config()->nodeSize - 2.0);
 
@@ -978,11 +978,11 @@ void SceneViewPreprocessor::paintGeometry()
                           Util::config()->colorCrossed.greenF(),
                           Util::config()->colorCrossed.blueF());
 
-            if (node->isHighlighted)
+            if (node->isHighlighted())
                 glColor3d(Util::config()->colorHighlighted.redF(),
                           Util::config()->colorHighlighted.greenF(),
                           Util::config()->colorHighlighted.blueF());
-            if (node->isSelected)
+            if (node->isSelected())
                 glColor3d(Util::config()->colorSelected.redF(),
                           Util::config()->colorSelected.greenF(),
                           Util::config()->colorSelected.blueF());
@@ -1014,13 +1014,13 @@ void SceneViewPreprocessor::paintGeometry()
         glVertex2d(label->point.x, label->point.y);
         glEnd();
 
-        if ((label->isSelected) || (label->isHighlighted))
+        if ((label->isSelected()) || (label->isHighlighted()))
         {
-            if (label->isHighlighted)
+            if (label->isHighlighted())
                 glColor3d(Util::config()->colorHighlighted.redF(),
                           Util::config()->colorHighlighted.greenF(),
                           Util::config()->colorHighlighted.blueF());
-            if (label->isSelected)
+            if (label->isSelected())
                 glColor3d(Util::config()->colorSelected.redF(),
                           Util::config()->colorSelected.greenF(),
                           Util::config()->colorSelected.blueF());
@@ -1092,7 +1092,7 @@ void SceneViewPreprocessor::paintEdgeLine()
 {
     if (m_nodeLast)
     {
-        if (m_nodeLast->isSelected)
+        if (m_nodeLast->isSelected())
         {
             loadProjection2d(true);
 

@@ -299,7 +299,7 @@ bool SceneLabelDialog::save()
     Point point(txtPointX->number(), txtPointY->number());
 
     // check if label doesn't exists
-    if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || isNew))
+    if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || m_isNew))
     {
         QMessageBox::warning(this, "Label", "Label already exists.");
         return false;
@@ -313,7 +313,7 @@ bool SceneLabelDialog::save()
         return false;
     }
 
-    if (!isNew)
+    if (!m_isNew)
     {
         if (sceneLabel->point != point)
         {

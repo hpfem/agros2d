@@ -96,7 +96,7 @@ void VolumeIntegralValue::calculate()
 
         foreach (SceneLabel *label, Util::scene()->labels->items())
         {
-            if (label->isSelected)
+            if (label->isSelected())
             {
                 int index = Util::scene()->labels->items().indexOf(label);
 
@@ -181,7 +181,7 @@ void VolumeIntegralValue::calculate()
                             }
                             catch (mu::Parser::exception_type &e)
                             {
-                                qDebug() << "Volume integral: " << integral->name << " (" << integral->id << ") " << integral->name << " - '" <<
+                                qDebug() << "Volume integral: " << integral->name() << " (" << integral->id() << ") " << integral->name() << " - '" <<
                                              QString::fromStdString(parsers[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
                             }
 

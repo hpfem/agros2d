@@ -214,8 +214,8 @@ void PostprocessorWidget::saveBasic()
     Util::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
     Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
-    if (physicFieldVariable && physicFieldVariable->id == "custom")
-        physicFieldVariable->expr.scalar = txtPostScalarFieldExpression->text();
+    if (physicFieldVariable && physicFieldVariable->id() == "custom")
+        physicFieldVariable->expression().scalar() = txtPostScalarFieldExpression->text();
 
     // vector field
     Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
@@ -887,7 +887,7 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
     cmbPostScalarFieldVariableComp->clear();
     if (physicFieldVariable)
     {
-        if (physicFieldVariable->isScalar)
+        if (physicFieldVariable->isScalar())
         {
             cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
         }
@@ -929,24 +929,24 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
 
     if (physicFieldVariable)
     {
-        txtPostScalarFieldExpression->setEnabled(physicFieldVariable->id == "custom");
+        txtPostScalarFieldExpression->setEnabled(physicFieldVariable->id() == "custom");
 
         // expression
         switch ((PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt())
         {
         case PhysicFieldVariableComp_Scalar:
-            txtPostScalarFieldExpression->setText(physicFieldVariable->expr.scalar);
+            txtPostScalarFieldExpression->setText(physicFieldVariable->expression().scalar());
             break;
         case PhysicFieldVariableComp_Magnitude:
             txtPostScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
-                                                    arg(physicFieldVariable->expr.comp_x).
-                                                    arg(physicFieldVariable->expr.comp_y));
+                                                    arg(physicFieldVariable->expression().compX()).
+                                                    arg(physicFieldVariable->expression().compY()));
             break;
         case PhysicFieldVariableComp_X:
-            txtPostScalarFieldExpression->setText(physicFieldVariable->expr.comp_x);
+            txtPostScalarFieldExpression->setText(physicFieldVariable->expression().compX());
             break;
         case PhysicFieldVariableComp_Y:
-            txtPostScalarFieldExpression->setText(physicFieldVariable->expr.comp_y);
+            txtPostScalarFieldExpression->setText(physicFieldVariable->expression().compY());
             break;
         }
     }

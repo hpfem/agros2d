@@ -617,17 +617,17 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
 
     foreach (SceneEdge *edge, edges->items())
     {
-        if (edge->isSelected)
+        if (edge->isSelected())
         {
-            edge->nodeStart->isSelected = true;
-            edge->nodeEnd->isSelected = true;
+            edge->nodeStart->setSelected(true);
+            edge->nodeEnd->setSelected(true);
             selectedEdges.append(edge);
         }
     }
 
     foreach (SceneNode *node, nodes->items())
     {
-        if (node->isSelected)
+        if (node->isSelected())
         {
             QPair<double, SceneNode *> pair;
 
@@ -656,7 +656,7 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
             }
 
             SceneNode *obstructNode = getNode(newPoint);
-            if (obstructNode && !obstructNode->isSelected)
+            if (obstructNode && !obstructNode->isSelected())
                 return;
 
             pair.second = node;
@@ -701,17 +701,17 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
             if (nodeAdded == nodeNew)
                 m_undoStack->push(new SceneNodeCommandAdd(nodeNew->point));
 
-            nodeAdded->isSelected = true;
-            node->isSelected = false;
+            nodeAdded->setSelected(true);
+            node->setSelected(false);
         }
     }
 
     foreach (SceneEdge *edge, selectedEdges)
     {
-        if (edge->isSelected)
+        if (edge->isSelected())
         {
-            edge->nodeStart->isSelected = false;
-            edge->nodeEnd->isSelected = false;
+            edge->nodeStart->setSelected(false);
+            edge->nodeEnd->setSelected(false);
             // this->checkEdge(edge);
 
             // add new edge
@@ -771,7 +771,7 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
 
     foreach (SceneLabel *label, labels->items())
     {
-        if (label->isSelected)
+        if (label->isSelected())
         {
             QPair<double, SceneLabel *> pair;
 
@@ -799,7 +799,7 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
             }
 
             SceneLabel *obstructLabel = getLabel(newPoint);
-            if (obstructLabel && !obstructLabel->isSelected)
+            if (obstructLabel && !obstructLabel->isSelected())
                 return;
 
             pair.second = label;
@@ -847,8 +847,8 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
                                                            "TODO",
                                                            labelNew->area));
 
-            labelAdded->isSelected = true;
-            label->isSelected = false;
+            labelAdded->setSelected(true);
+            label->setSelected(false);
         }
     }
 
@@ -1383,9 +1383,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                         type);
 
             Module::BoundaryType *boundary_type = field->module()->boundaryType(type);
-            foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables)
-                boundary->setValue(variable->id,
-                                   Value(element.toElement().attribute(variable->id, "0")));
+            foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables())
+                boundary->setValue(variable->id(),
+                                   Value(element.toElement().attribute(variable->id(), "0")));
 
             Util::scene()->addBoundary(boundary);
 
@@ -1421,9 +1421,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
             foreach (Module::MaterialTypeVariable *variable, field->module()->materialTypeVariables())
             {
-                material->setValue(variable->id,
-                                   Value(element.toElement().attribute(variable->id,
-                                                                       QString::number(variable->default_value))));
+                material->setValue(variable->id(),
+                                   Value(element.toElement().attribute(variable->id(),
+                                                                       QString::number(variable->defaultValue()))));
             }
 
             // add material

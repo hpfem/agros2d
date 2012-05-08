@@ -62,7 +62,7 @@ void Post2DHermes::processRangeContour()
         bool contains = false;
         foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
         {
-            if (variable->id == Util::config()->contourVariable)
+            if (variable->id() == Util::config()->contourVariable)
             {
                 contains = true;
                 break;
@@ -72,7 +72,7 @@ void Post2DHermes::processRangeContour()
         if (Util::config()->contourVariable == "" || !contains)
         {
             // default values
-            Util::config()->contourVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id;
+            Util::config()->contourVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
@@ -83,7 +83,7 @@ void Post2DHermes::processRangeContour()
             qDebug() << "error, trying to get variable " << variableName << " from module " << Util::scene()->activeViewField()->fieldId();
 
         ViewScalarFilter<double> *slnContourView = NULL;
-        if (variable->isScalar)
+        if (variable->isScalar())
             slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
                                                                                             PhysicFieldVariableComp_Scalar);
         else
@@ -113,7 +113,7 @@ void Post2DHermes::processRangeScalar()
         bool contains = false;
         foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
         {
-            if (variable->id == Util::config()->scalarVariable)
+            if (variable->id() == Util::config()->scalarVariable)
             {
                 contains = true;
                 break;
@@ -123,7 +123,7 @@ void Post2DHermes::processRangeScalar()
         if (Util::config()->scalarVariable == "" || !contains)
         {
             // default values
-            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id;
+            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
             Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->defaultViewScalarVariableComp();
         }
 
@@ -162,7 +162,7 @@ void Post2DHermes::processRangeVector()
         bool contains = false;
         foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
         {
-            if (variable->id == Util::config()->vectorVariable)
+            if (variable->id() == Util::config()->vectorVariable)
             {
                 contains = true;
                 break;
@@ -172,7 +172,7 @@ void Post2DHermes::processRangeVector()
         if (Util::config()->vectorVariable == "" || !contains)
         {
             // default values
-            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->defaultViewVectorVariable()->id;
+            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->defaultViewVectorVariable()->id();
         }
 
         Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
@@ -357,7 +357,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
                 SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().
                                                                    get_user_marker(Util::problem()->activeMeshInitial()->get_element_fast(index)->marker).marker.c_str()));
 
-                label->isSelected = !label->isSelected;
+                label->setSelected(!label->isSelected());
                 updateGL();
             }
             emit mousePressed();
@@ -369,7 +369,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
             //  find edge marker
             SceneEdge *edge = findClosestEdge(p);
 
-            edge->isSelected = !edge->isSelected;
+            edge->setSelected(!edge->isSelected());
             updateGL();
 
             emit mousePressed();
@@ -434,7 +434,7 @@ void SceneViewPost2D::paintGL()
             Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
             if (localVariable)
             {
-                QString text = Util::config()->scalarVariable != "" ? localVariable->name : "";
+                QString text = Util::config()->scalarVariable != "" ? localVariable->name() : "";
                 if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
                     text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
                 emit labelCenter(text);
@@ -994,7 +994,7 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
         {
             if (element->active)
             {
-                if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected)
+                if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected())
                 {
                     if (element->is_triangle())
                     {
@@ -1069,7 +1069,7 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
         glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
         glLineWidth(3.0);
 
-        if (edge->isSelected)
+        if (edge->isSelected())
         {
             if (edge->isStraight())
             {

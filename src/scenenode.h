@@ -80,7 +80,7 @@ class DSceneNode : public SceneBasicDialog
     Q_OBJECT
 
 public:
-    DSceneNode(SceneNode *node, QWidget *parent, bool isNew = false);
+    DSceneNode(SceneNode *node, QWidget *parent, bool m_isNew = false);
     ~DSceneNode();
 
 protected:

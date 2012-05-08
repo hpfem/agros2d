@@ -117,7 +117,7 @@ SceneNodeContainer SceneNodeContainer::selected()
     SceneNodeContainer list;
     foreach (SceneNode* item, this->data)
     {
-        if (item->isSelected)
+        if (item->isSelected())
             list.data.push_back(item);
     }
 
@@ -194,13 +194,13 @@ bool DSceneNode::save()
     Point point(txtPointX->number(), txtPointY->number());
 
     // check if node doesn't exists
-    if (Util::scene()->getNode(point) && ((sceneNode->point != point) || isNew))
+    if (Util::scene()->getNode(point) && ((sceneNode->point != point) || m_isNew))
     {
         QMessageBox::warning(this, tr("Node"), tr("Node already exists."));
         return false;
     }
 
-    if (!isNew)
+    if (!m_isNew)
     {
         if (sceneNode->point != point)
         {

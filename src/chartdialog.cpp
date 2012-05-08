@@ -390,8 +390,8 @@ void ChartDialog::plotGeometry()
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Bold));
     text.setText(QString("%1 (%2)").
-                 arg(physicFieldVariable->name).
-                 arg(physicFieldVariable->unit));
+                 arg(physicFieldVariable->name()).
+                 arg(physicFieldVariable->unit()));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
     // headers
@@ -496,8 +496,8 @@ void ChartDialog::plotTime()
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Bold));
     text.setText(QString("%1 (%2)").
-                 arg(physicFieldVariable->name).
-                 arg(physicFieldVariable->unit));
+                 arg(physicFieldVariable->name()).
+                 arg(physicFieldVariable->unit()));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
     // headers
@@ -547,17 +547,17 @@ QStringList ChartDialog::headers()
 
     foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
     {
-        if (variable->isScalar)
+        if (variable->isScalar())
         {
             // scalar variable
-            head.append(variable->shortname);
+            head.append(variable->shortname());
         }
         else
         {
             // vector variable
-            head.append(variable->shortname + Util::problem()->config()->labelX().toLower());
-            head.append(variable->shortname + Util::problem()->config()->labelY().toLower());
-            head.append(variable->shortname);
+            head.append(variable->shortname() + Util::problem()->config()->labelX().toLower());
+            head.append(variable->shortname() + Util::problem()->config()->labelY().toLower());
+            head.append(variable->shortname());
         }
     }
 
@@ -586,9 +586,9 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double
          it != localPointValue->values().end(); ++it)
     {
         // chart
-        if (it.key()->id == physicFieldVariable->id)
+        if (it.key()->id() == physicFieldVariable->id())
         {
-            if (physicFieldVariable->isScalar)
+            if (physicFieldVariable->isScalar())
             {
                 // scalar variable
                 yval[i] = it.value().scalar;
@@ -606,7 +606,7 @@ void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double
         }
 
         // table
-        if (it.key()->isScalar)
+        if (it.key()->isScalar())
         {
             // scalar variable
             trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
@@ -647,7 +647,7 @@ void ChartDialog::doFieldVariable(int index)
         return;
 
     cmbFieldVariableComp->clear();
-    if (physicFieldVariable->isScalar)
+    if (physicFieldVariable->isScalar())
     {
         cmbFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
     }

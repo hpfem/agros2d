@@ -156,16 +156,16 @@ void LocalPointValue::calculate()
                 try
                 {
                     PointValue pointValue;
-                    if (variable->isScalar)
+                    if (variable->isScalar())
                     {
-                        parsers[0]->SetExpr(variable->expr.scalar.toStdString());
+                        parsers[0]->SetExpr(variable->expression().scalar().toStdString());
                         pointValue.scalar = parsers[0]->Eval();
                     }
                     else
                     {
-                        parsers[0]->SetExpr(variable->expr.comp_x.toStdString());
+                        parsers[0]->SetExpr(variable->expression().compX().toStdString());
                         pointValue.vector.x = parsers[0]->Eval();
-                        parsers[0]->SetExpr(variable->expr.comp_y.toStdString());
+                        parsers[0]->SetExpr(variable->expression().compY().toStdString());
                         pointValue.vector.y = parsers[0]->Eval();
                     }
                     m_values[variable] = pointValue;
@@ -173,7 +173,7 @@ void LocalPointValue::calculate()
                 }
                 catch (mu::Parser::exception_type &e)
                 {
-                    qDebug() << "Local value: " << variable->name << " (" << variable->id << ") " << variable->name << " - " <<
+                    qDebug() << "Local value: " << variable->name() << " (" << variable->id() << ") " << variable->name() << " - " <<
                                 QString::fromStdString(parsers[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                 }
             }

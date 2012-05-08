@@ -587,12 +587,12 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
-        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables)
+        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
         {
-            if (variable->id == QString((*i).first))
+            if (variable->id() == QString((*i).first))
             {
                 assigned = true;
-                values[variable->id] = Value(QString::number((*i).second));
+                values[variable->id()] = Value(QString::number((*i).second));
                 break;
             }
         }
@@ -642,10 +642,10 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
         bool assigned = false;
         foreach (Module::MaterialTypeVariable *variable, materials)
         {
-            if (variable->id == QString((*i).first))
+            if (variable->id() == QString((*i).first))
             {
                 assigned = true;
-                values[variable->id] = Value(QString::number((*i).second));
+                values[variable->id()] = Value(QString::number((*i).second));
                 break;
             }
         }
@@ -692,15 +692,15 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
         {
             it.next();
 
-            if (it.key()->isScalar)
+            if (it.key()->isScalar())
             {
-                values[it.key()->shortname.toStdString()] = it.value().scalar;
+                values[it.key()->shortname().toStdString()] = it.value().scalar;
             }
             else
             {
-                values[it.key()->shortname.toStdString()] = it.value().vector.magnitude();
-                values[it.key()->shortname.toStdString() + Util::problem()->config()->labelX().toLower().toStdString()] = it.value().vector.x;
-                values[it.key()->shortname.toStdString() + Util::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
+                values[it.key()->shortname().toStdString()] = it.value().vector.magnitude();
+                values[it.key()->shortname().toStdString() + Util::problem()->config()->labelX().toLower().toStdString()] = it.value().vector.x;
+                values[it.key()->shortname().toStdString() + Util::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
             }
         }
     }
@@ -729,7 +729,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             {
                 if ((*it >= 0) && (*it < Util::scene()->edges->length()))
                 {
-                    Util::scene()->edges->at(*it)->isSelected = true;
+                    Util::scene()->edges->at(*it)->setSelected(true);
                 }
                 else
                 {
@@ -752,7 +752,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
         {
             it.next();
 
-            values[it.key()->shortname.toStdString()] = it.value();
+            values[it.key()->shortname().toStdString()] = it.value();
         }
     }
     else
@@ -784,7 +784,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
 
                     if (Util::scene()->labels->at(*it)->getMarker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
                     {
-                        Util::scene()->labels->at(*it)->isSelected = true;
+                        Util::scene()->labels->at(*it)->setSelected(true);
                     }
                     else
                     {
@@ -812,7 +812,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
         {
             it.next();
 
-            values[it.key()->shortname.toStdString()] = it.value();
+            values[it.key()->shortname().toStdString()] = it.value();
         }
     }
     else
@@ -969,7 +969,7 @@ void PyGeometry::selectNodes(vector<int> nodes)
         for (vector<int>::iterator it = nodes.begin(); it != nodes.end(); ++it)
         {
             if ((*it >= 0) && (*it < Util::scene()->nodes->length()))
-                Util::scene()->nodes->at(*it)->isSelected = true;
+                Util::scene()->nodes->at(*it)->setSelected(true);
             else
                 throw out_of_range(QObject::tr("Node index must be between 0 and '%1'.").arg(Util::scene()->nodes->length()-1).toStdString());
         }
@@ -991,7 +991,7 @@ void PyGeometry::selectEdges(vector<int> edges)
         for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
         {
             if ((*it >= 0) && (*it < Util::scene()->edges->length()))
-                Util::scene()->edges->at(*it)->isSelected = true;
+                Util::scene()->edges->at(*it)->setSelected(true);
             else
                 throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString());
         }
@@ -1013,7 +1013,7 @@ void PyGeometry::selectLabels(vector<int> labels)
         for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
         {
             if ((*it >= 0) && (*it < Util::scene()->labels->length()))
-                Util::scene()->labels->at(*it)->isSelected = true;
+                Util::scene()->labels->at(*it)->setSelected(true);
             else
                 throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->length()-1).toStdString());
         }
@@ -1031,7 +1031,7 @@ void PyGeometry::selectNodePoint(double x, double y)
     SceneNode *node = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestNode(Point(x, y));
     if (node)
     {
-        node->isSelected = true;
+        node->setSelected(true);
         // sceneView()->doInvalidated();
     }
 }
@@ -1041,7 +1041,7 @@ void PyGeometry::selectEdgePoint(double x, double y)
     SceneEdge *edge = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestEdge(Point(x, y));
     if (edge)
     {
-        edge->isSelected = true;
+        edge->setSelected(true);
         // sceneView()->doInvalidated();
     }
 }
@@ -1051,7 +1051,7 @@ void PyGeometry::selectLabelPoint(double x, double y)
     SceneLabel *label = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestLabel(Point(x, y));
     if (label)
     {
-        label->isSelected = true;
+        label->setSelected(true);
         // sceneView()->doInvalidated();
     }
 }
@@ -1209,8 +1209,8 @@ void PyViewPost2D::setScalarViewVariable(char* var)
     // scalar variables
     foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
     {
-        list.append(variable->id);
-        if (variable->id == QString(var))
+        list.append(variable->id());
+        if (variable->id() == QString(var))
         {
             Util::config()->scalarVariable = QString(var);
             return;
@@ -1220,8 +1220,8 @@ void PyViewPost2D::setScalarViewVariable(char* var)
     // vector variables
     foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
     {
-        list.append(variable->id);
-        if (variable->id == QString(var))
+        list.append(variable->id());
+        if (variable->id() == QString(var))
         {
             Util::config()->vectorVariable = QString(var);
             return;
@@ -1318,11 +1318,11 @@ void PyViewPost2D::setContourVariable(char* var)
     QStringList list;
     foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
     {
-        if (variable->isScalar)
+        if (variable->isScalar())
         {
-            list.append(variable->id);
+            list.append(variable->id());
 
-            if (variable->id == QString(var))
+            if (variable->id() == QString(var))
             {
                 Util::config()->contourVariable = QString(var);
                 return;
@@ -1360,8 +1360,8 @@ void PyViewPost2D::setVectorVariable(char* var)
     QStringList list;
     foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
     {
-        list.append(variable->id);
-        if (variable->id == QString(var))
+        list.append(variable->id());
+        if (variable->id() == QString(var))
         {
             Util::config()->vectorVariable = QString(var);
             return;

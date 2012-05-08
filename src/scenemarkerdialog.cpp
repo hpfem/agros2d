@@ -172,7 +172,7 @@ void SceneFieldWidget::createContent()
     // add custom widget
     addCustomWidget(layout);
 
-    QMapIterator<QString, QList<Module::DialogUI::DialogRow> > i(ui->groups);
+    QMapIterator<QString, QList<Module::DialogUI::DialogRow> > i(ui->groups());
     while (i.hasNext())
     {
         i.next();
@@ -186,18 +186,18 @@ void SceneFieldWidget::createContent()
         foreach (Module::DialogUI::DialogRow material, variables)
         {
             // id
-            ids.append(material.id);
+            ids.append(material.id());
 
             // label
             labels.append(new QLabel(QString("%1 (%2):").
-                                     arg(material.shortname_html).
-                                     arg(material.unit_html)));
-            labels.at(labels.count() - 1)->setToolTip(material.name);
+                                     arg(material.shortnameHtml()).
+                                     arg(material.unitHtml())));
+            labels.at(labels.count() - 1)->setToolTip(material.name());
             labels.at(labels.count() - 1)->setMinimumWidth(100);
 
             // text edit
-            values.append(new ValueLineEdit(this, material.timedep, material.nonlin));
-            values.at(values.count() - 1)->setValue(Value(QString::number(material.default_value)));
+            values.append(new ValueLineEdit(this, material.timedep(), material.nonlin()));
+            values.at(values.count() - 1)->setValue(Value(QString::number(material.defaultValue())));
 
             int index = layoutGroup->rowCount();
             layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
@@ -290,9 +290,9 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
         values.at(i)->setEnabled(false);
 
     Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->boundaryType(comboBox->itemData(index).toString());
-    foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables)
+    foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables())
     {
-        int i = ids.indexOf(variable->id);
+        int i = ids.indexOf(variable->id());
 
         if (i >= 0)
             values.at(i)->setEnabled(true);

@@ -89,7 +89,7 @@ class SceneLabelDialog : public SceneBasicDialog
     Q_OBJECT
 
 public:
-    SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew = false);
+    SceneLabelDialog(SceneLabel *label, QWidget *parent, bool m_isNew = false);
 
 protected:
     QLayout *createContent();

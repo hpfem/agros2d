@@ -337,7 +337,7 @@ bool SceneEdgeDialog::save()
 
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
-    if (!isNew)
+    if (!m_isNew)
     {
         // TODO: swap
         Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point,

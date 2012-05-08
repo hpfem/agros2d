@@ -103,7 +103,7 @@ class SceneEdgeDialog : public SceneBasicDialog
     Q_OBJECT
 
 public:
-    SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew);
+    SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool m_isNew);
 
 protected:
     QLayout *createContent();

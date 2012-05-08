@@ -38,7 +38,7 @@ void PostprocessorValue::setMaterialToParsers(Material *material)
 
     // set material
     foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        parserVariables[variable->shortname.toStdString()] = material->getValue(variable->id).number();
+        parserVariables[variable->shortname().toStdString()] = material->getValue(variable->id()).number();
 
     // register value address
     for (QMap<std::string, double>::iterator itv = parserVariables.begin(); itv != parserVariables.end(); ++itv)
@@ -57,7 +57,7 @@ void PostprocessorIntegralValue::initParser(QList<Module::Integral *> list)
 {
     foreach (Module::Integral *integral, list)
     {
-        parsers.push_back(m_fieldInfo->module()->expressionParser(integral->expression));
+        parsers.push_back(m_fieldInfo->module()->expressionParser(integral->expression()));
         m_values[integral] = 0.0;
     }
 }
@@ -110,7 +110,7 @@ void ViewScalarFilter<Scalar>::initParser(const QString &expression)
 
     // fill material variables map
     foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        parserVariables[variable->shortname.toStdString()] = 0.0;
+        parserVariables[variable->shortname().toStdString()] = 0.0;
 
     // register value address
     for (QMap<std::string, double>::iterator it = parserVariables.begin(); it != parserVariables.end(); ++it)
@@ -154,7 +154,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
                                                              get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
     if (isLinear)
         foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-            parserVariables[variable->shortname.toStdString()] = material->getValue(variable->id).number();
+            parserVariables[variable->shortname().toStdString()] = material->getValue(variable->id()).number();
 
     for (int i = 0; i < np; i++)
     {
