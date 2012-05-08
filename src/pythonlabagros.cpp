@@ -223,8 +223,7 @@ QString createPythonFromModel()
             if (edge->angle > 0.0)
                 str += ", angle = " + QString::number(edge->angle);
 
-            if (edge->refineTowardsEdge > 0)
-                str += ", refinement = " + QString::number(edge->refineTowardsEdge);
+            // TODO: if (edge->refineTowardsEdge > 0) str += ", refinement = " + QString::number(edge->refineTowardsEdge);
 
             str += ")\n";
         }
@@ -259,8 +258,7 @@ QString createPythonFromModel()
             if (label->area > 0.0)
                 str += ", area = " + QString::number(label->area);
 
-            if (label->polynomialOrder > 0)
-                str += ", order = " + QString::number(label->polynomialOrder);
+            // TODO: if (label->polynomialOrder > 0) str += ", order = " + QString::number(label->polynomialOrder);
 
             str += ")\n";
         }
@@ -846,10 +844,9 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
     // refinement
-    if (refinement < 0)
-        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
+    // TOOD: if (refinement < 0) throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
-    SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle, refinement);
+    SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle);
 
     // boundaries
     for (map<char*, char*>::iterator i = boundaries.begin(); i != boundaries.end(); ++i)
@@ -886,10 +883,9 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area must be positive.").toStdString());
 
-    if (order < 0 || order > 10)
-        throw out_of_range(QObject::tr("Polynomial order is out of range (0 - 10).").toStdString());
+    // TODO: if (order < 0 || order > 10) throw out_of_range(QObject::tr("Polynomial order is out of range (0 - 10).").toStdString());
 
-    SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area, order);
+    SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area);
 
     // materials
     for( map<char*, char*>::iterator i = materials.begin(); i != materials.end(); ++i)

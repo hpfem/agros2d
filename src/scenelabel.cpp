@@ -27,12 +27,11 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
-SceneLabel::SceneLabel(const Point &point, double area, int polynomialOrder)
+SceneLabel::SceneLabel(const Point &point, double area)
     : MarkedSceneBasic()
 {
     this->point = point;
     this->area = area;
-    this->polynomialOrder = polynomialOrder;
 
     foreach (FieldInfo* field, Util::problem()->fieldInfos())
     {
@@ -53,7 +52,8 @@ int SceneLabel::showDialog(QWidget *parent, bool isNew)
 
 SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
 {
-    return new SceneLabelCommandRemove(point, "TODO", area, polynomialOrder);
+    // TODO: undo
+    return new SceneLabelCommandRemove(point, "TODO", area);
 }
 
 
@@ -116,8 +116,23 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
     layoutBoundary->addWidget(cmbMaterial, 1);
     layoutBoundary->addWidget(btnMaterial);
 
+    txtPolynomialOrder = new QSpinBox(this);
+    txtPolynomialOrder->setMinimum(0);
+    txtPolynomialOrder->setMaximum(10);
+
+    // order
+    chkPolynomialOrder = new QCheckBox();
+    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
+
+    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
+    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
+    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
+
+    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(fieldInfo->polynomialOrder())));
+
     QFormLayout *layoutBoundaries = new QFormLayout();
     layoutBoundaries->addRow(tr("Material:"), layoutBoundary);
+    layoutBoundaries->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
 
     setLayout(layoutBoundaries);
 }
@@ -125,13 +140,25 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
 void SceneLabelMarker::load()
 {
     cmbMaterial->setCurrentIndex(cmbMaterial->findData(m_label->getMarker(m_fieldInfo)->variant()));
+
+    // txtPolynomialOrder->setValue(m_label->polynomialOrder);
+    // chkPolynomialOrder->setChecked(m_label->polynomialOrder > 0);
+    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 }
 
 bool SceneLabelMarker::save()
 {
     m_label->addMarker(cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>());
 
+    // TODO: sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
+
     return true;
+}
+
+void SceneLabelMarker::doPolynomialOrder(int state)
+{
+    chkPolynomialOrder->setEnabled(cmbMaterial->currentIndex() > 0);
+    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked() && cmbMaterial->currentIndex() > 0);
 }
 
 void SceneLabelMarker::fillComboBox()
@@ -153,6 +180,7 @@ void SceneLabelMarker::fillComboBox()
 void SceneLabelMarker::doMaterialChanged(int index)
 {
     btnMaterial->setEnabled(cmbMaterial->currentIndex() > 0);
+    doPolynomialOrder(0);
 }
 
 void SceneLabelMarker::doMaterialClicked()
@@ -201,9 +229,6 @@ QLayout* SceneLabelDialog::createContent()
     txtArea = new ValueLineEdit();
     txtArea->setMinimum(0.0);
     connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    txtPolynomialOrder = new QSpinBox(this);
-    txtPolynomialOrder->setMinimum(0);
-    txtPolynomialOrder->setMaximum(10);
 
     // coordinates must be greater then or equal to 0 (axisymmetric case)
     if (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
@@ -217,18 +242,6 @@ QLayout* SceneLabelDialog::createContent()
     QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
     grpCoordinates->setLayout(layoutCoordinates);
 
-    // order
-    chkPolynomialOrder = new QCheckBox();
-    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
-
-    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
-    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
-    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
-
-    //TODO
-    //layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::problem()->config()->polynomialOrder)));
-    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order TODO is %1.").arg(1)));
-
     // area
     chkArea = new QCheckBox();
     connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
@@ -240,7 +253,6 @@ QLayout* SceneLabelDialog::createContent()
     // mesh
     QFormLayout *layoutMeshParameters = new QFormLayout();
     layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
-    layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
 
     QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
     grpMeshParameters->setLayout(layoutMeshParameters);
@@ -269,9 +281,6 @@ bool SceneLabelDialog::load()
     txtArea->setNumber(sceneLabel->area);
     chkArea->setChecked(sceneLabel->area > 0.0);
     txtArea->setEnabled(chkArea->isChecked());
-    txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
-    chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
-    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
         labelMarker->load();
@@ -314,17 +323,11 @@ bool SceneLabelDialog::save()
 
     sceneLabel->point = point;
     sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
-    sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
 
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
         labelMarker->save();
 
     return true;
-}
-
-void SceneLabelDialog::doPolynomialOrder(int state)
-{
-    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 }
 
 void SceneLabelDialog::doArea(int state)
@@ -433,12 +436,11 @@ void SceneLabelSelectDialog::doReject()
 
 // undo framework *******************************************************************************************************************
 
-SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_point = point;
     m_markerName = markerName;
     m_area = area;
-    m_polynomialOrder = polynomialOrder;
 }
 
 void SceneLabelCommandAdd::undo()
@@ -454,12 +456,11 @@ void SceneLabelCommandAdd::redo()
     //    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
 }
 
-SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_point = point;
     m_markerName = markerName;
     m_area = area;
-    m_polynomialOrder = polynomialOrder;
 }
 
 void SceneLabelCommandRemove::undo()

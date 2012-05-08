@@ -28,13 +28,12 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/field.h"
 
-SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int refineTowardsEdge)
+SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
     : MarkedSceneBasic()
 {
     this->nodeStart = nodeStart;
     this->nodeEnd = nodeEnd;
     this->angle = angle;
-    this->refineTowardsEdge = refineTowardsEdge;
 
     foreach (FieldInfo* field, Util::problem()->fieldInfos())
     {
@@ -115,7 +114,8 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 
 SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
 {
-    return new SceneEdgeCommandRemove(nodeStart->point, nodeEnd->point, "TODO", angle, refineTowardsEdge);
+    // TODO: undo
+    return new SceneEdgeCommandRemove(nodeStart->point, nodeEnd->point, "TODO", angle);
 }
 
 //************************************************************************************************
@@ -126,8 +126,9 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
     {
         if ((edge->nodeStart == node) || (edge->nodeEnd == node))
         {
+            // TODO: undo
             Util::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, "TODO",
-                                                                        edge->angle, edge->refineTowardsEdge));
+                                                                        edge->angle));
             remove(edge);
         }
     }
@@ -181,8 +182,22 @@ SceneEdgeMarker::SceneEdgeMarker(SceneEdge *edge, FieldInfo *fieldInfo, QWidget 
     layoutBoundary->addWidget(cmbBoundary, 1);
     layoutBoundary->addWidget(btnBoundary);
 
+    // refine towards edge
+    txtRefineTowardsEdge = new QSpinBox(this);
+    txtRefineTowardsEdge->setMinimum(0);
+    txtRefineTowardsEdge->setMaximum(10);
+
+    chkRefineTowardsEdge = new QCheckBox();
+    connect(chkRefineTowardsEdge, SIGNAL(stateChanged(int)), this, SLOT(doRefineTowardsEdge(int)));
+
+    QHBoxLayout *layoutRefineTowardsEdge = new QHBoxLayout();
+    layoutRefineTowardsEdge->addStretch(1);
+    layoutRefineTowardsEdge->addWidget(chkRefineTowardsEdge);
+    layoutRefineTowardsEdge->addWidget(txtRefineTowardsEdge);
+
     QFormLayout *layoutBoundaries = new QFormLayout();
     layoutBoundaries->addRow(tr("Boundary condition:"), layoutBoundary);
+    layoutBoundaries->addRow(tr("Refine towards edge:"), layoutRefineTowardsEdge);
 
     setLayout(layoutBoundaries);
 }
@@ -190,11 +205,19 @@ SceneEdgeMarker::SceneEdgeMarker(SceneEdge *edge, FieldInfo *fieldInfo, QWidget 
 void SceneEdgeMarker::load()
 {
     cmbBoundary->setCurrentIndex(cmbBoundary->findData(m_edge->getMarker(m_fieldInfo)->variant()));
+
+    // TODO: load refine
+    // chkRefineTowardsEdge->setChecked(m_edge->refineTowardsEdge > 0.0);
+    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
+    // txtRefineTowardsEdge->setValue(m_edge->refineTowardsEdge);
 }
 
 bool SceneEdgeMarker::save()
 {
     m_edge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
+
+    // TODO: save refine
+    // m_edge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
 
     return true;
 }
@@ -218,6 +241,7 @@ void SceneEdgeMarker::fillComboBox()
 void SceneEdgeMarker::doBoundaryChanged(int index)
 {
     btnBoundary->setEnabled(cmbBoundary->currentIndex() > 0);
+    doRefineTowardsEdge(0);
 }
 
 void SceneEdgeMarker::doBoundaryClicked()
@@ -228,6 +252,12 @@ void SceneEdgeMarker::doBoundaryClicked()
         cmbBoundary->setItemText(cmbBoundary->currentIndex(), marker->getName());
         Util::scene()->refresh();
     }
+}
+
+void SceneEdgeMarker::doRefineTowardsEdge(int state)
+{
+    chkRefineTowardsEdge->setEnabled(cmbBoundary->currentIndex() > 0);
+    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked() && cmbBoundary->currentIndex() > 0);
 }
 
 SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) : SceneBasicDialog(parent, isNew)
@@ -263,9 +293,6 @@ QLayout* SceneEdgeDialog::createContent()
     txtAngle->setMaximum(180.0);
     connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     // connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(doAngleChanged()));
-    txtRefineTowardsEdge = new QSpinBox(this);
-    txtRefineTowardsEdge->setMinimum(0);
-    txtRefineTowardsEdge->setMaximum(10);
     lblLength = new QLabel();
 
     // coordinates
@@ -276,24 +303,7 @@ QLayout* SceneEdgeDialog::createContent()
     QGroupBox *grpEdgeParameters = new QGroupBox(tr("Edge parameters"));
     grpEdgeParameters->setLayout(layoutEdgeParameters);
 
-    // refine towards edge
-    chkRefineTowardsEdge = new QCheckBox();
-    connect(chkRefineTowardsEdge, SIGNAL(stateChanged(int)), this, SLOT(doRefineTowardsEdge(int)));
-
-    QHBoxLayout *layoutRefineTowardsEdge = new QHBoxLayout();
-    layoutRefineTowardsEdge->addStretch(1);
-    layoutRefineTowardsEdge->addWidget(chkRefineTowardsEdge);
-    layoutRefineTowardsEdge->addWidget(txtRefineTowardsEdge);
-
-    // mesh
-    QFormLayout *layoutMeshParameters = new QFormLayout();
-    layoutMeshParameters->addRow(tr("Refine towards edge:"), layoutRefineTowardsEdge);
-
-    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
-    grpMeshParameters->setLayout(layoutMeshParameters);
-
     layout->addRow(grpEdgeParameters);
-    layout->addRow(grpMeshParameters);
 
     fillComboBox();
 
@@ -312,9 +322,6 @@ bool SceneEdgeDialog::load()
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
     txtAngle->setNumber(sceneEdge->angle);
-    chkRefineTowardsEdge->setChecked(sceneEdge->refineTowardsEdge > 0.0);
-    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
-    txtRefineTowardsEdge->setValue(sceneEdge->refineTowardsEdge);
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->load();
@@ -335,12 +342,10 @@ bool SceneEdgeDialog::save()
         // TODO: swap
         Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point,
                                                                   sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point,
-                                                                  sceneEdge->angle, txtAngle->number(),
-                                                                  sceneEdge->refineTowardsEdge, txtRefineTowardsEdge->value()));
+                                                                  sceneEdge->angle, txtAngle->number()));
     }
 
     sceneEdge->angle = txtAngle->number();
-    sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->save();
@@ -362,14 +367,9 @@ void SceneEdgeDialog::doAngleChanged()
     else
     {
         // arc
-        SceneEdge edge(sceneEdge->nodeStart, sceneEdge->nodeEnd, txtAngle->number(), 0);
+        SceneEdge edge(sceneEdge->nodeStart, sceneEdge->nodeEnd, txtAngle->number());
         lblLength->setText(QString("%1 m").arg(edge.radius() * edge.angle / 180.0 * M_PI));
     }
-}
-
-void SceneEdgeDialog::doRefineTowardsEdge(int state)
-{
-    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
 }
 
 SceneEdgeSelectDialog::SceneEdgeSelectDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent)
@@ -474,13 +474,12 @@ void SceneEdgeSelectDialog::doReject()
 // **********************************************************************************************************************************
 
 SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName,
-                                         double angle, int refineTowardsEdge, QUndoCommand *parent) : QUndoCommand(parent)
+                                         double angle, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markerName = markerName;
     m_angle = angle;
-    m_refineTowardsEdge = refineTowardsEdge;
 }
 
 void SceneEdgeCommandAdd::undo()
@@ -497,18 +496,16 @@ void SceneEdgeCommandAdd::redo()
 
     Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
                                          Util::scene()->addNode(new SceneNode(m_pointEnd)),
-                                         m_angle,
-                                         m_refineTowardsEdge));
+                                         m_angle));
 }
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,
-                                               double angle, int refineTowardsEdge, QUndoCommand *parent) : QUndoCommand(parent)
+                                               double angle, QUndoCommand *parent) : QUndoCommand(parent)
 {    
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markerName = markerName;
     m_angle = angle;
-    m_refineTowardsEdge = refineTowardsEdge;
 }
 
 void SceneEdgeCommandRemove::undo()
@@ -519,8 +516,7 @@ void SceneEdgeCommandRemove::undo()
     //    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
     //                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
     //                                         boundary,
-    //                                         m_angle,
-    //                                         m_refineTowardsEdge));
+    //                                         m_angle));
 }
 
 void SceneEdgeCommandRemove::redo()
@@ -529,7 +525,7 @@ void SceneEdgeCommandRemove::redo()
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
-                                           double angle, double angleNew, int refineTowardsEdge, int refineTowardsEdgeNew, QUndoCommand *parent) : QUndoCommand(parent)
+                                           double angle, double angleNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
@@ -537,8 +533,6 @@ SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point 
     m_pointEndNew = pointEndNew;
     m_angle = angle;
     m_angleNew = angleNew;
-    m_refineTowardsEdge = refineTowardsEdge;
-    m_refineTowardsEdgeNew = refineTowardsEdgeNew;
 }
 
 void SceneEdgeCommandEdit::undo()
@@ -549,7 +543,6 @@ void SceneEdgeCommandEdit::undo()
         edge->nodeStart = Util::scene()->getNode(m_pointStart);
         edge->nodeEnd = Util::scene()->getNode(m_pointEnd);
         edge->angle = m_angle;
-        edge->refineTowardsEdge = m_refineTowardsEdge;
         Util::scene()->refresh();
     }
 }
@@ -562,7 +555,6 @@ void SceneEdgeCommandEdit::redo()
         edge->nodeStart = Util::scene()->getNode(m_pointStartNew);
         edge->nodeEnd = Util::scene()->getNode(m_pointEndNew);
         edge->angle = m_angleNew;
-        edge->refineTowardsEdge = m_refineTowardsEdge;
         Util::scene()->refresh();
     }
 }

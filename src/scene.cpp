@@ -61,7 +61,7 @@ void DxfFilter::addLine(const DL_LineData &l)
     SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.x2, l.y2)));
 
     // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd,  0, 0)); //TODO - do it better
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd,  0)); // TODO: do it better
 }
 
 void DxfFilter::addArc(const DL_ArcData& a)
@@ -80,7 +80,7 @@ void DxfFilter::addArc(const DL_ArcData& a)
     SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle2/180*M_PI), a.cy + a.radius*sin(angle2/180*M_PI))));
 
     // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1, 0)); //TODO - do it better
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1)); // TODO: do it better
 }
 
 void DxfFilter::addCircle(const DL_CircleData& c)
@@ -92,10 +92,10 @@ void DxfFilter::addCircle(const DL_CircleData& c)
     SceneNode *node4 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy - c.radius)));
 
     // edges
-    m_scene->addEdge(new SceneEdge(node1, node2, 90, 0)); // do it better
-    m_scene->addEdge(new SceneEdge(node2, node3, 90, 0));
-    m_scene->addEdge(new SceneEdge(node3, node4, 90, 0));
-    m_scene->addEdge(new SceneEdge(node4, node1, 90, 0));
+    m_scene->addEdge(new SceneEdge(node1, node2, 90));
+    m_scene->addEdge(new SceneEdge(node2, node3, 90));
+    m_scene->addEdge(new SceneEdge(node3, node4, 90));
+    m_scene->addEdge(new SceneEdge(node4, node1, 90));
 }
 
 // ************************************************************************************************************************
@@ -748,14 +748,14 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
                 if (newNodeStart && newNodeEnd)
                 {
                     SceneEdge *newEdge = new SceneEdge(newNodeStart, newNodeEnd,
-                                                       edge->angle, edge->refineTowardsEdge);
+                                                       edge->angle);
                     addEdge(newEdge);
 
+                    // TODO: undo
                     m_undoStack->push(new SceneEdgeCommandAdd(newEdge->nodeStart->point,
                                                               newEdge->nodeEnd->point,
                                                               "TODO",
-                                                              newEdge->angle,
-                                                              newEdge->refineTowardsEdge));
+                                                              newEdge->angle));
                 }
             }
         }
@@ -838,15 +838,14 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
         else
         {
             SceneLabel *labelNew = new SceneLabel(newPoint,
-                                                  label->area,
-                                                  label->polynomialOrder);
+                                                  label->area);
             SceneLabel *labelAdded = addLabel(labelNew);
 
             if (labelAdded == labelNew)
+                // TODO: undo
                 m_undoStack->push(new SceneLabelCommandAdd(labelNew->point,
                                                            "TODO",
-                                                           labelNew->area,
-                                                           label->polynomialOrder));
+                                                           labelNew->area));
 
             labelAdded->isSelected = true;
             label->isSelected = false;
@@ -911,16 +910,16 @@ void Scene::doNewNode(const Point &point)
 
 void Scene::doNewEdge()
 {
-    SceneEdge *edge = new SceneEdge(nodes->at(0), nodes->at(1), 0, 0); //TODO - do it better
+    SceneEdge *edge = new SceneEdge(nodes->at(0), nodes->at(1), 0);
     if (edge->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneEdge *edgeAdded = addEdge(edge);
         if (edgeAdded == edge)
+            // TODO: undo
             m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                       edge->nodeEnd->point,
                                                       "TODO",
-                                                      edge->angle,
-                                                      edge->refineTowardsEdge));
+                                                      edge->angle));
     }
     else
         delete edge;
@@ -928,14 +927,14 @@ void Scene::doNewEdge()
 
 void Scene::doNewLabel(const Point &point)
 {
-    SceneLabel *label = new SceneLabel(point, 0.0, 0); //TODO - do it better
+    SceneLabel *label = new SceneLabel(point, 0.0);
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneLabel *labelAdded = addLabel(label);
+        // TODO: undo
         if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point,
                                                                             "TODO",
-                                                                            label->area,
-                                                                            label->polynomialOrder));
+                                                                            label->area));
     }
     else
         delete label;
@@ -1271,7 +1270,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         double angle = element.attribute("angle", "0").toDouble();
         int refineTowardsEdge = element.attribute("refine_towards", "0").toInt();
 
-        SceneEdge *edge = new SceneEdge(nodeFrom, nodeTo, angle, refineTowardsEdge);
+        SceneEdge *edge = new SceneEdge(nodeFrom, nodeTo, angle);
         addEdge(edge);
 
         nodeEdge = nodeEdge.nextSibling();
@@ -1285,9 +1284,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         QDomElement element = nodeLabel.toElement();
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
         double area = element.attribute("area", "0").toDouble();
-        int polynomialOrder = element.attribute("polynomial_order", "0").toInt();
 
-        SceneLabel *label = new SceneLabel(point, area, polynomialOrder);
+        SceneLabel *label = new SceneLabel(point, area);
         addLabel(label);
 
         nodeLabel = nodeLabel.nextSibling();
@@ -1572,7 +1570,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleEdge.setAttribute("start", nodes->items().indexOf(edge->nodeStart));
         eleEdge.setAttribute("end", nodes->items().indexOf(edge->nodeEnd));
         eleEdge.setAttribute("angle", edge->angle);
-        eleEdge.setAttribute("refine_towards", edge->refineTowardsEdge);
 
         eleEdges.appendChild(eleEdge);
 
@@ -1591,7 +1588,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleLabel.setAttribute("x", label->point.x);
         eleLabel.setAttribute("y", label->point.y);
         eleLabel.setAttribute("area", label->area);
-        eleLabel.setAttribute("polynomial_order", label->polynomialOrder);
 
         eleLabels.appendChild(eleLabel);
 
@@ -1823,7 +1819,7 @@ void Scene::checkNodeConnect(SceneNode *node)
 
                 double edgeAngle = edgeCheck->angle;
                 removeEdge(edgeCheck);
-                SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, 0.0, 0);
+                SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, 0.0);
                 edge->angle = edgeAngle;
                 edge->lyingNodes.clear();
             }

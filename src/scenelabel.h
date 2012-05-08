@@ -30,9 +30,8 @@ class SceneLabel : public MarkedSceneBasic<SceneMaterial>
 public:
     Point point;
     double area;
-    int polynomialOrder;
 
-    SceneLabel(const Point &point, double area, int polynomialOrder);
+    SceneLabel(const Point &point, double area);
 
     double distance(const Point &point) const;
 
@@ -76,9 +75,13 @@ private:
     QComboBox *cmbMaterial;
     QPushButton *btnMaterial;
 
+    QSpinBox *txtPolynomialOrder;
+    QCheckBox *chkPolynomialOrder;
+
 private slots:
     void doMaterialChanged(int index);
     void doMaterialClicked();
+    void doPolynomialOrder(int);
 };
 
 class SceneLabelDialog : public SceneBasicDialog
@@ -98,9 +101,7 @@ private:
     ValueLineEdit *txtPointX;
     ValueLineEdit *txtPointY;
     ValueLineEdit *txtArea;
-    QSpinBox *txtPolynomialOrder;
     QCheckBox *chkArea;
-    QCheckBox *chkPolynomialOrder;
 
     QList<SceneLabelMarker *> m_labelMarkers;
 
@@ -108,7 +109,6 @@ private:
 
 private slots:
     void doArea(int);
-    void doPolynomialOrder(int);
 };
 
 class SceneLabelSelectDialog : public QDialog
@@ -138,7 +138,7 @@ private slots:
 class SceneLabelCommandAdd : public QUndoCommand
 {
 public:
-    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent = 0);
+    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -146,13 +146,12 @@ private:
     Point m_point;
     QString m_markerName;
     double m_area;
-    int m_polynomialOrder;
 };
 
 class SceneLabelCommandRemove : public QUndoCommand
 {
 public:
-    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent = 0);
+    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -160,7 +159,6 @@ private:
     Point m_point;
     QString m_markerName;
     double m_area;
-    int m_polynomialOrder;
 };
 
 class SceneLabelCommandEdit : public QUndoCommand

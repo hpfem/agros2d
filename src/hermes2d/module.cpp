@@ -1065,11 +1065,13 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
     if (refineTowardsEdge)
         foreach (SceneEdge *edge, Util::scene()->edges->items())
         {
+            // TODO: add refine towards edge
+            /*
             if (edge->refineTowardsEdge > 0)
                 mesh->refine_towards_boundary(QString::number(((edge->getMarker(fieldInfo)
                                                                 != SceneBoundaryContainer::getNone(fieldInfo)) ? i + 1 : -i)).toStdString(),
                                               edge->refineTowardsEdge);
-
+            */
             i++;
         }
 }

@@ -280,8 +280,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                            arg(edge->nodeEnd->point.x, 0, 'g', 3).
                            arg(edge->nodeEnd->point.y, 0, 'g', 3).
                            arg(str).
-                           arg(edge->angle, 0, 'f', 0).
-                           arg(edge->refineTowardsEdge, 0, 'g', 3).
+                           arg(edge->angle, 0, 'f', 0).                           
                            arg(Util::scene()->edges->items().indexOf(edge)));
                 updateGL();
             }
@@ -307,8 +306,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                            arg(label->point.x, 0, 'g', 3).
                            arg(label->point.y, 0, 'g', 3).
                            arg(str).
-                           arg(label->area, 0, 'g', 3).
-                           arg(label->polynomialOrder).
+                           arg(label->area, 0, 'g', 3).                           
                            arg(Util::scene()->labels->items().indexOf(label)));
                 updateGL();
             }
@@ -523,13 +521,13 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                 {
                     if (node != m_nodeLast)
                     {
-                        SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0, 0); //TODO - do it better
+                        SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0);
                         SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
+                        // TODO: undo
                         if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                         edge->nodeEnd->point,
                                                                                                         "TODO",
-                                                                                                        edge->angle,
-                                                                                                        edge->refineTowardsEdge));
+                                                                                                        edge->angle));
                     }
 
                     m_nodeLast->isSelected = false;
@@ -551,12 +549,12 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             }
             else
             {
-                SceneLabel *label = new SceneLabel(p, 0, 0); //TODO - do it better
+                SceneLabel *label = new SceneLabel(p, 0);
                 SceneLabel *labelAdded = Util::scene()->addLabel(label);
+                // TODO: undo
                 if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point,
                                                                                                    "TODO",
-                                                                                                   label->area,
-                                                                                                   label->polynomialOrder));
+                                                                                                   label->area));
                 updateGL();
             }
         }

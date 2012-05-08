@@ -44,7 +44,6 @@ QVariant SceneBasic::variant()
 
 // *************************************************************************************************************************************
 
-
 template <typename MarkerType>
 MarkerType* MarkedSceneBasic<MarkerType>::getMarker(FieldInfo* field)
 {
