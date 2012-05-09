@@ -73,7 +73,7 @@ geometry.add_label(0.25, 0, materials = {"magnetic" : "Air"})
 geometry.zoom_best_fit()
 
 geometry.mesh()
-problem.solve()
+#problem.solve()
 
 """
 local_values = magnetic.local_values(0, 0.025)
@@ -86,11 +86,10 @@ volume_integrals = magnetic.volume_integrals([0, 1, 2])
 print(volume_integrals)
 """
 
-#magnetic.postprocessor_2d({"scalar" : False, "contours" : True, "vectors" : True})
-
 view = agros2d.view
-view.post2d.scalar_view_show = True
-view.post2d.scalar_view_variable = "heat_heat_flux"
+
+#view.post2d.scalar_view_show = True
+#view.post2d.scalar_view_variable = "heat_heat_flux"
 # FIXME! view.post2d.scalar_view_component = "magnitude"
 #view.post2d.scalar_view_palette = "winter"
 #view.post2d.scalar_view_palette_quality = "coarse"
@@ -107,22 +106,22 @@ view.post2d.scalar_view_variable = "heat_heat_flux"
 #view.post2d.scalar_view_range_min = 0
 #view.post2d.scalar_view_range_max = 1
 
-view.post2d.contour_show = True
+#view.post2d.contour_show = True
 #view.post2d.contour_variable = ""
 #view.post2d.contour_count = 15
 
-view.post2d.vector_show = True
+#view.post2d.vector_show = True
 #view.post2d.vector_variable = ""
 #view.post2d.vector_count = 50
 #view.post2d.vector_scale = 1.0
 #view.post2d.vector_proportional = True
 #view.post2d.vector_color = True
 
-view.mesh.activate
-view.mesh.initial_mesh_view_show = True
-view.mesh.solution_mesh_view_show = True
+#view.mesh.activate
+#view.mesh.initial_mesh_view_show = True
+#view.mesh.solution_mesh_view_show = True
 
-view.mesh.order_view_show = True
+#view.mesh.order_view_show = True
 #view.mesh.order_view_color_bar = True
 #view.mesh.order_view_label = True
 #view.mesh.order_view_palette = "jet"
@@ -138,11 +137,10 @@ geometry.select_none()
 
 geometry.zoom_best_fit()
 
-#geometry.select_nodes()
-#geometry.move_selection(1.5, 1.5, True)
-#geometry.rotate_selection(0.5, 0.5, 90)
-#geometry.scale_selection(0.5, 0.5, 2)
-
-#geometry.select_labels()
-#geometry.remove_selection()
+geometry.select_nodes()
+geometry.move_selection(1.5, 1.5, True)
+geometry.rotate_selection(0.5, 0.5, 90)
+geometry.scale_selection(0.5, 0.5, 2)
+geometry.select_labels()
+geometry.remove_selection()
 """

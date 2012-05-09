@@ -148,6 +148,9 @@ cdef extern from "../../src/pythonlabagros.h":
         void setField(char *fieldid) except +
         char *getField()
 
+        void setActiveTimeStep(int timeStep)  except +
+        int getActiveTimeStep()
+
     # PyViewMesh
     cdef cppclass PyViewMesh:
         void activate()
@@ -662,8 +665,14 @@ cdef class __ViewConfig__:
     property field:
         def __get__(self):
             return self.thisptr.getField()
-        def __set__(self, fieldid):
-            self.thisptr.setField(fieldid)
+        def __set__(self, id):
+            self.thisptr.setField(id)
+
+    property active_time_step:
+        def __get__(self):
+            return self.thisptr.getActiveTimeStep()
+        def __set__(self, time_step):
+            self.thisptr.setActiveTimeStep(time_step)
 
 cdef class __ViewMesh__:
     cdef PyViewMesh *thisptr

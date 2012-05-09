@@ -1139,6 +1139,14 @@ void PyViewConfig::setField(char* variable)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Util::problem()->fieldInfos().keys())).toStdString());
 }
 
+void PyViewConfig::setActiveTimeStep(int timeStep)
+{
+    if (timeStep < 0 && timeStep > Util::problem()->config()->numTimeSteps())
+        throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Util::problem()->config()->numTimeSteps()).toStdString());
+
+    Util::scene()->setActiveTimeStep(timeStep);
+}
+
 // ****************************************************************************************************
 
 void PyViewMesh::activate()

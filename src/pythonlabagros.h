@@ -291,8 +291,12 @@ struct PyViewConfig
 {
     void setField(char* variable);
     inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
-    // TODO: setActiveTimeStep
-    // TODO: setActiveAdaptivityStep
+
+    // time step
+    void setActiveTimeStep(int timeStep);
+    inline int getActiveTimeStep() const { return Util::scene()->activeTimeStep(); }
+
+    // TODO: setActiveAdaptivityType
     // TODO: setActiveSolutionType
 };
 
@@ -318,7 +322,6 @@ struct PyViewMesh
     void setOrderViewPalette(char* palette);
     inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Util::config()->orderPaletteOrderType).toStdString().c_str()); }
 };
-
 
 // post2d
 struct PyViewPost2D
