@@ -1147,6 +1147,35 @@ void PyViewConfig::setActiveTimeStep(int timeStep)
     Util::scene()->setActiveTimeStep(timeStep);
 }
 
+void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
+{
+    if (adaptivityStep < 0 && adaptivityStep > Util::scene()->activeViewField()->adaptivitySteps())
+        throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(Util::scene()->activeViewField()->fieldId()).arg(Util::scene()->activeViewField()->adaptivitySteps()).toStdString());
+
+    Util::scene()->setActiveAdaptivityStep(adaptivityStep);
+}
+
+void PyViewConfig::setActiveSolutionType(char* solutionType)
+{
+    // todo: (Franta) check solution types
+    Util::scene()->setActiveSolutionType(solutionTypeFromStringKey(QString(solutionType)));
+}
+
+void PyViewConfig::setGridShow(int show)
+{
+    Util::config()->showGrid = show;
+}
+
+void PyViewConfig::setAxesShow(int show)
+{
+    Util::config()->showAxes = show;
+}
+
+void PyViewConfig::setRulersShow(int show)
+{
+    Util::config()->showRulers = show;
+}
+
 // ****************************************************************************************************
 
 void PyViewMesh::activate()

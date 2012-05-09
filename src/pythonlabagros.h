@@ -293,11 +293,32 @@ struct PyViewConfig
     inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
 
     // time step
+    // toto: (Franta) gui
     void setActiveTimeStep(int timeStep);
     inline int getActiveTimeStep() const { return Util::scene()->activeTimeStep(); }
 
-    // TODO: setActiveAdaptivityType
-    // TODO: setActiveSolutionType
+    // adaptivity step
+    // toto: (Franta) gui
+    void setActiveAdaptivityStep(int adaptivityStep);
+    inline int getActiveAdaptivityStep() const { return Util::scene()->activeAdaptivityStep(); }
+
+    // solution type
+    void setActiveSolutionType(char *solutionType);
+    inline char* getActiveSolutionType() const { return const_cast<char*>(solutionTypeToStringKey(Util::scene()->activeSolutionType()).toStdString().c_str()); }
+
+    // grid
+    void setGridShow(int show);
+    inline int getGridShow() const { return Util::config()->showGrid; }
+
+    // axes
+    void setAxesShow(int show);
+    inline int getAxesShow() const { return Util::config()->showAxes; }
+
+    // rulers
+    void setRulersShow(int show);
+    inline int getRulersShow() const { return Util::config()->showRulers; }
+
+    // todo: (Franta) font, size of nodes and edges, colors
 };
 
 // view mesh

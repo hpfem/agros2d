@@ -148,8 +148,23 @@ cdef extern from "../../src/pythonlabagros.h":
         void setField(char *fieldid) except +
         char *getField()
 
-        void setActiveTimeStep(int timeStep)  except +
+        void setActiveTimeStep(bool timeStep) except +
         int getActiveTimeStep()
+
+        void setActiveAdaptivityStep(bool adaptiveStep) except +
+        int getActiveAdaptivityStep()
+
+        void setActiveSolutionType(char *solutionType) except +
+        char *getActiveSolutionType()
+
+        void setGridShow(bool show)
+        int getGridShow()
+
+        void setAxesShow(bool show)
+        int getAxesShow()
+
+        void setRulersShow(bool show)
+        int getRulersShow()
 
     # PyViewMesh
     cdef cppclass PyViewMesh:
@@ -673,6 +688,36 @@ cdef class __ViewConfig__:
             return self.thisptr.getActiveTimeStep()
         def __set__(self, time_step):
             self.thisptr.setActiveTimeStep(time_step)
+
+    property active_adaptivity_step:
+        def __get__(self):
+            return self.thisptr.getActiveAdaptivityStep()
+        def __set__(self, adaptivity_step):
+            self.thisptr.setActiveAdaptivityStep(adaptivity_step)
+
+    property active_solution_type:
+        def __get__(self):
+            return self.thisptr.getActiveSolutionType()
+        def __set__(self, solution_type):
+            self.thisptr.setActiveSolutionType(solution_type)
+
+    property grid_show:
+        def __get__(self):
+            return self.thisptr.getGridShow()
+        def __set__(self, show):
+            self.thisptr.setGridShow(show)
+
+    property axes_show:
+        def __get__(self):
+            return self.thisptr.getAxesShow()
+        def __set__(self, show):
+            self.thisptr.setAxesShow(show)
+
+    property rulers_show:
+        def __get__(self):
+            return self.thisptr.getRulersShow()
+        def __set__(self, show):
+            self.thisptr.setRulersShow(show)
 
 cdef class __ViewMesh__:
     cdef PyViewMesh *thisptr
