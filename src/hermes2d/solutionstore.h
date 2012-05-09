@@ -10,8 +10,8 @@ public:
     bool contains(FieldSolutionID solutionID);
     MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
     MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
-    void saveSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void removeSolution(FieldSolutionID solutionID);

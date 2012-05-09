@@ -124,7 +124,7 @@ struct SolutionID
     SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionType solutionType) :
         group(group), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionType(solutionType) {}
 
-    bool exists() {return solutionType != SolutionType_NonExisting; }
+    inline bool exists() { return solutionType != SolutionType_NonExisting; }
 };
 
 template <typename Group>
@@ -169,6 +169,8 @@ public:
     FieldSolutionID() : SolutionID<FieldInfo>() {}
 
     BlockSolutionID blockSolutionID(Block* block);
+
+    QString toString();
 };
 
 class BlockSolutionID : public SolutionID<Block>

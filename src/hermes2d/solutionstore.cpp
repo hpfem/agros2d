@@ -43,7 +43,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solution
     return msa;
 }
 
-void SolutionStore::saveSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+void SolutionStore::addSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
     assert(!m_multiSolutions.contains(solutionID));
     replaceSolution(solutionID, multiSolution);
@@ -60,15 +60,17 @@ void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionAr
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
     m_multiSolutions[solutionID] = multiSolution;
+
+    qDebug() << "SolutionStore::replaceSolution" << solutionID.toString();
 }
 
-void SolutionStore::saveSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
     foreach(Field* field, solutionID.group->fields())
     {
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
-        saveSolution(fieldSID, fieldMultiSolution);
+        addSolution(fieldSID, fieldMultiSolution);
     }
 }
 

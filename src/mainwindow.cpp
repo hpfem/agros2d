@@ -149,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::scene()->clear();
 
-    sceneViewPreprocessor->actSceneModePreprocessor->trigger();
+    problemWidget->actProperties->trigger();
     sceneViewPreprocessor->doZoomBestFit();
 
     // set recent files
@@ -922,7 +922,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 setRecentFiles();
 
-                sceneViewPreprocessor->actOperateOnNodes->trigger();
+                problemWidget->actProperties->trigger();
                 sceneViewPreprocessor->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();
                 sceneViewPost2D->doZoomBestFit();
