@@ -1125,11 +1125,16 @@ void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 
 // ****************************************************************************************************
 
-void PyViewConfig::setField(char* variable)
+void PyViewConfig::refresh()
+{
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+}
+
+void PyViewConfig::setField(char* fieldid)
 {
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        if (fieldInfo->fieldId() == QString(variable))
+        if (fieldInfo->fieldId() == QString(fieldid))
         {
             Util::scene()->setActiveViewField(fieldInfo);
             return;
@@ -1157,11 +1162,13 @@ void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
 
 void PyViewConfig::setActiveSolutionType(char* solutionType)
 {
-    // todo: (Franta) check solution types
-    Util::scene()->setActiveSolutionType(solutionTypeFromStringKey(QString(solutionType)));
+    if (solutionTypeStringKeys().contains(QString(solutionType)))
+        Util::scene()->setActiveSolutionType(solutionTypeFromStringKey(QString(solutionType)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 }
 
-void PyViewConfig::setGridShow(int show)
+void PyViewConfig::setGridShow(bool show)
 {
     Util::config()->showGrid = show;
 }
@@ -1171,12 +1178,12 @@ void PyViewConfig::setGridStep(double step)
     Util::config()->gridStep = step;
 }
 
-void PyViewConfig::setAxesShow(int show)
+void PyViewConfig::setAxesShow(bool show)
 {
     Util::config()->showAxes = show;
 }
 
-void PyViewConfig::setRulersShow(int show)
+void PyViewConfig::setRulersShow(bool show)
 {
     Util::config()->showRulers = show;
 }

@@ -289,16 +289,19 @@ class PyGeometry
 // view
 struct PyViewConfig
 {
-    void setField(char* variable);
+    void refresh();
+
+    // field
+    void setField(char *fieldid);
     inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
 
     // time step
-    // toto: (Franta) gui
+    // todo: (Franta) gui is not synchronized
     void setActiveTimeStep(int timeStep);
     inline int getActiveTimeStep() const { return Util::scene()->activeTimeStep(); }
 
     // adaptivity step
-    // toto: (Franta) gui
+    // todo: (Franta) gui is not synchronized
     void setActiveAdaptivityStep(int adaptivityStep);
     inline int getActiveAdaptivityStep() const { return Util::scene()->activeAdaptivityStep(); }
 
@@ -307,20 +310,20 @@ struct PyViewConfig
     inline char* getActiveSolutionType() const { return const_cast<char*>(solutionTypeToStringKey(Util::scene()->activeSolutionType()).toStdString().c_str()); }
 
     // grid
-    void setGridShow(int show);
-    inline int getGridShow() const { return Util::config()->showGrid; }
+    void setGridShow(bool show);
+    inline bool getGridShow() const { return Util::config()->showGrid; }
     void setGridStep(double step);
     inline double getGridStep() const { return Util::config()->gridStep; }
 
     // axes
-    void setAxesShow(int show);
-    inline int getAxesShow() const { return Util::config()->showAxes; }
+    void setAxesShow(bool show);
+    inline bool getAxesShow() const { return Util::config()->showAxes; }
 
     // rulers
-    void setRulersShow(int show);
-    inline int getRulersShow() const { return Util::config()->showRulers; }
+    void setRulersShow(bool show);
+    inline bool getRulersShow() const { return Util::config()->showRulers; }
 
-    // todo: (Franta) font, size of nodes and edges, colors
+    // todo: (Franta) font, size of nodes and edges and labels, colors
 };
 
 // view mesh

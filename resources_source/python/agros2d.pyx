@@ -145,29 +145,31 @@ cdef extern from "../../src/pythonlabagros.h":
 
     # PyViewConfig
     cdef cppclass PyViewConfig:
+        void refresh()
+
         void setField(char *fieldid) except +
         char *getField()
 
-        void setActiveTimeStep(bool timeStep) except +
+        void setActiveTimeStep(int timeStep) except +
         int getActiveTimeStep()
 
-        void setActiveAdaptivityStep(bool adaptiveStep) except +
+        void setActiveAdaptivityStep(int adaptiveStep) except +
         int getActiveAdaptivityStep()
 
         void setActiveSolutionType(char *solutionType) except +
         char *getActiveSolutionType()
 
         void setGridShow(bool show)
-        int getGridShow()
+        bool getGridShow()
 
         void setGridStep(double step)
         double getGridStep()
 
         void setAxesShow(bool show)
-        int getAxesShow()
+        bool getAxesShow()
 
         void setRulersShow(bool show)
-        int getRulersShow()
+        bool getRulersShow()
 
     # PyViewMesh
     cdef cppclass PyViewMesh:
@@ -680,31 +682,34 @@ cdef class __ViewConfig__:
     def __dealloc__(self):
         del self.thisptr
 
+    def refresh(self):
+        self.thisptr.refresh()
+
     property field:
         def __get__(self):
             return self.thisptr.getField()
         def __set__(self, id):
             self.thisptr.setField(id)
 
-    property active_time_step:
+    property time_step:
         def __get__(self):
             return self.thisptr.getActiveTimeStep()
         def __set__(self, time_step):
             self.thisptr.setActiveTimeStep(time_step)
 
-    property active_adaptivity_step:
+    property adaptivity_step:
         def __get__(self):
             return self.thisptr.getActiveAdaptivityStep()
         def __set__(self, adaptivity_step):
             self.thisptr.setActiveAdaptivityStep(adaptivity_step)
 
-    property active_solution_type:
+    property solution_type:
         def __get__(self):
             return self.thisptr.getActiveSolutionType()
         def __set__(self, solution_type):
             self.thisptr.setActiveSolutionType(solution_type)
 
-    property grid_show:
+    property grid:
         def __get__(self):
             return self.thisptr.getGridShow()
         def __set__(self, show):
@@ -716,13 +721,13 @@ cdef class __ViewConfig__:
         def __set__(self, step):
             self.thisptr.setGridStep(step)
 
-    property axes_show:
+    property axes:
         def __get__(self):
             return self.thisptr.getAxesShow()
         def __set__(self, show):
             self.thisptr.setAxesShow(show)
 
-    property rulers_show:
+    property rulers:
         def __get__(self):
             return self.thisptr.getRulersShow()
         def __set__(self, show):
