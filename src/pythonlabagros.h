@@ -309,6 +309,8 @@ struct PyViewConfig
     // grid
     void setGridShow(int show);
     inline int getGridShow() const { return Util::config()->showGrid; }
+    void setGridStep(double step);
+    inline double getGridStep() const { return Util::config()->gridStep; }
 
     // axes
     void setAxesShow(int show);

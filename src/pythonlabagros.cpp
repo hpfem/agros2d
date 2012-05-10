@@ -1166,6 +1166,11 @@ void PyViewConfig::setGridShow(int show)
     Util::config()->showGrid = show;
 }
 
+void PyViewConfig::setGridStep(double step)
+{
+    Util::config()->gridStep = step;
+}
+
 void PyViewConfig::setAxesShow(int show)
 {
     Util::config()->showAxes = show;
