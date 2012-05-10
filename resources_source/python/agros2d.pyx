@@ -160,6 +160,9 @@ cdef extern from "../../src/pythonlabagros.h":
         void setGridShow(bool show)
         int getGridShow()
 
+        void setGridStep(double step)
+        double getGridStep()
+
         void setAxesShow(bool show)
         int getAxesShow()
 
@@ -706,6 +709,12 @@ cdef class __ViewConfig__:
             return self.thisptr.getGridShow()
         def __set__(self, show):
             self.thisptr.setGridShow(show)
+
+    property grid_step:
+        def __get__(self):
+            return self.thisptr.getGridStep()
+        def __set__(self, step):
+            self.thisptr.setGridStep(step)
 
     property axes_show:
         def __get__(self):
