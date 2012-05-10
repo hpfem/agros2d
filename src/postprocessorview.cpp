@@ -56,6 +56,9 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
 
     connect(this, SIGNAL(apply()), m_scenePost2D, SLOT(timeStepChanged()));
     connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));
+
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 }
 
 void PostprocessorWidget::loadBasic()
@@ -111,9 +114,6 @@ void PostprocessorWidget::loadBasic()
 
     // transient view
     // cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
-
-    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 
     refresh();
 }
