@@ -593,8 +593,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // steps
     txtPaletteSteps = new QSpinBox(this);
-    txtPaletteSteps->setMinimum(5);
-    txtPaletteSteps->setMaximum(100);
+    txtPaletteSteps->setMinimum(PALLETESTEPSMIN);
+    txtPaletteSteps->setMaximum(PALLETESTEPSMAX);
 
     // log scale
     chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
@@ -644,8 +644,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // decimal places
     txtScalarDecimalPlace = new QSpinBox(this);
-    txtScalarDecimalPlace->setMinimum(1);
-    txtScalarDecimalPlace->setMaximum(10);
+    txtScalarDecimalPlace->setMinimum(SCALARDECIMALPLACEMIN);
+    txtScalarDecimalPlace->setMaximum(SCALARDECIMALPLACEMAX);
 
     // color bar
     chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
@@ -674,20 +674,20 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     // contours and vectors
     // contours
     txtContoursCount = new QSpinBox(this);
-    txtContoursCount->setMinimum(1);
-    txtContoursCount->setMaximum(100);
+    txtContoursCount->setMinimum(CONTOURSCOUNTMIN);
+    txtContoursCount->setMaximum(CONTOURSCOUNTMAX);
 
     // vectors
     chkVectorProportional = new QCheckBox(tr("Proportional"), this);
     chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
     txtVectorCount = new QSpinBox(this);
-    txtVectorCount->setMinimum(1);
-    txtVectorCount->setMaximum(500);
+    txtVectorCount->setMinimum(VECTORSCOUNTMIN);
+    txtVectorCount->setMaximum(VECTORSCOUNTMAX);
     txtVectorScale = new QDoubleSpinBox(this);
     txtVectorScale->setDecimals(2);
     txtVectorScale->setSingleStep(0.1);
-    txtVectorScale->setMinimum(0);
-    txtVectorScale->setMaximum(20);
+    txtVectorScale->setMinimum(VECTORSSCALEMIN);
+    txtVectorScale->setMaximum(VECTORSSCALEMAX);
 
     QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
     connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
@@ -1099,8 +1099,8 @@ void PostprocessorWidget::doContoursVectorsDefault()
     txtContoursCount->setValue(CONTOURSCOUNT);
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
-    txtVectorCount->setValue(VECTORNUMBER);
-    txtVectorScale->setValue(VECTORSCALE);
+    txtVectorCount->setValue(VECTORSCOUNT);
+    txtVectorScale->setValue(VECTORSSCALE);
 }
 
 void PostprocessorWidget::doOrderDefault()

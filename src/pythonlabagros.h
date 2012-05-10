@@ -296,12 +296,10 @@ struct PyViewConfig
     inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
 
     // time step
-    // todo: (Franta) gui is not synchronized
     void setActiveTimeStep(int timeStep);
     inline int getActiveTimeStep() const { return Util::scene()->activeTimeStep(); }
 
     // adaptivity step
-    // todo: (Franta) gui is not synchronized
     void setActiveAdaptivityStep(int adaptivityStep);
     inline int getActiveAdaptivityStep() const { return Util::scene()->activeAdaptivityStep(); }
 
@@ -356,8 +354,8 @@ struct PyViewPost2D
     void refresh();
 
     // scalar view
-    void setScalarViewShow(int show);
-    inline int getScalarViewShow() const { return Util::config()->showScalarView; }
+    void setScalarViewShow(bool show);
+    inline bool getScalarViewShow() const { return Util::config()->showScalarView; }
     void setScalarViewVariable(char* var);
     inline char* getScalarViewVariable() const { return const_cast<char*>(Util::config()->scalarVariable.toStdString().c_str()); }
     void setScalarViewVariableComp(char* component);
@@ -369,47 +367,47 @@ struct PyViewPost2D
     inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
-    void setScalarViewPaletteFilter(int filter);
-    inline int getScalarViewPaletteFilter() const { return Util::config()->paletteFilter; }
+    void setScalarViewPaletteFilter(bool filter);
+    inline bool getScalarViewPaletteFilter() const { return Util::config()->paletteFilter; }
 
-    void setScalarViewRangeLog(int log);
-    inline int getScalarViewRangeLog() const { return Util::config()->scalarRangeLog; }
+    void setScalarViewRangeLog(bool log);
+    inline bool getScalarViewRangeLog() const { return Util::config()->scalarRangeLog; }
     void setScalarViewRangeBase(double base);
     inline double getScalarViewRangeBase() const { return Util::config()->scalarRangeBase; }
 
-    void setScalarViewColorBar(int show);
-    inline int getScalarViewColorBar() const { return Util::config()->showScalarColorBar; }
+    void setScalarViewColorBar(bool show);
+    inline bool getScalarViewColorBar() const { return Util::config()->showScalarColorBar; }
     void setScalarViewDecimalPlace(int place);
     inline int getScalarViewDecimalPlace() const { return Util::config()->scalarDecimalPlace; }
 
-    void setScalarViewRangeAuto(int autoRange);
-    inline int getScalarViewRangeAuto() const { return Util::config()->scalarRangeAuto; }
+    void setScalarViewRangeAuto(bool autoRange);
+    inline bool getScalarViewRangeAuto() const { return Util::config()->scalarRangeAuto; }
     void setScalarViewRangeMin(double min);
     inline double getScalarViewRangeMin() const { return Util::config()->scalarRangeMin; }
     void setScalarViewRangeMax(double max);
     inline double getScalarViewRangeMax() const { return Util::config()->scalarRangeMax; }
 
     // contour
-    void setContourShow(int show);
-    inline int getContourShow() const { return Util::config()->showContourView; }
+    void setContourShow(bool show);
+    inline bool getContourShow() const { return Util::config()->showContourView; }
     void setContourCount(int count);
     inline int getContourCount() const { return Util::config()->contoursCount; }
     void setContourVariable(char* var);
     inline char* getContourVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
 
     // vector
-    void setVectorShow(int show);
-    inline int getVectorShow() const { return Util::config()->showVectorView; }
+    void setVectorShow(bool show);
+    inline bool getVectorShow() const { return Util::config()->showVectorView; }
     void setVectorCount(int count);
     inline int getVectorCount() const { return Util::config()->vectorCount; }
     void setVectorScale(double scale);
     inline int getVectorScale() const { return Util::config()->vectorScale; }
     void setVectorVariable(char* var);
     inline char* getVectorVariable() const { return const_cast<char*>(Util::config()->vectorVariable.toStdString().c_str()); }
-    void setVectorProportional(int show);
-    inline int getVectorProportional() const { return Util::config()->vectorProportional; }
-    void setVectorColor(int show);
-    inline int getVectorColor() const { return Util::config()->vectorColor; }
+    void setVectorProportional(bool show);
+    inline bool getVectorProportional() const { return Util::config()->vectorProportional; }
+    void setVectorColor(bool show);
+    inline bool getVectorColor() const { return Util::config()->vectorColor; }
 };
 
 struct PyViewPost3D

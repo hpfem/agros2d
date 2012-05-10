@@ -1249,7 +1249,7 @@ void PyViewPost2D::refresh()
         currentPythonEngineAgros()->sceneViewPost2D()->refresh();
 }
 
-void PyViewPost2D::setScalarViewShow(int show)
+void PyViewPost2D::setScalarViewShow(bool show)
 {
     Util::config()->showScalarView = show;
 }
@@ -1269,52 +1269,47 @@ void PyViewPost2D::setScalarViewVariable(char* var)
         }
     }
 
-    // vector variables
-    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
-    {
-        list.append(variable->id());
-        if (variable->id() == QString(var))
-        {
-            Util::config()->vectorVariable = QString(var);
-            return;
-        }
-    }
-
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
 void PyViewPost2D::setScalarViewVariableComp(char* component)
 {
-    // todo: (Franta)
-    Util::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+    if (physicFieldVariableCompTypeStringKeys().contains(QString(component)))
+        Util::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(physicFieldVariableCompTypeStringKeys())).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPalette(char* palette)
 {
-    // todo: (Franta)
-    Util::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+    if (paletteTypeStringKeys().contains(QString(palette)))
+        Util::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteTypeStringKeys())).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
 {
-    // todo: (Franta)
-    Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+    if (paletteQualityStringKeys().contains(QString(quality)))
+        Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPaletteSteps(int steps)
 {
-    if (steps >= 5 && steps <= 100)
+    if (steps >= PALLETESTEPSMIN && steps <= PALLETESTEPSMAX)
         Util::config()->paletteSteps = steps;
     else
-        throw invalid_argument(QObject::tr("Palette steps must be in the range from 5 to 100.").toStdString());
+        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALLETESTEPSMIN).arg(PALLETESTEPSMAX).toStdString());
 }
 
-void PyViewPost2D::setScalarViewPaletteFilter(int filter)
+void PyViewPost2D::setScalarViewPaletteFilter(bool filter)
 {
     Util::config()->paletteFilter = filter;
 }
 
-void PyViewPost2D::setScalarViewRangeLog(int log)
+void PyViewPost2D::setScalarViewRangeLog(bool log)
 {
     Util::config()->scalarRangeLog = log;
 }
@@ -1324,20 +1319,20 @@ void PyViewPost2D::setScalarViewRangeBase(double base)
     Util::config()->scalarRangeBase = base;
 }
 
-void PyViewPost2D::setScalarViewColorBar(int show)
+void PyViewPost2D::setScalarViewColorBar(bool show)
 {
     Util::config()->showScalarColorBar = show;
 }
 
 void PyViewPost2D::setScalarViewDecimalPlace(int place)
 {
-    if (place >= 0 && place <= 10)
+    if (place >= SCALARDECIMALPLACEMIN && place <= SCALARDECIMALPLACEMAX)
         Util::config()->scalarDecimalPlace = place;
     else
-        throw invalid_argument(QObject::tr("Decimal place must be in the range from 0 to 10.").toStdString());
+        throw invalid_argument(QObject::tr("Decimal place must be in the range from %1 to %2.").arg(SCALARDECIMALPLACEMIN).arg(SCALARDECIMALPLACEMAX).toStdString());
 }
 
-void PyViewPost2D::setScalarViewRangeAuto(int autoRange)
+void PyViewPost2D::setScalarViewRangeAuto(bool autoRange)
 {
     Util::config()->scalarRangeAuto = autoRange;
 }
@@ -1352,17 +1347,17 @@ void PyViewPost2D::setScalarViewRangeMax(double max)
     Util::config()->scalarRangeMax = max;
 }
 
-void PyViewPost2D::setContourShow(int show)
+void PyViewPost2D::setContourShow(bool show)
 {
     Util::config()->showContourView = show;
 }
 
 void PyViewPost2D::setContourCount(int count)
 {
-    if (count > 0 && count <= 100)
+    if (count > CONTOURSCOUNTMIN && count <= CONTOURSCOUNTMAX)
         Util::config()->contoursCount = count;
     else
-        throw invalid_argument(QObject::tr("Contour count must be in the range from 1 to 100.").toStdString());
+        throw invalid_argument(QObject::tr("Contour count must be in the range from %1 to %2.").arg(CONTOURSCOUNTMIN).arg(CONTOURSCOUNTMAX).toStdString());
 }
 
 void PyViewPost2D::setContourVariable(char* var)
@@ -1385,26 +1380,25 @@ void PyViewPost2D::setContourVariable(char* var)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
-void PyViewPost2D::setVectorShow(int show)
+void PyViewPost2D::setVectorShow(bool show)
 {
     Util::config()->showVectorView = show;
 }
 
 void PyViewPost2D::setVectorCount(int count)
 {
-    if (count > 0 && count <= 500)
+    if (count > VECTORSCOUNTMIN && count <= VECTORSCOUNTMAX)
         Util::config()->vectorCount = count;
     else
-        throw invalid_argument(QObject::tr("Vector count must be in the range from 1 to 500.").toStdString());
+        throw invalid_argument(QObject::tr("Vector count must be in the range from %1 to %2.").arg(VECTORSCOUNTMIN).arg(VECTORSCOUNTMAX).toStdString());
 }
 
 void PyViewPost2D::setVectorScale(double scale)
 {
-    // todo: (Franta) change range
-    if (scale > 0.0 && scale <= 20.0)
+    if (scale > VECTORSSCALEMIN && scale <= VECTORSSCALEMAX)
         Util::config()->vectorScale = scale;
     else
-        throw invalid_argument(QObject::tr("Vector scale must be in the range from 0.0 to 20.0.").toStdString());
+        throw invalid_argument(QObject::tr("Vector scale must be in the range from %1 to %2.").arg(VECTORSSCALEMIN).arg(VECTORSSCALEMAX).toStdString());
 }
 
 void PyViewPost2D::setVectorVariable(char* var)
@@ -1423,12 +1417,12 @@ void PyViewPost2D::setVectorVariable(char* var)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
-void PyViewPost2D::setVectorProportional(int show)
+void PyViewPost2D::setVectorProportional(bool show)
 {
     Util::config()->vectorProportional = show;
 }
 
-void PyViewPost2D::setVectorColor(int show)
+void PyViewPost2D::setVectorColor(bool show)
 {
     Util::config()->vectorColor = show;
 }
