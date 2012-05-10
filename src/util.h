@@ -666,6 +666,7 @@ PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality);
 double paletteQualityValueToDouble(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromDouble(const double paletteQuality);
 
+QStringList paletteOrderTypeStringKeys();
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
 

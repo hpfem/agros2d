@@ -1202,34 +1202,37 @@ void PyViewMesh::refresh()
         currentPythonEngineAgros()->sceneViewMesh()->refresh();
 }
 
-void PyViewMesh::setInitialMeshViewShow(int show)
+void PyViewMesh::setInitialMeshViewShow(bool show)
 {
     Util::config()->showInitialMeshView = show;
 }
 
-void PyViewMesh::setSolutionMeshViewShow(int show)
+void PyViewMesh::setSolutionMeshViewShow(bool show)
 {
     Util::config()->showSolutionMeshView = show;
 }
 
-void PyViewMesh::setOrderViewShow(int show)
+void PyViewMesh::setOrderViewShow(bool show)
 {
     Util::config()->showOrderView = show;
 }
 
-void PyViewMesh::setOrderViewColorBar(int show)
+void PyViewMesh::setOrderViewColorBar(bool show)
 {
     Util::config()->showOrderColorBar = show;
 }
 
-void PyViewMesh::setOrderViewLabel(int show)
+void PyViewMesh::setOrderViewLabel(bool show)
 {
     Util::config()->orderLabel = show;
 }
 
 void PyViewMesh::setOrderViewPalette(char* palette)
 {
-    Util::config()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+    if (paletteOrderTypeStringKeys().contains(QString(palette)))
+        Util::config()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteOrderTypeStringKeys())).toStdString());
 }
 
 // ****************************************************************************************************

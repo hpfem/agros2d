@@ -333,18 +333,18 @@ struct PyViewMesh
     void refresh();
 
     // mesh
-    void setInitialMeshViewShow(int show);
-    inline int getInitialMeshViewShow() const { return Util::config()->showInitialMeshView; }
-    void setSolutionMeshViewShow(int show);
-    inline int getSolutionMeshViewShow() const { return Util::config()->showSolutionMeshView; }
+    void setInitialMeshViewShow(bool show);
+    inline bool getInitialMeshViewShow() const { return Util::config()->showInitialMeshView; }
+    void setSolutionMeshViewShow(bool show);
+    inline bool getSolutionMeshViewShow() const { return Util::config()->showSolutionMeshView; }
 
     // polynomial order
-    void setOrderViewShow(int show);
-    inline int getOrderViewShow() const { return Util::config()->showOrderView; }
-    void setOrderViewColorBar(int show);
-    inline int getOrderViewColorBar() const { return Util::config()->showOrderColorBar; }
-    void setOrderViewLabel(int show);
-    inline int getOrderViewLabel() const { return Util::config()->orderLabel; }
+    void setOrderViewShow(bool show);
+    inline bool getOrderViewShow() const { return Util::config()->showOrderView; }
+    void setOrderViewColorBar(bool show);
+    inline bool getOrderViewColorBar() const { return Util::config()->showOrderColorBar; }
+    void setOrderViewLabel(bool show);
+    inline bool getOrderViewLabel() const { return Util::config()->orderLabel; }
     void setOrderViewPalette(char* palette);
     inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Util::config()->orderPaletteOrderType).toStdString().c_str()); }
 };

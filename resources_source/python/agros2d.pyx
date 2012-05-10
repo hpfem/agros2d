@@ -176,16 +176,16 @@ cdef extern from "../../src/pythonlabagros.h":
         void activate()
         void refresh()
 
-        void setInitialMeshViewShow(bool show)  except +
+        void setInitialMeshViewShow(bool show)
         bool getInitialMeshViewShow()
-        void setSolutionMeshViewShow(bool show) except +
+        void setSolutionMeshViewShow(bool show)
         bool getSolutionMeshViewShow()
 
-        void setOrderViewShow(bool show) except +
+        void setOrderViewShow(bool show)
         bool getOrderViewShow()
-        void setOrderViewColorBar(bool show) except +
+        void setOrderViewColorBar(bool show)
         bool getOrderViewColorBar()
-        void setOrderViewLabel(bool show) except +
+        void setOrderViewLabel(bool show)
         bool getOrderViewLabel()
         void setOrderViewPalette(char *palette) except +
         char* getOrderViewPalette()
@@ -747,37 +747,37 @@ cdef class __ViewMesh__:
     def refresh(self):
         self.thisptr.refresh()
 
-    property solution_mesh_view_show:
+    property solution_mesh:
         def __get__(self):
             return self.thisptr.getSolutionMeshViewShow()
         def __set__(self, show):
             self.thisptr.setSolutionMeshViewShow(show)
 
-    property initial_mesh_view_show:
+    property initial_mesh:
         def __get__(self):
             return self.thisptr.getInitialMeshViewShow()
         def __set__(self, show):
             self.thisptr.setInitialMeshViewShow(show)
 
-    property order_view_show:
+    property order:
         def __get__(self):
             return self.thisptr.getOrderViewShow()
         def __set__(self, show):
             self.thisptr.setOrderViewShow(show)
 
-    property order_view_color_bar:
+    property order_color_bar:
         def __get__(self):
             return self.thisptr.getOrderViewColorBar()
         def __set__(self, show):
             self.thisptr.setOrderViewColorBar(show)
 
-    property order_view_label:
+    property order_label:
         def __get__(self):
             return self.thisptr.getOrderViewLabel()
         def __set__(self, show):
             self.thisptr.setOrderViewLabel(show)
 
-    property order_view_palette:
+    property order_palette:
         def __get__(self):
             return self.thisptr.getOrderViewPalette()
         def __set__(self, palette):

@@ -105,6 +105,7 @@ PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { retu
 double paletteQualityValueToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
 PaletteQuality paletteQualityFromDouble(const double paletteQuality) { return paletteQualityValueList.key(paletteQuality); }
 
+QStringList paletteOrderTypeStringKeys() { return paletteOrderTypeList.values(); }
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType) { return paletteOrderTypeList.key(paletteType); }
 
