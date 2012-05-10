@@ -388,6 +388,7 @@ void Problem::solve()
                     while (continueSolve && (adaptStep <= block->adaptivitySteps()))
                     {
                         continueSolve = solver->solveAdaptivityStep(0, adaptStep);
+                        continueSolve = continueSolve && solver->solveCreateAdaptedSpace(0, adaptStep);
                         cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
                         adaptStep++;
                     }

@@ -506,9 +506,6 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
         // break;
     }
 
-    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
-    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
-    initSelectors(projNormType, selector);
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
                                                            msaRef.solutionsNaked(),
@@ -522,6 +519,18 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
         Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Normal), msa);
         Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference), msaRef);
     }
+
+}
+
+template <typename Scalar>
+bool Solver<Scalar>::solveCreateAdaptedSpace(int timeStep, int adaptivityStep)
+{
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting)); // TODO or normal
+    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference));
+
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+    initSelectors(projNormType, selector);
 
     MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
     createNewSolutions(msaNew);
