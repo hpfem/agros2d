@@ -50,6 +50,7 @@ public:
 
     bool solveInitialAdaptivityStep(int timeStep);
     bool solveAdaptivityStep(int timeStep, int adaptivityStep);
+    bool solveCreateAdaptedSpace(int timeStep, int adaptivityStep);
 
 private:
     Block* m_block;
