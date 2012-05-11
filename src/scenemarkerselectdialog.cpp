@@ -111,7 +111,7 @@ void SceneMarkerSelectDialog::doAccept()
             {
                 foreach (SceneEdge *edge, Util::scene()->edges->items())
                 {
-                    if (edge->getMarker(Util::scene()->activeViewField()) ==
+                    if (edge->marker(Util::scene()->activeViewField()) ==
                             lstSurface->item(i)->data(Qt::UserRole).value<SceneBoundary *>())
                         edge->setSelected(true);
                 }
@@ -130,7 +130,7 @@ void SceneMarkerSelectDialog::doAccept()
             {
                 foreach (SceneLabel *label, Util::scene()->labels->items())
                 {
-                    if (label->getMarker(Util::scene()->activeViewField()) ==
+                    if (label->marker(Util::scene()->activeViewField()) ==
                             lstVolume->item(i)->data(Qt::UserRole).value<SceneMaterial *>())
                         label->setSelected(true);
                 }

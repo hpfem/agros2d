@@ -96,11 +96,11 @@ void ParserForm::initParser()
 
 void ParserForm::setMaterialToParser(Material *material)
 {
-    QList<Module::MaterialTypeVariable *> materials = material->getFieldInfo()->module()->materialTypeVariables();
+    QList<Module::MaterialTypeVariable *> materials = material->fieldInfo()->module()->materialTypeVariables();
     foreach (Module::MaterialTypeVariable *variable, materials)
     {
-        parserVariables[variable->shortname().toStdString()] = material->getValue(variable->id()).value(0.0); // TODO: nonlinear - value(value);
-        parserVariables["d" + variable->shortname().toStdString()] = material->getValue(variable->id()).derivative(0.0); // TODO: nonlinear - derivative(value);
+        parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(0.0); // TODO: nonlinear - value(value);
+        parserVariables["d" + variable->shortname().toStdString()] = material->value(variable->id()).derivative(0.0); // TODO: nonlinear - derivative(value);
     }
 
     // register value address
@@ -119,7 +119,7 @@ void ParserForm::setBoundaryToParser(Boundary * boundary)
     // TODO: zkontrolovat volani value, proc u boundary neni derivace, ...
     Module::BoundaryType *boundaryType = m_fieldInfo->module()->boundaryType(boundary->getType());
     foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
-        parserVariables[variable->shortname().toStdString()] = boundary->getValue(variable->id()).value(0.0); // TODO: nonlinear - value(value);
+        parserVariables[variable->shortname().toStdString()] = boundary->value(variable->id()).value(0.0); // TODO: nonlinear - value(value);
 
     // register value address
     for (QMap<std::string, double>::iterator itv = parserVariables.begin(); itv != parserVariables.end(); ++itv)
@@ -172,7 +172,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
         {
             foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
             {
-                Value value = m_materialSource->getValue(variable->id());
+                Value value = m_materialSource->value(variable->id());
 
                 // table
                 if (value.hasTable())
@@ -220,7 +220,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             {
                 foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
                 {
-                    Value value = m_materialSource->getValue(variable->id());
+                    Value value = m_materialSource->value(variable->id());
 
                     // table
                     if (value.hasTable())
@@ -333,11 +333,11 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
         {
             foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
             {
-                Value value = m_materialSource->getValue(variable->id());
+                Value value = m_materialSource->value(variable->id());
 
                 // table
                 if (value.hasTable())
-                    parserVariables[variable->shortname().toStdString()] = m_materialSource->getValue(variable->id()).value(pupval);
+                    parserVariables[variable->shortname().toStdString()] = m_materialSource->value(variable->id()).value(pupval);
             }
         }
     }
@@ -370,11 +370,11 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             {
                 foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
                 {
-                    Value value = m_materialSource->getValue(variable->id());
+                    Value value = m_materialSource->value(variable->id());
 
                     // table
                     if (value.hasTable())
-                        parserVariables[variable->shortname().toStdString()] = m_materialSource->getValue(variable->id()).value(pupval);
+                        parserVariables[variable->shortname().toStdString()] = m_materialSource->value(variable->id()).value(pupval);
                 }
             }
         }
@@ -460,7 +460,7 @@ CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, u
     : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm(), m_boundary(boundary)
 {
     // TODO: not good
-    m_fieldInfo = boundary->getFieldInfo();
+    m_fieldInfo = boundary->fieldInfo();
 
     // parser
     initParserField(expression);
@@ -553,7 +553,7 @@ CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i, u
     : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), j(j), ParserForm(), m_boundary(boundary)
 {
     // TODO: not good
-    m_fieldInfo = boundary->getFieldInfo();
+    m_fieldInfo = boundary->fieldInfo();
 
     // parser
     initParserField(expression);
@@ -635,7 +635,7 @@ CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, s
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh)
 {
     // TODO: not good
-    m_fieldInfo = boundary->getFieldInfo();
+    m_fieldInfo = boundary->fieldInfo();
 
     // parser
     initParserField(expression);

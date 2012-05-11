@@ -269,15 +269,16 @@
 
 	<element name="quantity">
 		<complexType>
+			<attribute name="id" use="required" type="string" />
 			<attribute name="condition" type="string" />
 			<attribute name="default" type="decimal" />
-			<attribute name="id" use="required" type="string" />
+			<attribute name="nonlinearity_planar" type="string" />
+			<attribute name="nonlinearity_axi" type="string" />
+			<attribute name="dependence" type="string" />
 			<attribute name="name" type="string" />
-			<attribute name="nonlin" type="integer" />
 			<attribute name="shortname" type="string" />
 			<attribute name="shortname_html" type="string" />
 			<attribute name="shortname_latex" type="string" />
-			<attribute name="timedep" type="integer" />
 			<attribute name="unit" type="string" />
 			<attribute name="unit_html" type="string" />
 			<attribute name="unit_latex" type="string" />

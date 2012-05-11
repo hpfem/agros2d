@@ -65,7 +65,7 @@ int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
 LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : PostprocessorValue(fieldInfo), point(point)
 {
     // parser variables
-    parsers.push_back(m_fieldInfo->module()->expressionParser());
+    m_parsers.push_back(m_fieldInfo->module()->expressionParser());
 
     initParser();
 
@@ -74,15 +74,13 @@ LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : Pos
 
 LocalPointValue::~LocalPointValue()
 {
+
 }
 
 void LocalPointValue::initParser()
 {
     // parser variables
-    parsers.push_back(m_fieldInfo->module()->expressionParser());
-
-    // init material variables
-    // parser->initParserMaterialVariables();
+    m_parsers.push_back(m_fieldInfo->module()->expressionParser());
 }
 
 void LocalPointValue::calculate()
@@ -105,13 +103,13 @@ void LocalPointValue::calculate()
             // find marker
             Hermes::Hermes2D::Element *e = Util::problem()->meshInitial(m_fieldInfo)->get_element_fast(index);
             SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
-            SceneMaterial *tmpMaterial = label->getMarker(m_fieldInfo);
+            SceneMaterial *material = label->marker(m_fieldInfo);
 
             // set variables
             double px = point.x;
             double py = point.y;
-            parsers[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-            parsers[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+            m_parsers[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+            m_parsers[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
             double *pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
             double *pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
@@ -142,13 +140,29 @@ void LocalPointValue::calculate()
                 std::stringstream number;
                 number << (k+1);
 
-                parsers[0]->DefineVar("value" + number.str(), &pvalue[k]);
-                parsers[0]->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-                parsers[0]->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+                m_parsers[0]->DefineVar("value" + number.str(), &pvalue[k]);
+                m_parsers[0]->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+                m_parsers[0]->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+            }
+
+            // add nonlinear parsers
+            foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
+            {
+                if (!variable->expressionNonlinear().isEmpty())
+                {
+                    mu::Parser *parser = m_fieldInfo->module()->expressionParser();
+                    parser->SetExpr(variable->expressionNonlinear().toStdString());
+
+                    // get variables
+                    for (std::map<std::string, double *>::const_iterator item = m_parsers[0]->GetVar().begin(); item != m_parsers[0]->GetVar().end(); ++item)
+                        parser->DefineVar(item->first, item->second);
+
+                    m_parsersNonlinear[variable] = parser;
+                }
             }
 
             // set material variables
-            setMaterialToParsers(tmpMaterial);
+            setMaterialToParsers(material);
 
             // parse expression
             foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
@@ -156,17 +170,21 @@ void LocalPointValue::calculate()
                 try
                 {
                     PointValue pointValue;
+
+                    // init nonlinear material
+                    setNonlinearMaterial(material);
+
                     if (variable->isScalar())
                     {
-                        parsers[0]->SetExpr(variable->expression().scalar().toStdString());
-                        pointValue.scalar = parsers[0]->Eval();
+                        m_parsers[0]->SetExpr(variable->expression().scalar().toStdString());
+                        pointValue.scalar = m_parsers[0]->Eval();
                     }
                     else
                     {
-                        parsers[0]->SetExpr(variable->expression().compX().toStdString());
-                        pointValue.vector.x = parsers[0]->Eval();
-                        parsers[0]->SetExpr(variable->expression().compY().toStdString());
-                        pointValue.vector.y = parsers[0]->Eval();
+                        m_parsers[0]->SetExpr(variable->expression().compX().toStdString());
+                        pointValue.vector.x = m_parsers[0]->Eval();
+                        m_parsers[0]->SetExpr(variable->expression().compY().toStdString());
+                        pointValue.vector.y = m_parsers[0]->Eval();
                     }
                     m_values[variable] = pointValue;
 
@@ -174,7 +192,7 @@ void LocalPointValue::calculate()
                 catch (mu::Parser::exception_type &e)
                 {
                     qDebug() << "Local value: " << variable->name() << " (" << variable->id() << ") " << variable->name() << " - " <<
-                                QString::fromStdString(parsers[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
+                                QString::fromStdString(m_parsers[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                 }
             }
 

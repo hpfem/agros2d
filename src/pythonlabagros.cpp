@@ -207,7 +207,7 @@ QString createPythonFromModel()
                 QString boundaries = ", boundaries = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
-                    SceneBoundary *marker = edge->getMarker(fieldInfo);
+                    SceneBoundary *marker = edge->marker(fieldInfo);
 
                     if (marker != Util::scene()->boundaries->getNone(fieldInfo))
                     {
@@ -245,7 +245,7 @@ QString createPythonFromModel()
                 QString materials = ", materials = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
-                    SceneMaterial *marker = label->getMarker(fieldInfo);
+                    SceneMaterial *marker = label->marker(fieldInfo);
 
                     materials += QString("\"%1\" : \"%2\", ").
                             arg(fieldInfo->fieldId()).
@@ -780,9 +780,9 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             {
                 if ((*it >= 0) && (*it < Util::scene()->labels->length()))
                 {
-                    qDebug() << QString::number(*it) << Util::scene()->labels->at(*it)->getMarker(m_fieldInfo)->getName();
+                    qDebug() << QString::number(*it) << Util::scene()->labels->at(*it)->marker(m_fieldInfo)->getName();
 
-                    if (Util::scene()->labels->at(*it)->getMarker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
+                    if (Util::scene()->labels->at(*it)->marker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
                     {
                         Util::scene()->labels->at(*it)->setSelected(true);
                     }

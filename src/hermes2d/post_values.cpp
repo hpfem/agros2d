@@ -31,33 +31,91 @@
 
 #include "../weakform/src/weakform_factory.h"
 
+#include <muParserDef.h>
 
 void PostprocessorValue::setMaterialToParsers(Material *material)
 {
-    parserVariables.clear();
+    m_parserVariables.clear();
 
     // set material
     foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        parserVariables[variable->shortname().toStdString()] = material->getValue(variable->id()).number();
+        if (variable->expressionNonlinear().isEmpty())
+            // linear variable
+            m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
+        else
+            // nonlinear variable
+            m_parserVariables[variable->shortname().toStdString()] = 0.0;
 
     // register value address
-    for (QMap<std::string, double>::iterator itv = parserVariables.begin(); itv != parserVariables.end(); ++itv)
-        foreach (mu::Parser *pars, parsers)
+    for (QMap<std::string, double>::iterator itv = m_parserVariables.begin(); itv != m_parserVariables.end(); ++itv)
+        foreach (mu::Parser *pars, m_parsers)
             pars->DefineVar(itv.key(), &itv.value());
 }
 
 PostprocessorValue::~PostprocessorValue()
 {
-    parserVariables.clear();
+    // delete parsers
+    foreach (mu::Parser *parser, m_parsers)
+        delete parser;
+    m_parsers.clear();
+
+    // delete parsers
+    foreach (mu::Parser *parser, m_parsersNonlinear.values())
+        delete parser;
+    m_parsersNonlinear.clear();
+
+    m_parserVariables.clear();
 }
 
+void PostprocessorValue::setNonlinearParsers()
+{
+    if ((m_fieldInfo->linearityType() != LinearityType_Linear) && (m_parsers.length() > 0))
+    {
+        foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
+        {
+            if (!variable->expressionNonlinear().isEmpty())
+            {
+                mu::Parser *parser = m_fieldInfo->module()->expressionParser();
+                parser->SetExpr(variable->expressionNonlinear().toStdString());
+
+                // get variables
+                for (std::map<std::string, double *>::const_iterator item = m_parsers[0]->GetVar().begin(); item != m_parsers[0]->GetVar().end(); ++item)
+                    parser->DefineVar(item->first, item->second);
+
+                m_parsersNonlinear[variable] = parser;
+            }
+        }
+    }
+}
+
+void PostprocessorValue::setNonlinearMaterial(SceneMaterial *material)
+{
+    if (m_fieldInfo->linearityType() != LinearityType_Linear)
+    {
+        foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
+        {
+            if (!variable->expressionNonlinear().isEmpty())
+            {
+                try
+                {
+                    double nonlinValue = m_parsersNonlinear[variable]->Eval();
+                    m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(nonlinValue);
+                }
+                catch (mu::Parser::exception_type &e)
+                {
+                    std::cout << "Nonlinear value '" << variable->id().toStdString() << "'): " << e.GetMsg() << std::endl;
+                }
+            }
+        }
+    }
+}
 // *********************************************************************************************************************************************
 
 void PostprocessorIntegralValue::initParser(QList<Module::Integral *> list)
 {
     foreach (Module::Integral *integral, list)
     {
-        parsers.push_back(m_fieldInfo->module()->expressionParser(integral->expression()));
+        m_parsers.push_back(m_fieldInfo->module()->expressionParser(integral->expression()));
         m_values[integral] = 0.0;
     }
 }
@@ -68,7 +126,7 @@ template <typename Scalar>
 ViewScalarFilter<Scalar>::ViewScalarFilter(FieldInfo *fieldInfo,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
                                            QString expression)
-    : Hermes::Hermes2D::Filter<Scalar>(sln), m_fieldInfo(fieldInfo)
+    : Hermes::Hermes2D::Filter<Scalar>(sln), PostprocessorValue(fieldInfo)
 {
     initParser(expression);
 }
@@ -76,8 +134,6 @@ ViewScalarFilter<Scalar>::ViewScalarFilter(FieldInfo *fieldInfo,
 template <typename Scalar>
 ViewScalarFilter<Scalar>::~ViewScalarFilter()
 {
-    delete parser;
-
     delete [] pvalue;
     delete [] pdx;
     delete [] pdy;
@@ -86,12 +142,11 @@ ViewScalarFilter<Scalar>::~ViewScalarFilter()
 template <typename Scalar>
 void ViewScalarFilter<Scalar>::initParser(const QString &expression)
 {
-    parser = m_fieldInfo->module()->expressionParser();
+    m_parsers.append(m_fieldInfo->module()->expressionParser());
 
-    parser->SetExpr(expression.toStdString());
-
-    parser->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-    parser->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+    m_parsers[0]->SetExpr(expression.toStdString());
+    m_parsers[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+    m_parsers[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
     // value and derivatives
     pvalue = new double[Hermes::Hermes2D::Filter<Scalar>::num];
@@ -103,18 +158,21 @@ void ViewScalarFilter<Scalar>::initParser(const QString &expression)
         std::stringstream number;
         number << (k+1);
 
-        parser->DefineVar("value" + number.str(), &pvalue[k]);
-        parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-        parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+        m_parsers[0]->DefineVar("value" + number.str(), &pvalue[k]);
+        m_parsers[0]->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+        m_parsers[0]->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
     }
+
+    // set nonlinear parsers
+    setNonlinearParsers();
 
     // fill material variables map
     foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        parserVariables[variable->shortname().toStdString()] = 0.0;
+        m_parserVariables[variable->shortname().toStdString()] = 0.0;
 
     // register value address
-    for (QMap<std::string, double>::iterator it = parserVariables.begin(); it != parserVariables.end(); ++it)
-        parser->DefineVar(it.key(), &it.value());
+    for (QMap<std::string, double>::iterator it = m_parserVariables.begin(); it != m_parserVariables.end(); ++it)
+        m_parsers[0]->DefineVar(it.key(), &it.value());
 }
 
 template <typename Scalar>
@@ -151,31 +209,31 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
 
     // set material
     SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
-                                                             get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
-    if (isLinear)
-        foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-            parserVariables[variable->shortname().toStdString()] = material->getValue(variable->id()).number();
+                                                             get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
+
+    foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
+        if (isLinear || variable->expressionNonlinear().isEmpty())
+            m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
 
     for (int i = 0; i < np; i++)
     {
         px = x[i];
         py = y[i];
 
-        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+        for (int k = 0; k < Hermes::Hermes2D::Filter<Scalar>::num; k++)
         {
             pvalue[k] = value[k][i];
             pdx[k] = dudx[k][i];
             pdy[k] = dudy[k][i];
         }
 
-        if (!isLinear)
-            foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-                parserVariables[variable->shortname().toStdString()] = material->getValue(variable->id()).value(pvalue[0]);
+        // init nonlinear material
+        setNonlinearMaterial(material);
 
         // parse expression
         try
         {
-            node->values[0][0][i] = parser->Eval();
+            node->values[0][0][i] = m_parsers[0]->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
@@ -204,7 +262,7 @@ ViewScalarFilter<Scalar>* ViewScalarFilter<Scalar>::clone()
     for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]);
 
-    return new ViewScalarFilter(m_fieldInfo, slns, QString::fromStdString(parser->GetExpr()));
+    return new ViewScalarFilter(m_fieldInfo, slns, QString::fromStdString(m_parsers[0]->GetExpr()));
 }
 
 template class ViewScalarFilter<double>;

@@ -2219,6 +2219,30 @@ namespace XMLModule
   // quantity
   // 
 
+  const quantity::id_type& quantity::
+  id () const
+  {
+    return this->id_.get ();
+  }
+
+  quantity::id_type& quantity::
+  id ()
+  {
+    return this->id_.get ();
+  }
+
+  void quantity::
+  id (const id_type& x)
+  {
+    this->id_.set (x);
+  }
+
+  void quantity::
+  id (::std::auto_ptr< id_type > x)
+  {
+    this->id_.set (x);
+  }
+
   const quantity::condition_optional& quantity::
   condition () const
   {
@@ -2273,28 +2297,94 @@ namespace XMLModule
     this->default__ = x;
   }
 
-  const quantity::id_type& quantity::
-  id () const
+  const quantity::nonlinearity_planar_optional& quantity::
+  nonlinearity_planar () const
   {
-    return this->id_.get ();
+    return this->nonlinearity_planar_;
   }
 
-  quantity::id_type& quantity::
-  id ()
+  quantity::nonlinearity_planar_optional& quantity::
+  nonlinearity_planar ()
   {
-    return this->id_.get ();
-  }
-
-  void quantity::
-  id (const id_type& x)
-  {
-    this->id_.set (x);
+    return this->nonlinearity_planar_;
   }
 
   void quantity::
-  id (::std::auto_ptr< id_type > x)
+  nonlinearity_planar (const nonlinearity_planar_type& x)
   {
-    this->id_.set (x);
+    this->nonlinearity_planar_.set (x);
+  }
+
+  void quantity::
+  nonlinearity_planar (const nonlinearity_planar_optional& x)
+  {
+    this->nonlinearity_planar_ = x;
+  }
+
+  void quantity::
+  nonlinearity_planar (::std::auto_ptr< nonlinearity_planar_type > x)
+  {
+    this->nonlinearity_planar_.set (x);
+  }
+
+  const quantity::nonlinearity_axi_optional& quantity::
+  nonlinearity_axi () const
+  {
+    return this->nonlinearity_axi_;
+  }
+
+  quantity::nonlinearity_axi_optional& quantity::
+  nonlinearity_axi ()
+  {
+    return this->nonlinearity_axi_;
+  }
+
+  void quantity::
+  nonlinearity_axi (const nonlinearity_axi_type& x)
+  {
+    this->nonlinearity_axi_.set (x);
+  }
+
+  void quantity::
+  nonlinearity_axi (const nonlinearity_axi_optional& x)
+  {
+    this->nonlinearity_axi_ = x;
+  }
+
+  void quantity::
+  nonlinearity_axi (::std::auto_ptr< nonlinearity_axi_type > x)
+  {
+    this->nonlinearity_axi_.set (x);
+  }
+
+  const quantity::dependence_optional& quantity::
+  dependence () const
+  {
+    return this->dependence_;
+  }
+
+  quantity::dependence_optional& quantity::
+  dependence ()
+  {
+    return this->dependence_;
+  }
+
+  void quantity::
+  dependence (const dependence_type& x)
+  {
+    this->dependence_.set (x);
+  }
+
+  void quantity::
+  dependence (const dependence_optional& x)
+  {
+    this->dependence_ = x;
+  }
+
+  void quantity::
+  dependence (::std::auto_ptr< dependence_type > x)
+  {
+    this->dependence_.set (x);
   }
 
   const quantity::name_optional& quantity::
@@ -2325,30 +2415,6 @@ namespace XMLModule
   name (::std::auto_ptr< name_type > x)
   {
     this->name_.set (x);
-  }
-
-  const quantity::nonlin_optional& quantity::
-  nonlin () const
-  {
-    return this->nonlin_;
-  }
-
-  quantity::nonlin_optional& quantity::
-  nonlin ()
-  {
-    return this->nonlin_;
-  }
-
-  void quantity::
-  nonlin (const nonlin_type& x)
-  {
-    this->nonlin_.set (x);
-  }
-
-  void quantity::
-  nonlin (const nonlin_optional& x)
-  {
-    this->nonlin_ = x;
   }
 
   const quantity::shortname_optional& quantity::
@@ -2439,30 +2505,6 @@ namespace XMLModule
   shortname_latex (::std::auto_ptr< shortname_latex_type > x)
   {
     this->shortname_latex_.set (x);
-  }
-
-  const quantity::timedep_optional& quantity::
-  timedep () const
-  {
-    return this->timedep_;
-  }
-
-  quantity::timedep_optional& quantity::
-  timedep ()
-  {
-    return this->timedep_;
-  }
-
-  void quantity::
-  timedep (const timedep_type& x)
-  {
-    this->timedep_.set (x);
-  }
-
-  void quantity::
-  timedep (const timedep_optional& x)
-  {
-    this->timedep_ = x;
   }
 
   const quantity::unit_optional& quantity::
@@ -6175,15 +6217,16 @@ namespace XMLModule
   quantity::
   quantity (const id_type& id)
   : ::xml_schema::type (),
+    id_ (id, ::xml_schema::flags (), this),
     condition_ (::xml_schema::flags (), this),
     default__ (::xml_schema::flags (), this),
-    id_ (id, ::xml_schema::flags (), this),
+    nonlinearity_planar_ (::xml_schema::flags (), this),
+    nonlinearity_axi_ (::xml_schema::flags (), this),
+    dependence_ (::xml_schema::flags (), this),
     name_ (::xml_schema::flags (), this),
-    nonlin_ (::xml_schema::flags (), this),
     shortname_ (::xml_schema::flags (), this),
     shortname_html_ (::xml_schema::flags (), this),
     shortname_latex_ (::xml_schema::flags (), this),
-    timedep_ (::xml_schema::flags (), this),
     unit_ (::xml_schema::flags (), this),
     unit_html_ (::xml_schema::flags (), this),
     unit_latex_ (::xml_schema::flags (), this)
@@ -6195,15 +6238,16 @@ namespace XMLModule
             ::xml_schema::flags f,
             ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    id_ (x.id_, f, this),
     condition_ (x.condition_, f, this),
     default__ (x.default__, f, this),
-    id_ (x.id_, f, this),
+    nonlinearity_planar_ (x.nonlinearity_planar_, f, this),
+    nonlinearity_axi_ (x.nonlinearity_axi_, f, this),
+    dependence_ (x.dependence_, f, this),
     name_ (x.name_, f, this),
-    nonlin_ (x.nonlin_, f, this),
     shortname_ (x.shortname_, f, this),
     shortname_html_ (x.shortname_html_, f, this),
     shortname_latex_ (x.shortname_latex_, f, this),
-    timedep_ (x.timedep_, f, this),
     unit_ (x.unit_, f, this),
     unit_html_ (x.unit_html_, f, this),
     unit_latex_ (x.unit_latex_, f, this)
@@ -6215,15 +6259,16 @@ namespace XMLModule
             ::xml_schema::flags f,
             ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    id_ (f, this),
     condition_ (f, this),
     default__ (f, this),
-    id_ (f, this),
+    nonlinearity_planar_ (f, this),
+    nonlinearity_axi_ (f, this),
+    dependence_ (f, this),
     name_ (f, this),
-    nonlin_ (f, this),
     shortname_ (f, this),
     shortname_html_ (f, this),
     shortname_latex_ (f, this),
-    timedep_ (f, this),
     unit_ (f, this),
     unit_html_ (f, this),
     unit_latex_ (f, this)
@@ -6245,6 +6290,15 @@ namespace XMLModule
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
+      if (n.name () == "id" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< id_type > r (
+          id_traits::create (i, f, this));
+
+        this->id_.set (r);
+        continue;
+      }
+
       if (n.name () == "condition" && n.namespace_ ().empty ())
       {
         ::std::auto_ptr< condition_type > r (
@@ -6260,12 +6314,30 @@ namespace XMLModule
         continue;
       }
 
-      if (n.name () == "id" && n.namespace_ ().empty ())
+      if (n.name () == "nonlinearity_planar" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< id_type > r (
-          id_traits::create (i, f, this));
+        ::std::auto_ptr< nonlinearity_planar_type > r (
+          nonlinearity_planar_traits::create (i, f, this));
 
-        this->id_.set (r);
+        this->nonlinearity_planar_.set (r);
+        continue;
+      }
+
+      if (n.name () == "nonlinearity_axi" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< nonlinearity_axi_type > r (
+          nonlinearity_axi_traits::create (i, f, this));
+
+        this->nonlinearity_axi_.set (r);
+        continue;
+      }
+
+      if (n.name () == "dependence" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< dependence_type > r (
+          dependence_traits::create (i, f, this));
+
+        this->dependence_.set (r);
         continue;
       }
 
@@ -6275,12 +6347,6 @@ namespace XMLModule
           name_traits::create (i, f, this));
 
         this->name_.set (r);
-        continue;
-      }
-
-      if (n.name () == "nonlin" && n.namespace_ ().empty ())
-      {
-        this->nonlin_.set (nonlin_traits::create (i, f, this));
         continue;
       }
 
@@ -6308,12 +6374,6 @@ namespace XMLModule
           shortname_latex_traits::create (i, f, this));
 
         this->shortname_latex_.set (r);
-        continue;
-      }
-
-      if (n.name () == "timedep" && n.namespace_ ().empty ())
-      {
-        this->timedep_.set (timedep_traits::create (i, f, this));
         continue;
       }
 
@@ -7644,6 +7704,7 @@ namespace XMLModule
   ::std::ostream&
   operator<< (::std::ostream& o, const quantity& i)
   {
+    o << ::std::endl << "id: " << i.id ();
     if (i.condition ())
     {
       o << ::std::endl << "condition: " << *i.condition ();
@@ -7654,15 +7715,24 @@ namespace XMLModule
       o << ::std::endl << "default: " << *i.default_ ();
     }
 
-    o << ::std::endl << "id: " << i.id ();
+    if (i.nonlinearity_planar ())
+    {
+      o << ::std::endl << "nonlinearity_planar: " << *i.nonlinearity_planar ();
+    }
+
+    if (i.nonlinearity_axi ())
+    {
+      o << ::std::endl << "nonlinearity_axi: " << *i.nonlinearity_axi ();
+    }
+
+    if (i.dependence ())
+    {
+      o << ::std::endl << "dependence: " << *i.dependence ();
+    }
+
     if (i.name ())
     {
       o << ::std::endl << "name: " << *i.name ();
-    }
-
-    if (i.nonlin ())
-    {
-      o << ::std::endl << "nonlin: " << *i.nonlin ();
     }
 
     if (i.shortname ())
@@ -7678,11 +7748,6 @@ namespace XMLModule
     if (i.shortname_latex ())
     {
       o << ::std::endl << "shortname_latex: " << *i.shortname_latex ();
-    }
-
-    if (i.timedep ())
-    {
-      o << ::std::endl << "timedep: " << *i.timedep ();
     }
 
     if (i.unit ())
@@ -9507,6 +9572,17 @@ namespace XMLModule
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
+    // id
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "id",
+          e));
+
+      a << i.id ();
+    }
+
     // condition
     //
     if (i.condition ())
@@ -9531,15 +9607,40 @@ namespace XMLModule
       a << ::xml_schema::as_decimal(*i.default_ ());
     }
 
-    // id
+    // nonlinearity_planar
     //
+    if (i.nonlinearity_planar ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "id",
+          "nonlinearity_planar",
           e));
 
-      a << i.id ();
+      a << *i.nonlinearity_planar ();
+    }
+
+    // nonlinearity_axi
+    //
+    if (i.nonlinearity_axi ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "nonlinearity_axi",
+          e));
+
+      a << *i.nonlinearity_axi ();
+    }
+
+    // dependence
+    //
+    if (i.dependence ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "dependence",
+          e));
+
+      a << *i.dependence ();
     }
 
     // name
@@ -9552,18 +9653,6 @@ namespace XMLModule
           e));
 
       a << *i.name ();
-    }
-
-    // nonlin
-    //
-    if (i.nonlin ())
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "nonlin",
-          e));
-
-      a << *i.nonlin ();
     }
 
     // shortname
@@ -9600,18 +9689,6 @@ namespace XMLModule
           e));
 
       a << *i.shortname_latex ();
-    }
-
-    // timedep
-    //
-    if (i.timedep ())
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "timedep",
-          e));
-
-      a << *i.timedep ();
     }
 
     // unit

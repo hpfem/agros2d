@@ -136,7 +136,7 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
 
 void SceneLabelMarker::load()
 {
-    cmbMaterial->setCurrentIndex(cmbMaterial->findData(m_label->getMarker(m_fieldInfo)->variant()));
+    cmbMaterial->setCurrentIndex(cmbMaterial->findData(m_label->marker(m_fieldInfo)->variant()));
 
     // txtPolynomialOrder->setValue(m_label->polynomialOrder);
     // chkPolynomialOrder->setChecked(m_label->polynomialOrder > 0);
@@ -394,9 +394,9 @@ void SceneLabelSelectDialog::load()
         foreach(SceneLabel* label, m_labels.items())
         {
             if(material)
-                match = match && (material == label->getMarker(fieldInfo));
+                match = match && (material == label->marker(fieldInfo));
             else
-                material = label->getMarker(fieldInfo);
+                material = label->marker(fieldInfo);
         }
         if(match)
             cmbMaterials[fieldInfo]->setCurrentIndex(cmbMaterials[fieldInfo]->findData(material->variant()));

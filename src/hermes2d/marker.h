@@ -27,16 +27,16 @@ class FieldInfo;
 class Marker
 {
 public:
-    Marker(FieldInfo *fieldInfo, QString name);
+    Marker(FieldInfo *m_fieldInfo, QString name);
     virtual ~Marker();
 
     /// value of one individual variable
-    Value getValue(QString id);
+    Value value(QString id);
 
     /// get all values
     const QMap<QString, Value> getValues() const;
 
-    void setValue(QString name, Value value) { values[name] = value; }
+    void setValue(QString name, Value value) { m_values[name] = value; }
 
     /// return name
     QString getName() {return name; }
@@ -44,7 +44,7 @@ public:
     /// set name
     void setName(QString paramName) { name = paramName; }
 
-    FieldInfo *getFieldInfo() { return fieldInfo; }
+    FieldInfo *fieldInfo() { return m_fieldInfo; }
 
     /// returns QString identification of field
     QString fieldId();
@@ -63,10 +63,10 @@ private:
     bool m_isNone;
 
 protected:
-    FieldInfo *fieldInfo;
+    FieldInfo *m_fieldInfo;
 
     /// variables - the way to customize boundary "template", given by the type parameter
-    QMap<QString, Value> values;
+    QMap<QString, Value> m_values;
 
 private:
     /// we don't want those objects to be copied since we compare pointers
@@ -79,8 +79,8 @@ private:
 class Boundary : public Marker
 {
 public:
-    Boundary(FieldInfo *fieldInfo, QString name = "", QString type = "",
-             QMap<QString, Value> values = (QMap<QString, Value>()));
+    Boundary(FieldInfo *m_fieldInfo, QString name = "", QString type = "",
+             QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     /// get type
     const QString getType() const {return type;}
@@ -99,8 +99,8 @@ private:
 class Material : public Marker
 {
 public:
-    Material(FieldInfo *fieldInfo, QString name,
-             QMap<QString, Value> values = (QMap<QString, Value>()));
+    Material(FieldInfo *m_fieldInfo, QString name,
+             QMap<QString, Value> m_values = (QMap<QString, Value>()));
 };
 
 

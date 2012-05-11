@@ -54,14 +54,12 @@ SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : Postprocessor
 
 SurfaceIntegralValue::~SurfaceIntegralValue()
 {
-    qDeleteAll(parsers);
 }
 
 void SurfaceIntegralValue::calculate()
 {
     if (Util::problem()->isSolved())
     {
-
         double px;
         double py;
         double ptanx;
@@ -74,7 +72,7 @@ void SurfaceIntegralValue::calculate()
         double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
         double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
 
-        foreach (mu::Parser *pars, parsers)
+        foreach (mu::Parser *pars, m_parsers)
         {
             pars->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
             pars->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
@@ -160,8 +158,14 @@ void SurfaceIntegralValue::calculate()
 
                             // set material variable
                             SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
-                                                                                     get_user_marker(e->marker).marker.c_str()))->getMarker(m_fieldInfo);
+                                                                                     get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
                             setMaterialToParsers(material);
+
+                            // set nonlinear parsers
+                            setNonlinearParsers();
+
+                            // init nonlinear material
+                            setNonlinearMaterial(material);
 
                             // parse expression
                             int n = 0;
@@ -186,7 +190,7 @@ void SurfaceIntegralValue::calculate()
                                             pdy[k] = dudy[k][i];
                                         }
 
-                                        result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * parsers[n]->Eval();
+                                        result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * m_parsers[n]->Eval();
                                     }
 
                                     m_values[integral] += result;
@@ -194,7 +198,7 @@ void SurfaceIntegralValue::calculate()
                                 catch (mu::Parser::exception_type &e)
                                 {
                                     qDebug() << "Surface integral: " << integral->name() << " (" << integral->id() << ") " << integral->name() << " - " <<
-                                                QString::fromStdString(parsers[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
+                                                QString::fromStdString(m_parsers[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
                                 }
 
                                 n++;

@@ -252,7 +252,7 @@ void WeakFormAgros<Scalar>::registerForms()
         // boundary conditions
         for (int edgeNum = 0; edgeNum<Util::scene()->edges->count(); edgeNum++)
         {
-            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->getMarker(fieldInfo);
+            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->marker(fieldInfo);
             cout << "registerForms : registering edge " << edgeNum << endl;
             
             if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
@@ -272,7 +272,7 @@ void WeakFormAgros<Scalar>::registerForms()
         // materials
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
-            SceneMaterial *material = Util::scene()->labels->at(labelNum)->getMarker(fieldInfo);
+            SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
             
             assert(material);
             if (material != Util::scene()->materials->getNone(fieldInfo))
@@ -290,13 +290,13 @@ void WeakFormAgros<Scalar>::registerForms()
                 {
                     foreach (ParserFormExpression *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
                     {
-                        SceneMaterial* material2 = Util::scene()->labels->at(labelNum)->getMarker(couplingInfo->sourceField());
-                        assert(material2);
+                        SceneMaterial* materialTarget = Util::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
+                        assert(materialTarget);
 
-                        if (material2 != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+                        if (materialTarget != Util::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
                             registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
-                                         m_block->offset(field), m_block->offset(field), material, material2, couplingInfo);
+                                         m_block->offset(field), m_block->offset(field), material, materialTarget, couplingInfo);
                         }
                     }
                 }
@@ -315,8 +315,8 @@ void WeakFormAgros<Scalar>::registerForms()
         
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
-            SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->getMarker(sourceField->fieldInfo());
-            SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->getMarker(targetField->fieldInfo());
+            SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->marker(sourceField->fieldInfo());
+            SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->marker(targetField->fieldInfo());
             
             if (sourceMaterial && (sourceMaterial != Util::scene()->materials->getNone(sourceField->fieldInfo()))
                     && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
@@ -360,35 +360,28 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
         {
             if (coordinateType == CoordinateType_Planar)
                 m_expression = Expression(m_isScalar ? QString::fromStdString(exp.planar().get()) : "",
-                                  m_isScalar ? "" : QString::fromStdString(exp.planar_x().get()),
-                                  m_isScalar ? "" : QString::fromStdString(exp.planar_y().get()));
+                                          m_isScalar ? "" : QString::fromStdString(exp.planar_x().get()),
+                                          m_isScalar ? "" : QString::fromStdString(exp.planar_y().get()));
             else
                 m_expression = Expression(m_isScalar ? QString::fromStdString(exp.axi().get()) : "",
-                                  m_isScalar ? "" : QString::fromStdString(exp.axi_r().get()),
-                                  m_isScalar ? "" : QString::fromStdString(exp.axi_z().get()));
+                                          m_isScalar ? "" : QString::fromStdString(exp.axi_r().get()),
+                                          m_isScalar ? "" : QString::fromStdString(exp.axi_z().get()));
         }
     }
 }
 
 // ***********************************************************************************************
 
-Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
+Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant, CoordinateType coordinateType)
+    : m_defaultValue(0), m_expressionNonlinear(""), m_isTimeDep(false)
 {
     m_id = QString::fromStdString(quant.id());
+
     if (quant.shortname().present())
         m_shortname = QString::fromStdString(quant.shortname().get());
+
     if (quant.default_().present())
         m_defaultValue = quant.default_().get();
-    else
-        m_defaultValue = 0.0;
-}
-
-Module::MaterialTypeVariable::MaterialTypeVariable(const QString &id, QString shortname,
-                                                   double default_value)
-{
-    this->m_id = id;
-    this->m_shortname = shortname;
-    this->m_defaultValue = default_value;
 }
 
 // ***********************************************************************************************
@@ -438,7 +431,7 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
         m_essential.append(new ParserFormEssential(form.i(),
-                                                 (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                   (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
     }
 }
 
@@ -493,9 +486,6 @@ Module::DialogUI::DialogRow::DialogRow(XMLModule::quantity qty)
     m_id = QString::fromStdString(qty.id());
     m_name = (qty.name().present()) ? QString::fromStdString(qty.name().get()) : "";
 
-    m_nonlin = (qty.nonlin().present()) ? qty.nonlin().get() : false;
-    m_timedep = (qty.timedep().present()) ? qty.timedep().get() : false;
-    
     m_shortname = (qty.shortname().present()) ? QString::fromStdString(qty.shortname().get()) : "";
     m_shortnameHtml = (qty.shortname_html().present()) ? QString::fromStdString(qty.shortname_html().get()) : "";
 
@@ -580,7 +570,7 @@ void Module::BasicModule::read(const QString &filename)
         XMLModule::analysis an = mod->general().analyses().analysis().at(i);
 
         if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
-            m_numberOfSolutions = an.solutions();       
+            m_numberOfSolutions = an.solutions();
     }
 
     // constants
@@ -626,7 +616,7 @@ void Module::BasicModule::read(const QString &filename)
     for (int i = 0; i < mod->volume().quantity().size(); i++)
     {
         XMLModule::quantity quant = mod->volume().quantity().at(i);
-        material_type_variables_tmp.append(Module::MaterialTypeVariable(quant));
+        material_type_variables_tmp.append(Module::MaterialTypeVariable(quant, m_coordinateType));
     }
 
     for (int i = 0; i < mod->volume().weakforms_volume().weakform_volume().size(); i++)
@@ -645,8 +635,21 @@ void Module::BasicModule::read(const QString &filename)
                     Module::MaterialTypeVariable old = (Module::MaterialTypeVariable) *it;
                     if (old.id().toStdString() == qty.id())
                     {
+                        QString expressionNonlinear;
+
+                        if (m_coordinateType == CoordinateType_Planar && qty.nonlinearity_planar().present())
+                            expressionNonlinear = QString::fromStdString(qty.nonlinearity_planar().get());
+                        else
+                            if (qty.nonlinearity_axi().present())
+                                expressionNonlinear = QString::fromStdString(qty.nonlinearity_axi().get());
+
+                        bool isTimeDep = false;
+                        if (qty.dependence().present())
+                            isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
+
                         Module::MaterialTypeVariable *var = new Module::MaterialTypeVariable(
-                                    old.id(), old.shortname(), old.defaultValue());
+                                    old.id(), old.shortname(), old.defaultValue(),
+                                    expressionNonlinear, isTimeDep);
                         m_materialTypeVariables.append(var);
                     }
                 }

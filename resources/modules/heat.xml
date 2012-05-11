@@ -17,15 +17,15 @@
 	</module:constants>
 
 	<module:volume>
-        <module:quantity id="heat_conductivity" shortname="he_lambda" nonlinearity_planar="value1" nonlinearity_axi="value1" />
-        <module:quantity id="heat_volume_heat" shortname="he_p" dependence="time" />
-        <module:quantity id="heat_density" shortname="he_rho" nonlinearity_planar="value1" nonlinearity_axi="value1" />
-        <module:quantity id="heat_specific_heat" shortname="he_cp" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+        <module:quantity id="heat_conductivity" shortname="he_lambda" />
+        <module:quantity id="heat_volume_heat" shortname="he_p" />
+        <module:quantity id="heat_density" shortname="he_rho" />
+        <module:quantity id="heat_specific_heat" shortname="he_cp" />
 
 		<module:weakforms_volume>
 			<module:weakform_volume analysistype="steadystate">
-				<module:quantity id="heat_conductivity" />
-				<module:quantity id="heat_volume_heat" />
+                <module:quantity id="heat_conductivity" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+                <module:quantity id="heat_volume_heat" dependence="time" />
 
 				<module:matrix_form i="1" j="1"
 					planar="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)"
@@ -37,10 +37,10 @@
 			</module:weakform_volume>
 
 			<module:weakform_volume analysistype="transient">
-				<module:quantity id="heat_conductivity" />
+                <module:quantity id="heat_conductivity" nonlinearity_planar="value1" nonlinearity_axi="value1" />
 				<module:quantity id="heat_volume_heat" />
-				<module:quantity id="heat_density" />
-				<module:quantity id="heat_specific_heat" />
+                <module:quantity id="heat_density" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+                <module:quantity id="heat_specific_heat" nonlinearity_planar="value1" nonlinearity_axi="value1" />
 
 				<module:matrix_form i="1" j="1"
 					planar="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + dhe_lambda * uval * upval * vval / deltat + he_rho * he_cp * uval * vval / deltat"

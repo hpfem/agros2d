@@ -31,7 +31,10 @@ class SceneLabelContainer;
 namespace Module
 {
     struct Integral;
+    struct MaterialTypeVariable;    
 }
+
+struct SceneMaterial;
 
 class PostprocessorValue
 {
@@ -45,8 +48,13 @@ protected:
     FieldInfo *m_fieldInfo;
 
     // parser
-    QMap<std::string, double> parserVariables;
-    QList<mu::Parser *> parsers;
+    QMap<std::string, double> m_parserVariables;
+    QList<mu::Parser *> m_parsers;
+
+    QMap<Module::MaterialTypeVariable *, mu::Parser *> m_parsersNonlinear;
+
+    void setNonlinearParsers();
+    void setNonlinearMaterial(SceneMaterial *material);
 };
 
 class PostprocessorIntegralValue : public PostprocessorValue
@@ -64,7 +72,7 @@ protected:
 };
 
 template <typename Scalar>
-class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>
+class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>, public PostprocessorValue
 {
 public:
     ViewScalarFilter(FieldInfo *fieldInfo,
@@ -79,21 +87,15 @@ public:
 protected:
     typename Hermes::Hermes2D::Function<Scalar>::Node* node;
 
+    void initParser(const QString &expression);
+    void precalculate(int order, int mask);
+
+private:
     double px;
     double py;
     double *pvalue;
     double *pdx;
     double *pdy;
-
-    mu::Parser *parser;
-
-    void initParser(const QString &expression);
-    void precalculate(int order, int mask);
-
-private:
-    FieldInfo *m_fieldInfo;
-
-    QMap<std::string, double> parserVariables;
 };
 
 #endif // POST_VALUES_H

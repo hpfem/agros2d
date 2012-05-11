@@ -43,7 +43,7 @@ void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
 {
     foreach(MarkerType* item, data)
     {
-        if(item->getFieldInfo() == fieldInfo)
+        if (item->fieldInfo() == fieldInfo)
             remove(item);
     }
 }
@@ -81,7 +81,7 @@ MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &f
 {
     MarkerContainer<MarkerType> items;
     foreach (MarkerType *item, data)
-        if (item->getFieldInfo() && item->getFieldInfo()->fieldId() == fieldName)
+        if (item->fieldInfo() && item->fieldInfo()->fieldId() == fieldName)
             items.add(item);
 
     return items;

@@ -220,7 +220,11 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/xsd/problem_a2d_xml.xsd \
     ../resources/xslt/problem_a2d_xml.xsl \
     ../resources/modules/rf.xml \
-    ../resources_source/python/agros2d.pyx
+    ../resources_source/python/agros2d.pyx \
+    ../resources/xsd/subdomains_h2d_xml.xsd \
+    ../resources/xsd/module_xml.xsd \
+    ../resources/xsd/mesh_h2d_xml.xsd \
+    ../resources/xsd/coupling_xml.xsd
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
