@@ -145,45 +145,47 @@ cdef extern from "../../src/pythonlabagros.h":
 
     # PyViewConfig
     cdef cppclass PyViewConfig:
+        void refresh()
+
         void setField(char *fieldid) except +
         char *getField()
 
-        void setActiveTimeStep(bool timeStep) except +
+        void setActiveTimeStep(int timeStep) except +
         int getActiveTimeStep()
 
-        void setActiveAdaptivityStep(bool adaptiveStep) except +
+        void setActiveAdaptivityStep(int adaptiveStep) except +
         int getActiveAdaptivityStep()
 
         void setActiveSolutionType(char *solutionType) except +
         char *getActiveSolutionType()
 
         void setGridShow(bool show)
-        int getGridShow()
+        bool getGridShow()
 
         void setGridStep(double step)
         double getGridStep()
 
         void setAxesShow(bool show)
-        int getAxesShow()
+        bool getAxesShow()
 
         void setRulersShow(bool show)
-        int getRulersShow()
+        bool getRulersShow()
 
     # PyViewMesh
     cdef cppclass PyViewMesh:
         void activate()
         void refresh()
 
-        void setInitialMeshViewShow(bool show)  except +
+        void setInitialMeshViewShow(bool show)
         bool getInitialMeshViewShow()
-        void setSolutionMeshViewShow(bool show) except +
+        void setSolutionMeshViewShow(bool show)
         bool getSolutionMeshViewShow()
 
-        void setOrderViewShow(bool show) except +
+        void setOrderViewShow(bool show)
         bool getOrderViewShow()
-        void setOrderViewColorBar(bool show) except +
+        void setOrderViewColorBar(bool show)
         bool getOrderViewColorBar()
-        void setOrderViewLabel(bool show) except +
+        void setOrderViewLabel(bool show)
         bool getOrderViewLabel()
         void setOrderViewPalette(char *palette) except +
         char* getOrderViewPalette()
@@ -193,7 +195,7 @@ cdef extern from "../../src/pythonlabagros.h":
         void activate()
         void refresh()
 
-        void setScalarViewShow(bool show) except +
+        void setScalarViewShow(bool show)
         bool getScalarViewShow()
         void setScalarViewVariable(char *variable) except +
         char *getScalarViewVariable()
@@ -206,34 +208,34 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void setScalarViewPaletteSteps(int steps) except +
         int getScalarViewPaletteSteps()
-        void setScalarViewPaletteFilter(bool filter) except +
+        void setScalarViewPaletteFilter(bool filter)
         bool getScalarViewPaletteFilter()
 
-        void setScalarViewRangeLog(bool log) except +
+        void setScalarViewRangeLog(bool log)
         bool getScalarViewRangeLog()
-        void setScalarViewRangeBase(double base) except +
+        void setScalarViewRangeBase(double base)
         double getScalarViewRangeBase()
 
-        void setScalarViewColorBar(int show) except +
-        int getScalarViewColorBar()
+        void setScalarViewColorBar(bool show)
+        bool getScalarViewColorBar()
         void setScalarViewDecimalPlace(int place) except +
         int getScalarViewDecimalPlace()
 
-        void setScalarViewRangeAuto(int autoRange) except +
-        int getScalarViewRangeAuto()
-        void setScalarViewRangeMin(double min) except +
+        void setScalarViewRangeAuto(bool autoRange)
+        bool getScalarViewRangeAuto()
+        void setScalarViewRangeMin(double min)
         double getScalarViewRangeMin()
-        void setScalarViewRangeMax(double max) except +
+        void setScalarViewRangeMax(double max)
         double getScalarViewRangeMax()
 
-        void setContourShow(bool show) except +
+        void setContourShow(bool show)
         bool getContourShow()
         void setContourCount(int count) except +
         int getContourCount()
         void setContourVariable(char *variable) except +
         char *getContourVariable()
 
-        void setVectorShow(bool show) except +
+        void setVectorShow(bool show)
         bool getVectorShow()
         void setVectorCount(int count) except +
         int getVectorCount()
@@ -241,9 +243,9 @@ cdef extern from "../../src/pythonlabagros.h":
         int getVectorScale()
         void setVectorVariable(char *variable) except +
         char *getVectorVariable()
-        void setVectorProportional(bool show) except +
+        void setVectorProportional(bool show)
         bool getVectorProportional()
-        void setVectorColor(bool show) except +
+        void setVectorColor(bool show)
         bool getVectorColor()
 
     # PyViewPost3D
@@ -671,7 +673,7 @@ cdef class __Geometry__:
     def zoom_region(self, double x1, double y1, double x2, double y2):
         self.thisptr.zoomRegion(x1, y1, x2, y2)
 
-# View
+# ViewConfig
 cdef class __ViewConfig__:
     cdef PyViewConfig *thisptr
 
@@ -680,31 +682,34 @@ cdef class __ViewConfig__:
     def __dealloc__(self):
         del self.thisptr
 
+    def refresh(self):
+        self.thisptr.refresh()
+
     property field:
         def __get__(self):
             return self.thisptr.getField()
         def __set__(self, id):
             self.thisptr.setField(id)
 
-    property active_time_step:
+    property time_step:
         def __get__(self):
             return self.thisptr.getActiveTimeStep()
         def __set__(self, time_step):
             self.thisptr.setActiveTimeStep(time_step)
 
-    property active_adaptivity_step:
+    property adaptivity_step:
         def __get__(self):
             return self.thisptr.getActiveAdaptivityStep()
         def __set__(self, adaptivity_step):
             self.thisptr.setActiveAdaptivityStep(adaptivity_step)
 
-    property active_solution_type:
+    property solution_type:
         def __get__(self):
             return self.thisptr.getActiveSolutionType()
         def __set__(self, solution_type):
             self.thisptr.setActiveSolutionType(solution_type)
 
-    property grid_show:
+    property grid:
         def __get__(self):
             return self.thisptr.getGridShow()
         def __set__(self, show):
@@ -716,18 +721,19 @@ cdef class __ViewConfig__:
         def __set__(self, step):
             self.thisptr.setGridStep(step)
 
-    property axes_show:
+    property axes:
         def __get__(self):
             return self.thisptr.getAxesShow()
         def __set__(self, show):
             self.thisptr.setAxesShow(show)
 
-    property rulers_show:
+    property rulers:
         def __get__(self):
             return self.thisptr.getRulersShow()
         def __set__(self, show):
             self.thisptr.setRulersShow(show)
 
+# ViewMesh
 cdef class __ViewMesh__:
     cdef PyViewMesh *thisptr
 
@@ -742,42 +748,43 @@ cdef class __ViewMesh__:
     def refresh(self):
         self.thisptr.refresh()
 
-    property solution_mesh_view_show:
+    property solution_mesh:
         def __get__(self):
             return self.thisptr.getSolutionMeshViewShow()
         def __set__(self, show):
             self.thisptr.setSolutionMeshViewShow(show)
 
-    property initial_mesh_view_show:
+    property initial_mesh:
         def __get__(self):
             return self.thisptr.getInitialMeshViewShow()
         def __set__(self, show):
             self.thisptr.setInitialMeshViewShow(show)
 
-    property order_view_show:
+    property order:
         def __get__(self):
             return self.thisptr.getOrderViewShow()
         def __set__(self, show):
             self.thisptr.setOrderViewShow(show)
 
-    property order_view_color_bar:
+    property order_color_bar:
         def __get__(self):
             return self.thisptr.getOrderViewColorBar()
         def __set__(self, show):
             self.thisptr.setOrderViewColorBar(show)
 
-    property order_view_label:
+    property order_label:
         def __get__(self):
             return self.thisptr.getOrderViewLabel()
         def __set__(self, show):
             self.thisptr.setOrderViewLabel(show)
 
-    property order_view_palette:
+    property order_palette:
         def __get__(self):
             return self.thisptr.getOrderViewPalette()
         def __set__(self, palette):
             self.thisptr.setOrderViewPalette(palette)
 
+# ViewPost2D
 cdef class __ViewPost2D__:
     cdef PyViewPost2D *thisptr
 
@@ -793,141 +800,141 @@ cdef class __ViewPost2D__:
         self.thisptr.refresh()
 
     # scalar view
-    property scalar_view_show:
+    property scalar:
         def __get__(self):
             return self.thisptr.getScalarViewShow()
         def __set__(self, show):
             self.thisptr.setScalarViewShow(show)
 
-    property scalar_view_variable:
+    property scalar_variable:
         def __get__(self):
             return self.thisptr.getScalarViewVariable()
         def __set__(self, variable):
             self.thisptr.setScalarViewVariable(variable)
 
-    property scalar_view_component:
+    property scalar_component:
         def __get__(self):
             return self.thisptr.getScalarViewVariableComp()
         def __set__(self, component):
             self.thisptr.setScalarViewVariableComp(component)
 
-    property scalar_view_palette:
+    property scalar_palette:
         def __get__(self):
             return self.thisptr.getScalarViewPalette()
         def __set__(self, palette):
             self.thisptr.setScalarViewPalette(palette)
 
-    property scalar_view_palette_quality:
+    property scalar_palette_quality:
         def __get__(self):
             return self.thisptr.getScalarViewPaletteQuality()
         def __set__(self, quality):
             self.thisptr.setScalarViewPaletteQuality(quality)
 
-    property scalar_view_palette_steps:
+    property scalar_palette_steps:
         def __get__(self):
             return self.thisptr.getScalarViewPaletteSteps()
         def __set__(self, steps):
             self.thisptr.setScalarViewPaletteSteps(steps)
 
-    property scalar_view_palette_filter:
+    property scalar_palette_filter:
         def __get__(self):
             return self.thisptr.getScalarViewPaletteFilter()
         def __set__(self, filter):
             self.thisptr.setScalarViewPaletteFilter(filter)
 
-    property scalar_view_log_scale:
+    property scalar_log_scale:
         def __get__(self):
             return self.thisptr.getScalarViewRangeLog()
         def __set__(self, log):
             self.thisptr.setScalarViewRangeLog(log)
 
-    property scalar_view_log_base:
+    property scalar_log_base:
         def __get__(self):
             return self.thisptr.getScalarViewRangeBase()
         def __set__(self, base):
             self.thisptr.setScalarViewRangeBase(base)
 
-    property scalar_view_color_bar:
+    property scalar_color_bar:
         def __get__(self):
             return self.thisptr.getScalarViewColorBar()
         def __set__(self, show):
             self.thisptr.setScalarViewColorBar(show)
 
-    property scalar_view_decimal_place:
+    property scalar_decimal_place:
         def __get__(self):
             return self.thisptr.getScalarViewDecimalPlace()
         def __set__(self, place):
             self.thisptr.setScalarViewDecimalPlace(place)
 
-    property scalar_view_auto_range:
+    property scalar_auto_range:
         def __get__(self):
             return self.thisptr.getScalarViewRangeAuto()
         def __set__(self, range_auto):
             self.thisptr.setScalarViewRangeAuto(range_auto)
 
-    property scalar_view_range_min:
+    property scalar_range_min:
         def __get__(self):
             return self.thisptr.getScalarViewRangeMin()
         def __set__(self, min):
             self.thisptr.setScalarViewRangeMin(min)
 
-    property scalar_view_range_max:
+    property scalar_range_max:
         def __get__(self):
             return self.thisptr.getScalarViewRangeMax()
         def __set__(self, max):
             self.thisptr.setScalarViewRangeMax(max)
 
     # contour
-    property contour_show:
+    property contours:
         def __get__(self):
             return self.thisptr.getContourShow()
         def __set__(self, show):
             self.thisptr.setContourShow(show)
 
-    property contour_count:
+    property contours_count:
         def __get__(self):
             return self.thisptr.getContourCount()
         def __set__(self, count):
             self.thisptr.setContourCount(count)
 
-    property contour_variable:
+    property contours_variable:
         def __get__(self):
             return self.thisptr.getContourVariable()
         def __set__(self, variable):
             self.thisptr.setContourVariable(variable)
 
     # vector
-    property vector_show:
+    property vectors:
         def __get__(self):
             return self.thisptr.getVectorShow()
         def __set__(self, show):
             self.thisptr.setVectorShow(show)
 
-    property vector_count:
+    property vectors_count:
         def __get__(self):
             return self.thisptr.getVectorCount()
         def __set__(self, count):
             self.thisptr.setVectorCount(count)
 
-    property vector_scale:
+    property vectors_scale:
         def __get__(self):
             return self.thisptr.getVectorScale()
         def __set__(self, count):
             self.thisptr.setVectorScale(count)
 
-    property vector_variable:
+    property vectors_variable:
         def __get__(self):
             return self.thisptr.getVectorVariable()
         def __set__(self, variable):
             self.thisptr.setVectorVariable(variable)
 
-    property vector_proportional:
+    property vectors_proportional:
         def __get__(self):
             return self.thisptr.getVectorProportional()
         def __set__(self, show):
             self.thisptr.setVectorProportional(show)
 
-    property vector_color:
+    property vectors_color:
         def __get__(self):
             return self.thisptr.getVectorColor()
         def __set__(self, show):

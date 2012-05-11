@@ -289,16 +289,17 @@ class PyGeometry
 // view
 struct PyViewConfig
 {
-    void setField(char* variable);
+    void refresh();
+
+    // field
+    void setField(char *fieldid);
     inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
 
     // time step
-    // toto: (Franta) gui
     void setActiveTimeStep(int timeStep);
     inline int getActiveTimeStep() const { return Util::scene()->activeTimeStep(); }
 
     // adaptivity step
-    // toto: (Franta) gui
     void setActiveAdaptivityStep(int adaptivityStep);
     inline int getActiveAdaptivityStep() const { return Util::scene()->activeAdaptivityStep(); }
 
@@ -307,20 +308,20 @@ struct PyViewConfig
     inline char* getActiveSolutionType() const { return const_cast<char*>(solutionTypeToStringKey(Util::scene()->activeSolutionType()).toStdString().c_str()); }
 
     // grid
-    void setGridShow(int show);
-    inline int getGridShow() const { return Util::config()->showGrid; }
+    void setGridShow(bool show);
+    inline bool getGridShow() const { return Util::config()->showGrid; }
     void setGridStep(double step);
     inline double getGridStep() const { return Util::config()->gridStep; }
 
     // axes
-    void setAxesShow(int show);
-    inline int getAxesShow() const { return Util::config()->showAxes; }
+    void setAxesShow(bool show);
+    inline bool getAxesShow() const { return Util::config()->showAxes; }
 
     // rulers
-    void setRulersShow(int show);
-    inline int getRulersShow() const { return Util::config()->showRulers; }
+    void setRulersShow(bool show);
+    inline bool getRulersShow() const { return Util::config()->showRulers; }
 
-    // todo: (Franta) font, size of nodes and edges, colors
+    // todo: (Franta) font, size of nodes and edges and labels, colors
 };
 
 // view mesh
@@ -330,18 +331,18 @@ struct PyViewMesh
     void refresh();
 
     // mesh
-    void setInitialMeshViewShow(int show);
-    inline int getInitialMeshViewShow() const { return Util::config()->showInitialMeshView; }
-    void setSolutionMeshViewShow(int show);
-    inline int getSolutionMeshViewShow() const { return Util::config()->showSolutionMeshView; }
+    void setInitialMeshViewShow(bool show);
+    inline bool getInitialMeshViewShow() const { return Util::config()->showInitialMeshView; }
+    void setSolutionMeshViewShow(bool show);
+    inline bool getSolutionMeshViewShow() const { return Util::config()->showSolutionMeshView; }
 
     // polynomial order
-    void setOrderViewShow(int show);
-    inline int getOrderViewShow() const { return Util::config()->showOrderView; }
-    void setOrderViewColorBar(int show);
-    inline int getOrderViewColorBar() const { return Util::config()->showOrderColorBar; }
-    void setOrderViewLabel(int show);
-    inline int getOrderViewLabel() const { return Util::config()->orderLabel; }
+    void setOrderViewShow(bool show);
+    inline bool getOrderViewShow() const { return Util::config()->showOrderView; }
+    void setOrderViewColorBar(bool show);
+    inline bool getOrderViewColorBar() const { return Util::config()->showOrderColorBar; }
+    void setOrderViewLabel(bool show);
+    inline bool getOrderViewLabel() const { return Util::config()->orderLabel; }
     void setOrderViewPalette(char* palette);
     inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Util::config()->orderPaletteOrderType).toStdString().c_str()); }
 };
@@ -353,8 +354,8 @@ struct PyViewPost2D
     void refresh();
 
     // scalar view
-    void setScalarViewShow(int show);
-    inline int getScalarViewShow() const { return Util::config()->showScalarView; }
+    void setScalarViewShow(bool show);
+    inline bool getScalarViewShow() const { return Util::config()->showScalarView; }
     void setScalarViewVariable(char* var);
     inline char* getScalarViewVariable() const { return const_cast<char*>(Util::config()->scalarVariable.toStdString().c_str()); }
     void setScalarViewVariableComp(char* component);
@@ -366,47 +367,47 @@ struct PyViewPost2D
     inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
-    void setScalarViewPaletteFilter(int filter);
-    inline int getScalarViewPaletteFilter() const { return Util::config()->paletteFilter; }
+    void setScalarViewPaletteFilter(bool filter);
+    inline bool getScalarViewPaletteFilter() const { return Util::config()->paletteFilter; }
 
-    void setScalarViewRangeLog(int log);
-    inline int getScalarViewRangeLog() const { return Util::config()->scalarRangeLog; }
+    void setScalarViewRangeLog(bool log);
+    inline bool getScalarViewRangeLog() const { return Util::config()->scalarRangeLog; }
     void setScalarViewRangeBase(double base);
     inline double getScalarViewRangeBase() const { return Util::config()->scalarRangeBase; }
 
-    void setScalarViewColorBar(int show);
-    inline int getScalarViewColorBar() const { return Util::config()->showScalarColorBar; }
+    void setScalarViewColorBar(bool show);
+    inline bool getScalarViewColorBar() const { return Util::config()->showScalarColorBar; }
     void setScalarViewDecimalPlace(int place);
     inline int getScalarViewDecimalPlace() const { return Util::config()->scalarDecimalPlace; }
 
-    void setScalarViewRangeAuto(int autoRange);
-    inline int getScalarViewRangeAuto() const { return Util::config()->scalarRangeAuto; }
+    void setScalarViewRangeAuto(bool autoRange);
+    inline bool getScalarViewRangeAuto() const { return Util::config()->scalarRangeAuto; }
     void setScalarViewRangeMin(double min);
     inline double getScalarViewRangeMin() const { return Util::config()->scalarRangeMin; }
     void setScalarViewRangeMax(double max);
     inline double getScalarViewRangeMax() const { return Util::config()->scalarRangeMax; }
 
     // contour
-    void setContourShow(int show);
-    inline int getContourShow() const { return Util::config()->showContourView; }
+    void setContourShow(bool show);
+    inline bool getContourShow() const { return Util::config()->showContourView; }
     void setContourCount(int count);
     inline int getContourCount() const { return Util::config()->contoursCount; }
     void setContourVariable(char* var);
     inline char* getContourVariable() const { return const_cast<char*>(Util::config()->contourVariable.toStdString().c_str()); }
 
     // vector
-    void setVectorShow(int show);
-    inline int getVectorShow() const { return Util::config()->showVectorView; }
+    void setVectorShow(bool show);
+    inline bool getVectorShow() const { return Util::config()->showVectorView; }
     void setVectorCount(int count);
     inline int getVectorCount() const { return Util::config()->vectorCount; }
     void setVectorScale(double scale);
     inline int getVectorScale() const { return Util::config()->vectorScale; }
     void setVectorVariable(char* var);
     inline char* getVectorVariable() const { return const_cast<char*>(Util::config()->vectorVariable.toStdString().c_str()); }
-    void setVectorProportional(int show);
-    inline int getVectorProportional() const { return Util::config()->vectorProportional; }
-    void setVectorColor(int show);
-    inline int getVectorColor() const { return Util::config()->vectorColor; }
+    void setVectorProportional(bool show);
+    inline bool getVectorProportional() const { return Util::config()->vectorProportional; }
+    void setVectorColor(bool show);
+    inline bool getVectorColor() const { return Util::config()->vectorColor; }
 };
 
 struct PyViewPost3D

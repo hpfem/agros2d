@@ -96,15 +96,18 @@ SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPos
 QString modeToStringKey(Mode mode) { return modeList[mode]; }
 Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
 
+QStringList paletteTypeStringKeys() { return paletteTypeList.values(); }
 QString paletteTypeToStringKey(PaletteType paletteType) { return paletteTypeList[paletteType]; }
 PaletteType paletteTypeFromStringKey(const QString &paletteType) { return paletteTypeList.key(paletteType); }
 
+QStringList paletteQualityStringKeys() { return paletteQualityList.values(); }
 QString paletteQualityToStringKey(PaletteQuality paletteQuality) { return paletteQualityList[paletteQuality]; }
 PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { return paletteQualityList.key(paletteQuality); }
 
 double paletteQualityValueToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
 PaletteQuality paletteQualityFromDouble(const double paletteQuality) { return paletteQualityValueList.key(paletteQuality); }
 
+QStringList paletteOrderTypeStringKeys() { return paletteOrderTypeList.values(); }
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType) { return paletteOrderTypeList.key(paletteType); }
 

@@ -165,8 +165,8 @@ void Config::loadPostprocessor(QDomElement *config)
     vectorVariable = readConfig("SceneViewSettings/VectorVariable", QString());
     vectorProportional = readConfig("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL);
     vectorColor = readConfig("SceneViewSettings/VectorColor", VECTORCOLOR);
-    vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORNUMBER);
-    vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSCALE);
+    vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORSCOUNT);
+    vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSSCALE);
 
     // order view
     showOrderView = readConfig("SceneViewSettings/ShowOrderView", SHOWORDERVIEW);

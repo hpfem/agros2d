@@ -18,10 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "settings.h"
-
 #include "gui.h"
-
 #include "scene.h"
+#include "pythonlabagros.h"
 
 const double minWidth = 110;
 
@@ -34,6 +33,9 @@ SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent)
     createControls();
 
     load();
+
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 }
 
 void SettingsWidget::createActions()
