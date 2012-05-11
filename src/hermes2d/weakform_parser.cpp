@@ -175,7 +175,7 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                 Value value = m_materialSource->getValue(variable->id());
 
                 // table
-                if (value.table->size() > 0)
+                if (value.hasTable())
                 {
                     parserVariables[variable->shortname().toStdString()] = value.value(pupval);
                     parserVariables["d" + variable->shortname().toStdString()] = value.derivative(pupval);
@@ -183,9 +183,6 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
 
                 // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
                 // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-                // if (variable->shortname == "mur")
-                //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
             }
         }
     }
@@ -226,7 +223,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                     Value value = m_materialSource->getValue(variable->id());
 
                     // table
-                    if (value.table->size() > 0)
+                    if (value.hasTable())
                     {
                         parserVariables[variable->shortname().toStdString()] = value.value(pupval);
                         parserVariables["d" + variable->shortname().toStdString()] = value.derivative(pupval);
@@ -339,15 +336,8 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
                 Value value = m_materialSource->getValue(variable->id());
 
                 // table
-                if (value.table->size() > 0)
-                {
+                if (value.hasTable())
                     parserVariables[variable->shortname().toStdString()] = m_materialSource->getValue(variable->id()).value(pupval);
-                }
-
-                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-                // if (variable->shortname == "epsr")
-                //     qDebug() << parser->parser_variables[variable->shortname];
             }
         }
     }
@@ -383,15 +373,8 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
                     Value value = m_materialSource->getValue(variable->id());
 
                     // table
-                    if (value.table->size() > 0)
-                    {
+                    if (value.hasTable())
                         parserVariables[variable->shortname().toStdString()] = m_materialSource->getValue(variable->id()).value(pupval);
-                    }
-
-                    // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-                    // if (variable->shortname == "epsr")
-                    //     qDebug() << parser->parser_variables[variable->shortname];
                 }
             }
         }

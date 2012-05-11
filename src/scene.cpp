@@ -1388,7 +1388,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             Module::BoundaryType *boundary_type = field->module()->boundaryType(type);
             foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables())
                 boundary->setValue(variable->id(),
-                                   Value(element.toElement().attribute(variable->id(), "0")));
+                                   Value(field, element.toElement().attribute(variable->id(), "0")));
 
             Util::scene()->addBoundary(boundary);
 
@@ -1425,8 +1425,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             foreach (Module::MaterialTypeVariable *variable, field->module()->materialTypeVariables())
             {
                 material->setValue(variable->id(),
-                                   Value(element.toElement().attribute(variable->id(),
-                                                                       QString::number(variable->defaultValue()))));
+                                   Value(field, element.toElement().attribute(variable->id(),
+                                                                              QString::number(variable->defaultValue()))));
             }
 
             // add material

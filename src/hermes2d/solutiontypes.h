@@ -49,9 +49,6 @@ struct SolutionArray
     SolutionArray();
     SolutionArray(std::tr1::shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, double time);
     ~SolutionArray();
-
-    void load(QDomElement element);
-    void save(QDomDocument *doc, QDomElement element);
 };
 
 template <typename Scalar>
@@ -98,6 +95,9 @@ public:
 
     inline double solveTime() { return m_solveTime; }
     void setSolveTime(const double ae) { m_solveTime = ae; }
+
+    void saveToFile(const QString &solutionID);
+    void loadFromFile(const QString &solutionID);
 
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;

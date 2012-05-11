@@ -26,35 +26,65 @@
 #include "datatabledialog.h"
 
 Value::Value()
+    : m_fieldInfo(NULL), m_isEvaluated(false)
 {
-    this->m_isLinear = -1;
-    this->m_isEvaluated = false;
     setText("0");
-    this->table = new DataTable();
+    this->m_table = new DataTable();
 }
 
-Value::Value(const QString &value, DataTable *table)
+Value::Value(FieldInfo *fieldInfo, const QString &value, DataTable *table)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(false)
 {
-    this->m_isLinear = -1;
-    this->m_isEvaluated = false;
     setText(value.isEmpty() ? "0" : value);
-    this->table = table;
+    this->m_table = table;
 }
 
-Value::Value(const QString &str, bool evaluateExpression)
+Value::Value(FieldInfo *fieldInfo, const QString &str, bool evaluateExpression)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(false)
 {
-    this->m_isLinear = -1;
-    this->m_isEvaluated = false;
-
     fromString(str);
 
     if (evaluateExpression)
         evaluate(true);
 }
 
+Value::Value(const QString &str, bool evaluateExpression)
+    : m_fieldInfo(NULL), m_isEvaluated(false)
+{
+    fromString(str);
+
+    if (evaluateExpression)
+        evaluate(true);
+}
+
+Value::Value(double value)
+    : m_fieldInfo(NULL), m_isEvaluated(true)
+{
+    m_text = QString::number(value);
+    m_number = value;
+}
+
+Value::Value(FieldInfo *fieldInfo, double value)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(true)
+{
+    m_text = QString::number(value);
+    m_number = value;
+}
+
 Value::~Value()
 {
 
+}
+
+bool Value::hasTable() const
+{
+    if (m_fieldInfo)
+        if (m_fieldInfo->linearityType() == LinearityType_Linear)
+            return false;
+        else
+            return (m_table->size() > 0);
+    else
+        return false;
 }
 
 double Value::number()
@@ -67,19 +97,11 @@ double Value::number()
 
 double Value::value(double key)
 {
-    // FIXME
-    // if (m_isLinear == -1)
-    //m_isLinear = (Util::problem()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
-
-    m_isLinear = 1;  //TODO nonlinear!!!!!
-
-    if (m_isLinear || table->size() == 0)
+    // TODO: fix if (!hasTable())
+    if (m_table->size() == 0)
         return number();
     else
-    {
-        // std::cout << table->value(key) << std::endl;
-        return table->value_spline(key);
-    }
+        return m_table->valueSpline(key);
 }
 
 Hermes::Ord Value::value(Hermes::Ord key)
@@ -89,17 +111,10 @@ Hermes::Ord Value::value(Hermes::Ord key)
 
 double Value::derivative(double key)
 {
-    // FIXME
-    // if (m_isLinear == -1)
-
-    m_isLinear = 1;  //TODO nonlinear!!!!!
-
-    //m_isLinear = (Util::problem()->fieldInfo("TODO")->linearityType == LinearityType_Linear) ? 1 : 0;
-
-    if (m_isLinear || table->size() == 0)
+    if (!hasTable())
         return 0.0;
     else
-        return table->derivative_spline(key);
+        return m_table->derivativeSpline(key);
 }
 
 Hermes::Ord Value::derivative(Hermes::Ord key)
@@ -109,15 +124,15 @@ Hermes::Ord Value::derivative(Hermes::Ord key)
 
 QString Value::toString() const
 {
-    if (table->size() == 0)
+    if (m_table->size() == 0)
         return m_text;
     else
-        return m_text + ";" + QString::fromStdString(table->to_string());
+        return m_text + ";" + QString::fromStdString(m_table->toString());
 }
 
 void Value::fromString(const QString &str)
 {
-    table = new DataTable();
+    m_table = new DataTable();
 
     if (str.contains(";"))
     {
@@ -125,7 +140,7 @@ void Value::fromString(const QString &str)
         QStringList lst = str.split(";");
         this->setText(lst.at(0));
 
-        table->from_string((lst.at(1) + ";" + lst.at(2)).toStdString());
+        m_table->fromString((lst.at(1) + ";" + lst.at(2)).toStdString());
     }
     else
     {
@@ -163,24 +178,16 @@ bool Value::evaluate(double time, bool quiet)
     return expressionResult.error.isEmpty();
 }
 
-bool Value::isTimeDep() const
-{
-    // FIXME - do it better
-    return Util::problem()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient
-            && m_text.contains("time");
-}
-
 // ***********************************************************************************
 
-ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin) : QWidget(parent)
+ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
+    : QWidget(parent), m_fieldInfo(NULL), m_hasTimeDep(hasTimeDep), m_hasNonlin(hasNonlin)
 {
     m_minimum = -numeric_limits<double>::max();
     m_minimumSharp = -numeric_limits<double>::max();
     m_maximum = numeric_limits<double>::max();
     m_maximumSharp = numeric_limits<double>::max();
 
-    m_hasTimeDep = hasTimeDep;
-    m_hasNonlin = hasNonlin;
     m_table = new DataTable();
 
     // create controls
@@ -254,10 +261,12 @@ double ValueLineEdit::number()
 
 void ValueLineEdit::setValue(Value value)
 {
+    m_fieldInfo = value.fieldInfo();
+
     txtLineEdit->setText(value.text());
 
     delete m_table;
-    m_table = value.table->copy();
+    m_table = value.table()->copy();
 
     setLayoutValue();
     evaluate();
@@ -265,7 +274,7 @@ void ValueLineEdit::setValue(Value value)
 
 Value ValueLineEdit::value()
 {
-    return Value(txtLineEdit->text(), m_table->copy());
+    return Value(m_fieldInfo, txtLineEdit->text(), m_table->copy());
 }
 
 bool ValueLineEdit::evaluate(bool quiet)
@@ -276,9 +285,7 @@ bool ValueLineEdit::evaluate(bool quiet)
     {
         Value val = value();
 
-        //TODO time dependence
-        btnEditTimeDep->setVisible(false);
-        //btnEditTimeDep->setVisible(m_hasTimeDep && Util::problem()->fieldInfo("TODO")->analysisType() == AnalysisType_Transient);
+        btnEditTimeDep->setVisible(m_hasTimeDep && m_fieldInfo && m_fieldInfo->analysisType() == AnalysisType_Transient);
 
         if (val.evaluate(quiet))
         {

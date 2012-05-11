@@ -279,7 +279,7 @@ void DataTableDialog::doPlot()
 
     // interpolation
     int countSpline = count*1e3;
-    double dx = (m_table->max_key() - m_table->min_key()) / (countSpline);
+    double dx = (m_table->maxKey() - m_table->minKey()) / (countSpline);
 
     double *keysSpline = new double[countSpline];
     double *valuesSpline = new double[countSpline];
@@ -290,11 +290,11 @@ void DataTableDialog::doPlot()
         // spline
         for (int i = 0; i < countSpline; i++)
         {
-            keysSpline[i] = m_table->min_key() + (i * dx);
+            keysSpline[i] = m_table->minKey() + (i * dx);
             // values[i] = m_table->value(keys[i]);
-            valuesSpline[i] = m_table->value_spline(keysSpline[i]);
+            valuesSpline[i] = m_table->valueSpline(keysSpline[i]);
             // derivatives[i] = m_table->derivative(keys[i]);
-            derivativesSpline[i] = m_table->derivative_spline(keysSpline[i]);
+            derivativesSpline[i] = m_table->derivativeSpline(keysSpline[i]);
         }
     }
     else
@@ -302,7 +302,7 @@ void DataTableDialog::doPlot()
         // lines
         for (int i = 0; i < countSpline; i++)
         {
-            keysSpline[i] = m_table->min_key() + (i * dx);
+            keysSpline[i] = m_table->minKey() + (i * dx);
             valuesSpline[i] = m_table->value(keysSpline[i]);
             derivativesSpline[i] = m_table->derivative(keysSpline[i]);
         }

@@ -26,17 +26,22 @@ class QwtPlotCurve;
 class QwtPlotPicker;
 class Chart;
 class DataTable;
+class FieldInfo;
 
 struct Value
 {
-    DataTable *table;
-
     Value();
-    Value(const QString &value, DataTable *table);
+    Value(FieldInfo *fieldInfo, const QString &value, DataTable *m_table);
+    Value(FieldInfo *fieldInfo, const QString &value, bool evaluateExpression = true);
     Value(const QString &value, bool evaluateExpression = true);
+    Value(double value);
+    Value(FieldInfo *fieldInfo, double value);
     ~Value();
 
     double number();
+
+    DataTable *table() const { return m_table; }
+    bool hasTable() const;
 
     double value(double key = 0.0);
     Hermes::Ord value(Hermes::Ord ord);
@@ -52,13 +57,14 @@ struct Value
     inline void setText(const QString &str) { m_isEvaluated = false; m_text = str; }
     inline QString text() const { return m_text; }
 
-    bool isTimeDep() const;
+    inline FieldInfo *fieldInfo() const { return m_fieldInfo; }
 
 private:
-    int m_isLinear;
+    FieldInfo *m_fieldInfo;
     bool m_isEvaluated;
     QString m_text;
     double m_number;
+    DataTable *m_table;
 };
 
 // ****************************************************************************************************
@@ -92,6 +98,8 @@ protected:
     void focusInEvent(QFocusEvent *event);
 
 private:
+    FieldInfo *m_fieldInfo;
+
     double m_minimum;
     double m_minimumSharp;
     double m_maximum;
@@ -99,11 +107,8 @@ private:
     double m_number;
 
     bool m_hasTimeDep;
-
     bool m_hasNonlin;
     DataTable *m_table;
-
-
 
     QLineEdit *txtLineEdit;
     QLabel *lblValue;
