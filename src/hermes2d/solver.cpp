@@ -525,7 +525,7 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
 template <typename Scalar>
 bool Solver<Scalar>::solveCreateAdaptedSpace(int timeStep, int adaptivityStep)
 {
-    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting)); // TODO or normal
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Normal));
     MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference));
 
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;

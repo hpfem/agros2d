@@ -173,6 +173,8 @@ private:
 
     // todo: move to Field
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
+
+    bool solveInit(bool& isError);
 };
 
 #endif // PROBLEM_H

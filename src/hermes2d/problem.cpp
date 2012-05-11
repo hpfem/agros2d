@@ -284,7 +284,159 @@ bool Problem::mesh()
     return false;
 }
 
+bool Problem::solveInit(bool& isError)
+{
+    if (isSolving())
+        return false;
+
+    m_isSolving = true;
+
+    // open indicator progress
+    Indicator::openProgress();
+
+
+    // control geometry
+    ErrorResult result = Util::scene()->checkGeometryResult();
+    if (result.isError())
+    {
+        result.showDialog();
+        m_isSolving = false;
+        return false;
+    }
+
+    // save problem
+    result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
+    if (result.isError())
+        result.showDialog();
+
+    createStructure();
+
+    if (!isMeshed())
+        isError = !mesh();
+
+    return true;
+}
+
 void Problem::solve()
+{
+    QTime elapsedTime;
+    elapsedTime.start();
+    bool isError = false;
+
+    clearSolution();
+
+    if(!solveInit(isError))
+        return;
+
+    if (!isError)
+    {
+        assert(isMeshed());
+
+        QMap<Block*, Solver<double>* > solvers;
+
+        // check geometry
+        if (!Util::scene()->checkGeometryAssignement())
+            return;
+
+        if (Util::problem()->fieldInfos().count() == 0)
+        {
+            Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
+            return;
+        }
+
+        Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+
+        Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
+
+        foreach (Block* block, m_blocks)
+        {
+            solvers[block] = block->prepareSolver();
+        }
+
+        foreach (Block* block, m_blocks)
+        {
+            Solver<double>* solver = solvers[block];
+
+            if (block->isTransient())
+            {
+                if (solver->solveInitialTimeStep())
+                {
+                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
+                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
+                        {
+                            isError = true;
+                            break; // inner loop
+                        }
+                }
+                else
+                {
+                    isError = true;
+                }
+
+                if (isError)
+                    break; // block solver loop
+            }
+            else
+            {
+                if (block->adaptivityType() == AdaptivityType_None)
+                {
+                    if (!solver->solveSimple())
+                    {
+                        isError = true;
+                        break; // block solver loop
+                    }
+                }
+                else
+                {
+                    if (!solver->solveInitialAdaptivityStep(0))
+                    {
+                        isError = true;
+                        break; // block solver loop
+                    }
+                    int adaptStep = 1;
+                    bool continueSolve = true;
+                    while (continueSolve && (adaptStep <= block->adaptivitySteps()))
+                    {
+                        continueSolve = solver->solveAdaptivityStep(0, adaptStep);
+                        continueSolve = continueSolve && solver->solveCreateAdaptedSpace(0, adaptStep);
+                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
+                        adaptStep++;
+                    }
+                }
+            }
+
+            if (!isError)
+            {
+                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
+                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
+                Util::scene()->setActiveSolutionType(SolutionType_Normal);
+                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
+            }
+        }
+
+        // delete temp file
+        if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
+        {
+            QFile::remove(Util::problem()->config()->fileName());
+            Util::problem()->config()->setFileName("");
+        }
+
+        if (!isError)
+        {
+            m_isSolved = true;
+            emit solved();
+        }
+    }
+
+    m_isSolving = false;
+
+    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
+
+    // close indicator progress
+    Indicator::closeProgress();
+}
+
+void Problem::solveAdaptiveStep()
 {
     if (isSolving()) return;
 
@@ -297,7 +449,6 @@ void Problem::solve()
 
     // open indicator progress
     Indicator::openProgress();
-
 
     // control geometry
     ErrorResult result = Util::scene()->checkGeometryResult();
@@ -424,10 +575,6 @@ void Problem::solve()
 
     // close indicator progress
     Indicator::closeProgress();
-}
-
-void Problem::solveAdaptiveStep()
-{
 
 }
 
