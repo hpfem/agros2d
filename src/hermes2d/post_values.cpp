@@ -39,7 +39,8 @@ void PostprocessorValue::setMaterialToParsers(Material *material)
 
     // set material
     foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        if (variable->expressionNonlinear().isEmpty())
+        if ((m_fieldInfo->linearityType() == LinearityType_Linear) ||
+                ((m_fieldInfo->linearityType() != LinearityType_Linear) && (m_parsers.length() > 0) && variable->expressionNonlinear().isEmpty()))
             // linear variable
             m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
         else

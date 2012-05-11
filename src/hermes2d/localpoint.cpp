@@ -114,7 +114,7 @@ void LocalPointValue::calculate()
             double *pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
             double *pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
             double *pdy = new double[m_fieldInfo->module()->numberOfSolutions()];
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions()); //TODO PK <double>
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions());
 
             for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
@@ -145,24 +145,11 @@ void LocalPointValue::calculate()
                 m_parsers[0]->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
             }
 
-            // add nonlinear parsers
-            foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-            {
-                if (!variable->expressionNonlinear().isEmpty())
-                {
-                    mu::Parser *parser = m_fieldInfo->module()->expressionParser();
-                    parser->SetExpr(variable->expressionNonlinear().toStdString());
-
-                    // get variables
-                    for (std::map<std::string, double *>::const_iterator item = m_parsers[0]->GetVar().begin(); item != m_parsers[0]->GetVar().end(); ++item)
-                        parser->DefineVar(item->first, item->second);
-
-                    m_parsersNonlinear[variable] = parser;
-                }
-            }
-
             // set material variables
             setMaterialToParsers(material);
+
+            // add nonlinear parsers
+            setNonlinearParsers();
 
             // parse expression
             foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
