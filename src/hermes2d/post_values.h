@@ -54,7 +54,7 @@ protected:
     QMap<Module::MaterialTypeVariable *, mu::Parser *> m_parsersNonlinear;
 
     void setNonlinearParsers();
-    void setNonlinearMaterial(SceneMaterial *material);
+    void setNonlinearMaterial(Material *material);
 };
 
 class PostprocessorIntegralValue : public PostprocessorValue

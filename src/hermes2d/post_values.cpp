@@ -33,6 +33,21 @@
 
 #include <muParserDef.h>
 
+PostprocessorValue::~PostprocessorValue()
+{
+    // delete parsers
+    foreach (mu::Parser *parser, m_parsers)
+        delete parser;
+    m_parsers.clear();
+
+    // delete parsers
+    foreach (mu::Parser *parser, m_parsersNonlinear.values())
+        delete parser;
+    m_parsersNonlinear.clear();
+
+    m_parserVariables.clear();
+}
+
 void PostprocessorValue::setMaterialToParsers(Material *material)
 {
     m_parserVariables.clear();
@@ -51,21 +66,6 @@ void PostprocessorValue::setMaterialToParsers(Material *material)
     for (QMap<std::string, double>::iterator itv = m_parserVariables.begin(); itv != m_parserVariables.end(); ++itv)
         foreach (mu::Parser *pars, m_parsers)
             pars->DefineVar(itv.key(), &itv.value());
-}
-
-PostprocessorValue::~PostprocessorValue()
-{
-    // delete parsers
-    foreach (mu::Parser *parser, m_parsers)
-        delete parser;
-    m_parsers.clear();
-
-    // delete parsers
-    foreach (mu::Parser *parser, m_parsersNonlinear.values())
-        delete parser;
-    m_parsersNonlinear.clear();
-
-    m_parserVariables.clear();
 }
 
 void PostprocessorValue::setNonlinearParsers()
@@ -89,7 +89,7 @@ void PostprocessorValue::setNonlinearParsers()
     }
 }
 
-void PostprocessorValue::setNonlinearMaterial(SceneMaterial *material)
+void PostprocessorValue::setNonlinearMaterial(Material *material)
 {
     if (m_fieldInfo->linearityType() != LinearityType_Linear)
     {
@@ -110,6 +110,7 @@ void PostprocessorValue::setNonlinearMaterial(SceneMaterial *material)
         }
     }
 }
+
 // *********************************************************************************************************************************************
 
 void PostprocessorIntegralValue::initParser(QList<Module::Integral *> list)
