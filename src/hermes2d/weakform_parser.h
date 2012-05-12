@@ -136,7 +136,7 @@ protected:
 
     // nonlinearities
     void setNonlinearParsers();
-    void setNonlinearMaterial(Material *material, int index, double *x, double *y, Hermes::Hermes2D::Func<double> *u_ext[]) const;
+    void setNonlinearMaterial(Material *material, int offset, int index, double *x, double *y, Hermes::Hermes2D::Func<double> *u_ext[]) const;
 
 protected:
     FieldInfo *m_fieldInfo;

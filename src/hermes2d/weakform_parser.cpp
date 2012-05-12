@@ -149,6 +149,11 @@ void ParserForm::setNonlinearParsers()
 {
     if (m_fieldInfo && (m_fieldInfo->linearityType() != LinearityType_Linear))
     {
+        // value and derivatives
+        pnlvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
+        pnldx = new double[m_fieldInfo->module()->numberOfSolutions()];
+        pnldy = new double[m_fieldInfo->module()->numberOfSolutions()];
+
         foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
         {
             if (!variable->expressionNonlinear().isEmpty())
@@ -158,11 +163,6 @@ void ParserForm::setNonlinearParsers()
 
                 parser->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &pnlx);
                 parser->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &pnly);
-
-                // value and derivatives
-                pnlvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
-                pnldx = new double[m_fieldInfo->module()->numberOfSolutions()];
-                pnldy = new double[m_fieldInfo->module()->numberOfSolutions()];
 
                 for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
                 {
@@ -180,7 +180,7 @@ void ParserForm::setNonlinearParsers()
     }
 }
 
-void ParserForm::setNonlinearMaterial(Material *material, int index, double *x, double *y, Hermes::Hermes2D::Func<double> *u_ext[]) const
+void ParserForm::setNonlinearMaterial(Material *material, int offset, int index, double *x, double *y, Hermes::Hermes2D::Func<double> *u_ext[]) const
 {
     if (m_fieldInfo && m_fieldInfo->linearityType() != LinearityType_Linear)
     {
@@ -189,9 +189,12 @@ void ParserForm::setNonlinearMaterial(Material *material, int index, double *x, 
 
         for (int i = 0; i < m_fieldInfo->module()->numberOfSolutions(); i++)
         {
-            pupval = u_ext[i]->val[index];
-            pupdx = u_ext[i]->dx[index];
-            pupdy = u_ext[i]->dy[index];
+            // pnlvalue[i] = u_ext[offset + i]->val[index];
+            // pnldx[i] = u_ext[offset + i]->dx[index];
+            // pnldy[i] = u_ext[offset + i]->dy[index];
+            pnlvalue[i] = u_ext[i]->val[index];
+            pnldx[i] = u_ext[i]->dx[index];
+            pnldy[i] = u_ext[i]->dy[index];
         }
 
         foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
@@ -275,23 +278,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdx = u_ext[this->i]->dx[i];
             pupdy = u_ext[this->i]->dy[i];
 
-            setNonlinearMaterial(m_materialSource, i, e->x, e->y, u_ext);
-            /*
-            if (m_fieldInfo)
-            {
-                foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-                {
-                    Value value = m_materialSource->value(variable->id());
-
-                    // table
-                    if (value.hasTable())
-                    {
-                        m_parserVariables[variable->shortname().toStdString()] = value.value(pupval); // TODO: nonlinear - value(value);
-                        m_parserVariables["d" + variable->shortname().toStdString()] = value.derivative(pupval); // TODO: nonlinear - value(value);
-                    }
-                }
-            }
-            */
+            setNonlinearMaterial(m_materialSource, this->i, i, e->x, e->y, u_ext);
         }
         else
         {
@@ -411,20 +398,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdx = u_ext[this->j]->dx[i];
             pupdy = u_ext[this->j]->dy[i];
 
-            setNonlinearMaterial(m_materialSource, i, e->x, e->y, u_ext);
-            /*
-            if (m_fieldInfo)
-            {
-                foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-                {
-                    Value value = m_materialSource->value(variable->id());
-
-                    // table
-                    if (value.hasTable())
-                        m_parserVariables[variable->shortname().toStdString()] = m_materialSource->value(variable->id()).value(pupval); // TODO: nonlinear - value(value);
-                }
-            }
-            */
+            setNonlinearMaterial(m_materialSource, this->j, i, e->x, e->y, u_ext);
         }
 
         if (m_materialTarget)

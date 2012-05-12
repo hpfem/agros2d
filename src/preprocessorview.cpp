@@ -511,6 +511,9 @@ void PreprocessorWidget::showInfo()
         field->SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
         field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType()).toStdString());
 
+        field->SetValue("LINEARITY_TYPE_LABEL", tr("Solution type:").toStdString());
+        field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType()).toStdString());
+        /*
         field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
         field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements()).toStdString());
         field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
@@ -527,6 +530,7 @@ void PreprocessorWidget::showInfo()
             field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString());
             field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
         }
+        */
     }
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/preprocessor.tpl", ctemplate::DO_NOT_STRIP, &problem, &info);
