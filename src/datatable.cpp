@@ -396,12 +396,12 @@ Hermes::Ord DataTable::derivativeSpline(Hermes::Ord key)
     return Hermes::Ord(1);
 }
 
-std::string DataTable::toString()
+std::string DataTable::toString() const
 {
     return (toStringX() + ";" + toStringY());
 }
 
-std::string DataTable::toStringX()
+std::string DataTable::toStringX() const
 {
     std::string str_key;
 
@@ -424,7 +424,7 @@ std::string DataTable::toStringX()
     return str_key;
 }
 
-std::string DataTable::toStringY()
+std::string DataTable::toStringY() const
 {
     std::string str_value;
 

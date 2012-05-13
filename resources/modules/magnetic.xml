@@ -210,6 +210,7 @@
 			<module:group name="Material properties">
 				<module:quantity id="magnetic_permeability" name="Permeability"
 					shortname="mur" shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                    shortname_dependence="B" shortname_dependence_html="&lt;i&gt;B&lt;/i&gt;"
 					unit="-" unit_html="-" unit_latex="-" />
 				<module:quantity id="magnetic_conductivity" name="Electrical conductivity"
 					shortname="gamma" unit="S/m" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;"

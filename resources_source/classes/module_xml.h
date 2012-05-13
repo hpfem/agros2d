@@ -3027,6 +3027,48 @@ namespace XMLModule
     void
     shortname_latex (::std::auto_ptr< shortname_latex_type > p);
 
+    // shortname_dependence
+    // 
+    typedef ::xml_schema::string shortname_dependence_type;
+    typedef ::xsd::cxx::tree::optional< shortname_dependence_type > shortname_dependence_optional;
+    typedef ::xsd::cxx::tree::traits< shortname_dependence_type, char > shortname_dependence_traits;
+
+    const shortname_dependence_optional&
+    shortname_dependence () const;
+
+    shortname_dependence_optional&
+    shortname_dependence ();
+
+    void
+    shortname_dependence (const shortname_dependence_type& x);
+
+    void
+    shortname_dependence (const shortname_dependence_optional& x);
+
+    void
+    shortname_dependence (::std::auto_ptr< shortname_dependence_type > p);
+
+    // shortname_dependence_html
+    // 
+    typedef ::xml_schema::string shortname_dependence_html_type;
+    typedef ::xsd::cxx::tree::optional< shortname_dependence_html_type > shortname_dependence_html_optional;
+    typedef ::xsd::cxx::tree::traits< shortname_dependence_html_type, char > shortname_dependence_html_traits;
+
+    const shortname_dependence_html_optional&
+    shortname_dependence_html () const;
+
+    shortname_dependence_html_optional&
+    shortname_dependence_html ();
+
+    void
+    shortname_dependence_html (const shortname_dependence_html_type& x);
+
+    void
+    shortname_dependence_html (const shortname_dependence_html_optional& x);
+
+    void
+    shortname_dependence_html (::std::auto_ptr< shortname_dependence_html_type > p);
+
     // unit
     // 
     typedef ::xml_schema::string unit_type;
@@ -3127,6 +3169,8 @@ namespace XMLModule
     shortname_optional shortname_;
     shortname_html_optional shortname_html_;
     shortname_latex_optional shortname_latex_;
+    shortname_dependence_optional shortname_dependence_;
+    shortname_dependence_html_optional shortname_dependence_html_;
     unit_optional unit_;
     unit_html_optional unit_html_;
     unit_latex_optional unit_latex_;

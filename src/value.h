@@ -72,6 +72,7 @@ private:
 class ValueLineEdit : public QWidget
 {
     Q_OBJECT
+
 public:
     ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false);
 
@@ -85,6 +86,11 @@ public:
     inline void setMinimumSharp(double min) { m_minimumSharp = min; }
     inline void setMaximum(double max) { m_maximum = max; }
     inline void setMaximumSharp(double max) { m_maximumSharp = max; }
+
+    inline void setLabelX(const QString &labelX) { m_labelX = labelX; }
+    inline QString labelX() const { return m_labelX; }
+    inline void setLabelY(const QString &labelY) { m_labelY = labelY; }
+    inline QString labelY() const { return m_labelY; }
 
 public slots:
     bool evaluate(bool quiet = true);
@@ -109,6 +115,8 @@ private:
     bool m_hasTimeDep;
     bool m_hasNonlin;
     DataTable *m_table;
+    QString m_labelX;
+    QString m_labelY;
 
     QLineEdit *txtLineEdit;
     QLabel *lblValue;

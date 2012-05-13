@@ -481,13 +481,15 @@ Module::BoundaryType::~BoundaryType()
 // ***********************************************************************************************
 
 // dialog row UI
-Module::DialogUI::DialogRow::DialogRow(XMLModule::quantity qty)
+Module::DialogRow::DialogRow(XMLModule::quantity qty)
 {
     m_id = QString::fromStdString(qty.id());
     m_name = (qty.name().present()) ? QString::fromStdString(qty.name().get()) : "";
 
     m_shortname = (qty.shortname().present()) ? QString::fromStdString(qty.shortname().get()) : "";
     m_shortnameHtml = (qty.shortname_html().present()) ? QString::fromStdString(qty.shortname_html().get()) : "";
+    m_shortnameDependence = (qty.shortname_dependence().present()) ? QString::fromStdString(qty.shortname_dependence().get()) : "";
+    m_shortnameDependenceHtml = (qty.shortname_dependence_html().present()) ? QString::fromStdString(qty.shortname_dependence_html().get()) : "";
 
     m_unit = (qty.unit().present()) ? QString::fromStdString(qty.unit().get()) : "";
     m_unitHtml = (qty.unit_html().present()) ? QString::fromStdString(qty.unit_html().get()) : "";
@@ -507,13 +509,13 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
         // group name
         QString name = (grp.name().present()) ? QString::fromStdString(grp.name().get()) : "";
         
-        QList<DialogUI::DialogRow> materials;
+        QList<Module::DialogRow> materials;
         for (int i = 0; i < grp.quantity().size(); i++)
         {
             XMLModule::quantity quant = grp.quantity().at(i);
 
             // append material
-            materials.append(DialogUI::DialogRow(quant));
+            materials.append(Module::DialogRow(quant));
         }
         
         m_groups[name] = materials;
@@ -635,13 +637,13 @@ void Module::BasicModule::read(const QString &filename)
                     Module::MaterialTypeVariable old = (Module::MaterialTypeVariable) *it;
                     if (old.id().toStdString() == qty.id())
                     {
-                        QString expressionNonlinear;
+                        QString nonlinearExpression;
 
                         if (m_coordinateType == CoordinateType_Planar && qty.nonlinearity_planar().present())
-                            expressionNonlinear = QString::fromStdString(qty.nonlinearity_planar().get());
+                            nonlinearExpression = QString::fromStdString(qty.nonlinearity_planar().get());
                         else
                             if (qty.nonlinearity_axi().present())
-                                expressionNonlinear = QString::fromStdString(qty.nonlinearity_axi().get());
+                                nonlinearExpression = QString::fromStdString(qty.nonlinearity_axi().get());
 
                         bool isTimeDep = false;
                         if (qty.dependence().present())
@@ -649,7 +651,7 @@ void Module::BasicModule::read(const QString &filename)
 
                         Module::MaterialTypeVariable *var = new Module::MaterialTypeVariable(
                                     old.id(), old.shortname(), old.defaultValue(),
-                                    expressionNonlinear, isTimeDep);
+                                    nonlinearExpression, isTimeDep);
                         m_materialTypeVariables.append(var);
                     }
                 }

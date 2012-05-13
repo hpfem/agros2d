@@ -125,6 +125,7 @@
 					name="Thermal conductivity" default="385" condition="value > 0"
 					shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;"
 					shortname_latex="\lambda" unit="W/m.K"
+                    shortname_dependence="T" shortname_dependence_html="&lt;i&gt;T&lt;/i&gt;"
 					unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;"
 					unit_latex="W \cdot m^{-1} \cdot K^{-1}" />
                 <module:quantity id="heat_volume_heat"

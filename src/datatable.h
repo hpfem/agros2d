@@ -61,11 +61,9 @@ public:
     double minValue();
     double maxValue();
 
-    // deprecated
     double value(double key);
     Hermes::Ord value(Hermes::Ord key);
 
-    // deprecated
     double derivative(double key);
     Hermes::Ord derivative(Hermes::Ord key);
 
@@ -75,9 +73,9 @@ public:
     double derivativeSpline(double key);
     Hermes::Ord derivativeSpline(Hermes::Ord key);
 
-    std::string toString();
-    std::string toStringX();
-    std::string toStringY();
+    std::string toString() const;
+    std::string toStringX() const;
+    std::string toStringY() const;
     void fromString(const std::string &str);
 
     void print();
