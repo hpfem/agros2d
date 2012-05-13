@@ -119,6 +119,9 @@ QString createPythonFromModel()
         str += QString("%1.analysis_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
                 arg(analysisTypeToStringKey(fieldInfo->analysisType()));
+        str += QString("%1.weak_forms = \"%2\"\n").
+                arg(fieldInfo->fieldId()).
+                arg(weakFormsTypeToStringKey(fieldInfo->weakFormsType()));
 
         if (fieldInfo->numberOfRefinements() > 0)
             str += QString("%1.number_of_refinements = %2\n").
