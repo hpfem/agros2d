@@ -2507,6 +2507,66 @@ namespace XMLModule
     this->shortname_latex_.set (x);
   }
 
+  const quantity::shortname_dependence_optional& quantity::
+  shortname_dependence () const
+  {
+    return this->shortname_dependence_;
+  }
+
+  quantity::shortname_dependence_optional& quantity::
+  shortname_dependence ()
+  {
+    return this->shortname_dependence_;
+  }
+
+  void quantity::
+  shortname_dependence (const shortname_dependence_type& x)
+  {
+    this->shortname_dependence_.set (x);
+  }
+
+  void quantity::
+  shortname_dependence (const shortname_dependence_optional& x)
+  {
+    this->shortname_dependence_ = x;
+  }
+
+  void quantity::
+  shortname_dependence (::std::auto_ptr< shortname_dependence_type > x)
+  {
+    this->shortname_dependence_.set (x);
+  }
+
+  const quantity::shortname_dependence_html_optional& quantity::
+  shortname_dependence_html () const
+  {
+    return this->shortname_dependence_html_;
+  }
+
+  quantity::shortname_dependence_html_optional& quantity::
+  shortname_dependence_html ()
+  {
+    return this->shortname_dependence_html_;
+  }
+
+  void quantity::
+  shortname_dependence_html (const shortname_dependence_html_type& x)
+  {
+    this->shortname_dependence_html_.set (x);
+  }
+
+  void quantity::
+  shortname_dependence_html (const shortname_dependence_html_optional& x)
+  {
+    this->shortname_dependence_html_ = x;
+  }
+
+  void quantity::
+  shortname_dependence_html (::std::auto_ptr< shortname_dependence_html_type > x)
+  {
+    this->shortname_dependence_html_.set (x);
+  }
+
   const quantity::unit_optional& quantity::
   unit () const
   {
@@ -6227,6 +6287,8 @@ namespace XMLModule
     shortname_ (::xml_schema::flags (), this),
     shortname_html_ (::xml_schema::flags (), this),
     shortname_latex_ (::xml_schema::flags (), this),
+    shortname_dependence_ (::xml_schema::flags (), this),
+    shortname_dependence_html_ (::xml_schema::flags (), this),
     unit_ (::xml_schema::flags (), this),
     unit_html_ (::xml_schema::flags (), this),
     unit_latex_ (::xml_schema::flags (), this)
@@ -6248,6 +6310,8 @@ namespace XMLModule
     shortname_ (x.shortname_, f, this),
     shortname_html_ (x.shortname_html_, f, this),
     shortname_latex_ (x.shortname_latex_, f, this),
+    shortname_dependence_ (x.shortname_dependence_, f, this),
+    shortname_dependence_html_ (x.shortname_dependence_html_, f, this),
     unit_ (x.unit_, f, this),
     unit_html_ (x.unit_html_, f, this),
     unit_latex_ (x.unit_latex_, f, this)
@@ -6269,6 +6333,8 @@ namespace XMLModule
     shortname_ (f, this),
     shortname_html_ (f, this),
     shortname_latex_ (f, this),
+    shortname_dependence_ (f, this),
+    shortname_dependence_html_ (f, this),
     unit_ (f, this),
     unit_html_ (f, this),
     unit_latex_ (f, this)
@@ -6374,6 +6440,24 @@ namespace XMLModule
           shortname_latex_traits::create (i, f, this));
 
         this->shortname_latex_.set (r);
+        continue;
+      }
+
+      if (n.name () == "shortname_dependence" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< shortname_dependence_type > r (
+          shortname_dependence_traits::create (i, f, this));
+
+        this->shortname_dependence_.set (r);
+        continue;
+      }
+
+      if (n.name () == "shortname_dependence_html" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< shortname_dependence_html_type > r (
+          shortname_dependence_html_traits::create (i, f, this));
+
+        this->shortname_dependence_html_.set (r);
         continue;
       }
 
@@ -7748,6 +7832,16 @@ namespace XMLModule
     if (i.shortname_latex ())
     {
       o << ::std::endl << "shortname_latex: " << *i.shortname_latex ();
+    }
+
+    if (i.shortname_dependence ())
+    {
+      o << ::std::endl << "shortname_dependence: " << *i.shortname_dependence ();
+    }
+
+    if (i.shortname_dependence_html ())
+    {
+      o << ::std::endl << "shortname_dependence_html: " << *i.shortname_dependence_html ();
     }
 
     if (i.unit ())
@@ -9689,6 +9783,30 @@ namespace XMLModule
           e));
 
       a << *i.shortname_latex ();
+    }
+
+    // shortname_dependence
+    //
+    if (i.shortname_dependence ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "shortname_dependence",
+          e));
+
+      a << *i.shortname_dependence ();
+    }
+
+    // shortname_dependence_html
+    //
+    if (i.shortname_dependence_html ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "shortname_dependence_html",
+          e));
+
+      a << *i.shortname_dependence_html ();
     }
 
     // unit

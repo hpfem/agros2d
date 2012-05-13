@@ -22,7 +22,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
-//#include "hermes2d/problem.h"
+#include "datatable.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneedge.h"
@@ -172,7 +172,7 @@ void SceneFieldWidget::createContent()
     // add custom widget
     addCustomWidget(layout);
 
-    QMapIterator<QString, QList<Module::DialogUI::DialogRow> > i(ui->groups());
+    QMapIterator<QString, QList<Module::DialogRow> > i(ui->groups());
     while (i.hasNext())
     {
         i.next();
@@ -181,11 +181,11 @@ void SceneFieldWidget::createContent()
         QGridLayout *layoutGroup = new QGridLayout();
 
         // variables
-        QList<Module::DialogUI::DialogRow> variables = i.value();
+        QList<Module::DialogRow> variables = i.value();
 
-        foreach (Module::DialogUI::DialogRow row, variables)
+        foreach (Module::DialogRow row, variables)
         {
-            ValueLineEdit *textEdit = addValueEditWidget(row.id());
+            ValueLineEdit *textEdit = addValueEditWidget(row);
 
             if (textEdit)
             {
@@ -234,12 +234,20 @@ SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMa
 {
 }
 
-ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const QString &var)
+ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::DialogRow &row)
 {
     foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
     {
-        if (variable->id() == var)
-            return new ValueLineEdit(this, variable->isTimeDep(), variable->isNonlinear());
+        if (variable->id() == row.id())
+        {
+            ValueLineEdit *edit = new ValueLineEdit(this, variable->isTimeDep(), variable->isNonlinear());
+            if (variable->isNonlinear())
+            {
+                edit->setLabelX(row.shortnameDependenceHtml());
+                edit->setLabelY(row.shortnameHtml());
+            }
+            return edit;
+        }
     }
 
     return NULL;
@@ -279,10 +287,10 @@ SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Module::DialogUI *ui, SceneBo
 {
 }
 
-ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const QString &var)
+ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::DialogRow &row)
 {
     foreach (Module::BoundaryTypeVariable *variable, boundary->fieldInfo()->module()->boundaryTypeVariables())
-        if (variable->id() == var)
+        if (variable->id() == row.id())
             return new ValueLineEdit(this, false, false);
 
     return new ValueLineEdit(this);

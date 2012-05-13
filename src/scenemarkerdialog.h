@@ -34,7 +34,8 @@ Q_DECLARE_METATYPE(SceneMaterial *)
 
 namespace Module
 {
-    class DialogUI;
+    struct DialogUI;
+    struct DialogRow;
 }
 
 class SceneBoundary : public Boundary
@@ -85,7 +86,7 @@ public:
     void createContent();
 
     virtual void addCustomWidget(QVBoxLayout *layout) = 0;
-    virtual ValueLineEdit *addValueEditWidget(const QString &variable) = 0;
+    virtual ValueLineEdit *addValueEditWidget(const Module::DialogRow &row) = 0;
     virtual void refresh() = 0;
     virtual void load() = 0;
     virtual bool save() = 0;
@@ -100,7 +101,7 @@ public:
     SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
 
     void addCustomWidget(QVBoxLayout *layout) {}
-    ValueLineEdit *addValueEditWidget(const QString &var);
+    ValueLineEdit *addValueEditWidget(const Module::DialogRow &row);
     void refresh();
     void load();
     bool save();
@@ -117,7 +118,7 @@ public:
     QComboBox *comboBox;
 
     void addCustomWidget(QVBoxLayout *layout);
-    ValueLineEdit *addValueEditWidget(const QString &var);
+    ValueLineEdit *addValueEditWidget(const Module::DialogRow &row);
     void refresh();
     void load();
     bool save();

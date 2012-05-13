@@ -335,48 +335,52 @@ private:
 };
 
 // dialog UI
+struct DialogRow
+{
+    DialogRow(XMLModule::quantity qty);
+
+    inline QString id() const { return m_id; }
+
+    inline QString name() const { return m_name; }
+    inline QString shortname() const { return m_shortname; }
+    inline QString shortnameHtml() const { return m_shortnameHtml; }
+    inline QString shortnameDependence() const { return m_shortnameDependence; }
+    inline QString shortnameDependenceHtml() const { return m_shortnameDependenceHtml; }
+
+    inline QString unit() const { return m_unit; }
+    inline QString unitHtml() const { return m_unitHtml; }
+    inline QString unitLatex() const { return m_unitLatex; }
+
+    inline double defaultValue() const { return m_defaultValue; }
+    inline QString condition() const { return m_condition; }
+
+private:
+    QString m_id;
+
+    QString m_name;
+    QString m_shortname;
+    QString m_shortnameHtml;
+    QString m_shortnameDependence;
+    QString m_shortnameDependenceHtml;
+
+    QString m_unit;
+    QString m_unitHtml;
+    QString m_unitLatex;
+
+    double m_defaultValue;
+    QString m_condition;
+};
+
 struct DialogUI
 {
     DialogUI() {}
     DialogUI(XMLModule::gui ui);
 
-    struct DialogRow
-    {
-        DialogRow(XMLModule::quantity qty);
-
-        inline QString id() const { return m_id; }
-
-        inline QString name() const { return m_name; }
-        inline QString shortname() const { return m_shortname; }
-        inline QString shortnameHtml() const { return m_shortnameHtml; }
-
-        inline QString unit() const { return m_unit; }
-        inline QString unitHtml() const { return m_unitHtml; }
-        inline QString unitLatex() const { return m_unitLatex; }
-
-        inline double defaultValue() const { return m_defaultValue; }
-        inline QString condition() const { return m_condition; }
-
-    private:
-        QString m_id;
-
-        QString m_name;
-        QString m_shortname;
-        QString m_shortnameHtml;
-
-        QString m_unit;
-        QString m_unitHtml;
-        QString m_unitLatex;
-
-        double m_defaultValue;
-        QString m_condition;
-    };
-
-    inline QMap<QString, QList<DialogRow> > groups() const { return m_groups; }
+    inline QMap<QString, QList<Module::DialogRow> > groups() const { return m_groups; }
     void clear();
 
 private:
-    QMap<QString, QList<DialogRow> > m_groups;
+    QMap<QString, QList<Module::DialogRow> > m_groups;
 };
 
 // basic xml module

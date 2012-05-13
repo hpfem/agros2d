@@ -198,7 +198,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
     connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
 
     lblValue = new QLabel(this);
-    lblInfo = new QLabel(tr("nonlinear material"));
+    lblInfo = new QLabel();
 
 #ifdef Q_WS_MAC
     btnDataTableDelete = new QToolButton();
@@ -351,6 +351,10 @@ void ValueLineEdit::setLayoutValue()
     }
     if (m_hasNonlin && m_table->size() > 0)
     {
+        if (!m_labelX.isEmpty() && !m_labelY.isEmpty())
+            lblInfo->setText(tr("nonlinear %1(%2)").arg(m_labelY).arg(m_labelX));
+        else
+            lblInfo->setText(tr("nonlinear"));
         lblInfo->setVisible(true);
         btnDataTableDelete->setVisible(true);
     }
@@ -399,12 +403,10 @@ void ValueLineEdit::doOpenDataTableDelete()
 
 void ValueLineEdit::doOpenDataTableDialog()
 {
-    DataTableDialog dataTableDialog(this);
+    DataTableDialog dataTableDialog(this, m_labelX, m_labelY);
     dataTableDialog.setTable(m_table);
     if (dataTableDialog.exec() == QDialog::Accepted)
-    {
         m_table = dataTableDialog.table();
-    }
 
     setLayoutValue();
     evaluate();

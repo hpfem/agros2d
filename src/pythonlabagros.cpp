@@ -178,11 +178,12 @@ QString createPythonFromModel()
             {
                 if (it.value().hasTable())
                 {
+                    Value value = it.value();
                     variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
                             arg(it.key()).
                             arg(it.value().text()).
-                            arg(QString::fromStdString(it.value().table()->toStringX())).
-                            arg(QString::fromStdString(it.value().table()->toStringY()));
+                            arg(QString::fromStdString(value.table()->toStringX())).
+                            arg(QString::fromStdString(value.table()->toStringY()));
                 }
                 else
                 {
