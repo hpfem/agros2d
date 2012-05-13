@@ -46,13 +46,14 @@
         <file alias="scene-labelmarker-notused.png">../resources_source/images/scene-labelmarker-notused.png</file>
         <file alias="scene-info.png">../resources_source/images/scene-info.png</file>
         <file alias="scene-geometry.png">../resources_source/images/scene-geometry.png</file>
+        <file alias="scene-mesh.png">../resources_source/images/scene-mesh.png</file>
         <file alias="scene-post2d.png">../resources_source/images/scene-post2d.png</file>
 		<file alias="scene-post3d.png">../resources_source/images/scene-post3d.png</file>
         <file alias="scene-delete.png">../resources_source/images/scene-delete.png</file>
         <file alias="scene-properties.png">../resources_source/images/scene-properties.png</file>
         <file alias="scene-select-region.png">../resources_source/images/scene-select-region.png</file>
         <file alias="scene-transform.png">../resources_source/images/scene-transform.png</file>
-        <file alias="scene-mesh.png">../resources_source/images/scene-mesh.png</file>
+        <file alias="scene-meshgen.png">../resources_source/images/scene-meshgen.png</file>
         <file alias="scene-function.png">../resources_source/images/scene-function.png</file>
         <file alias="run.png">../resources_source/images/run.png</file>
         <file alias="run-step.png">../resources_source/images/run-step.png</file>
