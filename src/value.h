@@ -34,8 +34,8 @@ struct Value
     Value(FieldInfo *fieldInfo, const QString &value, DataTable *m_table);
     Value(FieldInfo *fieldInfo, const QString &value, bool evaluateExpression = true);
     Value(const QString &value, bool evaluateExpression = true);
-    Value(double value);
-    Value(FieldInfo *fieldInfo, double value);
+    Value(double value, std::vector<double> x = std::vector<double>(), std::vector<double> y = std::vector<double>());
+    Value(FieldInfo *fieldInfo, double value, std::vector<double> x = std::vector<double>(), std::vector<double> y = std::vector<double>());
     ~Value();
 
     double number();

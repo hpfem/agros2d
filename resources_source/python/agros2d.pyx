@@ -92,7 +92,7 @@ cdef extern from "../../src/pythonlabagros.h":
         void setBoundary(char*, char*, map[char*, double]) except +
         void removeBoundary(char*)
 
-        void addMaterial(char*, map[char*, double]) except +
+        void addMaterial(char *id, map[char*, double] parameters, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
         void setMaterial(char*, map[char*, double]) except +
         void removeMaterial(char*)
 
@@ -460,12 +460,42 @@ cdef class __Field__:
     def add_material(self, char *name, parameters = {}):
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
+
+        cdef map[char*, vector[double]] nonlin_x_map
+        cdef pair[char*, vector[double]] nonlin_x
+        cdef vector[double] x
+        cdef map[char*, vector[double]] nonlin_y_map
+        cdef pair[char*, vector[double]] nonlin_y
+        cdef vector[double] y
+
         for key in parameters:
+            if isinstance(parameters[key], dict):
+                if ("value" in parameters[key]):
+                    val = parameters[key]["value"]
+                else:
+                    val = 0.0
+
+                if ("x" in parameters[key]):
+                    for v in parameters[key]["x"]:
+                        x.push_back(v)
+                    nonlin_x.first = key
+                    nonlin_x.second = x
+                    nonlin_x_map.insert(nonlin_x)
+
+                if ("y" in parameters[key]):
+                    for v in parameters[key]["y"]:
+                        y.push_back(v)
+                    nonlin_y.first = key
+                    nonlin_y.second = y
+                    nonlin_y_map.insert(nonlin_y)
+            else:
+                val = parameters[key]
+
             parameter.first = key
-            parameter.second = parameters[key]
+            parameter.second = val
             parameters_map.insert(parameter)
 
-        self.thisptr.addMaterial(name, parameters_map)
+        self.thisptr.addMaterial(name, parameters_map, nonlin_x_map, nonlin_y_map)
 
     def set_material(self, char *name, parameters):
         cdef map[char*, double] parameters_map

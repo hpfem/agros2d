@@ -222,7 +222,9 @@ class PyField
         void removeBoundary(char *name);
 
         // materials
-        void addMaterial(char *name, map<char*, double> parameters);
+        void addMaterial(char *name, map<char*, double> parameters,
+                         map<char*, vector<double> > nonlin_x,
+                         map<char*, vector<double> > nonlin_y);
         void setMaterial(char *name, map<char*, double> parameters);
         void removeMaterial(char *name);
 

@@ -143,9 +143,6 @@ void VolumeIntegralValue::calculate()
                         }
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
-                        // init nonlinear material
-                        setNonlinearMaterial(material);
-
                         // parse expression
                         int n = 0;
                         foreach (Module::Integral *integral, m_fieldInfo->module()->volumeIntegrals())
@@ -170,6 +167,9 @@ void VolumeIntegralValue::calculate()
                                         pdx[k] = dudx[k][i];
                                         pdy[k] = dudy[k][i];
                                     }
+
+                                    // set nonlinear material
+                                    setNonlinearMaterial(material);
 
                                     if (ru->is_jacobian_const())
                                     {

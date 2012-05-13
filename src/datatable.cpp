@@ -147,9 +147,15 @@ void DataTable::add(double key, double value, bool init)
 void DataTable::add(double *keys, double *values, int count)
 {
     for (int i = 0; i<count; i++)
-    {
         add(keys[i], values[i], false);
-    }
+
+    initSpline();
+}
+
+void DataTable::add(vector<double> keys, vector<double> values)
+{
+    for (int i = 0; i<keys.size(); i++)
+        add(keys[i], values[i], false);
 
     initSpline();
 }
@@ -392,17 +398,41 @@ Hermes::Ord DataTable::derivativeSpline(Hermes::Ord key)
 
 std::string DataTable::toString()
 {
+    return (toStringX() + ";" + toStringY());
+}
+
+std::string DataTable::toStringX()
+{
     std::string str_key;
-    std::string str_value;
 
     DataTableRow *data = m_data;
     while (data)
     {
         std::ostringstream o_key;
-        std::ostringstream o_value;
 
         o_key << data->key;
         str_key += o_key.str();
+
+        // next row
+        data = data->next;
+
+        // separator
+        if (data)
+            str_key += ",";
+    }
+
+    return str_key;
+}
+
+std::string DataTable::toStringY()
+{
+    std::string str_value;
+
+    DataTableRow *data = m_data;
+    while (data)
+    {
+        std::ostringstream o_value;
+
         o_value << data->value;
         str_value += o_value.str();
 
@@ -411,13 +441,10 @@ std::string DataTable::toString()
 
         // separator
         if (data)
-        {
-            str_key += ",";
             str_value += ",";
-        }
     }
 
-    return (str_key + ";" + str_value);
+    return str_value;
 }
 
 void DataTable::fromString(const std::string &str)

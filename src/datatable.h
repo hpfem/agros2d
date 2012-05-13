@@ -46,6 +46,7 @@ public:
 
     void add(double key, double value, bool init = true);
     void add(double *keys, double *values, int count);
+    void add(vector<double> keys, vector<double> values);
     void get(double *keys, double *values, double *derivatives);
     DataTable *copy() const;
 
@@ -75,6 +76,8 @@ public:
     Hermes::Ord derivativeSpline(Hermes::Ord key);
 
     std::string toString();
+    std::string toStringX();
+    std::string toStringY();
     void fromString(const std::string &str);
 
     void print();

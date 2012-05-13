@@ -127,7 +127,7 @@ void MarkerContainer<MarkerType>::doFieldsChanged()
 template <typename MarkerType>
 bool MarkerContainer<MarkerType>::evaluateAllVariables()
 {
-    foreach(MarkerType* marker, data)
+    foreach (MarkerType* marker, data)
     {
         if (!marker->evaluateAllVariables())
             return false;

@@ -33,6 +33,7 @@
 #include "scenelabel.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "datatable.h"
 
 #include "hermes2d/surfaceintegral.h"
 #include "hermes2d/volumeintegral.h"
@@ -147,13 +148,17 @@ QString createPythonFromModel()
         str += "\n";
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
+            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->getType());
+
             QString variables = "{";
             const QMap<QString, Value> values = boundary->getValues();
             for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
-                variables += QString("\"%1\" : %2, ").
-                        arg(it.key()).
-                        arg(it.value().toString());
+                foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+                    if (variable->id() == it.key())
+                        variables += QString("\"%1\" : %2, ").
+                                arg(it.key()).
+                                arg(it.value().toString());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -171,9 +176,20 @@ QString createPythonFromModel()
             const QMap<QString, Value> values = material->getValues();
             for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
-                variables += QString("\"%1\" : %2, ").
-                        arg(it.key()).
-                        arg(it.value().toString());
+                if (it.value().hasTable())
+                {
+                    variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
+                            arg(it.key()).
+                            arg(it.value().text()).
+                            arg(QString::fromStdString(it.value().table()->toStringX())).
+                            arg(QString::fromStdString(it.value().table()->toStringY()));
+                }
+                else
+                {
+                    variables += QString("\"%1\" : %2, ").
+                            arg(it.key()).
+                            arg(it.value().toString());
+                }
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -188,7 +204,7 @@ QString createPythonFromModel()
 
     // geometry
     str += "\n# geometry\n";
-    str += "geometry = agros2d.geometry()\n\n";
+    str += "geometry = agros2d.geometry\n\n";
 
     // edges
     if (Util::scene()->edges->count() > 0)
@@ -584,15 +600,15 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 
     // browse boundary parameters
     QMap<QString, Value> values;
-    for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
         foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
         {
-            if (variable->id() == QString((*i).first))
+            if (variable->id() == QString(QString((*i).first)))
             {
                 assigned = true;
-                values[variable->id()] = Value(QString::number((*i).second));
+                values[variable->id()] = Value(m_fieldInfo, (*i).second);
                 break;
             }
         }
@@ -610,11 +626,11 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
     if (sceneBoundary == NULL)
         throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(name).toStdString());
 
-    // todo: (Franta) check with defined types
+    // TODO: (Franta) check with defined types
     if (QString(type) != "")
         sceneBoundary->setType(QString(type));
 
-    // todo: (Franta) check with defined parameters
+    // TODO: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneBoundary->setValue(QString((*i).first), Value(QString::number((*i).second)));
 }
@@ -624,7 +640,9 @@ void PyField::removeBoundary(char *name)
     Util::scene()->removeBoundary(Util::scene()->getBoundary(QString(name)));
 }
 
-void PyField::addMaterial(char *name, map<char*, double> parameters)
+void PyField::addMaterial(char *name, map<char*, double> parameters,
+                          map<char*, vector<double> > nonlin_x,
+                          map<char*, vector<double> > nonlin_y)
 {
     // check materials with same name
     foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
@@ -644,8 +662,18 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
         {
             if (variable->id() == QString((*i).first))
             {
+                int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
+                int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
+                if (lenx != leny)
+                    if (lenx > leny)
+                        throw out_of_range(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
+                    else
+                        throw out_of_range(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
+
                 assigned = true;
-                values[variable->id()] = Value(QString::number((*i).second));
+                values[variable->id()] = Value(m_fieldInfo, (*i).second,
+                                               (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                               (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 break;
             }
         }

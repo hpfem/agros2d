@@ -274,7 +274,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
 
                 Util::scene()->highlightNone();
                 edge->setHighlighted(true);
-                setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Angle:</b> %6 deg.<br/><b>Refine towards edge:</b> %7<br/><b>Index:</b> %8").
+                setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Angle:</b> %6 deg.<br/><b>Index:</b> %7").
                            arg(edge->nodeStart()->point().x, 0, 'g', 3).
                            arg(edge->nodeStart()->point().y, 0, 'g', 3).
                            arg(edge->nodeEnd()->point().x, 0, 'g', 3).

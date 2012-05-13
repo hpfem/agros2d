@@ -70,8 +70,8 @@ void DataTableDialog::setTable(const DataTable *table)
     }
 
     // plot
-    doPlot();
-    doTextChanged();
+    textChanged();
+    QTimer::singleShot(0, this, SLOT(doPlot()));
 }
 
 bool DataTableDialog::parseTable(bool addToTable)
@@ -97,9 +97,8 @@ bool DataTableDialog::parseTable(bool addToTable)
         btnPlot->setEnabled(false);
         btnOk->setEnabled(false);
 
-        lblInfoError->setText(tr("Size doesn't match (%1 != %2).")
-                              .arg(x.size())
-                              .arg(y.size()));
+        lblInfoError->setText((x.size() > y.size()) ? tr("Size doesn't match (%1 > %2).").arg(x.size()).arg(y.size()) :
+                                                      tr("Size doesn't match (%1 < %2).").arg(x.size()).arg(y.size()));
         return false;
     }
 
@@ -202,11 +201,13 @@ void DataTableDialog::createControls()
     lstX = new QPlainTextEdit();
     lstX->setMaximumWidth(100);
     lstX->setMinimumWidth(100);
-    connect(lstX, SIGNAL(textChanged()), this, SLOT(doTextChanged()));
+    connect(lstX, SIGNAL(textChanged()), this, SLOT(textChanged()));
+    connect(lstX, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineX()));
     lstY = new QPlainTextEdit();
     lstY->setMaximumWidth(100);
     lstY->setMinimumWidth(100);
-    connect(lstY, SIGNAL(textChanged()), this, SLOT(doTextChanged()));
+    connect(lstY, SIGNAL(textChanged()), this, SLOT(textChanged()));
+    connect(lstY, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineY()));
 
     chkInterpolation = new QCheckBox(tr("Spline interpolation"));
     chkInterpolation->setChecked(true);
@@ -249,13 +250,64 @@ void DataTableDialog::createControls()
     setLayout(layout);
 }
 
-void DataTableDialog::doTextChanged()
+void DataTableDialog::textChanged()
 {
     lblInfoX->setText(tr("X: %1").arg(lstX->toPlainText().trimmed().split("\n").size()));
     lblInfoY->setText(tr("Y: %1").arg(lstY->toPlainText().trimmed().split("\n").size()));
 
     // try parse
     parseTable(false);
+}
+
+void DataTableDialog::gotoLine(QPlainTextEdit *lst, int lineNumber)
+{
+    if (lineNumber >= lst->document()->lineCount())
+        lineNumber = lst->document()->lineCount() - 1;
+
+    const QTextBlock &block = lst->document()->findBlockByNumber(lineNumber);
+    QTextCursor cursor(block);
+
+    int linedif = lineNumber - lst->textCursor().blockNumber();
+    if (linedif < 0)
+        cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, 0);
+    else
+        cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, 0);
+
+    // cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 0);
+    lst->setTextCursor(cursor);
+    // lst->centerCursor();
+    lst->ensureCursorVisible();
+}
+
+void DataTableDialog::highlightCurrentLine(QPlainTextEdit *lst)
+{
+    lst->blockSignals(true);
+
+    QList<QTextEdit::ExtraSelection> selections;
+
+    QTextEdit::ExtraSelection selection;
+    QColor lineColor = QColor(Qt::yellow).lighter(180);
+
+    selection.format.setBackground(lineColor);
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = lst->textCursor();
+    selection.cursor.clearSelection();
+    selections.append(selection);
+
+    lst->setExtraSelections(selections);
+    lst->blockSignals(false);
+}
+
+void DataTableDialog::highlightCurrentLineX()
+{
+    gotoLine(lstY, lstX->textCursor().blockNumber());
+    highlightCurrentLine(lstX);
+}
+
+void DataTableDialog::highlightCurrentLineY()
+{
+    gotoLine(lstX, lstY->textCursor().blockNumber());
+    highlightCurrentLine(lstY);
 }
 
 void DataTableDialog::doPlot()
@@ -329,7 +381,7 @@ void DataTableDialog::doMaterialBrowser()
             lstY->appendPlainText(QString::number(materialBrowserDialog.y().at(i)));
         }
 
-        doPlot();
+        QTimer::singleShot(0, this, SLOT(doPlot()));
     }
 }
 

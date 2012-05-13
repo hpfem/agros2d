@@ -26,21 +26,19 @@
 #include "datatabledialog.h"
 
 Value::Value()
-    : m_fieldInfo(NULL), m_isEvaluated(false)
+    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(new DataTable())
 {
     setText("0");
-    this->m_table = new DataTable();
 }
 
 Value::Value(FieldInfo *fieldInfo, const QString &value, DataTable *table)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(false)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(table)
 {
     setText(value.isEmpty() ? "0" : value);
-    this->m_table = table;
 }
 
 Value::Value(FieldInfo *fieldInfo, const QString &str, bool evaluateExpression)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(false)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(new DataTable())
 {
     fromString(str);
 
@@ -49,7 +47,7 @@ Value::Value(FieldInfo *fieldInfo, const QString &str, bool evaluateExpression)
 }
 
 Value::Value(const QString &str, bool evaluateExpression)
-    : m_fieldInfo(NULL), m_isEvaluated(false)
+    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(new DataTable())
 {
     fromString(str);
 
@@ -57,18 +55,20 @@ Value::Value(const QString &str, bool evaluateExpression)
         evaluate(true);
 }
 
-Value::Value(double value)
-    : m_fieldInfo(NULL), m_isEvaluated(true)
+Value::Value(double value, std::vector<double> x, std::vector<double> y)
+    : m_fieldInfo(NULL), m_isEvaluated(true), m_table(new DataTable())
 {
     m_text = QString::number(value);
     m_number = value;
+    m_table->add(x, y);
 }
 
-Value::Value(FieldInfo *fieldInfo, double value)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(true)
+Value::Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(true), m_table(new DataTable())
 {
     m_text = QString::number(value);
     m_number = value;
+    m_table->add(x, y);
 }
 
 Value::~Value()

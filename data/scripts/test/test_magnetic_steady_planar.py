@@ -16,6 +16,7 @@ magnetic.linearity_type = "linear"
 magnetic.weak_forms = "compiled"
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+
 magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e6}) 	 
 magnetic.add_material("Fe", {"magnetic_permeability" : 500}) 
 magnetic.add_material("Air", {"magnetic_permeability" : 1}) 

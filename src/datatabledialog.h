@@ -63,11 +63,16 @@ private:
 
     bool parseTable(bool addToTable = true);
 
+    void highlightCurrentLine(QPlainTextEdit *lst);
+    void gotoLine(QPlainTextEdit *lst, int lineNumber);
+
 private slots:
     void doAccept();
     void doReject();
 
-    void doTextChanged();
+    void textChanged();
+    void highlightCurrentLineX();
+    void highlightCurrentLineY();
     void doPlot();
     void doMaterialBrowser();
 };

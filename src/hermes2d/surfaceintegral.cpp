@@ -164,9 +164,6 @@ void SurfaceIntegralValue::calculate()
                             // set nonlinear parsers
                             setNonlinearParsers();
 
-                            // init nonlinear material
-                            setNonlinearMaterial(material);
-
                             // parse expression
                             int n = 0;
                             foreach (Module::Integral *integral, m_fieldInfo->module()->surfaceIntegrals())
@@ -189,6 +186,9 @@ void SurfaceIntegralValue::calculate()
                                             pdx[k] = dudx[k][i];
                                             pdy[k] = dudy[k][i];
                                         }
+
+                                        // set nonlinear material
+                                        setNonlinearMaterial(material);
 
                                         result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * m_parsers[n]->Eval();
                                     }
