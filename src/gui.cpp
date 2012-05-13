@@ -62,6 +62,7 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
     QString fieldId = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
 
     // clear combo
+    cmbFieldInfo->blockSignals(true);
     cmbFieldInfo->clear();
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         cmbFieldInfo->addItem(fieldInfo->name(), fieldInfo->fieldId());
@@ -69,6 +70,7 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
     cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(fieldId));
     if (cmbFieldInfo->currentIndex() == -1)
         cmbFieldInfo->setCurrentIndex(0);
+    cmbFieldInfo->blockSignals(false);
 }
 
 void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
@@ -80,12 +82,14 @@ void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
 
     // clear combo
+    cmbFieldVariable->blockSignals(true);
     cmbFieldVariable->clear();
     fieldInfo->module()->fillComboBoxScalarVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
         cmbFieldVariable->setCurrentIndex(0);
+    cmbFieldVariable->blockSignals(false);
 }
 
 void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
@@ -97,12 +101,14 @@ void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariab
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
 
     // clear combo
+    cmbFieldVariable->blockSignals(true);
     cmbFieldVariable->clear();
     fieldInfo->module()->fillComboBoxContourVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
         cmbFieldVariable->setCurrentIndex(0);
+    cmbFieldVariable->blockSignals(false);
 }
 
 void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
@@ -114,12 +120,14 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
 
     // clear combo
+    cmbFieldVariable->blockSignals(true);
     cmbFieldVariable->clear();
     fieldInfo->module()->fillComboBoxVectorVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
         cmbFieldVariable->setCurrentIndex(0);
+    cmbFieldVariable->blockSignals(false);
 }
 
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
