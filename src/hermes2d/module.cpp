@@ -105,14 +105,14 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakForm type, const QString &problemId,
                                             const QString &area, ParserFormExpression *form,
-                                            Marker* marker)
+                                            Marker* marker, Material* markerSecond)
 {
     if(type == WeakForm_MatVol)
-        return factoryMatrixFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker);
+        return factoryMatrixFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond);
     else if(type == WeakForm_MatSurf)
         return factoryMatrixFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker);
     else if(type == WeakForm_VecVol)
-        return factoryVectorFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker);
+        return factoryVectorFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond);
     else if(type == WeakForm_VecSurf)
         return factoryVectorFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker);
     else
@@ -189,7 +189,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakForm type, Field *field, QString ar
     // compiled form
     if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
-        custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker);
+        custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker, materialTarget);
     }
     
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)

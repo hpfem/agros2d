@@ -49,12 +49,12 @@
 
 <condition_matrix_vol>
         if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1))
-            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, sym, material);
+            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, sym, materialSource, materialTarget);
 </condition_matrix_vol>
 
 <condition_vector_vol>
         if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1))
-            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, material);
+            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, materialSource, materialTarget);
 </condition_vector_vol>
 
 <condition_matrix_surf>
@@ -80,7 +80,7 @@ Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt; *factoryExactSolution(const 
 template &lt;typename Scalar&gt;
 Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const std::string &amp;problemId, int i, int j,
                                                               const std::string &amp;area, Hermes::Hermes2D::SymFlag sym,
-                                                              SceneMaterial *material)
+                                                              SceneMaterial *materialSource, Material *materialTarget )
 {
     //conditions 
     return NULL;
@@ -90,7 +90,7 @@ Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const std::s
 <CustomVectorFormVol>
 template &lt;typename Scalar&gt;
 Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const std::string &amp;problemId, int i, int j,
-                                                              const std::string &amp;area, SceneMaterial *material)
+                                                              const std::string &amp;area, SceneMaterial *materialSource, Material *materialTarget)
 {
     //conditions 
     return NULL;
