@@ -36,10 +36,10 @@
 const double minWidth = 110;
 
 PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
-                                     SceneViewMesh *sceneMesh,
-                                     SceneViewPost2D *scenePost2D,
-                                     SceneViewPost3D *scenePost3D,
-                                     QWidget *parent) : QWidget(parent)
+                                         SceneViewMesh *sceneMesh,
+                                         SceneViewPost2D *scenePost2D,
+                                         SceneViewPost3D *scenePost3D,
+                                         QWidget *parent) : QWidget(parent)
 {
     m_sceneGeometry = sceneGeometry;
     m_sceneMesh = sceneMesh;
@@ -56,6 +56,9 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
 
     connect(this, SIGNAL(apply()), m_scenePost2D, SLOT(timeStepChanged()));
     connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));
+
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 }
 
 void PostprocessorWidget::loadBasic()
@@ -111,9 +114,6 @@ void PostprocessorWidget::loadBasic()
 
     // transient view
     // cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
-
-    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 
     refresh();
 }
@@ -593,8 +593,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // steps
     txtPaletteSteps = new QSpinBox(this);
-    txtPaletteSteps->setMinimum(5);
-    txtPaletteSteps->setMaximum(100);
+    txtPaletteSteps->setMinimum(PALLETESTEPSMIN);
+    txtPaletteSteps->setMaximum(PALLETESTEPSMAX);
 
     // log scale
     chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
@@ -644,8 +644,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // decimal places
     txtScalarDecimalPlace = new QSpinBox(this);
-    txtScalarDecimalPlace->setMinimum(1);
-    txtScalarDecimalPlace->setMaximum(10);
+    txtScalarDecimalPlace->setMinimum(SCALARDECIMALPLACEMIN);
+    txtScalarDecimalPlace->setMaximum(SCALARDECIMALPLACEMAX);
 
     // color bar
     chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
@@ -674,20 +674,20 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     // contours and vectors
     // contours
     txtContoursCount = new QSpinBox(this);
-    txtContoursCount->setMinimum(1);
-    txtContoursCount->setMaximum(100);
+    txtContoursCount->setMinimum(CONTOURSCOUNTMIN);
+    txtContoursCount->setMaximum(CONTOURSCOUNTMAX);
 
     // vectors
     chkVectorProportional = new QCheckBox(tr("Proportional"), this);
     chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
     txtVectorCount = new QSpinBox(this);
-    txtVectorCount->setMinimum(1);
-    txtVectorCount->setMaximum(500);
+    txtVectorCount->setMinimum(VECTORSCOUNTMIN);
+    txtVectorCount->setMaximum(VECTORSCOUNTMAX);
     txtVectorScale = new QDoubleSpinBox(this);
     txtVectorScale->setDecimals(2);
     txtVectorScale->setSingleStep(0.1);
-    txtVectorScale->setMinimum(0);
-    txtVectorScale->setMaximum(20);
+    txtVectorScale->setMinimum(VECTORSSCALEMIN);
+    txtVectorScale->setMaximum(VECTORSSCALEMAX);
 
     QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
     connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
@@ -873,38 +873,35 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
 
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
-    Module::LocalVariable *physicFieldVariable = NULL;
-
     if (cmbPostScalarFieldVariable->currentIndex() != -1)
     {
         QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
-        physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
-    }
+        Module::LocalVariable *physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
 
-    // component
-    cmbPostScalarFieldVariableComp->clear();
-    if (physicFieldVariable)
-    {
-        if (physicFieldVariable->isScalar())
+        // component
+        cmbPostScalarFieldVariableComp->clear();
+        if (physicFieldVariable)
         {
-            cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+            if (physicFieldVariable->isScalar())
+            {
+                cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+            }
+            else
+            {
+                cmbPostScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+                cmbPostScalarFieldVariableComp->addItem(Util::problem()->config()->labelX(), PhysicFieldVariableComp_X);
+                cmbPostScalarFieldVariableComp->addItem(Util::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
+            }
         }
-        else
-        {
-            cmbPostScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-            cmbPostScalarFieldVariableComp->addItem(Util::problem()->config()->labelX(), PhysicFieldVariableComp_X);
-            cmbPostScalarFieldVariableComp->addItem(Util::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
-        }
-    }
 
-    if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
         cmbPostScalarFieldVariableComp->setCurrentIndex(cmbPostScalarFieldVariableComp->findData(scalarFieldVariableComp));
-    if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
-        cmbPostScalarFieldVariableComp->setCurrentIndex(0);
+        if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
+            cmbPostScalarFieldVariableComp->setCurrentIndex(0);
 
-    doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
+        doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
+    }
 }
 
 void PostprocessorWidget::doScalarFieldVariableComp(int index)
@@ -939,8 +936,8 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
             break;
         case PhysicFieldVariableComp_Magnitude:
             txtPostScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
-                                                    arg(physicFieldVariable->expression().compX()).
-                                                    arg(physicFieldVariable->expression().compY()));
+                                                  arg(physicFieldVariable->expression().compX()).
+                                                  arg(physicFieldVariable->expression().compY()));
             break;
         case PhysicFieldVariableComp_X:
             txtPostScalarFieldExpression->setText(physicFieldVariable->expression().compX());
@@ -1099,8 +1096,8 @@ void PostprocessorWidget::doContoursVectorsDefault()
     txtContoursCount->setValue(CONTOURSCOUNT);
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
-    txtVectorCount->setValue(VECTORNUMBER);
-    txtVectorScale->setValue(VECTORSCALE);
+    txtVectorCount->setValue(VECTORSCOUNT);
+    txtVectorScale->setValue(VECTORSSCALE);
 }
 
 void PostprocessorWidget::doOrderDefault()

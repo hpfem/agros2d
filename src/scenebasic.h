@@ -110,23 +110,23 @@ public:
     ~MarkedSceneBasic() {}
 
     /// gets marker that corresponds to the given field
-    MarkerType* getMarker(QString field);
-    MarkerType* getMarker(FieldInfo* fieldInfo);
+    MarkerType* marker(QString field);
+    MarkerType* marker(FieldInfo* fieldInfo);
 
     /// adds marker. If there exists marker with the same field, is overwritten
     void addMarker(MarkerType* marker);
 
     /// true if has given marker
-    bool hasMarker(MarkerType* marker) { return markers[marker->getFieldInfo()] == marker; }
-    bool hasMarker(FieldInfo* fieldInfo) { return markers.contains(fieldInfo); }
+    bool hasMarker(MarkerType* marker) { return m_markers[marker->fieldInfo()] == marker; }
+    bool hasMarker(FieldInfo* fieldInfo) { return m_markers.contains(fieldInfo); }
 
     /// returns markers length
     int markersCount();
 
     /// removes marker corresponding to this field from node
-    void removeMarker(FieldInfo* fieldInfo) {markers.remove(fieldInfo); }
+    void removeMarker(FieldInfo* fieldInfo) {m_markers.remove(fieldInfo); }
     void removeMarker(QString field);
-    void removeMarker(MarkerType* marker) {removeMarker(marker->getFieldInfo()); }
+    void removeMarker(MarkerType* marker) {removeMarker(marker->fieldInfo()); }
 
     /// goes through own markers and if they are not yet in the list, adds them there
     void putMarkersToList(MarkerContainer<MarkerType>* list);
@@ -134,7 +134,7 @@ public:
     void doFieldsChanged();
 
 private:
-    QMap<FieldInfo*, MarkerType*> markers;
+    QMap<FieldInfo*, MarkerType*> m_markers;
 };
 
 

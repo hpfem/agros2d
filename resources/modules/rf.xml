@@ -1,342 +1,339 @@
 <?xml version="1.0"?>
 <module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
+        xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
 
-	<module:general id="rf" name="RF waves">
-		<module:description>Solving TE waves in RF field.</module:description>
-		<module:analyses>
-			<module:analysis id="harmonic" type="harmonic" name="Harmonic"
-				solutions="2" />
-		</module:analyses>
-	</module:general>
+        <module:general id="rf" name="RF waves">
+                <module:description>Solving TE waves in RF field.</module:description>
+                <module:analyses>
+                        <module:analysis id="harmonic" type="harmonic" name="Harmonic"
+                                solutions="2" />
+                </module:analyses>
+        </module:general>
 
-	<module:constants>
-		<module:constant id="EPS0" value="8.854e-12" />
-		<module:constant id="MU0" value="1.2566371e-06" />
-	</module:constants>
+        <module:constants>
+                <module:constant id="EPS0" value="8.854e-12" />
+                <module:constant id="MU0" value="1.2566371e-06" />
+        </module:constants>
 
-	<module:volume>
-		<module:quantity id="rf_te_permittivity" shortname="rf_esr" />
-		<module:quantity id="rf_te_permeability" shortname="rf_mur" />
-		<module:quantity id="rf_te_conductivity" shortname="rf_gamma" />
-		<module:quantity id="rf_te_current_density_external_real"
-			shortname="rf_Jer" />
-		<module:quantity id="rf_te_current_density_external_imag"
-			shortname="rf_Jei" />
+        <module:volume>
+                <module:quantity id="rf_te_permittivity" shortname="rf_esr" />
+                <module:quantity id="rf_te_permeability" shortname="rf_mur" />
+                <module:quantity id="rf_te_conductivity" shortname="rf_gamma" />
+                <module:quantity id="rf_te_current_density_external_real"
+                        shortname="rf_Jer" />
+                <module:quantity id="rf_te_current_density_external_imag"
+                        shortname="rf_Jei" />
 
-		<module:weakforms_volume>
-			<module:weakform_volume analysistype="harmonic">
-				<module:quantity id="rf_te_permittivity" />
-				<module:quantity id="rf_te_permeability" />
-				<module:quantity id="rf_te_conductivity" />
-				<module:quantity id="rf_te_current_density_external_real" />
-				<module:quantity id="rf_te_current_density_external_imag" />
+                <module:weakforms_volume>
+                        <module:weakform_volume analysistype="harmonic">
+                                <module:quantity id="rf_te_permittivity" />
+                                <module:quantity id="rf_te_permeability" />
+                                <module:quantity id="rf_te_conductivity" />
+                                <module:quantity id="rf_te_current_density_external_real" />
+                                <module:quantity id="rf_te_current_density_external_imag" />
 
-				<module:matrix_form i="1" j="1"
-					planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-					axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-					symmetric="1" />
-				<module:matrix_form i="2" j="2"
-					planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-					axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-					symmetric="1" />
-				<module:vector_form i="1" j="1"
-					planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jer * vval"
-					axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jer * vval" />
-				<module:vector_form i="2" j="2"
-					planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jei * vval"
-					axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jei * vval" />
-			</module:weakform_volume>
-		</module:weakforms_volume>
-	</module:volume>
+                                <module:matrix_form i="1" j="1"
+                                        planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                        axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                        symmetric="1" />
+                                <module:matrix_form i="2" j="2"
+                                        planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                        axi="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                        symmetric="1" />
+                                <module:vector_form i="1" j="1"
+                                        planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jer * vval"
+                                        axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jer * vval" />
+                                <module:vector_form i="2" j="2"
+                                        planar="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jei * vval"
+                                        axi="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jei * vval" />
+                        </module:weakform_volume>
+                </module:weakforms_volume>
+        </module:volume>
 
-	<module:surface>
-		<module:quantity id="rf_te_electric_field_real"
-			shortname="Er" />
-		<module:quantity id="rf_te_electric_field_imag"
-			shortname="Ei" />
-		<module:quantity id="rf_te_magnetic_field_real"
-			shortname="Hr" />
-		<module:quantity id="rf_te_magnetic_field_imag"
-			shortname="Hi" />
-		<module:quantity id="rf_te_surface_current_real"
-			shortname="Jr" />
-		<module:quantity id="rf_te_surface_current_imag"
-			shortname="Ji" />
-		<module:quantity id="rf_te_port_power" shortname="P" />
-		<module:quantity id="rf_te_port_phase" shortname="alpha" />
+        <module:surface>
+                <module:quantity id="rf_te_electric_field_real"
+                        shortname="Er" />
+                <module:quantity id="rf_te_electric_field_imag"
+                        shortname="Ei" />
+                <module:quantity id="rf_te_magnetic_field_real"
+                        shortname="Hr" />
+                <module:quantity id="rf_te_magnetic_field_imag"
+                        shortname="Hi" />
+                <module:quantity id="rf_te_surface_current_real"
+                        shortname="Jr" />
+                <module:quantity id="rf_te_surface_current_imag"
+                        shortname="Ji" />
+                <module:quantity id="rf_te_port_power" shortname="P" />
+                <module:quantity id="rf_te_port_phase" shortname="alpha" />
 
-		<module:weakforms_surface>
-			<module:weakform_surface analysistype="harmonic"
-				default="rf_electric_field">
-				<module:boundary id="rf_te_electric_field" name="Electric field">
-					<module:quantity id="rf_te_electric_field_real" />
-					<module:quantity id="rf_te_electric_field_imag" />
+                <module:weakforms_surface>
+                        <module:weakform_surface analysistype="harmonic"
+                                default="rf_te_electric_field">
+                                <module:boundary id="rf_te_electric_field" name="Electric field">
+                                        <module:quantity id="rf_te_electric_field_real" />
+                                        <module:quantity id="rf_te_electric_field_imag" />
 
-					<module:essential_form i="1" planar="Er" axi="Er" />
-					<module:essential_form i="2" planar="Ei" axi="Ei" />
-				</module:boundary>
+                                        <module:essential_form i="1" planar="Er" axi="Er" />
+                                        <module:essential_form i="2" planar="Ei" axi="Ei" />
+                                </module:boundary>
 
-				<module:boundary id="rf_te_magnetic_field" name="Magnetic field">
-					<module:quantity id="rf_te_magnetic_field_real" />
-					<module:quantity id="rf_te_magnetic_field_imag" />
+                                <module:boundary id="rf_te_magnetic_field" name="Magnetic field">
+                                        <module:quantity id="rf_te_magnetic_field_real" />
+                                        <module:quantity id="rf_te_magnetic_field_imag" />
 
-					<module:vector_form i="1" j="1" planar="Hr * vval"
-						axi="Hr * r * vval" />
-					<module:vector_form i="2" j="2" planar="Hi * vval"
-						axi="Hi * r * vval" />
-				</module:boundary>
+                                        <module:vector_form i="1" j="1" planar="Hr * vval"
+                                                axi="Hr * r * vval" />
+                                        <module:vector_form i="2" j="2" planar="Hi * vval"
+                                                axi="Hi * r * vval" />
+                                </module:boundary>
 
-				<module:boundary id="rf_te_surface_current" name="Surface current">
-					<module:quantity id="rf_te_surface_current_real" />
-					<module:quantity id="rf_te_surface_current_imag" />
+                                <module:boundary id="rf_te_surface_current" name="Surface current">
+                                        <module:quantity id="rf_te_surface_current_real" />
+                                        <module:quantity id="rf_te_surface_current_imag" />
 
-					<module:vector_form i="1" j="1"
-						planar="- 2 * PI * f * Ji * vval" axi="- 2 * PI * f * Ji * r * vval" />
-					<module:vector_form i="2" j="2"
-						planar="2 * PI * f * Jr * vval" axi="2 * PI * f * Jr * r * vval" />
-				</module:boundary>
+                                        <module:vector_form i="1" j="1"
+                                                planar="- 2 * PI * f * Ji * vval" axi="- 2 * PI * f * Ji * r * vval" />
+                                        <module:vector_form i="2" j="2"
+                                                planar="2 * PI * f * Jr * vval" axi="2 * PI * f * Jr * r * vval" />
+                                </module:boundary>
 
-				<module:boundary id="rf_te_port" name="Port">
-					<module:quantity id="rf_te_port_power" />
-					<module:quantity id="rf_te_port_phase" />
+                                <module:boundary id="rf_te_port" name="Port">
+                                        <module:quantity id="rf_te_port_power" />
+                                        <module:quantity id="rf_te_port_phase" />
 
-					<module:matrix_form i="1" j="2" planar="uval * vval"
-						axi="uval * vval" symmetric="1" />
-					<module:matrix_form i="2" j="1" planar="uval * vval"
-						axi="uval * vval" symmetric="1" />
-				</module:boundary>
+                                        <module:matrix_form i="1" j="2" planar="uval * vval"
+                                                axi="uval * vval" symmetric="1" />
+                                        <module:matrix_form i="2" j="1" planar="uval * vval"
+                                                axi="uval * vval" symmetric="1" />
+                                </module:boundary>
+                        </module:weakform_surface>
+                </module:weakforms_surface>
+        </module:surface>
 
-				<module:boundary id="rf_te_matched_boundary" name="Matched boundary">
-				</module:boundary>
-			</module:weakform_surface>
-		</module:weakforms_surface>
-	</module:surface>
+        <module:preprocessor>
+                <module:gui type="volume">
+                        <module:group>
+                                <module:quantity id="rf_te_permittivity" name="Permittivity"
+                                        shortname="epsr"
+                                        shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                        shortname_latex="\varepsilon_{r}" unit="-" unit_html="-"
+                                        unit_latex="-" />
+                                <module:quantity id="rf_te_permeability" name="Permeability"
+                                        shortname="mur" shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                        shortname_latex="\mu_{r}" unit="-" unit_html="-" unit_latex="-" />
+                                <module:quantity id="rf_te_conductivity" name="Conductivity"
+                                        shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;"
+                                        shortname_latex="\gamma" unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                        unit_latex="S \cdot m^{-1}" />
+                                <module:quantity id="rf_te_current_density_external_real"
+                                        name="Current dens. - ext. - real" shortname="Jer"
+                                        shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r,ext&lt;/sub&gt;"
+                                        shortname_latex="J_{r,ext}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                        unit_latex="A \cdot m^{-2}" />
+                                <module:quantity id="rf_te_current_density_external_imag"
+                                        name="Current dens. - ext. - imag" shortname_latex="J_{r,ext}"
+                                        shortname="Jei" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i,ext&lt;/sub&gt;"
+                                        unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
+                        </module:group>
+                </module:gui>
+                <module:gui type="surface">
+                        <module:group>
+                                <module:quantity id="rf_te_electric_field_real"
+                                        name="Electric field - real" shortname="Er"
+                                        shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                        shortname_latex="E_{r}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                        unit_latex="V \cdot m^{-1}" />
+                                <module:quantity id="rf_te_electric_field_imag"
+                                        name="Electric field - imag" shortname="Ei"
+                                        shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                        shortname_latex="E_{i}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                        unit_latex="V \cdot m^{-1}" />
+                                <module:quantity id="rf_te_magnetic_field_real"
+                                        name="Magnetic field - real" shortname="Hr"
+                                        shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                        shortname_latex="H_{r}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                        unit_latex="A \cdot m^{-1}" />
+                                <module:quantity id="rf_te_magnetic_field_imag"
+                                        name="Magnetic field - imag" shortname="Hi"
+                                        shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                        shortname_latex="H_{i}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                        unit_latex="A \cdot m^{-1}" />
+                                <module:quantity id="rf_te_surface_current_real"
+                                        name="Surface current - real" shortname="Jr"
+                                        shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                        shortname_latex="J_{r}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                        unit_latex="A \cdot m^{-2}" />
+                                <module:quantity id="rf_te_surface_current_imag"
+                                        name="Surface current - imag" shortname="Ji"
+                                        shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                        shortname_latex="J_{i}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                        unit_latex="A \cdot m^{-2}" />
+                                <module:quantity id="rf_te_port_power" name="Power"
+                                        shortname="P" shortname_html="&lt;i&gt;P&lt;/i&gt;"
+                                        shortname_latex="P" unit="W" unit_html="W" unit_latex="W" />
+                                <module:quantity id="rf_te_port_phase" name="Phase"
+                                        shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;"
+                                        shortname_latex="\alpha" unit="deg." unit_html="deg." unit_latex="deg." />
+                        </module:group>
+                </module:gui>
+        </module:preprocessor>
 
-	<module:preprocessor>
-		<module:gui type="volume">
-			<module:group>
-				<module:quantity id="rf_te_permittivity" name="Permittivity"
-					shortname="epsr"
-					shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-					shortname_latex="\varepsilon_{r}" unit="-" unit_html="-"
-					unit_latex="-" />
-				<module:quantity id="rf_te_permeability" name="Permeability"
-					shortname="mur" shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-					shortname_latex="\mu_{r}" unit="-" unit_html="-" unit_latex="-" />
-				<module:quantity id="rf_te_conductivity" name="Conductivity"
-					shortname="gamma" shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;"
-					shortname_latex="\gamma" unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;"
-					unit_latex="S \cdot m^{-1}" />
-				<module:quantity id="rf_te_current_density_external_real"
-					name="Current dens. - ext. - real" shortname="Jer"
-					shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r,ext&lt;/sub&gt;"
-					shortname_latex="J_{r,ext}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
-					unit_latex="A \cdot m^{-2}" />
-				<module:quantity id="rf_te_current_density_external_imag"
-					name="Current dens. - ext. - imag" shortname_latex="J_{r,ext}"
-					shortname="Jei" shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i,ext&lt;/sub&gt;"
-					unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="A \cdot m^{-2}" />
-			</module:group>
-		</module:gui>
-		<module:gui type="surface">
-			<module:group>
-				<module:quantity id="rf_te_electric_field_real"
-					name="Electric field - real" shortname="Er"
-					shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-					shortname_latex="E_{r}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
-					unit_latex="V \cdot m^{-1}" />
-				<module:quantity id="rf_te_electric_field_imag"
-					name="Electric field - imag" shortname="Ei"
-					shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-					shortname_latex="E_{i}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
-					unit_latex="V \cdot m^{-1}" />
-				<module:quantity id="rf_te_magnetic_field_real"
-					name="Magnetic field - real" shortname="Hr"
-					shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-					shortname_latex="H_{r}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
-					unit_latex="A \cdot m^{-1}" />
-				<module:quantity id="rf_te_magnetic_field_imag"
-					name="Magnetic field - imag" shortname="Hi"
-					shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-					shortname_latex="H_{i}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
-					unit_latex="A \cdot m^{-1}" />
-				<module:quantity id="rf_te_surface_current_real"
-					name="Surface current - real" shortname="Jr"
-					shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-					shortname_latex="J_{r}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
-					unit_latex="A \cdot m^{-2}" />
-				<module:quantity id="rf_te_surface_current_imag"
-					name="Surface current - imag" shortname="Ji"
-					shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-					shortname_latex="J_{i}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
-					unit_latex="A \cdot m^{-2}" />
-				<module:quantity id="rf_te_port_power" name="Power"
-					shortname="P" shortname_html="&lt;i&gt;P&lt;/i&gt;"
-					shortname_latex="P" unit="W" unit_html="W" unit_latex="W" />
-				<module:quantity id="rf_te_port_phase" name="Phase"
-					shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;"
-					shortname_latex="\alpha" unit="deg." unit_html="deg." unit_latex="deg." />
-			</module:group>
-		</module:gui>
-	</module:preprocessor>
+        <module:postprocessor>
+                <module:localvariables>
+                        <module:localvariable id="rf_te_electric_field_real"
+                                name="Electric field - real" type="scalar" shortname="Er"
+                                shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                shortname_latex="E_{r}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                unit_latex="V \cdot m^{-1}">
+                                <module:expression analysistype="harmonic" planar="value1"
+                                        axi="value1" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_electric_field_imag"
+                                name="Electric field - imag" type="scalar" shortname="Ei"
+                                shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                shortname_latex="E_{i}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                unit_latex="V \cdot m^{-1}">
+                                <module:expression analysistype="harmonic" planar="value2"
+                                        axi="value2" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_displacement_real"
+                                name="Displacement - real" type="scalar" shortname="Dr"
+                                shortname_html="&lt;i&gt;D&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                shortname_latex="D_{r}" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                unit_latex="C \cdot m^{-2}">
+                                <module:expression analysistype="harmonic"
+                                        planar="rf_esr * EPS0 * value1" axi="rf_esr * EPS0 * value1" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_displacement_imag"
+                                name="Displacement - imag" type="scalar" shortname="Di"
+                                shortname_html="&lt;i&gt;D&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                shortname_latex="D_{i}" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                unit_latex="C \cdot m^{-2}">
+                                <module:expression analysistype="harmonic"
+                                        planar="rf_esr * EPS0 * value2" axi="rf_esr * EPS0 * value2" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_surface_current_real"
+                                name="Current density - real" type="scalar" shortname="Jr"
+                                shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                shortname_latex="J_{r}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                unit_latex="A \cdot m^{-2}">
+                                <module:expression analysistype="harmonic"
+                                        planar="rf_gamma * value1" axi="rf_gamma * value1" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_surface_current_imag"
+                                name="Current density - imag" type="scalar" shortname="Ji"
+                                shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                shortname_latex="J_{i}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                unit_latex="A \cdot m^{-2}">
+                                <module:expression analysistype="harmonic"
+                                        planar="rf_gamma * value2" axi="rf_gamma * value2" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_magnetic_field_real"
+                                name="Magnetic field - real" type="vector" shortname="Hr"
+                                shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                shortname_latex="H_{r}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                unit_latex="A \cdot m^{-1}">
+                                <module:expression analysistype="harmonic"
+                                        planar_x="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dy2" planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx2"
+                                        axi_r="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dz2" axi_z="1.0 / (2.0 * PI * f * rf_mur * MU0) * dr2" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_magnetic_field_imag"
+                                name="Magnetic field - imag" type="vector" shortname="Hi"
+                                shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                shortname_latex="H_{i}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                unit_latex="A \cdot m^{-1}">
+                                <module:expression analysistype="harmonic"
+                                        planar_x="1.0 / (2.0 * PI * f * rf_mur * MU0) * dy1" planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx1"
+                                        axi_r="1.0 / (2.0 * PI * f * rf_mur * MU0) * dz1" axi_z="1.0 / (2.0 * PI * f * rf_mur * MU0) * dr1" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_flux_density_real"
+                                name="Flux density - real" type="vector" shortname="Br"
+                                shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                shortname_latex="B_{r}" unit="T">
+                                <module:expression analysistype="harmonic"
+                                        planar_x="- 1.0 / (2.0 * PI * f) * dy2" planar_y="1.0 / (2.0 * PI * f) * dx2"
+                                        axi_r="- 1.0 / (2.0 * PI * f) * dz2" axi_z="1.0 / (2.0 * PI * f) * dr2" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_flux_density_imag"
+                                name="Flux density - imag" type="vector" shortname="Bi"
+                                shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
+                                shortname_latex="B_{i}" unit="T">
+                                <module:expression analysistype="harmonic"
+                                        planar_x="1.0 / (2.0 * PI * f) * dy1" planar_y="1.0 / (2.0 * PI * f) * dx1"
+                                        axi_r="1.0 / (2.0 * PI * f) * dz1" axi_z="1.0 / (2.0 * PI * f) * dr1" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_poynting_vector"
+                                name="Poyting vector" type="vector" shortname="N" shortname_html="&lt;i&gt;N&lt;/i&gt;"
+                                shortname_latex="N" unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;"
+                                unit_latex="W \cdot m^{-2}">
+                                <module:expression analysistype="harmonic"
+                                        planar_x="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dx1 - value1 * dx2)"
+                                        planar_y="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dy1 - value1 * dy2)"
+                                        axi_r="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dr1 - value1 * dr2)"
+                                        axi_z="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dz1 - value1 * dz2)" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_permittivity"
+                                name="Permittivity" type="scalar" shortname="epsr"
+                                shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                shortname_latex="\varepsilon_{r}" unit="-" unit_html="-" unit_latex="-">
+                                <module:expression analysistype="harmonic" planar="rf_esr"
+                                        axi="rf_esr" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_permeability"
+                                name="Permeability" type="scalar" shortname="mur"
+                                shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
+                                shortname_latex="\mu_{r}" unit="-" unit_html="-" unit_latex="-">
+                                <module:expression analysistype="harmonic" planar="rf_mur"
+                                        axi="rf_mur" />
+                        </module:localvariable>
+                        <module:localvariable id="rf_te_conductivity"
+                                name="Conductivity" type="scalar" shortname="gamma"
+                                shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
+                                unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}">
+                                <module:expression analysistype="harmonic" planar="rf_gamma"
+                                        axi="rf_gamma" />
+                        </module:localvariable>
+                </module:localvariables>
 
-	<module:postprocessor>
-		<module:localvariables>
-			<module:localvariable id="rf_te_electric_field_real"
-				name="Electric field - real" type="scalar" shortname="Er"
-				shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-				shortname_latex="E_{r}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
-				unit_latex="V \cdot m^{-1}">
-				<module:expression analysistype="harmonic" planar="value1"
-					axi="value1" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_electric_field_imag"
-				name="Electric field - imag" type="scalar" shortname="Ei"
-				shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-				shortname_latex="E_{i}" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
-				unit_latex="V \cdot m^{-1}">
-				<module:expression analysistype="harmonic" planar="value2"
-					axi="value2" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_displacement_real"
-				name="Displacement - real" type="scalar" shortname="Dr"
-				shortname_html="&lt;i&gt;D&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-				shortname_latex="D_{r}" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;"
-				unit_latex="C \cdot m^{-2}">
-				<module:expression analysistype="harmonic"
-					planar="rf_esr * EPS0 * value1" axi="rf_esr * EPS0 * value1" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_displacement_imag"
-				name="Displacement - imag" type="scalar" shortname="Di"
-				shortname_html="&lt;i&gt;D&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-				shortname_latex="D_{i}" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;"
-				unit_latex="C \cdot m^{-2}">
-				<module:expression analysistype="harmonic"
-					planar="rf_esr * EPS0 * value2" axi="rf_esr * EPS0 * value2" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_surface_current_real"
-				name="Current density - real" type="scalar" shortname="Jr"
-				shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-				shortname_latex="J_{r}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
-				unit_latex="A \cdot m^{-2}">
-				<module:expression analysistype="harmonic"
-					planar="rf_gamma * value1" axi="rf_gamma * value1" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_surface_current_imag"
-				name="Current density - imag" type="scalar" shortname="Ji"
-				shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-				shortname_latex="J_{i}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
-				unit_latex="A \cdot m^{-2}">
-				<module:expression analysistype="harmonic"
-					planar="rf_gamma * value2" axi="rf_gamma * value2" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_magnetic_field_real"
-				name="Magnetic field - real" type="vector" shortname="Hr"
-				shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-				shortname_latex="H_{r}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
-				unit_latex="A \cdot m^{-1}">
-				<module:expression analysistype="harmonic"
-					planar_x="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dy2" planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx2"
-					axi_r="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dz2" axi_z="1.0 / (2.0 * PI * f * rf_mur * MU0) * dr2" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_magnetic_field_imag"
-				name="Magnetic field - imag" type="vector" shortname="Hi"
-				shortname_html="&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-				shortname_latex="H_{i}" unit="A/m" unit_html="A.m&lt;sup&gt;-1&lt;/sup&gt;"
-				unit_latex="A \cdot m^{-1}">
-				<module:expression analysistype="harmonic"
-					planar_x="1.0 / (2.0 * PI * f * rf_mur * MU0) * dy1" planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx1"
-					axi_r="1.0 / (2.0 * PI * f * rf_mur * MU0) * dz1" axi_z="1.0 / (2.0 * PI * f * rf_mur * MU0) * dr1" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_flux_density_real"
-				name="Flux density - real" type="vector" shortname="Br"
-				shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-				shortname_latex="B_{r}" unit="T">
-				<module:expression analysistype="harmonic"
-					planar_x="- 1.0 / (2.0 * PI * f) * dy2" planar_y="1.0 / (2.0 * PI * f) * dx2"
-					axi_r="- 1.0 / (2.0 * PI * f) * dz2" axi_z="1.0 / (2.0 * PI * f) * dr2" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_flux_density_imag"
-				name="Flux density - imag" type="vector" shortname="Bi"
-				shortname_html="&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
-				shortname_latex="B_{i}" unit="T">
-				<module:expression analysistype="harmonic"
-					planar_x="1.0 / (2.0 * PI * f) * dy1" planar_y="1.0 / (2.0 * PI * f) * dx1"
-					axi_r="1.0 / (2.0 * PI * f) * dz1" axi_z="1.0 / (2.0 * PI * f) * dr1" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_poynting_vector"
-				name="Poyting vector" type="vector" shortname="N" shortname_html="&lt;i&gt;N&lt;/i&gt;"
-				shortname_latex="N" unit="W/m2" unit_html="W.m&lt;sup&gt;-2&lt;/sup&gt;"
-				unit_latex="W \cdot m^{-2}">
-				<module:expression analysistype="harmonic"
-					planar_x="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dx1 - value1 * dx2)"
-					planar_y="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dy1 - value1 * dy2)"
-					axi_r="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dr1 - value1 * dr2)"
-					axi_z="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dz1 - value1 * dz2)" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_permittivity"
-				name="Permittivity" type="scalar" shortname="epsr"
-				shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-				shortname_latex="\varepsilon_{r}" unit="-" unit_html="-" unit_latex="-">
-				<module:expression analysistype="harmonic" planar="rf_esr"
-					axi="rf_esr" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_permeability"
-				name="Permeability" type="scalar" shortname="mur"
-				shortname_html="&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
-				shortname_latex="\mu_{r}" unit="-" unit_html="-" unit_latex="-">
-				<module:expression analysistype="harmonic" planar="rf_mur"
-					axi="rf_mur" />
-			</module:localvariable>
-			<module:localvariable id="rf_te_conductivity"
-				name="Conductivity" type="scalar" shortname="gamma"
-				shortname_html="&lt;i&gt;&amp;gamma;&lt;/i&gt;" shortname_latex="\gamma"
-				unit="S/m" unit_html="S.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="S \cdot m^{-1}">
-				<module:expression analysistype="harmonic" planar="rf_gamma"
-					axi="rf_gamma" />
-			</module:localvariable>
-		</module:localvariables>
+                <module:view>
+                        <module:scalar_view>
+                                <module:default analysistype="harmonic" id="rf_te_electric_field_real" />
+                        </module:scalar_view>
+                        <module:vector_view>
+                                <module:default analysistype="harmonic" id="rf_te_electric_field_real" />
+                        </module:vector_view>
+                </module:view>
 
-		<module:view>
-			<module:scalar_view>
-				<module:default analysistype="harmonic" id="rf_te_electric_field_real" />
-			</module:scalar_view>
-			<module:vector_view>
-				<module:default analysistype="harmonic" id="rf_te_electric_field_real" />
-			</module:vector_view>
-		</module:view>
+                <module:volumeintegrals>
+                        <module:volumeintegral id="rf_te_volume" name="Volume"
+                                shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
+                                unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
+                                <module:expression analysistype="harmonic" planar="1.0"
+                                        axi="2.0 * PI * r" />
+                        </module:volumeintegral>
+                        <module:volumeintegral id="rf_te_cross_section"
+                                name="Cross section" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
+                                shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
+                                unit_latex="m^{2}">
+                                <module:expression analysistype="harmonic" planar="1.0"
+                                        axi="1.0" />
+                        </module:volumeintegral>
+                </module:volumeintegrals>
 
-		<module:volumeintegrals>
-			<module:volumeintegral id="rf_te_volume" name="Volume"
-				shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V"
-				unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;" unit_latex="m^{3}">
-				<module:expression analysistype="harmonic" planar="1.0"
-					axi="2.0 * PI * r" />
-			</module:volumeintegral>
-			<module:volumeintegral id="rf_te_cross_section"
-				name="Cross section" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
-				shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
-				unit_latex="m^{2}">
-				<module:expression analysistype="harmonic" planar="1.0"
-					axi="1.0" />
-			</module:volumeintegral>
-		</module:volumeintegrals>
-
-		<module:surfaceintegrals>
-			<module:surfaceintegral id="rf_te_length"
-				name="Length" shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"
-				shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
-				<module:expression analysistype="harmonic" planar="1.0"
-					axi="1.0" />
-			</module:surfaceintegral>
-			<module:surfaceintegral id="rf_te_surface"
-				name="Surface" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
-				shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
-				unit_latex="m^{2}">
-				<module:expression analysistype="harmonic" planar="1.0"
-					axi="2.0 * PI * r" />
-			</module:surfaceintegral>
-		</module:surfaceintegrals>
-	</module:postprocessor>
+                <module:surfaceintegrals>
+                        <module:surfaceintegral id="rf_te_length"
+                                name="Length" shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"
+                                shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
+                                <module:expression analysistype="harmonic" planar="1.0"
+                                        axi="1.0" />
+                        </module:surfaceintegral>
+                        <module:surfaceintegral id="rf_te_surface"
+                                name="Surface" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
+                                shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
+                                unit_latex="m^{2}">
+                                <module:expression analysistype="harmonic" planar="1.0"
+                                        axi="2.0 * PI * r" />
+                        </module:surfaceintegral>
+                </module:surfaceintegrals>
+        </module:postprocessor>
 </module:module>

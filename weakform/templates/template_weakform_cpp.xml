@@ -42,12 +42,12 @@ CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned 
                                                  Material *material)
     : Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;(i, j, area, sym), m_material(material), m_sym(sym)
 {
-    //variable_definition	
+//variable_definition	
 }
 
 </custom_matrix_form_vol>
 
-<variable_definition> variable_short = m_material->getValue("variable");
+<variable_definition> variable_short = m_material->value("variable");
 </variable_definition>
 
 <comment_separator>
@@ -61,7 +61,6 @@ template &lt;typename Scalar&gt;
 Scalar CustomMatrixFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u,
                                           Hermes::Hermes2D::Func&lt;double&gt; *v, Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const
 {
-    //variable_definition
     double result = 0;    
     for (int i = 0; i &lt; n; i++)
     {
@@ -76,7 +75,6 @@ Scalar CustomMatrixFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Herme
 Hermes::Ord CustomMatrixFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u,
                                              Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const
 {
-    //variable_definition
     Hermes::Ord result(0);    
     for (int i = 0; i &lt; n; i++)
     {
@@ -103,7 +101,7 @@ CustomVectorFormVol&lt;Scalar&gt;::CustomVectorFormVol(unsigned int i, unsigned 
                                                  Material *material)
     : Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;(i, area), m_material(material), j(j)
 {
-           //variable_definition	
+//variable_definition	
 }
 
 </custom_vector_form_vol>
@@ -114,7 +112,6 @@ template &lt;typename Scalar&gt;
 Scalar CustomVectorFormVol&lt;Scalar&gt;::value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
                                           Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const
 {
-    //variable_definition
     double result = 0;
 
     for (int i = 0; i &lt; n; i++)
@@ -218,7 +215,7 @@ CustomVectorFormSurf&lt;Scalar&gt;::CustomVectorFormSurf(unsigned int i, unsigne
 
     : Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;(i, area), m_boundary(boundary), j(j)
 {
-    //variable_definition
+//variable_definition
 }
 
 </custom_vector_form_surf>
@@ -229,7 +226,6 @@ template &lt;typename Scalar&gt;
 Scalar CustomVectorFormSurf&lt;Scalar&gt;::value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
                                            Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const
 {
-    //variable_definition
     double result = 0;    
     for (int i = 0; i &lt; n; i++)
     {
@@ -246,7 +242,6 @@ template &lt;typename Scalar&gt;
 Hermes::Ord CustomVectorFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
                                               Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const
 {
-    //variable_definition
     Hermes::Ord result(0);    
     for (int i = 0; i &lt; n; i++)
     {
@@ -272,7 +267,7 @@ template &lt;typename Scalar&gt;
 CustomEssentialFormSurf&lt;Scalar&gt;::CustomEssentialFormSurf(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
     : Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt;(mesh), m_boundary(boundary)
 {
-     //variable_definition
+//variable_definition
 }
 
 </custom_essential_form_surf>

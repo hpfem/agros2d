@@ -27,7 +27,7 @@ BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
 
 QString FieldSolutionID::toString()
 {
-    QString str = QString("%1_%2_%3_%4.sol").
+    QString str = QString("%1_%2_%3_%4").
             arg(group->fieldId()).
             arg(timeStep).
             arg(adaptivityStep).
@@ -56,65 +56,6 @@ SolutionArray<Scalar>::SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scala
 template <typename Scalar>
 SolutionArray<Scalar>::~SolutionArray()
 {
-}
-
-template <typename Scalar>
-void SolutionArray<Scalar>::load(QDomElement element)
-{
-    QString fileNameSolution = tempProblemFileName() + ".sln";
-    QString fileNameSpace = tempProblemFileName() + ".spc";
-
-    // write content (saved solution)
-    QByteArray contentSolution;
-    contentSolution.append(element.elementsByTagName("sln").at(0).toElement().childNodes().at(0).nodeValue());
-    writeStringContentByteArray(fileNameSolution, QByteArray::fromBase64(contentSolution));
-
-    // write content (saved space)
-    QByteArray contentSpace;
-    contentSpace.append(element.elementsByTagName("space").at(0).toElement().childNodes().at(0).nodeValue());
-    writeStringContentByteArray(fileNameSpace, QByteArray::fromBase64(contentSpace));
-
-    sln = shared_ptr<Solution<Scalar> >(new Hermes::Hermes2D::Solution<Scalar>());
-    // sln->load(fileNameSolution.toStdString().c_str());
-    //space = new Hermes::Hermes2D::Space<Scalar>();
-    //space->load(fileNameSpace.toStdString().c_str());
-//    adaptiveError = element.attribute("adaptiveerror").toDouble();
-//    adaptiveSteps = element.attribute("adaptivesteps").toInt();
-    time = element.attribute("time").toDouble();
-
-    // delete solution
-    QFile::remove(fileNameSolution);
-    QFile::remove(fileNameSpace);
-}
-
-template <typename Scalar>
-void SolutionArray<Scalar>::save(QDomDocument *doc, QDomElement element)
-{
-    // solution
-    QString fileNameSolution = tempProblemFileName() + ".sln";
-    // sln->save(fileNameSolution.toStdString().c_str(), false);
-    QDomText textSolution = doc->createTextNode(readFileContentByteArray(fileNameSolution).toBase64());
-
-    // space
-    QString fileNameSpace = tempProblemFileName() + ".spc";
-    //space->save_data(fileNameSpace.toStdString().c_str());
-    QDomNode textSpace = doc->createTextNode(readFileContentByteArray(fileNameSpace).toBase64());
-
-    QDomNode eleSolution = doc->createElement("sln");
-    QDomNode eleSpace = doc->createElement("space");
-
-    eleSolution.appendChild(textSolution);
-    eleSpace.appendChild(textSpace);
-
-//    element.setAttribute("adaptiveerror", adaptiveError);
-//    element.setAttribute("adaptivesteps", adaptiveSteps);
-    element.setAttribute("time", time);
-    element.appendChild(eleSolution);
-    element.appendChild(eleSpace);
-
-    // delete
-    QFile::remove(fileNameSolution);
-    QFile::remove(fileNameSpace);
 }
 
 // *********************************************************************************************
@@ -201,7 +142,7 @@ template <typename Scalar>
 MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
 {
     MultiSolutionArray<Scalar> msa;
-    foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
+    foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
         Space<Scalar>* oldSpace = solutionArray.space.get();
         Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
@@ -271,6 +212,32 @@ void MultiSolutionArray<Scalar>::setTime(double time)
         m_solutionArrays.replace(i, newSA);
     }
 }
+
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::loadFromFile(const QString &solutionID)
+{
+
+}
+
+template <typename Scalar>
+void MultiSolutionArray<Scalar>::saveToFile(const QString &solutionID)
+{
+    int solutionIndex = 0;
+    foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
+    {        
+        QString fn = QString("%1_%2_%3").
+                arg(Util::problem()->config()->fileName().left(Util::problem()->config()->fileName().count() - 4)).
+                arg(solutionID).
+                arg(solutionIndex);
+
+        // TODO: check write access
+        solutionArray.sln.get()->save((fn + ".sln").toStdString().c_str());
+        solutionArray.space.get()->save((fn + ".spc").toStdString().c_str());
+
+        solutionIndex++;
+    }
+}
+
 
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;

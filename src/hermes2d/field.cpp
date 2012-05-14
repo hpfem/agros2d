@@ -24,10 +24,10 @@ bool Field::solveInitVariables()
     //        if (!Util::problem()->config()->initialCondition.evaluate()) return false;
     //    }
 
-    if(!Util::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
+    if (!Util::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
         return false;
 
-    if(!Util::scene()->materials->filter(m_fieldInfo).evaluateAllVariables())
+    if (!Util::scene()->materials->filter(m_fieldInfo).evaluateAllVariables())
         return false;
 
     return true;

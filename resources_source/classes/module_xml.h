@@ -2824,6 +2824,23 @@ namespace XMLModule
   class quantity: public ::xml_schema::type
   {
     public:
+    // id
+    // 
+    typedef ::xml_schema::string id_type;
+    typedef ::xsd::cxx::tree::traits< id_type, char > id_traits;
+
+    const id_type&
+    id () const;
+
+    id_type&
+    id ();
+
+    void
+    id (const id_type& x);
+
+    void
+    id (::std::auto_ptr< id_type > p);
+
     // condition
     // 
     typedef ::xml_schema::string condition_type;
@@ -2863,22 +2880,68 @@ namespace XMLModule
     void
     default_ (const default_optional& x);
 
-    // id
+    // nonlinearity_planar
     // 
-    typedef ::xml_schema::string id_type;
-    typedef ::xsd::cxx::tree::traits< id_type, char > id_traits;
+    typedef ::xml_schema::string nonlinearity_planar_type;
+    typedef ::xsd::cxx::tree::optional< nonlinearity_planar_type > nonlinearity_planar_optional;
+    typedef ::xsd::cxx::tree::traits< nonlinearity_planar_type, char > nonlinearity_planar_traits;
 
-    const id_type&
-    id () const;
+    const nonlinearity_planar_optional&
+    nonlinearity_planar () const;
 
-    id_type&
-    id ();
-
-    void
-    id (const id_type& x);
+    nonlinearity_planar_optional&
+    nonlinearity_planar ();
 
     void
-    id (::std::auto_ptr< id_type > p);
+    nonlinearity_planar (const nonlinearity_planar_type& x);
+
+    void
+    nonlinearity_planar (const nonlinearity_planar_optional& x);
+
+    void
+    nonlinearity_planar (::std::auto_ptr< nonlinearity_planar_type > p);
+
+    // nonlinearity_axi
+    // 
+    typedef ::xml_schema::string nonlinearity_axi_type;
+    typedef ::xsd::cxx::tree::optional< nonlinearity_axi_type > nonlinearity_axi_optional;
+    typedef ::xsd::cxx::tree::traits< nonlinearity_axi_type, char > nonlinearity_axi_traits;
+
+    const nonlinearity_axi_optional&
+    nonlinearity_axi () const;
+
+    nonlinearity_axi_optional&
+    nonlinearity_axi ();
+
+    void
+    nonlinearity_axi (const nonlinearity_axi_type& x);
+
+    void
+    nonlinearity_axi (const nonlinearity_axi_optional& x);
+
+    void
+    nonlinearity_axi (::std::auto_ptr< nonlinearity_axi_type > p);
+
+    // dependence
+    // 
+    typedef ::xml_schema::string dependence_type;
+    typedef ::xsd::cxx::tree::optional< dependence_type > dependence_optional;
+    typedef ::xsd::cxx::tree::traits< dependence_type, char > dependence_traits;
+
+    const dependence_optional&
+    dependence () const;
+
+    dependence_optional&
+    dependence ();
+
+    void
+    dependence (const dependence_type& x);
+
+    void
+    dependence (const dependence_optional& x);
+
+    void
+    dependence (::std::auto_ptr< dependence_type > p);
 
     // name
     // 
@@ -2900,24 +2963,6 @@ namespace XMLModule
 
     void
     name (::std::auto_ptr< name_type > p);
-
-    // nonlin
-    // 
-    typedef ::xml_schema::integer nonlin_type;
-    typedef ::xsd::cxx::tree::optional< nonlin_type > nonlin_optional;
-    typedef ::xsd::cxx::tree::traits< nonlin_type, char > nonlin_traits;
-
-    const nonlin_optional&
-    nonlin () const;
-
-    nonlin_optional&
-    nonlin ();
-
-    void
-    nonlin (const nonlin_type& x);
-
-    void
-    nonlin (const nonlin_optional& x);
 
     // shortname
     // 
@@ -2982,23 +3027,47 @@ namespace XMLModule
     void
     shortname_latex (::std::auto_ptr< shortname_latex_type > p);
 
-    // timedep
+    // shortname_dependence
     // 
-    typedef ::xml_schema::integer timedep_type;
-    typedef ::xsd::cxx::tree::optional< timedep_type > timedep_optional;
-    typedef ::xsd::cxx::tree::traits< timedep_type, char > timedep_traits;
+    typedef ::xml_schema::string shortname_dependence_type;
+    typedef ::xsd::cxx::tree::optional< shortname_dependence_type > shortname_dependence_optional;
+    typedef ::xsd::cxx::tree::traits< shortname_dependence_type, char > shortname_dependence_traits;
 
-    const timedep_optional&
-    timedep () const;
+    const shortname_dependence_optional&
+    shortname_dependence () const;
 
-    timedep_optional&
-    timedep ();
-
-    void
-    timedep (const timedep_type& x);
+    shortname_dependence_optional&
+    shortname_dependence ();
 
     void
-    timedep (const timedep_optional& x);
+    shortname_dependence (const shortname_dependence_type& x);
+
+    void
+    shortname_dependence (const shortname_dependence_optional& x);
+
+    void
+    shortname_dependence (::std::auto_ptr< shortname_dependence_type > p);
+
+    // shortname_dependence_html
+    // 
+    typedef ::xml_schema::string shortname_dependence_html_type;
+    typedef ::xsd::cxx::tree::optional< shortname_dependence_html_type > shortname_dependence_html_optional;
+    typedef ::xsd::cxx::tree::traits< shortname_dependence_html_type, char > shortname_dependence_html_traits;
+
+    const shortname_dependence_html_optional&
+    shortname_dependence_html () const;
+
+    shortname_dependence_html_optional&
+    shortname_dependence_html ();
+
+    void
+    shortname_dependence_html (const shortname_dependence_html_type& x);
+
+    void
+    shortname_dependence_html (const shortname_dependence_html_optional& x);
+
+    void
+    shortname_dependence_html (::std::auto_ptr< shortname_dependence_html_type > p);
 
     // unit
     // 
@@ -3090,15 +3159,18 @@ namespace XMLModule
            ::xml_schema::flags);
 
     protected:
+    ::xsd::cxx::tree::one< id_type > id_;
     condition_optional condition_;
     default_optional default__;
-    ::xsd::cxx::tree::one< id_type > id_;
+    nonlinearity_planar_optional nonlinearity_planar_;
+    nonlinearity_axi_optional nonlinearity_axi_;
+    dependence_optional dependence_;
     name_optional name_;
-    nonlin_optional nonlin_;
     shortname_optional shortname_;
     shortname_html_optional shortname_html_;
     shortname_latex_optional shortname_latex_;
-    timedep_optional timedep_;
+    shortname_dependence_optional shortname_dependence_;
+    shortname_dependence_html_optional shortname_dependence_html_;
     unit_optional unit_;
     unit_html_optional unit_html_;
     unit_latex_optional unit_latex_;

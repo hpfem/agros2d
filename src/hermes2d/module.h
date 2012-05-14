@@ -189,10 +189,12 @@ private:
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0) {}
-    MaterialTypeVariable(const QString &m_id, QString m_shortname,
-                         double m_defaultValue = 0);
-    MaterialTypeVariable(XMLModule::quantity quant);
+    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false) {}
+    MaterialTypeVariable(const QString &id, const QString &shortname, double defaultValue = 0,
+                         const QString &expressionNonlinear = "", bool isTimedep = false)
+        : m_id(id), m_shortname(shortname), m_defaultValue(defaultValue),
+          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep) {}
+    MaterialTypeVariable(XMLModule::quantity quant, CoordinateType coordinateType);
 
     // id
     inline QString id() const { return m_id; }
@@ -200,6 +202,11 @@ struct MaterialTypeVariable
     inline QString shortname() const { return m_shortname; }
     // default value
     inline double defaultValue() const { return m_defaultValue; }
+    // nonlinear expression
+    inline QString expressionNonlinear() const { return m_expressionNonlinear; }
+    inline bool isNonlinear() const { return !m_expressionNonlinear.isEmpty(); }
+    // timedep
+    inline bool isTimeDep() const { return m_isTimeDep; }
 
 private:
     // id
@@ -208,6 +215,10 @@ private:
     QString m_shortname;
     // default value
     double m_defaultValue;
+    // nonlinear expression
+    QString m_expressionNonlinear;
+    // timedep
+    bool m_isTimeDep;
 };
 
 // boundary condition type variable
@@ -279,19 +290,19 @@ private:
 struct Integral
 {
     Integral(const QString &id = "",
-                      const QString &name = "",
-                      const QString &shortname = "",
-                      const QString &shortnameHtml = "",
-                      const QString &unit = "",
-                      const QString &unitHtml = "",
-                      const QString &expression = "")
-            : m_id(id),
-              m_name(name),
-              m_shortname(shortname),
-              m_shortnameHtml(shortnameHtml),
-              m_unit(unit),
-              m_unitHtml(unitHtml),
-              m_expression(expression) {}
+             const QString &name = "",
+             const QString &shortname = "",
+             const QString &shortnameHtml = "",
+             const QString &unit = "",
+             const QString &unitHtml = "",
+             const QString &expression = "")
+        : m_id(id),
+          m_name(name),
+          m_shortname(shortname),
+          m_shortnameHtml(shortnameHtml),
+          m_unit(unit),
+          m_unitHtml(unitHtml),
+          m_expression(expression) {}
 
     // id
     inline QString id() const { return m_id; }
@@ -324,54 +335,52 @@ private:
 };
 
 // dialog UI
+struct DialogRow
+{
+    DialogRow(XMLModule::quantity qty);
+
+    inline QString id() const { return m_id; }
+
+    inline QString name() const { return m_name; }
+    inline QString shortname() const { return m_shortname; }
+    inline QString shortnameHtml() const { return m_shortnameHtml; }
+    inline QString shortnameDependence() const { return m_shortnameDependence; }
+    inline QString shortnameDependenceHtml() const { return m_shortnameDependenceHtml; }
+
+    inline QString unit() const { return m_unit; }
+    inline QString unitHtml() const { return m_unitHtml; }
+    inline QString unitLatex() const { return m_unitLatex; }
+
+    inline double defaultValue() const { return m_defaultValue; }
+    inline QString condition() const { return m_condition; }
+
+private:
+    QString m_id;
+
+    QString m_name;
+    QString m_shortname;
+    QString m_shortnameHtml;
+    QString m_shortnameDependence;
+    QString m_shortnameDependenceHtml;
+
+    QString m_unit;
+    QString m_unitHtml;
+    QString m_unitLatex;
+
+    double m_defaultValue;
+    QString m_condition;
+};
+
 struct DialogUI
 {
     DialogUI() {}
     DialogUI(XMLModule::gui ui);
 
-    struct DialogRow
-    {
-        DialogRow(XMLModule::quantity qty);
-
-        inline QString id() const { return m_id; }
-
-        inline bool nonlin() const { return m_nonlin; }
-        inline bool timedep() const { return m_timedep; }
-
-        inline QString name() const { return m_name; }
-        inline QString shortname() const { return m_shortname; }
-        inline QString shortnameHtml() const { return m_shortnameHtml; }
-
-        inline QString unit() const { return m_unit; }
-        inline QString unitHtml() const { return m_unitHtml; }
-        inline QString unitLatex() const { return m_unitLatex; }
-
-        inline double defaultValue() const { return m_defaultValue; }
-        inline QString condition() const { return m_condition; }
-
-    private:
-        QString m_id;
-
-        bool m_nonlin;
-        bool m_timedep;
-
-        QString m_name;
-        QString m_shortname;
-        QString m_shortnameHtml;
-
-        QString m_unit;
-        QString m_unitHtml;
-        QString m_unitLatex;
-
-        double m_defaultValue;
-        QString m_condition;
-    };
-
-    inline QMap<QString, QList<DialogRow> > groups() const { return m_groups; }
+    inline QMap<QString, QList<Module::DialogRow> > groups() const { return m_groups; }
     void clear();
 
 private:
-    QMap<QString, QList<DialogRow> > m_groups;
+    QMap<QString, QList<Module::DialogRow> > m_groups;
 };
 
 // basic xml module
@@ -388,7 +397,7 @@ struct BasicModule
     // description
     inline QString description() const { return m_description; }
 
-      // constants
+    // constants
     inline QMap<QString, double> constants() const { return m_constants; }
 
     // macros

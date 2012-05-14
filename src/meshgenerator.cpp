@@ -828,7 +828,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
         for (int i = 0; i<elementList.count(); i++)
         {
-            if (elementList[i].isUsed && (Util::scene()->labels->at(elementList[i].marker)->getMarker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
+            if (elementList[i].isUsed && (Util::scene()->labels->at(elementList[i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
             {
                 QDomElement eleSubElement = doc.createElement("i");
                 eleSubElements.appendChild(eleSubElement);
@@ -858,14 +858,14 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
                     int neigh = edgeList[i].neighElem[neigh_i];
                     if (neigh != -1)
                     {
-                        if (Util::scene()->labels->at(elementList[neigh].marker)->getMarker(fieldInfo)
+                        if (Util::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
                                 != SceneMaterialContainer::getNone(fieldInfo))
                             numNeighWithField++;
                     }
                 }
 
                 // edge has boundary condition prescribed for this field
-                bool hasFieldBoundaryCondition = (Util::scene()->edges->at(edgeList[i].marker)->getMarker(fieldInfo)
+                bool hasFieldBoundaryCondition = (Util::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo)
                                                   != SceneBoundaryContainer::getNone(fieldInfo));
 
                 if (numNeighWithField == 1)

@@ -28,6 +28,19 @@ class Material;
 class FieldInfo;
 class CouplingInfo;
 
+namespace Hermes
+{
+namespace Hermes2D
+{
+    template<typename Scalar> class Func;
+}
+}
+
+namespace Module
+{
+    struct MaterialTypeVariable;
+}
+
 struct ParserFormEssential
 {
     ParserFormEssential() : i(0), expression("") {}
@@ -61,10 +74,10 @@ const int maxSourceFieldComponents = 2;
 
 class ParserForm
 {
-public:
+protected:
     // parser
-    mutable mu::Parser *parser;
-    mutable QMap<std::string, double> parserVariables;
+    mutable mu::Parser *m_parser;
+    mutable QMap<std::string, double> m_parserVariables;
 
     // coordinates
     mutable double px;
@@ -98,6 +111,17 @@ public:
     mutable double sourcedx[maxSourceFieldComponents];
     mutable double sourcedy[maxSourceFieldComponents];
 
+    // nonlinearities
+    // coordinates
+    mutable double pnlx;
+    mutable double pnly;
+
+    // current solution
+    mutable double *pnlvalue;
+    mutable double *pnldx;
+    mutable double *pnldy;
+    mutable QMap<Module::MaterialTypeVariable *, mu::Parser *> m_parsersNonlinear;
+
     // TODO: not good
     ParserForm(FieldInfo *fieldInfo = NULL, CouplingInfo *couplingInfo = NULL);
     ~ParserForm();
@@ -109,6 +133,10 @@ public:
     void setMaterialsToParser(QList<Material *> materials);
     void setBoundaryToParser(Boundary * boundary);
     void setBoundariesToParser(QList<Boundary *> boundaries);
+
+    // nonlinearities
+    void setNonlinearParsers();
+    void setNonlinearMaterial(Material *material, int offset, int index, double *x, double *y, Hermes::Hermes2D::Func<double> *u_ext[]) const;
 
 protected:
     FieldInfo *m_fieldInfo;

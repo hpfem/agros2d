@@ -201,7 +201,7 @@ SceneEdgeMarker::SceneEdgeMarker(SceneEdge *edge, FieldInfo *fieldInfo, QWidget 
 
 void SceneEdgeMarker::load()
 {
-    cmbBoundary->setCurrentIndex(cmbBoundary->findData(m_edge->getMarker(m_fieldInfo)->variant()));
+    cmbBoundary->setCurrentIndex(cmbBoundary->findData(m_edge->marker(m_fieldInfo)->variant()));
 
     // TODO: load refine
     // chkRefineTowardsEdge->setChecked(m_edge->refineTowardsEdge > 0.0);
@@ -430,9 +430,9 @@ void SceneEdgeSelectDialog::load()
         foreach (SceneEdge *edge, m_edges.items())
         {
             if (boundary)
-                match = match && (boundary == edge->getMarker(fieldInfo));
+                match = match && (boundary == edge->marker(fieldInfo));
             else
-                boundary = edge->getMarker(fieldInfo);
+                boundary = edge->marker(fieldInfo);
         }
         if (match)
             cmbBoundaries[fieldInfo]->setCurrentIndex(cmbBoundaries[fieldInfo]->findData(boundary->variant()));

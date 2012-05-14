@@ -21,7 +21,7 @@ SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int co
 
 MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
 {
-    if(m_multiSolutions.contains(solutionID))
+    if (m_multiSolutions.contains(solutionID))
         return m_multiSolutions[solutionID];
 
     return MultiSolutionArray<double>();
@@ -61,7 +61,7 @@ void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionAr
     assert(solutionID.adaptivityStep >= 0);
     m_multiSolutions[solutionID] = multiSolution;
 
-    qDebug() << "SolutionStore::replaceSolution" << solutionID.toString();
+    // multiSolution.saveToFile(solutionID.toString());
 }
 
 void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)

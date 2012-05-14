@@ -23,7 +23,8 @@
 #include "pythonlabagros.h"
 #include "materialbrowserdialog.h"
 
-DataTableDialog::DataTableDialog(QWidget *parent) : QDialog(parent)
+DataTableDialog::DataTableDialog(QWidget *parent, const QString &labelX, const QString &labelY)
+    : QDialog(parent), m_labelX(labelX), m_labelY(labelY)
 {
     setWindowIcon(icon("scene-function"));
     setWindowTitle(tr("Data Table"));
@@ -38,7 +39,11 @@ DataTableDialog::DataTableDialog(QWidget *parent) : QDialog(parent)
 
     QSettings settings;
     restoreGeometry(settings.value("DataTableDialog/Geometry", saveGeometry()).toByteArray());
-    chkInterpolation->setChecked(settings.value("DataTableDialog/Interpolation").toBool());
+    chkInterpolation->setChecked(settings.value("DataTableDialog/Interpolation", true).toBool());
+    chkDerivative->setChecked(settings.value("DataTableDialog/Derivative", false).toBool());
+    chkMarkers->setChecked(settings.value("DataTableDialog/Markers", true).toBool());
+
+    chartDerivative->setVisible(chkDerivative->isChecked());
 }
 
 DataTableDialog::~DataTableDialog()
@@ -46,6 +51,8 @@ DataTableDialog::~DataTableDialog()
     QSettings settings;
     settings.setValue("DataTableDialog/Geometry", saveGeometry());
     settings.setValue("DataTableDialog/Interpolation", chkInterpolation->isChecked());
+    settings.setValue("DataTableDialog/Derivative", chkDerivative->isChecked());
+    settings.setValue("DataTableDialog/Markers", chkMarkers->isChecked());
 
     if (m_table)
         delete m_table;
@@ -70,8 +77,8 @@ void DataTableDialog::setTable(const DataTable *table)
     }
 
     // plot
-    doPlot();
-    doTextChanged();
+    textChanged();
+    QTimer::singleShot(0, this, SLOT(doPlot()));
 }
 
 bool DataTableDialog::parseTable(bool addToTable)
@@ -97,9 +104,8 @@ bool DataTableDialog::parseTable(bool addToTable)
         btnPlot->setEnabled(false);
         btnOk->setEnabled(false);
 
-        lblInfoError->setText(tr("Size doesn't match (%1 != %2).")
-                              .arg(x.size())
-                              .arg(y.size()));
+        lblInfoError->setText((x.size() > y.size()) ? tr("Size doesn't match (%1 > %2).").arg(x.size()).arg(y.size()) :
+                                                      tr("Size doesn't match (%1 < %2).").arg(x.size()).arg(y.size()));
         return false;
     }
 
@@ -117,7 +123,8 @@ bool DataTableDialog::parseTable(bool addToTable)
         keys[i] = x[i].toDouble(&ok);
         if (!ok)
         {
-            lblInfoError->setText(tr("X: cannot parse number (line %1).")
+            lblInfoError->setText(tr("%1: cannot parse number (line %2).")
+                                  .arg(m_labelX)
                                   .arg(i));
             procesOK = false;
             break;
@@ -126,7 +133,8 @@ bool DataTableDialog::parseTable(bool addToTable)
         values[i] = y[i].toDouble(&ok);
         if (!ok)
         {
-            lblInfoError->setText(tr("Y: cannot parse number (line %1).")
+            lblInfoError->setText(tr("%1: cannot parse number (line %2).")
+                                  .arg(m_labelY)
                                   .arg(i));
             procesOK = false;
             break;
@@ -150,6 +158,8 @@ bool DataTableDialog::parseTable(bool addToTable)
 
 void DataTableDialog::createControls()
 {
+    lblLabelX = new QLabel(m_labelX);
+    lblLabelY = new QLabel(m_labelY);
     lblInfoX = new QLabel();
     lblInfoY = new QLabel();
     lblInfoError = new QLabel();
@@ -160,39 +170,60 @@ void DataTableDialog::createControls()
 
     // chart
     QwtText text("");
+    text.setFont(QFont("Helvetica", 10, QFont::Normal));
 
     chartValue = new Chart(this);
     // axis labels
-    text.setFont(QFont("Helvetica", 10, QFont::Normal));
-    text.setText("x");
+    text.setText(m_labelX);
     chartValue->setAxisTitle(QwtPlot::xBottom, text);
-    text.setText("y");
+    text.setText(m_labelY);
     chartValue->setAxisTitle(QwtPlot::yLeft, text);
 
-    chartValueCurveDots = new QwtPlotCurve();
-    chartValueCurveDots->setRenderHint(QwtPlotItem::RenderAntialiased);
-    chartValueCurveDots->setStyle(QwtPlotCurve::NoCurve);
-    chartValueCurveDots->setCurveAttribute(QwtPlotCurve::Inverted);
-    chartValueCurveDots->setYAxis(QwtPlot::yLeft);
-    chartValueCurveDots->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::red), QColor(Qt::blue), QSize(7, 7)));
-    chartValueCurveDots->attach(chartValue);
+    // chart picker
+    pickerValue = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
+                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
+                               chartValue->canvas());
+    pickerValue->setRubberBandPen(QColor(Qt::green));
+    pickerValue->setRubberBand(QwtPicker::CrossRubberBand);
+    pickerValue->setTrackerMode(QwtPicker::AlwaysOn);
+    pickerValue->setTrackerPen(QColor(Qt::black));
+
+    connect(pickerValue, SIGNAL(moved(const QPoint &)), SLOT(doPickerValueMoved(const QPoint &)));
+
+    chartValueCurveMarkers = new QwtPlotCurve();
+    chartValueCurveMarkers->setRenderHint(QwtPlotItem::RenderAntialiased);
+    chartValueCurveMarkers->setStyle(QwtPlotCurve::NoCurve);
+    chartValueCurveMarkers->setCurveAttribute(QwtPlotCurve::Inverted);
+    chartValueCurveMarkers->setYAxis(QwtPlot::yLeft);
+    chartValueCurveMarkers->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::black), QColor(Qt::black), QSize(5, 5)));
+    chartValueCurveMarkers->attach(chartValue);
 
     chartDerivative = new Chart(this);
-    chartDerivative->setVisible(false);
     // axis labels
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
-    text.setText("x");
+    text.setText(m_labelX);
     chartDerivative->setAxisTitle(QwtPlot::xBottom, text);
-    text.setText("dy/dx");
+    text.setText(QString("d%1/d%2").arg(m_labelY).arg(m_labelX));
     chartDerivative->setAxisTitle(QwtPlot::yLeft, text);
 
-    chartDerivativeCurveDots = new QwtPlotCurve();
-    chartDerivativeCurveDots->setRenderHint(QwtPlotItem::RenderAntialiased);
-    chartDerivativeCurveDots->setStyle(QwtPlotCurve::NoCurve);
-    chartDerivativeCurveDots->setCurveAttribute(QwtPlotCurve::Inverted);
-    chartDerivativeCurveDots->setYAxis(QwtPlot::yLeft);
-    chartDerivativeCurveDots->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::red), QColor(Qt::blue), QSize(7, 7)));
-    chartDerivativeCurveDots->attach(chartDerivative);
+    // chart picker
+    pickerDerivative = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
+                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
+                               chartDerivative->canvas());
+    pickerDerivative->setRubberBandPen(QColor(Qt::green));
+    pickerDerivative->setRubberBand(QwtPicker::CrossRubberBand);
+    pickerDerivative->setTrackerMode(QwtPicker::AlwaysOn);
+    pickerDerivative->setTrackerPen(QColor(Qt::black));
+
+    connect(pickerDerivative, SIGNAL(moved(const QPoint &)), SLOT(doPickerDerivativeMoved(const QPoint &)));
+
+    chartDerivativeCurveMarkers = new QwtPlotCurve();
+    chartDerivativeCurveMarkers->setRenderHint(QwtPlotItem::RenderAntialiased);
+    chartDerivativeCurveMarkers->setStyle(QwtPlotCurve::NoCurve);
+    chartDerivativeCurveMarkers->setCurveAttribute(QwtPlotCurve::Inverted);
+    chartDerivativeCurveMarkers->setYAxis(QwtPlot::yLeft);
+    chartDerivativeCurveMarkers->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::black), QColor(Qt::black), QSize(5, 5)));
+    chartDerivativeCurveMarkers->attach(chartDerivative);
 
     QGridLayout *chartLayout = new QGridLayout();
     chartLayout->addWidget(chartValue);
@@ -202,26 +233,39 @@ void DataTableDialog::createControls()
     lstX = new QPlainTextEdit();
     lstX->setMaximumWidth(100);
     lstX->setMinimumWidth(100);
-    connect(lstX, SIGNAL(textChanged()), this, SLOT(doTextChanged()));
+    connect(lstX, SIGNAL(textChanged()), this, SLOT(textChanged()));
+    connect(lstX, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineX()));
     lstY = new QPlainTextEdit();
     lstY->setMaximumWidth(100);
     lstY->setMinimumWidth(100);
-    connect(lstY, SIGNAL(textChanged()), this, SLOT(doTextChanged()));
+    connect(lstY, SIGNAL(textChanged()), this, SLOT(textChanged()));
+    connect(lstY, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineY()));
+
+    chkMarkers = new QCheckBox(tr("Show markers"));
+    connect(chkMarkers, SIGNAL(clicked()), this, SLOT(doPlot()));
 
     chkInterpolation = new QCheckBox(tr("Spline interpolation"));
-    chkInterpolation->setChecked(true);
+    connect(chkInterpolation, SIGNAL(clicked()), this, SLOT(doPlot()));
+
+    chkDerivative = new QCheckBox(tr("Derivative chart"));
+    connect(chkDerivative, SIGNAL(clicked()), this, SLOT(doShowDerivativeClicked()));
+    doShowDerivativeClicked();
 
     QGridLayout *layoutSettings = new QGridLayout();
-    layoutSettings->addWidget(chkInterpolation, 3, 0, 1, 2);
+    layoutSettings->addWidget(chkMarkers, 3, 0, 1, 2);
+    layoutSettings->addWidget(chkInterpolation, 4, 0, 1, 2);
+    layoutSettings->addWidget(chkDerivative, 5, 0, 1, 2);
 
-    QGridLayout *controlsLayout = new QGridLayout();
-    controlsLayout->addWidget(lblInfoX, 0, 0);
-    controlsLayout->addWidget(lstX, 1, 0);
-    controlsLayout->addWidget(lblInfoY, 0, 1);
-    controlsLayout->addWidget(lstY, 1, 1);
-    controlsLayout->addLayout(layoutSettings, 2, 0, 1, 2);
-    controlsLayout->addLayout(chartLayout, 1, 2, 3, 1);
-    controlsLayout->addWidget(lblInfoError, 3, 0, 1, 3);
+    QGridLayout *controlsLayout = new QGridLayout();    
+    controlsLayout->addWidget(lblLabelX, 0, 0);
+    controlsLayout->addWidget(lblInfoX, 0, 1, 1, 1, Qt::AlignRight);
+    controlsLayout->addWidget(lstX, 1, 0, 1, 2);
+    controlsLayout->addWidget(lblLabelY, 0, 2);
+    controlsLayout->addWidget(lblInfoY, 0, 3, 1, 1, Qt::AlignRight);
+    controlsLayout->addWidget(lstY, 1, 2, 1, 2);
+    controlsLayout->addWidget(lblInfoError, 2, 0, 1, 4);
+    controlsLayout->addLayout(layoutSettings, 3, 0, 1, 5);
+    controlsLayout->addLayout(chartLayout, 1, 5, 4, 1);
 
     // dialog buttons
     btnOk = new QPushButton(tr("Ok"));
@@ -249,17 +293,87 @@ void DataTableDialog::createControls()
     setLayout(layout);
 }
 
-void DataTableDialog::doTextChanged()
+void DataTableDialog::textChanged()
 {
-    lblInfoX->setText(tr("X: %1").arg(lstX->toPlainText().trimmed().split("\n").size()));
-    lblInfoY->setText(tr("Y: %1").arg(lstY->toPlainText().trimmed().split("\n").size()));
+    lblInfoX->setText(tr("%1").arg(lstX->toPlainText().trimmed().split("\n").size()));
+    lblInfoY->setText(tr("%1").arg(lstY->toPlainText().trimmed().split("\n").size()));
 
     // try parse
     parseTable(false);
 }
 
+void DataTableDialog::doPickerValueMoved(const QPoint &pos)
+{
+    QString info;
+    info.sprintf("x=%g, y=%g",
+        chartValue->invTransform(QwtPlot::xBottom, pos.x()),
+        chartValue->invTransform(QwtPlot::yLeft, pos.y()));
+}
+
+void DataTableDialog::doPickerDerivativeMoved(const QPoint &pos)
+{
+    QString info;
+    info.sprintf("x=%g, y=%g",
+        chartDerivative->invTransform(QwtPlot::xBottom, pos.x()),
+        chartDerivative->invTransform(QwtPlot::yLeft, pos.y()));
+}
+
+void DataTableDialog::gotoLine(QPlainTextEdit *lst, int lineNumber)
+{
+    if (lineNumber >= lst->document()->lineCount())
+        lineNumber = lst->document()->lineCount() - 1;
+
+    const QTextBlock &block = lst->document()->findBlockByNumber(lineNumber);
+    QTextCursor cursor(block);
+
+    int linedif = lineNumber - lst->textCursor().blockNumber();
+    if (linedif < 0)
+        cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, 0);
+    else
+        cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, 0);
+
+    // cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 0);
+    lst->setTextCursor(cursor);
+    // lst->centerCursor();
+    lst->ensureCursorVisible();
+}
+
+void DataTableDialog::highlightCurrentLine(QPlainTextEdit *lst)
+{
+    lst->blockSignals(true);
+
+    QList<QTextEdit::ExtraSelection> selections;
+
+    QTextEdit::ExtraSelection selection;
+    QColor lineColor = QColor(Qt::yellow).lighter(180);
+
+    selection.format.setBackground(lineColor);
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = lst->textCursor();
+    selection.cursor.clearSelection();
+    selections.append(selection);
+
+    lst->setExtraSelections(selections);
+    lst->blockSignals(false);
+}
+
+void DataTableDialog::highlightCurrentLineX()
+{
+    gotoLine(lstY, lstX->textCursor().blockNumber());
+    highlightCurrentLine(lstX);
+}
+
+void DataTableDialog::highlightCurrentLineY()
+{
+    gotoLine(lstX, lstY->textCursor().blockNumber());
+    highlightCurrentLine(lstY);
+}
+
 void DataTableDialog::doPlot()
 {
+    chartValueCurveMarkers->setVisible(chkMarkers->isChecked());
+    chartDerivativeCurveMarkers->setVisible(chkMarkers->isChecked());
+
     parseTable();
 
     // points
@@ -270,8 +384,8 @@ void DataTableDialog::doPlot()
     double *derivatives = new double[count];
 
     m_table->get(keys, values, derivatives);
-    chartValueCurveDots->setSamples(keys, values, count);
-    chartDerivativeCurveDots->setSamples(keys, derivatives, count);
+    chartValueCurveMarkers->setSamples(keys, values, count);
+    chartDerivativeCurveMarkers->setSamples(keys, derivatives, count);
 
     delete [] keys;
     delete [] values;
@@ -279,7 +393,7 @@ void DataTableDialog::doPlot()
 
     // interpolation
     int countSpline = count*1e3;
-    double dx = (m_table->max_key() - m_table->min_key()) / (countSpline);
+    double dx = (m_table->maxKey() - m_table->minKey()) / (countSpline);
 
     double *keysSpline = new double[countSpline];
     double *valuesSpline = new double[countSpline];
@@ -290,11 +404,11 @@ void DataTableDialog::doPlot()
         // spline
         for (int i = 0; i < countSpline; i++)
         {
-            keysSpline[i] = m_table->min_key() + (i * dx);
+            keysSpline[i] = m_table->minKey() + (i * dx);
             // values[i] = m_table->value(keys[i]);
-            valuesSpline[i] = m_table->value_spline(keysSpline[i]);
+            valuesSpline[i] = m_table->valueSpline(keysSpline[i]);
             // derivatives[i] = m_table->derivative(keys[i]);
-            derivativesSpline[i] = m_table->derivative_spline(keysSpline[i]);
+            derivativesSpline[i] = m_table->derivativeSpline(keysSpline[i]);
         }
     }
     else
@@ -302,7 +416,7 @@ void DataTableDialog::doPlot()
         // lines
         for (int i = 0; i < countSpline; i++)
         {
-            keysSpline[i] = m_table->min_key() + (i * dx);
+            keysSpline[i] = m_table->minKey() + (i * dx);
             valuesSpline[i] = m_table->value(keysSpline[i]);
             derivativesSpline[i] = m_table->derivative(keysSpline[i]);
         }
@@ -314,6 +428,11 @@ void DataTableDialog::doPlot()
     delete [] keysSpline;
     delete [] valuesSpline;
     delete [] derivativesSpline;
+}
+
+void DataTableDialog::doShowDerivativeClicked()
+{
+    chartDerivative->setVisible(chkDerivative->isChecked());
 }
 
 void DataTableDialog::doMaterialBrowser()
@@ -329,7 +448,7 @@ void DataTableDialog::doMaterialBrowser()
             lstY->appendPlainText(QString::number(materialBrowserDialog.y().at(i)));
         }
 
-        doPlot();
+        QTimer::singleShot(0, this, SLOT(doPlot()));
     }
 }
 

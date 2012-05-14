@@ -29,7 +29,7 @@ DataTable::DataTable(double key, double value)
     m_data = NULL;
     add(key, value, false);
 
-    init_spline();
+    initSpline();
 }
 
 DataTable::DataTable(double *keys, double *values, int count)
@@ -141,17 +141,23 @@ void DataTable::add(double key, double value, bool init)
     }
 
     if (init)
-        init_spline();
+        initSpline();
 }
 
 void DataTable::add(double *keys, double *values, int count)
 {
     for (int i = 0; i<count; i++)
-    {
         add(keys[i], values[i], false);
-    }
 
-    init_spline();
+    initSpline();
+}
+
+void DataTable::add(vector<double> keys, vector<double> values)
+{
+    for (int i = 0; i<keys.size(); i++)
+        add(keys[i], values[i], false);
+
+    initSpline();
 }
 
 void DataTable::get(double *keys, double *values, double *derivatives)
@@ -187,11 +193,11 @@ DataTable *DataTable::copy() const
         data = data->next;
     }
 
-    table->init_spline();
+    table->initSpline();
     return table;
 }
 
-void DataTable::init_spline()
+void DataTable::initSpline()
 {
     int length = size();
 
@@ -234,7 +240,7 @@ int DataTable::size()
     return size;
 }
 
-double DataTable::min_key()
+double DataTable::minKey()
 {
     if (m_data)
         return m_data->key;
@@ -242,7 +248,7 @@ double DataTable::min_key()
         return 0.0;
 }
 
-double DataTable::max_key()
+double DataTable::maxKey()
 {
     double max = 0.0;
 
@@ -258,7 +264,7 @@ double DataTable::max_key()
     return max;
 }
 
-double DataTable::min_value()
+double DataTable::minValue()
 {
     if (m_data)
         return m_data->value;
@@ -266,7 +272,7 @@ double DataTable::min_value()
         return 0.0;
 }
 
-double DataTable::max_value()
+double DataTable::maxValue()
 {
     double max = 0.0;
 
@@ -362,7 +368,7 @@ Hermes::Ord DataTable::derivative(Hermes::Ord key)
     return Hermes::Ord(1);
 }
 
-double DataTable::value_spline(double key)
+double DataTable::valueSpline(double key)
 {
     if (m_data && m_data->next)
         return m_spline->value(key);
@@ -370,12 +376,12 @@ double DataTable::value_spline(double key)
         return 0.0;
 }
 
-Hermes::Ord DataTable::value_spline(Hermes::Ord key)
+Hermes::Ord DataTable::valueSpline(Hermes::Ord key)
 {
     return Hermes::Ord(1);
 }
 
-double DataTable::derivative_spline(double key)
+double DataTable::derivativeSpline(double key)
 {
     if (m_data && m_data->next)
     {
@@ -385,24 +391,48 @@ double DataTable::derivative_spline(double key)
         return 0.0;
 }
 
-Hermes::Ord DataTable::derivative_spline(Hermes::Ord key)
+Hermes::Ord DataTable::derivativeSpline(Hermes::Ord key)
 {
     return Hermes::Ord(1);
 }
 
-std::string DataTable::to_string()
+std::string DataTable::toString() const
+{
+    return (toStringX() + ";" + toStringY());
+}
+
+std::string DataTable::toStringX() const
 {
     std::string str_key;
-    std::string str_value;
 
     DataTableRow *data = m_data;
     while (data)
     {
         std::ostringstream o_key;
-        std::ostringstream o_value;
 
         o_key << data->key;
         str_key += o_key.str();
+
+        // next row
+        data = data->next;
+
+        // separator
+        if (data)
+            str_key += ",";
+    }
+
+    return str_key;
+}
+
+std::string DataTable::toStringY() const
+{
+    std::string str_value;
+
+    DataTableRow *data = m_data;
+    while (data)
+    {
+        std::ostringstream o_value;
+
         o_value << data->value;
         str_value += o_value.str();
 
@@ -411,16 +441,13 @@ std::string DataTable::to_string()
 
         // separator
         if (data)
-        {
-            str_key += ",";
             str_value += ",";
-        }
     }
 
-    return (str_key + ";" + str_value);
+    return str_value;
 }
 
-void DataTable::from_string(const std::string &str)
+void DataTable::fromString(const std::string &str)
 {
     std::string::const_iterator pos = std::find(str.begin(), str.end(), ';');
 
@@ -453,7 +480,7 @@ void DataTable::from_string(const std::string &str)
     for (int i = 0; i < keys_double.size(); i++)
         add(keys_double[i], values_double[i], false);
 
-    init_spline();
+    initSpline();
 }
 
 void DataTable::print()
@@ -544,10 +571,10 @@ void test()
     _assert(fabs(table.derivative(50) - 2.0) < EPS_ZERO);
 
     // min and max
-    _assert(fabs(table.min_key() - -10.0) < EPS_ZERO);
-    _assert(fabs(table.max_key() - 40.0) < EPS_ZERO);
-    _assert(fabs(table.min_value() - 4.0) < EPS_ZERO);
-    _assert(fabs(table.max_value() - 20.0) < EPS_ZERO);
+    _assert(fabs(table.minKey() - -10.0) < EPS_ZERO);
+    _assert(fabs(table.maxKey() - 40.0) < EPS_ZERO);
+    _assert(fabs(table.minValue() - 4.0) < EPS_ZERO);
+    _assert(fabs(table.maxValue() - 20.0) < EPS_ZERO);
 
     table.remove(30); // row exists
     table.remove(31); // row doesn't exist

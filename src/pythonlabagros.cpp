@@ -33,6 +33,7 @@
 #include "scenelabel.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "datatable.h"
 
 #include "hermes2d/surfaceintegral.h"
 #include "hermes2d/volumeintegral.h"
@@ -118,6 +119,9 @@ QString createPythonFromModel()
         str += QString("%1.analysis_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
                 arg(analysisTypeToStringKey(fieldInfo->analysisType()));
+        str += QString("%1.weak_forms = \"%2\"\n").
+                arg(fieldInfo->fieldId()).
+                arg(weakFormsTypeToStringKey(fieldInfo->weakFormsType()));
 
         if (fieldInfo->numberOfRefinements() > 0)
             str += QString("%1.number_of_refinements = %2\n").
@@ -147,13 +151,17 @@ QString createPythonFromModel()
         str += "\n";
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
+            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->getType());
+
             QString variables = "{";
             const QMap<QString, Value> values = boundary->getValues();
             for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
-                variables += QString("\"%1\" : %2, ").
-                        arg(it.key()).
-                        arg(it.value().toString());
+                foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+                    if (variable->id() == it.key())
+                        variables += QString("\"%1\" : %2, ").
+                                arg(it.key()).
+                                arg(it.value().toString());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -171,9 +179,21 @@ QString createPythonFromModel()
             const QMap<QString, Value> values = material->getValues();
             for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
-                variables += QString("\"%1\" : %2, ").
-                        arg(it.key()).
-                        arg(it.value().toString());
+                if (it.value().hasTable())
+                {
+                    Value value = it.value();
+                    variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
+                            arg(it.key()).
+                            arg(it.value().text()).
+                            arg(QString::fromStdString(value.table()->toStringX())).
+                            arg(QString::fromStdString(value.table()->toStringY()));
+                }
+                else
+                {
+                    variables += QString("\"%1\" : %2, ").
+                            arg(it.key()).
+                            arg(it.value().toString());
+                }
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -188,7 +208,7 @@ QString createPythonFromModel()
 
     // geometry
     str += "\n# geometry\n";
-    str += "geometry = agros2d.geometry()\n\n";
+    str += "geometry = agros2d.geometry\n\n";
 
     // edges
     if (Util::scene()->edges->count() > 0)
@@ -207,7 +227,7 @@ QString createPythonFromModel()
                 QString boundaries = ", boundaries = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
-                    SceneBoundary *marker = edge->getMarker(fieldInfo);
+                    SceneBoundary *marker = edge->marker(fieldInfo);
 
                     if (marker != Util::scene()->boundaries->getNone(fieldInfo))
                     {
@@ -245,7 +265,7 @@ QString createPythonFromModel()
                 QString materials = ", materials = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
-                    SceneMaterial *marker = label->getMarker(fieldInfo);
+                    SceneMaterial *marker = label->marker(fieldInfo);
 
                     materials += QString("\"%1\" : \"%2\", ").
                             arg(fieldInfo->fieldId()).
@@ -584,15 +604,15 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 
     // browse boundary parameters
     QMap<QString, Value> values;
-    for( map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
         foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
         {
-            if (variable->id() == QString((*i).first))
+            if (variable->id() == QString(QString((*i).first)))
             {
                 assigned = true;
-                values[variable->id()] = Value(QString::number((*i).second));
+                values[variable->id()] = Value(m_fieldInfo, (*i).second);
                 break;
             }
         }
@@ -610,11 +630,11 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
     if (sceneBoundary == NULL)
         throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(name).toStdString());
 
-    // todo: (Franta) check with defined types
+    // TODO: (Franta) check with defined types
     if (QString(type) != "")
         sceneBoundary->setType(QString(type));
 
-    // todo: (Franta) check with defined parameters
+    // TODO: (Franta) check with defined parameters
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
         sceneBoundary->setValue(QString((*i).first), Value(QString::number((*i).second)));
 }
@@ -624,7 +644,9 @@ void PyField::removeBoundary(char *name)
     Util::scene()->removeBoundary(Util::scene()->getBoundary(QString(name)));
 }
 
-void PyField::addMaterial(char *name, map<char*, double> parameters)
+void PyField::addMaterial(char *name, map<char*, double> parameters,
+                          map<char*, vector<double> > nonlin_x,
+                          map<char*, vector<double> > nonlin_y)
 {
     // check materials with same name
     foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
@@ -644,8 +666,18 @@ void PyField::addMaterial(char *name, map<char*, double> parameters)
         {
             if (variable->id() == QString((*i).first))
             {
+                int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
+                int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
+                if (lenx != leny)
+                    if (lenx > leny)
+                        throw out_of_range(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
+                    else
+                        throw out_of_range(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
+
                 assigned = true;
-                values[variable->id()] = Value(QString::number((*i).second));
+                values[variable->id()] = Value(m_fieldInfo, (*i).second,
+                                               (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                               (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 break;
             }
         }
@@ -780,9 +812,9 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             {
                 if ((*it >= 0) && (*it < Util::scene()->labels->length()))
                 {
-                    qDebug() << QString::number(*it) << Util::scene()->labels->at(*it)->getMarker(m_fieldInfo)->getName();
+                    qDebug() << QString::number(*it) << Util::scene()->labels->at(*it)->marker(m_fieldInfo)->getName();
 
-                    if (Util::scene()->labels->at(*it)->getMarker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
+                    if (Util::scene()->labels->at(*it)->marker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
                     {
                         Util::scene()->labels->at(*it)->setSelected(true);
                     }
@@ -1125,11 +1157,16 @@ void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 
 // ****************************************************************************************************
 
-void PyViewConfig::setField(char* variable)
+void PyViewConfig::refresh()
+{
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+}
+
+void PyViewConfig::setField(char* fieldid)
 {
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        if (fieldInfo->fieldId() == QString(variable))
+        if (fieldInfo->fieldId() == QString(fieldid))
         {
             Util::scene()->setActiveViewField(fieldInfo);
             return;
@@ -1137,6 +1174,50 @@ void PyViewConfig::setField(char* variable)
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Util::problem()->fieldInfos().keys())).toStdString());
+}
+
+void PyViewConfig::setActiveTimeStep(int timeStep)
+{
+    if (timeStep < 0 && timeStep > Util::problem()->config()->numTimeSteps())
+        throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Util::problem()->config()->numTimeSteps()).toStdString());
+
+    Util::scene()->setActiveTimeStep(timeStep);
+}
+
+void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
+{
+    if (adaptivityStep < 0 && adaptivityStep > Util::scene()->activeViewField()->adaptivitySteps())
+        throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(Util::scene()->activeViewField()->fieldId()).arg(Util::scene()->activeViewField()->adaptivitySteps()).toStdString());
+
+    Util::scene()->setActiveAdaptivityStep(adaptivityStep);
+}
+
+void PyViewConfig::setActiveSolutionType(char* solutionType)
+{
+    if (solutionTypeStringKeys().contains(QString(solutionType)))
+        Util::scene()->setActiveSolutionType(solutionTypeFromStringKey(QString(solutionType)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
+}
+
+void PyViewConfig::setGridShow(bool show)
+{
+    Util::config()->showGrid = show;
+}
+
+void PyViewConfig::setGridStep(double step)
+{
+    Util::config()->gridStep = step;
+}
+
+void PyViewConfig::setAxesShow(bool show)
+{
+    Util::config()->showAxes = show;
+}
+
+void PyViewConfig::setRulersShow(bool show)
+{
+    Util::config()->showRulers = show;
 }
 
 // ****************************************************************************************************
@@ -1153,34 +1234,37 @@ void PyViewMesh::refresh()
         currentPythonEngineAgros()->sceneViewMesh()->refresh();
 }
 
-void PyViewMesh::setInitialMeshViewShow(int show)
+void PyViewMesh::setInitialMeshViewShow(bool show)
 {
     Util::config()->showInitialMeshView = show;
 }
 
-void PyViewMesh::setSolutionMeshViewShow(int show)
+void PyViewMesh::setSolutionMeshViewShow(bool show)
 {
     Util::config()->showSolutionMeshView = show;
 }
 
-void PyViewMesh::setOrderViewShow(int show)
+void PyViewMesh::setOrderViewShow(bool show)
 {
     Util::config()->showOrderView = show;
 }
 
-void PyViewMesh::setOrderViewColorBar(int show)
+void PyViewMesh::setOrderViewColorBar(bool show)
 {
     Util::config()->showOrderColorBar = show;
 }
 
-void PyViewMesh::setOrderViewLabel(int show)
+void PyViewMesh::setOrderViewLabel(bool show)
 {
     Util::config()->orderLabel = show;
 }
 
 void PyViewMesh::setOrderViewPalette(char* palette)
 {
-    Util::config()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+    if (paletteOrderTypeStringKeys().contains(QString(palette)))
+        Util::config()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteOrderTypeStringKeys())).toStdString());
 }
 
 // ****************************************************************************************************
@@ -1197,7 +1281,7 @@ void PyViewPost2D::refresh()
         currentPythonEngineAgros()->sceneViewPost2D()->refresh();
 }
 
-void PyViewPost2D::setScalarViewShow(int show)
+void PyViewPost2D::setScalarViewShow(bool show)
 {
     Util::config()->showScalarView = show;
 }
@@ -1217,52 +1301,47 @@ void PyViewPost2D::setScalarViewVariable(char* var)
         }
     }
 
-    // vector variables
-    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
-    {
-        list.append(variable->id());
-        if (variable->id() == QString(var))
-        {
-            Util::config()->vectorVariable = QString(var);
-            return;
-        }
-    }
-
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
 void PyViewPost2D::setScalarViewVariableComp(char* component)
 {
-    // todo: (Franta)
-    Util::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+    if (physicFieldVariableCompTypeStringKeys().contains(QString(component)))
+        Util::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(physicFieldVariableCompTypeStringKeys())).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPalette(char* palette)
 {
-    // todo: (Franta)
-    Util::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+    if (paletteTypeStringKeys().contains(QString(palette)))
+        Util::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteTypeStringKeys())).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
 {
-    // todo: (Franta)
-    Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+    if (paletteQualityStringKeys().contains(QString(quality)))
+        Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPaletteSteps(int steps)
 {
-    if (steps >= 5 && steps <= 100)
+    if (steps >= PALLETESTEPSMIN && steps <= PALLETESTEPSMAX)
         Util::config()->paletteSteps = steps;
     else
-        throw invalid_argument(QObject::tr("Palette steps must be in the range from 5 to 100.").toStdString());
+        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALLETESTEPSMIN).arg(PALLETESTEPSMAX).toStdString());
 }
 
-void PyViewPost2D::setScalarViewPaletteFilter(int filter)
+void PyViewPost2D::setScalarViewPaletteFilter(bool filter)
 {
     Util::config()->paletteFilter = filter;
 }
 
-void PyViewPost2D::setScalarViewRangeLog(int log)
+void PyViewPost2D::setScalarViewRangeLog(bool log)
 {
     Util::config()->scalarRangeLog = log;
 }
@@ -1272,20 +1351,20 @@ void PyViewPost2D::setScalarViewRangeBase(double base)
     Util::config()->scalarRangeBase = base;
 }
 
-void PyViewPost2D::setScalarViewColorBar(int show)
+void PyViewPost2D::setScalarViewColorBar(bool show)
 {
     Util::config()->showScalarColorBar = show;
 }
 
 void PyViewPost2D::setScalarViewDecimalPlace(int place)
 {
-    if (place >= 0 && place <= 10)
+    if (place >= SCALARDECIMALPLACEMIN && place <= SCALARDECIMALPLACEMAX)
         Util::config()->scalarDecimalPlace = place;
     else
-        throw invalid_argument(QObject::tr("Decimal place must be in the range from 0 to 10.").toStdString());
+        throw invalid_argument(QObject::tr("Decimal place must be in the range from %1 to %2.").arg(SCALARDECIMALPLACEMIN).arg(SCALARDECIMALPLACEMAX).toStdString());
 }
 
-void PyViewPost2D::setScalarViewRangeAuto(int autoRange)
+void PyViewPost2D::setScalarViewRangeAuto(bool autoRange)
 {
     Util::config()->scalarRangeAuto = autoRange;
 }
@@ -1300,17 +1379,17 @@ void PyViewPost2D::setScalarViewRangeMax(double max)
     Util::config()->scalarRangeMax = max;
 }
 
-void PyViewPost2D::setContourShow(int show)
+void PyViewPost2D::setContourShow(bool show)
 {
     Util::config()->showContourView = show;
 }
 
 void PyViewPost2D::setContourCount(int count)
 {
-    if (count > 0 && count <= 100)
+    if (count > CONTOURSCOUNTMIN && count <= CONTOURSCOUNTMAX)
         Util::config()->contoursCount = count;
     else
-        throw invalid_argument(QObject::tr("Contour count must be in the range from 1 to 100.").toStdString());
+        throw invalid_argument(QObject::tr("Contour count must be in the range from %1 to %2.").arg(CONTOURSCOUNTMIN).arg(CONTOURSCOUNTMAX).toStdString());
 }
 
 void PyViewPost2D::setContourVariable(char* var)
@@ -1333,26 +1412,25 @@ void PyViewPost2D::setContourVariable(char* var)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
-void PyViewPost2D::setVectorShow(int show)
+void PyViewPost2D::setVectorShow(bool show)
 {
     Util::config()->showVectorView = show;
 }
 
 void PyViewPost2D::setVectorCount(int count)
 {
-    if (count > 0 && count <= 500)
+    if (count > VECTORSCOUNTMIN && count <= VECTORSCOUNTMAX)
         Util::config()->vectorCount = count;
     else
-        throw invalid_argument(QObject::tr("Vector count must be in the range from 1 to 500.").toStdString());
+        throw invalid_argument(QObject::tr("Vector count must be in the range from %1 to %2.").arg(VECTORSCOUNTMIN).arg(VECTORSCOUNTMAX).toStdString());
 }
 
 void PyViewPost2D::setVectorScale(double scale)
 {
-    // todo: (Franta) change range
-    if (scale > 0.0 && scale <= 20.0)
+    if (scale > VECTORSSCALEMIN && scale <= VECTORSSCALEMAX)
         Util::config()->vectorScale = scale;
     else
-        throw invalid_argument(QObject::tr("Vector scale must be in the range from 0.0 to 20.0.").toStdString());
+        throw invalid_argument(QObject::tr("Vector scale must be in the range from %1 to %2.").arg(VECTORSSCALEMIN).arg(VECTORSSCALEMAX).toStdString());
 }
 
 void PyViewPost2D::setVectorVariable(char* var)
@@ -1371,12 +1449,12 @@ void PyViewPost2D::setVectorVariable(char* var)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
-void PyViewPost2D::setVectorProportional(int show)
+void PyViewPost2D::setVectorProportional(bool show)
 {
     Util::config()->vectorProportional = show;
 }
 
-void PyViewPost2D::setVectorColor(int show)
+void PyViewPost2D::setVectorColor(bool show)
 {
     Util::config()->vectorColor = show;
 }

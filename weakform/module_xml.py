@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Fri May  4 10:19:46 2012 by generateDS.py version 2.7a.
+# Generated Sat May 12 20:51:54 2012 by generateDS.py version 2.7a.
 #
 
 import sys
@@ -3149,16 +3149,17 @@ class default(GeneratedsSuper):
 class quantity(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, timedep=None, unit_html=None, nonlin=None, name=None, default=None, shortname_latex=None, shortname_html=None, unit_latex=None, unit=None, shortname=None, id=None, condition=None):
-        self.timedep = _cast(int, timedep)
-        self.unit_html = _cast(None, unit_html)
-        self.nonlin = _cast(int, nonlin)
+    def __init__(self, nonlinearity_axi=None, name=None, default=None, shortname_latex=None, shortname_html=None, dependence=None, unit_latex=None, unit_html=None, unit=None, nonlinearity_planar=None, shortname=None, id=None, condition=None):
+        self.nonlinearity_axi = _cast(None, nonlinearity_axi)
         self.name = _cast(None, name)
         self.default = _cast(float, default)
         self.shortname_latex = _cast(None, shortname_latex)
         self.shortname_html = _cast(None, shortname_html)
+        self.dependence = _cast(None, dependence)
         self.unit_latex = _cast(None, unit_latex)
+        self.unit_html = _cast(None, unit_html)
         self.unit = _cast(None, unit)
+        self.nonlinearity_planar = _cast(None, nonlinearity_planar)
         self.shortname = _cast(None, shortname)
         self.id = _cast(None, id)
         self.condition = _cast(None, condition)
@@ -3169,12 +3170,8 @@ class quantity(GeneratedsSuper):
         else:
             return quantity(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_timedep(self): return self.timedep
-    def set_timedep(self, timedep): self.timedep = timedep
-    def get_unit_html(self): return self.unit_html
-    def set_unit_html(self, unit_html): self.unit_html = unit_html
-    def get_nonlin(self): return self.nonlin
-    def set_nonlin(self, nonlin): self.nonlin = nonlin
+    def get_nonlinearity_axi(self): return self.nonlinearity_axi
+    def set_nonlinearity_axi(self, nonlinearity_axi): self.nonlinearity_axi = nonlinearity_axi
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
     def get_default(self): return self.default
@@ -3183,10 +3180,16 @@ class quantity(GeneratedsSuper):
     def set_shortname_latex(self, shortname_latex): self.shortname_latex = shortname_latex
     def get_shortname_html(self): return self.shortname_html
     def set_shortname_html(self, shortname_html): self.shortname_html = shortname_html
+    def get_dependence(self): return self.dependence
+    def set_dependence(self, dependence): self.dependence = dependence
     def get_unit_latex(self): return self.unit_latex
     def set_unit_latex(self, unit_latex): self.unit_latex = unit_latex
+    def get_unit_html(self): return self.unit_html
+    def set_unit_html(self, unit_html): self.unit_html = unit_html
     def get_unit(self): return self.unit
     def set_unit(self, unit): self.unit = unit
+    def get_nonlinearity_planar(self): return self.nonlinearity_planar
+    def set_nonlinearity_planar(self, nonlinearity_planar): self.nonlinearity_planar = nonlinearity_planar
     def get_shortname(self): return self.shortname
     def set_shortname(self, shortname): self.shortname = shortname
     def get_id(self): return self.id
@@ -3205,15 +3208,9 @@ class quantity(GeneratedsSuper):
         else:
             outfile.write('/>\n')
     def exportAttributes(self, outfile, level, already_processed, namespace_='module:', name_='quantity'):
-        if self.timedep is not None and 'timedep' not in already_processed:
-            already_processed.append('timedep')
-            outfile.write(' timedep="%s"' % self.gds_format_integer(self.timedep, input_name='timedep'))
-        if self.unit_html is not None and 'unit_html' not in already_processed:
-            already_processed.append('unit_html')
-            outfile.write(' unit_html=%s' % (self.gds_format_string(quote_attrib(self.unit_html).encode(ExternalEncoding), input_name='unit_html'), ))
-        if self.nonlin is not None and 'nonlin' not in already_processed:
-            already_processed.append('nonlin')
-            outfile.write(' nonlin="%s"' % self.gds_format_integer(self.nonlin, input_name='nonlin'))
+        if self.nonlinearity_axi is not None and 'nonlinearity_axi' not in already_processed:
+            already_processed.append('nonlinearity_axi')
+            outfile.write(' nonlinearity_axi=%s' % (self.gds_format_string(quote_attrib(self.nonlinearity_axi).encode(ExternalEncoding), input_name='nonlinearity_axi'), ))
         if self.name is not None and 'name' not in already_processed:
             already_processed.append('name')
             outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
@@ -3226,12 +3223,21 @@ class quantity(GeneratedsSuper):
         if self.shortname_html is not None and 'shortname_html' not in already_processed:
             already_processed.append('shortname_html')
             outfile.write(' shortname_html=%s' % (self.gds_format_string(quote_attrib(self.shortname_html).encode(ExternalEncoding), input_name='shortname_html'), ))
+        if self.dependence is not None and 'dependence' not in already_processed:
+            already_processed.append('dependence')
+            outfile.write(' dependence=%s' % (self.gds_format_string(quote_attrib(self.dependence).encode(ExternalEncoding), input_name='dependence'), ))
         if self.unit_latex is not None and 'unit_latex' not in already_processed:
             already_processed.append('unit_latex')
             outfile.write(' unit_latex=%s' % (self.gds_format_string(quote_attrib(self.unit_latex).encode(ExternalEncoding), input_name='unit_latex'), ))
+        if self.unit_html is not None and 'unit_html' not in already_processed:
+            already_processed.append('unit_html')
+            outfile.write(' unit_html=%s' % (self.gds_format_string(quote_attrib(self.unit_html).encode(ExternalEncoding), input_name='unit_html'), ))
         if self.unit is not None and 'unit' not in already_processed:
             already_processed.append('unit')
             outfile.write(' unit=%s' % (self.gds_format_string(quote_attrib(self.unit).encode(ExternalEncoding), input_name='unit'), ))
+        if self.nonlinearity_planar is not None and 'nonlinearity_planar' not in already_processed:
+            already_processed.append('nonlinearity_planar')
+            outfile.write(' nonlinearity_planar=%s' % (self.gds_format_string(quote_attrib(self.nonlinearity_planar).encode(ExternalEncoding), input_name='nonlinearity_planar'), ))
         if self.shortname is not None and 'shortname' not in already_processed:
             already_processed.append('shortname')
             outfile.write(' shortname=%s' % (self.gds_format_string(quote_attrib(self.shortname).encode(ExternalEncoding), input_name='shortname'), ))
@@ -3256,18 +3262,10 @@ class quantity(GeneratedsSuper):
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.timedep is not None and 'timedep' not in already_processed:
-            already_processed.append('timedep')
+        if self.nonlinearity_axi is not None and 'nonlinearity_axi' not in already_processed:
+            already_processed.append('nonlinearity_axi')
             showIndent(outfile, level)
-            outfile.write('timedep = %d,\n' % (self.timedep,))
-        if self.unit_html is not None and 'unit_html' not in already_processed:
-            already_processed.append('unit_html')
-            showIndent(outfile, level)
-            outfile.write('unit_html = "%s",\n' % (self.unit_html,))
-        if self.nonlin is not None and 'nonlin' not in already_processed:
-            already_processed.append('nonlin')
-            showIndent(outfile, level)
-            outfile.write('nonlin = %d,\n' % (self.nonlin,))
+            outfile.write('nonlinearity_axi = "%s",\n' % (self.nonlinearity_axi,))
         if self.name is not None and 'name' not in already_processed:
             already_processed.append('name')
             showIndent(outfile, level)
@@ -3284,14 +3282,26 @@ class quantity(GeneratedsSuper):
             already_processed.append('shortname_html')
             showIndent(outfile, level)
             outfile.write('shortname_html = "%s",\n' % (self.shortname_html,))
+        if self.dependence is not None and 'dependence' not in already_processed:
+            already_processed.append('dependence')
+            showIndent(outfile, level)
+            outfile.write('dependence = "%s",\n' % (self.dependence,))
         if self.unit_latex is not None and 'unit_latex' not in already_processed:
             already_processed.append('unit_latex')
             showIndent(outfile, level)
             outfile.write('unit_latex = "%s",\n' % (self.unit_latex,))
+        if self.unit_html is not None and 'unit_html' not in already_processed:
+            already_processed.append('unit_html')
+            showIndent(outfile, level)
+            outfile.write('unit_html = "%s",\n' % (self.unit_html,))
         if self.unit is not None and 'unit' not in already_processed:
             already_processed.append('unit')
             showIndent(outfile, level)
             outfile.write('unit = "%s",\n' % (self.unit,))
+        if self.nonlinearity_planar is not None and 'nonlinearity_planar' not in already_processed:
+            already_processed.append('nonlinearity_planar')
+            showIndent(outfile, level)
+            outfile.write('nonlinearity_planar = "%s",\n' % (self.nonlinearity_planar,))
         if self.shortname is not None and 'shortname' not in already_processed:
             already_processed.append('shortname')
             showIndent(outfile, level)
@@ -3312,24 +3322,10 @@ class quantity(GeneratedsSuper):
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('timedep', node)
-        if value is not None and 'timedep' not in already_processed:
-            already_processed.append('timedep')
-            try:
-                self.timedep = int(value)
-            except ValueError, exp:
-                raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-        value = find_attr_value_('unit_html', node)
-        if value is not None and 'unit_html' not in already_processed:
-            already_processed.append('unit_html')
-            self.unit_html = value
-        value = find_attr_value_('nonlin', node)
-        if value is not None and 'nonlin' not in already_processed:
-            already_processed.append('nonlin')
-            try:
-                self.nonlin = int(value)
-            except ValueError, exp:
-                raise_parse_error(node, 'Bad integer attribute: %s' % exp)
+        value = find_attr_value_('nonlinearity_axi', node)
+        if value is not None and 'nonlinearity_axi' not in already_processed:
+            already_processed.append('nonlinearity_axi')
+            self.nonlinearity_axi = value
         value = find_attr_value_('name', node)
         if value is not None and 'name' not in already_processed:
             already_processed.append('name')
@@ -3349,14 +3345,26 @@ class quantity(GeneratedsSuper):
         if value is not None and 'shortname_html' not in already_processed:
             already_processed.append('shortname_html')
             self.shortname_html = value
+        value = find_attr_value_('dependence', node)
+        if value is not None and 'dependence' not in already_processed:
+            already_processed.append('dependence')
+            self.dependence = value
         value = find_attr_value_('unit_latex', node)
         if value is not None and 'unit_latex' not in already_processed:
             already_processed.append('unit_latex')
             self.unit_latex = value
+        value = find_attr_value_('unit_html', node)
+        if value is not None and 'unit_html' not in already_processed:
+            already_processed.append('unit_html')
+            self.unit_html = value
         value = find_attr_value_('unit', node)
         if value is not None and 'unit' not in already_processed:
             already_processed.append('unit')
             self.unit = value
+        value = find_attr_value_('nonlinearity_planar', node)
+        if value is not None and 'nonlinearity_planar' not in already_processed:
+            already_processed.append('nonlinearity_planar')
+            self.nonlinearity_planar = value
         value = find_attr_value_('shortname', node)
         if value is not None and 'shortname' not in already_processed:
             already_processed.append('shortname')
@@ -4229,9 +4237,9 @@ def parse(inFileName):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-    sys.stdout.write('<?xml version="1.0" ?>\n')
-    rootObj.export(sys.stdout, 0, name_=rootTag, 
-        namespacedef_='')
+##     sys.stdout.write('<?xml version="1.0" ?>\n')
+##     rootObj.export(sys.stdout, 0, name_=rootTag, 
+##         namespacedef_='')
     return rootObj
 
 
@@ -4247,9 +4255,9 @@ def parseString(inString):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-    sys.stdout.write('<?xml version="1.0" ?>\n')
-    rootObj.export(sys.stdout, 0, name_="module",
-        namespacedef_='')
+##     sys.stdout.write('<?xml version="1.0" ?>\n')
+##     rootObj.export(sys.stdout, 0, name_="module",
+##         namespacedef_='')
     return rootObj
 
 
@@ -4264,11 +4272,11 @@ def parseLiteral(inFileName):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-    sys.stdout.write('#from module_xml import *\n\n')
-    sys.stdout.write('import module_xml as model_\n\n')
-    sys.stdout.write('rootObj = model_.rootTag(\n')
-    rootObj.exportLiteral(sys.stdout, 0, name_=rootTag)
-    sys.stdout.write(')\n')
+##     sys.stdout.write('#from module_xml import *\n\n')
+##     sys.stdout.write('import module_xml as model_\n\n')
+##     sys.stdout.write('rootObj = model_.rootTag(\n')
+##     rootObj.exportLiteral(sys.stdout, 0, name_=rootTag)
+##     sys.stdout.write(')\n')
     return rootObj
 
 

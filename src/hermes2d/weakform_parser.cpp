@@ -38,74 +38,86 @@ ParserForm::ParserForm(FieldInfo *fieldInfo, CouplingInfo *couplingInfo) :
 
 ParserForm::~ParserForm()
 {
-    delete parser;
+    delete m_parser;
 }
 
 void ParserForm::initParserField(const std::string &expr)
 {
-    parser = m_fieldInfo->module()->expressionParser();
-    parser->SetExpr(expr);
+    m_parser = m_fieldInfo->module()->expressionParser();
+    m_parser->SetExpr(expr);
     initParser();
 }
 
 void ParserForm::initParserCoupling(const std::string &expr)
 {
-    parser = m_couplingInfo->coupling()->expressionParser();
-    parser->SetExpr(expr);
+    m_parser = m_couplingInfo->coupling()->expressionParser();
+    m_parser->SetExpr(expr);
     initParser();
 
     // coupling
     // FIXME: maxSourceFieldComponents not good
     for (int comp = 0; comp < maxSourceFieldComponents; comp++)
     {
-        parser->DefineVar("source" + QString().setNum(comp).toStdString(), &source[comp]);
-        parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelX().toLower().toStdString(), &sourcedx[comp]);
-        parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelY().toLower().toStdString(), &sourcedy[comp]);
+        m_parser->DefineVar("source" + QString().setNum(comp).toStdString(), &source[comp]);
+        m_parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelX().toLower().toStdString(), &sourcedx[comp]);
+        m_parser->DefineVar("source" + QString().setNum(comp).toStdString() + "d" + Util::problem()->config()->labelY().toLower().toStdString(), &sourcedy[comp]);
     }
 }
 
 void ParserForm::initParser()
 {
     // coordinates
-    parser->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-    parser->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+    m_parser->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+    m_parser->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
 
     // current solution
-    parser->DefineVar("uval", &puval);
-    parser->DefineVar("ud" + Util::problem()->config()->labelX().toLower().toStdString() , &pudx);
-    parser->DefineVar("ud" + Util::problem()->config()->labelY().toLower().toStdString(), &pudy);
+    m_parser->DefineVar("uval", &puval);
+    m_parser->DefineVar("ud" + Util::problem()->config()->labelX().toLower().toStdString() , &pudx);
+    m_parser->DefineVar("ud" + Util::problem()->config()->labelY().toLower().toStdString(), &pudy);
 
     // test function
-    parser->DefineVar("vval", &pvval);
-    parser->DefineVar("vd" + Util::problem()->config()->labelX().toLower().toStdString(), &pvdx);
-    parser->DefineVar("vd" + Util::problem()->config()->labelY().toLower().toStdString(), &pvdy);
+    m_parser->DefineVar("vval", &pvval);
+    m_parser->DefineVar("vd" + Util::problem()->config()->labelX().toLower().toStdString(), &pvdx);
+    m_parser->DefineVar("vd" + Util::problem()->config()->labelY().toLower().toStdString(), &pvdy);
 
     // previous solution
-    parser->DefineVar("upval", &pupval);
-    parser->DefineVar("upd" + Util::problem()->config()->labelX().toLower().toStdString(), &pupdx);
-    parser->DefineVar("upd" + Util::problem()->config()->labelY().toLower().toStdString(), &pupdy);
+    m_parser->DefineVar("upval", &pupval);
+    m_parser->DefineVar("upd" + Util::problem()->config()->labelX().toLower().toStdString(), &pupdx);
+    m_parser->DefineVar("upd" + Util::problem()->config()->labelY().toLower().toStdString(), &pupdy);
 
     // solution from previous time level
-    parser->DefineVar("uptval", &puptval);
-    parser->DefineVar("uptd" + Util::problem()->config()->labelX().toLower().toStdString(), &puptdx);
-    parser->DefineVar("uptd" + Util::problem()->config()->labelY().toLower().toStdString(), &puptdy);
+    m_parser->DefineVar("uptval", &puptval);
+    m_parser->DefineVar("uptd" + Util::problem()->config()->labelX().toLower().toStdString(), &puptdx);
+    m_parser->DefineVar("uptd" + Util::problem()->config()->labelY().toLower().toStdString(), &puptdy);
 
     // time step
-    parser->DefineVar("deltat", &pdeltat);
+    m_parser->DefineVar("deltat", &pdeltat);
 }
 
 void ParserForm::setMaterialToParser(Material *material)
-{
-    QList<Module::MaterialTypeVariable *> materials = material->getFieldInfo()->module()->materialTypeVariables();
+{  
+    QList<Module::MaterialTypeVariable *> materials = material->fieldInfo()->module()->materialTypeVariables();
     foreach (Module::MaterialTypeVariable *variable, materials)
     {
-        parserVariables[variable->shortname().toStdString()] = material->getValue(variable->id()).value(0.0); // TODO: nonlinear - value(value);
-        parserVariables["d" + variable->shortname().toStdString()] = material->getValue(variable->id()).derivative(0.0); // TODO: nonlinear - derivative(value);
+        if ((m_fieldInfo && ((m_fieldInfo->linearityType() == LinearityType_Linear) ||
+                             ((m_fieldInfo->linearityType() != LinearityType_Linear) && variable->expressionNonlinear().isEmpty())))
+                || m_couplingInfo)
+        {
+            // linear variable
+            m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
+            m_parserVariables["d" + variable->shortname().toStdString()] = 0.0;
+        }
+        else
+        {
+            // nonlinear variable
+            m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
+            m_parserVariables["d" + variable->shortname().toStdString()] = material->value(variable->id()).derivative(0.0);
+        }
     }
 
     // register value address
-    for (QMap<std::string, double>::iterator itv = parserVariables.begin(); itv != parserVariables.end(); ++itv)
-        parser->DefineVar(itv.key(), &itv.value());
+    for (QMap<std::string, double>::iterator itv = m_parserVariables.begin(); itv != m_parserVariables.end(); ++itv)
+        m_parser->DefineVar(itv.key(), &itv.value());
 }
 
 void ParserForm::setMaterialsToParser(QList<Material *> materials)
@@ -119,17 +131,89 @@ void ParserForm::setBoundaryToParser(Boundary * boundary)
     // TODO: zkontrolovat volani value, proc u boundary neni derivace, ...
     Module::BoundaryType *boundaryType = m_fieldInfo->module()->boundaryType(boundary->getType());
     foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
-        parserVariables[variable->shortname().toStdString()] = boundary->getValue(variable->id()).value(0.0); // TODO: nonlinear - value(value);
+        // linear variable
+        m_parserVariables[variable->shortname().toStdString()] = boundary->value(variable->id()).number();
 
     // register value address
-    for (QMap<std::string, double>::iterator itv = parserVariables.begin(); itv != parserVariables.end(); ++itv)
-        parser->DefineVar(itv.key(), &itv.value());
+    for (QMap<std::string, double>::iterator itv = m_parserVariables.begin(); itv != m_parserVariables.end(); ++itv)
+        m_parser->DefineVar(itv.key(), &itv.value());
 }
 
 void ParserForm::setBoundariesToParser(QList<Boundary *> boundaries)
 {
     foreach (Boundary *boundary, boundaries)
         setBoundaryToParser(boundary);
+}
+
+void ParserForm::setNonlinearParsers()
+{
+    if (m_fieldInfo && (m_fieldInfo->linearityType() != LinearityType_Linear))
+    {
+        // value and derivatives
+        pnlvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
+        pnldx = new double[m_fieldInfo->module()->numberOfSolutions()];
+        pnldy = new double[m_fieldInfo->module()->numberOfSolutions()];
+
+        foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
+        {
+            if (!variable->expressionNonlinear().isEmpty())
+            {
+                mu::Parser *parser = m_fieldInfo->module()->expressionParser();
+                parser->SetExpr(variable->expressionNonlinear().toStdString());
+
+                parser->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &pnlx);
+                parser->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &pnly);
+
+                for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                {
+                    std::stringstream number;
+                    number << (k+1);
+
+                    parser->DefineVar("value" + number.str(), &pnlvalue[k]);
+                    parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pnldx[k]);
+                    parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pnldy[k]);
+                }
+
+                m_parsersNonlinear[variable] = parser;
+            }
+        }
+    }
+}
+
+void ParserForm::setNonlinearMaterial(Material *material, int offset, int index, double *x, double *y, Hermes::Hermes2D::Func<double> *u_ext[]) const
+{
+    if (m_fieldInfo && m_fieldInfo->linearityType() != LinearityType_Linear)
+    {
+        pnlx = x[index];
+        pnly = y[index];
+
+        for (int i = 0; i < m_fieldInfo->module()->numberOfSolutions(); i++)
+        {
+            // pnlvalue[i] = u_ext[offset + i]->val[index];
+            // pnldx[i] = u_ext[offset + i]->dx[index];
+            // pnldy[i] = u_ext[offset + i]->dy[index];
+            pnlvalue[i] = u_ext[i]->val[index];
+            pnldx[i] = u_ext[i]->dx[index];
+            pnldy[i] = u_ext[i]->dy[index];
+        }
+
+        foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
+        {
+            if (!variable->expressionNonlinear().isEmpty())
+            {
+                try
+                {
+                    double nonlinValue = m_parsersNonlinear[variable]->Eval();
+                    m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(nonlinValue);
+                    m_parserVariables["d" + variable->shortname().toStdString()] = material->value(variable->id()).derivative(nonlinValue);
+                }
+                catch (mu::Parser::exception_type &e)
+                {
+                    std::cout << "Nonlinear value '" << variable->id().toStdString() << "'): " << e.GetMsg() << std::endl;
+                }
+            }
+        }
+    }
 }
 
 // **********************************************************************************************
@@ -143,11 +227,6 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
                                                              CouplingInfo *couplingInfo,
                                                              Material *materialSource,
                                                              Material *materialTarget)
-//TODO kam vsude probubla material
-// ->fieldInfo z materialu se v Parser form pouziva k projiti vsech fieldInfo->module->material_type_variables popr. module->get_boundary_type
-// m_material .. pouzije se pro ziskani hodnot promennych
-// initParser -> set parser variables ... take hodnoty promennych
-
     : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), ParserForm(fieldInfo, couplingInfo),
       m_materialSource(materialSource), m_materialTarget(materialTarget)
 {
@@ -165,30 +244,8 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
     if (m_materialTarget)
         setMaterialToParser(m_materialTarget);
 
-    if(this->linearityType() == LinearityType_Linear)
-    {
-        pupval = 0;  // todo: ???
-        if(m_fieldInfo)
-        {
-            foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-            {
-                Value value = m_materialSource->getValue(variable->id());
-
-                // table
-                if (value.table->size() > 0)
-                {
-                    parserVariables[variable->shortname().toStdString()] = value.value(pupval);
-                    parserVariables["d" + variable->shortname().toStdString()] = value.derivative(pupval);
-                }
-
-                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-                // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-                // if (variable->shortname == "mur")
-                //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
-            }
-        }
-    }
+    // nonlinear parsers
+    setNonlinearParsers();
 }
 
 template <typename Scalar>
@@ -212,33 +269,16 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        pupval = u_ext[this->i]->val[i];
-        pupdx = u_ext[this->i]->dx[i];
-        pupdy = u_ext[this->i]->dy[i];
-
         // previous solution
-        if (this->linearityType() != LinearityType_Linear)
+        // TODO: linear solver
+        // if (this->linearityType() != LinearityType_Linear)
+        if (true)
         {
-            if(m_fieldInfo)
-            {
-                foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-                {
-                    Value value = m_materialSource->getValue(variable->id());
+            pupval = u_ext[this->i]->val[i];
+            pupdx = u_ext[this->i]->dx[i];
+            pupdy = u_ext[this->i]->dy[i];
 
-                    // table
-                    if (value.table->size() > 0)
-                    {
-                        parserVariables[variable->shortname().toStdString()] = value.value(pupval);
-                        parserVariables["d" + variable->shortname().toStdString()] = value.derivative(pupval);
-                    }
-
-                    // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-                    // parser->parser_variables["d" + variable->shortname] = m_material->get_value(variable->id).derivative(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-                    // if (variable->shortname == "mur")
-                    //     qDebug() << 1.0/parser->parser_variables[variable->shortname]/(4*M_PI*1e-7);
-                }
-            }
+            setNonlinearMaterial(m_materialSource, this->i, i, e->x, e->y, u_ext);
         }
         else
         {
@@ -247,7 +287,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
             pupdy = 0.0;
         }
 
-        if(! m_materialTarget)
+        if (!m_materialTarget)
         {
             if (m_fieldInfo && (m_fieldInfo->analysisType() == AnalysisType_Transient))
             {
@@ -259,11 +299,11 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
         try
         {
-            result += wt[i] * parser->Eval();
+            result += wt[i] * m_parser->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
-            std::cout << "CustomParserMatrixFormVol: " << parser->GetExpr() << " - " << e.GetMsg() << std::endl;
+            std::cout << "CustomParserMatrixFormVol: " << m_parser->GetExpr() << " - " << e.GetMsg() << std::endl;
         }
     }
 
@@ -286,7 +326,7 @@ Hermes::Ord CustomParserMatrixFormVol<Scalar>::ord(int n, double *wt, Hermes::He
 template <typename Scalar>
 CustomParserMatrixFormVol<Scalar>* CustomParserMatrixFormVol<Scalar>::clone()
 {
-    return new CustomParserMatrixFormVol(this->i, this->j, this->areas[0], (Hermes::Hermes2D::SymFlag) this->sym, parser->GetExpr(),
+    return new CustomParserMatrixFormVol(this->i, this->j, this->areas[0], (Hermes::Hermes2D::SymFlag) this->sym, m_parser->GetExpr(),
                                          this->m_fieldInfo, this->m_couplingInfo, this->m_materialSource, this->m_materialTarget);
 }
 
@@ -329,28 +369,8 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
     if (m_materialTarget)
         setMaterialToParser(m_materialTarget);
 
-    if(this->linearityType() == LinearityType_Linear)
-    {
-        pupval = 0;  // todo: ???
-        if(m_fieldInfo)
-        {
-            foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-            {
-                Value value = m_materialSource->getValue(variable->id());
-
-                // table
-                if (value.table->size() > 0)
-                {
-                    parserVariables[variable->shortname().toStdString()] = m_materialSource->getValue(variable->id()).value(pupval);
-                }
-
-                // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-                // if (variable->shortname == "epsr")
-                //     qDebug() << parser->parser_variables[variable->shortname];
-            }
-        }
-    }
+    // nonlinear parsers
+    setNonlinearParsers();
 }
 
 template <typename Scalar>
@@ -370,30 +390,15 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        pupval = u_ext[this->j]->val[i];
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
-
-        if (this->linearityType() != LinearityType_Linear)
+        // TODO: linear solver
+        // if (this->linearityType() != LinearityType_Linear)
+        if (true)
         {
-            if (m_fieldInfo)
-            {
-                foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-                {
-                    Value value = m_materialSource->getValue(variable->id());
+            pupval = u_ext[this->j]->val[i];
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
 
-                    // table
-                    if (value.table->size() > 0)
-                    {
-                        parserVariables[variable->shortname().toStdString()] = m_materialSource->getValue(variable->id()).value(pupval);
-                    }
-
-                    // parser->parser_variables[variable->shortname] = m_material->get_value(variable->id).value(sqrt(pupdx*pupdx + pupdy*pupdy));
-
-                    // if (variable->shortname == "epsr")
-                    //     qDebug() << parser->parser_variables[variable->shortname];
-                }
-            }
+            setNonlinearMaterial(m_materialSource, this->j, i, e->x, e->y, u_ext);
         }
 
         if (m_materialTarget)
@@ -421,11 +426,11 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
         try
         {
-            result += wt[i] * parser->Eval();
+            result += wt[i] * m_parser->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
-            std::cout << "CustomParserVectorFormVol: " << parser->GetExpr() << " - " << e.GetMsg() << std::endl;
+            std::cout << "CustomParserVectorFormVol: " << m_parser->GetExpr() << " - " << e.GetMsg() << std::endl;
         }
     }
 
@@ -449,7 +454,7 @@ Hermes::Ord CustomParserVectorFormVol<Scalar>::ord(int n, double *wt, Hermes::He
 template <typename Scalar>
 CustomParserVectorFormVol<Scalar>* CustomParserVectorFormVol<Scalar>::clone()
 {
-    return new CustomParserVectorFormVol(this->i, this->j, this->areas[0], parser->GetExpr(),
+    return new CustomParserVectorFormVol(this->i, this->j, this->areas[0], m_parser->GetExpr(),
                                          this->m_fieldInfo, this->m_couplingInfo, this->m_materialSource, this->m_materialTarget);
 }
 
@@ -466,8 +471,6 @@ LinearityType CustomParserVectorFormVol<Scalar>::linearityType() const
     return linearityType;
 }
 
-
-
 // **********************************************************************************************
 
 template <typename Scalar>
@@ -477,14 +480,14 @@ CustomParserMatrixFormSurf<Scalar>::CustomParserMatrixFormSurf(unsigned int i, u
     : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), ParserForm(), m_boundary(boundary)
 {
     // TODO: not good
-    m_fieldInfo = boundary->getFieldInfo();
+    m_fieldInfo = boundary->fieldInfo();
 
     // parser
     initParserField(expression);
     // set boundary to the parser
     setBoundaryToParser(boundary);
 
-    parser->SetExpr(expression);
+    m_parser->SetExpr(expression);
 }
 
 template <typename Scalar>
@@ -516,27 +519,28 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdy = v->dy[i];
 
         // todo: now we use only Newton solver
-        // previous solution
-        //        if (m_fieldInfo->linearityType != LinearityType_Linear)
-        //        {
-        pupval = u_ext[this->j]->val[i];
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
-        //        }
-        //        else
-        //        {
-        //            pupval = 0.0;
-        //            pupdx = 0.0;
-        //            pupdy = 0.0;
-        //        }
+        // if (m_fieldInfo->linearityType != LinearityType_Linear)
+        // TODO: now we use only Newton solver
+        if (true)
+        {
+            pupval = u_ext[this->j]->val[i];
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
+        else
+        {
+            pupval = 0.0;
+            pupdx = 0.0;
+            pupdy = 0.0;
+        }
 
         try
         {
-            result += wt[i] * parser->Eval();
+            result += wt[i] * m_parser->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
-            std::cout << "CustomParserMatrixFormSurf: " << parser->GetExpr() << " - " << e.GetMsg() << std::endl;
+            std::cout << "CustomParserMatrixFormSurf: " << m_parser->GetExpr() << " - " << e.GetMsg() << std::endl;
         }
     }
 
@@ -559,7 +563,7 @@ Hermes::Ord CustomParserMatrixFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
 template <typename Scalar>
 CustomParserMatrixFormSurf<Scalar>* CustomParserMatrixFormSurf<Scalar>::clone()
 {
-    return new CustomParserMatrixFormSurf(this->i, this->j, this->areas[0], parser->GetExpr(),
+    return new CustomParserMatrixFormSurf(this->i, this->j, this->areas[0], m_parser->GetExpr(),
                                           this->m_boundary);
 }
 
@@ -570,14 +574,14 @@ CustomParserVectorFormSurf<Scalar>::CustomParserVectorFormSurf(unsigned int i, u
     : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), j(j), ParserForm(), m_boundary(boundary)
 {
     // TODO: not good
-    m_fieldInfo = boundary->getFieldInfo();
+    m_fieldInfo = boundary->fieldInfo();
 
     // parser
     initParserField(expression);
     // set boundary to the parser
     setBoundaryToParser(boundary);
 
-    parser->SetExpr(expression);
+    m_parser->SetExpr(expression);
 }
 
 template <typename Scalar>
@@ -597,28 +601,30 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        // todo: now we use only Newton solver
-        //        // previous solution
-        //        if (m_fieldInfo->linearityType != LinearityType_Linear)
-        //        {
-        pupval = u_ext[this->j]->val[i];
-        pupdx = u_ext[this->j]->dx[i];
-        pupdy = u_ext[this->j]->dy[i];
-        //        }
-        //        else
-        //        {
-        //            pupval = 0.0;
-        //            pupdx = 0.0;
-        //            pupdy = 0.0;
-        //        }
+
+        // previous solution
+        // if (m_fieldInfo->linearityType != LinearityType_Linear)
+        // TODO: now we use only Newton solver
+        if (true)
+        {
+            pupval = u_ext[this->j]->val[i];
+            pupdx = u_ext[this->j]->dx[i];
+            pupdy = u_ext[this->j]->dy[i];
+        }
+        else
+        {
+            pupval = 0.0;
+            pupdx = 0.0;
+            pupdy = 0.0;
+        }
 
         try
         {
-            result += wt[i] * parser->Eval();
+            result += wt[i] * m_parser->Eval();
         }
         catch (mu::Parser::exception_type &e)
         {
-            std::cout << "CustomParserVectorFormSurf: " << parser->GetExpr() << " - " << e.GetMsg() << std::endl;
+            std::cout << "CustomParserVectorFormSurf: " << m_parser->GetExpr() << " - " << e.GetMsg() << std::endl;
         }
     }
 
@@ -641,7 +647,7 @@ Hermes::Ord CustomParserVectorFormSurf<Scalar>::ord(int n, double *wt, Hermes::H
 template <typename Scalar>
 CustomParserVectorFormSurf<Scalar>* CustomParserVectorFormSurf<Scalar>::clone()
 {
-    return new CustomParserVectorFormSurf(this->i, this->j, this->areas[0], parser->GetExpr(),
+    return new CustomParserVectorFormSurf(this->i, this->j, this->areas[0], m_parser->GetExpr(),
                                           this->m_boundary);
 }
 
@@ -652,14 +658,14 @@ CustomExactSolution<Scalar>::CustomExactSolution(Hermes::Hermes2D::Mesh *mesh, s
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh)
 {
     // TODO: not good
-    m_fieldInfo = boundary->getFieldInfo();
+    m_fieldInfo = boundary->fieldInfo();
 
     // parser
     initParserField(expression);
     // set boundary to the parser
     setBoundaryToParser(boundary);
 
-    parser->SetExpr(expression);
+    m_parser->SetExpr(expression);
 }
 
 template <typename Scalar>
@@ -672,11 +678,11 @@ Scalar CustomExactSolution<Scalar>::value(double x, double y) const
 
     try
     {
-        result = parser->Eval();
+        result = m_parser->Eval();
     }
     catch (mu::Parser::exception_type &e)
     {
-        std::cout << "CustomExactSolution: " << parser->GetExpr() << " - " << e.GetMsg() << std::endl;
+        std::cout << "CustomExactSolution: " << m_parser->GetExpr() << " - " << e.GetMsg() << std::endl;
     }
 
     return result;

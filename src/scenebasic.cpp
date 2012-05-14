@@ -45,26 +45,26 @@ QVariant SceneBasic::variant()
 // *************************************************************************************************************************************
 
 template <typename MarkerType>
-MarkerType* MarkedSceneBasic<MarkerType>::getMarker(FieldInfo* field)
+MarkerType* MarkedSceneBasic<MarkerType>::marker(FieldInfo* field)
 {
-    assert(markers.contains(field));
-    MarkerType* marker = markers[field];
+    assert(m_markers.contains(field));
+    MarkerType* marker = m_markers[field];
     assert(marker);
 
     return marker;
 }
 
 template <typename MarkerType>
-MarkerType* MarkedSceneBasic<MarkerType>::getMarker(QString fieldId)
+MarkerType* MarkedSceneBasic<MarkerType>::marker(QString fieldId)
 {
-    getMarker(Util::problem()->fieldInfo(fieldId));
+    marker(Util::problem()->fieldInfo(fieldId));
 }
 
 
 template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::addMarker(MarkerType* marker)
 {
-    markers[marker->getFieldInfo()] = marker;
+    m_markers[marker->fieldInfo()] = marker;
 }
 
 template <typename MarkerType>
@@ -72,8 +72,8 @@ int MarkedSceneBasic<MarkerType>::markersCount()
 {
     int count = 0;
 
-    foreach (MarkerType* marker, markers)
-        if (marker != MarkerContainer<MarkerType>::getNone(marker->getFieldInfo()))
+    foreach (MarkerType* marker, m_markers)
+        if (marker != MarkerContainer<MarkerType>::getNone(marker->fieldInfo()))
             count++;
 
     return count;
@@ -82,7 +82,7 @@ int MarkedSceneBasic<MarkerType>::markersCount()
 template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>* list)
 {
-    foreach (MarkerType* marker, markers)
+    foreach (MarkerType* marker, m_markers)
         if(!list->contains(marker))
             list->add(marker);
 }
@@ -96,7 +96,7 @@ void MarkedSceneBasic<MarkerType>::removeMarker(QString field)
 template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::doFieldsChanged()
 {
-    foreach (MarkerType* marker, markers)
+    foreach (MarkerType* marker, m_markers)
     {
         if(! Util::problem()->fieldInfos().contains(marker->fieldId()))
             removeMarker(marker);
@@ -104,12 +104,12 @@ void MarkedSceneBasic<MarkerType>::doFieldsChanged()
 
     foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
     {
-        if(! markers.contains(fieldInfo)){
+        if(! m_markers.contains(fieldInfo)){
             if(typeid(MarkerType) == typeid(SceneBoundary))
-                markers[fieldInfo] = (MarkerType*)Util::scene()->boundaries->getNone(fieldInfo);
+                m_markers[fieldInfo] = (MarkerType*)Util::scene()->boundaries->getNone(fieldInfo);
 
             else if (typeid(MarkerType) == typeid(SceneMaterial))
-                markers[fieldInfo] = (MarkerType*)Util::scene()->materials->getNone(fieldInfo);
+                m_markers[fieldInfo] = (MarkerType*)Util::scene()->materials->getNone(fieldInfo);
 
             else
                 assert(0);

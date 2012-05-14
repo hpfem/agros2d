@@ -68,7 +68,7 @@ QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
 
                 assert(marker >= 0);
 
-                if (Util::scene()->edges->at(marker)->getMarker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
+                if (Util::scene()->edges->at(marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
                     boundaries.insert(marker);
             }
         }
@@ -115,7 +115,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         int index = 0;
         foreach(SceneEdge* edge, Util::scene()->edges->items())
         {
-            SceneBoundary *boundary = edge->getMarker(fieldInfo);
+            SceneBoundary *boundary = edge->marker(fieldInfo);
 
             if (boundary && (!boundary->isNone()))
             {
@@ -169,7 +169,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
             int j = 0;
             // set order by element
             foreach(SceneLabel* label, Util::scene()->labels->items()){
-                if (!label->getMarker(fieldInfo)->isNone())
+                if (!label->marker(fieldInfo)->isNone())
                 {
                     // TODO: set order in space
                     /*

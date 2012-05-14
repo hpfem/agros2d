@@ -329,48 +329,43 @@
 
                                         <!-- RF field -->
                                         <xsl:if test="@type='rf_electric_field'">
-                                            <xsl:attribute name="type">
-                                                <xsl:value-of select="@type"/>
-                                            </xsl:attribute>
-                                            <xsl:attribute name="rf_electric_field_real">
+                                            <xsl:attribute name="type">rf_electric_field</xsl:attribute>
+                                            <xsl:attribute name="rf_te_electric_field_real">
                                                 <xsl:value-of select="@value_real"/>
                                             </xsl:attribute>
-                                            <xsl:attribute name="rf_electric_field_imag">
+                                            <xsl:attribute name="rf_te_electric_field_imag">
                                                 <xsl:value-of select="@value_imag"/>
                                             </xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='rf_magnetic_field'">
-                                            <xsl:attribute name="type">
-                                                <xsl:value-of select="@type"/>
-                                            </xsl:attribute>
-                                            <xsl:attribute name="rf_magnetic_field_real">
+                                            <xsl:attribute name="type">rf_te_magnetic_field</xsl:attribute>
+                                            <xsl:attribute name="rf_te_magnetic_field_real">
                                                 <xsl:value-of select="@value_real"/>
                                             </xsl:attribute>
-                                            <xsl:attribute name="rf_magnetic_field_imag">
+                                            <xsl:attribute name="rf_te_magnetic_field_imag">
                                                 <xsl:value-of select="@value_imag"/>
                                             </xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='rf_surface_current'">
-                                            <xsl:attribute name="type">
-                                                <xsl:value-of select="@type"/>
-                                            </xsl:attribute>
-                                            <xsl:attribute name="rf_surface_current_real">
+                                            <xsl:attribute name="type">rf_te_surface_current</xsl:attribute>
+                                            <xsl:attribute name="rf_te_surface_current_real">
                                                 <xsl:value-of select="@value_real"/>
                                             </xsl:attribute>
-                                            <xsl:attribute name="rf_surface_current_imag">
+                                            <xsl:attribute name="rf_te_surface_current_imag">
                                                 <xsl:value-of select="@value_imag"/>
                                             </xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='rf_port'">
-                                            <xsl:attribute name="type">
-                                                <xsl:value-of select="@type"/>
-                                            </xsl:attribute>
-                                            <xsl:attribute name="rf_port_power">
+                                            <xsl:attribute name="type">rf_te_port</xsl:attribute>
+                                            <xsl:attribute name="rf_te_port_power">
                                                 <xsl:value-of select="@value_real"/>
                                             </xsl:attribute>
-                                            <xsl:attribute name="rf_port_phase">
+                                            <xsl:attribute name="rf_te_port_phase">
                                                 <xsl:value-of select="@value_imag"/>
                                             </xsl:attribute>
+                                        </xsl:if>
+                                        <xsl:if test="@type='rf_matched_boundary'">
+                                            <xsl:attribute name="type">rf_te_matched_boundary</xsl:attribute>
                                         </xsl:if>
 
                                         <!-- Elasticity -->
@@ -465,7 +460,8 @@
                                                 </xsl:element>
                                             </xsl:if>
                                         </xsl:for-each>
-                                    </xsl:element>
+                                    </xsl:element>rf_matched_boundary
+
                                 </xsl:for-each>
                             </xsl:when>
                             <xsl:otherwise>
@@ -493,7 +489,7 @@
                                             </xsl:if>
                                             <xsl:if test="@velocity_x">
                                                 <xsl:attribute name="magnetic_velocity_x">
-                                                    <xsl:value-of select="@velocity_x"/>
+                                                    <xsl:value-of select="@velocity_x"/>label
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@velocity_y">
@@ -587,27 +583,27 @@
                                         <!-- RF field -->
                                         <xsl:if test="$physical_field='rf'">
                                             <xsl:if test="@permittivity">
-                                                <xsl:attribute name="rf_permittivity">
+                                                <xsl:attribute name="rf_te_permittivity">
                                                     <xsl:value-of select="@permittivity"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@permeability">
-                                                <xsl:attribute name="rf_permeability">
+                                                <xsl:attribute name="rf_te_permeability">
                                                     <xsl:value-of select="@permittivity"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@conductivity">
-                                                <xsl:attribute name="rf_conductivity">
+                                                <xsl:attribute name="rf_te_conductivity">
                                                     <xsl:value-of select="@conductivity"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@current_density_real">
-                                                <xsl:attribute name="rf_current_density_external_real">
+                                                <xsl:attribute name="rf_te_current_density_external_real">
                                                     <xsl:value-of select="@current_density_real"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@current_density_imag">
-                                                <xsl:attribute name="rf_current_density_external_imag">
+                                                <xsl:attribute name="rf_te_current_density_external_imag">
                                                     <xsl:value-of select="@current_density_imag"/>
                                                 </xsl:attribute>
                                             </xsl:if>

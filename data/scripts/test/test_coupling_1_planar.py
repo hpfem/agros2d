@@ -9,6 +9,7 @@ problem.matrix_solver = "umfpack"
 # fields
 current = agros2d.field("current")
 current.analysis_type = "steadystate"
+current.weak_forms = "interpreted"
 current.number_of_refinements = 1
 current.polynomial_order = 3
 current.linearity_type = "linear"
@@ -22,6 +23,7 @@ current.add_material("Aluminium", {"current_conductivity" : 33e6})
 
 elasticity = agros2d.field("elasticity")
 elasticity.analysis_type = "steadystate"
+elasticity.weak_forms = "interpreted"
 elasticity.number_of_refinements = 1
 elasticity.polynomial_order = 3
 elasticity.linearity_type = "linear"
@@ -34,6 +36,7 @@ elasticity.add_material("Aluminium", {"elasticity_alpha" : 23e-6, "elasticity_fo
 
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
+heat.weak_forms = "interpreted"
 heat.number_of_refinements = 1
 heat.polynomial_order = 3
 heat.linearity_type = "linear"

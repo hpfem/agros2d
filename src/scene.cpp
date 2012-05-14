@@ -364,7 +364,7 @@ void Scene::removeEdge(SceneEdge *edge)
     edge->nodeStart()->connectedEdges().removeOne(edge);
     edge->nodeEnd()->connectedEdges().removeOne(edge);
 
-    emit invalidated();    
+    emit invalidated();
 }
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
@@ -1235,12 +1235,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     }
 
     // validation
+    /*
     ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
     if (error.isError())
     {
         //qDebug() << error.message();
         return error;
     }
+    */
 
     // geometry ***************************************************************************************************************
 
@@ -1307,8 +1309,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Util::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
 
     // transient
-    Util::problem()->config()->setTimeStep(Value(eleProblemInfo.toElement().attribute("time_step", "1")));
-    Util::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1")));
+    Util::problem()->config()->setTimeStep(Value(eleProblemInfo.toElement().attribute("time_step", "1.0")));
+    Util::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
 
     // matrix solver
     Util::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
@@ -1342,7 +1344,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                                                         analysisTypeToStringKey(AnalysisType_SteadyState))));
 
         // initial condition
-        field->initialCondition().setText(eleField.toElement().attribute("initial_condition", "0"));
+        field->initialCondition().setText(eleField.toElement().attribute("initial_condition", "0.0"));
 
         // weakforms
         field->setWeakFormsType(weakFormsTypeFromStringKey(eleField.toElement().attribute("weak_forms",
@@ -1386,7 +1388,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             Module::BoundaryType *boundary_type = field->module()->boundaryType(type);
             foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables())
                 boundary->setValue(variable->id(),
-                                   Value(element.toElement().attribute(variable->id(), "0")));
+                                   Value(field, element.toElement().attribute(variable->id(), "0")));
 
             Util::scene()->addBoundary(boundary);
 
@@ -1423,8 +1425,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             foreach (Module::MaterialTypeVariable *variable, field->module()->materialTypeVariables())
             {
                 material->setValue(variable->id(),
-                                   Value(element.toElement().attribute(variable->id(),
-                                                                       QString::number(variable->defaultValue()))));
+                                   Value(field, element.toElement().attribute(variable->id(),
+                                                                              QString::number(variable->defaultValue()))));
             }
 
             // add material

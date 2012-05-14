@@ -26,37 +26,37 @@
 #include "hermes2d/problem.h"
 
 Marker::Marker(FieldInfo *fieldInfo, QString name)
-    : fieldInfo(fieldInfo), name(name)
+    : m_fieldInfo(fieldInfo), name(name)
 {
     m_isNone = false;
 }
 
 Marker::~Marker()
 {
-    values.clear();
+    m_values.clear();
 }
 
-Value Marker::getValue(QString id)
+Value Marker::value(QString id)
 {
     if (!id.isEmpty())
-        return values[id];
+        return m_values[id];
 
     return Value();
 }
 
 const QMap<QString, Value> Marker::getValues() const
 {
-    return values;
+    return m_values;
 }
 
 void Marker::evaluate(QString id, double time)
 {
-    values[id].evaluate(time);
+    m_values[id].evaluate(time);
 }
 
 bool Marker::evaluateAllVariables()
 {
-    foreach (Value value, values)
+    foreach (Value value, m_values)
         if (!value.evaluate())
             return false;
 
@@ -65,7 +65,7 @@ bool Marker::evaluateAllVariables()
 
 QString Marker::fieldId()
 {
-    return fieldInfo->fieldId();
+    return m_fieldInfo->fieldId();
 }
 
 Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
@@ -73,16 +73,16 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
 {
     // name and type
     setType(type);
-    this->values = values;
+    this->m_values = values;
 
     // set values
     if (name != "none")
     {
-        if (this->values.size() == 0)
+        if (this->m_values.size() == 0)
         {
             Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(type);
             foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
-                this->values[variable->id()] = Value(QString::number(variable->defaultValue()));
+                this->m_values[variable->id()] = Value(QString::number(variable->defaultValue()));
         }
     }
 }
@@ -91,15 +91,15 @@ Material::Material(FieldInfo *fieldInfo, QString name,
                    QMap<QString, Value> values) : Marker(fieldInfo, name)
 {
     // name and type
-    this->values = values;
+    this->m_values = values;
 
     // set values
     if (name != "none")
     {
-        if (this->values.size() == 0)
+        if (this->m_values.size() == 0)
         {
             foreach (Module::MaterialTypeVariable *variable, fieldInfo->module()->materialTypeVariables())
-                this->values[variable->id()] = Value(QString::number(variable->defaultValue()));
+                this->m_values[variable->id()] = Value(QString::number(variable->defaultValue()));
         }
     }
 }

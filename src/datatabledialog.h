@@ -31,27 +31,40 @@ class DataTableDialog: public QDialog
     Q_OBJECT
 
 public:
-    DataTableDialog(QWidget *parent = 0);
+    DataTableDialog(QWidget *parent = 0, const QString &labelX = "x", const QString &labelY = "y");
     ~DataTableDialog();
 
     DataTable *table();
     void setTable(const DataTable *table);
 
 private:
+    // captions
+    QString m_labelX;
+    QString m_labelY;
+
+    // charts
     DataTable *m_table;
     Chart *chartValue;
-    QwtPlotCurve *chartValueCurveDots;
+    QwtPlotCurve *chartValueCurveMarkers;
     Chart *chartDerivative;
-    QwtPlotCurve *chartDerivativeCurveDots;
+    QwtPlotCurve *chartDerivativeCurveMarkers;
 
+    // values
     QPlainTextEdit *lstX;
     QPlainTextEdit *lstY;
 
+    // info
+    QLabel *lblLabelX;
+    QLabel *lblLabelY;
     QLabel *lblInfoX;
     QLabel *lblInfoY;
     QLabel *lblInfoError;
+    QwtPlotPicker *pickerValue;
+    QwtPlotPicker *pickerDerivative;
 
     QCheckBox *chkInterpolation;
+    QCheckBox *chkDerivative;
+    QCheckBox *chkMarkers;
 
     QPushButton *btnOk;
     QPushButton *btnClose;
@@ -63,13 +76,22 @@ private:
 
     bool parseTable(bool addToTable = true);
 
+    void highlightCurrentLine(QPlainTextEdit *lst);
+    void gotoLine(QPlainTextEdit *lst, int lineNumber);
+
 private slots:
     void doAccept();
     void doReject();
 
-    void doTextChanged();
+    void textChanged();
+    void highlightCurrentLineX();
+    void highlightCurrentLineY();
+    void doPickerValueMoved(const QPoint &pos);
+    void doPickerDerivativeMoved(const QPoint &pos);
     void doPlot();
+    void doShowDerivativeClicked();
     void doMaterialBrowser();
 };
 
 #endif // DATATABLEDIALOG_H
+

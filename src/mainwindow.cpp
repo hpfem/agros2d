@@ -43,7 +43,6 @@
 #include "collaboration.h"
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
-#include "datatabledialog.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
@@ -194,9 +193,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QString fileName = args[i];
         open(fileName);
     }
-
-    // DataTableDialog *dataTableDialog = new DataTableDialog(this);
-    // dataTableDialog->show();
 
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
@@ -352,7 +348,7 @@ void MainWindow::createActions()
     actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
-    actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh"), this);
+    actCreateMesh = new QAction(icon("scene-meshgen"), tr("&Mesh area"), this);
     actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
     actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));

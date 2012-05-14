@@ -17,15 +17,15 @@
 	</module:constants>
 
 	<module:volume>
-		<module:quantity id="heat_conductivity" shortname="he_lambda" />
-		<module:quantity id="heat_volume_heat" shortname="he_p" />
-		<module:quantity id="heat_density" shortname="he_rho" />
-		<module:quantity id="heat_specific_heat" shortname="he_cp" />
+        <module:quantity id="heat_conductivity" shortname="he_lambda" />
+        <module:quantity id="heat_volume_heat" shortname="he_p" />
+        <module:quantity id="heat_density" shortname="he_rho" />
+        <module:quantity id="heat_specific_heat" shortname="he_cp" />
 
 		<module:weakforms_volume>
 			<module:weakform_volume analysistype="steadystate">
-				<module:quantity id="heat_conductivity" />
-				<module:quantity id="heat_volume_heat" />
+                <module:quantity id="heat_conductivity" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+                <module:quantity id="heat_volume_heat" dependence="time" />
 
 				<module:matrix_form i="1" j="1"
 					planar="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)"
@@ -37,10 +37,10 @@
 			</module:weakform_volume>
 
 			<module:weakform_volume analysistype="transient">
-				<module:quantity id="heat_conductivity" />
+                <module:quantity id="heat_conductivity" nonlinearity_planar="value1" nonlinearity_axi="value1" />
 				<module:quantity id="heat_volume_heat" />
-				<module:quantity id="heat_density" />
-				<module:quantity id="heat_specific_heat" />
+                <module:quantity id="heat_density" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+                <module:quantity id="heat_specific_heat" nonlinearity_planar="value1" nonlinearity_axi="value1" />
 
 				<module:matrix_form i="1" j="1"
 					planar="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + dhe_lambda * uval * upval * vval / deltat + he_rho * he_cp * uval * vval / deltat"
@@ -121,13 +121,14 @@
 	<module:preprocessor>
 		<module:gui type="volume">
 			<module:group>
-				<module:quantity id="heat_conductivity" nonlin="1"
+                <module:quantity id="heat_conductivity"
 					name="Thermal conductivity" default="385" condition="value > 0"
 					shortname="lambda" shortname_html="&lt;i&gt;&amp;lambda;&lt;/i&gt;"
 					shortname_latex="\lambda" unit="W/m.K"
+                    shortname_dependence="T" shortname_dependence_html="&lt;i&gt;T&lt;/i&gt;"
 					unit_html="W.m&lt;sup&gt;-1&lt;/sup&gt;.K&lt;sup&gt;-1&lt;/sup&gt;"
 					unit_latex="W \cdot m^{-1} \cdot K^{-1}" />
-				<module:quantity id="heat_volume_heat" timedep="1"
+                <module:quantity id="heat_volume_heat"
 					name="Volume heat" condition="value >= 0" shortname="p"
 					shortname_html="&lt;i&gt;p&lt;/i&gt;" shortname_latex="p" unit="W/m3"
 					unit_html="W.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="W \cdot m^{-3}" />

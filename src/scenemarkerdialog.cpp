@@ -22,7 +22,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
-//#include "hermes2d/problem.h"
+#include "datatable.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneedge.h"
@@ -172,7 +172,7 @@ void SceneFieldWidget::createContent()
     // add custom widget
     addCustomWidget(layout);
 
-    QMapIterator<QString, QList<Module::DialogUI::DialogRow> > i(ui->groups());
+    QMapIterator<QString, QList<Module::DialogRow> > i(ui->groups());
     while (i.hasNext())
     {
         i.next();
@@ -181,27 +181,32 @@ void SceneFieldWidget::createContent()
         QGridLayout *layoutGroup = new QGridLayout();
 
         // variables
-        QList<Module::DialogUI::DialogRow> variables = i.value();
+        QList<Module::DialogRow> variables = i.value();
 
-        foreach (Module::DialogUI::DialogRow material, variables)
+        foreach (Module::DialogRow row, variables)
         {
-            // id
-            ids.append(material.id());
+            ValueLineEdit *textEdit = addValueEditWidget(row);
 
-            // label
-            labels.append(new QLabel(QString("%1 (%2):").
-                                     arg(material.shortnameHtml()).
-                                     arg(material.unitHtml())));
-            labels.at(labels.count() - 1)->setToolTip(material.name());
-            labels.at(labels.count() - 1)->setMinimumWidth(100);
+            if (textEdit)
+            {
+                // id
+                ids.append(row.id());
 
-            // text edit
-            values.append(new ValueLineEdit(this, material.timedep(), material.nonlin()));
-            values.at(values.count() - 1)->setValue(Value(QString::number(material.defaultValue())));
+                // label
+                labels.append(new QLabel(QString("%1 (%2):").
+                                         arg(row.shortnameHtml()).
+                                         arg(row.unitHtml())));
+                labels.at(labels.count() - 1)->setToolTip(row.name());
+                labels.at(labels.count() - 1)->setMinimumWidth(100);
 
-            int index = layoutGroup->rowCount();
-            layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
-            layoutGroup->addWidget(values.at(values.count() - 1), index, 1);
+                // text edit
+                values.append(textEdit);
+                values.at(values.count() - 1)->setValue(Value(QString::number(row.defaultValue())));
+
+                int index = layoutGroup->rowCount();
+                layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
+                layoutGroup->addWidget(values.at(values.count() - 1), index, 1);
+            }
         }
 
         // widget layout
@@ -229,10 +234,29 @@ SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMa
 {
 }
 
+ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::DialogRow &row)
+{
+    foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
+    {
+        if (variable->id() == row.id())
+        {
+            ValueLineEdit *edit = new ValueLineEdit(this, variable->isTimeDep(), variable->isNonlinear());
+            if (variable->isNonlinear())
+            {
+                edit->setLabelX(row.shortnameDependenceHtml());
+                edit->setLabelY(row.shortnameHtml());
+            }
+            return edit;
+        }
+    }
+
+    return NULL;
+}
+
 void SceneFieldWidgetMaterial::load()
 {
     for (int j = 0; j < ids.count(); j++)
-        values.at(j)->setValue(material->getValue(ids.at(j)));
+        values.at(j)->setValue(material->value(ids.at(j)));
 }
 
 bool SceneFieldWidgetMaterial::save()
@@ -250,8 +274,8 @@ void SceneFieldWidgetMaterial::refresh()
 {
     // read equation
     QString fileName = QString(":/equations/%1/%1_%2.png")
-            .arg(material->getFieldInfo()->fieldId())
-            .arg(analysisTypeToStringKey(material->getFieldInfo()->analysisType()));
+            .arg(material->fieldInfo()->fieldId())
+            .arg(analysisTypeToStringKey(material->fieldInfo()->analysisType()));
 
     readPixmap(equationImage, fileName);
 }
@@ -263,10 +287,19 @@ SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Module::DialogUI *ui, SceneBo
 {
 }
 
+ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::DialogRow &row)
+{
+    foreach (Module::BoundaryTypeVariable *variable, boundary->fieldInfo()->module()->boundaryTypeVariables())
+        if (variable->id() == row.id())
+            return new ValueLineEdit(this, false, false);
+
+    return new ValueLineEdit(this);
+}
+
 void SceneFieldWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
 {
     comboBox = new QComboBox(this);
-    boundary->getFieldInfo()->module()->fillComboBoxBoundaryCondition(comboBox);
+    boundary->fieldInfo()->module()->fillComboBoxBoundaryCondition(comboBox);
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     QFormLayout *layoutForm = new QFormLayout();
@@ -289,7 +322,7 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
 
-    Module::BoundaryType *boundary_type = boundary->getFieldInfo()->module()->boundaryType(comboBox->itemData(index).toString());
+    Module::BoundaryType *boundary_type = boundary->fieldInfo()->module()->boundaryType(comboBox->itemData(index).toString());
     foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables())
     {
         int i = ids.indexOf(variable->id());
@@ -300,7 +333,7 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
 
     // read equation
     QString fileName = QString(":/equations/%1/%2.png")
-            .arg(boundary->getFieldInfo()->fieldId())
+            .arg(boundary->fieldInfo()->fieldId())
             .arg(comboBox->itemData(index).toString());
 
     readPixmap(equationImage, fileName);
@@ -316,7 +349,7 @@ void SceneFieldWidgetBoundary::load()
 
     // load variables
     for (int i = 0; i < ids.count(); i++)
-        values.at(i)->setValue(boundary->getValue(ids.at(i)));
+        values.at(i)->setValue(boundary->value(ids.at(i)));
 }
 
 bool SceneFieldWidgetBoundary::save()
@@ -340,7 +373,7 @@ SceneBoundaryDialog::SceneBoundaryDialog(SceneBoundary *boundary, QWidget *paren
     : QDialog(parent), boundary(boundary)
 {
     setWindowIcon(icon("scene-edgemarker"));
-    setWindowTitle(tr("Boundary condition - %1").arg(boundary->getFieldInfo()->name()));
+    setWindowTitle(tr("Boundary condition - %1").arg(boundary->fieldInfo()->name()));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -374,7 +407,7 @@ void SceneBoundaryDialog::createDialog()
 
 void SceneBoundaryDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetBoundary(boundary->getFieldInfo()->module()->boundaryUI(), boundary, this);
+    fieldWidget = new SceneFieldWidgetBoundary(boundary->fieldInfo()->module()->boundaryUI(), boundary, this);
     fieldWidget->createContent();
     fieldWidget->setMinimumSize(sizeHint());
 
@@ -439,7 +472,7 @@ SceneMaterialDialog::SceneMaterialDialog(SceneMaterial *material, QWidget *paren
     : QDialog(parent), material(material)
 {
     setWindowIcon(icon("scene-labelmarker"));
-    setWindowTitle(tr("Material - %1").arg(material->getFieldInfo()->name()));
+    setWindowTitle(tr("Material - %1").arg(material->fieldInfo()->name()));
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
@@ -474,7 +507,7 @@ void SceneMaterialDialog::createDialog()
 
 void SceneMaterialDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetMaterial(material->getFieldInfo()->module()->materialUI(), material, this);
+    fieldWidget = new SceneFieldWidgetMaterial(material->fieldInfo()->module()->materialUI(), material, this);
     fieldWidget->createContent();
     fieldWidget->setMinimumSize(sizeHint());
 

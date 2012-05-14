@@ -46,19 +46,20 @@ public:
 
     void add(double key, double value, bool init = true);
     void add(double *keys, double *values, int count);
+    void add(vector<double> keys, vector<double> values);
     void get(double *keys, double *values, double *derivatives);
     DataTable *copy() const;
 
-    void init_spline();
+    void initSpline();
 
     inline DataTableRow *data() { return m_data; }
 
     int size();
 
-    double min_key();
-    double max_key();
-    double min_value();
-    double max_value();
+    double minKey();
+    double maxKey();
+    double minValue();
+    double maxValue();
 
     double value(double key);
     Hermes::Ord value(Hermes::Ord key);
@@ -66,14 +67,16 @@ public:
     double derivative(double key);
     Hermes::Ord derivative(Hermes::Ord key);
 
-    double value_spline(double key);
-    Hermes::Ord value_spline(Hermes::Ord key);
+    double valueSpline(double key);
+    Hermes::Ord valueSpline(Hermes::Ord key);
 
-    double derivative_spline(double key);
-    Hermes::Ord derivative_spline(Hermes::Ord key);
+    double derivativeSpline(double key);
+    Hermes::Ord derivativeSpline(Hermes::Ord key);
 
-    std::string to_string();
-    void from_string(const std::string &str);
+    std::string toString() const;
+    std::string toStringX() const;
+    std::string toStringY() const;
+    void fromString(const std::string &str);
 
     void print();
     void save(const char *filename, double start, double end, int count);

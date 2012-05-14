@@ -34,14 +34,15 @@ Q_DECLARE_METATYPE(SceneMaterial *)
 
 namespace Module
 {
-    class DialogUI;
+    struct DialogUI;
+    struct DialogRow;
 }
 
 class SceneBoundary : public Boundary
 {
 public:
-    SceneBoundary(FieldInfo *getFieldInfo, QString name = "", QString type = "",
-                  QMap<QString, Value> values = (QMap<QString, Value>()));
+    SceneBoundary(FieldInfo *fieldInfo, QString name = "", QString type = "",
+                  QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 
@@ -85,6 +86,7 @@ public:
     void createContent();
 
     virtual void addCustomWidget(QVBoxLayout *layout) = 0;
+    virtual ValueLineEdit *addValueEditWidget(const Module::DialogRow &row) = 0;
     virtual void refresh() = 0;
     virtual void load() = 0;
     virtual bool save() = 0;
@@ -99,6 +101,7 @@ public:
     SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
 
     void addCustomWidget(QVBoxLayout *layout) {}
+    ValueLineEdit *addValueEditWidget(const Module::DialogRow &row);
     void refresh();
     void load();
     bool save();
@@ -115,6 +118,7 @@ public:
     QComboBox *comboBox;
 
     void addCustomWidget(QVBoxLayout *layout);
+    ValueLineEdit *addValueEditWidget(const Module::DialogRow &row);
     void refresh();
     void load();
     bool save();
@@ -128,8 +132,8 @@ private slots:
 class SceneMaterial : public Material
 {
 public:
-    SceneMaterial(FieldInfo *getFieldInfo, QString name,
-                  QMap<QString, Value> values = (QMap<QString, Value>()));
+    SceneMaterial(FieldInfo *fieldInfo, QString name,
+                  QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 

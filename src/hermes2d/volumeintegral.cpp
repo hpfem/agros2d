@@ -53,7 +53,6 @@ VolumeIntegralValue::VolumeIntegralValue(FieldInfo *fieldInfo) : PostprocessorIn
 
 VolumeIntegralValue::~VolumeIntegralValue()
 {
-    qDeleteAll(parsers);
 }
 
 void VolumeIntegralValue::calculate()
@@ -70,7 +69,7 @@ void VolumeIntegralValue::calculate()
         double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
         double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
 
-        foreach (mu::Parser *pars, parsers)
+        foreach (mu::Parser *pars, m_parsers)
         {
             pars->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
             pars->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
@@ -83,7 +82,6 @@ void VolumeIntegralValue::calculate()
                 pars->DefineVar("value" + number.str(), &pvalue[k]);
                 pars->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
                 pars->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
-
             }
         }
 
@@ -100,8 +98,12 @@ void VolumeIntegralValue::calculate()
             {
                 int index = Util::scene()->labels->items().indexOf(label);
 
-                SceneMaterial *material = label->getMarker(m_fieldInfo);
+                SceneMaterial *material = label->marker(m_fieldInfo);
+
                 setMaterialToParsers(material);
+
+                // set nonlinear parsers
+                setNonlinearParsers();
 
                 for_all_active_elements(e, mesh)
                 {
@@ -166,14 +168,17 @@ void VolumeIntegralValue::calculate()
                                         pdy[k] = dudy[k][i];
                                     }
 
+                                    // set nonlinear material
+                                    setNonlinearMaterial(material);
+
                                     if (ru->is_jacobian_const())
                                     {
-                                        result += pt[i][2] * ru->get_const_jacobian() * parsers[n]->Eval();
+                                        result += pt[i][2] * ru->get_const_jacobian() * m_parsers[n]->Eval();
                                     }
                                     else
                                     {
                                         double* jac = ru->get_jacobian(o);
-                                        result += pt[i][2] * jac[i] * parsers[n]->Eval();
+                                        result += pt[i][2] * jac[i] * m_parsers[n]->Eval();
                                     }
                                 }
 
@@ -182,7 +187,7 @@ void VolumeIntegralValue::calculate()
                             catch (mu::Parser::exception_type &e)
                             {
                                 qDebug() << "Volume integral: " << integral->name() << " (" << integral->id() << ") " << integral->name() << " - '" <<
-                                             QString::fromStdString(parsers[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
+                                             QString::fromStdString(m_parsers[n]->GetExpr()) << "' - " << QString::fromStdString(e.GetMsg());
                             }
 
                             n++;

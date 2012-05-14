@@ -657,15 +657,18 @@ SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPos
 QString modeToStringKey(Mode teMode);
 Mode modeFromStringKey(const QString &teMode);
 
+QStringList paletteTypeStringKeys();
 QString paletteTypeToStringKey(PaletteType paletteType);
 PaletteType paletteTypeFromStringKey(const QString &paletteType);
 
+QStringList paletteQualityStringKeys();
 QString paletteQualityToStringKey(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality);
 
 double paletteQualityValueToDouble(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromDouble(const double paletteQuality);
 
+QStringList paletteOrderTypeStringKeys();
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
 
@@ -721,6 +724,17 @@ const int MESHANGLESEGMENTSCOUNT = 3;
 const bool MESHCURVILINEARELEMENTS = true;
 
 // post2d
+const int PALLETESTEPSMIN = 5;
+const int PALLETESTEPSMAX = 100;
+const int SCALARDECIMALPLACEMIN = 0;
+const int SCALARDECIMALPLACEMAX = 10;
+const int CONTOURSCOUNTMIN = 1;
+const int CONTOURSCOUNTMAX = 100;
+const int VECTORSCOUNTMIN = 1;
+const int VECTORSCOUNTMAX = 500;
+const double VECTORSSCALEMIN = 0.1;
+const double VECTORSSCALEMAX = 20.0;
+
 
 // post3d
 const SceneViewPost3DShow SCALARSHOWPOST3D = SceneViewPost3DShow_ScalarView3D;
@@ -737,8 +751,8 @@ const int PALETTESTEPS = 30;
 const bool SHOWVECTORVIEW = false;
 const bool VECTORPROPORTIONAL = true;
 const bool VECTORCOLOR = true;
-const int VECTORNUMBER = 50;
-const double VECTORSCALE = 0.6;
+const int VECTORSCOUNT = 50;
+const double VECTORSSCALE = 0.6;
 
 const bool SHOWORDERVIEW = true;
 const bool SHOWORDERCOLORBAR = true;

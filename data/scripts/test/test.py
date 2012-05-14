@@ -21,6 +21,7 @@ execfile("test_magnetic_harmonic_axisymmetric.py")
 
 # heat transfer
 execfile("test_heat_transfer_steady_planar.py")
+execfile("test_heat_transfer_steady_planar_nonlin.py")
 execfile("test_heat_transfer_steady_axisymmetric.py")
 # execfile("test_heat_transfer_transient_axisymmetric.py") # very slow
 
@@ -35,6 +36,7 @@ execfile("test_elasticity_axisymmetric.py")
 # coupling
 execfile("test_coupling_1_planar.py")
 execfile("test_coupling_2_axisymmetric.py")
+execfile("test_coupling_3_axisymmetric_nonlin.py")
 
 # scripting
 # execfile("test_scripting.py")
