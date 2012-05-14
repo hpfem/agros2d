@@ -180,8 +180,6 @@ void Problem::removeField(FieldInfo *field)
     emit fieldsChanged();
 }
 
-const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
-
 void Problem::createStructure()
 {
     foreach (Block* block, m_blocks)
@@ -249,13 +247,7 @@ void Problem::createStructure()
                     {
                         //this field is related (by this coupling)
                         added = true;
-
-                        //TODO for debugging only
-                        if(REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE)
-                            blockFieldInfos.push_front(checkedFieldInfo);
-                        else
-                            blockFieldInfos.push_back(checkedFieldInfo);
-
+                        blockFieldInfos.push_back(checkedFieldInfo);
                         fieldInfos.removeOne(checkedFieldInfo);
                     }
                 }
@@ -384,7 +376,8 @@ void Problem::solve()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    if (!solver->solveSimple(0, 0, SolutionMode_NonExisting))
+                    if (!solver->createInitialSpace(0) ||
+                        !solver->solveSimple(0, 0, false))
                     {
                         isError = true;
                         break; // block solver loop
@@ -401,7 +394,7 @@ void Problem::solve()
                     bool continueSolve = true;
                     while (continueSolve && (adaptStep <= block->adaptivitySteps()))
                     {
-                        continueSolve = solver->solveReferenceAndProject(0, adaptStep);
+                        continueSolve = solver->solveReferenceAndProject(0, adaptStep, false);
                         continueSolve = continueSolve && solver->createAdaptedSpace(0, adaptStep);
                         cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
                         adaptStep++;
@@ -470,50 +463,54 @@ void Problem::solveAdaptiveStep()
 
             if (block->isTransient())
             {
-                if (solver->solveInitialTimeStep())
-                {
-                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
-                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
-                        {
-                            isError = true;
-                            break; // inner loop
-                        }
-                }
-                else
-                {
-                    isError = true;
-                }
+//                if (solver->solveInitialTimeStep())
+//                {
+//                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
+//                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
+//                        {
+//                            isError = true;
+//                            break; // inner loop
+//                        }
+//                }
+//                else
+//                {
+//                    isError = true;
+//                }
 
-                if (isError)
-                    break; // block solver loop
+//                if (isError)
+//                    break; // block solver loop
             }
             else
             {
-                if (block->adaptivityType() == AdaptivityType_None)
-                {
-//                    if (!solver->solveSimple())
-//                    {
-//                        isError = true;
-//                        break; // block solver loop
-//                    }
-                }
-                else
+                int adaptStepNormal = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
+                int adaptStepNonExisting = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
+                int adaptStep = max(adaptStepNormal, adaptStepNonExisting);
+
+                // it means that solution allready exists, but will be recalculated by adapt step
+                bool solutionAlreadyExists = ((adaptStep >= 0) && (adaptStepNormal == adaptStep));
+
+                // it does not exist, problem has not been solved yet
+                if(adaptStep < 0)
                 {
                     if (!solver->createInitialSpace(0))
                     {
                         isError = true;
                         break; // block solver loop
                     }
-                    int adaptStep = 1;
-                    bool continueSolve = true;
-                    while (continueSolve && (adaptStep <= block->adaptivitySteps()))
-                    {
-                        continueSolve = solver->solveReferenceAndProject(0, adaptStep);
-                        continueSolve = continueSolve && solver->createAdaptedSpace(0, adaptStep);
-                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
-                        adaptStep++;
-                    }
+                    adaptStep = 0;
                 }
+
+                // standard adaptivity process may end by calculation of refference or by creating adapted space
+                // (depends on which stopping criteria is fulfilled). To avoid unnecessary calculations:
+                bool hasReference = (Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0) == adaptStep);
+                if(!hasReference)
+                {
+                    solver->solveReferenceAndProject(0, adaptStep + 1, solutionAlreadyExists);
+                }
+
+                solver->createAdaptedSpace(0, adaptStep + 1);
+                solver->solveSimple(0, 0, false);
+
             }
 
             if (!isError)
