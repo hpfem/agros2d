@@ -44,13 +44,13 @@ public:
     void doAdaptivityStep();
     void doTimeStep();
 
-    bool solveSimple();
     bool solveTimeStep(double timeStep);
     bool solveInitialTimeStep();
 
-    bool solveInitialAdaptivityStep(int timeStep);
-    bool solveAdaptivityStep(int timeStep, int adaptivityStep);
-    bool solveCreateAdaptedSpace(int timeStep, int adaptivityStep);
+    bool solveSimple(int timeStep, int adaptivityStep, SolutionMode solutionType);
+    bool createInitialSpace(int timeStep);
+    bool solveReferenceAndProject(int timeStep, int adaptivityStep);
+    bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
 private:
     Block* m_block;

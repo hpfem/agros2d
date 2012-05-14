@@ -560,12 +560,12 @@ enum SceneTransformMode
     SceneTransformMode_Scale
 };
 
-enum SolutionType
+enum SolutionMode
 {
-    SolutionType_Normal,
-    SolutionType_Reference,
-    SolutionType_NonExisting,
-    SolutionType_Finer  // used to choose reference if exists, normal otherwise
+    SolutionMode_Normal,
+    SolutionMode_Reference,
+    SolutionMode_NonExisting,
+    SolutionMode_Finer  // used to choose reference if exists, normal otherwise
 };
 
 // captions
@@ -639,8 +639,8 @@ QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
 QStringList solutionTypeStringKeys();
-QString solutionTypeToStringKey(SolutionType solutionType);
-SolutionType solutionTypeFromStringKey(const QString &solutionType);
+QString solutionTypeToStringKey(SolutionMode solutionType);
+SolutionMode solutionTypeFromStringKey(const QString &solutionType);
 
 QStringList matrixSolverTypeStringKeys();
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);

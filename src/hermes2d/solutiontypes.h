@@ -118,13 +118,13 @@ struct SolutionID
     Group* group;
     int timeStep;
     int adaptivityStep;
-    SolutionType solutionType;
+    SolutionMode solutionType;
 
-    SolutionID() : group(NULL), timeStep(0), adaptivityStep(0), solutionType(SolutionType_Normal) {}
-    SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionType solutionType) :
+    SolutionID() : group(NULL), timeStep(0), adaptivityStep(0), solutionType(SolutionMode_Normal) {}
+    SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionMode solutionType) :
         group(group), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionType(solutionType) {}
 
-    inline bool exists() { return solutionType != SolutionType_NonExisting; }
+    inline bool exists() { return solutionType != SolutionMode_NonExisting; }
 };
 
 template <typename Group>
@@ -163,7 +163,7 @@ class BlockSolutionID;
 class FieldSolutionID : public SolutionID<FieldInfo>
 {
 public:
-    FieldSolutionID(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionType solutionType) :
+    FieldSolutionID(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) :
         SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType) {}
 
     FieldSolutionID() : SolutionID<FieldInfo>() {}
@@ -176,7 +176,7 @@ public:
 class BlockSolutionID : public SolutionID<Block>
 {
 public:
-    BlockSolutionID(Block* block, int timeStep, int adaptivityStep, SolutionType solutionType) :
+    BlockSolutionID(Block* block, int timeStep, int adaptivityStep, SolutionMode solutionType) :
         SolutionID<Block>(block, timeStep, adaptivityStep, solutionType) {}
 
     BlockSolutionID() : SolutionID<Block>() {}

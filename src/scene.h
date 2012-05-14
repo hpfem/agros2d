@@ -186,8 +186,8 @@ public:
     void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
     inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
     void setActiveAdaptivityStep(int as) { m_activeAdaptivityStep = as; }
-    inline SolutionType activeSolutionType() const { return m_activeSolutionType; }
-    void setActiveSolutionType(SolutionType st) { m_activeSolutionType = st; }
+    inline SolutionMode activeSolutionType() const { return m_activeSolutionType; }
+    void setActiveSolutionType(SolutionMode st) { m_activeSolutionType = st; }
     // active MultiSolutionArray
     MultiSolutionArray<double> activeMultiSolutionArray();
 
@@ -212,7 +212,7 @@ private:
     FieldInfo* m_activeViewField;
     int m_activeTimeStep;
     int m_activeAdaptivityStep;
-    SolutionType m_activeSolutionType;
+    SolutionMode m_activeSolutionType;
 
     void createActions();
 
