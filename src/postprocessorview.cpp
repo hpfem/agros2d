@@ -863,6 +863,8 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
+
+        doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
     }
 }
 
