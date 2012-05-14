@@ -204,8 +204,12 @@ void ParserForm::setNonlinearMaterial(Material *material, int offset, int index,
                 try
                 {
                     double nonlinValue = m_parsersNonlinear[variable]->Eval();
+                    // qDebug() << "nonlinValue: B" << nonlinValue;
+
                     m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(nonlinValue);
                     m_parserVariables["d" + variable->shortname().toStdString()] = material->value(variable->id()).derivative(nonlinValue);
+
+                    // qDebug() << "mur" << m_parserVariables[variable->shortname().toStdString()] << "dmur/dB" << m_parserVariables["d" + variable->shortname().toStdString()];
                 }
                 catch (mu::Parser::exception_type &e)
                 {
@@ -299,6 +303,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
         try
         {
+            // qDebug() << "CustomParserMatrixFormVol" << m_parser->Eval();
             result += wt[i] * m_parser->Eval();
         }
         catch (mu::Parser::exception_type &e)
