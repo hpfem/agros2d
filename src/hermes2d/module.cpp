@@ -205,7 +205,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakForm type, Field *field, QString ar
     }
     
     // decide what solution to push, implicitly none
-    FieldSolutionID solutionID(NULL, 0, 0, SolutionType_NonExisting);
+    FieldSolutionID solutionID(NULL, 0, 0, SolutionMode_NonExisting);
     
     // weak coupling, push solutions
     if (materialTarget && couplingInfo->isWeak())
@@ -213,18 +213,18 @@ void WeakFormAgros<Scalar>::registerForm(WeakForm type, Field *field, QString ar
         // TODO at the present moment, it is impossible to have more sources !
         assert(field->m_couplingSources.size() <= 1);
         
-        solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionType_Finer);
+        solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
         assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
     }
     else
     {
         if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
         {
-            solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Finer);
+            solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Finer);
         }
     }
     
-    if (solutionID.solutionType != SolutionType_NonExisting)
+    if (solutionID.solutionType != SolutionMode_NonExisting)
     {
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
         {
