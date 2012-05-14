@@ -392,12 +392,13 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, SolutionMode solutionType)
+bool Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
+    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve"));
 
     MultiSolutionArray<Scalar> multiSolutionArray =
-            Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionType));;
+            Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
@@ -458,9 +459,10 @@ bool Solver<Scalar>::createInitialSpace(int timeStep)
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
+bool Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists)
 {
-    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_NonExisting));
+    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, solutionMode));
     MultiSolutionArray<Scalar> msaRef;
 
     cout << "solve adaptivity step " << adaptivityStep << endl;
@@ -506,7 +508,7 @@ bool Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     // output
     if (!isError)
     {
-        Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_NonExisting));
+        Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, solutionMode));
         Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal), msa);
         Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference), msaRef);
     }
