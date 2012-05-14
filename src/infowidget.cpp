@@ -198,8 +198,8 @@ void InfoWidget::showInfo()
             if (Util::problem()->isSolved())
             {
                 int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
-                int adaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionType_Normal);
-                MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionType_Normal));
+                int adaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
+                MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 
                 solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
                 solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
@@ -303,14 +303,14 @@ void InfoWidget::doAdaptiveError()
     FieldInfo *fieldInfo = Util::scene()->activeViewField();
 
     int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
-    int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionType_Normal) + 1;
+    int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
 
     double *xval = new double[adaptiveSteps];
     double *yval = new double[adaptiveSteps];
 
     for (int i = 0; i < adaptiveSteps; i++)
     {
-        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionType_Normal));
+        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
         xval[i] = i+1;
         yval[i] = msa.adaptiveError();
@@ -337,14 +337,14 @@ void InfoWidget::doAdaptiveDOFs()
     FieldInfo *fieldInfo = Util::scene()->activeViewField();
 
     int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
-    int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionType_Normal) + 1;
+    int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
 
     double *xval = new double[adaptiveSteps];
     double *yval = new double[adaptiveSteps];
 
     for (int i = 0; i < adaptiveSteps; i++)
     {
-        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionType_Normal));
+        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
         xval[i] = i+1;
         yval[i] = Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces())));

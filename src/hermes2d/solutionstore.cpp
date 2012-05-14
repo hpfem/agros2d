@@ -93,7 +93,7 @@ void SolutionStore::removeSolution(BlockSolutionID solutionID)
     }
 }
 
-int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionType solutionType)
+int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType)
 {
     int timeStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
@@ -105,7 +105,7 @@ int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionType solutionType)
     return timeStep;
 }
 
-int SolutionStore::lastTimeStep(Block *block, SolutionType solutionType)
+int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType)
 {
     int timeStep = lastTimeStep(block->fields().at(0)->fieldInfo(), solutionType);
 
@@ -119,7 +119,7 @@ int SolutionStore::lastTimeStep(Block *block, SolutionType solutionType)
 
 double SolutionStore::lastTime(FieldInfo *fieldInfo)
 {
-    int timeStep = lastTimeStep(fieldInfo, SolutionType_Normal);
+    int timeStep = lastTimeStep(fieldInfo, SolutionMode_Normal);
     double time = notFoundSoFar;
 
     foreach(FieldSolutionID id, m_multiSolutions.keys())
@@ -149,7 +149,7 @@ double SolutionStore::lastTime(Block *block)
 
 }
 
-int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionType solutionType, int timeStep)
+int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionMode solutionType, int timeStep)
 {
     if(timeStep == -1)
         timeStep = lastTimeStep(fieldInfo, solutionType);
@@ -164,7 +164,7 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionType solutionT
     return adaptiveStep;
 }
 
-int SolutionStore::lastAdaptiveStep(Block *block, SolutionType solutionType, int timeStep)
+int SolutionStore::lastAdaptiveStep(Block *block, SolutionMode solutionType, int timeStep)
 {
     int adaptiveStep = lastAdaptiveStep(block->fields().at(0)->fieldInfo(), solutionType, timeStep);
 
@@ -176,12 +176,12 @@ int SolutionStore::lastAdaptiveStep(Block *block, SolutionType solutionType, int
     return adaptiveStep;
 }
 
-FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionType solutionType)
+FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionMode solutionType)
 {
     FieldSolutionID solutionID;
-    if(solutionType == SolutionType_Finer) {
-        FieldSolutionID solutionIDNormal = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Normal);
-        FieldSolutionID solutionIDReference = lastTimeAndAdaptiveSolution(fieldInfo, SolutionType_Reference);
+    if(solutionType == SolutionMode_Finer) {
+        FieldSolutionID solutionIDNormal = lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Normal);
+        FieldSolutionID solutionIDReference = lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Reference);
         if((solutionIDNormal.timeStep > solutionIDReference.timeStep) ||
                 (solutionIDNormal.adaptivityStep > solutionIDReference.adaptivityStep))
         {
@@ -203,7 +203,7 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo,
     return solutionID;
 }
 
-BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionType solutionType)
+BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionMode solutionType)
 {
     FieldSolutionID fsid = lastTimeAndAdaptiveSolution(block->fields().at(0)->fieldInfo(), solutionType);
     BlockSolutionID bsid = fsid.blockSolutionID(block);

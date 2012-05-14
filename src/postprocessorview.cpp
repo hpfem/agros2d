@@ -1033,7 +1033,7 @@ void PostprocessorWidget::refresh()
         cmbTimeStep->setEnabled(timeSteps > 1);
 
         // adaptivity group
-        int lastStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
+        int lastStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal, Util::scene()->activeTimeStep());
         grpAdaptivity->setVisible(lastStep > 0);
         cmbAdaptivityStep->setEnabled(lastStep > 0);
         cmbAdaptivitySolutionType->setEnabled(lastStep > 0);
@@ -1067,7 +1067,7 @@ void PostprocessorWidget::doApply()
 
     Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
     Util::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
-    Util::scene()->setActiveSolutionType((SolutionType)cmbAdaptivitySolutionType->currentIndex());
+    Util::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());
 
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
