@@ -384,7 +384,8 @@ void Problem::solve()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    if (!solver->solveSimple(0, 0, SolutionMode_NonExisting))
+                    if (!solver->createInitialSpace(0) ||
+                        !solver->solveSimple(0, 0, SolutionMode_NonExisting))
                     {
                         isError = true;
                         break; // block solver loop
