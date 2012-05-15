@@ -206,11 +206,17 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
     // create types of projection and selectors
     for (int i = 0; i < m_block->numSolutions(); i++)
     {
-        if (m_block->adaptivityType() != AdaptivityType_None)
-        {
-            // add norm
-            projNormType.push_back(Util::config()->projNormType);
+        // add norm
+        projNormType.push_back(Util::config()->projNormType);
 
+        if (m_block->adaptivityType() == AdaptivityType_None)
+        {
+            select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
+                                                                                            Util::config()->convExp,
+                                                                                            H2DRS_DEFAULT_ORDER);
+        }
+        else
+        {
             switch (m_block->adaptivityType())
             {
             case AdaptivityType_H:
@@ -227,9 +233,10 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
                                                                                                 H2DRS_DEFAULT_ORDER);
                 break;
             }
-            // add refinement selector
-            selector.push_back(select);
         }
+
+        // add refinement selector
+        selector.push_back(select);
     }
 }
 
@@ -424,6 +431,7 @@ bool Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         BlockSolutionID solutionID;
         solutionID.group = m_block;
         solutionID.timeStep = 0;
+        solutionID.adaptivityStep = adaptivityStep;
 
         Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
     }

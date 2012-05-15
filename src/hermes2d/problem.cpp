@@ -509,7 +509,7 @@ void Problem::solveAdaptiveStep()
                 }
 
                 solver->createAdaptedSpace(0, adaptStep + 1);
-                solver->solveSimple(0, 0, false);
+                solver->solveSimple(0, adaptStep + 1, false);
 
             }
 
