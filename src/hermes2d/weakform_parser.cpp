@@ -303,7 +303,6 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
         try
         {
-            // qDebug() << "CustomParserMatrixFormVol" << m_parser->Eval();
             result += wt[i] * m_parser->Eval();
         }
         catch (mu::Parser::exception_type &e)

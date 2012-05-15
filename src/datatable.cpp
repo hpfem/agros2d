@@ -20,21 +20,21 @@
 #include "datatable.h"
 
 DataTable::DataTable()
+    : m_data(NULL), m_spline(NULL)
 {
-    m_data = NULL;
 }
 
 DataTable::DataTable(double key, double value)
+    : m_data(NULL), m_spline(NULL)
 {
-    m_data = NULL;
     add(key, value, false);
 
     initSpline();
 }
 
 DataTable::DataTable(double *keys, double *values, int count)
+    : m_data(NULL), m_spline(NULL)
 {
-    m_data = NULL;
     add(keys, values, count);
 }
 
@@ -57,6 +57,10 @@ void DataTable::clear()
     }
 
     m_data = NULL;
+
+    if (m_spline)
+        delete m_spline;
+    m_spline = NULL;
 }
 
 void DataTable::remove(double key)
@@ -204,6 +208,10 @@ void DataTable::initSpline()
     if (length <= 1)
         return;
 
+    if (m_spline)
+        delete m_spline;
+    m_spline = NULL;
+
     // prepare data
     Hermes::vector<double> points;
     Hermes::vector<double> values;
@@ -220,8 +228,9 @@ void DataTable::initSpline()
         data = data->next;
     }
 
-    //std::cout << "init spline" << std::endl;
-    m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, false, false, false, false);
+    // m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, false, false, false, false);
+    // m_spline = new Hermes::Hermes2D::CubicSpline(points, values, values.at(0), values.at(values.size() - 1), true, true, true, true);
+    m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0, 0, true, true, false, false);
 }
 
 int DataTable::size()
