@@ -39,15 +39,17 @@ template &lt;typename Scalar&gt;
 CustomMatrixFormVol&lt;Scalar&gt;::CustomMatrixFormVol(unsigned int i, unsigned int j,
                                                  std::string area,
                                                  Hermes::Hermes2D::SymFlag sym,
-                                                 Material *material)
-    : Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;(i, j, area, sym), m_material(material), m_sym(sym)
+                                                 Material *materialSource,
+						 Material *materialTarget
+						)
+    : Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;(i, j, area, sym), m_materialSource(materialSource), m_materialTarget(materialTarget), m_sym(sym)
 {
 //variable_definition	
 }
 
 </custom_matrix_form_vol>
 
-<variable_definition> variable_short = m_material->value("variable");
+<variable_definition> variable_short = m_materialSource->value("variable");
 </variable_definition>
 
 <comment_separator>
@@ -87,7 +89,7 @@ Hermes::Ord CustomMatrixFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::He
 CustomMatrixFormVol&lt;Scalar&gt;* CustomMatrixFormVol&lt;Scalar&gt;::clone()
 {
     return new CustomMatrixFormVol(this->i, this->j, this->areas[0], this->m_sym, 
-                                         this->m_material);
+                                         this->m_materialSource, this->m_materialTarget);
 }
 </custom_matrix_form_vol_clone>
 
@@ -98,8 +100,8 @@ CustomMatrixFormVol&lt;Scalar&gt;* CustomMatrixFormVol&lt;Scalar&gt;::clone()
 template &lt;typename Scalar&gt;
 CustomVectorFormVol&lt;Scalar&gt;::CustomVectorFormVol(unsigned int i, unsigned int j,
                                                  std::string area, 
-                                                 Material *material)
-    : Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;(i, area), m_material(material), j(j)
+                                                 Material* materialSource, Material* materialTarget)
+    : Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;(i, area), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
 {
 //variable_definition	
 }
@@ -144,7 +146,7 @@ Hermes::Ord CustomVectorFormVol&lt;Scalar&gt;::ord(int n, double *wt, Hermes::He
 CustomVectorFormVol&lt;Scalar&gt;* CustomVectorFormVol&lt;Scalar&gt;::clone()
 {
     return new CustomVectorFormVol(this->i, this->j, this->areas[0],
-                                         this->m_material);
+                                         this->m_materialSource, this->m_materialTarget);
 }
 </custom_vector_form_vol_clone>
 
@@ -155,7 +157,7 @@ template &lt;typename Scalar&gt;
 CustomMatrixFormSurf&lt;Scalar&gt;::CustomMatrixFormSurf(unsigned int i, unsigned int j,
                                                    std::string area, 
                                                    Boundary *boundary)
-    : Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt;(i, j, area), m_boundary(boundary)
+    : Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt;(i, j, area), m_boundarySource(boundary)
 {
     //variable_definition
 }
@@ -202,7 +204,7 @@ Hermes::Ord CustomMatrixFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
 CustomMatrixFormSurf&lt;Scalar&gt;* CustomMatrixFormSurf&lt;Scalar&gt;::clone()
 {
     return new CustomMatrixFormSurf(this->i, this->j, this->areas[0],
-                                         this->m_boundary);
+                                         this->m_boundarySource);
 }
 </custom_matrix_form_surf_clone>
 
@@ -213,7 +215,7 @@ CustomVectorFormSurf&lt;Scalar&gt;::CustomVectorFormSurf(unsigned int i, unsigne
                                                    std::string area, 
                                                    Boundary *boundary)
 
-    : Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;(i, area), m_boundary(boundary), j(j)
+    : Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;(i, area), m_boundarySource(boundary), j(j)
 {
 //variable_definition
 }
@@ -257,7 +259,7 @@ Hermes::Ord CustomVectorFormSurf&lt;Scalar&gt;::ord(int n, double *wt, Hermes::H
 CustomVectorFormSurf&lt;Scalar&gt;* CustomVectorFormSurf&lt;Scalar&gt;::clone()
 {
     return new CustomVectorFormSurf(this->i, this->j, this->areas[0],  
-                                         this->m_boundary);
+                                         this->m_boundarySource);
 }
 </custom_vector_form_surf_clone>
 
@@ -265,7 +267,7 @@ CustomVectorFormSurf&lt;Scalar&gt;* CustomVectorFormSurf&lt;Scalar&gt;::clone()
 
 template &lt;typename Scalar&gt;
 CustomEssentialFormSurf&lt;Scalar&gt;::CustomEssentialFormSurf(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
-    : Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt;(mesh), m_boundary(boundary)
+    : Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt;(mesh), m_boundarySource(boundary)
 {
 //variable_definition
 }

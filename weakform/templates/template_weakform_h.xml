@@ -41,7 +41,8 @@ public:
     CustomMatrixFormVol(unsigned int i, unsigned int j,
                               std::string area,
                               Hermes::Hermes2D::SymFlag sym,
-                              Material *material);
+                              Material *materialSource,
+			      Material *materialTarget);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u,
                          Hermes::Hermes2D::Func&lt;double&gt; *v, Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
@@ -49,7 +50,8 @@ public:
                             Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;   	    
     CustomMatrixFormVol&lt;Scalar&gt;* clone();
 private:
-    Material *m_material;
+    Material *m_materialSource;
+    Material *m_materialTarget;	
     Hermes::Hermes2D::SymFlag m_sym;
     //variable_declaration	    	
 };</custom_matrix_form_vol> 
@@ -61,7 +63,10 @@ class CustomVectorFormVol : public Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;
 public:
     CustomVectorFormVol(unsigned int i, unsigned int j,
                               std::string area, 
-                              Material *material);
+                              Material *materialSource,
+			      Material *materialTarget	
+				
+    );
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
                          Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
@@ -69,7 +74,8 @@ public:
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
     CustomVectorFormVol&lt;Scalar&gt;* clone();	
 private:		
-    Material *m_material;
+    Material *m_materialSource;
+    Material *m_materialTarget;	
     //variable_declaration
     unsigned int j;
 };</custom_vector_form_vol>
@@ -88,7 +94,7 @@ public:
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
     CustomMatrixFormSurf&lt;Scalar&gt;* clone(); 
 private:
-    Boundary *m_boundary;
+    Boundary *m_boundarySource;
     //variable_declaration	
 };</custom_matrix_form_surf>
 
@@ -106,7 +112,7 @@ public:
                             Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
     CustomVectorFormSurf&lt;Scalar&gt;* clone();
 private:
-    Boundary *m_boundary;
+    Boundary *m_boundarySource;
     //variable_declaration
     unsigned int j;
 };</custom_vector_form_surf>
@@ -125,7 +131,7 @@ public:
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }
 private:
-    Boundary *m_boundary;  
+    Boundary *m_boundarySource;  
     //variable_declaration	
 };</custom_essential_form_surf>
 

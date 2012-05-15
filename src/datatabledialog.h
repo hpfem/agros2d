@@ -47,7 +47,6 @@ private:
     Chart *chartValue;
     QwtPlotCurve *chartValueCurveMarkers;
     Chart *chartDerivative;
-    QwtPlotCurve *chartDerivativeCurveMarkers;
 
     // values
     QPlainTextEdit *lstX;
