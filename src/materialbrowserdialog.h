@@ -44,8 +44,8 @@ private:
     QLabel *lblMaterial;
     QLabel *lblProperty;
     QLabel *lblShortname;
+    QLabel *lblDependenceShortname;
     QLabel *lblSource;
-    QLabel *lblUnit;
     QLabel *lblValue;
     Chart *chartValue;
 
@@ -57,6 +57,7 @@ private:
     bool m_select;
 
 private slots:
+    void doPickerValueMoved(const QPoint &pos);
     void doMaterialSelected(QTreeWidgetItem *item, int role);
     void doMaterialSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doPropertySelected(QTreeWidgetItem *item, int role);
