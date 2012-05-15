@@ -92,7 +92,7 @@
 			</module:weakform_volume>
 
 			<module:weakform_volume analysistype="harmonic">
-				<module:quantity id="magnetic_permeability" />
+                                <module:quantity id="magnetic_permeability" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)" nonlinearity_axi="sqrt((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)"/>
 				<module:quantity id="magnetic_conductivity" />
 				<module:quantity id="magnetic_remanence" />
 				<module:quantity id="magnetic_remanence_angle" />
@@ -103,9 +103,13 @@
 				<module:quantity id="magnetic_current_density_external_imag" />
 
 				<module:matrix_form i="1" j="1"
-					planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                        planar="- dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
+                                                         (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)^0.5 * (updx * vdx + updy * vdy) +
+                                                1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
                                             ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
-					axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
+                                        axi="- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
+                                         ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) +
+                                             1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
                                          ma_gamma * uval * ma_vy * vdz" />
 				<module:vector_form i="1" j="1"
 					planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
@@ -118,9 +122,13 @@
                                               + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
 
 				<module:matrix_form i="2" j="2"
-					planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                        planar="- dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
+                                                    (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)^0.5 * (updx * vdx + updy * vdy) +
+                                        1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
                                             ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
-					axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
+                                        axi="- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
+                                                   ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) +
+                                        1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
                                          ma_gamma * uval * ma_vy * vdz" />
 				<module:vector_form i="2" j="2"
 					planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
