@@ -217,14 +217,6 @@ void DataTableDialog::createControls()
 
     connect(pickerDerivative, SIGNAL(moved(const QPoint &)), SLOT(doPickerDerivativeMoved(const QPoint &)));
 
-    chartDerivativeCurveMarkers = new QwtPlotCurve();
-    chartDerivativeCurveMarkers->setRenderHint(QwtPlotItem::RenderAntialiased);
-    chartDerivativeCurveMarkers->setStyle(QwtPlotCurve::NoCurve);
-    chartDerivativeCurveMarkers->setCurveAttribute(QwtPlotCurve::Inverted);
-    chartDerivativeCurveMarkers->setYAxis(QwtPlot::yLeft);
-    chartDerivativeCurveMarkers->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::black), QColor(Qt::black), QSize(5, 5)));
-    chartDerivativeCurveMarkers->attach(chartDerivative);
-
     QGridLayout *chartLayout = new QGridLayout();
     chartLayout->addWidget(chartValue);
     chartLayout->addWidget(chartDerivative);
@@ -332,9 +324,10 @@ void DataTableDialog::gotoLine(QPlainTextEdit *lst, int lineNumber)
     else
         cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, 0);
 
-    // cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 0);
+    lst->blockSignals(true);
     lst->setTextCursor(cursor);
-    // lst->centerCursor();
+    highlightCurrentLine(lst);
+    lst->blockSignals(false);
     lst->ensureCursorVisible();
 }
 
@@ -359,20 +352,19 @@ void DataTableDialog::highlightCurrentLine(QPlainTextEdit *lst)
 
 void DataTableDialog::highlightCurrentLineX()
 {
-    gotoLine(lstY, lstX->textCursor().blockNumber());
     highlightCurrentLine(lstX);
+    gotoLine(lstY, lstX->textCursor().blockNumber());
 }
 
 void DataTableDialog::highlightCurrentLineY()
 {
-    gotoLine(lstX, lstY->textCursor().blockNumber());
     highlightCurrentLine(lstY);
+    gotoLine(lstX, lstY->textCursor().blockNumber());
 }
 
 void DataTableDialog::doPlot()
 {
     chartValueCurveMarkers->setVisible(chkMarkers->isChecked());
-    chartDerivativeCurveMarkers->setVisible(chkMarkers->isChecked());
 
     parseTable();
 
@@ -385,7 +377,6 @@ void DataTableDialog::doPlot()
 
     m_table->get(keys, values, derivatives);
     chartValueCurveMarkers->setSamples(keys, values, count);
-    chartDerivativeCurveMarkers->setSamples(keys, derivatives, count);
 
     delete [] keys;
     delete [] values;

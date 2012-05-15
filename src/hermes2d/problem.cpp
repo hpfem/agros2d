@@ -180,8 +180,6 @@ void Problem::removeField(FieldInfo *field)
     emit fieldsChanged();
 }
 
-const bool REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE = false;
-
 void Problem::createStructure()
 {
     foreach (Block* block, m_blocks)
@@ -249,13 +247,7 @@ void Problem::createStructure()
                     {
                         //this field is related (by this coupling)
                         added = true;
-
-                        //TODO for debugging only
-                        if(REVERSE_ORDER_IN_BLOCK_DEBUG_REMOVE)
-                            blockFieldInfos.push_front(checkedFieldInfo);
-                        else
-                            blockFieldInfos.push_back(checkedFieldInfo);
-
+                        blockFieldInfos.push_back(checkedFieldInfo);
                         fieldInfos.removeOne(checkedFieldInfo);
                     }
                 }
@@ -314,6 +306,20 @@ bool Problem::solveInit(bool& isError)
     if (!isMeshed())
         isError = !mesh();
 
+    if(!isError)
+    {
+        // check geometry
+        if (!Util::scene()->checkGeometryAssignement())
+            return false;
+
+        if (Util::problem()->fieldInfos().count() == 0)
+        {
+            Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
+            return false;
+        }
+
+    }
+
     return true;
 }
 
@@ -333,16 +339,6 @@ void Problem::solve()
         assert(isMeshed());
 
         QMap<Block*, Solver<double>* > solvers;
-
-        // check geometry
-        if (!Util::scene()->checkGeometryAssignement())
-            return;
-
-        if (Util::problem()->fieldInfos().count() == 0)
-        {
-            Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
-            return;
-        }
 
         Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
@@ -380,7 +376,8 @@ void Problem::solve()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    if (!solver->solveSimple())
+                    if (!solver->createInitialSpace(0) ||
+                        !solver->solveSimple(0, 0, false))
                     {
                         isError = true;
                         break; // block solver loop
@@ -388,7 +385,7 @@ void Problem::solve()
                 }
                 else
                 {
-                    if (!solver->solveInitialAdaptivityStep(0))
+                    if (!solver->createInitialSpace(0))
                     {
                         isError = true;
                         break; // block solver loop
@@ -397,8 +394,8 @@ void Problem::solve()
                     bool continueSolve = true;
                     while (continueSolve && (adaptStep <= block->adaptivitySteps()))
                     {
-                        continueSolve = solver->solveAdaptivityStep(0, adaptStep);
-                        continueSolve = continueSolve && solver->solveCreateAdaptedSpace(0, adaptStep);
+                        continueSolve = solver->solveReferenceAndProject(0, adaptStep, false);
+                        continueSolve = continueSolve && solver->createAdaptedSpace(0, adaptStep);
                         cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
                         adaptStep++;
                     }
@@ -407,10 +404,10 @@ void Problem::solve()
 
             if (!isError)
             {
-                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
-                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
-                Util::scene()->setActiveSolutionType(SolutionType_Normal);
-                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
+                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+                Util::scene()->setActiveSolutionType(SolutionMode_Normal);
+                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
             }
         }
 
@@ -438,52 +435,18 @@ void Problem::solve()
 
 void Problem::solveAdaptiveStep()
 {
-    if (isSolving()) return;
-
     QTime elapsedTime;
     elapsedTime.start();
-
-    clearSolution();
-    m_isSolving = true;
     bool isError = false;
 
-    // open indicator progress
-    Indicator::openProgress();
-
-    // control geometry
-    ErrorResult result = Util::scene()->checkGeometryResult();
-    if (result.isError())
-    {
-        result.showDialog();
-        m_isSolving = false;
+    if(!solveInit(isError))
         return;
-    }
-
-    // save problem
-    result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
-    if (result.isError())
-        result.showDialog();
-
-    createStructure();
-
-    if (!isMeshed())
-        isError = !mesh();
 
     if (!isError)
     {
         assert(isMeshed());
 
         QMap<Block*, Solver<double>* > solvers;
-
-        // check geometry
-        if (!Util::scene()->checkGeometryAssignement())
-            return;
-
-        if (Util::problem()->fieldInfos().count() == 0)
-        {
-            Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
-            return;
-        }
 
         Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
@@ -500,58 +463,62 @@ void Problem::solveAdaptiveStep()
 
             if (block->isTransient())
             {
-                if (solver->solveInitialTimeStep())
-                {
-                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
-                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
-                        {
-                            isError = true;
-                            break; // inner loop
-                        }
-                }
-                else
-                {
-                    isError = true;
-                }
+//                if (solver->solveInitialTimeStep())
+//                {
+//                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
+//                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
+//                        {
+//                            isError = true;
+//                            break; // inner loop
+//                        }
+//                }
+//                else
+//                {
+//                    isError = true;
+//                }
 
-                if (isError)
-                    break; // block solver loop
+//                if (isError)
+//                    break; // block solver loop
             }
             else
             {
-                if (block->adaptivityType() == AdaptivityType_None)
+                int adaptStepNormal = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
+                int adaptStepNonExisting = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
+                int adaptStep = max(adaptStepNormal, adaptStepNonExisting);
+
+                // it means that solution allready exists, but will be recalculated by adapt step
+                bool solutionAlreadyExists = ((adaptStep >= 0) && (adaptStepNormal == adaptStep));
+
+                // it does not exist, problem has not been solved yet
+                if(adaptStep < 0)
                 {
-                    if (!solver->solveSimple())
+                    if (!solver->createInitialSpace(0))
                     {
                         isError = true;
                         break; // block solver loop
                     }
+                    adaptStep = 0;
                 }
-                else
+
+                // standard adaptivity process may end by calculation of refference or by creating adapted space
+                // (depends on which stopping criteria is fulfilled). To avoid unnecessary calculations:
+                bool hasReference = (Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0) == adaptStep);
+                if(!hasReference)
                 {
-                    if (!solver->solveInitialAdaptivityStep(0))
-                    {
-                        isError = true;
-                        break; // block solver loop
-                    }
-                    int adaptStep = 1;
-                    bool continueSolve = true;
-                    while (continueSolve && (adaptStep <= block->adaptivitySteps()))
-                    {
-                        continueSolve = solver->solveAdaptivityStep(0, adaptStep);
-                        continueSolve = continueSolve && solver->solveCreateAdaptedSpace(0, adaptStep);
-                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
-                        adaptStep++;
-                    }
+                    solver->solveReferenceAndProject(0, adaptStep + 1, solutionAlreadyExists);
                 }
+
+                solver->createAdaptedSpace(0, adaptStep + 1);
+                solver->solveSimple(0, adaptStep + 1, false);
+
             }
 
             if (!isError)
             {
-                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal));
-                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal));
-                Util::scene()->setActiveSolutionType(SolutionType_Normal);
-                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal) << endl;
+                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+                Util::scene()->setActiveSolutionType(SolutionMode_Normal);
+                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
             }
         }
 

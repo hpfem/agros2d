@@ -31,6 +31,7 @@
 #include "solutionstore.h"
 #include "weakform_parser.h"
 #include "logview.h"
+#include "util.h"
 #include "../weakform/src/weakform_factory.h"
 
 using namespace Hermes::Hermes2D;
@@ -205,11 +206,17 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
     // create types of projection and selectors
     for (int i = 0; i < m_block->numSolutions(); i++)
     {
-        if (m_block->adaptivityType() != AdaptivityType_None)
-        {
-            // add norm
-            projNormType.push_back(Util::config()->projNormType);
+        // add norm
+        projNormType.push_back(Util::config()->projNormType);
 
+        if (m_block->adaptivityType() == AdaptivityType_None)
+        {
+            select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
+                                                                                            Util::config()->convExp,
+                                                                                            H2DRS_DEFAULT_ORDER);
+        }
+        else
+        {
             switch (m_block->adaptivityType())
             {
             case AdaptivityType_H:
@@ -226,9 +233,10 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
                                                                                                 H2DRS_DEFAULT_ORDER);
                 break;
             }
-            // add refinement selector
-            selector.push_back(select);
         }
+
+        // add refinement selector
+        selector.push_back(select);
     }
 }
 
@@ -271,7 +279,7 @@ Hermes::vector<shared_ptr<Space<Scalar> > > Solver<Scalar>::createCoarseSpace()
 
     foreach(Field* field, m_block->fields())
     {
-        MultiSolutionArray<Scalar> multiSolution = Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionType_Normal));
+        MultiSolutionArray<Scalar> multiSolution = Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Normal));
         for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             Space<Scalar>* oldSpace = multiSolution.component(comp).space.get();
@@ -391,22 +399,13 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::solveSimple()
+bool Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
+    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve"));
 
-    // read mesh from file
-    QMap<FieldInfo*, Mesh*> meshes = readMesh();
-    if (meshes.isEmpty())
-        return false;
-
-    MultiSolutionArray<Scalar> multiSolutionArray;
-
-    // create essential boundary conditions and space
-    createSpace(meshes, multiSolutionArray);
-
-    // create solutions
-    createNewSolutions(multiSolutionArray);
+    MultiSolutionArray<Scalar> multiSolutionArray =
+            Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
@@ -432,6 +431,7 @@ bool Solver<Scalar>::solveSimple()
         BlockSolutionID solutionID;
         solutionID.group = m_block;
         solutionID.timeStep = 0;
+        solutionID.adaptivityStep = adaptivityStep;
 
         Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
     }
@@ -441,7 +441,7 @@ bool Solver<Scalar>::solveSimple()
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
+bool Solver<Scalar>::createInitialSpace(int timeStep)
 {
     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
 
@@ -458,18 +458,19 @@ bool Solver<Scalar>::solveInitialAdaptivityStep(int timeStep)
     // create solutions
     createNewSolutions(msa);
 
-    BlockSolutionID solutionID(m_block, timeStep, 0, SolutionType_NonExisting);
+    BlockSolutionID solutionID(m_block, timeStep, 0, SolutionMode_NonExisting);
     Util::solutionStore()->addSolution(solutionID, msa);
 
-    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
+    //Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
 
     return true;
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
+bool Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists)
 {
-    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
+    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, solutionMode));
     MultiSolutionArray<Scalar> msaRef;
 
     cout << "solve adaptivity step " << adaptivityStep << endl;
@@ -515,18 +516,18 @@ bool Solver<Scalar>::solveAdaptivityStep(int timeStep, int adaptivityStep)
     // output
     if (!isError)
     {
-        Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_NonExisting));
-        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Normal), msa);
-        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference), msaRef);
+        Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, solutionMode));
+        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal), msa);
+        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference), msaRef);
     }
 
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::solveCreateAdaptedSpace(int timeStep, int adaptivityStep)
+bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 {
-    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Normal));
-    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionType_Reference));
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
+    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
@@ -562,7 +563,7 @@ bool Solver<Scalar>::solveCreateAdaptedSpace(int timeStep, int adaptivityStep)
         // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
         // store solution
-        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionType_NonExisting), msaNew);
+        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_NonExisting), msaNew);
     }
 
 
@@ -601,7 +602,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
         }
     }
 
-    BlockSolutionID solutionID(m_block, 0, 0, SolutionType_Normal);
+    BlockSolutionID solutionID(m_block, 0, 0, SolutionMode_Normal);
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
     return true;
@@ -610,7 +611,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
 template <typename Scalar>
 bool Solver<Scalar>::solveTimeStep(double timeStep)
 {
-    BlockSolutionID previousSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionType_Normal);
+    BlockSolutionID previousSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal);
     MultiSolutionArray<Scalar> multiSolutionArray = Util::solutionStore()->multiSolution(previousSolutionID);
 
     createNewSolutions(multiSolutionArray);
@@ -673,8 +674,8 @@ void Solver<Scalar>::solve(SolverConfig config)
     Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
 
-    int lastTimeStep = Util::solutionStore()->lastTimeStep(m_block, SolutionType_Normal);
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(m_block, SolutionType_Normal);
+    int lastTimeStep = Util::solutionStore()->lastTimeStep(m_block, SolutionMode_Normal);
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(m_block, SolutionMode_Normal);
 
     if((config.action == SolverAction_Solve) ||
             ((config.action == SolverAction_TimeStep) && (lastTimeStep < 1)))
@@ -687,7 +688,7 @@ void Solver<Scalar>::solve(SolverConfig config)
     }
     else if((config.action == SolverAction_TimeStep) && (lastTimeStep >= 1))
     {
-        BlockSolutionID blockSID(m_block, lastTimeStep, lastAdaptiveStep, SolutionType_Normal);
+        BlockSolutionID blockSID(m_block, lastTimeStep, lastAdaptiveStep, SolutionMode_Normal);
         multiSolutionArray = Util::solutionStore()->multiSolution(blockSID);
     }
     else

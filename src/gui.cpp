@@ -140,7 +140,7 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
     // store variable
     int timeStep = cmbFieldVariable->currentIndex();
     if (timeStep == -1)
-        timeStep = Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionType_Normal);
+        timeStep = Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal);
 
     // clear combo
     cmbFieldVariable->clear();
@@ -163,7 +163,7 @@ void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
 
     cmbFieldVariable->blockSignals(true);
 
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionType_Normal, Util::scene()->activeTimeStep());
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal, Util::scene()->activeTimeStep());
 
     // store variable
     int adaptivityStep = cmbFieldVariable->currentIndex();
@@ -190,7 +190,7 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
     cmbFieldVariable->blockSignals(true);
 
     // store variable
-    SolutionType solutionType = (SolutionType) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    SolutionMode solutionType = (SolutionMode) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
     //    if (adaptivityStep == -1)
     //        adaptivityStep = lastAdaptiveStep;
 
@@ -201,13 +201,13 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
     int adaptivityStep = Util::scene()->activeAdaptivityStep();
 
     //TODO je potreba udelat dynamicky, jak se vybira casovy a adaptivni krok ve formulari
-    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionType_Normal)))
+    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionMode_Normal)))
     {
-        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionType_Normal)), SolutionType_Normal);
+        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionMode_Normal)), SolutionMode_Normal);
     }
-    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionType_Reference)))
+    if(Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionMode_Reference)))
     {
-        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionType_Reference)), SolutionType_Reference);
+        cmbFieldVariable->addItem(/*tr*/(solutionTypeToStringKey(SolutionMode_Reference)), SolutionMode_Reference);
     }
 
     //    for(int step = 0; step <= lastAdaptiveStep; step++)

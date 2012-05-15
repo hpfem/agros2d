@@ -27,7 +27,10 @@ struct MaterialProperty
     QString name;
     QString shortname;
     QString unit;
+    QString dependence_shortname;
+    QString dependence_unit;
     QString source;
+    QString key;
     QString value;
 };
 Q_DECLARE_METATYPE(MaterialProperty)
@@ -94,7 +97,7 @@ void MaterialBrowserDialog::createControls()
     lblMaterial = new QLabel("-");
     lblProperty = new QLabel("-");
     lblShortname = new QLabel("-");
-    lblUnit = new QLabel("-");
+    lblDependenceShortname = new QLabel("-");
     lblSource = new QLabel("-");
     lblSource->setWordWrap(true);
     lblSource->setMaximumWidth(350);
@@ -103,13 +106,15 @@ void MaterialBrowserDialog::createControls()
     chartValue = new Chart();
 
     // chart picker
-    QwtPlotPicker *picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                                              QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-                                              chartValue->canvas());
-    picker->setRubberBandPen(QColor(Qt::green));
-    picker->setRubberBand(QwtPicker::CrossRubberBand);
-    picker->setTrackerMode(QwtPicker::ActiveOnly);
-    picker->setTrackerPen(QColor(Qt::black));
+    QwtPlotPicker *pickerValue = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
+                                                   QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
+                                                   chartValue->canvas());
+    pickerValue->setRubberBandPen(QColor(Qt::green));
+    pickerValue->setRubberBand(QwtPicker::CrossRubberBand);
+    pickerValue->setTrackerMode(QwtPicker::AlwaysOn);
+    pickerValue->setTrackerPen(QColor(Qt::black));
+
+    connect(pickerValue, SIGNAL(moved(const QPoint &)), SLOT(doPickerValueMoved(const QPoint &)));
 
     QVBoxLayout *layoutChartValue = new QVBoxLayout();
     layoutChartValue->addWidget(chartValue);
@@ -122,10 +127,10 @@ void MaterialBrowserDialog::createControls()
     layoutProperty->addWidget(lblMaterial, 0, 1);
     layoutProperty->addWidget(new QLabel(tr("Property:")), 1, 0);
     layoutProperty->addWidget(lblProperty, 1, 1);
-    layoutProperty->addWidget(new QLabel(tr("Shortname:")), 2, 0);
+    layoutProperty->addWidget(new QLabel(tr("Variable:")), 2, 0);
     layoutProperty->addWidget(lblShortname, 2, 1);
-    layoutProperty->addWidget(new QLabel(tr("Unit:")), 3, 0);
-    layoutProperty->addWidget(lblUnit, 3, 1);
+    layoutProperty->addWidget(new QLabel(tr("Dependence:")), 3, 0);
+    layoutProperty->addWidget(lblDependenceShortname, 3, 1);
     layoutProperty->addWidget(new QLabel(tr("Source:")), 4, 0);
     layoutProperty->addWidget(lblSource, 4, 1);
     layoutProperty->addWidget(new QLabel(tr("Value:")), 5, 0);
@@ -156,6 +161,14 @@ void MaterialBrowserDialog::createControls()
     layout->addWidget(buttonBox);
 
     setLayout(layout);
+}
+
+void MaterialBrowserDialog::doPickerValueMoved(const QPoint &pos)
+{
+    QString info;
+    info.sprintf("x=%g, y=%g",
+        chartValue->invTransform(QwtPlot::xBottom, pos.x()),
+        chartValue->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 void MaterialBrowserDialog::readMaterials()
@@ -229,8 +242,11 @@ void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *item, int role)
             material.id = element.toElement().attribute("id");
             material.name = element.toElement().attribute("name");
             material.shortname = element.toElement().attribute("shortname");
+            material.dependence_shortname = element.toElement().attribute("dependence_shortname");
+            material.dependence_unit = element.toElement().attribute("dependence_unit");
             material.unit = element.toElement().attribute("unit");
             material.source = element.toElement().attribute("source");
+            material.key = element.toElement().attribute("key");
             material.value = element.toElement().attribute("value");
 
             QVariant v;
@@ -267,11 +283,11 @@ void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *item, int role)
 
         lblMaterial->setText(trvMaterial->currentItem()->text(0));
         lblProperty->setText(material.name);
-        lblShortname->setText(material.shortname);
-        lblUnit->setText(material.unit);
+        lblShortname->setText(QString("%1 (%2)").arg(material.shortname).arg(material.unit));
+        lblDependenceShortname->setText(QString("%1 (%2)").arg(material.dependence_shortname).arg(material.dependence_unit));
         lblSource->setText(material.source);
 
-        if (material.value.contains(";"))
+        if (!material.key.isEmpty())
         {
             // nonlinear material
             lblValue->setText(tr("nonlinear material"));
@@ -280,13 +296,15 @@ void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *item, int role)
             // axes
             QwtText text("");
             text.setFont(QFont("Helvetica", 10, QFont::Normal));
-            text.setText(material.unit);
+
+            text.setText(lblShortname->text());
             chartValue->setAxisTitle(QwtPlot::yLeft, text);
+            text.setText(lblDependenceShortname->text());
+            chartValue->setAxisTitle(QwtPlot::xBottom, text);
 
             // data
-            QStringList str = material.value.split(";");
-            QStringList strx = str.at(0).split(",");
-            QStringList stry = str.at(1).split(",");
+            QStringList strx = material.key.split(",");
+            QStringList stry = material.value.split(",");
 
             double *x = new double[strx.count()];
             double *y = new double[stry.count()];

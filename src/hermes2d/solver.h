@@ -41,16 +41,16 @@ public:
     void init( WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
     void solve(SolverConfig config);
-    void doAdaptivityStep();
-    void doTimeStep();
+    //void doAdaptivityStep();
+    //void doTimeStep();
 
-    bool solveSimple();
     bool solveTimeStep(double timeStep);
     bool solveInitialTimeStep();
 
-    bool solveInitialAdaptivityStep(int timeStep);
-    bool solveAdaptivityStep(int timeStep, int adaptivityStep);
-    bool solveCreateAdaptedSpace(int timeStep, int adaptivityStep);
+    bool createInitialSpace(int timeStep);
+    bool solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
+    bool solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
+    bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
 private:
     Block* m_block;
