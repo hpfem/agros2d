@@ -62,6 +62,19 @@
 using namespace std;
 using std::tr1::shared_ptr;
 
+// sign function
+inline int sign(double arg)
+{
+    if (arg > 0)
+        return 1;
+    else if (arg < 0)
+        return -1;
+    else
+        return 0;
+}
+
+inline Hermes::Ord sign(Hermes::Ord arg) { return Hermes::Ord(); }
+
 // show page
 void showPage(const QString &str = "");
 
