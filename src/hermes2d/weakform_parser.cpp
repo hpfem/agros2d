@@ -250,6 +250,17 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
 
     // nonlinear parsers
     setNonlinearParsers();
+
+    // register nonlinear values from all components
+    for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+    {
+        std::stringstream number;
+        number << (k+1);
+
+        m_parser->DefineVar("value" + number.str(), &pnlvalue[k]);
+        m_parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pnldx[k]);
+        m_parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pnldy[k]);
+    }
 }
 
 template <typename Scalar>
@@ -375,17 +386,6 @@ CustomParserVectorFormVol<Scalar>::CustomParserVectorFormVol(unsigned int i, uns
 
     // nonlinear parsers
     setNonlinearParsers();
-
-    // register nonlinear values from all components
-    for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
-    {
-        std::stringstream number;
-        number << (k+1);
-
-        m_parser->DefineVar("value" + number.str(), &pnlvalue[k]);
-        m_parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pnldx[k]);
-        m_parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pnldy[k]);
-    }
 }
 
 template <typename Scalar>
