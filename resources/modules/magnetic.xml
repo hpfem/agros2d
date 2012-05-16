@@ -69,14 +69,17 @@
                        1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
                        ma_gamma * uval * ma_vy * vdz" />
                 -->
-				<module:matrix_form i="1" j="1"
-                        planar="((abs(dma_mur) > 0 &amp;&amp; (updx * updx + updy * updy) > 0) ? - dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / (updx * updx + updy * updy)^0.5 * (updx * vdx + updy * vdy) : 0) +
-                                1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
-                                ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
-                        axi="((abs(dma_mur) > 0 &amp;&amp; ((updr + upval / (r + 1e-12)) * (updr + upval / (r + 1e-12)) + updz * updz) > 0) ? - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
-                       ((updr + upval / (r + 1e-12)) * (updr + upval / (r + 1e-12)) + updz * updz)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) : 0) +
-                       1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
-                       ma_gamma * uval * ma_vy * vdz" />
+<!--                <module:matrix_form i="1" j="1"
+                         planar="((abs(dma_mur) > 0 &amp;&amp; (updx * updx + updy * updy) > 0) ? - dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / (updx * updx + updy * updy)^0.5 * (updx * vdx + updy * vdy) : 0) +
+                                 1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
+                                 ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+                         axi="((abs(dma_mur) > 0 &amp;&amp; ((updr + upval / (r + 1e-12)) * (updr + upval / (r + 1e-12)) + updz * updz) > 0) ? - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
+                        ((updr + upval / (r + 1e-12)) * (updr + upval / (r + 1e-12)) + updz * updz)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) : 0) +
+                        1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) -
+                        ma_gamma * uval * ma_vy * vdz" />-->
+                <module:matrix_form i="1" j="1"
+                                 planar="1"
+                                 axi="1" />
 
                 <module:vector_form i="1" j="1"
                                         planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
@@ -129,16 +132,19 @@
 				<module:quantity id="magnetic_current_density_external_real" />
 				<module:quantity id="magnetic_current_density_external_imag" />
 
-				<module:matrix_form i="1" j="1"
-                                        planar="- dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
-                                                         (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)^0.5 * (updx * vdx + updy * vdy) +
+<!--				<module:matrix_form i="1" j="1"
+                                        planar="((abs(dma_mur) > 0 &amp;&amp; (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) > 0) ? - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
+                                                         (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)^0.5 * (updx * vdx + updy * vdy) : 0) +
                                                 1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
                                             ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
-                                        axi="- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
-                                         ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) +
+                                        axi="((abs(dma_mur) > 0 &amp;&amp; ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2) > 0) ? - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
+                                         ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) : 0) +
                                              1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
-                                         ma_gamma * uval * ma_vy * vdz" />
-				<module:vector_form i="1" j="1"
+                                         ma_gamma * uval * ma_vy * vdz" />-->
+                                         <module:matrix_form i="1" j="1"
+                                                 planar="1"
+                                                 axi="1" />
+                                <module:vector_form i="1" j="1"
 					planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
                                             ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)
                                               - ma_Jer * vval
@@ -148,16 +154,19 @@
                                               -ma_Jer * vval
                                               + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" />
 
-				<module:matrix_form i="2" j="2"
-                                        planar="- dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
-                                                    (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)^0.5 * (updx * vdx + updy * vdy) +
+<!--				<module:matrix_form i="2" j="2"
+                                        planar="((abs(dma_mur) > 0 &amp;&amp; (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) > 0) ? - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
+                                                    (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)^0.5 * (updx * vdx + updy * vdy) : 0) +
                                         1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
                                             ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
-                                        axi="- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
-                                                   ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) +
+                                        axi="((abs(dma_mur) > 0 &amp;&amp; ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2) > 0) ? - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) /
+                                               ((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12)) : 0) +
                                         1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / (r + 1e-12)) -
-                                         ma_gamma * uval * ma_vy * vdz" />
-				<module:vector_form i="2" j="2"
+                                         ma_gamma * uval * ma_vy * vdz" />-->
+                                         <module:matrix_form i="2" j="2"
+                                                 planar="1"
+                                                 axi="1" />
+                                <module:vector_form i="2" j="2"
 					planar="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -
                                             ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)
                                             - ma_Jei * vval"
