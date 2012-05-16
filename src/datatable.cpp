@@ -228,9 +228,9 @@ void DataTable::initSpline()
         data = data->next;
     }
 
-    // m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, false, false, false, false);
+    m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, false, false, false, false);
     // m_spline = new Hermes::Hermes2D::CubicSpline(points, values, values.at(0), values.at(values.size() - 1), true, true, true, true);
-    m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0, 0, true, true, false, false);
+    // m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0, 0, true, true, false, false);
 }
 
 int DataTable::size()

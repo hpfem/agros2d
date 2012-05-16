@@ -41,7 +41,7 @@ void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 {
     m_block = block;
     m_wf = wf;
-    isError = false;    
+    isError = false;
 }
 
 template <typename Scalar>
@@ -153,7 +153,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     if (custom_form)
                     {
                         bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
-//                        cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
+                        //                        cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                     }
                 }
             }
@@ -371,7 +371,6 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
-
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
@@ -382,7 +381,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             msa.setSolveTime(newton.get_solve_time() * 1000.0);
             delete coeff_vec;
         }
-        catch(Hermes::Exceptions::Exception e)
+        catch (Hermes::Exceptions::Exception e)
         {
             QString error = QString(e.getMsg());
             Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Newton's iteration failed: %1").arg(error));
