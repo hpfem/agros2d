@@ -342,8 +342,18 @@ class WeakForm:
                      'uval': 'u->val[i]',
                      'vval': 'v->val[i]', 
                      'uptval': 'ext->fn[this->i]->val[i]',
-                     'deltat': 'Util::problem()->config()->timeStep().number()'                       
-                     }            
+                     'deltat': 'Util::problem()->config()->timeStep().number()',
+                     'value1': 'u_ext[0]->val[i]',
+                     'value2': 'u_ext[1]->val[i]',
+                     'dx1': 'u_ext[0]->dx[i]',
+                     'dx2': 'u_ext[1]->dx[i]',
+                     'dy1': 'u_ext[0]->dy[i]',
+                     'dy2': 'u_ext[1]->dy[i]',
+                     'dr1': 'u_ext[0]->dx[i]',
+                     'dr2': 'u_ext[1]->dx[i]',
+                     'dz1': 'u_ext[0]->dy[i]',
+                     'dz2': 'u_ext[1]->dy[i]'
+                     }
         
         
         latex_replaces = { '*': '\\cdot ',
@@ -372,7 +382,8 @@ class WeakForm:
                 
         symbols = ['x', 'y', 'r', 'z', 'f', 'udr', 'udz', 'udx', 'udy',
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
-                   'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI']
+                   'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI',
+                   'value1', 'value2', 'dx1', 'dx2', 'dy1', 'dy2', 'dr1', 'dr2', 'dz1', 'dz2']
                            
         variables = []
         variables_derivatives = []
