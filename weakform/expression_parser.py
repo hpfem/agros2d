@@ -18,7 +18,7 @@ class NumericStringParser(object):
                          'xi', 'omicron', 'pi', 'rho', 'sigma', 'tau', 
                          'upsilon', 'phi', 'chi', 'psi', 'omega')
         
-        self.functions = ('cos', 'sin', 'log', 'log10', 'sqrt')
+        self.functions = ('cos', 'sin', 'log', 'log10', 'sqrt', 'sign', 'abs')
         
         self.string = ''            
         self.replaces = replaces

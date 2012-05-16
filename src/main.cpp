@@ -27,7 +27,7 @@ public:
         catch(Hermes::Exceptions::Exception& e)
         {
             qCritical() << "Hermes exception thrown: " << e.getMsg() << endl;
-            assert(0);
+            // assert(0);
         }
         catch(...)
         {
