@@ -21,6 +21,15 @@
 #include "scene.h"
 #include "hermes2d/module.h"
 
+#if defined(WIN32) || defined(_WINDOWS)
+# TODO: fix
+void setenv(std::string pSymbol, std::string pValue, bool pOverwrite = true)
+{
+    if (pOverwrite || GetEnv(pSymbol).length == 0)
+        putenv(std.string.toStringz(pSymbol ~ "=" ~ pValue));
+}
+#endif
+
 Config::Config() : eleConfig(NULL)
 {
     load();
