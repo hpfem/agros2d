@@ -20,11 +20,8 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-#include <tr1/memory>
 #include "util.h"
 #include "solutiontypes.h"
-
-using namespace std::tr1;
 
 class Block;
 class FieldInfo;
