@@ -291,12 +291,12 @@ macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
-    INCLUDEPATH += ../../qwt-5.2.1/src
+    INCLUDEPATH += ../../qwt-6.0.1/src
 
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
-    LIBS += -L../../qwt-5.2.1/lib
+    LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lpthread
     LIBS += -lpython2.7
     LIBS += -lqwt
