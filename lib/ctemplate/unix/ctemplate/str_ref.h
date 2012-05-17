@@ -1,4 +1,4 @@
-// Copyright (c) 2009, Google Inc.
+// Copyright (c) 2012, Olaf van der Spek <olafvdspek@gmail.com>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,53 +28,102 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // ---
-//
-// This contains some implementation of PerExpandData that is still simple
-// but is not conveniently defined in the header file, e.g., because it would
-// introduce new include dependencies.
+// Author: Olaf van der Spek <olafvdspek@gmail.com>
 
-#include <config.h>
-#include <ctemplate/per_expand_data.h>
-#include <ctemplate/template_annotator.h>
+#ifndef TEMPLATE_STR_REF_H_
+#define TEMPLATE_STR_REF_H_
 
-_START_GOOGLE_NAMESPACE_
+#include <cstddef>
 
-using std::string;
 
-#ifndef _MSC_VER
-bool PerExpandData::DataEq::operator()(const char* s1, const char* s2) const {
-  return ((s1 == 0 && s2 == 0) ||
-          (s1 && s2 && *s1 == *s2 && strcmp(s1, s2) == 0));
-}
-#endif
 
-PerExpandData::~PerExpandData() {
-  delete map_;
-}
+namespace ctemplate {
 
-TemplateAnnotator* PerExpandData::annotator() const {
-  if (annotator_ != NULL) {
-    return annotator_;
+template <class T>
+class str_ref_basic
+{
+public:
+  str_ref_basic()
+  {
+    clear();
   }
-  // TextTemplateAnnotator has no static state.  So direct static definition
-  // should be safe.
-  static TextTemplateAnnotator g_default_annotator;
-  return &g_default_annotator;
+
+  template <class U>
+  str_ref_basic(const U& c)
+  {
+    if (c.end() != c.begin())
+      assign(&*c.begin(), c.end() - c.begin() + &*c.begin());
+    else
+      clear();
+  }
+
+  str_ref_basic(const void* b, const void* e)
+  {
+    assign(b, e);
+  }
+
+  str_ref_basic(const void* b, size_t sz)
+  {
+    assign(b, sz);
+  }
+
+  str_ref_basic(const char* b)
+  {
+    if (b)
+      assign(b, strlen(b));
+    else
+      clear();
+  }
+
+  void clear()
+  {
+    begin_ = end_ = NULL;
+  }
+
+  void assign(const void* b, const void* e)
+  {
+    begin_ = reinterpret_cast<T>(b);
+    end_ = reinterpret_cast<T>(e);
+  }
+
+  void assign(const void* b, size_t sz)
+  {
+    begin_ = reinterpret_cast<T>(b);
+    end_ = begin_ + sz;
+  }
+
+  T begin() const
+  {
+    return begin_;
+  }
+
+  T end() const
+  {
+    return end_;
+  }
+
+  T data() const
+  {
+    return begin();
+  }
+
+  size_t size() const
+  {
+    return end() - begin();
+  }
+
+  bool empty() const
+  {
+    return begin() == end();
+  }
+private:
+  T begin_;
+  T end_;
+};
+
+typedef str_ref_basic<const unsigned char*> data_ref;
+typedef str_ref_basic<const char*> str_ref;
+
 }
 
-void PerExpandData::InsertForModifiers(const char* key, const void* value) {
-  if (!map_)
-    map_ = new DataMap;
-  (*map_)[key] = value;
-}
-
-  // Retrieve data specific to this Expand call. Returns NULL if key
-  // is not found.  This should only be used by template modifiers.
-const void* PerExpandData::LookupForModifiers(const char* key) const {
-  if (!map_)
-    return NULL;
-  const DataMap::const_iterator it = map_->find(key);
-  return it == map_->end() ? NULL : it->second;
-}
-
-_END_GOOGLE_NAMESPACE_
+#endif // TEMPLATE_STR_REF_H_

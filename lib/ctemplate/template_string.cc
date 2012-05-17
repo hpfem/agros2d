@@ -31,7 +31,7 @@
 // Authors: jcrim@google.com (Jay Crim)
 //          csilvers@google.com (Craig Silverstein)
 
-#include <ctemplate/config.h>
+#include <config.h>
 #include "base/mutex.h"   // This has to come first to get _XOPEN_SOURCE
 #include <ctemplate/template_string.h>
 #include HASH_SET_H

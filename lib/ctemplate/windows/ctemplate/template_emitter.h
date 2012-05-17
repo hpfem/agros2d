@@ -1,4 +1,4 @@
-// Copyright (c) 2009, Google Inc.
+// Copyright (c) 2007, Google Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,53 +28,49 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // ---
+// Author: csilvers@google.com (Craig Silverstein)
 //
-// This contains some implementation of PerExpandData that is still simple
-// but is not conveniently defined in the header file, e.g., because it would
-// introduce new include dependencies.
+// When we expand a template, we expand into an abstract "emitter".
+// This is typically a string, but could be a file-wrapper, or any
+// other data structure that supports this very simple "append" API.
 
-#include <config.h>
-#include <ctemplate/per_expand_data.h>
-#include <ctemplate/template_annotator.h>
+#ifndef TEMPLATE_TEMPLATE_EMITTER_H_
+#define TEMPLATE_TEMPLATE_EMITTER_H_
 
-_START_GOOGLE_NAMESPACE_
+#include <sys/types.h>     // for size_t
+#include <string>
 
-using std::string;
-
-#ifndef _MSC_VER
-bool PerExpandData::DataEq::operator()(const char* s1, const char* s2) const {
-  return ((s1 == 0 && s2 == 0) ||
-          (s1 && s2 && *s1 == *s2 && strcmp(s1, s2) == 0));
-}
+// NOTE: if you are statically linking the template library into your binary
+// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
+// as a compiler flag in your project file to turn off the dllimports.
+#ifndef CTEMPLATE_DLL_DECL
+# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
 #endif
 
-PerExpandData::~PerExpandData() {
-  delete map_;
+namespace ctemplate {
+
+class CTEMPLATE_DLL_DECL ExpandEmitter {
+ public:
+  ExpandEmitter() {}
+  virtual ~ExpandEmitter() {}
+  virtual void Emit(char c) = 0;
+  virtual void Emit(const std::string& s) = 0;
+  virtual void Emit(const char* s) = 0;
+  virtual void Emit(const char* s, size_t slen) = 0;
+};
+
+
+class CTEMPLATE_DLL_DECL StringEmitter : public ExpandEmitter {
+  std::string* const outbuf_;
+ public:
+  StringEmitter(std::string* outbuf) : outbuf_(outbuf) {}
+  virtual void Emit(char c) { *outbuf_ += c; }
+  virtual void Emit(const std::string& s) { *outbuf_ += s; }
+  virtual void Emit(const char* s) { *outbuf_ += s; }
+  virtual void Emit(const char* s, size_t slen) { outbuf_->append(s, slen); }
+};
+
 }
 
-TemplateAnnotator* PerExpandData::annotator() const {
-  if (annotator_ != NULL) {
-    return annotator_;
-  }
-  // TextTemplateAnnotator has no static state.  So direct static definition
-  // should be safe.
-  static TextTemplateAnnotator g_default_annotator;
-  return &g_default_annotator;
-}
 
-void PerExpandData::InsertForModifiers(const char* key, const void* value) {
-  if (!map_)
-    map_ = new DataMap;
-  (*map_)[key] = value;
-}
-
-  // Retrieve data specific to this Expand call. Returns NULL if key
-  // is not found.  This should only be used by template modifiers.
-const void* PerExpandData::LookupForModifiers(const char* key) const {
-  if (!map_)
-    return NULL;
-  const DataMap::const_iterator it = map_->find(key);
-  return it == map_->end() ? NULL : it->second;
-}
-
-_END_GOOGLE_NAMESPACE_
+#endif  // TEMPLATE_TEMPLATE_EMITTER_H_

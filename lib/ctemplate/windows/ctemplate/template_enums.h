@@ -1,4 +1,4 @@
-// Copyright (c) 2009, Google Inc.
+// Copyright (c) 2006, Google Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,52 +29,19 @@
 
 // ---
 //
-// This contains some implementation of PerExpandData that is still simple
-// but is not conveniently defined in the header file, e.g., because it would
-// introduce new include dependencies.
+// Alas that we can't forward-declare enums!  These are the ones
+// used by multiple files
 
-#include <config.h>
-#include <ctemplate/per_expand_data.h>
-#include <ctemplate/template_annotator.h>
+#ifndef TEMPLATE_TEMPLATE_ENUMS_H_
+#define TEMPLATE_TEMPLATE_ENUMS_H_
 
-_START_GOOGLE_NAMESPACE_
+namespace ctemplate {
 
-using std::string;
+// Enums for GetTemplate flag values
+enum Strip { DO_NOT_STRIP, STRIP_BLANK_LINES, STRIP_WHITESPACE,
+             NUM_STRIPS };   // sentinel value
 
-#ifndef _MSC_VER
-bool PerExpandData::DataEq::operator()(const char* s1, const char* s2) const {
-  return ((s1 == 0 && s2 == 0) ||
-          (s1 && s2 && *s1 == *s2 && strcmp(s1, s2) == 0));
-}
-#endif
-
-PerExpandData::~PerExpandData() {
-  delete map_;
 }
 
-TemplateAnnotator* PerExpandData::annotator() const {
-  if (annotator_ != NULL) {
-    return annotator_;
-  }
-  // TextTemplateAnnotator has no static state.  So direct static definition
-  // should be safe.
-  static TextTemplateAnnotator g_default_annotator;
-  return &g_default_annotator;
-}
 
-void PerExpandData::InsertForModifiers(const char* key, const void* value) {
-  if (!map_)
-    map_ = new DataMap;
-  (*map_)[key] = value;
-}
-
-  // Retrieve data specific to this Expand call. Returns NULL if key
-  // is not found.  This should only be used by template modifiers.
-const void* PerExpandData::LookupForModifiers(const char* key) const {
-  if (!map_)
-    return NULL;
-  const DataMap::const_iterator it = map_->find(key);
-  return it == map_->end() ? NULL : it->second;
-}
-
-_END_GOOGLE_NAMESPACE_
+#endif  // TEMPLATE_TEMPLATE_ENUMS_H_

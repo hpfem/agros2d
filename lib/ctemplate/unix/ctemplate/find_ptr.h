@@ -1,4 +1,4 @@
-// Copyright (c) 2009, Google Inc.
+// Copyright (c) 2012, Olaf van der Spek <olafvdspek@gmail.com>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,53 +28,43 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // ---
-//
-// This contains some implementation of PerExpandData that is still simple
-// but is not conveniently defined in the header file, e.g., because it would
-// introduce new include dependencies.
+// Author: Olaf van der Spek <olafvdspek@gmail.com>
 
-#include <config.h>
-#include <ctemplate/per_expand_data.h>
-#include <ctemplate/template_annotator.h>
+#ifndef TEMPLATE_FIND_PTR_H_
+#define TEMPLATE_FIND_PTR_H_
 
-_START_GOOGLE_NAMESPACE_
 
-using std::string;
 
-#ifndef _MSC_VER
-bool PerExpandData::DataEq::operator()(const char* s1, const char* s2) const {
-  return ((s1 == 0 && s2 == 0) ||
-          (s1 && s2 && *s1 == *s2 && strcmp(s1, s2) == 0));
-}
-#endif
+namespace ctemplate {
 
-PerExpandData::~PerExpandData() {
-  delete map_;
+template <class T, class U>
+typename T::value_type::second_type* find_ptr(T& c, U v)
+{
+  typename T::iterator i = c.find(v);
+  return i == c.end() ? NULL : &i->second;
 }
 
-TemplateAnnotator* PerExpandData::annotator() const {
-  if (annotator_ != NULL) {
-    return annotator_;
-  }
-  // TextTemplateAnnotator has no static state.  So direct static definition
-  // should be safe.
-  static TextTemplateAnnotator g_default_annotator;
-  return &g_default_annotator;
+template <class T, class U>
+const typename T::value_type::second_type* find_ptr(const T& c, U v)
+{
+  typename T::const_iterator i = c.find(v);
+  return i == c.end() ? NULL : &i->second;
 }
 
-void PerExpandData::InsertForModifiers(const char* key, const void* value) {
-  if (!map_)
-    map_ = new DataMap;
-  (*map_)[key] = value;
+template <class T, class U>
+typename T::value_type::second_type find_ptr2(T& c, U v)
+{
+  typename T::iterator i = c.find(v);
+  return i == c.end() ? NULL : i->second;
 }
 
-  // Retrieve data specific to this Expand call. Returns NULL if key
-  // is not found.  This should only be used by template modifiers.
-const void* PerExpandData::LookupForModifiers(const char* key) const {
-  if (!map_)
-    return NULL;
-  const DataMap::const_iterator it = map_->find(key);
-  return it == map_->end() ? NULL : it->second;
+template <class T, class U>
+const typename T::value_type::second_type find_ptr2(const T& c, U v)
+{
+  typename T::const_iterator i = c.find(v);
+  return i == c.end() ? NULL : i->second;
 }
 
-_END_GOOGLE_NAMESPACE_
+}
+
+#endif // TEMPLATE_FIND_PTR_H_

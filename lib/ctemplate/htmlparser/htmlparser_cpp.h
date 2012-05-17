@@ -34,7 +34,7 @@
 #ifndef SECURITY_STREAMHTMLPARSER_HTMLPARSER_CPP_H__
 #define SECURITY_STREAMHTMLPARSER_HTMLPARSER_CPP_H__
 
-#include <ctemplate/config.h>
+#include <config.h>
 #include <string>
 #include "htmlparser/htmlparser.h"
 #include "htmlparser/jsparser.h"
