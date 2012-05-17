@@ -609,5 +609,5 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 
 //    // expand template
 //    ctemplate::ExpandTemplate(fileNameTemplate.toStdString(), ctemplate::DO_NOT_STRIP, &dict, &report);
-//    return  QString::fromStdString(report);
+    return  QString::fromStdString("");
 }
