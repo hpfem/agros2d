@@ -1,7 +1,6 @@
 #ifndef SOLUTIONTYPES_H
 #define SOLUTIONTYPES_H
 
-#include <tr1/memory>
 #include "util.h"
 #include "hermes2d.h"
 

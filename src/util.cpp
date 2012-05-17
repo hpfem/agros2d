@@ -28,6 +28,8 @@
 
 #include "hermes2d/module.h"
 
+# define M_PI_2		1.57079632679489661923	/* pi/2 */
+
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
