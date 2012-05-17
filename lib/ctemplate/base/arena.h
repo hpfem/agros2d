@@ -270,7 +270,7 @@
 #ifndef BASE_ARENA_H_
 #define BASE_ARENA_H_
 
-#include "ctemplate/config.h"
+#include <config.h>
 #include "base/mutex.h"   // must go first to get _XOPEN_SOURCE
 #include <assert.h>
 #include <string.h>

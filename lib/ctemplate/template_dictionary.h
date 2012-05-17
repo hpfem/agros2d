@@ -55,6 +55,7 @@
 #include <string>
 #include <vector>
 
+#include <ctemplate/str_ref.h>
 #include <ctemplate/template_dictionary_interface.h>
 #include <ctemplate/template_modifiers.h>
 #include <ctemplate/template_string.h>
@@ -84,7 +85,7 @@ class  TemplateDictionary : public TemplateDictionaryInterface {
   static UnsafeArena* const NO_ARENA;
 
   std::string name() const {
-    return std::string(name_.ptr_, name_.length_);
+    return std::string(name_.data(), name_.size());
   }
 
   // Returns a recursive copy of this dictionary.  This dictionary
@@ -102,12 +103,36 @@ class  TemplateDictionary : public TemplateDictionaryInterface {
   // either a char* or a C++ string, or a TemplateString(s, slen).
 
   void SetValue(const TemplateString variable, const TemplateString value);
-void SetIntValue(const TemplateString variable, long value);
+  void SetIntValue(const TemplateString variable, long value);
   void SetFormattedValue(const TemplateString variable, const char* format, ...)
 #if 1
       __attribute__((__format__ (__printf__, 3, 4)))
 #endif
      ;  // starts at 3 because of implicit 1st arg 'this'
+
+  class SetProxy {
+  public:
+    SetProxy(TemplateDictionary& dict, const TemplateString& variable) :
+      dict_(dict),
+      variable_(variable) {
+    }
+
+    void operator=(str_ref value) {
+      dict_.SetValue(variable_, TemplateString(value.data(), value.size()));
+    }
+
+    void operator=(long value) {
+      dict_.SetIntValue(variable_, value);
+    }
+
+  private:
+    TemplateDictionary& dict_;
+    const TemplateString& variable_;
+  };
+
+  SetProxy operator[](const TemplateString& variable) {
+    return SetProxy(*this, variable);
+  }
 
   // We also let you set values in the 'global' dictionary which is
   // referenced when all other dictionaries fail.  Note this is a
@@ -294,10 +319,10 @@ void SetIntValue(const TemplateString variable, long value);
   // trailing-NUL check in the TemplateString version of Memdup.
   TemplateString Memdup(const char* s, size_t slen);
   TemplateString Memdup(const TemplateString& s) {
-    if (s.is_immutable() && s.ptr_[s.length_] == '\0') {
+    if (s.is_immutable() && s.data()[s.size()] == '\0') {
       return s;
     }
-    return Memdup(s.ptr_, s.length_);
+    return Memdup(s.data(), s.size());
   }
 
   // Used for recursive MakeCopy calls.
@@ -338,10 +363,10 @@ void SetIntValue(const TemplateString variable, long value);
   // of TemplateString, but we are
   static std::string PrintableTemplateString(
       const TemplateString& ts) {
-    return std::string(ts.ptr_, ts.length_);
+    return std::string(ts.data(), ts.size());
   }
   static bool InvalidTemplateString(const TemplateString& ts) {
-    return ts.ptr_ == NULL;
+    return ts.data() == NULL;
   }
   // Compilers differ about whether nested classes inherit our friendship.
   // The only thing DictionaryPrinter needs is IdToString, so just re-export.

@@ -60,7 +60,7 @@
 #ifndef BASE_ARENA_INL_H_
 #define BASE_ARENA_INL_H_
 
-#include "ctemplate/config.h"
+#include <config.h>
 #include "base/arena.h"
 #include <assert.h>
 #include <stddef.h>
@@ -105,6 +105,9 @@ template <class T, class C> class ArenaAllocator {
   }
   void construct(pointer p, const T & val) {
     new(reinterpret_cast<void*>(p)) T(val);
+  }
+  void construct(pointer p) {
+    new(reinterpret_cast<void*>(p)) T();
   }
   void destroy(pointer p) { p->~T(); }
 

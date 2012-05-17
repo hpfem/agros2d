@@ -29,7 +29,7 @@
 
 // ---
 
-#include "ctemplate/config.h"
+#include <config.h>
 #include "base/mutex.h"     // This must go first so we get _XOPEN_SOURCE
 #include <ctemplate/template.h>
 
@@ -82,9 +82,10 @@
 #define AS_STR(x)   AS_STR1(x)
 
 // A very simple logging system
+#undef LOG   // a non-working version is provided in base/util.h; redefine it
 static int kVerbosity = 0;   // you can change this by hand to get vlogs
 #define LOG(level)   std::cerr << #level ": "
-#define VLOG(level)  if (kVerbosity >= level)  std::cerr << "V" #level ": "
+#define VLOG(level)  if (kVerbosity >= level)  LOG(level)
 
 // TODO(csilvers): use our own tables for these?
 static bool ascii_isalnum(char c) {
@@ -96,8 +97,8 @@ static bool ascii_isspace(char c) {
 }
 
 #define strsuffix(str, suffix)                                          \
-   ( strlen(str) > (sizeof(""suffix"")-1) &&                            \
-     strcmp(str + strlen(str) - (sizeof(suffix)-1), suffix) == 0 )
+   ( strlen(str) > (sizeof("" suffix "") - 1) &&                            \
+     strcmp(str + strlen(str) - (sizeof(suffix) - 1), suffix) == 0 )
 
 using std::endl;
 using std::string;
@@ -1033,11 +1034,11 @@ bool VariableTemplateNode::Expand(ExpandEmitter *output_buffer,
   const TemplateString value = dictionary->GetValue(variable_);
 
   if (AnyMightModify(token_.modvals, per_expand_data)) {
-    EmitModifiedString(token_.modvals, value.ptr_, value.length_,
+    EmitModifiedString(token_.modvals, value.data(), value.size(),
                        per_expand_data, output_buffer);
   } else {
     // No need to modify value, so just emit it.
-    output_buffer->Emit(value.ptr_, value.length_);
+    output_buffer->Emit(value.data(), value.size());
   }
 
   if (per_expand_data->annotate()) {
@@ -2140,9 +2141,9 @@ Template* Template::StringToTemplate(const TemplateString& content,
   // But we have to do the "loading" and parsing ourselves:
 
   // BuildTree deletes the buffer when done, so we need a copy for it.
-  char* buffer = new char[content.length_];
-  size_t content_len = content.length_;
-  memcpy(buffer, content.ptr_, content_len);
+  char* buffer = new char[content.size()];
+  size_t content_len = content.size();
+  memcpy(buffer, content.data(), content_len);
   tpl->StripBuffer(&buffer, &content_len);
   if ( tpl->BuildTree(buffer, buffer + content_len) ) {
     assert(tpl->state() == TS_READY);
@@ -2170,7 +2171,7 @@ Template* Template::StringToTemplate(const TemplateString& content,
 Template::Template(const TemplateString& filename, Strip strip,
                    TemplateCache* owner)
     // TODO(csilvers): replace ToString() with an is_immutable() check
-    : original_filename_(filename.ToString()), resolved_filename_(),
+    : original_filename_(filename.data(), filename.size()), resolved_filename_(),
       filename_mtime_(0), strip_(strip), state_(TS_EMPTY),
       template_cache_(owner), template_text_(NULL), template_text_len_(0),
       tree_(NULL), parse_state_(),

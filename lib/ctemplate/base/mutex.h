@@ -111,7 +111,7 @@
 #ifndef GOOGLE_MUTEX_H_
 #define GOOGLE_MUTEX_H_
 
-#include "ctemplate/config.h"
+#include <config.h>
 #if defined(NO_THREADS)
   typedef int MutexType;      // to keep a lock-count
 #elif defined(_WIN32) || defined(__CYGWIN32__) || defined(__CYGWIN64__)

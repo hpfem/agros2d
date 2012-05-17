@@ -33,7 +33,7 @@
 // but is not conveniently defined in the header file, e.g., because it would
 // introduce new include dependencies.
 
-#include "ctemplate/config.h"
+#include <config.h>
 #include <ctemplate/per_expand_data.h>
 #include <ctemplate/template_annotator.h>
 

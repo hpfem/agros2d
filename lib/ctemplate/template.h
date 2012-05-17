@@ -57,7 +57,7 @@ class PerExpandData;
 }
 #endif
 
-namespace HTMLPARSER_NAMESPACE {
+namespace google_ctemplate_streamhtmlparser {
 class HtmlParser;
 }
 
@@ -434,7 +434,7 @@ class  Template {
   TemplateContext initial_context_;
   // Non-null if the template was initialized in an Auto-Escape mode that
   // requires a parser (currently TC_HTML, TC_CSS and TC_JS).
-  HTMLPARSER_NAMESPACE::HtmlParser *htmlparser_;
+  google_ctemplate_streamhtmlparser::HtmlParser *htmlparser_;
 
   // A sorted list of trusted variable names, declared here because a unittest
   // needs to verify that it is appropriately sorted (an unsorted array would

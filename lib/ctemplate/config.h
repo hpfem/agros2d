@@ -131,7 +131,7 @@
 /* #undef HAVE___INT64 */
 
 /* The namespace to put the htmlparser code. */
-#define HTMLPARSER_NAMESPACE HTMLPARSER_NAMESPACE
+#define HTMLPARSER_NAMESPACE google_ctemplate_streamhtmlparser
 
 /* define if first argument to InterlockedExchange is just LONG */
 #define INTERLOCKED_EXCHANGE_NONVOLATILE 1
@@ -147,19 +147,22 @@
 #define PACKAGE "ctemplate"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "opensource@google.com"
+#define PACKAGE_BUGREPORT "google-ctemplate@googlegroups.com"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "ctemplate"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "ctemplate 1.0rc2"
+#define PACKAGE_STRING "ctemplate 2.2"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "ctemplate"
 
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
+
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.0rc2"
+#define PACKAGE_VERSION "2.2"
 
 /* printf format code for printing a size_t and ssize_t */
 #define PRIdS "ld"
@@ -181,7 +184,7 @@
 #define STL_NAMESPACE std
 
 /* Version number of package */
-#define VERSION "1.0rc2"
+#define VERSION "2.2"
 
 /* Stops putting the code inside the Google namespace */
 #define _END_GOOGLE_NAMESPACE_ }
