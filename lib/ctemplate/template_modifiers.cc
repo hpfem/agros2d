@@ -45,7 +45,7 @@
 // the list of Safe XSS Alternatives.
 //
 
-#include <config.h>
+#include <ctemplate/config.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>

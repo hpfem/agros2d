@@ -29,7 +29,7 @@
 
 // ---
 
-#include <config.h>
+#include <ctemplate/config.h>
 #include "base/mutex.h"  // This must go first so we get _XOPEN_SOURCE
 #include <ctemplate/template_cache.h>
 #include <assert.h>      // for assert()

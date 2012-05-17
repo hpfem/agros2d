@@ -34,7 +34,7 @@
 // to windows easier, though it's nice to have an API for this kind of
 // thing.
 
-#include <config.h>
+#include <ctemplate/config.h>
 #include <string>
 #include <ctype.h>       // for isalpha, used on windows
 #include <string.h>      // for strchr

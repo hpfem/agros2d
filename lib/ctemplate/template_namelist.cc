@@ -29,7 +29,7 @@
 
 // ---
 
-#include <config.h>
+#include <ctemplate/config.h>
 #include <stdlib.h>
 #include <sys/stat.h>            // for stat()
 #include <time.h>                // for time_t

@@ -39,7 +39,7 @@
 // suggested by Ron van der Wal and Scott Meyers at
 //     http://www.aristeia.com/BookErrata/M27Comments_frames.html
 
-#include <config.h>
+#include <ctemplate/config.h>
 #include "base/arena.h"
 #include "base/arena-inl.h"
 #include <assert.h>
