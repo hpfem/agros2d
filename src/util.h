@@ -34,8 +34,6 @@
 #include <cmath>
 #include <limits>
 #include <vector>
-#include <tr1/memory>
-
 
 #include <locale.h>
 #include <stdlib.h>
