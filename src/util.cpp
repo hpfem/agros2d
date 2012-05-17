@@ -35,7 +35,7 @@ static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
 static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList; // FIXME: deprecated - DO NOT USE
 static QHash<WeakFormsType, QString> weakFormsTypeList;
-static QHash<WeakForm, QString> weakFormList;
+static QHash<WeakFormKind, QString> weakFormList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<SolutionMode, QString> solutionTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
@@ -65,8 +65,8 @@ QString weakFormsTypeToStringKey(WeakFormsType weakFormsType) { return weakForms
 WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType) { return weakFormsTypeList.key(weakFormsType); }
 
 QStringList weakFormStringKeys() { return weakFormList.values(); }
-QString weakFormToStringKey(WeakForm weakForm) { return weakFormList[weakForm]; }
-WeakForm weakFormFromStringKey(const QString &weakForm) { return weakFormList.key(weakForm); }
+QString weakFormToStringKey(WeakFormKind weakForm) { return weakFormList[weakForm]; }
+WeakFormKind weakFormFromStringKey(const QString &weakForm) { return weakFormList.key(weakForm); }
 
 QStringList meshTypeStringKeys() { return meshTypeList.values(); }
 QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
@@ -358,7 +358,7 @@ QString weakFormsTypeString(WeakFormsType weakFormsType)
     }
 }
 
-QString weakFormString(WeakForm weakForm)
+QString weakFormString(WeakFormKind weakForm)
 {
     switch (weakForm)
     {

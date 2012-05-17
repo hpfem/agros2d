@@ -44,8 +44,6 @@
 
 //#include "solver.h"
 
-#include <dirent.h>
-
 #include "../../resources_source/classes/module_xml.h"
 
 double actualTime;
@@ -103,7 +101,7 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakForm type, const QString &problemId,
+Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const QString &problemId,
                                             const QString &area, ParserFormExpression *form,
                                             Marker* marker, Material* markerSecond)
 {
@@ -120,7 +118,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakForm type, const QString &proble
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WeakForm type, int i, int j, const QString &area,
+Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WeakFormKind type, int i, int j, const QString &area,
                                                   Hermes::Hermes2D::SymFlag sym, string expression, FieldInfo *fieldInfo,
                                                   CouplingInfo *couplingInfo,
                                                   Marker* marker, Material* markerSecond)
@@ -157,7 +155,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WeakForm type, int i, int j, c
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::addForm(WeakForm type, Hermes::Hermes2D::Form<Scalar> *form)
+void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
     cout << "addForm : pridavam formu typu " << type << ", i: " << form->i <<  /*", j: " << form->j <<*/ ", areas: ";
     for(int i = 0; i < form->areas.size(); i++)
@@ -176,7 +174,7 @@ void WeakFormAgros<Scalar>::addForm(WeakForm type, Hermes::Hermes2D::Form<Scalar
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WeakForm type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
+void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
                                          Marker* marker, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze sdruzeni
