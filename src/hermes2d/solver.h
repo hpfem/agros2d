@@ -67,7 +67,7 @@ private:
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMesh();
     void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
 //    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
     // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
     void createNewSolutions(MultiSolutionArray<Scalar>& msa);
     void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
@@ -76,11 +76,11 @@ private:
 
     void cleanup();
 
-//    bool solveOneProblem(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
-//                         Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
+//    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
+//                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
     bool solveOneProblem(MultiSolutionArray<Scalar> msa);
-    void saveSolution(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
-                      Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
+    void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
+                      Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);
 
 };

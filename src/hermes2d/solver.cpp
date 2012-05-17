@@ -101,7 +101,7 @@ QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
 template <typename Scalar>
 void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionArray<Scalar>& msa)
 {
-    Hermes::vector<shared_ptr<Space<Scalar> > > space;
+    Hermes::vector<QSharedPointer<Space<Scalar> > > space;
 
     qDebug() << "---- createSpace()";
     // essential boundary conditions
@@ -164,7 +164,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         // create space
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
-            space.push_back(shared_ptr<Space<Scalar> >(new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
+            space.push_back(QSharedPointer<Space<Scalar> >(new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
 
             int j = 0;
             // set order by element
@@ -192,7 +192,7 @@ void  Solver<Scalar>::createNewSolutions(MultiSolutionArray<Scalar>& msa)
     for(int comp = 0; comp < msa.size(); comp++)
     {
         Mesh* mesh = msa.component(comp).space->get_mesh();
-        msa.setSolution(shared_ptr<Solution<double> >(new Solution<double>(mesh)), comp);
+        msa.setSolution(QSharedPointer<Solution<double> >(new Solution<double>(mesh)), comp);
     }
 }
 
@@ -264,7 +264,7 @@ void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selecto
 
 //            // constant initial solution
 //            InitialCondition<double> *initial = new InitialCondition<double>(mesh, field->fieldInfo()->initialCondition.number());
-//            msaInitial.setSolution(shared_ptr<Solution<Scalar> >(initial), totalComp);
+//            msaInitial.setSolution(QSharedPointer<Solution<Scalar> >(initial), totalComp);
 //            totalComp++;
 //        }
 //    }
@@ -273,20 +273,20 @@ void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selecto
 //}
 
 template <typename Scalar>
-Hermes::vector<shared_ptr<Space<Scalar> > > Solver<Scalar>::createCoarseSpace()
+Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpace()
 {
-    Hermes::vector<shared_ptr<Space<Scalar> > > space;
+    Hermes::vector<QSharedPointer<Space<Scalar> > > space;
 
     foreach(Field* field, m_block->fields())
     {
         MultiSolutionArray<Scalar> multiSolution = Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Normal));
         for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
-            Space<Scalar>* oldSpace = multiSolution.component(comp).space.get();
+            Space<Scalar>* oldSpace = multiSolution.component(comp).space.data();
             Mesh* mesh = new Mesh();
             mesh->copy(oldSpace->get_mesh());
 
-            space.push_back(shared_ptr<Space<Scalar> >(oldSpace->dup(mesh)));
+            space.push_back(QSharedPointer<Space<Scalar> >(oldSpace->dup(mesh)));
         }
     }
 
@@ -596,7 +596,7 @@ bool Solver<Scalar>::solveInitialTimeStep()
         {
             // constant initial solution
             InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition().number());
-            multiSolutionArray.setSolution(shared_ptr<Solution<Scalar> >(initial), totalComp);
+            multiSolutionArray.setSolution(QSharedPointer<Solution<Scalar> >(initial), totalComp);
             totalComp++;
         }
     }
@@ -663,11 +663,11 @@ void Solver<Scalar>::solve(SolverConfig config)
 
     // mesh file
     Mesh *mesh = NULL;
-    //    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > space;
-    //    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solution;
+    //    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > space;
+    //    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solution;
     MultiSolutionArray<Scalar> multiSolutionArray;
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaceCoarse;
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutionCoarse;
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaceCoarse;
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutionCoarse;
 
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *select;

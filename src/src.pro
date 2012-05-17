@@ -244,6 +244,8 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
+    INCLUDEPATH += ../lib/ctemplate/unix
+
     LIBS += -lumfpack
     LIBS += -lxerces-c
     LIBS += -lamd
@@ -309,6 +311,8 @@ win32-msvc2008 {
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-5.2.1/src
+    INCLUDEPATH += ../lib/ctemplate/windows
+
     LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-5.2.1/lib
     LIBS += -lqwt

@@ -228,7 +228,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakForm type, Field *field, QString ar
     {
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
         {
-            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.get());
+            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
         }
     }
     
@@ -971,7 +971,7 @@ ViewScalarFilter<double> *Module::BasicModule::viewScalarFilter(Module::LocalVar
     for (int k = 0; k < numberOfSolutions(); k++)
     {
         FieldSolutionID fsid(Util::scene()->activeViewField(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
+        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
     }
     return new ViewScalarFilter<double>(Util::scene()->activeViewField(),
                                         sln,

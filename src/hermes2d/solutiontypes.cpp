@@ -39,14 +39,14 @@ QString FieldSolutionID::toString()
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
 {
-    sln.reset();
-    space.reset();
+    sln.clear();
+    space.clear();
 
     time = 0.0;
 }
 
 template <typename Scalar>
-SolutionArray<Scalar>::SolutionArray(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > sln, shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, double time)
+SolutionArray<Scalar>::SolutionArray(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > sln, QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, double time)
 {
     this->sln = sln;
     this->space = space;
@@ -99,9 +99,9 @@ void MultiSolutionArray<Scalar>::append(MultiSolutionArray<Scalar> msa)
 }
 
 template <typename Scalar>
-Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray<Scalar>::spaces()
+Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray<Scalar>::spaces()
 {
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces;
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces;
 
     foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
@@ -112,9 +112,9 @@ Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray
 }
 
 template <typename Scalar>
-Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > MultiSolutionArray<Scalar>::solutions()
+Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > MultiSolutionArray<Scalar>::solutions()
 {
-    Hermes::vector<shared_ptr<Hermes::Hermes2D::Solution<Scalar> > > solutions;
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions;
 
     foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
@@ -144,18 +144,18 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
     MultiSolutionArray<Scalar> msa;
     foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
-        Space<Scalar>* oldSpace = solutionArray.space.get();
+        Space<Scalar>* oldSpace = solutionArray.space.data();
         Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
         newMesh->copy(oldSpace->get_mesh());
         Space<Scalar>* newSpace = oldSpace->dup(newMesh);
-        msa.addComponent(SolutionArray<Scalar>(shared_ptr<Solution<Scalar> >(), shared_ptr<Space<Scalar> >(newSpace), 0));
+        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(newSpace), 0));
     }
 
     return msa;
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::setSpace(shared_ptr<Hermes::Hermes2D::Space<Scalar> > space, int component)
+void MultiSolutionArray<Scalar>::setSpace(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, int component)
 {
 
     SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
@@ -164,7 +164,7 @@ void MultiSolutionArray<Scalar>::setSpace(shared_ptr<Hermes::Hermes2D::Space<Sca
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<shared_ptr<Hermes::Hermes2D::Space<Scalar> > > spaces)
+void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces)
 {
     if(m_solutionArrays.size() == 0)
     {
@@ -181,7 +181,7 @@ void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<shared_ptr<Hermes::Her
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::setSolution(shared_ptr<Hermes::Hermes2D::Solution<Scalar> > solution, int component)
+void MultiSolutionArray<Scalar>::setSolution(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, int component)
 {
     SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
     newSA.sln = solution;
@@ -231,8 +231,8 @@ void MultiSolutionArray<Scalar>::saveToFile(const QString &solutionID)
                 arg(solutionIndex);
 
         // TODO: check write access
-        solutionArray.sln.get()->save((fn + ".sln").toStdString().c_str());
-        solutionArray.space.get()->save((fn + ".spc").toStdString().c_str());
+        solutionArray.sln.data()->save((fn + ".sln").toStdString().c_str());
+        solutionArray.space.data()->save((fn + ".spc").toStdString().c_str());
 
         solutionIndex++;
     }

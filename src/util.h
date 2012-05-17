@@ -60,7 +60,6 @@
 #define rad2deg(radians) (radians*180.0/M_PI)
 
 using namespace std;
-using std::tr1::shared_ptr;
 
 // sign function
 inline int sign(double arg)
