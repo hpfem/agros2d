@@ -310,11 +310,11 @@ win32-msvc2008 {
     DEFINES += "popen=_popen"
 
     INCLUDEPATH += c:/Python27/include
-    INCLUDEPATH += ../../qwt-5.2.1/src
+    INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../lib/ctemplate/windows
 
     LIBS += -Lc:/Python27/libs
-    LIBS += -L../../qwt-5.2.1/lib
+    LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lqwt
     LIBS += -lpython27
     LIBS += -llibumfpack
