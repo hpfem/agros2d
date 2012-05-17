@@ -306,7 +306,7 @@ void Scene::removeNode(SceneNode *node)
 
 SceneNode *Scene::getNode(const Point &point)
 {
-    nodes->get(point);
+    return nodes->get(point);
 }
 
 SceneEdge *Scene::addEdge(SceneEdge *edge)
@@ -369,7 +369,7 @@ void Scene::removeEdge(SceneEdge *edge)
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
 {
-    edges->get(pointStart, pointEnd, angle);
+    return edges->get(pointStart, pointEnd, angle);
 }
 
 SceneLabel *Scene::addLabel(SceneLabel *label)
@@ -402,7 +402,7 @@ void Scene::removeLabel(SceneLabel *label)
 
 SceneLabel *Scene::getLabel(const Point &point)
 {
-    labels->get(point);
+    return labels->get(point);
 }
 
 void Scene::addBoundary(SceneBoundary *boundary)
