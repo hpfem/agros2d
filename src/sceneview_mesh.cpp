@@ -57,7 +57,7 @@ void MeshHermes::processOrder()
         Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
         // ERROR: FIX component(0)
-        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_space());
+        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_space());
 
         m_orderIsPrepared = true;
     }
@@ -86,11 +86,11 @@ void MeshHermes::processSolutionMesh()
     if (Util::problem()->isSolved())
     {
         // ERROR: FIX component(0)
-        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_mesh()->get_num_active_elements()));
+        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
-        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_mesh());
+        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
 
         m_solutionMeshIsPrepared = true;
@@ -219,7 +219,7 @@ void SceneViewMesh::exportVTKOrderView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Orderizer orderView;
-        orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).sln.get()->get_space(),
+        orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_space(),
                                         fn.toStdString().c_str());
 
         if (!fn.isEmpty())

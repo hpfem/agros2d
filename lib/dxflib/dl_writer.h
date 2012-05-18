@@ -26,14 +26,15 @@
 #ifndef DL_WRITER_H
 #define DL_WRITER_H
 
-#include <strings.h>
-
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
 #if defined(__OS2__)||defined(__EMX__)||defined(_WIN32)
+#include <string.h>
 #define strcasecmp(s,t) stricmp(s,t)
+#else
+#include <strings.h>
 #endif
 
 #include <iostream>

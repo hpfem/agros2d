@@ -37,7 +37,7 @@ FILE *fmemopen (void *buf, size_t size, const char *opentype);
     #define HERMES_API __declspec(dllexport)
   #else  
     // when using the DLL by a client project
-    #define HERMES_API __declspec(dllimport)
+    #define HERMES_API __declspec(dllexport)
   #endif
 #else 
   #define HERMES_API

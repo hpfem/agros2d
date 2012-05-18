@@ -244,6 +244,8 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
+    INCLUDEPATH += ../lib/ctemplate/unix
+
     LIBS += -lumfpack
     LIBS += -lxerces-c
     LIBS += -lamd
@@ -289,12 +291,12 @@ macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
-    INCLUDEPATH += ../../qwt-5.2.1/src
+    INCLUDEPATH += ../../qwt-6.0.1/src
 
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
-    LIBS += -L../../qwt-5.2.1/lib
+    LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lpthread
     LIBS += -lpython2.7
     LIBS += -lqwt
@@ -308,9 +310,11 @@ win32-msvc2008 {
     DEFINES += "popen=_popen"
 
     INCLUDEPATH += c:/Python27/include
-    INCLUDEPATH += ../../qwt-5.2.1/src
+    INCLUDEPATH += ../../qwt-6.0.1/src
+    INCLUDEPATH += ../lib/ctemplate/windows
+
     LIBS += -Lc:/Python27/libs
-    LIBS += -L../../qwt-5.2.1/lib
+    LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lqwt
     LIBS += -lpython27
     LIBS += -llibumfpack

@@ -44,7 +44,7 @@ SurfaceIntegralValue::SurfaceIntegralValue(FieldInfo *fieldInfo) : Postprocessor
     for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
     {
         FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.get());
+        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
     }
 
     initParser(m_fieldInfo->module()->surfaceIntegrals());

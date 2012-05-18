@@ -17,7 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "ctemplate/template.h"
+#include <ctemplate/template.h>
 
 #include "reportdialog.h"
 #include "scene.h"
@@ -609,5 +609,5 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 
 //    // expand template
 //    ctemplate::ExpandTemplate(fileNameTemplate.toStdString(), ctemplate::DO_NOT_STRIP, &dict, &report);
-//    return  QString::fromStdString(report);
+    return  QString::fromStdString("");
 }

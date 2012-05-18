@@ -86,7 +86,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/mesh/traverse.cpp \
                 src/mesh/element_to_refine.cpp \
                 src/mesh/mesh.cpp \
-                src/mesh/nurbs.cpp \
                 src/mesh/refmap.cpp \
                 src/quadrature/limit_order.cpp \
                 src/quadrature/quad_std.cpp \

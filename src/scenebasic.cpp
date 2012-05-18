@@ -57,7 +57,7 @@ MarkerType* MarkedSceneBasic<MarkerType>::marker(FieldInfo* field)
 template <typename MarkerType>
 MarkerType* MarkedSceneBasic<MarkerType>::marker(QString fieldId)
 {
-    marker(Util::problem()->fieldInfo(fieldId));
+    return marker(Util::problem()->fieldInfo(fieldId));
 }
 
 

@@ -48,7 +48,7 @@
 #ifndef UTIL_GTL_SMALL_MAP_H_
 #define UTIL_GTL_SMALL_MAP_H_
 
-#include "ctemplate/config.h"
+#include <config.h>
 #include <assert.h>
 #include <utility>   // for make_pair()
 #include "base/manual_constructor.h"
@@ -360,20 +360,20 @@ class small_map {
     if (size_ >= 0) {
       for (int i = 0; i < size_; i++) {
         if (compare(array_[i]->first, x.first)) {
-          return make_pair(iterator(array_ + i), false);
+          return std::make_pair(iterator(array_ + i), false);
         }
       }
       if (size_ == kArraySize) {
         ConvertToRealMap();  // Invalidates all iterators!
         std::pair<typename NormalMap::iterator, bool> ret = map_->insert(x);
-        return make_pair(iterator(ret.first), ret.second);
+        return std::make_pair(iterator(ret.first), ret.second);
       } else {
         array_[size_].Init(x);
-        return make_pair(iterator(array_ + size_++), true);
+        return std::make_pair(iterator(array_ + size_++), true);
       }
     } else {
       std::pair<typename NormalMap::iterator, bool> ret = map_->insert(x);
-      return make_pair(iterator(ret.first), ret.second);
+      return std::make_pair(iterator(ret.first), ret.second);
     }
   }
 

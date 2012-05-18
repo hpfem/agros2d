@@ -45,7 +45,7 @@
 #ifndef TEMPLATE_TEMPLATE_MODIFIERS_INTERNAL_H_
 #define TEMPLATE_TEMPLATE_MODIFIERS_INTERNAL_H_
 
-#include "ctemplate/config.h"
+#include <config.h>
 #include <sys/types.h>   // for size_t
 #include <string.h>      // for strchr
 #include <string>

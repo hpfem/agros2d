@@ -119,7 +119,7 @@ void LocalPointValue::calculate()
             for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
                 FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-                sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.get();
+                sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
 
                 double value;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)

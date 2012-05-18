@@ -34,7 +34,7 @@
 #ifndef SECURITY_STREAMHTMLPARSER_STATEMACHINE_H
 #define SECURITY_STREAMHTMLPARSER_STATEMACHINE_H
 
-#include "ctemplate/config.h"
+#include <config.h>
 #ifdef __cplusplus
 namespace HTMLPARSER_NAMESPACE {
 #endif

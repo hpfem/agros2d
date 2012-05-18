@@ -14,6 +14,7 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     muparser/muParserCallback.cpp \
     muparser/muParserError.cpp \
     muparser/muParserInt.cpp \
+    gl2ps/gl2ps.c \
     ctemplate/base/arena.cc \
     ctemplate/htmlparser/htmlparser.cc \
     ctemplate/htmlparser/htmlparser_cpp.h \
@@ -27,17 +28,18 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     ctemplate/template_modifiers.cc \
     ctemplate/template_namelist.cc \
     ctemplate/template_pathops.cc \
-    ctemplate/template_string.cc \
-    gl2ps/gl2ps.c
-
-# HEADERS = +=
-
-INCLUDEPATH += ctemplate
+    ctemplate/template_string.cc
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    INCLUDEPATH += ctemplate \
+            ctemplate/unix \
+            .
 }
 
 win32-msvc2008 {
+    INCLUDEPATH += ctemplate \
+            ctemplate/windows \
+            .
 }
 
 macx-g++ {

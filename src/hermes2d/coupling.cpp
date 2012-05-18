@@ -25,8 +25,6 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
-#include <dirent.h>
-
 #include "../../resources_source/classes/coupling_xml.h"
 
 // TODO: in each module should be implicit value

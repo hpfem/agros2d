@@ -34,8 +34,6 @@
 #include <cmath>
 #include <limits>
 #include <vector>
-#include <tr1/memory>
-
 
 #include <locale.h>
 #include <stdlib.h>
@@ -60,7 +58,6 @@
 #define rad2deg(radians) (radians*180.0/M_PI)
 
 using namespace std;
-using std::tr1::shared_ptr;
 
 // sign function
 inline int sign(double arg)
@@ -453,7 +450,7 @@ enum WeakFormsType
     WeakFormsType_Compiled
 };
 
-enum WeakForm
+enum WeakFormKind
 {
     WeakForm_MatVol,
     WeakForm_MatSurf,
@@ -589,7 +586,7 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
 QString coordinateTypeString(CoordinateType coordinateType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
 QString weakFormsTypeString(WeakFormsType weakFormsType);
-QString weakFormString(WeakForm weakForm);
+QString weakFormString(WeakFormKind weakForm);
 QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
@@ -636,8 +633,8 @@ QString weakFormsTypeToStringKey(WeakFormsType weakFormsType);
 WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType);
 
 QStringList weakFormStringKeys();
-QString weakFormToStringKey(WeakForm weakForm);
-WeakForm weakFormFromStringKey(const QString &weakForm);
+QString weakFormToStringKey(WeakFormKind weakForm);
+WeakFormKind weakFormFromStringKey(const QString &weakForm);
 
 QStringList meshTypeStringKeys();
 QString meshTypeToStringKey(MeshType meshType);
