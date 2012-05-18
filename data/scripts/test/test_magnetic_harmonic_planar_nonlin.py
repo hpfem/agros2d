@@ -11,11 +11,12 @@ problem.frequency = 50
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "harmonic"
 magnetic.weak_forms = "interpreted"
+magnetic.weak_forms = "compiled"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
-magnetic.linearity_type = "newton"
+magnetic.linearity_type = "picard"
 magnetic.nonlinear_tolerance = 0.001
-magnetic.nonlinear_steps = 10
+magnetic.nonlinear_steps = 15
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_imag" : 0, "magnetic_potential_real" : 0})
 

@@ -105,62 +105,92 @@ class XmlParser:
         index_file.close()
         
     def parse_xml_file(self, filename):
-         # constants definitions
-         coordinate_types = ['planar', 'axi']; 
-         # opens file and initializes xml parser            
-         ds_module = md.parse(Config.modules_dir + filename)
+        # constants definitions
+        coordinate_types = ['planar', 'axi']; 
+        # opens file and initializes xml parser            
+        ds_module = md.parse(Config.modules_dir + filename)
                      
-         # parses module general information             
-         module = Module()       
-         module.description = ds_module.general.description        
-         module.id = ds_module.general.id
-         # parses module constans
-         for constant in ds_module.constants.constant:
+        # parses module general information             
+        module = Module()       
+        module.description = ds_module.general.description        
+        module.id = ds_module.general.id
+        # parses module constans
+        for constant in ds_module.constants.constant:
             const = Constant()            
             const.id = constant.id
             const.value = constant.value
             module.constants.append(const)
                     
-         # parses volume information
-         # parses quantities
-         for ds_quantity in ds_module.volume.quantity:            
+        # parses volume information
+        # parses quantities
+        quantities = []
+        for ds_quantity in ds_module.volume.quantity:            
             quantity = Quantity()            
             quantity.id = ds_quantity.id
             quantity.name = ds_quantity.id
             quantity.short_name = ds_quantity.shortname
             quantity.type = 'material'            
             quantity.unit = ds_quantity.unit
-            module.quantities.append(quantity)
+            quantities.append(quantity)
         
-         for ds_weakform in ds_module.volume.weakforms_volume.weakform_volume:
-             volume = Volume()                 
-             volume.name =  ds_weakform.analysistype      
-             i  = 0
-             n  = len(ds_weakform.matrix_form)
-             for ds_matrix in ds_weakform.matrix_form + ds_weakform.vector_form:                 
-                 for coordinate_type in coordinate_types:                                          
-                         weakform = WeakForm()                            
-                         weakform.integral_type = 'vol'                     
-                         weakform.analysis_type = ds_weakform.analysistype                         
-                         if (i < n):    
-                             weakform.type = 'matrix'                             
-                         else:
-                             weakform.type = 'vector'                            
-                         if coordinate_type == 'planar':                            
-                             weakform.expression = ds_matrix.planar                        
-                         if coordinate_type == 'axi':    
-                             weakform.expression = ds_matrix.axi                                                      
-                         weakform.coordinate_type = coordinate_type                                                     
-                         weakform.i = ds_matrix.i
-                         weakform.j = ds_matrix.j    
-                         volume.weakforms.append(weakform)                
-                 i = i + 1
-             module.volumes.append(volume)
+        for ds_weakform in ds_module.volume.weakforms_volume.weakform_volume:
+            volume = Volume()                 
+            volume.name =  ds_weakform.analysistype
+            for ds_quantity in ds_weakform.quantity:
+                for module_quantity in quantities:
+                    for coordinate_type in coordinate_types:
+                        quantity = Quantity()
+                        quantity.id = ds_quantity.id
+                        quantity.short_name = ds_quantity.shortname
+                        quantity.unit = ds_quantity.unit                
+
+                        if (module_quantity.id == quantity.id):
+                            quantity.name = module_quantity.name
+                            quantity.short_name = module_quantity.short_name
+                            quantity.type = 'material'
+                            quantity.unit = module_quantity.unit
+                            if coordinate_type == 'planar':                            
+                                if (ds_quantity.nonlinearity_planar != None) and (ds_quantity.nonlinearity_planar != ''):
+                                    quantity.expression = ds_quantity.nonlinearity_planar                                                                    
+                                else:
+                                    quantity.expression = None     
+                                if not (quantity in volume.quantities_planar):    
+                                    volume.quantities_planar.append(quantity)                                                                         
+                            
+                            if coordinate_type == 'axi':                                
+                                if (ds_quantity.nonlinearity_axi != None) and (ds_quantity.nonlinearity_axi != ''):
+                                    quantity.expression = ds_quantity.nonlinearity_axi                                    
+                                else:
+                                    quantity.expression = None                            
+                                if not (quantity in volume.quantities_axi):
+                                    volume.quantities_axi.append(quantity)                                    
+                                             
+            i  = 0
+            n  = len(ds_weakform.matrix_form)
+            for ds_matrix in ds_weakform.matrix_form + ds_weakform.vector_form:                 
+                for coordinate_type in coordinate_types:                                          
+                    weakform = WeakForm()                            
+                    weakform.integral_type = 'vol'                     
+                    weakform.analysis_type = ds_weakform.analysistype                         
+                    if (i < n):    
+                        weakform.type = 'matrix'                             
+                    else:
+                        weakform.type = 'vector'                            
+                    if coordinate_type == 'planar':                            
+                        weakform.expression = ds_matrix.planar                                                
+                    if coordinate_type == 'axi':    
+                        weakform.expression = ds_matrix.axi                                                      
+                    weakform.coordinate_type = coordinate_type                                                     
+                    weakform.i = ds_matrix.i
+                    weakform.j = ds_matrix.j    
+                    volume.weakforms.append(weakform)                
+                i = i + 1
+            module.volumes.append(volume)
                 
-         surface = Surface()
-         surface.id = ds_module.general.id
-         surface.name = ds_weakform.analysistype                  
-         for ds_quantity in ds_module.surface.quantity:
+        surface = Surface()
+        surface.id = ds_module.general.id
+        surface.name = ds_weakform.analysistype                  
+        for ds_quantity in ds_module.surface.quantity:
             quantity = Quantity()            
             quantity.id = ds_quantity.id
             quantity.name = ds_quantity.id
@@ -169,41 +199,42 @@ class XmlParser:
             quantity.unit = ds_quantity.unit
             surface.quantities.append(quantity)            
                     
-         for ds_weakform in ds_module.surface.weakforms_surface.weakform_surface:             
-             for ds_boundary in ds_weakform.boundary:                 
-                 for ds_quantity in ds_boundary.quantity:
+        for ds_weakform in ds_module.surface.weakforms_surface.weakform_surface:             
+            for ds_boundary in ds_weakform.boundary:                 
+                for ds_quantity in ds_boundary.quantity:
                     quantity = Quantity()      
                     quantity.id = ds_quantity.id                    
                     weakform.quantities.append(quantity)                 
-                 n_essential = len(ds_boundary.essential_form)
-                 n_vector = n_essential + len(ds_boundary.vector_form)
-                 i = 0                 
-                 for ds_vector in ds_boundary.essential_form + ds_boundary.vector_form + ds_boundary.matrix_form:                     
-                     for coordinate_type in coordinate_types:                         
-                         weakform = WeakForm()
-                         if (i < n_essential) :
-                             weakform.type = 'essential'
-                         if ((i >= n_essential) & (i < n_vector)):                                 
-                             weakform.type = 'vector'   
-                             weakform.j = ds_vector.j
-                         if (i >= n_vector):
-                             weakform.type = 'matrix'   
-                             weakform.j = ds_vector.j
-                         weakform.i = ds_vector.i        
-                         if coordinate_type == 'planar':                            
-                             weakform.expression = ds_vector.planar
-                         if coordinate_type == 'axi':
-                             weakform.expression = ds_vector.axi                             
-                         weakform.coordinate_type = coordinate_type
-                         weakform.analysis_type = ds_weakform.analysistype
-                         weakform.integral_type = 'surf'
-                         weakform.boundary_type = ds_boundary.id                         
-                         weakform.id = surface.id + '_' + weakform.analysis_type + '_' \
+                n_essential = len(ds_boundary.essential_form)
+                n_vector = n_essential + len(ds_boundary.vector_form)
+                i = 0                 
+                for ds_vector in ds_boundary.essential_form + ds_boundary.vector_form + ds_boundary.matrix_form:                     
+                    for coordinate_type in coordinate_types:                         
+                        weakform = WeakForm()
+                        if (i < n_essential) :
+                            weakform.type = 'essential'
+                        if ((i >= n_essential) & (i < n_vector)):                                 
+                            weakform.type = 'vector'   
+                            weakform.j = ds_vector.j
+                        if (i >= n_vector):
+                            weakform.type = 'matrix'   
+                            weakform.j = ds_vector.j
+                        weakform.i = ds_vector.i 
+                        if coordinate_type == 'planar':                 
+                            weakform.expression = ds_vector.planar
+                        if coordinate_type == 'axi':
+                            weakform.expression = ds_vector.axi
+                        weakform.coordinate_type = coordinate_type
+                        weakform.analysis_type = ds_weakform.analysistype
+                        weakform.integral_type = 'surf'
+                        weakform.boundary_type = ds_boundary.id                         
+                        weakform.id = surface.id + '_' + weakform.analysis_type + '_' \
                              + weakform.coordinate_type                           
-                         surface.weakforms.append(weakform)                         
-                     i = i + 1
-         module.surfaces.append(surface)            
-         self.modules.append(module)
+                        surface.weakforms.append(weakform)                         
+                    i = i + 1
+        module.surfaces.append(surface)                    
+        self.modules.append(module)
+        
         
         
 class WeakForm:
@@ -355,6 +386,23 @@ class WeakForm:
                      'dz2': 'u_ext[1]->dy[i]'
                      }
         
+        postprocessor_replaces = {
+                     'x': 'e->x[i]',
+                     'y': 'e->y[i]',
+                     'r': 'e->x[i]',
+                     'z': 'e->y[i]',
+                     'value1': 'u_ext[0]->val[i]',
+                     'value2': 'u_ext[1]->val[i]',
+                     'dx1': 'u_ext[0]->dx[i]',
+                     'dx2': 'u_ext[1]->dx[i]',
+                     'dy1': 'u_ext[0]->dy[i]',
+                     'dy2': 'u_ext[1]->dy[i]',
+                     'dr1': 'u_ext[0]->dx[i]',
+                     'dr2': 'u_ext[1]->dx[i]',
+                     'dz1': 'u_ext[0]->dy[i]',
+                     'dz2': 'u_ext[1]->dy[i]'                                  
+                     }
+        
         
         latex_replaces = { '*': '\\cdot ',
                      'PI': '\\pi',
@@ -387,12 +435,26 @@ class WeakForm:
                            
         variables = []
         variables_derivatives = []
+        parser = NumericStringParser(symbols, postprocessor_replaces, variables, 
+                                     variables_derivatives, without_variables)                        
+
         for variable in self.variables:        
             symbols.append(variable.short_name)
-            symbols.append("d" + variable.short_name)
-            variables.append(variable.short_name)
+            symbols.append("d" + variable.short_name)                        
             variables_derivatives.append("d" + variable.short_name)
-             
+            parsed_exp = None            
+            if variable.expression != None:                                
+                expression_list = parser.parse(variable.expression).asList()                
+                parsed_exp = variable.short_name + '.value(' + parser.translate_to_cpp(expression_list) + ')'
+                #variable.expression =  parsed_exp                
+            else:
+                parsed_exp = variable.short_name + '.number()'             
+            variables.append([variable.short_name, parsed_exp])
+            
+            
+            
+        parsed_exp = ''
+        
         for const in self.constants:
             symbols.append(const.id)        
         if output == 'latex':            
@@ -407,11 +469,11 @@ class WeakForm:
             parser = NumericStringParser(symbols, replaces, variables, 
                                          variables_derivatives, without_variables)                        
             if not(expression.replace(' ','') == ''):
-                expression_list = parser.parse(expression).asList()                                  
+                expression_list = parser.parse(expression).asList()                                                 
                 parsed_exp = parser.translate_to_cpp(expression_list)                             
             else:
                 parsed_exp =''
-            parsed_exp = '(' + parsed_exp + ');'                                          
+            parsed_exp = '(' + parsed_exp + ');'                                                          
         return parsed_exp
 
 class Volume:
@@ -420,7 +482,9 @@ class Volume:
         self.name = ''
         self.type = ''                
         self.weakforms = []        
-
+        self.quantities_planar = []
+        self.quantities_axi = []
+        
 class Surface:
     def __init__(self):
         self.id = ''
@@ -436,6 +500,7 @@ class Quantity:
         self.name = ''
         self.short_name = ''
         self.units = ''  
+        self.expression = None
         
     def write_cpp_code(self):
         pass
@@ -562,15 +627,31 @@ class Module:
                     + weakform.coordinate_type
                     part_module.description = self.description
                     part_module.coordinate_type = weakform.coordinate_type
-                    part_module.constants = self.constants                    
+                    part_module.constants = self.constants
                     part_module.volumes = self.volumes
-                    part_module.analysis = volume.name                    
+                    part_module.analysis = volume.name
                     part_modules.append(part_module)                                
-                weakform.variables = self.quantities
+                
+                if weakform.coordinate_type == 'axi':
+                    weakform.variables = volume.quantities_axi                    
+                
+                if weakform.coordinate_type == 'planar':
+                    weakform.variables = volume.quantities_planar
+                    for variable in volume.quantities_planar:
+                        if variable.expression != None:
+                            print variable.expression
+                                                        
                 weakform.constants = self.constants
                 weakform.id = part_module.id                
                 part_module.weakforms.append(weakform)                        
        
+#        for weakform in volume.weakforms:
+#            print weakform.coordinate_type
+#            for variable in weakform.variables:
+#                if variable.expression != None:
+#                   print variable.expression
+#            print "------------------------------------"
+            
         for surface in self.surfaces:                                    
                 for weakform in surface.weakforms:                                         
                     if (weakform.id + '_' + weakform.analysis_type in module_types):                                                                
@@ -579,10 +660,8 @@ class Module:
                             part_module = part_modules[index] 
                             weakform.variables = surface.quantities
                             weakform.constants = self.constants                                        
-                            part_module.weakforms.append(weakform)               
-        
-        
-        
+                            part_module.weakforms.append(weakform)                        
+              
 #        for part_module in part_modules:
 #            print "--------------------------"                            
 #            print part_module.id

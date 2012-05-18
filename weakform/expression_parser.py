@@ -22,7 +22,11 @@ class NumericStringParser(object):
         
         self.string = ''            
         self.replaces = replaces
-        self.variables = variables
+        self.variables = []
+        self.expressions = []
+        for variable in variables:
+            self.variables.append(variable[0])
+            self.expressions.append(variable[1])                
         self.variables_derivatives = variables_derivatives
         self.without_variables = without_variables         
         point = Literal( "." )
@@ -42,12 +46,13 @@ class NumericStringParser(object):
         expop = Literal( "^" )
         expr = Forward()
         literals = Keyword("value")
+        function = oneOf(self.functions) + Group(lpar+expr+rpar) 
         symbols.append("value")        
         for symbol in symbols:
             literals |= Keyword(symbol)
         
         atom = ((Optional(oneOf("- +")) +
-                 (literals|fnumber|ident+lpar+expr+rpar).setParseAction(self.pushFirst))
+                 (function|literals|fnumber|ident+lpar+expr+rpar).setParseAction(self.pushFirst))
                 | Optional(oneOf("- +")) + Group(lpar+expr+rpar)
                 ).setParseAction(self.pushUMinus)       
 
@@ -60,7 +65,7 @@ class NumericStringParser(object):
         self.bnf = expr
     
     def parse(self,num_string):
-        self.exprStack=[]        
+        self.exprStack=[]               
         return self.bnf.parseString(num_string,True)
 
 
@@ -74,14 +79,14 @@ class NumericStringParser(object):
                 string.append('(' + self.translate_to_cpp(item) + ')')                
             elif item in self.functions:
                 string.append(item + '(' + self.translate_to_cpp(expression_list.pop()) + ')')                 
-            elif item == '^':                
-                string[i-1] = 'pow(' + string[i-1] +  ',' + self.translate_to_cpp([expression_list.pop()]) + ')'                
+            elif item == '^':                                
+                string.append('pow(' + string.pop() +  ',' + self.translate_to_cpp([expression_list.pop()]) + ')')                
             else:                                                
-                if item in self.variables:                   
+                if item in self.variables:                                       
                     if self.without_variables:
                         string.append('1')
-                    else:
-                        string.append(item + '.value(0.0)') # TODO: from quantity
+                    else:                                                
+                        string.append(self.expressions[self.variables.index(item)]) # TODO: from quantity                                                
                 elif item in self.variables_derivatives:                   
                     if self.without_variables:
                         string.append('1')
