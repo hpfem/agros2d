@@ -111,13 +111,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/space/space_l2.cpp \
                 src/space/space_hdiv.cpp \
                 src/space/space_h2d_xml.cpp \
-                src/views/base_view.cpp  \
-                src/views/mesh_view.cpp  \
-                src/views/order_view.cpp  \
-                src/views/scalar_view.cpp  \
-                src/views/stream_view.cpp  \
-                src/views/vector_base_view.cpp  \
-                src/views/vector_view.cpp  \
                 src/views/view.cpp  \
                 src/views/view_data.cpp  \
                 src/views/view_support.cpp \
