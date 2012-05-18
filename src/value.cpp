@@ -467,7 +467,7 @@ void ValueTimeDialog::createControls()
     // chart
     QwtText text("");
 
-    chart = new Chart(this);
+    chart = new Chart(this, true);
     // axis labels
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
     text.setText(tr("time"));
@@ -482,17 +482,6 @@ void ValueTimeDialog::createControls()
     chartCurve->setYAxis(QwtPlot::yLeft);
     // chartCurve->setSymbol(QwtSymbol(QwtSymbol::Diamond, Qt::red, QPen(Qt::blue, 1), QSize(10,10)));
     chartCurve->attach(chart);
-
-    // chart picker
-    picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-                               chart->canvas());
-    picker->setRubberBandPen(QColor(Qt::green));
-    picker->setRubberBand(QwtPicker::CrossRubberBand);
-    picker->setTrackerMode(QwtPicker::ActiveOnly);
-    picker->setTrackerPen(QColor(Qt::black));
-
-    connect(picker, SIGNAL(moved(const QPoint &)), SLOT(crossMoved(const QPoint &)));
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(chart, 0, 0, 1, 4);
@@ -528,12 +517,6 @@ void ValueTimeDialog::createControls()
     layout->addLayout(layoutButtons);
 
     setLayout(layout);
-}
-
-void ValueTimeDialog::crossMoved(const QPoint &pos)
-{
-    QString info;
-    info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 void ValueTimeDialog::presetsChanged(int index)

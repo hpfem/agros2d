@@ -34,8 +34,6 @@ namespace Module
     struct LocalVariable;
 }
 
-class QwtPlotPicker;
-
 // definition of chart line
 struct ChartLine
 {
@@ -84,8 +82,6 @@ private:
 
     QTabWidget* tabOutput;
     QTabWidget* tabAnalysisType;
-
-    QwtPlotPicker *picker;
 
     // geometry
     QComboBox *cmbTimeStep;
@@ -139,7 +135,6 @@ private slots:
     void doSaveImage();
     void doExportData();
 
-    void doMoved(const QPoint &);
     void doChartLine();
     void doTimeStepChanged(int index);
 };

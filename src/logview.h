@@ -93,7 +93,15 @@ public:
 private:
      LogWidget *logWidget;
 
+     QwtPlotCurve *m_curve;
+     Chart *chartNewton;
+     QList<double> chartN;
+     QList<double> chartNorm;
+
      void createControls();
+
+private slots:
+     void printDebug(const QString &module, const QString &message);
 };
 
 #endif // TOOLTIPVIEW_H

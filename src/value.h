@@ -23,7 +23,6 @@
 #include "util.h"
 
 class QwtPlotCurve;
-class QwtPlotPicker;
 class Chart;
 class DataTable;
 class FieldInfo;
@@ -158,8 +157,6 @@ private:
     Chart *chart;
     QwtPlotCurve *chartCurve;
 
-    QwtPlotPicker *picker;
-
     QPushButton *btnOk;
     QPushButton *btnClose;
     QPushButton *btnPlot;
@@ -177,7 +174,6 @@ private slots:
 
     void checkExpression();
     void plotFunction();
-    void crossMoved(const QPoint &pos);
     void presetsChanged(int index);
 };
 

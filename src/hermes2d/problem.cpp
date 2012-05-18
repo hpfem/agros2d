@@ -113,6 +113,15 @@ bool Problem::isHarmonic() const
     return false;
 }
 
+bool Problem::isNonlinear() const
+{
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        if (fieldInfo->linearityType() != LinearityType_Linear)
+            return true;
+
+    return false;
+}
+
 void Problem::clearSolution()
 {
     if (Util::problem()->isSolved())

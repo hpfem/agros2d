@@ -58,8 +58,6 @@ private:
     QLabel *lblInfoX;
     QLabel *lblInfoY;
     QLabel *lblInfoError;
-    QwtPlotPicker *pickerValue;
-    QwtPlotPicker *pickerDerivative;
 
     QCheckBox *chkInterpolation;
     QCheckBox *chkDerivative;
@@ -85,8 +83,6 @@ private slots:
     void textChanged();
     void highlightCurrentLineX();
     void highlightCurrentLineY();
-    void doPickerValueMoved(const QPoint &pos);
-    void doPickerDerivativeMoved(const QPoint &pos);
     void doPlot();
     void doShowDerivativeClicked();
     void doMaterialBrowser();

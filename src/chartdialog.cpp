@@ -155,7 +155,7 @@ void ChartDialog::hideEvent(QHideEvent *event)
 
 void ChartDialog::createControls()
 {
-    chart = new Chart(this);
+    chart = new Chart(this, true);
 
     // controls
     QWidget *controls = new QWidget(this);
@@ -349,17 +349,6 @@ void ChartDialog::createControls()
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(controls);
     layout->addWidget(tabOutput, 1);
-
-    // chart picker
-    picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-                               chart->canvas());
-    picker->setRubberBandPen(QColor(Qt::green));
-    picker->setRubberBand(QwtPicker::CrossRubberBand);
-    picker->setTrackerMode(QwtPicker::AlwaysOn);
-    picker->setTrackerPen(QColor(Qt::black));
-
-    connect(picker, SIGNAL(moved(const QPoint &)), SLOT(doMoved(const QPoint &)));
 
     setLayout(layout);
 }
@@ -742,14 +731,6 @@ void ChartDialog::doExportData()
 
         file.close();
     }
-}
-
-void ChartDialog::doMoved(const QPoint &pos)
-{
-    QString info;
-    info.sprintf("x=%g, y=%g",
-        chart->invTransform(QwtPlot::xBottom, pos.x()),
-        chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 void ChartDialog::doChartLine()

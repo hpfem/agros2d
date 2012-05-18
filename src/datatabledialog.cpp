@@ -172,23 +172,12 @@ void DataTableDialog::createControls()
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
 
-    chartValue = new Chart(this);
+    chartValue = new Chart(this, true);
     // axis labels
     text.setText(m_labelX);
     chartValue->setAxisTitle(QwtPlot::xBottom, text);
     text.setText(m_labelY);
     chartValue->setAxisTitle(QwtPlot::yLeft, text);
-
-    // chart picker
-    pickerValue = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-                               chartValue->canvas());
-    pickerValue->setRubberBandPen(QColor(Qt::green));
-    pickerValue->setRubberBand(QwtPicker::CrossRubberBand);
-    pickerValue->setTrackerMode(QwtPicker::AlwaysOn);
-    pickerValue->setTrackerPen(QColor(Qt::black));
-
-    connect(pickerValue, SIGNAL(moved(const QPoint &)), SLOT(doPickerValueMoved(const QPoint &)));
 
     chartValueCurveMarkers = new QwtPlotCurve();
     chartValueCurveMarkers->setRenderHint(QwtPlotItem::RenderAntialiased);
@@ -198,24 +187,13 @@ void DataTableDialog::createControls()
     chartValueCurveMarkers->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::black), QColor(Qt::black), QSize(5, 5)));
     chartValueCurveMarkers->attach(chartValue);
 
-    chartDerivative = new Chart(this);
+    chartDerivative = new Chart(this, true);
     // axis labels
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
     text.setText(m_labelX);
     chartDerivative->setAxisTitle(QwtPlot::xBottom, text);
     text.setText(QString("d%1/d%2").arg(m_labelY).arg(m_labelX));
     chartDerivative->setAxisTitle(QwtPlot::yLeft, text);
-
-    // chart picker
-    pickerDerivative = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                               QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-                               chartDerivative->canvas());
-    pickerDerivative->setRubberBandPen(QColor(Qt::green));
-    pickerDerivative->setRubberBand(QwtPicker::CrossRubberBand);
-    pickerDerivative->setTrackerMode(QwtPicker::AlwaysOn);
-    pickerDerivative->setTrackerPen(QColor(Qt::black));
-
-    connect(pickerDerivative, SIGNAL(moved(const QPoint &)), SLOT(doPickerDerivativeMoved(const QPoint &)));
 
     QGridLayout *chartLayout = new QGridLayout();
     chartLayout->addWidget(chartValue);
@@ -292,22 +270,6 @@ void DataTableDialog::textChanged()
 
     // try parse
     parseTable(false);
-}
-
-void DataTableDialog::doPickerValueMoved(const QPoint &pos)
-{
-    QString info;
-    info.sprintf("x=%g, y=%g",
-        chartValue->invTransform(QwtPlot::xBottom, pos.x()),
-        chartValue->invTransform(QwtPlot::yLeft, pos.y()));
-}
-
-void DataTableDialog::doPickerDerivativeMoved(const QPoint &pos)
-{
-    QString info;
-    info.sprintf("x=%g, y=%g",
-        chartDerivative->invTransform(QwtPlot::xBottom, pos.x()),
-        chartDerivative->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 void DataTableDialog::gotoLine(QPlainTextEdit *lst, int lineNumber)

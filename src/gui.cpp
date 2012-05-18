@@ -221,7 +221,7 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
 
 // ***********************************************************************************************************
 
-Chart::Chart(QWidget *parent) : QwtPlot(parent)
+Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
 {
     //  chart style
     setAutoReplot(false);
@@ -276,6 +276,19 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
     m_curve->setCurveAttribute(QwtPlotCurve::Inverted);
     m_curve->setYAxis(QwtPlot::yLeft);
     m_curve->attach(this);
+
+    // chart picker
+    QwtPlotPicker *pickerValue = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
+                                                   QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
+                                                   canvas());
+    pickerValue->setRubberBandPen(QColor(Qt::green));
+    pickerValue->setRubberBand(QwtPicker::CrossRubberBand);
+    pickerValue->setTrackerMode(QwtPicker::AlwaysOn);
+    pickerValue->setTrackerPen(QColor(Qt::black));
+
+    connect(pickerValue, SIGNAL(moved(const QPoint &)), SLOT(pickerValueMoved(const QPoint &)));
+
+    setMinimumSize(sizeHint());
 }
 
 Chart::~Chart()
@@ -366,6 +379,14 @@ void Chart::setData(QList<double> xval, QList<double> yval)
 
     delete [] txval;
     delete [] tyval;
+}
+
+void Chart::pickerValueMoved(const QPoint &pos)
+{
+    QString info;
+    info.sprintf("x=%g, y=%g",
+        invTransform(QwtPlot::xBottom, pos.x()),
+        invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 // ****************************************************************************************************

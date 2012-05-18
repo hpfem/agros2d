@@ -57,7 +57,6 @@ private:
     bool m_select;
 
 private slots:
-    void doPickerValueMoved(const QPoint &pos);
     void doMaterialSelected(QTreeWidgetItem *item, int role);
     void doMaterialSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doPropertySelected(QTreeWidgetItem *item, int role);

@@ -84,7 +84,7 @@ class Chart : public QwtPlot
 {
     Q_OBJECT
 public:
-    Chart(QWidget *parent = 0);
+    Chart(QWidget *parent = 0, bool showPicker = false);
     ~Chart();
 
     inline QwtPlotCurve *curve() { return m_curve; }
@@ -96,6 +96,9 @@ public slots:
 
 private:
     QwtPlotCurve *m_curve;
+
+private slots:
+    void pickerValueMoved(const QPoint &pos);
 };
 
 // ****************************************************************************************************

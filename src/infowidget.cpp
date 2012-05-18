@@ -370,7 +370,7 @@ ChartInfoWidget::ChartInfoWidget(QWidget *parent)
 
 void ChartInfoWidget::createControls()
 {
-    chart = new Chart(this);
+    chart = new Chart(this, true);
 
     // dialog buttons
     QPushButton *btnSaveImage = new QPushButton(tr("Save image"));

@@ -138,6 +138,7 @@ public:
 
     bool isTransient() const;
     bool isHarmonic() const;
+    bool isNonlinear() const;
 
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
     inline FieldInfo *fieldInfo(const QString &fieldId) { assert(m_fieldInfos.contains(fieldId));

@@ -19,6 +19,9 @@
 
 #include "logview.h"
 #include "scene.h"
+#include "gui.h"
+
+#include "hermes2d/problem.h"
 
 Log::Log()
 {
@@ -182,14 +185,61 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
+    connect(Util::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
+
     logWidget = new LogWidget(this);
+
+    chartNewton = new Chart(this, true);
+    chartNewton->setVisible(false);
+
+    if (Util::problem()->isNonlinear())
+    {
+        chartNewton->setVisible(true);
+
+        // axes
+        QwtText text("");
+        text.setFont(QFont("Helvetica", 10, QFont::Normal));
+
+        text.setText(tr("residual norm"));
+        chartNewton->setAxisTitle(QwtPlot::yLeft, text);
+        text.setText(tr("iteration"));
+        chartNewton->setAxisTitle(QwtPlot::xBottom, text);
+    }
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
+    QHBoxLayout *layoutHorizontal = new QHBoxLayout();
+    layoutHorizontal->addWidget(logWidget);
+    layoutHorizontal->addWidget(chartNewton);
+
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(logWidget);
+    layout->addLayout(layoutHorizontal);
     layout->addWidget(buttonBox);
 
     setLayout(layout);
+}
+
+void LogDialog::printDebug(const QString &module, const QString &message)
+{
+    QString str = "residual norm:";
+
+    if (module == tr("Solver") && message.contains(str))
+    {
+        bool ok = false;
+        double res_norm = (message.right(message.length() - (message.indexOf(str) + str.length() + 1))).toDouble(&ok);
+
+        if (ok)
+        {
+            chartN.append(chartN.length() + 1);
+            chartNorm.append(res_norm);
+
+            chartNewton->setData(chartN, chartNorm);
+        }
+    }
+    else
+    {
+        chartN.clear();
+        chartNorm.clear();
+    }
 }

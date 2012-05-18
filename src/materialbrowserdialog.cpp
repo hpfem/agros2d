@@ -103,18 +103,7 @@ void MaterialBrowserDialog::createControls()
     lblSource->setMaximumWidth(350);
     lblValue = new QLabel("0.0");
 
-    chartValue = new Chart();
-
-    // chart picker
-    QwtPlotPicker *pickerValue = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-                                                   QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-                                                   chartValue->canvas());
-    pickerValue->setRubberBandPen(QColor(Qt::green));
-    pickerValue->setRubberBand(QwtPicker::CrossRubberBand);
-    pickerValue->setTrackerMode(QwtPicker::AlwaysOn);
-    pickerValue->setTrackerPen(QColor(Qt::black));
-
-    connect(pickerValue, SIGNAL(moved(const QPoint &)), SLOT(doPickerValueMoved(const QPoint &)));
+    chartValue = new Chart(this, true);
 
     QVBoxLayout *layoutChartValue = new QVBoxLayout();
     layoutChartValue->addWidget(chartValue);
@@ -163,13 +152,6 @@ void MaterialBrowserDialog::createControls()
     setLayout(layout);
 }
 
-void MaterialBrowserDialog::doPickerValueMoved(const QPoint &pos)
-{
-    QString info;
-    info.sprintf("x=%g, y=%g",
-        chartValue->invTransform(QwtPlot::xBottom, pos.x()),
-        chartValue->invTransform(QwtPlot::yLeft, pos.y()));
-}
 
 void MaterialBrowserDialog::readMaterials()
 {
