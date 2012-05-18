@@ -441,14 +441,12 @@ class WeakForm:
         for variable in self.variables:        
             symbols.append(variable.short_name)
             symbols.append("d" + variable.short_name)                        
-            variables_derivatives.append("d" + variable.short_name)
+            variables_derivatives.append("d" + variable.short_name)            
             parsed_exp = None            
             if variable.expression != None:                                
                 expression_list = parser.parse(variable.expression).asList()                
-                parsed_exp = variable.short_name + '.value(' + parser.translate_to_cpp(expression_list) + ')'
-                #variable.expression =  parsed_exp                
-            else:
-                parsed_exp = variable.short_name + '.number()'             
+                parsed_exp =  '(' + parser.translate_to_cpp(expression_list) + ')'
+                #variable.expression =  parsed_exp                                                         
             variables.append([variable.short_name, parsed_exp])
             
             
@@ -637,10 +635,7 @@ class Module:
                 
                 if weakform.coordinate_type == 'planar':
                     weakform.variables = volume.quantities_planar
-                    for variable in volume.quantities_planar:
-                        if variable.expression != None:
-                            print variable.expression
-                                                        
+                                                       
                 weakform.constants = self.constants
                 weakform.id = part_module.id                
                 part_module.weakforms.append(weakform)                        
