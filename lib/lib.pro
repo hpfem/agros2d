@@ -1,5 +1,5 @@
 QT -= GUI
-TARGET = ../build/lib/lib/lib
+TARGET = lib/lib
 OBJECTS_DIR = ../build/lib
 TEMPLATE = lib
 CONFIG = += staticlib

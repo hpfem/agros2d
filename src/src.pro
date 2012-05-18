@@ -16,9 +16,6 @@ DEFINES += VERSION_DAY=26
 
 DEFINES += WEAKFORM_FACTORY
 
-QMAKE_LFLAGS += -fopenmp
-QMAKE_CXXFLAGS += -fopenmp
-
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
@@ -31,7 +28,7 @@ TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
 CODECFORTR = UTF-8
-RC_FILE = src.rc
+# RC_FILE = src.rc
 RESOURCES = src.qrc
 TARGET = agros2d
 DESTDIR = ../
@@ -228,16 +225,16 @@ OTHER_FILES += python/agros2d.pyx \
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
-LIBS += -L../build/hermes2d/lib
+LIBS += -L../hermes2d/lib
 LIBS += -lhermes2d
-LIBS += -L../build/lib/lib
+LIBS += -L../lib/lib
 LIBS += -llib
-LIBS += -L../build/weakform/lib
-LIBS += -lweakform #//TODO
+LIBS += -L../weakform/lib
+LIBS += -lweakform
 
 linux-g++|linux-g++-64|linux-g++-32 {
-    # DEFINES += WITH_MUMPS
-    # DEFINES += WITH_SUPERLU
+    QMAKE_LFLAGS += -fopenmp
+    QMAKE_CXXFLAGS += -fopenmp
     # DEFINES += WITH_UNITY
 
     INCLUDEPATH += /usr/include
@@ -306,6 +303,9 @@ macx-g++ {
 }
 
 win32-msvc2008 {
+    QMAKE_LFLAGS += /MD /openmp
+    QMAKE_CXXFLAGS += /MD /openmp
+
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 
@@ -320,4 +320,5 @@ win32-msvc2008 {
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
+    LIBS += -lxerces-c_static_3
 }

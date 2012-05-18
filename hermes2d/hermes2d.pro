@@ -1,7 +1,7 @@
 QT -= GUI
-TARGET = ../build/hermes2d/lib/hermes2d
-TEMPLATE = lib
+TARGET = lib/hermes2d
 OBJECTS_DIR = ../build/hermes2d
+TEMPLATE = lib
 CONFIG += staticlib
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
@@ -10,9 +10,6 @@ DEFINES += WITH_UMFPACK
 contains(CONFIG, HERMES_DEBUG) {
     CONFIG += debug
 }
-
-QMAKE_LFLAGS += -fopenmp
-QMAKE_CXXFLAGS += -fopenmp
 
 INCLUDEPATH += include \
                include/adapt \
@@ -137,12 +134,15 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/global.cpp
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    QMAKE_LFLAGS += -fopenmp
+    QMAKE_CXXFLAGS += -fopenmp
+
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
     DEFINES += HAVE_FMEMOPEN
     DEFINES += HAVE_LOG2
 
-    INCLUDEPATH += /usr/include/suitesparse   
+    INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
@@ -166,6 +166,9 @@ linux-g++|linux-g++-64|linux-g++-32 {
 }
 
 win32-msvc2008 {
+    QMAKE_LFLAGS += /MD /openmp
+    QMAKE_CXXFLAGS += /MD /openmp
+
     DEFINES += WIN32
     DEFINES += IMPLEMENT_C99
     DEFINES += "finite=_finite"
@@ -180,6 +183,7 @@ win32-msvc2008 {
     LIBS += -lblas
     LIBS += -lpthread
     LIBS += -lpython27
+    LIBS += -lxerces-c_static_3
 }
 
 macx-g++ {
