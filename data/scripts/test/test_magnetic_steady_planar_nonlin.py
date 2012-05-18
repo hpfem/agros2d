@@ -12,12 +12,12 @@ problem.time_total = 1.0
 # fields
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
-#magnetic.weak_forms = "compiled"
-magnetic.weak_forms = "interpreted"
+magnetic.weak_forms = "compiled"
+#magnetic.weak_forms = "interpreted"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
 magnetic.linearity_type = "newton"
-magnetic.nonlinear_tolerance = 0.03
+magnetic.nonlinear_tolerance = 0.3
 magnetic.nonlinear_steps = 10
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})

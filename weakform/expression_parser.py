@@ -86,12 +86,16 @@ class NumericStringParser(object):
                     if self.without_variables:
                         string.append('1')
                     else:                                                
-                        string.append(self.expressions[self.variables.index(item)]) # TODO: from quantity                                                
+                        if self.expressions[self.variables.index(item)] != None:
+                            string.append(item + '.value'+ self.expressions[self.variables.index(item)]) # TODO: from quantity
+                        else:
+                            string.append(item + '.number()')                                                
                 elif item in self.variables_derivatives:                   
                     if self.without_variables:
-                        string.append('1')
+                        string.append('1')                    
                     else:
-                        string.append(item[1:] + '.derivative(u_ext[0]->val[i])') # TODO: from quantity       
+                        string.append(item[1:] + '.derivative' + self.expressions[self.variables_derivatives.index(item)]) # TODO: from quantity
+                               
                 else:    
                     if item in self.replaces.iterkeys(): 
                         string.append(self.replaces[item])
