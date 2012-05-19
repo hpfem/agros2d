@@ -276,13 +276,8 @@ void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *item, int role)
             chartValue->setVisible(true);
 
             // axes
-            QwtText text("");
-            text.setFont(QFont("Helvetica", 10, QFont::Normal));
-
-            text.setText(lblShortname->text());
-            chartValue->setAxisTitle(QwtPlot::yLeft, text);
-            text.setText(lblDependenceShortname->text());
-            chartValue->setAxisTitle(QwtPlot::xBottom, text);
+            chartValue->setAxisTitle(QwtPlot::yLeft, lblShortname->text());
+            chartValue->setAxisTitle(QwtPlot::xBottom, lblDependenceShortname->text());
 
             // data
             QStringList strx = material.key.split(",");

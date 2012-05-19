@@ -16,8 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 #include "picard_solver.h"
 #include "newton_solver.h"
+
+#include "../src/alter_newton_solver.h"
 
 namespace Hermes
 {
@@ -291,7 +294,7 @@ namespace Hermes
 
         // Output for the user.
         if (this->verbose_output)
-          info("---- Picard iter %d, ndof %d, rel. error %g%%", it, ndof, rel_error);
+          info("---- Picard iter %d, ndof %d, rel. error: %g", it, ndof, rel_error);
 
         // Stopping because error is sufficiently low.
         if (rel_error < tol)

@@ -408,17 +408,12 @@ void ChartInfoWidget::setDataCurve(double *x, double *y, int size, QColor color)
 
 void ChartInfoWidget::setXLabel(const QString &xlabel)
 {
-    QwtText textErrorBottom(xlabel);
-    textErrorBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
-    chart->setAxisTitle(QwtPlot::xBottom, textErrorBottom);
+    chart->setAxisTitle(QwtPlot::xBottom, xlabel);
 }
 
 void ChartInfoWidget::setYLabel(const QString &ylabel)
 {
-    // labels
-    QwtText textErrorLeft(ylabel);
-    textErrorLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
-    chart->setAxisTitle(QwtPlot::yLeft, textErrorLeft);
+    chart->setAxisTitle(QwtPlot::yLeft, ylabel);
 }
 
 void ChartInfoWidget::saveImage()

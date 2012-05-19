@@ -23,6 +23,8 @@
 #include "pythonlabagros.h"
 #include "materialbrowserdialog.h"
 
+#include "qwt_symbol.h"
+
 DataTableDialog::DataTableDialog(QWidget *parent, const QString &labelX, const QString &labelY)
     : QDialog(parent), m_labelX(labelX), m_labelY(labelY)
 {
@@ -169,15 +171,10 @@ void DataTableDialog::createControls()
     lblInfoError->setPalette(palette);
 
     // chart
-    QwtText text("");
-    text.setFont(QFont("Helvetica", 10, QFont::Normal));
-
     chartValue = new Chart(this, true);
     // axis labels
-    text.setText(m_labelX);
-    chartValue->setAxisTitle(QwtPlot::xBottom, text);
-    text.setText(m_labelY);
-    chartValue->setAxisTitle(QwtPlot::yLeft, text);
+    chartValue->setAxisTitle(QwtPlot::xBottom, m_labelX);
+    chartValue->setAxisTitle(QwtPlot::yLeft, m_labelY);
 
     chartValueCurveMarkers = new QwtPlotCurve();
     chartValueCurveMarkers->setRenderHint(QwtPlotItem::RenderAntialiased);
@@ -189,11 +186,8 @@ void DataTableDialog::createControls()
 
     chartDerivative = new Chart(this, true);
     // axis labels
-    text.setFont(QFont("Helvetica", 10, QFont::Normal));
-    text.setText(m_labelX);
-    chartDerivative->setAxisTitle(QwtPlot::xBottom, text);
-    text.setText(QString("d%1/d%2").arg(m_labelY).arg(m_labelX));
-    chartDerivative->setAxisTitle(QwtPlot::yLeft, text);
+    chartDerivative->setAxisTitle(QwtPlot::xBottom, m_labelX);
+    chartDerivative->setAxisTitle(QwtPlot::yLeft, QString("d%1/d%2").arg(m_labelY).arg(m_labelX));
 
     QGridLayout *chartLayout = new QGridLayout();
     chartLayout->addWidget(chartValue);

@@ -118,21 +118,28 @@ int Block::offset(Field *fieldParam) const
 
 LinearityType Block::linearityType() const
 {
-    int linear = 0, newton = 0;
+    int linear = 0;
+    int newton = 0;
+    int picard = 0;
+
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->linearityType() == LinearityType_Linear)
+        if (fieldInfo->linearityType() == LinearityType_Linear)
             linear++;
-        if(fieldInfo->linearityType() == LinearityType_Newton)
+        if (fieldInfo->linearityType() == LinearityType_Newton)
             newton++;
+        if (fieldInfo->linearityType() == LinearityType_Picard)
+            picard++;
     }
-    assert(linear * newton == 0); // all hard coupled fields has to be solved by the same method
+    assert(linear * newton * picard == 0); // all hard coupled fields has to be solved by the same method
 
-    if(linear)
+    if (linear)
         return LinearityType_Linear;
-    else if(newton)
+    else if (newton)
         return  LinearityType_Newton;
+    else if (picard)
+        return  LinearityType_Picard;
     else
         assert(0);
 }

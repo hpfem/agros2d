@@ -20,20 +20,9 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <qwt_scale_map.h>
-#include <qwt_symbol.h>
-#include <qwt_plot_grid.h>
-#include <qwt_plot_marker.h>
+#include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_zoomer.h>
-#include <qwt_plot_panner.h>
-#include <qwt_counter.h>
-#include <qwt_legend.h>
-#include <qwt_text.h>
-#include <qwt_plot.h>
-#include <qwt_scale_engine.h>
-#include <qwt_plot_renderer.h>
-#include "qwt_plot_magnifier.h"
 
 #include "util.h"
 
@@ -96,6 +85,7 @@ public slots:
 
 private:
     QwtPlotCurve *m_curve;
+
 
 private slots:
     void pickerValueMoved(const QPoint &pos);

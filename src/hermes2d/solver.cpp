@@ -389,9 +389,41 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         }
     }
 
-    //    if (m_fieldInfo->linearityType == LinearityType_Picard)
-    //    {
-    //    }
+    if (m_block->linearityType() == LinearityType_Picard)
+    {
+        Hermes::TimePeriod timer;
+
+        Hermes::vector<Solution<Scalar>* > slns;
+        for (int i = 0; i < msa.spaces().size(); i++)
+        {
+            QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space = msa.spaces().at(i);
+            Hermes::Hermes2D::Space<Scalar> *spc = space.data();
+            slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
+        }
+        PicardSolver<Scalar> picard(&dp, slns, Util::problem()->config()->matrixSolver());
+        // picard.attach_timer(&timer);
+
+        try
+        {
+            picard.solve(m_block->nonlinearTolerance(), m_block->nonlinearSteps());
+            Solution<Scalar>::vector_to_solutions(picard.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+
+            /*
+            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+                                    arg(milisecondsToTime(picard.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime(picard.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime((picard.get_assemble_time() + picard.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
+            msa.setAssemblyTime(picard.get_assemble_time() * 1000.0);
+            msa.setSolveTime(picard.get_solve_time() * 1000.0);
+            */
+        }
+        catch (Hermes::Exceptions::Exception e)
+        {
+            QString error = QString(e.getMsg());
+            Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Newton's iteration failed: %1").arg(error));
+            return false;
+        }
+    }
 
     return true;
 

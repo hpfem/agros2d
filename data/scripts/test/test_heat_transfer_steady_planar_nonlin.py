@@ -13,7 +13,8 @@ heat.number_of_refinements = 2
 heat.polynomial_order = 2
 #heat.weak_forms = "interpreted"
 heat.weak_forms = "compiled"
-heat.linearity_type = "newton"
+#heat.linearity_type = "newton"
+heat.linearity_type = "picard"
 heat.nonlinear_tolerance = 0.001
 heat.nonlinear_steps = 10
 

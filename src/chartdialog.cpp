@@ -376,12 +376,9 @@ void ChartDialog::plotGeometry()
     double *yval = new double[count];
 
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
-    QwtText text("");
-    text.setFont(QFont("Helvetica", 10, QFont::Bold));
-    text.setText(QString("%1 (%2)").
-                 arg(physicFieldVariable->name()).
-                 arg(physicFieldVariable->unit()));
-    chart->setAxisTitle(QwtPlot::yLeft, text);
+    chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
+                        arg(physicFieldVariable->name()).
+                        arg(physicFieldVariable->unit()));
 
     // headers
     QStringList head = headers();
@@ -393,9 +390,10 @@ void ChartDialog::plotGeometry()
     trvTable->setHorizontalHeaderLabels(head);
 
     // chart
-    if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
-    if (radAxisX->isChecked()) text.setText(Util::problem()->config()->labelX() + " (m)");
-    if (radAxisY->isChecked()) text.setText(Util::problem()->config()->labelY() + " (m)");
+    QString text;
+    if (radAxisLength->isChecked()) text = tr("Length (m)");
+    if (radAxisX->isChecked()) text = Util::problem()->config()->labelX() + " (m)";
+    if (radAxisY->isChecked()) text = Util::problem()->config()->labelY() + " (m)";
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
@@ -482,12 +480,9 @@ void ChartDialog::plotTime()
     double *yval = new double[timeLevels.count()];
 
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
-    QwtText text("");
-    text.setFont(QFont("Helvetica", 10, QFont::Bold));
-    text.setText(QString("%1 (%2)").
-                 arg(physicFieldVariable->name()).
-                 arg(physicFieldVariable->unit()));
-    chart->setAxisTitle(QwtPlot::yLeft, text);
+    chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
+                        arg(physicFieldVariable->name()).
+                        arg(physicFieldVariable->unit()));
 
     // headers
     QStringList head = headers();
@@ -499,8 +494,7 @@ void ChartDialog::plotTime()
     trvTable->setHorizontalHeaderLabels(head);
 
     // chart
-    text.setText(tr("Time (s)"));
-    chart->setAxisTitle(QwtPlot::xBottom, text);
+    chart->setAxisTitle(QwtPlot::xBottom, tr("time (s)"));
 
     // calculate values
     QStringList row;

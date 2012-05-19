@@ -111,10 +111,10 @@ Hermes::Ord Value::value(Hermes::Ord key)
 
 double Value::derivative(double key)
 {
-    if (!hasTable())
-        return 0.0;
-    else
+    if ((m_fieldInfo->linearityType() == LinearityType_Newton) && hasTable())
         return m_table->derivativeSpline(key);
+    else
+        return 0.0;
 }
 
 Hermes::Ord Value::derivative(Hermes::Ord key)
@@ -465,15 +465,10 @@ void ValueTimeDialog::createControls()
     connect(cmbPresets, SIGNAL(currentIndexChanged(int)), this, SLOT(presetsChanged(int)));
 
     // chart
-    QwtText text("");
-
     chart = new Chart(this, true);
     // axis labels
-    text.setFont(QFont("Helvetica", 10, QFont::Normal));
-    text.setText(tr("time"));
-    chart->setAxisTitle(QwtPlot::xBottom, text);
-    text.setText(tr("value"));
-    chart->setAxisTitle(QwtPlot::yLeft, text);
+    chart->setAxisTitle(QwtPlot::xBottom, tr("time"));
+    chart->setAxisTitle(QwtPlot::yLeft, tr("value"));
 
     chartCurve = new QwtPlotCurve();
     chartCurve->setRenderHint(QwtPlotItem::RenderAntialiased);

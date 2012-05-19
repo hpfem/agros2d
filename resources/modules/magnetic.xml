@@ -45,7 +45,7 @@
 				<module:quantity id="magnetic_current_density_external_real" />
 
         <module:matrix_form i="1" j="1"
-                        planar="(abs((sign(((ma_mur * (updx * updx + updy * updy)))))) * (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / (1e-12 + (updx * updx + updy * updy)^0.5) * (updx * vdx + updy * vdy)) +
+                        planar="(abs(sign(dma_mur * (updx * updx + updy * updy))) * (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / (1e-12 + (updx * updx + updy * updy)^0.5) * (updx * vdx + updy * vdy)) +
                         1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
                         ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy))"
                         axi="(abs((sign((ma_mur * ((updr + upval / (r + 1e-12)) * (updr + upval / (r + 1e-12)) + updz * updz)))))
@@ -106,7 +106,7 @@
 
 
                                 <module:matrix_form i="1" j="1"
-                                        planar="abs((sign((dma_mur * (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2))))) * ( - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
+                                        planar="abs(sign(dma_mur * (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2))) * ( - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) /
                                                          (1e-12 + (dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)^0.5) * (updx * vdx + updy * vdy)) +
                                                 1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
                                             ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"

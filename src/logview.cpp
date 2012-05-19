@@ -189,29 +189,25 @@ void LogDialog::createControls()
 
     logWidget = new LogWidget(this);
 
-    chartNewton = new Chart(this, true);
-    chartNewton->setVisible(false);
+    m_chartNewton = new Chart(this, true);
+    m_chartNewton->setVisible(false);
+    m_chartNewton->setMinimumWidth(300);
 
     if (Util::problem()->isNonlinear())
     {
-        chartNewton->setVisible(true);
+        m_chartNewton->setVisible(true);
 
         // axes
-        QwtText text("");
-        text.setFont(QFont("Helvetica", 10, QFont::Normal));
-
-        text.setText(tr("residual norm"));
-        chartNewton->setAxisTitle(QwtPlot::yLeft, text);
-        text.setText(tr("iteration"));
-        chartNewton->setAxisTitle(QwtPlot::xBottom, text);
+        m_chartNewton->setAxisTitle(QwtPlot::yLeft, tr("error"));
+        m_chartNewton->setAxisTitle(QwtPlot::xBottom, tr("iteration"));
     }
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
-    layoutHorizontal->addWidget(logWidget);
-    layoutHorizontal->addWidget(chartNewton);
+    layoutHorizontal->addWidget(logWidget, 1);
+    layoutHorizontal->addWidget(m_chartNewton, 0);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutHorizontal);
@@ -222,24 +218,32 @@ void LogDialog::createControls()
 
 void LogDialog::printDebug(const QString &module, const QString &message)
 {
-    QString str = "residual norm:";
-
-    if (module == tr("Solver") && message.contains(str))
+    if (Util::problem()->isNonlinear())
     {
-        bool ok = false;
-        double res_norm = (message.right(message.length() - (message.indexOf(str) + str.length() + 1))).toDouble(&ok);
+        QString strNewton = "residual norm:";
+        QString strPicard = "rel. error:";
 
-        if (ok)
+        if (module == tr("Solver") && (message.contains(strNewton) || message.contains(strPicard)))
         {
-            chartN.append(chartN.length() + 1);
-            chartNorm.append(res_norm);
+            bool ok = false;
+            double error = 0.0;
+            if (message.contains(strNewton))
+                error = (message.right(message.length() - (message.indexOf(strNewton) + strNewton.length() + 1))).toDouble(&ok);
+            else if (message.contains(strPicard))
+                error = (message.right(message.length() - (message.indexOf(strPicard) + strPicard.length() + 1))).toDouble(&ok);
 
-            chartNewton->setData(chartN, chartNorm);
+            if (ok)
+            {
+                m_chartStep.append(m_chartStep.length() + 1);
+                m_chartNorm.append(error);
+
+                m_chartNewton->setData(m_chartStep, m_chartNorm);
+            }
         }
-    }
-    else
-    {
-        chartN.clear();
-        chartNorm.clear();
+        else
+        {
+            m_chartStep.clear();
+            m_chartNorm.clear();
+        }
     }
 }

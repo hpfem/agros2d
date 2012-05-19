@@ -29,6 +29,19 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
 
+#include <qwt_scale_map.h>
+#include <qwt_symbol.h>
+#include <qwt_plot_grid.h>
+#include <qwt_plot_marker.h>
+#include <qwt_plot_panner.h>
+#include <qwt_counter.h>
+#include <qwt_legend.h>
+#include <qwt_text.h>
+#include <qwt_scale_engine.h>
+#include <qwt_plot_renderer.h>
+#include "qwt_plot_magnifier.h"
+#include "qwt_plot_rescaler.h"
+
 void readPixmap(QLabel *lblEquation, const QString &name)
 {
     QPixmap pixmap;
@@ -229,10 +242,19 @@ Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
     setMinimumSize(420, 260);
 
     // panning with the left mouse button
-    // (void) new QwtPlotPanner(canvas());
+    // QwtPlotPanner *panner = new QwtPlotPanner(canvas());
+    // panner->setMouseButton(Qt::MidButton);
 
     // zoom in/out with the wheel
-    // (void) new QwtPlotMagnifier(canvas());
+    // QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(canvas());
+    // magnifier->setWheelFactor(1 / magnifier->wheelFactor());
+    // magnifier->setMouseFactor(1 / magnifier->mouseFactor());
+
+    // QwtPlotZoomer *zoomer = new QwtPlotZoomer(canvas());
+    // zoomer->setRubberBandPen(QColor(Qt::red));
+    // zoomer->setTrackerPen(Qt::NoPen);
+    // zoomer->setMousePattern(QwtEventPattern::MouseSelect2, Qt::RightButton, Qt::ControlModifier);
+    // zoomer->setMousePattern(QwtEventPattern::MouseSelect3, Qt::RightButton);
 
     // legend
     /*
@@ -245,11 +267,12 @@ Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
     QPalette canvasPalette(Qt::white);
     canvasPalette.setColor(QPalette::Foreground, QColor(0, 0, 0));
     canvas()->setPalette(canvasPalette);
+    canvas()->setFrameShape(QFrame::NoFrame);
 
     // grid
     QwtPlotGrid *grid = new QwtPlotGrid;
-    grid->setMajPen(QPen(Qt::darkGray, 0, Qt::DotLine));
-    grid->setMinPen(QPen(Qt::gray, 0, Qt::DotLine));
+    grid->setMajPen(QPen(Qt::gray, 0, Qt::DotLine));
+    grid->setMinPen(QPen(Qt::NoPen));
     grid->enableX(true);
     grid->enableY(true);
     grid->enableXMin(true);
@@ -257,10 +280,11 @@ Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
     grid->attach(this);
 
     // axes
-    setAxisTitle(QwtPlot::xBottom, " ");
-    setAxisFont(QwtPlot::xBottom, QFont("Helvetica", 9, QFont::Normal));
-    setAxisTitle(QwtPlot::yLeft, " ");
-    setAxisFont(QwtPlot::yLeft, QFont("Helvetica", 9, QFont::Normal));
+    QFont fnt = QFont(QApplication::font().family(), QApplication::font().pointSize() - 1, QFont::Normal);
+    setAxisFont(QwtPlot::xBottom, fnt);
+    setAxisTitle(QwtPlot::xBottom, QwtText(" "));
+    setAxisFont(QwtPlot::yLeft, fnt);
+    setAxisTitle(QwtPlot::yLeft, QwtText(" "));
 
     // curve styles
     QwtSymbol sym;
@@ -272,10 +296,11 @@ Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
     // curve
     m_curve = new QwtPlotCurve();
     m_curve->setRenderHint(QwtPlotCurve::RenderAntialiased);
-    m_curve->setPen(QPen(Qt::blue));
+    m_curve->setPen(QPen(Qt::darkBlue, 1.5));
     m_curve->setCurveAttribute(QwtPlotCurve::Inverted);
     m_curve->setYAxis(QwtPlot::yLeft);
     m_curve->attach(this);
+
 
     // chart picker
     QwtPlotPicker *pickerValue = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
@@ -379,14 +404,16 @@ void Chart::setData(QList<double> xval, QList<double> yval)
 
     delete [] txval;
     delete [] tyval;
+
+    replot();
 }
 
 void Chart::pickerValueMoved(const QPoint &pos)
 {
     QString info;
     info.sprintf("x=%g, y=%g",
-        invTransform(QwtPlot::xBottom, pos.x()),
-        invTransform(QwtPlot::yLeft, pos.y()));
+                 invTransform(QwtPlot::xBottom, pos.x()),
+                 invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 // ****************************************************************************************************

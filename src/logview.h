@@ -94,9 +94,9 @@ private:
      LogWidget *logWidget;
 
      QwtPlotCurve *m_curve;
-     Chart *chartNewton;
-     QList<double> chartN;
-     QList<double> chartNorm;
+     Chart *m_chartNewton;
+     QList<double> m_chartStep;
+     QList<double> m_chartNorm;
 
      void createControls();
 
