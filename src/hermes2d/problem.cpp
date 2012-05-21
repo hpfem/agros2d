@@ -168,6 +168,8 @@ void Problem::addField(FieldInfo *field)
     // couplings
     synchronizeCouplings();
 
+    m_isSolved = false;
+
     emit fieldsChanged();
 }
 
