@@ -40,8 +40,8 @@ CONFIG += warn_off
 # QMAKE_CXXFLAGS += -w
 # QMAKE_CXXFLAGS_DEBUG += -Wuninitialized
 # QMAKE_CXXFLAGS += -Wuninitialized
-OBJECTS_DIR = ../build/agros2d
-MOC_DIR = ../build/agros2d
+OBJECTS_DIR = build
+MOC_DIR = build
 SUBDIRS += src
 SOURCES += util.cpp \
     value.cpp \
@@ -225,11 +225,11 @@ OTHER_FILES += python/agros2d.pyx \
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
-LIBS += -L../hermes2d/lib
+LIBS += -L../hermes2d/build/lib
 LIBS += -lhermes2d
-LIBS += -L../lib/lib
+LIBS += -L../lib/build/lib
 LIBS += -llib
-LIBS += -L../weakform/lib
+LIBS += -L../weakform/build/lib
 LIBS += -lweakform
 
 linux-g++|linux-g++-64|linux-g++-32 {

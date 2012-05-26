@@ -1,5 +1,5 @@
 QT += network
-OBJECTS_DIR = ../build/agros2d-remote
+OBJECTS_DIR = build/agros2d-remote
 TARGET = agros2d-remote
 DESTDIR = ../
 TEMPLATE = app
