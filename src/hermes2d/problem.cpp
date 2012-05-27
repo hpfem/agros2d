@@ -345,6 +345,8 @@ void Problem::solve()
     if(!solveInit(isError))
         return;
 
+    // todo: poradne to ucesat s tim isError, takhle je to sileny
+
     if (!isError)
     {
         assert(isMeshed());
@@ -355,63 +357,58 @@ void Problem::solve()
 
         Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
 
+        //new
         foreach (Block* block, m_blocks)
         {
             solvers[block] = block->prepareSolver();
-        }
-
-        foreach (Block* block, m_blocks)
-        {
-            Solver<double>* solver = solvers[block];
-
-            if (block->isTransient())
-            {
-                if (solver->solveInitialTimeStep())
-                {
-                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
-                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
-                        {
-                            isError = true;
-                            break; // inner loop
-                        }
-                }
-                else
+            if(block->isTransient())
+                if(!solvers[block]->solveInitialTimeStep())
                 {
                     isError = true;
+                    break;
                 }
+        }
 
-                if (isError)
-                    break; // block solver loop
-            }
-            else
+        int timeStep = 0;
+        bool doNextTimeStep = !isError;
+        while(doNextTimeStep)
+        {
+            foreach (Block* block, m_blocks)
             {
-                if (block->adaptivityType() == AdaptivityType_None)
+                Solver<double>* solver = solvers[block];
+                if(!block->skipThisTimeStep(timeStep))
                 {
-                    if (!solver->createInitialSpace(0) ||
-                        !solver->solveSimple(0, 0, false))
+                    if (block->adaptivityType() == AdaptivityType_None)
                     {
-                        isError = true;
-                        break; // block solver loop
+                        if (!solver->createInitialSpace(0) ||
+                            !solver->solveSimple(0, 0, false))
+                        {
+                            isError = true;
+                            break; // block solver loop
+                        }
                     }
-                }
-                else
-                {
-                    if (!solver->createInitialSpace(0))
+                    else
                     {
-                        isError = true;
-                        break; // block solver loop
+                        if (!solver->createInitialSpace(0))
+                        {
+                            isError = true;
+                            break; // block solver loop
+                        }
+                        int adaptStep = 1;
+                        bool continueAdaptivity = true;
+                        while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
+                        {
+                            continueAdaptivity = solver->solveReferenceAndProject(0, adaptStep, false);
+                            continueAdaptivity = continueAdaptivity && solver->createAdaptedSpace(0, adaptStep);
+                            cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueAdaptivity << endl;
+                            adaptStep++;
+                        }
                     }
-                    int adaptStep = 1;
-                    bool continueSolve = true;
-                    while (continueSolve && (adaptStep <= block->adaptivitySteps()))
-                    {
-                        continueSolve = solver->solveReferenceAndProject(0, adaptStep, false);
-                        continueSolve = continueSolve && solver->createAdaptedSpace(0, adaptStep);
-                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
-                        adaptStep++;
-                    }
+
                 }
             }
+            timeStep++;
+            doNextTimeStep = Util::problem()->isTransient() && (timeStep < Util::problem()->config()->numTimeSteps());
 
             if (!isError)
             {
@@ -420,7 +417,76 @@ void Problem::solve()
                 Util::scene()->setActiveSolutionType(SolutionMode_Normal);
                 cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
             }
+
         }
+
+//        //old
+//        foreach (Block* block, m_blocks)
+//        {
+//            solvers[block] = block->prepareSolver();
+//        }
+
+//        foreach (Block* block, m_blocks)
+//        {
+//            Solver<double>* solver = solvers[block];
+
+//            if (block->isTransient())
+//            {
+//                if (solver->solveInitialTimeStep())
+//                {
+//                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
+//                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
+//                        {
+//                            isError = true;
+//                            break; // inner loop
+//                        }
+//                }
+//                else
+//                {
+//                    isError = true;
+//                }
+
+//                if (isError)
+//                    break; // block solver loop
+//            }
+//            else
+//            {
+//                if (block->adaptivityType() == AdaptivityType_None)
+//                {
+//                    if (!solver->createInitialSpace(0) ||
+//                        !solver->solveSimple(0, 0, false))
+//                    {
+//                        isError = true;
+//                        break; // block solver loop
+//                    }
+//                }
+//                else
+//                {
+//                    if (!solver->createInitialSpace(0))
+//                    {
+//                        isError = true;
+//                        break; // block solver loop
+//                    }
+//                    int adaptStep = 1;
+//                    bool continueSolve = true;
+//                    while (continueSolve && (adaptStep <= block->adaptivitySteps()))
+//                    {
+//                        continueSolve = solver->solveReferenceAndProject(0, adaptStep, false);
+//                        continueSolve = continueSolve && solver->createAdaptedSpace(0, adaptStep);
+//                        cout << "step " << adaptStep << " / " << block->adaptivitySteps() << ", continueSolve " << continueSolve << endl;
+//                        adaptStep++;
+//                    }
+//                }
+//            }
+
+//            if (!isError)
+//            {
+//                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+//                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+//                Util::scene()->setActiveSolutionType(SolutionMode_Normal);
+//                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+//            }
+//        }
 
         // delete temp file
         if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
