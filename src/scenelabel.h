@@ -31,6 +31,7 @@ class SceneLabel : public MarkedSceneBasic<SceneMaterial>
 public:
     SceneLabel(const Point &m_point, double m_area);
 
+    inline virtual SceneMaterial* marker(FieldInfo *fieldInfo) { return MarkedSceneBasic<SceneMaterial>::marker(fieldInfo); }
     inline Point point() const { return m_point; }
     inline void setPoint(const Point &point) { m_point = point; }
     inline double area() const { return m_area; }

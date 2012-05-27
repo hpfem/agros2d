@@ -64,8 +64,8 @@
 // This is for opensource ctemplate on windows.  Even though we
 // #include config.h, just like the files used to compile the dll, we
 // are actually a *client* of the dll, so we don't get to decl anything.
-#include <config.h>
-#undef CTEMPLATE_DLL_DECL
+#include <config_ctemplate.h>
+#undef 
 
 #include <stdlib.h>
 #include <stdio.h>

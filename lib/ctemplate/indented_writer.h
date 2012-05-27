@@ -33,7 +33,7 @@
 #ifndef TEMPLATE_INDENTED_WRITER_H_
 #define TEMPLATE_INDENTED_WRITER_H_
 
-#include <config.h>
+#include <config_ctemplate.h>
 #include <string>
 
 _START_GOOGLE_NAMESPACE_

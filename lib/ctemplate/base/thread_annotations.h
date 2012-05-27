@@ -44,7 +44,7 @@
 #define BASE_THREAD_ANNOTATIONS_H_
 
 
-#include <config.h>
+#include <config_ctemplate.h>
 #if defined(__GNUC__) && defined(__SUPPORT_TS_ANNOTATION__) && !defined(SWIG)
 #define THREAD_ANNOTATION_ATTRIBUTE__(x)   __attribute__((x))
 #else

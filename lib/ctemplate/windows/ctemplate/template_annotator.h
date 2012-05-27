@@ -54,13 +54,6 @@
 
 #include <string>
 
-// NOTE: if you are statically linking the template library into your binary
-// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
-// as a compiler flag in your project file to turn off the dllimports.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
-#endif
-
 namespace ctemplate {
 
 class ExpandEmitter;
@@ -73,7 +66,7 @@ class ExpandEmitter;
 // so the action of an implementation will be to add additional inline
 // content.  The emitter argument is never to be remembered beyond each
 // function call.
-class CTEMPLATE_DLL_DECL TemplateAnnotator {
+class  TemplateAnnotator {
  public:
   TemplateAnnotator() { }
   virtual ~TemplateAnnotator() { }
@@ -116,7 +109,7 @@ class CTEMPLATE_DLL_DECL TemplateAnnotator {
 // that have a standard text form bracketed by {{ }}.  It is used as
 // the default annotation implementation when annotation is turned on
 // by PerExpandData and no annotator type is specified.
-class CTEMPLATE_DLL_DECL TextTemplateAnnotator : public TemplateAnnotator {
+class  TextTemplateAnnotator : public TemplateAnnotator {
  public:
   TextTemplateAnnotator() { }
   virtual void EmitOpenInclude(ExpandEmitter* emitter, const std::string& value);

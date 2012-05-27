@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     a.setApplicationVersion(versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta));
     a.setOrganizationName("hpfem.org");
     a.setOrganizationDomain("hpfem.org");
-    a.setApplicationName("Agros2D");
+    a.setApplicationName("Agros2D-3");
 
 #ifdef Q_WS_MAC
     // don't show icons in menu

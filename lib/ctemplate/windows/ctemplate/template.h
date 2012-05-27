@@ -61,13 +61,6 @@ namespace google_ctemplate_streamhtmlparser {
 class HtmlParser;
 }
 
-// NOTE: if you are statically linking the template library into your binary
-// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
-// as a compiler flag in your project file to turn off the dllimports.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
-#endif
-
 namespace ctemplate {
 
 // These free functions form the "simple" template API, and support
@@ -79,8 +72,8 @@ namespace ctemplate {
 // to create your own TemplateCache object, and work directly with
 // it.  See template_cache.h for details.
 
-extern CTEMPLATE_DLL_DECL const TemplateCache* default_template_cache();
-extern CTEMPLATE_DLL_DECL TemplateCache* mutable_default_template_cache();
+extern  const TemplateCache* default_template_cache();
+extern  TemplateCache* mutable_default_template_cache();
 
 
 // ---- EXPANDING A TEMPLATE -------
@@ -208,7 +201,7 @@ enum TemplateContext { TC_UNUSED, TC_HTML, TC_JS, TC_CSS, TC_JSON,
 // This class is deprecated.  Old code uses this class heavily (via
 // GetTemplate() to obtain a Template*, and then methods on that
 // Template*) but new code should use the free functions above.
-class CTEMPLATE_DLL_DECL Template {
+class  Template {
  public:
   // ---- METHODS FOR TOOLS ----
   //   These are not intended for normal use, but are public so a
@@ -407,7 +400,7 @@ class CTEMPLATE_DLL_DECL Template {
 
   // Template markers have the form {{VARIABLE}}, etc.  These constants
   // define the {{ and }} that delimit template markers.
-  struct CTEMPLATE_DLL_DECL MarkerDelimiters {
+  struct  MarkerDelimiters {
     const char* start_marker;
     size_t start_marker_len;
     const char* end_marker;
@@ -422,7 +415,7 @@ class CTEMPLATE_DLL_DECL Template {
   };
 
   // The current parsing state.  Used in BuildTree() and subroutines
-  struct CTEMPLATE_DLL_DECL ParseState {
+  struct  ParseState {
     const char* bufstart;
     const char* bufend;
     enum { PS_UNUSED, GETTING_TEXT, GETTING_NAME } phase;

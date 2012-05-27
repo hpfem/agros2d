@@ -29,7 +29,7 @@
 
 // ---
 
-#include <config.h>
+#include <config_ctemplate.h>
 #include <ctemplate/template_annotator.h>
 #include <string>
 #include <ctemplate/template_emitter.h>
