@@ -34,7 +34,7 @@
 #ifndef TEMPLATE_UTIL_H_
 #define TEMPLATE_UTIL_H_
 
-#include <config.h>
+#include <config_ctemplate.h>
 #include <ctype.h>
 #include <errno.h>
 #include <stdlib.h>

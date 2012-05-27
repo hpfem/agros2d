@@ -49,16 +49,15 @@ class Mutex;
 class TemplateCacheUnittest;
 
 // NOTE: if you are statically linking the template library into your binary
-// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
+// (rather than using the template .dll), set '/D ='
 // as a compiler flag in your project file to turn off the dllimports.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
-extern template class __declspec(dllimport) std::allocator<std::string>;
-extern template class __declspec(dllimport) std::vector<std::string>;
-#else
-template class __declspec(dllexport) std::allocator<std::string>;
-template class __declspec(dllexport) std::vector<std::string>;
-#endif
+// #ifndef
+extern template class std::allocator<std::string>;
+extern template class std::vector<std::string>;
+// #else
+// template class std::allocator<std::string>;
+// template class std::vector<std::string>;
+// #endif
 
 namespace ctemplate {
 
@@ -68,7 +67,7 @@ class TemplateCachePeer;
 class TemplateDictionaryInterface;
 
 // A cache to store parsed templates.
-class CTEMPLATE_DLL_DECL TemplateCache {
+class  TemplateCache {
  public:
   TemplateCache();
   ~TemplateCache();

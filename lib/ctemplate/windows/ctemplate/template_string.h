@@ -55,13 +55,6 @@ extern char _start[] __attribute__((weak));     // linker emits: start of .text
 extern char data_start[] __attribute__((weak));               // start of .data
 #endif
 
-// NOTE: if you are statically linking the template library into your binary
-// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
-// as a compiler flag in your project file to turn off the dllimports.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
-#endif
-
 namespace ctemplate {
 
 // Most methods of TemplateDictionary take a TemplateString rather than a
@@ -90,7 +83,7 @@ struct StaticTemplateString;
 // better than the STL default.  We don't include TemplateString or
 // StaticTemplateString here, since they are hashed more efficiently
 // based on their id.
-struct CTEMPLATE_DLL_DECL StringHash {
+struct  StringHash {
   inline size_t operator()(const char* s) const {
     return Hash(s, strlen(s));
   };
@@ -119,7 +112,7 @@ typedef unsigned __int64 TemplateId;
 
 const TemplateId kIllegalTemplateId = 0;
 
-struct CTEMPLATE_DLL_DECL StaticTemplateString {
+struct  StaticTemplateString {
   // Do not define a constructor!  We use only brace-initialization,
   // so the data is constructed at static-initialization time.
   // Anything you want to put in a constructor, put in
@@ -167,7 +160,7 @@ struct CTEMPLATE_DLL_DECL StaticTemplateString {
   inline bool operator==(const StaticTemplateString& x) const;
 };
 
-class CTEMPLATE_DLL_DECL TemplateString {
+class  TemplateString {
  public:
   TemplateString(const char* s)
       : ptr_(s ? s : ""), length_(strlen(ptr_)),
@@ -333,7 +326,7 @@ inline bool StaticTemplateString::operator==(
 // do so as an optimization: this may be called rather late (though
 // before main), so other code should not depend on this being called
 // before them.
-class CTEMPLATE_DLL_DECL StaticTemplateStringInitializer {
+class  StaticTemplateStringInitializer {
  public:
   // This constructor operates on a const StaticTemplateString - we should
   // only change those things that are mutable.

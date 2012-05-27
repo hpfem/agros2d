@@ -126,6 +126,9 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/spline.cpp \
                 src/global.cpp
 
+HEADERS += \
+    ../hermes_common/include/config.h
+
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
@@ -158,27 +161,6 @@ linux-g++|linux-g++-64|linux-g++-32 {
     }
 }
 
-win32-msvc2008 {
-    QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /openmp
-
-    DEFINES += WIN32
-    DEFINES += IMPLEMENT_C99
-    DEFINES += "finite=_finite"
-    DEFINES += "popen=_popen"
-    DEFINES += "M_LN2=0.69314718055994530942"
-
-    INCLUDEPATH += c:/Python27/include
-    INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
-    LIBS += -Lc:/Python27
-    LIBS += -lumfpack
-    LIBS += -lamd
-    LIBS += -lblas
-    LIBS += -lpthread
-    LIBS += -lpython27
-    LIBS += -lxerces-c_static_3
-}
-
 macx-g++ {
     DEFINES += HAVE_FMEMOPEN
     DEFINES += HAVE_LOG2
@@ -198,7 +180,29 @@ macx-g++ {
     LIBS += -lblas
 }
 
-HEADERS += \
-    ../hermes_common/include/config.h
+win32-msvc2010 {
+    # QMAKE_LFLAGS += /MD /openmp
+    QMAKE_CXXFLAGS += /MD /openmp /Zc:wchar_t
 
+    DEFINES += XERCES_STATIC_LIBRARY
+    DEFINES += XML_LIBRARY
+    DEFINES += WIN32
+    DEFINES += IMPLEMENT_C99
+    DEFINES += "finite=_finite"
+    DEFINES += "popen=_popen"
+    DEFINES += "M_LN2=0.69314718055994530942"
 
+    INCLUDEPATH += c:/Python27/include
+    INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
+    LIBS += -Lc:/Python27
+    LIBS += -Lc:/Qt/4.8.2/lib
+    LIBS += -lumfpack
+    LIBS += -lamd
+    LIBS += -lblas
+    LIBS += -lpthread
+    LIBS += -lpython27
+    LIBS += -lvcomp
+    LIBS += -lxerces-c_static_3
+    LIBS += -ladvapi32
+    LIBS += -lws2_32
+}

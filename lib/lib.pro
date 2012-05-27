@@ -2,7 +2,7 @@ QT -= GUI
 TARGET = build/lib/lib
 OBJECTS_DIR = build
 TEMPLATE = lib
-CONFIG = += staticlib
+CONFIG += staticlib
 
 SOURCES += dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
@@ -36,10 +36,12 @@ linux-g++|linux-g++-64|linux-g++-32 {
             .
 }
 
-win32-msvc2008 {
+win32-msvc2010 {
     INCLUDEPATH += ctemplate \
             ctemplate/windows \
             .
+
+    SOURCES += ctemplate/windows/port.cc
 }
 
 macx-g++ {

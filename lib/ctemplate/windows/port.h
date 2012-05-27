@@ -1,10 +1,10 @@
 /* Copyright (c) 2007, Google Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above
@@ -14,7 +14,7 @@
  *     * Neither the name of Google Inc. nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -40,7 +40,7 @@
 #ifndef CTEMPLATE_WINDOWS_PORT_H_
 #define CTEMPLATE_WINDOWS_PORT_H_
 
-#include "windows/config.h"
+#include "windows/config_ctemplate.h"
 #ifdef _WIN32
 
 #define USING_PORT_CC
@@ -101,9 +101,9 @@
  * name vsnprintf, since windows defines that (but not snprintf (!)).
  */
 #if !defined(__MINGW32__) && !defined(__MINGW64__)  /* mingw already defines */
-extern CTEMPLATE_DLL_DECL int snprintf(char *str, size_t size,
+extern  int snprintf(char *str, size_t size,
                                        const char *format, ...);
-extern int CTEMPLATE_DLL_DECL safe_vsnprintf(char *str, size_t size,
+extern int  safe_vsnprintf(char *str, size_t size,
                                              const char *format, va_list ap);
 #define vsnprintf(str, size, format, ap)  safe_vsnprintf(str, size, format, ap)
 #define va_copy(dst, src)  (dst) = (src)
@@ -123,10 +123,10 @@ extern int CTEMPLATE_DLL_DECL safe_vsnprintf(char *str, size_t size,
 #include <vector>
 
 _START_GOOGLE_NAMESPACE_
-extern CTEMPLATE_DLL_DECL std::string TmpFile(const char* basename);
-void CTEMPLATE_DLL_DECL CreateOrCleanTestDir(const std::string& dirname);
+extern  std::string TmpFile(const char* basename);
+void  CreateOrCleanTestDir(const std::string& dirname);
 _END_GOOGLE_NAMESPACE_
-void CTEMPLATE_DLL_DECL GetNamelist(const char* testdata_dir,
+void  GetNamelist(const char* testdata_dir,
                                     std::vector<std::string>* namelist);
 #endif  /* __cplusplus */
 

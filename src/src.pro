@@ -225,11 +225,8 @@ OTHER_FILES += python/agros2d.pyx \
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
-LIBS += -L../hermes2d/build/lib
 LIBS += -lhermes2d
-LIBS += -L../lib/build/lib
 LIBS += -llib
-LIBS += -L../weakform/build/lib
 LIBS += -lweakform
 
 linux-g++|linux-g++-64|linux-g++-32 {
@@ -242,6 +239,10 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../lib/ctemplate/unix
+
+    LIBS += -L../hermes2d/build/lib
+    LIBS += -L../lib/build/lib
+    LIBS += -L../weakform/build/lib
 
     LIBS += -lumfpack
     LIBS += -lxerces-c
@@ -302,10 +303,12 @@ macx-g++ {
     LIBS += -lblas
 }
 
-win32-msvc2008 {
-    QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /openmp
+win32-msvc2010 {
+    # QMAKE_LFLAGS += /MD /openmp
+    QMAKE_CXXFLAGS += /MD /openmp /Zc:wchar_t
 
+    #DEFINES += XERCES_STATIC_LIBRARY
+    #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 
@@ -313,12 +316,20 @@ win32-msvc2008 {
     INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../lib/ctemplate/windows
 
+    LIBS += -L../hermes2d/release/build/lib
+    LIBS += -L../lib/release/build/lib
+    LIBS += -L../weakform/release/build/lib
+
     LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
+    LIBS += -lvcomp
     LIBS += -lqwt
     LIBS += -lpython27
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -llibpthreadVCE2
+    #LIBS += -lmsvcrt
     LIBS += -lxerces-c_static_3
+    LIBS += -ladvapi32
+    LIBS += -lws2_32
 }

@@ -35,7 +35,7 @@
 #ifndef TEMPLATE_OPENSOURCE_FILEUTIL_H_
 #define TEMPLATE_OPENSOURCE_FILEUTIL_H_
 
-#include <config.h>
+#include <config_ctemplate.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <time.h>
