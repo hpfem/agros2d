@@ -395,12 +395,22 @@ void Problem::solveAction()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    solver->createInitialSpace(0);
-                    solver->solveSimple(timeStep, 0, false, false);
+                    // todo: merge solveSimple and solveTimeStep
+                    if(block->isTransient())
+                    {
+                        solver->solveTimeStep(Util::problem()->config()->timeStep().value());
+                    }
+                    else
+                    {
+                        solver->createInitialSpace(timeStep);
+                        solver->solveSimple(timeStep, 0, false);
+                    }
                 }
                 else
                 {
-                    solver->createInitialSpace(0);
+                    assert(!block->isTransient()); // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
+                                                   // vezmu treba pred pred posledni adaptivni krok a tim budu mit derefinement
+                    solver->createInitialSpace(timeStep);
                     int adaptStep = 1;
                     bool continueAdaptivity = true;
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))

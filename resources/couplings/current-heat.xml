@@ -16,20 +16,36 @@
 
 	<coupling:volume>
 		<coupling:weakforms_volume>
-			<coupling:weakform_volume couplingtype="weak"
-				sourceanalysis="steadystate" targetanalysis="steadystate">
-				<coupling:vector_form i="1" j="1"
-					planar="- cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
-					axi="- cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval" />
-			</coupling:weakform_volume>
+                <coupling:weakform_volume couplingtype="weak"
+                        sourceanalysis="steadystate" targetanalysis="steadystate">
+                        <coupling:vector_form i="1" j="1"
+                                planar="- cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
+                                axi="- cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval" />
+                </coupling:weakform_volume>
 
-			<coupling:weakform_volume couplingtype="hard"
-				sourceanalysis="steadystate" targetanalysis="steadystate">
-				<coupling:matrix_form i="2" j="1"
-					planar="cu_gamma * (udx * udx + udy * udy) * vval" axi="cu_gamma * (udr * udr + udz * udz) * r * vval" />
-				<coupling:vector_form i="2" j="1"
-					planar="- cu_gamma * (updx * updx + updy * updy) * vval" axi="- cu_gamma * (updr * updr + updz * updz) * r * vval" />
-			</coupling:weakform_volume>
-		</coupling:weakforms_volume>
+                <coupling:weakform_volume couplingtype="hard"
+                        sourceanalysis="steadystate" targetanalysis="steadystate">
+                        <coupling:matrix_form i="2" j="1"
+                                planar="cu_gamma * (udx * udx + udy * udy) * vval" axi="cu_gamma * (udr * udr + udz * udz) * r * vval" />
+                        <coupling:vector_form i="2" j="1"
+                                planar="- cu_gamma * (updx * updx + updy * updy) * vval" axi="- cu_gamma * (updr * updr + updz * updz) * r * vval" />
+                </coupling:weakform_volume>
+
+
+                <coupling:weakform_volume couplingtype="weak"
+                        sourceanalysis="steadystate" targetanalysis="transient">
+                        <coupling:vector_form i="1" j="1"
+                                planar="- cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
+                                axi="- cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval" />
+                </coupling:weakform_volume>
+
+                <coupling:weakform_volume couplingtype="hard"
+                        sourceanalysis="steadystate" targetanalysis="transient">
+                        <coupling:matrix_form i="2" j="1"
+                                planar="cu_gamma * (udx * udx + udy * udy) * vval" axi="cu_gamma * (udr * udr + udz * udz) * r * vval" />
+                        <coupling:vector_form i="2" j="1"
+                                planar="- cu_gamma * (updx * updx + updy * updy) * vval" axi="- cu_gamma * (updr * updr + updz * updz) * r * vval" />
+                </coupling:weakform_volume>
+                </coupling:weakforms_volume>
 	</coupling:volume>
 </coupling:coupling>

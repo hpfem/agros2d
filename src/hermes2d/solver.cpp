@@ -429,7 +429,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists, bool usePrevious)
+void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
     SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve"));
@@ -458,7 +458,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     // output
     BlockSolutionID solutionID;
     solutionID.group = m_block;
-    solutionID.timeStep = 0;
+    solutionID.timeStep = timeStep;
     solutionID.adaptivityStep = adaptivityStep;
 
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);

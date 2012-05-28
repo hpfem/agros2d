@@ -43,15 +43,13 @@ class Solver
 public:
     void init( WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
-    void solve(SolverConfig config);
-    //void doAdaptivityStep();
-    //void doTimeStep();
+
+    //todo : merge solveSimple and solveTimeStep?
 
     void solveTimeStep(double timeStep);
     void solveInitialTimeStep();
-
     void createInitialSpace(int timeStep);
-    void solveSimple(int timeStep, int adaptivityStep, bool solutionExists, bool usePrevious); //todo: refact
+    void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
     bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
