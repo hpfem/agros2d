@@ -29,6 +29,12 @@ class FieldInfo;
 template <typename Scalar>
 class WeakFormAgros;
 
+class SolverException
+{
+public:
+    SolverException(QString str) { this->str = str; }
+    QString str;
+};
 
 // solve
 template <typename Scalar>
@@ -37,16 +43,14 @@ class Solver
 public:
     void init( WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
-    void solve(SolverConfig config);
-    //void doAdaptivityStep();
-    //void doTimeStep();
 
-    bool solveTimeStep(double timeStep);
-    bool solveInitialTimeStep();
+    //todo : merge solveSimple and solveTimeStep?
 
-    bool createInitialSpace(int timeStep);
-    bool solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
-    bool solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
+    void solveTimeStep(double timeStep);
+    void solveInitialTimeStep();
+    void createInitialSpace(int timeStep);
+    void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
+    void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
     bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
 private:
@@ -54,9 +58,6 @@ private:
 
     // elapsed time
     double m_elapsedTime;
-
-    // error
-    bool isError;
 
     // weak form
     WeakFormAgros<Scalar> *m_wf;
