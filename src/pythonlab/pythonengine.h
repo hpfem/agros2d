@@ -53,13 +53,16 @@ protected:
     virtual void addCustomExtensions() {}
     virtual void runPythonHeader() {}
 
+    PyObject *runCode(const QString &code, bool returnOutput = false);
+
 private slots:
     void stdOut(const QString &message);
 
 private:
     QString m_stdOut;
+    QString m_functions;
 
-    QString m_functions;    
+    QMutex muttex;
 };
 
 // create custom python engine
