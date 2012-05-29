@@ -552,6 +552,9 @@ void SceneViewPost2D::paintScalarField()
 
     if (m_listScalarField == -1)
     {
+        paletteFilter(textureScalar());
+        paletteCreate(textureScalar());
+
         m_listScalarField = glGenLists(1);
         glNewList(m_listScalarField, GL_COMPILE);
 
@@ -1118,9 +1121,6 @@ void SceneViewPost2D::refresh()
 
     if (Util::problem()->isSolved())
     {
-        paletteFilter(textureScalar());
-        paletteCreate(textureScalar());
-
         m_post2DHermes->processSolved();
     }
 
