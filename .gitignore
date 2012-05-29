@@ -1,5 +1,3 @@
-.gitignore
-.gitignore~
 *.o
 *.a
 moc_*
@@ -50,3 +48,19 @@ src/mainwindow.cpp.BASE.9065.cpp
 src/mainwindow.cpp.LOCAL.9065.cpp
 src/mainwindow.cpp.REMOTE.9065.cpp
 tmp
+*.obj
+*.dll
+*.tlog
+*.ipch
+*.filters
+*.vcxproj
+*.manifest
+*.lastbuildstate
+*.lib
+*.pdb
+*.ilk
+*.exp
+*.opensdf
+*.sdf
+*.sln
+*.suo
