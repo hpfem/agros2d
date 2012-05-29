@@ -60,12 +60,6 @@
 #include <ctemplate/template_modifiers.h>
 #include <ctemplate/template_string.h>
 
-// NOTE: if you are statically linking the template library into your binary
-// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
-// as a compiler flag in your project file to turn off the dllimports.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
-#endif
 
 namespace ctemplate {
 template <class T, class C> class ArenaAllocator;
@@ -77,7 +71,7 @@ template<typename NormalMap> class small_map_default_init;  // in small_map.h
 namespace ctemplate {
 
 
-class CTEMPLATE_DLL_DECL TemplateDictionary : public TemplateDictionaryInterface {
+class  TemplateDictionary : public TemplateDictionaryInterface {
  public:
   // name is used only for debugging.
   // arena is used to store all names and values.  It can be NULL (the

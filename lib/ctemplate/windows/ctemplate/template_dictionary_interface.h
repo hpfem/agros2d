@@ -46,13 +46,6 @@
 #include <string>
 #include <ctemplate/template_string.h>
 
-// NOTE: if you are statically linking the template library into your binary
-// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
-// as a compiler flag in your project file to turn off the dllimports.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
-#endif
-
 namespace ctemplate {
 
 const int kIndent = 2;  // num spaces to indent each level -- used with dump
@@ -63,7 +56,7 @@ const int kIndent = 2;  // num spaces to indent each level -- used with dump
 // templates, the associated set of dictionaries for sections and
 // included templates, and the template filenames to be expanded in
 // place of template-include nodes.
-class CTEMPLATE_DLL_DECL TemplateDictionaryInterface {
+class  TemplateDictionaryInterface {
  public:
   // TemplateDictionaryInterface destructor
   virtual ~TemplateDictionaryInterface() {}

@@ -11,7 +11,7 @@
 #ifndef CTEMPLATE_MACROS_H_
 #define CTEMPLATE_MACROS_H_
 
-#include <config.h>
+#include <config_ctemplate.h>
 #ifdef HAVE_STDINT_H
 #include <stdint.h>         // the normal place uint32_t is defined
 #endif

@@ -32,7 +32,7 @@
 //
 // Based on the 'old' TemplateDictionary by Frank Jernigan.
 
-#include <config.h>
+#include <config_ctemplate.h>
 #include "base/mutex.h"         // This must go first so we get _XOPEN_SOURCE
 #include <assert.h>
 #include <stdlib.h>

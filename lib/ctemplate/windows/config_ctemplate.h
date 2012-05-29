@@ -4,13 +4,13 @@
    in .. -- this is particularly true for msys/mingw, which uses the
    unix config.h but also runs code in the windows directory.
 */
-#if defined(__MINGW32__) || defined(__MING64__)
+// #if defined(__MINGW32__) || defined(__MING64__)
 #define CTEMPLATE_DLL_DECL
 // These two lines make sure we read the unix-style config.h, and not the
 // windows-style config.h -- it would be bad if we tried to read both!
-#include "../config.h"
-#define GOOGLE_CTEMPLATE_WINDOWS_CONFIG_H_
-#endif
+// #include "../config.h"
+// #define GOOGLE_CTEMPLATE_WINDOWS_CONFIG_H_
+// #endif
 
 #ifndef GOOGLE_CTEMPLATE_WINDOWS_CONFIG_H_
 #define GOOGLE_CTEMPLATE_WINDOWS_CONFIG_H_
@@ -211,10 +211,10 @@
 // to define this here because this file is only used internally, to
 // compile the DLL, and every dll source file #includes "config.h"
 // before anything else.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllexport)
-# define CTEMPLATE_DLL_DECL_FOR_UNITTESTS  __declspec(dllimport)
-#endif
+// #ifndef
+// # define   __declspec(dllexport)
+// # define _FOR_UNITTESTS  __declspec(dllexport)
+// #endif
 
 // TODO(csilvers): include windows/port.h in every relevant source file instead?
 #include "windows/port.h"

@@ -547,8 +547,6 @@ void Module::BasicModule::read(const QString &filename)
 {
     assert(QFile::exists(filename));
 
-    // qDebug() << "reading module: " << filename;
-
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");

@@ -46,13 +46,6 @@
 #include <ctemplate/template_enums.h>    // for Strip
 #include <ctemplate/template_string.h>   // for StringHash
 
-// NOTE: if you are statically linking the template library into your binary
-// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
-// as a compiler flag in your project file to turn off the dllimports.
-#ifndef CTEMPLATE_DLL_DECL
-# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
-#endif
-
 namespace ctemplate {
 
 // RegisterTemplateFilename
@@ -80,7 +73,7 @@ namespace ctemplate {
 //   sanity-checking code to make sure all the templates used by a program
 //   exist and are syntactically correct.
 
-class CTEMPLATE_DLL_DECL TemplateNamelist {
+class  TemplateNamelist {
   friend class TemporaryRegisterTemplate;
  public:
   // These types should be taken as 'generic' containers.  The only

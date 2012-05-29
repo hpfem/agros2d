@@ -812,8 +812,6 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             {
                 if ((*it >= 0) && (*it < Util::scene()->labels->length()))
                 {
-                    qDebug() << QString::number(*it) << Util::scene()->labels->at(*it)->marker(m_fieldInfo)->getName();
-
                     if (Util::scene()->labels->at(*it)->marker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
                     {
                         Util::scene()->labels->at(*it)->setSelected(true);
