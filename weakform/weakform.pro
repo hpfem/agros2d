@@ -26,10 +26,15 @@ linux-g++|linux-g++-64|linux-g++-32 {
 OTHER_FILES += \
     xml_parser.py
 
+
+win32-msvc2010 {
+    # QMAKE_LFLAGS += /MD /openmp
+    QMAKE_CXXFLAGS += /MD /MP /openmp /Zc:wchar_t
+
+    INCLUDEPATH += c:/Python27/include
+    INCLUDEPATH += ../../qwt-6.0.1/src
+    INCLUDEPATH += ../lib/ctemplate/windows
+	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
+}
+	
 include(src/weakform.pri)
-
-
-
-
-
-

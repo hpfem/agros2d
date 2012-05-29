@@ -305,20 +305,21 @@ macx-g++ {
 
 win32-msvc2010 {
     # QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /openmp /Zc:wchar_t
+    QMAKE_CXXFLAGS += /MD /MP /openmp /Zc:wchar_t
 
     #DEFINES += XERCES_STATIC_LIBRARY
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
-
+	
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../lib/ctemplate/windows
+	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
-    LIBS += -L../hermes2d/release/build/lib
-    LIBS += -L../lib/release/build/lib
-    LIBS += -L../weakform/release/build/lib
+    LIBS += -L../hermes2d/debug/build/lib
+    LIBS += -L../lib/debug/build/lib
+    LIBS += -L../weakform/debug/build/lib
 
     LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
