@@ -58,6 +58,15 @@ const double* SceneViewPostInterface::paletteColor(double x) const
 {
     switch (Util::config()->paletteType)
     {
+    case Palette_Agros2D:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataAgros2D[n];
+    }
+        break;
     case Palette_Jet:
     {
         if (x < 0.0) x = 0.0;
