@@ -320,6 +320,9 @@ win32-msvc2010 {
     LIBS += -L../hermes2d/debug/build/lib
     LIBS += -L../lib/debug/build/lib
     LIBS += -L../weakform/debug/build/lib
+    LIBS += -L../hermes2d/release/build/lib
+    LIBS += -L../lib/release/build/lib
+    LIBS += -L../weakform/release/build/lib
 
     LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
