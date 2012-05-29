@@ -182,7 +182,7 @@ macx-g++ {
 
 win32-msvc2010 {
     # QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /openmp /Zc:wchar_t
+    QMAKE_CXXFLAGS += /MD /MP /openmp /Zc:wchar_t
 
     DEFINES += XERCES_STATIC_LIBRARY
     DEFINES += XML_LIBRARY
@@ -191,9 +191,11 @@ win32-msvc2010 {
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
     DEFINES += "M_LN2=0.69314718055994530942"
-
+	
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
+	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
+
     LIBS += -Lc:/Python27
     LIBS += -Lc:/Qt/4.8.2/lib
     LIBS += -lumfpack
