@@ -76,7 +76,7 @@ public:
     double linearizerQuality;
 
     // post3d
-    SceneViewPost3DShow showPost3D;
+    SceneViewPost3DMode showPost3D;
 
     // contour
     bool showContourView;

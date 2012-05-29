@@ -552,15 +552,14 @@ enum PaletteOrderType
     PaletteOrder_BWDesc
 };
 
-// FIXME: deprecated - DO NOT USE
-enum SceneViewPost3DShow
+enum SceneViewPost3DMode
 {
-    SceneViewPost3DShow_Undefined,
-    SceneViewPost3DShow_None,
-    SceneViewPost3DShow_ScalarView3D,
-    SceneViewPost3DShow_ScalarView3DSolid,
-    SceneViewPost3DShow_Model,
-    SceneViewPost3DShow_ParticleTracing
+    //SceneViewPost3DMode_Undefined,
+    SceneViewPost3DMode_None,
+    SceneViewPost3DMode_ScalarView3D,
+    SceneViewPost3DMode_ScalarView3DSolid,
+    SceneViewPost3DMode_Model,
+    SceneViewPost3DMode_ParticleTracing
 };
 
 enum SceneTransformMode
@@ -660,9 +659,9 @@ QStringList linearityTypeStringKeys();
 QString linearityTypeToStringKey(LinearityType linearityType);
 LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
-// FIXME: deprecated - DO NOT USE
-QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow);
-SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow);
+QStringList sceneViewPost3DModeStringKeys();
+QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode);
+SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPost3DMode);
 
 QString modeToStringKey(Mode teMode);
 Mode modeFromStringKey(const QString &teMode);
@@ -747,7 +746,7 @@ const double VECTORSSCALEMAX = 20.0;
 
 
 // post3d
-const SceneViewPost3DShow SCALARSHOWPOST3D = SceneViewPost3DShow_ScalarView3D;
+const SceneViewPost3DMode SCALARSHOWPOST3D = SceneViewPost3DMode_ScalarView3D;
 
 const double LINEARIZER_QUALITY = 0.0006;
 

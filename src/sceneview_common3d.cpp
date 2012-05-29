@@ -137,7 +137,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene)
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
         RectPoint rect = Util::scene()->boundingBox();
-        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D)
+        if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D)
         {
             glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
         }
@@ -166,7 +166,7 @@ void SceneViewCommon3D::setZoom(double power)
 
 void SceneViewCommon3D::initLighting()
 {
-    if (Util::config()->scalarView3DLighting || Util::config()->showPost3D == SceneViewPost3DShow_Model)
+    if (Util::config()->scalarView3DLighting || Util::config()->showPost3D == SceneViewPost3DMode_Model)
     {
         // environment
         float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };

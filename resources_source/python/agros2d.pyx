@@ -253,6 +253,9 @@ cdef extern from "../../src/pythonlabagros.h":
         void activate()
         void refresh()
 
+        void setPost3DMode(char *mode) except +
+        char *getPost3DMode()
+
     char *pyVersion()
     void pyQuit()
 
@@ -983,6 +986,12 @@ cdef class __ViewPost3D__:
         self.thisptr = new PyViewPost3D()
     def __dealloc__(self):
         del self.thisptr
+
+    property mode:
+        def __get__(self):
+            return self.thisptr.getPost3DMode()
+        def __set__(self, mode):
+            self.thisptr.setPost3DMode(mode)
 
 # problem
 __problem__ = __Problem__()

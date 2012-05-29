@@ -416,6 +416,10 @@ struct PyViewPost3D
 {
     void activate();
     void refresh();
+
+    // scalar view
+    void setPost3DMode(char* mode);
+    inline char* getPost3DMode() const { return const_cast<char*>(sceneViewPost3DModeToStringKey(Util::config()->showPost3D).toStdString().c_str()); }
 };
 
 // functions

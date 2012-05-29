@@ -1471,6 +1471,14 @@ void PyViewPost3D::refresh()
         currentPythonEngineAgros()->sceneViewPost3D()->refresh();
 }
 
+void PyViewPost3D::setPost3DMode(char* mode)
+{
+    if (sceneViewPost3DModeStringKeys().contains(QString(mode)))
+        Util::config()->showPost3D = sceneViewPost3DModeFromStringKey(QString(mode));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(sceneViewPost3DModeStringKeys())).toStdString());
+}
+
 // ****************************************************************************************************
 
 char *pyVersion()
