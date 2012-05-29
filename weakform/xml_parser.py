@@ -1,26 +1,35 @@
 #!/usr/bin/python
 import module_xml as md
+import couplings as cp
 from xml.dom import minidom
 import os
 from expression_parser import NumericStringParser
 
 class Config:     
     modules_dir = '../resources/modules/'
-    weakform_dir = './src/'
+    couplings_dir = '../resources/couplings/'
+    templates_dir = './templates/'
+    weakform_dir = './src/'        
     factory_dir = './src/' 
     doc_dir = '../resources_source/doc/source/modules/'
-    templates_dir = './templates/'
+   
     
     templates = ['template_weakform_cpp.xml', 'template_weakform_h.xml', 'template_weakform_factory_h.xml']
     project_file = 'weakform.pri'
-
+  
+    
 class XmlParser:    
-    def __init__(self, modules):               
+    def __init__(self, modules, couplings):               
         self.module_files = [] 
+        self.coupling_files = []
         for module_name in modules:
             module_file = module_name + '.xml'             
-            self.module_files.append(module_file)                    
-                                       
+            self.module_files.append(module_file)                  
+            
+        for coupling_name in couplings:
+            coupling_file = coupling_name + '.xml'             
+            self.coupling_files.append(coupling_file)
+                                               
         self.modules = []
         self.templates = dict()        
         
@@ -35,9 +44,32 @@ class XmlParser:
                 #print 'I/O error({0}): {1} "{2}".'.format(errno, strerror, 														  template_file)
                 raise
                                   
-    def process(self):                              
+    def process(self):                                      
         for module_file in self.module_files:        
             self.parse_xml_file(module_file)            
+                                            
+        for coupling_file in self.coupling_files:
+            file_name =  coupling_file.split('.')[0] # remove suffix
+            coupled_module_names = file_name.split('-')  #separates coupled modules                      
+            coupled_constants = []
+            for module in self.modules:
+                for module_name in coupled_module_names:
+                    coupled_quantities_planar = []
+                    coupled_quantities_axi = []
+                    if(module.id == module_name):                    
+                        coupled_constants.extend(module.constants)
+                        for volume in module.volumes:
+                            coupled_quantities_planar.extend(volume.quantities_planar)
+                            coupled_quantities_axi.extend(volume.quantities_planar)   
+                                                     
+            
+            self.parse_xml_coupling(coupling_file)
+            for module in self.modules:
+                if module.id == (file_name).replace('-','_'):
+                    for volume in module.volumes:
+                        volume.quantities_planar = coupled_quantities_planar
+                        volume.quantities_axi = coupled_quantities_axi
+                        volume.constants = coupled_constants
             
         # create src directory
         try:
@@ -54,19 +86,19 @@ class XmlParser:
         files = []
         conditions = []
         
-        for module in self.modules:                           
+        for module in self.modules:                                                
             module_files, module_conditions = module.get_code(self.templates)             
             module.write_code(Config.weakform_dir, self.templates)                                       
             conditions.extend(module_conditions)                                      
             files.extend(module_files)
-       
+                
         # writes weakform_factory.h         
         factory_code_str = ''    
         key = 'template_weakform_factory_h.xml'        
         node = self.templates[key].getElementsByTagName('head')[0]  
         factory_code_str += node.childNodes[0].nodeValue      
        
-        for module_file in files:                    
+        for module_file in files:                                
             if module_file[::-1][:2][::-1] == '.h':                
                 node = self.templates[key].getElementsByTagName('includes')[0]  
                 string = node.childNodes[0].nodeValue 
@@ -77,9 +109,9 @@ class XmlParser:
                            'CustomMatrixFormSurf','CustomVectorFormSurf', 'CustomEssentialFormSurf']                    
         for weakform_temp in weakform_temps:                            
             weakform_string = ''            
-            for condition in conditions:                  
+            for condition in conditions:                                  
                 if condition[0] == weakform_temp:                    
-                    weakform_string += condition[1]                    
+                    weakform_string += condition[1]                                    
             node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
             string = node.childNodes[0].nodeValue      
             string = string.replace('//conditions', weakform_string)            
@@ -235,6 +267,55 @@ class XmlParser:
         module.surfaces.append(surface)                    
         self.modules.append(module)
         
+    def parse_xml_coupling(self, filename):
+        coordinate_types = ['planar', 'axi'];         
+        module = Module()
+        ds_coupling = cp.parse(Config.couplings_dir + filename)
+        module.description = ds_coupling.general.description                
+        module.id = (ds_coupling.general.id).replace('-','_')            
+        module.source = ds_coupling.general.modules.source
+        module.target = ds_coupling.general.modules.target
+         
+        for ds_weakform in ds_coupling.volume.weakforms_volume.weakform_volume:            
+            volume = Volume()
+            volume.name = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis                    
+            for coordinate_type in coordinate_types:
+                for ds_matrix in ds_weakform.matrix_form:
+                    weakform = WeakForm()
+                    weakform.coupling_type = ds_weakform.couplingtype
+                    weakform.source_analysis = ds_weakform.sourceanalysis
+                    weakform.target_analysis = ds_weakform.targetanalysis
+                    weakform.analysis_type = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis                      
+                    weakform.type = 'matrix'
+                    weakform.coordinate_type = coordinate_type
+                    if coordinate_type == 'planar':
+                        weakform.expression = ds_matrix.planar
+                    if coordinate_type == 'axi':
+                        weakform.expression = ds_matrix.axi
+                    weakform.i = ds_matrix.i
+                    weakform.j = ds_matrix.j                    
+                    weakform.integral_type = 'vol'
+                    volume.weakforms.append(weakform)
+                    
+                for ds_vector in ds_weakform.vector_form:
+                    weakform = WeakForm()
+                    weakform.coordinate_type = coordinate_type
+                    weakform.coupling_type = ds_weakform.couplingtype
+                    weakform.source_analysis = ds_weakform.sourceanalysis
+                    weakform.source_analysis = ds_weakform.sourceanalysis
+                    weakform.analysis_type = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis
+                    weakform.integral_type = 'vol'
+                    weakform.i = ds_vector.i
+                    weakform.j = ds_vector.j                    
+                    weakform.type = 'vector'
+                    weakform.coordinate_type = coordinate_type
+                    if coordinate_type == 'planar':
+                        weakform.expression = ds_vector.planar
+                    if coordinate_type == 'axi':
+                        weakform.expression = ds_vector.axi
+                    volume.weakforms.append(weakform)                                        
+            module.volumes.append(volume)    
+        self.modules.append(module)
         
         
 class WeakForm:
@@ -242,6 +323,9 @@ class WeakForm:
         self.id = ''
         self.type = ''
         self.integral_type = ''        
+        self.coupling_type = ''
+        self.source_analysis = ''
+        self.target_analysis = ''
         self.coordinate_type = ''
         self.analysis_type = ''
         self.boundary_type = ''        
@@ -431,7 +515,7 @@ class WeakForm:
         symbols = ['x', 'y', 'r', 'z', 'f', 'udr', 'udz', 'udx', 'udy',
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
                    'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI',
-                   'value1', 'value2', 'dx1', 'dx2', 'dy1', 'dy2', 'dr1', 'dr2', 'dz1', 'dz2']
+                   'value1', 'value2', 'dx1', 'dx2', 'dy1', 'dy2', 'dr1', 'dr2', 'dz1', 'dz2', 'source0']
                            
         variables = []
         variables_derivatives = []
@@ -525,6 +609,8 @@ class Module:
         self.id = ''
         self.name = ''
         self.description = ''        
+        self.target = ''
+        self.source = ''
         self.volumes = [] 
         self.surfaces = []
         self.constants = []
@@ -608,11 +694,11 @@ class Module:
         module_types = []
         part_modules = []
         part_module = PartModule()          
-        
+                
         for volume in self.volumes:  
-            for weakform in volume.weakforms:                             
+            for weakform in volume.weakforms:                                             
                 part_module_id = self.id + '_' + volume.name + '_' \
-                    + weakform.coordinate_type + '_' + weakform.analysis_type                
+                    + weakform.coordinate_type + '_' + weakform.analysis_type                            
                 if (part_module_id in module_types):                    
                     index = module_types.index(part_module_id)                                          
                     part_module = part_modules[index]
@@ -622,12 +708,12 @@ class Module:
                     part_module = PartModule()                    
                     part_module.name = self.name
                     part_module.id = self.id + '_' + volume.name + '_' \
-                    + weakform.coordinate_type
+                    + weakform.coordinate_type                                        
                     part_module.description = self.description
                     part_module.coordinate_type = weakform.coordinate_type
                     part_module.constants = self.constants
                     part_module.volumes = self.volumes
-                    part_module.analysis = volume.name
+                    part_module.analysis = volume.name                    
                     part_modules.append(part_module)                                
                 
                 if weakform.coordinate_type == 'axi':
@@ -639,13 +725,6 @@ class Module:
                 weakform.constants = self.constants
                 weakform.id = part_module.id                
                 part_module.weakforms.append(weakform)                        
-       
-#        for weakform in volume.weakforms:
-#            print weakform.coordinate_type
-#            for variable in weakform.variables:
-#                if variable.expression != None:
-#                   print variable.expression
-#            print "------------------------------------"
             
         for surface in self.surfaces:                                    
                 for weakform in surface.weakforms:                                         
@@ -656,14 +735,7 @@ class Module:
                             weakform.variables = surface.quantities
                             weakform.constants = self.constants                                        
                             part_module.weakforms.append(weakform)                        
-              
-#        for part_module in part_modules:
-#            print "--------------------------"                            
-#            print part_module.id
-#            print "--------------------------"                
-#            for weakform in part_module.weakforms:
-#                print weakform.id, weakform.type, weakform.integral_type
-            
+                         
         return part_modules;
         
                                                                                           
@@ -677,8 +749,8 @@ class Module:
                 
         part_modules = self.extract_modules()                                                
         factory_codes = []                   
-        for part_module in part_modules:                                    
-            filename = (part_module.id)                                     
+        for part_module in part_modules:                                                
+            filename = (part_module.id)                                                            
             for key in templates.iterkeys():                           
                 file_string_name = filename + key
                 node = templates[key].getElementsByTagName('head')[0]            
@@ -708,7 +780,7 @@ class Module:
                 node = templates[key].getElementsByTagName('footer')[0]                            
                 if key == '.cpp':                        
                     for class_name in class_names:
-                        string = node.childNodes[0].nodeValue
+                        string = node.childNodes[0].nodeValue                        
                         string = string.replace('ClassName', class_name)                        
                         file_strings[file_string_name] += string             
                
@@ -736,6 +808,5 @@ class Module:
             weakform_pri_file.close()
 
 if __name__ == '__main__':    
-    parser = XmlParser(['heat', 'electrostatic', 'magnetic', 'current', 'acoustic', 'elasticity', 'rf'])
-    #parser = XmlParser(['heat'])    
-    parser.process()
+    coupling_parser = XmlParser(['heat', 'elasticity'], ['heat-elasticity'])
+    coupling_parser.process()

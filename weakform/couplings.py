@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Thu Apr 19 12:27:30 2012 by generateDS.py version 2.7a.
+# Generated Sat May 26 09:08:58 2012 by generateDS.py version 2.7a.
 #
 
 import sys
@@ -368,8 +368,9 @@ def _cast(typ, value):
 class coupling(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, general=None, volume=None):
+    def __init__(self, general=None, constants=None, volume=None):
         self.general = general
+        self.constants = constants
         self.volume = volume
     def factory(*args_, **kwargs_):
         if coupling.subclass:
@@ -379,9 +380,11 @@ class coupling(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_general(self): return self.general
     def set_general(self, general): self.general = general
+    def get_constants(self): return self.constants
+    def set_constants(self, constants): self.constants = constants
     def get_volume(self): return self.volume
     def set_volume(self, volume): self.volume = volume
-    def export(self, outfile, level, namespace_='', name_='coupling', namespacedef_=''):
+    def export(self, outfile, level, namespace_='coupling:', name_='coupling', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
@@ -393,16 +396,19 @@ class coupling(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='coupling'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='coupling'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='coupling', fromsubclass_=False):
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='coupling', fromsubclass_=False):
         if self.general is not None:
             self.general.export(outfile, level, namespace_, name_='general', )
+        if self.constants is not None:
+            self.constants.export(outfile, level, namespace_, name_='constants', )
         if self.volume is not None:
             self.volume.export(outfile, level, namespace_, name_='volume', )
     def hasContent_(self):
         if (
             self.general is not None or
+            self.constants is not None or
             self.volume is not None
             ):
             return True
@@ -420,6 +426,12 @@ class coupling(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('general=model_.general(\n')
             self.general.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        if self.constants is not None:
+            showIndent(outfile, level)
+            outfile.write('constants=model_.constants(\n')
+            self.constants.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
         if self.volume is not None:
@@ -440,6 +452,10 @@ class coupling(GeneratedsSuper):
             obj_ = general.factory()
             obj_.build(child_)
             self.set_general(obj_)
+        elif nodeName_ == 'constants':
+            obj_ = constants.factory()
+            obj_.build(child_)
+            self.set_constants(obj_)
         elif nodeName_ == 'volume':
             obj_ = volume.factory()
             obj_.build(child_)
@@ -469,7 +485,7 @@ class general(GeneratedsSuper):
     def set_id(self, id): self.id = id
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def export(self, outfile, level, namespace_='', name_='general', namespacedef_=''):
+    def export(self, outfile, level, namespace_='coupling:', name_='general', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
@@ -481,14 +497,14 @@ class general(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='general'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='general'):
         if self.id is not None and 'id' not in already_processed:
             already_processed.append('id')
-            outfile.write(' id=%s' % (quote_attrib(self.id), ))
+            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
         if self.name is not None and 'name' not in already_processed:
             already_processed.append('name')
             outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='general', fromsubclass_=False):
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='general', fromsubclass_=False):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -552,6 +568,165 @@ class general(GeneratedsSuper):
 # end class general
 
 
+class constants(GeneratedsSuper):
+    subclass = None
+    superclass = None
+    def __init__(self, constant=None):
+        if constant is None:
+            self.constant = []
+        else:
+            self.constant = constant
+    def factory(*args_, **kwargs_):
+        if constants.subclass:
+            return constants.subclass(*args_, **kwargs_)
+        else:
+            return constants(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_constant(self): return self.constant
+    def set_constant(self, constant): self.constant = constant
+    def add_constant(self, value): self.constant.append(value)
+    def insert_constant(self, index, value): self.constant[index] = value
+    def export(self, outfile, level, namespace_='coupling:', name_='constants', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        already_processed = []
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='constants')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='constants'):
+        pass
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='constants', fromsubclass_=False):
+        for constant_ in self.constant:
+            constant_.export(outfile, level, namespace_, name_='constant')
+    def hasContent_(self):
+        if (
+            self.constant
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='constants'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, [], name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('constant=[\n')
+        level += 1
+        for constant_ in self.constant:
+            showIndent(outfile, level)
+            outfile.write('model_.constant(\n')
+            constant_.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib, [])
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, node, nodeName_)
+    def buildAttributes(self, node, attrs, already_processed):
+        pass
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        if nodeName_ == 'constant':
+            obj_ = constant.factory()
+            obj_.build(child_)
+            self.constant.append(obj_)
+# end class constants
+
+
+class constant(GeneratedsSuper):
+    subclass = None
+    superclass = None
+    def __init__(self, id=None, value=None):
+        self.id = _cast(None, id)
+        self.value = _cast(float, value)
+        pass
+    def factory(*args_, **kwargs_):
+        if constant.subclass:
+            return constant.subclass(*args_, **kwargs_)
+        else:
+            return constant(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_id(self): return self.id
+    def set_id(self, id): self.id = id
+    def get_value(self): return self.value
+    def set_value(self, value): self.value = value
+    def export(self, outfile, level, namespace_='coupling:', name_='constant', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        already_processed = []
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='constant')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='constant'):
+        if self.id is not None and 'id' not in already_processed:
+            already_processed.append('id')
+            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
+        if self.value is not None and 'value' not in already_processed:
+            already_processed.append('value')
+            outfile.write(' value="%s"' % self.gds_format_double(self.value, input_name='value'))
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='constant', fromsubclass_=False):
+        pass
+    def hasContent_(self):
+        if (
+
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='constant'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, [], name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.id is not None and 'id' not in already_processed:
+            already_processed.append('id')
+            showIndent(outfile, level)
+            outfile.write('id = "%s",\n' % (self.id,))
+        if self.value is not None and 'value' not in already_processed:
+            already_processed.append('value')
+            showIndent(outfile, level)
+            outfile.write('value = %e,\n' % (self.value,))
+    def exportLiteralChildren(self, outfile, level, name_):
+        pass
+    def build(self, node):
+        self.buildAttributes(node, node.attrib, [])
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, node, nodeName_)
+    def buildAttributes(self, node, attrs, already_processed):
+        value = find_attr_value_('id', node)
+        if value is not None and 'id' not in already_processed:
+            already_processed.append('id')
+            self.id = value
+        value = find_attr_value_('value', node)
+        if value is not None and 'value' not in already_processed:
+            already_processed.append('value')
+            try:
+                self.value = float(value)
+            except ValueError, exp:
+                raise ValueError('Bad float/double attribute (value): %s' % exp)
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        pass
+# end class constant
+
+
 class modules(GeneratedsSuper):
     subclass = None
     superclass = None
@@ -568,7 +743,7 @@ class modules(GeneratedsSuper):
     def set_source(self, source): self.source = source
     def get_target(self): return self.target
     def set_target(self, target): self.target = target
-    def export(self, outfile, level, namespace_='', name_='modules', namespacedef_=''):
+    def export(self, outfile, level, namespace_='coupling:', name_='modules', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
@@ -580,9 +755,9 @@ class modules(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='modules'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='modules'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='modules', fromsubclass_=False):
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='modules', fromsubclass_=False):
         if self.source is not None:
             self.source.export(outfile, level, namespace_, name_='source', )
         if self.target is not None:
@@ -648,7 +823,7 @@ class source(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
-    def export(self, outfile, level, namespace_='', name_='source', namespacedef_=''):
+    def export(self, outfile, level, namespace_='coupling:', name_='source', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
@@ -659,11 +834,11 @@ class source(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='source'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='source'):
         if self.id is not None and 'id' not in already_processed:
             already_processed.append('id')
-            outfile.write(' id=%s' % (quote_attrib(self.id), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='source', fromsubclass_=False):
+            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='source', fromsubclass_=False):
         pass
     def hasContent_(self):
         if (
@@ -713,7 +888,7 @@ class target(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
-    def export(self, outfile, level, namespace_='', name_='target', namespacedef_=''):
+    def export(self, outfile, level, namespace_='coupling:', name_='target', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
@@ -724,11 +899,11 @@ class target(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='target'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='target'):
         if self.id is not None and 'id' not in already_processed:
             already_processed.append('id')
-            outfile.write(' id=%s' % (quote_attrib(self.id), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='target', fromsubclass_=False):
+            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='target', fromsubclass_=False):
         pass
     def hasContent_(self):
         if (
@@ -767,17 +942,17 @@ class target(GeneratedsSuper):
 class volume(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, weakforms=None):
-        self.weakforms = weakforms
+    def __init__(self, weakforms_volume=None):
+        self.weakforms_volume = weakforms_volume
     def factory(*args_, **kwargs_):
         if volume.subclass:
             return volume.subclass(*args_, **kwargs_)
         else:
             return volume(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_weakforms(self): return self.weakforms
-    def set_weakforms(self, weakforms): self.weakforms = weakforms
-    def export(self, outfile, level, namespace_='', name_='volume', namespacedef_=''):
+    def get_weakforms_volume(self): return self.weakforms_volume
+    def set_weakforms_volume(self, weakforms_volume): self.weakforms_volume = weakforms_volume
+    def export(self, outfile, level, namespace_='coupling:', name_='volume', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
@@ -789,14 +964,14 @@ class volume(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='volume'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='volume'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='volume', fromsubclass_=False):
-        if self.weakforms is not None:
-            self.weakforms.export(outfile, level, namespace_, name_='weakforms', )
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='volume', fromsubclass_=False):
+        if self.weakforms_volume is not None:
+            self.weakforms_volume.export(outfile, level, namespace_, name_='weakforms_volume', )
     def hasContent_(self):
         if (
-            self.weakforms is not None
+            self.weakforms_volume is not None
             ):
             return True
         else:
@@ -809,10 +984,10 @@ class volume(GeneratedsSuper):
     def exportLiteralAttributes(self, outfile, level, already_processed, name_):
         pass
     def exportLiteralChildren(self, outfile, level, name_):
-        if self.weakforms is not None:
+        if self.weakforms_volume is not None:
             showIndent(outfile, level)
-            outfile.write('weakforms=model_.weakforms(\n')
-            self.weakforms.exportLiteral(outfile, level)
+            outfile.write('weakforms_volume=model_.weakforms_volume(\n')
+            self.weakforms_volume.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -823,36 +998,36 @@ class volume(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
-        if nodeName_ == 'weakforms':
-            obj_ = weakforms.factory()
+        if nodeName_ == 'weakforms_volume':
+            obj_ = weakforms_volume.factory()
             obj_.build(child_)
-            self.set_weakforms(obj_)
+            self.set_weakforms_volume(obj_)
 # end class volume
 
 
-class weakforms(GeneratedsSuper):
+class weakforms_volume(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, weakform=None):
-        if weakform is None:
-            self.weakform = []
+    def __init__(self, weakform_volume=None):
+        if weakform_volume is None:
+            self.weakform_volume = []
         else:
-            self.weakform = weakform
+            self.weakform_volume = weakform_volume
     def factory(*args_, **kwargs_):
-        if weakforms.subclass:
-            return weakforms.subclass(*args_, **kwargs_)
+        if weakforms_volume.subclass:
+            return weakforms_volume.subclass(*args_, **kwargs_)
         else:
-            return weakforms(*args_, **kwargs_)
+            return weakforms_volume(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_weakform(self): return self.weakform
-    def set_weakform(self, weakform): self.weakform = weakform
-    def add_weakform(self, value): self.weakform.append(value)
-    def insert_weakform(self, index, value): self.weakform[index] = value
-    def export(self, outfile, level, namespace_='', name_='weakforms', namespacedef_=''):
+    def get_weakform_volume(self): return self.weakform_volume
+    def set_weakform_volume(self, weakform_volume): self.weakform_volume = weakform_volume
+    def add_weakform_volume(self, value): self.weakform_volume.append(value)
+    def insert_weakform_volume(self, index, value): self.weakform_volume[index] = value
+    def export(self, outfile, level, namespace_='coupling:', name_='weakforms_volume', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
-        self.exportAttributes(outfile, level, already_processed, namespace_, name_='weakforms')
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='weakforms_volume')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -860,19 +1035,19 @@ class weakforms(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='weakforms'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='weakforms_volume'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='weakforms', fromsubclass_=False):
-        for weakform_ in self.weakform:
-            weakform_.export(outfile, level, namespace_, name_='weakform')
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='weakforms_volume', fromsubclass_=False):
+        for weakform_volume_ in self.weakform_volume:
+            weakform_volume_.export(outfile, level, namespace_, name_='weakform_volume')
     def hasContent_(self):
         if (
-            self.weakform
+            self.weakform_volume
             ):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='weakforms'):
+    def exportLiteral(self, outfile, level, name_='weakforms_volume'):
         level += 1
         self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
@@ -881,12 +1056,12 @@ class weakforms(GeneratedsSuper):
         pass
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('weakform=[\n')
+        outfile.write('weakform_volume=[\n')
         level += 1
-        for weakform_ in self.weakform:
+        for weakform_volume_ in self.weakform_volume:
             showIndent(outfile, level)
-            outfile.write('model_.weakform(\n')
-            weakform_.exportLiteral(outfile, level)
+            outfile.write('model_.weakform_volume(\n')
+            weakform_volume_.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -900,53 +1075,53 @@ class weakforms(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
-        if nodeName_ == 'weakform':
-            obj_ = weakform.factory()
+        if nodeName_ == 'weakform_volume':
+            obj_ = weakform_volume.factory()
             obj_.build(child_)
-            self.weakform.append(obj_)
-# end class weakforms
+            self.weakform_volume.append(obj_)
+# end class weakforms_volume
 
 
-class weakform(GeneratedsSuper):
+class weakform_surface(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, couplingtype=None, targetanalysis=None, sourceanalysis=None, matrix=None, vector=None):
+    def __init__(self, couplingtype=None, targetanalysis=None, sourceanalysis=None, matrix_form=None, vector_form=None):
         self.couplingtype = _cast(None, couplingtype)
         self.targetanalysis = _cast(None, targetanalysis)
         self.sourceanalysis = _cast(None, sourceanalysis)
-        if matrix is None:
-            self.matrix = []
+        if matrix_form is None:
+            self.matrix_form = []
         else:
-            self.matrix = matrix
-        if vector is None:
-            self.vector = []
+            self.matrix_form = matrix_form
+        if vector_form is None:
+            self.vector_form = []
         else:
-            self.vector = vector
+            self.vector_form = vector_form
     def factory(*args_, **kwargs_):
-        if weakform.subclass:
-            return weakform.subclass(*args_, **kwargs_)
+        if weakform_surface.subclass:
+            return weakform_surface.subclass(*args_, **kwargs_)
         else:
-            return weakform(*args_, **kwargs_)
+            return weakform_surface(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_matrix(self): return self.matrix
-    def set_matrix(self, matrix): self.matrix = matrix
-    def add_matrix(self, value): self.matrix.append(value)
-    def insert_matrix(self, index, value): self.matrix[index] = value
-    def get_vector(self): return self.vector
-    def set_vector(self, vector): self.vector = vector
-    def add_vector(self, value): self.vector.append(value)
-    def insert_vector(self, index, value): self.vector[index] = value
+    def get_matrix_form(self): return self.matrix_form
+    def set_matrix_form(self, matrix_form): self.matrix_form = matrix_form
+    def add_matrix_form(self, value): self.matrix_form.append(value)
+    def insert_matrix_form(self, index, value): self.matrix_form[index] = value
+    def get_vector_form(self): return self.vector_form
+    def set_vector_form(self, vector_form): self.vector_form = vector_form
+    def add_vector_form(self, value): self.vector_form.append(value)
+    def insert_vector_form(self, index, value): self.vector_form[index] = value
     def get_couplingtype(self): return self.couplingtype
     def set_couplingtype(self, couplingtype): self.couplingtype = couplingtype
     def get_targetanalysis(self): return self.targetanalysis
     def set_targetanalysis(self, targetanalysis): self.targetanalysis = targetanalysis
     def get_sourceanalysis(self): return self.sourceanalysis
     def set_sourceanalysis(self, sourceanalysis): self.sourceanalysis = sourceanalysis
-    def export(self, outfile, level, namespace_='', name_='weakform', namespacedef_=''):
+    def export(self, outfile, level, namespace_='coupling:', name_='weakform_surface', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
-        self.exportAttributes(outfile, level, already_processed, namespace_, name_='weakform')
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='weakform_surface')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -954,30 +1129,30 @@ class weakform(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='weakform'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='weakform_surface'):
         if self.couplingtype is not None and 'couplingtype' not in already_processed:
             already_processed.append('couplingtype')
-            outfile.write(' couplingtype=%s' % (quote_attrib(self.couplingtype), ))
+            outfile.write(' couplingtype=%s' % (self.gds_format_string(quote_attrib(self.couplingtype).encode(ExternalEncoding), input_name='couplingtype'), ))
         if self.targetanalysis is not None and 'targetanalysis' not in already_processed:
             already_processed.append('targetanalysis')
-            outfile.write(' targetanalysis=%s' % (quote_attrib(self.targetanalysis), ))
+            outfile.write(' targetanalysis=%s' % (self.gds_format_string(quote_attrib(self.targetanalysis).encode(ExternalEncoding), input_name='targetanalysis'), ))
         if self.sourceanalysis is not None and 'sourceanalysis' not in already_processed:
             already_processed.append('sourceanalysis')
-            outfile.write(' sourceanalysis=%s' % (quote_attrib(self.sourceanalysis), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='weakform', fromsubclass_=False):
-        for matrix_ in self.matrix:
-            matrix_.export(outfile, level, namespace_, name_='matrix')
-        for vector_ in self.vector:
-            vector_.export(outfile, level, namespace_, name_='vector')
+            outfile.write(' sourceanalysis=%s' % (self.gds_format_string(quote_attrib(self.sourceanalysis).encode(ExternalEncoding), input_name='sourceanalysis'), ))
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='weakform_surface', fromsubclass_=False):
+        for matrix_form_ in self.matrix_form:
+            matrix_form_.export(outfile, level, namespace_, name_='matrix_form')
+        for vector_form_ in self.vector_form:
+            vector_form_.export(outfile, level, namespace_, name_='vector_form')
     def hasContent_(self):
         if (
-            self.matrix or
-            self.vector
+            self.matrix_form or
+            self.vector_form
             ):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='weakform'):
+    def exportLiteral(self, outfile, level, name_='weakform_surface'):
         level += 1
         self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
@@ -997,24 +1172,24 @@ class weakform(GeneratedsSuper):
             outfile.write('sourceanalysis = "%s",\n' % (self.sourceanalysis,))
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('matrix=[\n')
+        outfile.write('matrix_form=[\n')
         level += 1
-        for matrix_ in self.matrix:
+        for matrix_form_ in self.matrix_form:
             showIndent(outfile, level)
-            outfile.write('model_.matrix(\n')
-            matrix_.exportLiteral(outfile, level)
+            outfile.write('model_.matrix_form(\n')
+            matrix_form_.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
         showIndent(outfile, level)
-        outfile.write('vector=[\n')
+        outfile.write('vector_form=[\n')
         level += 1
-        for vector_ in self.vector:
+        for vector_form_ in self.vector_form:
             showIndent(outfile, level)
-            outfile.write('model_.vector(\n')
-            vector_.exportLiteral(outfile, level)
+            outfile.write('model_.vector_form(\n')
+            vector_form_.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -1039,65 +1214,285 @@ class weakform(GeneratedsSuper):
             already_processed.append('sourceanalysis')
             self.sourceanalysis = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
-        if nodeName_ == 'matrix':
-            obj_ = matrix.factory()
+        if nodeName_ == 'matrix_form':
+            obj_ = matrix_form.factory()
             obj_.build(child_)
-            self.matrix.append(obj_)
-        elif nodeName_ == 'vector':
-            obj_ = vector.factory()
+            self.matrix_form.append(obj_)
+        elif nodeName_ == 'vector_form':
+            obj_ = vector_form.factory()
             obj_.build(child_)
-            self.vector.append(obj_)
-# end class weakform
+            self.vector_form.append(obj_)
+# end class weakform_surface
 
 
-class matrix(GeneratedsSuper):
+class weakforms_surface(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, i=None, planar=None, axi=None, j=None):
+    def __init__(self, weakform_surface=None):
+        if weakform_surface is None:
+            self.weakform_surface = []
+        else:
+            self.weakform_surface = weakform_surface
+    def factory(*args_, **kwargs_):
+        if weakforms_surface.subclass:
+            return weakforms_surface.subclass(*args_, **kwargs_)
+        else:
+            return weakforms_surface(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_weakform_surface(self): return self.weakform_surface
+    def set_weakform_surface(self, weakform_surface): self.weakform_surface = weakform_surface
+    def add_weakform_surface(self, value): self.weakform_surface.append(value)
+    def insert_weakform_surface(self, index, value): self.weakform_surface[index] = value
+    def export(self, outfile, level, namespace_='coupling:', name_='weakforms_surface', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        already_processed = []
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='weakforms_surface')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='weakforms_surface'):
+        pass
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='weakforms_surface', fromsubclass_=False):
+        for weakform_surface_ in self.weakform_surface:
+            weakform_surface_.export(outfile, level, namespace_, name_='weakform_surface')
+    def hasContent_(self):
+        if (
+            self.weakform_surface
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='weakforms_surface'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, [], name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('weakform_surface=[\n')
+        level += 1
+        for weakform_surface_ in self.weakform_surface:
+            showIndent(outfile, level)
+            outfile.write('model_.weakform_surface(\n')
+            weakform_surface_.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib, [])
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, node, nodeName_)
+    def buildAttributes(self, node, attrs, already_processed):
+        pass
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        if nodeName_ == 'weakform_surface':
+            obj_ = weakform_surface.factory()
+            obj_.build(child_)
+            self.weakform_surface.append(obj_)
+# end class weakforms_surface
+
+
+class weakform_volume(GeneratedsSuper):
+    subclass = None
+    superclass = None
+    def __init__(self, couplingtype=None, targetanalysis=None, sourceanalysis=None, matrix_form=None, vector_form=None):
+        self.couplingtype = _cast(None, couplingtype)
+        self.targetanalysis = _cast(None, targetanalysis)
+        self.sourceanalysis = _cast(None, sourceanalysis)
+        if matrix_form is None:
+            self.matrix_form = []
+        else:
+            self.matrix_form = matrix_form
+        if vector_form is None:
+            self.vector_form = []
+        else:
+            self.vector_form = vector_form
+    def factory(*args_, **kwargs_):
+        if weakform_volume.subclass:
+            return weakform_volume.subclass(*args_, **kwargs_)
+        else:
+            return weakform_volume(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_matrix_form(self): return self.matrix_form
+    def set_matrix_form(self, matrix_form): self.matrix_form = matrix_form
+    def add_matrix_form(self, value): self.matrix_form.append(value)
+    def insert_matrix_form(self, index, value): self.matrix_form[index] = value
+    def get_vector_form(self): return self.vector_form
+    def set_vector_form(self, vector_form): self.vector_form = vector_form
+    def add_vector_form(self, value): self.vector_form.append(value)
+    def insert_vector_form(self, index, value): self.vector_form[index] = value
+    def get_couplingtype(self): return self.couplingtype
+    def set_couplingtype(self, couplingtype): self.couplingtype = couplingtype
+    def get_targetanalysis(self): return self.targetanalysis
+    def set_targetanalysis(self, targetanalysis): self.targetanalysis = targetanalysis
+    def get_sourceanalysis(self): return self.sourceanalysis
+    def set_sourceanalysis(self, sourceanalysis): self.sourceanalysis = sourceanalysis
+    def export(self, outfile, level, namespace_='coupling:', name_='weakform_volume', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        already_processed = []
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='weakform_volume')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='weakform_volume'):
+        if self.couplingtype is not None and 'couplingtype' not in already_processed:
+            already_processed.append('couplingtype')
+            outfile.write(' couplingtype=%s' % (self.gds_format_string(quote_attrib(self.couplingtype).encode(ExternalEncoding), input_name='couplingtype'), ))
+        if self.targetanalysis is not None and 'targetanalysis' not in already_processed:
+            already_processed.append('targetanalysis')
+            outfile.write(' targetanalysis=%s' % (self.gds_format_string(quote_attrib(self.targetanalysis).encode(ExternalEncoding), input_name='targetanalysis'), ))
+        if self.sourceanalysis is not None and 'sourceanalysis' not in already_processed:
+            already_processed.append('sourceanalysis')
+            outfile.write(' sourceanalysis=%s' % (self.gds_format_string(quote_attrib(self.sourceanalysis).encode(ExternalEncoding), input_name='sourceanalysis'), ))
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='weakform_volume', fromsubclass_=False):
+        for matrix_form_ in self.matrix_form:
+            matrix_form_.export(outfile, level, namespace_, name_='matrix_form')
+        for vector_form_ in self.vector_form:
+            vector_form_.export(outfile, level, namespace_, name_='vector_form')
+    def hasContent_(self):
+        if (
+            self.matrix_form or
+            self.vector_form
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='weakform_volume'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, [], name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.couplingtype is not None and 'couplingtype' not in already_processed:
+            already_processed.append('couplingtype')
+            showIndent(outfile, level)
+            outfile.write('couplingtype = "%s",\n' % (self.couplingtype,))
+        if self.targetanalysis is not None and 'targetanalysis' not in already_processed:
+            already_processed.append('targetanalysis')
+            showIndent(outfile, level)
+            outfile.write('targetanalysis = "%s",\n' % (self.targetanalysis,))
+        if self.sourceanalysis is not None and 'sourceanalysis' not in already_processed:
+            already_processed.append('sourceanalysis')
+            showIndent(outfile, level)
+            outfile.write('sourceanalysis = "%s",\n' % (self.sourceanalysis,))
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('matrix_form=[\n')
+        level += 1
+        for matrix_form_ in self.matrix_form:
+            showIndent(outfile, level)
+            outfile.write('model_.matrix_form(\n')
+            matrix_form_.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('vector_form=[\n')
+        level += 1
+        for vector_form_ in self.vector_form:
+            showIndent(outfile, level)
+            outfile.write('model_.vector_form(\n')
+            vector_form_.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib, [])
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, node, nodeName_)
+    def buildAttributes(self, node, attrs, already_processed):
+        value = find_attr_value_('couplingtype', node)
+        if value is not None and 'couplingtype' not in already_processed:
+            already_processed.append('couplingtype')
+            self.couplingtype = value
+        value = find_attr_value_('targetanalysis', node)
+        if value is not None and 'targetanalysis' not in already_processed:
+            already_processed.append('targetanalysis')
+            self.targetanalysis = value
+        value = find_attr_value_('sourceanalysis', node)
+        if value is not None and 'sourceanalysis' not in already_processed:
+            already_processed.append('sourceanalysis')
+            self.sourceanalysis = value
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        if nodeName_ == 'matrix_form':
+            obj_ = matrix_form.factory()
+            obj_.build(child_)
+            self.matrix_form.append(obj_)
+        elif nodeName_ == 'vector_form':
+            obj_ = vector_form.factory()
+            obj_.build(child_)
+            self.vector_form.append(obj_)
+# end class weakform_volume
+
+
+class matrix_form(GeneratedsSuper):
+    subclass = None
+    superclass = None
+    def __init__(self, i=None, planar=None, j=None, axi=None):
         self.i = _cast(int, i)
         self.planar = _cast(None, planar)
-        self.axi = _cast(None, axi)
         self.j = _cast(int, j)
+        self.axi = _cast(None, axi)
         pass
     def factory(*args_, **kwargs_):
-        if matrix.subclass:
-            return matrix.subclass(*args_, **kwargs_)
+        if matrix_form.subclass:
+            return matrix_form.subclass(*args_, **kwargs_)
         else:
-            return matrix(*args_, **kwargs_)
+            return matrix_form(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_i(self): return self.i
     def set_i(self, i): self.i = i
     def get_planar(self): return self.planar
     def set_planar(self, planar): self.planar = planar
-    def get_axi(self): return self.axi
-    def set_axi(self, axi): self.axi = axi
     def get_j(self): return self.j
     def set_j(self, j): self.j = j
-    def export(self, outfile, level, namespace_='', name_='matrix', namespacedef_=''):
+    def get_axi(self): return self.axi
+    def set_axi(self, axi): self.axi = axi
+    def export(self, outfile, level, namespace_='coupling:', name_='matrix_form', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
-        self.exportAttributes(outfile, level, already_processed, namespace_, name_='matrix')
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='matrix_form')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='matrix'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='matrix_form'):
         if self.i is not None and 'i' not in already_processed:
             already_processed.append('i')
             outfile.write(' i="%s"' % self.gds_format_integer(self.i, input_name='i'))
         if self.planar is not None and 'planar' not in already_processed:
             already_processed.append('planar')
             outfile.write(' planar=%s' % (self.gds_format_string(quote_attrib(self.planar).encode(ExternalEncoding), input_name='planar'), ))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            outfile.write(' axi=%s' % (self.gds_format_string(quote_attrib(self.axi).encode(ExternalEncoding), input_name='axi'), ))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             outfile.write(' j="%s"' % self.gds_format_integer(self.j, input_name='j'))
-    def exportChildren(self, outfile, level, namespace_='', name_='matrix', fromsubclass_=False):
+        if self.axi is not None and 'axi' not in already_processed:
+            already_processed.append('axi')
+            outfile.write(' axi=%s' % (self.gds_format_string(quote_attrib(self.axi).encode(ExternalEncoding), input_name='axi'), ))
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='matrix_form', fromsubclass_=False):
         pass
     def hasContent_(self):
         if (
@@ -1106,7 +1501,7 @@ class matrix(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='matrix'):
+    def exportLiteral(self, outfile, level, name_='matrix_form'):
         level += 1
         self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
@@ -1120,14 +1515,14 @@ class matrix(GeneratedsSuper):
             already_processed.append('planar')
             showIndent(outfile, level)
             outfile.write('planar = "%s",\n' % (self.planar,))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            showIndent(outfile, level)
-            outfile.write('axi = "%s",\n' % (self.axi,))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             showIndent(outfile, level)
             outfile.write('j = %d,\n' % (self.j,))
+        if self.axi is not None and 'axi' not in already_processed:
+            already_processed.append('axi')
+            showIndent(outfile, level)
+            outfile.write('axi = "%s",\n' % (self.axi,))
     def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
@@ -1147,10 +1542,6 @@ class matrix(GeneratedsSuper):
         if value is not None and 'planar' not in already_processed:
             already_processed.append('planar')
             self.planar = value
-        value = find_attr_value_('axi', node)
-        if value is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            self.axi = value
         value = find_attr_value_('j', node)
         if value is not None and 'j' not in already_processed:
             already_processed.append('j')
@@ -1158,59 +1549,63 @@ class matrix(GeneratedsSuper):
                 self.j = int(value)
             except ValueError, exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
+        value = find_attr_value_('axi', node)
+        if value is not None and 'axi' not in already_processed:
+            already_processed.append('axi')
+            self.axi = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
-# end class matrix
+# end class matrix_form
 
 
-class vector(GeneratedsSuper):
+class vector_form(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, i=None, planar=None, axi=None, j=None):
+    def __init__(self, i=None, planar=None, j=None, axi=None):
         self.i = _cast(int, i)
         self.planar = _cast(None, planar)
-        self.axi = _cast(None, axi)
         self.j = _cast(int, j)
+        self.axi = _cast(None, axi)
         pass
     def factory(*args_, **kwargs_):
-        if vector.subclass:
-            return vector.subclass(*args_, **kwargs_)
+        if vector_form.subclass:
+            return vector_form.subclass(*args_, **kwargs_)
         else:
-            return vector(*args_, **kwargs_)
+            return vector_form(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_i(self): return self.i
     def set_i(self, i): self.i = i
     def get_planar(self): return self.planar
     def set_planar(self, planar): self.planar = planar
-    def get_axi(self): return self.axi
-    def set_axi(self, axi): self.axi = axi
     def get_j(self): return self.j
     def set_j(self, j): self.j = j
-    def export(self, outfile, level, namespace_='', name_='vector', namespacedef_=''):
+    def get_axi(self): return self.axi
+    def set_axi(self, axi): self.axi = axi
+    def export(self, outfile, level, namespace_='coupling:', name_='vector_form', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = []
-        self.exportAttributes(outfile, level, already_processed, namespace_, name_='vector')
+        self.exportAttributes(outfile, level, already_processed, namespace_, name_='vector_form')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='vector'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='coupling:', name_='vector_form'):
         if self.i is not None and 'i' not in already_processed:
             already_processed.append('i')
             outfile.write(' i="%s"' % self.gds_format_integer(self.i, input_name='i'))
         if self.planar is not None and 'planar' not in already_processed:
             already_processed.append('planar')
             outfile.write(' planar=%s' % (self.gds_format_string(quote_attrib(self.planar).encode(ExternalEncoding), input_name='planar'), ))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            outfile.write(' axi=%s' % (self.gds_format_string(quote_attrib(self.axi).encode(ExternalEncoding), input_name='axi'), ))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             outfile.write(' j="%s"' % self.gds_format_integer(self.j, input_name='j'))
-    def exportChildren(self, outfile, level, namespace_='', name_='vector', fromsubclass_=False):
+        if self.axi is not None and 'axi' not in already_processed:
+            already_processed.append('axi')
+            outfile.write(' axi=%s' % (self.gds_format_string(quote_attrib(self.axi).encode(ExternalEncoding), input_name='axi'), ))
+    def exportChildren(self, outfile, level, namespace_='coupling:', name_='vector_form', fromsubclass_=False):
         pass
     def hasContent_(self):
         if (
@@ -1219,7 +1614,7 @@ class vector(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='vector'):
+    def exportLiteral(self, outfile, level, name_='vector_form'):
         level += 1
         self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
@@ -1233,14 +1628,14 @@ class vector(GeneratedsSuper):
             already_processed.append('planar')
             showIndent(outfile, level)
             outfile.write('planar = "%s",\n' % (self.planar,))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            showIndent(outfile, level)
-            outfile.write('axi = "%s",\n' % (self.axi,))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             showIndent(outfile, level)
             outfile.write('j = %d,\n' % (self.j,))
+        if self.axi is not None and 'axi' not in already_processed:
+            already_processed.append('axi')
+            showIndent(outfile, level)
+            outfile.write('axi = "%s",\n' % (self.axi,))
     def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
@@ -1260,10 +1655,6 @@ class vector(GeneratedsSuper):
         if value is not None and 'planar' not in already_processed:
             already_processed.append('planar')
             self.planar = value
-        value = find_attr_value_('axi', node)
-        if value is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            self.axi = value
         value = find_attr_value_('j', node)
         if value is not None and 'j' not in already_processed:
             already_processed.append('j')
@@ -1271,9 +1662,13 @@ class vector(GeneratedsSuper):
                 self.j = int(value)
             except ValueError, exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
+        value = find_attr_value_('axi', node)
+        if value is not None and 'axi' not in already_processed:
+            already_processed.append('axi')
+            self.axi = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
-# end class vector
+# end class vector_form
 
 
 USAGE_TEXT = """
@@ -1302,9 +1697,9 @@ def parse(inFileName):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-    sys.stdout.write('<?xml version="1.0" ?>\n')
-    rootObj.export(sys.stdout, 0, name_=rootTag, 
-        namespacedef_='')
+    #sys.stdout.write('<?xml version="1.0" ?>\n')
+    #rootObj.export(sys.stdout, 0, name_=rootTag, 
+    #    namespacedef_='')
     return rootObj
 
 
@@ -1359,14 +1754,18 @@ if __name__ == '__main__':
 
 
 __all__ = [
+    "constant",
+    "constants",
     "coupling",
     "general",
-    "matrix",
+    "matrix_form",
     "modules",
     "source",
     "target",
-    "vector",
+    "vector_form",
     "volume",
-    "weakform",
-    "weakforms"
+    "weakform_surface",
+    "weakform_volume",
+    "weakforms_surface",
+    "weakforms_volume"
     ]
