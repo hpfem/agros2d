@@ -156,6 +156,7 @@ bool Value::evaluate(bool quiet)
 
 bool Value::evaluate(double time, bool quiet)
 {
+    bool signalBlocked = currentPythonEngine()->signalsBlocked();
     currentPythonEngine()->blockSignals(true);
 
     // eval time
@@ -172,7 +173,9 @@ bool Value::evaluate(double time, bool quiet)
         if (!quiet)
             QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
     }
-    currentPythonEngine()->blockSignals(false);
+
+    if (!signalBlocked)
+        currentPythonEngine()->blockSignals(false);
 
     m_isEvaluated = true;
     return expressionResult.error.isEmpty();

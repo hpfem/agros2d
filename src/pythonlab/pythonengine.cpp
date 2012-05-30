@@ -134,7 +134,7 @@ void PythonEngine::init()
     PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     // functions.py
-    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    runCode(m_functions);
 }
 
 void PythonEngine::pythonShowMessageCommand(const QString &message)
@@ -192,7 +192,7 @@ void PythonEngine::deleteUserModules()
 
             QString exp = QString("del %1; import sys; del sys.modules[\"%1\"]").arg(variable.name);
             // qDebug() << exp;
-            PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            runCode(exp.toLatin1().data());
         }
     }
 
@@ -214,8 +214,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     PyObject *output = NULL;
     if (QFile::exists(fileName))
     {
-        QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
-        PyRun_String(str.toStdString().c_str(), Py_single_input, m_dict, m_dict);
+        runCode(QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')"));
     }
     // compile
     PyObject *code = Py_CompileString(script.toStdString().c_str(), fileName.toStdString().c_str(), Py_file_input);
@@ -251,7 +250,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
     else
         exp = expression;
 
-    PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+    PyObject *output = runCode(exp, true);
 
     ExpressionResult expressionResult;
     if (output)
@@ -280,7 +279,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
                         expressionResult.value = 0.0;
                     Py_XDECREF(result);
 
-                    PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                    runCode("del result_pythonlab");
                 }
             }
         }
@@ -296,6 +295,23 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bo
     emit executedExpression();
 
     return expressionResult;
+}
+
+PyObject *PythonEngine::runCode(const QString &code, bool returnOutput)
+{
+    muttex.lock();
+    PyObject *output = PyRun_String(code.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    muttex.unlock();
+
+    if (returnOutput)
+    {
+        return output;
+    }
+    else
+    {
+        Py_XDECREF(output);
+        return NULL;
+    }
 }
 
 QStringList PythonEngine::codeCompletion(const QString& code, int offset, const QString& fileName)
@@ -347,7 +363,7 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
 
     // QTime time;
     // time.start();
-    PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+    PyObject *output = runCode(exp, true);
     // qDebug() << time.elapsed();
 
     // parse result
@@ -374,8 +390,9 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
             }
             Py_DECREF(result);
         }
+        Py_XDECREF(output);
 
-        PyRun_String("del result_rope_pythonlab", Py_single_input, m_dict, m_dict);
+        runCode("del result_rope_pythonlab");
     }
     else
     {
@@ -389,9 +406,7 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 {
     QStringList out;
 
-    QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(fileName);
-
-    PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+    runCode(QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(fileName));
 
     // parse result
     PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
@@ -413,7 +428,7 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
         Py_DECREF(result);
     }
 
-    PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
+    runCode("del result_pyflakes_pythonlab");
 
     return out;
 }

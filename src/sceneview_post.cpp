@@ -58,6 +58,15 @@ const double* SceneViewPostInterface::paletteColor(double x) const
 {
     switch (Util::config()->paletteType)
     {
+    case Palette_Agros2D:
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataAgros2D[n];
+    }
+        break;
     case Palette_Jet:
     {
         if (x < 0.0) x = 0.0;
@@ -217,16 +226,18 @@ const double* SceneViewPostInterface::paletteColorOrder(int n) const
 
 void SceneViewPostInterface::paletteCreate(int texture)
 {
+    int paletteSteps = Util::config()->paletteFilter ? 100 : Util::config()->paletteSteps;
+
     unsigned char palette[256][3];
-    for (int i = 0; i < Util::config()->paletteSteps; i++)
+    for (int i = 0; i < paletteSteps; i++)
     {
-        const double* color = paletteColor((double) i / Util::config()->paletteSteps);
+        const double* color = paletteColor((double) i / paletteSteps);
         palette[i][0] = (unsigned char) (color[0] * 255);
         palette[i][1] = (unsigned char) (color[1] * 255);
         palette[i][2] = (unsigned char) (color[2] * 255);
     }
-    for (int i = Util::config()->paletteSteps; i < 256; i++)
-        memcpy(palette[i], palette[Util::config()->paletteSteps-1], 3);
+    for (int i = paletteSteps; i < 256; i++)
+        memcpy(palette[i], palette[paletteSteps-1], 3);
 
     glBindTexture(GL_TEXTURE_1D, texture);
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
@@ -245,14 +256,16 @@ void SceneViewPostInterface::paletteFilter(int texture)
 
 void SceneViewPostInterface::paletteUpdateTexAdjust()
 {
+    int paletteSteps = Util::config()->paletteFilter ? 100 : Util::config()->paletteSteps;
+
     if (Util::config()->paletteFilter)
     {
-        m_texScale = (double) (Util::config()->paletteSteps-1) / 256.0;
+        m_texScale = (double) (paletteSteps-1) / 256.0;
         m_texShift = 0.5 / 256.0;
     }
     else
     {
-        m_texScale = (double) Util::config()->paletteSteps / 256.0;
+        m_texScale = (double) paletteSteps / 256.0;
         m_texShift = 0.0;
     }
 }

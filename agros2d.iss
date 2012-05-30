@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "1.9.1.812"
-#define AppDate "2011-05-23"
+#define AppVersion "3.0.0.1971"
+#define AppDate "2012-05-27"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -29,7 +29,7 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 
 [Files]
 Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
-Source: src\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
+Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
@@ -37,10 +37,7 @@ Source: functions.py; DestDir: {app}; DestName: functions.py
 Source: data\*.a2d; DestDir: {app}/data
 Source: data\scripts\*.py; DestDir: {app}/data/scripts
 Source: data\scripts\test\*.py; DestDir: {app}/data/scripts/test
-Source: lang\*.qm; DestDir: {app}/lang
-Source: doc\web\*; DestDir: {app}/doc/web; Flags: ignoreversion recursesubdirs 
-Source: doc\report\default.css; DestDir: {app}/doc/report
-Source: doc\report\default.html; DestDir: {app}/doc/report
+Source: resources\*; DestDir: {app}/resources; Flags: recursesubdirs
 Source: ..\agros2d_windows_install\runtime\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 
 [Icons]

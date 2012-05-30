@@ -507,6 +507,7 @@ enum SceneModePostprocessor
 
 enum PaletteType
 {
+    Palette_Agros2D,
     Palette_Jet,
     Palette_Copper,
     Palette_Hot,
@@ -754,7 +755,7 @@ const double LINEARIZER_QUALITY = 0.0006;
 const bool SHOWCONTOURVIEW = false;
 const int CONTOURSCOUNT = 15;
 
-const PaletteType PALETTETYPE = Palette_Jet;
+const PaletteType PALETTETYPE = Palette_Agros2D;
 const bool PALETTEFILTER = false;
 const int PALETTESTEPS = 30;
 

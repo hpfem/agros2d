@@ -195,6 +195,7 @@ void initLists()
     linearityTypeList.insert(LinearityType_Newton, "newton");
 
     // PaletteType
+    paletteTypeList.insert(Palette_Agros2D, "agros2d");
     paletteTypeList.insert(Palette_Jet, "jet");
     paletteTypeList.insert(Palette_Copper, "copper");
     paletteTypeList.insert(Palette_Hot, "hot");
