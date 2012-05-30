@@ -43,28 +43,28 @@
 </includes>
 
 <condition_exact_solution>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1))
+        if ((problemId == "class_name")&amp;&amp;(i == row_index))
             return new namespace::FunctionName&lt;double&gt;(mesh, boundary);
 </condition_exact_solution>
 
 <condition_matrix_vol>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1))
-            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, sym, materialSource, materialTarget);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+            return new namespace::FunctionName&lt;double&gt;(i-1, j-1, area, sym, materialSource, materialTarget);
 </condition_matrix_vol>
 
 <condition_vector_vol>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1))
-            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, materialSource, materialTarget);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+            return new namespace::FunctionName&lt;double&gt;(i-1, j-1, area, materialSource, materialTarget);
 </condition_vector_vol>
 
 <condition_matrix_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1)&amp;&amp;(boundary->getType() == "boundary_type"))
-            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+            return new namespace::FunctionName&lt;double&gt;(i-1, j-1, area, boundary);
 </condition_matrix_surf>
 
 <condition_vector_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index + 1)&amp;&amp;(j == column_index + 1)&amp;&amp;(boundary->getType() == "boundary_type"))
-            return new namespace::FunctionName&lt;double&gt;(row_index, column_index, area, boundary);
+        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+            return new namespace::FunctionName&lt;double&gt;(i-1, j-1, area, boundary);
 </condition_vector_surf>
 
 <CustomEssentialFormSurf>
@@ -80,7 +80,7 @@ Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt; *factoryExactSolution(const 
 template &lt;typename Scalar&gt;
 Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const std::string &amp;problemId, int i, int j,
                                                               const std::string &amp;area, Hermes::Hermes2D::SymFlag sym,
-                                                              SceneMaterial *materialSource, Material *materialTarget )
+                                                              SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ )
 {
     //conditions 
     return NULL;
@@ -90,7 +90,7 @@ Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const std::s
 <CustomVectorFormVol>
 template &lt;typename Scalar&gt;
 Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const std::string &amp;problemId, int i, int j,
-                                                              const std::string &amp;area, SceneMaterial *materialSource, Material *materialTarget)
+                                                              const std::string &amp;area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
 {
     //conditions 
     return NULL;
@@ -100,7 +100,7 @@ Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const std::s
 <CustomMatrixFormSurf>
 template &lt;typename Scalar&gt;
 Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt; *factoryMatrixFormSurf(const std::string &amp;problemId, int i, int j,
-                                                                const std::string &amp;area, SceneBoundary *boundary)
+                                                                const std::string &amp;area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
     //conditions 
     return NULL;
@@ -110,7 +110,7 @@ Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt; *factoryMatrixFormSurf(const std:
 <CustomVectorFormSurf>
 template &lt;typename Scalar&gt;
 Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt; *factoryVectorFormSurf(const std::string &amp;problemId, int i, int j,
-                                                                const std::string &amp;area, SceneBoundary *boundary)
+                                                                const std::string &amp;area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
     //conditions 
     return NULL;

@@ -103,16 +103,16 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const QString &problemId,
                                             const QString &area, ParserFormExpression *form,
-                                            Marker* marker, Material* markerSecond)
+                                            Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
     if(type == WeakForm_MatVol)
-        return factoryMatrixFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond);
+        return factoryMatrixFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
     else if(type == WeakForm_MatSurf)
-        return factoryMatrixFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker);
+        return factoryMatrixFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
     else if(type == WeakForm_VecVol)
-        return factoryVectorFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond);
+        return factoryVectorFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
     else if(type == WeakForm_VecSurf)
-        return factoryVectorFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker);
+        return factoryVectorFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
     else
         assert(0);
 }
@@ -187,7 +187,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     // compiled form
     if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
-        custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker, materialTarget);
+        custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker, materialTarget, offsetI, offsetJ);
     }
     
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)

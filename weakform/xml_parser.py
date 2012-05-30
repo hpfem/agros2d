@@ -51,13 +51,17 @@ class XmlParser:
         for coupling_file in self.coupling_files:
             file_name =  coupling_file.split('.')[0] # remove suffix
             coupled_module_names = file_name.split('-')  #separates coupled modules                      
+            
             coupled_constants = []
+            i = 0
             for module in self.modules:
                 for module_name in coupled_module_names:
                     coupled_quantities_planar = []
                     coupled_quantities_axi = []
                     if(module.id == module_name):                    
-                        coupled_constants.extend(module.constants)
+                        module.order = i
+                        i = i + 1
+                        coupled_constants.extend(module.constants)                        
                         for volume in module.volumes:
                             coupled_quantities_planar.extend(volume.quantities_planar)
                             coupled_quantities_axi.extend(volume.quantities_planar)   
@@ -337,17 +341,17 @@ class WeakForm:
         
     def get_temp_class_name(self):
         class_name =  'Custom' + self.type.capitalize() + 'Form'  \
-            + self.integral_type.capitalize()                                
+            + self.integral_type.capitalize()                                        
         return class_name    
        
     def get_class_name(self):
         class_name =  'Custom' + self.type.capitalize() + 'Form'  \
             + self.integral_type.capitalize() + '_' + self.boundary_type + '_' + str(self.i) \
-            + '_'  + str(self.j)                        
+            + '_'  + str(self.j) + '_' + self.analysis_type + '_' + self.coupling_type        
         return class_name    
     
     def get_function_name(self):              
-        function_name =  'custom_' + self.type + '_form_' + self.integral_type                                        
+        function_name =  'custom_' + self.type + '_form_' + self.integral_type                                                
         return function_name    
 
     def get_factory_code(self, factory_template):        
@@ -367,13 +371,18 @@ class WeakForm:
                      
         string = string.replace('class_name', self.id)
         string = string.replace('axi', 'axisymmetric')                        
-        string = string.replace('row_index', str(self.i-1))                        
-        string = string.replace('column_index', str(self.j-1))
+        if (self.type != 'essential'):
+            string = string.replace('row_index', '(' + str(self.i) + ' + offsetI' + ')')                        
+            string = string.replace('column_index', '(' + str(self.j) + ' + offsetJ' + ')')
+        else:
+            string = string.replace('row_index', str(self.i))                        
+            string = string.replace('column_index', str(self.j))
+
         string = string.replace('boundary_type', self.boundary_type)        
         namespace = self.id.replace('_','')
         string = string.replace('namespace', namespace)
         function_name = self.get_class_name();        
-        string = string.replace('FunctionName', function_name + '_' + self.analysis_type)
+        string = string.replace('FunctionName', function_name)
         factory_code = []
         factory_code.append(self.get_temp_class_name())
         factory_code.append(string)                        
@@ -388,7 +397,7 @@ class WeakForm:
             name = self.get_temp_class_name()             
             variable_defs = ''
             self.boundary_type = self.boundary_type.replace(' ','_')                
-            replaced_string = string.replace(name, self.get_class_name() + '_' + self.analysis_type)            
+            replaced_string = string.replace(name, self.get_class_name())            
             for variable in self.variables:                                    
                 variable_string = variable_def_temp.replace('variable_short', 
                                         variable.short_name)                    
@@ -410,7 +419,7 @@ class WeakForm:
             for node in cpp_template.getElementsByTagName(self.get_function_name() + function_type):                        
                 string = node.childNodes[0].nodeValue                                                                                                                                                                                                  
                 name = self.get_temp_class_name()             
-                replaced_string = string.replace(name, self.get_class_name()  + '_' + self.analysis_type)
+                replaced_string = string.replace(name, self.get_class_name())
                 if function_type == '':
                     variable_defs = '' ;                    
                     for variable in self.variables:                    
@@ -460,6 +469,8 @@ class WeakForm:
                      'deltat': 'Util::problem()->config()->timeStep().number()',
                      'value1': 'u_ext[0]->val[i]',
                      'value2': 'u_ext[1]->val[i]',
+                     'source0': 'ext->fn[0]->val[i]',
+                     'source1': 'ext->fn[1]->val[i]',
                      'dx1': 'u_ext[0]->dx[i]',
                      'dx2': 'u_ext[1]->dx[i]',
                      'dy1': 'u_ext[0]->dy[i]',
@@ -770,7 +781,7 @@ class Module:
                
                 for weakform in part_module.weakforms:                                     
                     if key == '.cpp':
-                        class_names.add(weakform.get_class_name() + '_' + weakform.analysis_type)
+                        class_names.add(weakform.get_class_name())
                         file_strings[file_string_name] += weakform.get_cpp_code(templates[key])            
                         factory_code =  weakform.get_factory_code(param_templates['template_weakform_factory_h.xml'])
                         factory_codes.append(factory_code)
@@ -801,12 +812,15 @@ class Module:
                 output_file.close()                            
                
                 # append to weakform.pri                
-                if filename[::-1][:4][::-1] == '.cpp':                
-                    weakform_pri_file.write('SOURCES += ' + Config.weakform_dir + filename + '\n')            
-           
+                suffix = filename.split('.')[-1]
+                if suffix == 'cpp':                
+                    weakform_pri_file.write('SOURCES += ' + Config.weakform_dir + filename + '\n')
+                if suffix == 'h':            
+                    weakform_pri_file.write('HEADERS += ' + Config.weakform_dir + filename + '\n')
+                    
             weakform_pri_file.write('HEADERS += ' + Config.weakform_dir + 'weakform_factory.h' + '\n')
             weakform_pri_file.close()
 
 if __name__ == '__main__':    
-    coupling_parser = XmlParser(['heat', 'elasticity'], ['heat-elasticity'])
+    coupling_parser = XmlParser(['electrostatic', 'current', 'heat', 'elasticity'], ['heat-elasticity'])
     coupling_parser.process()
