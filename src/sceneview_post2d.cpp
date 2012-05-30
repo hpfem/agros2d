@@ -249,13 +249,14 @@ void SceneViewPost2D::createActionsPost2D()
     actSceneModePost2D->setStatusTip(tr("Postprocessor 2D"));
     actSceneModePost2D->setCheckable(true);
 
-    actSelectByMarker = new QAction(icon(""), tr("Select by marker"), this);
+    // point
+    actSelectPoint = new QAction(icon("select-by-point"), tr("Local point value"), this);
+    connect(actSelectPoint, SIGNAL(triggered()), this, SLOT(selectPoint()));
+
+    // marker
+    actSelectByMarker = new QAction(icon("select-by-marker"), tr("Select by marker"), this);
     actSelectByMarker->setStatusTip(tr("Select by marker"));
     connect(actSelectByMarker, SIGNAL(triggered()), this, SLOT(selectByMarker()));
-
-    // point
-    actSelectPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
-    connect(actSelectPoint, SIGNAL(triggered()), this, SLOT(selectPoint()));
 
     // postprocessor group
     actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), tr("Local Values"), this);
@@ -551,6 +552,9 @@ void SceneViewPost2D::paintScalarField()
 
     if (m_listScalarField == -1)
     {
+        paletteFilter(textureScalar());
+        paletteCreate(textureScalar());
+
         m_listScalarField = glGenLists(1);
         glNewList(m_listScalarField, GL_COMPILE);
 
@@ -1117,9 +1121,6 @@ void SceneViewPost2D::refresh()
 
     if (Util::problem()->isSolved())
     {
-        paletteFilter(textureScalar());
-        paletteCreate(textureScalar());
-
         m_post2DHermes->processSolved();
     }
 

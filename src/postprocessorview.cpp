@@ -563,6 +563,7 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     // scalar field
     // palette
     cmbPalette = new QComboBox();
+    cmbPalette->addItem(tr("Agros2D"), Palette_Agros2D);
     cmbPalette->addItem(tr("Jet"), Palette_Jet);
     cmbPalette->addItem(tr("Hot"), Palette_Hot);
     cmbPalette->addItem(tr("Copper"), Palette_Copper);

@@ -138,7 +138,7 @@ void Post3DHermes::processSolved()
     m_initialMeshIsPrepared = false;
     m_scalarIsPrepared = false;
 
-    // processRangeScalar();
+    processRangeScalar();
     // QTimer::singleShot(0, this, SLOT(processRangeScalar()));
 
     emit processed();
@@ -237,14 +237,13 @@ void SceneViewPost3D::paintGL()
 
 void SceneViewPost3D::resizeGL(int w, int h)
 {
-    SceneViewCommon::resizeGL(w, h);
-
     if (Util::problem()->isSolved())
     {
         paletteFilter(textureScalar());
-        paletteUpdateTexAdjust();
         paletteCreate(textureScalar());
     }
+
+    SceneViewCommon::resizeGL(w, h);
 }
 
 void SceneViewPost3D::paintScalarField3D()
@@ -256,6 +255,9 @@ void SceneViewPost3D::paintScalarField3D()
 
     if (m_listScalarField3D == -1)
     {
+        paletteFilter(textureScalar());
+        paletteCreate(textureScalar());
+
         m_listScalarField3D = glGenLists(1);
         glNewList(m_listScalarField3D, GL_COMPILE);
 

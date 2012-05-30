@@ -9,10 +9,10 @@ QT += opengl \
 DEFINES += VERSION_MAJOR=3
 DEFINES += VERSION_MINOR=0
 DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=823
+DEFINES += VERSION_GIT=1971
 DEFINES += VERSION_YEAR=2012
-DEFINES += VERSION_MONTH=2
-DEFINES += VERSION_DAY=26
+DEFINES += VERSION_MONTH=5
+DEFINES += VERSION_DAY=27
 
 DEFINES += WEAKFORM_FACTORY
 
@@ -28,7 +28,7 @@ TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
 CODECFORTR = UTF-8
-# RC_FILE = src.rc
+RC_FILE = src.rc
 RESOURCES = src.qrc
 TARGET = agros2d
 DESTDIR = ../
@@ -305,17 +305,21 @@ macx-g++ {
 
 win32-msvc2010 {
     # QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /openmp /Zc:wchar_t
+    QMAKE_CXXFLAGS += /MD /MP /openmp /Zc:wchar_t
 
     #DEFINES += XERCES_STATIC_LIBRARY
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
-
+	
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../lib/ctemplate/windows
+	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
+    LIBS += -L../hermes2d/debug/build/lib
+    LIBS += -L../lib/debug/build/lib
+    LIBS += -L../weakform/debug/build/lib
     LIBS += -L../hermes2d/release/build/lib
     LIBS += -L../lib/release/build/lib
     LIBS += -L../weakform/release/build/lib

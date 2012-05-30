@@ -173,7 +173,8 @@ namespace Hermes
       int ndof = static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_num_dofs();
       Hermes::vector<const Space<Scalar>* > spaces = static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces();
       NewtonSolver<Scalar> newton(static_cast<DiscreteProblem<Scalar>*>(this->dp), this->matrix_solver_type);
-      newton.set_verbose_output(this->verbose_output_inner_newton);
+      // newton.set_verbose_output(this->verbose_output_inner_newton);
+      newton.set_verbose_output(true);
 
       // Delete solution vector if there is any.
       if(this->sln_vector != NULL)
