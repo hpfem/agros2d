@@ -58,6 +58,13 @@
                                             + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udy * vdy)"
 					axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +
                                          r * (st_E / (2.0*(1.0 + st_nu))) * (udr * vdr + 2 * udz * vdz)" />
+                 <module:vector_form i="1" j="1"
+                     planar="st_fx * vval + ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdx"
+                     axi="r * st_fx * vval + r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * (vdr + vval / r)" />
+                 <module:vector_form i="2" j="2"
+                     planar="st_fy * vval + ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdy"
+                     axi="r * st_fy * vval + r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" />
+                <!--
 				<module:vector_form i="1" j="1"
 					planar="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updx * vdx)
                                             + (st_E / (2.0*(1.0 + st_nu))) * (updy * vdy)
@@ -82,6 +89,7 @@
 					axi="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * updz * vdz +
                                          r * (st_E / (2.0*(1.0 + st_nu))) * (updr * vdr + 2 * updz * vdz)
                                          - r * st_fy * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" />
+                -->
 			</module:weakform_volume>
 		</module:weakforms_volume>
 	</module:volume>
@@ -110,27 +118,33 @@
 					<module:quantity id="elasticity_force_y" />
 
 					<module:essential_form i="1" planar="dx" axi="dx" />
-					<module:vector_form i="2" j="2" planar="-st_fy * vval"
-						axi="-st_fy * r * vval" />
+                    <module:vector_form i="2" j="2" planar="st_fy * vval" axi="st_fy * r * vval" />
+                    <!--
+                    <module:vector_form i="2" j="2" planar="-st_fy * vval" axi="-st_fy * r * vval" />
+                    -->
 				</module:boundary>
 
 				<module:boundary id="elasticity_free_fixed" name="Free - fixed">
 					<module:quantity id="elasticity_force_x" />
 					<module:quantity id="elasticity_displacement_y" />
 
-					<module:vector_form i="1" j="1" planar="-st_fx * vval"
-						axi="-st_fx * r * vval" />
-					<module:essential_form i="2" planar="dy" axi="dy" />
+                    <module:essential_form i="2" planar="dy" axi="dy" />
+                    <module:vector_form i="1" j="1" planar="st_fx * vval" axi="st_fx * r * vval" />
+                    <!--
+                    <module:vector_form i="1" j="1" planar="-st_fx * vval" axi="-st_fx * r * vval" />
+                    -->
 				</module:boundary>
 
                 <module:boundary id="elasticity_free_free" name="Free - free">
 					<module:quantity id="elasticity_force_x" />
 					<module:quantity id="elasticity_force_y" />
 
-					<module:vector_form i="1" j="1" planar="-st_fx * vval"
-						axi="-st_fx * r * vval" />
-					<module:vector_form i="2" j="2" planar="-st_fy * vval"
-						axi="-st_fy * r * vval" />
+                    <module:vector_form i="1" j="1" planar="st_fx * vval" axi="st_fx * r * vval" />
+                    <module:vector_form i="2" j="2" planar="st_fy * vval" axi="st_fy * r * vval" />
+                    <!--
+                    <module:vector_form i="1" j="1" planar="-st_fx * vval" axi="-st_fx * r * vval" />
+                    <module:vector_form i="2" j="2" planar="-st_fy * vval" axi="-st_fy * r * vval" />
+                    -->
 				</module:boundary>
 			</module:weakform_surface>
 		</module:weakforms_surface>

@@ -16,8 +16,6 @@ rf.polynomial_order = 3
 rf.linearity_type = "linear"
 rf.weak_forms = "compiled"
 
-#newdocument("", "", "", 1, 3, "disabled", 1, 1, , "", 1.0, 1.0, 0.0)
-
 # boundaries
 rf.add_boundary("Perfect electric conductor", "rf_te_electric_field")
 # rf.add_boundary("Matched boundary", "rf_te_matched_boundary")

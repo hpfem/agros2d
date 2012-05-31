@@ -25,9 +25,12 @@
 
                 <module:matrix_form i="1" j="1" planar="el_epsr * EPS0 * (udx * vdx + udy * vdy)"
                                     axi="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" symmetric="1" />
+                <module:vector_form i="1" j="1" planar="el_rho * vval"
+                                    axi="el_rho * r * vval" />
+                <!--
                 <module:vector_form i="1" j="1" planar="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"
-                                    axi="el_epsr * EPS0 * r * (updr * vdr + updz * vdz) - el_rho * r * vval" />
-                                    <!-- axi="el_rho * r * vval" /> -->
+                                    axi="el_rho * r * vval" />
+                -->
             </module:weakform_volume>
         </module:weakforms_volume>
     </module:volume>

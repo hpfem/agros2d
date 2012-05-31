@@ -14,8 +14,6 @@ acoustic.number_of_refinements = 3
 acoustic.polynomial_order = 2
 acoustic.linearity_type = "linear"
 acoustic.weak_forms = "compiled"
-acoustic.nonlinear_tolerance = 0.001
-acoustic.nonlinear_steps = 10
 
 acoustic.add_boundary("Source", "acoustic_pressure", {"acoustic_pressure_real" : 0.01, "acoustic_pressure_imag" : 0})
 acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 0, "acoustic_normal_acceleration_imag" : 0})

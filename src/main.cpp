@@ -20,20 +20,25 @@ public:
         {
             return QApplication::notify(receiver, event);
         }
-        catch(std::exception& e)
+        catch (std::exception& e)
         {
-            qCritical() << "Exception thrown: " << e.what() << endl;
-            assert(0);
+            qCritical() << "Exception thrown: " << e.what();
+            throw;
         }
-        catch(Hermes::Exceptions::Exception& e)
+        catch (Hermes::Exceptions::Exception& e)
         {
-            qCritical() << "Hermes exception thrown: " << e.getMsg() << endl;
-            // assert(0);
+            qCritical() << "Hermes exception thrown: " << e.getMsg();
+            throw;
         }
-        catch(...)
+        catch (mu::Parser::exception_type &e)
         {
-            qCritical() << "Unknown exception thrown" << endl;
-            assert(0);
+            qCritical() << "mu::Parser " << QString::fromStdString(e.GetMsg());
+            throw;
+        }
+        catch (...)
+        {
+            qCritical() << "Unknown exception thrown";
+            throw;
         }
 
         return false;
@@ -55,6 +60,7 @@ int main(int argc, char *argv[])
     // TODO: qInstallMsgHandler(logOutput);
 
     MyApplication a(argc, argv);
+    // QApplication a(argc, argv);
 
 #ifdef VERSION_BETA
     bool beta = true;

@@ -13,8 +13,6 @@ current.number_of_refinements = 3
 current.polynomial_order = 5
 current.linearity_type = "linear"
 current.weak_forms = "compiled"
-current.nonlinear_tolerance = 0.001
-current.nonlinear_steps = 10
 
 current.add_boundary("Neumann", "current_inward_current_flow", {"current_inward_current_flow" : 0})
 current.add_boundary("Zero", "current_potential", {"current_potential" : 0})

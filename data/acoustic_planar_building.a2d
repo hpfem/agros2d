@@ -169,7 +169,7 @@
         <fields>
             <field field_id="acoustic" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="compiled" analysis_type="harmonic">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary acoustic_pressure_imag="0" type="acoustic_pressure" id="1" name="Source" acoustic_pressure_real="1">
                         <edge edge="75"/>

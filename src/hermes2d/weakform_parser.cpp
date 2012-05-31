@@ -105,7 +105,7 @@ void ParserForm::setMaterialToParser(Material *material)
         {
             // linear variable
             m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
-            m_parserVariables["d" + variable->shortname().toStdString()] = 0.0;
+            // m_parserVariables["d" + variable->shortname().toStdString()] = 0.0;
         }
         else
         {
@@ -204,12 +204,9 @@ void ParserForm::setNonlinearMaterial(Material *material, int offset, int index,
                 try
                 {
                     double nonlinValue = m_parsersNonlinear[variable]->Eval();
-                    // qDebug() << "nonlinValue: B" << nonlinValue;
 
                     m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(nonlinValue);
                     m_parserVariables["d" + variable->shortname().toStdString()] = material->value(variable->id()).derivative(nonlinValue);
-
-                    // qDebug() << "mur" << m_parserVariables[variable->shortname().toStdString()] << "dmur/dB" << m_parserVariables["d" + variable->shortname().toStdString()];
                 }
                 catch (mu::Parser::exception_type &e)
                 {

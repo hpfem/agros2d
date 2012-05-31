@@ -20,30 +20,36 @@
 
                 <module:matrix_form i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)"
                                     axi="cu_gamma * r * (udr * vdr + udz * vdz)" symmetric="1" />
+                <!--
                 <module:vector_form i="1" j="1" planar="cu_gamma * (updx * vdx + updy * vdy)"
                                     axi="cu_gamma * r * (updr * vdr + updz * vdz)" />
+                -->
             </module:weakform_volume>
         </module:weakforms_volume>
     </module:volume>
 
     <module:surface>
-        <module:quantity id="current_potential" shortname="V" />
-        <module:quantity id="current_inward_current_flow" shortname="Jn" />
+        <module:quantity id="current_potential" shortname="cu_V" />
+        <module:quantity id="current_inward_current_flow" shortname="cu_Jn" />
     	
         <module:weakforms_surface>
             <module:weakform_surface analysistype="steadystate" default="current_potential">
                 <module:boundary id="current_potential" name="Fixed voltage">
                     <module:quantity id="current_potential" />
 
-                    <module:essential_form i="1" planar="V"
-                                     axi="V" />
+                    <module:essential_form i="1" planar="cu_V"
+                                     axi="cu_V" />
                 </module:boundary>
 
                 <module:boundary id="current_inward_current_flow" name="Current density">
                     <module:quantity id="current_inward_current_flow" />
 
-                    <module:vector_form i="1" j="1" planar="- Jn * vval"
-                                        axi="- Jn * r * vval" />
+                    <module:vector_form i="1" j="1" planar="cu_Jn * vval"
+                                        axi="cu_Jn * r * vval" />
+                    <!--
+                    <module:vector_form i="1" j="1" planar="- cu_Jn * vval"
+                                        axi="- cu_Jn * r * vval" />
+                    -->
                 </module:boundary>
             </module:weakform_surface>
         </module:weakforms_surface>
