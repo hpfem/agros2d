@@ -336,6 +336,8 @@ void Problem::solve()
     QTime elapsedTime;
     elapsedTime.start();
 
+    setActualTime(0.);
+
     try
     {
         solveAction();
@@ -391,14 +393,14 @@ void Problem::solveAction()
         foreach (Block* block, m_blocks)
         {
             Solver<double>* solver = solvers[block];
-            if(!block->skipThisTimeStep(timeStep))
+            if((!block->skipThisTimeStep(timeStep)) && !(block->isTransient() && (timeStep == 0)))
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
                     // todo: merge solveSimple and solveTimeStep
                     if(block->isTransient())
                     {
-                        solver->solveTimeStep(Util::problem()->config()->timeStep().value());
+                        solver->solveTimeStep();
                     }
                     else
                     {
@@ -430,6 +432,8 @@ void Problem::solveAction()
         Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveSolutionType(SolutionMode_Normal);
         cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+
+        addToActualTime(Util::problem()->config()->timeStep().value());
     }
 
 //    //old

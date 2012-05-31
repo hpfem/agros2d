@@ -57,7 +57,7 @@ void MeshHermes::processOrder()
         Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
         // ERROR: FIX component(0)
-        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_space());
+        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).space.data());
 
         m_orderIsPrepared = true;
     }
