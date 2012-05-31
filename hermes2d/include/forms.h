@@ -113,6 +113,7 @@ namespace Hermes
       template<typename Scalar> friend class Adapt;
       template<typename Scalar> friend class KellyTypeAdapt;
       template<typename Scalar> friend class DiscreteProblem;
+      template<typename Scalar> friend class DiscreteProblemLinear;
       template<typename Scalar> friend class BasicKellyAdapt;
       template<typename Scalar> friend class Hermes::Hermes2D::OGProjection;
       friend class ErrorEstimatorFormKelly;
@@ -185,6 +186,7 @@ namespace Hermes
       ///< (when retrieving values on an edge that is oriented differently in both elements).
       static T zero;              ///< Zero value used for the zero-extension.
       template<typename Scalar> friend class DiscreteProblem;
+      template<typename Scalar> friend class DiscreteProblemLinear;
       template<typename Scalar> friend class KellyTypeAdapt;
       template<typename Scalar> friend class Adapt;
       template<typename Scalar> friend class NeighborSearch;
@@ -234,6 +236,7 @@ namespace Hermes
       friend Geom<double>* init_geom_surf(RefMap *rm, int isurf, int marker, const int order, double3*& tan);
 
       template<typename Scalar> friend class DiscreteProblem;
+      template<typename Scalar> friend class DiscreteProblemLinear;
       template<typename Scalar> friend class InterfaceGeom;
       template<typename Scalar> friend class KellyTypeAdapt;
       template<typename Scalar> friend class BasicKellyAdapt;
@@ -254,19 +257,21 @@ namespace Hermes
     public:
       int neighb_id;
       T   neighb_diam;
-    private:
-      /// Constructor.
-      InterfaceGeom(Geom<T>* geom, int n_marker, int n_id, T n_diam);
-      Geom<T>* wrapped_geom;
       int get_neighbor_marker() const;
       int get_neighbor_id()  const;
       T get_neighbor_diam() const;
 
+    private:
+      /// Constructor.
+      InterfaceGeom(Geom<T>* geom, int n_marker, int n_id, T n_diam);
+      Geom<T>* wrapped_geom;
+      
       virtual void free();
       virtual void free_ord();
 
       int neighb_marker;
       template<typename Scalar> friend class DiscreteProblem;
+      template<typename Scalar> friend class DiscreteProblemLinear;
       template<typename Scalar> friend class KellyTypeAdapt;
       template<typename Scalar> friend class Adapt;
     };
@@ -311,6 +316,7 @@ namespace Hermes
       /// Deallocation for integration order.
       void free_ord();
       template<typename Scalar> friend class DiscreteProblem;
+      template<typename Scalar> friend class DiscreteProblemLinear;
       template<typename Scalar> friend class InterfaceGeom;
       template<typename Scalar> friend class KellyTypeAdapt;
       template<typename Scalar> friend class BasicKellyAdapt;

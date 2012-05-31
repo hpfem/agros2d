@@ -1,3 +1,6 @@
+//#define DEBUG_DG_ASSEMBLING
+//#define DEBUG_DG_ASSEMBLING_ELEMENT 44
+//#define DEBUG_DG_ASSEMBLING_ISURF 3
 // This file is part of Hermes2D.
 //
 // Hermes2D is free software: you can redistribute it and/or modify
@@ -13,6 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <iostream>
 #include "global.h"
 #include "integrals/h1.h"
 #include "quadrature/limit_order.h"
@@ -1090,7 +1094,7 @@ namespace Hermes
           {
             if (std::abs(current_als[current_mfvol[current_mfvol_i]->i]->coef[i]) < 1e-12)
               continue;
-            if (current_als[current_mfvol[current_mfvol_i]->i]->dof[i] >= 0)
+            //if (current_als[current_mfvol[current_mfvol_i]->i]->dof[i] >= 0)
             {
               current_spss[current_mfvol[current_mfvol_i]->i]->set_active_shape(current_als[current_mfvol[current_mfvol_i]->i]->idx[i]);
               test_fns[i] = init_fn(current_spss[current_mfvol[current_mfvol_i]->i], current_refmaps[current_mfvol[current_mfvol_i]->i], order);
@@ -1101,7 +1105,7 @@ namespace Hermes
           {
             if (std::abs(current_als[current_mfvol[current_mfvol_i]->j]->coef[j]) < 1e-12)
               continue;
-            if (current_als[current_mfvol[current_mfvol_i]->j]->dof[j] >= 0)
+            //if (current_als[current_mfvol[current_mfvol_i]->j]->dof[j] >= 0)
             {
               current_pss[current_mfvol[current_mfvol_i]->j]->set_active_shape(current_als[current_mfvol[current_mfvol_i]->j]->idx[j]);
 
@@ -1753,10 +1757,59 @@ namespace Hermes
               intra_edge_passed_DG[current_state->isurf] = true;
               continue;
             }
-
-            // Create a multimesh tree;
+           // Create a multimesh tree;
             NeighborNode* root = new NeighborNode(NULL, 0);
             build_multimesh_tree(root, (*neighbor_searches[current_state->isurf]));
+
+#ifdef DEBUG_DG_ASSEMBLING
+#pragma omp critical (debug_DG)
+            {
+              int id = 0;
+              bool pass = true;
+              if(DEBUG_DG_ASSEMBLING_ELEMENT != -1)
+              {
+                for(unsigned int i = 0; i < (*neighbor_searches[current_state->isurf]).get_size(); i++)
+                  if((*neighbor_searches[current_state->isurf]).present(i))
+                    if((*neighbor_searches[current_state->isurf]).get(i)->central_el->id == DEBUG_DG_ASSEMBLING_ELEMENT)
+                      pass = false;
+              }
+              else
+                pass = false;
+
+              if(!pass)
+                if(DEBUG_DG_ASSEMBLING_ISURF != -1)
+                  if(current_state->isurf != DEBUG_DG_ASSEMBLING_ISURF)
+                    pass = true;
+
+              if(!pass)
+              {
+                for(unsigned int i = 0; i < (*neighbor_searches[current_state->isurf]).get_size(); i++)
+                {
+                  if((*neighbor_searches[current_state->isurf]).present(i))
+                  {
+                    NeighborSearch<Scalar>* ns = (*neighbor_searches[current_state->isurf]).get(i);
+                    std::cout << (std::string)"The " << ++id << (std::string)"-th Neighbor search:: " << (std::string)"Central element: " << ns->central_el->id << (std::string)", Isurf: " << current_state->isurf << (std::string)", Original sub_idx: " << ns->original_central_el_transform << std::endl;
+                    for(int j = 0; j < ns->n_neighbors; j++)
+                    {
+                      std::cout << '\t' << (std::string)"The " << j << (std::string)"-th neighbor element: " << ns->neighbors[j]->id << std::endl;
+                      if(ns->central_transformations.present(j))
+                      {
+                        std::cout << '\t' << (std::string)"Central transformations: " << std::endl;
+                        for(int k = 0; k < ns->central_transformations.get(j)->num_levels; k++)
+                          std::cout << '\t' << '\t' << ns->central_transformations.get(j)->transf[k] << std::endl;
+                      }
+                      if(ns->neighbor_transformations.present(j))
+                      {
+                        std::cout << '\t' << (std::string)"Neighbor transformations: " << std::endl;
+                        for(int k = 0; k < ns->neighbor_transformations.get(j)->num_levels; k++)
+                          std::cout << '\t' << '\t' << ns->neighbor_transformations.get(j)->transf[k] << std::endl;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+#endif
 
             // Update all NeighborSearches according to the multimesh tree.
             // After this, all NeighborSearches in neighbor_searches should have the same count
@@ -1858,9 +1911,10 @@ namespace Hermes
       {
         if(neighbor_searches.present(i))
         {
-          neighbor_searches.get(i)->active_segment = neighbor_i;
-          neighbor_searches.get(i)->neighb_el = neighbor_searches.get(i)->neighbors[neighbor_i];
-          neighbor_searches.get(i)->neighbor_edge = neighbor_searches.get(i)->neighbor_edges[neighbor_i];
+          NeighborSearch<Scalar>* ns = neighbor_searches.get(i);
+          ns->active_segment = neighbor_i;
+          ns->neighb_el = neighbor_searches.get(i)->neighbors[neighbor_i];
+          ns->neighbor_edge = neighbor_searches.get(i)->neighbor_edges[neighbor_i];
         }
       }
 
@@ -1933,12 +1987,6 @@ namespace Hermes
 
           nbs_u->set_quad_order(order);
           nbs_v->set_quad_order(order);
-
-          // Evaluate the form using just calculated order.
-          Quad2D* quad = current_pss[0]->get_quad_2d();
-          int eo = quad->get_edge_points(current_state->isurf, order, current_state->rep->get_mode());
-          int np = quad->get_num_points(eo, current_state->rep->get_mode());
-          double3* pt = quad->get_points(eo, current_state->rep->get_mode());
 
           // Init geometry.
           int n_quadrature_points;
@@ -2023,7 +2071,7 @@ namespace Hermes
                 DiscontinuousFunc<double>* v = new DiscontinuousFunc<double>(init_fn(fv, rv, nbs_v->get_quad_eo(support_neigh_v)),
                   support_neigh_v, nbs_v->neighbor_edge.orientation);
 
-                Scalar res = mfs->value(np, jacobian_x_weights, prev, u, v, e, ext) * mfs->scaling_factor;
+                Scalar res = mfs->value(n_quadrature_points, jacobian_x_weights, prev, u, v, e, ext) * mfs->scaling_factor;
 
                 u->free_fn();
                 delete u;
@@ -2091,12 +2139,6 @@ namespace Hermes
             
           NeighborSearch<Scalar>* nbs_v = (neighbor_searches.get(spaces[m]->get_mesh()->get_seq() - min_dg_mesh_seq));
 
-          // Evaluate the form using just calculated order.
-          Quad2D* quad = current_spss[m]->get_quad_2d();
-          int eo = quad->get_edge_points(current_state->isurf, order, current_state->rep->get_mode());
-          int np = quad->get_num_points(eo, current_state->rep->get_mode());
-          double3* pt = quad->get_points(eo, current_state->rep->get_mode());
-
           // Init geometry and jacobian*weights.
           // Init geometry.
           int n_quadrature_points;
@@ -2129,10 +2171,10 @@ namespace Hermes
               continue;
             current_spss[m]->set_active_shape(current_als[m]->idx[dof_i]);
 
-            Func<double>* v = init_fn(current_spss[m], current_refmaps[m], eo);
+            Func<double>* v = init_fn(current_spss[m], current_refmaps[m], nbs_v->get_quad_eo());
             
 #pragma omp critical (rhs)
-            current_rhs->add(current_als[m]->dof[dof_i], 0.5 * vfs->value(np, jacobian_x_weights, prev, v, e, ext) * vfs->scaling_factor * current_als[m]->coef[dof_i]);
+            current_rhs->add(current_als[m]->dof[dof_i], 0.5 * vfs->value(n_quadrature_points, jacobian_x_weights, prev, v, e, ext) * vfs->scaling_factor * current_als[m]->coef[dof_i]);
 
             v->free_fn();
             delete v;
@@ -2368,7 +2410,7 @@ namespace Hermes
           node = multimesh_tree;
 
         // Update the NeighborSearch.
-        unsigned int added = update_ns_subtree(ns, node, i);
+        int added = update_ns_subtree(ns, node, i);
         i += added;
         num_neighbors += added;
       }
@@ -2402,10 +2444,12 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    unsigned int DiscreteProblem<Scalar>::update_ns_subtree(NeighborSearch<Scalar>* ns,
+    int DiscreteProblem<Scalar>::update_ns_subtree(NeighborSearch<Scalar>* ns,
       NeighborNode* node, unsigned int ith_neighbor)
     {
       _F_;
+      int current_count = ns->get_num_neighbors();
+
       // No subtree => no work.
       // Also check the assertion that if one son is null, then the other too.
       if(node->get_left_son() == NULL)
@@ -2474,8 +2518,8 @@ namespace Hermes
       for(unsigned int i = 0; i < running_neighbor_transformations.size(); i++)
         delete running_neighbor_transformations[i];
 
-      // Return the number of neighbors deleted.
-      return -1;
+      // Return the number of neighbors added/deleted.
+      return ns->get_num_neighbors() - current_count;
     }
 
     template<typename Scalar>

@@ -16,7 +16,8 @@ public:
 
     // reimplemented from QApplication so we can throw exceptions in slots
     virtual bool notify(QObject * receiver, QEvent * event) {
-        try {
+        try
+        {
             return QApplication::notify(receiver, event);
         }
         catch(std::exception& e)
@@ -32,7 +33,7 @@ public:
         catch(...)
         {
             qCritical() << "Unknown exception thrown" << endl;
-            // assert(0);
+            assert(0);
         }
 
         return false;

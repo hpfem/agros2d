@@ -298,62 +298,53 @@ int DEBUG_COUNTER = 0;
 template <typename Scalar>
 bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 {
-    // Initialize the FE problem.
-    DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
-
     // Linear solver
-    // TODO original linear solver, now not used. We use Newton solver for linear problems instead. It should be put back....
-    //    if (m_block->linearityType() == LinearityType_Linear)
-    /*
-    if(0)
+    if (m_block->linearityType() == LinearityType_Linear)
     {
-        // set up the solver, matrix, and rhs according to the solver selection.
-        Hermes::Algebra::SparseMatrix<Scalar> *matrix = create_matrix<Scalar>(Hermes::SOLVER_UMFPACK);
-        Hermes::Algebra::Vector<Scalar> *rhs = create_vector<Scalar>(Hermes::SOLVER_UMFPACK);
-        Hermes::Algebra::LinearSolver<Scalar> *solver = create_linear_solver<Scalar>(Hermes::SOLVER_UMFPACK, matrix, rhs);
+        // Initialize the FE problem.
+        DiscreteProblemLinear<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
 
-        // assemble the linear problem.
-        dp.assemble(matrix, rhs);
+        Hermes::TimePeriod timer;
 
-        if (solver->solve())
+        LinearSolver<Scalar> linear(&dp, Util::problem()->config()->matrixSolver());
+        // try
         {
-            Solution<Scalar>::vector_to_solutions(solver->get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+            // linear.solve();
 
-            for(int i = 0; i < solver->get_matrix_size(); i++)
-                cout << solver->get_sln_vector()[i] << ", ";
-            cout << "  <- reseni " << endl;
-            FILE *f;
-            char fileName[30];
-            sprintf(fileName, "rhs%d.txt", DEBUG_COUNTER);
-            f = fopen(fileName, "w");
-            rhs->dump(f, "rhs");
-            fclose(f);
+            Hermes::Algebra::SparseMatrix<Scalar>* jacobian = create_matrix<Scalar>(Util::problem()->config()->matrixSolver());
+            Hermes::Algebra::Vector<Scalar>* residual = create_vector<Scalar>(Util::problem()->config()->matrixSolver());
+            Hermes::Algebra::LinearMatrixSolver<Scalar>* matrix_solver = create_linear_solver<Scalar>(Util::problem()->config()->matrixSolver(), jacobian, residual);
 
-            sprintf(fileName, "mat%d.txt", DEBUG_COUNTER);
-            f = fopen(fileName, "w");
-            matrix->dump(f, "matrix");
-            fclose(f);
-            DEBUG_COUNTER++;
+            dp.assemble(jacobian, residual);
 
-            Views::Linearizer lin;
-            bool mode_3D = true;
-            lin.save_solution_vtk(msa.solutions()[0].get(), "sln.vtk", "SLN", mode_3D);
+            matrix_solver->solve();
+
+            Solution<Scalar>::vector_to_solutions(matrix_solver->get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+            // Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+
+            /*
+            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+                                    arg(milisecondsToTime(picard.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime(picard.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime((picard.get_assemble_time() + picard.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
+            msa.setAssemblyTime(picard.get_assemble_time() * 1000.0);
+            msa.setSolveTime(picard.get_solve_time() * 1000.0);
+            */
         }
-        else
+        // catch (Hermes::Exceptions::Exception e)
         {
-            m_progressItemSolve->emitMessage(QObject::tr("Linear solver failed."), true);
-            return false;
+        //     QString error = QString(e.getMsg());
+        //     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver failed: %1").arg(error));
+            // return false;
         }
-
-        delete matrix;
-        delete rhs;
-        delete solver;
     }
-    */
 
     // Nonlinear solver
-    if ((m_block->linearityType() == LinearityType_Newton) || (m_block->linearityType() == LinearityType_Linear))
+    if (m_block->linearityType() == LinearityType_Newton)
     {
+        // Initialize the FE problem.
+        DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
+
         Hermes::TimePeriod timer;
 
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
@@ -390,6 +381,9 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 
     if (m_block->linearityType() == LinearityType_Picard)
     {
+        // Initialize the FE problem.
+        DiscreteProblemLinear<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
+
         Hermes::TimePeriod timer;
 
         Hermes::vector<Solution<Scalar>* > slns;
@@ -425,7 +419,6 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
     }
 
     return true;
-
 }
 
 template <typename Scalar>
@@ -450,7 +443,9 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_wf->set_current_time(actualTime);
 
     m_wf->delete_all();
+    qDebug() << "m_wf->registerForms();";
     m_wf->registerForms();
+    qDebug() << "m_wf->registerForms(); - OK";
 
     if (!solveOneProblem(multiSolutionArray))
         throw("Problem not solved");

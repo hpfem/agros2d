@@ -157,26 +157,26 @@ namespace Hermes
       this->right=e.getExpectedLength();
     }
 
-    LinearSolverException::LinearSolverException()
+    LinearMatrixSolverException::LinearMatrixSolverException()
     {
       char * msg =  new char[22];
       sprintf(msg, "Linear solver failed.");
       message = msg;
     }
 
-    LinearSolverException::LinearSolverException(const char * reason)
+    LinearMatrixSolverException::LinearMatrixSolverException(const char * reason)
     {
       char * msg =  new char[34 + strlen(reason)];
       sprintf(msg, "Linear solver failed because:\"%s\"", reason);
       message = msg;
     }
 
-    LinearSolverException::~LinearSolverException()
+    LinearMatrixSolverException::~LinearMatrixSolverException()
     {
       delete[] message;
     }
 
-    LinearSolverException::LinearSolverException(const LinearSolverException&e)
+    LinearMatrixSolverException::LinearMatrixSolverException(const LinearMatrixSolverException&e)
     {
       char * msg= new char[strlen(e.getMsg())+1];
       strcpy(msg, e.getMsg());
@@ -187,9 +187,9 @@ namespace Hermes
     {
       char * msg =  new char[55 + strlen(name)];
       if (value>allowed)
-        sprintf(msg, "Variable %s is %g but maximum allowed value is %g", name, value, allowed);
+        sprintf(msg, "Variable %s is %f but maximum allowed value is %f", name, value, allowed);
       else
-        sprintf(msg, "Variable %s is %g but minimum allowed value is %g", name, value, allowed);
+        sprintf(msg, "Variable %s is %f but minimum allowed value is %f", name, value, allowed);
       message = msg;
       this->value = value;
       this->allowed = allowed;

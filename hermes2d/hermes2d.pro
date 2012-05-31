@@ -42,7 +42,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/exceptions.cpp \
                 ../hermes_common/src/third_party_codes/trilinos-teuchos/Teuchos_stacktrace.cpp \
                 ../hermes_common/src/solvers/dp_interface.cpp \
-                ../hermes_common/src/solvers/linear_solver.cpp \
+                ../hermes_common/src/solvers/linear_matrix_solver.cpp \
                 ../hermes_common/src/solvers/nonlinear_solver.cpp \
                 ../hermes_common/src/solvers/epetra.cpp \
                 ../hermes_common/src/solvers/aztecoo_solver.cpp \
@@ -57,6 +57,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/solvers/precond_ifpack.cpp \
                 src/forms.cpp \
                 src/asmlist.cpp \
+                src/linear_solver.cpp \
                 src/newton_solver.cpp \
                 src/picard_solver.cpp \
                 src/adapt/adapt.cpp \
@@ -122,6 +123,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 src/neighbor.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
+                src/discrete_problem_linear.cpp \
                 src/runge_kutta.cpp \
                 src/spline.cpp \
                 src/global.cpp

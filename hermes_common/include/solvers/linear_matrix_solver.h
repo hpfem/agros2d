@@ -92,12 +92,12 @@ namespace Hermes
     ///\todo Adjust interface to support faster update of matrix and rhs
     ///
     template <typename Scalar>
-    class LinearSolver
+    class LinearMatrixSolver
     {
     public:
-      LinearSolver();
+      LinearMatrixSolver();
 
-      virtual ~LinearSolver();
+      virtual ~LinearMatrixSolver();
 
       /// Solve.
       /// @return true on succes
@@ -134,11 +134,11 @@ namespace Hermes
     /// \brief Base class for defining interface for direct linear solvers.
     ///
     template <typename Scalar>
-    class DirectSolver : public LinearSolver<Scalar>
+    class DirectSolver : public LinearMatrixSolver<Scalar>
     {
     public:
       DirectSolver(unsigned int factorization_scheme = HERMES_FACTORIZE_FROM_SCRATCH)
-        : LinearSolver<Scalar>(), factorization_scheme(factorization_scheme) {};
+        : LinearMatrixSolver<Scalar>(), factorization_scheme(factorization_scheme) {};
 
     protected:
       virtual void set_factorization_scheme(FactorizationScheme reuse_scheme);
@@ -149,10 +149,10 @@ namespace Hermes
     /// \brief  Abstract class for defining interface for iterative solvers.
     ///
     template <typename Scalar>
-    class IterSolver : public LinearSolver<Scalar>
+    class IterSolver : public LinearMatrixSolver<Scalar>
     {
     public:
-      IterSolver() : LinearSolver<Scalar>(), max_iters(10000), tolerance(1e-8), precond_yes(false) {};
+      IterSolver() : LinearMatrixSolver<Scalar>(), max_iters(10000), tolerance(1e-8), precond_yes(false) {};
 
       virtual int get_num_iters() = 0;
       virtual double get_residual() = 0;
@@ -181,7 +181,7 @@ namespace Hermes
     /// @param[in] rhs right hand side vector
     /// @return created linear solver
     template<typename Scalar>
-    HERMES_API LinearSolver<Scalar>*
+    HERMES_API LinearMatrixSolver<Scalar>*
       create_linear_solver(Hermes::MatrixSolverType matrix_solver_type, Matrix<Scalar>* matrix, Vector<Scalar>* rhs);
   }
 }

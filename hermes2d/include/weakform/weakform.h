@@ -34,6 +34,7 @@ namespace Hermes
 
     class RefMap;
     template<typename Scalar> class DiscreteProblem;
+    template<typename Scalar> class DiscreteProblemLinear;
     template<typename Scalar> class RungeKutta;
     template<typename Scalar> class Space;
     template<typename Scalar> class MeshFunction;
@@ -140,6 +141,7 @@ namespace Hermes
       Hermes::vector<VectorFormSurf<Scalar> *> vfsurf;
 
       friend class DiscreteProblem<Scalar>;
+      friend class DiscreteProblemLinear<Scalar>;
       friend class RungeKutta<Scalar>;
       friend class Hermes::Preconditioners::Precond<Scalar>;
     };

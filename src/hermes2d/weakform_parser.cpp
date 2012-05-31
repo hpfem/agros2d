@@ -285,9 +285,7 @@ Scalar CustomParserMatrixFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdy = v->dy[i];
 
         // previous solution
-        // TODO: linear solver
-        // if (this->linearityType() != LinearityType_Linear)
-        if (true)
+        if (this->linearityType() != LinearityType_Linear)
         {
             pupval = u_ext[this->i]->val[i];
             pupdx = u_ext[this->i]->dx[i];
@@ -405,15 +403,19 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        // TODO: linear solver
-        // if (this->linearityType() != LinearityType_Linear)
-        if (true)
+        if (this->linearityType() != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
             pupdy = u_ext[this->j]->dy[i];
 
             setNonlinearMaterial(m_materialSource, this->j, i, e->x, e->y, u_ext);
+        }
+        else
+        {
+            pupval = 0;
+            pupdx = 0;
+            pupdy = 0;
         }
 
         if (m_materialTarget)
@@ -533,10 +535,7 @@ Scalar CustomParserMatrixFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
         pvdx = v->dx[i];
         pvdy = v->dy[i];
 
-        // todo: now we use only Newton solver
-        // if (m_fieldInfo->linearityType != LinearityType_Linear)
-        // TODO: now we use only Newton solver
-        if (true)
+        if (m_fieldInfo->linearityType() != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];
@@ -618,9 +617,7 @@ Scalar CustomParserVectorFormSurf<Scalar>::value(int n, double *wt, Hermes::Herm
 
 
         // previous solution
-        // if (m_fieldInfo->linearityType != LinearityType_Linear)
-        // TODO: now we use only Newton solver
-        if (true)
+        if (m_fieldInfo->linearityType() != LinearityType_Linear)
         {
             pupval = u_ext[this->j]->val[i];
             pupdx = u_ext[this->j]->dx[i];

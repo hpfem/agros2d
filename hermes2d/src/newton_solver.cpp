@@ -19,8 +19,6 @@
 #include "newton_solver.h"
 #include "hermes_common.h"
 
-#include "../src/alter_newton_solver.h"
-
 namespace Hermes
 {
   namespace Hermes2D
@@ -177,12 +175,6 @@ namespace Hermes
         }
         // Assemble just the jacobian.
         this->dp->assemble(coeff_vec, jacobian);
-        //assert(0);
-        FILE* f = fopen("jac.txt", "w");
-        jacobian->dump(f, "jac");
-        fprintf(f, "\n size %d\n", jacobian->get_size());
-        residual->dump(f, "res");
-        fclose(f);
         if (this->timer != NULL)
         {
           this->timer->tick();
@@ -195,7 +187,7 @@ namespace Hermes
 
         // Solve the linear system.
         if(!linear_solver->solve())
-          throw Exceptions::LinearSolverException();
+          throw Exceptions::LinearMatrixSolverException();
 
         // Add \deltaY^{n + 1} to Y^n.
         for (int i = 0; i < ndof; i++)
@@ -321,7 +313,7 @@ namespace Hermes
 
         // Solve the linear system.
         if(!linear_solver->solve()) {
-          throw Exceptions::LinearSolverException();
+          throw Exceptions::LinearMatrixSolverException();
         }
 
         // Add \deltaY^{n + 1} to Y^n.

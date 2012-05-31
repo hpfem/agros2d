@@ -23,7 +23,7 @@
 #define __HERMES_COMMON_MUMPS_SOLVER_H_
 #include "config.h"
 #ifdef WITH_MUMPS
-#include "linear_solver.h"
+#include "linear_matrix_solver.h"
 #include "matrix.h"
 
 extern "C"
@@ -80,15 +80,6 @@ namespace Hermes
       MumpsMatrix();
       virtual ~MumpsMatrix();
 
-    protected:
-      /// MUMPS specific data structures for storing the system matrix (CSC format).
-      unsigned int nnz;          ///< Number of non-zero elements.
-      int *irn;         ///< Row indices.
-      int *jcn;         ///< Column indices.
-      typename mumps_type<Scalar>::mumps_Scalar *Ax; ///< Matrix entries (column-wise).
-      int *Ai;          ///< Row indices of values in Ax.
-      unsigned int *Ap;          ///< Index to Ax/Ai, where each column starts.
-
       virtual void alloc();
       virtual void free();
       virtual Scalar get(unsigned int m, unsigned int n);
@@ -123,6 +114,15 @@ namespace Hermes
       /// Duplicates a matrix (including allocation).
       MumpsMatrix* duplicate();
 
+    protected:
+      /// MUMPS specific data structures for storing the system matrix (CSC format).
+      unsigned int nnz;          ///< Number of non-zero elements.
+      int *irn;         ///< Row indices.
+      int *jcn;         ///< Column indices.
+      typename mumps_type<Scalar>::mumps_Scalar *Ax; ///< Matrix entries (column-wise).
+      int *Ai;          ///< Row indices of values in Ax.
+      unsigned int *Ap;          ///< Index to Ax/Ai, where each column starts.
+
       friend class Solvers::MumpsSolver<Scalar>;
     };
 
@@ -133,11 +133,6 @@ namespace Hermes
     public:
       MumpsVector();
       virtual ~MumpsVector();
-
-    protected:
-      // MUMPS specific data structures for storing the rhs.
-      ///Vector data.
-      Scalar *v;
 
       virtual void alloc(unsigned int ndofs);
       virtual void free();
@@ -151,6 +146,11 @@ namespace Hermes
       virtual void add_vector(Vector<Scalar>* vec);
       virtual void add_vector(Scalar* vec);
       virtual bool dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt = DF_MATLAB_SPARSE);
+
+    protected:
+      // MUMPS specific data structures for storing the rhs.
+      ///Vector data.
+      Scalar *v;
 
       friend class Solvers::MumpsSolver<Scalar>;
     };

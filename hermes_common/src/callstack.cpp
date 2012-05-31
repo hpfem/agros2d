@@ -108,9 +108,8 @@ void CallStack::dump()
 }
 const char * CallStack::getLastFunc()
 {
-
-//  if (size>0)
-//    return stack[size-1]->func;
-//  else
+  if (size>0)
+    return stack[size-1]->func;
+  else
     return NULL;
 }

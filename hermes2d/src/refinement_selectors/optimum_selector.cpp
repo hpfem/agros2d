@@ -587,17 +587,9 @@ namespace Hermes
         const int num_cands = (int)candidates.size();
         unrefined.score = 0;
         const double unrefined_dofs_exp = std::pow(unrefined.dofs, conv_exp);
-//        std::cout << (std::string)"Element no. " << e->id << std::endl;
-//        std::cout << (std::string)" unrefined split: " << unrefined.split << (std::string)", error: " << unrefined.error << (std::string)", dofs: " << unrefined.dofs << std::endl;
-//        std::cout << (std::string)" unrefined p: " << unrefined.p[0] << ',' << unrefined.p[1] << ',' << unrefined.p[2] << ',' << unrefined.p[3] << std::endl;
-
         for (int i = 1; i < num_cands; i++)
         {
           Cand& cand = candidates[i];
-
-//          std::cout << (std::string)"  candidate " << i << (std::string)" split: " << cand.split << (std::string)", error: " << cand.error << (std::string)", dofs: " << cand.dofs << std::endl;
-//          std::cout << (std::string)"  candidate " << i << (std::string)" p: " << cand.p[0] << ',' << cand.p[1] << ',' << cand.p[2] << ',' << cand.p[3] << std::endl;
-
           if (cand.error < unrefined.error && cand.dofs > unrefined.dofs)
           {
             double delta_dof_exp = std::pow(cand.dofs - unrefined.dofs, conv_exp);
@@ -608,7 +600,6 @@ namespace Hermes
           else
             candidates[i].score = 0;
         }
-//        std::cout << std::endl;
       }
 
       template<typename Scalar>

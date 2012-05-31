@@ -24,7 +24,7 @@
 
 #include "global.h"
 #include "projections/ogprojection.h"
-#include "discrete_problem.h"
+#include "discrete_problem_linear.h"
 #include "views/scalar_view.h"
 
 namespace Hermes
@@ -36,11 +36,11 @@ namespace Hermes
     class HERMES_API PicardSolver : public NonlinearSolver<Scalar>
     {
     public:
-      PicardSolver(DiscreteProblem<Scalar>* dp, Solution<Scalar>* sln_prev_iter);
-      PicardSolver(DiscreteProblem<Scalar>* dp, Hermes::vector<Solution<Scalar>* > slns_prev_iter);
-      PicardSolver(DiscreteProblem<Scalar>* dp, Solution<Scalar>* sln_prev_iter,
+      PicardSolver(DiscreteProblemLinear<Scalar>* dp, Solution<Scalar>* sln_prev_iter);
+      PicardSolver(DiscreteProblemLinear<Scalar>* dp, Hermes::vector<Solution<Scalar>* > slns_prev_iter);
+      PicardSolver(DiscreteProblemLinear<Scalar>* dp, Solution<Scalar>* sln_prev_iter,
                    Hermes::MatrixSolverType matrix_solver_type);
-      PicardSolver(DiscreteProblem<Scalar>* dp, Hermes::vector<Solution<Scalar>* > sln_prev_iter,
+      PicardSolver(DiscreteProblemLinear<Scalar>* dp, Hermes::vector<Solution<Scalar>* > sln_prev_iter,
                    Hermes::MatrixSolverType matrix_solver_type);
       
       /// Sets the attribute verbose_output for the inner Newton's loop to the paramater passed.

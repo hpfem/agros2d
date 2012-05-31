@@ -25,7 +25,7 @@
 #include "trace.h"
 #include "error.h"
 #include "callstack.h"
-#include"exceptions.h"
+#include "exceptions.h"
 
 using namespace Hermes::Error;
 
@@ -713,7 +713,7 @@ namespace Hermes
     template<typename Scalar>
     int MumpsSolver<Scalar>::get_matrix_size()
     {
-      return m->size;
+      return m->get_size();
     }
 
     template<typename Scalar>
@@ -731,7 +731,7 @@ namespace Hermes
       // the system matrix.
       if ( !setup_factorization() )
       {
-        throw Exceptions::LinearSolverException("LU factorization could not be completed.");
+        throw Exceptions::LinearMatrixSolverException("LU factorization could not be completed.");
       }
 
       // Specify the right-hand side (will be replaced by the solution).
