@@ -279,11 +279,11 @@ void WeakFormAgros<Scalar>::registerForms()
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
 
-                /*
+
                 foreach (ParserFormExpression *expression, fieldInfo->module()->wfVectorVolumeExpression())
                     registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
-                */
+
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {

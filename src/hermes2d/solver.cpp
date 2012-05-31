@@ -307,9 +307,12 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         Hermes::TimePeriod timer;
 
         LinearSolver<Scalar> linear(&dp, Util::problem()->config()->matrixSolver());
-        // try
+        try
         {
-            // linear.solve();
+            /*
+            linear.solve();
+            Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+             */
 
             Hermes::Algebra::SparseMatrix<Scalar>* jacobian = create_matrix<Scalar>(Util::problem()->config()->matrixSolver());
             Hermes::Algebra::Vector<Scalar>* residual = create_vector<Scalar>(Util::problem()->config()->matrixSolver());
@@ -318,9 +321,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             dp.assemble(jacobian, residual);
 
             matrix_solver->solve();
-
             Solution<Scalar>::vector_to_solutions(matrix_solver->get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
-            // Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             /*
             Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
@@ -331,11 +332,11 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             msa.setSolveTime(picard.get_solve_time() * 1000.0);
             */
         }
-        // catch (Hermes::Exceptions::Exception e)
+        catch (Hermes::Exceptions::Exception e)
         {
-        //     QString error = QString(e.getMsg());
-        //     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver failed: %1").arg(error));
-            // return false;
+            QString error = QString(e.getMsg());
+            Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver failed: %1").arg(error));
+            return false;
         }
     }
 
@@ -441,9 +442,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_wf->set_current_time(Util::problem()->actualTime());
 
     m_wf->delete_all();
-    qDebug() << "m_wf->registerForms();";
     m_wf->registerForms();
-    qDebug() << "m_wf->registerForms(); - OK";
 
     if (!solveOneProblem(multiSolutionArray))
         throw("Problem not solved");
