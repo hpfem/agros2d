@@ -32,7 +32,7 @@ public:
         catch(...)
         {
             qCritical() << "Unknown exception thrown" << endl;
-            assert(0);
+            // assert(0);
         }
 
         return false;

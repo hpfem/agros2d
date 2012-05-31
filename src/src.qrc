@@ -30,6 +30,8 @@
         <file alias="mode-localpointvalue.png">../resources_source/images/mode-localpointvalue.png</file>
         <file alias="mode-surfaceintegral.png">../resources_source/images/mode-surfaceintegral.png</file>
         <file alias="mode-volumeintegral.png">../resources_source/images/mode-volumeintegral.png</file>
+        <file alias="select-by-point.png">../resources_source/images/select-by-point.png</file>
+        <file alias="select-by-marker.png">../resources_source/images/select-by-marker.png</file>
         <file alias="options.png">../resources_source/images/options.png</file>
         <file alias="options-main.png">../resources_source/images/options-main.png</file>
         <file alias="options-view.png">../resources_source/images/options-view.png</file>
