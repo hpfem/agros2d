@@ -46,7 +46,7 @@ public:
 
     //todo : merge solveSimple and solveTimeStep?
 
-    void solveTimeStep(double timeStep);
+    void solveTimeStep();
     void solveInitialTimeStep();
     void createInitialSpace(int timeStep);
     void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);

@@ -161,6 +161,10 @@ public:
 
     inline QTime timeElapsed() const { return m_timeElapsed; }
 
+    double actualTime() const { return m_actualTime; }
+    void setActualTime(double time) { m_actualTime = time; }
+    void addToActualTime(double time) { m_actualTime += time; }
+
 private:
     ProblemConfig *m_config;
     QList<Block*> m_blocks;
@@ -177,6 +181,7 @@ private:
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
 
     void solveInit();
+    double m_actualTime;
 };
 
 #endif // PROBLEM_H

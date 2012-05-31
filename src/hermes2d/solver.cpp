@@ -444,16 +444,16 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         throw(SolverException("DOF is zero"));
     }
 
-    double actualTime = 0.0;
-
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
-    m_wf->set_current_time(actualTime);
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
+    m_wf->set_current_time(Util::problem()->actualTime());
 
     m_wf->delete_all();
     m_wf->registerForms();
 
     if (!solveOneProblem(multiSolutionArray))
         throw("Problem not solved");
+
+    multiSolutionArray.setTime(Util::problem()->actualTime());
 
     // output
     BlockSolutionID solutionID;
@@ -619,7 +619,7 @@ void Solver<Scalar>::solveInitialTimeStep()
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveTimeStep(double timeStep)
+void Solver<Scalar>::solveTimeStep()
 {
     BlockSolutionID previousSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal);
     MultiSolutionArray<Scalar> multiSolutionArray = Util::solutionStore()->
@@ -633,18 +633,17 @@ void Solver<Scalar>::solveTimeStep(double timeStep)
         throw(SolverException("DOF is zero"));
     }
 
-    double actualTime = Util::solutionStore()->lastTime(m_block) + timeStep;
-    multiSolutionArray.setTime(actualTime);
-    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve time step, actual time is %1 s").arg(actualTime));
+    multiSolutionArray.setTime(Util::problem()->actualTime());
+    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve time step, actual time is %1 s").arg(Util::problem()->actualTime()));
 
     // update essential bc values
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), actualTime);
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
 
     // update timedep values
     foreach (Field* field, m_block->fields())
-        field->fieldInfo()->module()->updateTimeFunctions(actualTime);
+        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
-    m_wf->set_current_time(actualTime);
+    m_wf->set_current_time(Util::problem()->actualTime());
 
     m_wf->delete_all();
     m_wf->registerForms();
