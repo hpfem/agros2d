@@ -54,18 +54,32 @@ class XmlParser:
             
             coupled_constants = []
             i = 0
-            for module in self.modules:
-                for module_name in coupled_module_names:
-                    coupled_quantities_planar = []
-                    coupled_quantities_axi = []
-                    if(module.id == module_name):                    
-                        module.order = i
-                        i = i + 1
+
+            quantity_ids_planar = []
+            quantity_ids_axi = []
+            coupled_quantities_planar = []
+            coupled_quantities_axi = [] 
+           
+            for module in self.modules: 
+                for module_name in coupled_module_names:        
+                    if(module.id == module_name):                                            
                         coupled_constants.extend(module.constants)                        
-                        for volume in module.volumes:
-                            coupled_quantities_planar.extend(volume.quantities_planar)
-                            coupled_quantities_axi.extend(volume.quantities_planar)   
-                                                     
+                        for volume in module.volumes:                            
+                            for quantity in volume.quantities_planar:
+                                if not(quantity.id in quantity_ids_planar):                                    
+                                    coupled_quantities_planar.append(quantity)                                    
+                                    quantity_ids_planar.append(quantity.id)
+                                    print quantity.id                                
+                                                                                                    
+                            for quantity in volume.quantities_axi:                                
+                                if not(quantity.id in quantity_ids_axi):
+                                    coupled_quantities_axi.append(quantity)
+                                    quantity_ids_axi.append(quantity.id)
+
+
+            #for quantity in coupled_quantities_planar:
+                # print quantity.id
+            print "----------------------------------"                
             
             self.parse_xml_coupling(coupling_file)
             for module in self.modules:
@@ -369,11 +383,11 @@ class WeakForm:
                 string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
         
                      
-        string = string.replace('class_name', self.id)
+        string = string.replace('class_name', self.id + '_' + self.coupling_type)
         string = string.replace('axi', 'axisymmetric')                        
         if (self.type != 'essential'):
-            string = string.replace('row_index', '(' + str(self.i) + ' + offsetI' + ')')                        
-            string = string.replace('column_index', '(' + str(self.j) + ' + offsetJ' + ')')
+            string = string.replace('row_index', str(self.i))                        
+            string = string.replace('column_index', str(self.j))
         else:
             string = string.replace('row_index', str(self.i))                        
             string = string.replace('column_index', str(self.j))
@@ -397,14 +411,14 @@ class WeakForm:
             name = self.get_temp_class_name()             
             variable_defs = ''
             self.boundary_type = self.boundary_type.replace(' ','_')                
-            replaced_string = string.replace(name, self.get_class_name())            
-            for variable in self.variables:                                    
+            replaced_string = string.replace(name, self.get_class_name())                        
+            for variable in self.variables:                                                                    
                 variable_string = variable_def_temp.replace('variable_short', 
                                         variable.short_name)                    
                 variable_string = variable_string.replace('variable', 
                                         variable.id)
                 variable_defs += variable_string
-                variable_defs = variable_defs.replace('material', variable.type)                                                                                        
+                variable_defs = variable_defs.replace('material', variable.type)                                                                                                                
             replaced_string = replaced_string.replace('//variable_declaration', 
                                                               str(variable_defs))                             
             h_code += replaced_string                                                                                                                           
@@ -471,6 +485,10 @@ class WeakForm:
                      'value2': 'u_ext[1]->val[i]',
                      'source0': 'ext->fn[0]->val[i]',
                      'source1': 'ext->fn[1]->val[i]',
+                     'source0dx': 'ext->fn[0]->dx[i]',
+                     'source0dy': 'ext->fn[0]->dy[i]',
+                     'source0dr': 'ext->fn[0]->dx[i]',
+                     'source0dz': 'ext->fn[0]->dy[i]',
                      'dx1': 'u_ext[0]->dx[i]',
                      'dx2': 'u_ext[1]->dx[i]',
                      'dy1': 'u_ext[0]->dy[i]',
@@ -526,7 +544,8 @@ class WeakForm:
         symbols = ['x', 'y', 'r', 'z', 'f', 'udr', 'udz', 'udx', 'udy',
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
                    'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI',
-                   'value1', 'value2', 'dx1', 'dx2', 'dy1', 'dy2', 'dr1', 'dr2', 'dz1', 'dz2', 'source0']
+                   'value1', 'value2', 'dx1', 'dx2', 'dy1', 'dy2', 'dr1', 'dr2', 'dz1', 'dz2', 'source0',
+                   'source1', 'source0dx', 'source0dy', 'source0dr', 'source0dz']
                            
         variables = []
         variables_derivatives = []
@@ -728,11 +747,11 @@ class Module:
                     part_modules.append(part_module)                                
                 
                 if weakform.coordinate_type == 'axi':
-                    weakform.variables = volume.quantities_axi                    
+                    weakform.variables = volume.quantities_axi                                                    
                 
                 if weakform.coordinate_type == 'planar':
                     weakform.variables = volume.quantities_planar
-                                                       
+                                                                         
                 weakform.constants = self.constants
                 weakform.id = part_module.id                
                 part_module.weakforms.append(weakform)                        
@@ -824,6 +843,6 @@ class Module:
 if __name__ == '__main__':    
     # coupling_parser = XmlParser(['elasticity', 'heat'], ['heat-elasticity'])
     # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
-    # coupling_parser = XmlParser(['magnetic'], [])
     coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'rf'], [])
+    coupling_parser.process()
     coupling_parser.process()

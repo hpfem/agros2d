@@ -178,10 +178,28 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
                                          Marker* marker, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze sdruzeni
-    string problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
-            analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-            coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString();
+
+    string problemId;
+
+    if (couplingInfo)
+    {
+        problemId =
+                field->fieldInfo()->fieldId().toStdString() + "_" +
+                materialTarget->fieldInfo()->fieldId().toStdString() + "_" +
+                analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
+                analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
+                coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
+                couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
+    }
+    else
+    {
+        problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
+                analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
+                coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_";
+    }
     
+     qDebug() << QString(problemId.c_str()) << offsetI << offsetJ << " " << form->i << " " << form->j;
+
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
     
     // compiled form
@@ -191,8 +209,11 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     }
     
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
+    {
         Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2).").
                                   arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)));
+        qDebug("Cannot find compiled weakform.");
+    }
     
     // interpreted form
     if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
