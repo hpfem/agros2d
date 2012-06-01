@@ -43,14 +43,15 @@ namespace Module
 
 struct ParserFormEssential
 {
-    ParserFormEssential() : i(0), expression("") {}
-    ParserFormEssential(int i, std::string expr) : i(i), expression(expr) {}
+    ParserFormEssential() : i(0), expressionLinear(""), expressionNewton("") {}
+    ParserFormEssential(int i, string expr_linear, string expr_newton) : i(i), expressionLinear(expr_linear), expressionNewton(expr_newton) {}
 
     // position
     int i;
 
     // expression
-    std::string expression;
+    std::string expressionLinear;
+    std::string expressionNewton;
 };
 
 // instead of ParserFormVector and ParserFormMatrix

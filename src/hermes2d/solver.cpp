@@ -143,7 +143,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     {
                         {
                             CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
-                                                                                                    form->expression,
+                                                                                                    form->expressionLinear,
                                                                                                     boundary);
                             custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                         }

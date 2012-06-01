@@ -143,6 +143,7 @@ class XmlParser:
     def parse_xml_file(self, filename):
         # constants definitions
         coordinate_types = ['planar', 'axi']; 
+        solver_types = ['linear', 'newton']
         # opens file and initializes xml parser            
         ds_module = md.parse(Config.modules_dir + filename)
                      
@@ -187,7 +188,7 @@ class XmlParser:
                             quantity.unit = module_quantity.unit
                             if coordinate_type == 'planar':                            
                                 if (ds_quantity.nonlinearity_planar != None) and (ds_quantity.nonlinearity_planar != ''):
-                                    quantity.expression = ds_quantity.nonlinearity_planar                                                                    
+                                    quantity.expression = ds_quantity.nonlinearity_planar                                                                                                    
                                 else:
                                     quantity.expression = None     
                                 if not (quantity in volume.quantities_planar):    
@@ -204,22 +205,30 @@ class XmlParser:
             i  = 0
             n  = len(ds_weakform.matrix_form)
             for ds_matrix in ds_weakform.matrix_form + ds_weakform.vector_form:                 
-                for coordinate_type in coordinate_types:                                          
-                    weakform = WeakForm()                            
-                    weakform.integral_type = 'vol'                     
-                    weakform.analysis_type = ds_weakform.analysistype                         
-                    if (i < n):    
-                        weakform.type = 'matrix'                             
-                    else:
-                        weakform.type = 'vector'                            
-                    if coordinate_type == 'planar':                            
-                        weakform.expression = ds_matrix.planar_linear
-                    if coordinate_type == 'axi':    
-                        weakform.expression = ds_matrix.axi_linear                                            
-                    weakform.coordinate_type = coordinate_type                                                     
-                    weakform.i = ds_matrix.i
-                    weakform.j = ds_matrix.j    
-                    volume.weakforms.append(weakform)                
+                for coordinate_type in coordinate_types:   
+                    for solver_type in solver_types:                                       
+                        weakform = WeakForm()                            
+                        weakform.integral_type = 'vol'                     
+                        weakform.analysis_type = ds_weakform.analysistype                         
+                        if (i < n):    
+                            weakform.type = 'matrix'                             
+                        else:
+                            weakform.type = 'vector'                            
+                        if coordinate_type == 'planar':
+                            if (solver_type == 'linear'):                                                            
+                                weakform.expression = ds_matrix.planar_linear
+                            if (solver_type == 'newton'):
+                                weakform.expression = ds_matrix.planar_newton
+                        if coordinate_type == 'axi':
+                            if (solver_type == 'linear'):                                        
+                                weakform.expression = ds_matrix.axi_linear
+                            if (solver_type == 'newton'):    
+                                weakform.expression = ds_matrix.axi_newton
+                        weakform.solver_type = solver_type
+                        weakform.coordinate_type = coordinate_type                                                     
+                        weakform.i = ds_matrix.i
+                        weakform.j = ds_matrix.j    
+                        volume.weakforms.append(weakform)                
                 i = i + 1
             module.volumes.append(volume)
                 
@@ -244,29 +253,39 @@ class XmlParser:
                 n_essential = len(ds_boundary.essential_form)
                 n_vector = n_essential + len(ds_boundary.vector_form)
                 i = 0                 
+                print len(ds_boundary.matrix_form)
                 for ds_vector in ds_boundary.essential_form + ds_boundary.vector_form + ds_boundary.matrix_form:                     
-                    for coordinate_type in coordinate_types:                         
-                        weakform = WeakForm()
-                        if (i < n_essential):
-                            weakform.type = 'essential'
-                        if ((i >= n_essential) & (i < n_vector)):                                 
-                            weakform.type = 'vector'   
-                            weakform.j = ds_vector.j
-                        if (i >= n_vector):
-                            weakform.type = 'matrix'   
-                            weakform.j = ds_vector.j
-                        weakform.i = ds_vector.i 
-                        if coordinate_type == 'planar':                 
-                            weakform.expression = ds_vector.planar_linear
-                        if coordinate_type == 'axi':
-                            weakform.expression = ds_vector.axi_linear
-                        weakform.coordinate_type = coordinate_type
-                        weakform.analysis_type = ds_weakform.analysistype
-                        weakform.integral_type = 'surf'
-                        weakform.boundary_type = ds_boundary.id                         
-                        weakform.id = surface.id + '_' + weakform.analysis_type + '_' \
-                             + weakform.coordinate_type                           
-                        surface.weakforms.append(weakform)                         
+                    for coordinate_type in coordinate_types:
+                        for solver_type in solver_types:                         
+                            weakform = WeakForm()
+                            if (i < n_essential):
+                                weakform.type = 'essential'
+                            if ((i >= n_essential) & (i < n_vector)):                                 
+                                weakform.type = 'vector'   
+                                weakform.j = ds_vector.j
+                            if (i >= n_vector):
+                                weakform.type = 'matrix'   
+                                weakform.j = ds_vector.j
+                            weakform.i = ds_vector.i 
+                            print weakform.type
+                            if coordinate_type == 'planar':
+                                if (solver_type == 'linear'):                                                            
+                                    weakform.expression = ds_vector.planar_linear
+                                if (solver_type == 'newton'):
+                                    weakform.expression = ds_vector.planar_newton
+                            if coordinate_type == 'axi':
+                                if (solver_type == 'linear'):                                        
+                                    weakform.expression = ds_vector.axi_linear
+                                if (solver_type == 'newton'):    
+                                    weakform.expression = ds_vector.axi_newton
+                            weakform.solver_type = solver_type                        
+                            weakform.coordinate_type = coordinate_type
+                            weakform.analysis_type = ds_weakform.analysistype
+                            weakform.integral_type = 'surf'
+                            weakform.boundary_type = ds_boundary.id                         
+                            weakform.id = surface.id + '_' + weakform.analysis_type + '_' \
+                                 + weakform.coordinate_type                          
+                            surface.weakforms.append(weakform)                         
                     i = i + 1
         module.surfaces.append(surface)                    
         self.modules.append(module)
@@ -347,7 +366,7 @@ class WeakForm:
     def get_class_name(self):
         class_name =  'Custom' + self.type.capitalize() + 'Form'  \
             + self.integral_type.capitalize() + '_' + self.boundary_type + '_' + str(self.i) \
-            + '_'  + str(self.j) + '_' + self.analysis_type + '_' + self.coupling_type        
+            + '_'  + str(self.j) + '_' + self.analysis_type + '_' + self.coupling_type  + '_' + self.solver_type               
         return class_name    
     
     def get_function_name(self):              
@@ -369,7 +388,7 @@ class WeakForm:
                 string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
         
                      
-        string = string.replace('class_name', self.id)
+        string = string.replace('class_name', self.id + '_' + self.solver_type)
         string = string.replace('axi', 'axisymmetric')                        
         if (self.type != 'essential'):
             string = string.replace('row_index', '(' + str(self.i) + ' + offsetI' + ')')                        
@@ -433,7 +452,7 @@ class WeakForm:
                                                               str(variable_defs))     
                 if function_type == '_ord':
                     expression = self.parse_expression(self.expression, True, '')                     
-                else:
+                else:                    
                     expression = self.parse_expression(self.expression, False, '')                                                                                                                                                                  
                 if self.expression =='':               
                     replaced_string = ''
@@ -738,15 +757,15 @@ class Module:
                 part_module.weakforms.append(weakform)                        
             
         for surface in self.surfaces:                                    
-                for weakform in surface.weakforms:                                         
+                for weakform in surface.weakforms:                                                             
                     if (weakform.id + '_' + weakform.analysis_type in module_types):                                                                
-                        if weakform.integral_type == 'surf':                            
-                            index = module_types.index(weakform.id + '_' + weakform.analysis_type)                    
+                        if weakform.integral_type == 'surf':                                                        
+                            index = module_types.index(weakform.id + '_' + weakform.analysis_type)                                                
                             part_module = part_modules[index] 
                             weakform.variables = surface.quantities
                             weakform.constants = self.constants                                        
                             part_module.weakforms.append(weakform)                        
-                         
+                            
         return part_modules;
         
                                                                                           
@@ -823,7 +842,6 @@ class Module:
 
 if __name__ == '__main__':    
     # coupling_parser = XmlParser(['elasticity', 'heat'], ['heat-elasticity'])
-    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
-    # coupling_parser = XmlParser(['magnetic'], [])
-    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'rf'], [])
+    coupling_parser = XmlParser(['magnetic'], [])
+    # coupling_parser = XmlParser(['magnetic'], [])    
     coupling_parser.process()

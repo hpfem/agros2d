@@ -180,8 +180,8 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze sdruzeni
     string problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
             analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-            coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString();
-    
+            coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
+            linearityTypeToStringKey(field->fieldInfo()->linearityType()).toStdString();
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
     
     // compiled form
@@ -191,8 +191,11 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     }
     
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
+    {
         Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2).").
                                   arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)));
+        qDebug() << 'Cannot find compiled form';
+    }
     
     // interpreted form
     if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
@@ -433,7 +436,8 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
         m_essential.append(new ParserFormEssential(form.i(),
-                                                   (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                   (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                   (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
     }
 }
 
