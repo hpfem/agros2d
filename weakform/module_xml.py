@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Sat May 12 20:51:54 2012 by generateDS.py version 2.7a.
+# Generated Fri Jun  1 13:58:00 2012 by generateDS.py version 2.7a.
 #
 
 import sys
@@ -3149,7 +3149,7 @@ class default(GeneratedsSuper):
 class quantity(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, nonlinearity_axi=None, name=None, default=None, shortname_latex=None, shortname_html=None, dependence=None, unit_latex=None, unit_html=None, unit=None, nonlinearity_planar=None, shortname=None, id=None, condition=None):
+    def __init__(self, nonlinearity_axi=None, name=None, default=None, shortname_latex=None, shortname_html=None, dependence=None, unit_latex=None, shortname_dependence_html=None, unit_html=None, shortname_dependence=None, nonlinearity_planar=None, shortname=None, unit=None, id=None, condition=None):
         self.nonlinearity_axi = _cast(None, nonlinearity_axi)
         self.name = _cast(None, name)
         self.default = _cast(float, default)
@@ -3157,10 +3157,12 @@ class quantity(GeneratedsSuper):
         self.shortname_html = _cast(None, shortname_html)
         self.dependence = _cast(None, dependence)
         self.unit_latex = _cast(None, unit_latex)
+        self.shortname_dependence_html = _cast(None, shortname_dependence_html)
         self.unit_html = _cast(None, unit_html)
-        self.unit = _cast(None, unit)
+        self.shortname_dependence = _cast(None, shortname_dependence)
         self.nonlinearity_planar = _cast(None, nonlinearity_planar)
         self.shortname = _cast(None, shortname)
+        self.unit = _cast(None, unit)
         self.id = _cast(None, id)
         self.condition = _cast(None, condition)
         pass
@@ -3184,14 +3186,18 @@ class quantity(GeneratedsSuper):
     def set_dependence(self, dependence): self.dependence = dependence
     def get_unit_latex(self): return self.unit_latex
     def set_unit_latex(self, unit_latex): self.unit_latex = unit_latex
+    def get_shortname_dependence_html(self): return self.shortname_dependence_html
+    def set_shortname_dependence_html(self, shortname_dependence_html): self.shortname_dependence_html = shortname_dependence_html
     def get_unit_html(self): return self.unit_html
     def set_unit_html(self, unit_html): self.unit_html = unit_html
-    def get_unit(self): return self.unit
-    def set_unit(self, unit): self.unit = unit
+    def get_shortname_dependence(self): return self.shortname_dependence
+    def set_shortname_dependence(self, shortname_dependence): self.shortname_dependence = shortname_dependence
     def get_nonlinearity_planar(self): return self.nonlinearity_planar
     def set_nonlinearity_planar(self, nonlinearity_planar): self.nonlinearity_planar = nonlinearity_planar
     def get_shortname(self): return self.shortname
     def set_shortname(self, shortname): self.shortname = shortname
+    def get_unit(self): return self.unit
+    def set_unit(self, unit): self.unit = unit
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
     def get_condition(self): return self.condition
@@ -3229,18 +3235,24 @@ class quantity(GeneratedsSuper):
         if self.unit_latex is not None and 'unit_latex' not in already_processed:
             already_processed.append('unit_latex')
             outfile.write(' unit_latex=%s' % (self.gds_format_string(quote_attrib(self.unit_latex).encode(ExternalEncoding), input_name='unit_latex'), ))
+        if self.shortname_dependence_html is not None and 'shortname_dependence_html' not in already_processed:
+            already_processed.append('shortname_dependence_html')
+            outfile.write(' shortname_dependence_html=%s' % (self.gds_format_string(quote_attrib(self.shortname_dependence_html).encode(ExternalEncoding), input_name='shortname_dependence_html'), ))
         if self.unit_html is not None and 'unit_html' not in already_processed:
             already_processed.append('unit_html')
             outfile.write(' unit_html=%s' % (self.gds_format_string(quote_attrib(self.unit_html).encode(ExternalEncoding), input_name='unit_html'), ))
-        if self.unit is not None and 'unit' not in already_processed:
-            already_processed.append('unit')
-            outfile.write(' unit=%s' % (self.gds_format_string(quote_attrib(self.unit).encode(ExternalEncoding), input_name='unit'), ))
+        if self.shortname_dependence is not None and 'shortname_dependence' not in already_processed:
+            already_processed.append('shortname_dependence')
+            outfile.write(' shortname_dependence=%s' % (self.gds_format_string(quote_attrib(self.shortname_dependence).encode(ExternalEncoding), input_name='shortname_dependence'), ))
         if self.nonlinearity_planar is not None and 'nonlinearity_planar' not in already_processed:
             already_processed.append('nonlinearity_planar')
             outfile.write(' nonlinearity_planar=%s' % (self.gds_format_string(quote_attrib(self.nonlinearity_planar).encode(ExternalEncoding), input_name='nonlinearity_planar'), ))
         if self.shortname is not None and 'shortname' not in already_processed:
             already_processed.append('shortname')
             outfile.write(' shortname=%s' % (self.gds_format_string(quote_attrib(self.shortname).encode(ExternalEncoding), input_name='shortname'), ))
+        if self.unit is not None and 'unit' not in already_processed:
+            already_processed.append('unit')
+            outfile.write(' unit=%s' % (self.gds_format_string(quote_attrib(self.unit).encode(ExternalEncoding), input_name='unit'), ))
         if self.id is not None and 'id' not in already_processed:
             already_processed.append('id')
             outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
@@ -3290,14 +3302,18 @@ class quantity(GeneratedsSuper):
             already_processed.append('unit_latex')
             showIndent(outfile, level)
             outfile.write('unit_latex = "%s",\n' % (self.unit_latex,))
+        if self.shortname_dependence_html is not None and 'shortname_dependence_html' not in already_processed:
+            already_processed.append('shortname_dependence_html')
+            showIndent(outfile, level)
+            outfile.write('shortname_dependence_html = "%s",\n' % (self.shortname_dependence_html,))
         if self.unit_html is not None and 'unit_html' not in already_processed:
             already_processed.append('unit_html')
             showIndent(outfile, level)
             outfile.write('unit_html = "%s",\n' % (self.unit_html,))
-        if self.unit is not None and 'unit' not in already_processed:
-            already_processed.append('unit')
+        if self.shortname_dependence is not None and 'shortname_dependence' not in already_processed:
+            already_processed.append('shortname_dependence')
             showIndent(outfile, level)
-            outfile.write('unit = "%s",\n' % (self.unit,))
+            outfile.write('shortname_dependence = "%s",\n' % (self.shortname_dependence,))
         if self.nonlinearity_planar is not None and 'nonlinearity_planar' not in already_processed:
             already_processed.append('nonlinearity_planar')
             showIndent(outfile, level)
@@ -3306,6 +3322,10 @@ class quantity(GeneratedsSuper):
             already_processed.append('shortname')
             showIndent(outfile, level)
             outfile.write('shortname = "%s",\n' % (self.shortname,))
+        if self.unit is not None and 'unit' not in already_processed:
+            already_processed.append('unit')
+            showIndent(outfile, level)
+            outfile.write('unit = "%s",\n' % (self.unit,))
         if self.id is not None and 'id' not in already_processed:
             already_processed.append('id')
             showIndent(outfile, level)
@@ -3353,14 +3373,18 @@ class quantity(GeneratedsSuper):
         if value is not None and 'unit_latex' not in already_processed:
             already_processed.append('unit_latex')
             self.unit_latex = value
+        value = find_attr_value_('shortname_dependence_html', node)
+        if value is not None and 'shortname_dependence_html' not in already_processed:
+            already_processed.append('shortname_dependence_html')
+            self.shortname_dependence_html = value
         value = find_attr_value_('unit_html', node)
         if value is not None and 'unit_html' not in already_processed:
             already_processed.append('unit_html')
             self.unit_html = value
-        value = find_attr_value_('unit', node)
-        if value is not None and 'unit' not in already_processed:
-            already_processed.append('unit')
-            self.unit = value
+        value = find_attr_value_('shortname_dependence', node)
+        if value is not None and 'shortname_dependence' not in already_processed:
+            already_processed.append('shortname_dependence')
+            self.shortname_dependence = value
         value = find_attr_value_('nonlinearity_planar', node)
         if value is not None and 'nonlinearity_planar' not in already_processed:
             already_processed.append('nonlinearity_planar')
@@ -3369,6 +3393,10 @@ class quantity(GeneratedsSuper):
         if value is not None and 'shortname' not in already_processed:
             already_processed.append('shortname')
             self.shortname = value
+        value = find_attr_value_('unit', node)
+        if value is not None and 'unit' not in already_processed:
+            already_processed.append('unit')
+            self.unit = value
         value = find_attr_value_('id', node)
         if value is not None and 'id' not in already_processed:
             already_processed.append('id')
@@ -3692,12 +3720,14 @@ class group(GeneratedsSuper):
 class matrix_form(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, i=None, symmetric=None, planar=None, j=None, axi=None):
+    def __init__(self, axi_newton=None, i=None, axi_linear=None, j=None, symmetric=None, planar_newton=None, planar_linear=None):
+        self.axi_newton = _cast(None, axi_newton)
         self.i = _cast(int, i)
-        self.symmetric = _cast(int, symmetric)
-        self.planar = _cast(None, planar)
+        self.axi_linear = _cast(None, axi_linear)
         self.j = _cast(int, j)
-        self.axi = _cast(None, axi)
+        self.symmetric = _cast(int, symmetric)
+        self.planar_newton = _cast(None, planar_newton)
+        self.planar_linear = _cast(None, planar_linear)
         pass
     def factory(*args_, **kwargs_):
         if matrix_form.subclass:
@@ -3705,16 +3735,20 @@ class matrix_form(GeneratedsSuper):
         else:
             return matrix_form(*args_, **kwargs_)
     factory = staticmethod(factory)
+    def get_axi_newton(self): return self.axi_newton
+    def set_axi_newton(self, axi_newton): self.axi_newton = axi_newton
     def get_i(self): return self.i
     def set_i(self, i): self.i = i
-    def get_symmetric(self): return self.symmetric
-    def set_symmetric(self, symmetric): self.symmetric = symmetric
-    def get_planar(self): return self.planar
-    def set_planar(self, planar): self.planar = planar
+    def get_axi_linear(self): return self.axi_linear
+    def set_axi_linear(self, axi_linear): self.axi_linear = axi_linear
     def get_j(self): return self.j
     def set_j(self, j): self.j = j
-    def get_axi(self): return self.axi
-    def set_axi(self, axi): self.axi = axi
+    def get_symmetric(self): return self.symmetric
+    def set_symmetric(self, symmetric): self.symmetric = symmetric
+    def get_planar_newton(self): return self.planar_newton
+    def set_planar_newton(self, planar_newton): self.planar_newton = planar_newton
+    def get_planar_linear(self): return self.planar_linear
+    def set_planar_linear(self, planar_linear): self.planar_linear = planar_linear
     def export(self, outfile, level, namespace_='module:', name_='matrix_form', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -3727,21 +3761,27 @@ class matrix_form(GeneratedsSuper):
         else:
             outfile.write('/>\n')
     def exportAttributes(self, outfile, level, already_processed, namespace_='module:', name_='matrix_form'):
+        if self.axi_newton is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            outfile.write(' axi_newton=%s' % (self.gds_format_string(quote_attrib(self.axi_newton).encode(ExternalEncoding), input_name='axi_newton'), ))
         if self.i is not None and 'i' not in already_processed:
             already_processed.append('i')
             outfile.write(' i="%s"' % self.gds_format_integer(self.i, input_name='i'))
-        if self.symmetric is not None and 'symmetric' not in already_processed:
-            already_processed.append('symmetric')
-            outfile.write(' symmetric="%s"' % self.gds_format_integer(self.symmetric, input_name='symmetric'))
-        if self.planar is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
-            outfile.write(' planar=%s' % (self.gds_format_string(quote_attrib(self.planar).encode(ExternalEncoding), input_name='planar'), ))
+        if self.axi_linear is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
+            outfile.write(' axi_linear=%s' % (self.gds_format_string(quote_attrib(self.axi_linear).encode(ExternalEncoding), input_name='axi_linear'), ))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             outfile.write(' j="%s"' % self.gds_format_integer(self.j, input_name='j'))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            outfile.write(' axi=%s' % (self.gds_format_string(quote_attrib(self.axi).encode(ExternalEncoding), input_name='axi'), ))
+        if self.symmetric is not None and 'symmetric' not in already_processed:
+            already_processed.append('symmetric')
+            outfile.write(' symmetric="%s"' % self.gds_format_integer(self.symmetric, input_name='symmetric'))
+        if self.planar_newton is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            outfile.write(' planar_newton=%s' % (self.gds_format_string(quote_attrib(self.planar_newton).encode(ExternalEncoding), input_name='planar_newton'), ))
+        if self.planar_linear is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            outfile.write(' planar_linear=%s' % (self.gds_format_string(quote_attrib(self.planar_linear).encode(ExternalEncoding), input_name='planar_linear'), ))
     def exportChildren(self, outfile, level, namespace_='module:', name_='matrix_form', fromsubclass_=False):
         pass
     def hasContent_(self):
@@ -3757,26 +3797,34 @@ class matrix_form(GeneratedsSuper):
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.axi_newton is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            showIndent(outfile, level)
+            outfile.write('axi_newton = "%s",\n' % (self.axi_newton,))
         if self.i is not None and 'i' not in already_processed:
             already_processed.append('i')
             showIndent(outfile, level)
             outfile.write('i = %d,\n' % (self.i,))
-        if self.symmetric is not None and 'symmetric' not in already_processed:
-            already_processed.append('symmetric')
+        if self.axi_linear is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
             showIndent(outfile, level)
-            outfile.write('symmetric = %d,\n' % (self.symmetric,))
-        if self.planar is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
-            showIndent(outfile, level)
-            outfile.write('planar = "%s",\n' % (self.planar,))
+            outfile.write('axi_linear = "%s",\n' % (self.axi_linear,))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             showIndent(outfile, level)
             outfile.write('j = %d,\n' % (self.j,))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
+        if self.symmetric is not None and 'symmetric' not in already_processed:
+            already_processed.append('symmetric')
             showIndent(outfile, level)
-            outfile.write('axi = "%s",\n' % (self.axi,))
+            outfile.write('symmetric = %d,\n' % (self.symmetric,))
+        if self.planar_newton is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            showIndent(outfile, level)
+            outfile.write('planar_newton = "%s",\n' % (self.planar_newton,))
+        if self.planar_linear is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            showIndent(outfile, level)
+            outfile.write('planar_linear = "%s",\n' % (self.planar_linear,))
     def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
@@ -3785,11 +3833,26 @@ class matrix_form(GeneratedsSuper):
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
+        value = find_attr_value_('axi_newton', node)
+        if value is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            self.axi_newton = value
         value = find_attr_value_('i', node)
         if value is not None and 'i' not in already_processed:
             already_processed.append('i')
             try:
                 self.i = int(value)
+            except ValueError, exp:
+                raise_parse_error(node, 'Bad integer attribute: %s' % exp)
+        value = find_attr_value_('axi_linear', node)
+        if value is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
+            self.axi_linear = value
+        value = find_attr_value_('j', node)
+        if value is not None and 'j' not in already_processed:
+            already_processed.append('j')
+            try:
+                self.j = int(value)
             except ValueError, exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = find_attr_value_('symmetric', node)
@@ -3799,21 +3862,14 @@ class matrix_form(GeneratedsSuper):
                 self.symmetric = int(value)
             except ValueError, exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-        value = find_attr_value_('planar', node)
-        if value is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
-            self.planar = value
-        value = find_attr_value_('j', node)
-        if value is not None and 'j' not in already_processed:
-            already_processed.append('j')
-            try:
-                self.j = int(value)
-            except ValueError, exp:
-                raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-        value = find_attr_value_('axi', node)
-        if value is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            self.axi = value
+        value = find_attr_value_('planar_newton', node)
+        if value is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            self.planar_newton = value
+        value = find_attr_value_('planar_linear', node)
+        if value is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            self.planar_linear = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
 # end class matrix_form
@@ -3822,11 +3878,13 @@ class matrix_form(GeneratedsSuper):
 class vector_form(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, i=None, planar=None, j=None, axi=None):
+    def __init__(self, axi_newton=None, i=None, axi_linear=None, j=None, planar_newton=None, planar_linear=None):
+        self.axi_newton = _cast(None, axi_newton)
         self.i = _cast(int, i)
-        self.planar = _cast(None, planar)
+        self.axi_linear = _cast(None, axi_linear)
         self.j = _cast(int, j)
-        self.axi = _cast(None, axi)
+        self.planar_newton = _cast(None, planar_newton)
+        self.planar_linear = _cast(None, planar_linear)
         pass
     def factory(*args_, **kwargs_):
         if vector_form.subclass:
@@ -3834,14 +3892,18 @@ class vector_form(GeneratedsSuper):
         else:
             return vector_form(*args_, **kwargs_)
     factory = staticmethod(factory)
+    def get_axi_newton(self): return self.axi_newton
+    def set_axi_newton(self, axi_newton): self.axi_newton = axi_newton
     def get_i(self): return self.i
     def set_i(self, i): self.i = i
-    def get_planar(self): return self.planar
-    def set_planar(self, planar): self.planar = planar
+    def get_axi_linear(self): return self.axi_linear
+    def set_axi_linear(self, axi_linear): self.axi_linear = axi_linear
     def get_j(self): return self.j
     def set_j(self, j): self.j = j
-    def get_axi(self): return self.axi
-    def set_axi(self, axi): self.axi = axi
+    def get_planar_newton(self): return self.planar_newton
+    def set_planar_newton(self, planar_newton): self.planar_newton = planar_newton
+    def get_planar_linear(self): return self.planar_linear
+    def set_planar_linear(self, planar_linear): self.planar_linear = planar_linear
     def export(self, outfile, level, namespace_='module:', name_='vector_form', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -3854,18 +3916,24 @@ class vector_form(GeneratedsSuper):
         else:
             outfile.write('/>\n')
     def exportAttributes(self, outfile, level, already_processed, namespace_='module:', name_='vector_form'):
+        if self.axi_newton is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            outfile.write(' axi_newton=%s' % (self.gds_format_string(quote_attrib(self.axi_newton).encode(ExternalEncoding), input_name='axi_newton'), ))
         if self.i is not None and 'i' not in already_processed:
             already_processed.append('i')
             outfile.write(' i="%s"' % self.gds_format_integer(self.i, input_name='i'))
-        if self.planar is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
-            outfile.write(' planar=%s' % (self.gds_format_string(quote_attrib(self.planar).encode(ExternalEncoding), input_name='planar'), ))
+        if self.axi_linear is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
+            outfile.write(' axi_linear=%s' % (self.gds_format_string(quote_attrib(self.axi_linear).encode(ExternalEncoding), input_name='axi_linear'), ))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             outfile.write(' j="%s"' % self.gds_format_integer(self.j, input_name='j'))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            outfile.write(' axi=%s' % (self.gds_format_string(quote_attrib(self.axi).encode(ExternalEncoding), input_name='axi'), ))
+        if self.planar_newton is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            outfile.write(' planar_newton=%s' % (self.gds_format_string(quote_attrib(self.planar_newton).encode(ExternalEncoding), input_name='planar_newton'), ))
+        if self.planar_linear is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            outfile.write(' planar_linear=%s' % (self.gds_format_string(quote_attrib(self.planar_linear).encode(ExternalEncoding), input_name='planar_linear'), ))
     def exportChildren(self, outfile, level, namespace_='module:', name_='vector_form', fromsubclass_=False):
         pass
     def hasContent_(self):
@@ -3881,22 +3949,30 @@ class vector_form(GeneratedsSuper):
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.axi_newton is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            showIndent(outfile, level)
+            outfile.write('axi_newton = "%s",\n' % (self.axi_newton,))
         if self.i is not None and 'i' not in already_processed:
             already_processed.append('i')
             showIndent(outfile, level)
             outfile.write('i = %d,\n' % (self.i,))
-        if self.planar is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
+        if self.axi_linear is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
             showIndent(outfile, level)
-            outfile.write('planar = "%s",\n' % (self.planar,))
+            outfile.write('axi_linear = "%s",\n' % (self.axi_linear,))
         if self.j is not None and 'j' not in already_processed:
             already_processed.append('j')
             showIndent(outfile, level)
             outfile.write('j = %d,\n' % (self.j,))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
+        if self.planar_newton is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
             showIndent(outfile, level)
-            outfile.write('axi = "%s",\n' % (self.axi,))
+            outfile.write('planar_newton = "%s",\n' % (self.planar_newton,))
+        if self.planar_linear is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            showIndent(outfile, level)
+            outfile.write('planar_linear = "%s",\n' % (self.planar_linear,))
     def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
@@ -3905,6 +3981,10 @@ class vector_form(GeneratedsSuper):
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
+        value = find_attr_value_('axi_newton', node)
+        if value is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            self.axi_newton = value
         value = find_attr_value_('i', node)
         if value is not None and 'i' not in already_processed:
             already_processed.append('i')
@@ -3912,10 +3992,10 @@ class vector_form(GeneratedsSuper):
                 self.i = int(value)
             except ValueError, exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-        value = find_attr_value_('planar', node)
-        if value is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
-            self.planar = value
+        value = find_attr_value_('axi_linear', node)
+        if value is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
+            self.axi_linear = value
         value = find_attr_value_('j', node)
         if value is not None and 'j' not in already_processed:
             already_processed.append('j')
@@ -3923,10 +4003,14 @@ class vector_form(GeneratedsSuper):
                 self.j = int(value)
             except ValueError, exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-        value = find_attr_value_('axi', node)
-        if value is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            self.axi = value
+        value = find_attr_value_('planar_newton', node)
+        if value is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            self.planar_newton = value
+        value = find_attr_value_('planar_linear', node)
+        if value is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            self.planar_linear = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
 # end class vector_form
@@ -3935,10 +4019,12 @@ class vector_form(GeneratedsSuper):
 class essential_form(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, i=None, planar=None, axi=None):
+    def __init__(self, i=None, planar_linear=None, axi_linear=None, axi_newton=None, planar_newton=None):
         self.i = _cast(int, i)
-        self.planar = _cast(None, planar)
-        self.axi = _cast(None, axi)
+        self.planar_linear = _cast(None, planar_linear)
+        self.axi_linear = _cast(None, axi_linear)
+        self.axi_newton = _cast(None, axi_newton)
+        self.planar_newton = _cast(None, planar_newton)
         pass
     def factory(*args_, **kwargs_):
         if essential_form.subclass:
@@ -3948,10 +4034,14 @@ class essential_form(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_i(self): return self.i
     def set_i(self, i): self.i = i
-    def get_planar(self): return self.planar
-    def set_planar(self, planar): self.planar = planar
-    def get_axi(self): return self.axi
-    def set_axi(self, axi): self.axi = axi
+    def get_planar_linear(self): return self.planar_linear
+    def set_planar_linear(self, planar_linear): self.planar_linear = planar_linear
+    def get_axi_linear(self): return self.axi_linear
+    def set_axi_linear(self, axi_linear): self.axi_linear = axi_linear
+    def get_axi_newton(self): return self.axi_newton
+    def set_axi_newton(self, axi_newton): self.axi_newton = axi_newton
+    def get_planar_newton(self): return self.planar_newton
+    def set_planar_newton(self, planar_newton): self.planar_newton = planar_newton
     def export(self, outfile, level, namespace_='module:', name_='essential_form', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -3967,12 +4057,18 @@ class essential_form(GeneratedsSuper):
         if self.i is not None and 'i' not in already_processed:
             already_processed.append('i')
             outfile.write(' i="%s"' % self.gds_format_integer(self.i, input_name='i'))
-        if self.planar is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
-            outfile.write(' planar=%s' % (self.gds_format_string(quote_attrib(self.planar).encode(ExternalEncoding), input_name='planar'), ))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            outfile.write(' axi=%s' % (self.gds_format_string(quote_attrib(self.axi).encode(ExternalEncoding), input_name='axi'), ))
+        if self.planar_linear is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            outfile.write(' planar_linear=%s' % (self.gds_format_string(quote_attrib(self.planar_linear).encode(ExternalEncoding), input_name='planar_linear'), ))
+        if self.axi_linear is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
+            outfile.write(' axi_linear=%s' % (self.gds_format_string(quote_attrib(self.axi_linear).encode(ExternalEncoding), input_name='axi_linear'), ))
+        if self.axi_newton is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            outfile.write(' axi_newton=%s' % (self.gds_format_string(quote_attrib(self.axi_newton).encode(ExternalEncoding), input_name='axi_newton'), ))
+        if self.planar_newton is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            outfile.write(' planar_newton=%s' % (self.gds_format_string(quote_attrib(self.planar_newton).encode(ExternalEncoding), input_name='planar_newton'), ))
     def exportChildren(self, outfile, level, namespace_='module:', name_='essential_form', fromsubclass_=False):
         pass
     def hasContent_(self):
@@ -3992,14 +4088,22 @@ class essential_form(GeneratedsSuper):
             already_processed.append('i')
             showIndent(outfile, level)
             outfile.write('i = %d,\n' % (self.i,))
-        if self.planar is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
+        if self.planar_linear is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
             showIndent(outfile, level)
-            outfile.write('planar = "%s",\n' % (self.planar,))
-        if self.axi is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
+            outfile.write('planar_linear = "%s",\n' % (self.planar_linear,))
+        if self.axi_linear is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
             showIndent(outfile, level)
-            outfile.write('axi = "%s",\n' % (self.axi,))
+            outfile.write('axi_linear = "%s",\n' % (self.axi_linear,))
+        if self.axi_newton is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            showIndent(outfile, level)
+            outfile.write('axi_newton = "%s",\n' % (self.axi_newton,))
+        if self.planar_newton is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            showIndent(outfile, level)
+            outfile.write('planar_newton = "%s",\n' % (self.planar_newton,))
     def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
@@ -4015,14 +4119,22 @@ class essential_form(GeneratedsSuper):
                 self.i = int(value)
             except ValueError, exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-        value = find_attr_value_('planar', node)
-        if value is not None and 'planar' not in already_processed:
-            already_processed.append('planar')
-            self.planar = value
-        value = find_attr_value_('axi', node)
-        if value is not None and 'axi' not in already_processed:
-            already_processed.append('axi')
-            self.axi = value
+        value = find_attr_value_('planar_linear', node)
+        if value is not None and 'planar_linear' not in already_processed:
+            already_processed.append('planar_linear')
+            self.planar_linear = value
+        value = find_attr_value_('axi_linear', node)
+        if value is not None and 'axi_linear' not in already_processed:
+            already_processed.append('axi_linear')
+            self.axi_linear = value
+        value = find_attr_value_('axi_newton', node)
+        if value is not None and 'axi_newton' not in already_processed:
+            already_processed.append('axi_newton')
+            self.axi_newton = value
+        value = find_attr_value_('planar_newton', node)
+        if value is not None and 'planar_newton' not in already_processed:
+            already_processed.append('planar_newton')
+            self.planar_newton = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
 # end class essential_form

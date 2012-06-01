@@ -3433,39 +3433,73 @@ namespace XMLModule
     void
     j (const j_type& x);
 
-    // axi
+    // planar_linear
     // 
-    typedef ::xml_schema::string axi_type;
-    typedef ::xsd::cxx::tree::traits< axi_type, char > axi_traits;
+    typedef ::xml_schema::string planar_linear_type;
+    typedef ::xsd::cxx::tree::traits< planar_linear_type, char > planar_linear_traits;
 
-    const axi_type&
-    axi () const;
+    const planar_linear_type&
+    planar_linear () const;
 
-    axi_type&
-    axi ();
-
-    void
-    axi (const axi_type& x);
+    planar_linear_type&
+    planar_linear ();
 
     void
-    axi (::std::auto_ptr< axi_type > p);
+    planar_linear (const planar_linear_type& x);
 
-    // planar
+    void
+    planar_linear (::std::auto_ptr< planar_linear_type > p);
+
+    // axi_linear
     // 
-    typedef ::xml_schema::string planar_type;
-    typedef ::xsd::cxx::tree::traits< planar_type, char > planar_traits;
+    typedef ::xml_schema::string axi_linear_type;
+    typedef ::xsd::cxx::tree::traits< axi_linear_type, char > axi_linear_traits;
 
-    const planar_type&
-    planar () const;
+    const axi_linear_type&
+    axi_linear () const;
 
-    planar_type&
-    planar ();
-
-    void
-    planar (const planar_type& x);
+    axi_linear_type&
+    axi_linear ();
 
     void
-    planar (::std::auto_ptr< planar_type > p);
+    axi_linear (const axi_linear_type& x);
+
+    void
+    axi_linear (::std::auto_ptr< axi_linear_type > p);
+
+    // planar_newton
+    // 
+    typedef ::xml_schema::string planar_newton_type;
+    typedef ::xsd::cxx::tree::traits< planar_newton_type, char > planar_newton_traits;
+
+    const planar_newton_type&
+    planar_newton () const;
+
+    planar_newton_type&
+    planar_newton ();
+
+    void
+    planar_newton (const planar_newton_type& x);
+
+    void
+    planar_newton (::std::auto_ptr< planar_newton_type > p);
+
+    // axi_newton
+    // 
+    typedef ::xml_schema::string axi_newton_type;
+    typedef ::xsd::cxx::tree::traits< axi_newton_type, char > axi_newton_traits;
+
+    const axi_newton_type&
+    axi_newton () const;
+
+    axi_newton_type&
+    axi_newton ();
+
+    void
+    axi_newton (const axi_newton_type& x);
+
+    void
+    axi_newton (::std::auto_ptr< axi_newton_type > p);
 
     // symmetric
     // 
@@ -3489,8 +3523,10 @@ namespace XMLModule
     //
     matrix_form (const i_type&,
                  const j_type&,
-                 const axi_type&,
-                 const planar_type&);
+                 const planar_linear_type&,
+                 const axi_linear_type&,
+                 const planar_newton_type&,
+                 const axi_newton_type&);
 
     matrix_form (const ::xercesc::DOMElement& e,
                  ::xml_schema::flags f = 0,
@@ -3517,8 +3553,10 @@ namespace XMLModule
     protected:
     ::xsd::cxx::tree::one< i_type > i_;
     ::xsd::cxx::tree::one< j_type > j_;
-    ::xsd::cxx::tree::one< axi_type > axi_;
-    ::xsd::cxx::tree::one< planar_type > planar_;
+    ::xsd::cxx::tree::one< planar_linear_type > planar_linear_;
+    ::xsd::cxx::tree::one< axi_linear_type > axi_linear_;
+    ::xsd::cxx::tree::one< planar_newton_type > planar_newton_;
+    ::xsd::cxx::tree::one< axi_newton_type > axi_newton_;
     symmetric_optional symmetric_;
   };
 
@@ -3553,46 +3591,82 @@ namespace XMLModule
     void
     j (const j_type& x);
 
-    // planar
+    // planar_linear
     // 
-    typedef ::xml_schema::string planar_type;
-    typedef ::xsd::cxx::tree::traits< planar_type, char > planar_traits;
+    typedef ::xml_schema::string planar_linear_type;
+    typedef ::xsd::cxx::tree::traits< planar_linear_type, char > planar_linear_traits;
 
-    const planar_type&
-    planar () const;
+    const planar_linear_type&
+    planar_linear () const;
 
-    planar_type&
-    planar ();
-
-    void
-    planar (const planar_type& x);
+    planar_linear_type&
+    planar_linear ();
 
     void
-    planar (::std::auto_ptr< planar_type > p);
+    planar_linear (const planar_linear_type& x);
 
-    // axi
+    void
+    planar_linear (::std::auto_ptr< planar_linear_type > p);
+
+    // axi_linear
     // 
-    typedef ::xml_schema::string axi_type;
-    typedef ::xsd::cxx::tree::traits< axi_type, char > axi_traits;
+    typedef ::xml_schema::string axi_linear_type;
+    typedef ::xsd::cxx::tree::traits< axi_linear_type, char > axi_linear_traits;
 
-    const axi_type&
-    axi () const;
+    const axi_linear_type&
+    axi_linear () const;
 
-    axi_type&
-    axi ();
-
-    void
-    axi (const axi_type& x);
+    axi_linear_type&
+    axi_linear ();
 
     void
-    axi (::std::auto_ptr< axi_type > p);
+    axi_linear (const axi_linear_type& x);
+
+    void
+    axi_linear (::std::auto_ptr< axi_linear_type > p);
+
+    // planar_newton
+    // 
+    typedef ::xml_schema::string planar_newton_type;
+    typedef ::xsd::cxx::tree::traits< planar_newton_type, char > planar_newton_traits;
+
+    const planar_newton_type&
+    planar_newton () const;
+
+    planar_newton_type&
+    planar_newton ();
+
+    void
+    planar_newton (const planar_newton_type& x);
+
+    void
+    planar_newton (::std::auto_ptr< planar_newton_type > p);
+
+    // axi_newton
+    // 
+    typedef ::xml_schema::string axi_newton_type;
+    typedef ::xsd::cxx::tree::traits< axi_newton_type, char > axi_newton_traits;
+
+    const axi_newton_type&
+    axi_newton () const;
+
+    axi_newton_type&
+    axi_newton ();
+
+    void
+    axi_newton (const axi_newton_type& x);
+
+    void
+    axi_newton (::std::auto_ptr< axi_newton_type > p);
 
     // Constructors.
     //
     vector_form (const i_type&,
                  const j_type&,
-                 const planar_type&,
-                 const axi_type&);
+                 const planar_linear_type&,
+                 const axi_linear_type&,
+                 const planar_newton_type&,
+                 const axi_newton_type&);
 
     vector_form (const ::xercesc::DOMElement& e,
                  ::xml_schema::flags f = 0,
@@ -3619,8 +3693,10 @@ namespace XMLModule
     protected:
     ::xsd::cxx::tree::one< i_type > i_;
     ::xsd::cxx::tree::one< j_type > j_;
-    ::xsd::cxx::tree::one< planar_type > planar_;
-    ::xsd::cxx::tree::one< axi_type > axi_;
+    ::xsd::cxx::tree::one< planar_linear_type > planar_linear_;
+    ::xsd::cxx::tree::one< axi_linear_type > axi_linear_;
+    ::xsd::cxx::tree::one< planar_newton_type > planar_newton_;
+    ::xsd::cxx::tree::one< axi_newton_type > axi_newton_;
   };
 
   class essential_form: public ::xml_schema::type
@@ -3640,45 +3716,81 @@ namespace XMLModule
     void
     i (const i_type& x);
 
-    // axi
+    // axi_linear
     // 
-    typedef ::xml_schema::string axi_type;
-    typedef ::xsd::cxx::tree::traits< axi_type, char > axi_traits;
+    typedef ::xml_schema::string axi_linear_type;
+    typedef ::xsd::cxx::tree::traits< axi_linear_type, char > axi_linear_traits;
 
-    const axi_type&
-    axi () const;
+    const axi_linear_type&
+    axi_linear () const;
 
-    axi_type&
-    axi ();
-
-    void
-    axi (const axi_type& x);
+    axi_linear_type&
+    axi_linear ();
 
     void
-    axi (::std::auto_ptr< axi_type > p);
+    axi_linear (const axi_linear_type& x);
 
-    // planar
+    void
+    axi_linear (::std::auto_ptr< axi_linear_type > p);
+
+    // planar_linear
     // 
-    typedef ::xml_schema::string planar_type;
-    typedef ::xsd::cxx::tree::traits< planar_type, char > planar_traits;
+    typedef ::xml_schema::string planar_linear_type;
+    typedef ::xsd::cxx::tree::traits< planar_linear_type, char > planar_linear_traits;
 
-    const planar_type&
-    planar () const;
+    const planar_linear_type&
+    planar_linear () const;
 
-    planar_type&
-    planar ();
-
-    void
-    planar (const planar_type& x);
+    planar_linear_type&
+    planar_linear ();
 
     void
-    planar (::std::auto_ptr< planar_type > p);
+    planar_linear (const planar_linear_type& x);
+
+    void
+    planar_linear (::std::auto_ptr< planar_linear_type > p);
+
+    // axi_newton
+    // 
+    typedef ::xml_schema::string axi_newton_type;
+    typedef ::xsd::cxx::tree::traits< axi_newton_type, char > axi_newton_traits;
+
+    const axi_newton_type&
+    axi_newton () const;
+
+    axi_newton_type&
+    axi_newton ();
+
+    void
+    axi_newton (const axi_newton_type& x);
+
+    void
+    axi_newton (::std::auto_ptr< axi_newton_type > p);
+
+    // planar_newton
+    // 
+    typedef ::xml_schema::string planar_newton_type;
+    typedef ::xsd::cxx::tree::traits< planar_newton_type, char > planar_newton_traits;
+
+    const planar_newton_type&
+    planar_newton () const;
+
+    planar_newton_type&
+    planar_newton ();
+
+    void
+    planar_newton (const planar_newton_type& x);
+
+    void
+    planar_newton (::std::auto_ptr< planar_newton_type > p);
 
     // Constructors.
     //
     essential_form (const i_type&,
-                    const axi_type&,
-                    const planar_type&);
+                    const axi_linear_type&,
+                    const planar_linear_type&,
+                    const axi_newton_type&,
+                    const planar_newton_type&);
 
     essential_form (const ::xercesc::DOMElement& e,
                     ::xml_schema::flags f = 0,
@@ -3704,8 +3816,10 @@ namespace XMLModule
 
     protected:
     ::xsd::cxx::tree::one< i_type > i_;
-    ::xsd::cxx::tree::one< axi_type > axi_;
-    ::xsd::cxx::tree::one< planar_type > planar_;
+    ::xsd::cxx::tree::one< axi_linear_type > axi_linear_;
+    ::xsd::cxx::tree::one< planar_linear_type > planar_linear_;
+    ::xsd::cxx::tree::one< axi_newton_type > axi_newton_;
+    ::xsd::cxx::tree::one< planar_newton_type > planar_newton_;
   };
 
   class boundary: public ::xml_schema::type

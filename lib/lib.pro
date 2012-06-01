@@ -4,6 +4,10 @@ OBJECTS_DIR = build
 TEMPLATE = lib
 CONFIG += staticlib
 
+contains(CONFIG, HERMES_DEBUG) {
+    CONFIG += debug
+}
+
 SOURCES += dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
     muparser/muParser.cpp \

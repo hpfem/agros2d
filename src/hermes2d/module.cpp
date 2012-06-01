@@ -198,7 +198,8 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
     {
         FieldInfo *fieldInfo = couplingInfo ? NULL : field->fieldInfo();
-        custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym, form->expression,
+        custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym,
+                                                field->fieldInfo()->linearityType() == LinearityType_Newton ? form->expressionNewton : form->expressionLinear,
                                                 fieldInfo, couplingInfo, marker, materialTarget);
     }
     
@@ -414,7 +415,8 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     {
         XMLModule::matrix_form form = bdy.matrix_form().at(i);
         m_wfMatrixSurface.append(new ParserFormExpression(form.i(), form.j(),
-                                                          (problem_type == CoordinateType_Planar) ? form.planar() : form.axi(),
+                                                          (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                          (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton(),
                                                           form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
     }
     
@@ -422,7 +424,8 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
         m_wfVectorSurface.append(new ParserFormExpression(form.i(), form.j(),
-                                                          (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                          (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                          (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
     }
     
     // essential
@@ -660,7 +663,8 @@ void Module::BasicModule::read(const QString &filename)
             {
                 XMLModule::matrix_form form = wf.matrix_form().at(i);
                 m_wfMatrixVolumeExpression.append(new ParserFormExpression(form.i(), form.j(),
-                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi(),
+                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton(),
                                                                            form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
             }
 
@@ -668,7 +672,8 @@ void Module::BasicModule::read(const QString &filename)
             {
                 XMLModule::vector_form form = wf.vector_form().at(i);
                 m_wfVectorVolumeExpression.append(new ParserFormExpression(form.i(), form.j(),
-                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
             }
         }
     }

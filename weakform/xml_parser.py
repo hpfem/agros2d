@@ -213,9 +213,9 @@ class XmlParser:
                     else:
                         weakform.type = 'vector'                            
                     if coordinate_type == 'planar':                            
-                        weakform.expression = ds_matrix.planar                                                
+                        weakform.expression = ds_matrix.planar_linear
                     if coordinate_type == 'axi':    
-                        weakform.expression = ds_matrix.axi                                                      
+                        weakform.expression = ds_matrix.axi_linear                                            
                     weakform.coordinate_type = coordinate_type                                                     
                     weakform.i = ds_matrix.i
                     weakform.j = ds_matrix.j    
@@ -247,7 +247,7 @@ class XmlParser:
                 for ds_vector in ds_boundary.essential_form + ds_boundary.vector_form + ds_boundary.matrix_form:                     
                     for coordinate_type in coordinate_types:                         
                         weakform = WeakForm()
-                        if (i < n_essential) :
+                        if (i < n_essential):
                             weakform.type = 'essential'
                         if ((i >= n_essential) & (i < n_vector)):                                 
                             weakform.type = 'vector'   
@@ -257,9 +257,9 @@ class XmlParser:
                             weakform.j = ds_vector.j
                         weakform.i = ds_vector.i 
                         if coordinate_type == 'planar':                 
-                            weakform.expression = ds_vector.planar
+                            weakform.expression = ds_vector.planar_linear
                         if coordinate_type == 'axi':
-                            weakform.expression = ds_vector.axi
+                            weakform.expression = ds_vector.axi_linear
                         weakform.coordinate_type = coordinate_type
                         weakform.analysis_type = ds_weakform.analysistype
                         weakform.integral_type = 'surf'
@@ -293,9 +293,9 @@ class XmlParser:
                     weakform.type = 'matrix'
                     weakform.coordinate_type = coordinate_type
                     if coordinate_type == 'planar':
-                        weakform.expression = ds_matrix.planar
+                        weakform.expression = ds_matrix.planar_linear
                     if coordinate_type == 'axi':
-                        weakform.expression = ds_matrix.axi
+                        weakform.expression = ds_matrix.axi_linear
                     weakform.i = ds_matrix.i
                     weakform.j = ds_matrix.j                    
                     weakform.integral_type = 'vol'
@@ -314,9 +314,9 @@ class XmlParser:
                     weakform.type = 'vector'
                     weakform.coordinate_type = coordinate_type
                     if coordinate_type == 'planar':
-                        weakform.expression = ds_vector.planar
+                        weakform.expression = ds_vector.planar_linear
                     if coordinate_type == 'axi':
-                        weakform.expression = ds_vector.axi
+                        weakform.expression = ds_vector.axi_linear
                     volume.weakforms.append(weakform)                                        
             module.volumes.append(volume)    
         self.modules.append(module)
@@ -823,5 +823,7 @@ class Module:
 
 if __name__ == '__main__':    
     # coupling_parser = XmlParser(['elasticity', 'heat'], ['heat-elasticity'])
-    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
+    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
+    # coupling_parser = XmlParser(['magnetic'], [])
+    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'rf'], [])
     coupling_parser.process()

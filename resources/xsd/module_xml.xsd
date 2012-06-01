@@ -323,8 +323,10 @@
 		<complexType>
 			<attribute name="i" use="required" type="integer" />
 			<attribute name="j" use="required" type="integer" />
-			<attribute name="axi" use="required" type="string" />
-			<attribute name="planar" use="required" type="string" />
+			<attribute name="planar_linear" use="required" type="string" />
+			<attribute name="axi_linear" use="required" type="string" />
+			<attribute name="planar_newton" use="required" type="string" />
+			<attribute name="axi_newton" use="required" type="string" />
 			<attribute name="symmetric" type="integer" />
 		</complexType>
 	</element>
@@ -333,16 +335,20 @@
 		<complexType>
 			<attribute name="i" use="required" type="integer" />
 			<attribute name="j" use="required" type="integer" />
-			<attribute name="planar" use="required" type="string" />
-			<attribute name="axi" use="required" type="string" />
+			<attribute name="planar_linear" use="required" type="string" />
+			<attribute name="axi_linear" use="required" type="string" />
+			<attribute name="planar_newton" use="required" type="string" />
+			<attribute name="axi_newton" use="required" type="string" />
 		</complexType>
 	</element>
 
 	<element name="essential_form">
 		<complexType>
 			<attribute name="i" use="required" type="integer" />
-			<attribute name="axi" use="required" type="string" />
-			<attribute name="planar" use="required" type="string" />
+			<attribute name="axi_linear" use="required" type="string" />
+			<attribute name="planar_linear" use="required" type="string" />
+			<attribute name="axi_newton" use="required" type="string" />
+			<attribute name="planar_newton" use="required" type="string" />
 		</complexType>
 	</element>
 

@@ -56,8 +56,9 @@ struct ParserFormEssential
 // instead of ParserFormVector and ParserFormMatrix
 struct ParserFormExpression
 {
-    ParserFormExpression() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expression("") {}
-    ParserFormExpression(int i, int j, string expr, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM) : i(i), j(j), expression(expr), sym(sym) {}
+    ParserFormExpression() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), expressionLinear(""), expressionNewton("") {}
+    ParserFormExpression(int i, int j, string expr_linear, string expr_newton, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
+        : i(i), j(j), expressionLinear(expr_linear), expressionNewton(expr_newton), sym(sym) {}
 
     // position
     int i;
@@ -67,7 +68,8 @@ struct ParserFormExpression
     Hermes::Hermes2D::SymFlag sym;
 
     // expression
-    std::string expression;   
+    std::string expressionLinear;
+    std::string expressionNewton;
 };
 
 const int maxSourceFieldComponents = 2;

@@ -2853,52 +2853,100 @@ namespace XMLModule
     this->j_.set (x);
   }
 
-  const matrix_form::axi_type& matrix_form::
-  axi () const
+  const matrix_form::planar_linear_type& matrix_form::
+  planar_linear () const
   {
-    return this->axi_.get ();
+    return this->planar_linear_.get ();
   }
 
-  matrix_form::axi_type& matrix_form::
-  axi ()
+  matrix_form::planar_linear_type& matrix_form::
+  planar_linear ()
   {
-    return this->axi_.get ();
-  }
-
-  void matrix_form::
-  axi (const axi_type& x)
-  {
-    this->axi_.set (x);
+    return this->planar_linear_.get ();
   }
 
   void matrix_form::
-  axi (::std::auto_ptr< axi_type > x)
+  planar_linear (const planar_linear_type& x)
   {
-    this->axi_.set (x);
-  }
-
-  const matrix_form::planar_type& matrix_form::
-  planar () const
-  {
-    return this->planar_.get ();
-  }
-
-  matrix_form::planar_type& matrix_form::
-  planar ()
-  {
-    return this->planar_.get ();
+    this->planar_linear_.set (x);
   }
 
   void matrix_form::
-  planar (const planar_type& x)
+  planar_linear (::std::auto_ptr< planar_linear_type > x)
   {
-    this->planar_.set (x);
+    this->planar_linear_.set (x);
+  }
+
+  const matrix_form::axi_linear_type& matrix_form::
+  axi_linear () const
+  {
+    return this->axi_linear_.get ();
+  }
+
+  matrix_form::axi_linear_type& matrix_form::
+  axi_linear ()
+  {
+    return this->axi_linear_.get ();
   }
 
   void matrix_form::
-  planar (::std::auto_ptr< planar_type > x)
+  axi_linear (const axi_linear_type& x)
   {
-    this->planar_.set (x);
+    this->axi_linear_.set (x);
+  }
+
+  void matrix_form::
+  axi_linear (::std::auto_ptr< axi_linear_type > x)
+  {
+    this->axi_linear_.set (x);
+  }
+
+  const matrix_form::planar_newton_type& matrix_form::
+  planar_newton () const
+  {
+    return this->planar_newton_.get ();
+  }
+
+  matrix_form::planar_newton_type& matrix_form::
+  planar_newton ()
+  {
+    return this->planar_newton_.get ();
+  }
+
+  void matrix_form::
+  planar_newton (const planar_newton_type& x)
+  {
+    this->planar_newton_.set (x);
+  }
+
+  void matrix_form::
+  planar_newton (::std::auto_ptr< planar_newton_type > x)
+  {
+    this->planar_newton_.set (x);
+  }
+
+  const matrix_form::axi_newton_type& matrix_form::
+  axi_newton () const
+  {
+    return this->axi_newton_.get ();
+  }
+
+  matrix_form::axi_newton_type& matrix_form::
+  axi_newton ()
+  {
+    return this->axi_newton_.get ();
+  }
+
+  void matrix_form::
+  axi_newton (const axi_newton_type& x)
+  {
+    this->axi_newton_.set (x);
+  }
+
+  void matrix_form::
+  axi_newton (::std::auto_ptr< axi_newton_type > x)
+  {
+    this->axi_newton_.set (x);
   }
 
   const matrix_form::symmetric_optional& matrix_form::
@@ -2965,52 +3013,100 @@ namespace XMLModule
     this->j_.set (x);
   }
 
-  const vector_form::planar_type& vector_form::
-  planar () const
+  const vector_form::planar_linear_type& vector_form::
+  planar_linear () const
   {
-    return this->planar_.get ();
+    return this->planar_linear_.get ();
   }
 
-  vector_form::planar_type& vector_form::
-  planar ()
+  vector_form::planar_linear_type& vector_form::
+  planar_linear ()
   {
-    return this->planar_.get ();
-  }
-
-  void vector_form::
-  planar (const planar_type& x)
-  {
-    this->planar_.set (x);
+    return this->planar_linear_.get ();
   }
 
   void vector_form::
-  planar (::std::auto_ptr< planar_type > x)
+  planar_linear (const planar_linear_type& x)
   {
-    this->planar_.set (x);
-  }
-
-  const vector_form::axi_type& vector_form::
-  axi () const
-  {
-    return this->axi_.get ();
-  }
-
-  vector_form::axi_type& vector_form::
-  axi ()
-  {
-    return this->axi_.get ();
+    this->planar_linear_.set (x);
   }
 
   void vector_form::
-  axi (const axi_type& x)
+  planar_linear (::std::auto_ptr< planar_linear_type > x)
   {
-    this->axi_.set (x);
+    this->planar_linear_.set (x);
+  }
+
+  const vector_form::axi_linear_type& vector_form::
+  axi_linear () const
+  {
+    return this->axi_linear_.get ();
+  }
+
+  vector_form::axi_linear_type& vector_form::
+  axi_linear ()
+  {
+    return this->axi_linear_.get ();
   }
 
   void vector_form::
-  axi (::std::auto_ptr< axi_type > x)
+  axi_linear (const axi_linear_type& x)
   {
-    this->axi_.set (x);
+    this->axi_linear_.set (x);
+  }
+
+  void vector_form::
+  axi_linear (::std::auto_ptr< axi_linear_type > x)
+  {
+    this->axi_linear_.set (x);
+  }
+
+  const vector_form::planar_newton_type& vector_form::
+  planar_newton () const
+  {
+    return this->planar_newton_.get ();
+  }
+
+  vector_form::planar_newton_type& vector_form::
+  planar_newton ()
+  {
+    return this->planar_newton_.get ();
+  }
+
+  void vector_form::
+  planar_newton (const planar_newton_type& x)
+  {
+    this->planar_newton_.set (x);
+  }
+
+  void vector_form::
+  planar_newton (::std::auto_ptr< planar_newton_type > x)
+  {
+    this->planar_newton_.set (x);
+  }
+
+  const vector_form::axi_newton_type& vector_form::
+  axi_newton () const
+  {
+    return this->axi_newton_.get ();
+  }
+
+  vector_form::axi_newton_type& vector_form::
+  axi_newton ()
+  {
+    return this->axi_newton_.get ();
+  }
+
+  void vector_form::
+  axi_newton (const axi_newton_type& x)
+  {
+    this->axi_newton_.set (x);
+  }
+
+  void vector_form::
+  axi_newton (::std::auto_ptr< axi_newton_type > x)
+  {
+    this->axi_newton_.set (x);
   }
 
 
@@ -3035,52 +3131,100 @@ namespace XMLModule
     this->i_.set (x);
   }
 
-  const essential_form::axi_type& essential_form::
-  axi () const
+  const essential_form::axi_linear_type& essential_form::
+  axi_linear () const
   {
-    return this->axi_.get ();
+    return this->axi_linear_.get ();
   }
 
-  essential_form::axi_type& essential_form::
-  axi ()
+  essential_form::axi_linear_type& essential_form::
+  axi_linear ()
   {
-    return this->axi_.get ();
-  }
-
-  void essential_form::
-  axi (const axi_type& x)
-  {
-    this->axi_.set (x);
+    return this->axi_linear_.get ();
   }
 
   void essential_form::
-  axi (::std::auto_ptr< axi_type > x)
+  axi_linear (const axi_linear_type& x)
   {
-    this->axi_.set (x);
-  }
-
-  const essential_form::planar_type& essential_form::
-  planar () const
-  {
-    return this->planar_.get ();
-  }
-
-  essential_form::planar_type& essential_form::
-  planar ()
-  {
-    return this->planar_.get ();
+    this->axi_linear_.set (x);
   }
 
   void essential_form::
-  planar (const planar_type& x)
+  axi_linear (::std::auto_ptr< axi_linear_type > x)
   {
-    this->planar_.set (x);
+    this->axi_linear_.set (x);
+  }
+
+  const essential_form::planar_linear_type& essential_form::
+  planar_linear () const
+  {
+    return this->planar_linear_.get ();
+  }
+
+  essential_form::planar_linear_type& essential_form::
+  planar_linear ()
+  {
+    return this->planar_linear_.get ();
   }
 
   void essential_form::
-  planar (::std::auto_ptr< planar_type > x)
+  planar_linear (const planar_linear_type& x)
   {
-    this->planar_.set (x);
+    this->planar_linear_.set (x);
+  }
+
+  void essential_form::
+  planar_linear (::std::auto_ptr< planar_linear_type > x)
+  {
+    this->planar_linear_.set (x);
+  }
+
+  const essential_form::axi_newton_type& essential_form::
+  axi_newton () const
+  {
+    return this->axi_newton_.get ();
+  }
+
+  essential_form::axi_newton_type& essential_form::
+  axi_newton ()
+  {
+    return this->axi_newton_.get ();
+  }
+
+  void essential_form::
+  axi_newton (const axi_newton_type& x)
+  {
+    this->axi_newton_.set (x);
+  }
+
+  void essential_form::
+  axi_newton (::std::auto_ptr< axi_newton_type > x)
+  {
+    this->axi_newton_.set (x);
+  }
+
+  const essential_form::planar_newton_type& essential_form::
+  planar_newton () const
+  {
+    return this->planar_newton_.get ();
+  }
+
+  essential_form::planar_newton_type& essential_form::
+  planar_newton ()
+  {
+    return this->planar_newton_.get ();
+  }
+
+  void essential_form::
+  planar_newton (const planar_newton_type& x)
+  {
+    this->planar_newton_.set (x);
+  }
+
+  void essential_form::
+  planar_newton (::std::auto_ptr< planar_newton_type > x)
+  {
+    this->planar_newton_.set (x);
   }
 
 
@@ -6798,13 +6942,17 @@ namespace XMLModule
   matrix_form::
   matrix_form (const i_type& i,
                const j_type& j,
-               const axi_type& axi,
-               const planar_type& planar)
+               const planar_linear_type& planar_linear,
+               const axi_linear_type& axi_linear,
+               const planar_newton_type& planar_newton,
+               const axi_newton_type& axi_newton)
   : ::xml_schema::type (),
     i_ (i, ::xml_schema::flags (), this),
     j_ (j, ::xml_schema::flags (), this),
-    axi_ (axi, ::xml_schema::flags (), this),
-    planar_ (planar, ::xml_schema::flags (), this),
+    planar_linear_ (planar_linear, ::xml_schema::flags (), this),
+    axi_linear_ (axi_linear, ::xml_schema::flags (), this),
+    planar_newton_ (planar_newton, ::xml_schema::flags (), this),
+    axi_newton_ (axi_newton, ::xml_schema::flags (), this),
     symmetric_ (::xml_schema::flags (), this)
   {
   }
@@ -6816,8 +6964,10 @@ namespace XMLModule
   : ::xml_schema::type (x, f, c),
     i_ (x.i_, f, this),
     j_ (x.j_, f, this),
-    axi_ (x.axi_, f, this),
-    planar_ (x.planar_, f, this),
+    planar_linear_ (x.planar_linear_, f, this),
+    axi_linear_ (x.axi_linear_, f, this),
+    planar_newton_ (x.planar_newton_, f, this),
+    axi_newton_ (x.axi_newton_, f, this),
     symmetric_ (x.symmetric_, f, this)
   {
   }
@@ -6829,8 +6979,10 @@ namespace XMLModule
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     i_ (f, this),
     j_ (f, this),
-    axi_ (f, this),
-    planar_ (f, this),
+    planar_linear_ (f, this),
+    axi_linear_ (f, this),
+    planar_newton_ (f, this),
+    axi_newton_ (f, this),
     symmetric_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
@@ -6862,21 +7014,39 @@ namespace XMLModule
         continue;
       }
 
-      if (n.name () == "axi" && n.namespace_ ().empty ())
+      if (n.name () == "planar_linear" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< axi_type > r (
-          axi_traits::create (i, f, this));
+        ::std::auto_ptr< planar_linear_type > r (
+          planar_linear_traits::create (i, f, this));
 
-        this->axi_.set (r);
+        this->planar_linear_.set (r);
         continue;
       }
 
-      if (n.name () == "planar" && n.namespace_ ().empty ())
+      if (n.name () == "axi_linear" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< planar_type > r (
-          planar_traits::create (i, f, this));
+        ::std::auto_ptr< axi_linear_type > r (
+          axi_linear_traits::create (i, f, this));
 
-        this->planar_.set (r);
+        this->axi_linear_.set (r);
+        continue;
+      }
+
+      if (n.name () == "planar_newton" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< planar_newton_type > r (
+          planar_newton_traits::create (i, f, this));
+
+        this->planar_newton_.set (r);
+        continue;
+      }
+
+      if (n.name () == "axi_newton" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< axi_newton_type > r (
+          axi_newton_traits::create (i, f, this));
+
+        this->axi_newton_.set (r);
         continue;
       }
 
@@ -6901,17 +7071,31 @@ namespace XMLModule
         "");
     }
 
-    if (!axi_.present ())
+    if (!planar_linear_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "axi",
+        "planar_linear",
         "");
     }
 
-    if (!planar_.present ())
+    if (!axi_linear_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "planar",
+        "axi_linear",
+        "");
+    }
+
+    if (!planar_newton_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "planar_newton",
+        "");
+    }
+
+    if (!axi_newton_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "axi_newton",
         "");
     }
   }
@@ -6934,13 +7118,17 @@ namespace XMLModule
   vector_form::
   vector_form (const i_type& i,
                const j_type& j,
-               const planar_type& planar,
-               const axi_type& axi)
+               const planar_linear_type& planar_linear,
+               const axi_linear_type& axi_linear,
+               const planar_newton_type& planar_newton,
+               const axi_newton_type& axi_newton)
   : ::xml_schema::type (),
     i_ (i, ::xml_schema::flags (), this),
     j_ (j, ::xml_schema::flags (), this),
-    planar_ (planar, ::xml_schema::flags (), this),
-    axi_ (axi, ::xml_schema::flags (), this)
+    planar_linear_ (planar_linear, ::xml_schema::flags (), this),
+    axi_linear_ (axi_linear, ::xml_schema::flags (), this),
+    planar_newton_ (planar_newton, ::xml_schema::flags (), this),
+    axi_newton_ (axi_newton, ::xml_schema::flags (), this)
   {
   }
 
@@ -6951,8 +7139,10 @@ namespace XMLModule
   : ::xml_schema::type (x, f, c),
     i_ (x.i_, f, this),
     j_ (x.j_, f, this),
-    planar_ (x.planar_, f, this),
-    axi_ (x.axi_, f, this)
+    planar_linear_ (x.planar_linear_, f, this),
+    axi_linear_ (x.axi_linear_, f, this),
+    planar_newton_ (x.planar_newton_, f, this),
+    axi_newton_ (x.axi_newton_, f, this)
   {
   }
 
@@ -6963,8 +7153,10 @@ namespace XMLModule
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     i_ (f, this),
     j_ (f, this),
-    planar_ (f, this),
-    axi_ (f, this)
+    planar_linear_ (f, this),
+    axi_linear_ (f, this),
+    planar_newton_ (f, this),
+    axi_newton_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -6995,21 +7187,39 @@ namespace XMLModule
         continue;
       }
 
-      if (n.name () == "planar" && n.namespace_ ().empty ())
+      if (n.name () == "planar_linear" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< planar_type > r (
-          planar_traits::create (i, f, this));
+        ::std::auto_ptr< planar_linear_type > r (
+          planar_linear_traits::create (i, f, this));
 
-        this->planar_.set (r);
+        this->planar_linear_.set (r);
         continue;
       }
 
-      if (n.name () == "axi" && n.namespace_ ().empty ())
+      if (n.name () == "axi_linear" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< axi_type > r (
-          axi_traits::create (i, f, this));
+        ::std::auto_ptr< axi_linear_type > r (
+          axi_linear_traits::create (i, f, this));
 
-        this->axi_.set (r);
+        this->axi_linear_.set (r);
+        continue;
+      }
+
+      if (n.name () == "planar_newton" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< planar_newton_type > r (
+          planar_newton_traits::create (i, f, this));
+
+        this->planar_newton_.set (r);
+        continue;
+      }
+
+      if (n.name () == "axi_newton" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< axi_newton_type > r (
+          axi_newton_traits::create (i, f, this));
+
+        this->axi_newton_.set (r);
         continue;
       }
     }
@@ -7028,17 +7238,31 @@ namespace XMLModule
         "");
     }
 
-    if (!planar_.present ())
+    if (!planar_linear_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "planar",
+        "planar_linear",
         "");
     }
 
-    if (!axi_.present ())
+    if (!axi_linear_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "axi",
+        "axi_linear",
+        "");
+    }
+
+    if (!planar_newton_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "planar_newton",
+        "");
+    }
+
+    if (!axi_newton_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "axi_newton",
         "");
     }
   }
@@ -7060,12 +7284,16 @@ namespace XMLModule
 
   essential_form::
   essential_form (const i_type& i,
-                  const axi_type& axi,
-                  const planar_type& planar)
+                  const axi_linear_type& axi_linear,
+                  const planar_linear_type& planar_linear,
+                  const axi_newton_type& axi_newton,
+                  const planar_newton_type& planar_newton)
   : ::xml_schema::type (),
     i_ (i, ::xml_schema::flags (), this),
-    axi_ (axi, ::xml_schema::flags (), this),
-    planar_ (planar, ::xml_schema::flags (), this)
+    axi_linear_ (axi_linear, ::xml_schema::flags (), this),
+    planar_linear_ (planar_linear, ::xml_schema::flags (), this),
+    axi_newton_ (axi_newton, ::xml_schema::flags (), this),
+    planar_newton_ (planar_newton, ::xml_schema::flags (), this)
   {
   }
 
@@ -7075,8 +7303,10 @@ namespace XMLModule
                   ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     i_ (x.i_, f, this),
-    axi_ (x.axi_, f, this),
-    planar_ (x.planar_, f, this)
+    axi_linear_ (x.axi_linear_, f, this),
+    planar_linear_ (x.planar_linear_, f, this),
+    axi_newton_ (x.axi_newton_, f, this),
+    planar_newton_ (x.planar_newton_, f, this)
   {
   }
 
@@ -7086,8 +7316,10 @@ namespace XMLModule
                   ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     i_ (f, this),
-    axi_ (f, this),
-    planar_ (f, this)
+    axi_linear_ (f, this),
+    planar_linear_ (f, this),
+    axi_newton_ (f, this),
+    planar_newton_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -7112,21 +7344,39 @@ namespace XMLModule
         continue;
       }
 
-      if (n.name () == "axi" && n.namespace_ ().empty ())
+      if (n.name () == "axi_linear" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< axi_type > r (
-          axi_traits::create (i, f, this));
+        ::std::auto_ptr< axi_linear_type > r (
+          axi_linear_traits::create (i, f, this));
 
-        this->axi_.set (r);
+        this->axi_linear_.set (r);
         continue;
       }
 
-      if (n.name () == "planar" && n.namespace_ ().empty ())
+      if (n.name () == "planar_linear" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< planar_type > r (
-          planar_traits::create (i, f, this));
+        ::std::auto_ptr< planar_linear_type > r (
+          planar_linear_traits::create (i, f, this));
 
-        this->planar_.set (r);
+        this->planar_linear_.set (r);
+        continue;
+      }
+
+      if (n.name () == "axi_newton" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< axi_newton_type > r (
+          axi_newton_traits::create (i, f, this));
+
+        this->axi_newton_.set (r);
+        continue;
+      }
+
+      if (n.name () == "planar_newton" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< planar_newton_type > r (
+          planar_newton_traits::create (i, f, this));
+
+        this->planar_newton_.set (r);
         continue;
       }
     }
@@ -7138,17 +7388,31 @@ namespace XMLModule
         "");
     }
 
-    if (!axi_.present ())
+    if (!axi_linear_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "axi",
+        "axi_linear",
         "");
     }
 
-    if (!planar_.present ())
+    if (!planar_linear_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "planar",
+        "planar_linear",
+        "");
+    }
+
+    if (!axi_newton_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "axi_newton",
+        "");
+    }
+
+    if (!planar_newton_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "planar_newton",
         "");
     }
   }
@@ -7926,8 +8190,10 @@ namespace XMLModule
   {
     o << ::std::endl << "i: " << i.i ();
     o << ::std::endl << "j: " << i.j ();
-    o << ::std::endl << "axi: " << i.axi ();
-    o << ::std::endl << "planar: " << i.planar ();
+    o << ::std::endl << "planar_linear: " << i.planar_linear ();
+    o << ::std::endl << "axi_linear: " << i.axi_linear ();
+    o << ::std::endl << "planar_newton: " << i.planar_newton ();
+    o << ::std::endl << "axi_newton: " << i.axi_newton ();
     if (i.symmetric ())
     {
       o << ::std::endl << "symmetric: " << *i.symmetric ();
@@ -7941,8 +8207,10 @@ namespace XMLModule
   {
     o << ::std::endl << "i: " << i.i ();
     o << ::std::endl << "j: " << i.j ();
-    o << ::std::endl << "planar: " << i.planar ();
-    o << ::std::endl << "axi: " << i.axi ();
+    o << ::std::endl << "planar_linear: " << i.planar_linear ();
+    o << ::std::endl << "axi_linear: " << i.axi_linear ();
+    o << ::std::endl << "planar_newton: " << i.planar_newton ();
+    o << ::std::endl << "axi_newton: " << i.axi_newton ();
     return o;
   }
 
@@ -7950,8 +8218,10 @@ namespace XMLModule
   operator<< (::std::ostream& o, const essential_form& i)
   {
     o << ::std::endl << "i: " << i.i ();
-    o << ::std::endl << "axi: " << i.axi ();
-    o << ::std::endl << "planar: " << i.planar ();
+    o << ::std::endl << "axi_linear: " << i.axi_linear ();
+    o << ::std::endl << "planar_linear: " << i.planar_linear ();
+    o << ::std::endl << "axi_newton: " << i.axi_newton ();
+    o << ::std::endl << "planar_newton: " << i.planar_newton ();
     return o;
   }
 
@@ -9989,26 +10259,48 @@ namespace XMLModule
       a << i.j ();
     }
 
-    // axi
+    // planar_linear
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "axi",
+          "planar_linear",
           e));
 
-      a << i.axi ();
+      a << i.planar_linear ();
     }
 
-    // planar
+    // axi_linear
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "planar",
+          "axi_linear",
           e));
 
-      a << i.planar ();
+      a << i.axi_linear ();
+    }
+
+    // planar_newton
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "planar_newton",
+          e));
+
+      a << i.planar_newton ();
+    }
+
+    // axi_newton
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "axi_newton",
+          e));
+
+      a << i.axi_newton ();
     }
 
     // symmetric
@@ -10051,26 +10343,48 @@ namespace XMLModule
       a << i.j ();
     }
 
-    // planar
+    // planar_linear
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "planar",
+          "planar_linear",
           e));
 
-      a << i.planar ();
+      a << i.planar_linear ();
     }
 
-    // axi
+    // axi_linear
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "axi",
+          "axi_linear",
           e));
 
-      a << i.axi ();
+      a << i.axi_linear ();
+    }
+
+    // planar_newton
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "planar_newton",
+          e));
+
+      a << i.planar_newton ();
+    }
+
+    // axi_newton
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "axi_newton",
+          e));
+
+      a << i.axi_newton ();
     }
   }
 
@@ -10090,26 +10404,48 @@ namespace XMLModule
       a << i.i ();
     }
 
-    // axi
+    // axi_linear
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "axi",
+          "axi_linear",
           e));
 
-      a << i.axi ();
+      a << i.axi_linear ();
     }
 
-    // planar
+    // planar_linear
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "planar",
+          "planar_linear",
           e));
 
-      a << i.planar ();
+      a << i.planar_linear ();
+    }
+
+    // axi_newton
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "axi_newton",
+          e));
+
+      a << i.axi_newton ();
+    }
+
+    // planar_newton
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "planar_newton",
+          e));
+
+      a << i.planar_newton ();
     }
   }
 
