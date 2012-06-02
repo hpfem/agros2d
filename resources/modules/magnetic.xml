@@ -46,8 +46,8 @@
 
 		        <module:matrix_form i="1" j="1"
 		        			planar_linear="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
-		                        ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy))"
-	                        axi_linear="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) - ma_gamma * uval * ma_vy * vdz)" 
+		                        ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)"
+	                        axi_linear="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) - ma_gamma * uval * ma_vy * vdz" 
 	                        planar_newton="(abs(sign(dma_mur * (updx * updx + updy * updy))) * (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / (1e-12 + (updx * updx + updy * updy)^0.5) * (updx * vdx + updy * vdy)) +
 		                        1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -
 		                        ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy))"
