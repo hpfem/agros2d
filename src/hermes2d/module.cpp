@@ -195,7 +195,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
         problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
                     analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
                     coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-                    linearityTypeToStringKey(field->fieldInfo()->linearityType()).toStdString();
+                    ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear");
     }
 
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;

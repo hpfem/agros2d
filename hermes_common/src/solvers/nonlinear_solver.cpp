@@ -40,8 +40,8 @@ namespace Hermes
     template<typename Scalar>
     NonlinearSolver<Scalar>::~NonlinearSolver()
     {
-      if(sln_vector != NULL)
-        delete [] sln_vector;
+      // if(sln_vector != NULL)
+      //   delete [] sln_vector;
     }
 
     template<typename Scalar>

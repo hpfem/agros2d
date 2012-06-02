@@ -12,7 +12,7 @@ problem.time_total = 1
 # fields
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
-heat.weak_forms = "interpreted"
+heat.weak_forms = "compiled"
 heat.number_of_refinements = 1
 heat.polynomial_order = 2
 
@@ -25,7 +25,7 @@ heat.add_material("Insulation", {"heat_conductivity" : 6})
 
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "harmonic"
-magnetic.weak_forms = "interpreted"
+magnetic.weak_forms = "compiled"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
 

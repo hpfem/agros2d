@@ -130,14 +130,14 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                         string problemId = fieldInfo->fieldId().toStdString() + "_" +
                                 analysisTypeToStringKey(fieldInfo->module()->analysisType()).toStdString()  + "_" +
                                 coordinateTypeToStringKey(fieldInfo->module()->coordinateType()).toStdString() + "_" +
-                                linearityTypeToStringKey(field->fieldInfo()->linearityType()).toStdString();
+                                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear");
 
                         ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
                         custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                     }
 
                     if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
-                        Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled VectorFormEssential()."));
+                        Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled EssentialBoundaryCondition()."));
 
                     // interpreted form
                     if (!custom_form || fieldInfo->weakFormsType() == WeakFormsType_Interpreted)

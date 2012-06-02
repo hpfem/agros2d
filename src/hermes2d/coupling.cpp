@@ -195,8 +195,8 @@ void Coupling::read(const QString &filename)
             {
                 XMLCoupling::matrix_form form = wf.matrix_form().at(i);
                 m_wfMatrixVolumeExpression.push_back(new ParserFormExpression(form.i(), form.j(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
             }
 
             // vector form
@@ -204,8 +204,8 @@ void Coupling::read(const QString &filename)
             {
                 XMLCoupling::vector_form form = wf.vector_form().at(i);
                 m_wfVectorVolumeExpression.push_back(new ParserFormExpression(form.i(), form.j(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
             }
         }
     }
