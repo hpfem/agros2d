@@ -24,7 +24,7 @@
 
 #include "global.h"
 #include "projections/ogprojection.h"
-#include "discrete_problem_linear.h"
+#include "discrete_problem.h"
 #include "views/scalar_view.h"
 
 namespace Hermes

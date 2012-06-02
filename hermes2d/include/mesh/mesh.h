@@ -643,10 +643,6 @@ namespace Hermes
             for (int _id = 0, _max = (mesh)->get_max_element_id(); _id < _max; _id++) \
               if (((e) = (mesh)->get_element_fast(_id))->used)
 
-    #define for_all_base_elements_with_unused(e, mesh) \
-            for (int _id = 0, _max = (mesh)->get_num_base_elements(); _id < _max; _id++) \
-              if (((e) = (mesh)->get_element_fast(_id)))
-
     #define for_all_base_elements(e, mesh) \
             for (int _id = 0; _id < (mesh)->get_num_base_elements(); _id++) \
               if (((e) = (mesh)->get_element_fast(_id))->used)

@@ -20,6 +20,7 @@
 \brief General nonlinear solver functionality.
 */
 #include "linear_solver.h"
+#include "../src/alter_newton_solver.h"
 
 using namespace Hermes::Algebra;
 
@@ -46,8 +47,6 @@ namespace Hermes
     template<typename Scalar>
     LinearSolver<Scalar>::~LinearSolver()
     {
-      if(sln_vector != NULL)
-        delete [] sln_vector;
       delete jacobian;
       delete residual;
       delete matrix_solver;

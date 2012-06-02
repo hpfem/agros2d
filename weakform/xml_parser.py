@@ -843,6 +843,7 @@ class Module:
 if __name__ == '__main__':    
     # coupling_parser = XmlParser(['elasticity', 'heat'], ['heat-elasticity'])
     # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
-    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'rf'], [])
+    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'rf'], [])
+    coupling_parser = XmlParser(['electrostatic'], [])
     coupling_parser.process()
     coupling_parser.process()

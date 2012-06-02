@@ -143,7 +143,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     {
                         {
                             CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
-                                                                                                    form->expression,
+                                                                                                    form->expressionLinear,
                                                                                                     boundary);
                             custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                         }
@@ -309,19 +309,8 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         LinearSolver<Scalar> linear(&dp, Util::problem()->config()->matrixSolver());
         try
         {
-            /*
             linear.solve();
             Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
-             */
-
-            Hermes::Algebra::SparseMatrix<Scalar>* jacobian = create_matrix<Scalar>(Util::problem()->config()->matrixSolver());
-            Hermes::Algebra::Vector<Scalar>* residual = create_vector<Scalar>(Util::problem()->config()->matrixSolver());
-            Hermes::Algebra::LinearMatrixSolver<Scalar>* matrix_solver = create_linear_solver<Scalar>(Util::problem()->config()->matrixSolver(), jacobian, residual);
-
-            dp.assemble(jacobian, residual);
-
-            matrix_solver->solve();
-            Solution<Scalar>::vector_to_solutions(matrix_solver->get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             /*
             Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").

@@ -286,7 +286,7 @@ void InfoWidget::showInfo()
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME_LABEL", tr("Total elapsed time:").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME", tr("%1 s").arg(Util::problem()->timeElapsed().toString("mm:ss.zzz")).toStdString());
         problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
-        problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::Global<double>::Hermes_omp_get_max_threads()).toStdString());
+        problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::HermesApi.getParamValue("num_threads")).toStdString());
         problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
     }
 

@@ -292,9 +292,9 @@ namespace Hermes
       }
 
       // RefinementSelectors cloning.
-      RefinementSelectors::Selector<Scalar>*** global_refinement_selectors = new RefinementSelectors::Selector<Scalar>**[Global<Scalar>::Hermes_omp_get_max_threads()];
+      RefinementSelectors::Selector<Scalar>*** global_refinement_selectors = new RefinementSelectors::Selector<Scalar>**[HermesApi.getParamValue("num_threads")];
 
-      for(unsigned int i = 0; i < Global<Scalar>::Hermes_omp_get_max_threads(); i++)
+      for(unsigned int i = 0; i < HermesApi.getParamValue("num_threads"); i++)
       {
         global_refinement_selectors[i] = new RefinementSelectors::Selector<Scalar>*[refinement_selectors.size()];
         for (unsigned int j = 0; j < refinement_selectors.size(); j++)
@@ -312,9 +312,9 @@ namespace Hermes
       }
 
       // Solution cloning.
-      Solution<Scalar>*** rslns = new Solution<Scalar>**[Global<Scalar>::Hermes_omp_get_max_threads()];
+      Solution<Scalar>*** rslns = new Solution<Scalar>**[HermesApi.getParamValue("num_threads")];
 
-      for(unsigned int i = 0; i < Global<Scalar>::Hermes_omp_get_max_threads(); i++)
+      for(unsigned int i = 0; i < HermesApi.getParamValue("num_threads"); i++)
       {
         rslns[i] = new Solution<Scalar>*[this->num];
         for (int j = 0; j < this->num; j++)
@@ -328,7 +328,8 @@ namespace Hermes
       Solution<Scalar>** current_rslns;
       int id_to_refine;
 #define CHUNKSIZE 1
-#pragma omp parallel shared(ids, components, elem_inx_to_proc, meshes, current_orders) private(current_refinement_selectors, current_rslns, id_to_refine)
+      int num_threads_used = HermesApi.getParamValue("num_threads");
+#pragma omp parallel shared(ids, components, elem_inx_to_proc, meshes, current_orders) private(current_refinement_selectors, current_rslns, id_to_refine) num_threads(num_threads_used)
       {
 #pragma omp for schedule(dynamic, CHUNKSIZE)
         for(id_to_refine = 0; id_to_refine < ids.size(); id_to_refine++)
@@ -365,7 +366,7 @@ namespace Hermes
       }
       delete [] global_refinement_selectors;
 
-      for(unsigned int i = 0; i < Global<Scalar>::Hermes_omp_get_max_threads(); i++)
+      for(unsigned int i = 0; i < HermesApi.getParamValue("num_threads"); i++)
       {
         if(rslns[i] != NULL)
         {

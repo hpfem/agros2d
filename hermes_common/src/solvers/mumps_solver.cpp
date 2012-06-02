@@ -25,7 +25,6 @@
 #include "trace.h"
 #include "error.h"
 #include "callstack.h"
-#include "exceptions.h"
 
 using namespace Hermes::Error;
 
@@ -711,7 +710,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    int MumpsSolver<Scalar>::get_matrix_size()
+    bool MumpsSolver<Scalar>::get_matrix_size()
     {
       return m->get_size();
     }

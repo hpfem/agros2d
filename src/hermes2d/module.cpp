@@ -454,7 +454,8 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
         m_essential.append(new ParserFormEssential(form.i(),
-                                                   (problem_type == CoordinateType_Planar) ? form.planar() : form.axi()));
+                                                   (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
+                                                   (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
     }
 }
 
