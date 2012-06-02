@@ -53,8 +53,8 @@
 					axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + dhe_lambda * r * uval * upval * vval / deltat + r * he_rho * he_cp * uval * vval / deltat"
 					symmetric="1" />
 				<module:vector_form i="1" j="1"
-					planar_linear="he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat"
-					axi_linear="he_p * r * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat" 
+                    planar_linear="he_p * vval + he_rho * he_cp * uptval * vval / deltat"
+                    axi_linear="he_p * r * vval + r * he_rho * he_cp * uptval * vval / deltat"
 					planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat"
 					axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat" />
 			</module:weakform_volume>
@@ -129,8 +129,8 @@
                         axi_newton="he_h * r * uval * vval"
                         symmetric="1" />
                     <module:vector_form i="1" j="1"
-                        planar_linear="(- he_f - he_h * he_Te) * vval"
-                        axi_linear="r * (- he_f - he_h * he_Te) * vval"
+                        planar_linear="(he_f + he_h * he_Te) * vval"
+                        axi_linear="r * (he_f + he_h * he_Te) * vval"
                         planar_newton="((- he_f - he_h * he_Te) + he_h * upval) * vval"
                         axi_newton="r * ((- he_f - he_h * he_Te) + he_h * upval) * vval" />
                 </module:boundary>

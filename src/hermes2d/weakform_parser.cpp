@@ -440,6 +440,7 @@ Scalar CustomParserVectorFormVol<Scalar>::value(int n, double *wt, Hermes::Herme
 
         try
         {
+            // qDebug() << QString::fromStdString(m_parser->GetExpr()) << m_parser->Eval();
             result += wt[i] * m_parser->Eval();
         }
         catch (mu::Parser::exception_type &e)

@@ -15,6 +15,10 @@ heat.analysis_type = "steadystate"
 heat.weak_forms = "compiled"
 heat.number_of_refinements = 1
 heat.polynomial_order = 2
+# TODO - linear doesn't work
+heat.linearity_type = "newton"
+heat.nonlinear_tolerance = 0.001
+heat.nonlinear_steps = 10
 
 heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 10, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})

@@ -12,7 +12,7 @@ problem.time_total = 1
 # fields
 current = agros2d.field("current")
 current.analysis_type = "steadystate"
-current.weak_forms = "interpreted"
+current.weak_forms = "compiled"
 current.number_of_refinements = 1
 current.polynomial_order = 2
 current.linearity_type = "newton"
@@ -42,7 +42,7 @@ elasticity.add_material("Material", {"elasticity_alpha" : 2.3e-05, "elasticity_f
 
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
-heat.weak_forms = "interpreted"
+heat.weak_forms = "compiled"
 heat.number_of_refinements = 2
 heat.polynomial_order = 3
 heat.linearity_type = "newton"

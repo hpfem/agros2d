@@ -39,9 +39,9 @@
         <startup_script></startup_script>
         <description></description>
         <fields>
-            <field field_id="current" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="steadystate">
+            <field field_id="current" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="compiled" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary current_potential="10" type="current_potential" id="1" name="10V">
                         <edge edge="3"/>
@@ -60,9 +60,9 @@
                     </material>
                 </materials>
             </field>
-            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
+            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="compiled" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed" elasticity_displacement_y="0">
                         <edge edge="10"/>
@@ -81,15 +81,15 @@
                     </material>
                 </materials>
             </field>
-            <field field_id="heat" initial_condition="300.0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="transient">
+            <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="compiled" analysis_type="transient">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary type="heat_temperature" heat_temperature="300" id="1" name="T=300K">
                         <edge edge="1"/>
                         <edge edge="11"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" heat_temperature="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0">
                         <edge edge="2"/>
                         <edge edge="3"/>
                         <edge edge="4"/>

@@ -27,9 +27,9 @@
         <startup_script></startup_script>
         <description>This model is an example.</description>
         <fields>
-            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="interpreted" analysis_type="steadystate">
+            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" weak_forms="compiled" analysis_type="steadystate">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed" elasticity_displacement_y="0">
                         <edge edge="3"/>
@@ -49,9 +49,9 @@
                     </material>
                 </materials>
             </field>
-            <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="interpreted" analysis_type="transient">
+            <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="compiled" analysis_type="transient">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Insulation" heat_radiation_ambient_temperature="0"/>
                     <boundary heat_convection_external_temperature="20" heat_convection_heat_transfer_coefficient="10" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0">

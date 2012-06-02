@@ -157,10 +157,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WeakFormKind type, int i, int 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    cout << "addForm : pridavam formu typu " << type << ", i: " << form->i <<  /*", j: " << form->j <<*/ ", areas: ";
-    for(int i = 0; i < form->areas.size(); i++)
-        cout << form->areas.at(i) << ", ";
-    cout << endl;
+    qDebug() << "addForm: type: " << weakFormString(type) << ", i: " << form->i << ", area: " << QString::fromStdString(form->areas.at(0));
+
     if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
     else if(type == WeakForm_MatSurf)
@@ -210,7 +208,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     {
         Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2).").
                                   arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)));
-        qDebug() << 'Cannot find compiled form';
+        qDebug() << "Cannot find compiled form";
     }
     
     // interpreted form

@@ -57,8 +57,11 @@ void CouplingInfo::reload()
 
 LinearityType CouplingInfo::linearityType()
 {
-    assert(sourceField()->linearityType() == targetField()->linearityType());
-    return sourceField()->linearityType();
+    // TODO: FIX - warning
+    if (couplingType() == CouplingType_Hard)
+        assert(sourceField()->linearityType() == targetField()->linearityType());
+
+    return targetField()->linearityType();
 }
 
 bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
