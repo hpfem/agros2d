@@ -183,7 +183,8 @@ class XmlParser:
             quantity.type = 'material'            
             quantity.unit = ds_quantity.unit
             quantities.append(quantity)
-        
+
+        # modules        
         for ds_weakform in ds_module.volume.weakforms_volume.weakform_volume:
             volume = Volume()                 
             volume.name =  ds_weakform.analysistype
@@ -305,52 +306,71 @@ class XmlParser:
         self.modules.append(module)
         
     def parse_xml_coupling(self, filename):
-        coordinate_types = ['planar', 'axi'];         
+        coordinate_types = ['planar', 'axi']
+        solver_types = ['linear', 'newton']        
         module = Module()
         ds_coupling = cp.parse(Config.couplings_dir + filename)
         module.description = ds_coupling.general.description                
         module.id = (ds_coupling.general.id).replace('-','_')            
         module.source = ds_coupling.general.modules.source
         module.target = ds_coupling.general.modules.target
-         
+
+        # couplings         
         for ds_weakform in ds_coupling.volume.weakforms_volume.weakform_volume:            
             volume = Volume()
             volume.name = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis                    
             for coordinate_type in coordinate_types:
-                for ds_matrix in ds_weakform.matrix_form:
-                    weakform = WeakForm()
-                    weakform.coupling_type = ds_weakform.couplingtype
-                    weakform.source_analysis = ds_weakform.sourceanalysis
-                    weakform.target_analysis = ds_weakform.targetanalysis
-                    weakform.analysis_type = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis                      
-                    weakform.type = 'matrix'
-                    weakform.coordinate_type = coordinate_type
-                    if coordinate_type == 'planar':
-                        weakform.expression = ds_matrix.planar_linear
-                    if coordinate_type == 'axi':
-                        weakform.expression = ds_matrix.axi_linear
-                    weakform.i = ds_matrix.i
-                    weakform.j = ds_matrix.j                    
-                    weakform.integral_type = 'vol'
-                    volume.weakforms.append(weakform)
+                for solver_type in solver_types:
+                    for ds_matrix in ds_weakform.matrix_form:
+                        weakform = WeakForm()
+                        weakform.coupling_type = ds_weakform.couplingtype
+                        weakform.source_analysis = ds_weakform.sourceanalysis
+                        weakform.target_analysis = ds_weakform.targetanalysis
+                        weakform.analysis_type = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis                      
+                        weakform.type = 'matrix'
+                        weakform.coordinate_type = coordinate_type
+                        if coordinate_type == 'planar':
+                            if (solver_type == 'linear'):                                                            
+                                weakform.expression = ds_matrix.planar_linear
+                            if (solver_type == 'newton'):
+                                weakform.expression = ds_matrix.planar_newton
+                        if coordinate_type == 'axi':
+                            if (solver_type == 'linear'):                                        
+                                weakform.expression = ds_matrix.axi_linear
+                            if (solver_type == 'newton'):    
+                                weakform.expression = ds_matrix.axi_newton
+                        weakform.solver_type = solver_type
+                        weakform.i = ds_matrix.i
+                        weakform.j = ds_matrix.j                    
+                        weakform.integral_type = 'vol'
+                        volume.weakforms.append(weakform)
                     
                 for ds_vector in ds_weakform.vector_form:
-                    weakform = WeakForm()
-                    weakform.coordinate_type = coordinate_type
-                    weakform.coupling_type = ds_weakform.couplingtype
-                    weakform.source_analysis = ds_weakform.sourceanalysis
-                    weakform.source_analysis = ds_weakform.sourceanalysis
-                    weakform.analysis_type = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis
-                    weakform.integral_type = 'vol'
-                    weakform.i = ds_vector.i
-                    weakform.j = ds_vector.j                    
-                    weakform.type = 'vector'
-                    weakform.coordinate_type = coordinate_type
-                    if coordinate_type == 'planar':
-                        weakform.expression = ds_vector.planar_linear
-                    if coordinate_type == 'axi':
-                        weakform.expression = ds_vector.axi_linear
-                    volume.weakforms.append(weakform)                                        
+                    for solver_type in solver_types:
+                        weakform = WeakForm()
+                        weakform.coordinate_type = coordinate_type
+                        weakform.coupling_type = ds_weakform.couplingtype
+                        weakform.source_analysis = ds_weakform.sourceanalysis
+                        weakform.source_analysis = ds_weakform.sourceanalysis
+                        weakform.analysis_type = ds_weakform.sourceanalysis + '_' + ds_weakform.targetanalysis
+                        weakform.integral_type = 'vol'
+                        weakform.i = ds_vector.i
+                        weakform.j = ds_vector.j                    
+                        weakform.type = 'vector'
+                        weakform.coordinate_type = coordinate_type
+                        if coordinate_type == 'planar':
+                            if (solver_type == 'linear'):                                                            
+                                weakform.expression = ds_vector.planar_linear
+                            if (solver_type == 'newton'):
+                                weakform.expression = ds_vector.planar_newton
+                        if coordinate_type == 'axi':
+                            if (solver_type == 'linear'):                                        
+                                weakform.expression = ds_vector.axi_linear
+                            if (solver_type == 'newton'):    
+                                weakform.expression = ds_vector.axi_newton
+                        weakform.solver_type = solver_type
+                        volume.weakforms.append(weakform)                                        
+
             module.volumes.append(volume)    
         self.modules.append(module)
         
@@ -467,8 +487,8 @@ class WeakForm:
                 if function_type == '_ord':
                     expression = self.parse_expression(self.expression, True, '')                     
                 else:                    
-                    expression = self.parse_expression(self.expression, False, '')                                                                                                                                                                  
-                if self.expression =='':               
+                    expression = self.parse_expression(self.expression, False, '')                                   
+                if self.expression == '':               
                     replaced_string = ''
                 else:                    
                     replaced_string = replaced_string.replace('//expression', 
@@ -523,16 +543,16 @@ class WeakForm:
                      'y': 'e->y[i]',
                      'r': 'e->x[i]',
                      'z': 'e->y[i]',
-                     'value1': 'u_ext[0]->val[i]',
-                     'value2': 'u_ext[1]->val[i]',
-                     'dx1': 'u_ext[0]->dx[i]',
-                     'dx2': 'u_ext[1]->dx[i]',
-                     'dy1': 'u_ext[0]->dy[i]',
-                     'dy2': 'u_ext[1]->dy[i]',
-                     'dr1': 'u_ext[0]->dx[i]',
-                     'dr2': 'u_ext[1]->dx[i]',
-                     'dz1': 'u_ext[0]->dy[i]',
-                     'dz2': 'u_ext[1]->dy[i]'                                  
+                     'value1': '(u_ext[0] ? u_ext[0]->val[i] : 0)',
+                     'value2': '(u_ext[1] ? u_ext[1]->val[i] : 0)',
+                     'dx1': '(u_ext[0] ? u_ext[0]->dx[i] : 0)',
+                     'dx2': '(u_ext[1] ? u_ext[1]->dx[i] : 0)',
+                     'dy1': '(u_ext[0] ? u_ext[0]->dy[i] : 0)',
+                     'dy2': '(u_ext[1] ? u_ext[1]->dy[i] : 0)',
+                     'dr1': '(u_ext[0] ? u_ext[0]->dx[i] : 0)',
+                     'dr2': '(u_ext[1] ? u_ext[1]->dx[i] : 0)',
+                     'dz1': '(u_ext[0] ? u_ext[0]->dy[i] : 0)',
+                     'dz2': '(u_ext[1] ? u_ext[1]->dy[i] : 0)'                                  
                      }
         
         
@@ -861,7 +881,7 @@ class Module:
 
 if __name__ == '__main__':    
     # coupling_parser = XmlParser(['elasticity', 'heat'], ['heat-elasticity'])
-    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
-    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'rf'], [])
-    coupling_parser = XmlParser(['electrostatic'], [])
+    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['heat-elasticity'])
+    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
+    # coupling_parser = XmlParser(['electrostatic'], [])
     coupling_parser.process()

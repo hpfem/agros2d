@@ -180,13 +180,13 @@
 					planar_newton="2 * PI * f * ma_gamma * uval * vval" 
 					axi_newton="2 * PI * f * ma_gamma * uval * vval" />
 				<module:vector_form i="1" j="2"
-					planar_linear="- 2 * PI * f * ma_gamma * upval * vval" 
-					axi_linear="- 2 * PI * f * ma_gamma * upval * vval"
+                    planar_linear="0"
+                    axi_linear="0"
 					planar_newton="- 2 * PI * f * ma_gamma * upval * vval" 
 					axi_newton="- 2 * PI * f * ma_gamma * upval * vval" />
 				<module:vector_form i="2" j="1"
-					planar_linear="2 * PI * f * ma_gamma * upval * vval" 
-					axi_linear="2 * PI * f * ma_gamma * upval * vval"
+                    planar_linear="0"
+                    axi_linear="0"
 					planar_newton="2 * PI * f * ma_gamma * upval * vval" 
 					axi_newton="2 * PI * f * ma_gamma * upval * vval" />
 			</module:weakform_volume>
