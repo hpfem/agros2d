@@ -66,10 +66,7 @@ void ConfigDialog::load()
     chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
 
     // number of threads
-    chkNumOfThreads->setChecked(Util::config()->numberOfThreads > 0);
     txtNumOfThreads->setValue(Util::config()->numberOfThreads);
-    connect(chkNumOfThreads, SIGNAL(stateChanged(int)), this, SLOT(numOfThreadsChecked(int)));
-    numOfThreadsChecked(chkNumOfThreads->isChecked());
 
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteTriangleMeshFiles);
@@ -136,7 +133,7 @@ void ConfigDialog::save()
     Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
 
     // number of threads
-    Util::config()->numberOfThreads = chkNumOfThreads->isChecked() ? txtNumOfThreads->value() : 0;
+    Util::config()->numberOfThreads = txtNumOfThreads->value();
 
     // delete files
     Util::config()->deleteTriangleMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
@@ -300,17 +297,15 @@ QWidget *ConfigDialog::createSolverWidget()
     if (Util::config()->showExperimentalFeatures)
         chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
 
-    chkNumOfThreads = new QCheckBox(tr("Enable threads settings"));
     txtNumOfThreads = new QSpinBox(this);
-    txtNumOfThreads->setMinimum(0);
+    txtNumOfThreads->setMinimum(1);
     txtNumOfThreads->setMaximum(omp_get_max_threads());
 
     QGridLayout *layoutSolver = new QGridLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles, 0, 0, 1, 2);
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile, 1, 0, 1, 2);
-    layoutSolver->addWidget(chkNumOfThreads, 2, 0, 1, 2);
-    layoutSolver->addWidget(new QLabel(tr("Number of threads:")), 3, 0);
-    layoutSolver->addWidget(txtNumOfThreads, 3, 1);
+    layoutSolver->addWidget(new QLabel(tr("Number of threads:")), 2, 0);
+    layoutSolver->addWidget(txtNumOfThreads, 2, 1);
     if (Util::config()->showExperimentalFeatures)
         layoutSolver->addWidget(chkSaveWithSolution);
 
@@ -502,10 +497,4 @@ void ConfigDialog::doCommandsDefault()
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
 }
-
-void ConfigDialog::numOfThreadsChecked(int state)
-{
-    txtNumOfThreads->setEnabled(chkNumOfThreads->isChecked());
-}
-
 
