@@ -95,7 +95,7 @@ void ParserForm::initParser()
 }
 
 void ParserForm::setMaterialToParser(Material *material)
-{  
+{
     QList<Module::MaterialTypeVariable *> materials = material->fieldInfo()->module()->materialTypeVariables();
     foreach (Module::MaterialTypeVariable *variable, materials)
     {
@@ -199,18 +199,21 @@ void ParserForm::setNonlinearMaterial(Material *material, int offset, int index,
 
         foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
         {
-            if (!variable->expressionNonlinear().isEmpty())
+            if (m_parserVariables.keys().indexOf(variable->shortname().toStdString()) == -1)
             {
-                try
+                if (!variable->expressionNonlinear().isEmpty())
                 {
-                    double nonlinValue = m_parsersNonlinear[variable]->Eval();
+                    try
+                    {
+                        double nonlinValue = m_parsersNonlinear[variable]->Eval();
 
-                    m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(nonlinValue);
-                    m_parserVariables["d" + variable->shortname().toStdString()] = material->value(variable->id()).derivative(nonlinValue);
-                }
-                catch (mu::Parser::exception_type &e)
-                {
-                    std::cout << "Nonlinear value '" << variable->id().toStdString() << "'): " << e.GetMsg() << std::endl;
+                        m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(nonlinValue);
+                        m_parserVariables["d" + variable->shortname().toStdString()] = material->value(variable->id()).derivative(nonlinValue);
+                    }
+                    catch (mu::Parser::exception_type &e)
+                    {
+                        std::cout << "Nonlinear value '" << variable->id().toStdString() << "'): " << e.GetMsg() << std::endl;
+                    }
                 }
             }
         }

@@ -64,8 +64,9 @@ int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
 
 LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : PostprocessorValue(fieldInfo), point(point)
 {
-    // parser variables
-    m_parsers.push_back(m_fieldInfo->module()->expressionParser());
+    pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
+    pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
+    pdy = new double[m_fieldInfo->module()->numberOfSolutions()];
 
     initParser();
 
@@ -74,13 +75,30 @@ LocalPointValue::LocalPointValue(FieldInfo *fieldInfo, const Point &point) : Pos
 
 LocalPointValue::~LocalPointValue()
 {
-
+    delete [] pvalue;
+    delete [] pdx;
+    delete [] pdy;
 }
 
 void LocalPointValue::initParser()
 {
+    mu::Parser *parser = m_fieldInfo->module()->expressionParser();
+
+    parser->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+    parser->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+
+    for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+    {
+        std::stringstream number;
+        number << (k+1);
+
+        parser->DefineVar("value" + number.str(), &pvalue[k]);
+        parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+        parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+    }
+
     // parser variables
-    m_parsers.push_back(m_fieldInfo->module()->expressionParser());
+    m_parsers.push_back(parser);
 }
 
 void LocalPointValue::calculate()
@@ -106,16 +124,16 @@ void LocalPointValue::calculate()
             SceneMaterial *material = label->marker(m_fieldInfo);
 
             // set variables
-            double px = point.x;
-            double py = point.y;
-            m_parsers[0]->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
-            m_parsers[0]->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+            px = point.x;
+            py = point.y;
 
-            double *pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
-            double *pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
-            double *pdy = new double[m_fieldInfo->module()->numberOfSolutions()];
+            // set material variables
+            setMaterialToParsers(material);
+
+            // add nonlinear parsers
+            setNonlinearParsers();
+
             std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions());
-
             for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
                 FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
@@ -136,20 +154,10 @@ void LocalPointValue::calculate()
                 pvalue[k] = value;
                 pdx[k] = derivative.x;
                 pdy[k] = derivative.y;
-
-                std::stringstream number;
-                number << (k+1);
-
-                m_parsers[0]->DefineVar("value" + number.str(), &pvalue[k]);
-                m_parsers[0]->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
-                m_parsers[0]->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
             }
 
-            // set material variables
-            setMaterialToParsers(material);
-
-            // add nonlinear parsers
-            setNonlinearParsers();
+            // init nonlinear material
+            setNonlinearMaterial(material);
 
             // parse expression
             foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
@@ -182,10 +190,6 @@ void LocalPointValue::calculate()
                                 QString::fromStdString(m_parsers[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
                 }
             }
-
-            delete [] pvalue;
-            delete [] pdx;
-            delete [] pdy;
         }
     }
 }

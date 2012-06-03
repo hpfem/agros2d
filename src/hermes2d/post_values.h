@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "hermes2d.h"
+#include "module.h"
 
 class FieldInfo;
 class CouplingInfo;
@@ -69,6 +70,28 @@ public:
 protected:
     // variables
     QMap<Module::Integral*, double> m_values;
+};
+
+class LocalForceValue : public PostprocessorValue
+{
+public:
+    LocalForceValue(FieldInfo *fieldInfo);
+    ~LocalForceValue();
+
+    Point3 calculate(const Point3 &point, const Point3 &velocity = Point3());
+
+private:
+    mu::Parser *addParser(const QString &exp);
+
+    double px;
+    double py;
+    double pvelx;
+    double pvely;
+    double pvelz;
+
+    double *pvalue;
+    double *pdx;
+    double *pdy;
 };
 
 template <typename Scalar>

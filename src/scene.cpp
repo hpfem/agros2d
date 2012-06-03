@@ -27,6 +27,7 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenefunction.h"
+#include "hermes2d/localpoint.h"
 
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
@@ -1965,4 +1966,286 @@ ErrorResult Scene::checkGeometryResult()
     }
 
     return ErrorResult();
+}
+
+void Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
+{
+    // Lorentz force
+    Point3 forceLorentz = fieldInfo->forceValue()->calculate(position, velocity) * Util::config()->particleConstant;
+
+    // Gravitational force
+    Point3 forceGravitational;
+    if (Util::config()->particleIncludeGravitation)
+        forceGravitational = Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0);
+
+    // Drag force
+    Point3 velocityReal = (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ?
+                velocity : Point3(velocity.x, velocity.y, position.x * velocity.z);
+    Point3 forceDrag;
+    if (velocityReal.magnitude() > 0.0)
+        forceDrag = velocityReal.normalizePoint() *
+                - 0.5 * Util::config()->particleDragDensity * velocityReal.magnitude() * velocityReal.magnitude() * Util::config()->particleDragCoefficient * Util::config()->particleDragReferenceArea;
+
+    // Total force
+    Point3 totalForce = forceLorentz + forceGravitational + forceDrag;
+
+    // Total acceleration
+    Point3 totalAccel = totalForce / Util::config()->particleMass;
+
+    if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
+    {
+        // position
+        *newposition = velocity * step;
+
+        // velocity
+        *newvelocity = totalAccel * step;
+    }
+    else
+    {
+        (*newposition).x = velocity.x * step; // r
+        (*newposition).y = velocity.y * step; // z
+        (*newposition).z = velocity.z * step; // alpha
+
+        (*newvelocity).x = (totalAccel.x + velocity.z * velocity.z * position.x) * step; // r
+        (*newvelocity).y = (totalAccel.y) * step; // z
+        (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
+    }
+}
+
+void Scene::computeParticleTracingPath(QList<Point3> *positions,
+                                       QList<Point3> *velocities,
+                                       bool randomPoint)
+{
+    QTime timePart;
+    timePart.start();
+
+    // initial position
+    Point3 p;
+    p.x = Util::config()->particleStart.x;
+    p.y = Util::config()->particleStart.y;
+
+    // random point
+    if (randomPoint)
+    {
+        int trials = 0;
+        while (true)
+        {
+            Point3 dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                      rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
+                      (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
+
+            p = Point3(-Util::config()->particleStartingRadius / 2,
+                       -Util::config()->particleStartingRadius / 2,
+                       (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + p + dp;
+
+            int index = findElementInMesh(Util::problem()->activeMeshInitial(), Point(p.x, p.y));
+
+            trials++;
+            if (index > 0 || trials > 10)
+                break;
+        }
+    }
+
+    // initial velocity
+    Point3 v;
+    v.x = Util::config()->particleStartVelocity.x;
+    v.y = Util::config()->particleStartVelocity.y;
+
+    int steps = 0;
+
+    // position and velocity cache
+    positions->append(p);
+    velocities->append(v);
+
+    RectPoint bound = boundingBox();
+
+    double minStep = (Util::config()->particleMinimumStep > 0.0) ? Util::config()->particleMinimumStep : min(bound.width(), bound.height()) / 80.0;
+    double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-6;
+    double relErrorMax = 1e-3;
+    double dt = 1e-11;
+
+    int max_steps_iter = 0;
+    while (max_steps_iter < Util::config()->particleMaximumNumberOfSteps)
+    {
+        foreach(FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+        {
+            max_steps_iter++;
+
+            steps++;
+
+            QTime time;
+            time.start();
+
+            // Runge-Kutta steps
+            Point3 np5;
+            Point3 nv5;
+
+            int max_steps_step = 0;
+            while (max_steps_step < 100)
+            {
+                // Runge-Kutta-Fehlberg adaptive method
+                Point3 k1np;
+                Point3 k1nv;
+                newtonEquations(fieldInfo,
+                                dt,
+                                p,
+                                v,
+                                &k1np, &k1nv);
+
+                Point3 k2np;
+                Point3 k2nv;
+                newtonEquations(fieldInfo,
+                                dt,
+                                p + k1np * 1/4,
+                                v + k1nv * 1/4,
+                                &k2np, &k2nv);
+
+                Point3 k3np;
+                Point3 k3nv;
+                newtonEquations(fieldInfo,
+                                dt,
+                                p + k1np * 3/32 + k2np * 9/32,
+                                v + k1nv * 3/32 + k2nv * 9/32,
+                                &k3np, &k3nv);
+
+                Point3 k4np;
+                Point3 k4nv;
+                newtonEquations(fieldInfo,
+                                dt,
+                                p + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
+                                v + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
+                                &k4np, &k4nv);
+
+                Point3 k5np;
+                Point3 k5nv;
+                newtonEquations(fieldInfo,
+                                dt,
+                                p + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
+                                v + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
+                                &k5np, &k5nv);
+
+                Point3 k6np;
+                Point3 k6nv;
+                newtonEquations(fieldInfo,
+                                dt,
+                                p - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
+                                v - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
+                                &k6np, &k6nv);
+
+                // Runge-Kutta order 4
+                Point3 np4 = p + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
+                // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
+
+                // Runge-Kutta order 5
+                np5 = p + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k6np * 2/55;
+                nv5 = v + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k6nv * 2/55;
+
+                // optimal step estimation
+                double absError = abs(np5.magnitude() - np4.magnitude());
+                double relError = abs(absError / np5.magnitude());
+                double currentStep = (p - np5).magnitude();
+
+                // qDebug() << np5.toString();
+                // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", time step: " << dt << "current step: " << currentStep;
+
+                // minimum step
+                if ((currentStep > minStep) || (relError > relErrorMax))
+                {
+                    // decrease step
+                    dt /= 3.0;
+                    continue;
+                }
+                // relative tolerance
+                else if ((relError < relErrorMin || relError < EPS_ZERO))
+                {
+                    // increase step
+                    dt *= 2.0;
+                }
+                break;
+            }
+
+            SceneEdge *crossingEdge = NULL;
+            Point intersect;
+            foreach (SceneEdge *edge, edges->items())
+            {
+                QList<Point> intersects = intersection(Point(p.x, p.y), Point(np5.x, np5.y),
+                                                       Point(), 0.0, 0.0,
+                                                       edge->nodeStart()->point(), edge->nodeEnd()->point(),
+                                                       edge->center(), edge->radius(), edge->angle());
+
+                if (intersects.length() > 0)
+                {
+                    crossingEdge = edge;
+                    intersect = intersects[0];
+
+                    break;
+                }
+            }
+
+            if (crossingEdge)
+            {
+                if ((Util::config()->particleCoefficientOfRestitution < EPS_ZERO) ||
+                        (crossingEdge->marker(fieldInfo) == Util::scene()->boundaries->getNone(fieldInfo) && !Util::config()->particleReflectOnDifferentMaterial) ||
+                        (crossingEdge->marker(fieldInfo) != Util::scene()->boundaries->getNone(fieldInfo) && !Util::config()->particleReflectOnBoundary))
+                {
+                    np5.x = intersect.x;
+                    np5.y = intersect.y;
+                }
+                else
+                {
+                    // input vector moved to the origin
+                    Point vectin = Point(np5.x, np5.y) - intersect;
+
+                    // tangent vector
+                    Point tangent;
+                    if (crossingEdge->angle() > 0)
+                        tangent = (Point( (intersect.y - crossingEdge->center().y),
+                                          -(intersect.x - crossingEdge->center().x))).normalizePoint();
+                    else
+                        tangent = (crossingEdge->nodeStart()->point() - crossingEdge->nodeEnd()->point()).normalizePoint();
+
+                    // output point
+                    np5.x = intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
+                    np5.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y);
+
+                    // output vector
+                    Point vectout = (Point(np5.x, np5.y) - intersect).normalizePoint();
+
+                    // velocity in the direction of output vector
+                    Point3 oldv = nv5;
+                    nv5.x = vectout.x * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
+                    nv5.y = vectout.y * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
+                }
+            }
+
+            // new values
+            v = nv5;
+            p = np5;
+
+            if (crossingEdge)
+            {
+                // stop simulation
+                if ((Util::config()->particleCoefficientOfRestitution < EPS_ZERO) ||
+                        (crossingEdge->marker(fieldInfo) == Util::scene()->boundaries->getNone(fieldInfo) && !Util::config()->particleReflectOnDifferentMaterial) ||
+                        (crossingEdge->marker(fieldInfo) != Util::scene()->boundaries->getNone(fieldInfo) && !Util::config()->particleReflectOnBoundary))
+                {
+                    break;
+                }
+            }
+        }
+
+        if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
+        {
+            velocities->append(v);
+        }
+        else
+        {
+            velocities->append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
+        }
+
+        // cache
+        positions->append(p);
+    }
+
+    // qDebug() << "steps: " << steps << "total: " << timePart.elapsed();
 }

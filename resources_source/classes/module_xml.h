@@ -273,6 +273,7 @@ namespace XMLModule
   class volumeintegral;
   class surfaceintegrals;
   class surfaceintegral;
+  class force;
   class volume;
   class surface;
   class weakforms_surface;
@@ -1171,17 +1172,36 @@ namespace XMLModule
     void
     surfaceintegrals (::std::auto_ptr< surfaceintegrals_type > p);
 
+    // force
+    // 
+    typedef ::XMLModule::force force_type;
+    typedef ::xsd::cxx::tree::traits< force_type, char > force_traits;
+
+    const force_type&
+    force () const;
+
+    force_type&
+    force ();
+
+    void
+    force (const force_type& x);
+
+    void
+    force (::std::auto_ptr< force_type > p);
+
     // Constructors.
     //
     postprocessor (const localvariables_type&,
                    const view_type&,
                    const volumeintegrals_type&,
-                   const surfaceintegrals_type&);
+                   const surfaceintegrals_type&,
+                   const force_type&);
 
     postprocessor (::std::auto_ptr< localvariables_type >&,
                    ::std::auto_ptr< view_type >&,
                    ::std::auto_ptr< volumeintegrals_type >&,
-                   ::std::auto_ptr< surfaceintegrals_type >&);
+                   ::std::auto_ptr< surfaceintegrals_type >&,
+                   ::std::auto_ptr< force_type >&);
 
     postprocessor (const ::xercesc::DOMElement& e,
                    ::xml_schema::flags f = 0,
@@ -1210,6 +1230,7 @@ namespace XMLModule
     ::xsd::cxx::tree::one< view_type > view_;
     ::xsd::cxx::tree::one< volumeintegrals_type > volumeintegrals_;
     ::xsd::cxx::tree::one< surfaceintegrals_type > surfaceintegrals_;
+    ::xsd::cxx::tree::one< force_type > force_;
   };
 
   class localvariables: public ::xml_schema::type
@@ -2214,6 +2235,56 @@ namespace XMLModule
     unit_latex_optional unit_latex_;
   };
 
+  class force: public ::xml_schema::type
+  {
+    public:
+    // expression
+    // 
+    typedef ::XMLModule::expression expression_type;
+    typedef ::xsd::cxx::tree::sequence< expression_type > expression_sequence;
+    typedef expression_sequence::iterator expression_iterator;
+    typedef expression_sequence::const_iterator expression_const_iterator;
+    typedef ::xsd::cxx::tree::traits< expression_type, char > expression_traits;
+
+    const expression_sequence&
+    expression () const;
+
+    expression_sequence&
+    expression ();
+
+    void
+    expression (const expression_sequence& s);
+
+    // Constructors.
+    //
+    force ();
+
+    force (const ::xercesc::DOMElement& e,
+           ::xml_schema::flags f = 0,
+           ::xml_schema::container* c = 0);
+
+    force (const force& x,
+           ::xml_schema::flags f = 0,
+           ::xml_schema::container* c = 0);
+
+    virtual force*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~force ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    expression_sequence expression_;
+  };
+
   class volume: public ::xml_schema::type
   {
     public:
@@ -2653,6 +2724,27 @@ namespace XMLModule
     void
     axi_z (::std::auto_ptr< axi_z_type > p);
 
+    // axi_phi
+    // 
+    typedef ::xml_schema::string axi_phi_type;
+    typedef ::xsd::cxx::tree::optional< axi_phi_type > axi_phi_optional;
+    typedef ::xsd::cxx::tree::traits< axi_phi_type, char > axi_phi_traits;
+
+    const axi_phi_optional&
+    axi_phi () const;
+
+    axi_phi_optional&
+    axi_phi ();
+
+    void
+    axi_phi (const axi_phi_type& x);
+
+    void
+    axi_phi (const axi_phi_optional& x);
+
+    void
+    axi_phi (::std::auto_ptr< axi_phi_type > p);
+
     // planar
     // 
     typedef ::xml_schema::string planar_type;
@@ -2716,6 +2808,27 @@ namespace XMLModule
     void
     planar_y (::std::auto_ptr< planar_y_type > p);
 
+    // planar_z
+    // 
+    typedef ::xml_schema::string planar_z_type;
+    typedef ::xsd::cxx::tree::optional< planar_z_type > planar_z_optional;
+    typedef ::xsd::cxx::tree::traits< planar_z_type, char > planar_z_traits;
+
+    const planar_z_optional&
+    planar_z () const;
+
+    planar_z_optional&
+    planar_z ();
+
+    void
+    planar_z (const planar_z_type& x);
+
+    void
+    planar_z (const planar_z_optional& x);
+
+    void
+    planar_z (::std::auto_ptr< planar_z_type > p);
+
     // Constructors.
     //
     expression (const analysistype_type&);
@@ -2747,9 +2860,11 @@ namespace XMLModule
     axi_optional axi_;
     axi_r_optional axi_r_;
     axi_z_optional axi_z_;
+    axi_phi_optional axi_phi_;
     planar_optional planar_;
     planar_x_optional planar_x_;
     planar_y_optional planar_y_;
+    planar_z_optional planar_z_;
   };
 
   class default_: public ::xml_schema::type
@@ -4029,6 +4144,9 @@ namespace XMLModule
   operator<< (::std::ostream&, const surfaceintegral&);
 
   ::std::ostream&
+  operator<< (::std::ostream&, const force&);
+
+  ::std::ostream&
   operator<< (::std::ostream&, const volume&);
 
   ::std::ostream&
@@ -4310,6 +4428,9 @@ namespace XMLModule
 
   void
   operator<< (::xercesc::DOMElement&, const surfaceintegral&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const force&);
 
   void
   operator<< (::xercesc::DOMElement&, const volume&);

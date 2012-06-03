@@ -30,6 +30,7 @@
 #include "scenelabel.h"
 
 #include "../weakform/src/weakform_factory.h"
+#include "solutionstore.h"
 
 #include <muParserDef.h>
 
@@ -54,13 +55,14 @@ void PostprocessorValue::setMaterialToParsers(Material *material)
 
     // set material
     foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        if ((m_fieldInfo->linearityType() == LinearityType_Linear) ||
-                ((m_fieldInfo->linearityType() != LinearityType_Linear) && (m_parsers.length() > 0) && variable->expressionNonlinear().isEmpty()))
-            // linear variable
-            m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
-        else
-            // nonlinear variable
-            m_parserVariables[variable->shortname().toStdString()] = 0.0;
+        if (m_parserVariables.keys().indexOf(variable->shortname().toStdString()) == -1)
+            if ((m_fieldInfo->linearityType() == LinearityType_Linear) ||
+                    ((m_fieldInfo->linearityType() != LinearityType_Linear) && (m_parsers.length() > 0) && variable->expressionNonlinear().isEmpty()))
+                // linear variable
+                m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
+            else
+                // nonlinear variable
+                m_parserVariables[variable->shortname().toStdString()] = 0.0;
 
     // register value address
     for (QMap<std::string, double>::iterator itv = m_parserVariables.begin(); itv != m_parserVariables.end(); ++itv)
@@ -120,6 +122,143 @@ void PostprocessorIntegralValue::initParser(QList<Module::Integral *> list)
         m_parsers.push_back(m_fieldInfo->module()->expressionParser(integral->expression()));
         m_values[integral] = 0.0;
     }
+}
+
+// *********************************************************************************************************************************************
+
+LocalForceValue::LocalForceValue(FieldInfo *fieldInfo) : PostprocessorValue(fieldInfo)
+{
+    pvalue = new double[m_fieldInfo->module()->numberOfSolutions()];
+    pdx = new double[m_fieldInfo->module()->numberOfSolutions()];
+    pdy = new double[m_fieldInfo->module()->numberOfSolutions()];
+
+    // parser variables
+    m_parsers.push_back(addParser(m_fieldInfo->module()->force().compX()));
+    m_parsers.push_back(addParser(m_fieldInfo->module()->force().compY()));
+    m_parsers.push_back(addParser(m_fieldInfo->module()->force().compZ()));
+}
+
+LocalForceValue::~LocalForceValue()
+{
+    delete [] pvalue;
+    delete [] pdx;
+    delete [] pdy;
+}
+
+mu::Parser *LocalForceValue::addParser(const QString &exp)
+{
+    mu::Parser *parser = m_fieldInfo->module()->expressionParser();
+    parser->SetExpr(exp.toStdString());
+
+    parser->DefineVar(Util::problem()->config()->labelX().toLower().toStdString(), &px);
+    parser->DefineVar(Util::problem()->config()->labelY().toLower().toStdString(), &py);
+
+    parser->DefineVar("velx", &pvelx);
+    parser->DefineVar("vely", &pvely);
+    parser->DefineVar("velz", &pvelz);
+
+    for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+    {
+        std::stringstream number;
+        number << (k+1);
+
+        parser->DefineVar("value" + number.str(), &pvalue[k]);
+        parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pdx[k]);
+        parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pdy[k]);
+    }
+
+    return parser;
+}
+
+Point3 LocalForceValue::calculate(const Point3 &point, const Point3 &velocity)
+{
+    Point3 res;
+
+    // update time functions
+    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+    {
+        QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+        m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
+    }
+
+    if (Util::problem()->isSolved())
+    {
+        int index = findElementInMesh(Util::problem()->meshInitial(m_fieldInfo), Point(point.x, point.y));
+        if (index != -1)
+        {
+            // find marker
+            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial(m_fieldInfo)->get_element_fast(index);
+            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
+            SceneMaterial *material = label->marker(m_fieldInfo);
+
+            // set variables
+            px = point.x;
+            py = point.y;
+
+            pvelx = velocity.x;
+            pvely = velocity.y;
+            pvelz = velocity.z;
+
+            // set material variables
+            setMaterialToParsers(material);
+
+            // add nonlinear parsers
+            setNonlinearParsers();
+
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions());
+            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+            {
+                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+                sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
+
+                double value;
+                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
+                    // const solution at first time step
+                    value = m_fieldInfo->initialCondition().number();
+                else
+                    value = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
+
+                Point derivative;
+                derivative.x = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DX_0);
+                derivative.y = sln[k]->get_pt_value(point.x, point.y, Hermes::Hermes2D::H2D_FN_DY_0);
+
+                // set variables
+                pvalue[k] = value;
+                pdx[k] = derivative.x;
+                pdy[k] = derivative.y;
+            }
+
+            // init nonlinear material
+            setNonlinearMaterial(material);
+
+            try
+            {
+                res.x = m_parsers[0]->Eval();
+            }
+            catch (mu::Parser::exception_type &e)
+            {
+                qDebug() << "Local force value X: " << QString::fromStdString(m_parsers[0]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
+            }
+            try
+            {
+                res.y = m_parsers[1]->Eval();
+            }
+            catch (mu::Parser::exception_type &e)
+            {
+                qDebug() << "Local force value Y: " << QString::fromStdString(m_parsers[1]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
+            }
+            try
+            {
+                res.z = m_parsers[2]->Eval();
+            }
+            catch (mu::Parser::exception_type &e)
+            {
+                qDebug() << "Local force value Z: " << QString::fromStdString(m_parsers[2]->GetExpr()) << " - " << QString::fromStdString(e.GetMsg());
+            }
+        }
+    }
+
+    return res;
 }
 
 // *********************************************************************************************************************************************

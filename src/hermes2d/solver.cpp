@@ -144,7 +144,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     {
                         {
                             CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
-                                                                                                    form->expressionLinear,
+                                                                                                    ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? form->expressionNewton : form->expressionLinear),
                                                                                                     boundary);
                             custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                         }
@@ -172,11 +172,11 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                 if (!label->marker(fieldInfo)->isNone())
                 {
                     // TODO: set order in space
-                    /*
-                    space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder(),
+                    // space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder(),
+                    //                                QString::number(j).toStdString());
+                    space.at(i)->set_uniform_order(fieldInfo->polynomialOrder(),
                                                    QString::number(j).toStdString());
                     j++;
-                    */
                 }
             }
         }

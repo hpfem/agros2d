@@ -329,7 +329,9 @@
 				<module:expression analysistype="steadystate"
 					planar="1.0" axi="2.0 * PI * r" />
 			</module:surfaceintegral>
-		</module:surfaceintegrals>
+        </module:surfaceintegrals>
+
+        <module:force />
 	</module:postprocessor>
 </module:module>
 

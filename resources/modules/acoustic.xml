@@ -272,5 +272,7 @@
 					axi="2.0 * PI * r" />
 			</module:surfaceintegral>
 		</module:surfaceintegrals>
+
+        <module:force />
 	</module:postprocessor>
 </module:module>

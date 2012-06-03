@@ -76,6 +76,13 @@ private:
     QMap<Module::LocalVariable *, PointValue> m_values;
 
     void initParser();
+
+    double px;
+    double py;
+
+    double *pvalue;
+    double *pdx;
+    double *pdy;
 };
 
 #endif // LOCALPOINT_H

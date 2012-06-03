@@ -99,6 +99,7 @@
 				<element ref="module:view" />
 				<element ref="module:volumeintegrals" />
 				<element ref="module:surfaceintegrals" />
+				<element ref="module:force" />
 			</sequence>
 		</complexType>
 	</element>
@@ -202,6 +203,14 @@
 		</complexType>
 	</element>
 
+	<element name="force">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" maxOccurs="unbounded" ref="module:expression" />
+			</sequence>
+		</complexType>
+	</element>
+
 	<element name="volume">
 		<complexType>
 			<sequence>
@@ -254,9 +263,11 @@
 			<attribute name="axi" type="string" />
 			<attribute name="axi_r" type="string" />
 			<attribute name="axi_z" type="string" />
+			<attribute name="axi_phi" type="string" />
 			<attribute name="planar" type="string" />
 			<attribute name="planar_x" type="string" />
 			<attribute name="planar_y" type="string" />
+			<attribute name="planar_z" type="string" />
 		</complexType>
 	</element>
 

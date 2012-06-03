@@ -51,6 +51,7 @@ void Post2DHermes::clear()
     m_contourIsPrepared = false;
     m_scalarIsPrepared = false;
     m_vectorIsPrepared = false;
+    m_particleTracingIsPrepared = false;
 }
 
 void Post2DHermes::processRangeContour()
@@ -199,6 +200,56 @@ void Post2DHermes::processRangeVector()
     }
 }
 
+void Post2DHermes::processParticleTracing()
+{
+    m_particleTracingIsPrepared = false;
+
+    if (Util::problem()->isSolved() && Util::config()->showParticleView)
+    {
+        /*
+        bool contains = false;
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
+        {
+            if (variable->id() == Util::config()->vectorVariable)
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->vectorVariable == "" || !contains)
+        {
+            // default values
+            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->defaultViewVectorVariable()->id();
+        }
+        */
+
+        Util::log()->printMessage(tr("Post2DView"), tr("particle view (%1)").arg(Util::config()->vectorVariable));
+
+        /*
+        ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+                                                                                                                  PhysicFieldVariableComp_X);
+
+        ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+                                                                                                                  PhysicFieldVariableComp_Y);
+
+        m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
+                                         Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
+                                         Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+
+        // deformed shape
+        if (Util::config()->deformVector)
+            Util::scene()->activeViewField()->module()->deformShape(m_vecVectorView.get_vertices(),
+                                                                     m_vecVectorView.get_num_vertices());
+
+        delete slnVectorXView;
+        delete slnVectorYView;
+        */
+
+        m_particleTracingIsPrepared = true;
+    }
+}
+
 void Post2DHermes::processSolved()
 {
     m_contourIsPrepared = false;
@@ -208,6 +259,8 @@ void Post2DHermes::processSolved()
     processRangeContour();
     processRangeScalar();
     processRangeVector();
+    processParticleTracing();
+
     emit processed();
 
     // QTimer::singleShot(0, this, SLOT(processRangeContour()));
@@ -400,6 +453,7 @@ void SceneViewPost2D::paintGL()
         if (Util::config()->showScalarView) paintScalarField();
         if (Util::config()->showContourView) paintContours();
         if (Util::config()->showVectorView) paintVectors();
+        if (Util::config()->showParticleView) paintParticleTracing();
     }
 
     // geometry
@@ -414,6 +468,8 @@ void SceneViewPost2D::paintGL()
         // bars
         if (Util::config()->showScalarView && Util::config()->showScalarColorBar)
             paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
+        if (Util::config()->showParticleView && Util::config()->particleColorByVelocity)
+            paintParticleTracingColorBar(m_particleTracingVelocityMin, m_particleTracingVelocityMax);
     }
 
     // rulers
@@ -746,6 +802,126 @@ void SceneViewPost2D::paintContours()
     else
     {
         glCallList(m_listContours);
+    }
+}
+
+void SceneViewPost2D::paintParticleTracing()
+{
+    if (!Util::problem()->isSolved()) return;
+    if (!m_post2DHermes->particleTracingIsPrepared()) return;
+
+    loadProjection2d(true);
+
+    if (m_listParticleTracing == -1)
+    {
+        m_listParticleTracing = glGenLists(1);
+        glNewList(m_listParticleTracing, GL_COMPILE);
+
+        RectPoint rect = Util::scene()->boundingBox();
+        double bound = max(rect.width(), rect.height());
+        if (bound < EPS_ZERO)
+            return;
+
+        m_particleTracingVelocityMin = numeric_limits<double>::max();
+        m_particleTracingVelocityMax = -numeric_limits<double>::max();
+
+        QList<QList<Point3> > positionsList;
+        QList<QList<Point3> > velocitiesList;
+
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        {
+            // position and velocity cache
+            QList<Point3> positions;
+            QList<Point3> velocities;
+
+            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
+
+            // velocity min and max value
+            for (int i = 0; i < velocities.length(); i++)
+            {
+                double velocity = velocities[i].magnitude();
+
+                if (velocity < m_particleTracingVelocityMin) m_particleTracingVelocityMin = velocity;
+                if (velocity > m_particleTracingVelocityMax) m_particleTracingVelocityMax = velocity;
+            }
+
+            positionsList.append(positions);
+            velocitiesList.append(velocities);
+        }
+
+        // visualization
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        {
+            // starting point
+            glPointSize(Util::config()->nodeSize * 1.2);
+            glColor3d(0.0, 0.0, 0.0);
+            glBegin(GL_POINTS);
+            glVertex2d(positionsList[k][0].x, positionsList[k][0].y);
+            glEnd();
+
+            // color
+            if (!Util::config()->particleColorByVelocity)
+            {
+                if (k == 0)
+                    glColor3d(Util::config()->colorSelected.redF(),
+                              Util::config()->colorSelected.greenF(),
+                              Util::config()->colorSelected.blueF());
+                else
+                    glColor3d(rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX));
+            }
+
+            // lines
+            glLineWidth(2.0);
+            glBegin(GL_LINES);
+            for (int i = 0; i < positionsList[k].length() - 1; i++)
+            {
+                if (Util::config()->particleColorByVelocity)
+                    glColor3d(1.0 - 0.8 * (velocitiesList[k][i].magnitude() - m_particleTracingVelocityMin) / (m_particleTracingVelocityMax - m_particleTracingVelocityMin),
+                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - m_particleTracingVelocityMin) / (m_particleTracingVelocityMax - m_particleTracingVelocityMin),
+                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - m_particleTracingVelocityMin) / (m_particleTracingVelocityMax - m_particleTracingVelocityMin));
+
+                glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
+                glVertex2d(positionsList[k][i+1].x, positionsList[k][i+1].y);
+            }
+            glEnd();
+
+            // points
+            if (Util::config()->particleShowPoints)
+            {
+                glColor3d(Util::config()->colorSelected.redF(),
+                          Util::config()->colorSelected.greenF(),
+                          Util::config()->colorSelected.blueF());
+
+                glPointSize(Util::config()->nodeSize * 4.0/5.0);
+                glBegin(GL_POINTS);
+                for (int i = 0; i < positionsList[k].length() - 1; i++)
+                {
+                    glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
+                }
+                glEnd();
+            }
+        }
+
+        // clear position and velocity cache
+        foreach (QList<Point3> positions, positionsList)
+            positions.clear();
+        positionsList.clear();
+
+        foreach (QList<Point3> velocities, velocitiesList)
+            velocities.clear();
+        velocitiesList.clear();
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
+
+        glEndList();
+
+        glCallList(m_listParticleTracing);
+    }
+    else
+    {
+        glCallList(m_listParticleTracing);
     }
 }
 
@@ -1111,10 +1287,12 @@ void SceneViewPost2D::refresh()
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
     if (m_listScalarField != -1) glDeleteLists(m_listScalarField, 1);
+    if (m_listParticleTracing != -1) glDeleteLists(m_listParticleTracing, 1);
 
     m_listContours = -1;
     m_listVectors = -1;
     m_listScalarField = -1;
+    m_listParticleTracing = -1;
 
     m_post2DHermes->clear();
 

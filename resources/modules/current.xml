@@ -190,5 +190,11 @@
 					planar="cu_gamma * (tanx * dy1 - tany * dx1)" axi="2.0 * PI * r * cu_gamma * (tanr * dz1 - tanz * dr1)" />
 			</module:surfaceintegral>
 		</module:surfaceintegrals>
+
+        <module:force>
+            <module:expression analysistype="steadystate"
+                planar_x="- dx1" planar_y="- dy1" planar_z="0"
+                axi_r="- dr1" axi_z="- dz1" axi_phi="0" />
+        </module:force>
 	</module:postprocessor>
 </module:module>

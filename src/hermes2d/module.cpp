@@ -55,7 +55,7 @@ QMap<QString, QString> availableModules()
     // read modules
     if (modules.size() == 0)
     {
-        QDir dir(datadir()+ MODULEROOT);
+        QDir dir(datadir() + MODULEROOT);
 
         QStringList filter;
         filter << "*.xml";
@@ -191,9 +191,9 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     else
     {
         problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
-                    analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-                    coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-                    ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear");
+                analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
+                coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
+                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear");
     }
 
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
@@ -807,6 +807,17 @@ void Module::BasicModule::read(const QString &filename)
 
             m_surfaceIntegrals.append(surint);
         }
+    }
+
+    // force
+    XMLModule::force force = mod->postprocessor().force();
+    for (int i = 0; i < force.expression().size(); i++)
+    {
+        XMLModule::expression exp = force.expression().at(i);
+        if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            m_force = Module::Force((m_coordinateType == CoordinateType_Planar) ? QString::fromStdString(exp.planar_x().get()) : QString::fromStdString(exp.axi_r().get()),
+                                    (m_coordinateType == CoordinateType_Planar) ? QString::fromStdString(exp.planar_y().get()) : QString::fromStdString(exp.axi_z().get()),
+                                    (m_coordinateType == CoordinateType_Planar) ? QString::fromStdString(exp.planar_z().get()) : QString::fromStdString(exp.axi_phi().get()));
     }
 
     // preprocessor

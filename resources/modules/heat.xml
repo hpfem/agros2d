@@ -338,5 +338,7 @@
 					planar="- he_lambda * (tany * dx1 - tanx * dy1)" axi="- 2.0 * PI * r * he_lambda * (tanz * dr1 - tanr * dz1)" />
 			</module:surfaceintegral>
 		</module:surfaceintegrals>
+
+        <module:force />
 	</module:postprocessor>
 </module:module>

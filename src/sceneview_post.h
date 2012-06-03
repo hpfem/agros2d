@@ -42,6 +42,7 @@ protected:
     virtual int textureScalar() { return -1; }
 
     void paintScalarFieldColorBar(double min, double max);
+    void paintParticleTracingColorBar(double min, double max);
 
     // palette
     const double *paletteColor(double x) const;
@@ -49,6 +50,10 @@ protected:
     void paletteCreate(int texture);
     void paletteFilter(int texture);
     void paletteUpdateTexAdjust();
+
+    // particle tracing
+    double m_particleTracingVelocityMin;
+    double m_particleTracingVelocityMax;
 
 public slots:
     void timeStepChanged(bool showViewProgress = false);

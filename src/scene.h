@@ -206,6 +206,12 @@ public:
 
     inline QUndoStack *undoStack() const { return m_undoStack; }
 
+    // compute particle path
+    void newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity);
+    void computeParticleTracingPath(QList<Point3> *positions,
+                                    QList<Point3> *velocities,
+                                    bool randomPoint);
+
 private:
     QUndoStack *m_undoStack;
 

@@ -50,6 +50,9 @@ public:
     inline bool vectorIsPrepared() { return m_vectorIsPrepared; }
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
+    // particle tracing
+    inline bool particleTracingIsPrepared() { return m_particleTracingIsPrepared; }
+
 signals:
     void processed();
 
@@ -69,11 +72,15 @@ private:
     bool m_vectorIsPrepared;
     Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
 
+    // particle tracing
+    bool m_particleTracingIsPrepared;
+
 private slots:
     // process
     void processRangeContour();
     void processRangeScalar();
     void processRangeVector();
+    void processParticleTracing();
 };
 
 class SceneViewPost2D : public SceneViewCommon2D
@@ -131,6 +138,7 @@ protected:
     void paintContours(); // paint scalar field contours
     void paintContoursTri(double3* vert, int3* tri, double step);
     void paintVectors(); // paint vector field vectors
+    void paintParticleTracing(); // paint scalar field contours
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
@@ -147,6 +155,7 @@ private:
     int m_listContours;
     int m_listVectors;
     int m_listScalarField;
+    int m_listParticleTracing;
 
     Post2DHermes *m_post2DHermes;
 

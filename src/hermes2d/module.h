@@ -30,6 +30,7 @@ namespace XMLModule
 class module;
 class quantity;
 class boundary;
+class force;
 class localvariable;
 class gui;
 }
@@ -184,6 +185,24 @@ private:
 
     // expressions
     Expression m_expression;
+};
+
+// force
+struct Force
+{
+    Force(const QString &compX = "", const QString &compY = "", const QString &compZ = "")
+        : m_compX(compX), m_compY(compY), m_compZ(compZ) {}
+
+    // expressions
+    inline QString compX() const { return m_compX; }
+    inline QString compY() const { return m_compY; }
+    inline QString compZ() const { return m_compZ; }
+
+private:
+    // expressions
+    QString m_compX;
+    QString m_compY;
+    QString m_compZ;    
 };
 
 // material property
@@ -459,6 +478,8 @@ struct BasicModule
 
     // volume integrals
     inline QList<Integral *> volumeIntegrals() const { return m_volumeIntegrals; }
+    // force
+    inline Force force() const { return m_force; }
 
     // view scalar and vector variables
     inline QList<LocalVariable *> viewScalarVariables() const { return m_viewScalarVariables; }
@@ -517,6 +538,9 @@ private:
 
     // volume integrals
     QList<Integral *> m_volumeIntegrals;
+
+    // force
+    Force m_force;
 
     // material and boundary user interface
     DialogUI *m_materialUI;

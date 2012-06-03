@@ -378,3 +378,94 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
     glEnd();
 }
+
+void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max)
+{
+    if (!Util::problem()->isSolved() || !Util::config()->showParticleView) return;
+
+    loadProjectionViewPort();
+
+
+    glScaled(2.0 / width(), 2.0 / height(), 1.0);
+    glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
+
+    // dimensions
+    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
+    int textHeight = fontMetrics().height();
+    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*fontMetrics().height() : 10.0);
+    double scaleLeft = (width()
+                        - (((Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
+    int numTicks = 11;
+
+    // blended rectangle
+    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+              0.91, 0.91, 0.91);
+
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // palette border
+    glColor3d(0.0, 0.0, 0.0);
+    glBegin(GL_QUADS);
+    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
+    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
+    glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0);
+    glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
+    glEnd();
+
+    // palette
+    glBegin(GL_QUADS);
+    glColor3d(0.0, 0.0, 0.0);
+    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 52.0);
+    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 52.0);
+    glColor3d(0.8, 0.8, 0.8);
+    glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
+    glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
+    glEnd();
+
+    // ticks
+    glColor3d(0.0, 0.0, 0.0);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    for (int i = 1; i < numTicks; i++)
+    {
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+
+        glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 15.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 25.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+    }
+    glEnd();
+
+    // labels
+    for (int i = 1; i < numTicks+1; i++)
+    {
+        double value = min + (double) (i-1) / (numTicks-1) * (max - min);
+
+        if (fabs(value) < EPS_ZERO) value = 0.0;
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+
+        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
+                   scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
+                   0.0,
+                   QString::number(value, '+e', Util::config()->scalarDecimalPlace));
+    }
+
+    // variable
+    QString str = QString("%1 (m/s)").
+            arg(tr("Vel."));
+
+    renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
+               scaleBorder.y + scaleSize.y - 20.0,
+               0.0,
+               str);
+    // line
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
+    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
+    glEnd();
+}

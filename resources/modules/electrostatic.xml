@@ -207,5 +207,11 @@
 					planar="el_epsr * EPS0 * (tany * dx1 - tanx * dy1)" axi="2.0 * PI * r * el_epsr * EPS0 * (tanz * dr1 - tanr * dz1)" />
 			</module:surfaceintegral>
 		</module:surfaceintegrals>
-	</module:postprocessor>
+
+        <module:force>
+            <module:expression analysistype="steadystate"
+                planar_x="- dx1" planar_y="- dy1" planar_z="0"
+                axi_r="- dr1" axi_z="- dz1" axi_phi="0" />
+        </module:force>
+    </module:postprocessor>
 </module:module>

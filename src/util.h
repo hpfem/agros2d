@@ -53,6 +53,7 @@
 #define MU0 4*M_PI*1e-7
 #define SIGMA0 5.670373e-8
 #define PRESSURE_MIN_AIR 20e-6
+#define GRAVITATIONAL_ACCELERATION 9.81
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
 #define rad2deg(radians) (radians*180.0/M_PI)
@@ -781,11 +782,14 @@ const double PARTICLESTARTVELOCITYX = 0;
 const double PARTICLESTARTVELOCITYY = 0;
 const double PARTICLEMASS = 9.109e-31; // mass of the electron
 const double PARTICLECONSTANT = 1.602e-19; // charge of the electron
-const double PARTICLETERMINATEONDIFFERENTMATERIAL = true;
+const bool PARTICLEREFLECTONDIFFERENTMATERIAL = true;
+const bool PARTICLEREFLECTONBOUNDARY = false;
+const double PARTICLECOEFFICIENTOFRESTITUTION = 0.0;
 const double PARTICLEMAXIMUMRELATIVEERROR = 0.0;
 const bool PARTICLECOLORBYVELOCITY = true;
 const bool PARTICLESHOWPOINTS = false;
-const int PARTICLEMAXIMUMSTEPS = 1000;
+const int PARTICLEMAXIMUMNUMBEROFSTEPS = 1000;
+const double PARTICLEMINIMUMSTEP = 0;
 const double PARTICLEDRAGDENSITY = 1.2041;
 const double PARTICLEDRAGCOEFFICIENT = 0.0;
 const double PARTICLEDRAGREFERENCEAREA = 1e-6;

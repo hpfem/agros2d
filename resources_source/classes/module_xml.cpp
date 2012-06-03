@@ -751,6 +751,30 @@ namespace XMLModule
     this->surfaceintegrals_.set (x);
   }
 
+  const postprocessor::force_type& postprocessor::
+  force () const
+  {
+    return this->force_.get ();
+  }
+
+  postprocessor::force_type& postprocessor::
+  force ()
+  {
+    return this->force_.get ();
+  }
+
+  void postprocessor::
+  force (const force_type& x)
+  {
+    this->force_.set (x);
+  }
+
+  void postprocessor::
+  force (::std::auto_ptr< force_type > x)
+  {
+    this->force_.set (x);
+  }
+
 
   // localvariables
   // 
@@ -1682,6 +1706,28 @@ namespace XMLModule
   }
 
 
+  // force
+  // 
+
+  const force::expression_sequence& force::
+  expression () const
+  {
+    return this->expression_;
+  }
+
+  force::expression_sequence& force::
+  expression ()
+  {
+    return this->expression_;
+  }
+
+  void force::
+  expression (const expression_sequence& s)
+  {
+    this->expression_ = s;
+  }
+
+
   // volume
   // 
 
@@ -2073,6 +2119,36 @@ namespace XMLModule
     this->axi_z_.set (x);
   }
 
+  const expression::axi_phi_optional& expression::
+  axi_phi () const
+  {
+    return this->axi_phi_;
+  }
+
+  expression::axi_phi_optional& expression::
+  axi_phi ()
+  {
+    return this->axi_phi_;
+  }
+
+  void expression::
+  axi_phi (const axi_phi_type& x)
+  {
+    this->axi_phi_.set (x);
+  }
+
+  void expression::
+  axi_phi (const axi_phi_optional& x)
+  {
+    this->axi_phi_ = x;
+  }
+
+  void expression::
+  axi_phi (::std::auto_ptr< axi_phi_type > x)
+  {
+    this->axi_phi_.set (x);
+  }
+
   const expression::planar_optional& expression::
   planar () const
   {
@@ -2161,6 +2237,36 @@ namespace XMLModule
   planar_y (::std::auto_ptr< planar_y_type > x)
   {
     this->planar_y_.set (x);
+  }
+
+  const expression::planar_z_optional& expression::
+  planar_z () const
+  {
+    return this->planar_z_;
+  }
+
+  expression::planar_z_optional& expression::
+  planar_z ()
+  {
+    return this->planar_z_;
+  }
+
+  void expression::
+  planar_z (const planar_z_type& x)
+  {
+    this->planar_z_.set (x);
+  }
+
+  void expression::
+  planar_z (const planar_z_optional& x)
+  {
+    this->planar_z_ = x;
+  }
+
+  void expression::
+  planar_z (::std::auto_ptr< planar_z_type > x)
+  {
+    this->planar_z_.set (x);
   }
 
 
@@ -4467,12 +4573,14 @@ namespace XMLModule
   postprocessor (const localvariables_type& localvariables,
                  const view_type& view,
                  const volumeintegrals_type& volumeintegrals,
-                 const surfaceintegrals_type& surfaceintegrals)
+                 const surfaceintegrals_type& surfaceintegrals,
+                 const force_type& force)
   : ::xml_schema::type (),
     localvariables_ (localvariables, ::xml_schema::flags (), this),
     view_ (view, ::xml_schema::flags (), this),
     volumeintegrals_ (volumeintegrals, ::xml_schema::flags (), this),
-    surfaceintegrals_ (surfaceintegrals, ::xml_schema::flags (), this)
+    surfaceintegrals_ (surfaceintegrals, ::xml_schema::flags (), this),
+    force_ (force, ::xml_schema::flags (), this)
   {
   }
 
@@ -4480,12 +4588,14 @@ namespace XMLModule
   postprocessor (::std::auto_ptr< localvariables_type >& localvariables,
                  ::std::auto_ptr< view_type >& view,
                  ::std::auto_ptr< volumeintegrals_type >& volumeintegrals,
-                 ::std::auto_ptr< surfaceintegrals_type >& surfaceintegrals)
+                 ::std::auto_ptr< surfaceintegrals_type >& surfaceintegrals,
+                 ::std::auto_ptr< force_type >& force)
   : ::xml_schema::type (),
     localvariables_ (localvariables, ::xml_schema::flags (), this),
     view_ (view, ::xml_schema::flags (), this),
     volumeintegrals_ (volumeintegrals, ::xml_schema::flags (), this),
-    surfaceintegrals_ (surfaceintegrals, ::xml_schema::flags (), this)
+    surfaceintegrals_ (surfaceintegrals, ::xml_schema::flags (), this),
+    force_ (force, ::xml_schema::flags (), this)
   {
   }
 
@@ -4497,7 +4607,8 @@ namespace XMLModule
     localvariables_ (x.localvariables_, f, this),
     view_ (x.view_, f, this),
     volumeintegrals_ (x.volumeintegrals_, f, this),
-    surfaceintegrals_ (x.surfaceintegrals_, f, this)
+    surfaceintegrals_ (x.surfaceintegrals_, f, this),
+    force_ (x.force_, f, this)
   {
   }
 
@@ -4509,7 +4620,8 @@ namespace XMLModule
     localvariables_ (f, this),
     view_ (f, this),
     volumeintegrals_ (f, this),
-    surfaceintegrals_ (f, this)
+    surfaceintegrals_ (f, this),
+    force_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -4584,6 +4696,20 @@ namespace XMLModule
         }
       }
 
+      // force
+      //
+      if (n.name () == "force" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< force_type > r (
+          force_traits::create (i, f, this));
+
+        if (!force_.present ())
+        {
+          this->force_.set (r);
+          continue;
+        }
+      }
+
       break;
     }
 
@@ -4612,6 +4738,13 @@ namespace XMLModule
     {
       throw ::xsd::cxx::tree::expected_element< char > (
         "surfaceintegrals",
+        "XMLModule");
+    }
+
+    if (!force_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_element< char > (
+        "force",
         "XMLModule");
     }
   }
@@ -5736,6 +5869,76 @@ namespace XMLModule
   {
   }
 
+  // force
+  //
+
+  force::
+  force ()
+  : ::xml_schema::type (),
+    expression_ (::xml_schema::flags (), this)
+  {
+  }
+
+  force::
+  force (const force& x,
+         ::xml_schema::flags f,
+         ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    expression_ (x.expression_, f, this)
+  {
+  }
+
+  force::
+  force (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f,
+         ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    expression_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void force::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // expression
+      //
+      if (n.name () == "expression" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< expression_type > r (
+          expression_traits::create (i, f, this));
+
+        this->expression_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  force* force::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class force (*this, f, c);
+  }
+
+  force::
+  ~force ()
+  {
+  }
+
   // volume
   //
 
@@ -6187,9 +6390,11 @@ namespace XMLModule
     axi_ (::xml_schema::flags (), this),
     axi_r_ (::xml_schema::flags (), this),
     axi_z_ (::xml_schema::flags (), this),
+    axi_phi_ (::xml_schema::flags (), this),
     planar_ (::xml_schema::flags (), this),
     planar_x_ (::xml_schema::flags (), this),
-    planar_y_ (::xml_schema::flags (), this)
+    planar_y_ (::xml_schema::flags (), this),
+    planar_z_ (::xml_schema::flags (), this)
   {
   }
 
@@ -6202,9 +6407,11 @@ namespace XMLModule
     axi_ (x.axi_, f, this),
     axi_r_ (x.axi_r_, f, this),
     axi_z_ (x.axi_z_, f, this),
+    axi_phi_ (x.axi_phi_, f, this),
     planar_ (x.planar_, f, this),
     planar_x_ (x.planar_x_, f, this),
-    planar_y_ (x.planar_y_, f, this)
+    planar_y_ (x.planar_y_, f, this),
+    planar_z_ (x.planar_z_, f, this)
   {
   }
 
@@ -6217,9 +6424,11 @@ namespace XMLModule
     axi_ (f, this),
     axi_r_ (f, this),
     axi_z_ (f, this),
+    axi_phi_ (f, this),
     planar_ (f, this),
     planar_x_ (f, this),
-    planar_y_ (f, this)
+    planar_y_ (f, this),
+    planar_z_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -6274,6 +6483,15 @@ namespace XMLModule
         continue;
       }
 
+      if (n.name () == "axi_phi" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< axi_phi_type > r (
+          axi_phi_traits::create (i, f, this));
+
+        this->axi_phi_.set (r);
+        continue;
+      }
+
       if (n.name () == "planar" && n.namespace_ ().empty ())
       {
         ::std::auto_ptr< planar_type > r (
@@ -6298,6 +6516,15 @@ namespace XMLModule
           planar_y_traits::create (i, f, this));
 
         this->planar_y_.set (r);
+        continue;
+      }
+
+      if (n.name () == "planar_z" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< planar_z_type > r (
+          planar_z_traits::create (i, f, this));
+
+        this->planar_z_.set (r);
         continue;
       }
     }
@@ -7725,6 +7952,7 @@ namespace XMLModule
     o << ::std::endl << "view: " << i.view ();
     o << ::std::endl << "volumeintegrals: " << i.volumeintegrals ();
     o << ::std::endl << "surfaceintegrals: " << i.surfaceintegrals ();
+    o << ::std::endl << "force: " << i.force ();
     return o;
   }
 
@@ -7919,6 +8147,19 @@ namespace XMLModule
   }
 
   ::std::ostream&
+  operator<< (::std::ostream& o, const force& i)
+  {
+    for (force::expression_const_iterator
+         b (i.expression ().begin ()), e (i.expression ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "expression: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
   operator<< (::std::ostream& o, const volume& i)
   {
     for (volume::quantity_const_iterator
@@ -8023,6 +8264,11 @@ namespace XMLModule
       o << ::std::endl << "axi_z: " << *i.axi_z ();
     }
 
+    if (i.axi_phi ())
+    {
+      o << ::std::endl << "axi_phi: " << *i.axi_phi ();
+    }
+
     if (i.planar ())
     {
       o << ::std::endl << "planar: " << *i.planar ();
@@ -8036,6 +8282,11 @@ namespace XMLModule
     if (i.planar_y ())
     {
       o << ::std::endl << "planar_y: " << *i.planar_y ();
+    }
+
+    if (i.planar_z ())
+    {
+      o << ::std::endl << "planar_z: " << *i.planar_z ();
     }
 
     return o;
@@ -9126,6 +9377,18 @@ namespace XMLModule
 
       s << i.surfaceintegrals ();
     }
+
+    // force
+    //
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "force",
+          "XMLModule",
+          e));
+
+      s << i.force ();
+    }
   }
 
   void
@@ -9626,6 +9889,27 @@ namespace XMLModule
   }
 
   void
+  operator<< (::xercesc::DOMElement& e, const force& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // expression
+    //
+    for (force::expression_const_iterator
+         b (i.expression ().begin ()), n (i.expression ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "expression",
+          "XMLModule",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
   operator<< (::xercesc::DOMElement& e, const volume& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
@@ -9866,6 +10150,18 @@ namespace XMLModule
       a << *i.axi_z ();
     }
 
+    // axi_phi
+    //
+    if (i.axi_phi ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "axi_phi",
+          e));
+
+      a << *i.axi_phi ();
+    }
+
     // planar
     //
     if (i.planar ())
@@ -9900,6 +10196,18 @@ namespace XMLModule
           e));
 
       a << *i.planar_y ();
+    }
+
+    // planar_z
+    //
+    if (i.planar_z ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "planar_z",
+          e));
+
+      a << *i.planar_z ();
     }
   }
 

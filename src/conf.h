@@ -136,8 +136,11 @@ public:
     double particleMass;
     double particleConstant;
     double particleMaximumRelativeError;
-    int particleMaximumSteps;
-    bool particleTerminateOnDifferentMaterial;
+    double particleMinimumStep;
+    int particleMaximumNumberOfSteps;
+    bool particleReflectOnDifferentMaterial;
+    bool particleReflectOnBoundary;
+    double particleCoefficientOfRestitution;
     Point particleStart;
     Point particleStartVelocity;
     Point particleAcceleration;

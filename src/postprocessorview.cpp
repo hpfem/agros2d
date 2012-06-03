@@ -82,6 +82,7 @@ void PostprocessorWidget::loadBasic()
     chkShowPost2DContourView->setChecked(Util::config()->showContourView);
     chkShowPost2DVectorView->setChecked(Util::config()->showVectorView);
     chkShowPost2DScalarView->setChecked(Util::config()->showScalarView);
+    chkShowPost2DParticleView->setChecked(Util::config()->showParticleView);
 
     // contour field
     cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Util::config()->contourVariable));
@@ -153,9 +154,12 @@ void PostprocessorWidget::loadAdvanced()
     txtParticlePointY->setValue(Util::config()->particleStart.y);
     txtParticleVelocityX->setValue(Util::config()->particleStartVelocity.x);
     txtParticleVelocityY->setValue(Util::config()->particleStartVelocity.y);
-    chkParticleTerminateOnDifferentMaterial->setChecked(Util::config()->particleTerminateOnDifferentMaterial);
+    chkParticleReflectOnDifferentMaterial->setChecked(Util::config()->particleReflectOnDifferentMaterial);
+    chkParticleReflectOnBoundary->setChecked(Util::config()->particleReflectOnBoundary);
+    txtParticleCoefficientOfRestitution->setValue(Util::config()->particleCoefficientOfRestitution);
     txtParticleMaximumRelativeError->setValue(Util::config()->particleMaximumRelativeError);
-    txtParticleMaximumSteps->setValue(Util::config()->particleMaximumSteps);
+    txtParticleMinimumStep->setValue(Util::config()->particleMinimumStep);
+    txtParticleMaximumNumberOfSteps->setValue(Util::config()->particleMaximumNumberOfSteps);
     chkParticleColorByVelocity->setChecked(Util::config()->particleColorByVelocity);
     chkParticleShowPoints->setChecked(Util::config()->particleShowPoints);
     txtParticleDragDensity->setValue(Util::config()->particleDragDensity);
@@ -202,6 +206,7 @@ void PostprocessorWidget::saveBasic()
     Util::config()->showContourView = chkShowPost2DContourView->isChecked();
     Util::config()->showScalarView = chkShowPost2DScalarView->isChecked();
     Util::config()->showVectorView = chkShowPost2DVectorView->isChecked();
+    Util::config()->showParticleView = chkShowPost2DParticleView->isChecked();
 
     // contour field
     Util::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
@@ -254,9 +259,12 @@ void PostprocessorWidget::saveAdvanced()
     Util::config()->particleStart.y = txtParticlePointY->value();
     Util::config()->particleStartVelocity.x = txtParticleVelocityX->value();
     Util::config()->particleStartVelocity.y = txtParticleVelocityY->value();
-    Util::config()->particleTerminateOnDifferentMaterial = chkParticleTerminateOnDifferentMaterial->isChecked();
+    Util::config()->particleReflectOnDifferentMaterial = chkParticleReflectOnDifferentMaterial->isChecked();
+    Util::config()->particleReflectOnBoundary = chkParticleReflectOnBoundary->isChecked();
+    Util::config()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value();
     Util::config()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
-    Util::config()->particleMaximumSteps = txtParticleMaximumSteps->value();
+    Util::config()->particleMinimumStep = txtParticleMinimumStep->value();
+    Util::config()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
     Util::config()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
     Util::config()->particleShowPoints = chkParticleShowPoints->isChecked();
     Util::config()->particleDragDensity = txtParticleDragDensity->value();
@@ -371,6 +379,7 @@ QWidget *PostprocessorWidget::post2DWidget()
     chkShowPost2DScalarView = new QCheckBox(tr("Scalar view"));
     connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DParticleView = new QCheckBox(tr("Particle tracing"));
+    connect(chkShowPost2DParticleView, SIGNAL(clicked()), this, SLOT(refresh()));
 
     QGridLayout *layoutPost2D = new QGridLayout();
     layoutPost2D->addWidget(chkShowPost2DScalarView, 0, 0);
@@ -735,17 +744,22 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     txtParticleVelocityX = new SLineEditDouble();
     txtParticleVelocityY = new SLineEditDouble();
     txtParticleMaximumRelativeError = new SLineEditDouble();
-    chkParticleTerminateOnDifferentMaterial = new QCheckBox(tr("Terminate on different material"));
+    txtParticleMinimumStep = new SLineEditDouble();
+    chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflect on different material"));
+    chkParticleReflectOnBoundary = new QCheckBox(tr("Reflect on boundary"));
+    txtParticleCoefficientOfRestitution = new SLineEditDouble(0.0, true);
+    txtParticleCoefficientOfRestitution->setBottom(0.0);
+    txtParticleCoefficientOfRestitution->setTop(1.0);
     lblParticlePointX = new QLabel();
     lblParticlePointY = new QLabel();
     lblParticleVelocityX = new QLabel();
     lblParticleVelocityY = new QLabel();
     chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
     chkParticleShowPoints = new QCheckBox(tr("Show points"));
-    txtParticleMaximumSteps = new QSpinBox();
-    txtParticleMaximumSteps->setMinimum(100);
-    txtParticleMaximumSteps->setMaximum(100000);
-    txtParticleMaximumSteps->setSingleStep(100);
+    txtParticleMaximumNumberOfSteps = new QSpinBox();
+    txtParticleMaximumNumberOfSteps->setMinimum(10);
+    txtParticleMaximumNumberOfSteps->setMaximum(100000);
+    txtParticleMaximumNumberOfSteps->setSingleStep(10);
     txtParticleDragDensity = new SLineEditDouble();
     txtParticleDragCoefficient = new SLineEditDouble();
     txtParticleDragReferenceArea = new SLineEditDouble();
@@ -780,6 +794,18 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
     grpDragForce->setLayout(gridLayoutDragForce);
 
+    // reflection
+    QGridLayout *gridLayoutReflection = new QGridLayout();
+    gridLayoutReflection->setColumnMinimumWidth(0, minWidth);
+    gridLayoutReflection->setColumnStretch(1, 1);
+    gridLayoutReflection->addWidget(chkParticleReflectOnDifferentMaterial, 0, 0, 1, 2);
+    gridLayoutReflection->addWidget(chkParticleReflectOnBoundary, 1, 0, 1, 2);
+    gridLayoutReflection->addWidget(new QLabel(tr("Coefficient of restitution (-):")), 2, 0);
+    gridLayoutReflection->addWidget(txtParticleCoefficientOfRestitution, 2, 1);
+
+    QGroupBox *grpReflection = new QGroupBox(tr("Reflection"));
+    grpReflection->setLayout(gridLayoutReflection);
+
     // initial particle position
     QGridLayout *gridLayoutInitialPosition = new QGridLayout();
     gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
@@ -804,13 +830,14 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     QGridLayout *gridLayoutAdvanced = new QGridLayout();
     gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0);
     gridLayoutAdvanced->addWidget(new QLabel(QString("<i><b>F</b></i><sub>G</sub> = (0, m g<sub>0</sub>, 0))")), 0, 1);
-    gridLayoutAdvanced->addWidget(chkParticleTerminateOnDifferentMaterial, 1, 0, 1, 2);
     gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
     gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
     gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum relative error (%):")), 4, 0);
     gridLayoutAdvanced->addWidget(txtParticleMaximumRelativeError, 4, 1);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum steps:")), 5, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMaximumSteps, 5, 1);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Minimum step (m):")), 5, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMinimumStep, 5, 1);
+    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum number of steps:")), 6, 0);
+    gridLayoutAdvanced->addWidget(txtParticleMaximumNumberOfSteps, 6, 1);
 
     QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
     grpAdvanced->setLayout(gridLayoutAdvanced);
@@ -828,7 +855,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     gridLayoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
     gridLayoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
     gridLayoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpAdvanced, 9, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpReflection, 9, 0, 1, 2);
+    gridLayoutParticle->addWidget(grpAdvanced, 10, 0, 1, 2);
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
     layoutParticle->addLayout(gridLayoutParticle);
@@ -984,16 +1012,7 @@ void PostprocessorWidget::refresh()
         chkShowPost2DContourView->setEnabled(Util::problem()->isSolved() && (cmbPost2DContourVariable->count() > 0));
         chkShowPost2DScalarView->setEnabled(Util::problem()->isSolved() && (cmbPostScalarFieldVariable->count() > 0));
         chkShowPost2DVectorView->setEnabled(Util::problem()->isSolved() && (cmbPost2DVectorFieldVariable->count() > 0));
-        // if (Util::problem()->config()->hermes()->hasParticleTracing())
-        // {
-        // chkShowParticleTracing->setEnabled(Util::problem()->isSolved() && (Util::problem()->config()->analysisType == AnalysisType_SteadyState));
         chkShowPost2DParticleView->setEnabled(Util::problem()->isSolved());
-        // }
-        // else
-        // {
-        //     chkShowParticleTracing->setEnabled(false);
-        //     chkShowParticleTracing->setChecked(false);
-        // }
 
         // contour
         cmbPost2DContourVariable->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
@@ -1021,7 +1040,7 @@ void PostprocessorWidget::refresh()
         radPost3DScalarField3D->setEnabled(Util::problem()->isSolved());
         radPost3DScalarField3DSolid->setEnabled(Util::problem()->isSolved());
         radPost3DModel->setEnabled(Util::problem()->isSolved());
-        radPost3DParticleTracing->setEnabled(chkShowPost2DParticleView->isEnabled());
+        radPost3DParticleTracing->setEnabled(Util::problem()->isSolved());
     }
 
     grpTransient->setVisible(false);
@@ -1121,9 +1140,12 @@ void PostprocessorWidget::doParticleDefault()
     txtParticlePointY->setValue(PARTICLESTARTY);
     txtParticleVelocityX->setValue(PARTICLESTARTVELOCITYX);
     txtParticleVelocityY->setValue(PARTICLESTARTVELOCITYY);
-    chkParticleTerminateOnDifferentMaterial->setChecked(PARTICLETERMINATEONDIFFERENTMATERIAL);
+    chkParticleReflectOnDifferentMaterial->setChecked(PARTICLEREFLECTONDIFFERENTMATERIAL);
+    chkParticleReflectOnBoundary->setChecked(PARTICLEREFLECTONBOUNDARY);
+    txtParticleCoefficientOfRestitution->setValue(PARTICLECOEFFICIENTOFRESTITUTION);
     txtParticleMaximumRelativeError->setValue(PARTICLEMAXIMUMRELATIVEERROR);
-    txtParticleMaximumSteps->setValue(PARTICLEMAXIMUMSTEPS);
+    txtParticleMinimumStep->setValue(PARTICLEMINIMUMSTEP);
+    txtParticleMaximumNumberOfSteps->setValue(PARTICLEMAXIMUMNUMBEROFSTEPS);
     chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
     chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
     txtParticleDragDensity->setValue(PARTICLEDRAGDENSITY);

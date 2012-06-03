@@ -726,5 +726,11 @@
 					planar="1.0" axi="1.0" />
 			</module:surfaceintegral>
 		</module:surfaceintegrals>
+
+        <module:force>
+            <module:expression analysistype="steadystate"
+                planar_x="- velz * (-dx1)" planar_y="velz * dy1" planar_z="velx * (-dx1) - vely * dy1"
+                axi_r="- velz * (r * dr1 + value1)" axi_z="- velz * r * (dz1)" axi_phi="vely * dz1 + velx * (dr1 + value1 / (r + 1e-12))" />
+        </module:force>
 	</module:postprocessor>
 </module:module>
