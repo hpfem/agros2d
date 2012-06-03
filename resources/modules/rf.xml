@@ -64,8 +64,7 @@
                 <module:quantity id="rf_te_magnetic_field_imag" shortname="rf_Hi" />
                 <module:quantity id="rf_te_surface_current_real" shortname="rf_Jr" />
                 <module:quantity id="rf_te_surface_current_imag" shortname="rf_Ji" />
-                <module:quantity id="rf_te_port_power" shortname="rf_P" />
-                <module:quantity id="rf_te_port_phase" shortname="rf_alpha" />
+                <module:quantity id="rf_te_impedance" shortname="rf_Z0" />
 
                 <module:weakforms_surface>
                         <module:weakform_surface analysistype="harmonic"
@@ -117,15 +116,32 @@
                                                 planar_newton="2 * PI * f * rf_Jr * vval" 
                                                 axi_newton="2 * PI * f * rf_Jr * r * vval" />
                                 </module:boundary>
-                                <!--
-                                <module:boundary id="rf_te_port" name="Port">
-                                        <module:quantity id="rf_te_port_power" />
-                                        <module:quantity id="rf_te_port_phase" />
+                                <module:boundary id="rf_te_impedance" name="Impedance boundary condition">
+                                    <module:quantity id="rf_te_impedance" />
 
-                                        <module:matrix_form i="1" j="2" planar="uval * vval" axi="uval * vval" symmetric="1" />
-                                        <module:matrix_form i="2" j="1" planar="uval * vval" axi="uval * vval" symmetric="1" />
+                                    <module:matrix_form i="1" j="2"
+                                        planar_linear="- 2 * PI * f / rf_Z0 * uval * vval"
+                                        axi_linear="- r * 2 * PI * f / rf_Z0 * uval * vval"
+                                        planar_newton="- 2 * PI * f / rf_Z0 * uval * vval"
+                                        axi_newton="- r * 2 * PI * f / rf_Z0 * uval * vval"
+                                        symmetric="1" />
+                                    <module:matrix_form i="2" j="1"
+                                        planar_linear="2 * PI * f / rf_Z0 * uval * vval"
+                                        axi_linear="r * 2 * PI * f / rf_Z0 * uval * vval"
+                                        planar_newton="2 * PI * f / rf_Z0 * uval * vval"
+                                        axi_newton="r * 2 * PI * f / rf_Z0 * uval * vval"
+                                        symmetric="1" />
+                                    <module:vector_form i="1" j="2"
+                                        planar_linear="0"
+                                        axi_linear="0"
+                                        planar_newton="- 2 * PI * f / rf_Z0 * upval * vval"
+                                        axi_newton="- r * 2 * PI * f / rf_Z0 * upval * vval" />
+                                    <module:vector_form i="2" j="1"
+                                        planar_linear="0"
+                                        axi_linear="0"
+                                        planar_newton="2 * PI * f / rf_Z0 * upval * vval"
+                                        axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" />
                                 </module:boundary>
-                                -->
                         </module:weakform_surface>
                 </module:weakforms_surface>
         </module:surface>
@@ -188,12 +204,9 @@
                                         shortname_html="&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
                                         shortname_latex="J_{i}" unit="A/m2" unit_html="A.m&lt;sup&gt;-2&lt;/sup&gt;"
                                         unit_latex="A \cdot m^{-2}" />
-                                <module:quantity id="rf_te_port_power" name="Power"
-                                        shortname="P" shortname_html="&lt;i&gt;P&lt;/i&gt;"
-                                        shortname_latex="P" unit="W" unit_html="W" unit_latex="W" />
-                                <module:quantity id="rf_te_port_phase" name="Phase"
-                                        shortname="alpha" shortname_html="&lt;i&gt;&amp;alpha;&lt;/i&gt;"
-                                        shortname_latex="\alpha" unit="deg." unit_html="deg." unit_latex="deg." />
+                                <module:quantity id="rf_te_impedance" name="Impedance"
+                                        shortname="Z0" shortname_html="&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;"
+                                        shortname_latex="Z_0" unit="" unit_html="" unit_latex="" />
                         </module:group>
                 </module:gui>
         </module:preprocessor>

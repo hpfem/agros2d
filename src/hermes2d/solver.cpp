@@ -342,7 +342,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         NewtonSolver<Scalar> newton(&dp, Util::problem()->config()->matrixSolver());
         newton.attach_timer(&timer);
 
-        //newton.set_max_allowed_residual_norm(1e15);
+        // newton.set_max_allowed_residual_norm(1e15);
         try
         {
             int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));
