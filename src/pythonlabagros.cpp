@@ -1473,6 +1473,185 @@ void PyViewPost3D::refresh()
 
 // ****************************************************************************************************
 
+// particle tracing
+void PyParticleTracing::solve()
+{
+    if (!Util::problem()->isSolved())
+        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+
+    // store values
+    // double particleStartingRadius = Util::config()->particleStartingRadius;
+    // int particleNumberOfParticles = Util::config()->particleNumberOfParticles;
+    Util::config()->particleStartingRadius = 0.0;
+    Util::config()->particleNumberOfParticles = 1;
+
+    // clear
+    m_positions.clear();
+    m_velocities.clear();
+
+    Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, false);
+    currentPythonEngineAgros()->sceneViewPost2D()->refresh();
+
+    // restore values
+    // Util::config()->particleStartingRadius = particleStartingRadius;
+    // Util::config()->particleNumberOfParticles = particleNumberOfParticles;
+}
+
+void PyParticleTracing::positions(std::vector<double> &x,
+                                  std::vector<double> &y,
+                                  std::vector<double> &z)
+{
+    std::vector<double> outX;
+    std::vector<double> outY;
+    std::vector<double> outZ;
+    for (int i = 0; i < length(); i++)
+    {
+        outX.push_back(m_positions[i].x);
+        outY.push_back(m_positions[i].y);
+        outZ.push_back(m_positions[i].z);
+    }
+
+    x = outX;
+    y = outY;
+    z = outZ;
+}
+
+void PyParticleTracing::velocities(std::vector<double> &x,
+                                   std::vector<double> &y,
+                                   std::vector<double> &z)
+{
+    std::vector<double> outX;
+    std::vector<double> outY;
+    std::vector<double> outZ;
+    for (int i = 0; i < length(); i++)
+    {
+        outX.push_back(m_velocities[i].x);
+        outY.push_back(m_velocities[i].y);
+        outZ.push_back(m_velocities[i].z);
+    }
+
+    x = outX;
+    y = outY;
+    z = outZ;
+}
+
+void PyParticleTracing::setInitialPosition(double x, double y)
+{
+    RectPoint rect = Util::scene()->boundingBox();
+
+    if (x < rect.start.x || x > rect.end.x)
+        throw out_of_range(QObject::tr("x coordinate is out of range.").toStdString());
+    if (y < rect.start.y || y > rect.end.y)
+        throw out_of_range(QObject::tr("y coordinate is out of range.").toStdString());
+
+    Util::config()->particleStart = Point(x, y);
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setInitialVelocity(double x, double y)
+{
+    Util::config()->particleStartVelocity = Point(x, y);
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setParticleMass(double mass)
+{
+    if (mass <= 0.0)
+        throw out_of_range(QObject::tr("Mass must be positive.").toStdString());
+
+    Util::config()->particleMass = mass;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setParticleCharge(double charge)
+{
+    Util::config()->particleConstant = charge;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setDragForceDensity(double rho)
+{
+    if (rho < 0.0)
+        throw out_of_range(QObject::tr("Density cannot be negative.").toStdString());
+
+    Util::config()->particleDragDensity = rho;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setDragForceReferenceArea(double area)
+{
+    if (area < 0.0)
+        throw out_of_range(QObject::tr("Area cannot be negative.").toStdString());
+
+    Util::config()->particleDragReferenceArea = area;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setDragForceCoefficient(double coeff)
+{
+    if (coeff < 0.0)
+        throw out_of_range(QObject::tr("Coefficient cannot be negative.").toStdString());
+
+    Util::config()->particleDragCoefficient = coeff;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setIncludeGravitation(int include)
+{
+    Util::config()->particleIncludeGravitation = include;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setReflectOnDifferentMaterial(int reflect)
+{
+    Util::config()->particleReflectOnDifferentMaterial = reflect;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setReflectOnBoundary(int reflect)
+{
+    Util::config()->particleReflectOnBoundary = reflect;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setCoefficientOfRestitution(double coeff)
+{
+    if (coeff < 0.0)
+       throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
+
+    Util::config()->particleCoefficientOfRestitution = coeff;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setMaximumTolerance(double tolerance)
+{
+    if (tolerance < 0.0)
+       throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
+
+    Util::config()->particleMaximumRelativeError = tolerance;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setMaximumNumberOfSteps(int steps)
+{
+    if (steps < 0.0)
+        throw out_of_range(QObject::tr("Maximum number of steps cannot be negative.").toStdString());
+
+    Util::config()->particleMaximumNumberOfSteps = steps;
+    Util::scene()->refresh();
+}
+
+void PyParticleTracing::setMinimumStep(int step)
+{
+    if (step < 0.0)
+        throw out_of_range(QObject::tr("Minimum step cannot be negative.").toStdString());
+
+    Util::config()->particleMinimumStep = step;
+    Util::scene()->refresh();
+}
+
+// **************************************************************************************************
+
 char *pyVersion()
 {
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());

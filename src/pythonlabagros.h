@@ -418,6 +418,61 @@ struct PyViewPost3D
     void refresh();
 };
 
+class PyParticleTracing
+{
+public:
+    PyParticleTracing() {}
+    ~PyParticleTracing() {}
+
+    void setInitialPosition(double x, double y);
+    void initialPosition(double &x, double &y)
+    {
+        x = Util::config()->particleStart.x;
+        y = Util::config()->particleStart.y;
+    }
+    void setInitialVelocity(double x, double y);
+    void initialVelocity(double &x, double &y)
+    {
+        x = Util::config()->particleStartVelocity.x;
+        y = Util::config()->particleStartVelocity.y;
+    }
+    void setParticleMass(double mass);
+    double particleMass() { return Util::config()->particleMass; }
+    void setParticleCharge(double charge);
+    double particleCharge() { return Util::config()->particleConstant; }
+    void setDragForceDensity(double rho);
+    double dragForceDensity() { return Util::config()->particleDragDensity; }
+    void setDragForceReferenceArea(double area);
+    double dragForceReferenceArea() { return Util::config()->particleDragReferenceArea; }
+    void setDragForceCoefficient(double coeff);
+    double dragForceCoefficient() { return Util::config()->particleDragCoefficient; }
+    void setIncludeGravitation(int include);
+    int includeGravitation() { return Util::config()->particleIncludeGravitation; }
+    void setReflectOnDifferentMaterial(int reflect);
+    int reflectOnDifferentMaterial() { return Util::config()->particleReflectOnDifferentMaterial; }
+    void setReflectOnBoundary(int reflect);
+    int reflectOnBoundary() { return Util::config()->particleReflectOnBoundary; }
+    void setCoefficientOfRestitution(double coeff);
+    int coefficientOfRestitution() { return Util::config()->particleCoefficientOfRestitution; }
+    void setMaximumTolerance(double tolerance);
+    double maximumTolerance() { return Util::config()->particleMaximumRelativeError; }
+    void setMaximumNumberOfSteps(int steps);
+    int maximumNumberOfSteps() { return Util::config()->particleMaximumNumberOfSteps; }
+    void setMinimumStep(int step);
+    int minimumStep() { return Util::config()->particleMinimumStep; }
+
+    void solve();
+
+    inline int length() { return m_positions.length(); }
+    void positions(vector<double> &x, vector<double> &y, vector<double> &z);
+    void velocities(vector<double> &x, vector<double> &y, vector<double> &z);
+
+private:
+    // position and velocity
+    QList<Point3> m_positions;
+    QList<Point3> m_velocities;
+};
+
 // functions
 char *pyVersion();
 void pyQuit();
