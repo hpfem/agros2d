@@ -1167,9 +1167,19 @@ void MainWindow::doDocumentSaveGeometry()
 
 void MainWindow::doCreateVideo()
 {
-    VideoDialog videoDialog(sceneViewPost2D, this);
+    VideoDialog *videoDialog = NULL;
+    if (sceneViewMesh->actSceneModeMesh->isChecked())
+        videoDialog = new VideoDialog(sceneViewMesh, this);
+    else if (sceneViewPost2D->actSceneModePost2D->isChecked())
+        videoDialog = new VideoDialog(sceneViewPost2D, this);
+    else if (sceneViewPost3D->actSceneModePost3D->isChecked())
+        videoDialog = new VideoDialog(sceneViewPost3D, this);
 
-    videoDialog.showDialog();
+    if (videoDialog)
+    {
+        videoDialog->showDialog();
+        delete videoDialog;
+    }
 }
 
 void MainWindow::doCreateMesh()

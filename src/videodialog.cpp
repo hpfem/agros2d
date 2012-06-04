@@ -25,9 +25,9 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
 
-VideoDialog::VideoDialog(SceneViewPost2D *sceneView, QWidget *parent) : QDialog(parent)
+VideoDialog::VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent) : QDialog(parent)
 {
-    m_sceneViewPost2D = sceneView;
+    m_sceneView = sceneView;
 
     setModal(true);
     setWindowIcon(icon("video"));
@@ -35,6 +35,8 @@ VideoDialog::VideoDialog(SceneViewPost2D *sceneView, QWidget *parent) : QDialog(
 
     // store timestep
     m_timeStep = Util::scene()->activeTimeStep();
+    // store adaptive step
+    m_adaptiveStep = Util::scene()->activeAdaptivityStep();
 
     // time steps
     m_timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
@@ -57,7 +59,7 @@ VideoDialog::~VideoDialog()
 {
     // restore previous timestep
     Util::scene()->setActiveTimeStep(m_timeStep);
-    m_sceneViewPost2D->refresh();
+    m_sceneView->refresh();
 
     delete timerAnimate;
 }
@@ -66,11 +68,18 @@ void VideoDialog::showDialog()
 {
     doCommandFFmpeg();
 
+    /*
     int timeSteps = m_timeLevels.count();
 
     txtAnimateFrom->setMaximum(timeSteps);
     txtAnimateTo->setMaximum(timeSteps);
     txtAnimateTo->setValue(timeSteps);
+    */
+    int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) + 1;
+
+    txtAnimateFrom->setMaximum(adaptiveSteps);
+    txtAnimateTo->setMaximum(adaptiveSteps);
+    txtAnimateTo->setValue(adaptiveSteps);
 
     doValueFromChanged(txtAnimateFrom->value());
     doValueToChanged(txtAnimateTo->value());
@@ -246,9 +255,19 @@ void VideoDialog::doAnimate()
 
 void VideoDialog::doAnimateNextStep()
 {
+    /*
     if (Util::scene()->activeTimeStep() + 1 < txtAnimateTo->value())
     {
         doSetTimeStep(Util::scene()->activeTimeStep() + 2);
+    }
+    else
+    {
+        doAnimate();
+    }
+    */
+    if (Util::scene()->activeAdaptivityStep() + 1 < txtAnimateTo->value())
+    {
+        doSetTimeStep(Util::scene()->activeAdaptivityStep() + 2);
     }
     else
     {
@@ -258,13 +277,15 @@ void VideoDialog::doAnimateNextStep()
 
 void VideoDialog::doSetTimeStep(int index)
 {
-    Util::scene()->setActiveTimeStep(index - 1);
-    m_sceneViewPost2D->refresh();
+    // Util::scene()->setActiveTimeStep(index - 1);
+    Util::scene()->setActiveAdaptivityStep(index - 1);
+
+    m_sceneView->refresh();
 
     sldAnimate->setValue(index);
 
-    QString time = QString::number(m_timeLevels[index - 1], 'g');
-    lblAnimateTime->setText(time + " s");
+    // QString time = QString::number(m_timeLevels[index - 1], 'g');
+    // lblAnimateTime->setText(time + " s");
 
     QApplication::processEvents();
 }
@@ -291,7 +312,7 @@ void VideoDialog::doCreateImages()
     {
         progressBar->setValue(i);
         Util::scene()->setActiveTimeStep(i);
-        m_sceneViewPost2D->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
+        m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
     }
 
     btnClose->setEnabled(true);

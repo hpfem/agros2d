@@ -263,9 +263,8 @@ namespace Hermes
             {
 #pragma omp critical (rhs)
               {
-                    // std::cout << "XXX: " << n_quadrature_points << " : " << u << " : " << u->val[0] << " : " << v << std::endl << std::flush;
                 if(surface_form)
-                  ; // this->current_rhs->add(current_als[form->i]->dof[i], -0.5 * block_scaling_coeff(form) * form->value(n_quadrature_points, jacobian_x_weights, u_ext, u, v, geometry, &ext) * form->scaling_factor * current_als[form->j]->coef[j] * current_als[form->i]->coef[i]);
+                  this->current_rhs->add(current_als[form->i]->dof[i], -0.5 * block_scaling_coeff(form) * form->value(n_quadrature_points, jacobian_x_weights, u_ext, u, v, geometry, &ext) * form->scaling_factor * current_als[form->j]->coef[j] * current_als[form->i]->coef[i]);
                 else
                   this->current_rhs->add(current_als[form->i]->dof[i], -block_scaling_coeff(form) * form->value(n_quadrature_points, jacobian_x_weights, u_ext, u, v, geometry, &ext) * form->scaling_factor * current_als[form->j]->coef[j] * current_als[form->i]->coef[i]);
               }

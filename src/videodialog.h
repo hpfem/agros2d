@@ -24,22 +24,25 @@
 
 class SLineEditDouble;
 
-class SceneViewPost2D;
+class SceneViewPostInterface;
 
 class VideoDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    VideoDialog(SceneViewPost2D *sceneView, QWidget *parent = 0);
+    VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent = 0);
     ~VideoDialog();
 
     void showDialog();
 
 private:
+    SceneViewPostInterface *m_sceneView;
+
     int m_timeStep;
-    SceneViewPost2D *m_sceneViewPost2D;
     QList<double> m_timeLevels;
+
+    int m_adaptiveStep;
 
     QString commandFFmpeg;
     QString outputFile;

@@ -705,38 +705,9 @@ void SceneViewPost2D::paintScalarField()
             glVertex2d(linVertScalar[linTrisScalar[i][j]][0], linVertScalar[linTrisScalar[i][j]][1]);
         }
     }
-    glEnd();
+    glEnd();  
 
     m_post2DHermes->linScalarView().unlock_data();
-
-    // mesh
-    // init linearizer for solution mesh
-    Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeSceneSolution()->sln(0)->get_mesh());
-    Hermes::Hermes2D::Views::Linearizer linSolutionMeshView;
-    linSolutionMeshView.process_solution(&solution);
-
-    linSolutionMeshView.lock_data();
-
-    double3* linVert = linSolutionMeshView.get_vertices();
-    int3* linEdges = linSolutionMeshView.get_edges();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(Util::config()->colorSolutionMesh.redF(),
-              Util::config()->colorSolutionMesh.greenF(),
-              Util::config()->colorSolutionMesh.blueF());
-    glLineWidth(1.3);
-
-    // triangles
-    glBegin(GL_LINES);
-    for (int i = 0; i < linSolutionMeshView.get_num_edges(); i++)
-    {
-        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
-        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
-    }
-    glEnd();
-
-    linSolutionMeshView.unlock_data();
     */
 }
 
