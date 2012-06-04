@@ -15,7 +15,7 @@ current.analysis_type = "steadystate"
 current.weak_forms = "compiled"
 current.number_of_refinements = 1
 current.polynomial_order = 2
-current.linearity_type = "newton"
+current.linearity_type = "linear"
 current.nonlinear_tolerance = 0.001
 current.nonlinear_steps = 10
 
@@ -24,21 +24,6 @@ current.add_boundary("0 V", "current_potential", {"current_potential" : 0})
 current.add_boundary("Neumann", "current_inward_current_flow", {"current_inward_current_flow" : 0})
 
 current.add_material("Material", {"current_conductivity" : 100000})
-
-elasticity = agros2d.field("elasticity")
-elasticity.analysis_type = "steadystate"
-elasticity.weak_forms = "interpreted"
-elasticity.number_of_refinements = 1
-elasticity.polynomial_order = 3
-elasticity.linearity_type = "newton"
-elasticity.nonlinear_tolerance = 0.001
-elasticity.nonlinear_steps = 10
-
-elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
-elasticity.add_boundary("Fixed free", "elasticity_fixed_free", {"elasticity_displacement_x" : 0, "elasticity_force_y" : 0})
-elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})
-
-elasticity.add_material("Material", {"elasticity_alpha" : 2.3e-05, "elasticity_force_x" : 0, "elasticity_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 300, "elasticity_young_modulus" : 7e+10})
 
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
@@ -54,6 +39,20 @@ heat.add_boundary("Flux", "heat_heat_flux", {"heat_convection_external_temperatu
 
 heat.add_material("Material", {"heat_conductivity" : { "value" : 385, "x" : [0,100,400,900,1200,1800], "y" : [300,350,480,300,280,320] }, "heat_volume_heat" : 0})
 
+elasticity = agros2d.field("elasticity")
+elasticity.analysis_type = "steadystate"
+elasticity.weak_forms = "compiled"
+elasticity.number_of_refinements = 1
+elasticity.polynomial_order = 3
+elasticity.linearity_type = "newton"
+elasticity.nonlinear_tolerance = 0.001
+elasticity.nonlinear_steps = 10
+
+elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
+elasticity.add_boundary("Fixed free", "elasticity_fixed_free", {"elasticity_displacement_x" : 0, "elasticity_force_y" : 0})
+elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})
+
+elasticity.add_material("Material", {"elasticity_alpha" : 2.3e-05, "elasticity_force_x" : 0, "elasticity_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 300, "elasticity_young_modulus" : 7e+10})
 
 # geometry
 geometry = agros2d.geometry

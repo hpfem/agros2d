@@ -53,8 +53,8 @@
 			<coupling:weakform_volume couplingtype="weak" sourceanalysis="harmonic"
 				targetanalysis="transient">
 				<coupling:vector_form i="1" j="1"
-					planar_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * vval"
-					axi_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * r * vval" 
+                    planar_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * vval"
+                    axi_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * r * vval"
 					planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * vval"
 					axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source0 * source0 + source1 * source1) * r * vval"/>
 			</coupling:weakform_volume>

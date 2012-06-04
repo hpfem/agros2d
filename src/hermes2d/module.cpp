@@ -175,7 +175,6 @@ template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
                                          Marker* marker, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
-    //TODO zatim jen interpretovane formy. Pak se musi nejak rozlisit, jestli je registrovana forma z modulu nebo ze sdruzeni
     string problemId;
 
     if (couplingInfo)
@@ -183,8 +182,8 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
         problemId =
                 materialTarget->fieldInfo()->fieldId().toStdString() + "_" +
                 field->fieldInfo()->fieldId().toStdString() + "_" +
-                analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
                 analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
+                analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
                 coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
                 ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_" +
                 couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
@@ -197,8 +196,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
                 ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
     }
 
-    qDebug() << problemId.c_str();
-    Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
+    Hermes::Hermes2D::Form<Scalar> *custom_form = NULL;
     
     // compiled form
     if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)

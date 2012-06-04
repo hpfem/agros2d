@@ -69,8 +69,8 @@ class XmlParser:
                                 if not(quantity.id in quantity_ids_planar):
                                     tmp_quantity = Quantity()
                                     tmp_quantity = copy(quantity)
-                                    if module_name == coupled_module_names[1]:                                                                            
-                                        tmp_quantity.field  = 'Target'                                        
+                                    if module_name == coupled_module_names[0]:
+                                        tmp_quantity.field  = 'Target'
                                     coupled_quantities_planar.append(tmp_quantity)                                    
                                     quantity_ids_planar.append(quantity.id)
                                     #print quantity.id                                
@@ -79,8 +79,8 @@ class XmlParser:
                                 if not(quantity.id in quantity_ids_axi):
                                     tmp_quantity = Quantity()
                                     tmp_quantity = copy(quantity)
-                                    if module_name == coupled_module_names[1]:
-                                        tmp_quantity.field  = 'Target'   
+                                    if module_name == coupled_module_names[0]:
+                                        tmp_quantity.field  = 'Target'
                                     coupled_quantities_axi.append(tmp_quantity)
                                     quantity_ids_axi.append(quantity.id)
                                     
@@ -895,6 +895,5 @@ class Module:
 if __name__ == '__main__':
     x = 10
     assert(x==10)        
-    coupling_parser = XmlParser(['current', 'heat'], ['current-heat'])    
+    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat'])
     coupling_parser.process()
-    
