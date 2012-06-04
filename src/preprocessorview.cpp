@@ -288,18 +288,21 @@ void PreprocessorWidget::refresh()
     labelsNode->setFont(0, fnt);
 
     QList<QTreeWidgetItem *> listLabels;
+    int ilabel = 0;
     foreach (SceneLabel *label, Util::scene()->labels->items())
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("%1 - [%2; %3]").
-                      arg(inode).
+                      arg(ilabel).
                       arg(label->point().x, 0, 'e', 2).
                       arg(label->point().y, 0, 'e', 2));
         item->setIcon(0, icon("scene-label"));
         item->setData(0, Qt::UserRole, label->variant());
 
         listLabels.append(item);
+
+        ilabel++;
     }
     labelsNode->addChildren(listLabels);
 

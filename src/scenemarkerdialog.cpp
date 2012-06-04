@@ -240,7 +240,9 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
     {
         if (variable->id() == row.id())
         {
-            ValueLineEdit *edit = new ValueLineEdit(this, variable->isTimeDep(), variable->isNonlinear());
+            ValueLineEdit *edit = new ValueLineEdit(this,
+                                                    (variable->isTimeDep() && material->fieldInfo()->analysisType() == AnalysisType_Transient),
+                                                    (variable->isNonlinear() && material->fieldInfo()->linearityType() != LinearityType_Linear));
             if (variable->isNonlinear())
             {
                 edit->setLabelX(row.shortnameDependenceHtml());
@@ -289,11 +291,19 @@ SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Module::DialogUI *ui, SceneBo
 
 ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::DialogRow &row)
 {
-    foreach (Module::BoundaryTypeVariable *variable, boundary->fieldInfo()->module()->boundaryTypeVariables())
-        if (variable->id() == row.id())
-            return new ValueLineEdit(this, false, false);
+    foreach (Module::BoundaryType *boundaryType, boundary->fieldInfo()->module()->boundaryTypes())
+        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+        {
+            if (variable->id() == row.id())
+            {
+                ValueLineEdit *edit = new ValueLineEdit(this,
+                                                        (variable->isTimeDep() && boundary->fieldInfo()->analysisType() == AnalysisType_Transient),
+                                                        false);
+                return edit;
+            }
+        }
 
-    return new ValueLineEdit(this);
+    return NULL;
 }
 
 void SceneFieldWidgetBoundary::addCustomWidget(QVBoxLayout *layout)

@@ -44,6 +44,7 @@ void Config::loadWorkspace()
 
     // experimental features
     showExperimentalFeatures = settings.value("SceneViewSettings/ExperimentalFeatures", false).toBool();
+    showLogStdOut = settings.value("SceneViewSettings/LogStdOut", false).toBool();
 
     // general
     guiStyle = settings.value("General/GUIStyle").toString();
@@ -218,7 +219,6 @@ void Config::loadAdvanced()
     // add quadratic elements (added points on the middle of edge used by rough triangle division)
     if (!commandTriangle.contains("-o2"))
         commandTriangle = COMMANDS_TRIANGLE;
-    commandFFmpeg = settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString();
 
     // number of threads
     numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
@@ -242,6 +242,7 @@ void Config::saveWorkspace()
 
     // experimental features
     settings.setValue("SceneViewSettings/ExperimentalFeatures", showExperimentalFeatures);
+    settings.setValue("SceneViewSettings/LogStdOut", showLogStdOut);
 
     // general
     settings.setValue("General/GUIStyle", guiStyle);
@@ -407,7 +408,6 @@ void Config::saveAdvanced()
 
     // command argument
     settings.setValue("Commands/Triangle", commandTriangle);
-    settings.setValue("Commands/FFmpeg", commandFFmpeg);
 
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);

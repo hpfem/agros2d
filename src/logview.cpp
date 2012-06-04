@@ -247,3 +247,34 @@ void LogDialog::printDebug(const QString &module, const QString &message)
         }
     }
 }
+
+// *******************************************************************************************
+
+LogStdOut::LogStdOut(QWidget *parent) : QObject(parent)
+{
+    connect(Util::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
+    connect(Util::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
+    connect(Util::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
+    connect(Util::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
+}
+
+void LogStdOut::printMessage(const QString &module, const QString &message)
+{
+    qWarning() << QString("%1: %2").arg(module).arg(message);
+}
+
+void LogStdOut::printError(const QString &module, const QString &message)
+{
+    qCritical() << QString("%1: %2").arg(module).arg(message);
+}
+
+void LogStdOut::printWarning(const QString &module, const QString &message)
+{
+    qWarning() << QString("%1: %2").arg(module).arg(message);
+}
+
+void LogStdOut::printDebug(const QString &module, const QString &message)
+{
+    qDebug() << QString("%1: %2").arg(module).arg(message);
+}
+

@@ -97,9 +97,9 @@ void FieldInfo::setAnalysisType(const AnalysisType analysisType)
     m_analysisType = analysisType;
 
     if (m_module) delete m_module;
-    m_module = moduleFactory(m_fieldId,
-                             Util::problem()->config()->coordinateType(),
-                             m_analysisType);
+    m_module = new Module::ModuleAgros(m_fieldId,
+                                       Util::problem()->config()->coordinateType(),
+                                       m_analysisType);
 }
 
 void FieldInfo::clear()

@@ -25,7 +25,7 @@
 		<module:weakforms_volume>
 			<module:weakform_volume analysistype="steadystate">
                 <module:quantity id="heat_conductivity" nonlinearity_planar="value1" nonlinearity_axi="value1" />
-                <module:quantity id="heat_volume_heat" dependence="time" />
+                <module:quantity id="heat_volume_heat" />
 
 				<module:matrix_form i="1" j="1"
 					planar_linear="he_lambda * (udx * vdx + udy * vdy)"
@@ -42,7 +42,7 @@
 
 			<module:weakform_volume analysistype="transient">
                 <module:quantity id="heat_conductivity" nonlinearity_planar="value1" nonlinearity_axi="value1" />
-				<module:quantity id="heat_volume_heat" />
+                <module:quantity id="heat_volume_heat" dependence="time" />
                 <module:quantity id="heat_density" nonlinearity_planar="value1" nonlinearity_axi="value1" />
                 <module:quantity id="heat_specific_heat" nonlinearity_planar="value1" nonlinearity_axi="value1" />
 

@@ -48,45 +48,41 @@
 					axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
 			</module:weakform_volume>
 
-                        <module:weakform_volume analysistype="transient">
-                                <module:quantity id="acoustic_density" />
-                                <module:quantity id="acoustic_speed" />
+            <module:weakform_volume analysistype="transient">
+                    <module:quantity id="acoustic_density" />
+                    <module:quantity id="acoustic_speed" />
 
-                                <module:matrix_form i="1" j="1"
-                                        planar_linear="1 / ac_rho * (udx * vdx + udy * vdy) + 1 / (ac_rho * ac_vel * ac_vel) * uval * vval / deltat"
-                                        axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
-                                        planar_newton="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
-                                        axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
-                                        symmetric="1" />
-                                <module:matrix_form i="2" j="2"
-                                        planar_linear="uval * vval / deltat"
-                                        axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
-                                        planar_newton="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
-                                        axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval" />
-                                <module:vector_form i="1" j="1"
-                                        planar_linear="- 1 / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat"
-                                        axi_linear="0"
-                                        planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval"
-                                        axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
-                                <module:vector_form i="2" j="2"
-                                        planar_linear="uval * vval - uptval * vval / deltat "
-                                        axi_linear="0"
-                                        planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho *ac_vel * ac_vel) * upval * vval"
-                                        axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
-                        </module:weakform_volume>
+                    <module:matrix_form i="1" j="1"
+                            planar_linear="1 / ac_rho * (udx * vdx + udy * vdy) + 1 / (ac_rho * ac_vel * ac_vel) * uval * vval / deltat"
+                            axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                            planar_newton="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                            axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                            symmetric="1" />
+                    <module:matrix_form i="2" j="2"
+                            planar_linear="uval * vval / deltat"
+                            axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                            planar_newton="1 / ac_rho * (udx * vdx + udy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval"
+                            axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * uval * vval" />
+                    <module:vector_form i="1" j="1"
+                            planar_linear="1 / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat"
+                            axi_linear="r * 1 / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat"
+                            planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval"
+                            axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
+                    <module:vector_form i="2" j="2"
+                            planar_linear="uptval * vval / deltat"
+                            axi_linear="r * uptval * vval / deltat"
+                            planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval"
+                            axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * (2 * PI * f)^2 / (ac_rho * ac_vel * ac_vel) * upval * vval" />
+            </module:weakform_volume>
 
 		</module:weakforms_volume>
 	</module:volume>
 
 	<module:surface>
-		<module:quantity id="acoustic_pressure_real"
-			shortname="ac_pr" />
-		<module:quantity id="acoustic_pressure_imag"
-			shortname="ac_pi" />
-		<module:quantity id="acoustic_normal_acceleration_real"
-			shortname="ac_anr" />
-		<module:quantity id="acoustic_normal_acceleration_imag"
-			shortname="ac_ani" />
+        <module:quantity id="acoustic_pressure_real" shortname="ac_pr" />
+        <module:quantity id="acoustic_pressure_imag" shortname="ac_pi" />
+        <module:quantity id="acoustic_normal_acceleration_real" shortname="ac_anr" />
+        <module:quantity id="acoustic_normal_acceleration_imag" shortname="ac_ani" />
 		<module:quantity id="acoustic_impedance" shortname="ac_Z0" />
 
 		<module:weakforms_surface>
@@ -153,7 +149,41 @@
 						axi_newton="r * 2 * PI * f / ac_Z0 * upval * vval" />
 				</module:boundary>
 			</module:weakform_surface>
-		</module:weakforms_surface>
+            <module:weakform_surface analysistype="transient"
+                default="acoustic_pressure">
+                <module:boundary id="acoustic_pressure" name="Pressure">
+                    <module:quantity id="acoustic_pressure_real" /> <!--  TODO:  update essential BCs - dependence="time" -->
+
+                    <module:essential_form i="1"
+                        planar_linear="ac_pr"
+                        axi_linear="ac_pr"
+                        planar_newton="ac_pr"
+                        axi_newton="ac_pr"/>
+                    <module:essential_form i="2"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0" />
+                </module:boundary>
+
+                <module:boundary id="acoustic_normal_acceleration"
+                    name="Normal acceleration">
+                    <module:quantity id="acoustic_normal_acceleration_real" dependence="time" />
+
+                    <module:vector_form i="1" j="1"
+                        planar_linear="ac_anr * vval"
+                        axi_linear="ac_anr * r * vval"
+                        planar_newton="- ac_anr * vval"
+                        axi_newton="- ac_anr * r * vval" />
+                    <module:vector_form i="2" j="2"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0" />
+                </module:boundary>
+            </module:weakform_surface>
+        </module:weakforms_surface>
+
 	</module:surface>
 
 	<module:preprocessor>
@@ -209,7 +239,9 @@
 				shortname_latex="p_{r}" unit="Pa" unit_html="Pa" unit_latex="Pa">
 				<module:expression analysistype="harmonic" planar="value1"
 					axi="value1" />
-			</module:localvariable>
+                <module:expression analysistype="transient"
+                    planar="value1" axi="value1" />
+            </module:localvariable>
 			<module:localvariable id="acoustic_pressure_imag"
 				name="Pressure - imag" type="scalar" shortname="pi"
 				shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
@@ -217,12 +249,14 @@
 				<module:expression analysistype="harmonic" planar="value2"
 					axi="value2" />
 			</module:localvariable>
-                        <module:localvariable id="acoustic_sound_pressure_level"
+            <module:localvariable id="acoustic_sound_pressure_level"
                                 name="Sound pressure level" type="scalar" shortname="SPL"
 				shortname_html="&lt;i&gt;SPL&lt;/i&gt;" shortname_latex="SPL" unit="dB"
 				unit_html="dB" unit_latex="dB">
 				<module:expression analysistype="harmonic"
 					planar="20 * log10(sqrt(value1^2 + value2^2) / P0)" axi="20 * log10(sqrt(value1^2 + value2^2) / P0)" />
+                <module:expression analysistype="transient"
+                    planar="20 * log10(value1 / P0)" axi="20 * log10(value1 / P0)" />
 			</module:localvariable>
 			<module:localvariable id="acoustic_local_acceleration_real"
 				name="Local acceleration - real" type="vector" shortname="ar"
@@ -232,6 +266,9 @@
 				<module:expression analysistype="harmonic"
 					planar_x="- dx1 / ac_rho" planar_y="- dy1 / ac_rho" axi_r="- dr1 / ac_rho"
 					axi_z="- dz1 / ac_rho" />
+                <module:expression analysistype="transient"
+                    planar_x="- dx1 / ac_rho" planar_y="- dy1 / ac_rho" axi_r="- dr1 / ac_rho"
+                    axi_z="- dz1 / ac_rho" />
 			</module:localvariable>
 			<module:localvariable id="acoustic_local_acceleration_imag"
 				name="Local acceleration - imag" type="vector" shortname="ai"
@@ -248,6 +285,8 @@
 				unit="kg/m3" unit_html="kg.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="kg \cdot m^{-3}">
 				<module:expression analysistype="harmonic" planar="ac_rho"
 					axi="ac_rho" />
+                <module:expression analysistype="transient" planar="ac_rho"
+                    axi="ac_rho" />
 			</module:localvariable>
 			<module:localvariable id="acoustic_speed" name="Speed of sound"
 				type="scalar" shortname="vel" shortname_html="&lt;i&gt;c&lt;/i&gt;"
@@ -255,17 +294,20 @@
 				unit_latex="m \cdot s^{-1}">
 				<module:expression analysistype="harmonic" planar="ac_vel"
 					axi="ac_vel" />
-			</module:localvariable>
+                <module:expression analysistype="transient" planar="ac_vel"
+                    axi="ac_vel" />
+            </module:localvariable>
 		</module:localvariables>
 
 		<module:view>
 			<module:scalar_view>
-				<module:default analysistype="harmonic" id="acoustic_pressure_real" />
-			</module:scalar_view>
+                <module:default analysistype="harmonic" id="acoustic_pressure_real" />
+                <module:default analysistype="transient" id="acoustic_pressure_real" />
+            </module:scalar_view>
 			<module:vector_view>
-				<module:default analysistype="harmonic"
-					id="acoustic_local_acceleration_real" />
-			</module:vector_view>
+                <module:default analysistype="harmonic" id="acoustic_local_acceleration_real" />
+                <module:default analysistype="transient" id="acoustic_local_acceleration_real" />
+            </module:vector_view>
 		</module:view>
 
 		<module:volumeintegrals>
@@ -275,13 +317,17 @@
 				unit_latex="m^{3}">
 				<module:expression analysistype="harmonic" planar="1.0"
 					axi="2.0 * PI * r" />
-			</module:volumeintegral>
+                <module:expression analysistype="transient" planar="1.0"
+                    axi="2.0 * PI * r" />
+                </module:volumeintegral>
 			<module:volumeintegral id="acoustic_cross_section"
 				name="Cross section" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
 				shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
 				unit_latex="m^{2}">
 				<module:expression analysistype="harmonic" planar="1.0"
 					axi="1.0" />
+                <module:expression analysistype="transient" planar="1.0"
+                    axi="1.0" />
 			</module:volumeintegral>
 		</module:volumeintegrals>
 
@@ -289,16 +335,20 @@
 			<module:surfaceintegral id="acoustic_length"
 				name="Length" shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"
 				shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
-				<module:expression analysistype="harmonic" planar="1.0"
-					axi="1.0" />
-			</module:surfaceintegral>
+                <module:expression analysistype="harmonic" planar="1.0"
+                    axi="1.0" />
+                <module:expression analysistype="transient" planar="1.0"
+                    axi="1.0" />
+            </module:surfaceintegral>
 			<module:surfaceintegral id="acoustic_surface"
 				name="Surface" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
 				shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
 				unit_latex="m^{2}">
-				<module:expression analysistype="harmonic" planar="1.0"
-					axi="2.0 * PI * r" />
-			</module:surfaceintegral>
+                <module:expression analysistype="harmonic" planar="1.0"
+                    axi="2.0 * PI * r" />
+                <module:expression analysistype="transient" planar="1.0"
+                    axi="2.0 * PI * r" />
+            </module:surfaceintegral>
 		</module:surfaceintegrals>
 
         <module:force />

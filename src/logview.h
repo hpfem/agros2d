@@ -104,4 +104,17 @@ private slots:
      void printDebug(const QString &module, const QString &message);
 };
 
+class LogStdOut : public QObject
+{
+    Q_OBJECT
+public:
+    LogStdOut(QWidget *parent = 0);
+
+private slots:
+    void printMessage(const QString &module, const QString &message);
+    void printError(const QString &module, const QString &message);
+    void printWarning(const QString &module, const QString &message);
+    void printDebug(const QString &module, const QString &message);
+};
+
 #endif // TOOLTIPVIEW_H

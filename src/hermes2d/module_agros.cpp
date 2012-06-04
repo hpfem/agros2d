@@ -155,33 +155,20 @@ void Module::ModuleAgros::deformShape(double4* linVert, int count)
         deformShapeTemplate<double4 *>(linVert, count);
 }
 
-// ***************************************************************************************
-
-void ModuleMagnetic::updateTimeFunctions(double time)
+void Module::ModuleAgros::updateTimeFunctions(double time)
 {
     // update materials
-    // foreach (SceneMaterial *material, Util::scene()->materials->items())
-    //     material->evaluate("magnetic_current_density_external_real", time);
-}
+    foreach (SceneMaterial *material, Util::scene()->materials->items())
+        if (material->fieldInfo())
+            foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
+                if (variable->isTimeDep() && material->fieldInfo()->analysisType() == AnalysisType_Transient)
+                    material->evaluate(variable->id(), time);
 
-void ModuleHeat::updateTimeFunctions(double time)
-{
-    // update materials
-    // foreach (SceneMaterial *material, Util::scene()->materials->items())
-    //     material->evaluate("heat_volume_heat", time);
-}
-
-// ****************************************************************************************************
-
-Module::ModuleAgros *moduleFactory(const QString &fieldId, CoordinateType coordinate_type, AnalysisType analysis_type)
-{
-    Module::ModuleAgros *module = NULL;
-    if (fieldId == "heat")
-        module = new ModuleHeat(fieldId, coordinate_type, analysis_type);
-    else if (fieldId == "magnetic")
-        module = new ModuleMagnetic(fieldId, coordinate_type, analysis_type);
-    else
-        module = new Module::ModuleAgros(fieldId, coordinate_type, analysis_type);
-
-    return module;
+    // update boundaries
+    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
+        if (boundary->fieldInfo())
+            foreach (Module::BoundaryType *boundaryType, boundary->fieldInfo()->module()->boundaryTypes())
+                foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+                    if (variable->isTimeDep() && boundary->fieldInfo()->analysisType() == AnalysisType_Transient)
+                        boundary->evaluate(variable->id(), time);
 }

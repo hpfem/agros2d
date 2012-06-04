@@ -365,8 +365,9 @@ void Problem::solve()
 
 void Problem::solveAction()
 {
-
     clearSolution();
+
+    Util::scene()->blockSignals(true);
 
     solveInit();
 
@@ -382,7 +383,7 @@ void Problem::solveAction()
     foreach (Block* block, m_blocks)
     {
         solvers[block] = block->prepareSolver();
-        if(block->isTransient())
+        if (block->isTransient())
             solvers[block]->solveInitialTimeStep();
     }
 
@@ -393,7 +394,7 @@ void Problem::solveAction()
         foreach (Block* block, m_blocks)
         {
             Solver<double>* solver = solvers[block];
-            if((!block->skipThisTimeStep(timeStep)) && !(block->isTransient() && (timeStep == 0)))
+            if ((!block->skipThisTimeStep(timeStep)) && !(block->isTransient() && (timeStep == 0)))
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
@@ -404,8 +405,18 @@ void Problem::solveAction()
                     }
                     else
                     {
-                        solver->createInitialSpace(timeStep);
-                        solver->solveSimple(timeStep, 0, false);
+                        try
+                        {
+                            solver->createInitialSpace(timeStep);
+                            solver->solveSimple(timeStep, 0, false);
+                        }
+                        // catch (std::exception& e)
+                        catch (...)
+                        {
+                            // TODO: do it better
+                            // Util::log()->printError(tr("Problem"), QString::fromStdString(e.what()));
+                            return;
+                        }
                     }
                 }
                 else
@@ -435,6 +446,7 @@ void Problem::solveAction()
 
         addToActualTime(Util::problem()->config()->timeStep().value());
     }
+
 
 //    //old
 //    foreach (Block* block, m_blocks)
@@ -504,6 +516,8 @@ void Problem::solveAction()
 //        }
 //    }
 
+
+     Util::scene()->blockSignals(false);
 
     m_isSolved = true;
     emit solved();

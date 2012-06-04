@@ -102,7 +102,6 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 {
     Hermes::vector<QSharedPointer<Space<Scalar> > > space;
 
-    qDebug() << "---- createSpace()";
     // essential boundary conditions
     Hermes::vector<EssentialBCs<double> *> bcs;
     for (int i = 0; i < m_block->numSolutions(); i++)
@@ -620,12 +619,13 @@ void Solver<Scalar>::solveTimeStep()
     multiSolutionArray.setTime(Util::problem()->actualTime());
     Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve time step, actual time is %1 s").arg(Util::problem()->actualTime()));
 
-    // update essential bc values
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
-
     // update timedep values
     foreach (Field* field, m_block->fields())
         field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
+
+    // update essential bc values
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()),
+                                                                Util::problem()->actualTime());
 
     m_wf->set_current_time(Util::problem()->actualTime());
 

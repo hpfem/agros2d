@@ -44,6 +44,7 @@ class ReportDialog;
 class ServerDownloadDialog;
 class SceneTransformDialog;
 class SceneViewWidget;
+class LogStdOut;
 
 class MainWindow : public QMainWindow
 {
@@ -222,6 +223,8 @@ private:
     SceneTransformDialog *sceneTransformDialog;
 
     QSplitter *splitter;
+
+    LogStdOut *logStdOut;
 
     void setRecentFiles();
 

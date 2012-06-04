@@ -54,6 +54,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     Util::createSingleton();
 
+    // log stdout
+    logStdOut = NULL;
+    if (Util::config()->showLogStdOut)
+        logStdOut = new LogStdOut();
+
     // FIXME: curve elements from script doesn't work
     readMeshDirtyFix();
 
@@ -213,6 +218,8 @@ MainWindow::~MainWindow()
 
     // remove temp files
     removeDirectory(tempProblemDir());
+
+    delete logStdOut;
 }
 
 void MainWindow::open(const QString &fileName)

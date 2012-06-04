@@ -54,33 +54,12 @@ public:
     void deformShape(double3* linVert, int count);
     void deformShape(double4* linVert, int count);
 
+    void updateTimeFunctions(double time);
+
 private:
     void fillComboBox(QComboBox *cmbFieldVariable, QList<LocalVariable *> list);
 };
 
 }
-
-// module factory
-Module::ModuleAgros *moduleFactory(const QString &fieldId, CoordinateType problem_type, AnalysisType analysis_type);
-
-struct ModuleMagnetic : public Module::ModuleAgros
-{
-    Q_OBJECT
-public:
-    ModuleMagnetic(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType)
-        : Module::ModuleAgros(fieldId, problemType, analysisType) {}
-
-    void updateTimeFunctions(double time);
-};
-
-struct ModuleHeat : public Module::ModuleAgros
-{
-    Q_OBJECT
-public:
-    ModuleHeat(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType)
-        : Module::ModuleAgros(fieldId, problemType, analysisType) {}
-
-    void updateTimeFunctions(double time);
-};
 
 #endif // MODULE_AGROS_H

@@ -157,7 +157,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WeakFormKind type, int i, int 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    qDebug() << "addForm: type: " << weakFormString(type) << ", i: " << form->i << ", area: " << QString::fromStdString(form->areas.at(0));
+    // Util::log()->printDebug("WeakFormAgros", QString("addForm: type: %1, i: %2, area: %3").
+    //                         arg(weakFormString(type)).
+    //                         arg(form->i).
+    //                         arg(QString::fromStdString(form->areas.at(0))));
 
     if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
@@ -208,7 +211,6 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     {
         Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2).").
                                   arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)));
-        qDebug() << "Cannot find compiled form";
     }
     
     // interpreted form
@@ -259,8 +261,6 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms()
 {
-    qDebug() << "registerForms";
-    
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
@@ -268,9 +268,7 @@ void WeakFormAgros<Scalar>::registerForms()
         // boundary conditions
         for (int edgeNum = 0; edgeNum<Util::scene()->edges->count(); edgeNum++)
         {
-            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->marker(fieldInfo);
-            cout << "registerForms : registering edge " << edgeNum << endl;
-            
+            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->marker(fieldInfo);            
             if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
             {
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
@@ -419,8 +417,12 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
         {
             if (old.id().toStdString() == qty.id())
             {
+                bool isTimeDep = false;
+                if (qty.dependence().present())
+                    isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
+
                 Module::BoundaryTypeVariable *var = new Module::BoundaryTypeVariable(
-                            old.id(), old.shortname(), old.defaultValue());
+                            old.id(), old.shortname(), old.defaultValue(), isTimeDep);
                 
                 m_variables.append(var);
             }
@@ -464,14 +466,6 @@ Module::BoundaryTypeVariable::BoundaryTypeVariable(XMLModule::quantity quant)
         m_defaultValue = quant.default_().get();
     else
         m_defaultValue = 0.0;
-}
-
-Module::BoundaryTypeVariable::BoundaryTypeVariable(const QString &id, QString shortname,
-                                                   double defaultValue)
-{
-    this->m_id = id;
-    this->m_shortname = shortname;
-    this->m_defaultValue = defaultValue;
 }
 
 Module::BoundaryType::~BoundaryType()
@@ -656,7 +650,6 @@ void Module::BasicModule::read(const QString &filename)
                     if (old.id().toStdString() == qty.id())
                     {
                         QString nonlinearExpression;
-
                         if (m_coordinateType == CoordinateType_Planar && qty.nonlinearity_planar().present())
                             nonlinearExpression = QString::fromStdString(qty.nonlinearity_planar().get());
                         else

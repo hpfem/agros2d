@@ -42,17 +42,13 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent) : Q
     m_timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
     // timer animate
-    timerAnimate = new QTimer(this);
-    connect(timerAnimate, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(doAdaptiveAnimateNextStep()));
 
     // timer create images
-    timerFile = new QTimer(this);
-    connect(timerFile, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
+    timer = new QTimer(this);
 
     createControls();
-
-    setMinimumSize(sizeHint());
-    setMaximumSize(sizeHint());
 }
 
 VideoDialog::~VideoDialog()
@@ -61,28 +57,30 @@ VideoDialog::~VideoDialog()
     Util::scene()->setActiveTimeStep(m_timeStep);
     m_sceneView->refresh();
 
-    delete timerAnimate;
+    delete timer;
 }
 
 void VideoDialog::showDialog()
-{
-    doCommandFFmpeg();
-
-    /*
+{    
+    // transient
     int timeSteps = m_timeLevels.count();
 
-    txtAnimateFrom->setMaximum(timeSteps);
-    txtAnimateTo->setMaximum(timeSteps);
-    txtAnimateTo->setValue(timeSteps);
-    */
+    txtTransientAnimateFrom->setMaximum(timeSteps);
+    txtTransientAnimateTo->setMaximum(timeSteps);
+    txtTransientAnimateTo->setValue(timeSteps);
+
+    doTransientValueFromChanged(txtTransientAnimateFrom->value());
+    doTransientValueToChanged(txtTransientAnimateTo->value());
+
+    // adaptivity
     int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) + 1;
 
-    txtAnimateFrom->setMaximum(adaptiveSteps);
-    txtAnimateTo->setMaximum(adaptiveSteps);
-    txtAnimateTo->setValue(adaptiveSteps);
+    txtAdaptiveAnimateFrom->setMaximum(adaptiveSteps);
+    txtAdaptiveAnimateTo->setMaximum(adaptiveSteps);
+    txtAdaptiveAnimateTo->setValue(adaptiveSteps);
 
-    doValueFromChanged(txtAnimateFrom->value());
-    doValueToChanged(txtAnimateTo->value());
+    doAdaptiveValueFromChanged(txtAdaptiveAnimateFrom->value());
+    doAdaptiveValueToChanged(txtAdaptiveAnimateTo->value());
 
     exec();
 }
@@ -90,143 +88,71 @@ void VideoDialog::showDialog()
 void VideoDialog::createControls()
 {
     // tab
-    QTabWidget *tabType = new QTabWidget();
-    tabType->addTab(createControlsViewport(), icon(""), tr("Viewport"));
-    tabType->addTab(createControlsFile(), icon(""), tr("File"));
+    tabTransient = createControlsViewportTimeSteps();
+    tabAdaptivity = createControlsViewportAdaptiveSteps();
+
+    tabType = new QTabWidget();
+    tabType->addTab(tabAdaptivity, icon(""), tr("Adaptivity"));
+    tabType->addTab(tabTransient, icon(""), tr("Transient"));
+    connect(tabType, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
     btnClose = new QPushButton(tr("Close"));
     btnClose->setDefault(true);
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
+    btnAnimate = new QPushButton(tr("Animate"));
+
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addStretch();
+    layoutButton->addWidget(btnAnimate);
     layoutButton->addWidget(btnClose);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tabType);
-    layout->addLayout(layoutButton);
-
-    setLayout(layout);
-}
-
-QWidget *VideoDialog::createControlsFile()
-{
-    QSettings settings;
-    QString codec = settings.value("VideoDialog/Codec", "msmpeg4v2").value<QString>();
-    QString format = settings.value("VideoDialog/Format", "avi").value<QString>();
-    int fps = settings.value("VideoDialog/FPS", 15).value<int>();
-
-    // file
-    cmbCodec = new QComboBox();
-    cmbCodec->addItem("Motion JPEG (mjpeg)", "mjpeg");
-    cmbCodec->addItem("Flash Video (flv)", "flv");
-    cmbCodec->addItem("MPEG-4 part 2 (mpeg4)", "mpeg4");
-    cmbCodec->addItem("MPEG-4 part 2 Microsoft variant version 2 (msmpeg4v2)", "msmpeg4v2");
-    cmbCodec->addItem("Windows Media Video 7 (wmv1)", "wmv1");
-    cmbCodec->addItem("Windows Media Video 8 (wmv2)", "wmv2");
-    cmbCodec->addItem("H.263 (h263)", "h263");
-    // cmbCodec->addItem("Graphics Interchange Format (gif)", "gif");
-    // cmbCodec->addItem("Portable Network Graphic (png)", "png");
-
-    cmbCodec->setCurrentIndex(cmbCodec->findData(codec));
-    connect(cmbCodec, SIGNAL(currentIndexChanged(int)), this, SLOT(doCommandFFmpeg()));
-
-    cmbFormat = new QComboBox();
-    cmbFormat->addItem("Microsoft Audio/Video Interleaved (avi)", "avi");
-    cmbFormat->addItem("MPEG system stream format (mpeg)", "mpeg");
-    // cmbFormat->addItem("FLV format (flv)", "flv");
-    cmbFormat->setCurrentIndex(cmbFormat->findData(format));
-    connect(cmbFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(doCommandFFmpeg()));
-
-    txtFPS = new QSpinBox();
-    txtFPS->setMinimum(1);
-    txtFPS->setValue(fps);
-    connect(txtFPS, SIGNAL(valueChanged(int)), this, SLOT(doCommandFFmpeg()));
-
-    progressBar = new QProgressBar(this);
-
-    QFormLayout *layoutControlsFile = new QFormLayout();
-    layoutControlsFile->addRow(tr("Codec:"), cmbCodec);
-    layoutControlsFile->addRow(tr("Format:"), cmbFormat);
-    layoutControlsFile->addRow(tr("FPS:"), txtFPS);
-    layoutControlsFile->addRow(tr("Progress:"), progressBar);
-
-    // dialog buttons
-    QPushButton *btnCreateImages = new QPushButton(tr("Create images"));
-    connect(btnCreateImages, SIGNAL(clicked()), this, SLOT(doCreateImages()));
-
-    btnEncodeFFmpeg = new QPushButton(tr("Encode"));
-    btnEncodeFFmpeg->setEnabled(false);
-    connect(btnEncodeFFmpeg, SIGNAL(clicked()), this, SLOT(doEncodeFFmpeg()));
-
-    btnSaveVideo = new QPushButton(tr("Save ..."));
-    btnSaveVideo->setEnabled(false);
-    connect(btnSaveVideo, SIGNAL(clicked()), this, SLOT(doSaveVideo()));
-
-    btnOpenVideo = new QPushButton(tr("Open"));
-    btnOpenVideo->setEnabled(false);
-    connect(btnOpenVideo, SIGNAL(clicked()), this, SLOT(doOpenVideo()));
-
-    QHBoxLayout *layoutButtonFile = new QHBoxLayout();
-    layoutButtonFile->addWidget(btnCreateImages);
-    layoutButtonFile->addWidget(btnEncodeFFmpeg);
-    layoutButtonFile->addWidget(btnSaveVideo);
-    layoutButtonFile->addWidget(btnOpenVideo);
-
-    QVBoxLayout *layoutFile = new QVBoxLayout();
-    layoutFile->addLayout(layoutControlsFile);
-    layoutFile->addStretch();
-    layoutFile->addLayout(layoutButtonFile);
-
-    QWidget *widFile = new QWidget();
-    widFile->setLayout(layoutFile);
-
-    return widFile;
-}
-
-QWidget *VideoDialog::createControlsViewport()
-{
-    // viewport
-    lblAnimateTime = new QLabel("0.0");
-
-    txtAnimateFrom = new QSpinBox();
-    txtAnimateFrom->setMinimum(1);
-    connect(txtAnimateFrom, SIGNAL(valueChanged(int)), this, SLOT(doValueFromChanged(int)));
-
-    txtAnimateTo = new QSpinBox();
-    txtAnimateTo->setMinimum(1);
-    connect(txtAnimateTo, SIGNAL(valueChanged(int)), this, SLOT(doValueToChanged(int)));
-
-    sldAnimate = new QSlider(Qt::Horizontal);
-    sldAnimate->setTickPosition(QSlider::TicksBelow);
-    connect(sldAnimate, SIGNAL(valueChanged(int)), this, SLOT(doSetTimeStep(int)));
-
-    txtAnimateDelay = new SLineEditDouble(0.1);
-
-    QGridLayout *layoutControlsViewport = new QGridLayout();
-    layoutControlsViewport->addWidget(new QLabel(tr("From:")), 0, 0);
-    layoutControlsViewport->addWidget(txtAnimateFrom, 0, 1);
-    layoutControlsViewport->addWidget(new QLabel(tr("To:")), 1, 0);
-    layoutControlsViewport->addWidget(txtAnimateTo, 1, 1);
-    layoutControlsViewport->addWidget(new QLabel(tr("Delay:")), 0, 2);
-    layoutControlsViewport->addWidget(txtAnimateDelay, 0, 3);
-    layoutControlsViewport->addWidget(new QLabel(tr("Time:")), 1, 2);
-    layoutControlsViewport->addWidget(lblAnimateTime, 1, 3, 1, 1, Qt::AlignLeft);
-    layoutControlsViewport->addWidget(new QLabel(tr("Time step:")), 2, 0);
-
-    // dialog buttons
-    btnAnimate = new QPushButton(tr("Animate"));
-    connect(btnAnimate, SIGNAL(clicked()), this, SLOT(doAnimate()));
+    txtDelay = new SLineEditDouble(0.1);
+    lblStepLabel = new QLabel("");
+    lblStep = new QLabel("0.0");
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
     layoutButtonViewport->addWidget(btnAnimate);
 
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(new QLabel(tr("Delay:")), 0, 0);
+    layout->addWidget(txtDelay, 0, 1);
+    layout->addWidget(lblStepLabel, 1, 0);
+    layout->addWidget(lblStep, 1, 1);
+    layout->addWidget(tabType, 2, 0, 1, 2);
+    layout->addLayout(layoutButton, 3, 0, 1, 2);
+
+    setLayout(layout);
+
+    setMinimumWidth(300);
+}
+
+QWidget *VideoDialog::createControlsViewportTimeSteps()
+{
+    // adaptivity
+    txtTransientAnimateFrom = new QSpinBox();
+    txtTransientAnimateFrom->setMinimum(1);
+    connect(txtTransientAnimateFrom, SIGNAL(valueChanged(int)), this, SLOT(doTransientValueFromChanged(int)));
+
+    txtTransientAnimateTo = new QSpinBox();
+    txtTransientAnimateTo->setMinimum(1);
+    connect(txtTransientAnimateTo, SIGNAL(valueChanged(int)), this, SLOT(doTransientValueToChanged(int)));
+
+    sldTransientAnimate = new QSlider(Qt::Horizontal);
+    sldTransientAnimate->setTickPosition(QSlider::TicksBelow);
+    connect(sldTransientAnimate, SIGNAL(valueChanged(int)), this, SLOT(doTransientSetStep(int)));
+
+
+    QGridLayout *layoutControlsViewport = new QGridLayout();
+    layoutControlsViewport->addWidget(new QLabel(tr("From:")), 0, 0);
+    layoutControlsViewport->addWidget(txtTransientAnimateFrom, 0, 1);
+    layoutControlsViewport->addWidget(new QLabel(tr("To:")), 1, 0);
+    layoutControlsViewport->addWidget(txtTransientAnimateTo, 1, 1);
+
     QVBoxLayout *layoutViewport = new QVBoxLayout();
     layoutViewport->addLayout(layoutControlsViewport);
-    layoutViewport->addWidget(sldAnimate);
-    layoutViewport->addStretch();
-    layoutViewport->addLayout(layoutButtonViewport);
+    layoutViewport->addWidget(sldTransientAnimate);
 
     QWidget *widViewport = new QWidget();
     widViewport->setLayout(layoutViewport);
@@ -234,13 +160,44 @@ QWidget *VideoDialog::createControlsViewport()
     return widViewport;
 }
 
-void VideoDialog::doAnimate()
+QWidget *VideoDialog::createControlsViewportAdaptiveSteps()
 {
-    if (timerAnimate->isActive())
+    // adaptivity
+    txtAdaptiveAnimateFrom = new QSpinBox();
+    txtAdaptiveAnimateFrom->setMinimum(1);
+    connect(txtAdaptiveAnimateFrom, SIGNAL(valueChanged(int)), this, SLOT(doAdaptiveValueFromChanged(int)));
+
+    txtAdaptiveAnimateTo = new QSpinBox();
+    txtAdaptiveAnimateTo->setMinimum(1);
+    connect(txtAdaptiveAnimateTo, SIGNAL(valueChanged(int)), this, SLOT(doAdaptiveValueToChanged(int)));
+
+    sldAdaptiveAnimate = new QSlider(Qt::Horizontal);
+    sldAdaptiveAnimate->setTickPosition(QSlider::TicksBelow);
+    connect(sldAdaptiveAnimate, SIGNAL(valueChanged(int)), this, SLOT(doAdaptiveSetStep(int)));
+
+    QGridLayout *layoutControlsViewport = new QGridLayout();
+    layoutControlsViewport->addWidget(new QLabel(tr("From:")), 0, 0);
+    layoutControlsViewport->addWidget(txtAdaptiveAnimateFrom, 0, 1);
+    layoutControlsViewport->addWidget(new QLabel(tr("To:")), 1, 0);
+    layoutControlsViewport->addWidget(txtAdaptiveAnimateTo, 1, 1);
+
+    QVBoxLayout *layoutViewport = new QVBoxLayout();
+    layoutViewport->addLayout(layoutControlsViewport);
+    layoutViewport->addWidget(sldAdaptiveAnimate);
+
+    QWidget *widViewport = new QWidget();
+    widViewport->setLayout(layoutViewport);
+
+    return widViewport;
+}
+
+void VideoDialog::doAdaptiveAnimate()
+{
+    if (timer->isActive())
     {
         btnClose->setEnabled(true);
 
-        timerAnimate->stop();
+        timer->stop();
         btnAnimate->setText(tr("Animate"));
     }
     else
@@ -248,56 +205,97 @@ void VideoDialog::doAnimate()
         btnClose->setEnabled(false);
 
         btnAnimate->setText(tr("Stop"));
-        doSetTimeStep(txtAnimateFrom->value());
-        timerAnimate->start(txtAnimateDelay->value() * 1e3);
+        doAdaptiveSetStep(txtAdaptiveAnimateFrom->value());
+        timer->start(txtDelay->value() * 1e3);
     }
 }
 
-void VideoDialog::doAnimateNextStep()
+void VideoDialog::doTransientAnimate()
 {
-    /*
-    if (Util::scene()->activeTimeStep() + 1 < txtAnimateTo->value())
+    if (timer->isActive())
     {
-        doSetTimeStep(Util::scene()->activeTimeStep() + 2);
+        btnClose->setEnabled(true);
+
+        timer->stop();
+        btnAnimate->setText(tr("Animate"));
     }
     else
     {
-        doAnimate();
-    }
-    */
-    if (Util::scene()->activeAdaptivityStep() + 1 < txtAnimateTo->value())
-    {
-        doSetTimeStep(Util::scene()->activeAdaptivityStep() + 2);
-    }
-    else
-    {
-        doAnimate();
+        btnClose->setEnabled(false);
+
+        btnAnimate->setText(tr("Stop"));
+        doAdaptiveSetStep(txtTransientAnimateFrom->value());
+        timer->start(txtDelay->value() * 1e3);
     }
 }
 
-void VideoDialog::doSetTimeStep(int index)
+void VideoDialog::doTransientAnimateNextStep()
 {
-    // Util::scene()->setActiveTimeStep(index - 1);
-    Util::scene()->setActiveAdaptivityStep(index - 1);
+    if (Util::scene()->activeTimeStep() + 1 < txtTransientAnimateTo->value())
+    {
+        doTransientSetStep(Util::scene()->activeTimeStep() + 2);
+    }
+    else
+    {
+        doTransientAnimate();
+    }
+}
+
+void VideoDialog::doTransientSetStep(int index)
+{
+    Util::scene()->setActiveTimeStep(index - 1);
 
     m_sceneView->refresh();
 
-    sldAnimate->setValue(index);
+    sldTransientAnimate->setValue(index);
 
-    // QString time = QString::number(m_timeLevels[index - 1], 'g');
-    // lblAnimateTime->setText(time + " s");
+    QString time = QString::number(m_timeLevels[index - 1], 'g');
+    lblStep->setText(time + " s");
 
     QApplication::processEvents();
 }
 
-void VideoDialog::doValueFromChanged(int index)
+void VideoDialog::doTransientValueFromChanged(int index)
 {
-    sldAnimate->setMinimum(txtAnimateFrom->value());
+    sldTransientAnimate->setMinimum(txtTransientAnimateFrom->value());
 }
 
-void VideoDialog::doValueToChanged(int index)
+void VideoDialog::doTransientValueToChanged(int index)
 {
-    sldAnimate->setMaximum(txtAnimateTo->value());
+    sldTransientAnimate->setMaximum(txtTransientAnimateTo->value());
+}
+
+void VideoDialog::doAdaptiveAnimateNextStep()
+{
+    if (Util::scene()->activeAdaptivityStep() + 1 < txtAdaptiveAnimateTo->value())
+    {
+        doAdaptiveSetStep(Util::scene()->activeAdaptivityStep() + 2);
+    }
+    else
+    {
+        doAdaptiveAnimate();
+    }
+}
+
+void VideoDialog::doAdaptiveSetStep(int index)
+{
+    Util::scene()->setActiveAdaptivityStep(index - 1);
+
+    m_sceneView->refresh();
+
+    sldAdaptiveAnimate->setValue(index);
+
+    QApplication::processEvents();
+}
+
+void VideoDialog::doAdaptiveValueFromChanged(int index)
+{
+    sldAdaptiveAnimate->setMinimum(txtAdaptiveAnimateFrom->value());
+}
+
+void VideoDialog::doAdaptiveValueToChanged(int index)
+{
+    sldAdaptiveAnimate->setMaximum(txtAdaptiveAnimateTo->value());
 }
 
 void VideoDialog::doCreateImages()
@@ -316,96 +314,30 @@ void VideoDialog::doCreateImages()
     }
 
     btnClose->setEnabled(true);
-    btnEncodeFFmpeg->setEnabled(true);
 }
 
-void VideoDialog::doEncodeFFmpeg()
+void VideoDialog::tabChanged(int index)
 {
-    btnClose->setEnabled(false);
+    timer->disconnect(this);
+    btnAnimate->disconnect(this);
 
-    // exec mencoder
-    QProcess *processFFmpeg = new QProcess();
-    processFFmpeg->setStandardOutputFile(tempProblemDir() + "/video/output.txt");
-    processFFmpeg->setStandardErrorFile(tempProblemDir() + "/video/error.txt");
-    connect(processFFmpeg, SIGNAL(finished(int)), this, SLOT(doVideoCreated(int)));
-
-    processFFmpeg->start(commandFFmpeg);
-
-    if (!processFFmpeg->waitForStarted())
+    if (tabType->currentWidget() == tabTransient)
     {
-        processFFmpeg->kill();
-        btnClose->setEnabled(true);
-        return;
+        lblStepLabel->setText(tr("Time:"));
+
+        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(doTransientAnimate()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(doTransientAnimateNextStep()));
     }
-
-    while (!processFFmpeg->waitForFinished()) {}
-}
-
-void VideoDialog::doSaveVideo()
-{
-    QSettings settings;
-    QString dir = settings.value("General/LastVideoDir").toString();
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save video to file"), dir, QString("%1 (*.%2)").arg(cmbFormat->currentText()).arg(cmbFormat->itemData(cmbFormat->currentIndex()).toString()));
-    if (!fileName.isEmpty())
+    else if (tabType->currentWidget() == tabAdaptivity)
     {
-        QFileInfo fileInfo(fileName);
-        if (fileInfo.suffix().toLower() != "avi") fileName += ".avi";
-        QFile::remove(fileName);
-        QFile::copy(outputFile, fileName);
+        lblStepLabel->setText(tr("Step:"));
 
-        if (fileInfo.absoluteDir() != tempProblemDir())
-            settings.setValue("General/LastVideoDir", fileInfo.absolutePath());
+        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(doAdaptiveAnimate()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(doAdaptiveAnimateNextStep()));
     }
-}
-
-void VideoDialog::doOpenVideo()
-{
-    QDesktopServices::openUrl(QUrl::fromLocalFile(outputFile));
-}
-
-void VideoDialog::doCommandFFmpeg()
-{
-    outputFile = tempProblemDir() + "/video/output." + cmbFormat->itemData(cmbFormat->currentIndex()).toString();
-
-    QString ffmpegBinary = "ffmpeg";
-    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "ffmpeg.exe"))
-        ffmpegBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "ffmpeg.exe\"";
-    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "ffmpeg"))
-        ffmpegBinary = QApplication::applicationDirPath() + QDir::separator() + "ffmpeg";
-
-    commandFFmpeg = QString(Util::config()->commandFFmpeg).
-            arg(ffmpegBinary).
-            arg(txtFPS->value()).
-            arg(tempProblemDir() + "/video/").
-            arg(cmbCodec->itemData(cmbCodec->currentIndex()).toString()).
-            arg(outputFile);
-}
-
-void VideoDialog::doVideoCreated(int result)
-{
-    btnClose->setEnabled(true);
-
-    if (result == 0)
-    {
-        btnSaveVideo->setEnabled(true);
-        btnOpenVideo->setEnabled(true);
-    }
-    else
-    {
-        QMessageBox::critical(this, tr("FFmpeg error"), readFileContent(tempProblemDir() + "/video/error.txt"));
-    }
-
-    // remove files
-    QFile::remove(tempProblemDir() + QString("/video/video*.png"));
 }
 
 void VideoDialog::doClose()
 {
-    QSettings settings;
-    settings.setValue("VideoDialog/Codec", cmbCodec->itemData(cmbCodec->currentIndex()).toString());
-    settings.setValue("VideoDialog/Format", cmbFormat->itemData(cmbFormat->currentIndex()).toString());
-    settings.setValue("VideoDialog/FPS", txtFPS->value());
-
     hide();
 }

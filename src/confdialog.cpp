@@ -87,10 +87,12 @@ void ConfigDialog::load()
 
     // command argument
     txtArgumentTriangle->setText(Util::config()->commandTriangle);
-    txtArgumentFFmpeg->setText(Util::config()->commandFFmpeg);
 
     // experimental features
     chkExperimentalFeatures->setChecked(Util::config()->showExperimentalFeatures);
+
+    // std log
+    chkLogStdOut->setChecked(Util::config()->showLogStdOut);
 
     // global script
     txtGlobalScript->setPlainText(Util::config()->globalScript);
@@ -154,10 +156,12 @@ void ConfigDialog::save()
 
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();
-    Util::config()->commandFFmpeg = txtArgumentFFmpeg->text();
 
     // experimental features
     Util::config()->showExperimentalFeatures = chkExperimentalFeatures->isChecked();
+
+    // std log
+    Util::config()->showLogStdOut = chkLogStdOut->isChecked();
 
     // global script
     Util::config()->globalScript = txtGlobalScript->toPlainText();
@@ -269,10 +273,13 @@ QWidget *ConfigDialog::createMainWidget()
     chkExperimentalFeatures = new QCheckBox(tr("Enable experimental features"));
     chkExperimentalFeatures->setToolTip(tr("Warning: Agros2D should be unstable!"));
 
+    chkLogStdOut = new QCheckBox(tr("Print application log to stdout."));
+
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);
     layoutOther->addWidget(chkCheckVersion);
     layoutOther->addWidget(chkExperimentalFeatures);
+    layoutOther->addWidget(chkLogStdOut);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));
     grpOther->setLayout(layoutOther);
@@ -403,7 +410,6 @@ QWidget *ConfigDialog::createSolverWidget()
 
     // commands
     txtArgumentTriangle = new QLineEdit("");
-    txtArgumentFFmpeg = new QLineEdit("");
 
     // default
     QPushButton *btnCommandsDefault = new QPushButton(tr("Default"));
@@ -412,8 +418,6 @@ QWidget *ConfigDialog::createSolverWidget()
     QVBoxLayout *layoutCommands = new QVBoxLayout();
     layoutCommands->addWidget(new QLabel(tr("Triangle")));
     layoutCommands->addWidget(txtArgumentTriangle);
-    layoutCommands->addWidget(new QLabel(tr("FFmpeg")));
-    layoutCommands->addWidget(txtArgumentFFmpeg);
     layoutCommands->addStretch();
     layoutCommands->addWidget(btnCommandsDefault, 0, Qt::AlignLeft);
 
@@ -495,6 +499,5 @@ void ConfigDialog::doAdaptivityDefault()
 void ConfigDialog::doCommandsDefault()
 {
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
-    txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
 }
 

@@ -893,7 +893,6 @@ class Module:
             weakform_pri_file.close()
 
 if __name__ == '__main__':
-    x = 10
-    assert(x==10)        
-    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat'])
+    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat'])
+    coupling_parser = XmlParser(['heat', 'acoustic'], [])
     coupling_parser.process()

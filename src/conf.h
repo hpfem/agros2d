@@ -179,7 +179,6 @@ public:
 
     // command argument
     QString commandTriangle;
-    QString commandFFmpeg;
 
     // number of threads
     int numberOfThreads;
@@ -188,6 +187,7 @@ public:
     QString globalScript;
 
     bool showExperimentalFeatures;
+    bool showLogStdOut;
 
     void load();
     void loadWorkspace();

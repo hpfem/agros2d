@@ -72,6 +72,9 @@ private:
     // experimental features
     QCheckBox *chkExperimentalFeatures;
 
+    // log std out
+    QCheckBox *chkLogStdOut;
+
     // geometry
     QSpinBox *txtMeshAngleSegmentsCount;
     QCheckBox *chkMeshCurvilinearElements;
@@ -98,7 +101,6 @@ private:
     QSpinBox *txtNumOfThreads;
 
     QLineEdit *txtArgumentTriangle;
-    QLineEdit *txtArgumentFFmpeg;
 
     // global script
     ScriptEditor *txtGlobalScript;

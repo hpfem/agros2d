@@ -361,8 +361,9 @@ void ValueLineEdit::setLayoutValue()
         lblInfo->setVisible(true);
         btnDataTableDelete->setVisible(true);
     }
-    if (m_hasNonlin)
-        btnDataTableDialog->setVisible(true);
+
+    btnDataTableDialog->setVisible(m_hasNonlin);
+    btnEditTimeDep->setVisible(m_hasTimeDep && m_fieldInfo && m_fieldInfo->analysisType() == AnalysisType_Transient);
 }
 
 void ValueLineEdit::setLabel(const QString &text, QColor color, bool isVisible)

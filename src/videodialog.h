@@ -44,49 +44,51 @@ private:
 
     int m_adaptiveStep;
 
-    QString commandFFmpeg;
-    QString outputFile;
-
     QTabWidget *tabType;
+    QWidget *tabTransient;
+    QWidget *tabAdaptivity;
 
-    QTimer *timerAnimate;
-    QTimer *timerFile;
+    QTimer *timer;
 
     // file
     QPushButton *btnClose;
-    QPushButton *btnEncodeFFmpeg;
-    QPushButton *btnSaveVideo;
-    QPushButton *btnOpenVideo;
     QPushButton *btnAnimate;
-    QComboBox *cmbCodec;
-    QComboBox *cmbFormat;
-    QSpinBox *txtFPS;
     QProgressBar *progressBar;
 
-    // viewport
-    QSpinBox *txtAnimateFrom;
-    QSpinBox *txtAnimateTo;
-    QSlider *sldAnimate;
-    SLineEditDouble *txtAnimateDelay;
-    QLabel *lblAnimateTime;
+    SLineEditDouble *txtDelay;
+    QLabel *lblStep;
+    QLabel *lblStepLabel;
+
+    // adaptivity
+    QSpinBox *txtAdaptiveAnimateFrom;
+    QSpinBox *txtAdaptiveAnimateTo;
+    QSlider *sldAdaptiveAnimate;
+
+    // transient
+    QSpinBox *txtTransientAnimateFrom;
+    QSpinBox *txtTransientAnimateTo;
+    QSlider *sldTransientAnimate;
 
     void createControls();
-    QWidget *createControlsViewport();
-    QWidget *createControlsFile();
+    QWidget *createControlsViewportAdaptiveSteps();
+    QWidget *createControlsViewportTimeSteps();
 
 private slots:
-    void doAnimate();
-    void doAnimateNextStep();
-    void doSetTimeStep(int index);
-    void doValueFromChanged(int index);
-    void doValueToChanged(int index);
+    void doAdaptiveAnimate();
+    void doAdaptiveAnimateNextStep();
+    void doAdaptiveSetStep(int index);
+    void doAdaptiveValueFromChanged(int index);
+    void doAdaptiveValueToChanged(int index);
 
-    void doCommandFFmpeg();
+    void doTransientAnimate();
+    void doTransientAnimateNextStep();
+    void doTransientSetStep(int index);
+    void doTransientValueFromChanged(int index);
+    void doTransientValueToChanged(int index);
+
     void doCreateImages();
-    void doEncodeFFmpeg();
-    void doSaveVideo();
-    void doOpenVideo();
-    void doVideoCreated(int result);
+
+    void tabChanged(int index);
 
     void doClose();
 };

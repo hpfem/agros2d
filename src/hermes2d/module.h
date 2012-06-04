@@ -243,9 +243,10 @@ private:
 // boundary condition type variable
 struct BoundaryTypeVariable
 {
-    BoundaryTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0) {}
-    BoundaryTypeVariable(const QString &m_id, QString m_shortname,
-                         double m_defaultValue = 0);
+    BoundaryTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0), m_isTimeDep(false) {}
+    BoundaryTypeVariable(const QString &id, QString shortname,
+                         double defaultValue = 0, bool isTimedep = false)
+        : m_id(id), m_shortname(shortname), m_defaultValue(defaultValue), m_isTimeDep(isTimedep) {}
     BoundaryTypeVariable(XMLModule::quantity quant);
 
     // id
@@ -254,6 +255,8 @@ struct BoundaryTypeVariable
     inline QString shortname() const { return m_shortname; }
     // default value
     inline double defaultValue() const { return m_defaultValue; }
+    // timedep
+    inline bool isTimeDep() const { return m_isTimeDep; }
 
 private:
     // id
@@ -262,6 +265,8 @@ private:
     QString m_shortname;
     // default value
     double m_defaultValue;
+    // timedep
+    bool m_isTimeDep;
 };
 
 // boundary condition type

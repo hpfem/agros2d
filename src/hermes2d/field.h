@@ -41,7 +41,7 @@ public:
 
     void clear();
 
-    inline Module::ModuleAgros *module() const { return m_module; }
+    inline Module::ModuleAgros *module() const { assert(m_module); return m_module; }
 
     QString fieldId() const { return m_fieldId; }
     AnalysisType analysisType() const { return m_analysisType; }
