@@ -217,8 +217,8 @@
 				<module:expression analysistype="harmonic" planar="value2"
 					axi="value2" />
 			</module:localvariable>
-			<module:localvariable id="acoustic_pressure_level"
-				name="Pressure level" type="scalar" shortname="SPL"
+                        <module:localvariable id="acoustic_sound_pressure_level"
+                                name="Sound pressure level" type="scalar" shortname="SPL"
 				shortname_html="&lt;i&gt;SPL&lt;/i&gt;" shortname_latex="SPL" unit="dB"
 				unit_html="dB" unit_latex="dB">
 				<module:expression analysistype="harmonic"
