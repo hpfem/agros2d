@@ -181,11 +181,12 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     if (couplingInfo)
     {
         problemId =
-                field->fieldInfo()->fieldId().toStdString() + "_" +
                 materialTarget->fieldInfo()->fieldId().toStdString() + "_" +
+                field->fieldInfo()->fieldId().toStdString() + "_" +
                 analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
                 analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
                 coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
+                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_" +
                 couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
     }
     else
@@ -193,9 +194,10 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
         problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
                 analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
                 coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear");
+                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
     }
 
+    qDebug() << problemId.c_str();
     Hermes::Hermes2D::Form<Scalar>* custom_form = NULL;
     
     // compiled form
