@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import module_xml as md
+from copy import *
 import couplings as cp
 from xml.dom import minidom
 import os
@@ -52,34 +53,42 @@ class XmlParser:
             file_name =  coupling_file.split('.')[0] # remove suffix
             coupled_module_names = file_name.split('-')  #separates coupled modules                      
             
-            coupled_constants = []
-            i = 0
+            coupled_constants = []            
 
             quantity_ids_planar = []
             quantity_ids_axi = []
             coupled_quantities_planar = []
             coupled_quantities_axi = [] 
            
-            for module in self.modules: 
-                for module_name in coupled_module_names:        
+            for module in self.modules:                 
+                for module_name in coupled_module_names:                            
                     if(module.id == module_name):                                            
                         coupled_constants.extend(module.constants)                        
                         for volume in module.volumes:                            
-                            for quantity in volume.quantities_planar:
-                                if not(quantity.id in quantity_ids_planar):                                    
-                                    coupled_quantities_planar.append(quantity)                                    
+                            for quantity in volume.quantities_planar:                                
+                                if not(quantity.id in quantity_ids_planar):
+                                    tmp_quantity = Quantity()
+                                    tmp_quantity = copy(quantity)
+                                    if module_name == coupled_module_names[1]:                                                                            
+                                        tmp_quantity.field  = 'Target'                                        
+                                    coupled_quantities_planar.append(tmp_quantity)                                    
                                     quantity_ids_planar.append(quantity.id)
-                                    print quantity.id                                
+                                    #print quantity.id                                
                                                                                                     
                             for quantity in volume.quantities_axi:                                
                                 if not(quantity.id in quantity_ids_axi):
-                                    coupled_quantities_axi.append(quantity)
+                                    tmp_quantity = Quantity()
+                                    tmp_quantity = copy(quantity)
+                                    if module_name == coupled_module_names[1]:
+                                        tmp_quantity.field  = 'Target'   
+                                    coupled_quantities_axi.append(tmp_quantity)
                                     quantity_ids_axi.append(quantity.id)
-
+                                    
+                    
 
             #for quantity in coupled_quantities_planar:
                 # print quantity.id
-            print "----------------------------------"                
+            # print "----------------------------------"                
             
             self.parse_xml_coupling(coupling_file)
             for module in self.modules:
@@ -268,7 +277,7 @@ class XmlParser:
                 n_essential = len(ds_boundary.essential_form)
                 n_vector = n_essential + len(ds_boundary.vector_form)
                 i = 0                 
-                print len(ds_boundary.matrix_form)
+                # print len(ds_boundary.matrix_form)
                 for ds_vector in ds_boundary.essential_form + ds_boundary.vector_form + ds_boundary.matrix_form:                     
                     for coordinate_type in coordinate_types:
                         for solver_type in solver_types:                         
@@ -282,7 +291,7 @@ class XmlParser:
                                 weakform.type = 'matrix'   
                                 weakform.j = ds_vector.j
                             weakform.i = ds_vector.i 
-                            print weakform.type
+                            # print weakform.type
                             if coordinate_type == 'planar':
                                 if (solver_type == 'linear'):                                                            
                                     weakform.expression = ds_vector.planar_linear
@@ -386,6 +395,7 @@ class WeakForm:
         self.coordinate_type = ''
         self.analysis_type = ''
         self.boundary_type = ''        
+        self.field = ''
         self.i = 0
         self.j = 0
         self.expression = ''
@@ -400,7 +410,7 @@ class WeakForm:
     def get_class_name(self):
         class_name =  'Custom' + self.type.capitalize() + 'Form'  \
             + self.integral_type.capitalize() + '_' + self.boundary_type + '_' + str(self.i) \
-            + '_'  + str(self.j) + '_' + self.analysis_type + '_' + self.coupling_type  + '_' + self.solver_type               
+            + '_'  + str(self.j) + '_' + self.analysis_type  + '_' + self.solver_type + '_' + self.coupling_type               
         return class_name    
     
     def get_function_name(self):              
@@ -422,7 +432,7 @@ class WeakForm:
                 string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
         
                      
-        string = string.replace('class_name', self.id + '_' + self.solver_type)
+        string = string.replace('class_name', self.id + '_' + self.solver_type + '_' + self.coupling_type)
         string = string.replace('axi', 'axisymmetric')                        
         if (self.type != 'essential'):
             string = string.replace('row_index', str(self.i))                        
@@ -455,7 +465,7 @@ class WeakForm:
                 variable_string = variable_def_temp.replace('variable_short', 
                                         variable.short_name)                    
                 variable_string = variable_string.replace('variable', 
-                                        variable.id)
+                                        variable.id)                
                 variable_defs += variable_string
                 variable_defs = variable_defs.replace('material', variable.type)                                                                                                                
             replaced_string = replaced_string.replace('//variable_declaration', 
@@ -480,8 +490,10 @@ class WeakForm:
                                         variable.short_name)                    
                         variable_string = variable_string.replace('variable', 
                                         variable.id)
+                        variable_string = variable_string.replace('Source', variable.field)
                         variable_defs += variable_string
-                        variable_defs = variable_defs.replace('material', variable.type)                                                                                        
+                        variable_defs = variable_defs.replace('material', variable.type)                        
+                                                                                                                                        
                     replaced_string = replaced_string.replace('//variable_definition', 
                                                               str(variable_defs))     
                 if function_type == '_ord':
@@ -652,6 +664,7 @@ class Quantity:
         self.short_name = ''
         self.units = ''  
         self.expression = None
+        self.field = 'Source'
         
     def write_cpp_code(self):
         pass
@@ -879,9 +892,9 @@ class Module:
             weakform_pri_file.write('HEADERS += ' + Config.weakform_dir + 'weakform_factory.h' + '\n')
             weakform_pri_file.close()
 
-if __name__ == '__main__':    
-    # coupling_parser = XmlParser(['elasticity', 'heat'], ['heat-elasticity'])
-    # coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['heat-elasticity'])
-    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], [])
-    # coupling_parser = XmlParser(['rf'], [])
+if __name__ == '__main__':
+    x = 10
+    assert(x==10)        
+    coupling_parser = XmlParser(['current', 'heat'], ['current-heat'])    
     coupling_parser.process()
+    
