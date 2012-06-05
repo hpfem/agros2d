@@ -121,7 +121,7 @@
 						axi_newton="- ac_ani * r * vval" />
 				</module:boundary>
 
-				<module:boundary id="acoustic_impedance" name="Impedance boundary condition">
+                <module:boundary id="acoustic_impedance_harmonic" name="Impedance boundary condition">
 					<module:quantity id="acoustic_impedance" />
 
 					<module:matrix_form i="1" j="2"
