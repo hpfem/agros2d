@@ -69,7 +69,8 @@ create_image(template, r"K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon) \vecfaz{E} = \mj \omega \vecfaz{J}_\mathrm{ext}", dir + "rf_te/rf_te_harmonic.png")
 create_image(template, r"J_{t} = - \frac{1}{\omega \mu} \frac{\partial E}{\partial n_0} = J_0", dir + "rf_te/rf_te_surface_current.png")
 create_image(template, r"E = E_0", dir + "rf_te/rf_te_electric_field.png")
-create_image(template, r" - \frac{1}{\omega \mu} \frac{\partial E}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} E", dir + "rf_te/rf_te_matched_boundary.png")
+create_image(template, r" - \frac{1}{\omega \mu} \frac{\partial E}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} E", dir + "rf_te/rf_te_impedance.png")
+#create_image(template, r" - \frac{1}{\omega \mu} \frac{\partial E}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} E", dir + "rf_te/rf_te_impedance.png")
 
 # acoustic
 create_image(template, r"-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) - \frac{\omega^2}{\rho  c^2} \cdot p = 0", dir + "acoustic/acoustic_harmonic.png")
@@ -78,8 +79,6 @@ create_image(template, r"p = p_0", dir + "acoustic/acoustic_pressure.png")
 create_image(template, r"a_\mathrm{n} = \frac{1}{\rho} \frac{\partial p}{\partial n_0} = a_0", dir + "acoustic/acoustic_normal_acceleration.png")
 create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \mj \omega \frac{p}{Z_0}", dir + "acoustic/acoustic_impedance_harmonic.png")
 create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}", dir + "acoustic/acoustic_impedance_transient.png")
-create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \mj \omega \frac{p}{\rho c}", dir + "acoustic/acoustic_matched_boundary_harmonic.png")
-create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{\rho c} \frac{\partial p}{\partial t}", dir + "acoustic/acoustic_matched_boundary_transient.png")
 
 # flow
 create_image(template, r"\rho \vec{v} \cdot \grad \vec{v} = -\, \grad p + \mu \triangle \vec{v} + \vec{f},~\div \vec{v} = 0", dir + "flow/flow_steadystate.png")

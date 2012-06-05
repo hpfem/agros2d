@@ -206,7 +206,7 @@
                                         unit_latex="A \cdot m^{-2}" />
                                 <module:quantity id="rf_te_impedance" name="Impedance"
                                         shortname="Z0" shortname_html="&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;"
-                                        shortname_latex="Z_0" unit="" unit_html="" unit_latex="" />
+                                        shortname_latex="Z_0" unit="" unit_html="&amp;Omega;" unit_latex="\Ohm" />
                         </module:group>
                 </module:gui>
         </module:preprocessor>

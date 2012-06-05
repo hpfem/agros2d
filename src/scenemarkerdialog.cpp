@@ -155,6 +155,9 @@ void SceneFieldWidget::createContent()
     layout = new QVBoxLayout();
     setLayout(layout);
 
+    // add custom widget
+    addCustomWidget(layout);
+
     // equation
     equationImage = new QLabel();
     equationImage->setMinimumHeight(fontMetrics().height()*2.2);
@@ -168,9 +171,6 @@ void SceneFieldWidget::createContent()
     grpEquation->setLayout(layoutEquation);
 
     layout->addWidget(grpEquation);
-
-    // add custom widget
-    addCustomWidget(layout);
 
     QMapIterator<QString, QList<Module::DialogRow> > i(ui->groups());
     while (i.hasNext())
