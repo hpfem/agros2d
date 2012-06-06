@@ -136,10 +136,8 @@ void SurfaceIntegralValue::calculate()
                             o += ru->get_inv_ref_order();
 
                             Hermes::Hermes2D::Quad2D* quad2d = ru->get_quad_2d();
-                            // TODO: HERMES_MODE_TRIANGLE
-                            int eo = quad2d->get_edge_points(edge, o, Hermes::Hermes2D::HERMES_MODE_TRIANGLE);
-                            // TODO: HERMES_MODE_TRIANGLE
-                            double3 *pt = quad2d->get_points(eo, Hermes::Hermes2D::HERMES_MODE_TRIANGLE);
+                            int eo = quad2d->get_edge_points(edge, o, e->get_mode());
+                            double3 *pt = quad2d->get_points(eo, e->get_mode());
                             double3 *tan = ru->get_tangent(edge);
 
                             for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
@@ -172,8 +170,7 @@ void SurfaceIntegralValue::calculate()
 
                                 try
                                 {
-                                    // TODO: HERMES_MODE_TRIANGLE
-                                    for (int i = 0; i < quad2d->get_num_points(eo, Hermes::Hermes2D::HERMES_MODE_TRIANGLE); i++)
+                                    for (int i = 0; i < quad2d->get_num_points(eo, e->get_mode()); i++)
                                     {
                                         px = x[i];
                                         py = y[i];

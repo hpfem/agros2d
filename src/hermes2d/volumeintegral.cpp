@@ -126,10 +126,7 @@ void VolumeIntegralValue::calculate()
                         double *y = ru->get_phys_y(o);
 
                         {
-                            using namespace Hermes::Hermes2D;
-                            // TODO: HERMES_MODE_TRIANGLE
-                            // TODO: PK for macro have to use "using namespace"...
-                            limit_order(o, Hermes::Hermes2D::HERMES_MODE_TRIANGLE);
+                            Hermes::Hermes2D::limit_order(o, e->get_mode());
                         }
 
                         // solution
@@ -151,10 +148,8 @@ void VolumeIntegralValue::calculate()
 
                             try
                             {
-                                // TODO: HERMES_MODE_TRIANGLE
-                                double3* pt = quad->get_points(o, Hermes::Hermes2D::HERMES_MODE_TRIANGLE);
-                                // TODO: HERMES_MODE_TRIANGLE
-                                int np = quad->get_num_points(o, Hermes::Hermes2D::HERMES_MODE_TRIANGLE);
+                                double3* pt = quad->get_points(o, e->get_mode());
+                                int np = quad->get_num_points(o, e->get_mode());
 
                                 for (int i = 0; i < np; i++)
                                 {

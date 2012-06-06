@@ -71,7 +71,7 @@
                         <edge edge="14"/>
                         <edge edge="15"/>
                     </boundary>
-                    <boundary type="acoustic_impedance_harmonic" acoustic_impedance="1.25*343" id="4" name="Matched boundary">
+                    <boundary type="acoustic_impedance" acoustic_impedance="1.25*343" id="4" name="Matched boundary">
                         <edge edge="7"/>
                     </boundary>
                 </boundaries>
