@@ -420,6 +420,38 @@ struct PyViewPost3D
     // scalar view
     void setPost3DMode(char* mode);
     inline char* getPost3DMode() const { return const_cast<char*>(sceneViewPost3DModeToStringKey(Util::config()->showPost3D).toStdString().c_str()); }
+
+    // TODO: (Franta) duplicated code
+    void setScalarViewVariable(char* var);
+    inline char* getScalarViewVariable() const { return const_cast<char*>(Util::config()->scalarVariable.toStdString().c_str()); }
+    void setScalarViewVariableComp(char* component);
+    inline char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Util::config()->scalarVariableComp).toStdString().c_str()); }
+
+    void setScalarViewPalette(char* palette);
+    inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Util::config()->paletteType).toStdString().c_str()); }
+    void setScalarViewPaletteQuality(char* quality);
+    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
+    void setScalarViewPaletteSteps(int steps);
+    inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
+    void setScalarViewPaletteFilter(bool filter);
+    inline bool getScalarViewPaletteFilter() const { return Util::config()->paletteFilter; }
+
+    void setScalarViewRangeLog(bool log);
+    inline bool getScalarViewRangeLog() const { return Util::config()->scalarRangeLog; }
+    void setScalarViewRangeBase(double base);
+    inline double getScalarViewRangeBase() const { return Util::config()->scalarRangeBase; }
+
+    void setScalarViewColorBar(bool show);
+    inline bool getScalarViewColorBar() const { return Util::config()->showScalarColorBar; }
+    void setScalarViewDecimalPlace(int place);
+    inline int getScalarViewDecimalPlace() const { return Util::config()->scalarDecimalPlace; }
+
+    void setScalarViewRangeAuto(bool autoRange);
+    inline bool getScalarViewRangeAuto() const { return Util::config()->scalarRangeAuto; }
+    void setScalarViewRangeMin(double min);
+    inline double getScalarViewRangeMin() const { return Util::config()->scalarRangeMin; }
+    void setScalarViewRangeMax(double max);
+    inline double getScalarViewRangeMax() const { return Util::config()->scalarRangeMax; }
 };
 
 // functions

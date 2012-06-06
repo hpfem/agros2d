@@ -1479,6 +1479,82 @@ void PyViewPost3D::setPost3DMode(char* mode)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(sceneViewPost3DModeStringKeys())).toStdString());
 }
 
+// TODO: (Franta) duplicated code
+void PyViewPost3D::setScalarViewVariableComp(char* component)
+{
+    if (physicFieldVariableCompTypeStringKeys().contains(QString(component)))
+        Util::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(physicFieldVariableCompTypeStringKeys())).toStdString());
+}
+
+void PyViewPost3D::setScalarViewPalette(char* palette)
+{
+    if (paletteTypeStringKeys().contains(QString(palette)))
+        Util::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteTypeStringKeys())).toStdString());
+}
+
+void PyViewPost3D::setScalarViewPaletteQuality(char* quality)
+{
+    if (paletteQualityStringKeys().contains(QString(quality)))
+        Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
+}
+
+void PyViewPost3D::setScalarViewPaletteSteps(int steps)
+{
+    if (steps >= PALLETESTEPSMIN && steps <= PALLETESTEPSMAX)
+        Util::config()->paletteSteps = steps;
+    else
+        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALLETESTEPSMIN).arg(PALLETESTEPSMAX).toStdString());
+}
+
+void PyViewPost3D::setScalarViewPaletteFilter(bool filter)
+{
+    Util::config()->paletteFilter = filter;
+}
+
+void PyViewPost3D::setScalarViewRangeLog(bool log)
+{
+    Util::config()->scalarRangeLog = log;
+}
+
+void PyViewPost3D::setScalarViewRangeBase(double base)
+{
+    Util::config()->scalarRangeBase = base;
+}
+
+void PyViewPost3D::setScalarViewColorBar(bool show)
+{
+    Util::config()->showScalarColorBar = show;
+}
+
+void PyViewPost3D::setScalarViewDecimalPlace(int place)
+{
+    if (place >= SCALARDECIMALPLACEMIN && place <= SCALARDECIMALPLACEMAX)
+        Util::config()->scalarDecimalPlace = place;
+    else
+        throw invalid_argument(QObject::tr("Decimal place must be in the range from %1 to %2.").arg(SCALARDECIMALPLACEMIN).arg(SCALARDECIMALPLACEMAX).toStdString());
+}
+
+void PyViewPost3D::setScalarViewRangeAuto(bool autoRange)
+{
+    Util::config()->scalarRangeAuto = autoRange;
+}
+
+void PyViewPost3D::setScalarViewRangeMin(double min)
+{
+    Util::config()->scalarRangeMin = min;
+}
+
+void PyViewPost3D::setScalarViewRangeMax(double max)
+{
+    Util::config()->scalarRangeMax = max;
+}
+
 // ****************************************************************************************************
 
 char *pyVersion()
