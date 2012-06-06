@@ -15,7 +15,7 @@
         </module:constants>
 
         <module:volume>
-                <module:quantity id="rf_te_permittivity" shortname="rf_esr" />
+                <module:quantity id="rf_te_permittivity" shortname="rf_eps" />
                 <module:quantity id="rf_te_permeability" shortname="rf_mur" />
                 <module:quantity id="rf_te_conductivity" shortname="rf_gamma" />
                 <module:quantity id="rf_te_current_density_external_real" shortname="rf_Jer" />
@@ -30,29 +30,40 @@
                                 <module:quantity id="rf_te_current_density_external_imag" />
 
                                 <module:matrix_form i="1" j="1"
-                                        planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-                                        axi_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-                                        planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-                                        axi_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                        planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
+                                        axi_linear="- r * 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
+                                        planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
+                                        axi_newton="- r * 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
                                         symmetric="1" />
                                 <module:matrix_form i="2" j="2"
-                                        planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-                                        axi_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-                                        planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
-                                        axi_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * uval * vval"
+                                        planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
+                                        axi_linear="- r * 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
+                                        planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
+                                        axi_newton="- r * 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + r * (2 * PI * f)^2 * rf_eps * EPS0 * uval * vval"
+                                        symmetric="1" />
+                                <module:matrix_form i="1" j="2"
+                                        planar_linear="2 * PI * f * rf_gamma * uval * vval"
+                                        axi_linear="r * 2 * PI * f * rf_gamma * uval * vval"
+                                        planar_newton="0"
+                                        axi_newton="0"
+                                        symmetric="1" />
+                                <module:matrix_form i="2" j="1"
+                                        planar_linear="- 2 * PI * f * rf_gamma * uval * vval"
+                                        axi_linear="- r * 2 * PI * f * rf_gamma * uval * vval"
+                                        planar_newton="0"
+                                        axi_newton="0"
                                         symmetric="1" />
 
                                 <module:vector_form i="1" j="1"
                                         planar_linear="rf_Jer * vval"
                                         axi_linear="r * rf_Jer * vval"
-                                        planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jer * vval"
-                                        axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jer * vval" />
+                                        planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_eps * EPS0 * upval * vval - rf_Jer * vval"
+                                        axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_eps * EPS0 * upval * vval - r * rf_Jer * vval" />
                                 <module:vector_form i="2" j="2"
                                         planar_linear="rf_Jei * vval"
                                         axi_linear="r * rf_Jei * vval"
-                                        planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - rf_Jei * vval"
-                                        axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_esr * EPS0 * upval * vval - r * rf_Jei * vval" />
-
+                                        planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + (2 * PI * f)^2 * rf_eps * EPS0 * upval * vval - rf_Jei * vval"
+                                        axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * (2 * PI * f)^2 * rf_eps * EPS0 * upval * vval - r * rf_Jei * vval" />
                         </module:weakform_volume>
                 </module:weakforms_volume>
         </module:volume>
@@ -116,21 +127,20 @@
                                                 planar_newton="2 * PI * f * rf_Jr * vval" 
                                                 axi_newton="2 * PI * f * rf_Jr * r * vval" />
                                 </module:boundary>
+
                                 <module:boundary id="rf_te_impedance" name="Impedance boundary condition">
                                     <module:quantity id="rf_te_impedance" />
 
                                     <module:matrix_form i="1" j="2"
                                         planar_linear="- 2 * PI * f / rf_Z0 * uval * vval"
                                         axi_linear="- r * 2 * PI * f / rf_Z0 * uval * vval"
-                                        planar_newton="- 2 * PI * f / rf_Z0 * uval * vval"
-                                        axi_newton="- r * 2 * PI * f / rf_Z0 * uval * vval"
-                                        symmetric="1" />
+                                        planar_newton="2 * PI * f / rf_Z0 * uval * vval"
+                                        axi_newton="r * 2 * PI * f / rf_Z0 * uval * vval" />
                                     <module:matrix_form i="2" j="1"
                                         planar_linear="2 * PI * f / rf_Z0 * uval * vval"
                                         axi_linear="r * 2 * PI * f / rf_Z0 * uval * vval"
-                                        planar_newton="2 * PI * f / rf_Z0 * uval * vval"
-                                        axi_newton="r * 2 * PI * f / rf_Z0 * uval * vval"
-                                        symmetric="1" />
+                                        planar_newton="- 2 * PI * f / rf_Z0 * uval * vval"
+                                        axi_newton="- r * 2 * PI * f / rf_Z0 * uval * vval" />
                                     <module:vector_form i="1" j="2"
                                         planar_linear="0"
                                         axi_linear="0"
@@ -213,6 +223,13 @@
 
         <module:postprocessor>
                 <module:localvariables>
+                        <module:localvariable id="rf_te_electric_field"
+                                name="Electric field" type="scalar" shortname="E"
+                                shortname_html="&lt;i&gt;E&lt;/i&gt;"
+                                shortname_latex="E" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
+                                unit_latex="V \cdot m^{-1}" >
+                                <module:expression analysistype="harmonic" planar="sqrt(value1*value1 + value2*value2)" axi="sqrt(value1*value1 + value2*value2)" />
+                        </module:localvariable>
                         <module:localvariable id="rf_te_electric_field_real"
                                 name="Electric field - real" type="scalar" shortname="Er"
                                 shortname_html="&lt;i&gt;E&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
@@ -235,7 +252,7 @@
                                 shortname_latex="D_{r}" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;"
                                 unit_latex="C \cdot m^{-2}">
                                 <module:expression analysistype="harmonic"
-                                        planar="rf_esr * EPS0 * value1" axi="rf_esr * EPS0 * value1" />
+                                        planar="rf_eps * EPS0 * value1" axi="rf_eps * EPS0 * value1" />
                         </module:localvariable>
                         <module:localvariable id="rf_te_displacement_imag"
                                 name="Displacement - imag" type="scalar" shortname="Di"
@@ -243,7 +260,7 @@
                                 shortname_latex="D_{i}" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;"
                                 unit_latex="C \cdot m^{-2}">
                                 <module:expression analysistype="harmonic"
-                                        planar="rf_esr * EPS0 * value2" axi="rf_esr * EPS0 * value2" />
+                                        planar="rf_eps * EPS0 * value2" axi="rf_eps * EPS0 * value2" />
                         </module:localvariable>
                         <module:localvariable id="rf_te_surface_current_real"
                                 name="Current density - real" type="scalar" shortname="Jr"
@@ -309,8 +326,8 @@
                                 name="Permittivity" type="scalar" shortname="epsr"
                                 shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
                                 shortname_latex="\varepsilon_{r}" unit="-" unit_html="-" unit_latex="-">
-                                <module:expression analysistype="harmonic" planar="rf_esr"
-                                        axi="rf_esr" />
+                                <module:expression analysistype="harmonic" planar="rf_eps"
+                                        axi="rf_eps" />
                         </module:localvariable>
                         <module:localvariable id="rf_te_permeability"
                                 name="Permeability" type="scalar" shortname="mur"

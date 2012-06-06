@@ -142,11 +142,11 @@
 						planar_newton="- 2 * PI * f / ac_Z0 * upval * vval" 
 						axi_newton="- r * 2 * PI * f / ac_Z0 * upval * vval" /> 
 					<module:vector_form 
-						i="2" j="1" 
+                        i="2" j="1"
 						planar_linear="0" 
 						axi_linear="0"
-						planar_newton="2 * PI * f / ac_Z0 * upval * vval" 
-						axi_newton="r * 2 * PI * f / ac_Z0 * upval * vval" />
+                        planar_newton="2 * PI * f / ac_Z0 * upval * vval"
+                        axi_newton="r * 2 * PI * f / ac_Z0 * upval * vval" />
 				</module:boundary>
 			</module:weakform_surface>
             <module:weakform_surface analysistype="transient"
