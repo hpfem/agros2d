@@ -1345,7 +1345,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                                                         analysisTypeToStringKey(AnalysisType_SteadyState))));
 
         // initial condition
-        field->initialCondition().setText(eleField.toElement().attribute("initial_condition", "0.0"));
+        field->setInitialCondition(eleField.toElement().attribute("initial_condition", "0.0"));
 
         // weakforms
         field->setWeakFormsType(weakFormsTypeFromStringKey(eleField.toElement().attribute("weak_forms",

@@ -437,7 +437,7 @@ void Problem::solveAction()
             }
         }
         timeStep++;
-        doNextTimeStep = Util::problem()->isTransient() && (timeStep < Util::problem()->config()->numTimeSteps());
+        doNextTimeStep = Util::problem()->isTransient() && (timeStep <= Util::problem()->config()->numTimeSteps());
 
         Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
