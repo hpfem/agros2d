@@ -751,7 +751,7 @@ const double VECTORSSCALEMAX = 20.0;
 // post3d
 const SceneViewPost3DShow SCALARSHOWPOST3D = SceneViewPost3DShow_ScalarView3D;
 
-const double LINEARIZER_QUALITY = 0.0006;
+const double LINEARIZER_QUALITY = 0.0002;
 
 const bool SHOWCONTOURVIEW = false;
 const int CONTOURSCOUNT = 15;

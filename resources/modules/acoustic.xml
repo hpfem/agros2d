@@ -83,7 +83,7 @@
         <module:quantity id="acoustic_pressure_imag" shortname="ac_pi" />
         <module:quantity id="acoustic_normal_acceleration_real" shortname="ac_anr" />
         <module:quantity id="acoustic_normal_acceleration_imag" shortname="ac_ani" />
-		<module:quantity id="acoustic_impedance" shortname="ac_Z0" />
+        <module:quantity id="acoustic_impedance" shortname="ac_Z0" />
 
 		<module:weakforms_surface>
 			<module:weakform_surface analysistype="harmonic"
@@ -121,20 +121,20 @@
 						axi_newton="- ac_ani * r * vval" />
 				</module:boundary>
 
-                <module:boundary id="acoustic_impedance_harmonic" name="Impedance boundary condition">
-					<module:quantity id="acoustic_impedance" />
+                <module:boundary id="acoustic_impedance" name="Impedance boundary condition">
+                    <module:quantity id="acoustic_impedance" />
 
 					<module:matrix_form i="1" j="2"
-						planar_linear="- 2 * PI * f / ac_Z0 * uval * vval" 
-						axi_linear="- r * 2 * PI * f / ac_Z0 * uval * vval"
-						planar_newton="- 2 * PI * f / ac_Z0 * uval * vval" 
-						axi_newton="- r * 2 * PI * f / ac_Z0 * uval * vval"
+                        planar_linear="- 2 * PI * f / ac_Z0 * uval * vval"
+                        axi_linear="- r * 2 * PI * f / ac_Z0 * uval * vval"
+                        planar_newton="- 2 * PI * f / ac_Z0 * uval * vval"
+                        axi_newton="- r * 2 * PI * f / ac_Z0 * uval * vval"
 						symmetric="1" />
 					<module:matrix_form i="2" j="1"
-						planar_linear="2 * PI * f / ac_Z0 * uval * vval" 
-						axi_linear="r * 2 * PI * f / ac_Z0 * uval * vval"
-						planar_newton="2 * PI * f / ac_Z0 * uval * vval" 
-						axi_newton="r * 2 * PI * f / ac_Z0 * uval * vval"						
+                        planar_linear="2 * PI * f / ac_Z0 * uval * vval"
+                        axi_linear="r * 2 * PI * f / ac_Z0 * uval * vval"
+                        planar_newton="2 * PI * f / ac_Z0 * uval * vval"
+                        axi_newton="r * 2 * PI * f / ac_Z0 * uval * vval"
 						symmetric="1" />
 					<module:vector_form i="1" j="2" 
 						planar_linear="0" 
@@ -217,10 +217,10 @@
 					shortname_html="&lt;i&gt;an&lt;/i&gt;&lt;sub&gt;i&lt;/sub&gt;"
 					shortname_latex="an_{i}" unit="m/s2" unit_html="m.s&lt;sup&gt;-2&lt;/sup&gt;"
 					unit_latex="m \cdot s^{-2}" />
-				<module:quantity id="acoustic_impedance" name="Impedance boundary condition"
-					shortname="Z0" shortname_html="&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;"
-					shortname_latex="Z_{0}" unit="Pa.s/m" unit_html="Pa.s.m&lt;sup&gt;-1&lt;/sup&gt;"
-					unit_latex="Pa \cdot s \cdot m^{-1}" />
+                <module:quantity id="acoustic_impedance" name="Impedance boundary condition"
+                    shortname="Z0" shortname_html="&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;"
+                    shortname_latex="Z_{0}" unit="Pa.s/m" unit_html="Pa.s.m&lt;sup&gt;-1&lt;/sup&gt;"
+                    unit_latex="Pa \cdot s \cdot m^{-1}" />
 			</module:group>
 		</module:gui>
 	</module:preprocessor>

@@ -328,7 +328,7 @@ void ViewScalarFilter<Scalar>::precalculate(int order, int mask)
     bool isLinear = (m_fieldInfo->linearityType() == LinearityType_Linear);
 
     Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<Scalar>::quads[Hermes::Hermes2D::Function<Scalar>::cur_quad];
-    int np = quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_TRIANGLE) + quad->get_num_points(order, Hermes::Hermes2D::HERMES_MODE_QUAD);
+    int np = quad->get_num_points(order, this->get_active_element()->get_mode());
     node = Hermes::Hermes2D::Function<Scalar>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
     double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];

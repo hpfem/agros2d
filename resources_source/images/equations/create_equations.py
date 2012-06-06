@@ -77,8 +77,8 @@ create_image(template, r"-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) - \f
 create_image(template, r"-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0", dir + "acoustic/acoustic_transient.png")
 create_image(template, r"p = p_0", dir + "acoustic/acoustic_pressure.png")
 create_image(template, r"a_\mathrm{n} = \frac{1}{\rho} \frac{\partial p}{\partial n_0} = a_0", dir + "acoustic/acoustic_normal_acceleration.png")
-create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \mj \omega \frac{p}{Z_0}", dir + "acoustic/acoustic_impedance_harmonic.png")
-create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}", dir + "acoustic/acoustic_impedance_transient.png")
+create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \mj \omega \frac{p}{Z_0}", dir + "acoustic/acoustic_impedance.png")
+# create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}", dir + "acoustic/acoustic_impedance_transient.png")
 
 # flow
 create_image(template, r"\rho \vec{v} \cdot \grad \vec{v} = -\, \grad p + \mu \triangle \vec{v} + \vec{f},~\div \vec{v} = 0", dir + "flow/flow_steadystate.png")

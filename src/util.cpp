@@ -219,14 +219,14 @@ void initLists()
     paletteQualityList.insert(Palette_Finer, "finer");
     paletteQualityList.insert(Palette_ExtraFine, "extra_fine");
 
-    paletteQualityValueList.insert(Palette_ExtremelyCoarse, 0.01);
-    paletteQualityValueList.insert(Palette_ExtraCoarse, 0.007);
-    paletteQualityValueList.insert(Palette_Coarser, 0.003);
-    paletteQualityValueList.insert(Palette_Coarse, 0.001);
+    paletteQualityValueList.insert(Palette_ExtremelyCoarse, 0.1);
+    paletteQualityValueList.insert(Palette_ExtraCoarse, 0.01);
+    paletteQualityValueList.insert(Palette_Coarser, 0.001);
+    paletteQualityValueList.insert(Palette_Coarse, 0.0007);
     paletteQualityValueList.insert(Palette_Normal, LINEARIZER_QUALITY);
-    paletteQualityValueList.insert(Palette_Fine, 0.0001);
-    paletteQualityValueList.insert(Palette_Finer, 0.00005);
-    paletteQualityValueList.insert(Palette_ExtraFine, 0.00001);
+    paletteQualityValueList.insert(Palette_Fine, 0.00001);
+    paletteQualityValueList.insert(Palette_Finer, 0.00003);
+    paletteQualityValueList.insert(Palette_ExtraFine, 0.000005);
 
     // PaletteOrderType
     paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
