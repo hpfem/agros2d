@@ -389,6 +389,13 @@
                                 <module:expression analysistype="harmonic" planar="1.0"
                                         axi="1.0" />
                         </module:volumeintegral>
+                        <module:volumeintegral id="rf_te_electric_field"
+                                name="Electric field" shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
+                                shortname_latex="E" unit="V m" unit_html="V.m"
+                                unit_latex="m^{2}">
+                                <module:expression analysistype="harmonic" planar="sqrt(value1*value1 + value2*value2)"
+                                        axi="0" />
+                        </module:volumeintegral>
                 </module:volumeintegrals>
 
                 <module:surfaceintegrals>
