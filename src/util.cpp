@@ -33,7 +33,7 @@
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
-static QHash<SceneViewPost3DShow, QString> sceneViewPost3DShowList; // FIXME: deprecated - DO NOT USE
+static QHash<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
 static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<WeakFormKind, QString> weakFormList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
@@ -92,8 +92,9 @@ QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values();
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
-QString sceneViewPost3DShowToStringKey(SceneViewPost3DShow sceneViewPost3DShow) { return sceneViewPost3DShowList[sceneViewPost3DShow]; }
-SceneViewPost3DShow sceneViewPost3DShowFromStringKey(const QString &sceneViewPost3DShow) { return sceneViewPost3DShowList.key(sceneViewPost3DShow); }
+QStringList sceneViewPost3DModeStringKeys() { return sceneViewPost3DModeList.values(); }
+QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode) { return sceneViewPost3DModeList[sceneViewPost3DMode]; }
+SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPost3DMode) { return sceneViewPost3DModeList.key(sceneViewPost3DMode); }
 
 QString modeToStringKey(Mode mode) { return modeList[mode]; }
 Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
@@ -161,13 +162,12 @@ void initLists()
     modeList.insert(Mode_02, "mode_02");
 
     // post3d
-    // FIXME: deprecated - DO NOT USE
-    sceneViewPost3DShowList.insert(SceneViewPost3DShow_Undefined, "");
-    sceneViewPost3DShowList.insert(SceneViewPost3DShow_None, "none");
-    sceneViewPost3DShowList.insert(SceneViewPost3DShow_ScalarView3D, "scalar");
-    sceneViewPost3DShowList.insert(SceneViewPost3DShow_ScalarView3DSolid, "scalarsolid");
-    sceneViewPost3DShowList.insert(SceneViewPost3DShow_ParticleTracing, "particletracing");
-    sceneViewPost3DShowList.insert(SceneViewPost3DShow_Model, "model");
+    //sceneViewPost3DModeList.insert(SceneViewPost3DMode_Undefined, "");
+    sceneViewPost3DModeList.insert(SceneViewPost3DMode_None, "none");
+    sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3D, "scalar");
+    sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3DSolid, "scalarsolid");
+    sceneViewPost3DModeList.insert(SceneViewPost3DMode_ParticleTracing, "particletracing");
+    sceneViewPost3DModeList.insert(SceneViewPost3DMode_Model, "model");
 
     // ADAPTIVITYTYPE
     adaptivityTypeList.insert(AdaptivityType_Undefined, "");

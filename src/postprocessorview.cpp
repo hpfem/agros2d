@@ -73,10 +73,10 @@ void PostprocessorWidget::loadBasic()
     chkShowSolutionMeshView->setChecked(Util::config()->showSolutionMeshView);
     chkShowOrderView->setChecked(Util::config()->showOrderView);
 
-    radPost3DNone->setChecked(Util::config()->showPost3D == SceneViewPost3DShow_None);
-    radPost3DScalarField3D->setChecked(Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D);
-    radPost3DScalarField3DSolid->setChecked(Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid);
-    radPost3DModel->setChecked(Util::config()->showPost3D == SceneViewPost3DShow_Model);
+    radPost3DNone->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_None);
+    radPost3DScalarField3D->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D);
+    radPost3DScalarField3DSolid->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid);
+    radPost3DModel->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_Model);
     doPostprocessorGroupClicked(butPost3DGroup->checkedButton());
 
     chkShowPost2DContourView->setChecked(Util::config()->showContourView);
@@ -198,10 +198,10 @@ void PostprocessorWidget::saveBasic()
     Util::config()->showOrderView = chkShowOrderView->isChecked();
 
     // show
-    if (radPost3DNone->isChecked()) Util::config()->showPost3D = SceneViewPost3DShow_None;
-    if (radPost3DScalarField3D->isChecked()) Util::config()->showPost3D = SceneViewPost3DShow_ScalarView3D;
-    if (radPost3DScalarField3DSolid->isChecked()) Util::config()->showPost3D = SceneViewPost3DShow_ScalarView3DSolid;
-    if (radPost3DModel->isChecked()) Util::config()->showPost3D = SceneViewPost3DShow_Model;
+    if (radPost3DNone->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_None;
+    if (radPost3DScalarField3D->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_ScalarView3D;
+    if (radPost3DScalarField3DSolid->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_ScalarView3DSolid;
+    if (radPost3DModel->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_Model;
 
     Util::config()->showContourView = chkShowPost2DContourView->isChecked();
     Util::config()->showScalarView = chkShowPost2DScalarView->isChecked();

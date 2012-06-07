@@ -193,23 +193,23 @@ void SceneViewPost3D::paintGL()
 
     if (Util::problem()->isMeshed())
     {
-        if (Util::config()->showPost3D == SceneViewPost3DShow_Model) paintScalarField3DSolid();
+        if (Util::config()->showPost3D == SceneViewPost3DMode_Model) paintScalarField3DSolid();
     }
 
     if (Util::problem()->isSolved())
     {
-        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D) paintScalarField3D();
-        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid) paintScalarField3DSolid();
+        if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D) paintScalarField3D();
+        if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid) paintScalarField3DSolid();
 
-        if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D ||
-                Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid)
+        if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D ||
+                Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid)
             paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
     }
 
     switch (Util::config()->showPost3D)
     {
-    case SceneViewPost3DShow_ScalarView3D:
-    case SceneViewPost3DShow_ScalarView3DSolid:
+    case SceneViewPost3DMode_ScalarView3D:
+    case SceneViewPost3DMode_ScalarView3DSolid:
     {
         if (Util::problem()->isSolved())
         {
@@ -224,10 +224,10 @@ void SceneViewPost3D::paintGL()
         }
     }
         break;
-    case SceneViewPost3DShow_Model:
+    case SceneViewPost3DMode_Model:
         emit labelCenter(tr("Model"));
         break;
-    case SceneViewPost3DShow_ParticleTracing:
+    case SceneViewPost3DMode_ParticleTracing:
         emit labelCenter(tr("Particle tracing"));
         break;
     default:
@@ -427,7 +427,7 @@ void SceneViewPost3D::paintScalarField3D()
 void SceneViewPost3D::paintScalarField3DSolid()
 {
     if (!Util::problem()->isSolved()) return;
-    if (Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3DSolid && !m_post3DHermes->scalarIsPrepared()) return;
+    if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid && !m_post3DHermes->scalarIsPrepared()) return;
 
     loadProjection3d(true);
 
@@ -436,7 +436,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
 
-        bool isModel = (Util::config()->showPost3D == SceneViewPost3DShow_Model);
+        bool isModel = (Util::config()->showPost3D == SceneViewPost3DMode_Model);
 
         // gradient background
         paintBackground();

@@ -133,7 +133,7 @@ void Config::loadPostprocessor(QDomElement *config)
     activeField = readConfig("SceneViewSettings/ActiveField", QString());
 
     // view
-    showPost3D = (SceneViewPost3DShow) readConfig("SceneViewSettings/ShowPost3D", (int) SCALARSHOWPOST3D);
+    showPost3D = (SceneViewPost3DMode) readConfig("SceneViewSettings/ShowPost3D", (int) SCALARSHOWPOST3D);
 
     // mesh
     showInitialMeshView = readConfig("SceneViewSettings/ShowInitialMeshView", SHOWINITIALMESHVIEW);
