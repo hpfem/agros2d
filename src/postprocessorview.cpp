@@ -892,6 +892,7 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
+        fillComboBoxTimeStep(cmbTimeStep);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
     }
@@ -1085,7 +1086,10 @@ void PostprocessorWidget::doApply()
     // time step
     QApplication::processEvents();
 
-    Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
+    double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
+    int actualTimeStep = int(actualTime/Util::problem()->config()->timeStep().number() + 0.5); // round
+    qDebug() << "actualTimeStep : " << actualTimeStep;
+    Util::scene()->setActiveTimeStep(actualTimeStep);
     Util::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
     Util::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());
 

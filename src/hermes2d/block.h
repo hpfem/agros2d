@@ -27,7 +27,7 @@ public:
 
     LinearityType linearityType() const;
     bool isTransient() const;
-    bool skipThisTimeStep(int timeStep) const {return false; }  //todo: skipping
+    bool skipThisTimeStep(int timeStep) const;
 
     AdaptivityType adaptivityType() const;
     int adaptivitySteps() const;
@@ -52,7 +52,7 @@ private:
     WeakFormAgros<double> *m_wf;
 
     QList<Field*> m_fields;
-    QList<CouplingInfo*> m_couplings;   
+    QList<CouplingInfo*> m_couplings;
 };
 
 ostream& operator<<(ostream& output, const Block& id);

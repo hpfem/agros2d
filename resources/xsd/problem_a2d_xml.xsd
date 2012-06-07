@@ -129,6 +129,7 @@
                         <xsd:attribute name="polynomial_order" type="xsd:int" />
                         <xsd:attribute name="weak_forms" type="xsd:string" />
                         <xsd:attribute name="initial_condition" type="xsd:float" />
+                        <xsd:attribute name="time_steps_skip" type="xsd:int" />
                       </xsd:complexType>
                     </xsd:element>
                   </xsd:all>
