@@ -3,7 +3,6 @@ import agros2d
 # model
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "planar"
-problem.name = "nepojmenovaný"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.time_step = 10
@@ -73,7 +72,7 @@ problem.solve()
 # point value
 local_values_current = current.local_values(0.1, 0.15)
 testV = agros2d.test("Current - Scalar potential", local_values_current["V"], 0.049999)
-testJ = agros2d.test("Current - Current density", local_values_current["J"], 9.901206e6)
+testJ = agros2d.test("Current - Current density", local_values_current["Jrc"], 9.901206e6)
 local_values_heat = heat.local_values(0.05, 0.05)
 testT1 = agros2d.test("Heat - Temperature 1", local_values_heat["T"], 71.88167)
 local_values_heat = heat.local_values(-0.05, 0.15)

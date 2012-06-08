@@ -58,17 +58,18 @@ bool Block::isTransient() const
 
 bool Block::skipThisTimeStep(int timeStep) const
 {
-    if(timeStep == Util::problem()->config()->numTimeSteps())
+    if (timeStep == Util::problem()->config()->numTimeSteps())
         return false;
 
     int S = m_fields.at(0)->fieldInfo()->timeStepsSkip().number();
     foreach (Field *field, m_fields)
     {
         int sActual = field->fieldInfo()->timeStepsSkip().number();
-        if(sActual < S)
+        if (sActual < S)
             S = sActual;
     }
-    return timeStep % S > 0;
+
+    return (S > 0) ? timeStep % S > 0 : false;
 }
 
 AdaptivityType Block::adaptivityType() const
