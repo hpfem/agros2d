@@ -38,6 +38,7 @@ dir = "./"
 
 # current
 create_image(template, r"-\, \div \left( \sigma\,\, \grad \varphi \right) = 0", dir + "current/current_steadystate.png")
+create_image(template, r"-\, \div \left( \left( \sigma + \mj \omega \varepsilon \right) \,\, \grad \varphi \right) = 0", dir + "current/current_harmonic.png")
 create_image(template, r"\varphi = \varphi_0", dir + "current/current_potential.png")
 create_image(template, r"J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0", dir + "current/current_inward_current_flow.png")
 

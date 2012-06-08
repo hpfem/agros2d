@@ -43,12 +43,12 @@ problem.solve()
 # point value
 point = current.local_values(0.213175, 0.25045)
 testV = agros2d.test("Scalar potential", point["V"], 5.566438)
-testE = agros2d.test("Electric field", point["E"], 32.059116)
-testEr = agros2d.test("Electric field - r", point["Er"], -11.088553)
-testEz = agros2d.test("Electric field - z", point["Ez"], -30.080408)
-testJ = agros2d.test("Current density", point["J"], 1.82737e9)
-testJr = agros2d.test("Current density - r", point["Jr"], -6.320475e8)
-testJz = agros2d.test("Current density - z", point["Jz"], -1.714583e9)
+testE = agros2d.test("Electric field", point["Er"], 32.059116)
+testEr = agros2d.test("Electric field - r", point["Err"], -11.088553)
+testEz = agros2d.test("Electric field - z", point["Erz"], -30.080408)
+testJ = agros2d.test("Current density", point["Jrc"], 1.82737e9)
+testJr = agros2d.test("Current density - r", point["Jrcr"], -6.320475e8)
+testJz = agros2d.test("Current density - z", point["Jrcz"], -1.714583e9)
 testpj = agros2d.test("Losses", point["pj"], 5.858385e10)	
 
 # volume integral

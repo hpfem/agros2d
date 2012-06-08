@@ -2,8 +2,8 @@
 <module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
 
-	<module:general id="electrostatic" name="Electrostatic field">
-		<module:description>Electrostatics is the branch of science that deals
+    <module:general id="electrostatic" name="Electrostatic field">
+        <module:description>Electrostatics is the branch of science that deals
 			with the phenomena and properties of stationary or slow-moving
 			(without acceleration) electric charges.</module:description>
 		<module:analyses>
@@ -17,15 +17,15 @@
 	</module:constants>
 
 	<module:volume>
-		<module:quantity id="electrostatic_permittivity"
+        <module:quantity id="electrostatic_permittivity"
 			shortname="el_epsr" />
-		<module:quantity id="electrostatic_charge_density"
+        <module:quantity id="electrostatic_charge_density"
 			shortname="el_rho" />
 
 		<module:weakforms_volume>
 			<module:weakform_volume analysistype="steadystate">
-				<module:quantity id="electrostatic_permittivity" />
-				<module:quantity id="electrostatic_charge_density" />
+                <module:quantity id="electrostatic_permittivity" />
+                <module:quantity id="electrostatic_charge_density" />
 
 				<module:matrix_form i="1" j="1"
 					planar_linear="el_epsr * EPS0 * (udx * vdx + udy * vdy)"
@@ -43,16 +43,16 @@
 	</module:volume>
 
 	<module:surface>
-		<module:quantity id="electrostatic_potential"
+        <module:quantity id="electrostatic_potential"
 			shortname="V" />
-		<module:quantity id="electrostatic_surface_charge_density"
+        <module:quantity id="electrostatic_surface_charge_density"
 			shortname="sigma" />
 
 		<module:weakforms_surface>
 			<module:weakform_surface analysistype="steadystate"
-				default="electrostatic_potential">
-				<module:boundary id="electrostatic_potential" name="Fixed voltage">
-					<module:quantity id="electrostatic_potential" />
+                default="electrostatic_potential">
+                <module:boundary id="electrostatic_potential" name="Fixed voltage">
+                    <module:quantity id="electrostatic_potential" />
 
                     <module:essential_form i="1"
                         planar_linear="V"
@@ -61,9 +61,9 @@
                         axi_newton="V" />
 				</module:boundary>
 
-				<module:boundary id="electrostatic_surface_charge_density"
+                <module:boundary id="electrostatic_surface_charge_density"
 					name="Surface charge density">
-					<module:quantity id="electrostatic_surface_charge_density" />
+                    <module:quantity id="electrostatic_surface_charge_density" />
 
 					<module:vector_form i="1" j="1" 
 						planar_linear="sigma * vval"
@@ -78,12 +78,12 @@
 	<module:preprocessor>
 		<module:gui type="volume">
 			<module:group>
-				<module:quantity id="electrostatic_permittivity"
+                <module:quantity id="electrostatic_permittivity"
 					name="Permittivity" shortname="epsr"
 					shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
 					shortname_latex="\varepsilon_{r}" unit="F/m"
 					unit_html="F.m&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="F \cdot m^{-1}" />
-				<module:quantity id="electrostatic_charge_density"
+                <module:quantity id="electrostatic_charge_density"
 					name="Charge density" shortname="rho" shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;"
 					shortname_latex="\rho" unit="C/m3" unit_html="C.m&lt;sup&gt;-3&lt;/sup&gt;"
 					unit_latex="C \cdot m^{-3}" />
@@ -91,10 +91,10 @@
 		</module:gui>
 		<module:gui type="surface">
 			<module:group>
-				<module:quantity id="electrostatic_potential" name="Fixed voltage"
+                <module:quantity id="electrostatic_potential" name="Fixed voltage"
 					shortname="V" shortname_html="&lt;i&gt;&amp;phi;&lt;/i&gt;"
 					shortname_latex="\phi" unit="V" unit_html="V" unit_latex="V" />
-				<module:quantity id="electrostatic_surface_charge_density"
+                <module:quantity id="electrostatic_surface_charge_density"
 					name="Surface charge density" shortname="sigma"
 					shortname_html="&lt;i&gt;&amp;sigma;&lt;/i&gt;" shortname_latex="\sigma"
 					unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;" unit_latex="C \cdot m^{-2}" />
@@ -104,21 +104,21 @@
 
 	<module:postprocessor>
 		<module:localvariables>
-			<module:localvariable id="electrostatic_potential"
+            <module:localvariable id="electrostatic_potential"
 				name="Scalar potential" type="scalar" shortname="V"
 				shortname_html="&lt;i&gt;V&lt;/i&gt;" shortname_latex="V" unit="V"
 				unit_html="V" unit_latex="V">
 				<module:expression analysistype="steadystate"
 					planar="value1" axi="value1" />
 			</module:localvariable>
-			<module:localvariable id="electrostatic_electric_field"
+            <module:localvariable id="electrostatic_electric_field"
 				name="Electric field" type="vector" shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
 				shortname_latex="E" unit="V/m" unit_html="V.m&lt;sup&gt;-1&lt;/sup&gt;"
 				unit_latex="V \cdot m^{-1}">
 				<module:expression analysistype="steadystate"
 					planar_x="- dx1" planar_y="- dy1" axi_r="- dr1" axi_z="- dz1" />
 			</module:localvariable>
-			<module:localvariable id="electrostatic_displacement"
+            <module:localvariable id="electrostatic_displacement"
 				name="Displacement" type="vector" shortname="D" shortname_html="&lt;i&gt;D&lt;/i&gt;"
 				shortname_latex="D" unit="C/m2" unit_html="C.m&lt;sup&gt;-2&lt;/sup&gt;"
 				unit_latex="C \cdot m^{-2}">
@@ -126,7 +126,7 @@
 					planar_x="- el_epsr * EPS0 * dx1" planar_y="- el_epsr * EPS0 * dy1"
 					axi_r="- el_epsr * EPS0 * dr1" axi_z="- el_epsr * EPS0 * dz1" />
 			</module:localvariable>
-			<module:localvariable id="electrostatic_energy_density"
+            <module:localvariable id="electrostatic_energy_density"
 				name="Energy density" type="scalar" shortname="we"
 				shortname_html="&lt;i&gt;w&lt;/i&gt;&lt;sub&gt;e&lt;/sub&gt;"
 				shortname_latex="w_{e}" unit="J/m3" unit_html="J.m&lt;sup&gt;-3&lt;/sup&gt;"
@@ -134,14 +134,14 @@
 				<module:expression analysistype="steadystate"
 					planar="0.5 * el_epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)" axi="0.5 * el_epsr * EPS0 * (dr1 * dr1 + dz1 * dz1)" />
 			</module:localvariable>
-			<module:localvariable id="electrostatic_permittivity"
+            <module:localvariable id="electrostatic_permittivity"
 				name="Permittivity" type="scalar" shortname="epsr"
 				shortname_html="&lt;i&gt;&amp;epsilon;&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt;"
 				shortname_latex="\varepilon_{r}" unit="-" unit_html="-" unit_latex="-">
 				<module:expression analysistype="steadystate"
 					planar="el_epsr" axi="el_epsr" />
 			</module:localvariable>
-			<module:localvariable id="electrostatic_charge_density"
+            <module:localvariable id="electrostatic_charge_density"
 				name="Charge density" type="scalar" shortname="rho"
 				shortname_html="&lt;i&gt;&amp;rho;&lt;/i&gt;" shortname_latex="\rho"
 				unit="C/m3" unit_html="C.m&lt;sup&gt;-3&lt;/sup&gt;" unit_latex="C \cdot m^{-3}">
@@ -153,30 +153,30 @@
 		<module:view>
 			<module:scalar_view>
 				<module:default analysistype="steadystate"
-					id="electrostatic_potential" />
+                    id="electrostatic_potential" />
 			</module:scalar_view>
 			<module:vector_view>
 				<module:default analysistype="steadystate"
-					id="electrostatic_electric_field" />
+                    id="electrostatic_electric_field" />
 			</module:vector_view>
 		</module:view>
 
 		<module:volumeintegrals>
-			<module:volumeintegral id="electrostatic_volume"
+            <module:volumeintegral id="electrostatic_volume"
 				name="Volume" shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;"
 				shortname_latex="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;"
 				unit_latex="m^{3}">
 				<module:expression analysistype="steadystate"
 					planar="1.0" axi="2.0 * PI * r" />
 			</module:volumeintegral>
-			<module:volumeintegral id="electrostatic_cross_section"
+            <module:volumeintegral id="electrostatic_cross_section"
 				name="Cross section" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
 				shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
 				unit_latex="m^{2}">
 				<module:expression analysistype="steadystate"
 					planar="1.0" axi="1.0" />
 			</module:volumeintegral>
-			<module:volumeintegral id="electrostatic_energy"
+            <module:volumeintegral id="electrostatic_energy"
 				name="Energy" shortname="We"
 				shortname_html="&lt;i&gt;W&lt;sub&gt;e&lt;/sub&gt;&lt;/i&gt;"
 				shortname_latex="W_{e}" unit="J" unit_html="J" unit_latex="J">
@@ -187,20 +187,20 @@
 		</module:volumeintegrals>
 
 		<module:surfaceintegrals>
-			<module:surfaceintegral id="electrostatic_length"
+            <module:surfaceintegral id="electrostatic_length"
 				name="Length" shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"
 				shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
 				<module:expression analysistype="steadystate"
 					planar="1.0" axi="1.0" />
 			</module:surfaceintegral>
-			<module:surfaceintegral id="electrostatic_surface"
+            <module:surfaceintegral id="electrostatic_surface"
 				name="Surface" shortname="S" shortname_html="&lt;i&gt;S&lt;/i&gt;"
 				shortname_latex="S" unit="m2" unit_html="m&lt;sup&gt;2&lt;/sup&gt;"
 				unit_latex="m^{2}">
 				<module:expression analysistype="steadystate"
 					planar="1.0" axi="2.0 * PI * r" />
 			</module:surfaceintegral>
-			<module:surfaceintegral id="electrostatic_charge"
+            <module:surfaceintegral id="electrostatic_charge"
 				name="Charge" shortname="Q" shortname_html="&lt;i&gt;Q&lt;/i&gt;"
 				shortname_latex="Q" unit="C" unit_html="C" unit_latex="C">
 				<module:expression analysistype="steadystate"

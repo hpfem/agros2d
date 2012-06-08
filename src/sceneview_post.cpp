@@ -395,7 +395,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
     Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (width()
-                        - (((Util::config()->showPost3D == SceneViewPost3DShow_ScalarView3D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
+                        - (((Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
 
     // blended rectangle

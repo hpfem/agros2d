@@ -109,6 +109,7 @@
 		<file alias="browser-variable-unknown.png">../resources_source/images/browser-variable-unknown.png</file>
 		<file alias="history-command.png">../resources_source/images/history-command.png</file>
         <file alias="equations/current/current_steadystate.png">../resources_source/images/equations/current/current_steadystate.png</file>
+        <file alias="equations/current/current_harmonic.png">../resources_source/images/equations/current/current_harmonic.png</file>
         <file alias="equations/current/current_potential.png">../resources_source/images/equations/current/current_potential.png</file>
         <file alias="equations/current/current_inward_current_flow.png">../resources_source/images/equations/current/current_inward_current_flow.png</file>
         <file alias="equations/electrostatic/electrostatic_steadystate.png">../resources_source/images/equations/electrostatic/electrostatic_steadystate.png</file>

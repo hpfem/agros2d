@@ -5,12 +5,9 @@
 	<module:general id="magnetic" name="Magnetic field">
 		<module:description>Magnetic field ...</module:description>
 		<module:analyses>
-			<module:analysis id="steadystate" type="steadystate"
-				name="Steady state" solutions="1" />
-			<module:analysis id="harmonic" type="harmonic" name="Harmonic"
-				solutions="2" />
-			<module:analysis id="transient" type="transient"
-				name="Transient" solutions="1" />
+            <module:analysis id="steadystate" type="steadystate" name="Steady state" solutions="1" />
+            <module:analysis id="harmonic" type="harmonic" name="Harmonic" solutions="2" />
+            <module:analysis id="transient" type="transient" name="Transient" solutions="1" />
 		</module:analyses>
 	</module:general>
 
