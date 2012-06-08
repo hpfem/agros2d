@@ -1391,7 +1391,9 @@ void MainWindow::doTimeStepChanged(int index)
 {
     if (cmbTimeStep->currentIndex() != -1)
     {
-        Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
+        double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
+        int actualTimeStep = int(actualTime/Util::problem()->config()->timeStep().number() + 0.5); // round
+        Util::scene()->setActiveTimeStep(actualTimeStep);
         postprocessorWidget->updateControls();
     }
 }

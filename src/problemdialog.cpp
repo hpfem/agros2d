@@ -159,6 +159,7 @@ void FieldWidget::createContent()
     // transient
     cmbAnalysisType = new QComboBox();
     txtTransientInitialCondition = new ValueLineEdit();
+    txtTransientTimeStepsSkip = new ValueLineEdit();
 
     // linearity
     cmbLinearityType = new QComboBox();
@@ -194,6 +195,8 @@ void FieldWidget::createContent()
     layoutTransientAnalysis->setColumnStretch(1, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 0, 0);
     layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Time steps:")), 1, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeStepsSkip, 1, 1);
 
     QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
@@ -316,6 +319,7 @@ void FieldWidget::load()
     txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder());
     // transient
     txtTransientInitialCondition->setValue(m_fieldInfo->initialCondition());
+    txtTransientTimeStepsSkip->setValue(m_fieldInfo->timeStepsSkip());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
     txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps());
@@ -325,7 +329,7 @@ void FieldWidget::load()
 }
 
 bool FieldWidget::save()
-{    
+{
     m_fieldInfo->setAnalysisType((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
 
     // adaptivity
@@ -339,6 +343,7 @@ bool FieldWidget::save()
     m_fieldInfo->setPolynomialOrder(txtPolynomialOrder->value());
     // transient
     m_fieldInfo->setInitialCondition(txtTransientInitialCondition->value());
+    m_fieldInfo->setTimeStepsSkip(txtTransientTimeStepsSkip->value());
     // linearity
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setNonlinearSteps(txtNonlinearSteps->value());
@@ -533,7 +538,7 @@ void FieldsToobar::refresh()
     // spacing
     QLabel *spacing = new QLabel;
     spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    tlbFields->addWidget(spacing);   
+    tlbFields->addWidget(spacing);
 }
 
 void FieldsToobar::fieldDialog(QAction *action)
@@ -544,7 +549,7 @@ void FieldsToobar::fieldDialog(QAction *action)
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
         {
-            refresh();            
+            refresh();
             emit changed();
         }
     }

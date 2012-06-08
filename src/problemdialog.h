@@ -118,6 +118,7 @@ private:
 
     // transient
     ValueLineEdit *txtTransientInitialCondition;
+    ValueLineEdit *txtTransientTimeStepsSkip;
 
     // weak forms
     QComboBox *cmbWeakForms;
