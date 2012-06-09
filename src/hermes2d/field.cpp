@@ -111,6 +111,7 @@ void FieldInfo::clear()
     m_adaptivityTolerance = 1.0;
 
     m_initialCondition = Value("0.0", false);
+    m_timeStepsSkip = Value("1", false);
 
     // weakforms
     m_weakFormsType = WeakFormsType_Compiled;
