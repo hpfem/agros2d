@@ -119,6 +119,7 @@ private:
     // transient
     ValueLineEdit *txtTransientInitialCondition;
     ValueLineEdit *txtTransientTimeStepsSkip;
+    QLabel *lblTransientTimeStepsSkip;
 
     // weak forms
     QComboBox *cmbWeakForms;
@@ -132,6 +133,7 @@ private slots:
     void doAnalysisTypeChanged(int index);
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
+    void doTransientTimeStepsChanged();
     void doShowEquation();
 };
 
