@@ -212,6 +212,10 @@ class PyField
         inline const double getInitialCondition() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
         void setInitialCondition(const double initialCondition);
 
+        // time steps skip
+        inline const int getTimeStepsSkip() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->timeStepsSkip().number(); }
+        void setTimeStepsSkip(const int timeStepsSkip);
+
         // weak forms
         inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType()).toStdString().c_str(); }
         void setWeakForms(const char *weakForms);
@@ -412,6 +416,7 @@ struct PyViewPost2D
     inline bool getVectorColor() const { return Util::config()->vectorColor; }
 };
 
+// post3d
 struct PyViewPost3D
 {
     void activate();

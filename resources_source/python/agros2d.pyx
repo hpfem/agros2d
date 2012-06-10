@@ -85,6 +85,9 @@ cdef extern from "../../src/pythonlabagros.h":
         double getInitialCondition()
         void setInitialCondition(double) except +
 
+        double getTimeStepsSkip()
+        void setTimeStepsSkip(int) except +
+
         char *getWeakForms()
         void setWeakForms(char*) except +
 
@@ -504,6 +507,13 @@ cdef class __Field__:
             return self.thisptr.getInitialCondition()
         def __set__(self, initial_condition):
             self.thisptr.setInitialCondition(initial_condition)
+
+    # time_steps_skip
+    property time_steps_skip:
+        def __get__(self):
+            return self.thisptr.getTimeStepsSkip()
+        def __set__(self, skip):
+            self.thisptr.setTimeStepsSkip(skip)
 
     # weak_forms
     property weak_forms:
@@ -1050,6 +1060,7 @@ cdef class __ViewPost2D__:
         def __set__(self, show):
             self.thisptr.setVectorColor(show)
 
+# ViewPost3D
 cdef class __ViewPost3D__:
     cdef PyViewPost3D *thisptr
 

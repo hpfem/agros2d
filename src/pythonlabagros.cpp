@@ -88,11 +88,11 @@ QString createPythonFromModel()
     str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::problem()->config()->meshType()));
     str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()));
 
-    if (Util::problem()->config()->frequency() > 0.0)
+    if (Util::problem()->isHarmonic())
         str += QString("problem.frequency = %1\n").
                 arg(Util::problem()->config()->frequency());
 
-    if (Util::problem()->config()->timeTotal().number() > 0 && Util::problem()->config()->timeStep().number() > 0)
+    if (Util::problem()->isTransient())
         str += QString("problem.time_step = %1\n"
                        "problem.time_total = %2\n").
                 arg(Util::problem()->config()->timeStep().text()).
@@ -146,6 +146,17 @@ QString createPythonFromModel()
             str += QString("%1.nonlinear_steps = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->nonlinearSteps());
+        }
+        if (Util::problem()->isTransient())
+        {
+            if (fieldInfo->analysisType() == analysisTypeFromStringKey("transient"))
+                str += QString("%1.initial_condition = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->initialCondition().number());
+
+            str += QString("%1.time_steps_skip = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->timeStepsSkip().number());
         }
 
         str += "\n";
@@ -579,6 +590,14 @@ void PyField::setInitialCondition(const double initialCondition)
 {
     // TODO: check
     Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(Value(QString::number(initialCondition)));
+}
+
+void PyField::setTimeStepsSkip(const int timeStepsSkip)
+{
+    if (timeStepsSkip >= 1 && timeStepsSkip < Util::problem()->config()->timeTotal().number())
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeStepsSkip(Value(QString::number(timeStepsSkip)));
+    else
+        throw invalid_argument(QObject::tr("Time steps skip is out of range (1 - %1).").arg(Util::problem()->config()->timeTotal().number()-1).toStdString());
 }
 
 void PyField::setWeakForms(const char *weakForms)
@@ -1480,6 +1499,24 @@ void PyViewPost3D::setPost3DMode(char* mode)
 }
 
 // TODO: (Franta) duplicated code
+void PyViewPost3D::setScalarViewVariable(char* var)
+{
+    QStringList list;
+
+    // scalar variables
+    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
+    {
+        list.append(variable->id());
+        if (variable->id() == QString(var))
+        {
+            Util::config()->scalarVariable = QString(var);
+            return;
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
 void PyViewPost3D::setScalarViewVariableComp(char* component)
 {
     if (physicFieldVariableCompTypeStringKeys().contains(QString(component)))
