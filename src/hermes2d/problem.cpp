@@ -394,7 +394,7 @@ void Problem::solveAction()
         foreach (Block* block, m_blocks)
         {
             Solver<double>* solver = solvers[block];
-            if (!(block->isTransient() && (timeStep == 0) && (!block->skipThisTimeStep(timeStep))))
+            if (!(block->isTransient() && (timeStep == 0)) && (!block->skipThisTimeStep(timeStep)))
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
