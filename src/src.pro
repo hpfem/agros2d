@@ -114,7 +114,8 @@ SOURCES += util.cpp \
     settings.cpp \
     hermes2d/solutionstore.cpp \
     ../resources_source/classes/module_xml.cpp \
-    ../resources_source/classes/coupling_xml.cpp
+    ../resources_source/classes/coupling_xml.cpp \
+    moduledialog.cpp
 
 HEADERS += util.h \
     value.h \
@@ -185,7 +186,8 @@ HEADERS += util.h \
     settings.h \
     hermes2d/field.h \
     hermes2d/block.h \
-    hermes2d/solutionstore.h
+    hermes2d/solutionstore.h \
+    moduledialog.h
 
 INCLUDEPATH += . \
     ../lib \

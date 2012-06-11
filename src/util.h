@@ -686,6 +686,7 @@ PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
 // constants
 const QString IMAGEROOT = "../resources_source/images";
 const QString LANGUAGEROOT = "/resources/lang";
+const QString XSDROOT = "/resources/xsd";
 const QString MODULEROOT = "/resources/modules";
 const QString COUPLINGROOT = "/resources/couplings";
 const QString TEMPLATEROOT = "/resources/templates";
