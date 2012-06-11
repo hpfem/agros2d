@@ -123,12 +123,11 @@ int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType)
 int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
 {
     int ts = timeStep;
-    if(ts == 0)
-        return 0;
     while(!this->contains(FieldSolutionID(fieldInfo, ts, 0, SolutionMode_Normal)))
     {
         ts--;
-        assert(ts >= 0);
+        if(ts <= 0)
+            return 0;
     }
     return ts;
 }
