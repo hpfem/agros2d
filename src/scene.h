@@ -181,13 +181,13 @@ public:
 
     // clears all solutions and remove them
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
-    void setActiveViewField(FieldInfo* fieldInfo) { m_activeViewField = fieldInfo; }
+    void setActiveViewField(FieldInfo* fieldInfo);
     inline int activeTimeStep() const { return m_activeTimeStep; }
     void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
     inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
     void setActiveAdaptivityStep(int as) { m_activeAdaptivityStep = as; }
-    inline SolutionMode activeSolutionType() const { return m_activeSolutionType; }
-    void setActiveSolutionType(SolutionMode st) { m_activeSolutionType = st; }
+    inline SolutionMode activeSolutionType() const { return m_activeSolutionMode; }
+    void setActiveSolutionType(SolutionMode st) { m_activeSolutionMode = st; }
     // active MultiSolutionArray
     MultiSolutionArray<double> activeMultiSolutionArray();
 
@@ -218,7 +218,7 @@ private:
     FieldInfo* m_activeViewField;
     int m_activeTimeStep;
     int m_activeAdaptivityStep;
-    SolutionMode m_activeSolutionType;
+    SolutionMode m_activeSolutionMode;
 
     void createActions();
 

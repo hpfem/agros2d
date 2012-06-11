@@ -22,13 +22,14 @@ SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int co
 MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
 {
     cout << "chci solution " << solutionID << std::endl;
-    if (m_multiSolutions.contains(solutionID))
+    assert(m_multiSolutions.contains(solutionID));
+//    if (m_multiSolutions.contains(solutionID))
         return m_multiSolutions[solutionID];
 
-    return MultiSolutionArray<double>();
+//    return MultiSolutionArray<double>();
 }
 
-bool SolutionStore::contains(FieldSolutionID solutionID)
+bool SolutionStore::contains(FieldSolutionID solutionID) const
 {
     return m_multiSolutions.contains(solutionID);
 }
@@ -117,6 +118,19 @@ int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType)
     }
 
     return timeStep;
+}
+
+int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
+{
+    int ts = timeStep;
+    if(ts == 0)
+        return 0;
+    while(!this->contains(FieldSolutionID(fieldInfo, ts, 0, SolutionMode_Normal)))
+    {
+        ts--;
+        assert(ts >= 0);
+    }
+    return ts;
 }
 
 double SolutionStore::lastTime(FieldInfo *fieldInfo)
