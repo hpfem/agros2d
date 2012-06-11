@@ -56,6 +56,8 @@ public:
 private:
     Block* m_block;
 
+    QString m_solverID;
+
     // elapsed time
     double m_elapsedTime;
 
