@@ -7,7 +7,7 @@ class SolutionStore
 {
 public:
     SolutionArray<double> solution(FieldSolutionID solutionID, int component);
-    bool contains(FieldSolutionID solutionID);
+    bool contains(FieldSolutionID solutionID) const;
     MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
     MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
     void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
@@ -19,6 +19,9 @@ public:
 
     int lastTimeStep(FieldInfo* fieldInfo, SolutionMode solutionType);
     int lastTimeStep(Block* block, SolutionMode solutionType);
+
+    // finds nearest smaller(or equal) time step, where this fieldInfo was calculated
+    int nearestTimeStep(FieldInfo* fieldInfo, int timeStep) const;
 
     double lastTime(FieldInfo* fieldInfo);
     double lastTime(Block* block);

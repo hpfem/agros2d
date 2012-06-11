@@ -4,5 +4,5 @@
 
 void newton_log(char *str)
 {
-    Util::log()->printDebug(QObject::tr("Solver"), str);
+    Util::log()->printDebug(QObject::tr("Newton Method"), str);
 }
