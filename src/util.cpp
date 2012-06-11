@@ -223,7 +223,7 @@ void initLists()
     paletteQualityValueList.insert(Palette_ExtraCoarse, 0.01);
     paletteQualityValueList.insert(Palette_Coarser, 0.001);
     paletteQualityValueList.insert(Palette_Coarse, 0.0007);
-    paletteQualityValueList.insert(Palette_Normal, LINEARIZER_QUALITY);
+    paletteQualityValueList.insert(Palette_Normal, 0.0002);
     paletteQualityValueList.insert(Palette_Fine, 0.00001);
     paletteQualityValueList.insert(Palette_Finer, 0.00003);
     paletteQualityValueList.insert(Palette_ExtraFine, 0.000005);

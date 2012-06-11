@@ -1110,7 +1110,7 @@ void PostprocessorWidget::doScalarFieldDefault()
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
     chkPaletteFilter->setChecked(PALETTEFILTER);
     txtPaletteSteps->setValue(PALETTESTEPS);
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(LINEARIZER_QUALITY));
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(paletteQualityValueToDouble(Palette_Normal)));
     chkShowScalarColorBar->setChecked(SHOWSCALARCOLORBAR);
     chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
     txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);
