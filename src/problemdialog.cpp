@@ -380,7 +380,7 @@ void FieldWidget::doAnalysisTypeChanged(int index)
         if (otherFieldInfo->analysisType() == AnalysisType_Transient && otherFieldInfo->fieldId() != m_fieldInfo->fieldId())
             otherFieldIsTransient = true;
 
-    txtTransientTimeStepsSkip->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient || otherFieldIsTransient);
+    txtTransientTimeStepsSkip->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() != AnalysisType_Transient && otherFieldIsTransient);
 
     doShowEquation();
 }
