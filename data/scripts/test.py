@@ -21,8 +21,8 @@ magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" 
 #magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 #magnetic.add_boundary("A = 0", "potential", {"magnetic_potential_real" : 0})
 #magnetic.set_boundary("Dirichlet", "magnetic_potential", {"magnetic_potential_real" : 0})
-# FIXME! magnetic.set_boundary("A = 0", "potential", {"magnetic_potential_real" : 0})
-# FIXME! magnetic.set_boundary("A = 0", "magnetic_potential", {"potential_real" : 0})
+#magnetic.set_boundary("A = 0", "potential", {"magnetic_potential_real" : 0})
+#magnetic.set_boundary("A = 0", "magnetic_potential", {"potential_real" : 0})
 #agnetic.add_boundary("Test", "magnetic_potential", {"magnetic_potential_real" : 0})
 #agnetic.remove_boundary("Test")
 
@@ -30,7 +30,7 @@ magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_dens
 #magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e6})
 #magnetic.add_material("Cu", {"permeability" : 1, "magnetic_current_density_external_real" : 1e6})
 #magnetic.set_material("Copper", {"permeability" : 1.1})
-# FIXME! magnetic.set_material("Cu", {"permeability" : 1.1})
+#magnetic.set_material("Cu", {"permeability" : 1.1})
 #magnetic.add_material("Test", {"magnetic_permeability" : 1})
 #magnetic.remove_material("Test")
 magnetic.add_material("Fe", {"magnetic_permeability" : 500, "magnetic_conductivity" : 1e5})
@@ -38,12 +38,17 @@ magnetic.add_material("Air", {"magnetic_permeability" : 1})
 
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
+heat.linearity_type = "newton"
 heat.initial_condition = 20
 
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_heat_transfer_coefficient" : 10, "heat_convection_external_temperature" : 20})
 heat.add_boundary("Flux", "heat_heat_flux", {"heat_heat_flux" : 0})
 
 heat.add_material("Fe", {"heat_conductivity" : 60, "heat_volume_heat" : 0})
+
+#heat.add_material("Al", {"heat_conductivity" : { "value" : 385, "x" : [0,100,400,900,1200,1800], "y" : [300,350,480,300,280,320] }, "heat_volume_heat" : 0})
+#heat.set_material("Al", {"heat_conductivity" : { "value" : 500, "x" : [0,100,400,900,1200,1800], "y" : [320,280,300,480,350,300] }, "heat_volume_heat" : 0})
+#heat.remove_material("Al")
 
 geometry = agros2d.geometry
 
@@ -66,13 +71,14 @@ geometry.add_edge(0.5, 0.5, 0, 0.5, boundaries = {"magnetic" : "A = 0"})
 geometry.add_edge(0, 0.5, 0, 0.1, boundaries = {"magnetic" : "A = 0"})
 geometry.add_edge(0, -0.1, 0, -0.5, boundaries = {"magnetic" : "A = 0"})
 
-geometry.add_label(0.025, 0, materials = {"magnetic" : "Fe", "heat" : "Fe"})
+geometry.add_label(0.025, 0, 0, materials = {"magnetic" : "Fe", "heat" : "Fe"})
+#geometry.add_label(0.025, 0, -3, materials = {"magnetic" : "Fe", "heat" : "Fe"})
 geometry.add_label(0.07, 0, materials = {"magnetic" : "Cu"})
 geometry.add_label(0.25, 0, materials = {"magnetic" : "Air"})
 
 geometry.zoom_best_fit()
 
-geometry.mesh()
+#geometry.mesh()
 #problem.solve()
 
 """
