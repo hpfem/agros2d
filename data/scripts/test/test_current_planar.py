@@ -63,6 +63,6 @@ testPj = agros2d.test("Losses", volume["Pj"], 10070.23937)
 
 # surface integral
 surface = current.surface_integrals([0])
-testI = agros2d.test("Current", surface["I"], 3629.425713)
+testI = agros2d.test("Current", surface["Ir"], 3629.425713)
 
 print("Test: Current field - planar: " + str(testV and testE and testEx and testEy and testJ and testJx and testJy and testpj and testI))

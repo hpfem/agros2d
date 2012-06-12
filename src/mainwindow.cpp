@@ -566,7 +566,6 @@ void MainWindow::createMenus()
     mnuTools->addAction(actCreateVideo);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
-    mnuTools->addAction(actWeakform);
     mnuTools->addAction(actOptions);
 #endif
 

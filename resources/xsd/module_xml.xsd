@@ -287,7 +287,7 @@
 			<attribute name="nonlinearity_axi" type="string" />
 			<attribute name="dependence" type="string" />
 			<attribute name="name" type="string" />
-			<attribute name="shortname" type="string" />
+            <attribute name="shortname" type="string" />
 			<attribute name="shortname_html" type="string" />
 			<attribute name="shortname_latex" type="string" />
 			<attribute name="shortname_dependence" type="string" />
