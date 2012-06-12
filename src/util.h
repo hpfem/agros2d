@@ -684,12 +684,12 @@ QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
 
 // constants
-const QString IMAGEROOT = "../resources_source/images";
-const QString LANGUAGEROOT = "/resources/lang";
-const QString XSDROOT = "/resources/xsd";
-const QString MODULEROOT = "/resources/modules";
-const QString COUPLINGROOT = "/resources/couplings";
-const QString TEMPLATEROOT = "/resources/templates";
+const QString IMAGEROOT = QString("..%1resources_source%1images").arg(QDir::separator());
+const QString LANGUAGEROOT = QString("%1/resources%1lang").arg(QDir::separator());
+const QString XSDROOT = QString("%1resources%1xsd").arg(QDir::separator());
+const QString MODULEROOT = QString("%1resources%1modules").arg(QDir::separator());
+const QString COUPLINGROOT = QString("%1resources%1couplings").arg(QDir::separator());
+const QString TEMPLATEROOT = QString("%1resources%1templates").arg(QDir::separator());
 
 const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
 const QColor COLORGRID = QColor::fromRgb(200, 200, 200);

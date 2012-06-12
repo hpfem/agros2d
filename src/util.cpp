@@ -492,8 +492,8 @@ void setLanguage(const QString &locale)
     else
         qDebug() << "Qt language file not found.";
 
-    if (QFile::exists(datadir() + LANGUAGEROOT + "/" + locale + ".qm"))
-        appTranslator->load(datadir() + LANGUAGEROOT + "/" + locale + ".qm");
+    if (QFile::exists(datadir() + LANGUAGEROOT + QDir::separator() + locale + ".qm"))
+        appTranslator->load(datadir() + LANGUAGEROOT + QDir::separator() + locale + ".qm");
     else if (QFile::exists(datadir() + LANGUAGEROOT + "/en_US.qm"))
         appTranslator->load(datadir() + LANGUAGEROOT + "/en_US.qm");
     else
