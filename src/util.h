@@ -526,14 +526,14 @@ enum PaletteType
 
 enum PaletteQuality
 {
-    Palette_ExtremelyCoarse,
-    Palette_ExtraCoarse,
-    Palette_Coarser,
-    Palette_Coarse,
-    Palette_Normal,
-    Palette_Fine,
-    Palette_Finer,
-    Palette_ExtraFine
+    PaletteQuality_ExtremelyCoarse,
+    PaletteQuality_ExtraCoarse,
+    PaletteQuality_Coarser,
+    PaletteQuality_Coarse,
+    PaletteQuality_Normal,
+    PaletteQuality_Fine,
+    PaletteQuality_Finer,
+    PaletteQuality_ExtraFine
 };
 
 enum PaletteOrderType
@@ -676,7 +676,7 @@ QStringList paletteQualityStringKeys();
 QString paletteQualityToStringKey(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality);
 
-double paletteQualityValueToDouble(PaletteQuality paletteQuality);
+double paletteQualityToDouble(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromDouble(const double paletteQuality);
 
 QStringList paletteOrderTypeStringKeys();
@@ -735,8 +735,8 @@ const int MESHANGLESEGMENTSCOUNT = 3;
 const bool MESHCURVILINEARELEMENTS = true;
 
 // post2d
-const int PALLETESTEPSMIN = 5;
-const int PALLETESTEPSMAX = 100;
+const int PALETTESTEPSMIN = 5;
+const int PALETTESTEPSMAX = 100;
 const int SCALARDECIMALPLACEMIN = 0;
 const int SCALARDECIMALPLACEMAX = 10;
 const int CONTOURSCOUNTMIN = 1;

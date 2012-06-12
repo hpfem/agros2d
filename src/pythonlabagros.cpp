@@ -1412,17 +1412,17 @@ void PyViewPost2D::setScalarViewPalette(char* palette)
 void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
 {
     if (paletteQualityStringKeys().contains(QString(quality)))
-        Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+        Util::config()->linearizerQuality = paletteQualityToDouble(paletteQualityFromStringKey(QString(quality)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPaletteSteps(int steps)
 {
-    if (steps >= PALLETESTEPSMIN && steps <= PALLETESTEPSMAX)
+    if (steps >= PALETTESTEPSMIN && steps <= PALETTESTEPSMAX)
         Util::config()->paletteSteps = steps;
     else
-        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALLETESTEPSMIN).arg(PALLETESTEPSMAX).toStdString());
+        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALETTESTEPSMIN).arg(PALETTESTEPSMAX).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPaletteFilter(bool filter)
@@ -1608,17 +1608,17 @@ void PyViewPost3D::setScalarViewPalette(char* palette)
 void PyViewPost3D::setScalarViewPaletteQuality(char* quality)
 {
     if (paletteQualityStringKeys().contains(QString(quality)))
-        Util::config()->linearizerQuality= paletteQualityValueToDouble(paletteQualityFromStringKey(QString(quality)));
+        Util::config()->linearizerQuality = paletteQualityToDouble(paletteQualityFromStringKey(QString(quality)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }
 
 void PyViewPost3D::setScalarViewPaletteSteps(int steps)
 {
-    if (steps >= PALLETESTEPSMIN && steps <= PALLETESTEPSMAX)
+    if (steps >= PALETTESTEPSMIN && steps <= PALETTESTEPSMAX)
         Util::config()->paletteSteps = steps;
     else
-        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALLETESTEPSMIN).arg(PALLETESTEPSMAX).toStdString());
+        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALETTESTEPSMIN).arg(PALETTESTEPSMAX).toStdString());
 }
 
 void PyViewPost3D::setScalarViewPaletteFilter(bool filter)

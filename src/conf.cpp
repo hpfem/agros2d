@@ -111,7 +111,8 @@ void Config::loadWorkspace()
     showAxes = settings.value("SceneViewSettings/ShowAxes", SHOWAXES).toBool();
 
     // linearizer quality
-    linearizerQuality = paletteQualityValueToDouble(paletteQualityFromStringKey(settings.value("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(Palette_Normal)).toString()));
+    QString quality = settings.value("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(PaletteQuality_Normal)).toString();
+    linearizerQuality = paletteQualityToDouble(paletteQualityFromStringKey(quality));
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
