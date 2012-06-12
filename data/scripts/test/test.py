@@ -34,10 +34,10 @@ execfile("test_rf_planar.py")
 # execfile("test_rf_axisymmetric.py")
 
 # coupling
-# execfile("current_heat_transient_planar.py") # TODO: (Franta) test_ is redundant
 execfile("test_coupling_1_planar.py")
 execfile("test_coupling_2_axisymmetric.py")
 execfile("test_coupling_3_axisymmetric_nonlin.py")
+execfile("test_coupling_4_transient_planar.py") 
 
 # scripting
 # execfile("test_scripting.py")

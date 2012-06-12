@@ -66,4 +66,4 @@ surface = acoustic.surface_integrals([0])
 #testPs_imag = agros2d.test("Pressure - imag", surface["p_imag"], -0.324708)
 
 # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
-print("Test: Acoustics - axisymmetric: " + str(testp and testp_real and testp_imag))
+print("Test: Acoustic - axisymmetric: " + str(testp and testp_real and testp_imag))
