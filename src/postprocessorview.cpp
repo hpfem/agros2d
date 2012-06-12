@@ -589,22 +589,22 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // quality
     cmbLinearizerQuality = new QComboBox();
-    cmbLinearizerQuality->addItem(tr("Extremely coarse"), paletteQualityValueToDouble(Palette_ExtremelyCoarse));
-    cmbLinearizerQuality->addItem(tr("Extra coarse"), paletteQualityValueToDouble(Palette_ExtraCoarse));
-    cmbLinearizerQuality->addItem(tr("Coarser"), paletteQualityValueToDouble(Palette_Coarser));
-    cmbLinearizerQuality->addItem(tr("Coarse"), paletteQualityValueToDouble(Palette_Coarse));
-    cmbLinearizerQuality->addItem(tr("Normal"), paletteQualityValueToDouble(Palette_Normal));
-    cmbLinearizerQuality->addItem(tr("Fine"), paletteQualityValueToDouble(Palette_Fine));
-    cmbLinearizerQuality->addItem(tr("Finer"), paletteQualityValueToDouble(Palette_Finer));
-    cmbLinearizerQuality->addItem(tr("Extra fine"), paletteQualityValueToDouble(Palette_ExtraFine));
+    cmbLinearizerQuality->addItem(tr("Extremely coarse"), paletteQualityToDouble(PaletteQuality_ExtremelyCoarse));
+    cmbLinearizerQuality->addItem(tr("Extra coarse"), paletteQualityToDouble(PaletteQuality_ExtraCoarse));
+    cmbLinearizerQuality->addItem(tr("Coarser"), paletteQualityToDouble(PaletteQuality_Coarser));
+    cmbLinearizerQuality->addItem(tr("Coarse"), paletteQualityToDouble(PaletteQuality_Coarse));
+    cmbLinearizerQuality->addItem(tr("Normal"), paletteQualityToDouble(PaletteQuality_Normal));
+    cmbLinearizerQuality->addItem(tr("Fine"), paletteQualityToDouble(PaletteQuality_Fine));
+    cmbLinearizerQuality->addItem(tr("Finer"), paletteQualityToDouble(PaletteQuality_Finer));
+    cmbLinearizerQuality->addItem(tr("Extra fine"), paletteQualityToDouble(PaletteQuality_ExtraFine));
 
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
 
     // steps
     txtPaletteSteps = new QSpinBox(this);
-    txtPaletteSteps->setMinimum(PALLETESTEPSMIN);
-    txtPaletteSteps->setMaximum(PALLETESTEPSMAX);
+    txtPaletteSteps->setMinimum(PALETTESTEPSMIN);
+    txtPaletteSteps->setMaximum(PALETTESTEPSMAX);
 
     // log scale
     chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
@@ -1110,7 +1110,7 @@ void PostprocessorWidget::doScalarFieldDefault()
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
     chkPaletteFilter->setChecked(PALETTEFILTER);
     txtPaletteSteps->setValue(PALETTESTEPS);
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(LINEARIZER_QUALITY));
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(paletteQualityToDouble(PaletteQuality_Normal)));
     chkShowScalarColorBar->setChecked(SHOWSCALARCOLORBAR);
     chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
     txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);

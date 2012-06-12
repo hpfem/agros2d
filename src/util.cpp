@@ -107,7 +107,7 @@ QStringList paletteQualityStringKeys() { return paletteQualityList.values(); }
 QString paletteQualityToStringKey(PaletteQuality paletteQuality) { return paletteQualityList[paletteQuality]; }
 PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { return paletteQualityList.key(paletteQuality); }
 
-double paletteQualityValueToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
+double paletteQualityToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
 PaletteQuality paletteQualityFromDouble(const double paletteQuality) { return paletteQualityValueList.key(paletteQuality); }
 
 QStringList paletteOrderTypeStringKeys() { return paletteOrderTypeList.values(); }
@@ -210,23 +210,23 @@ void initLists()
     paletteTypeList.insert(Palette_BWDesc, "bw_descending");
 
     // PaletteQuality
-    paletteQualityList.insert(Palette_ExtremelyCoarse, "extremely_coarse");
-    paletteQualityList.insert(Palette_ExtraCoarse, "extra_coarse");
-    paletteQualityList.insert(Palette_Coarser, "coarser");
-    paletteQualityList.insert(Palette_Coarse, "coarse");
-    paletteQualityList.insert(Palette_Normal, "normal");
-    paletteQualityList.insert(Palette_Fine, "fine");
-    paletteQualityList.insert(Palette_Finer, "finer");
-    paletteQualityList.insert(Palette_ExtraFine, "extra_fine");
+    paletteQualityList.insert(PaletteQuality_ExtremelyCoarse, "extremely_coarse");
+    paletteQualityList.insert(PaletteQuality_ExtraCoarse, "extra_coarse");
+    paletteQualityList.insert(PaletteQuality_Coarser, "coarser");
+    paletteQualityList.insert(PaletteQuality_Coarse, "coarse");
+    paletteQualityList.insert(PaletteQuality_Normal, "normal");
+    paletteQualityList.insert(PaletteQuality_Fine, "fine");
+    paletteQualityList.insert(PaletteQuality_Finer, "finer");
+    paletteQualityList.insert(PaletteQuality_ExtraFine, "extra_fine");
 
-    paletteQualityValueList.insert(Palette_ExtremelyCoarse, 0.1);
-    paletteQualityValueList.insert(Palette_ExtraCoarse, 0.01);
-    paletteQualityValueList.insert(Palette_Coarser, 0.001);
-    paletteQualityValueList.insert(Palette_Coarse, 0.0007);
-    paletteQualityValueList.insert(Palette_Normal, LINEARIZER_QUALITY);
-    paletteQualityValueList.insert(Palette_Fine, 0.00001);
-    paletteQualityValueList.insert(Palette_Finer, 0.00003);
-    paletteQualityValueList.insert(Palette_ExtraFine, 0.000005);
+    paletteQualityValueList.insert(PaletteQuality_ExtremelyCoarse, 0.1);
+    paletteQualityValueList.insert(PaletteQuality_ExtraCoarse, 0.01);
+    paletteQualityValueList.insert(PaletteQuality_Coarser, 0.001);
+    paletteQualityValueList.insert(PaletteQuality_Coarse, 0.0007);
+    paletteQualityValueList.insert(PaletteQuality_Normal, 0.0002);
+    paletteQualityValueList.insert(PaletteQuality_Fine, 0.00001);
+    paletteQualityValueList.insert(PaletteQuality_Finer, 0.00003);
+    paletteQualityValueList.insert(PaletteQuality_ExtraFine, 0.000005);
 
     // PaletteOrderType
     paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
