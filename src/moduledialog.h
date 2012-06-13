@@ -29,8 +29,13 @@ class ScriptEditor;
 class SLineEditDouble;
 class ValueLineEdit;
 
-struct ModuleItem
+class ModuleItem : public QWidget
 {
+    Q_OBJECT
+
+public:
+    ModuleItem(QWidget *parent);
+
     QLineEdit *txtPlanar;
     QLineEdit *txtPlanarX;
     QLineEdit *txtPlanarY;
@@ -39,6 +44,22 @@ struct ModuleItem
     QLineEdit *txtAxiR;
     QLineEdit *txtAxiZ;
     QLineEdit *txtAxiPhi;
+
+    virtual void save() = 0;
+};
+
+class ModuleItemLocalValue : public ModuleItem
+{
+    Q_OBJECT
+
+public:
+    ModuleItemLocalValue(const QString &type, XMLModule::expression *expr, QWidget *parent);
+
+    void save();
+
+private:
+    QString m_type;
+    XMLModule::expression *m_expr;
 };
 
 class ModuleItemDialog : public QDialog
@@ -47,7 +68,6 @@ class ModuleItemDialog : public QDialog
 
 public:
     ModuleItemDialog(QWidget *parent);
-
 
 protected slots:
     virtual void doAccept() = 0;
@@ -63,10 +83,28 @@ protected:
     QLineEdit *txtUnitHtml;
     QLineEdit *txtUnitLatex;
 
-    QList<ModuleItem> items;
+    QList<ModuleItem *> items;
 
-    void load();
+    QVBoxLayout *layoutMain;
+    QDialogButtonBox *buttonBox;
+};
+
+class ModuleWeakform : public QWidget
+{
+    Q_OBJECT
+
+public:
+    ModuleWeakform(WeakFormKind weakForm, QWidget *parent);
+
     void save();
+
+protected:
+    QSpinBox *txtI;
+    QSpinBox *txtJ;
+    QLineEdit *txtPlanarLinear;
+    QLineEdit *txtAxiLinear;
+    QLineEdit *txtPlanarNewton;
+    QLineEdit *txtAxiNewton;
 };
 
 class ModuleItemLocalValueDialog : public ModuleItemDialog
@@ -101,6 +139,9 @@ class ModuleSurfaceIntegralValueDialog : public ModuleItemDialog
 public:
     ModuleSurfaceIntegralValueDialog(XMLModule::surfaceintegral *sur, QWidget *parent);
 
+protected:
+    void addExpressions(QLayout *layout) {}
+
 protected slots:
     void doAccept();
 
@@ -120,9 +161,16 @@ private slots:
     void doAccept();
     void doReject();
 
-    void localItemDoubleClicked(QTreeWidgetItem *item, int role);
+    void constantDoubleClicked(QTreeWidgetItem *item, int role);
+    void analysisDoubleClicked(QTreeWidgetItem *item, int role);
+
     void volumeIntegralDoubleClicked(QTreeWidgetItem *item, int role);
     void surfaceIntegralDoubleClicked(QTreeWidgetItem *item, int role);
+
+    void materialDoubleClicked(QTreeWidgetItem *item, int role);
+    void boundaryDoubleClicked(QTreeWidgetItem *item, int role);
+    void localItemDoubleClicked(QTreeWidgetItem *item, int role);
+
 
 private:
     QString m_fieldId;    
@@ -143,6 +191,18 @@ private:
     QWidget *createWeakforms();
     QWidget *createPreprocessor();
     QWidget *createPostprocessor();       
+
+    // constant
+    QTreeWidget *treeConstants;
+    QTreeWidget *treeAnalyses;
+
+    // weakforms
+    QTreeWidget *treeVolumeQuantity;
+    QTreeWidget *treeSurfaceQuantity;
+
+    // preprocessor
+    QTreeWidget *treeMaterials;
+    QTreeWidget *treeBoundaries;
 
     // postprocessor
     QTreeWidget *treeLocalVariables;

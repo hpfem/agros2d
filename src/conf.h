@@ -73,7 +73,7 @@ public:
     QString activeField;
 
     // linearizer quality
-    double linearizerQuality;
+    PaletteQuality linearizerQuality;
 
     // post3d
     SceneViewPost3DMode showPost3D;

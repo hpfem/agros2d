@@ -12,38 +12,35 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
+
 /*! \file common.h
     \brief File containing common definitions, and basic global enums etc. for HermesCommon.
 */
 #ifndef __HERMES_COMMON_COMMON_H
 #define __HERMES_COMMON_COMMON_H
 
-#ifdef _POSIX_C_SOURCE
-# undef _POSIX_C_SOURCE	// typeinfo defines it
-#endif
-#ifdef _XOPEN_SOURCE
-# undef _XOPEN_SOURCE	// typeinfo defines it
-#endif
-
-// In Trilinos preconditioning, unistd.h is used if this flag is not defined.
-#ifdef _MSC_VER
-#define ICL
-#endif
-
-#include <typeinfo>
 #include <complex>
 
 #include <stdexcept>
 #include <cstdarg>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stddef.h> //allows to use offsetof
+#include <stddef.h>
 #include <assert.h>
 #include <math.h>
 #include <time.h>
 #include <float.h>
 #include <errno.h>
 #include <cmath>
+
+#include <pthread.h>
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
+#include <map>
+#include <cstdio>
+#include <stdarg.h>
+#include <sstream>
 
 #include <algorithm>
 #include <vector>
@@ -53,25 +50,11 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
-
+#include <iostream>
 #include <omp.h>
+#include <signal.h>
 
-#include "hermes_logging.h"
-#include "hermes_function.h"
-#include "common_time_period.h"
-#include "compat.h"
-#include "callstack.h"
-#include "error.h"
-#include "vector.h"
-#include "tables.h"
-#include "array.h"
-#include "qsort.h"
-#include "ord.h"
-
-#ifndef CONFIG_H_INCLUDED
-#define CONFIG_H_INCLUDED
 #include "config.h"
-#endif
 
 typedef int int2[2];
 typedef int int3[3];
@@ -102,6 +85,7 @@ public:
     return val[idx];
   }
 };
+
 template<typename Scalar>
 class Scalar3
 {
@@ -131,7 +115,6 @@ typedef unsigned __int8  uint8_t;
 typedef unsigned __int16 uint16_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
-
 #else
 #include <inttypes.h>
 #endif
@@ -143,30 +126,6 @@ typedef unsigned __int64 uint64_t;
 
 namespace Hermes
 {
-  enum MatrixSolverType
-  {
-    SOLVER_UMFPACK = 0,
-    SOLVER_PETSC,
-    SOLVER_MUMPS,
-    SOLVER_SUPERLU,
-    SOLVER_AMESOS,
-    SOLVER_AZTECOO
-  };
-
-  const std::string MatrixSolverNames[6] = {
-    "UMFPACK",
-    "PETSc",
-    "MUMPS",
-    "SuperLU",
-    "Trilinos/Amesos",
-    "Trilinos/AztecOO"
-  };
-
-  struct HERMES_API SplineCoeff
-  {
-    double a, b, c, d;		// four coefficients of a cubic spline.
-  };
-
   inline double sqr(int x) { return x*x; }
   inline double sqr(double x) { return x*x; }
   inline double sqrt(double x) { return std::sqrt(x); }
@@ -181,23 +140,16 @@ namespace Hermes
   inline double pow(double x, double y) { return std::pow(x, y); }
   inline double log(double x) { return std::log(x); }
 
+  // Represents "any" part of the boundary when deciding where (on which elements) to assemble the form at hand.
   const std::string HERMES_ANY = "-1234";
   // For internal use.
   const int HERMES_ANY_INT = -1234;
-  /// This defines the edge types used by discontinuous Galerkin weak forms.
-  const std::string H2D_DG_BOUNDARY_EDGE = "-12345";  ///< This is to be used by weak forms on the boundary.
-  ///< It complements H2D_ANY in that it ensures the forms are evaluated also on non-natural
-  ///< boundaries (essential conditions may be enforced weakly in some DG methods).
-  const std::string H2D_DG_INNER_EDGE = "-1234567";    ///< This is to be used by weak forms specifying numerical flux through interior edges.
-  ///< Forms with this identifier will receive DiscontinuousFunc representations of shape
-  ///< and ext. functions, which they may query for values on either side of given interface.
+  /// This is to be used by weak forms specifying numerical flux through interior edges.
+  /// Forms with this identifier will receive DiscontinuousFunc representations of shape
+  /// and ext. functions, which they may query for values on either side of given interface.
+  const std::string H2D_DG_INNER_EDGE = "-1234567";    
   // For internal use.
   const int H2D_DG_INNER_EDGE_INT = -1234567;
-  const int H2D_DG_BOUNDARY_EDGE_INT = -12345;
-
-  // For internal use (inside Geom<Ord>).
-  const int HERMES_DUMMY_ELEM_MARKER = -9999;
-  const int HERMES_DUMMY_EDGE_MARKER = -8888;
 
   namespace Helpers
   {
@@ -210,38 +162,6 @@ namespace Hermes
     {
       fprintf(f, "(%lf, %lf)", x.real(), x.imag());
     }
-
-    /// This class makes command line arguments available to any other method in Hermes.
-    class HERMES_API CommandLineArgs
-    {
-    public:
-      CommandLineArgs() {};
-
-      int m_argc;
-      char** m_argv;
-
-      void set(int argc_in, char** argv_in)
-      {
-        m_argc = argc_in;
-        m_argv = argv_in;
-      }
-      bool check()
-      {
-        return (m_argc > 0);
-      }
-      void missing_error()
-      {
-        error("Command line arguments have not been set.");
-      }
-      int& get_argc()
-      {
-        return m_argc;
-      }
-      char**& get_argv()
-      {
-        return m_argv;
-      }
-    };
   }
 
   namespace BLAS
@@ -282,10 +202,6 @@ namespace Hermes
 
 #endif
   }
-
-  // Common return values for tests.
-  #define TEST_SUCCESS    0
-  #define TEST_FAILURE    -1
 }
 #endif
 

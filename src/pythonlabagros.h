@@ -229,7 +229,9 @@ class PyField
         void addMaterial(char *name, map<char*, double> parameters,
                          map<char*, vector<double> > nonlin_x,
                          map<char*, vector<double> > nonlin_y);
-        void setMaterial(char *name, map<char*, double> parameters);
+        void setMaterial(char *name, map<char*, double> parameters,
+                         map<char *, vector<double> > nonlin_x,
+                         map<char *, vector<double> > nonlin_y);
         void removeMaterial(char *name);
 
         // solve
@@ -370,7 +372,7 @@ struct PyViewPost2D
     void setScalarViewPalette(char* palette);
     inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Util::config()->paletteType).toStdString().c_str()); }
     void setScalarViewPaletteQuality(char* quality);
-    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
+    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(Util::config()->linearizerQuality).toStdString().c_str()); }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
     void setScalarViewPaletteFilter(bool filter);
@@ -435,7 +437,7 @@ struct PyViewPost3D
     void setScalarViewPalette(char* palette);
     inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Util::config()->paletteType).toStdString().c_str()); }
     void setScalarViewPaletteQuality(char* quality);
-    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
+    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(Util::config()->linearizerQuality).toStdString().c_str()); }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
     void setScalarViewPaletteFilter(bool filter);

@@ -22,12 +22,8 @@
 #include "config.h"
 #ifdef WITH_MUMPS
 #include "mumps_solver.h"
-#include "trace.h"
-#include "error.h"
 #include "callstack.h"
-#include "exceptions.h"
-
-using namespace Hermes::Error;
+#include "time_period.h"
 
 namespace Hermes
 {
@@ -50,7 +46,6 @@ namespace Hermes
     ///
     static int find_position(int *Ai, int Alen, int idx)
     {
-      _F_;
       assert (idx >= 0);
 
       register int lo = 0, hi = Alen - 1, mid;
@@ -77,7 +72,6 @@ namespace Hermes
     template<typename Scalar>
     MumpsMatrix<Scalar>::MumpsMatrix()
     {
-      _F_;
       nnz = 0;
       this->size = 0;
       irn = NULL;
@@ -90,22 +84,18 @@ namespace Hermes
     template<typename Scalar>
     MumpsMatrix<Scalar>::~MumpsMatrix()
     {
-      _F_;
       free();
     }
 
     template<typename Scalar>
     void MumpsMatrix<Scalar>::alloc()
     {
-      _F_;
       assert(this->pages != NULL);
 
       // initialize the arrays Ap and Ai
       Ap = new unsigned int [this->size + 1];
-      MEM_CHECK(Ap);
       int aisize = this->get_num_indices();
       Ai = new int [aisize];
-      MEM_CHECK(Ai);
 
       // sort the indices and remove duplicities, insert into Ai
       unsigned int i, pos = 0;
@@ -136,7 +126,6 @@ namespace Hermes
     template<typename Scalar>
     void MumpsMatrix<Scalar>::free()
     {
-      _F_;
       nnz = 0;
       delete[] Ap; Ap = NULL;
       delete[] Ai; Ai = NULL;
@@ -158,7 +147,6 @@ namespace Hermes
     template<typename Scalar>
     Scalar MumpsMatrix<Scalar>::get(unsigned int m, unsigned int n)
     {
-      _F_;
       // Find m-th row in the n-th column.
       int mid = find_position(Ai + Ap[n], Ap[n + 1] - Ap[n], m);
       // Return 0 if the entry has not been found.
@@ -171,7 +159,6 @@ namespace Hermes
     template<typename Scalar>
     void MumpsMatrix<Scalar>::zero()
     {
-      _F_;
       memset(Ax, 0, sizeof(Scalar) * Ap[this->size]);
     }
 
@@ -185,14 +172,13 @@ namespace Hermes
     template<typename Scalar>
     void MumpsMatrix<Scalar>::add(unsigned int m, unsigned int n, Scalar v)
     {
-      _F_;
       //          produced an error in neutronics-2-group-adapt (although tutorial-07
       //          ran well).
       // Find m-th row in the n-th column.
       int pos = find_position(Ai + Ap[n], Ap[n + 1] - Ap[n], m);
       // Make sure we are adding to an existing non-zero entry.
       if (pos < 0)
-        error("Sparse matrix entry not found");
+        throw new Hermes::Exceptions::Exception("Sparse matrix entry not found");
       // Add offset to the n-th column.
       pos += Ap[n];
       Ax[pos] += v;
@@ -203,7 +189,6 @@ namespace Hermes
     template<typename Scalar>
     void MumpsMatrix<Scalar>::add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols)
     {
-      _F_;
       for (unsigned int i = 0; i < m; i++)       // rows
         for (unsigned int j = 0; j < n; j++)     // cols
           if(rows[i] >= 0 && cols[j] >= 0) // not Dir. dofs.
@@ -226,7 +211,6 @@ namespace Hermes
     template<typename Scalar>
     bool MumpsMatrix<Scalar>::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt)
     {
-      _F_;
       // TODO
       switch (fmt)
       {
@@ -276,14 +260,12 @@ namespace Hermes
     template<typename Scalar>
     unsigned int MumpsMatrix<Scalar>::get_matrix_size() const
     {
-      _F_;
       return this->size;
     }
 
     template<typename Scalar>
     unsigned int MumpsMatrix<Scalar>::get_nnz() const
     {
-      _F_;
       return nnz;
     }
 
@@ -291,24 +273,21 @@ namespace Hermes
     template<typename Scalar>
     double MumpsMatrix<Scalar>::get_fill_in() const
     {
-      _F_;
       return Ap[this->size] / (double) (this->size * this->size);
     }
 
     template<typename Scalar>
     void MumpsMatrix<Scalar>::add_matrix(MumpsMatrix<Scalar>* mat)
     {
-      _F_;
       add_as_block(0, 0, mat);
     };
 
     template<typename Scalar>
     void MumpsMatrix<Scalar>::add_to_diagonal_blocks(int num_stages, MumpsMatrix<Scalar>* mat)
     {
-      _F_;
       int ndof = mat->get_size();
       if (this->get_size() != (unsigned int) num_stages * ndof)
-        error("Incompatible matrix sizes in PetscMatrix<Scalar>::add_to_diagonal_blocks()");
+        throw new Hermes::Exceptions::Exception("Incompatible matrix sizes in PetscMatrix<Scalar>::add_to_diagonal_blocks()");
 
       for (int i = 0; i < num_stages; i++)
       {
@@ -332,7 +311,6 @@ namespace Hermes
     template<typename Scalar>
     void MumpsMatrix<Scalar>::add_as_block(unsigned int i, unsigned int j, MumpsMatrix<Scalar>* mat)
     {
-      _F_;
       int idx;
       for (unsigned int col = 0;col<mat->get_size();col++)
       {
@@ -340,7 +318,7 @@ namespace Hermes
         {
           idx = find_position(Ai + Ap[col + j], Ap[col + 1 + j] - Ap[col + j], mat->Ai[n] + i);
           if (idx<0)
-            error("Sparse matrix entry not found");
+            throw new Hermes::Exceptions::Exception("Sparse matrix entry not found");
           idx +=Ap[col + j];
           Ax[idx] +=mat->Ax[n];
         }
@@ -351,7 +329,6 @@ namespace Hermes
     template<typename Scalar>
     void MumpsMatrix<Scalar>::multiply_with_vector(Scalar* vector_in, Scalar* vector_out)
     {
-      _F_;
       for(unsigned int i = 0;i<this->size;i++)
       {
         vector_out[i] = 0;
@@ -367,7 +344,6 @@ namespace Hermes
     template<>
     void MumpsMatrix<double>::multiply_with_Scalar(double value)
     {
-      _F_;
       int n = nnz;
       for(int i = 0;i<n;i++)
       {
@@ -378,7 +354,6 @@ namespace Hermes
     template<>
     void MumpsMatrix<std::complex<double> >::multiply_with_Scalar(std::complex<double> value)
     {
-      _F_;
       int n = nnz;
       std::complex<double> a;
       for(int i = 0;i<n;i++)
@@ -458,7 +433,6 @@ namespace Hermes
     template<typename Scalar>
     MumpsVector<Scalar>::MumpsVector()
     {
-      _F_;
       v = NULL;
       this->size = 0;
     }
@@ -466,14 +440,12 @@ namespace Hermes
     template<typename Scalar>
     MumpsVector<Scalar>::~MumpsVector()
     {
-      _F_;
       free();
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::alloc(unsigned int n)
     {
-      _F_;
       free();
       this->size = n;
       v = new Scalar[n];
@@ -483,21 +455,18 @@ namespace Hermes
     template<typename Scalar>
     void MumpsVector<Scalar>::change_sign()
     {
-      _F_;
       for (unsigned int i = 0; i < this->size; i++) v[i] *= -1.;
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::zero()
     {
-      _F_;
       memset(v, 0, this->size * sizeof(Scalar));
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::free()
     {
-      _F_;
       delete [] v;
       v = NULL;
       this->size = 0;
@@ -506,21 +475,18 @@ namespace Hermes
     template<typename Scalar>
     void MumpsVector<Scalar>::set(unsigned int idx, Scalar y)
     {
-      _F_;
       v[idx] = y;
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::add(unsigned int idx, Scalar y)
     {
-      _F_;
       v[idx] += y;
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::add(unsigned int n, unsigned int *idx, Scalar *y)
     {
-      _F_;
       for (unsigned int i = 0; i < n; i++)
       {
         v[idx[i]] += y[i];
@@ -555,7 +521,6 @@ namespace Hermes
     template<typename Scalar>
     bool MumpsVector<Scalar>::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt)
     {
-      _F_;
       switch (fmt)
       {
       case DF_NATIVE:
@@ -628,13 +593,12 @@ namespace Hermes
     template<typename Scalar>
     bool MumpsSolver<Scalar>::check_status()
     {
-      _F_;
       switch (param.INFOG(1))
       {
       case 0: return true; // no error
-      case -1: warning("Error occured on processor %d", MUMPS_INFO(param, 2)); break;
+      case -1: warn("Error occured on processor %d", MUMPS_INFO(param, 2)); break;
         /// \todo add the rest according to the MUMPS docs
-      default: warning("INFOG(1) = %d", param.INFOG(1)); break;
+      default: warn("INFOG(1) = %d", param.INFOG(1)); break;
       }
       return false;
     }
@@ -642,7 +606,6 @@ namespace Hermes
     template<typename Scalar>
     bool MumpsSolver<Scalar>::reinit()
     {
-      _F_;
       if (inited)
       {
         // If there is already an instance of MUMPS running,
@@ -686,7 +649,6 @@ namespace Hermes
     MumpsSolver<Scalar>::MumpsSolver(MumpsMatrix<Scalar> *m, MumpsVector<Scalar> *rhs) :
     DirectSolver<Scalar>(), m(m), rhs(rhs)
     {
-      _F_;
       inited = false;
 
       // Initial values for some fields of the MUMPS_STRUC structure that may be accessed
@@ -699,7 +661,6 @@ namespace Hermes
     template<typename Scalar>
     MumpsSolver<Scalar>::~MumpsSolver()
     {
-      _F_;
       // Terminate the current instance of MUMPS.
       if (inited)
       {
@@ -713,13 +674,12 @@ namespace Hermes
     template<typename Scalar>
     int MumpsSolver<Scalar>::get_matrix_size()
     {
-      return m->get_size();
+      return m->size;
     }
 
     template<typename Scalar>
     bool MumpsSolver<Scalar>::solve()
     {
-      _F_;
       bool ret = false;
       assert(m != NULL);
       assert(rhs != NULL);
@@ -731,7 +691,7 @@ namespace Hermes
       // the system matrix.
       if ( !setup_factorization() )
       {
-        throw Exceptions::LinearMatrixSolverException("LU factorization could not be completed.");
+        throw Hermes::Exceptions::LinearMatrixSolverException("LU factorization could not be completed.");
       }
 
       // Specify the right-hand side (will be replaced by the solution).
@@ -763,7 +723,6 @@ namespace Hermes
     template<typename Scalar>
     bool MumpsSolver<Scalar>::setup_factorization()
     {
-      _F_;
       // When called for the first time, all three phases (analysis, factorization,
       // solution) must be performed.
       int eff_fact_scheme = this->factorization_scheme;

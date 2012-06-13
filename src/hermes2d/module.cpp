@@ -551,7 +551,7 @@ Module::BasicModule::BasicModule(const QString &fieldId, CoordinateType problemT
     clear();
 
     // open xml description
-    read(datadir() + MODULEROOT + "/" + fieldId + ".xml");
+    read(datadir() + MODULEROOT + QDir::separator() + fieldId + ".xml");
 }
 
 Module::BasicModule::~BasicModule()

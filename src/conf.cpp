@@ -111,7 +111,11 @@ void Config::loadWorkspace()
     showAxes = settings.value("SceneViewSettings/ShowAxes", SHOWAXES).toBool();
 
     // linearizer quality
-    linearizerQuality = settings.value("SceneViewSettings/LinearizerQuality", LINEARIZER_QUALITY).toDouble();
+    QString quality = settings.value("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(PaletteQuality_Normal)).toString();
+    // qDebug() << "quality" << quality;
+    linearizerQuality = paletteQualityFromStringKey(quality);
+    linearizerQuality = PaletteQuality_Normal; // TODO: FIXME
+    // qDebug() << "linearizerQuality" << linearizerQuality;
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
@@ -224,7 +228,7 @@ void Config::loadAdvanced()
     numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
     if (numberOfThreads > omp_get_max_threads())
         numberOfThreads = omp_get_max_threads();
-    Hermes::Hermes2D::HermesApi.setParamValue("num_threads", numberOfThreads);
+    Hermes::Hermes2D::Hermes2DApi.setParamValue(Hermes::Hermes2D::numThreads, numberOfThreads);
 
     // global script
     globalScript = settings.value("Python/GlobalScript", "").toString();
@@ -304,7 +308,7 @@ void Config::saveWorkspace()
     settings.setValue("SceneViewSettings/ShowAxes", showAxes);
 
     // linearizer quality
-    settings.setValue("SceneViewSettings/LinearizerQuality", linearizerQuality);
+    settings.setValue("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(linearizerQuality));
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
@@ -411,7 +415,7 @@ void Config::saveAdvanced()
 
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);
-    Hermes::Hermes2D::HermesApi.setParamValue("num_threads", numberOfThreads);
+    Hermes::Hermes2D::Hermes2DApi.setParamValue(Hermes::Hermes2D::numThreads, numberOfThreads);
 
     // global script
     settings.setValue("Python/GlobalScript", globalScript);

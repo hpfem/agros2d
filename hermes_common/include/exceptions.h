@@ -22,10 +22,8 @@
 #ifndef __HERMES_COMMON_EXCEPTIONS_H_
 #define __HERMES_COMMON_EXCEPTIONS_H_
 
-#include<stdio.h>
-#include<string>
-#include"callstack.h"
-#include<string.h>
+#include "common.h"
+#include "compat.h"
 
 namespace Hermes
 {
@@ -39,7 +37,7 @@ namespace Hermes
         Exception();
         /// Init exception with message.
         /// \param[in] msg message
-        Exception(const char * msg);
+        Exception(const char * msg, ...);
         /// \brief print error message to stderr
         void printMsg() const;
         /// \brief get pointer to error message
@@ -49,8 +47,6 @@ namespace Hermes
         virtual ~Exception(){};
       protected:
         const char * message;
-      private:
-        const char * func;
     };
 
     /// \brief Null parameter exception.
@@ -112,13 +108,13 @@ namespace Hermes
         /// \brief Linear solver failed from unknown reason.
         LinearMatrixSolverException();
         /// Linear solver failed from spevific reason.
-        /// \param[in] reasen specification of solver fail.
+        /// \param[in] reason specification of solver fail.
         LinearMatrixSolverException(const char * reason);
         ~LinearMatrixSolverException();
         LinearMatrixSolverException(const LinearMatrixSolverException & e);
     };
 
-    /// \brief Value is out of allowed range
+    /// \brief Numeric value is out of allowed range
     class HERMES_API ValueException : public Exception
     {
       public:
@@ -143,6 +139,17 @@ namespace Hermes
         ValueException(const ValueException & e);
       private:
         double value, allowed;
+    };
+
+    /// \brief Linear solver failed.
+    class HERMES_API FunctionNotOverridenException : public Exception
+    {
+      public:
+        /// Constructor
+        /// \param[in] name Name of the function.
+        FunctionNotOverridenException(const char * reason);
+        ~FunctionNotOverridenException();
+        FunctionNotOverridenException(const FunctionNotOverridenException & e);
     };
   }
 }

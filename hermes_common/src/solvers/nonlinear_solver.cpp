@@ -20,6 +20,8 @@
 \brief General nonlinear solver functionality.
 */
 #include "nonlinear_solver.h"
+#include "hermes_logging.h"
+#include "api.h"
 
 using namespace Hermes::Algebra;
 
@@ -28,26 +30,21 @@ namespace Hermes
   namespace Solvers
   {
     template<typename Scalar>
-    NonlinearSolver<Scalar>::NonlinearSolver(DiscreteProblemInterface<Scalar>* dp) : dp(dp), sln_vector(NULL), time(-1.0), matrix_solver_type(SOLVER_UMFPACK),  verbose_output(true)
-    {
-    }
-
-    template<typename Scalar>
-    NonlinearSolver<Scalar>::NonlinearSolver(DiscreteProblemInterface<Scalar>* dp, Hermes::MatrixSolverType matrix_solver_type) : dp(dp), sln_vector(NULL), time(-1.0), matrix_solver_type(matrix_solver_type), verbose_output(true)
+    NonlinearSolver<Scalar>::NonlinearSolver(DiscreteProblemInterface<Scalar>* dp) : dp(dp), sln_vector(NULL), time(-1.0), verbose_output(true)
     {
     }
 
     template<typename Scalar>
     NonlinearSolver<Scalar>::~NonlinearSolver()
     {
-      // if(sln_vector != NULL)
-      //   delete [] sln_vector;
+      if(sln_vector != NULL)
+        delete [] sln_vector;
     }
 
     template<typename Scalar>
     void NonlinearSolver<Scalar>::solve(Scalar* coeff_vec)
     {
-      error("An abstract class's method has been called.");
+      throw new Hermes::Exceptions::FunctionNotOverridenException("NonlinearSolver<Scalar>::solve");
       return;
     }
 
@@ -72,9 +69,9 @@ namespace Hermes
     template<typename Scalar>
     void NonlinearSolver<Scalar>::set_iterative_method(const char* iterative_method_name)
     {
-      if(this->matrix_solver_type != SOLVER_AZTECOO)
+      if(Hermes::HermesCommonApi.getParamValue(Hermes::matrixSolverType) != SOLVER_AZTECOO)
       {
-        warning("Trying to set iterative method for a different solver than AztecOO.");
+        warn("Trying to set iterative method for a different solver than AztecOO.");
         return;
       }
       else
@@ -86,9 +83,9 @@ namespace Hermes
     template<typename Scalar>
     void NonlinearSolver<Scalar>::set_preconditioner(const char* preconditioner_name)
     {
-      if(this->matrix_solver_type != SOLVER_AZTECOO)
+      if(Hermes::HermesCommonApi.getParamValue(Hermes::matrixSolverType) != SOLVER_AZTECOO)
       {
-        warning("Trying to set iterative method for a different solver than AztecOO.");
+        warn("Trying to set iterative method for a different solver than AztecOO.");
         return;
       }
       else

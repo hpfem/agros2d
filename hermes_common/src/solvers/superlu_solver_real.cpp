@@ -16,18 +16,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-/*! \file superlu_real.cpp
-\brief SuperLU algebraic interface for real numbers.
+/*! \file superlu_solver.cpp
+\brief SuperLU solver interface.
 */
 #include "config.h"
 #ifdef WITH_SUPERLU
-#include"superlu_solver.h"
+#include "superlu_solver.h"
+#include "callstack.h"
 #include <slu_ddefs.h>
 
 namespace Hermes
 {
   namespace Solvers
-{
+  {
     template <>
     void  SuperLUSolver<double>::solver_driver (superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r, int *etree, char *equed, double *R,
       double *C, SuperMatrix *L, SuperMatrix *U, void *work, int lwork, SuperMatrix *B, SuperMatrix *X,

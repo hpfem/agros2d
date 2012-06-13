@@ -24,6 +24,8 @@
 
 #include "precond.h"
 #include "dp_interface.h"
+#include "exceptions.h"
+#include "hermes_logging.h"
 
 using namespace Hermes::Algebra;
 
@@ -176,13 +178,12 @@ namespace Hermes
     };
 
     /// \brief Function returning a solver according to the users's choice.
-    /// @param[in] matrix_solver_type the choice of solver, an element of enum Hermes::MatrixSolverType.
     /// @param[in] matrix matrix
     /// @param[in] rhs right hand side vector
     /// @return created linear solver
     template<typename Scalar>
     HERMES_API LinearMatrixSolver<Scalar>*
-      create_linear_solver(Hermes::MatrixSolverType matrix_solver_type, Matrix<Scalar>* matrix, Vector<Scalar>* rhs);
+      create_linear_solver(Matrix<Scalar>* matrix, Vector<Scalar>* rhs);
   }
 }
 /*@}*/ // End of documentation group Solvers.

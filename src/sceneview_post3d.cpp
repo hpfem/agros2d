@@ -121,7 +121,7 @@ void Post3DHermes::processRangeScalar()
 
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         Util::config()->linearizerQuality);
+                                         paletteQualityToDouble(Util::config()->linearizerQuality));
 
         // deformed shape
         if (Util::config()->deformScalar)
