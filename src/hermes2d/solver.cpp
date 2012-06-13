@@ -41,6 +41,16 @@ void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 {
     m_block = block;
     m_wf = wf;
+
+    m_solverID = QObject::tr("Solver") + " (";
+    QListIterator<Field*> iter(m_block->fields());
+    while(iter.hasNext())
+    {
+        m_solverID += iter.next()->fieldInfo()->fieldId();
+        if(iter.hasNext())
+            m_solverID += " + ";
+    }
+    m_solverID += ")";
 }
 
 template <typename Scalar>
@@ -79,7 +89,7 @@ QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
                 markers += QString::number(marker) + ", ";
             markers = markers.left(markers.length() - 2);
 
-            Util::log()->printError(QObject::tr("Solver"), QObject::tr("boundary edges '%1' does not have a boundary marker").arg(markers));
+            Util::log()->printError(m_solverID, QObject::tr("boundary edges '%1' does not have a boundary marker").arg(markers));
 
             foreach(Mesh* delMesh, meshes)
                 delete delMesh;
@@ -313,7 +323,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             /*
-            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+            Util::log()->printDebug(m_sovlerID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
                                     arg(milisecondsToTime(picard.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime(picard.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime((picard.get_assemble_time() + picard.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
@@ -324,7 +334,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         catch (Hermes::Exceptions::Exception e)
         {
             QString error = QString(e.getMsg());
-            Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver failed: %1").arg(error));
+            Util::log()->printDebug(m_solverID, QObject::tr("Linear solver failed: %1").arg(error));
             return false;
         }
     }
@@ -353,7 +363,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
-            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+            Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
                                     arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
@@ -364,7 +374,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         catch (Hermes::Exceptions::Exception e)
         {
             QString error = QString(e.getMsg());
-            Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Newton's iteration failed: %1").arg(error));
+            Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
             return false;
         }
     }
@@ -392,7 +402,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             Solution<Scalar>::vector_to_solutions(picard.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             /*
-            Util::log()->printDebug("Solver", QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+            Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
                                     arg(milisecondsToTime(picard.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime(picard.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime((picard.get_assemble_time() + picard.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
@@ -403,7 +413,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         catch (Hermes::Exceptions::Exception e)
         {
             QString error = QString(e.getMsg());
-            Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("Newton's iteration failed: %1").arg(error));
+            Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
             return false;
         }
     }
@@ -415,7 +425,7 @@ template <typename Scalar>
 void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
     SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
-    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve"));
+    Util::log()->printDebug(m_solverID, QObject::tr("solve"));
 
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
@@ -423,7 +433,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
     {
-        Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("DOF is zero"));
+        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(SolverException("DOF is zero"));
     }
 
@@ -450,7 +460,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
 template <typename Scalar>
 void Solver<Scalar>::createInitialSpace(int timeStep)
 {
-    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("initial adaptivity step"));
+    Util::log()->printDebug(m_solverID, QObject::tr("initial adaptivity step"));
 
     // read mesh from file
     QMap<FieldInfo*, Mesh*> meshes = readMesh();
@@ -481,7 +491,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
     {
-        Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("DOF is zero"));
+        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(SolverException("DOF is zero"));
     }
 
@@ -562,7 +572,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     }
 
 
-    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
+    Util::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
                               arg(error).
                               arg(initialDOFs).
                               arg(Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked()))));
@@ -612,12 +622,12 @@ void Solver<Scalar>::solveTimeStep()
 
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
     {
-        Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("DOF is zero"));
+        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(SolverException("DOF is zero"));
     }
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
-    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("solve time step, actual time is %1 s").arg(Util::problem()->actualTime()));
+    Util::log()->printDebug(m_solverID, QObject::tr("solve time step, actual time is %1 s").arg(Util::problem()->actualTime()));
 
     // update timedep values
     foreach (Field* field, m_block->fields())

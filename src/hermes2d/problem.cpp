@@ -377,6 +377,8 @@ void Problem::solveAction()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
+    Util::scene()->setActiveAdaptivityStep(0);
+    Util::scene()->setActiveTimeStep(0);
     Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
 
     //new
@@ -394,7 +396,7 @@ void Problem::solveAction()
         foreach (Block* block, m_blocks)
         {
             Solver<double>* solver = solvers[block];
-            if (!(block->isTransient() && (timeStep == 0) && (!block->skipThisTimeStep(timeStep))))
+            if (!(block->isTransient() && (timeStep == 0)) && (!block->skipThisTimeStep(timeStep)))
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {

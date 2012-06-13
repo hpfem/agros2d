@@ -57,6 +57,6 @@ testPj = agros2d.test("Losses", volume["Pj"], 4.542019e9)
 
 # surface integral
 surface = current.surface_integrals([1])
-testI = agros2d.test("Current", surface["I"], -2.166256e8)
+testI = agros2d.test("Current", surface["Ir"], -2.166256e8)
 
 print("Test: Current field - axisymmetric: " + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))

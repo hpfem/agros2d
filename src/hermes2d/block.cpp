@@ -28,7 +28,7 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
 
 Solver<double>* Block::prepareSolver()
 {
-    Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("prepare solver"));
+    //Util::log()->printDebug(QObject::tr("Solver"), QObject::tr("prepare solver"));
 
     Solver<double>* solver = new Solver<double>;
 

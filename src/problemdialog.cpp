@@ -21,6 +21,7 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "moduledialog.h"
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -389,7 +390,8 @@ void FieldWidget::doTransientTimeStepsChanged()
     QString timeSteps = "1";
     for (int i = 2; i < Util::problem()->config()->numTimeSteps(); i++)
     {
-        if ((i % (int) txtTransientTimeStepsSkip->value().number()) == 0)
+        if ((txtTransientTimeStepsSkip->value().number() > 0)
+                && ((i % (int) txtTransientTimeStepsSkip->value().number()) == 0))
             timeSteps += QString(", %1").arg(i);
     }
 
@@ -433,7 +435,12 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
     btnDeleteField->setEnabled(Util::problem()->hasField(fieldInfo->fieldId()));
     connect(btnDeleteField, SIGNAL(clicked()), this, SLOT(deleteField()));
 
+    QPushButton *btnModuleEditor = new QPushButton(tr("Module editor"));
+    btnModuleEditor->setDefault(false);
+    connect(btnModuleEditor, SIGNAL(clicked()), this, SLOT(moduleEditor()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnModuleEditor, QDialogButtonBox::ActionRole);
     buttonBox->addButton(btnDeleteField, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
@@ -470,6 +477,15 @@ void FieldDialog::deleteField()
     {
         Util::problem()->removeField(fieldWidget->fieldInfo());
         accept();
+    }
+}
+
+void FieldDialog::moduleEditor()
+{
+    ModuleDialog moduleDialog(fieldWidget->fieldInfo()->fieldId(), this);
+    if (moduleDialog.exec())
+    {
+
     }
 }
 

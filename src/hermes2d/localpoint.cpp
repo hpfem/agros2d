@@ -109,8 +109,9 @@ void LocalPointValue::calculate()
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
-        QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-        m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
+        //QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+        //m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
+        m_fieldInfo->module()->updateTimeFunctions(Util::problem()->config()->timeStepToTime(Util::scene()->activeTimeStep()));
     }
 
     if (Util::problem()->isSolved())

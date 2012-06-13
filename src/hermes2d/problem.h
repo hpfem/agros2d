@@ -49,6 +49,8 @@ public:
 
     inline int numTimeSteps() const { return floor(timeTotal().number() / timeStep().number()); }
 
+    inline double timeStepToTime(int timeStepIndex) {return m_timeStep.number() * timeStepIndex; }
+
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
     void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
 

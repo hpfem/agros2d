@@ -197,7 +197,7 @@ void InfoWidget::showInfo()
 
             if (Util::problem()->isSolved())
             {
-                int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
+                int timeStep = Util::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
                 int adaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
                 MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 

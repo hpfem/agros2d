@@ -141,7 +141,7 @@ class FieldDialog : public QDialog
 {
     Q_OBJECT
 public:
-    FieldDialog(FieldInfo * fieldInfo, QWidget *parent = 0);
+    FieldDialog(FieldInfo *fieldInfo, QWidget *parent = 0);
     ~FieldDialog();
 
 private:
@@ -150,6 +150,7 @@ private:
 private slots:
     void doAccept();
     void deleteField();
+    void moduleEditor();
 };
 
 class FieldsToobar: public QWidget

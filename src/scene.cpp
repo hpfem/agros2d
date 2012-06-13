@@ -525,6 +525,9 @@ void Scene::clear()
     }
 
     m_activeViewField = NULL;
+    m_activeTimeStep = 0;
+    m_activeAdaptivityStep = 0;
+    m_activeSolutionMode = SolutionMode_Normal;
 
     // geometry
     nodes->clear();
@@ -2253,4 +2256,10 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
     }
 
     // qDebug() << "steps: " << steps << "total: " << timePart.elapsed();
+}
+
+void Scene::setActiveViewField(FieldInfo* fieldInfo)
+{
+    m_activeViewField = fieldInfo;
+    setActiveTimeStep(Util::solutionStore()->nearestTimeStep(fieldInfo, m_activeTimeStep));
 }
