@@ -32,13 +32,12 @@ namespace Hermes
 
     template<typename Scalar>
     void OGProjection<Scalar>::project_internal(const Space<Scalar>* space, WeakForm<Scalar>* wf,
-	Scalar* target_vec, Hermes::MatrixSolverType matrix_solver, double newton_tol, int newton_max_iter)
+	Scalar* target_vec, double newton_tol, int newton_max_iter)
     {
-      _F_
-
+      
       // Sanity check.
       if(space == NULL) 
-        error("this->space == NULL in project_internal().");
+        throw new Hermes::Exceptions::Exception("this->space == NULL in project_internal().");
 
       // Get dimension of the space.
       int ndof = space->get_num_dofs();
@@ -51,7 +50,7 @@ namespace Hermes
       memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
       // Initialize Newton solver.
-      NewtonSolver<Scalar> newton(&dp, matrix_solver);
+      NewtonSolver<Scalar> newton(&dp);
       newton.set_verbose_output(false);
 
       // Perform Newton iteration.
@@ -62,7 +61,7 @@ namespace Hermes
       catch(Hermes::Exceptions::Exception e)
       {
         e.printMsg();
-        error("Newton's iteration in projection failed.");
+        throw new Hermes::Exceptions::Exception("Newton's iteration in projection failed.");
       }
 
       delete [] coeff_vec;
@@ -76,18 +75,16 @@ namespace Hermes
     void OGProjection<Scalar>::project_global(const Space<Scalar>* space,
         MatrixFormVol<Scalar>* custom_projection_jacobian,
         VectorFormVol<Scalar>* custom_projection_residual,
-        Scalar* target_vec, Hermes::MatrixSolverType matrix_solver, 
-        double newton_tol, int newton_max_iter)
+        Scalar* target_vec, double newton_tol, int newton_max_iter)
     {
-      _F_
-
+      
       // Define projection weak form.
       WeakForm<Scalar>* proj_wf = new WeakForm<Scalar>(1);
       proj_wf->add_matrix_form(custom_projection_jacobian);
       proj_wf->add_vector_form(custom_projection_residual);
 
       // Call the main function.
-      project_internal(space, proj_wf, target_vec, matrix_solver, newton_tol, newton_max_iter);
+      project_internal(space, proj_wf, target_vec, newton_tol, newton_max_iter);
 
       // Clean up.
       delete proj_wf;
@@ -96,11 +93,9 @@ namespace Hermes
     template<typename Scalar>
     void OGProjection<Scalar>::project_global(const Space<Scalar>* space, 
         MeshFunction<Scalar>* source_meshfn, Scalar* target_vec, 
-        Hermes::MatrixSolverType matrix_solver, ProjNormType proj_norm, 
-        double newton_tol, int newton_max_iter)
+        ProjNormType proj_norm, double newton_tol, int newton_max_iter)
     {
-      _F_;
-
+      
       bool sln_vector_loaded = true;
 
       if(dynamic_cast<Solution<Scalar>*>(source_meshfn) != NULL && dynamic_cast<Solution<Scalar>*>(source_meshfn)->get_type() == HERMES_SLN)
@@ -134,7 +129,7 @@ namespace Hermes
           case HERMES_HCURL_SPACE: norm = HERMES_HCURL_NORM; break;
           case HERMES_HDIV_SPACE: norm = HERMES_HDIV_NORM; break;
           case HERMES_L2_SPACE: norm = HERMES_L2_NORM; break;
-          default: error("Unknown space type in OGProjection<Scalar>::project_global().");
+          default: throw new Hermes::Exceptions::Exception("Unknown space type in OGProjection<Scalar>::project_global().");
         }
       }
       else norm = proj_norm;
@@ -147,7 +142,7 @@ namespace Hermes
       proj_wf->add_vector_form(new ProjectionVectorFormVol(0, source_meshfn, norm));
 
       // Call main function.
-      project_internal(space, proj_wf, target_vec, matrix_solver, newton_tol, newton_max_iter);
+      project_internal(space, proj_wf, target_vec, newton_tol, newton_max_iter);
 
       // Clean up.
       delete proj_wf;
@@ -156,7 +151,7 @@ namespace Hermes
     template<typename Scalar>
     void OGProjection<Scalar>::project_global(const Space<Scalar>* space,
         Solution<Scalar>* source_sln, Solution<Scalar>* target_sln,
-        Hermes::MatrixSolverType matrix_solver, ProjNormType proj_norm, 
+        ProjNormType proj_norm, 
         double newton_tol, int newton_max_iter)
     {
       if (proj_norm == HERMES_UNSET_NORM) 
@@ -168,14 +163,14 @@ namespace Hermes
           case HERMES_HCURL_SPACE: proj_norm = HERMES_HCURL_NORM; break;
           case HERMES_HDIV_SPACE: proj_norm = HERMES_HDIV_NORM; break;
           case HERMES_L2_SPACE: proj_norm = HERMES_L2_NORM; break;
-          default: error("Unknown space type in OGProjection<Scalar>::project_global().");
+          default: throw new Hermes::Exceptions::Exception("Unknown space type in OGProjection<Scalar>::project_global().");
         }
       }
 
       // Calculate the coefficient vector.
       int ndof = space->get_num_dofs();
       Scalar* target_vec = new Scalar[ndof];
-      project_global(space, source_sln, target_vec, matrix_solver, proj_norm, newton_tol, newton_max_iter);
+      project_global(space, source_sln, target_vec, proj_norm, newton_tol, newton_max_iter);
 
       // Translate coefficient vector into a Solution.
       Solution<Scalar>::vector_to_solution(target_vec, space, target_sln);
@@ -187,11 +182,9 @@ namespace Hermes
     template<typename Scalar>
     void OGProjection<Scalar>::project_global(Hermes::vector<const Space<Scalar>*> spaces, 
         Hermes::vector<MeshFunction<Scalar>*> source_meshfns,
-        Scalar* target_vec, Hermes::MatrixSolverType matrix_solver, 
-        Hermes::vector<ProjNormType> proj_norms, 
+        Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms, 
         double newton_tol, int newton_max_iter)
     {
-      _F_
       int n = spaces.size();
 
       // Sanity checks.
@@ -203,9 +196,9 @@ namespace Hermes
       for (int i = 0; i < n; i++) 
       {
         if (proj_norms.empty())
-          project_global(spaces[i], source_meshfns[i], target_vec + start_index, matrix_solver, HERMES_UNSET_NORM, newton_tol, newton_max_iter);
+          project_global(spaces[i], source_meshfns[i], target_vec + start_index, HERMES_UNSET_NORM, newton_tol, newton_max_iter);
         else
-          project_global(spaces[i], source_meshfns[i], target_vec + start_index, matrix_solver, proj_norms[i], newton_tol, newton_max_iter);
+          project_global(spaces[i], source_meshfns[i], target_vec + start_index, proj_norms[i], newton_tol, newton_max_iter);
         spaces[i]->assign_dofs(start_index);
         start_index += spaces[i]->get_num_dofs();
       }
@@ -213,10 +206,9 @@ namespace Hermes
 
     template<typename Scalar>
     void OGProjection<Scalar>::project_global(Hermes::vector<const Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> source_slns,
-        Scalar* target_vec, Hermes::MatrixSolverType matrix_solver, Hermes::vector<ProjNormType> proj_norms, 
+        Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms, 
         double newton_tol, int newton_max_iter)
     {
-      _F_
       int n = spaces.size();
 
       // Sanity checks.
@@ -228,20 +220,18 @@ namespace Hermes
       for (int i = 0; i < n; i++) 
       {
         if (proj_norms.empty())
-          project_global(spaces[i], source_slns[i], target_vec + start_index, matrix_solver, HERMES_UNSET_NORM, newton_tol, newton_max_iter);
+          project_global(spaces[i], source_slns[i], target_vec + start_index, HERMES_UNSET_NORM, newton_tol, newton_max_iter);
         else
-          project_global(spaces[i], source_slns[i], target_vec + start_index, matrix_solver, proj_norms[i], newton_tol, newton_max_iter);
+          project_global(spaces[i], source_slns[i], target_vec + start_index, proj_norms[i], newton_tol, newton_max_iter);
         start_index += spaces[i]->get_num_dofs();
       }
     }
 
     template<typename Scalar>
     void OGProjection<Scalar>::project_global(Hermes::vector<const Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> source_slns,
-        Hermes::vector<Solution<Scalar>*> target_slns, Hermes::MatrixSolverType matrix_solver,
-        Hermes::vector<ProjNormType> proj_norms, bool delete_old_meshes, 
+        Hermes::vector<Solution<Scalar>*> target_slns, Hermes::vector<ProjNormType> proj_norms, bool delete_old_meshes, 
         double newton_tol, int newton_max_iter)
     {
-      _F_
       int n = spaces.size();
 
       // Sanity checks.
@@ -253,9 +243,9 @@ namespace Hermes
       for (int i = 0; i < n; i++) 
       {
         if (proj_norms.empty())
-          project_global(spaces[i], source_slns[i], target_slns[i], matrix_solver, HERMES_UNSET_NORM, newton_tol, newton_max_iter);
+          project_global(spaces[i], source_slns[i], target_slns[i], HERMES_UNSET_NORM, newton_tol, newton_max_iter);
         else
-          project_global(spaces[i], source_slns[i], target_slns[i], matrix_solver, proj_norms[i], newton_tol, newton_max_iter);
+          project_global(spaces[i], source_slns[i], target_slns[i], proj_norms[i], newton_tol, newton_max_iter);
         start_index += spaces[i]->get_num_dofs();
       }
     }

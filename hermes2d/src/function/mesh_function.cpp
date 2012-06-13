@@ -34,8 +34,6 @@ namespace Hermes
     {
       this->mesh = mesh;
       this->refmap = new RefMap;
-      // FIXME - this was in H3D: MEM_CHECK(this->refmap);
-      this->element = NULL;		// this comes with Transformable
     }
 
     template<typename Scalar>
@@ -92,7 +90,6 @@ namespace Hermes
     template<typename Scalar>
     void MeshFunction<Scalar>::set_quad_2d(Quad2D* quad_2d)
     {
-      _F_
       if (quad_2d==NULL) throw Exceptions::NullException(1);
       Function<Scalar>::set_quad_2d(quad_2d);
       refmap->set_quad_2d(quad_2d);

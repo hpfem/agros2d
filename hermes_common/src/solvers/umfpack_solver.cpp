@@ -22,16 +22,13 @@
 #include "config.h"
 #ifdef WITH_UMFPACK
 #include "umfpack_solver.h"
-#include "trace.h"
-#include "error.h"
-#include "callstack.h"
+#include "time_period.h"
+#include "hermes_logging.h"
 
 extern "C"
 {
 #include <umfpack.h>
 }
-
-using namespace Hermes::Error;
 
 namespace Hermes
 {
@@ -39,7 +36,6 @@ namespace Hermes
   {
     static int find_position(int *Ai, int Alen, int idx)
     {
-      _F_;
       assert (Ai != NULL);
       assert (Alen > 0);
       assert (idx >= 0);
@@ -68,7 +64,6 @@ namespace Hermes
     template<typename Scalar>
     CSCMatrix<Scalar>::CSCMatrix()
     {
-      _F_;
       this->size = 0; nnz = 0;
       Ap = NULL;
       Ai = NULL;
@@ -78,7 +73,6 @@ namespace Hermes
     template<typename Scalar>
     CSCMatrix<Scalar>::CSCMatrix(unsigned int size)
     {
-      _F_;
       this->size = size;
       this->alloc();
     }
@@ -86,7 +80,6 @@ namespace Hermes
     template<typename Scalar>
     CSCMatrix<Scalar>::~CSCMatrix()
     {
-      _F_;
       free();
     }
 
@@ -113,15 +106,12 @@ namespace Hermes
     template<typename Scalar>
     void CSCMatrix<Scalar>::alloc()
     {
-      _F_;
       assert(this->pages != NULL);
 
       // initialize the arrays Ap and Ai
       Ap = new int [this->size + 1];
-      MEM_CHECK(Ap);
       int aisize = this->get_num_indices();
       Ai = new int [aisize];
-      MEM_CHECK(Ai);
 
       // sort the indices and remove duplicities, insert into Ai
       unsigned int i;
@@ -139,14 +129,12 @@ namespace Hermes
       nnz = Ap[this->size];
 
       Ax = new Scalar [nnz];
-      MEM_CHECK(Ax);
       memset(Ax, 0, sizeof(Scalar) * nnz);
     }
 
     template<typename Scalar>
     void CSCMatrix<Scalar>::free()
     {
-      _F_;
       nnz = 0;
       if (Ap != NULL) {delete [] Ap; Ap = NULL;}
       if (Ai != NULL) {delete [] Ai; Ai = NULL;}
@@ -156,7 +144,6 @@ namespace Hermes
     template<typename Scalar>
     Scalar CSCMatrix<Scalar>::get(unsigned int m, unsigned int n)
     {
-      _F_;
       // Find m-th row in the n-th column.
       int mid = find_position(Ai + Ap[n], Ap[n + 1] - Ap[n], m);
 
@@ -169,15 +156,13 @@ namespace Hermes
     template<typename Scalar>
     void CSCMatrix<Scalar>::zero()
     {
-      _F_;
       memset(Ax, 0, sizeof(Scalar) * nnz);
     }
 
     template<typename Scalar>
     void CSCMatrix<Scalar>::add(unsigned int m, unsigned int n, Scalar v)
     {
-      _F_;
-
+      
       if (v != 0.0)   // ignore zero values.
       {
         // Find m-th row in the n-th column.
@@ -186,7 +171,7 @@ namespace Hermes
         if (pos < 0)
         {
           info("CSCMatrix<Scalar>::add(): i = %d, j = %d.", m, n);
-          error("Sparse matrix entry not found");
+          throw new Hermes::Exceptions::Exception("Sparse matrix entry not found");
         }
 
         Ax[Ap[n] + pos] += v;
@@ -196,10 +181,9 @@ namespace Hermes
     template<typename Scalar>
     void CSCMatrix<Scalar>::add_to_diagonal_blocks(int num_stages, CSCMatrix<Scalar>* mat_block)
     {
-      _F_;
       int ndof = mat_block->get_size();
       if (this->get_size() != (unsigned int) num_stages * ndof)
-        error("Incompatible matrix sizes in CSCMatrix<Scalar>::add_to_diagonal_blocks()");
+        throw new Hermes::Exceptions::Exception("Incompatible matrix sizes in CSCMatrix<Scalar>::add_to_diagonal_blocks()");
 
       for (int i = 0; i < num_stages; i++)
       {
@@ -227,12 +211,12 @@ namespace Hermes
 
       // Sanity check.
       bool this_not_empty = this_it.init();
-      if (!this_not_empty) error("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
+      if (!this_not_empty) throw new Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
 
       // Iterate through the small matrix column by column and add all nonzeros
       // to the large one.
       bool mat_not_finished = mat_it.init();
-      if (!mat_not_finished) error("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
+      if (!mat_not_finished) throw new Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
 
       int mat_i, mat_j;
       Scalar mat_val;
@@ -241,7 +225,7 @@ namespace Hermes
         mat_it.get_current_position(mat_i, mat_j, mat_val);
         bool found = this_it.move_to_position(mat_i + offset_i, mat_j + offset_j);
         if (!found) 
-          error ("Nonzero matrix entry at %d, %d not found in CSCMatrix<Scalar>::add_as_block().",
+          throw new Hermes::Exceptions::Exception("Nonzero matrix entry at %d, %d not found in CSCMatrix<Scalar>::add_as_block().",
           mat_i + offset_i, mat_j + offset_j);
         this_it.add_to_current_position(mat_val);
         mat_not_finished = mat_it.move_ptr();
@@ -251,7 +235,6 @@ namespace Hermes
     template<typename Scalar>
     void CSCMatrix<Scalar>::add_matrix(CSCMatrix<Scalar>* mat)
     {
-      _F_;
       assert(this->get_size() == mat->get_size());
       // Create iterators for both matrices.
       UMFPackIterator<Scalar> mat_it(mat);
@@ -276,7 +259,7 @@ namespace Hermes
           if (!this_not_finished)
           {
             printf("Entry %d %d does not exist in the matrix to which it is contributed.\n", mat_i, mat_j);
-            error("Incompatible matrices in add_umfpack_matrix().");
+            throw new Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
           }
           this_it.get_current_position(this_i, this_j, this_val);
         }
@@ -284,7 +267,7 @@ namespace Hermes
         mat_not_finished = mat_it.move_ptr();
         this_not_finished = this_it.move_ptr();
         if (mat_not_finished && !this_not_finished)
-          error("Incompatible matrices in add_umfpack_matrix().");
+          throw new Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
       }
     }
 
@@ -300,7 +283,6 @@ namespace Hermes
     template<typename Scalar>
     void CSCMatrix<Scalar>::add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols)
     {
-      _F_;
       for (unsigned int i = 0; i < m; i++)       // rows
         for (unsigned int j = 0; j < n; j++)     // cols
           if(rows[i] >= 0 && cols[j] >= 0) // not Dir. dofs.
@@ -330,7 +312,6 @@ namespace Hermes
     template<>
     bool CSCMatrix<double>::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt)
     {
-      _F_;
       switch (fmt)
       {
       case DF_MATLAB_SPARSE:
@@ -436,7 +417,6 @@ namespace Hermes
     template<>
     bool CSCMatrix<std::complex<double> >::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt)
     {
-      _F_;
       switch (fmt)
       {
       case DF_MATLAB_SPARSE:
@@ -548,14 +528,12 @@ namespace Hermes
     template<typename Scalar>
     double CSCMatrix<Scalar>::get_fill_in() const
     {
-      _F_;
       return nnz / (double) (this->size * this->size);
     }
 
     template<typename Scalar>
     void CSCMatrix<Scalar>::create(unsigned int size, unsigned int nnz, int* ap, int* ai, Scalar* ax)
     {
-      _F_;
       this->nnz = nnz;
       this->size = size;
       this->Ap = new int[this->size + 1]; assert(this->Ap != NULL);
@@ -572,7 +550,6 @@ namespace Hermes
     template<typename Scalar>
     CSCMatrix<Scalar>* CSCMatrix<Scalar>::duplicate()
     {
-      _F_;
       CSCMatrix<Scalar>* new_matrix = new CSCMatrix<Scalar>();
       new_matrix->create(this->get_size(), this->get_nnz(), this->get_Ap(),  this->get_Ai(),  this->get_Ax());
       return new_matrix;
@@ -599,7 +576,6 @@ namespace Hermes
     template<typename Scalar>
     UMFPackVector<Scalar>::UMFPackVector()
     {
-      _F_;
       v = NULL;
       this->size = 0;
     }
@@ -607,7 +583,6 @@ namespace Hermes
     template<typename Scalar>
     UMFPackVector<Scalar>::UMFPackVector(unsigned int size)
     {
-      _F_;
       v = NULL;
       this->size = size;
       this->alloc(size);
@@ -616,39 +591,33 @@ namespace Hermes
     template<typename Scalar>
     UMFPackVector<Scalar>::~UMFPackVector()
     {
-      _F_;
       free();
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::alloc(unsigned int n)
     {
-      _F_;
       free();
       this->size = n;
       v = new Scalar [n];
-      MEM_CHECK(v);
       this->zero();
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::zero()
     {
-      _F_;
       memset(v, 0, this->size * sizeof(Scalar));
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::change_sign()
     {
-      _F_;
       for (unsigned int i = 0; i < this->size; i++) v[i] *= -1.;
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::free()
     {
-      _F_;
       delete [] v;
       v = NULL;
       this->size = 0;
@@ -657,21 +626,18 @@ namespace Hermes
     template<typename Scalar>
     void UMFPackVector<Scalar>::set(unsigned int idx, Scalar y)
     {
-      _F_;
       v[idx] = y;
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::add(unsigned int idx, Scalar y)
     {
-      _F_;
       v[idx] += y;
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::add(unsigned int n, unsigned int *idx, Scalar *y)
     {
-      _F_;
       for (unsigned int i = 0; i < n; i++)
         v[idx[i]] += y[i];
     }
@@ -710,7 +676,6 @@ namespace Hermes
     template<>
     bool UMFPackVector<double>::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt)
     {
-      _F_;
       switch (fmt)
       {
       case DF_MATLAB_SPARSE:
@@ -754,7 +719,6 @@ namespace Hermes
     template<>
     bool UMFPackVector<std::complex<double> >::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt)
     {
-      _F_;
       switch (fmt)
       {
       case DF_MATLAB_SPARSE:
@@ -805,21 +769,20 @@ namespace Hermes
   {
     static void check_status(const char *fn_name, int status)
     {
-      _F_;
       switch (status)
       {
       case UMFPACK_OK: break;
-      case UMFPACK_WARNING_singular_matrix:       warning("%s: singular matrix!", fn_name); break;
-      case UMFPACK_ERROR_out_of_memory:           warning("%s: out of memory!", fn_name); break;
-      case UMFPACK_ERROR_argument_missing:        warning("%s: argument missing", fn_name); break;
-      case UMFPACK_ERROR_invalid_Symbolic_object: warning("%s: invalid Symbolic object", fn_name); break;
-      case UMFPACK_ERROR_invalid_Numeric_object:  warning("%s: invalid Numeric object", fn_name); break;
-      case UMFPACK_ERROR_different_pattern:       warning("%s: different pattern", fn_name); break;
-      case UMFPACK_ERROR_invalid_system:          warning("%s: invalid system", fn_name); break;
-      case UMFPACK_ERROR_n_nonpositive:           warning("%s: n nonpositive", fn_name); break;
-      case UMFPACK_ERROR_invalid_matrix:          warning("%s: invalid matrix", fn_name); break;
-      case UMFPACK_ERROR_internal_error:          warning("%s: internal error", fn_name); break;
-      default:                                    warning("%s: unknown error (%d)", fn_name, status); break;
+      case UMFPACK_WARNING_singular_matrix:       warn("%s: singular matrix!", fn_name); break;
+      case UMFPACK_ERROR_out_of_memory:           warn("%s: out of memory!", fn_name); break;
+      case UMFPACK_ERROR_argument_missing:        warn("%s: argument missing", fn_name); break;
+      case UMFPACK_ERROR_invalid_Symbolic_object: warn("%s: invalid Symbolic object", fn_name); break;
+      case UMFPACK_ERROR_invalid_Numeric_object:  warn("%s: invalid Numeric object", fn_name); break;
+      case UMFPACK_ERROR_different_pattern:       warn("%s: different pattern", fn_name); break;
+      case UMFPACK_ERROR_invalid_system:          warn("%s: invalid system", fn_name); break;
+      case UMFPACK_ERROR_n_nonpositive:           warn("%s: n nonpositive", fn_name); break;
+      case UMFPACK_ERROR_invalid_matrix:          warn("%s: invalid matrix", fn_name); break;
+      case UMFPACK_ERROR_internal_error:          warn("%s: internal error", fn_name); break;
+      default:                                    warn("%s: unknown error (%d)", fn_name, status); break;
       }
     }
 
@@ -887,7 +850,6 @@ namespace Hermes
     template<>
     bool UMFPackLinearMatrixSolver<double>::setup_factorization()
     {
-      _F_;
       // Perform both factorization phases for the first time.
       int eff_fact_scheme;
       if (factorization_scheme != HERMES_FACTORIZE_FROM_SCRATCH && symbolic == NULL && numeric == NULL)
@@ -908,7 +870,8 @@ namespace Hermes
           check_status("umfpack_di_symbolic", status);
           return false;
         }
-        if (symbolic == NULL) EXIT("umfpack_di_symbolic error: symbolic == NULL");
+        if (symbolic == NULL)
+          throw new Exceptions::Exception("umfpack_di_symbolic error: symbolic == NULL");
 
       case HERMES_REUSE_MATRIX_REORDERING:
       case HERMES_REUSE_MATRIX_REORDERING_AND_SCALING:
@@ -921,7 +884,8 @@ namespace Hermes
           check_status("umfpack_di_numeric", status);
           return false;
         }
-        if (numeric == NULL) EXIT("umfpack_di_numeric error: numeric == NULL");
+        if (numeric == NULL)
+          throw new Exceptions::Exception("umfpack_di_numeric error: numeric == NULL");
       }
 
       return true;
@@ -931,13 +895,11 @@ namespace Hermes
     UMFPackLinearMatrixSolver<Scalar>::UMFPackLinearMatrixSolver(UMFPackMatrix<Scalar> *m, UMFPackVector<Scalar> *rhs)
       : DirectSolver<Scalar>(HERMES_FACTORIZE_FROM_SCRATCH), m(m), rhs(rhs), symbolic(NULL), numeric(NULL)
     {
-      _F_;
-    }
+      }
 
     template<typename Scalar>
     UMFPackLinearMatrixSolver<Scalar>::~UMFPackLinearMatrixSolver()
     {
-      _F_;
       free_factorization_data();
     }
 
@@ -950,7 +912,6 @@ namespace Hermes
     template<>
     bool UMFPackLinearMatrixSolver<std::complex<double> >::setup_factorization()
     {
-      _F_;
       // Perform both factorization phases for the first time.
       int eff_fact_scheme;
       if (factorization_scheme != HERMES_FACTORIZE_FROM_SCRATCH && symbolic == NULL && numeric == NULL)
@@ -971,7 +932,8 @@ namespace Hermes
           check_status("umfpack_di_symbolic", status);
           return false;
         }
-        if (symbolic == NULL) EXIT("umfpack_di_symbolic error: symbolic == NULL");
+        if (symbolic == NULL)
+          throw new Exceptions::Exception("umfpack_di_symbolic error: symbolic == NULL");
 
       case HERMES_REUSE_MATRIX_REORDERING:
       case HERMES_REUSE_MATRIX_REORDERING_AND_SCALING:
@@ -984,7 +946,8 @@ namespace Hermes
           check_status("umfpack_di_numeric", status);
           return false;
         }
-        if (numeric == NULL) EXIT("umfpack_di_numeric error: numeric == NULL");
+        if (numeric == NULL)
+          throw new Exceptions::Exception("umfpack_di_numeric error: numeric == NULL");
       }
 
       return true;
@@ -993,7 +956,6 @@ namespace Hermes
     template<>
     void UMFPackLinearMatrixSolver<double>::free_factorization_data()
     {
-      _F_;
       if (symbolic != NULL) umfpack_di_free_symbolic(&symbolic);
       symbolic = NULL;
       if (numeric != NULL) umfpack_di_free_numeric(&numeric);
@@ -1003,7 +965,6 @@ namespace Hermes
     template<>
     void UMFPackLinearMatrixSolver<std::complex<double> >::free_factorization_data()
     {
-      _F_;
       if (symbolic != NULL) umfpack_zi_free_symbolic(&symbolic);
       symbolic = NULL;
       if (numeric != NULL) umfpack_zi_free_numeric(&numeric);
@@ -1013,7 +974,6 @@ namespace Hermes
     template<>
     bool UMFPackLinearMatrixSolver<double>::solve()
     {
-      _F_;
       assert(m != NULL);
       assert(rhs != NULL);
 
@@ -1023,12 +983,12 @@ namespace Hermes
 
       int status;
 
-      if ( !setup_factorization() ) throw Exceptions::LinearMatrixSolverException("LU factorization could not be completed.");
+      if ( !setup_factorization() )
+        throw new Exceptions::LinearMatrixSolverException("LU factorization could not be completed.");
 
-      if(sln)
+      if(sln != NULL)
         delete [] sln;
       sln = new double[m->get_size()];
-      MEM_CHECK(sln);
       memset(sln, 0, m->get_size() * sizeof(double));
       status = umfpack_di_solve(UMFPACK_A, m->get_Ap(), m->get_Ai(), m->get_Ax(), sln, rhs->get_c_array(), numeric, NULL, NULL);
       if (status != UMFPACK_OK)
@@ -1046,7 +1006,6 @@ namespace Hermes
     template<>
     bool UMFPackLinearMatrixSolver<std::complex<double> >::solve()
     {
-      _F_;
       assert(m != NULL);
       assert(rhs != NULL);
 
@@ -1058,14 +1017,13 @@ namespace Hermes
 
       if ( !setup_factorization() )
       {
-        warning("LU factorization could not be completed.");
+        warn("LU factorization could not be completed.");
         return false;
       }
 
       if(sln)
         delete [] sln;
       sln = new std::complex<double>[m->get_size()];
-      MEM_CHECK(sln);
       memset(sln, 0, m->get_size() * sizeof(std::complex<double>));
       status = umfpack_zi_solve(UMFPACK_A, m->get_Ap(), m->get_Ai(), (double *)m->get_Ax(), NULL, (double*) sln, NULL, (double *)rhs->get_c_array(), NULL, numeric, NULL, NULL);
       if (status != UMFPACK_OK)

@@ -31,8 +31,7 @@ namespace Hermes
 
     template<typename Scalar>
     void LocalProjection<Scalar>::project_local(const Space<Scalar>* space, MeshFunction<Scalar>* meshfn,
-      Scalar* target_vec, Hermes::MatrixSolverType matrix_solver,
-      ProjNormType proj_norm)
+      Scalar* target_vec, ProjNormType proj_norm)
     {
       if (proj_norm == HERMES_UNSET_NORM) 
       { 
@@ -43,7 +42,7 @@ namespace Hermes
           case HERMES_HCURL_SPACE: proj_norm = HERMES_HCURL_NORM; break;
           case HERMES_HDIV_SPACE: proj_norm = HERMES_HDIV_NORM; break;
           case HERMES_L2_SPACE: proj_norm = HERMES_L2_NORM; break;
-          default: error("Unknown space type in OGProjection<Scalar>::project_global().");
+          default: throw new Hermes::Exceptions::Exception("Unknown space type in OGProjection<Scalar>::project_global().");
         }
       }
 
@@ -98,12 +97,11 @@ namespace Hermes
     template<typename Scalar>
     void LocalProjection<Scalar>::project_local(const Space<Scalar>* space,
         Solution<Scalar>* source_sln, Solution<Scalar>* target_sln,
-        Hermes::MatrixSolverType matrix_solver, ProjNormType proj_norm)
+        ProjNormType proj_norm)
     {
-      _F_
       int ndof = space->get_num_dofs();
       Scalar* coeff_vec = new Scalar[ndof];
-      project_local(space, source_sln, coeff_vec, matrix_solver, proj_norm);
+      project_local(space, source_sln, coeff_vec, proj_norm);
       Solution<Scalar>::vector_to_solution(coeff_vec, space, target_sln, proj_norm);
       delete [] coeff_vec;
     }
@@ -111,9 +109,8 @@ namespace Hermes
     template<typename Scalar>
     void LocalProjection<Scalar>::project_local(Hermes::vector<const Space<Scalar>*> spaces, 
         Hermes::vector<MeshFunction<Scalar>*> meshfns, Scalar* target_vec, 
-        Hermes::MatrixSolverType matrix_solver, Hermes::vector<ProjNormType> proj_norms)
+        Hermes::vector<ProjNormType> proj_norms)
     {
-      _F_
       int n = spaces.size();
 
       if (n != meshfns.size()) throw Exceptions::LengthException(1, 2, n, meshfns.size());
@@ -124,9 +121,9 @@ namespace Hermes
       for (int i = 0; i < n; i++) 
       {
         if (proj_norms.empty())
-          project_local(spaces[i], meshfns[i], target_vec + start_index, matrix_solver);
+          project_local(spaces[i], meshfns[i], target_vec + start_index);
         else
-          project_local(spaces[i], meshfns[i], target_vec + start_index, matrix_solver, proj_norms[i]);
+          project_local(spaces[i], meshfns[i], target_vec + start_index, proj_norms[i]);
         start_index += spaces[i]->get_num_dofs();
       }
     }
@@ -134,9 +131,8 @@ namespace Hermes
     template<typename Scalar>
     void LocalProjection<Scalar>::project_local(Hermes::vector<const Space<Scalar>*> spaces, 
         Hermes::vector<Solution<Scalar>*> slns, Scalar* target_vec, 
-        Hermes::MatrixSolverType matrix_solver, Hermes::vector<ProjNormType> proj_norms)
+        Hermes::vector<ProjNormType> proj_norms)
     {
-      _F_
       int n = spaces.size();
 
       // Sanity checks.
@@ -148,19 +144,17 @@ namespace Hermes
       for (int i = 0; i < n; i++) 
       {
         if (proj_norms.empty())
-          project_local(spaces[i], slns[i], target_vec + start_index, matrix_solver);
+          project_local(spaces[i], slns[i], target_vec + start_index);
         else
-          project_local(spaces[i], slns[i], target_vec + start_index, matrix_solver, proj_norms[i]);
+          project_local(spaces[i], slns[i], target_vec + start_index, proj_norms[i]);
         start_index += spaces[i]->get_num_dofs();
       }
     }
 
     template<typename Scalar>
     void LocalProjection<Scalar>::project_local(Hermes::vector<const Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> source_slns,
-      Hermes::vector<Solution<Scalar>*> target_slns, Hermes::MatrixSolverType matrix_solver,
-      Hermes::vector<ProjNormType> proj_norms, bool delete_old_meshes)
+      Hermes::vector<Solution<Scalar>*> target_slns, Hermes::vector<ProjNormType> proj_norms, bool delete_old_meshes)
     {
-      _F_
       int n = spaces.size();
 
       // Sanity checks.
@@ -171,9 +165,9 @@ namespace Hermes
       for (int i = 0; i < n; i++) 
       {
         if (proj_norms.empty())
-          project_local(spaces[i], source_slns[i], target_slns[i], matrix_solver);
+          project_local(spaces[i], source_slns[i], target_slns[i]);
         else
-          project_local(spaces[i], source_slns[i], target_slns[i], matrix_solver, proj_norms[i]);
+          project_local(spaces[i], source_slns[i], target_slns[i], proj_norms[i]);
       }
     }
 

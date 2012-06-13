@@ -372,7 +372,7 @@ struct PyViewPost2D
     void setScalarViewPalette(char* palette);
     inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Util::config()->paletteType).toStdString().c_str()); }
     void setScalarViewPaletteQuality(char* quality);
-    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
+    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(Util::config()->linearizerQuality).toStdString().c_str()); }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
     void setScalarViewPaletteFilter(bool filter);
@@ -437,7 +437,7 @@ struct PyViewPost3D
     void setScalarViewPalette(char* palette);
     inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Util::config()->paletteType).toStdString().c_str()); }
     void setScalarViewPaletteQuality(char* quality);
-    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(paletteQualityFromDouble(Util::config()->linearizerQuality)).toStdString().c_str()); }
+    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(Util::config()->linearizerQuality).toStdString().c_str()); }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Util::config()->paletteSteps; }
     void setScalarViewPaletteFilter(bool filter);

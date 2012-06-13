@@ -23,10 +23,8 @@
 #ifdef HAVE_AMESOS
 #include "amesos_solver.h"
 #include "callstack.h"
-#include "error.h"
+#include "time_period.h"
 #include <Amesos_ConfigDefs.h>
-
-using namespace Hermes::Error;
 
 namespace Hermes
 {
@@ -38,7 +36,6 @@ namespace Hermes
     AmesosSolver<Scalar>::AmesosSolver(const char *solver_type, EpetraMatrix<Scalar> *m, EpetraVector<Scalar> *rhs)
       : DirectSolver<Scalar>(HERMES_FACTORIZE_FROM_SCRATCH), m(m), rhs(rhs)
     {
-      _F_;
       solver = factory.Create(solver_type, problem);
       assert(solver != NULL);
       // WARNING: Amesos does not use RCP to allocate the Amesos_BaseSolver,
@@ -50,28 +47,24 @@ namespace Hermes
     template<typename Scalar>
     AmesosSolver<Scalar>::~AmesosSolver()
     {
-      _F_;
       delete solver;
     }
 
     template<typename Scalar>
     bool AmesosSolver<Scalar>::is_available(const char *name)
     {
-      _F_;
       return factory.Query(name);
     }
 
     template<typename Scalar>
     void AmesosSolver<Scalar>::set_use_transpose(bool use_transpose)
     {
-      _F_;
       solver->SetUseTranspose(use_transpose);
     }
 
     template<typename Scalar>
     bool AmesosSolver<Scalar>::use_transpose()
     {
-      _F_;
       return solver->UseTranspose();
     }
 
@@ -83,7 +76,6 @@ namespace Hermes
     template<>
     bool AmesosSolver<double>::solve()
     {
-      _F_;
       assert(m != NULL);
       assert(rhs != NULL);
 
@@ -98,14 +90,14 @@ namespace Hermes
 
       if (!setup_factorization())
       {
-        warning("AmesosSolver: LU factorization could not be completed");
+        warn("AmesosSolver: LU factorization could not be completed");
         return false;
       }
 
       int status = solver->Solve();
       if (status != 0)
       {
-        error("AmesosSolver: Solution failed.");
+        throw new Hermes::Exceptions::Exception("AmesosSolver: Solution failed.");
         return false;
       }
 
@@ -113,7 +105,7 @@ namespace Hermes
       this->time = tmr.accumulated();
 
       delete [] this->sln;
-      this->sln = new double[m->size]; MEM_CHECK(this->sln);
+      this->sln = new double[m->size];
       // copy the solution into sln vector
       memset(this->sln, 0, m->size * sizeof(double));
 
@@ -125,7 +117,6 @@ namespace Hermes
     template<>
     bool AmesosSolver<std::complex<double> >::solve()
     {
-      _F_;
       assert(m != NULL);
       assert(rhs != NULL);
 
@@ -133,18 +124,18 @@ namespace Hermes
 
       Hermes::TimePeriod tmr;
 
-      error("AmesosSolver<Scalar>::solve() not yet implemented for complex problems");
+      throw new Hermes::Exceptions::Exception("AmesosSolver<Scalar>::solve() not yet implemented for complex problems");
 
       if (!setup_factorization())
       {
-        warning("AmesosSolver: LU factorization could not be completed");
+        warn("AmesosSolver: LU factorization could not be completed");
         return false;
       }
 
       int status = solver->Solve();
       if (status != 0)
       {
-        error("AmesosSolver: Solution failed.");
+        throw new Hermes::Exceptions::Exception("AmesosSolver: Solution failed.");
         return false;
       }
 
@@ -152,7 +143,7 @@ namespace Hermes
       this->time = tmr.accumulated();
 
       delete [] this->sln;
-      this->sln = new std::complex<double>[m->size]; MEM_CHECK(this->sln);
+      this->sln = new std::complex<double>[m->size];
       // copy the solution into sln vector
       memset(this->sln, 0, m->size * sizeof(std::complex<double>));
 
@@ -162,7 +153,6 @@ namespace Hermes
     template<typename Scalar>
     bool AmesosSolver<Scalar>::setup_factorization()
     {
-      _F_;
       // Perform both factorization phases for the first time.
       int eff_fact_scheme;
       if (this->factorization_scheme != HERMES_FACTORIZE_FROM_SCRATCH &&
@@ -179,7 +169,7 @@ namespace Hermes
         status = solver->SymbolicFactorization();
         if (status != 0)
         {
-          warning("Symbolic factorization failed.");
+          warn("Symbolic factorization failed.");
           return false;
         }
 
@@ -188,7 +178,7 @@ namespace Hermes
         status = solver->NumericFactorization();
         if (status != 0)
         {
-          warning("Numeric factorization failed.");
+          warn("Numeric factorization failed.");
           return false;
         }
       }

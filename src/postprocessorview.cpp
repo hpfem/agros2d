@@ -233,7 +233,7 @@ void PostprocessorWidget::saveAdvanced()
     Util::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
     Util::config()->paletteFilter = chkPaletteFilter->isChecked();
     Util::config()->paletteSteps = txtPaletteSteps->value();
-    Util::config()->linearizerQuality = cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toDouble();
+    Util::config()->linearizerQuality = (PaletteQuality) cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toInt();
 
     // contours
     Util::config()->contoursCount = txtContoursCount->value();
@@ -589,6 +589,9 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // quality
     cmbLinearizerQuality = new QComboBox();
+    foreach (QString key, paletteQualityStringKeys())
+        cmbLinearizerQuality->addItem(key, paletteQualityFromStringKey(key));
+    /*
     cmbLinearizerQuality->addItem(tr("Extremely coarse"), paletteQualityToDouble(PaletteQuality_ExtremelyCoarse));
     cmbLinearizerQuality->addItem(tr("Extra coarse"), paletteQualityToDouble(PaletteQuality_ExtraCoarse));
     cmbLinearizerQuality->addItem(tr("Coarser"), paletteQualityToDouble(PaletteQuality_Coarser));
@@ -597,6 +600,7 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     cmbLinearizerQuality->addItem(tr("Fine"), paletteQualityToDouble(PaletteQuality_Fine));
     cmbLinearizerQuality->addItem(tr("Finer"), paletteQualityToDouble(PaletteQuality_Finer));
     cmbLinearizerQuality->addItem(tr("Extra fine"), paletteQualityToDouble(PaletteQuality_ExtraFine));
+    */
 
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
@@ -1110,7 +1114,7 @@ void PostprocessorWidget::doScalarFieldDefault()
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
     chkPaletteFilter->setChecked(PALETTEFILTER);
     txtPaletteSteps->setValue(PALETTESTEPS);
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(paletteQualityToDouble(PaletteQuality_Normal)));
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(PaletteQuality_Normal));
     chkShowScalarColorBar->setChecked(SHOWSCALARCOLORBAR);
     chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
     txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);

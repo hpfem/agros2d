@@ -22,6 +22,7 @@
 #ifndef __HERMES_COMMON_C99_FUNCTIONS_H
 #define __HERMES_COMMON_C99_FUNCTIONS_H
 
+#include "compat.h"
 #ifdef IMPLEMENT_C99
 
 /// \brief Not-a-number constant.

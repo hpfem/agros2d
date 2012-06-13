@@ -25,47 +25,23 @@ namespace Hermes
   namespace Hermes2D
   {
     template<typename Scalar>
-    PicardSolver<Scalar>::PicardSolver(DiscreteProblemLinear<Scalar>* dp, Solution<Scalar>* sln_prev_iter,
-        Hermes::MatrixSolverType matrix_solver_type) : NonlinearSolver<Scalar>(dp, matrix_solver_type)
-    {
-      if(dp->get_spaces().size() != 1)
-        error("Mismatched number of spaces and solutions in PicardSolver.");
-      this->slns_prev_iter.push_back(sln_prev_iter);
-      verbose_output_inner_newton = false;
-    }
-
-    template<typename Scalar>
-    PicardSolver<Scalar>::PicardSolver(DiscreteProblemLinear<Scalar>* dp, Hermes::vector<Solution<Scalar>* > slns_prev_iter,
-        Hermes::MatrixSolverType matrix_solver_type) : NonlinearSolver<Scalar>(dp, matrix_solver_type)
-    {
-      int n = slns_prev_iter.size();
-      if(dp->get_spaces().size() != n)
-        error("Mismatched number of spaces and solutions in PicardSolver.");
-      for (int i = 0; i<n; i++)
-      {
-        this->slns_prev_iter.push_back(slns_prev_iter[i]);
-      }
-      verbose_output_inner_newton = false;
-    }
-
-    template<typename Scalar>
     PicardSolver<Scalar>::PicardSolver(DiscreteProblemLinear<Scalar>* dp, Solution<Scalar>* sln_prev_iter)
-        : NonlinearSolver<Scalar>(dp, SOLVER_UMFPACK)
+        : NonlinearSolver<Scalar>(dp)
     {
       int n = slns_prev_iter.size();
       if(dp->get_spaces().size() != n)
-        error("Mismatched number of spaces and solutions in PicardSolver.");
+        throw new Hermes::Exceptions::Exception("Mismatched number of spaces and solutions in PicardSolver.");
       this->slns_prev_iter.push_back(sln_prev_iter);
       verbose_output_inner_newton = false;
     }
 
     template<typename Scalar>
     PicardSolver<Scalar>::PicardSolver(DiscreteProblemLinear<Scalar>* dp, Hermes::vector<Solution<Scalar>* > slns_prev_iter)
-        : NonlinearSolver<Scalar>(dp, SOLVER_UMFPACK)
+        : NonlinearSolver<Scalar>(dp)
     {
       int n = slns_prev_iter.size();
       if(dp->get_spaces().size() != n)
-        error("Mismatched number of spaces and solutions in PicardSolver.");
+        throw new Hermes::Exceptions::Exception("Mismatched number of spaces and solutions in PicardSolver.");
       for (int i = 0; i<n; i++)
       {
         this->slns_prev_iter.push_back(slns_prev_iter[i]);
@@ -88,7 +64,7 @@ namespace Hermes
     template<typename Scalar>
     void calculate_anderson_coeffs(Scalar** previous_vectors, Scalar* anderson_coeffs, int num_last_vectors_used, int ndof)
     {
-      if (num_last_vectors_used <= 1) error("Anderson acceleration makes sense only if at least two last iterations are used.");
+      if (num_last_vectors_used <= 1) throw new Hermes::Exceptions::Exception("Anderson acceleration makes sense only if at least two last iterations are used.");
 
       // If num_last_vectors_used is 2, then there is only one residual, and thus only one alpha coeff which is 1.0.
       if (num_last_vectors_used == 2)
@@ -163,7 +139,7 @@ namespace Hermes
     {
       // Sanity check.
       if (num_last_vectors_used < 1)
-        error("PicardSolver: Bad number of last iterations to be used (must be at least one).");
+        throw new Hermes::Exceptions::Exception("PicardSolver: Bad number of last iterations to be used (must be at least one).");
 
       // Preliminaries.
       int num_spaces = this->slns_prev_iter.size();
@@ -172,7 +148,7 @@ namespace Hermes
       Hermes::vector<bool> add_dir_lift;
       for(unsigned int i = 0; i < spaces.size(); i++)
         add_dir_lift.push_back(false);
-      LinearSolver<Scalar> linear_solver(static_cast<DiscreteProblemLinear<Scalar>*>(this->dp), this->matrix_solver_type);
+      LinearSolver<Scalar> linear_solver(static_cast<DiscreteProblemLinear<Scalar>*>(this->dp));
 
       // Delete solution vector if there is any.
       if(this->sln_vector != NULL)
@@ -185,7 +161,7 @@ namespace Hermes
       // coefficient vector for the Picard's method.
       info("Projecting to obtain initial vector for the Picard's method.");
       this->sln_vector = new Scalar[ndof];
-      OGProjection<Scalar>::project_global(spaces, this->slns_prev_iter, this->sln_vector, this->matrix_solver_type);
+      OGProjection<Scalar>::project_global(spaces, this->slns_prev_iter, this->sln_vector);
 
       // Save the coefficient vector, it will be used to calculate increment error
       // after a new coefficient vector is calculated.

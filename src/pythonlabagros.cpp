@@ -1412,7 +1412,7 @@ void PyViewPost2D::setScalarViewPalette(char* palette)
 void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
 {
     if (paletteQualityStringKeys().contains(QString(quality)))
-        Util::config()->linearizerQuality = paletteQualityToDouble(paletteQualityFromStringKey(QString(quality)));
+        Util::config()->linearizerQuality = paletteQualityFromStringKey(QString(quality));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }
@@ -1608,7 +1608,7 @@ void PyViewPost3D::setScalarViewPalette(char* palette)
 void PyViewPost3D::setScalarViewPaletteQuality(char* quality)
 {
     if (paletteQualityStringKeys().contains(QString(quality)))
-        Util::config()->linearizerQuality = paletteQualityToDouble(paletteQualityFromStringKey(QString(quality)));
+        Util::config()->linearizerQuality = paletteQualityFromStringKey(QString(quality));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }

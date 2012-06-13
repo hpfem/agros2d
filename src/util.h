@@ -29,6 +29,9 @@
 
 #include <muParser.h>
 
+#include "hermes_common.h"
+#include "hermes2d.h"
+
 #include <typeinfo>
 #include <iostream>
 #include <cmath>
@@ -42,8 +45,6 @@
 #include "value.h"
 
 #include "indicators/indicators.h"
-
-#include "hermes2d.h"
 
 // zero
 #define EPS_ZERO 1e-10
@@ -674,10 +675,8 @@ PaletteType paletteTypeFromStringKey(const QString &paletteType);
 
 QStringList paletteQualityStringKeys();
 QString paletteQualityToStringKey(PaletteQuality paletteQuality);
-PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality);
-
+PaletteQuality paletteQualityFromStringKey(const QString &quality);
 double paletteQualityToDouble(PaletteQuality paletteQuality);
-PaletteQuality paletteQualityFromDouble(const double paletteQuality);
 
 QStringList paletteOrderTypeStringKeys();
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);

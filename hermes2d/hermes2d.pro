@@ -28,12 +28,11 @@ INCLUDEPATH += include \
                ../hermes_common \
                ../hermes_common/include/ \
                ../hermes_common/include/solvers/ \
-               ../hermes_common/include/third_party_codes/trilinos-teuchos/
 
 SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
-                ../hermes_common/src/common_time_period.cpp \
+                ../hermes_common/src/api.cpp \
+                ../hermes_common/src/time_period.cpp \
                 ../hermes_common/src/callstack.cpp \
-                ../hermes_common/src/error.cpp \
                 ../hermes_common/src/matrix.cpp \
                 ../hermes_common/src/tables.cpp \
                 ../hermes_common/src/qsort.cpp \
@@ -41,7 +40,6 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/ord.cpp \
                 ../hermes_common/src/hermes_function.cpp \
                 ../hermes_common/src/exceptions.cpp \
-                ../hermes_common/src/third_party_codes/trilinos-teuchos/Teuchos_stacktrace.cpp \
                 ../hermes_common/src/solvers/dp_interface.cpp \
                 ../hermes_common/src/solvers/linear_matrix_solver.cpp \
                 ../hermes_common/src/solvers/nonlinear_solver.cpp \
@@ -50,12 +48,13 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/solvers/amesos_solver.cpp \
                 ../hermes_common/src/solvers/mumps_solver.cpp \
                 ../hermes_common/src/solvers/superlu_solver.cpp \
-                ../hermes_common/src/solvers/superlu_real.cpp \
-                ../hermes_common/src/solvers/superlu_cplx.cpp \
+                ../hermes_common/src/solvers/superlu_solver_real.cpp \
+                ../hermes_common/src/solvers/superlu_solver_cplx.cpp \
                 ../hermes_common/src/solvers/petsc_solver.cpp \
                 ../hermes_common/src/solvers/umfpack_solver.cpp \
                 ../hermes_common/src/solvers/precond_ml.cpp \
                 ../hermes_common/src/solvers/precond_ifpack.cpp \
+                src/api2d.cpp \
                 src/forms.cpp \
                 src/asmlist.cpp \
                 src/linear_solver.cpp \
