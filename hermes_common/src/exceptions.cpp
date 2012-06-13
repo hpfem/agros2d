@@ -157,7 +157,7 @@ namespace Hermes
       this->right=e.getExpectedLength();
     }
 
-    LinearMatrixSolverException::LinearMatrixSolverException()
+    LinearMatrixSolverException::LinearMatrixSolverException() : Exception()
     {
       char * msg =  new char[22];
       sprintf(msg, "Linear solver failed.");

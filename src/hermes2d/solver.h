@@ -29,10 +29,10 @@ class FieldInfo;
 template <typename Scalar>
 class WeakFormAgros;
 
-class SolverException
+class AgrosSolverException
 {
 public:
-    SolverException(QString str) { this->str = str; }
+    AgrosSolverException(QString str) { this->str = str; }
     QString str;
 };
 

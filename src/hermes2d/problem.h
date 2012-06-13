@@ -152,6 +152,8 @@ public:
     void addField(FieldInfo *field);
     void removeField(FieldInfo *field);
 
+    Block* blockOfField(FieldInfo* fieldInfo) const;
+
     void synchronizeCouplings();
     inline QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos() const { return m_couplingInfos; }
     inline CouplingInfo* couplingInfo(FieldInfo* sourceField, FieldInfo* targetField) { assert (m_couplingInfos.contains(QPair<FieldInfo*, FieldInfo* >(sourceField, targetField)));
