@@ -29,6 +29,9 @@
 
 #include <muParser.h>
 
+#include "hermes_common.h"
+#include "hermes2d.h"
+
 #include <typeinfo>
 #include <iostream>
 #include <cmath>
@@ -42,8 +45,6 @@
 #include "value.h"
 
 #include "indicators/indicators.h"
-
-#include "hermes2d.h"
 
 // zero
 #define EPS_ZERO 1e-10
@@ -674,22 +675,20 @@ PaletteType paletteTypeFromStringKey(const QString &paletteType);
 
 QStringList paletteQualityStringKeys();
 QString paletteQualityToStringKey(PaletteQuality paletteQuality);
-PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality);
-
+PaletteQuality paletteQualityFromStringKey(const QString &quality);
 double paletteQualityToDouble(PaletteQuality paletteQuality);
-PaletteQuality paletteQualityFromDouble(const double paletteQuality);
 
 QStringList paletteOrderTypeStringKeys();
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
 
 // constants
-const QString IMAGEROOT = "../resources_source/images";
-const QString LANGUAGEROOT = "/resources/lang";
-const QString XSDROOT = "/resources/xsd";
-const QString MODULEROOT = "/resources/modules";
-const QString COUPLINGROOT = "/resources/couplings";
-const QString TEMPLATEROOT = "/resources/templates";
+const QString IMAGEROOT = QString("..%1resources_source%1images").arg(QDir::separator());
+const QString LANGUAGEROOT = QString("%1/resources%1lang").arg(QDir::separator());
+const QString XSDROOT = QString("%1resources%1xsd").arg(QDir::separator());
+const QString MODULEROOT = QString("%1resources%1modules").arg(QDir::separator());
+const QString COUPLINGROOT = QString("%1resources%1couplings").arg(QDir::separator());
+const QString TEMPLATEROOT = QString("%1resources%1templates").arg(QDir::separator());
 
 const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
 const QColor COLORGRID = QColor::fromRgb(200, 200, 200);

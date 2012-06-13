@@ -308,6 +308,8 @@ int DEBUG_COUNTER = 0;
 template <typename Scalar>
 bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 {
+    Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
+
     // Linear solver
     if (m_block->linearityType() == LinearityType_Linear)
     {
@@ -316,7 +318,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 
         Hermes::TimePeriod timer;
 
-        LinearSolver<Scalar> linear(&dp, Util::problem()->config()->matrixSolver());
+        LinearSolver<Scalar> linear(&dp);
         try
         {
             linear.solve();
@@ -348,7 +350,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         Hermes::TimePeriod timer;
 
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-        NewtonSolver<Scalar> newton(&dp, Util::problem()->config()->matrixSolver());
+        NewtonSolver<Scalar> newton(&dp);
         newton.attach_timer(&timer);
 
         // newton.set_max_allowed_residual_norm(1e15);
@@ -393,7 +395,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             Hermes::Hermes2D::Space<Scalar> *spc = space.data();
             slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
         }
-        PicardSolver<Scalar> picard(&dp, slns, Util::problem()->config()->matrixSolver());
+        PicardSolver<Scalar> picard(&dp, slns);
         // picard.attach_timer(&timer);
 
         try
@@ -520,8 +522,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
                                                            msaRef.solutionsNaked(),
-                                                           msa.solutionsNaked(),
-                                                           Util::problem()->config()->matrixSolver());
+                                                           msa.solutionsNaked());
 
     Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, solutionMode));
     Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal), msa);

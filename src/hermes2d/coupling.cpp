@@ -77,7 +77,7 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
     foreach (QString filename, list)
     {
         // read name
-        std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + "/" + filename).toStdString().c_str());
+        std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + filename).toStdString().c_str());
         XMLCoupling::coupling *coup = couplings_xsd.get();
 
         // module name
@@ -113,7 +113,7 @@ Coupling::Coupling(const QString &couplingId, CoordinateType coordinateType, Cou
     clear();
 
     // read coupling description
-    QString filename = (datadir() + COUPLINGROOT + "/" + couplingId + ".xml");
+    QString filename = (datadir() + COUPLINGROOT + QDir::separator() + couplingId + ".xml");
     assert(QFile::exists(filename));
 
     read(filename);
@@ -225,7 +225,7 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 {
     // open coupling
     QString couplingId = sourceField->fieldId() + "-" + targetField->fieldId();
-    QString filename = (datadir() + COUPLINGROOT + "/" + couplingId + ".xml");
+    QString filename = (datadir() + COUPLINGROOT + QDir::separator() + couplingId + ".xml");
 
     if (QFile::exists(filename))
     {

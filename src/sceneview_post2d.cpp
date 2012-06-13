@@ -93,7 +93,7 @@ void Post2DHermes::processRangeContour()
 
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
-                                          Util::config()->linearizerQuality);
+                                          paletteQualityToDouble(Util::config()->linearizerQuality));
 
         // deformed shape
         if (Util::config()->deformContour)
@@ -135,7 +135,7 @@ void Post2DHermes::processRangeScalar()
 
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         Util::config()->linearizerQuality);
+                                         paletteQualityToDouble(Util::config()->linearizerQuality));
 
         // deformed shape
         if (Util::config()->deformScalar)

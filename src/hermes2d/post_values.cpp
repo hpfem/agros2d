@@ -401,7 +401,7 @@ ViewScalarFilter<Scalar>* ViewScalarFilter<Scalar>::clone()
     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> slns;
 
     for (int i = 0; i < this->num; i++)
-        slns.push_back(this->sln[i]);
+        slns.push_back(this->sln[i]->clone());
 
     return new ViewScalarFilter(m_fieldInfo, slns, QString::fromStdString(m_parsers[0]->GetExpr()));
 }

@@ -16,18 +16,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-/*! \file superlu_cplx.cpp
-\brief SuperLU algebraic interface for complex numbers.
+/*! \file superlu_solver.cpp
+\brief SuperLU solver interface.
 */
 #include "config.h"
 #ifdef WITH_SUPERLU
-#include"superlu_solver.h"
+#include "superlu_solver.h"
+#include "callstack.h"
 #include <slu_zdefs.h>
 
 namespace Hermes
 {
   namespace Solvers
-{
+  {
     template <>
     void SuperLUSolver<std::complex<double> >::create_csc_matrix (SuperMatrix *A, int m, int n, int nnz,
       SuperLuType<std::complex<double> >::Scalar *nzval,
@@ -54,4 +55,3 @@ namespace Hermes
   }
 }
 #endif
-

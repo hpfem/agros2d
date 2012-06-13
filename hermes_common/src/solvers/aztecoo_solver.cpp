@@ -23,9 +23,8 @@
 #ifdef HAVE_AZTECOO
 #include "aztecoo_solver.h"
 #include "callstack.h"
+#include "time_period.h"
 #include <Komplex_LinearProblem.h>
-
-using namespace Hermes::Error;
 
 namespace Hermes
 {
@@ -35,20 +34,17 @@ namespace Hermes
     AztecOOSolver<Scalar>::AztecOOSolver(EpetraMatrix<Scalar> *m, EpetraVector<Scalar> *rhs)
       : IterSolver<Scalar>(), m(m), rhs(rhs)
     {
-      _F_;
       pc = NULL;
     }
 
     template<typename Scalar>
     AztecOOSolver<Scalar>::~AztecOOSolver()
     {
-      _F_;
-    }
+      }
 
     template<typename Scalar>
     void AztecOOSolver<Scalar>::set_solver(const char *name)
     {
-      _F_;
       int az_solver;
       if (name)
       {
@@ -86,7 +82,6 @@ namespace Hermes
     template<typename Scalar>
     void AztecOOSolver<Scalar>::set_precond(const char *name)
     {
-      _F_;
       int az_precond;
       if (name)
       {
@@ -104,14 +99,12 @@ namespace Hermes
     template<typename Scalar>
     void AztecOOSolver<Scalar>::set_option(int option, int value)
     {
-      _F_;
       aztec.SetAztecOption(option, value);
     }
 
     template<typename Scalar>
     void AztecOOSolver<Scalar>::set_param(int param, double value)
     {
-      _F_;
       aztec.SetAztecParam(param, value);
     }
 
@@ -124,7 +117,6 @@ namespace Hermes
     template<>
     bool AztecOOSolver<double>::solve()
     {
-      _F_;
       assert(m != NULL);
       assert(rhs != NULL);
       assert(m->size == rhs->size);
@@ -155,7 +147,6 @@ namespace Hermes
 
       delete [] this->sln;
       this->sln = new double[m->size];
-      MEM_CHECK(this->sln);
       memset(this->sln, 0, m->size * sizeof(double));
 
       // copy the solution into sln vector
@@ -166,7 +157,6 @@ namespace Hermes
     template<>
     bool AztecOOSolver<std::complex<double> >::solve()
     {
-      _F_;
       assert(m != NULL);
       assert(rhs != NULL);
       assert(m->size == rhs->size);
@@ -193,7 +183,6 @@ namespace Hermes
 
       delete [] this->sln;
       this->sln = new std::complex<double>[m->size];
-      MEM_CHECK(this->sln);
       memset(this->sln, 0, m->size * sizeof(std::complex<double>));
 
       // copy the solution into sln vector
@@ -204,14 +193,12 @@ namespace Hermes
     template<typename Scalar>
     int AztecOOSolver<Scalar>::get_num_iters()
     {
-      _F_;
       return aztec.NumIters();
     }
 
     template<typename Scalar>
     double AztecOOSolver<Scalar>::get_residual()
     {
-      _F_;
       return aztec.TrueResidual();
     }
 

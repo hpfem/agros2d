@@ -106,9 +106,7 @@ PaletteType paletteTypeFromStringKey(const QString &paletteType) { return palett
 QStringList paletteQualityStringKeys() { return paletteQualityList.values(); }
 QString paletteQualityToStringKey(PaletteQuality paletteQuality) { return paletteQualityList[paletteQuality]; }
 PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { return paletteQualityList.key(paletteQuality); }
-
 double paletteQualityToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
-PaletteQuality paletteQualityFromDouble(const double paletteQuality) { return paletteQualityValueList.key(paletteQuality); }
 
 QStringList paletteOrderTypeStringKeys() { return paletteOrderTypeList.values(); }
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
@@ -492,8 +490,8 @@ void setLanguage(const QString &locale)
     else
         qDebug() << "Qt language file not found.";
 
-    if (QFile::exists(datadir() + LANGUAGEROOT + "/" + locale + ".qm"))
-        appTranslator->load(datadir() + LANGUAGEROOT + "/" + locale + ".qm");
+    if (QFile::exists(datadir() + LANGUAGEROOT + QDir::separator() + locale + ".qm"))
+        appTranslator->load(datadir() + LANGUAGEROOT + QDir::separator() + locale + ".qm");
     else if (QFile::exists(datadir() + LANGUAGEROOT + "/en_US.qm"))
         appTranslator->load(datadir() + LANGUAGEROOT + "/en_US.qm");
     else

@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <typeinfo>
 #include "runge_kutta.h"
 #include "discrete_problem.h"
 #include "projections/ogprojection.h"
@@ -25,12 +24,11 @@ namespace Hermes
   {
     template<typename Scalar>
     RungeKutta<Scalar>::RungeKutta(const WeakForm<Scalar>* wf, Hermes::vector<Space<Scalar> *> spaces, ButcherTable* bt, 
-        Hermes::MatrixSolverType matrix_solver, bool start_from_zero_K_vector, bool residual_as_vector)
+        bool start_from_zero_K_vector, bool residual_as_vector)
       : wf(wf), bt(bt), num_stages(bt->get_size()), stage_wf_right(bt->get_size() * spaces.size()),
       stage_wf_left(spaces.size()), start_from_zero_K_vector(start_from_zero_K_vector), 
-      residual_as_vector(residual_as_vector), iteration(0) , matrix_solver(matrix_solver)
+      residual_as_vector(residual_as_vector), iteration(0)
     {
-      _F_;
       for(unsigned int i = 0; i < spaces.size(); i++)
         this->spaces.push_back(const_cast<const Space<Scalar>*>(spaces.at(i)));
       for(unsigned int i = 0; i < spaces.size(); i++)
@@ -41,11 +39,11 @@ namespace Hermes
 
       do_global_projections = true;
 
-      matrix_right = create_matrix<Scalar>(matrix_solver);
-      matrix_left = create_matrix<Scalar>(matrix_solver);
-      vector_right = create_vector<Scalar>(matrix_solver);
+      matrix_right = create_matrix<Scalar>();
+      matrix_left = create_matrix<Scalar>();
+      vector_right = create_vector<Scalar>();
       // Create matrix solver.
-      solver = create_linear_solver(matrix_solver, matrix_right, vector_right);
+      solver = create_linear_solver(matrix_right, vector_right);
 
       // Vector K_vector of length num_stages * ndof. will represent
       // the 'K_i' vectors in the usual R-K notation.
@@ -60,13 +58,12 @@ namespace Hermes
 
     template<typename Scalar>
     RungeKutta<Scalar>::RungeKutta(const WeakForm<Scalar>* wf, Space<Scalar>* space, ButcherTable* bt, 
-        Hermes::MatrixSolverType matrix_solver, bool start_from_zero_K_vector, bool residual_as_vector)
+        bool start_from_zero_K_vector, bool residual_as_vector)
       : wf(wf), bt(bt), num_stages(bt->get_size()), stage_wf_right(bt->get_size() * 1),
       stage_wf_left(1), start_from_zero_K_vector(start_from_zero_K_vector), 
-      residual_as_vector(residual_as_vector), iteration(0) , matrix_solver(matrix_solver)
+      residual_as_vector(residual_as_vector), iteration(0)
     {
-      _F_;
-
+      
       spaces.push_back(const_cast<const Space<Scalar>*>(space));
       spaces_mutable.push_back(space);
 
@@ -74,11 +71,11 @@ namespace Hermes
 
       do_global_projections = true;
 
-      matrix_right = create_matrix<Scalar>(matrix_solver);
-      matrix_left = create_matrix<Scalar>(matrix_solver);
-      vector_right = create_vector<Scalar>(matrix_solver);
+      matrix_right = create_matrix<Scalar>();
+      matrix_left = create_matrix<Scalar>();
+      vector_right = create_vector<Scalar>();
       // Create matrix solver.
-      solver = create_linear_solver(matrix_solver, matrix_right, vector_right);
+      solver = create_linear_solver(matrix_right, vector_right);
 
       // Vector K_vector of length num_stages * ndof. will represent
       // the 'K_i' vectors in the usual R-K notation.
@@ -156,7 +153,7 @@ namespace Hermes
     {
       // Check whether the user provided a nonzero B2-row if he wants temporal error estimation.
       if(error_fns != Hermes::vector<Solution<Scalar>*>() && bt->is_embedded() == false)
-        error("rk_time_step_newton(): R-K method must be embedded if temporal error estimate is requested.");
+        throw new Hermes::Exceptions::Exception("rk_time_step_newton(): R-K method must be embedded if temporal error estimate is requested.");
 
       // All Spaces of the problem.
       Hermes::vector<const Space<Scalar>*> stage_spaces_vector;

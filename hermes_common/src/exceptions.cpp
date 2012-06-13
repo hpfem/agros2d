@@ -18,6 +18,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include"exceptions.h"
+#include"api.h"
+#include"callstack.h"
 
 namespace Hermes
 {
@@ -27,13 +29,19 @@ namespace Hermes
     Exception::Exception()
     {
       message = NULL;
-      func = callstack.getLastFunc();
     }
 
-    Exception::Exception(const char * msg)
+    Exception::Exception(const char * msg, ...)
     {
-      message = msg;
-      func = callstack.getLastFunc();
+      char text[1024];
+
+      //print the message
+      va_list arglist;
+      va_start(arglist, msg);
+      vsprintf(text, msg, arglist);
+      va_end(arglist);
+
+      message = text;
     }
 
     void Exception::printMsg() const
@@ -42,13 +50,8 @@ namespace Hermes
         fprintf(stderr, "%s\n", message);
       else
         fprintf(stderr, "Default exception\n");
-      if (func)
-        fprintf(stderr, "in %s\n", func);
-    }
-
-    const char * Exception::getFuncName() const
-    {
-      return func;
+      if(Hermes::HermesCommonApi.getParamValue(Hermes::exceptionsPrintCallstack) == 1)
+        CallStack::dump(0);
     }
 
     const char * Exception::getMsg() const
@@ -239,5 +242,23 @@ namespace Hermes
       this->allowed=e.getAllowed();
     }
 
+    FunctionNotOverridenException::FunctionNotOverridenException(const char * name)
+    {
+      char * msg =  new char[34 + strlen(name)];
+      sprintf(msg, "Linear solver failed because:\"%s\"", name);
+      message = msg;
+    }
+
+    FunctionNotOverridenException::~FunctionNotOverridenException()
+    {
+      delete[] message;
+    }
+
+    FunctionNotOverridenException::FunctionNotOverridenException(const FunctionNotOverridenException&e)
+    {
+      char * msg= new char[strlen(e.getMsg())+1];
+      strcpy(msg, e.getMsg());
+      message=msg;
+    }
   }
 }

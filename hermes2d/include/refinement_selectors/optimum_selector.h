@@ -19,7 +19,7 @@
 #include <ostream>
 #include "order_permutator.h"
 #include "selector.h"
-#include "common_time_period.h"
+#include "time_period.h"
 
 namespace Hermes
 {
@@ -120,7 +120,7 @@ namespace Hermes
             case H2D_REFINEMENT_ANISO_V:
               return 2;
             default:
-              error("Invalid refinement type %d.", split);
+              throw new Hermes::Exceptions::Exception("Invalid refinement type %d.", split);
               return -1;
               break;
             }

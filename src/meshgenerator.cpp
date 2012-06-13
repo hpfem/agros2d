@@ -82,10 +82,10 @@ bool MeshGeneratorTriangle::mesh()
             {
                 QFileInfo fileInfoOrig(Util::problem()->config()->fileName());
 
-                QFile::copy(tempProblemFileName() + ".poly", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".poly");
-                QFile::copy(tempProblemFileName() + ".node", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".node");
-                QFile::copy(tempProblemFileName() + ".edge", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".edge");
-                QFile::copy(tempProblemFileName() + ".ele", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".ele");
+                QFile::copy(tempProblemFileName() + ".poly", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".poly");
+                QFile::copy(tempProblemFileName() + ".node", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".node");
+                QFile::copy(tempProblemFileName() + ".edge", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".edge");
+                QFile::copy(tempProblemFileName() + ".ele", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".ele");
             }
 
             while (!processTriangle.waitForFinished()) {}
@@ -115,7 +115,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             {
                 QFileInfo fileInfoOrig(Util::problem()->config()->fileName());
 
-                QFile::copy(tempProblemFileName() + ".mesh", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".mesh");
+                QFile::copy(tempProblemFileName() + ".mesh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".mesh");
             }
 
             //  remove triangle temp files
