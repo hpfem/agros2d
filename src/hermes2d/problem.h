@@ -124,7 +124,6 @@ public:
     bool mesh();
     // solve
     void solve();
-    void solveAction(); //called by previous, can throw SolverException
     void solveAdaptiveStep();
 
     // check geometry
@@ -185,6 +184,9 @@ private:
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
 
     void solveInit();
+    void solveAction(); //called by solve, can throw SolverException
+    void solveAdaptiveStepAction();
+
     double m_actualTime;
 };
 

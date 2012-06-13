@@ -469,6 +469,9 @@ void Problem::solveAdaptiveStep()
     if (isSolving())
         return;
 
+    QTime elapsedTime;
+    elapsedTime.start();
+
     if(m_blocks.count() > 1)
     {
         QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "This action is possible for one field only, unless they are hard-coupled");
@@ -479,10 +482,40 @@ void Problem::solveAdaptiveStep()
         QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "This action is not possible for transient problems");
         return;
     }
-    Util::scene()->blockSignals(true);
 
-    QTime elapsedTime;
-    elapsedTime.start();
+    try
+    {
+        solveAdaptiveStepAction();
+    }
+    catch (Hermes::Exceptions::Exception& e)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e.getMsg()));
+        return;
+    }
+    catch (AgrosSolverException& e)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", e.str);
+        return;
+    }
+
+    // delete temp file
+    if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
+    {
+        QFile::remove(Util::problem()->config()->fileName());
+        Util::problem()->config()->setFileName("");
+    }
+
+    m_isSolving = false;
+
+    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
+
+    // close indicator progress
+    Indicator::closeProgress();
+}
+
+void Problem::solveAdaptiveStepAction()
+{
+    Util::scene()->blockSignals(true);
 
     solveInit();
 
@@ -535,23 +568,8 @@ void Problem::solveAdaptiveStep()
         cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
     }
 
-    // delete temp file
-    if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
-    {
-        QFile::remove(Util::problem()->config()->fileName());
-        Util::problem()->config()->setFileName("");
-    }
-
     m_isSolved = true;
     emit solved();
-
-    m_isSolving = false;
-
-    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
-
-    // close indicator progress
-    Indicator::closeProgress();
-
 }
 
 void Problem::synchronizeCouplings()

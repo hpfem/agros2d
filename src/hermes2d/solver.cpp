@@ -306,7 +306,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 int DEBUG_COUNTER = 0;
 
 template <typename Scalar>
-bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
+void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 {
     Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
@@ -337,7 +337,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         {
             QString error = QString(e.getMsg());
             Util::log()->printDebug(m_solverID, QObject::tr("Linear solver failed: %1").arg(error));
-            return false;
+            throw;
         }
     }
 
@@ -377,7 +377,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         {
             QString error = QString(e.getMsg());
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
-            return false;
+            throw;
         }
     }
 
@@ -416,11 +416,9 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         {
             QString error = QString(e.getMsg());
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
-            return false;
+            throw;
         }
     }
-
-    return true;
 }
 
 template <typename Scalar>
@@ -445,8 +443,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_wf->delete_all();
     m_wf->registerForms();
 
-    if (!solveOneProblem(multiSolutionArray))
-        throw("Problem not solved");
+    solveOneProblem(multiSolutionArray);
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
@@ -516,8 +513,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     createNewSolutions(msaRef);
 
     // solve reference problem
-    if (!solveOneProblem(msaRef))
-        throw(AgrosSolverException("Problem not solved"));
+    solveOneProblem(msaRef);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
@@ -643,8 +639,7 @@ void Solver<Scalar>::solveTimeStep()
     m_wf->delete_all();
     m_wf->registerForms();
 
-    if (!solveOneProblem(multiSolutionArray))
-        throw(AgrosSolverException("Problem not solved"));
+    solveOneProblem(multiSolutionArray);
 
     // output
     BlockSolutionID solutionID;

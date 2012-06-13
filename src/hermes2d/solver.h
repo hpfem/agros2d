@@ -78,7 +78,7 @@ private:
 
 //    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
 //                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    bool solveOneProblem(MultiSolutionArray<Scalar> msa);
+    void solveOneProblem(MultiSolutionArray<Scalar> msa);
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);
