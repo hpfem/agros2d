@@ -21,12 +21,10 @@ SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int co
 
 MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
 {
-    cout << "chci solution " << solutionID << std::endl;
+    //cout << "chci solution " << solutionID << std::endl;
     assert(m_multiSolutions.contains(solutionID));
-//    if (m_multiSolutions.contains(solutionID))
-        return m_multiSolutions[solutionID];
+    return m_multiSolutions[solutionID];
 
-//    return MultiSolutionArray<double>();
 }
 
 bool SolutionStore::contains(FieldSolutionID solutionID) const
@@ -59,7 +57,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
 
 void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
 {
-    cout << "saving solution " << solutionID << std::endl;
+    //cout << "saving solution " << solutionID << std::endl;
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
     m_multiSolutions[solutionID] = multiSolution;

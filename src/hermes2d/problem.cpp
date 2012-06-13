@@ -393,7 +393,6 @@ void Problem::solveAction()
     Util::scene()->setActiveTimeStep(0);
     Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
 
-    //new
     foreach (Block* block, m_blocks)
     {
         solvers[block] = block->prepareSolver();
@@ -467,113 +466,91 @@ void Problem::solveAction()
 
 void Problem::solveAdaptiveStep()
 {
-//    QTime elapsedTime;
-//    elapsedTime.start();
-//    bool isError = false;
+    if (isSolving())
+        return;
 
-//    if(!solveInit(isError))
-//        return;
+    if(m_blocks.count() > 1)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "This action is possible for one field only, unless they are hard-coupled");
+        return;
+    }
+    if(isTransient())
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "This action is not possible for transient problems");
+        return;
+    }
+    Util::scene()->blockSignals(true);
 
-//    if (!isError)
-//    {
-//        assert(isMeshed());
+    QTime elapsedTime;
+    elapsedTime.start();
 
-//        QMap<Block*, Solver<double>* > solvers;
+    solveInit();
 
-//        Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+    assert(isMeshed());
 
-//        Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
+    QMap<Block*, Solver<double>* > solvers;
 
-//        foreach (Block* block, m_blocks)
-//        {
-//            solvers[block] = block->prepareSolver();
-//        }
+    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
-//        foreach (Block* block, m_blocks)
-//        {
-//            Solver<double>* solver = solvers[block];
+    Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
 
-//            if (block->isTransient())
-//            {
-////                if (solver->solveInitialTimeStep())
-////                {
-////                    for (int i = 0; i < Util::problem()->config()->numTimeSteps(); i++)
-////                        if (!solver->solveTimeStep(Util::problem()->config()->timeStep().value()))
-////                        {
-////                            isError = true;
-////                            break; // inner loop
-////                        }
-////                }
-////                else
-////                {
-////                    isError = true;
-////                }
+    foreach (Block* block, m_blocks)
+    {
+        solvers[block] = block->prepareSolver();
+    }
 
-////                if (isError)
-////                    break; // block solver loop
-//            }
-//            else
-//            {
-//                int adaptStepNormal = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
-//                int adaptStepNonExisting = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
-//                int adaptStep = max(adaptStepNormal, adaptStepNonExisting);
+    foreach (Block* block, m_blocks)
+    {
+        Solver<double>* solver = solvers[block];
 
-//                // it means that solution allready exists, but will be recalculated by adapt step
-//                bool solutionAlreadyExists = ((adaptStep >= 0) && (adaptStepNormal == adaptStep));
+        int adaptStepNormal = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
+        int adaptStepNonExisting = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
+        int adaptStep = max(adaptStepNormal, adaptStepNonExisting);
 
-//                // it does not exist, problem has not been solved yet
-//                if(adaptStep < 0)
-//                {
-//                    if (!solver->createInitialSpace(0))
-//                    {
-//                        isError = true;
-//                        break; // block solver loop
-//                    }
-//                    adaptStep = 0;
-//                }
+        // it means that solution allready exists, but will be recalculated by adapt step
+        bool solutionAlreadyExists = ((adaptStep >= 0) && (adaptStepNormal == adaptStep));
 
-//                // standard adaptivity process may end by calculation of refference or by creating adapted space
-//                // (depends on which stopping criteria is fulfilled). To avoid unnecessary calculations:
-//                bool hasReference = (Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0) == adaptStep);
-//                if(!hasReference)
-//                {
-//                    solver->solveReferenceAndProject(0, adaptStep + 1, solutionAlreadyExists);
-//                }
+        // it does not exist, problem has not been solved yet
+        if(adaptStep < 0)
+        {
+            solver->createInitialSpace(0);
+            adaptStep = 0;
+        }
 
-//                solver->createAdaptedSpace(0, adaptStep + 1);
-//                solver->solveSimple(0, adaptStep + 1, false, false);
+        // standard adaptivity process may end by calculation of refference or by creating adapted space
+        // (depends on which stopping criteria is fulfilled). To avoid unnecessary calculations:
+        bool hasReference = (Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0) == adaptStep);
+        if(!hasReference)
+        {
+            solver->solveReferenceAndProject(0, adaptStep + 1, solutionAlreadyExists);
+        }
 
-//            }
+        solver->createAdaptedSpace(0, adaptStep + 1);
+        solver->solveSimple(0, adaptStep + 1, false);
 
-//            if (!isError)
-//            {
-//                Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
-//                Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
-//                Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-//                cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
-//            }
-//        }
 
-//        // delete temp file
-//        if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
-//        {
-//            QFile::remove(Util::problem()->config()->fileName());
-//            Util::problem()->config()->setFileName("");
-//        }
+        Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+        Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+        Util::scene()->setActiveSolutionType(SolutionMode_Normal);
+        cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+    }
 
-//        if (!isError)
-//        {
-//            m_isSolved = true;
-//            emit solved();
-//        }
-//    }
+    // delete temp file
+    if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
+    {
+        QFile::remove(Util::problem()->config()->fileName());
+        Util::problem()->config()->setFileName("");
+    }
 
-//    m_isSolving = false;
+    m_isSolved = true;
+    emit solved();
 
-//    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
+    m_isSolving = false;
 
-//    // close indicator progress
-//    Indicator::closeProgress();
+    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
+
+    // close indicator progress
+    Indicator::closeProgress();
 
 }
 
