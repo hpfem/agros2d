@@ -184,6 +184,7 @@ private:
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
 
     void solveInit();
+    void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
     void solveAction(); //called by solve, can throw SolverException
     void solveAdaptiveStepAction();
 

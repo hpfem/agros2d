@@ -209,8 +209,8 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
-        Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2).").
-                                  arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)));
+        Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2). %3, (%4, %5)").
+                                  arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)).arg(QString::fromStdString(problemId)).arg(offsetI).arg(offsetJ));
     }
     
     // interpreted form

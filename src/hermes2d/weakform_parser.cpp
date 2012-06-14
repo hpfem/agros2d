@@ -251,15 +251,18 @@ CustomParserMatrixFormVol<Scalar>::CustomParserMatrixFormVol(unsigned int i, uns
     // nonlinear parsers
     setNonlinearParsers();
 
-    // register nonlinear values from all components
-    for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+    if(m_fieldInfo) // nonlinearity only in field forms, NOT in coupling forms
     {
-        std::stringstream number;
-        number << (k+1);
+        // register nonlinear values from all components
+        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+        {
+            std::stringstream number;
+            number << (k+1);
 
-        m_parser->DefineVar("value" + number.str(), &pnlvalue[k]);
-        m_parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pnldx[k]);
-        m_parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pnldy[k]);
+            m_parser->DefineVar("value" + number.str(), &pnlvalue[k]);
+            m_parser->DefineVar("d" + Util::problem()->config()->labelX().toLower().toStdString() + number.str(), &pnldx[k]);
+            m_parser->DefineVar("d" + Util::problem()->config()->labelY().toLower().toStdString() + number.str(), &pnldy[k]);
+        }
     }
 }
 

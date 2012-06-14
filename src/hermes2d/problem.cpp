@@ -338,26 +338,7 @@ void Problem::solve()
 
     setActualTime(0.);
 
-    try
-    {
-        solveAction();
-    }
-    catch (Hermes::Exceptions::Exception& e)
-    {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e.getMsg()));
-        return;
-    }
-    catch (AgrosSolverException& e)
-    {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", e.str);
-        return;
-    }
-    // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
-//                        catch (...)
-//                        {
-//                            // Util::log()->printError(tr("Problem"), QString::fromStdString(e.what()));
-//                            return;
-//                        }
+    solveActionCatchExceptions(false);
 
     // delete temp file
     if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
@@ -483,20 +464,7 @@ void Problem::solveAdaptiveStep()
         return;
     }
 
-    try
-    {
-        solveAdaptiveStepAction();
-    }
-    catch (Hermes::Exceptions::Exception& e)
-    {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e.getMsg()));
-        return;
-    }
-    catch (AgrosSolverException& e)
-    {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", e.str);
-        return;
-    }
+    solveActionCatchExceptions(true);
 
     // delete temp file
     if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
@@ -512,6 +480,45 @@ void Problem::solveAdaptiveStep()
     // close indicator progress
     Indicator::closeProgress();
 }
+
+void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
+{
+    try
+    {
+        if(adaptiveStepOnly)
+            solveAdaptiveStepAction();
+        else
+            solveAction();
+    }
+    catch (Hermes::Exceptions::Exception& e)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e.getMsg()));
+        return;
+    }
+    catch (Hermes::Exceptions::Exception* e) // todo: before exceptions change from pointers in Hermes
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e->getMsg()));
+        return;
+    }
+    catch (mu::ParserError& e)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Parser Error", "Error in XML Parser");
+        return;
+    }
+    catch (AgrosSolverException& e)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", e.str);
+        return;
+    }
+    // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
+//                        catch (...)
+//                        {
+//                            // Util::log()->printError(tr("Problem"), QString::fromStdString(e.what()));
+//                            return;
+//                        }
+
+}
+
 
 void Problem::solveAdaptiveStepAction()
 {
