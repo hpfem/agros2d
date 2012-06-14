@@ -306,7 +306,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 int DEBUG_COUNTER = 0;
 
 template <typename Scalar>
-bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
+void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 {
     Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
@@ -337,7 +337,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         {
             QString error = QString(e.getMsg());
             Util::log()->printDebug(m_solverID, QObject::tr("Linear solver failed: %1").arg(error));
-            return false;
+            throw;
         }
     }
 
@@ -377,7 +377,7 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         {
             QString error = QString(e.getMsg());
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
-            return false;
+            throw;
         }
     }
 
@@ -416,11 +416,9 @@ bool Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         {
             QString error = QString(e.getMsg());
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
-            return false;
+            throw;
         }
     }
-
-    return true;
 }
 
 template <typename Scalar>
@@ -436,7 +434,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
     {
         Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-        throw(SolverException("DOF is zero"));
+        throw(AgrosSolverException("DOF is zero"));
     }
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
@@ -445,8 +443,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_wf->delete_all();
     m_wf->registerForms();
 
-    if (!solveOneProblem(multiSolutionArray))
-        throw("Problem not solved");
+    solveOneProblem(multiSolutionArray);
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
@@ -467,7 +464,7 @@ void Solver<Scalar>::createInitialSpace(int timeStep)
     // read mesh from file
     QMap<FieldInfo*, Mesh*> meshes = readMesh();
     if (meshes.isEmpty())
-        throw(SolverException("Meshes are empty"));
+        throw(AgrosSolverException("Meshes are empty"));
 
     MultiSolutionArray<Scalar> msa;
 
@@ -494,7 +491,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
     {
         Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-        throw(SolverException("DOF is zero"));
+        throw(AgrosSolverException("DOF is zero"));
     }
 
     double actualTime = 0.0;
@@ -516,8 +513,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     createNewSolutions(msaRef);
 
     // solve reference problem
-    if (!solveOneProblem(msaRef))
-        throw(SolverException("Problem not solved"));
+    solveOneProblem(msaRef);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
@@ -591,7 +587,7 @@ void Solver<Scalar>::solveInitialTimeStep()
     // read mesh from file
     QMap<FieldInfo*, Mesh*> meshes = readMesh();
     if (meshes.isEmpty())
-        throw(SolverException("No meshes set"));
+        throw(AgrosSolverException("No meshes set"));
 
     // create essential boundary conditions and space
     createSpace(meshes, multiSolutionArray);
@@ -624,7 +620,7 @@ void Solver<Scalar>::solveTimeStep()
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
     {
         Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-        throw(SolverException("DOF is zero"));
+        throw(AgrosSolverException("DOF is zero"));
     }
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
@@ -643,8 +639,7 @@ void Solver<Scalar>::solveTimeStep()
     m_wf->delete_all();
     m_wf->registerForms();
 
-    if (!solveOneProblem(multiSolutionArray))
-        throw(SolverException("Problem not solved"));
+    solveOneProblem(multiSolutionArray);
 
     // output
     BlockSolutionID solutionID;

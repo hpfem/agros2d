@@ -18,20 +18,45 @@
     <module:quantity id="heat_volume_heat" shortname="he_p"/>
     <module:quantity id="heat_density" shortname="he_rho"/>
     <module:quantity id="heat_specific_heat" shortname="he_cp"/>
+    <module:quantity id="heat_velocity_x" shortname="he_vx" />
+    <module:quantity id="heat_velocity_y" shortname="he_vy" />
+    <module:quantity id="heat_velocity_angular" shortname="he_va" />
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate">
         <module:quantity id="heat_conductivity" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="heat_volume_heat"/>
-        <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz)" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz)" i="1" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy)" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:vector_form axi_linear="he_p * r * vval" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval" i="1" j="1" planar_linear="he_p * vval" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval"/>
+        <module:quantity id="heat_velocity_x" />
+        <module:quantity id="heat_velocity_y" />
+        <module:quantity id="heat_velocity_angular" />
+        <module:quantity id="heat_density" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
+        <module:quantity id="heat_specific_heat" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
+        <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz)"
+                            axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz)" i="1" j="1"
+                            planar_linear="he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"
+                            planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
+        <module:vector_form axi_linear="he_p * r * vval"
+                            axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval" i="1" j="1"
+                            planar_linear="he_p * vval"
+                            planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval  + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
       </module:weakform_volume>
       <module:weakform_volume analysistype="transient">
+        <module:quantity id="heat_velocity_x" />
+        <module:quantity id="heat_velocity_y" />
+        <module:quantity id="heat_velocity_angular" />
         <module:quantity id="heat_conductivity" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity dependence="time" id="heat_volume_heat"/>
         <module:quantity id="heat_density" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="heat_specific_heat" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
-        <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * uval * vval / deltat" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + dhe_lambda * r * uval * upval * vval / deltat + r * he_rho * he_cp * uval * vval / deltat" i="1" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval / deltat" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + dhe_lambda * uval * upval * vval / deltat + he_rho * he_cp * uval * vval / deltat" symmetric="1"/>
-        <module:vector_form axi_linear="he_p * r * vval + r * he_rho * he_cp * uptval * vval / deltat" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat" i="1" j="1" planar_linear="he_p * vval + he_rho * he_cp * uptval * vval / deltat" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat"/>
+        <module:matrix_form  i="1" j="1"
+                            axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * uval * vval / deltat"
+                            axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + dhe_lambda * r * uval * upval * vval / deltat + r * he_rho * he_cp * uval * vval / deltat"
+                            planar_linear="he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval / deltat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"
+                            planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval / deltat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
+        <module:vector_form i="1" j="1"
+                            axi_linear="he_p * r * vval + r * he_rho * he_cp * uptval * vval / deltat"
+                            axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat"
+                            planar_linear="he_p * vval + he_rho * he_cp * uptval * vval / deltat"
+                            planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
@@ -85,6 +110,18 @@
         <module:quantity condition="value >= 0" id="heat_density" name="Density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}"/>
         <module:quantity condition="value >= 0" id="heat_specific_heat" name="Specific heat" shortname="cp" shortname_html="&lt;i>c&lt;/i>&lt;sub>P&lt;/sub>" shortname_latex="c_{P}" unit="J/kg.K" unit_html="J.kg&lt;sup>-1&lt;/sup>.K&lt;sup>-1&lt;/sup>" unit_latex="J \cdot kg^{-1} \cdot K^{-1}"/>
       </module:group>
+      <module:group name="Velocity">
+          <module:quantity id="heat_velocity_x" name="Velocity - x"
+              shortname="vx" shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+              unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
+          <module:quantity id="heat_velocity_y" name="Velocity - y"
+              shortname="vy" shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+              unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
+        <module:quantity id="heat_velocity_angular"
+              name="Velocity - angular" shortname="va"
+              shortname_html="&lt;i&gt;&amp;omega;&lt;/i&gt;" unit="m/s"
+              unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m \cdot s^{-1}" />
+    </module:group>
     </module:gui>
     <module:gui type="surface">
       <module:group>
@@ -126,6 +163,17 @@
       <module:localvariable id="heat_specific_heat" name="Specific heat" shortname="cp" shortname_html="&lt;i>c&lt;/i>&lt;sub>P&lt;/sub>" shortname_latex="c_\mathrm{P}" type="scalar" unit="J/kg.K" unit_html="J.kg&lt;sup>-1&lt;/sup>.K&lt;sup>-1&lt;/sup>" unit_latex="J \cdot kg^{-1} \cdot K^{-1}">
         <module:expression analysistype="transient" axi="he_cp" planar="he_cp"/>
       </module:localvariable>
+      <module:localvariable id="heat_velocity"
+              name="Velocity" shortname="v" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;"
+              unit_latex="m \cdot s^{-1}" type="vector">
+              <module:expression analysistype="steadystate"
+                      planar_x="he_vx - he_va * y" planar_y="he_vy + he_va * x" axi_r="0"
+                      axi_z="he_vy" />
+              <module:expression analysistype="transient"
+                      planar_x="he_vx - he_va * y" planar_y="he_vy + he_va * x" axi_r="0"
+                      axi_z="he_vy" />
+      </module:localvariable>
+
     </module:localvariables>
     <module:view>
       <module:scalar_view>

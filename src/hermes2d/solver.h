@@ -29,10 +29,10 @@ class FieldInfo;
 template <typename Scalar>
 class WeakFormAgros;
 
-class SolverException
+class AgrosSolverException
 {
 public:
-    SolverException(QString str) { this->str = str; }
+    AgrosSolverException(QString str) { this->str = str; }
     QString str;
 };
 
@@ -78,7 +78,7 @@ private:
 
 //    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
 //                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    bool solveOneProblem(MultiSolutionArray<Scalar> msa);
+    void solveOneProblem(MultiSolutionArray<Scalar> msa);
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);

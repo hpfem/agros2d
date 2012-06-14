@@ -124,7 +124,6 @@ public:
     bool mesh();
     // solve
     void solve();
-    void solveAction(); //called by previous, can throw SolverException
     void solveAdaptiveStep();
 
     // check geometry
@@ -151,6 +150,8 @@ public:
     inline bool hasField(const QString &fieldId) { return m_fieldInfos.contains(fieldId); }
     void addField(FieldInfo *field);
     void removeField(FieldInfo *field);
+
+    Block* blockOfField(FieldInfo* fieldInfo) const;
 
     void synchronizeCouplings();
     inline QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos() const { return m_couplingInfos; }
@@ -183,6 +184,10 @@ private:
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
 
     void solveInit();
+    void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
+    void solveAction(); //called by solve, can throw SolverException
+    void solveAdaptiveStepAction();
+
     double m_actualTime;
 };
 
