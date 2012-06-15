@@ -501,6 +501,7 @@ QWidget *PostprocessorWidget::controlsBasic()
 {
     cmbFieldInfo = new QComboBox();
     connect(cmbFieldInfo, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldInfo(int)));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doFieldInfoCalcFinished()));
 
     QGridLayout *layoutField = new QGridLayout();
     layoutField->setColumnMinimumWidth(0, minWidth);
@@ -883,6 +884,20 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     widget->setLayout(layout);
 
     return widget;
+}
+
+void PostprocessorWidget::doFieldInfoCalcFinished()
+{
+    QString activeFieldName = Util::scene()->activeViewField()->fieldId();
+    for(int index = 0; index < cmbFieldInfo->count(); index++)
+    {
+        if(cmbFieldInfo->itemData(index).toString() == activeFieldName)
+        {
+            cmbFieldInfo->setCurrentIndex(index);
+            doFieldInfo(index);
+            return;
+        }
+    }
 }
 
 void PostprocessorWidget::doFieldInfo(int index)

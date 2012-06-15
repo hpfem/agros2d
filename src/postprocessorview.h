@@ -177,6 +177,7 @@ public slots:
 
 private slots:
     void doFieldInfo(int index);
+    void doFieldInfoCalcFinished();
     void doScalarFieldVariable(int index);
     void doScalarFieldVariableComp(int index);
     void doScalarFieldRangeAuto(int state);
