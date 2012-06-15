@@ -168,6 +168,9 @@ private:
     QWidget *post2DWidget();
     QWidget *post3DWidget();
 
+    int selectedTimeStep();
+    FieldInfo* selectedField();
+
 signals:
     void apply();
 
@@ -177,7 +180,8 @@ public slots:
 
 private slots:
     void doFieldInfo(int index);
-    void doFieldInfoCalcFinished();
+    void doTimeStep(int index);
+    void doCalculationFinished();
     void doScalarFieldVariable(int index);
     void doScalarFieldVariableComp(int index);
     void doScalarFieldRangeAuto(int state);
