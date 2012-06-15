@@ -896,7 +896,7 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
-        fillComboBoxTimeStep(cmbTimeStep);
+        fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
     }
@@ -1069,7 +1069,7 @@ void PostprocessorWidget::updateControls()
 {
     fillComboBoxFieldInfo(cmbFieldInfo);
     doFieldInfo(cmbFieldInfo->currentIndex());
-    fillComboBoxTimeStep(cmbTimeStep);
+    //fillComboBoxTimeStep(cmbTimeStep);
     fillComboBoxAdaptivityStep(cmbAdaptivityStep);
     fillComboBoxSolutionType(cmbAdaptivitySolutionType);
 

@@ -122,7 +122,7 @@ ChartDialog::~ChartDialog()
 void ChartDialog::showDialog()
 {
     fillComboBoxScalarVariable(m_fieldInfo, cmbFieldVariable);
-    fillComboBoxTimeStep(cmbTimeStep);
+    fillComboBoxTimeStep(m_fieldInfo, cmbTimeStep);
 
     // correct labels
     lblStartX->setText(Util::problem()->config()->labelX() + ":");
