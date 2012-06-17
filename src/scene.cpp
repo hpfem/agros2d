@@ -127,6 +127,8 @@ Util::Util()
     m_scene = new Scene();
     QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
 
+    initLists();
+
     // script remote
     m_scriptEngineRemote = new ScriptEngineRemote();
 
@@ -138,8 +140,6 @@ Util::Util()
 
     // log
     m_log = new Log();
-
-    initLists();
 }
 
 Util::~Util()

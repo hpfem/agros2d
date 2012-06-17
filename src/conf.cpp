@@ -112,10 +112,7 @@ void Config::loadWorkspace()
 
     // linearizer quality
     QString quality = settings.value("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(PaletteQuality_Normal)).toString();
-    // qDebug() << "quality" << quality;
     linearizerQuality = paletteQualityFromStringKey(quality);
-    linearizerQuality = PaletteQuality_Normal; // TODO: FIXME
-    // qDebug() << "linearizerQuality" << linearizerQuality;
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();

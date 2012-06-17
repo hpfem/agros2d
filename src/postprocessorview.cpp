@@ -574,35 +574,13 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     // scalar field
     // palette
     cmbPalette = new QComboBox();
-    cmbPalette->addItem(tr("Agros2D"), Palette_Agros2D);
-    cmbPalette->addItem(tr("Jet"), Palette_Jet);
-    cmbPalette->addItem(tr("Hot"), Palette_Hot);
-    cmbPalette->addItem(tr("Copper"), Palette_Copper);
-    cmbPalette->addItem(tr("Cool"), Palette_Cool);
-    cmbPalette->addItem(tr("Bone"), Palette_Bone);
-    cmbPalette->addItem(tr("Pink"), Palette_Pink);
-    cmbPalette->addItem(tr("Spring"), Palette_Spring);
-    cmbPalette->addItem(tr("Summer"), Palette_Summer);
-    cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
-    cmbPalette->addItem(tr("Winter"), Palette_Winter);
-    cmbPalette->addItem(tr("HSV"), Palette_HSV);
-    cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
-    cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
+    foreach (QString key, paletteTypeStringKeys())
+        cmbPalette->addItem(paletteTypeString(paletteTypeFromStringKey(key)), paletteTypeFromStringKey(key));
 
     // quality
     cmbLinearizerQuality = new QComboBox();
     foreach (QString key, paletteQualityStringKeys())
-        cmbLinearizerQuality->addItem(key, paletteQualityFromStringKey(key));
-    /*
-    cmbLinearizerQuality->addItem(tr("Extremely coarse"), paletteQualityToDouble(PaletteQuality_ExtremelyCoarse));
-    cmbLinearizerQuality->addItem(tr("Extra coarse"), paletteQualityToDouble(PaletteQuality_ExtraCoarse));
-    cmbLinearizerQuality->addItem(tr("Coarser"), paletteQualityToDouble(PaletteQuality_Coarser));
-    cmbLinearizerQuality->addItem(tr("Coarse"), paletteQualityToDouble(PaletteQuality_Coarse));
-    cmbLinearizerQuality->addItem(tr("Normal"), paletteQualityToDouble(PaletteQuality_Normal));
-    cmbLinearizerQuality->addItem(tr("Fine"), paletteQualityToDouble(PaletteQuality_Fine));
-    cmbLinearizerQuality->addItem(tr("Finer"), paletteQualityToDouble(PaletteQuality_Finer));
-    cmbLinearizerQuality->addItem(tr("Extra fine"), paletteQualityToDouble(PaletteQuality_ExtraFine));
-    */
+        cmbLinearizerQuality->addItem(paletteQualityString(paletteQualityFromStringKey(key)), paletteQualityFromStringKey(key));
 
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
