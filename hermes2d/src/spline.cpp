@@ -30,7 +30,7 @@ namespace Hermes
     {
       this->is_const = false;
       bool success = this->calculate_coeffs();
-      if (!success) throw new Hermes::Exceptions::Exception("There was a problem constructing a cubic spline.");
+      if (!success) throw Hermes::Exceptions::Exception("There was a problem constructing a cubic spline.");
     }
 
     CubicSpline::CubicSpline(double const_value) : Hermes::Hermes1DFunction<double>(const_value)
@@ -152,7 +152,7 @@ namespace Hermes
     void CubicSpline::plot(const char* filename, double extension, bool plot_derivative, int subdiv) const
     {
       FILE *f = fopen(filename, "wb");
-      if (f == NULL) throw new Hermes::Exceptions::Exception("Could not open a spline file for writing.");
+      if (f == NULL) throw Hermes::Exceptions::Exception("Could not open a spline file for writing.");
 
       // Plotting on the left of the area of definition.
       double x_left = point_left - extension;
@@ -217,17 +217,17 @@ namespace Hermes
       // Basic sanity checks.
       if (points.empty() || values.empty())
       {
-        warn("Empty points or values vector in CubicSpline, returning false.");
+        warn(NULL, "Empty points or values vector in CubicSpline, returning false.");
         return false;
       }
       if (points.size() < 2 || values.size() < 2)
       {
-        warn("At least two points and values required in CubicSpline, returning false.");
+        warn(NULL, "At least two points and values required in CubicSpline, returning false.");
         return false;
       }
       if (points.size() != values.size())
       {
-        warn("Mismatched number fo points and values in CubicSpline, returning false.");
+        warn(NULL, "Mismatched number fo points and values in CubicSpline, returning false.");
         return false;
       }
 
@@ -237,7 +237,7 @@ namespace Hermes
       {
         if (points[i + 1] < points[i] + eps)
         {
-          warn("Duplicated or improperly ordered points in CubicSpline detected, returning false.");
+          warn(NULL, "Duplicated or improperly ordered points in CubicSpline detected, returning false.");
           return false;
         }
       }

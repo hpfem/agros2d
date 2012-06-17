@@ -162,7 +162,7 @@ namespace Hermes
           {
           case HERMES_WAIT_CLOSE: str << HERMES_WAIT_CLOSE_MSG; break;
           case HERMES_WAIT_KEYPRESS: str << HERMES_WAIT_KEYPRESS_MSG; break;
-          default: throw new Hermes::Exceptions::Exception("Unknown wait event"); break;
+          default: throw Hermes::Exceptions::Exception("Unknown wait event"); break;
           }
         }
         str << " >>" << std::endl;
@@ -172,7 +172,7 @@ namespace Hermes
         {
         case HERMES_WAIT_CLOSE: wait_for_all_views_close(str.str().c_str()); break;
         case HERMES_WAIT_KEYPRESS: wait_for_any_key(str.str().c_str()); break;
-        default: throw new Hermes::Exceptions::Exception("Unknown wait event"); break;
+        default: throw Hermes::Exceptions::Exception("Unknown wait event"); break;
         }
       }
 
@@ -234,7 +234,7 @@ namespace Hermes
 
       void View::pre_display()
       {
-        //info("display: lock");
+        //info(NULL, "display: lock");
         view_sync.enter();
 
         //begin time measuring
@@ -489,7 +489,7 @@ namespace Hermes
             case H2DV_PT_HUESCALE: pal_type = H2DV_PT_GRAYSCALE; break;
             case H2DV_PT_GRAYSCALE: pal_type = H2DV_PT_INVGRAYSCALE; break;
             case H2DV_PT_INVGRAYSCALE: pal_type = H2DV_PT_DEFAULT; break;
-            default: throw new Hermes::Exceptions::Exception("Invalid palette type");
+            default: throw Hermes::Exceptions::Exception("Invalid palette type");
             }
             */
             switch(pal_type)
@@ -497,7 +497,7 @@ namespace Hermes
             case H2DV_PT_HUESCALE: pal_type = H2DV_PT_GRAYSCALE; break;
             case H2DV_PT_GRAYSCALE: pal_type = H2DV_PT_INVGRAYSCALE; break;
             case H2DV_PT_INVGRAYSCALE: pal_type = H2DV_PT_HUESCALE; break;
-            default: throw new Hermes::Exceptions::Exception("Invalid palette type");
+            default: throw Hermes::Exceptions::Exception("Invalid palette type");
             }
             create_gl_palette();
             refresh();
@@ -525,7 +525,7 @@ namespace Hermes
 
       void View::wait_for_keypress(const char* text)
       {
-        warn("Function View::wait_for_keypress deprecated: use View::wait instead");
+        warn(NULL, "Function View::wait_for_keypress deprecated: use View::wait instead");
         View::wait(HERMES_WAIT_KEYPRESS, text);
       }
 
@@ -696,7 +696,7 @@ namespace Hermes
         if (max < min)
         {
           std::swap(min, max);
-          warn("Upper bound set below the lower bound: reversing to (%f, %f).", min, max);
+          warn(NULL, "Upper bound set below the lower bound: reversing to (%f, %f).", min, max);
         }
         view_sync.enter();
         range_min = min;
@@ -841,19 +841,19 @@ namespace Hermes
         // alloc memory for pixel data (4 bytes per pixel)
         char* pixels = NULL;
         if ((pixels = (char*) malloc(4 * output_width * output_height)) == NULL)
-          throw new Hermes::Exceptions::Exception("Could not allocate memory for pixel data");
+          throw Hermes::Exceptions::Exception("Could not allocate memory for pixel data");
 
         // get pixels from framebuffer
 #ifdef GL_BGRA_EXT
         glReadPixels(0, 0, output_width, output_height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, pixels);
 #else
         glReadPixels(0, 0, output_width, output_height, GL_RGBA, GL_UNSIGNED_BYTE, pixels); // FIXME!!!
-        warn("BGRA format not supported. Saved image will have inverted colors");
+        warn(NULL, "BGRA format not supported. Saved image will have inverted colors");
 #endif
         // opening file for binary writing
         FILE* file = fopen(file_name, "wb");
         if (file == NULL)
-          throw new Hermes::Exceptions::Exception("Could not open '%s' for writing", file_name);
+          throw Hermes::Exceptions::Exception("Could not open '%s' for writing", file_name);
 
         // fill in bitmap header
         file_header.type = BITMAP_ID;
@@ -863,7 +863,7 @@ namespace Hermes
         file_header.off_bits = 14 + 40; // length of both headers
 
         if (fwrite(&file_header, sizeof(file_header), 1, file) != 1)
-          throw new Hermes::Exceptions::Exception("Error writing bitmap header");
+          throw Hermes::Exceptions::Exception("Error writing bitmap header");
 
         // fill in bitmap info header
         info_header.size = sizeof(BitmapInfoHeader);
@@ -879,11 +879,11 @@ namespace Hermes
         info_header.clr_important = 0;
 
         if (fwrite(&info_header, sizeof(info_header), 1, file) != 1)
-          throw new Hermes::Exceptions::Exception("Error writing bitmap header");
+          throw Hermes::Exceptions::Exception("Error writing bitmap header");
 
         // write image pixels
         if (fwrite((GLubyte*) pixels, 1, info_header.size_image, file) != info_header.size_image)
-          throw new Hermes::Exceptions::Exception("Error writing pixel data");
+          throw Hermes::Exceptions::Exception("Error writing pixel data");
 
         fclose(file);
         free((void*) pixels);

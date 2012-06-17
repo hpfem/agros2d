@@ -67,7 +67,7 @@ namespace Hermes
               MaterialPropertyMap1 *mrmg_map)
             {
               if (G == 1)
-                warn(W_MG_EXTENSION);
+                warn(NULL, W_MG_EXTENSION);
 
               MaterialPropertyMap0::const_iterator it;
               for (it = mrsg_map.begin(); it != mrsg_map.end(); ++it)
@@ -79,7 +79,7 @@ namespace Hermes
               MaterialPropertyMap1 *mrmg_map)
             {
               if (materials_list.empty())
-                throw new Hermes::Exceptions::Exception(E_MR_EXTENSION);
+                throw Hermes::Exceptions::Exception(E_MR_EXTENSION);
 
               std::set<std::string>::const_iterator it;
               for (it = materials_list.begin(); it != materials_list.end(); ++it)
@@ -90,9 +90,9 @@ namespace Hermes
               MaterialPropertyMap1 *mrmg_map)
             {
               if (materials_list.empty())
-                throw new Hermes::Exceptions::Exception(E_MR_EXTENSION);
+                throw Hermes::Exceptions::Exception(E_MR_EXTENSION);
               if (G == 1)
-                warn(W_MG_EXTENSION);
+                warn(NULL, W_MG_EXTENSION);
 
               std::set<std::string>::const_iterator it;
               for (it = materials_list.begin(); it != materials_list.end(); ++it)
@@ -102,7 +102,7 @@ namespace Hermes
             void MaterialPropertyMaps::fill_with(double c, MaterialPropertyMap1 *mrmg_map)
             {
               if (materials_list.empty())
-                throw new Hermes::Exceptions::Exception(E_MR_EXTENSION);
+                throw Hermes::Exceptions::Exception(E_MR_EXTENSION);
 
               std::set<std::string>::const_iterator it;
               for (it = materials_list.begin(); it != materials_list.end(); ++it)
@@ -140,14 +140,14 @@ namespace Hermes
               }
               else
               {
-                warn(W_NO_FISSION);
+                warn(NULL, W_NO_FISSION);
                 fill_with(0.0, &nu);
                 fill_with(0.0, &chi);
                 fill_with(0.0, &Sigma_f);
               }
 
               if ((nu.size() != Sigma_f.size()) || (nu.size() != chi.size()))
-                throw new Hermes::Exceptions::Exception(E_NONMATCHING_PROPERTIES);
+                throw Hermes::Exceptions::Exception(E_NONMATCHING_PROPERTIES);
 
               if (Sigma_f.size() > 0)
               {
@@ -170,7 +170,7 @@ namespace Hermes
 
                   for ( ; a != ita->second.end(); ++a, ++f)
                     if (*a < *f)
-                      warn(W_SA_LT_SF);
+                      warn(NULL, W_SA_LT_SF);
                 }
               }
             }
@@ -186,7 +186,7 @@ namespace Hermes
                 return data->second;
               else
               {
-                throw new Hermes::Exceptions::Exception(E_INVALID_MARKER);
+                throw Hermes::Exceptions::Exception(E_INVALID_MARKER);
                 return *(new rank1()); // To avoid MSVC problems; execution should never come to this point.
               }
             }
@@ -199,7 +199,7 @@ namespace Hermes
                 return data->second;
               else
               {
-                throw new Hermes::Exceptions::Exception(E_INVALID_MARKER);
+                throw Hermes::Exceptions::Exception(E_INVALID_MARKER);
                 return *(new rank1()); // To avoid MSVC problems; execution should never come to this point.
               }
             }
@@ -212,7 +212,7 @@ namespace Hermes
                 return data->second;
               else
               {
-                throw new Hermes::Exceptions::Exception(E_INVALID_MARKER);
+                throw Hermes::Exceptions::Exception(E_INVALID_MARKER);
                 return *(new rank1()); // To avoid MSVC problems; execution should never come to this point.
               }
             }
@@ -340,7 +340,7 @@ namespace Hermes
                     {
                       // If only Sigma_t is given, we assume that all reaction terms are included in Sigma_t; all
                       // other x-sections will be set to zero.
-                      warn(W_NO_SCATTERING);
+                      warn(NULL, W_NO_SCATTERING);
                       fill_with(0.0, &Sigma_s);
                     }
 
@@ -353,7 +353,7 @@ namespace Hermes
 
                   if (!Sigma_s_given)
                   {
-                    warn(W_NO_SCATTERING);
+                    warn(NULL, W_NO_SCATTERING);
                     fill_with(0.0, &Sigma_s);
                     Sigma_s_given = true;
                   }
@@ -366,7 +366,7 @@ namespace Hermes
                     if (Sigma_f_given)
                       Sigma_t = Sigma_f;
                     else
-                      throw new Hermes::Exceptions::Exception(E_INSUFFICIENT_DATA);
+                      throw Hermes::Exceptions::Exception(E_INSUFFICIENT_DATA);
                   }
 
                   Sigma_t_given = true;
@@ -399,7 +399,7 @@ namespace Hermes
                 }
                 else
                 {
-                  warn(W_NO_SCATTERING);
+                  warn(NULL, W_NO_SCATTERING);
                   fill_with(0.0, &Sigma_s);
                   scattering_multigroup_structure = bool2(G, Hermes::vector<bool>(G, false));
                 }
@@ -420,7 +420,7 @@ namespace Hermes
               }
 
               if ((D.size() != Sigma_r.size()) || (D.size() != Sigma_s.size()) || (src_given && D.size() != src.size()))
-                throw new Hermes::Exceptions::Exception(E_NONMATCHING_PROPERTIES);
+                throw Hermes::Exceptions::Exception(E_NONMATCHING_PROPERTIES);
 
               using ValidationFunctors::ensure_size;
               std::for_each(Sigma_s.begin(), Sigma_s.end(), ensure_size(G, G));
@@ -440,7 +440,7 @@ namespace Hermes
                 return data->second;
               else
               {
-                throw new Hermes::Exceptions::Exception(E_INVALID_MARKER);
+                throw Hermes::Exceptions::Exception(E_INVALID_MARKER);
                 return *(new rank2()); // To avoid MSVC problems; execution should never come to this point.
               }
             }
@@ -453,7 +453,7 @@ namespace Hermes
                 return data->second;
               else
               {
-                throw new Hermes::Exceptions::Exception(E_INVALID_MARKER);
+                throw Hermes::Exceptions::Exception(E_INVALID_MARKER);
                 return *(new rank1()); // To avoid MSVC problems; execution should never come to this point.
               }
             }
@@ -466,7 +466,7 @@ namespace Hermes
                 return data->second;
               else
               {
-                throw new Hermes::Exceptions::Exception(E_INVALID_MARKER);
+                throw Hermes::Exceptions::Exception(E_INVALID_MARKER);
                 return *(new rank1()); // To avoid MSVC problems; execution should never come to this point.
               }
             }
@@ -479,7 +479,7 @@ namespace Hermes
                 return data->second;
               else
               {
-                throw new Hermes::Exceptions::Exception(E_INVALID_MARKER);
+                throw Hermes::Exceptions::Exception(E_INVALID_MARKER);
                 return *(new rank1()); // To avoid MSVC problems; execution should never come to this point.
               }
             }
@@ -829,7 +829,7 @@ namespace Hermes
               GeomType geom_type ) : WeakForm<Scalar>(matprop.get_G())
             {
               if (f_src.size() != matprop.get_G())
-                throw new Hermes::Exceptions::Exception(E_INVALID_SIZE);
+                throw Hermes::Exceptions::Exception(E_INVALID_SIZE);
 
               lhs_init(matprop.get_G(), matprop, mesh, geom_type);
               for (unsigned int gto = 0; gto < matprop.get_G(); gto++)
@@ -843,7 +843,7 @@ namespace Hermes
               GeomType geom_type ) : WeakForm<Scalar>(matprop.get_G())
             {
               if (f_src.size() != matprop.get_G())
-                throw new Hermes::Exceptions::Exception(E_INVALID_SIZE);
+                throw Hermes::Exceptions::Exception(E_INVALID_SIZE);
 
               lhs_init(matprop.get_G(), matprop, mesh, geom_type);
               for (unsigned int gto = 0; gto < matprop.get_G(); gto++)

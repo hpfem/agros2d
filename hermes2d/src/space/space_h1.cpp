@@ -38,7 +38,7 @@ namespace Hermes
       this->chol_p   = h1_chol_p;
 
       // set uniform poly order in elements
-      if (p_init < 1) throw new Hermes::Exceptions::Exception("P_INIT must be >=  1 in an H1 space.");
+      if (p_init < 1) throw Hermes::Exceptions::Exception("P_INIT must be >=  1 in an H1 space.");
       else this->set_uniform_order_internal(p_init, HERMES_ANY_INT);
 
       // enumerate basis functions
@@ -80,7 +80,7 @@ namespace Hermes
         this->own_shapeset = false;
       }
       else
-        throw new Hermes::Exceptions::Exception("Wrong shapeset type in H1Space<Scalar>::set_shapeset()");
+        throw Hermes::Exceptions::Exception("Wrong shapeset type in H1Space<Scalar>::set_shapeset()");
     }
 
     template<typename Scalar>
@@ -176,7 +176,7 @@ namespace Hermes
                 this->next_dof += this->stride;
                 //double x = vn->x;
                 //double y = vn->y;
-                //info("Assigning dof %d to vertex %g %g\n", nd->dof, x, y);
+                //info(NULL, "Assigning dof %d to vertex %g %g\n", nd->dof, x, y);
               }
               nd->n = 1;
             }

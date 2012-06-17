@@ -70,7 +70,7 @@ namespace Hermes
     template<typename Scalar>
     Scalar DefaultEssentialBCConst<Scalar>::value(double x, double y, double n_x, double n_y, double t_x, double t_y) const
     {
-      warn("EssentialBoundaryCondition::Function used either for a constant condition, or not redefined for nonconstant condition.");
+      warn(NULL, "EssentialBoundaryCondition::Function used either for a constant condition, or not redefined for nonconstant condition.");
       return 0.0;
     }
 
@@ -181,7 +181,7 @@ namespace Hermes
         for(Hermes::vector<std::string>::const_iterator it = (*iterator)->markers.begin(); it != (*iterator)->markers.end(); it++)
         {
           if (this->markers[*it] != NULL)
-            throw new Hermes::Exceptions::Exception("Attempt to define more than one description of the BC on the same part of the boundary with marker '%s'.", it->c_str());
+            throw Hermes::Exceptions::Exception("Attempt to define more than one description of the BC on the same part of the boundary with marker '%s'.", it->c_str());
           this->markers[*it] = *iterator;
         }
     }

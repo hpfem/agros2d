@@ -18,7 +18,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "picard_solver.h"
 #include "linear_solver.h"
-#include "../src/alter_newton_solver.h"
 
 namespace Hermes
 {
@@ -30,7 +29,7 @@ namespace Hermes
     {
       int n = slns_prev_iter.size();
       if(dp->get_spaces().size() != n)
-        throw new Hermes::Exceptions::Exception("Mismatched number of spaces and solutions in PicardSolver.");
+        throw Hermes::Exceptions::Exception("Mismatched number of spaces and solutions in PicardSolver.");
       this->slns_prev_iter.push_back(sln_prev_iter);
       verbose_output_inner_newton = false;
     }
@@ -41,7 +40,7 @@ namespace Hermes
     {
       int n = slns_prev_iter.size();
       if(dp->get_spaces().size() != n)
-        throw new Hermes::Exceptions::Exception("Mismatched number of spaces and solutions in PicardSolver.");
+        throw Hermes::Exceptions::Exception("Mismatched number of spaces and solutions in PicardSolver.");
       for (int i = 0; i<n; i++)
       {
         this->slns_prev_iter.push_back(slns_prev_iter[i]);
@@ -64,7 +63,7 @@ namespace Hermes
     template<typename Scalar>
     void calculate_anderson_coeffs(Scalar** previous_vectors, Scalar* anderson_coeffs, int num_last_vectors_used, int ndof)
     {
-      if (num_last_vectors_used <= 1) throw new Hermes::Exceptions::Exception("Anderson acceleration makes sense only if at least two last iterations are used.");
+      if (num_last_vectors_used <= 1) throw Hermes::Exceptions::Exception("Anderson acceleration makes sense only if at least two last iterations are used.");
 
       // If num_last_vectors_used is 2, then there is only one residual, and thus only one alpha coeff which is 1.0.
       if (num_last_vectors_used == 2)
@@ -139,7 +138,7 @@ namespace Hermes
     {
       // Sanity check.
       if (num_last_vectors_used < 1)
-        throw new Hermes::Exceptions::Exception("PicardSolver: Bad number of last iterations to be used (must be at least one).");
+        throw Hermes::Exceptions::Exception("PicardSolver: Bad number of last iterations to be used (must be at least one).");
 
       // Preliminaries.
       int num_spaces = this->slns_prev_iter.size();
@@ -159,7 +158,7 @@ namespace Hermes
 
       // Project slns_prev_iter on the FE space(s) to obtain initial
       // coefficient vector for the Picard's method.
-      info("Projecting to obtain initial vector for the Picard's method.");
+      info(this->verbose_callback, "Projecting to obtain initial vector for the Picard's method.");
       this->sln_vector = new Scalar[ndof];
       OGProjection<Scalar>::project_global(spaces, this->slns_prev_iter, this->sln_vector);
 
@@ -197,7 +196,7 @@ namespace Hermes
 
         // Output for the user.
         if (this->verbose_output)
-          info("---- Picard iter %d, ndof %d, rel. error %g%%", it, ndof, rel_error);
+          info(this->verbose_callback, "---- Picard iter %d, ndof %d, rel. error %g%%", it, ndof, rel_error);
 
         // Stopping because error is sufficiently low.
         if (rel_error < tol)
@@ -211,7 +210,7 @@ namespace Hermes
         if (it >= max_iter)
         {
           if (this->verbose_output)
-            info("Maximum allowed number of Picard iterations exceeded, returning false.");
+            info(this->verbose_callback, "Maximum allowed number of Picard iterations exceeded, returning false.");
           delete [] last_iter_vector;
           // If Anderson acceleration was employed, release memory for the Anderson vectors and coeffs.
           return false;

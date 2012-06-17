@@ -978,7 +978,8 @@ QString Module::BasicModule::expression(Module::LocalVariable *physicFieldVariab
     case PhysicFieldVariableComp_Magnitude:
         return "sqrt((" + physicFieldVariable->expression().compX() + ") * (" + physicFieldVariable->expression().compX() + ") + (" + physicFieldVariable->expression().compY() + ") * (" + physicFieldVariable->expression().compY() + "))";
     default:
-        error("Unknown type.");
+        qCritical() << "Unknown type.";
+        assert(0);
     }
 }
 

@@ -127,7 +127,7 @@ namespace Hermes
     double3* RefMap::get_tangent(int edge, int order)
     {
       if(quad_2d == NULL)
-        throw new Hermes::Exceptions::Exception("2d quadrature wasn't set.");
+        throw Hermes::Exceptions::Exception("2d quadrature wasn't set.");
       if (order == -1)
         order = quad_2d->get_edge_points(edge, quad_2d->get_max_order(element->get_mode()), element->get_mode());
 
@@ -255,9 +255,9 @@ namespace Hermes
         jac[i] = (m[i][0][0] * m[i][1][1] - m[i][0][1] * m[i][1][0]);
         double ij = 1.0 / jac[i];
         if(!finite(ij))
-          throw new Hermes::Exceptions::Exception("1/jac[%d] is infinity when calculating inv. ref. map for order %d (jac = %g)", i, order);
+          throw Hermes::Exceptions::Exception("1/jac[%d] is infinity when calculating inv. ref. map for order %d (jac = %g)", i, order);
         if(ij != ij)
-          throw new Hermes::Exceptions::Exception("1/jac[%d] is NaN when calculating inv. ref. map for order %d (jac = %g)", i, order);
+          throw Hermes::Exceptions::Exception("1/jac[%d] is NaN when calculating inv. ref. map for order %d (jac = %g)", i, order);
 
         // invert and transpose the matrix
         irm[i][0][0] =  m[i][1][1] * ij;
@@ -337,14 +337,14 @@ namespace Hermes
     void RefMap::calc_const_inv_ref_map()
     {
       if (element == NULL)
-        throw new Hermes::Exceptions::Exception("The element variable must not be NULL.");
+        throw Hermes::Exceptions::Exception("The element variable must not be NULL.");
       int k = element->is_triangle() ? 2 : 3;
       double m[2][2] = { { element->vn[1]->x - element->vn[0]->x,  element->vn[k]->x - element->vn[0]->x },
       { element->vn[1]->y - element->vn[0]->y,  element->vn[k]->y - element->vn[0]->y } };
 
       const_jacobian = 0.25 * (m[0][0] * m[1][1] - m[0][1] * m[1][0]);
       if (const_jacobian <= 0.0)
-        throw new Hermes::Exceptions::Exception("Element #%d is concave or badly oriented.", element->id);
+        throw Hermes::Exceptions::Exception("Element #%d is concave or badly oriented.", element->id);
 
       double ij = 0.5 / const_jacobian;
 
@@ -464,7 +464,7 @@ namespace Hermes
       double* jac = get_jacobian(mo);
       for (i = 0; i < quad->get_num_points(mo, element->get_mode()); i++)
         if (jac[i] <= 0.0)
-          throw new Hermes::Exceptions::Exception("Element #%d is concave or badly oriented.", element->id);
+          throw Hermes::Exceptions::Exception("Element #%d is concave or badly oriented.", element->id);
 
       // next, estimate the "exact" value of the typical integral int_grad_u_grad_v
       // (with grad_u == grad_v == (1, 1)) using the maximum integration rule
@@ -493,7 +493,7 @@ namespace Hermes
       }
       if (o >= 10)
       {
-        warn("Element #%d is too distorted (iro ~ %d).", element->id, o);
+        warn(NULL, "Element #%d is too distorted (iro ~ %d).", element->id, o);
       }
       return o;
     }
@@ -597,7 +597,7 @@ namespace Hermes
           xi2 = xi2_old - (m[0][1] * (vx - x) + m[1][1] * (vy - y));
           if (fabs(xi1 - xi1_old) < TOL && fabs(xi2 - xi2_old) < TOL) return;
           if (it > 1 && (xi1 > 1.5 || xi2 > 1.5 || xi1 < -1.5 || xi2 < -1.5)) return;
-          if (it > 100) { warn("Could not find reference coordinates - Newton method did not converge."); return; }
+          if (it > 100) { warn(NULL, "Could not find reference coordinates - Newton method did not converge."); return; }
           xi1_old = xi1;
           xi2_old = xi2;
           it++;

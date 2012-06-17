@@ -92,7 +92,7 @@ namespace Hermes
       delete[] message;
     }
 
-    NullException::NullException(const NullException & e) : Exception()
+    NullException::NullException(const NullException & e)
     {
       char * msg= new char[strlen(e.getMsg())+1];
       strcpy(msg, e.getMsg());
@@ -233,7 +233,7 @@ namespace Hermes
       delete[] message;
     }
 
-    ValueException::ValueException(const ValueException&e) : Exception()
+    ValueException::ValueException(const ValueException&e)
     {
       char * msg= new char[strlen(e.getMsg())+1];
       strcpy(msg, e.getMsg());
@@ -242,7 +242,7 @@ namespace Hermes
       this->allowed=e.getAllowed();
     }
 
-    FunctionNotOverridenException::FunctionNotOverridenException(const char * name)
+    FunctionNotOverridenException::FunctionNotOverridenException(const char * name) : Exception()
     {
       char * msg =  new char[34 + strlen(name)];
       sprintf(msg, "Linear solver failed because:\"%s\"", name);
@@ -254,7 +254,7 @@ namespace Hermes
       delete[] message;
     }
 
-    FunctionNotOverridenException::FunctionNotOverridenException(const FunctionNotOverridenException&e) : Exception()
+    FunctionNotOverridenException::FunctionNotOverridenException(const FunctionNotOverridenException&e)
     {
       char * msg= new char[strlen(e.getMsg())+1];
       strcpy(msg, e.getMsg());
