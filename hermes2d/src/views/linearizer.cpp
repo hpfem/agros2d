@@ -792,7 +792,7 @@ namespace Hermes
             fns[omp_get_thread_num()][0]->set_quad_order(0, this->item);
             double* val = fns[omp_get_thread_num()][0]->get_values(component, value_type);
             if (val == NULL)
-              throw new Hermes::Exceptions::Exception("Item not defined in the solution.");
+              throw Hermes::Exceptions::Exception("Item not defined in the solution.");
 
             if(xdisp != NULL)
               fns[omp_get_thread_num()][1]->set_quad_order(0, H2D_FN_VAL);
@@ -821,7 +821,8 @@ namespace Hermes
               if(this->ydisp != NULL)
                 y_disp += dmult * dy[i];
 
-              iv[i] = this->get_vertex(-rand()-omp_get_thread_num()*17*rand(), -rand()-omp_get_thread_num()*rand(), x_disp, y_disp, f);
+
+              iv[i] = this->get_vertex(-fns[omp_get_thread_num()][0]->get_active_element()->vn[i]->id, -fns[omp_get_thread_num()][0]->get_active_element()->vn[i]->id, x_disp, y_disp, f);
             }
 
             // we won't bother calculating physical coordinates from the refmap if this is not a curved element
@@ -851,6 +852,21 @@ namespace Hermes
         delete [] fns;
         delete [] trfs;
         delete [] trav;
+
+        // regularize the linear mesh
+        for (int i = 0; i < this->triangle_count; i++)
+        {
+          int iv0 = tris[i][0], iv1 = tris[i][1], iv2 = tris[i][2];
+
+          int mid0 = peek_vertex(iv0, iv1);
+          int mid1 = peek_vertex(iv1, iv2);
+          int mid2 = peek_vertex(iv2, iv0);
+          if (mid0 >= 0 || mid1 >= 0 || mid2 >= 0)
+          {
+            this->del_slot = i;
+            regularize_triangle(iv0, iv1, iv2, mid0, mid1, mid2);
+          }
+        }
 
         find_min_max();
 
@@ -894,9 +910,9 @@ namespace Hermes
         {
           if (
             this->info[i][0] == p1 && this->info[i][1] == p2 && 
-            (value == verts[i][2] || fabs(value - verts[i][2]) < this->max*1e-4) &&
-            (fabs(x - verts[i][0]) < 1e-6) && 
-            (fabs(y - verts[i][1]) < 1e-6)
+            (value == verts[i][2] || fabs(value - verts[i][2]) < this->max*1e-8) &&
+            (fabs(x - verts[i][0]) < 1e-8) && 
+            (fabs(y - verts[i][1]) < 1e-8)
             ) 
             return i;
           // note that we won't return a vertex with a different value than the required one;
@@ -906,6 +922,7 @@ namespace Hermes
         }
 
         // if not found, create a new one
+#pragma omp critical(realloc_vertices)
         i = add_vertex();
         verts[i][0] = x;
         verts[i][1] = y;
@@ -919,24 +936,15 @@ namespace Hermes
 
       int Linearizer::add_vertex()
       {
-#pragma omp critical(realloc_vertices)
+        if (this->vertex_count >= this->vertex_size)
         {
-          if (this->vertex_count >= this->vertex_size)
-          {
-            this->vertex_size *= 2;
-            verts = (double3*) realloc(verts, sizeof(double3) * vertex_size);
-            this->info = (int4*) realloc(info, sizeof(int4) * vertex_size);
-            this->hash_table = (int*) realloc(hash_table, sizeof(int) * vertex_size);
-            memset(this->hash_table + this->vertex_size / 2, 0xff, sizeof(int) * this->vertex_size / 2);
-          }
+          this->vertex_size *= 2;
+          verts = (double3*) realloc(verts, sizeof(double3) * vertex_size);
+          this->info = (int4*) realloc(info, sizeof(int4) * vertex_size);
+          this->hash_table = (int*) realloc(hash_table, sizeof(int) * vertex_size);
+          memset(this->hash_table + this->vertex_size / 2, 0xff, sizeof(int) * this->vertex_size / 2);
         }
         return this->vertex_count++;
-      }
-
-      int Linearizer::get_top_vertex(int id, double value)
-      {
-        if (fabs(value - verts[id][2]) < max*1e-24) return id;
-        return get_vertex(-rand(), -rand(), verts[id][0], verts[id][1], value);
       }
 
       void Linearizer::free()
@@ -960,7 +968,7 @@ namespace Hermes
         process_solution(sln, item, eps);
 
         FILE* f = fopen(filename, "wb");
-        if (f == NULL) throw new Hermes::Exceptions::Exception("Could not open %s for writing.", filename);
+        if (f == NULL) throw Hermes::Exceptions::Exception("Could not open %s for writing.", filename);
         lock_data();
 
         // Output header for vertices.
@@ -1010,7 +1018,7 @@ namespace Hermes
       void Linearizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const
       {
         if(verts == NULL)
-          throw new Exceptions::Exception("Cannot calculate AABB from NULL vertices");
+          throw Exceptions::Exception("Cannot calculate AABB from NULL vertices");
         calc_aabb(&verts[0][0], &verts[0][1], sizeof(double3), vertex_count, min_x, max_x, min_y, max_y);
       }
 

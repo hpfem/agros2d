@@ -42,7 +42,7 @@ namespace Hermes
           case HERMES_HCURL_SPACE: proj_norm = HERMES_HCURL_NORM; break;
           case HERMES_HDIV_SPACE: proj_norm = HERMES_HDIV_NORM; break;
           case HERMES_L2_SPACE: proj_norm = HERMES_L2_NORM; break;
-          default: throw new Hermes::Exceptions::Exception("Unknown space type in OGProjection<Scalar>::project_global().");
+          default: throw Hermes::Exceptions::Exception("Unknown space type in OGProjection<Scalar>::project_global().");
         }
       }
 
@@ -70,7 +70,7 @@ namespace Hermes
             Node* vn = e->vn[j];
             double x = e->vn[j]->x;
             double y = e->vn[j]->y;
-            //info("Probing vertex %g %g\n", x, y);
+            //info(NULL, "Probing vertex %g %g\n", x, y);
             typename Space<Scalar>::NodeData* nd = space->ndata + vn->id;
             if (!vn->is_constrained_vertex() && nd->dof >= 0)
             {

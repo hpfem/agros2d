@@ -36,6 +36,14 @@
 
 using namespace Hermes::Hermes2D;
 
+int DEBUG_COUNTER = 0;
+
+void processSolverOutput(const char* aha)
+{
+    QString str = QString(aha).trimmed();
+    Util::log()->printMessage(QObject::tr("Solver"), str.replace("I ---- ", ""));
+}
+
 template <typename Scalar>
 void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 {
@@ -302,9 +310,6 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
     return space;
 }
 
-
-int DEBUG_COUNTER = 0;
-
 template <typename Scalar>
 void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 {
@@ -352,6 +357,8 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         NewtonSolver<Scalar> newton(&dp);
         newton.attach_timer(&timer);
+        newton.set_verbose_output(true);
+        newton.set_verbose_callback(processSolverOutput);
 
         // newton.set_max_allowed_residual_norm(1e15);
         try
@@ -397,6 +404,8 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         }
         PicardSolver<Scalar> picard(&dp, slns);
         // picard.attach_timer(&timer);
+        picard.set_verbose_output(true);
+        picard.set_verbose_callback(processSolverOutput);
 
         try
         {

@@ -61,7 +61,7 @@ namespace Hermes
         if(vec == NULL)
           vec = new Vectorizer;
         if (vsln->get_num_components() < 2)
-          throw new Hermes::Exceptions::Exception("The single-argument version of show() is only for vector-valued solutions.");
+          throw Hermes::Exceptions::Exception("The single-argument version of show() is only for vector-valued solutions.");
         show(vsln, vsln, eps, H2D_FN_VAL_0, H2D_FN_VAL_1);
       }
 
@@ -71,7 +71,7 @@ namespace Hermes
         if(vec == NULL)
           vec = new Vectorizer;
         if (xsln == ysln)
-          warn("Identical solutions passed to the two-argument version of show(). Most likely this is a mistake.");
+          warn(NULL, "Identical solutions passed to the two-argument version of show(). Most likely this is a mistake.");
         show(xsln, ysln, eps, H2D_FN_VAL_0, H2D_FN_VAL_0);
       }
 

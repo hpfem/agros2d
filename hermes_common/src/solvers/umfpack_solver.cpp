@@ -170,8 +170,8 @@ namespace Hermes
         // Make sure we are adding to an existing non-zero entry.
         if (pos < 0)
         {
-          info("CSCMatrix<Scalar>::add(): i = %d, j = %d.", m, n);
-          throw new Hermes::Exceptions::Exception("Sparse matrix entry not found");
+          info(NULL, "CSCMatrix<Scalar>::add(): i = %d, j = %d.", m, n);
+          throw Hermes::Exceptions::Exception("Sparse matrix entry not found");
         }
 
         Ax[Ap[n] + pos] += v;
@@ -183,7 +183,7 @@ namespace Hermes
     {
       int ndof = mat_block->get_size();
       if (this->get_size() != (unsigned int) num_stages * ndof)
-        throw new Hermes::Exceptions::Exception("Incompatible matrix sizes in CSCMatrix<Scalar>::add_to_diagonal_blocks()");
+        throw Hermes::Exceptions::Exception("Incompatible matrix sizes in CSCMatrix<Scalar>::add_to_diagonal_blocks()");
 
       for (int i = 0; i < num_stages; i++)
       {
@@ -211,12 +211,12 @@ namespace Hermes
 
       // Sanity check.
       bool this_not_empty = this_it.init();
-      if (!this_not_empty) throw new Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
+      if (!this_not_empty) throw Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
 
       // Iterate through the small matrix column by column and add all nonzeros
       // to the large one.
       bool mat_not_finished = mat_it.init();
-      if (!mat_not_finished) throw new Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
+      if (!mat_not_finished) throw Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
 
       int mat_i, mat_j;
       Scalar mat_val;
@@ -225,7 +225,7 @@ namespace Hermes
         mat_it.get_current_position(mat_i, mat_j, mat_val);
         bool found = this_it.move_to_position(mat_i + offset_i, mat_j + offset_j);
         if (!found) 
-          throw new Hermes::Exceptions::Exception("Nonzero matrix entry at %d, %d not found in CSCMatrix<Scalar>::add_as_block().",
+          throw Hermes::Exceptions::Exception("Nonzero matrix entry at %d, %d not found in CSCMatrix<Scalar>::add_as_block().",
           mat_i + offset_i, mat_j + offset_j);
         this_it.add_to_current_position(mat_val);
         mat_not_finished = mat_it.move_ptr();
@@ -259,7 +259,7 @@ namespace Hermes
           if (!this_not_finished)
           {
             printf("Entry %d %d does not exist in the matrix to which it is contributed.\n", mat_i, mat_j);
-            throw new Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
+            throw Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
           }
           this_it.get_current_position(this_i, this_j, this_val);
         }
@@ -267,7 +267,7 @@ namespace Hermes
         mat_not_finished = mat_it.move_ptr();
         this_not_finished = this_it.move_ptr();
         if (mat_not_finished && !this_not_finished)
-          throw new Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
+          throw Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
       }
     }
 
@@ -772,17 +772,17 @@ namespace Hermes
       switch (status)
       {
       case UMFPACK_OK: break;
-      case UMFPACK_WARNING_singular_matrix:       warn("%s: singular matrix!", fn_name); break;
-      case UMFPACK_ERROR_out_of_memory:           warn("%s: out of memory!", fn_name); break;
-      case UMFPACK_ERROR_argument_missing:        warn("%s: argument missing", fn_name); break;
-      case UMFPACK_ERROR_invalid_Symbolic_object: warn("%s: invalid Symbolic object", fn_name); break;
-      case UMFPACK_ERROR_invalid_Numeric_object:  warn("%s: invalid Numeric object", fn_name); break;
-      case UMFPACK_ERROR_different_pattern:       warn("%s: different pattern", fn_name); break;
-      case UMFPACK_ERROR_invalid_system:          warn("%s: invalid system", fn_name); break;
-      case UMFPACK_ERROR_n_nonpositive:           warn("%s: n nonpositive", fn_name); break;
-      case UMFPACK_ERROR_invalid_matrix:          warn("%s: invalid matrix", fn_name); break;
-      case UMFPACK_ERROR_internal_error:          warn("%s: internal error", fn_name); break;
-      default:                                    warn("%s: unknown error (%d)", fn_name, status); break;
+      case UMFPACK_WARNING_singular_matrix:       warn(NULL, "%s: singular matrix!", fn_name); break;
+      case UMFPACK_ERROR_out_of_memory:           warn(NULL, "%s: out of memory!", fn_name); break;
+      case UMFPACK_ERROR_argument_missing:        warn(NULL, "%s: argument missing", fn_name); break;
+      case UMFPACK_ERROR_invalid_Symbolic_object: warn(NULL, "%s: invalid Symbolic object", fn_name); break;
+      case UMFPACK_ERROR_invalid_Numeric_object:  warn(NULL, "%s: invalid Numeric object", fn_name); break;
+      case UMFPACK_ERROR_different_pattern:       warn(NULL, "%s: different pattern", fn_name); break;
+      case UMFPACK_ERROR_invalid_system:          warn(NULL, "%s: invalid system", fn_name); break;
+      case UMFPACK_ERROR_n_nonpositive:           warn(NULL, "%s: n nonpositive", fn_name); break;
+      case UMFPACK_ERROR_invalid_matrix:          warn(NULL, "%s: invalid matrix", fn_name); break;
+      case UMFPACK_ERROR_internal_error:          warn(NULL, "%s: internal error", fn_name); break;
+      default:                                    warn(NULL, "%s: unknown error (%d)", fn_name, status); break;
       }
     }
 
@@ -871,7 +871,7 @@ namespace Hermes
           return false;
         }
         if (symbolic == NULL)
-          throw new Exceptions::Exception("umfpack_di_symbolic error: symbolic == NULL");
+          throw Exceptions::Exception("umfpack_di_symbolic error: symbolic == NULL");
 
       case HERMES_REUSE_MATRIX_REORDERING:
       case HERMES_REUSE_MATRIX_REORDERING_AND_SCALING:
@@ -885,7 +885,7 @@ namespace Hermes
           return false;
         }
         if (numeric == NULL)
-          throw new Exceptions::Exception("umfpack_di_numeric error: numeric == NULL");
+          throw Exceptions::Exception("umfpack_di_numeric error: numeric == NULL");
       }
 
       return true;
@@ -933,7 +933,7 @@ namespace Hermes
           return false;
         }
         if (symbolic == NULL)
-          throw new Exceptions::Exception("umfpack_di_symbolic error: symbolic == NULL");
+          throw Exceptions::Exception("umfpack_di_symbolic error: symbolic == NULL");
 
       case HERMES_REUSE_MATRIX_REORDERING:
       case HERMES_REUSE_MATRIX_REORDERING_AND_SCALING:
@@ -947,7 +947,7 @@ namespace Hermes
           return false;
         }
         if (numeric == NULL)
-          throw new Exceptions::Exception("umfpack_di_numeric error: numeric == NULL");
+          throw Exceptions::Exception("umfpack_di_numeric error: numeric == NULL");
       }
 
       return true;
@@ -1017,7 +1017,7 @@ namespace Hermes
 
       if ( !setup_factorization() )
       {
-        warn("LU factorization could not be completed.");
+        warn(NULL, "LU factorization could not be completed.");
         return false;
       }
 

@@ -68,7 +68,7 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
 {
     QDir dir(datadir() + COUPLINGROOT);
     if (!dir.exists())
-        error("Couplings dir '%s' doesn't exists", (datadir() + COUPLINGROOT).toStdString().c_str());
+        qDebug() << QObject::tr("Couplings dir '%1' doesn't exists").arg(datadir() + COUPLINGROOT);
 
     QStringList filter;
     filter << "*.xml";

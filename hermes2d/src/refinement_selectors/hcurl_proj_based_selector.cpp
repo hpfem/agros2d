@@ -18,8 +18,8 @@ namespace Hermes
       {
         if(user_shapeset != NULL)
         {
-          warn("Warning: The user shapeset provided for the selector has to have a correct copy constructor implemented.");
-          warn("Warning: The functionality for cloning user shapeset is to be implemented yet.");
+          warn(NULL, "Warning: The user shapeset provided for the selector has to have a correct copy constructor implemented.");
+          warn(NULL, "Warning: The functionality for cloning user shapeset is to be implemented yet.");
         }
       }
 
@@ -92,7 +92,7 @@ namespace Hermes
           }
         }
         if(!done)
-              throw new Exceptions::Exception("All transformation processed but identity transformation not found."); //identity transformation has to be the last transformation
+              throw Exceptions::Exception("All transformation processed but identity transformation not found."); //identity transformation has to be the last transformation
       }
 
       void HcurlProjBasedSelector::precalc_ortho_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<ShapeInx>& shapes, const int max_shape_inx, TrfShape& svals, ElementMode2D mode)
@@ -146,7 +146,7 @@ namespace Hermes
               }
             }
             if(!done)
-              throw new Exceptions::Exception("All transformation processed but identity transformation not found."); //identity transformation has to be the last transformation
+              throw Exceptions::Exception("All transformation processed but identity transformation not found."); //identity transformation has to be the last transformation
           }
 
           //normalize
@@ -162,7 +162,7 @@ namespace Hermes
           }
           double norm = sqrt(norm_squared);
           if(!finite(1/norm))
-            throw new Exceptions::Exception("Norm (%g) is almost zero.", norm);
+            throw Exceptions::Exception("Norm (%g) is almost zero.", norm);
 
           //for all transformations: normalize
           int inx_trf = 0;
@@ -188,7 +188,7 @@ namespace Hermes
             }
           }
           if(!done)
-            throw new Exceptions::Exception("All transformation processed but identity transformation not found."); //identity transformation has to be the last transformation
+            throw Exceptions::Exception("All transformation processed but identity transformation not found."); //identity transformation has to be the last transformation
         }
       }
 

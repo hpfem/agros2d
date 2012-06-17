@@ -20,7 +20,6 @@
 \brief General nonlinear solver functionality.
 */
 #include "linear_solver.h"
-#include "../src/alter_newton_solver.h"
 
 using namespace Hermes::Algebra;
 
