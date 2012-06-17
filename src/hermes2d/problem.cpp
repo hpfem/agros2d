@@ -418,7 +418,7 @@ void Problem::solveAction()
                     bool continueAdaptivity = true;
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
                     {
-                        solver->solveReferenceAndProject(timeStep, adaptStep, false);
+                        solver->solveReferenceAndProject(timeStep, adaptStep - 1, false);
                         continueAdaptivity = solver->createAdaptedSpace(timeStep, adaptStep);
                         adaptStep++;
                     }
@@ -442,7 +442,6 @@ void Problem::solveAction()
 
     m_isSolved = true;
     emit solved();
-
 }
 
 void Problem::solveAdaptiveStep()
@@ -453,16 +452,22 @@ void Problem::solveAdaptiveStep()
     QTime elapsedTime;
     elapsedTime.start();
 
-    if(m_blocks.count() > 1)
+    // todo: should be number of blocks, but they are not created at this moment. Anyway, hard coupling does not work at this moment, rewrite....
+    //if(m_blocks.count() > 1)
+    if(m_fieldInfos.count() > 1)
     {
         QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "This action is possible for one field only, unless they are hard-coupled");
         return;
     }
+
     if(isTransient())
     {
         QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "This action is not possible for transient problems");
         return;
     }
+
+    // since transients are not allowed, I can do this
+    setActualTime(0.);
 
     solveActionCatchExceptions(true);
 
@@ -479,6 +484,64 @@ void Problem::solveAdaptiveStep()
 
     // close indicator progress
     Indicator::closeProgress();
+}
+
+void Problem::solveAdaptiveStepAction()
+{
+    Util::scene()->blockSignals(true);
+
+    solveInit();
+
+    assert(isMeshed());
+
+
+    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+
+    Block* block = m_blocks.at(0);
+    Solver<double>* solver = block->prepareSolver();
+
+    int adaptStepNormal = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
+    int adaptStepNonExisting = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
+    int adaptStep = max(adaptStepNormal, adaptStepNonExisting);
+
+    // it means that solution allready exists, but will be recalculated by adapt step
+    bool solutionAlreadyExists = ((adaptStep >= 0) && (adaptStepNormal == adaptStep));
+
+    // it does not exist, problem has not been solved yet
+    if(adaptStep < 0)
+    {
+        Util::scene()->setActiveAdaptivityStep(0);
+        Util::scene()->setActiveTimeStep(0);
+        Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
+
+        solver->createInitialSpace(0);
+        adaptStep = 0;
+    }
+
+    // standard adaptivity process may end by calculation of refference or by creating adapted space
+    // (depends on which stopping criteria is fulfilled). To avoid unnecessary calculations:
+    bool hasReference = (Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0) == adaptStep);
+    if(!hasReference)
+    {
+        solver->solveReferenceAndProject(0, adaptStep, solutionAlreadyExists);
+    }
+
+    solver->createAdaptedSpace(0, adaptStep + 1);
+
+    // only if solution in previous adapt step existed, solve new one (we would have two new adapt steps otherwise)
+    if(solutionAlreadyExists || adaptStep == 0)
+        solver->solveSimple(0, adaptStep + 1, false);
+
+
+    Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+    Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+    Util::scene()->setActiveSolutionType(SolutionMode_Normal);
+    cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+
+    Util::scene()->blockSignals(false);
+
+    m_isSolved = true;
+    emit solved();
 }
 
 void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
@@ -517,66 +580,6 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 //                            return;
 //                        }
 
-}
-
-
-void Problem::solveAdaptiveStepAction()
-{
-    Util::scene()->blockSignals(true);
-
-    solveInit();
-
-    assert(isMeshed());
-
-    QMap<Block*, Solver<double>* > solvers;
-
-    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
-
-    Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
-
-    foreach (Block* block, m_blocks)
-    {
-        solvers[block] = block->prepareSolver();
-    }
-
-    foreach (Block* block, m_blocks)
-    {
-        Solver<double>* solver = solvers[block];
-
-        int adaptStepNormal = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
-        int adaptStepNonExisting = Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
-        int adaptStep = max(adaptStepNormal, adaptStepNonExisting);
-
-        // it means that solution allready exists, but will be recalculated by adapt step
-        bool solutionAlreadyExists = ((adaptStep >= 0) && (adaptStepNormal == adaptStep));
-
-        // it does not exist, problem has not been solved yet
-        if(adaptStep < 0)
-        {
-            solver->createInitialSpace(0);
-            adaptStep = 0;
-        }
-
-        // standard adaptivity process may end by calculation of refference or by creating adapted space
-        // (depends on which stopping criteria is fulfilled). To avoid unnecessary calculations:
-        bool hasReference = (Util::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0) == adaptStep);
-        if(!hasReference)
-        {
-            solver->solveReferenceAndProject(0, adaptStep + 1, solutionAlreadyExists);
-        }
-
-        solver->createAdaptedSpace(0, adaptStep + 1);
-        solver->solveSimple(0, adaptStep + 1, false);
-
-
-        Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
-        Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
-        Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-        cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
-    }
-
-    m_isSolved = true;
-    emit solved();
 }
 
 void Problem::synchronizeCouplings()

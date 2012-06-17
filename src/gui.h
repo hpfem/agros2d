@@ -34,8 +34,8 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo);
 void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
 void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
 void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
-void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);
-void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable);
+void fillComboBoxTimeStep(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable);
+void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *cmbFieldVariable);
 void fillComboBoxSolutionType(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 

@@ -137,7 +137,8 @@ void LocalPointValue::calculate()
             std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions());
             for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
-                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+                // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
+                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
 
                 double value;

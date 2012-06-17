@@ -501,6 +501,7 @@ QWidget *PostprocessorWidget::controlsBasic()
 {
     cmbFieldInfo = new QComboBox();
     connect(cmbFieldInfo, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldInfo(int)));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(doCalculationFinished()));
 
     QGridLayout *layoutField = new QGridLayout();
     layoutField->setColumnMinimumWidth(0, minWidth);
@@ -513,6 +514,7 @@ QWidget *PostprocessorWidget::controlsBasic()
 
     // transient
     cmbTimeStep = new QComboBox(this);
+    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStep(int)));
 
     QGridLayout *layoutTransient = new QGridLayout();
     layoutTransient->setColumnMinimumWidth(0, minWidth);
@@ -885,6 +887,23 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     return widget;
 }
 
+void PostprocessorWidget::doCalculationFinished()
+{
+    QString activeFieldName = Util::scene()->activeViewField()->fieldId();
+    for(int index = 0; index < cmbFieldInfo->count(); index++)
+    {
+        if(cmbFieldInfo->itemData(index).toString() == activeFieldName)
+        {
+            cmbFieldInfo->setCurrentIndex(index);
+            doFieldInfo(index);
+            break;
+        }
+    }
+
+    cmbTimeStep->setCurrentIndex(Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep()));
+    cmbAdaptivityStep->setCurrentIndex(Util::scene()->activeAdaptivityStep());
+}
+
 void PostprocessorWidget::doFieldInfo(int index)
 {
     QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
@@ -896,10 +915,18 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
-        fillComboBoxTimeStep(cmbTimeStep);
+        fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
+        doTimeStep(0);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
     }
+}
+
+void PostprocessorWidget::doTimeStep(int index)
+{
+    fillComboBoxAdaptivityStep(selectedField(), selectedTimeStep(), cmbAdaptivityStep);
+    if((cmbAdaptivityStep->currentIndex() >= cmbAdaptivityStep->count()) || (cmbAdaptivityStep->currentIndex() < 0))
+        cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);
 }
 
 void PostprocessorWidget::doScalarFieldVariable(int index)
@@ -1069,8 +1096,8 @@ void PostprocessorWidget::updateControls()
 {
     fillComboBoxFieldInfo(cmbFieldInfo);
     doFieldInfo(cmbFieldInfo->currentIndex());
-    fillComboBoxTimeStep(cmbTimeStep);
-    fillComboBoxAdaptivityStep(cmbAdaptivityStep);
+    //fillComboBoxTimeStep(cmbTimeStep);
+    //fillComboBoxAdaptivityStep(cmbAdaptivityStep);
     fillComboBoxSolutionType(cmbAdaptivitySolutionType);
 
     loadBasic();
@@ -1082,6 +1109,17 @@ void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
     refresh();
 }
 
+int PostprocessorWidget::selectedTimeStep()
+{
+    double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
+    return int(actualTime/Util::problem()->config()->timeStep().number() + 0.5); // round
+}
+
+FieldInfo* PostprocessorWidget::selectedField()
+{
+    return Util::problem()->fieldInfo(cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString());
+}
+
 void PostprocessorWidget::doApply()
 {
     saveBasic();
@@ -1090,8 +1128,7 @@ void PostprocessorWidget::doApply()
     // time step
     QApplication::processEvents();
 
-    double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
-    int actualTimeStep = int(actualTime/Util::problem()->config()->timeStep().number() + 0.5); // round
+    int actualTimeStep = selectedTimeStep();
     qDebug() << "actualTimeStep : " << actualTimeStep;
     Util::scene()->setActiveTimeStep(actualTimeStep);
     Util::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());

@@ -143,7 +143,7 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     cmbFieldVariable->blockSignals(false);
 }
 
-void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
+void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbFieldVariable)
 {
     if (!Util::problem()->isSolved())
         return;
@@ -152,31 +152,42 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
     // store variable
     int timeStep = cmbFieldVariable->currentIndex();
-    if (timeStep == -1)
-        timeStep = Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal);
+    double timeValue;
+    if (timeStep == -1){
+        timeStep = Util::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
+        timeValue = Util::problem()->config()->timeStepToTime(timeStep);
+    }
+    else
+    {
+        timeValue = cmbFieldVariable->currentText().toDouble();
+    }
 
     // clear combo
     cmbFieldVariable->clear();
 
-    QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+    QList<double> timeLevels = Util::solutionStore()->timeLevels(fieldInfo);
     int i = 0;
+    timeStep = 0;
     foreach(double time, timeLevels)
     {
         cmbFieldVariable->addItem(QString::number(time, 'e', 2), i++);
+        if(time < timeValue)
+            timeStep = i;
     }
 
     cmbFieldVariable->setCurrentIndex(timeStep);
     cmbFieldVariable->blockSignals(false);
+
 }
 
-void fillComboBoxAdaptivityStep(QComboBox *cmbFieldVariable)
+void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *cmbFieldVariable)
 {
     if (!Util::problem()->isSolved())
         return;
 
     cmbFieldVariable->blockSignals(true);
 
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal, Util::scene()->activeTimeStep());
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
 
     // store variable
     int adaptivityStep = cmbFieldVariable->currentIndex();
