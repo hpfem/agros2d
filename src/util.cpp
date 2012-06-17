@@ -395,7 +395,7 @@ double paletteQualityToDouble(PaletteQuality paletteQuality)
     case PaletteQuality_Coarse:
         return 0.0007;
     case PaletteQuality_Normal:
-        return 0.0002;
+        return 0.0004;
     case PaletteQuality_Fine:
         return 0.0002;
     case PaletteQuality_Finer:
