@@ -7,6 +7,9 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 1.6e10
 
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 rf = agros2d.field("rf")
 rf.analysis_type = "harmonic"

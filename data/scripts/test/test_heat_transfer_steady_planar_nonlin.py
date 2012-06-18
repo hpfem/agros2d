@@ -6,6 +6,9 @@ problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"

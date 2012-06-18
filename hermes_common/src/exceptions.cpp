@@ -242,16 +242,23 @@ namespace Hermes
       this->allowed=e.getAllowed();
     }
 
-    FunctionNotOverridenException::FunctionNotOverridenException(const char * name) : Exception()
+    FunctionNotOverridenException::FunctionNotOverridenException(const char * msg, ...) : Exception()
     {
-      char * msg =  new char[34 + strlen(name)];
-      sprintf(msg, "Linear solver failed because:\"%s\"", name);
-      message = msg;
+      char * msgOwn = new char[strlen(msg)+1];
+      strcpy(msgOwn, msg);
+      char text[1024];
+
+      //print the message
+      va_list arglist;
+      va_start(arglist, msgOwn);
+      vsprintf(text, msgOwn, arglist);
+      va_end(arglist);
+
+      message = text;
     }
 
     FunctionNotOverridenException::~FunctionNotOverridenException()
     {
-      delete[] message;
     }
 
     FunctionNotOverridenException::FunctionNotOverridenException(const FunctionNotOverridenException&e)
@@ -261,16 +268,23 @@ namespace Hermes
       message=msg;
     }
 
-    MeshLoadFailureException::MeshLoadFailureException(const char * name) : Exception()
+    MeshLoadFailureException::MeshLoadFailureException(const char * msg, ...) : Exception()
     {
-      char * msg =  new char[34 + strlen(name)];
-      sprintf(msg, "Mesh loading failed because:\"%s\"", name);
-      message = msg;
+      char * msgOwn = new char[strlen(msg)+1];
+      strcpy(msgOwn, msg);
+      char text[1024];
+
+      //print the message
+      va_list arglist;
+      va_start(arglist, msgOwn);
+      vsprintf(text, msgOwn, arglist);
+      va_end(arglist);
+
+      message = text;
     }
 
     MeshLoadFailureException::~MeshLoadFailureException()
     {
-      delete[] message;
     }
 
     MeshLoadFailureException::MeshLoadFailureException(const MeshLoadFailureException&e)

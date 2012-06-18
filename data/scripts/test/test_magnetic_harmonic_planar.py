@@ -8,6 +8,9 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 50
 
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "harmonic"

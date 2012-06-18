@@ -277,9 +277,12 @@ bool Problem::mesh()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
+    QTime time;
+    time.start();
     MeshGeneratorTriangle pim;
     if (pim.mesh())
     {
+        qDebug() << "pim.mesh()" << time.elapsed();
         emit meshed();
         return true;
     }

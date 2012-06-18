@@ -9,6 +9,9 @@ problem.matrix_solver = "umfpack"
 problem.time_step = 500
 problem.time_total = 10000
 
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 heat = agros2d.field("heat")
 heat.analysis_type = "transient"
