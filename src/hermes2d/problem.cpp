@@ -301,7 +301,7 @@ void Problem::solveInit()
     {
         result.showDialog();
         m_isSolving = false;
-        throw(AgrosSolverException("Geometry check failed"));
+        throw (AgrosSolverException("Geometry check failed"));
     }
 
     // save problem

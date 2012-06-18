@@ -58,6 +58,7 @@ void SceneViewPreprocessor::createActionsGeometry()
     actOperateOnNodes->setShortcut(Qt::Key_F2);
     actOperateOnNodes->setStatusTip(tr("Operate on nodes"));
     actOperateOnNodes->setCheckable(true);
+    actOperateOnNodes->setChecked(true);
 
     actOperateOnEdges = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
     actOperateOnEdges->setShortcut(Qt::Key_F3);
@@ -70,6 +71,7 @@ void SceneViewPreprocessor::createActionsGeometry()
     actOperateOnLabels->setCheckable(true);
 
     actOperateGroup = new QActionGroup(this);
+    actOperateGroup->setExclusive(true);
     actOperateGroup->addAction(actOperateOnNodes);
     actOperateGroup->addAction(actOperateOnEdges);
     actOperateGroup->addAction(actOperateOnLabels);
@@ -171,9 +173,18 @@ void SceneViewPreprocessor::clear()
 
 void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
 {
-    if (actOperateOnNodes->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnNodes;
-    if (actOperateOnEdges->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnEdges;
-    if (actOperateOnLabels->isChecked()) m_sceneMode = SceneGeometryMode_OperateOnLabels;
+    if (actOperateOnNodes->isChecked())
+        m_sceneMode = SceneGeometryMode_OperateOnNodes;
+    else if (actOperateOnEdges->isChecked())
+        m_sceneMode = SceneGeometryMode_OperateOnEdges;
+    else if (actOperateOnLabels->isChecked())
+        m_sceneMode = SceneGeometryMode_OperateOnLabels;
+    else
+    {
+        // set default
+        actOperateOnNodes->setChecked(true);
+        m_sceneMode = SceneGeometryMode_OperateOnNodes;
+    }
 
     switch (m_sceneMode)
     {
