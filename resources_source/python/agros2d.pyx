@@ -113,6 +113,7 @@ cdef extern from "../../src/pythonlabagros.h":
 
         void addNode(double, double) except +
         void addEdge(double, double, double, double, double, int, map[char*, char*]) except +
+        void addEdgeByNodes(int, int, double, int, map[char*, char*]) except +
         void addLabel(double, double, double, int, map[char*, char*]) except +
 
         void removeNode(int index) except +
@@ -709,6 +710,18 @@ cdef class __Geometry__:
             boundaries_map.insert(boundary)
 
         self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, boundaries_map)
+
+    # add_edge_by_nodes(start_node_index, end_node_index, angle, refinement, boundaries)
+    def add_edge_by_nodes(self, int start_node_index, int end_node_index, double angle = 0.0, int refinement = 0, boundaries = {}):
+
+        cdef map[char*, char*] boundaries_map
+        cdef pair[char*, char *] boundary
+        for key in boundaries:
+            boundary.first = key
+            boundary.second = boundaries[key]
+            boundaries_map.insert(boundary)
+
+        self.thisptr.addEdgeByNodes(start_node_index, end_node_index, angle, refinement, boundaries_map)
 
     # remove_edge(index)
     def remove_edge(self, int index):
