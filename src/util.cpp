@@ -45,7 +45,6 @@ static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 static QHash<PaletteType, QString> paletteTypeList;
 static QHash<PaletteQuality, QString> paletteQualityList;
-static QHash<PaletteQuality, double> paletteQualityValueList;
 static QHash<PaletteOrderType, QString> paletteOrderTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
@@ -106,7 +105,6 @@ PaletteType paletteTypeFromStringKey(const QString &paletteType) { return palett
 QStringList paletteQualityStringKeys() { return paletteQualityList.values(); }
 QString paletteQualityToStringKey(PaletteQuality paletteQuality) { return paletteQualityList[paletteQuality]; }
 PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { return paletteQualityList.key(paletteQuality); }
-double paletteQualityToDouble(PaletteQuality paletteQuality) { return paletteQualityValueList[paletteQuality]; }
 
 QStringList paletteOrderTypeStringKeys() { return paletteOrderTypeList.values(); }
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
@@ -216,15 +214,6 @@ void initLists()
     paletteQualityList.insert(PaletteQuality_Fine, "fine");
     paletteQualityList.insert(PaletteQuality_Finer, "finer");
     paletteQualityList.insert(PaletteQuality_ExtraFine, "extra_fine");
-
-    paletteQualityValueList.insert(PaletteQuality_ExtremelyCoarse, 0.1);
-    paletteQualityValueList.insert(PaletteQuality_ExtraCoarse, 0.01);
-    paletteQualityValueList.insert(PaletteQuality_Coarser, 0.001);
-    paletteQualityValueList.insert(PaletteQuality_Coarse, 0.0007);
-    paletteQualityValueList.insert(PaletteQuality_Normal, 0.0002);
-    paletteQualityValueList.insert(PaletteQuality_Fine, 0.00001);
-    paletteQualityValueList.insert(PaletteQuality_Finer, 0.00003);
-    paletteQualityValueList.insert(PaletteQuality_ExtraFine, 0.000005);
 
     // PaletteOrderType
     paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
@@ -389,6 +378,96 @@ QString meshTypeString(MeshType meshType)
         return QObject::tr("Quad join");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
+        throw;
+    }
+}
+
+double paletteQualityToDouble(PaletteQuality paletteQuality)
+{
+    switch (paletteQuality)
+    {
+    case PaletteQuality_ExtremelyCoarse:
+        return 0.1;
+    case PaletteQuality_ExtraCoarse:
+        return 0.01;
+    case PaletteQuality_Coarser:
+        return 0.001;
+    case PaletteQuality_Coarse:
+        return 0.0007;
+    case PaletteQuality_Normal:
+        return 0.0004;
+    case PaletteQuality_Fine:
+        return 0.0002;
+    case PaletteQuality_Finer:
+        return 0.00001;
+    case PaletteQuality_ExtraFine:
+        return 0.00003;
+    default:
+        std::cerr << "Palette quality '" + QString::number(paletteQuality).toStdString() + "' is not implemented. paletteQualityToDouble(PaletteQuality paletteQuality)" << endl;
+        throw;
+    }
+}
+
+QString paletteQualityString(PaletteQuality paletteQuality)
+{
+    switch (paletteQuality)
+    {
+    case PaletteQuality_ExtremelyCoarse:
+        return QObject::tr("Extremely coarse");
+    case PaletteQuality_ExtraCoarse:
+        return QObject::tr("Extra coarse");
+    case PaletteQuality_Coarser:
+        return QObject::tr("Coarser");
+    case PaletteQuality_Coarse:
+        return QObject::tr("Coarse");
+    case PaletteQuality_Normal:
+        return QObject::tr("Normal");
+    case PaletteQuality_Fine:
+        return QObject::tr("Fine");
+    case PaletteQuality_Finer:
+        return QObject::tr("Finer");
+    case PaletteQuality_ExtraFine:
+        return QObject::tr("Extra fine");
+    default:
+        std::cerr << "Palette quality '" + QString::number(paletteQuality).toStdString() + "' is not implemented. paletteQualityString(PaletteQuality paletteQuality)" << endl;
+        throw;
+    }
+}
+
+QString paletteTypeString(PaletteType paletteType)
+{
+    switch (paletteType)
+    {
+    case Palette_Agros2D:
+        return QObject::tr("Agros2D");
+    case Palette_Jet:
+        return QObject::tr("Jet");
+    case Palette_Copper:
+        return QObject::tr("Copper");
+    case Palette_Hot:
+        return QObject::tr("Hot");
+    case Palette_Cool:
+        return QObject::tr("Cool");
+    case Palette_Bone:
+        return QObject::tr("Bone");
+    case Palette_Pink:
+        return QObject::tr("Pink");
+    case Palette_Spring:
+        return QObject::tr("Spring");
+    case Palette_Summer:
+        return QObject::tr("Summer");
+    case Palette_Autumn:
+        return QObject::tr("Autumn");
+    case Palette_Winter:
+        return QObject::tr("Winter");
+    case Palette_HSV:
+        return QObject::tr("HSV");
+    case Palette_BWAsc:
+        return QObject::tr("B/W ascending");
+    case Palette_BWDesc:
+        return QObject::tr("B/W descending");
+    default:
+        std::cerr << "Palette type '" + QString::number(paletteType).toStdString() + "' is not implemented. paletteTypeString(PaletteType paletteType)" << endl;
         throw;
     }
 }

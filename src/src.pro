@@ -97,7 +97,6 @@ SOURCES += util.cpp \
     collaboration.cpp \
     resultsview.cpp \
     hermes2d/weakform_parser.cpp\
-    alter_newton_solver.cpp \
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
@@ -168,7 +167,6 @@ HEADERS += util.h \
     collaboration.h \
     resultsview.h \
     hermes2d/weakform_parser.h \
-    alter_newton_solver.h \
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \

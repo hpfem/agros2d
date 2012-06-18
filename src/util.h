@@ -672,11 +672,13 @@ Mode modeFromStringKey(const QString &teMode);
 QStringList paletteTypeStringKeys();
 QString paletteTypeToStringKey(PaletteType paletteType);
 PaletteType paletteTypeFromStringKey(const QString &paletteType);
+QString paletteTypeString(PaletteType paletteType);
 
 QStringList paletteQualityStringKeys();
 QString paletteQualityToStringKey(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromStringKey(const QString &quality);
 double paletteQualityToDouble(PaletteQuality paletteQuality);
+QString paletteQualityString(PaletteQuality paletteQuality);
 
 QStringList paletteOrderTypeStringKeys();
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
