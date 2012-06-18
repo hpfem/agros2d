@@ -247,7 +247,7 @@ void VideoDialog::doTransientSetStep(int index)
     sldTransientAnimate->setValue(index);
 
     QString time = QString::number(m_timeLevels[index - 1], 'g');
-    lblStep->setText(time + " s");
+    lblStep->setText(tr("%1 s").arg(time));
 
     QApplication::processEvents();
 }
@@ -281,6 +281,8 @@ void VideoDialog::doAdaptiveSetStep(int index)
     m_sceneView->refresh();
 
     sldAdaptiveAnimate->setValue(index);
+
+    lblStep->setText(tr("%1").arg(index));
 
     QApplication::processEvents();
 }
