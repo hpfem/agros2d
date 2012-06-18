@@ -961,11 +961,60 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
     // angle
-    if (angle > 180.0 || angle < 0.0)
+    if (angle > 90.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
     // refinement
     // TOOD: if (refinement < 0) throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
+
+    SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle);
+
+    // boundaries
+    for (map<char*, char*>::iterator i = boundaries.begin(); i != boundaries.end(); ++i)
+    {
+        if (!Util::problem()->hasField(QString((*i).first)))
+        {
+            delete sceneEdge;
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        }
+
+        bool assigned = false;
+        foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
+        {
+            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == QString((*i).second)))
+            {
+                assigned = true;
+                sceneEdge->addMarker(sceneBoundary);
+                break;
+            }
+        }
+
+        if (!assigned)
+        {
+            delete sceneEdge;
+            throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString((*i).second)).toStdString());
+        }
+    }
+
+    Util::scene()->addEdge(sceneEdge);
+}
+
+void PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int refinement, map<char*, char*> boundaries)
+{
+    // nodes
+    if (angle > 90.0 || angle < 0.0)
+        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+
+    if (Util::scene()->nodes->isEmpty())
+        throw out_of_range(QObject::tr("Geometry does not contain nodes.").toStdString());
+
+    if (nodeStartIndex > (Util::scene()->nodes->length() - 1) || nodeStartIndex < 0)
+        throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeStartIndex).toStdString());
+    if (nodeEndIndex > (Util::scene()->nodes->length() - 1) || nodeEndIndex < 0)
+        throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeEndIndex).toStdString());
+
+    SceneNode *nodeStart = Util::scene()->nodes->at(nodeStartIndex);
+    SceneNode *nodeEnd = Util::scene()->nodes->at(nodeEndIndex);
 
     SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle);
 
