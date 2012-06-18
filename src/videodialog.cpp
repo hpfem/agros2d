@@ -41,14 +41,11 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent) : Q
     // time steps
     m_timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
-    // timer animate
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(doAdaptiveAnimateNextStep()));
-
     // timer create images
     timer = new QTimer(this);
 
     createControls();
+    tabChanged(0);
 }
 
 VideoDialog::~VideoDialog()
