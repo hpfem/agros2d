@@ -84,8 +84,8 @@ testJr = agros2d.test("Current density - total", point["Jr"], -1.987738e5)
 volume = magnetic.volume_integrals([5])
 testWm = agros2d.test("Energy", volume["Wm"], 3.088946)
 testPj = agros2d.test("Losses", volume["Pj"], 220.022114)
-# testFxv = agros2d.test("Lorentz force - x", volume["Fx"], -110.011057)
-# testFyv = agros2d.test("Lorentz force - y", volume["Fy"], -36.62167)
+testFxv = agros2d.test("Lorentz force - x", volume["Fx"], -110.011057)
+testFyv = agros2d.test("Lorentz force - y", volume["Fy"], -36.62167)
 testT = agros2d.test("Torque", volume["T"], 20.463818)
 
 # surface integral
@@ -97,4 +97,5 @@ print("Test: Magnetic steady state - planar: " + str(point and testA
                                                      and testB and testBx and testBy
                                                      and testH and testHx and testHy
                                                      and testJiv and testJr
-                                                     and testwm and testpj and testWm and testPj and testT))
+                                                     and testwm and testpj and testWm and testPj and testT
+													 and testFxv and testFyv))

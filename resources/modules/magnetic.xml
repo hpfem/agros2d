@@ -712,6 +712,31 @@
                                                 - x * (-((ma_Jer + 2 * PI * f * ma_gamma * value2) * dy1) + ((ma_Jei + 2 * PI * f * ma_gamma * value1) * dy2)
                                                 + dy1 * (- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)))" />
                         </module:volumeintegral>
+                        <module:volumeintegral id="magentic_lorentz_force_x"
+                                name="Lorentz force - x" shortname="Fx" unit="N" unit_html="N"
+                                unit_latex="N">
+                                <module:expression analysistype="steadystate"
+                                        planar="dx1 * (ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))"
+                                        axi="dx1 * (ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))" />
+                                <module:expression analysistype="harmonic"
+                                        planar="-0.5 * (-((ma_Jer + 2 * PI * f * ma_gamma * value2) * dx1) + ((ma_Jei + 2 * PI * f * ma_gamma * value1) * dx2))
+                                                + dx1 * (ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))"
+                                        axi="-0.5 * (-(2 * PI * x * (ma_Jer + 2 * PI * f * ma_gamma * value2) * (dx1 + ((x > 0) ? value1 / x : 0.0)))
+                                             + (2 * PI * x * (ma_Jei + 2 * PI * f * ma_gamma * value1) * (dx2 + ((x > 0) ? value2 / x : 0.0))))
+                                             + dx1 * (-ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)))" />
+                        </module:volumeintegral>
+                        <module:volumeintegral id="magentic_lorentz_force_y"
+                                name="Lorentz force - y" shortname="Fy" unit="N" unit_html="N"
+                                unit_latex="N">
+                                <module:expression analysistype="steadystate"
+                                        planar="dy1 * (-ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))"
+                                        axi="2 * PI * x * dy1 * (ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))" />
+                                <module:expression analysistype="harmonic"
+                                        planar="-0.5 * (-((ma_Jer + 2 * PI * f * ma_gamma * value2) * dy1) + ((ma_Jei + 2 * PI * f * ma_gamma * value1) * dy2))
+                                                + dy1 * (ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))"
+                                        axi="-2 * PI * x * 0.5 * (-((ma_Jer + 2 * PI * f * ma_gamma * value2) * dy1) + ((ma_Jei + 2 * PI * f * ma_gamma * value1) * dy2))
+                                             + 2 * PI * x * dy1 * (-ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))" />
+                        </module:volumeintegral>
                 </module:volumeintegrals>
 
                 <module:surfaceintegrals>

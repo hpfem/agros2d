@@ -96,12 +96,13 @@ testIr = agros2d.test("Current - real", volume["Ir"], -104.701323)
 testIi = agros2d.test("Current - imag", volume["Ii"], -1381.947299)
 testWm = agros2d.test("Energy", volume["Wm"], 0.042927)
 testPj = agros2d.test("Losses", volume["Pj"], 90.542962)
-#testFLx = agros2d.test("Lorentz force - x", volume["Fx"], -11.228229)
-#testFLy = agros2d.test("Lorentz force - y", volume["Fy"], -4.995809)
+testFLx = agros2d.test("Lorentz force - x", volume["Fx"], -11.228229)
+testFLy = agros2d.test("Lorentz force - y", volume["Fy"], -4.995809)
 
 print("Test: Magnetic harmonic - planar: " + str(testA and testA_real and testA_imag
                                                  and testB and testBx_real and testBx_imag and testBy_real and testBy_imag
                                                  and testH and testHx_real and testHy_real and testHx_imag and testHy_imag
                                                  and testJit_real and testJit_imag and testJ_real and testJ_imag
                                                  and testIe_real and testIe_imag and testIit_real and testIit_imag and testIr and testIi
-                                                 and testwm and testpj and testWm and testPj))
+                                                 and testwm and testpj and testWm and testPj
+                                                 and testFLx and testFLy))
