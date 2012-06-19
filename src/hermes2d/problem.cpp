@@ -548,22 +548,17 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     }
     catch (Hermes::Exceptions::Exception& e)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e.getMsg()));
-        return;
-    }
-    catch (Hermes::Exceptions::Exception* e) // todo: before exceptions change from pointers in Hermes
-    {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e->getMsg()));
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString::fromStdString(e.getMsg()));
         return;
     }
     catch (mu::ParserError& e)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Parser Error", "Error in XML Parser");
+        Util::log()->printError(QObject::tr("Solver"), "Error in XML Parser");
         return;
     }
     catch (AgrosSolverException& e)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", e.str);
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.str);
         return;
     }
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
