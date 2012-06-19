@@ -189,17 +189,17 @@ void LogDialog::createControls()
 
     logWidget = new LogWidget(this);
 
-    m_chartNewton = new Chart(this, true);
-    m_chartNewton->setVisible(false);
-    m_chartNewton->setMinimumWidth(300);
+    m_chart = new Chart(this, true);
+    m_chart->setVisible(false);
+    m_chart->setMinimumWidth(300);
 
     if (Util::problem()->isNonlinear())
     {
-        m_chartNewton->setVisible(true);
+        m_chart->setVisible(true);
 
         // axes
-        m_chartNewton->setAxisTitle(QwtPlot::yLeft, tr("error"));
-        m_chartNewton->setAxisTitle(QwtPlot::xBottom, tr("iteration"));
+        m_chart->setAxisTitle(QwtPlot::yLeft, tr("error"));
+        m_chart->setAxisTitle(QwtPlot::xBottom, tr("iteration"));
     }
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
@@ -207,7 +207,7 @@ void LogDialog::createControls()
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(logWidget, 1);
-    layoutHorizontal->addWidget(m_chartNewton, 0);
+    layoutHorizontal->addWidget(m_chart, 0);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutHorizontal);
@@ -237,7 +237,7 @@ void LogDialog::printDebug(const QString &module, const QString &message)
                 m_chartStep.append(m_chartStep.length() + 1);
                 m_chartNorm.append(error);
 
-                m_chartNewton->setData(m_chartStep, m_chartNorm);
+                m_chart->setData(m_chartStep, m_chartNorm);
             }
         }
         else
@@ -245,7 +245,7 @@ void LogDialog::printDebug(const QString &module, const QString &message)
             m_chartStep.clear();
             m_chartNorm.clear();
         }
-    }
+    }    
 }
 
 // *******************************************************************************************
