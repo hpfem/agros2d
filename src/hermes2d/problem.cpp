@@ -554,6 +554,11 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
         Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString::fromStdString(e.getMsg()));
         return;
     }
+    catch (Hermes::Exceptions::Exception* e)
+    {
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString::fromStdString(e->getMsg()));
+        return;
+    }
     catch (mu::ParserError& e)
     {
         Util::log()->printError(QObject::tr("Solver"), "Error in XML Parser");
