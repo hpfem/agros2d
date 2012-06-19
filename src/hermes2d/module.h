@@ -96,9 +96,6 @@ template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
 public:
-    //TODO
-    //TODO coupling a sourceSolution asi obalit do nejake tridy
-    //TODO mozna by se melo udelat neco jako CouplingInfo (obdoba fieldInfo), a tam by se teprv ziskal Coupling, jako se ziska Module
     WeakFormAgros(Block* block);
 
     void registerForms();
@@ -108,8 +105,11 @@ public:
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
-                      Marker *marker, SceneMaterial *materialTarget = NULL, CouplingInfo *couplingInfo = NULL);
+    void registerForm(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ, Marker *marker);
+    void registerFormCoupling(WeakFormKind type, QString area, ParserFormExpression *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
+                              SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
+//    void registerFormOld(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
+//                         SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;

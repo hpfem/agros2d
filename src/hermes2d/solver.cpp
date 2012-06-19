@@ -78,7 +78,6 @@ QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
             Node *node = mesh->get_node(i);
 
 
-
             if ((node->used == 1 && node->ref < 2 && node->type == 1))
             {
                 int marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
@@ -518,6 +517,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     m_wf->registerForms();
 
     msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msaRef.spaces()), Util::problem()->actualTime());
 
     // create solutions
     createNewSolutions(msaRef);
@@ -599,6 +599,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 template <typename Scalar>
 void Solver<Scalar>::solveInitialTimeStep()
 {
+    Util::log()->printDebug(m_solverID, QObject::tr("initial time step"));
+
     MultiSolutionArray<Scalar> multiSolutionArray;
 
     // read mesh from file
