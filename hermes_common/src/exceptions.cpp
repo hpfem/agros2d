@@ -242,19 +242,52 @@ namespace Hermes
       this->allowed=e.getAllowed();
     }
 
-    FunctionNotOverridenException::FunctionNotOverridenException(const char * name) : Exception()
+    FunctionNotOverridenException::FunctionNotOverridenException(const char * msg, ...) : Exception()
     {
-      char * msg =  new char[34 + strlen(name)];
-      sprintf(msg, "Linear solver failed because:\"%s\"", name);
-      message = msg;
+      char * msgOwn = new char[strlen(msg)+1];
+      strcpy(msgOwn, msg);
+      char text[1024];
+
+      //print the message
+      va_list arglist;
+      va_start(arglist, msgOwn);
+      vsprintf(text, msgOwn, arglist);
+      va_end(arglist);
+
+      message = text;
     }
 
     FunctionNotOverridenException::~FunctionNotOverridenException()
     {
-      delete[] message;
     }
 
     FunctionNotOverridenException::FunctionNotOverridenException(const FunctionNotOverridenException&e)
+    {
+      char * msg= new char[strlen(e.getMsg())+1];
+      strcpy(msg, e.getMsg());
+      message=msg;
+    }
+
+    MeshLoadFailureException::MeshLoadFailureException(const char * msg, ...) : Exception()
+    {
+      char * msgOwn = new char[strlen(msg)+1];
+      strcpy(msgOwn, msg);
+      char text[1024];
+
+      //print the message
+      va_list arglist;
+      va_start(arglist, msgOwn);
+      vsprintf(text, msgOwn, arglist);
+      va_end(arglist);
+
+      message = text;
+    }
+
+    MeshLoadFailureException::~MeshLoadFailureException()
+    {
+    }
+
+    MeshLoadFailureException::MeshLoadFailureException(const MeshLoadFailureException&e)
     {
       char * msg= new char[strlen(e.getMsg())+1];
       strcpy(msg, e.getMsg());

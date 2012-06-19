@@ -880,6 +880,7 @@ void PostprocessorWidget::doCalculationFinished()
 
     cmbTimeStep->setCurrentIndex(Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep()));
     cmbAdaptivityStep->setCurrentIndex(Util::scene()->activeAdaptivityStep());
+    qDebug() << "timestep set to " << Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep()) << ", adapt " << Util::scene()->activeAdaptivityStep() << "\n";
 }
 
 void PostprocessorWidget::doFieldInfo(int index)

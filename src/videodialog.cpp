@@ -41,14 +41,11 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent) : Q
     // time steps
     m_timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
-    // timer animate
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(doAdaptiveAnimateNextStep()));
-
     // timer create images
     timer = new QTimer(this);
 
     createControls();
+    tabChanged(0);
 }
 
 VideoDialog::~VideoDialog()
@@ -250,7 +247,7 @@ void VideoDialog::doTransientSetStep(int index)
     sldTransientAnimate->setValue(index);
 
     QString time = QString::number(m_timeLevels[index - 1], 'g');
-    lblStep->setText(time + " s");
+    lblStep->setText(tr("%1 s").arg(time));
 
     QApplication::processEvents();
 }
@@ -284,6 +281,8 @@ void VideoDialog::doAdaptiveSetStep(int index)
     m_sceneView->refresh();
 
     sldAdaptiveAnimate->setValue(index);
+
+    lblStep->setText(tr("%1").arg(index));
 
     QApplication::processEvents();
 }

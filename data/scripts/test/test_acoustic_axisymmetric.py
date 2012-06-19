@@ -6,6 +6,10 @@ problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 700
+
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 acoustic = agros2d.field("acoustic")
 acoustic.analysis_type = "harmonic"

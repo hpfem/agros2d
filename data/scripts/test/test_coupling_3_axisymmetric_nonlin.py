@@ -9,6 +9,9 @@ problem.matrix_solver = "umfpack"
 problem.time_step = 1
 problem.time_total = 1
 
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 current = agros2d.field("current")
 current.analysis_type = "steadystate"

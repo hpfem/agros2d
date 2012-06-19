@@ -153,7 +153,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::scene()->clear();
 
-    problemWidget->actProperties->trigger();
+    problemWidget->actProperties->trigger();    
     sceneViewPreprocessor->doZoomBestFit();
 
     // set recent files
@@ -164,8 +164,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
-
-    setControls();
 
     if (settings.value("General/CheckVersion", true).value<bool>())
         checkForNewVersion(true);
@@ -205,6 +203,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // show/hide control panel
     actHideControlPanel->setChecked(settings.value("MainWindow/ControlPanel", true).toBool());
     doHideControlPanel();
+
+    setControls();
 }
 
 MainWindow::~MainWindow()
@@ -1419,8 +1419,8 @@ void MainWindow::setControls()
     sceneViewPost2D->actSceneZoomRegion = NULL;
     sceneViewPost3D->actSceneZoomRegion = NULL;
 
-    tlbGeometry->setVisible(false);
-    tlbPost2D->setVisible(false);
+    tlbGeometry->setVisible(sceneViewPreprocessor->actSceneModePreprocessor->isChecked());
+    tlbPost2D->setVisible(sceneViewPost2D->actSceneModePost2D->isChecked());
 
     if (problemWidget->actProperties->isChecked())
     {
@@ -1437,8 +1437,6 @@ void MainWindow::setControls()
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomBestFit()));
         sceneViewPreprocessor->actSceneZoomRegion = actSceneZoomRegion;
-
-        tlbGeometry->setVisible(true);
     }
     if (sceneViewMesh->actSceneModeMesh->isChecked())
     {
@@ -1462,8 +1460,6 @@ void MainWindow::setControls()
 
         // hide transform dialog
         sceneTransformDialog->hide();
-
-        tlbPost2D->setVisible(true);
     }
     if (sceneViewPost3D->actSceneModePost3D->isChecked())
     {

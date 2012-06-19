@@ -9,6 +9,9 @@ problem.frequency = 50
 problem.time_step = 1
 problem.time_total = 1
 
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"

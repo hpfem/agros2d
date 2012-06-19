@@ -446,6 +446,10 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         throw(AgrosSolverException("DOF is zero"));
     }
 
+    // update timedep values
+    foreach (Field* field, m_block->fields())
+        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
+
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
     m_wf->set_current_time(Util::problem()->actualTime());
 
@@ -480,6 +484,8 @@ void Solver<Scalar>::createInitialSpace(int timeStep)
     // create essential boundary conditions and space
     createSpace(meshes, msa);
 
+    msa.setTime(Util::problem()->actualTime());
+
     // create solutions
     createNewSolutions(msa);
 
@@ -501,18 +507,15 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
         throw(AgrosSolverException("DOF is zero"));
     }
 
-    double actualTime = 0.0;
+    // update timedep values
+    foreach (Field* field, m_block->fields())
+        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msa.spaces()), actualTime);
-    m_wf->set_current_time(actualTime);
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msa.spaces()), Util::problem()->actualTime());
+    m_wf->set_current_time(Util::problem()->actualTime());
 
     m_wf->delete_all();
     m_wf->registerForms();
-
-
-    //    // construct refined spaces
-    //    Hermes::vector<Space<Scalar> *> spaceReference
-    //            = *Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()));
 
     msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
 
@@ -526,6 +529,9 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
                                                            msaRef.solutionsNaked(),
                                                            msa.solutionsNaked());
+
+    msa.setTime(Util::problem()->actualTime());
+    msaRef.setTime(Util::problem()->actualTime());
 
     Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
     Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal), msa);
@@ -575,6 +581,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
         // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
         // store solution
+        msaNew.setTime(Util::problem()->actualTime());
         Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_NonExisting), msaNew);
 //    }
 

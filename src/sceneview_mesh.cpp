@@ -169,11 +169,19 @@ void SceneViewMesh::refresh()
 
     setControls();
 
-    if (Util::problem()->isMeshed())
+    if (Util::problem()->isMeshed() && !Util::problem()->isSolved())
+    {
         m_meshHermes->processMeshed();
+    }
 
     if (Util::problem()->isSolved())
+    {
+        m_meshHermes->blockSignals(true);
+        m_meshHermes->processMeshed();
+        m_meshHermes->blockSignals(false);
+
         m_meshHermes->processSolved();
+    }
 
     SceneViewCommon::refresh();
 }

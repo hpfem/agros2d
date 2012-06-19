@@ -6,6 +6,9 @@ problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
+# palette quality
+agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+
 # fields
 elasticity = agros2d.field("elasticity")
 elasticity.analysis_type = "steadystate"

@@ -129,10 +129,19 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
 
             // load mesh
-            QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
+            try
+            {
+                QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
 
-            // FIXME: jinak
-            Util::problem()->setMeshesInitial(meshes);
+                // FIXME: jinak
+                Util::problem()->setMeshesInitial(meshes);
+            }
+            catch (Hermes::Exceptions::Exception& e)
+            {
+                m_isError = true;
+
+                Util::log()->printError(tr("Mesh generator"), e.getMsg());
+            }
         }
         else
         {

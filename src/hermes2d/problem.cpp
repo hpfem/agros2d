@@ -277,9 +277,12 @@ bool Problem::mesh()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
+    QTime time;
+    time.start();
     MeshGeneratorTriangle pim;
     if (pim.mesh())
     {
+        qDebug() << "pim.mesh()" << time.elapsed();
         emit meshed();
         return true;
     }
@@ -301,7 +304,7 @@ void Problem::solveInit()
     {
         result.showDialog();
         m_isSolving = false;
-        throw(AgrosSolverException("Geometry check failed"));
+        throw (AgrosSolverException("Geometry check failed"));
     }
 
     // save problem
@@ -392,26 +395,19 @@ void Problem::solveAction()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    // todo: merge solveSimple and solveTimeStep
-                    if(block->isTransient())
-                    {
-                        solver->solveTimeStep();
-                    }
-                    else
-                    {
-                        solver->createInitialSpace(timeStep);
-                        solver->solveSimple(timeStep, 0, false);
-                    }
+                    solver->createInitialSpace(timeStep);
+                    solver->solveSimple(timeStep, 0, false);
+
                 }
                 else
                 {
-                    if(block->isTransient())
-                    {
-                        // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
-                        // vezmu treba pred pred posledni adaptivni krok a tim budu mit derefinement
-                        QMessageBox::warning(QApplication::activeWindow(), "Solver Error", "Adaptivity not implemented for transient problems");
-                        return;
-                    }
+//                    if(block->isTransient())
+//                    {
+//                        // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
+//                        // vezmu treba pred pred posledni adaptivni krok a tim budu mit derefinement
+//                        QMessageBox::warning(QApplication::activeWindow(), "Solver Error", "Adaptivity not implemented for transient problems");
+//                        return;
+//                    }
 
                     solver->createInitialSpace(timeStep);
                     int adaptStep = 1;
