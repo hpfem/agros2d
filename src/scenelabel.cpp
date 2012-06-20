@@ -324,6 +324,7 @@ bool SceneLabelDialog::save()
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
         labelMarker->save();
 
+    Util::scene()->refresh();
     return true;
 }
 
@@ -417,6 +418,7 @@ bool SceneLabelSelectDialog::save()
         }
     }
 
+    Util::scene()->refresh();
     return true;
 }
 

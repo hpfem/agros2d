@@ -51,7 +51,7 @@ QString SceneBoundary::html()
     QString out;
     //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
     //    out += "<table>";
-    
+
     //    Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(type);
     //    if (boundary_type)
     //        for (Hermes::vector<Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
@@ -66,9 +66,9 @@ QString SceneBoundary::html()
     //                    arg(values[variable->id].text());
     //            out += "</tr>";
     //        }
-    
+
     //    out += "</table>";
-    
+
     return out;
 }
 
@@ -106,10 +106,10 @@ QString SceneMaterial::html()
 {
     //TODO
     QString out;
-    
+
     //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
     //    out += "<table>";
-    
+
     //    for (Hermes::vector<Module::MaterialTypeVariable *>::iterator it = Util::problem()->config()->module()->material_type_variables.begin();
     //         it < Util::problem()->config()->module()->material_type_variables.end(); ++it )
     //    {
@@ -125,7 +125,7 @@ QString SceneMaterial::html()
     //        out += "</tr>";
     //    }
     //    out += "</table>";
-    
+
     return out;
 }
 
@@ -400,18 +400,18 @@ void SceneBoundaryDialog::createDialog()
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-    
+
     layout->addWidget(new QLabel(tr("Name:")), 0, 0);
     layout->addWidget(txtName, 0, 2);
-    
+
     // content
     createContent();
-    
+
     layout->addWidget(buttonBox, 100, 0, 1, 3);
     layout->setRowStretch(99, 1);
-    
+
     txtName->setFocus();
-    
+
     setLayout(layout);
 }
 
@@ -499,19 +499,19 @@ void SceneMaterialDialog::createDialog()
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-    
+
     // name
     layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
     layout->addWidget(txtName, 0, 2);
 
     // content
     createContent();
-    
+
     layout->addWidget(buttonBox, 100, 0, 1, 3);
     layout->setRowStretch(99, 1);
-    
+
     txtName->setFocus();
-    
+
     setLayout(layout);
 }
 
@@ -541,7 +541,7 @@ bool SceneMaterialDialog::save()
         {
             if (material == material)
                 continue;
-            
+
             QMessageBox::warning(this, tr("Material marker"), tr("Material marker name already exists."));
             return false;
         }
