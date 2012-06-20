@@ -35,9 +35,6 @@
 #include "meshgenerator.h"
 #include "logview.h"
 
-
-
-
 ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
 {
     clear();
@@ -277,12 +274,9 @@ bool Problem::mesh()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
-    QTime time;
-    time.start();
     MeshGeneratorTriangle pim;
     if (pim.mesh())
     {
-        qDebug() << "pim.mesh()" << time.elapsed();
         emit meshed();
         return true;
     }
@@ -395,9 +389,12 @@ void Problem::solveAction()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
+                    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("transient step %1/%2").
+                                              arg(timeStep + 1).
+                                              arg(Util::problem()->config()->numTimeSteps()));
+
                     solver->createInitialSpace(timeStep);
                     solver->solveSimple(timeStep, 0, false);
-
                 }
                 else
                 {
@@ -551,22 +548,17 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     }
     catch (Hermes::Exceptions::Exception& e)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e.getMsg()));
-        return;
-    }
-    catch (Hermes::Exceptions::Exception* e) // todo: before exceptions change from pointers in Hermes
-    {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", QString::fromAscii(e->getMsg()));
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString::fromStdString(e.getMsg()));
         return;
     }
     catch (mu::ParserError& e)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Parser Error", "Error in XML Parser");
+        Util::log()->printError(QObject::tr("Solver"), "Error in XML Parser");
         return;
     }
     catch (AgrosSolverException& e)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", e.str);
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.str);
         return;
     }
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated

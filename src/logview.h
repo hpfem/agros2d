@@ -94,7 +94,7 @@ private:
      LogWidget *logWidget;
 
      QwtPlotCurve *m_curve;
-     Chart *m_chartNewton;
+     Chart *m_chart;
      QList<double> m_chartStep;
      QList<double> m_chartNorm;
 
