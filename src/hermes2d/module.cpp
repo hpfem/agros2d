@@ -218,12 +218,12 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
                                          SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     string problemId =
-            materialTarget->fieldInfo()->fieldId().toStdString() + "_" +
             materialSource->fieldInfo()->fieldId().toStdString() + "_" +
-            analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
+            materialTarget->fieldInfo()->fieldId().toStdString() + "_" +
             analysisTypeToStringKey(materialSource->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
+            analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
             coordinateTypeToStringKey(materialTarget->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-            ((materialSource->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_" +
+            ((materialTarget->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_" +
             couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
 
     if(materialTarget->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
@@ -232,7 +232,9 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     }
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, materialSource, materialTarget, offsetI, offsetJ);
+    //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, materialTarget, materialSource, offsetI, offsetJ);
 
     if (!custom_form)
     {
@@ -371,6 +373,7 @@ void WeakFormAgros<Scalar>::registerForms()
         // materials
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
+            cout << "material " << labelNum << endl;
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
             
             assert(material);
@@ -390,13 +393,14 @@ void WeakFormAgros<Scalar>::registerForms()
                 {
                     foreach (ParserFormExpression *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
                     {
-                        SceneMaterial* materialTarget = Util::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
-                        assert(materialTarget);
+                        SceneMaterial* materialSource = Util::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
+                        assert(materialSource);
 
-                        if (materialTarget != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+                        if (materialSource != Util::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
+                            cout << "register coupling form " << expression << endl;
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                         m_block->offset(field), m_block->offset(field), material, materialTarget, couplingInfo);
+                                         m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
                         }
                     }
                 }
