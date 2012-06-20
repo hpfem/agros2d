@@ -35,9 +35,6 @@
 #include "meshgenerator.h"
 #include "logview.h"
 
-
-
-
 ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
 {
     clear();
@@ -277,12 +274,9 @@ bool Problem::mesh()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
-    QTime time;
-    time.start();
     MeshGeneratorTriangle pim;
     if (pim.mesh())
     {
-        qDebug() << "pim.mesh()" << time.elapsed();
         emit meshed();
         return true;
     }
@@ -395,9 +389,12 @@ void Problem::solveAction()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
+                    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("transient step %1/%2").
+                                              arg(timeStep + 1).
+                                              arg(Util::problem()->config()->numTimeSteps()));
+
                     solver->createInitialSpace(timeStep);
                     solver->solveSimple(timeStep, 0, false);
-
                 }
                 else
                 {
