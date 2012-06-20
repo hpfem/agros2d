@@ -320,8 +320,6 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         // Initialize the FE problem.
         DiscreteProblemLinear<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
 
-        Hermes::TimePeriod timer;
-
         LinearSolver<Scalar> linear(&dp);
         try
         {
@@ -329,12 +327,12 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
             Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             /*
-            Util::log()->printDebug(m_sovlerID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
-                                    arg(milisecondsToTime(picard.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime(picard.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime((picard.get_assemble_time() + picard.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
-            msa.setAssemblyTime(picard.get_assemble_time() * 1000.0);
-            msa.setSolveTime(picard.get_solve_time() * 1000.0);
+            Util::log()->printDebug(m_sovlerID, QObject::tr("Linear solver - assemble/solve/total: %1/%2/%3 s").
+                                    arg(milisecondsToTime(linear.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime(linear.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
+                                    arg(milisecondsToTime((linear.get_assemble_time() + linear.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
+            msa.setAssemblyTime(linear.get_assemble_time() * 1000.0);
+            msa.setSolveTime(linear.get_solve_time() * 1000.0);
             */
         }
         catch (Hermes::Exceptions::Exception e)
@@ -351,11 +349,8 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         // Initialize the FE problem.
         DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
 
-        Hermes::TimePeriod timer;
-
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         NewtonSolver<Scalar> newton(&dp);
-        newton.attach_timer(&timer);
         newton.set_verbose_output(true);
         newton.set_verbose_callback(processSolverOutput);
 
@@ -387,12 +382,11 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         }
     }
 
+    // Picard solver
     if (m_block->linearityType() == LinearityType_Picard)
     {
         // Initialize the FE problem.
         DiscreteProblemLinear<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
-
-        Hermes::TimePeriod timer;
 
         Hermes::vector<Solution<Scalar>* > slns;
         for (int i = 0; i < msa.spaces().size(); i++)
@@ -423,7 +417,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
         catch (Hermes::Exceptions::Exception e)
         {
             QString error = QString(e.getMsg());
-            Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
+            Util::log()->printDebug(m_solverID, QObject::tr("Picard's solver failed: %1").arg(error));
             throw;
         }
     }
@@ -526,9 +520,10 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     solveOneProblem(msaRef);
 
     // project the fine mesh solution onto the coarse mesh.
-    Hermes::Hermes2D::OGProjection<Scalar>::project_global(castConst(msa.spacesNaked()),
-                                                           msaRef.solutionsNaked(),
-                                                           msa.solutionsNaked());
+    Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
+    ogProjection.project_global(castConst(msa.spacesNaked()),
+                                msaRef.solutionsNaked(),
+                                msa.solutionsNaked());
 
     msa.setTime(Util::problem()->actualTime());
     msaRef.setTime(Util::problem()->actualTime());
@@ -568,22 +563,22 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 
     // condition removed, adapt allways to allow to perform single adaptivity step in the future.
     // should be refacted.
-//    if (adapt)
-//    {
-        cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
-                ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
-        bool noref = adaptivity.adapt(selector,
-                                      Util::config()->threshold,
-                                      Util::config()->strategy,
-                                      Util::config()->meshRegularity);
+    //    if (adapt)
+    //    {
+    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
+            ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
+    bool noref = adaptivity.adapt(selector,
+                                  Util::config()->threshold,
+                                  Util::config()->strategy,
+                                  Util::config()->meshRegularity);
 
-        // cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
-        // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
+    // cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
+    // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
-        // store solution
-        msaNew.setTime(Util::problem()->actualTime());
-        Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_NonExisting), msaNew);
-//    }
+    // store solution
+    msaNew.setTime(Util::problem()->actualTime());
+    Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_NonExisting), msaNew);
+    //    }
 
 
     Util::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
