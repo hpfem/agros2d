@@ -20,11 +20,11 @@ magnetic.weak_forms = "compiled"
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 
-magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e6}) 	 
+magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e6})
 magnetic.add_material("Fe", {"magnetic_permeability" : 500}) 
 magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
 magnetic.add_material("Magnet", {"magnetic_permeability" : 1.11, "magnetic_remanence" : 0.1, "magnetic_remanence_angle" : -30}) 
-magnetic.add_material("Velocity", {"magnetic_permeability" : 1, "magnetic_conductivity" : 1e7, "magnetic_velocity_x" : 2}) 
+magnetic.add_material("Velocity", {"magnetic_permeability" : 1, "magnetic_conductivity" : 1e7, "magnetic_velocity_x" : 2})
 
 # geometry
 geometry = agros2d.geometry
@@ -79,13 +79,15 @@ testwm = agros2d.test("Energy density", point["wm"], 67.727733)
 testpj = agros2d.test("Losses density ", point["pj"], 3977.255622)
 testJiv = agros2d.test("Current density - induced velocity", point["Jivr"], -1.987738e5)
 testJr = agros2d.test("Current density - total", point["Jr"], -1.987738e5)
+testFx = agros2d.test("Lorentz force - x", point["Flrx"], -1975.551246)
+testFy = agros2d.test("Lorentz force - y", point["Flry"], -1671.99571)
 
 # volume integral
 volume = magnetic.volume_integrals([5])
 testWm = agros2d.test("Energy", volume["Wm"], 3.088946)
 testPj = agros2d.test("Losses", volume["Pj"], 220.022114)
-testFxv = agros2d.test("Lorentz force - x", volume["Fx"], -110.011057)
-testFyv = agros2d.test("Lorentz force - y", volume["Fy"], -36.62167)
+testFxv = agros2d.test("Lorentz force - x", volume["Flx"], -110.011057)
+testFyv = agros2d.test("Lorentz force - y", volume["Fly"], -36.62167)
 testT = agros2d.test("Torque", volume["T"], 20.463818)
 
 # surface integral
@@ -97,5 +99,6 @@ print("Test: Magnetic steady state - planar: " + str(point and testA
                                                      and testB and testBx and testBy
                                                      and testH and testHx and testHy
                                                      and testJiv and testJr
+                                                     and testFx and testFy
                                                      and testwm and testpj and testWm and testPj and testT
 													 and testFxv and testFyv))
