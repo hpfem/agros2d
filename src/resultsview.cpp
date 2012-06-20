@@ -99,44 +99,41 @@ void ResultsView::showPoint(const Point &point)
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        LocalPointValue value(fieldInfo, point);
-        if (value.values().size() > 0)
+        QMap<Module::LocalVariable *, PointValue> values = LocalPointValue(fieldInfo, point).values();
+        if (values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            QMapIterator<Module::LocalVariable *, PointValue> it(value.values());
-            while (it.hasNext())
+            foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
             {
-                it.next();
-
-                if (it.key()->isScalar())
+                if (variable->isScalar())
                 {
                     // scalar variable
                     ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                    item->SetValue("NAME", it.key()->name().toStdString());
-                    item->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
-                    item->SetValue("VALUE", QString("%1").arg(it.value().scalar, 0, 'e', 3).toStdString());
-                    item->SetValue("UNIT", it.key()->unitHtml().toStdString());
+                    item->SetValue("NAME", variable->name().toStdString());
+                    item->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
+                    item->SetValue("VALUE", QString("%1").arg(values[variable].scalar, 0, 'e', 3).toStdString());
+                    item->SetValue("UNIT", variable->unitHtml().toStdString());
                 }
                 else
                 {
                     // vector variable
                     ctemplate::TemplateDictionary *itemMagnitude = field->AddSectionDictionary("ITEM");
-                    itemMagnitude->SetValue("NAME", it.key()->name().toStdString());
-                    itemMagnitude->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
-                    itemMagnitude->SetValue("VALUE", QString("%1").arg(it.value().vector.magnitude(), 0, 'e', 3).toStdString());
-                    itemMagnitude->SetValue("UNIT", it.key()->unitHtml().toStdString());
+                    itemMagnitude->SetValue("NAME", variable->name().toStdString());
+                    itemMagnitude->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
+                    itemMagnitude->SetValue("VALUE", QString("%1").arg(values[variable].vector.magnitude(), 0, 'e', 3).toStdString());
+                    itemMagnitude->SetValue("UNIT", variable->unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
-                    itemX->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
+                    itemX->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
                     itemX->SetValue("PART", Util::problem()->config()->labelX().toLower().toStdString());
-                    itemX->SetValue("VALUE", QString("%1").arg(it.value().vector.x, 0, 'e', 3).toStdString());
-                    itemX->SetValue("UNIT", it.key()->unitHtml().toStdString());
+                    itemX->SetValue("VALUE", QString("%1").arg(values[variable].vector.x, 0, 'e', 3).toStdString());
+                    itemX->SetValue("UNIT", variable->unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
-                    itemY->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
+                    itemY->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
                     itemY->SetValue("PART", Util::problem()->config()->labelY().toLower().toStdString());
-                    itemY->SetValue("VALUE", QString("%1").arg(it.value().vector.y, 0, 'e', 3).toStdString());
-                    itemY->SetValue("UNIT", it.key()->unitHtml().toStdString());
+                    itemY->SetValue("VALUE", QString("%1").arg(values[variable].vector.y, 0, 'e', 3).toStdString());
+                    itemY->SetValue("UNIT", variable->unitHtml().toStdString());
                 }
             }
         }
@@ -172,22 +169,20 @@ void ResultsView::showVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        VolumeIntegralValue volumeIntegralValue(fieldInfo);
-        if (volumeIntegralValue.values().size() > 0)
+        QMap<Module::Integral*, double> values = VolumeIntegralValue(fieldInfo).values();
+
+        if(values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = volumeIntegrals.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            QMapIterator<Module::Integral *, double> it(volumeIntegralValue.values());
-            while (it.hasNext())
+            foreach (Module::Integral *integral, fieldInfo->module()->volumeIntegrals())
             {
-                it.next();
-
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                item->SetValue("NAME", it.key()->name().toStdString());
-                item->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
-                item->SetValue("VALUE", QString("%1").arg(it.value(), 0, 'e', 3).toStdString());
-                item->SetValue("UNIT", it.key()->unitHtml().toStdString());
+                item->SetValue("NAME", integral->name().toStdString());
+                item->SetValue("SHORTNAME", integral->shortnameHtml().toStdString());
+                item->SetValue("VALUE", QString("%1").arg(values[integral], 0, 'e', 3).toStdString());
+                item->SetValue("UNIT", integral->unitHtml().toStdString());
             }
         }
     }
@@ -222,22 +217,18 @@ void ResultsView::showSurfaceIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        SurfaceIntegralValue surfaceIntegralValue(fieldInfo);
-        if (surfaceIntegralValue.values().size() > 0)
+        QMap<Module::Integral*, double> values = SurfaceIntegralValue(fieldInfo).values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            QMapIterator<Module::Integral *, double> it(surfaceIntegralValue.values());
-            while (it.hasNext())
+            foreach (Module::Integral *integral, fieldInfo->module()->surfaceIntegrals())
             {
-                it.next();
-
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                item->SetValue("NAME", it.key()->name().toStdString());
-                item->SetValue("SHORTNAME", it.key()->shortnameHtml().toStdString());
-                item->SetValue("VALUE", QString("%1").arg(it.value(), 0, 'e', 3).toStdString());
-                item->SetValue("UNIT", it.key()->unitHtml().toStdString());
+                item->SetValue("NAME", integral->name().toStdString());
+                item->SetValue("SHORTNAME", integral->shortnameHtml().toStdString());
+                item->SetValue("VALUE", QString("%1").arg(values[integral], 0, 'e', 3).toStdString());
+                item->SetValue("UNIT", integral->unitHtml().toStdString());
             }
         }
     }
