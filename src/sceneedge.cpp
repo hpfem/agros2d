@@ -349,6 +349,7 @@ bool SceneEdgeDialog::save()
 
     Util::scene()->checkEdge(sceneEdge);
 
+    Util::scene()->refresh();
     return true;
 }
 
@@ -453,6 +454,7 @@ bool SceneEdgeSelectDialog::save()
         }
     }
 
+    Util::scene()->refresh();
     return true;
 }
 
@@ -498,7 +500,7 @@ void SceneEdgeCommandAdd::redo()
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,
                                                double angle, QUndoCommand *parent) : QUndoCommand(parent)
-{    
+{
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markerName = markerName;
