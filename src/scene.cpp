@@ -428,9 +428,9 @@ void Scene::setBoundary(SceneBoundary *boundary)
     selectNone();
 }
 
-SceneBoundary *Scene::getBoundary(const QString &name)
+SceneBoundary *Scene::getBoundary(FieldInfo *field, const QString &name)
 {
-    return boundaries->get(name);
+    return boundaries->filter(field).get(name);
 }
 
 void Scene::addMaterial(SceneMaterial *material)
@@ -440,9 +440,9 @@ void Scene::addMaterial(SceneMaterial *material)
 }
 
 
-SceneMaterial *Scene::getMaterial(const QString &name)
+SceneMaterial *Scene::getMaterial(FieldInfo *field, const QString &name)
 {
-    return materials->get(name);
+    return materials->filter(field).get(name);
 }
 
 void Scene::removeMaterial(SceneMaterial *material)
@@ -756,10 +756,9 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
                                                        edge->angle());
                     addEdge(newEdge);
 
-                    // TODO: undo
                     m_undoStack->push(new SceneEdgeCommandAdd(newEdge->nodeStart()->point(),
                                                               newEdge->nodeEnd()->point(),
-                                                              "TODO",
+                                                              newEdge->markersKeys(),
                                                               newEdge->angle()));
                 }
             }
@@ -847,9 +846,8 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
             SceneLabel *labelAdded = addLabel(labelNew);
 
             if (labelAdded == labelNew)
-                // TODO: undo
                 m_undoStack->push(new SceneLabelCommandAdd(labelNew->point(),
-                                                           "TODO",
+                                                           labelNew->markersKeys(),
                                                            labelNew->area()));
 
             labelAdded->setSelected(true);
@@ -920,10 +918,9 @@ void Scene::doNewEdge()
     {
         SceneEdge *edgeAdded = addEdge(edge);
         if (edgeAdded == edge)
-            // TODO: undo
             m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart()->point(),
                                                       edge->nodeEnd()->point(),
-                                                      "TODO",
+                                                      edge->markersKeys(),
                                                       edge->angle()));
     }
     else
@@ -936,10 +933,11 @@ void Scene::doNewLabel(const Point &point)
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneLabel *labelAdded = addLabel(label);
-        // TODO: undo
-        if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point(),
-                                                                            "TODO",
-                                                                            label->area()));
+
+        if (labelAdded == label)
+            m_undoStack->push(new SceneLabelCommandAdd(label->point(),
+                                                       label->markersKeys(),
+                                                       label->area()));
     }
     else
         delete label;
@@ -1681,7 +1679,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         {
             QDomElement eleBoundary = doc.createElement("boundary");
 
-            eleBoundary.setAttribute("name", boundary->getName());
+            eleBoundary.setAttribute("name", boundary->name());
             if (boundary->getType() == "")
                 eleBoundary.setAttribute("type", "none");
 
@@ -1691,7 +1689,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
                 eleBoundary.setAttribute("id", iboundary);
                 eleBoundary.setAttribute("type", boundary->getType());
 
-                const QMap<QString, Value> values = boundary->getValues();
+                const QMap<QString, Value> values = boundary->values();
                 for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                     eleBoundary.setAttribute(it.key(), it.value().toString());
 
@@ -1723,9 +1721,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
             // write marker
             eleMaterial.setAttribute("id", imaterial);
-            eleMaterial.setAttribute("name", material->getName());
+            eleMaterial.setAttribute("name", material->name());
 
-            const QMap<QString, Value> values = material->getValues();
+            const QMap<QString, Value> values = material->values();
             for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                 eleMaterial.setAttribute(it.key(), it.value().toString());
 

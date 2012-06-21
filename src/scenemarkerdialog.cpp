@@ -426,7 +426,7 @@ void SceneBoundaryDialog::createContent()
 
 void SceneBoundaryDialog::load()
 {
-    txtName->setText(boundary->getName());
+    txtName->setText(boundary->name());
 
     // load variables
     fieldWidget->load();
@@ -437,7 +437,7 @@ bool SceneBoundaryDialog::save()
     // find name duplicities
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
     {
-        if (boundary->getName() == txtName->text())
+        if (boundary->name() == txtName->text())
         {
             if (boundary == boundary)
                 continue;
@@ -526,7 +526,7 @@ void SceneMaterialDialog::createContent()
 
 void SceneMaterialDialog::load()
 {
-    txtName->setText(material->getName());
+    txtName->setText(material->name());
 
     // load variables
     fieldWidget->load();
@@ -537,7 +537,7 @@ bool SceneMaterialDialog::save()
     // find name duplicities
     foreach (SceneMaterial *material, Util::scene()->materials->items())
     {
-        if (material->getName() == txtName->text())
+        if (material->name() == txtName->text())
         {
             if (material == material)
                 continue;

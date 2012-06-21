@@ -162,7 +162,7 @@ private slots:
 class SceneEdgeCommandAdd : public QUndoCommand
 {
 public:
-    SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName,
+    SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
                         double angle, QUndoCommand *parent = 0);
     void undo();
     void redo();
@@ -170,14 +170,14 @@ public:
 private:
     Point m_pointStart;
     Point m_pointEnd;
-    QString m_markerName;
+    QMap<QString, QString> m_markers;
     double m_angle;
 };
 
 class SceneEdgeCommandRemove : public QUndoCommand
 {
 public:
-    SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,
+    SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
                            double angle, QUndoCommand *parent = 0);
     void undo();
     void redo();
@@ -185,7 +185,7 @@ public:
 private:
     Point m_pointStart;
     Point m_pointEnd;
-    QString m_markerName;
+    QMap<QString, QString> m_markers;
     double m_angle;
 };
 

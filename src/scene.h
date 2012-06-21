@@ -151,12 +151,12 @@ public:
     void addBoundary(SceneBoundary *boundary);
     void removeBoundary(SceneBoundary *boundary);
     void setBoundary(SceneBoundary *boundary); // set edge marker to selected edges
-    SceneBoundary *getBoundary(const QString &name);
+    SceneBoundary *getBoundary(FieldInfo *field, const QString &name);
 
     void addMaterial(SceneMaterial *material);
     void removeMaterial(SceneMaterial *material);
     void setMaterial(SceneMaterial *material); // set label marker to selected labels
-    SceneMaterial *getMaterial(const QString &name);
+    SceneMaterial *getMaterial(FieldInfo *field, const QString &name);
 
     bool checkGeometryAssignement();
     // OBSOLETE - DO NOT USE *************************************************************

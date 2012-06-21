@@ -122,6 +122,7 @@ public:
 
     /// returns markers length
     int markersCount();
+    QMap<QString, QString> markersKeys() const;
 
     /// removes marker corresponding to this field from node
     void removeMarker(FieldInfo* fieldInfo) {m_markers.remove(fieldInfo); }

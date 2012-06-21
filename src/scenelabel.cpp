@@ -49,8 +49,7 @@ int SceneLabel::showDialog(QWidget *parent, bool isNew)
 
 SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
 {
-    // TODO: undo
-    return new SceneLabelCommandRemove(m_point, "TODO", m_area);
+    return new SceneLabelCommandRemove(m_point, markersKeys(), m_area);
 }
 
 
@@ -79,20 +78,6 @@ SceneLabel* SceneLabelContainer::get(const Point& point) const
 
     return NULL;
 }
-/*
-SceneLabel* SceneLabelContainer::atNotNoneHack(int i, FieldInfo* fieldInfo)
-{
-    int count = 0;
-    foreach(SceneLabel* label, items())
-    {
-        if (label->getMarker(fieldInfo)->isNone())
-            continue;
-        if (count == i)
-            return label;
-        count++;
-    }
-}
-*/
 
 // *************************************************************************************************************************************
 
@@ -163,13 +148,13 @@ void SceneLabelMarker::fillComboBox()
     cmbMaterial->clear();
 
     // none marker
-    cmbMaterial->addItem(Util::scene()->materials->getNone(m_fieldInfo)->getName(),
+    cmbMaterial->addItem(Util::scene()->materials->getNone(m_fieldInfo)->name(),
                          Util::scene()->materials->getNone(m_fieldInfo)->variant());
 
     // real markers
     foreach (SceneMaterial *material, Util::scene()->materials->filter(m_fieldInfo).items())
     {
-        cmbMaterial->addItem(material->getName(),
+        cmbMaterial->addItem(material->name(),
                              material->variant());
     }
 }
@@ -185,7 +170,7 @@ void SceneLabelMarker::doMaterialClicked()
     SceneMaterial *marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
-        cmbMaterial->setItemText(cmbMaterial->currentIndex(), marker->getName());
+        cmbMaterial->setItemText(cmbMaterial->currentIndex(), marker->name());
         Util::scene()->refresh();
     }
 }
@@ -379,12 +364,12 @@ void SceneLabelSelectDialog::load()
         cmbMaterials[fieldInfo]->clear();
 
         // none marker
-        cmbMaterials[fieldInfo]->addItem(Util::scene()->materials->getNone(fieldInfo)->getName(),
+        cmbMaterials[fieldInfo]->addItem(Util::scene()->materials->getNone(fieldInfo)->name(),
                                          Util::scene()->materials->getNone(fieldInfo)->variant());
 
         // real markers
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
-            cmbMaterials[fieldInfo]->addItem(material->getName(),
+            cmbMaterials[fieldInfo]->addItem(material->name(),
                                              material->variant());
     }
 
@@ -435,10 +420,10 @@ void SceneLabelSelectDialog::doReject()
 
 // undo framework *******************************************************************************************************************
 
-SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_point = point;
-    m_markerName = markerName;
+    m_markers = markers;
     m_area = area;
 }
 
@@ -449,25 +434,55 @@ void SceneLabelCommandAdd::undo()
 
 void SceneLabelCommandAdd::redo()
 {
-    //assert(0); //TODO
-    //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
-    //    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
-    //    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
+    // new edge
+    SceneLabel *label = new SceneLabel(m_point, m_area);
+
+    foreach (QString fieldId, m_markers.keys())
+    {
+        if (Util::problem()->hasField(fieldId))
+        {
+            SceneMaterial *material = Util::scene()->materials->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+
+            if (!material)
+                material = Util::scene()->materials->getNone(Util::problem()->fieldInfo(fieldId));
+
+            // add marker
+            label->addMarker(material);
+        }
+    }
+
+    // add edge to the list
+    Util::scene()->addLabel(label);;
 }
 
-SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_point = point;
-    m_markerName = markerName;
+    m_markers = markers;
     m_area = area;
 }
 
 void SceneLabelCommandRemove::undo()
 {
-    // assert(0);//TODO
-    //    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
-    //    if (material == NULL) material = Util::scene()->materials->get("none"); //TODO - do it better
-    //    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
+    // new edge
+    SceneLabel *label = new SceneLabel(m_point, m_area);
+
+    foreach (QString fieldId, m_markers.keys())
+    {
+        if (Util::problem()->hasField(fieldId))
+        {
+            SceneMaterial *material = Util::scene()->materials->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+
+            if (!material)
+                material = Util::scene()->materials->getNone(Util::problem()->fieldInfo(fieldId));
+
+            // add marker
+            label->addMarker(material);
+        }
+    }
+
+    // add edge to the list
+    Util::scene()->addLabel(label);
 }
 
 void SceneLabelCommandRemove::redo()

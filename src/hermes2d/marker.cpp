@@ -26,7 +26,7 @@
 #include "hermes2d/problem.h"
 
 Marker::Marker(FieldInfo *fieldInfo, QString name)
-    : m_fieldInfo(fieldInfo), name(name)
+    : m_fieldInfo(fieldInfo), m_name(name)
 {
     m_isNone = false;
 }
@@ -44,7 +44,7 @@ Value Marker::value(QString id)
     return Value();
 }
 
-const QMap<QString, Value> Marker::getValues() const
+const QMap<QString, Value> Marker::values() const
 {
     return m_values;
 }

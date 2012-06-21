@@ -146,26 +146,26 @@ private slots:
 class SceneLabelCommandAdd : public QUndoCommand
 {
 public:
-    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandAdd(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
     Point m_point;
-    QString m_markerName;
+    QMap<QString, QString> m_markers;
     double m_area;
 };
 
 class SceneLabelCommandRemove : public QUndoCommand
 {
 public:
-    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
     Point m_point;
-    QString m_markerName;
+    QMap<QString, QString> m_markers;
     double m_area;
 };
 

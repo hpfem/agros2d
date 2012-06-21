@@ -187,7 +187,7 @@ QString createPythonFromModel()
             Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->getType());
 
             QString variables = "{";
-            const QMap<QString, Value> values = boundary->getValues();
+            const QMap<QString, Value> values = boundary->values();
             for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
@@ -200,7 +200,7 @@ QString createPythonFromModel()
 
             str += QString("%1.add_boundary(\"%2\", \"%3\", %4)\n").
                     arg(fieldInfo->fieldId()).
-                    arg(boundary->getName()).
+                    arg(boundary->name()).
                     arg(boundary->getType()).
                     arg(variables);
         }
@@ -211,7 +211,7 @@ QString createPythonFromModel()
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const QMap<QString, Value> values = material->getValues();
+            const QMap<QString, Value> values = material->values();
             for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 if (it.value().hasTable())
@@ -234,7 +234,7 @@ QString createPythonFromModel()
 
             str += QString("%1.add_material(\"%2\", %3)\n").
                     arg(fieldInfo->fieldId()).
-                    arg(material->getName()).
+                    arg(material->name()).
                     arg(variables);
         }
 
@@ -268,7 +268,7 @@ QString createPythonFromModel()
                     {
                         boundaries += QString("\"%1\" : \"%2\", ").
                                 arg(fieldInfo->fieldId()).
-                                arg(marker->getName());
+                                arg(marker->name());
                     }
                 }
                 boundaries = (boundaries.endsWith(", ") ? boundaries.left(boundaries.length() - 2) : boundaries) + "}";
@@ -304,7 +304,7 @@ QString createPythonFromModel()
 
                     materials += QString("\"%1\" : \"%2\", ").
                             arg(fieldInfo->fieldId()).
-                            arg(marker->getName());
+                            arg(marker->name());
                 }
                 materials = (materials.endsWith(", ") ? materials.left(materials.length() - 2) : materials) + "}";
                 str += materials;
@@ -635,7 +635,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     // check boundaries with same name
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
-        if (boundary->getName() == name)
+        if (boundary->name() == name)
             throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
     }
 
@@ -667,7 +667,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
 
 void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 {
-    SceneBoundary *sceneBoundary = Util::scene()->getBoundary(QString(name));
+    SceneBoundary *sceneBoundary = Util::scene()->getBoundary(fieldInfo(), QString(name));
     if (sceneBoundary == NULL)
         throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(name).toStdString());
 
@@ -705,7 +705,7 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
 
 void PyField::removeBoundary(char *name)
 {
-    Util::scene()->removeBoundary(Util::scene()->getBoundary(QString(name)));
+    Util::scene()->removeBoundary(Util::scene()->getBoundary(fieldInfo(), QString(name)));
 }
 
 void PyField::addMaterial(char *name, map<char*, double> parameters,
@@ -715,7 +715,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
     // check materials with same name
     foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
-        if (material->getName() == name)
+        if (material->name() == name)
             throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
     }
 
@@ -757,7 +757,7 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
                           map<char*, vector<double> > nonlin_x,
                           map<char*, vector<double> > nonlin_y)
 {
-    SceneMaterial *sceneMaterial = Util::scene()->getMaterial(QString(name));
+    SceneMaterial *sceneMaterial = Util::scene()->getMaterial(fieldInfo(), QString(name));
 
     if (sceneMaterial == NULL)
         throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(name).toStdString());
@@ -794,7 +794,7 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
 
 void PyField::removeMaterial(char *name)
 {
-    Util::scene()->removeMaterial(Util::scene()->getMaterial(QString(name)));
+    Util::scene()->removeMaterial(Util::scene()->getMaterial(fieldInfo(), QString(name)));
 }
 
 void PyField::localValues(double x, double y, map<std::string, double> &results)
@@ -981,7 +981,7 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
         bool assigned = false;
         foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
         {
-            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == QString((*i).second)))
+            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->name() == QString((*i).second)))
             {
                 assigned = true;
                 sceneEdge->addMarker(sceneBoundary);
@@ -1030,7 +1030,7 @@ void PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double ang
         bool assigned = false;
         foreach (SceneBoundary *sceneBoundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
         {
-            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->getName() == QString((*i).second)))
+            if ((sceneBoundary->fieldId() == QString((*i).first)) && (sceneBoundary->name() == QString((*i).second)))
             {
                 assigned = true;
                 sceneEdge->addMarker(sceneBoundary);
@@ -1072,7 +1072,7 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
             bool assigned = false;
             foreach (SceneMaterial *sceneMaterial, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString((*i).first))).items())
             {
-                if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->getName() == QString((*i).second)))
+                if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->name() == QString((*i).second)))
                 {
                     assigned = true;
                     sceneLabel->addMarker(sceneMaterial);

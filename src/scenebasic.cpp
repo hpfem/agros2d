@@ -80,6 +80,16 @@ int MarkedSceneBasic<MarkerType>::markersCount()
 }
 
 template <typename MarkerType>
+QMap<QString, QString> MarkedSceneBasic<MarkerType>::markersKeys() const
+{
+    QMap<QString, QString> markers;
+    foreach (MarkerType* marker, m_markers)
+        markers[marker->fieldId()] = marker->name();
+
+    return markers;
+}
+
+template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>* list)
 {
     foreach (MarkerType* marker, m_markers)
