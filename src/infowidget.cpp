@@ -268,7 +268,7 @@ void InfoWidget::showInfo()
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
     webView->setHtml(QString::fromStdString(info));
 
-    setFocus();
+    // setFocus();
 }
 
 void InfoWidget::doAdaptiveError()
