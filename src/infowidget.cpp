@@ -25,6 +25,7 @@
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
+#include "sceneview_common.h"
 #include "sceneview_geometry.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
@@ -39,13 +40,6 @@
 InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)
 {
     this->m_sceneViewGeometry = sceneView;
-
-    setMinimumWidth(160);
-    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
-    // setWindowFlags(Qt::Popup | Qt::Dialog);
-    setAttribute(Qt::WA_DeleteOnClose);
-
-    createActions();
 
     // problem information
     webView = new QWebView(this);
@@ -62,7 +56,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     layoutButtons->addWidget(btnDOFs);
 
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
-    layoutMain->setContentsMargins(0, 5, 3, 5);
+    // layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(webView);
     layoutMain->addLayout(layoutButtons);
 
@@ -74,27 +68,8 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     refresh();
 }
 
-/*
-int w = 450;
-int h = height() - 80;
-
-InfoWidget *popup = new InfoWidget(sceneViewPreprocessor, this);
-popup->resize(w, h);
-popup->move(pos().x() + 75, pos().y() + 70);
-popup->setAttribute(Qt::WA_DeleteOnClose);
-
-popup->show();
-*/
-
 InfoWidget::~InfoWidget()
 {
-}
-
-void InfoWidget::createActions()
-{
-    actInfo = new QAction(icon("scene-info"), tr("Info"), this);
-    actInfo->setShortcut(QKeySequence("Alt+I"));
-    actInfo->setCheckable(true);
 }
 
 void InfoWidget::refresh()
@@ -113,7 +88,7 @@ void InfoWidget::showInfo()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem_style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string info;
@@ -295,7 +270,6 @@ void InfoWidget::showInfo()
 
     setFocus();
 }
-
 
 void InfoWidget::doAdaptiveError()
 {

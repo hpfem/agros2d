@@ -76,7 +76,7 @@ Problem::Problem()
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));    
 }
 
 Problem::~Problem()
@@ -121,19 +121,17 @@ bool Problem::isNonlinear() const
 
 void Problem::clearSolution()
 {
-    if (Util::problem()->isSolved())
-        Util::solutionStore()->clearAll();
+    m_isSolved = false;
+    m_isSolving = false;
+    m_timeStep = 0;
+    m_timeElapsed = QTime(0, 0);
+
     Util::solutionStore()->clearAll();
 
     foreach (Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
         if (mesh)
             delete mesh;
     m_meshesInitial.clear();
-
-    m_timeStep = 0;
-    m_timeElapsed = QTime(0, 0);
-    m_isSolved = false;
-    m_isSolving = false;
 }
 
 void Problem::clearFieldsAndConfig()

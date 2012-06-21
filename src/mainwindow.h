@@ -195,6 +195,7 @@ private:
     // scene mode
     QActionGroup *actSceneModeGroup;
 
+    SceneViewWidget *sceneViewInfoWidget;
     SceneViewWidget *sceneViewPreprocessorWidget;
     SceneViewWidget *sceneViewMeshWidget;
     SceneViewWidget *sceneViewPost2DWidget;
@@ -202,6 +203,7 @@ private:
     SceneViewWidget *sceneViewBlankWidget;
 
     QStackedLayout *tabViewLayout;
+    InfoWidget *sceneInfoWidget;
     SceneViewPreprocessor *sceneViewPreprocessor;
     SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
@@ -212,7 +214,6 @@ private:
     QStackedLayout *tabControlsLayout;
     PreprocessorWidget *preprocessorWidget;
     PostprocessorWidget *postprocessorWidget;
-    InfoWidget *infoWidget;
     SettingsWidget *settingsWidget;
     ProblemWidget *problemWidget;
 

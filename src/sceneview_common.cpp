@@ -36,6 +36,29 @@
 
 SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWidget(parent)
 {
+    createControls(widget);
+
+    iconLeft(widget->iconView());
+    labelLeft(widget->labelView());
+
+    connect(widget, SIGNAL(labelCenter(QString)), this, SLOT(labelCenter(QString)));
+    connect(widget, SIGNAL(labelRight(QString)), this, SLOT(labelRight(QString)));
+}
+
+SceneViewWidget::SceneViewWidget(QWidget *widget, QWidget *parent) : QWidget(parent)
+{
+    createControls(widget);
+
+    iconLeft(icon("scene-info"));
+    labelLeft(tr("Info"));
+}
+
+SceneViewWidget::~SceneViewWidget()
+{
+}
+
+void SceneViewWidget::createControls(QWidget *widget)
+{
     // label
     sceneViewLabelPixmap = new QLabel();
     sceneViewLabelLeft = new QLabel();
@@ -60,16 +83,6 @@ SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWi
     sceneViewLayout->setStretch(1, 1);
 
     setLayout(sceneViewLayout);
-
-    iconLeft(widget->iconView());
-    labelLeft(widget->labelView());
-
-    connect(widget, SIGNAL(labelCenter(QString)), this, SLOT(labelCenter(QString)));
-    connect(widget, SIGNAL(labelRight(QString)), this, SLOT(labelRight(QString)));
-}
-
-SceneViewWidget::~SceneViewWidget()
-{
 }
 
 void SceneViewWidget::labelLeft(const QString &left)
@@ -315,7 +328,7 @@ ErrorResult SceneViewCommon::saveImageToFile(const QString &fileName, int w, int
 
 void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w, int h)
 {
-    assert(0); //TODO    
+    assert(0); //TODO
     //    // store sceneview settings
     //    SceneViewSettings sceneViewSettingsCopy = Util::scene()ViewSettings;
     //    SceneMode sceneModeCopy = Util::scene()Mode;

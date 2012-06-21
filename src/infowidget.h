@@ -21,6 +21,7 @@
 #define INFOWIDGET_H
 
 #include "util.h"
+#include "sceneview_common.h"
 
 #include <QWebView>
 
@@ -53,8 +54,6 @@ public:
     InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
     ~InfoWidget();
 
-    QAction *actInfo;
-
 public slots:
     void refresh();
 
@@ -66,7 +65,6 @@ private:
 
     QWebView *webView;
 
-    void createActions();
     QDialog *createChart(const QString &xlabel, const QString &ylabel,
                          double *x1, double *y1, int size1,
                          double *x2, double *y2, int size2);

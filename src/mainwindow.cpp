@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewPost2D = new SceneViewPost2D(this);
     sceneViewPost3D = new SceneViewPost3D(this);
     sceneViewBlank = new SceneViewBlank(this);
+    sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
     connect(Util::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
@@ -78,9 +79,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     postprocessorWidget = new PostprocessorWidget(sceneViewPreprocessor, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
     // settings
     settingsWidget = new SettingsWidget(this);
-    // info
-    infoWidget = new InfoWidget(sceneViewPreprocessor, this);
-    // info
+    // problem
     problemWidget = new ProblemWidget(this);
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
@@ -141,12 +140,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
     // info
-    connect(problemWidget, SIGNAL(apply()), infoWidget, SLOT(refresh()));
-    connect(Util::scene(), SIGNAL(cleared()), infoWidget, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), infoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(timeStepChanged()), infoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(meshed()), infoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), infoWidget, SLOT(refresh()));
+    connect(problemWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
+    connect(Util::scene(), SIGNAL(cleared()), sceneInfoWidget, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(timeStepChanged()), sceneInfoWidget, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(meshed()), sceneInfoWidget, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(solved()), sceneInfoWidget, SLOT(refresh()));
 
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
@@ -434,7 +433,6 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
-    actSceneModeGroup->addAction(infoWidget->actInfo);
     actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
@@ -523,7 +521,6 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
     mnuView->addAction(settingsWidget->actSettings);
-    mnuView->addAction(infoWidget->actInfo);
     mnuView->addSeparator();
     mnuView->addAction(actHideControlPanel);
     mnuView->addSeparator();
@@ -674,6 +671,7 @@ void MainWindow::createToolBars()
 
 void MainWindow::createMain()
 {
+    sceneViewInfoWidget = new SceneViewWidget(sceneInfoWidget, this);
     sceneViewBlankWidget = new SceneViewWidget(sceneViewBlank, this);
     sceneViewPreprocessorWidget = new SceneViewWidget(sceneViewPreprocessor, this);
     sceneViewMeshWidget = new SceneViewWidget(sceneViewMesh, this);
@@ -682,6 +680,7 @@ void MainWindow::createMain()
 
     tabViewLayout = new QStackedLayout();
     tabViewLayout->setContentsMargins(0, 0, 0, 0);
+    tabViewLayout->addWidget(sceneViewInfoWidget);
     tabViewLayout->addWidget(sceneViewBlankWidget);
     tabViewLayout->addWidget(sceneViewPreprocessorWidget);
     tabViewLayout->addWidget(sceneViewMeshWidget);
@@ -697,7 +696,6 @@ void MainWindow::createMain()
     tabControlsLayout->addWidget(preprocessorWidget);
     tabControlsLayout->addWidget(postprocessorWidget);
     tabControlsLayout->addWidget(settingsWidget);
-    tabControlsLayout->addWidget(infoWidget);
 
     viewControls = new QWidget();
     viewControls->setLayout(tabControlsLayout);
@@ -729,7 +727,6 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(settingsWidget->actSettings);
-    tlbLeftBar->addAction(infoWidget->actInfo);
     tlbLeftBar->addWidget(spacing);
     tlbLeftBar->addAction(actCreateMesh);
     tlbLeftBar->addAction(actSolve);
@@ -1438,7 +1435,7 @@ void MainWindow::setControls()
 
     if (problemWidget->actProperties->isChecked())
     {
-        tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
+        tabViewLayout->setCurrentWidget(sceneViewInfoWidget);
         tabControlsLayout->setCurrentWidget(problemWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
@@ -1498,16 +1495,6 @@ void MainWindow::setControls()
     {
         tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
         tabControlsLayout->setCurrentWidget(settingsWidget);
-
-        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
-        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
-        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
-        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
-    }
-    if (infoWidget->actInfo->isChecked())
-    {
-        tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
-        tabControlsLayout->setCurrentWidget(infoWidget);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
