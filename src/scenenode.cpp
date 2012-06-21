@@ -107,6 +107,17 @@ SceneNodeContainer SceneNodeContainer::selected()
     return list;
 }
 
+SceneNodeContainer SceneNodeContainer::highlighted()
+{
+    SceneNodeContainer list;
+    foreach (SceneNode* item, this->data)
+    {
+        if (item->isHighlighted())
+            list.data.push_back(item);
+    }
+
+    return list;
+}
 
 // *************************************************************************************************************************************
 
@@ -218,12 +229,14 @@ void SceneNodeCommandAdd::undo()
     if (node)
     {
         Util::scene()->nodes->remove(node);
+        Util::scene()->refresh();
     }
 }
 
 void SceneNodeCommandAdd::redo()
 {
     Util::scene()->addNode(new SceneNode(m_point));
+    Util::scene()->refresh();
 }
 
 SceneNodeCommandRemove::SceneNodeCommandRemove(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
@@ -234,6 +247,7 @@ SceneNodeCommandRemove::SceneNodeCommandRemove(const Point &point, QUndoCommand 
 void SceneNodeCommandRemove::undo()
 {
     Util::scene()->addNode(new SceneNode(m_point));
+    Util::scene()->refresh();
 }
 
 void SceneNodeCommandRemove::redo()
@@ -242,6 +256,7 @@ void SceneNodeCommandRemove::redo()
     if (node)
     {
         Util::scene()->nodes->remove(node);
+        Util::scene()->refresh();
     }
 }
 

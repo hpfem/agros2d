@@ -25,6 +25,7 @@
 #include "scenebasic.h"
 #include "sceneview_common.h"
 #include "sceneview_geometry.h"
+#include "sceneview_blank.h"
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
@@ -69,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewMesh = new SceneViewMesh(this);
     sceneViewPost2D = new SceneViewPost2D(this);
     sceneViewPost3D = new SceneViewPost3D(this);
+    sceneViewBlank = new SceneViewBlank(this);
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
     connect(Util::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
@@ -100,6 +102,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(postprocessorWidget, SIGNAL(apply()), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
 
+    // blank
+    connect(Util::scene(), SIGNAL(cleared()), sceneViewBlank, SLOT(refresh()));
+    connect(problemWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
+    connect(settingsWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
     // preprocessor
     connect(problemWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
@@ -143,6 +150,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
+    sceneViewBlank->clear();
     sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
@@ -666,6 +674,7 @@ void MainWindow::createToolBars()
 
 void MainWindow::createMain()
 {
+    sceneViewBlankWidget = new SceneViewWidget(sceneViewBlank, this);
     sceneViewPreprocessorWidget = new SceneViewWidget(sceneViewPreprocessor, this);
     sceneViewMeshWidget = new SceneViewWidget(sceneViewMesh, this);
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
@@ -673,6 +682,7 @@ void MainWindow::createMain()
 
     tabViewLayout = new QStackedLayout();
     tabViewLayout->setContentsMargins(0, 0, 0, 0);
+    tabViewLayout->addWidget(sceneViewBlankWidget);
     tabViewLayout->addWidget(sceneViewPreprocessorWidget);
     tabViewLayout->addWidget(sceneViewMeshWidget);
     tabViewLayout->addWidget(sceneViewPost2DWidget);
@@ -1055,6 +1065,7 @@ void MainWindow::doDocumentClose()
     */
 
     Util::scene()->clear();
+    sceneViewBlank->clear();
     sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
@@ -1424,7 +1435,13 @@ void MainWindow::setControls()
 
     if (problemWidget->actProperties->isChecked())
     {
+        tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
         tabControlsLayout->setCurrentWidget(problemWidget);
+
+        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
+        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
+        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
+        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
     if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
     {
@@ -1476,11 +1493,23 @@ void MainWindow::setControls()
     }
     if (settingsWidget->actSettings->isChecked())
     {
+        tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
         tabControlsLayout->setCurrentWidget(settingsWidget);
+
+        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
+        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
+        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
+        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
     if (infoWidget->actInfo->isChecked())
     {
+        tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
         tabControlsLayout->setCurrentWidget(infoWidget);
+
+        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
+        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
+        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
+        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
 
     //    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::problem()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep

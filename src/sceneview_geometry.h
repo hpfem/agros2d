@@ -35,6 +35,7 @@ public slots:
     void doSceneGeometryModeSet(QAction *action);
     void doSelectBasic();
     void doSceneObjectProperties();
+    void doSceneEdgeSwapDirection();
 
 public:
     SceneViewPreprocessor(QWidget *parent = 0);
@@ -50,6 +51,7 @@ public:
     QAction *actOperateOnLabels;
 
     QAction *actSceneObjectProperties;
+    QAction *actSceneEdgeSwapDirection;
 
     // background image
     QImage m_backgroundImage;

@@ -26,6 +26,7 @@ class SceneViewPost2D;
 class SceneViewPost3D;
 class SceneViewPreprocessor;
 class SceneViewMesh;
+class SceneViewBlank;
 class InfoWidget;
 class SettingsWidget;
 class ProblemWidget;
@@ -198,12 +199,14 @@ private:
     SceneViewWidget *sceneViewMeshWidget;
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
+    SceneViewWidget *sceneViewBlankWidget;
 
     QStackedLayout *tabViewLayout;
     SceneViewPreprocessor *sceneViewPreprocessor;
     SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
+    SceneViewBlank *sceneViewBlank;
 
     QWidget *viewControls;
     QStackedLayout *tabControlsLayout;

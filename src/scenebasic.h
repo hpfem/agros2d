@@ -89,10 +89,6 @@ public:
 
     void deleteWithUndo(QString message);
 
-    // saves all members into the node
-    //void fillQDomNode(const QDomDocument & document) const;
-
-
 protected:
     QList<BasicType*> data;
 
@@ -166,7 +162,7 @@ public:
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> selected();
 
     /// Filters for highlighted
-    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlited();
+    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlighted();
 };
 
 // *************************************************************************************************************************************

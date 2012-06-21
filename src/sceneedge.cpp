@@ -38,6 +38,14 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
     }
 }
 
+void SceneEdge::swapDirection()
+{
+    SceneNode *tmp = m_nodeStart;
+
+    m_nodeStart = m_nodeEnd;
+    m_nodeEnd = tmp;
+}
+
 Point SceneEdge::center() const
 {
     return centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
@@ -117,6 +125,11 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
     SceneEdgeDialog *dialog = new SceneEdgeDialog(this, parent, isNew);
     return dialog->exec();
+}
+
+SceneEdgeCommandAdd* SceneEdge::getAddCommand()
+{
+    return new SceneEdgeCommandAdd(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
 }
 
 SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
@@ -346,7 +359,6 @@ bool SceneEdgeDialog::save()
 
     if (!m_isNew)
     {
-        // TODO: swap
         Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
                                                                   sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
                                                                   sceneEdge->angle(), txtAngle->number()));
@@ -494,6 +506,7 @@ SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &p
 void SceneEdgeCommandAdd::undo()
 {
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Util::scene()->refresh();
 }
 
 void SceneEdgeCommandAdd::redo()
@@ -519,6 +532,7 @@ void SceneEdgeCommandAdd::redo()
 
     // add edge to the list
     Util::scene()->addEdge(edge);
+    Util::scene()->refresh();
 }
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
@@ -553,11 +567,13 @@ void SceneEdgeCommandRemove::undo()
 
     // add edge to the list
     Util::scene()->addEdge(edge);
+    Util::scene()->refresh();
 }
 
 void SceneEdgeCommandRemove::redo()
 {
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Util::scene()->refresh();
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,

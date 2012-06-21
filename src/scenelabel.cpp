@@ -47,6 +47,11 @@ int SceneLabel::showDialog(QWidget *parent, bool isNew)
     return dialog->exec();
 }
 
+SceneLabelCommandAdd* SceneLabel::getAddCommand()
+{
+    return new SceneLabelCommandAdd(m_point, markersKeys(), m_area);
+}
+
 SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
 {
     return new SceneLabelCommandRemove(m_point, markersKeys(), m_area);
@@ -430,6 +435,7 @@ SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QMap<QStrin
 void SceneLabelCommandAdd::undo()
 {
     Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
+    Util::scene()->refresh();
 }
 
 void SceneLabelCommandAdd::redo()
@@ -453,6 +459,7 @@ void SceneLabelCommandAdd::redo()
 
     // add edge to the list
     Util::scene()->addLabel(label);;
+    Util::scene()->refresh();
 }
 
 SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
@@ -483,11 +490,13 @@ void SceneLabelCommandRemove::undo()
 
     // add edge to the list
     Util::scene()->addLabel(label);
+    Util::scene()->refresh();
 }
 
 void SceneLabelCommandRemove::redo()
 {
     Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
+    Util::scene()->refresh();
 }
 
 SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)

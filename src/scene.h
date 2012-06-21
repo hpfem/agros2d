@@ -168,8 +168,10 @@ public:
     void selectNone();
     void selectAll(SceneGeometryMode sceneMode);
     int selectedCount();
-    void highlightNone();
     void deleteSelected();
+
+    void highlightNone();
+    int highlightedCount();
 
     void moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);

@@ -23,6 +23,7 @@
 #include "util.h"
 #include "scenebasic.h"
 
+class SceneEdgeCommandAdd;
 class SceneEdgeCommandRemove;
 
 class SceneEdge : public MarkedSceneBasic<SceneBoundary>
@@ -36,6 +37,7 @@ public:
     inline void setNodeEnd(SceneNode *nodeEnd) { m_nodeEnd = nodeEnd; }
     inline double angle() const { return m_angle; }
     inline void setAngle(double angle) { m_angle = angle; }
+    void swapDirection();
 
     bool isCrossed() const { return m_crossedEdges.length() > 0; }
     inline QList<SceneEdge *> &crossedEdges() { return m_crossedEdges; } // TODO: make const
@@ -51,6 +53,7 @@ public:
     double length() const;
     bool isStraight() const { return (fabs(m_angle) < EPS_ZERO); }
 
+    SceneEdgeCommandAdd* getAddCommand();
     SceneEdgeCommandRemove* getRemoveCommand();
 
     int showDialog(QWidget *parent, bool isNew = false);

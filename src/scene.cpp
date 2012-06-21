@@ -615,6 +615,13 @@ void Scene::highlightNone()
     labels->setHighlighted(false);
 }
 
+int Scene::highlightedCount()
+{
+    return nodes->highlighted().length() +
+            edges->highlighted().length() +
+            labels->highlighted().length();
+}
+
 void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
 {
     QList<SceneEdge *> selectedEdges;
@@ -756,10 +763,7 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
                                                        edge->angle());
                     addEdge(newEdge);
 
-                    m_undoStack->push(new SceneEdgeCommandAdd(newEdge->nodeStart()->point(),
-                                                              newEdge->nodeEnd()->point(),
-                                                              newEdge->markersKeys(),
-                                                              newEdge->angle()));
+                    m_undoStack->push(newEdge->getAddCommand());
                 }
             }
         }
@@ -846,9 +850,7 @@ void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
             SceneLabel *labelAdded = addLabel(labelNew);
 
             if (labelAdded == labelNew)
-                m_undoStack->push(new SceneLabelCommandAdd(labelNew->point(),
-                                                           labelNew->markersKeys(),
-                                                           labelNew->area()));
+                m_undoStack->push(label->getAddCommand());
 
             labelAdded->setSelected(true);
             label->setSelected(false);
@@ -918,10 +920,7 @@ void Scene::doNewEdge()
     {
         SceneEdge *edgeAdded = addEdge(edge);
         if (edgeAdded == edge)
-            m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart()->point(),
-                                                      edge->nodeEnd()->point(),
-                                                      edge->markersKeys(),
-                                                      edge->angle()));
+            m_undoStack->push(edge->getAddCommand());
     }
     else
         delete edge;
@@ -935,9 +934,7 @@ void Scene::doNewLabel(const Point &point)
         SceneLabel *labelAdded = addLabel(label);
 
         if (labelAdded == label)
-            m_undoStack->push(new SceneLabelCommandAdd(label->point(),
-                                                       label->markersKeys(),
-                                                       label->area()));
+            m_undoStack->push(label->getAddCommand());
     }
     else
         delete label;
