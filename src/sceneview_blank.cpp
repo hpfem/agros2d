@@ -110,5 +110,3 @@ void SceneViewBlank::paintGeometry()
         glLineWidth(1.0);
     }
 }
-
-

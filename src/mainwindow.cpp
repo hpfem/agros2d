@@ -899,6 +899,7 @@ void MainWindow::doDocumentNew()
         Util::problem()->addField(fieldInfo);
 
         problemWidget->actProperties->trigger();
+        sceneViewBlank->doZoomBestFit();
         sceneViewPreprocessor->doZoomBestFit();
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
@@ -936,6 +937,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
                 setRecentFiles();
 
                 problemWidget->actProperties->trigger();
+                sceneViewBlank->doZoomBestFit();
                 sceneViewPreprocessor->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();
                 sceneViewPost2D->doZoomBestFit();
@@ -1425,6 +1427,7 @@ void MainWindow::setControls()
     Util::scene()->actTransform->setEnabled(false);
 
     actSceneZoomRegion->setChecked(false);
+    sceneViewBlank->actSceneZoomRegion = NULL;
     sceneViewPreprocessor->actSceneZoomRegion = NULL;
     sceneViewMesh->actSceneZoomRegion = NULL;
     sceneViewPost2D->actSceneZoomRegion = NULL;
@@ -1512,7 +1515,7 @@ void MainWindow::setControls()
         sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
 
-    //    actSolveAdaptiveStep->setEnabled(Util::problem()->isSolved() && Util::problem()->fieldInfo("TODO")->analysisType() != AnalysisType_Transient); // FIXME: timedep
+    actSolveAdaptiveStep->setEnabled((!Util::problem()->isTransient())); // FIXME: timedep
     actChart->setEnabled(Util::problem()->isSolved());
 
     actSolve->setEnabled(Util::problem()->fieldInfos().count() > 0);
