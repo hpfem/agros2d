@@ -76,7 +76,7 @@ Problem::Problem()
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));    
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));        
 }
 
 Problem::~Problem()
@@ -126,12 +126,12 @@ void Problem::clearSolution()
     m_timeStep = 0;
     m_timeElapsed = QTime(0, 0);
 
-    Util::solutionStore()->clearAll();
-
     foreach (Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
         if (mesh)
             delete mesh;
     m_meshesInitial.clear();
+
+    Util::solutionStore()->clearAll();
 }
 
 void Problem::clearFieldsAndConfig()

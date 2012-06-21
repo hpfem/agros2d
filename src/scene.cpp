@@ -126,6 +126,7 @@ Util::Util()
     m_problem = new Problem();
     m_scene = new Scene();
     QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
+    QObject::connect(m_scene, SIGNAL(invalidated()), m_problem, SLOT(clearSolution()));
 
     initLists();
 
@@ -898,7 +899,6 @@ void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
     actNewLabel->setEnabled(materials->length() >= 1);
-    //actClearSolutions->setEnabled(m_sceneSolution->isSolved());  //TODO kdy umoznit mazani?
 }
 
 void Scene::doNewNode(const Point &point)

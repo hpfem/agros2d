@@ -100,13 +100,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
     connect(postprocessorWidget, SIGNAL(apply()), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
+    connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewPreprocessor, SLOT(refresh()));
 
     // blank
     connect(Util::scene(), SIGNAL(cleared()), sceneViewBlank, SLOT(refresh()));
     connect(problemWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
-    // preprocessor
+
+    // preprocessor   
     connect(problemWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
