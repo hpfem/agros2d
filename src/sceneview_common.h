@@ -36,7 +36,7 @@ class LocalPointValue;
 class SurfaceIntegralValue;
 class VolumeIntegralValue;
 
-class SceneViewCommon;
+class SceneViewInterface;
 
 namespace Module
 {
@@ -50,6 +50,7 @@ class SceneViewWidget : public QWidget
     Q_OBJECT
 public:
    SceneViewWidget(SceneViewCommon *widget, QWidget *parent = 0);
+   SceneViewWidget(QWidget *widget, QWidget *parent = 0);
    ~SceneViewWidget();
 
 public slots:
@@ -59,6 +60,8 @@ public slots:
    void iconLeft(const QIcon &left);
 
 private:
+   void createControls(QWidget *widget);
+
    QLabel *sceneViewLabelPixmap;
    QLabel *sceneViewLabelLeft;
    QLabel *sceneViewLabelCenter;

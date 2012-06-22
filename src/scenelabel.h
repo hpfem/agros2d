@@ -23,6 +23,7 @@
 #include "util.h"
 #include "scenebasic.h"
 
+class SceneLabelCommandAdd;
 class SceneLabelCommandRemove;
 class FieldInfo;
 
@@ -39,6 +40,7 @@ public:
 
     double distance(const Point &m_point) const;
 
+    SceneLabelCommandAdd* getAddCommand();
     SceneLabelCommandRemove* getRemoveCommand();
 
     int showDialog(QWidget *parent, bool isNew = false);
@@ -54,12 +56,6 @@ public:
     /// if container contains the same label, returns it. Otherwise returns NULL
     SceneLabel* get(SceneLabel* label) const;
     SceneLabel* get(const Point& point) const;
-
-    /// finds label at position i, but NOT COUNTING those labels, that have none marker in this field
-    /// "inverse" function to the mean, in which we skip labels with none materials in solver and register weak forms
-    /// this aditional mapping of markers between agros and hermes will be rewised when implementing subdomains
-    // SceneLabel* atNotNoneHack(int i, FieldInfo* fieldInfo);
-
 };
 
 
@@ -146,26 +142,26 @@ private slots:
 class SceneLabelCommandAdd : public QUndoCommand
 {
 public:
-    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandAdd(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
     Point m_point;
-    QString m_markerName;
+    QMap<QString, QString> m_markers;
     double m_area;
 };
 
 class SceneLabelCommandRemove : public QUndoCommand
 {
 public:
-    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
     Point m_point;
-    QString m_markerName;
+    QMap<QString, QString> m_markers;
     double m_area;
 };
 

@@ -944,6 +944,8 @@ void ProblemWidget::updateControls()
     grpCouplings->setVisible(Util::problem()->couplingInfos().count() > 0);
 
     doTransientChanged();
+
+    emit apply();
 }
 
 bool ProblemWidget::save()

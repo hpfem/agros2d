@@ -23,7 +23,6 @@
 #ifdef WITH_SUPERLU
 #include "superlu_solver.h"
 #include "callstack.h"
-#include "time_period.h"
 
 namespace Hermes
 {
@@ -242,14 +241,14 @@ namespace Hermes
 
       case DF_HERMES_BIN:
         {
-          hermes_fwrite("HERMESX\001", 1, 8, file);
+          this->hermes_fwrite("HERMESX\001", 1, 8, file);
           int ssize = sizeof(Scalar);
-          hermes_fwrite(&ssize, sizeof(int), 1, file);
-          hermes_fwrite(&this->size, sizeof(int), 1, file);
-          hermes_fwrite(&nnz, sizeof(int), 1, file);
-          hermes_fwrite(Ap, sizeof(int), this->size + 1, file);
-          hermes_fwrite(Ai, sizeof(int), nnz, file);
-          hermes_fwrite(Ax, sizeof(Scalar), nnz, file);
+          this->hermes_fwrite(&ssize, sizeof(int), 1, file);
+          this->hermes_fwrite(&this->size, sizeof(int), 1, file);
+          this->hermes_fwrite(&nnz, sizeof(int), 1, file);
+          this->hermes_fwrite(Ap, sizeof(int), this->size + 1, file);
+          this->hermes_fwrite(Ai, sizeof(int), nnz, file);
+          this->hermes_fwrite(Ax, sizeof(Scalar), nnz, file);
           return true;
         }
 
@@ -508,11 +507,11 @@ namespace Hermes
 
       case DF_HERMES_BIN:
         {
-          hermes_fwrite("HERMESR\001", 1, 8, file);
+          this->hermes_fwrite("HERMESR\001", 1, 8, file);
           int ssize = sizeof(Scalar);
-          hermes_fwrite(&ssize, sizeof(int), 1, file);
-          hermes_fwrite(&this->size, sizeof(int), 1, file);
-          hermes_fwrite(v, sizeof(Scalar), this->size, file);
+          this->hermes_fwrite(&ssize, sizeof(int), 1, file);
+          this->hermes_fwrite(&this->size, sizeof(int), 1, file);
+          this->hermes_fwrite(v, sizeof(Scalar), this->size, file);
           return true;
         }
 
@@ -538,18 +537,18 @@ namespace Hermes
       }
       else if (info <= m->size)
       {
-        warn(NULL, "SuperLU: Factor U is singular, solution could not be computed.");
+        this->warn("SuperLU: Factor U is singular, solution could not be computed.");
         return false;
       }
       else if (info == m->size + 1)
       {
-        warn(NULL, "SuperLU: RCOND is less than machine precision "
+        this->warn("SuperLU: RCOND is less than machine precision "
           "(system matrix is singular to working precision).");
         return true;
       }
       else if (info > m->size + 1)
       {
-        warn(NULL, "SuperLU: Not enough memory.\n Failure when %.3f MB were allocated.",
+        this->warn("SuperLU: Not enough memory.\n Failure when %.3f MB were allocated.",
           (info - m->size)/1e6);
         return false;
       }
@@ -652,7 +651,7 @@ namespace Hermes
       assert(m != NULL);
       assert(rhs != NULL);
 
-      Hermes::TimePeriod tmr;
+      this->tick();
 
       // Initialize the statistics variable.
       slu_stat_t stat;
@@ -678,7 +677,7 @@ namespace Hermes
 
       if ( !setup_factorization() )
       {
-        warn(NULL, "LU factorization could not be completed.");
+        this->warn("LU factorization could not be completed.");
         return false;
       }
 
@@ -814,8 +813,8 @@ namespace Hermes
       delete x;
       Destroy_SuperMatrix_Store(&X);
 
-      tmr.tick();
-      this->time = tmr.accumulated();
+      this->tick();
+      this->time = this->accumulated();
 
       return factorized;
     }
@@ -826,7 +825,7 @@ namespace Hermes
       unsigned int A_size = A.nrow < 0 ? 0 : A.nrow;
       if (has_A && this->factorization_scheme != HERMES_FACTORIZE_FROM_SCRATCH && A_size != m->size)
       {
-        warn(NULL, "You cannot reuse factorization structures for factorizing matrices of different sizes.");
+        this->warn("You cannot reuse factorization structures for factorizing matrices of different sizes.");
         return false;
       }
 

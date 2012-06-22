@@ -74,6 +74,7 @@ public:
 
     //TODO should be in SceneBasicContainer, but I would have to cast the result....
     SceneNodeContainer selected();
+    SceneNodeContainer highlighted();
 
 };
 

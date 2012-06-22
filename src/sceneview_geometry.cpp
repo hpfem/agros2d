@@ -86,6 +86,10 @@ void SceneViewPreprocessor::createActionsGeometry()
     actSceneObjectProperties = new QAction(icon("scene-properties"), tr("Object properties"), this);
     actSceneObjectProperties->setShortcut(Qt::Key_Space);
     connect(actSceneObjectProperties, SIGNAL(triggered()), this, SLOT(doSceneObjectProperties()));
+
+    // scene edge swap points
+    actSceneEdgeSwapDirection = new QAction(icon(""), tr("Swap direction"), this);
+    connect(actSceneEdgeSwapDirection, SIGNAL(triggered()), this, SLOT(doSceneEdgeSwapDirection()));
 }
 
 void SceneViewPreprocessor::createMenuGeometry()
@@ -101,11 +105,24 @@ void SceneViewPreprocessor::createMenuGeometry()
     mnuScene->addAction(actSceneViewSelectRegion);
     mnuScene->addAction(Util::scene()->actTransform);
     mnuScene->addSeparator();
+    if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
+        mnuScene->addAction(actSceneEdgeSwapDirection);
     mnuScene->addAction(actSceneObjectProperties);
 }
 
 void SceneViewPreprocessor::doSceneObjectProperties()
 {
+    if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
+    {
+        if (Util::scene()->selectedCount() == 1)
+        {
+            for (int i = 0; i < Util::scene()->nodes->length(); i++)
+            {
+                if (Util::scene()->nodes->at(i)->isSelected())
+                    Util::scene()->nodes->at(i)->showDialog(this);
+            }
+        }
+    }
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
     {
         if (Util::scene()->selectedCount() > 1)
@@ -140,6 +157,19 @@ void SceneViewPreprocessor::doSceneObjectProperties()
     }
 
     Util::scene()->selectNone();
+}
+
+void SceneViewPreprocessor::doSceneEdgeSwapDirection()
+{
+    // swap
+    if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
+        if (Util::scene()->selectedCount() == 1)
+            for (int i = 0; i < Util::scene()->edges->length(); i++)
+                if (Util::scene()->edges->at(i)->isSelected())
+                {
+                    Util::scene()->edges->at(i)->swapDirection();
+                    refresh();
+                }
 }
 
 void SceneViewPreprocessor::doSelectBasic()
@@ -278,7 +308,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 QString str;
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                     str = str + QString("%1 (%2), ").
-                            arg(edge->marker(fieldInfo)->getName()).
+                            arg(edge->marker(fieldInfo)->name()).
                             arg(fieldInfo->name());
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
@@ -306,7 +336,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 QString str;
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                     str = str + QString("%1 (%2), ").
-                            arg(label->marker(fieldInfo)->getName()).
+                            arg(label->marker(fieldInfo)->name()).
                             arg(fieldInfo->name());
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
@@ -317,7 +347,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                            arg(label->point().x, 0, 'g', 3).
                            arg(label->point().y, 0, 'g', 3).
                            arg(str).
-                           arg(label->area(), 0, 'g', 3).                           
+                           arg(label->area(), 0, 'g', 3).
                            arg(Util::scene()->labels->items().indexOf(label)));
                 updateGL();
             }
@@ -370,20 +400,20 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             {
                 if (fabs(len.x) > Util::config()->gridStep)
                 {
-                    foreach (SceneNode *node, Util::scene()->nodes->items())
-                        if (node->isSelected())
-                            node->setPoint(Point(node->point().x + (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep,
-                                                 node->point().y));
+                    dp.x = (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                    dp.y = 0;
                     len.x = 0;
+
+                    Util::scene()->transformTranslate(dp, false);
                 }
 
                 if (fabs(len.y) > Util::config()->gridStep)
                 {
-                    foreach (SceneNode *node, Util::scene()->nodes->items())
-                        if (node->isSelected())
-                            node->setPoint(Point(node->point().x,
-                                                 node->point().y + (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep));
+                    dp.x = 0;
+                    dp.y = (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
                     len.y = 0;
+
+                    Util::scene()->transformTranslate(dp, false);
                 }
             }
             else
@@ -536,11 +566,8 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                     {
                         SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0);
                         SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
-                        // TODO: undo
-                        if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart()->point(),
-                                                                                                        edge->nodeEnd()->point(),
-                                                                                                        "TODO",
-                                                                                                        edge->angle()));
+
+                        if (edgeAdded == edge) Util::scene()->undoStack()->push(edge->getAddCommand());
                     }
 
                     m_nodeLast->setSelected(false);
@@ -564,10 +591,10 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             {
                 SceneLabel *label = new SceneLabel(p, 0);
                 SceneLabel *labelAdded = Util::scene()->addLabel(label);
-                // TODO: undo
-                if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point(),
-                                                                                                   "TODO",
-                                                                                                   label->area()));
+
+                if (labelAdded == label)
+                    Util::scene()->undoStack()->push(label->getAddCommand());
+
                 updateGL();
             }
         }
@@ -713,7 +740,7 @@ void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Delete:
     {
-        Util::scene()->deleteSelected();        
+        Util::scene()->deleteSelected();
     }
         break;
     case Qt::Key_Space:
@@ -754,9 +781,16 @@ void SceneViewPreprocessor::contextMenuEvent(QContextMenuEvent *event)
 {
     actSceneObjectProperties->setEnabled(false);
 
+    // set node context menu
+    if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
+        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() == 1);
+
     // set boundary context menu
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
+    {
         actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
+        actSceneEdgeSwapDirection->setEnabled(Util::scene()->selectedCount() == 1);
+    }
 
     // set material context menu
     if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
@@ -1053,7 +1087,7 @@ void SceneViewPreprocessor::paintGeometry()
             QString str;
             foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 str = str + QString("%1, ").
-                        arg(label->marker(fieldInfo)->getName());
+                        arg(label->marker(fieldInfo)->name());
             if (str.length() > 0)
                 str = str.left(str.length() - 2);
 

@@ -184,7 +184,7 @@ void PreprocessorWidget::refresh()
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
 
-            item->setText(0, material->getName());
+            item->setText(0, material->name());
             item->setIcon(0, (Util::scene()->labels->haveMarker(material).count() > 0) ? icon("scene-labelmarker") : icon("scene-labelmarker-notused"));
             if (Util::scene()->labels->haveMarker(material).count() == 0)
                 item->setForeground(0, QBrush(Qt::gray));
@@ -209,7 +209,7 @@ void PreprocessorWidget::refresh()
 
             Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
 
-            item->setText(0, QString("%1 (%2)").arg(boundary->getName()).arg(boundary_type->name()));
+            item->setText(0, QString("%1 (%2)").arg(boundary->name()).arg(boundary_type->name()));
             item->setIcon(0, (Util::scene()->edges->haveMarker(boundary).count() > 0) ? icon("scene-edgemarker") : icon("scene-edgemarker-notused"));
             if (Util::scene()->edges->haveMarker(boundary).count() == 0)
                 item->setForeground(0, QBrush(Qt::gray));

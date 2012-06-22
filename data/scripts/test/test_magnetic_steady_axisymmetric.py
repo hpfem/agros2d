@@ -84,9 +84,17 @@ testHr = agros2d.test("Magnetic intensity - r", point["Hrr"], 156.728443)
 testHz = agros2d.test("Magnetic intensity - z", point["Hrz"], 494.39852)
 testwm = agros2d.test("Energy density", point["wm"], 50.704118)
 
+point = magnetic.local_values(0.0199415, 0.0609942)
+testFr_real = agros2d.test("Lorentz force - r - real", point["Flrr"], -1.237274e5)
+testFz_real = agros2d.test("Lorentz force - z - real", point["Flrz"], -41951.726164)
+
 # volume integral
 volume = magnetic.volume_integrals([1])
 testWm = agros2d.test("Energy", volume["Wm"], 0.002273)
+
+volume = magnetic.volume_integrals([2])
+testFLr = agros2d.test("Lorentz force - r", volume["Flx"], -8.069509) # TODO: Flr
+testFLz = agros2d.test("Lorentz force - z", volume["Fly"], -5.288991) # TODO: Flz
 
 # surface integral
 surface = magnetic.surface_integrals([12, 13, 14, 15])
@@ -95,4 +103,6 @@ surface = magnetic.surface_integrals([12, 13, 14, 15])
 print("Test: Magnetic steady state - axisymmetric: " + str(point and testA
                                                            and testB and testBr and testBz
                                                            and testH and testHr and testHz
-                                                           and testwm and testWm))
+                                                           and testFr_real and testFz_real
+                                                           and testwm and testWm
+                                                           and testFLr and testFLz))

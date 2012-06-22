@@ -38,6 +38,14 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
     }
 }
 
+void SceneEdge::swapDirection()
+{
+    SceneNode *tmp = m_nodeStart;
+
+    m_nodeStart = m_nodeEnd;
+    m_nodeEnd = tmp;
+}
+
 Point SceneEdge::center() const
 {
     return centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
@@ -103,16 +111,30 @@ double SceneEdge::length() const
         return radius() * m_angle / 180.0 * M_PI;
 }
 
+bool SceneEdge::isOutsideArea() const
+{
+    return (m_nodeStart->isOutsideArea() || m_nodeEnd->isOutsideArea());
+}
+
+bool SceneEdge::isError() const
+{
+    return (this->isLyingNode() || this->isOutsideArea() || isCrossed());
+}
+
 int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
     SceneEdgeDialog *dialog = new SceneEdgeDialog(this, parent, isNew);
     return dialog->exec();
 }
 
+SceneEdgeCommandAdd* SceneEdge::getAddCommand()
+{
+    return new SceneEdgeCommandAdd(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
+}
+
 SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
 {
-    // TODO: undo
-    return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), "TODO", m_angle);
+    return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
 }
 
 //************************************************************************************************
@@ -123,8 +145,9 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
     {
         if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
         {
-            // TODO: undo
-            Util::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart()->point(), edge->nodeEnd()->point(), "TODO",
+            Util::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart()->point(),
+                                                                        edge->nodeEnd()->point(),
+                                                                        edge->markersKeys(),
                                                                         edge->angle()));
             remove(edge);
         }
@@ -224,13 +247,13 @@ void SceneEdgeMarker::fillComboBox()
     cmbBoundary->clear();
 
     // none marker
-    cmbBoundary->addItem(Util::scene()->boundaries->getNone(m_fieldInfo)->getName(),
+    cmbBoundary->addItem(Util::scene()->boundaries->getNone(m_fieldInfo)->name(),
                          Util::scene()->boundaries->getNone(m_fieldInfo)->variant());
 
     // real markers
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(m_fieldInfo).items())
     {
-        cmbBoundary->addItem(boundary->getName(),
+        cmbBoundary->addItem(boundary->name(),
                              boundary->variant());
     }
 }
@@ -246,7 +269,7 @@ void SceneEdgeMarker::doBoundaryClicked()
     SceneBoundary *marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
-        cmbBoundary->setItemText(cmbBoundary->currentIndex(), marker->getName());
+        cmbBoundary->setItemText(cmbBoundary->currentIndex(), marker->name());
         Util::scene()->refresh();
     }
 }
@@ -336,7 +359,6 @@ bool SceneEdgeDialog::save()
 
     if (!m_isNew)
     {
-        // TODO: swap
         Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
                                                                   sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
                                                                   sceneEdge->angle(), txtAngle->number()));
@@ -349,6 +371,7 @@ bool SceneEdgeDialog::save()
 
     Util::scene()->checkEdge(sceneEdge);
 
+    Util::scene()->refresh();
     return true;
 }
 
@@ -414,12 +437,12 @@ void SceneEdgeSelectDialog::load()
         cmbBoundaries[fieldInfo]->clear();
 
         // none marker
-        cmbBoundaries[fieldInfo]->addItem(Util::scene()->boundaries->getNone(fieldInfo)->getName(),
+        cmbBoundaries[fieldInfo]->addItem(Util::scene()->boundaries->getNone(fieldInfo)->name(),
                                           Util::scene()->boundaries->getNone(fieldInfo)->variant());
 
         // real markers
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
-            cmbBoundaries[fieldInfo]->addItem(boundary->getName(),
+            cmbBoundaries[fieldInfo]->addItem(boundary->name(),
                                               boundary->variant());
     }
 
@@ -453,6 +476,7 @@ bool SceneEdgeSelectDialog::save()
         }
     }
 
+    Util::scene()->refresh();
     return true;
 }
 
@@ -470,55 +494,86 @@ void SceneEdgeSelectDialog::doReject()
 // undo framework *******************************************************************************************************************
 // **********************************************************************************************************************************
 
-SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName,
+SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
                                          double angle, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
-    m_markerName = markerName;
+    m_markers = markers;
     m_angle = angle;
 }
 
 void SceneEdgeCommandAdd::undo()
 {
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Util::scene()->refresh();
 }
 
 void SceneEdgeCommandAdd::redo()
 {
-    //TODO
-    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
-    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
-    //TODO
+    // new edge
+    SceneEdge *edge = new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
+                                    Util::scene()->addNode(new SceneNode(m_pointEnd)),
+                                    m_angle);
 
-    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
-                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
-                                         m_angle));
+    foreach (QString fieldId, m_markers.keys())
+    {
+        if (Util::problem()->hasField(fieldId))
+        {
+            SceneBoundary *boundary = Util::scene()->boundaries->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+
+            if (!boundary)
+                boundary = Util::scene()->boundaries->getNone(Util::problem()->fieldInfo(fieldId));
+
+            // add marker
+            edge->addMarker(boundary);
+        }
+    }
+
+    // add edge to the list
+    Util::scene()->addEdge(edge);
+    Util::scene()->refresh();
 }
 
-SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,
+SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
                                                double angle, QUndoCommand *parent) : QUndoCommand(parent)
-{    
+{
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
-    m_markerName = markerName;
+    m_markers = markers;
     m_angle = angle;
 }
 
 void SceneEdgeCommandRemove::undo()
 {
-    assert(0); //TODO
-    //    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
-    //    if (boundary == NULL) boundary = Util::scene()->boundaries->get("none"); //TODO - do it better
-    //    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
-    //                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
-    //                                         boundary,
-    //                                         m_angle));
+    // new edge
+    SceneEdge *edge = new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
+                                    Util::scene()->addNode(new SceneNode(m_pointEnd)),
+                                    m_angle);
+
+    foreach (QString fieldId, m_markers.keys())
+    {
+        if (Util::problem()->hasField(fieldId))
+        {
+            SceneBoundary *boundary = Util::scene()->boundaries->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+
+            if (!boundary)
+                boundary = Util::scene()->boundaries->getNone(Util::problem()->fieldInfo(fieldId));
+
+            // add marker
+            edge->addMarker(boundary);
+        }
+    }
+
+    // add edge to the list
+    Util::scene()->addEdge(edge);
+    Util::scene()->refresh();
 }
 
 void SceneEdgeCommandRemove::redo()
 {
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Util::scene()->refresh();
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
@@ -556,12 +611,3 @@ void SceneEdgeCommandEdit::redo()
     }
 }
 
-bool SceneEdge::isOutsideArea() const
-{
-    return (m_nodeStart->isOutsideArea() || m_nodeEnd->isOutsideArea());
-}
-
-bool SceneEdge::isError() const
-{
-    return (this->isLyingNode() || this->isOutsideArea() || isCrossed());
-}

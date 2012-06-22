@@ -89,10 +89,6 @@ public:
 
     void deleteWithUndo(QString message);
 
-    // saves all members into the node
-    //void fillQDomNode(const QDomDocument & document) const;
-
-
 protected:
     QList<BasicType*> data;
 
@@ -122,6 +118,7 @@ public:
 
     /// returns markers length
     int markersCount();
+    QMap<QString, QString> markersKeys() const;
 
     /// removes marker corresponding to this field from node
     void removeMarker(FieldInfo* fieldInfo) {m_markers.remove(fieldInfo); }
@@ -165,7 +162,7 @@ public:
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> selected();
 
     /// Filters for highlighted
-    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlited();
+    MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> highlighted();
 };
 
 // *************************************************************************************************************************************

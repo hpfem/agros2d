@@ -27,22 +27,22 @@ class FieldInfo;
 class Marker
 {
 public:
-    Marker(FieldInfo *m_fieldInfo, QString name);
+    Marker(FieldInfo *m_fieldInfo, QString m_name);
     virtual ~Marker();
 
     /// value of one individual variable
     Value value(QString id);
 
     /// get all values
-    const QMap<QString, Value> getValues() const;
+    const QMap<QString, Value> values() const;
 
     void setValue(QString name, Value value) { m_values[name] = value; }
 
     /// return name
-    QString getName() {return name; }
+    QString name() {return m_name; }
 
     /// set name
-    void setName(QString paramName) { name = paramName; }
+    void setName(QString paramName) { m_name = paramName; }
 
     FieldInfo *fieldInfo() { return m_fieldInfo; }
 
@@ -59,7 +59,7 @@ public:
     void setNone() {m_isNone = true;}
 
 private:
-    QString name;
+    QString m_name;
     bool m_isNone;
 
 protected:
@@ -79,7 +79,7 @@ private:
 class Boundary : public Marker
 {
 public:
-    Boundary(FieldInfo *m_fieldInfo, QString name = "", QString type = "",
+    Boundary(FieldInfo *m_fieldInfo, QString m_name = "", QString type = "",
              QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     /// get type
@@ -99,7 +99,7 @@ private:
 class Material : public Marker
 {
 public:
-    Material(FieldInfo *m_fieldInfo, QString name,
+    Material(FieldInfo *m_fieldInfo, QString m_name,
              QMap<QString, Value> m_values = (QMap<QString, Value>()));
 };
 

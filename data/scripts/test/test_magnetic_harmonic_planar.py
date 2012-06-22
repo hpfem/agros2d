@@ -81,10 +81,10 @@ testJit_real = agros2d.test("Current density - induced transform - real", point[
 testJit_imag = agros2d.test("Current density - induced transform - imag", point["Jiti"], -6.073744e6)
 testJ_real = agros2d.test("Current density - total - real", point["Jr"], 1.50663e6)
 testJ_imag = agros2d.test("Current density - total - imag", point["Ji"], -6.073744e6)
-#testFx_real = agros2d.test("Lorentz force - y - real", point["Fx_real"], 1.442159e5)
-#testFx_imag = agros2d.test("Lorentz force - x - imag", point["Fx_imag"], 56947.557678)
-#testFy_real = agros2d.test("Lorentz force - y - real", point["Fy_real"], 1.677588e5)
-#testFy_imag = agros2d.test("Lorentz force - y - imag", point["Fy_imag"], 69168.050723)
+testFx_real = agros2d.test("Lorentz force - x - real", point["Flrx"], 1.442159e5)
+testFx_imag = agros2d.test("Lorentz force - x - imag", point["Flix"], 56947.557678)
+testFy_real = agros2d.test("Lorentz force - y - real", point["Flry"], 1.677588e5)
+testFy_imag = agros2d.test("Lorentz force - y - imag", point["Fliy"], 69168.050723)
 
 # volume integral
 volume = magnetic.volume_integrals([1])
@@ -96,12 +96,14 @@ testIr = agros2d.test("Current - real", volume["Ir"], -104.701323)
 testIi = agros2d.test("Current - imag", volume["Ii"], -1381.947299)
 testWm = agros2d.test("Energy", volume["Wm"], 0.042927)
 testPj = agros2d.test("Losses", volume["Pj"], 90.542962)
-#testFLx = agros2d.test("Lorentz force - x", volume["Fx"], -11.228229)
-#testFLy = agros2d.test("Lorentz force - y", volume["Fy"], -4.995809)
+testFLx = agros2d.test("Lorentz force - x", volume["Flx"], -11.228229)
+testFLy = agros2d.test("Lorentz force - y", volume["Fly"], -4.995809)
 
 print("Test: Magnetic harmonic - planar: " + str(testA and testA_real and testA_imag
                                                  and testB and testBx_real and testBx_imag and testBy_real and testBy_imag
                                                  and testH and testHx_real and testHy_real and testHx_imag and testHy_imag
                                                  and testJit_real and testJit_imag and testJ_real and testJ_imag
+                                                 and testFx_real and testFx_imag and testFy_real and testFy_imag
                                                  and testIe_real and testIe_imag and testIit_real and testIit_imag and testIr and testIi
-                                                 and testwm and testpj and testWm and testPj))
+                                                 and testwm and testpj and testWm and testPj
+                                                 and testFLx and testFLy))

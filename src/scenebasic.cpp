@@ -80,6 +80,16 @@ int MarkedSceneBasic<MarkerType>::markersCount()
 }
 
 template <typename MarkerType>
+QMap<QString, QString> MarkedSceneBasic<MarkerType>::markersKeys() const
+{
+    QMap<QString, QString> markers;
+    foreach (MarkerType* marker, m_markers)
+        markers[marker->fieldId()] = marker->name();
+
+    return markers;
+}
+
+template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>* list)
 {
     foreach (MarkerType* marker, m_markers)
@@ -179,19 +189,6 @@ void SceneBasicContainer<BasicType>::deleteWithUndo(QString message)
     }
 }
 
-//TODO asi to nema cenu delat tady...
-//template <typename BasicType>
-//void SceneBasicContainer<BasicType>::fillQDomNode(const QDomDocument & document) const
-//{
-//    QDomNode nodeList = doc.createELement(containerName);
-//    int i = 0;
-//    foreach (BasicType *node, data)
-//    {
-//        nodeList.appendChild(node->getQDomElement(document, i));
-//        i++;
-//    }
-//}
-
 template class SceneBasicContainer<SceneNode>;
 template class SceneBasicContainer<SceneEdge>;
 template class SceneBasicContainer<SceneLabel>;
@@ -210,7 +207,7 @@ MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicCont
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
-MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::highlited()
+MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::highlighted()
 {
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> list;
     foreach (MarkedSceneBasicType* item, this->data)
