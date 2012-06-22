@@ -47,8 +47,20 @@
 	<tr>
 		<td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
 	</tr>
+	<tr>
+	<td>
+		<h3>{{GEOMETRY_LABEL}}</h3>
+		<table>
+			<tr><td><b>{{GEOMETRY_NODES_LABEL}}</b></td><td>{{GEOMETRY_NODES}}</td></tr>
+			<tr><td><b>{{GEOMETRY_EDGES_LABEL}}</b></td><td>{{GEOMETRY_EDGES}}</td></tr>
+			<tr><td><b>{{GEOMETRY_LABELS_LABEL}}</b></td><td>{{GEOMETRY_LABELS}}</td></tr>
+			<tr><td><b>{{GEOMETRY_MATERIALS_LABEL}}</b></td><td>{{GEOMETRY_MATERIALS}}</td></tr>
+			<tr><td><b>{{GEOMETRY_BOUNDARIES_LABEL}}</b></td><td>{{GEOMETRY_BOUNDARIES}}</td></tr>
+		</table>
+	</td>
+	<td><div class="figure">{{GEOMETRY_SVG}}</div></td>
+	</tr>
 </table>
-<div class="figure">{{GEOMETRY_SVG}}</div>
 </div>
 
 <div class="section">

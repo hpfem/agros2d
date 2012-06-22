@@ -50,7 +50,7 @@ tr {
 }
 
 .figure { 
-  text-align: center; 
+  text-align: left; 
 }
 
 .section {

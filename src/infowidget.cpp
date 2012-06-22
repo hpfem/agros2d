@@ -113,6 +113,17 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
     problemInfo.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
 
+    problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
+    problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());
+    problemInfo.SetValue("GEOMETRY_NODES", QString::number(Util::scene()->nodes->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges:").toStdString());
+    problemInfo.SetValue("GEOMETRY_EDGES", QString::number(Util::scene()->edges->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
+    problemInfo.SetValue("GEOMETRY_LABELS", QString::number(Util::scene()->labels->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_MATERIALS_LABEL", tr("Materials:").toStdString());
+    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Util::scene()->materials->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_BOUNDARIES_LABEL", tr("Boundaries:").toStdString());
+    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Util::scene()->boundaries->items().count()).toStdString());
     problemInfo.SetValue("GEOMETRY_SVG", generateGeometry().toStdString());
 
     if (Util::problem()->fieldInfos().count() > 0)
@@ -280,37 +291,54 @@ QString InfoWidget::generateGeometry()
     double size = 200;
     double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
 
-    QString str;
     // svg
+    QString str;
     str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
-    // str += QString("<svg width=\"%1px\" height=\"%2px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
             arg(size).
             arg(size).
-            arg(boundingBox.start.x - stroke_width).
-            arg(boundingBox.start.y - stroke_width).
-            arg(boundingBox.width() + 2*stroke_width).
-            arg(boundingBox.height() + 2*stroke_width);
+            arg(boundingBox.start.x).
+            arg(0).
+            arg(boundingBox.width()).
+            arg(boundingBox.height());
+
     str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
 
     foreach (SceneEdge *edge, Util::scene()->edges->items())
     {
         if (edge->angle() > 0.0)
         {
-            str += QString("   <path d=\"M%1 %2 A%3 %4 0 0 0 %5 %6\" />\n").
-                    arg(edge->nodeStart()->point().x).
-                    arg(edge->nodeStart()->point().y).
-                    arg(edge->radius()).
-                    arg(edge->radius()).
-                    arg(edge->nodeEnd()->point().x).
-                    arg(edge->nodeEnd()->point().y);
+            Point center = edge->center();
+            double radius = edge->radius();
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+            int segments = edge->angle() / 5.0;
+            if (segments < 2) segments = 2;
+            double theta = edge->angle() / double(segments - 1);
+
+            for (int i = 0; i < segments-1; i++)
+            {
+                double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                double x1 = radius * cos(arc1);
+                double y1 = radius * sin(arc1);
+                double x2 = radius * cos(arc2);
+                double y2 = radius * sin(arc2);
+
+                str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                        arg(center.x + x1).
+                        arg(boundingBox.end.y - (center.y + y1)).
+                        arg(center.x + x2).
+                        arg(boundingBox.end.y - (center.y + y2));
+            }
         }
         else
         {
-            str += QString("   <line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+            str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
                     arg(edge->nodeStart()->point().x).
-                    arg(edge->nodeStart()->point().y).
+                    arg(boundingBox.end.y - edge->nodeStart()->point().y).
                     arg(edge->nodeEnd()->point().x).
-                    arg(edge->nodeEnd()->point().y);
+                    arg(boundingBox.end.y - edge->nodeEnd()->point().y);
         }
     }
     str += "</g>\n";
