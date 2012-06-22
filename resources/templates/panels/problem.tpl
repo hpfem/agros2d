@@ -9,7 +9,20 @@
 	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />
 </head>
 <body>
-
+<!--
+<svg width="500px" height="500px" viewBox="-0.012 -2.012 1.524 3.024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g stroke="black" stroke-width="0.012" fill="none">
+   <line x1="0" y1="-2" x2="0" y2="-1" />
+   <line x1="0" y1="-1" x2="0.2" y2="-1" />
+   <line x1="0.2" y1="-1" x2="0" y2="-0.5" />
+   <line x1="0" y1="-0.5" x2="0" y2="-0.25" />
+   <line x1="0" y1="0.25" x2="0" y2="1" />
+   <path d="M0 0.25 A0.25 0.25 0 0 0 0 -0.25" />
+   <path d="M0 1 A1.5 1.5 0 0 0 1.5 -0.5" />
+   <path d="M1.5 -0.5 A1.5 1.5 0 0 0 0 -2" />
+</g>
+</svg>
+-->
 <table>
 <tr>
 <td>
@@ -35,6 +48,7 @@
 		<td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
 	</tr>
 </table>
+<div class="figure">{{GEOMETRY_SVG}}</div>
 </div>
 
 <div class="section">

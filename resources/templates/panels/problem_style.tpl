@@ -49,6 +49,10 @@ tr {
 	vertical-align: top;
 }
 
+.figure { 
+  text-align: center; 
+}
+
 .section {
 	background: rgba(206, 206, 206, 0.6);
     border-radius: 6px;

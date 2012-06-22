@@ -86,7 +86,7 @@ void InfoWidget::showInfo()
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() - 1).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem_style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
@@ -112,6 +112,8 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("TIME_STEP", QString::number(Util::problem()->config()->timeStep().number()).toStdString() + " s");
     problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
     problemInfo.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
+
+    problemInfo.SetValue("GEOMETRY_SVG", generateGeometry().toStdString());
 
     if (Util::problem()->fieldInfos().count() > 0)
     {
@@ -269,6 +271,52 @@ void InfoWidget::showInfo()
     webView->setHtml(QString::fromStdString(info));
 
     // setFocus();
+}
+
+QString InfoWidget::generateGeometry()
+{
+    RectPoint boundingBox = Util::scene()->boundingBox();
+
+    double size = 200;
+    double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
+
+    QString str;
+    // svg
+    str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
+    // str += QString("<svg width=\"%1px\" height=\"%2px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
+            arg(size).
+            arg(size).
+            arg(boundingBox.start.x - stroke_width).
+            arg(boundingBox.start.y - stroke_width).
+            arg(boundingBox.width() + 2*stroke_width).
+            arg(boundingBox.height() + 2*stroke_width);
+    str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
+
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    {
+        if (edge->angle() > 0.0)
+        {
+            str += QString("   <path d=\"M%1 %2 A%3 %4 0 0 0 %5 %6\" />\n").
+                    arg(edge->nodeStart()->point().x).
+                    arg(edge->nodeStart()->point().y).
+                    arg(edge->radius()).
+                    arg(edge->radius()).
+                    arg(edge->nodeEnd()->point().x).
+                    arg(edge->nodeEnd()->point().y);
+        }
+        else
+        {
+            str += QString("   <line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                    arg(edge->nodeStart()->point().x).
+                    arg(edge->nodeStart()->point().y).
+                    arg(edge->nodeEnd()->point().x).
+                    arg(edge->nodeEnd()->point().y);
+        }
+    }
+    str += "</g>\n";
+    str += "</svg>\n";
+
+    return str;
 }
 
 void InfoWidget::doAdaptiveError()

@@ -71,6 +71,7 @@ private:
 
 private slots:
     void showInfo();
+    QString generateGeometry();
 
     void doAdaptiveError();
     void doAdaptiveDOFs();
