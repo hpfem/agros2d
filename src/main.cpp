@@ -10,9 +10,7 @@
 
 class MyApplication : public QApplication {
 public:
-    MyApplication(int& argc, char ** argv) :
-    QApplication(argc, argv) { }
-    virtual ~MyApplication() { }
+    MyApplication(int& argc, char ** argv) : QApplication(argc, argv) {}
 
     // reimplemented from QApplication so we can throw exceptions in slots
     virtual bool notify(QObject * receiver, QEvent * event) {
