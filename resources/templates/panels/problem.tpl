@@ -38,15 +38,19 @@
 	<tr>
 		<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
 	</tr>
+	{{#HARMONIC}}
 	<tr>
 		<td><b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td>
 	</tr>
+	{{/HARMONIC}}
+	{{#TRANSIENT}}
 	<tr>
 		<td><b>{{TIME_STEP_LABEL}}</b></td><td>{{TIME_STEP}}</td>
 	</tr>
 	<tr>
 		<td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
 	</tr>
+	{{/TRANSIENT}}
 	<tr>
 	<td>
 		<h3>{{GEOMETRY_LABEL}}</h3>

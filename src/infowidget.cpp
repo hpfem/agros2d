@@ -106,8 +106,12 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
     problemInfo.SetValue("MESH_TYPE", meshTypeString(Util::problem()->config()->meshType()).toStdString());
 
+    if (Util::problem()->isHarmonic())
+        problemInfo.ShowSection("HARMONIC");
     problemInfo.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
     problemInfo.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
+    if (Util::problem()->isTransient())
+        problemInfo.ShowSection("TRANSIENT");
     problemInfo.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
     problemInfo.SetValue("TIME_STEP", QString::number(Util::problem()->config()->timeStep().number()).toStdString() + " s");
     problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
