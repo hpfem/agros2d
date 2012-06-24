@@ -41,7 +41,7 @@ int DEBUG_COUNTER = 0;
 void processSolverOutput(const char* aha)
 {
     QString str = QString(aha).trimmed();
-    Util::log()->printMessage(QObject::tr("Solver"), str.replace("I ---- ", ""));
+    Util::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
 }
 
 template <typename Scalar>
@@ -52,11 +52,11 @@ void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
 
     m_solverID = QObject::tr("Solver") + " (";
     QListIterator<Field*> iter(m_block->fields());
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
         m_solverID += iter.next()->fieldInfo()->fieldId();
-        if(iter.hasNext())
-            m_solverID += " + ";
+        if (iter.hasNext())
+            m_solverID += ", ";
     }
     m_solverID += ")";
 }
@@ -239,9 +239,12 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
                 select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
                 break;
             case AdaptivityType_P:
+                select = new Hermes::Hermes2D::RefinementSelectors::POnlySelector<Scalar>(H2DRS_DEFAULT_ORDER, 1, 1);
+                /*
                 select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
                                                                                                 Util::config()->convExp,
                                                                                                 H2DRS_DEFAULT_ORDER);
+                */
                 break;
             case AdaptivityType_HP:
                 select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,

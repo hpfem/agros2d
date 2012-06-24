@@ -69,6 +69,7 @@ private:
      QAction *actShowTimestamp;
      QAction *actShowDebug;
      QAction *actClear;
+     QAction *actCopy;
 
      void createActions();
 };
@@ -101,7 +102,7 @@ private:
      void createControls();
 
 private slots:
-     void printDebug(const QString &module, const QString &message);
+     void printMessage(const QString &module, const QString &message);
 };
 
 class LogStdOut : public QObject

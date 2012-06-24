@@ -180,7 +180,9 @@ namespace Hermes
       {
         linear_solver.solve();
 
-        this->sln_vector = linear_solver.get_sln_vector();
+        for (int i = 0; i < ndof; i++)
+          this->sln_vector[i] = linear_solver.get_sln_vector()[i];
+        // this->sln_vector = linear_solver.get_sln_vector();
 
         // Calculate relative error between last_iter_vector[] and this->sln_vector[].
         // FIXME: this is wrong in the complex case (complex conjugation must be used).
