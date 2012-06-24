@@ -516,7 +516,7 @@ void PreprocessorWidget::showInfo()
         field->SetValue("WEAK_FORMS_TYPE_LABEL", tr("Weak forms:").toStdString());
         field->SetValue("WEAK_FORMS_TYPE", weakFormsTypeString(fieldInfo->weakFormsType()).toStdString());
 
-        field->SetValue("LINEARITY_TYPE_LABEL", tr("Solution type:").toStdString());
+        field->SetValue("LINEARITY_TYPE_LABEL", tr("Solver:").toStdString());
         field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType()).toStdString());
         /*
         field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());

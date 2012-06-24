@@ -170,7 +170,7 @@ void InfoWidget::showInfo()
                 field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
             }
 
-            field->SetValue("LINEARITY_TYPE_LABEL", tr("Solution type:").toStdString());
+            field->SetValue("LINEARITY_TYPE_LABEL", tr("Solver:").toStdString());
             field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType()).toStdString());
 
             if (fieldInfo->linearityType() != LinearityType_Linear)
