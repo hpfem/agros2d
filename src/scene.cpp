@@ -448,9 +448,9 @@ SceneMaterial *Scene::getMaterial(FieldInfo *field, const QString &name)
 
 void Scene::removeMaterial(SceneMaterial *material)
 {
-    //TODO instead of setting NoneMaterial we now remove... rething
     labels->removeMarkerFromAll(material);
-    this->materials->remove(material);
+    materials->remove(material);
+
     // delete material;
 
     emit invalidated();

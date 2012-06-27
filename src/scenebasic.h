@@ -121,9 +121,9 @@ public:
     QMap<QString, QString> markersKeys() const;
 
     /// removes marker corresponding to this field from node
-    void removeMarker(FieldInfo* fieldInfo) {m_markers.remove(fieldInfo); }
+    void removeMarker(FieldInfo* fieldInfo);
     void removeMarker(QString field);
-    void removeMarker(MarkerType* marker) {removeMarker(marker->fieldInfo()); }
+    void removeMarker(MarkerType* marker);
 
     /// goes through own markers and if they are not yet in the list, adds them there
     void putMarkersToList(MarkerContainer<MarkerType>* list);

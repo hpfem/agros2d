@@ -45,33 +45,6 @@ int SceneBoundary::showDialog(QWidget *parent)
         QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Boundary dialog doesn't exists."));
 }
 
-QString SceneBoundary::html()
-{
-    //TODO
-    QString out;
-    //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
-    //    out += "<table>";
-
-    //    Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(type);
-    //    if (boundary_type)
-    //        for (Hermes::vector<Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    //        {
-    //            Module::BoundaryTypeVariable *variable = ((Module::BoundaryTypeVariable *) *it);
-
-    //            out += "<tr>";
-    ////            out += QString("<td>%1 (%2):</td>").
-    ////                    arg(QString::fromStdString(variable->name)).
-    ////                    arg(QString::fromStdString(variable->unit));
-    //            out += QString("<td>%1</td>").
-    //                    arg(values[variable->id].text());
-    //            out += "</tr>";
-    //        }
-
-    //    out += "</table>";
-
-    return out;
-}
-
 QVariant SceneBoundary::variant()
 {
     QVariant v;
@@ -100,33 +73,6 @@ int SceneMaterial::showDialog(QWidget *parent)
     else
         QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Material dialog doesn't exists."));
 
-}
-
-QString SceneMaterial::html()
-{
-    //TODO
-    QString out;
-
-    //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
-    //    out += "<table>";
-
-    //    for (Hermes::vector<Module::MaterialTypeVariable *>::iterator it = Util::problem()->config()->module()->material_type_variables.begin();
-    //         it < Util::problem()->config()->module()->material_type_variables.end(); ++it )
-    //    {
-    //        Module::MaterialTypeVariable *material = ((Module::MaterialTypeVariable *) *it);
-
-    //        out += "<tr>";
-    ////        out += QString("<td>%1 (%2)</td>").
-    ////                arg(QString::fromStdString(material->name)).
-    ////                arg(QString::fromStdString(material->unit));
-    //        // FIXME - add value
-    //        out += QString("<td>%1</td>").
-    //                arg(QString::fromStdString("FIXME"));
-    //        out += "</tr>";
-    //    }
-    //    out += "</table>";
-
-    return out;
 }
 
 QVariant SceneMaterial::variant()

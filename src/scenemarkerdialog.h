@@ -46,7 +46,6 @@ public:
 
     int showDialog(QWidget *parent);
 
-    QString html();
     QVariant variant();
 };
 
@@ -137,7 +136,6 @@ public:
 
     int showDialog(QWidget *parent);
 
-    QString html();
     QVariant variant();
 };
 

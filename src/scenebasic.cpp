@@ -104,6 +104,23 @@ void MarkedSceneBasic<MarkerType>::removeMarker(QString field)
 }
 
 template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::removeMarker(MarkerType* marker)
+{
+    foreach (MarkerType* item, m_markers)
+    {
+        if (item == marker)
+            m_markers.insert(marker->fieldInfo(), MarkerContainer<MarkerType>::getNone(marker->fieldInfo()));
+    }
+}
+
+template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::removeMarker(FieldInfo* fieldInfo)
+{
+    // replace marker with none marker
+    m_markers.remove(fieldInfo);
+}
+
+template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::doFieldsChanged()
 {
     foreach (MarkerType* marker, m_markers)
@@ -236,9 +253,7 @@ template <typename MarkerType, typename MarkedSceneBasicType>
 void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeFieldMarkers(FieldInfo *fieldInfo)
 {
     foreach(MarkedSceneBasicType* item, this->data)
-    {
         item->removeMarker(fieldInfo);
-    }
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
