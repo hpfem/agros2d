@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
+
+    <module:general id="flow" name="Incompressible flow">
+        <module:description>Incompressible flow model using Navier-Stokes equations </module:description>
+        <module:analyses>
+            <module:analysis id="steadystate" type="steadystate" name="Steady state" solutions="3" />
+            <module:analysis id="transient" type="transient" name="Transient" solutions="3"/>
+        </module:analyses>
+    </module:general>
+
+    <module:constants />
+
+    <module:volume>
+        <module:quantity id="flow_viscosity" shortname="fl_mu" />
+        <module:quantity id="flow_density" shortname="fl_rho" />
+
+        <module:weakforms_volume>
+            <module:weakform_volume analysistype="steadystate">
+                <module:quantity id="flow_viscosity" />
+                <module:quantity id="flow_density" />
+
+                <module:matrix_form i="1" j="1"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval"
+                    axi_newton=""
+                />
+                <module:matrix_form i="1" j="2"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="fl_rho * dy1 * uval * vval"
+                    axi_newton=""
+                />
+                <module:matrix_form i="1" j="3"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton=" - uval * vdx"
+                    axi_newton=""
+                />
+                <module:matrix_form i="2" j="1"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="fl_rho * dx2 * uval * vval"
+                    axi_newton=""
+                />
+                <module:matrix_form i="2" j="2"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dy2 * uval) * vval"
+                    axi_newton=""
+                />
+                <module:matrix_form i="2" j="3"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton=" - uval * vdy"
+                    axi_newton=""
+                />
+                <!--                    asi ne!!-->
+                <module:matrix_form i="3" j="1"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton=" uval * vdx"
+                    axi_newton=""
+                />
+                <!--                    asi ne!!-->
+                <module:matrix_form i="3" j="2"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton=" uval * vdy"
+                    axi_newton=""
+                />
+                <module:matrix_form i="3" j="3"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton=""
+                    axi_newton=""
+                />
+
+<!--                todo: proc je tam minus u tlaku? z puvodni rovnice pouziju green. vetu na laplase, tim by se melo obratit znamenko a tedy byt stejne pro viskozni cast jako pro tlak-->
+                <module:vector_form i="1" j="1"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="fl_mu * (dx1 * vdx + dy1 * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval"
+                    axi_newton=""
+                />
+                <module:vector_form i="1" j="2"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="0"
+                    axi_newton=""
+                />
+                <module:vector_form i="1" j="3"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="0"
+                    axi_newton=""
+                />
+                <module:vector_form i="2" j="1"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="0"
+                    axi_newton=""
+                />
+                <module:vector_form i="2" j="2"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="fl_mu * (dx2 * vdx + dy2 * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval"
+                    axi_newton=""
+                />
+                <module:vector_form i="2" j="3"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="0"
+                    axi_newton=""
+                />
+                <module:vector_form i="3" j="1"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="0"
+                    axi_newton=""
+                />
+                <module:vector_form i="3" j="2"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="0"
+                    axi_newton=""
+                />
+                <module:vector_form i="3" j="3"
+                    planar_linear=""
+                    axi_linear=""
+                    planar_newton="0"
+                    axi_newton=""
+                />
+
+            </module:weakform_volume>
+        </module:weakforms_volume>
+    </module:volume>
+
+    <module:surface>
+        <module:quantity id="elasticity_displacement_x" shortname="st_dx" />
+
+        <module:weakforms_surface>
+            <module:weakform_surface analysistype="steadystate" default="elasticity_fixed_fixed">
+                <module:boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
+                    <module:quantity id="elasticity_displacement_x" />
+                    <module:quantity id="elasticity_displacement_y" />
+
+                    <module:essential_form i="1"
+                        planar_linear="st_dx"
+                        axi_linear="st_dx"
+                        planar_newton="st_dx"
+                        axi_newton="st_dx" />
+                    <module:essential_form i="2"
+                        planar_linear="st_dy"
+                        axi_linear="st_dy"
+                        planar_newton="st_dy"
+                        axi_newton="st_dy" />
+                </module:boundary>
+
+            </module:weakform_surface>
+        </module:weakforms_surface>
+    </module:surface>
+
+    <module:preprocessor>
+        <module:gui type="volume">
+            <module:group>
+				<module:quantity id="elasticity_young_modulus" name="Young modulus"
+					shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
+					shortname_latex="E" unit="Pa" unit_html="Pa" unit_latex="Pa" />
+            </module:group>
+        </module:gui>
+        <module:gui type="surface">
+            <module:group>
+				<module:quantity id="elasticity_displacement_x"
+					name="Fixed - x" shortname="dx"
+					shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+					shortname_latex="\delta_\mathrm{x}" unit="m" unit_html="m"
+					unit_latex="m" />
+            </module:group>
+        </module:gui>
+    </module:preprocessor>
+
+    <module:postprocessor>
+        <module:localvariables>
+            <module:localvariable id="elasticity_displacement"
+                                name="Displacement" type="vector" shortname="d" shortname_html="&lt;i&gt;d&lt;/i&gt;"
+				shortname_latex="d" unit="m" unit_html="m" unit_latex="m">
+				<module:expression analysistype="steadystate"
+					planar_x="value1" planar_y="value2" axi_r="value1" axi_z="value2" />
+            </module:localvariable>
+        </module:localvariables>
+
+        <module:view>
+            <module:scalar_view>
+                <module:default analysistype="steadystate" id="elasticity_displacement" />
+            </module:scalar_view>
+            <module:vector_view>
+                <module:default analysistype="steadystate" id="elasticity_displacement" />
+            </module:vector_view>
+        </module:view>
+
+        <module:volumeintegrals>
+            <module:volumeintegral id="elasticity_volume"
+				name="Volume" shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;"
+				shortname_latex="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;"
+				unit_latex="m^{3}">
+				<module:expression analysistype="steadystate"
+					planar="1.0" axi="2.0 * PI * r" />
+            </module:volumeintegral>
+        </module:volumeintegrals>
+
+        <module:surfaceintegrals>
+            <module:surfaceintegral id="elasticity_length"
+				name="Length" shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"
+				shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
+				<module:expression analysistype="steadystate"
+					planar="1.0" axi="1.0" />
+            </module:surfaceintegral>
+        </module:surfaceintegrals>
+
+        <module:force />
+    </module:postprocessor>
+</module:module>
+
