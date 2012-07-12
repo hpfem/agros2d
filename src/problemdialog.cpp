@@ -560,7 +560,7 @@ void FieldsToobar::refresh()
         }
 
         // linearity
-        hint += tr("<tr><td><b>Solution type:</b></td><td>%1</td></tr>")
+        hint += tr("<tr><td><b>Solver:</b></td><td>%1</td></tr>")
                 .arg(linearityTypeString(fieldInfo->linearityType()));
         if (fieldInfo->linearityType() != LinearityType_Linear)
         {
@@ -944,6 +944,8 @@ void ProblemWidget::updateControls()
     grpCouplings->setVisible(Util::problem()->couplingInfos().count() > 0);
 
     doTransientChanged();
+
+    emit apply();
 }
 
 bool ProblemWidget::save()

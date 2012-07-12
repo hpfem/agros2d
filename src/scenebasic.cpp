@@ -80,6 +80,16 @@ int MarkedSceneBasic<MarkerType>::markersCount()
 }
 
 template <typename MarkerType>
+QMap<QString, QString> MarkedSceneBasic<MarkerType>::markersKeys() const
+{
+    QMap<QString, QString> markers;
+    foreach (MarkerType* marker, m_markers)
+        markers[marker->fieldId()] = marker->name();
+
+    return markers;
+}
+
+template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>* list)
 {
     foreach (MarkerType* marker, m_markers)
@@ -91,6 +101,23 @@ template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::removeMarker(QString field)
 {
     removeMarker(Util::problem()->fieldInfo(field));
+}
+
+template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::removeMarker(MarkerType* marker)
+{
+    foreach (MarkerType* item, m_markers)
+    {
+        if (item == marker)
+            m_markers.insert(marker->fieldInfo(), MarkerContainer<MarkerType>::getNone(marker->fieldInfo()));
+    }
+}
+
+template <typename MarkerType>
+void MarkedSceneBasic<MarkerType>::removeMarker(FieldInfo* fieldInfo)
+{
+    // replace marker with none marker
+    m_markers.remove(fieldInfo);
 }
 
 template <typename MarkerType>
@@ -179,19 +206,6 @@ void SceneBasicContainer<BasicType>::deleteWithUndo(QString message)
     }
 }
 
-//TODO asi to nema cenu delat tady...
-//template <typename BasicType>
-//void SceneBasicContainer<BasicType>::fillQDomNode(const QDomDocument & document) const
-//{
-//    QDomNode nodeList = doc.createELement(containerName);
-//    int i = 0;
-//    foreach (BasicType *node, data)
-//    {
-//        nodeList.appendChild(node->getQDomElement(document, i));
-//        i++;
-//    }
-//}
-
 template class SceneBasicContainer<SceneNode>;
 template class SceneBasicContainer<SceneEdge>;
 template class SceneBasicContainer<SceneLabel>;
@@ -210,7 +224,7 @@ MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicCont
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
-MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::highlited()
+MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::highlighted()
 {
     MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> list;
     foreach (MarkedSceneBasicType* item, this->data)
@@ -239,9 +253,7 @@ template <typename MarkerType, typename MarkedSceneBasicType>
 void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeFieldMarkers(FieldInfo *fieldInfo)
 {
     foreach(MarkedSceneBasicType* item, this->data)
-    {
         item->removeMarker(fieldInfo);
-    }
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>

@@ -6,11 +6,29 @@
 	<style type="text/css">
 		{{STYLESHEET}}
 	</style>
+	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />
 </head>
 <body>
-<h1>{{BASIC_INFORMATION_LABEL}}</h1>
+<!--
+<svg width="500px" height="500px" viewBox="-0.012 -2.012 1.524 3.024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g stroke="black" stroke-width="0.012" fill="none">
+   <line x1="0" y1="-2" x2="0" y2="-1" />
+   <line x1="0" y1="-1" x2="0.2" y2="-1" />
+   <line x1="0.2" y1="-1" x2="0" y2="-0.5" />
+   <line x1="0" y1="-0.5" x2="0" y2="-0.25" />
+   <line x1="0" y1="0.25" x2="0" y2="1" />
+   <path d="M0 0.25 A0.25 0.25 0 0 0 0 -0.25" />
+   <path d="M0 1 A1.5 1.5 0 0 0 1.5 -0.5" />
+   <path d="M1.5 -0.5 A1.5 1.5 0 0 0 0 -2" />
+</g>
+</svg>
+-->
+<table>
+<tr>
+<td>
 <div class="section">
-<table class="maintable">
+<h2>{{BASIC_INFORMATION_LABEL}}</h2>
+<table>
 	<tr>
 		<td><b>{{NAME_LABEL}}</b></td><td>{{NAME}}</td>
 	</tr>
@@ -20,24 +38,78 @@
 	<tr>
 		<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
 	</tr>
+	{{#HARMONIC}}
 	<tr>
 		<td><b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td>
 	</tr>
+	{{/HARMONIC}}
+	{{#TRANSIENT}}
 	<tr>
 		<td><b>{{TIME_STEP_LABEL}}</b></td><td>{{TIME_STEP}}</td>
 	</tr>
 	<tr>
 		<td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
 	</tr>
+	{{/TRANSIENT}}
+	<tr>
+	<td>
+		<h3>{{GEOMETRY_LABEL}}</h3>
+		<table>
+			<tr><td><b>{{GEOMETRY_NODES_LABEL}}</b></td><td>{{GEOMETRY_NODES}}</td></tr>
+			<tr><td><b>{{GEOMETRY_EDGES_LABEL}}</b></td><td>{{GEOMETRY_EDGES}}</td></tr>
+			<tr><td><b>{{GEOMETRY_LABELS_LABEL}}</b></td><td>{{GEOMETRY_LABELS}}</td></tr>
+			<tr><td><b>{{GEOMETRY_MATERIALS_LABEL}}</b></td><td>{{GEOMETRY_MATERIALS}}</td></tr>
+			<tr><td><b>{{GEOMETRY_BOUNDARIES_LABEL}}</b></td><td>{{GEOMETRY_BOUNDARIES}}</td></tr>
+		</table>
+	</td>
+	<td><div class="figure">{{GEOMETRY_SVG}}</div></td>
+	</tr>
 </table>
 </div>
 
+<div class="section">
+{{#COUPLING}}
+<h2>{{COUPLING_MAIN_LABEL}}</h2>
+<table>
+	{{#COUPLING_SECTION}}
+	<tr>
+		<td colspan=2><h3>{{COUPLING_LABEL}}</h3></td>
+	<tr>
+	<tr>
+		<td><b>{{COUPLING_SOURCE_LABEL}}</b></td><td>{{COUPLING_SOURCE}}</td>
+	<tr>
+	</tr>
+		<td><b>{{COUPLING_TARGET_LABEL}}</b></td><td>{{COUPLING_TARGET}}</td>
+	<tr>
+	</tr>
+		<td><b>{{COUPLING_TYPE_LABEL}}</b></td><td>{{COUPLING_TYPE}}</td>		
+	</tr>
+	{{/COUPLING_SECTION}}
+</table>
+</div>
+{{/COUPLING}}
+
+{{#SOLUTION_PARAMETERS_SECTION}}
+<div class="section">
+<h2>{{SOLUTION_LABEL}}</h2>
+<table>
+    <tr>
+        <td><b>{{SOLUTION_ELAPSED_TIME_LABEL}}</b></td><td>{{SOLUTION_ELAPSED_TIME}}</td>
+    </tr>
+    <tr>
+        <td><b>{{NUM_THREADS_LABEL}}</b></td><td>{{NUM_THREADS}}</td>
+    </tr>
+</table>
+</div>
+{{/SOLUTION_PARAMETERS_SECTION}}
+</td>
+
+<td>
 {{#FIELD}}
-<h2>{{PHYSICAL_FIELD_MAIN_LABEL}}</h2>
 {{#FIELD_SECTION}}
 <div class="section">
-<h3>{{PHYSICAL_FIELD_LABEL}}</h3>
-<table class="maintable">
+<h2>{{PHYSICAL_FIELD_LABEL}}</h2>
+<table>
 	<tr>
 		<td><b>{{ANALYSIS_TYPE_LABEL}}</b></td><td>{{ANALYSIS_TYPE}}</td>
 	</tr>
@@ -79,9 +151,9 @@
 	</tr>	
 </table>
 
-<table class="maintable">
+<table>
     {{#MESH_PARAMETERS_SECTION}}
-    <tr><td colspan=2><h4>{{MESH_LABEL}}</h4></td></tr>
+    <tr><td colspan=2><h3>{{MESH_LABEL}}</h3></td></tr>
     <tr>
         <td><b>{{INITIAL_MESH_LABEL}}</b></td><td>{{INITIAL_MESH_NODES}}</td>
     </tr>
@@ -111,40 +183,11 @@
 </div>
 {{/FIELD_SECTION}}
 {{/FIELD}}
-
-{{#COUPLING}}
-<div class="section">
-<h2>{{COUPLING_MAIN_LABEL}}</h2>
-<table class="maintable">
-	{{#COUPLING_SECTION}}
-	<tr>
-		<td colspan=2><h3>{{COUPLING_LABEL}}</h3></td>
-	<tr>
-	<tr>
-		<td><b>{{COUPLING_SOURCE_LABEL}}</b></td><td>{{COUPLING_SOURCE}}</td>
-	<tr>
-	</tr>
-		<td><b>{{COUPLING_TARGET_LABEL}}</b></td><td>{{COUPLING_TARGET}}</td>
-	<tr>
-	</tr>
-		<td><b>{{COUPLING_TYPE_LABEL}}</b></td><td>{{COUPLING_TYPE}}</td>		
-	</tr>
-	{{/COUPLING_SECTION}}
+</td>
+</tr>
 </table>
-</div>
-{{/COUPLING}}
 
-<table class="maintable">
-    {{#SOLUTION_PARAMETERS_SECTION}}
-    <tr><td colspan=2><h2>{{SOLUTION_LABEL}}</h2></td></tr>
-    <tr>
-        <td><b>{{SOLUTION_ELAPSED_TIME_LABEL}}</b></td><td>{{SOLUTION_ELAPSED_TIME}}</td>
-    </tr>
-    <tr>
-        <td><b>{{NUM_THREADS_LABEL}}</b></td><td>{{NUM_THREADS}}</td>
-    </tr>
-    {{/SOLUTION_PARAMETERS_SECTION}}
-</table>
+<div class="cleaner"></div>
 </body>
 </html>
 
@@ -152,7 +195,7 @@
 {{#SOLUTION_SECTION}}
 <h1>{{SOLUTION_INFORMATION_LABEL}}</h1>
 <div class="section">
-<table class="maintable">
+<table>
 	<tr><td colspan=2><h2>{{INITIAL_MESH_LABEL}}</h2></td></tr>
 	<tr><td colspan=2><div class="subsection">
 		<table>

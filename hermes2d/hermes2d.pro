@@ -29,9 +29,8 @@ INCLUDEPATH += include \
                ../hermes_common/include/ \
                ../hermes_common/include/solvers/ \
 
-SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
-                ../hermes_common/src/api.cpp \
-                ../hermes_common/src/time_period.cpp \
+SOURCES +=      ../hermes_common/src/api.cpp \
+                ../hermes_common/src/mixins.cpp \
                 ../hermes_common/src/callstack.cpp \
                 ../hermes_common/src/matrix.cpp \
                 ../hermes_common/src/tables.cpp \
@@ -40,6 +39,7 @@ SOURCES +=  ../hermes_common/src/hermes_logging.cpp \
                 ../hermes_common/src/ord.cpp \
                 ../hermes_common/src/hermes_function.cpp \
                 ../hermes_common/src/exceptions.cpp \
+                ../hermes_common/src/mixins.cpp \
                 ../hermes_common/src/solvers/dp_interface.cpp \
                 ../hermes_common/src/solvers/linear_matrix_solver.cpp \
                 ../hermes_common/src/solvers/nonlinear_solver.cpp \

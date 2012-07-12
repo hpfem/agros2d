@@ -45,33 +45,6 @@ int SceneBoundary::showDialog(QWidget *parent)
         QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Boundary dialog doesn't exists."));
 }
 
-QString SceneBoundary::html()
-{
-    //TODO
-    QString out;
-    //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
-    //    out += "<table>";
-    
-    //    Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(type);
-    //    if (boundary_type)
-    //        for (Hermes::vector<Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
-    //        {
-    //            Module::BoundaryTypeVariable *variable = ((Module::BoundaryTypeVariable *) *it);
-
-    //            out += "<tr>";
-    ////            out += QString("<td>%1 (%2):</td>").
-    ////                    arg(QString::fromStdString(variable->name)).
-    ////                    arg(QString::fromStdString(variable->unit));
-    //            out += QString("<td>%1</td>").
-    //                    arg(values[variable->id].text());
-    //            out += "</tr>";
-    //        }
-    
-    //    out += "</table>";
-    
-    return out;
-}
-
 QVariant SceneBoundary::variant()
 {
     QVariant v;
@@ -100,33 +73,6 @@ int SceneMaterial::showDialog(QWidget *parent)
     else
         QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Material dialog doesn't exists."));
 
-}
-
-QString SceneMaterial::html()
-{
-    //TODO
-    QString out;
-    
-    //    out += "<h4>" + QString::fromStdString(Util::problem()->config()->module()->name) + "</h4>";
-    //    out += "<table>";
-    
-    //    for (Hermes::vector<Module::MaterialTypeVariable *>::iterator it = Util::problem()->config()->module()->material_type_variables.begin();
-    //         it < Util::problem()->config()->module()->material_type_variables.end(); ++it )
-    //    {
-    //        Module::MaterialTypeVariable *material = ((Module::MaterialTypeVariable *) *it);
-
-    //        out += "<tr>";
-    ////        out += QString("<td>%1 (%2)</td>").
-    ////                arg(QString::fromStdString(material->name)).
-    ////                arg(QString::fromStdString(material->unit));
-    //        // FIXME - add value
-    //        out += QString("<td>%1</td>").
-    //                arg(QString::fromStdString("FIXME"));
-    //        out += "</tr>";
-    //    }
-    //    out += "</table>";
-    
-    return out;
 }
 
 QVariant SceneMaterial::variant()
@@ -400,18 +346,18 @@ void SceneBoundaryDialog::createDialog()
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-    
+
     layout->addWidget(new QLabel(tr("Name:")), 0, 0);
     layout->addWidget(txtName, 0, 2);
-    
+
     // content
     createContent();
-    
+
     layout->addWidget(buttonBox, 100, 0, 1, 3);
     layout->setRowStretch(99, 1);
-    
+
     txtName->setFocus();
-    
+
     setLayout(layout);
 }
 
@@ -426,7 +372,7 @@ void SceneBoundaryDialog::createContent()
 
 void SceneBoundaryDialog::load()
 {
-    txtName->setText(boundary->getName());
+    txtName->setText(boundary->name());
 
     // load variables
     fieldWidget->load();
@@ -437,7 +383,7 @@ bool SceneBoundaryDialog::save()
     // find name duplicities
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
     {
-        if (boundary->getName() == txtName->text())
+        if (boundary->name() == txtName->text())
         {
             if (boundary == boundary)
                 continue;
@@ -499,19 +445,19 @@ void SceneMaterialDialog::createDialog()
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-    
+
     // name
     layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
     layout->addWidget(txtName, 0, 2);
 
     // content
     createContent();
-    
+
     layout->addWidget(buttonBox, 100, 0, 1, 3);
     layout->setRowStretch(99, 1);
-    
+
     txtName->setFocus();
-    
+
     setLayout(layout);
 }
 
@@ -526,7 +472,7 @@ void SceneMaterialDialog::createContent()
 
 void SceneMaterialDialog::load()
 {
-    txtName->setText(material->getName());
+    txtName->setText(material->name());
 
     // load variables
     fieldWidget->load();
@@ -537,11 +483,11 @@ bool SceneMaterialDialog::save()
     // find name duplicities
     foreach (SceneMaterial *material, Util::scene()->materials->items())
     {
-        if (material->getName() == txtName->text())
+        if (material->name() == txtName->text())
         {
             if (material == material)
                 continue;
-            
+
             QMessageBox::warning(this, tr("Material marker"), tr("Material marker name already exists."));
             return false;
         }

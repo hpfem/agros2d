@@ -23,7 +23,6 @@
 #ifdef WITH_MUMPS
 #include "mumps_solver.h"
 #include "callstack.h"
-#include "time_period.h"
 
 namespace Hermes
 {
@@ -241,14 +240,14 @@ namespace Hermes
 
       case DF_HERMES_BIN:
         {
-          hermes_fwrite("HERMESX\001", 1, 8, file);
+          this->hermes_fwrite("HERMESX\001", 1, 8, file);
           int ssize = sizeof(Scalar);
-          hermes_fwrite(&ssize, sizeof(int), 1, file);
-          hermes_fwrite(&this->size, sizeof(int), 1, file);
-          hermes_fwrite(&nnz, sizeof(int), 1, file);
-          hermes_fwrite(Ap, sizeof(int), this->size + 1, file);
-          hermes_fwrite(Ai, sizeof(int), nnz, file);
-          hermes_fwrite(Ax, sizeof(Scalar), nnz, file);
+          this->hermes_fwrite(&ssize, sizeof(int), 1, file);
+          this->hermes_fwrite(&this->size, sizeof(int), 1, file);
+          this->hermes_fwrite(&nnz, sizeof(int), 1, file);
+          this->hermes_fwrite(Ap, sizeof(int), this->size + 1, file);
+          this->hermes_fwrite(Ai, sizeof(int), nnz, file);
+          this->hermes_fwrite(Ax, sizeof(Scalar), nnz, file);
           return true;
         }
 
@@ -545,11 +544,11 @@ namespace Hermes
 
       case DF_HERMES_BIN:
         {
-          hermes_fwrite("HERMESR\001", 1, 8, file);
+          this->hermes_fwrite("HERMESR\001", 1, 8, file);
           int ssize = sizeof(Scalar);
-          hermes_fwrite(&ssize, sizeof(int), 1, file);
-          hermes_fwrite(&this->size, sizeof(int), 1, file);
-          hermes_fwrite(v, sizeof(Scalar), this->size, file);
+          this->hermes_fwrite(&ssize, sizeof(int), 1, file);
+          this->hermes_fwrite(&this->size, sizeof(int), 1, file);
+          this->hermes_fwrite(v, sizeof(Scalar), this->size, file);
           return true;
         }
 
@@ -596,9 +595,9 @@ namespace Hermes
       switch (param.INFOG(1))
       {
       case 0: return true; // no error
-      case -1: warn(NULL, "Error occured on processor %d", MUMPS_INFO(param, 2)); break;
+      case -1: this->warn("Error occured on processor %d", MUMPS_INFO(param, 2)); break;
         /// \todo add the rest according to the MUMPS docs
-      default: warn(NULL, "INFOG(1) = %d", param.INFOG(1)); break;
+      default: this->warn("INFOG(1) = %d", param.INFOG(1)); break;
       }
       return false;
     }
@@ -684,7 +683,7 @@ namespace Hermes
       assert(m != NULL);
       assert(rhs != NULL);
 
-      Hermes::TimePeriod tmr;
+      this->tick();
 
       // Prepare the MUMPS data structure with input for the solver driver
       // (according to the chosen factorization reuse strategy), as well as
@@ -711,8 +710,8 @@ namespace Hermes
           this->sln[i] = mumps_to_Scalar(param.rhs[i]);
       }
 
-      tmr.tick();
-      this->time = tmr.accumulated();
+      this->tick();
+      this->time = this->accumulated();
 
       delete [] param.rhs;
       param.rhs = NULL;

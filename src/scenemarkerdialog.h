@@ -41,12 +41,11 @@ namespace Module
 class SceneBoundary : public Boundary
 {
 public:
-    SceneBoundary(FieldInfo *fieldInfo, QString name = "", QString type = "",
+    SceneBoundary(FieldInfo *fieldInfo, QString m_name = "", QString type = "",
                   QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 
-    QString html();
     QVariant variant();
 };
 
@@ -132,12 +131,11 @@ private slots:
 class SceneMaterial : public Material
 {
 public:
-    SceneMaterial(FieldInfo *fieldInfo, QString name,
+    SceneMaterial(FieldInfo *fieldInfo, QString m_name,
                   QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 
-    QString html();
     QVariant variant();
 };
 

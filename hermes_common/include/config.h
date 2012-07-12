@@ -1,3 +1,6 @@
+#ifndef __HERMES_CONFIG_H_
+#define __HERMES_CONFIG_H_
+
 // OpenMP
 #define NUM_THREADS 4
 
@@ -14,11 +17,7 @@
 /* #undef WITH_MPI */
 
 // stacktrace
-#define HAVE_TEUCHOS_LINK
-/* #undef HAVE_TEUCHOS_BFD */
-#define HAVE_EXECINFO
-#define HAVE_VASPRINTF
-#define HAVE_CXXABI
+/* #undef WITH_STACKTRACE */
 
 // trilinos
 /* #undef WITH_TRILINOS */
@@ -31,14 +30,7 @@
 /* #undef HAVE_NOX */
 /* #undef HAVE_KOMPLEX */
 
-/* #undef TRACING */
-/* #undef DEBUG */
-/* #undef DEBUG_ORDER */
-
-// elements
-/* #undef WITH_TETRA */
-/* #undef WITH_HEX */
-/* #undef WITH_PRISM */
-
 // no logo
 /* #undef HERMES_NO_LOGO */
+
+#endif

@@ -25,6 +25,7 @@
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
+#include "sceneview_common.h"
 #include "sceneview_geometry.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
@@ -39,13 +40,6 @@
 InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)
 {
     this->m_sceneViewGeometry = sceneView;
-
-    setMinimumWidth(160);
-    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
-    // setWindowFlags(Qt::Popup | Qt::Dialog);
-    setAttribute(Qt::WA_DeleteOnClose);
-
-    createActions();
 
     // problem information
     webView = new QWebView(this);
@@ -62,7 +56,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     layoutButtons->addWidget(btnDOFs);
 
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
-    layoutMain->setContentsMargins(0, 5, 3, 5);
+    // layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(webView);
     layoutMain->addLayout(layoutButtons);
 
@@ -74,27 +68,8 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     refresh();
 }
 
-/*
-int w = 450;
-int h = height() - 80;
-
-InfoWidget *popup = new InfoWidget(sceneViewPreprocessor, this);
-popup->resize(w, h);
-popup->move(pos().x() + 75, pos().y() + 70);
-popup->setAttribute(Qt::WA_DeleteOnClose);
-
-popup->show();
-*/
-
 InfoWidget::~InfoWidget()
 {
-}
-
-void InfoWidget::createActions()
-{
-    actInfo = new QAction(icon("scene-info"), tr("Info"), this);
-    actInfo->setShortcut(QKeySequence("Alt+I"));
-    actInfo->setCheckable(true);
 }
 
 void InfoWidget::refresh()
@@ -111,9 +86,9 @@ void InfoWidget::showInfo()
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() - 1).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem_style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string info;
@@ -131,12 +106,29 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
     problemInfo.SetValue("MESH_TYPE", meshTypeString(Util::problem()->config()->meshType()).toStdString());
 
+    if (Util::problem()->isHarmonic())
+        problemInfo.ShowSection("HARMONIC");
     problemInfo.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
     problemInfo.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
+    if (Util::problem()->isTransient())
+        problemInfo.ShowSection("TRANSIENT");
     problemInfo.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
     problemInfo.SetValue("TIME_STEP", QString::number(Util::problem()->config()->timeStep().number()).toStdString() + " s");
     problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
     problemInfo.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
+
+    problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
+    problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());
+    problemInfo.SetValue("GEOMETRY_NODES", QString::number(Util::scene()->nodes->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges:").toStdString());
+    problemInfo.SetValue("GEOMETRY_EDGES", QString::number(Util::scene()->edges->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
+    problemInfo.SetValue("GEOMETRY_LABELS", QString::number(Util::scene()->labels->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_MATERIALS_LABEL", tr("Materials:").toStdString());
+    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Util::scene()->materials->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_BOUNDARIES_LABEL", tr("Boundaries:").toStdString());
+    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Util::scene()->boundaries->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_SVG", generateGeometry().toStdString());
 
     if (Util::problem()->fieldInfos().count() > 0)
     {
@@ -178,7 +170,7 @@ void InfoWidget::showInfo()
                 field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
             }
 
-            field->SetValue("LINEARITY_TYPE_LABEL", tr("Solution type:").toStdString());
+            field->SetValue("LINEARITY_TYPE_LABEL", tr("Solver:").toStdString());
             field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType()).toStdString());
 
             if (fieldInfo->linearityType() != LinearityType_Linear)
@@ -293,9 +285,71 @@ void InfoWidget::showInfo()
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
     webView->setHtml(QString::fromStdString(info));
 
-    setFocus();
+    // setFocus();
 }
 
+QString InfoWidget::generateGeometry()
+{
+    RectPoint boundingBox = Util::scene()->boundingBox();
+
+    double size = 200;
+    double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
+
+    // svg
+    QString str;
+    str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
+            arg(size).
+            arg(size).
+            arg(boundingBox.start.x).
+            arg(0).
+            arg(boundingBox.width()).
+            arg(boundingBox.height());
+
+    str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
+
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    {
+        if (edge->angle() > 0.0)
+        {
+            Point center = edge->center();
+            double radius = edge->radius();
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+            int segments = edge->angle() / 5.0;
+            if (segments < 2) segments = 2;
+            double theta = edge->angle() / double(segments - 1);
+
+            for (int i = 0; i < segments-1; i++)
+            {
+                double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                double x1 = radius * cos(arc1);
+                double y1 = radius * sin(arc1);
+                double x2 = radius * cos(arc2);
+                double y2 = radius * sin(arc2);
+
+                str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                        arg(center.x + x1).
+                        arg(boundingBox.end.y - (center.y + y1)).
+                        arg(center.x + x2).
+                        arg(boundingBox.end.y - (center.y + y2));
+            }
+        }
+        else
+        {
+            str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                    arg(edge->nodeStart()->point().x).
+                    arg(boundingBox.end.y - edge->nodeStart()->point().y).
+                    arg(edge->nodeEnd()->point().x).
+                    arg(boundingBox.end.y - edge->nodeEnd()->point().y);
+        }
+    }
+    str += "</g>\n";
+    str += "</svg>\n";
+
+    return str;
+}
 
 void InfoWidget::doAdaptiveError()
 {

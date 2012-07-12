@@ -43,6 +43,7 @@ LogWidget::LogWidget(QWidget *parent) : QTextEdit(parent)
     mnuInfo->addAction(actShowDebug);
 #endif
     mnuInfo->addSeparator();
+    mnuInfo->addAction(actCopy);
     mnuInfo->addAction(actClear);
 
     connect(Util::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
@@ -75,6 +76,9 @@ void LogWidget::createActions()
 
     actClear = new QAction(icon(""), tr("Clear"), this);
     connect(actClear, SIGNAL(triggered()), this, SLOT(clear()));
+
+    actCopy = new QAction(icon(""), tr("Copy"), this);
+    connect(actCopy, SIGNAL(triggered()), this, SLOT(copy()));
 }
 
 void LogWidget::showTimestamp()
@@ -185,7 +189,7 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
-    connect(Util::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
+    connect(Util::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
 
     logWidget = new LogWidget(this);
 
@@ -216,7 +220,7 @@ void LogDialog::createControls()
     setLayout(layout);
 }
 
-void LogDialog::printDebug(const QString &module, const QString &message)
+void LogDialog::printMessage(const QString &module, const QString &message)
 {
     if (Util::problem()->isNonlinear())
     {
