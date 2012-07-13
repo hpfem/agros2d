@@ -180,7 +180,14 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         // create space
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
-            space.push_back(QSharedPointer<Space<Scalar> >(new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder())));
+            Space<Scalar>* actualSpace;
+            // todo: dirty hack. Information should be retrieved from the module itself
+            // todo: use L2 space and decrease polynomial order for pressure in incompressible flow
+//            if(fieldInfo->fieldId() == "flow" && i == 2)
+//                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() - 1);
+//            else
+                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder());
+            space.push_back(QSharedPointer<Space<Scalar> >(actualSpace));
 
             int j = 0;
             // set order by element

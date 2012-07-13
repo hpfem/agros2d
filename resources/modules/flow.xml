@@ -15,123 +15,126 @@
     <module:volume>
         <module:quantity id="flow_viscosity" shortname="fl_mu" />
         <module:quantity id="flow_density" shortname="fl_rho" />
+        <module:quantity id="flow_force_x" shortname="fl_fx" />
+        <module:quantity id="flow_force_y" shortname="fl_fy" />
 
         <module:weakforms_volume>
             <module:weakform_volume analysistype="steadystate">
                 <module:quantity id="flow_viscosity" />
                 <module:quantity id="flow_density" />
+                <module:quantity id="flow_force_x" />
+                <module:quantity id="flow_force_y" />
 
                 <module:matrix_form i="1" j="1"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:matrix_form i="1" j="2"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="fl_rho * dy1 * uval * vval"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:matrix_form i="1" j="3"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton=" - uval * vdx"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:matrix_form i="2" j="1"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="fl_rho * dx2 * uval * vval"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:matrix_form i="2" j="2"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dy2 * uval) * vval"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:matrix_form i="2" j="3"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton=" - uval * vdy"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <!--                    asi ne!!-->
                 <module:matrix_form i="3" j="1"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton=" uval * vdx"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <!--                    asi ne!!-->
                 <module:matrix_form i="3" j="2"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton=" uval * vdy"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:matrix_form i="3" j="3"
-                    planar_linear=""
-                    axi_linear=""
-                    planar_newton=""
-                    axi_newton=""
+                    planar_linear="0"
+                    axi_linear="0"
+                    planar_newton="0"
+                    axi_newton="0"
                 />
 
-<!--                todo: proc je tam minus u tlaku? z puvodni rovnice pouziju green. vetu na laplase, tim by se melo obratit znamenko a tedy byt stejne pro viskozni cast jako pro tlak-->
                 <module:vector_form i="1" j="1"
-                    planar_linear=""
-                    axi_linear=""
-                    planar_newton="fl_mu * (dx1 * vdx + dy1 * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval"
-                    axi_newton=""
+                    planar_linear="0"
+                    axi_linear="0"
+                    planar_newton="fl_mu * (dx1 * vdx + dy1 * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval - fl_fx * vval"
+                    axi_newton="0"
                 />
                 <module:vector_form i="1" j="2"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="0"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:vector_form i="1" j="3"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="0"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:vector_form i="2" j="1"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="0"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:vector_form i="2" j="2"
-                    planar_linear=""
-                    axi_linear=""
-                    planar_newton="fl_mu * (dx2 * vdx + dy2 * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval"
-                    axi_newton=""
+                    planar_linear="0"
+                    axi_linear="0"
+                    planar_newton="fl_mu * (dx2 * vdx + dy2 * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval - fl_fy * vval"
+                    axi_newton="0"
                 />
                 <module:vector_form i="2" j="3"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="0"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:vector_form i="3" j="1"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="0"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:vector_form i="3" j="2"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="0"
-                    axi_newton=""
+                    axi_newton="0"
                 />
                 <module:vector_form i="3" j="3"
-                    planar_linear=""
-                    axi_linear=""
+                    planar_linear="0"
+                    axi_linear="0"
                     planar_newton="0"
-                    axi_newton=""
+                    axi_newton="0"
                 />
 
             </module:weakform_volume>
@@ -139,24 +142,46 @@
     </module:volume>
 
     <module:surface>
-        <module:quantity id="elasticity_displacement_x" shortname="st_dx" />
+        <module:quantity id="flow_velocity_x" shortname="fl_vx" />
+        <module:quantity id="flow_velocity_y" shortname="fl_vy" />
 
         <module:weakforms_surface>
-            <module:weakform_surface analysistype="steadystate" default="elasticity_fixed_fixed">
-                <module:boundary id="elasticity_fixed_fixed" name="Fixed - fixed">
-                    <module:quantity id="elasticity_displacement_x" />
-                    <module:quantity id="elasticity_displacement_y" />
+            <module:weakform_surface analysistype="steadystate" default="flow_velocity">
+                <module:boundary id="flow_velocity" name="Velocity">
+                    <module:quantity id="flow_velocity_x" />
+                    <module:quantity id="flow_velocity_y" />
 
                     <module:essential_form i="1"
-                        planar_linear="st_dx"
-                        axi_linear="st_dx"
-                        planar_newton="st_dx"
-                        axi_newton="st_dx" />
+                        planar_linear="fl_vx"
+                        axi_linear="fl_vx"
+                        planar_newton="fl_vx"
+                        axi_newton="fl_vx" />
                     <module:essential_form i="2"
-                        planar_linear="st_dy"
-                        axi_linear="st_dy"
-                        planar_newton="st_dy"
-                        axi_newton="st_dy" />
+                        planar_linear="fl_vy"
+                        axi_linear="fl_vy"
+                        planar_newton="fl_vy"
+                        axi_newton="fl_vy" />
+<!--       todo: remove-->
+                    <module:essential_form i="3"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0" />
+                </module:boundary>
+
+                <module:boundary id="fluid_outlet" name="Outlet">
+                    <module:vector_form i="1" j="1"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0"
+                    />
+                    <module:vector_form i="2" j="2"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0"
+                    />
                 </module:boundary>
 
             </module:weakform_surface>
@@ -166,57 +191,112 @@
     <module:preprocessor>
         <module:gui type="volume">
             <module:group>
-				<module:quantity id="elasticity_young_modulus" name="Young modulus"
-					shortname="E" shortname_html="&lt;i&gt;E&lt;/i&gt;"
-					shortname_latex="E" unit="Pa" unit_html="Pa" unit_latex="Pa" />
+                <module:quantity id="flow_density" name="Density"
+                    shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>"
+                    shortname_latex="\rho" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}"
+                />
+                <module:quantity id="flow_viscosity" name="Viscosity"
+                    shortname="mu" shortname_html="&lt;i>&amp;mu;&lt;/i>"
+                    shortname_latex="\mu" unit="Pa.s" unit_html="Pa.s" unit_latex="Pa\cdot s"
+                />
+                <module:quantity id="flow_force_x" name="Force - x"
+                        shortname="fx" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+                        shortname_latex="f_{x}" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;"
+                        unit_latex="N \cdot m^{-3}" />
+                <module:quantity id="flow_force_y" name="Force - y"
+                        shortname="fy" shortname_html="&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+                        shortname_latex="f_{y}" unit="N/m3" unit_html="N.m&lt;sup&gt;-3&lt;/sup&gt;"
+                        unit_latex="N \cdot m^{-3}" />
+
             </module:group>
         </module:gui>
         <module:gui type="surface">
             <module:group>
-				<module:quantity id="elasticity_displacement_x"
-					name="Fixed - x" shortname="dx"
-					shortname_html="&lt;i&gt;&amp;delta;&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
-					shortname_latex="\delta_\mathrm{x}" unit="m" unit_html="m"
-					unit_latex="m" />
+            <module:quantity id="flow_velocity_x"
+                name="Velocity - x" shortname="vx"
+                shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+                shortname_latex="v_\mathrm{x}" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;"
+                unit_latex="m\cdot s^{-1}"/>
+            <module:quantity id="flow_velocity_y"
+                name="Velocity - y" shortname="vy"
+                shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+                shortname_latex="v_\mathrm{y}" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;"
+                unit_latex="m\cdot s^{-1}"/>
             </module:group>
         </module:gui>
     </module:preprocessor>
 
     <module:postprocessor>
         <module:localvariables>
-            <module:localvariable id="elasticity_displacement"
-                                name="Displacement" type="vector" shortname="d" shortname_html="&lt;i&gt;d&lt;/i&gt;"
-				shortname_latex="d" unit="m" unit_html="m" unit_latex="m">
-				<module:expression analysistype="steadystate"
-					planar_x="value1" planar_y="value2" axi_r="value1" axi_z="value2" />
+            <module:localvariable id="flow_velocity"
+                    name="Velocity" type="vector" shortname="v" shortname_html="&lt;i&gt;v&lt;/i&gt;"
+                    shortname_latex="v" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;" unit_latex="m\cdot s^{-1}">
+                    <module:expression analysistype="steadystate"
+                            planar_x="value1" planar_y="value2" axi_r="value1" axi_z="value2" />
+                    <module:expression analysistype="transient"
+                            planar_x="value1" planar_y="value2" axi_r="value1" axi_z="value2" />
+            </module:localvariable>
+            <module:localvariable id="flow_pressure"
+                    name="Pressure" type="scalar" shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;"
+                    shortname_latex="p" unit="Pa" unit_html="Pa" unit_latex="Pa">
+                    <module:expression analysistype="steadystate"
+                            planar="value3" axi="value3" />
+                    <module:expression analysistype="transient"
+                            planar="value3" axi="value3" />
+            </module:localvariable>
+            <module:localvariable id="flow_density"
+                    name="Density" type="scalar" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>"
+                    shortname_latex="\rho" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}">
+                    <module:expression analysistype="steadystate"
+                            planar="fl_rho" axi="fl_rho" />
+                    <module:expression analysistype="transient"
+                            planar="fl_rho" axi="fl_rho" />
+            </module:localvariable>
+            <module:localvariable id="flow_viscosity"
+                    name="Viscosity" type="scalar" shortname="mu" shortname_html="&lt;i>&amp;mu;&lt;/i>"
+                    shortname_latex="\mu" unit="Pa.s" unit_html="Pa.s" unit_latex="Pa\cdot s">
+                    <module:expression analysistype="steadystate"
+                            planar="fl_mu" axi="fl_mu" />
+                    <module:expression analysistype="transient"
+                            planar="fl_mu" axi="fl_mu" />
+            </module:localvariable>
+            <module:localvariable id="flow_inner_force"
+                    name="Inner force" type="vector" shortname="f" shortname_html="&lt;i&gt;f&lt;/i&gt;"
+                    shortname_latex="f" unit="N" unit_html="N" unit_latex="N">
+                    <module:expression analysistype="steadystate"
+                            planar_x="fl_fx" planar_y="fl_fy" axi_r="fl_fx" axi_z="fl_fy" />
             </module:localvariable>
         </module:localvariables>
 
         <module:view>
             <module:scalar_view>
-                <module:default analysistype="steadystate" id="elasticity_displacement" />
+                <module:default analysistype="steadystate" id="flow_velocity" />
             </module:scalar_view>
             <module:vector_view>
-                <module:default analysistype="steadystate" id="elasticity_displacement" />
+                <module:default analysistype="steadystate" id="flow_velocity" />
             </module:vector_view>
         </module:view>
 
         <module:volumeintegrals>
-            <module:volumeintegral id="elasticity_volume"
+            <module:volumeintegral id="flow_volume"
 				name="Volume" shortname="V" shortname_html="&lt;i&gt;V&lt;/i&gt;"
 				shortname_latex="V" unit="m3" unit_html="m&lt;sup&gt;3&lt;/sup&gt;"
 				unit_latex="m^{3}">
-				<module:expression analysistype="steadystate"
-					planar="1.0" axi="2.0 * PI * r" />
+                                <module:expression analysistype="steadystate"
+                                        planar="1.0" axi="2.0 * PI * r" />
+                                <module:expression analysistype="transient"
+                                        planar="1.0" axi="2.0 * PI * r" />
             </module:volumeintegral>
         </module:volumeintegrals>
 
         <module:surfaceintegrals>
-            <module:surfaceintegral id="elasticity_length"
+            <module:surfaceintegral id="flow_length"
 				name="Length" shortname="l" shortname_html="&lt;i&gt;l&lt;/i&gt;"
 				shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
-				<module:expression analysistype="steadystate"
-					planar="1.0" axi="1.0" />
+                                <module:expression analysistype="steadystate"
+                                        planar="1.0" axi="1.0" />
+                                <module:expression analysistype="transient"
+                                        planar="1.0" axi="1.0" />
             </module:surfaceintegral>
         </module:surfaceintegrals>
 

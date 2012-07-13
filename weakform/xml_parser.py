@@ -534,6 +534,7 @@ class WeakForm:
                      'deltat': 'Util::problem()->config()->timeStep().number()',
                      'value1': 'u_ext[0]->val[i]',
                      'value2': 'u_ext[1]->val[i]',
+                     'value3': 'u_ext[2]->val[i]',
                      'source0': 'ext->fn[0]->val[i]',
                      'source1': 'ext->fn[1]->val[i]',
                      'source0dx': 'ext->fn[0]->dx[i]',
@@ -542,12 +543,16 @@ class WeakForm:
                      'source0dz': 'ext->fn[0]->dy[i]',
                      'dx1': 'u_ext[0]->dx[i]',
                      'dx2': 'u_ext[1]->dx[i]',
+                     'dx3': 'u_ext[2]->dx[i]',
                      'dy1': 'u_ext[0]->dy[i]',
                      'dy2': 'u_ext[1]->dy[i]',
+                     'dy3': 'u_ext[2]->dy[i]',
                      'dr1': 'u_ext[0]->dx[i]',
                      'dr2': 'u_ext[1]->dx[i]',
+                     'dr3': 'u_ext[2]->dx[i]',
                      'dz1': 'u_ext[0]->dy[i]',
-                     'dz2': 'u_ext[1]->dy[i]'
+                     'dz2': 'u_ext[1]->dy[i]',
+                     'dz3': 'u_ext[2]->dy[i]'
                      }
         
         postprocessor_replaces = {
@@ -557,14 +562,19 @@ class WeakForm:
                      'z': 'e->y[i]',
                      'value1': '(u_ext[0] ? u_ext[0]->val[i] : 0)',
                      'value2': '(u_ext[1] ? u_ext[1]->val[i] : 0)',
+                     'value3': '(u_ext[2] ? u_ext[2]->val[i] : 0)',
                      'dx1': '(u_ext[0] ? u_ext[0]->dx[i] : 0)',
                      'dx2': '(u_ext[1] ? u_ext[1]->dx[i] : 0)',
+                     'dx3': '(u_ext[2] ? u_ext[2]->dx[i] : 0)',
                      'dy1': '(u_ext[0] ? u_ext[0]->dy[i] : 0)',
                      'dy2': '(u_ext[1] ? u_ext[1]->dy[i] : 0)',
+                     'dy3': '(u_ext[2] ? u_ext[2]->dy[i] : 0)',
                      'dr1': '(u_ext[0] ? u_ext[0]->dx[i] : 0)',
                      'dr2': '(u_ext[1] ? u_ext[1]->dx[i] : 0)',
+                     'dr3': '(u_ext[2] ? u_ext[2]->dx[i] : 0)',
                      'dz1': '(u_ext[0] ? u_ext[0]->dy[i] : 0)',
-                     'dz2': '(u_ext[1] ? u_ext[1]->dy[i] : 0)'                                  
+                     'dz2': '(u_ext[1] ? u_ext[1]->dy[i] : 0)',
+                     'dz3': '(u_ext[2] ? u_ext[2]->dy[i] : 0)'
                      }
         
         
@@ -595,7 +605,7 @@ class WeakForm:
         symbols = ['x', 'y', 'r', 'z', 'f', 'udr', 'udz', 'udx', 'udy',
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
                    'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI',
-                   'value1', 'value2', 'dx1', 'dx2', 'dy1', 'dy2', 'dr1', 'dr2', 'dz1', 'dz2', 'source0',
+                   'value1', 'value2', 'value3', 'dx1', 'dx2', 'dx3', 'dy1', 'dy2', 'dy3', 'dr1', 'dr2', 'dr3', 'dz1', 'dz2', 'dz3', 'source0',
                    'source1', 'source0dx', 'source0dy', 'source0dr', 'source0dz']
                            
         variables = []
@@ -893,6 +903,6 @@ class Module:
             weakform_pri_file.close()
 
 if __name__ == '__main__':
-    coupling_parser = XmlParser(['acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat'])
-    # coupling_parser = XmlParser(['current'], [])
+    coupling_parser = XmlParser(['flow', 'acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat'])
+    # coupling_parser = XmlParser(['flow'], [])
     coupling_parser.process()

@@ -208,6 +208,7 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/modules/elasticity.xml \
     ../resources/modules/current.xml \
     ../resources/modules/acoustic.xml \
+    ../resources/modules/flow.xml \
     ../resources/couplings/heat-elasticity.xml \
     ../resources/couplings/current-heat.xml \
     ../resources/couplings/magnetic-heat.xml \
