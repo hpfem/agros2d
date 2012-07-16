@@ -153,6 +153,9 @@ namespace Hermes
         
         // Assemble just the jacobian.
         this->dp->assemble(coeff_vec, jacobian);
+        FILE* jacfile = fopen("jac.m", "w");
+        jacobian->dump(jacfile, "jacobian");
+        fclose(jacfile);
           
         this->tick();
         assemble_time += this->last();

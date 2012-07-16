@@ -26,7 +26,7 @@
                 <module:quantity id="flow_force_y" />
 
                 <module:matrix_form i="1" j="1"
-                    planar_linear="0"
+                    planar_linear="fl_mu * (udx * vdx + udy * vdy)"
                     axi_linear="0"
                     planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval"
                     axi_newton="0"
@@ -38,7 +38,7 @@
                     axi_newton="0"
                 />
                 <module:matrix_form i="1" j="3"
-                    planar_linear="0"
+                    planar_linear=" - uval * vdx"
                     axi_linear="0"
                     planar_newton=" - uval * vdx"
                     axi_newton="0"
@@ -50,29 +50,27 @@
                     axi_newton="0"
                 />
                 <module:matrix_form i="2" j="2"
-                    planar_linear="0"
+                    planar_linear="fl_mu * (udx * vdx + udy * vdy)"
                     axi_linear="0"
                     planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dy2 * uval) * vval"
                     axi_newton="0"
                 />
                 <module:matrix_form i="2" j="3"
-                    planar_linear="0"
+                    planar_linear=" - uval * vdy"
                     axi_linear="0"
                     planar_newton=" - uval * vdy"
                     axi_newton="0"
                 />
-                <!--                    asi ne!!-->
                 <module:matrix_form i="3" j="1"
-                    planar_linear="0"
+                    planar_linear="udx * vval"
                     axi_linear="0"
-                    planar_newton=" uval * vdx"
+                    planar_newton="udx * vval"
                     axi_newton="0"
                 />
-                <!--                    asi ne!!-->
                 <module:matrix_form i="3" j="2"
-                    planar_linear="0"
+                    planar_linear="udy * vval"
                     axi_linear="0"
-                    planar_newton=" uval * vdy"
+                    planar_newton="udy * vval"
                     axi_newton="0"
                 />
                 <module:matrix_form i="3" j="3"
@@ -82,8 +80,14 @@
                     axi_newton="0"
                 />
 
-                <module:vector_form i="1" j="1"
+<!--stokes                <module:vector_form i="1" j="1"
                     planar_linear="0"
+                    axi_linear="0"
+                    planar_newton="fl_mu * (dx1 * vdx + dy1 * vdy) - value3 * vdx - fl_fx * vval"
+                    axi_newton="0"
+                />-->
+                <module:vector_form i="1" j="1"
+                    planar_linear="fl_fx * vval"
                     axi_linear="0"
                     planar_newton="fl_mu * (dx1 * vdx + dy1 * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval - fl_fx * vval"
                     axi_newton="0"
@@ -106,8 +110,14 @@
                     planar_newton="0"
                     axi_newton="0"
                 />
-                <module:vector_form i="2" j="2"
+<!-- stokes                <module:vector_form i="2" j="2"
                     planar_linear="0"
+                    axi_linear="0"
+                    planar_newton="fl_mu * (dx2 * vdx + dy2 * vdy) - value3 * vdy - fl_fy * vval"
+                    axi_newton="0"
+                />-->
+                <module:vector_form i="2" j="2"
+                    planar_linear="fl_fy * vval"
                     axi_linear="0"
                     planar_newton="fl_mu * (dx2 * vdx + dy2 * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval - fl_fy * vval"
                     axi_newton="0"
@@ -133,7 +143,7 @@
                 <module:vector_form i="3" j="3"
                     planar_linear="0"
                     axi_linear="0"
-                    planar_newton="0"
+                    planar_newton="(dx1 + dy2) * vval"
                     axi_newton="0"
                 />
 
@@ -162,11 +172,11 @@
                         planar_newton="fl_vy"
                         axi_newton="fl_vy" />
 <!--       todo: remove-->
-                    <module:essential_form i="3"
+<!--                    <module:essential_form i="3"
                         planar_linear="0"
                         axi_linear="0"
                         planar_newton="0"
-                        axi_newton="0" />
+                        axi_newton="0" />-->
                 </module:boundary>
 
                 <module:boundary id="fluid_outlet" name="Outlet">

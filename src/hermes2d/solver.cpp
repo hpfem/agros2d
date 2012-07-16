@@ -177,6 +177,12 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         }
 
 
+        // todo: pressure polynomial order hack
+        int polynomialDecreaser[5] = {0, 0, 0, 0, 0};
+        if(fieldInfo->fieldId() == "flow")
+            polynomialDecreaser[2] = 1;
+
+
         // create space
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
@@ -184,9 +190,11 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
             // todo: dirty hack. Information should be retrieved from the module itself
             // todo: use L2 space and decrease polynomial order for pressure in incompressible flow
             if(fieldInfo->fieldId() == "flow" && i == 2)
-                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() - 1);
+                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() - polynomialDecreaser[i]);
+//                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() - polynomialDecreaser[i]);
             else
                 actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder());
+            cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             space.push_back(QSharedPointer<Space<Scalar> >(actualSpace));
 
             int j = 0;
@@ -197,7 +205,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     // TODO: set order in space
                     // space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder(),
                     //                                QString::number(j).toStdString());
-                    space.at(i)->set_uniform_order(fieldInfo->polynomialOrder(),
+                    space.at(i)->set_uniform_order(fieldInfo->polynomialOrder() - polynomialDecreaser[i],
                                                    QString::number(j).toStdString());
                     j++;
                 }
@@ -441,6 +449,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
 
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
+
+    cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
