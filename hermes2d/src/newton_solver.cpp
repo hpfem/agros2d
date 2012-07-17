@@ -84,6 +84,12 @@ namespace Hermes
       {
         // Assemble just the residual vector.
         this->dp->assemble(coeff_vec, residual);
+          char filename[20], varname[20];
+          sprintf(filename, "residual%d.m", it);
+          sprintf(varname, "res%d", it);
+        FILE* resfile = fopen(filename, "w");
+        residual->dump(resfile, varname);
+        fclose(resfile);
 
         this->tick();
         assemble_time += this->last();
@@ -153,8 +159,10 @@ namespace Hermes
         
         // Assemble just the jacobian.
         this->dp->assemble(coeff_vec, jacobian);
-        FILE* jacfile = fopen("jac.m", "w");
-        jacobian->dump(jacfile, "jacobian");
+        sprintf(filename, "jacobian%d.m", it);
+        sprintf(varname, "jac%d", it);
+        FILE* jacfile = fopen(filename, "w");
+        jacobian->dump(jacfile, varname);
         fclose(jacfile);
           
         this->tick();

@@ -26,11 +26,11 @@
             <label x="2.5" y="2.6" id="1" area="0"/>
         </labels>
     </geometry>
-    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="quad_fine_division" time_step="0.1" name="unnamed" time_total="0.1">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="0.1" name="unnamed" time_total="1.0">
         <startup_script></startup_script>
         <description></description>
         <fields>
-            <field field_id="flow" initial_condition="0.0" polynomial_order="2" time_steps_skip="1" number_of_refinements="0" weak_forms="compiled" analysis_type="transient">
+            <field field_id="flow" initial_condition="0.0" polynomial_order="2" time_steps_skip="1" number_of_refinements="2" weak_forms="compiled" analysis_type="transient">
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
