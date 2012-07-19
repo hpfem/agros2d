@@ -44,9 +44,6 @@ public:
     void init( WeakFormAgros<Scalar> *wf, Block* block);
     void clear();
 
-    //todo : merge solveSimple and solveTimeStep?
-
-    void solveTimeStep();
     void solveInitialTimeStep();
     void createInitialSpace(int timeStep);
     void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
@@ -78,7 +75,7 @@ private:
 
 //    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
 //                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    void solveOneProblem(MultiSolutionArray<Scalar> msa);
+    void solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa = NULL);
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);

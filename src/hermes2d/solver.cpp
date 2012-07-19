@@ -328,7 +328,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
+void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa)
 {
     Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
@@ -379,7 +379,17 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa)
 
             // Initial coefficient vector for the Newton's method.
             Scalar* coeff_vec = new Scalar[ndof];
-            memset(coeff_vec, 0, ndof*sizeof(Scalar));
+
+            if(previousMsa)
+            {
+                OGProjection<double> ogProjection;
+                ogProjection.project_global(castConst(desmartize(msa.spaces())),
+                                            desmartize(previousMsa->solutions()),
+                  coeff_vec, Hermes::vector<ProjNormType>(HERMES_H1_NORM, HERMES_H1_NORM, HERMES_L2_NORM));
+
+            }
+            else
+                memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
             newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
@@ -450,6 +460,10 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
 
+    MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
+    if(timeStep > 0)
+        previousTSMultiSolutionArray = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep - 1, adaptivityStep, SolutionMode_Normal));;
+
     cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
@@ -469,7 +483,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_wf->delete_all();
     m_wf->registerForms();
 
-    solveOneProblem(multiSolutionArray);
+    solveOneProblem(multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
@@ -632,7 +646,7 @@ void Solver<Scalar>::solveInitialTimeStep()
         for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             // constant initial solution
-            InitialCondition<double> *initial = new InitialCondition<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition().number());
+            ConstantSolution<double> *initial = new ConstantSolution<double>(meshes[field->fieldInfo()], field->fieldInfo()->initialCondition().number());
             multiSolutionArray.setSolution(QSharedPointer<Solution<Scalar> >(initial), totalComp);
             totalComp++;
         }
@@ -642,47 +656,47 @@ void Solver<Scalar>::solveInitialTimeStep()
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 }
 
-template <typename Scalar>
-void Solver<Scalar>::solveTimeStep()
-{
-    BlockSolutionID previousSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal);
-    MultiSolutionArray<Scalar> multiSolutionArray = Util::solutionStore()->
-            multiSolution(previousSolutionID);
+//template <typename Scalar>
+//void Solver<Scalar>::solveTimeStep()
+//{
+//    BlockSolutionID previousSolutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal);
+//    MultiSolutionArray<Scalar> multiSolutionArray = Util::solutionStore()->
+//            multiSolution(previousSolutionID);
 
-    createNewSolutions(multiSolutionArray);
+//    createNewSolutions(multiSolutionArray);
 
-    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
-    {
-        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-        throw(AgrosSolverException("DOF is zero"));
-    }
+//    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
+//    {
+//        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
+//        throw(AgrosSolverException("DOF is zero"));
+//    }
 
-    multiSolutionArray.setTime(Util::problem()->actualTime());
-    Util::log()->printDebug(m_solverID, QObject::tr("solve time step, actual time is %1 s").arg(Util::problem()->actualTime()));
+//    multiSolutionArray.setTime(Util::problem()->actualTime());
+//    Util::log()->printDebug(m_solverID, QObject::tr("solve time step, actual time is %1 s").arg(Util::problem()->actualTime()));
 
-    // update timedep values
-    foreach (Field* field, m_block->fields())
-        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
+//    // update timedep values
+//    foreach (Field* field, m_block->fields())
+//        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
-    // update essential bc values
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()),
-                                                                Util::problem()->actualTime());
+//    // update essential bc values
+//    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()),
+//                                                                Util::problem()->actualTime());
 
-    m_wf->set_current_time(Util::problem()->actualTime());
+//    m_wf->set_current_time(Util::problem()->actualTime());
 
-    m_wf->delete_all();
-    m_wf->registerForms();
+//    m_wf->delete_all();
+//    m_wf->registerForms();
 
-    solveOneProblem(multiSolutionArray);
+//    solveOneProblem(multiSolutionArray);
 
-    // output
-    BlockSolutionID solutionID;
-    solutionID.group = m_block;
-    solutionID.timeStep = previousSolutionID.timeStep + 1;
+//    // output
+//    BlockSolutionID solutionID;
+//    solutionID.group = m_block;
+//    solutionID.timeStep = previousSolutionID.timeStep + 1;
 
-    Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
+//    Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
-}
+//}
 
 
 template class Solver<double>;
