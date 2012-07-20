@@ -212,6 +212,7 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/couplings/heat-elasticity.xml \
     ../resources/couplings/current-heat.xml \
     ../resources/couplings/magnetic-heat.xml \
+    ../resources/couplings/flow-heat.xml \
     ../resources/custom.xml \
     ../resources/a2d_convert_table.xml \
     ../resources/materials/Copper.xml \

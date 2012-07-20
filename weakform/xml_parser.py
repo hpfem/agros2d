@@ -544,15 +544,19 @@ class WeakForm:
                      'dx1': 'u_ext[0]->dx[i]',
                      'dx2': 'u_ext[1]->dx[i]',
                      'dx3': 'u_ext[2]->dx[i]',
+                     'dx4': 'u_ext[3]->dx[i]',
                      'dy1': 'u_ext[0]->dy[i]',
                      'dy2': 'u_ext[1]->dy[i]',
                      'dy3': 'u_ext[2]->dy[i]',
+                     'dy4': 'u_ext[3]->dy[i]',
                      'dr1': 'u_ext[0]->dx[i]',
                      'dr2': 'u_ext[1]->dx[i]',
                      'dr3': 'u_ext[2]->dx[i]',
+                     'dr4': 'u_ext[3]->dx[i]',
                      'dz1': 'u_ext[0]->dy[i]',
                      'dz2': 'u_ext[1]->dy[i]',
-                     'dz3': 'u_ext[2]->dy[i]'
+                     'dz3': 'u_ext[2]->dy[i]',
+                     'dz4': 'u_ext[3]->dy[i]'
                      }
         
         postprocessor_replaces = {
@@ -605,7 +609,7 @@ class WeakForm:
         symbols = ['x', 'y', 'r', 'z', 'f', 'udr', 'udz', 'udx', 'udy',
                    'vdr', 'vdz', 'vdx', 'vdy', 'updr', 'updx', 'updy', 'updz',
                    'uval', 'vval', 'upval', 'deltat', 'uptval', 'PI',
-                   'value1', 'value2', 'value3', 'dx1', 'dx2', 'dx3', 'dy1', 'dy2', 'dy3', 'dr1', 'dr2', 'dr3', 'dz1', 'dz2', 'dz3', 'source0',
+                   'value1', 'value2', 'value3', 'dx1', 'dx2', 'dx3', 'dx4', 'dy1', 'dy2', 'dy3', 'dy4', 'dr1', 'dr2', 'dr3', 'dr4', 'dz1', 'dz2', 'dz3', 'dz4', 'source0',
                    'source1', 'source0dx', 'source0dy', 'source0dr', 'source0dz']
                            
         variables = []
@@ -904,5 +908,5 @@ class Module:
 
 if __name__ == '__main__':
     coupling_parser = XmlParser(['flow', 'acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat'])
-    # coupling_parser = XmlParser(['flow'], [])
+    # coupling_parser = XmlParser(['flow', 'heat'], ['flow-heat'])
     coupling_parser.process()
