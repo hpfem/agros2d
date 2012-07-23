@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "coupling.h"
+#include "logview.h"
 #include "scene.h"
 #include "util.h"
 #include "module.h"
@@ -77,7 +78,19 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
     foreach (QString filename, list)
     {
         // read name
-        std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + filename).toStdString().c_str());
+        std::auto_ptr<XMLCoupling::coupling> couplings_xsd;
+        try{
+            couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + filename).toStdString().c_str());
+        }
+        catch(xsd::cxx::tree::exception<char>& e)
+        {
+            cout << e;
+            std::stringstream str;
+            str << e;
+            Util::log()->printError("solver",QObject::tr("Unable to read coupling file %1: %2").arg(filename).arg(QString::fromStdString(str.str())));
+            return false;
+        }
+
         XMLCoupling::coupling *coup = couplings_xsd.get();
 
         // module name
