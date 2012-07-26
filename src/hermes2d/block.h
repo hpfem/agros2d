@@ -48,6 +48,8 @@ public:
     inline QList<Field*> fields() const { return m_fields; }
     inline QList<CouplingInfo*> couplings() const { return m_couplings; }
 
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormTypeVector() const;
+
 private:
     WeakFormAgros<double> *m_wf;
 

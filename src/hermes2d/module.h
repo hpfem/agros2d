@@ -428,6 +428,28 @@ struct BasicModule
     // number of solutions
     inline int numberOfSolutions() const { return m_numberOfSolutions; }
 
+    // todo: following two functions are ugly. Information about space properties should be stored in xml
+    // todo: the problem is, that up to now the only use is for pressure in incompressible flow...
+
+    // is it H1 or L2 or other? Should be readed from the module, for now hardcoded: L2 for pressure, H1 otherwise
+    Hermes::Hermes2D::SpaceType spaceType(int comp) const
+    {
+        if(name() == "Incompressible flow" && comp == 2)
+            return Hermes::Hermes2D::HERMES_L2_SPACE;
+        else
+            return Hermes::Hermes2D::HERMES_H1_SPACE;
+    }
+
+    // should be polynomial order of this space decreased? Intended for pressure, hardcoded
+    int spaceOrderAdjust(int comp) const
+    {
+        if(name() == "Incompressible flow" && comp == 2)
+            return -1;
+        else
+            return 0;
+    }
+
+
     // scalar filter
     ViewScalarFilter<double> *viewScalarFilter(Module::LocalVariable *physicFieldVariable,
                                                PhysicFieldVariableComp physicFieldVariableComp);

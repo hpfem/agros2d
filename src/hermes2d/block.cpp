@@ -209,6 +209,26 @@ Field* Block::field(FieldInfo *fieldInfo) const
     return NULL;
 }
 
+Hermes::vector<Hermes::Hermes2D::ProjNormType> Block::projNormTypeVector() const
+{
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> vec;
+
+    foreach (Field* field, m_fields)
+    {
+        for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
+        {
+            Hermes::Hermes2D::SpaceType spaceType = field->fieldInfo()->module()->spaceType(comp);
+            if(spaceType == Hermes::Hermes2D::HERMES_H1_SPACE)
+                vec.push_back(Hermes::Hermes2D::HERMES_H1_NORM);
+            else if(spaceType == Hermes::Hermes2D::HERMES_L2_SPACE)
+                vec.push_back(Hermes::Hermes2D::HERMES_L2_NORM);
+            else
+                assert(0);
+        }
+    }
+    return vec;
+}
+
 ostream& operator<<(ostream& output, const Block& id)
 {
     output << "Block ";

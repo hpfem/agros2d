@@ -176,24 +176,16 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
             index++;
         }
 
-
-        // todo: pressure polynomial order hack
-        int polynomialDecreaser[5] = {0, 0, 0, 0, 0};
-        if(fieldInfo->fieldId() == "flow")
-            polynomialDecreaser[2] = 1;
-
-
         // create space
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
             Space<Scalar>* actualSpace;
-            // todo: dirty hack. Information should be retrieved from the module itself
-            // todo: use L2 space and decrease polynomial order for pressure in incompressible flow
-            if(fieldInfo->fieldId() == "flow" && i == 2)
-                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() - polynomialDecreaser[i]);
-//                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() - polynomialDecreaser[i]);
+            if(fieldInfo->module()->spaceType(i) == HERMES_L2_SPACE)
+                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i));
+            else if(fieldInfo->module()->spaceType(i) == HERMES_H1_SPACE)
+                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i));
             else
-                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder());
+                assert(0);
             cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             space.push_back(QSharedPointer<Space<Scalar> >(actualSpace));
 
@@ -203,9 +195,9 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                 if (!label->marker(fieldInfo)->isNone())
                 {
                     // TODO: set order in space
-                    // space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder(),
+                    // space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i),
                     //                                QString::number(j).toStdString());
-                    space.at(i)->set_uniform_order(fieldInfo->polynomialOrder() - polynomialDecreaser[i],
+                    space.at(i)->set_uniform_order(fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i),
                                                    QString::number(j).toStdString());
                     j++;
                 }
@@ -385,7 +377,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
                 OGProjection<double> ogProjection;
                 ogProjection.project_global(castConst(desmartize(msa.spaces())),
                                             desmartize(previousMsa->solutions()),
-                  coeff_vec, Hermes::vector<ProjNormType>(HERMES_H1_NORM, HERMES_H1_NORM, HERMES_L2_NORM));
+                                            coeff_vec, m_block->projNormTypeVector());
 
             }
             else
