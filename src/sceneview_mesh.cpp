@@ -287,6 +287,8 @@ void SceneViewMesh::paintGL()
 
     // axes
     if (Util::config()->showAxes) paintAxes();
+
+    paintZoomRegion();
 }
 
 void SceneViewMesh::paintGeometry()

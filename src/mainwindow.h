@@ -135,6 +135,7 @@ private:
     QToolBar *tlbFile;
     QToolBar *tlbEdit;
     QToolBar *tlbView;
+    QToolBar *tlbZoom;
     QToolBar *tlbGeometry;
     QToolBar *tlbPost2D;
 

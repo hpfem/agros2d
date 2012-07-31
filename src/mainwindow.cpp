@@ -613,6 +613,8 @@ void MainWindow::createToolBars()
     tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actDocumentSave);
+    tlbFile->addSeparator();
+    tlbFile->addAction(actHideControlPanel);
 
     tlbView = addToolBar(tr("View"));
     tlbView->setObjectName("View");
@@ -623,12 +625,13 @@ void MainWindow::createToolBars()
     tlbView->setFixedHeight(iconHeight);
     tlbView->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
-    tlbView->addAction(actHideControlPanel);
-    tlbView->addSeparator();
-    tlbView->addAction(actSceneZoomBestFit);
-    tlbView->addAction(actSceneZoomRegion);
-    tlbView->addAction(actSceneZoomIn);
-    tlbView->addAction(actSceneZoomOut);
+
+    tlbZoom = addToolBar(tr("Zoom"));
+    tlbZoom->setObjectName("Zoom");
+    tlbZoom->addAction(actSceneZoomBestFit);
+    tlbZoom->addAction(actSceneZoomRegion);
+    tlbZoom->addAction(actSceneZoomIn);
+    tlbZoom->addAction(actSceneZoomOut);
 
     tlbGeometry = addToolBar(tr("Geometry"));
     tlbGeometry->setObjectName("Geometry");
@@ -1425,7 +1428,6 @@ void MainWindow::setControls()
     // set controls
     Util::scene()->actTransform->setEnabled(false);
 
-    actSceneZoomRegion->setChecked(false);
     sceneViewBlank->actSceneZoomRegion = NULL;
     sceneViewPreprocessor->actSceneZoomRegion = NULL;
     sceneViewMesh->actSceneZoomRegion = NULL;
@@ -1434,6 +1436,15 @@ void MainWindow::setControls()
 
     tlbGeometry->setVisible(sceneViewPreprocessor->actSceneModePreprocessor->isChecked());
     tlbPost2D->setVisible(sceneViewPost2D->actSceneModePost2D->isChecked());
+    bool showZoom = sceneViewPreprocessor->actSceneModePreprocessor->isChecked() ||
+            sceneViewMesh->actSceneModeMesh->isChecked() ||
+            sceneViewPost2D->actSceneModePost2D->isChecked() ||
+            sceneViewPost3D->actSceneModePost3D->isChecked();
+    tlbZoom->setVisible(showZoom);
+    actSceneZoomIn->setVisible(showZoom);
+    actSceneZoomOut->setVisible(showZoom);
+    actSceneZoomBestFit->setVisible(showZoom);
+    actSceneZoomRegion->setVisible(showZoom);
 
     if (problemWidget->actProperties->isChecked())
     {
@@ -1465,7 +1476,7 @@ void MainWindow::setControls()
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewMesh, SLOT(doZoomBestFit()));
-        sceneViewPost2D->actSceneZoomRegion = actSceneZoomRegion;
+        sceneViewMesh->actSceneZoomRegion = actSceneZoomRegion;
     }
     if (sceneViewPost2D->actSceneModePost2D->isChecked())
     {
@@ -1488,7 +1499,6 @@ void MainWindow::setControls()
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomBestFit()));
-        actSceneZoomRegion->setEnabled(false);
 
         // hide transform dialog
         sceneTransformDialog->hide();
