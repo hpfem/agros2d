@@ -10,6 +10,12 @@ public:
     bool contains(FieldSolutionID solutionID) const;
     MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
     MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
+
+    // returns MultiSolution with components related to last time step, in which was each respective field calculated
+    // this time step can be different for respective fields due to time step skipping
+    // intented to be used as initial condition for the newton method
+    MultiSolutionArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
+
     void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);

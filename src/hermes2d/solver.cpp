@@ -454,7 +454,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
 
     MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
     if(timeStep > 0)
-        previousTSMultiSolutionArray = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep - 1, adaptivityStep, SolutionMode_Normal));;
+        previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));;
 
     cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
