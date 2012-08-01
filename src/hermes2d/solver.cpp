@@ -364,7 +364,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
         newton.set_verbose_output(true);
         newton.set_verbose_callback(processSolverOutput);
 
-        // newton.set_max_allowed_residual_norm(1e15);
+        newton.set_max_allowed_residual_norm(1e15);
         try
         {
             int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));

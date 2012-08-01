@@ -57,7 +57,7 @@ namespace Hermes
                                int newton_max_iter = 100, bool residual_as_function = false);
 
       /// Sets the maximum allowed norm of the residual during the calculation.
-      void set_max_allowed_residual_norm(double max_allowed_residual_norm_to_set);
+      void set_max_allowed_residual_norm(double max_allowed_residual_norm_to_set) {max_allowed_residual_norm = max_allowed_residual_norm_to_set;}
 
       /// Call NonlinearSolver::set_iterative_method() and set the method to the linear solver (if applicable).
       virtual void set_iterative_method(const char* iterative_method_name);
