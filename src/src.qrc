@@ -149,5 +149,6 @@
 		<file alias="fields/heat.png">../resources_source/images/fields/heat.png</file>
 		<file alias="fields/magnetic.png">../resources_source/images/fields/magnetic.png</file>
   		<file alias="fields/rf.png">../resources_source/images/fields/rf.png</file>
+		<file alias="fields/flow.png">../resources_source/images/fields/flow.png</file>
     </qresource>
 </RCC>
