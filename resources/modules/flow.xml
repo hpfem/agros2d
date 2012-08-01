@@ -259,6 +259,7 @@
     <module:surface>
         <module:quantity id="flow_velocity_x" shortname="fl_vx" />
         <module:quantity id="flow_velocity_y" shortname="fl_vy" />
+        <module:quantity id="flow_pressure" shortname="fl_p" />
 
         <module:weakforms_surface>
             <module:weakform_surface analysistype="steadystate" default="flow_velocity">
@@ -296,6 +297,17 @@
                         axi_linear="0"
                         planar_newton="0"
                         axi_newton="0"
+                    />
+                </module:boundary>
+
+                <module:boundary id="fluid_pressure" name="Pressure">
+                    <module:quantity id="flow_pressure" />
+
+                    <module:essential_form i="3"
+                        planar_linear="fl_p"
+                        axi_linear="fl_p"
+                        planar_newton="fl_p"
+                        axi_newton="fl_p"
                     />
                 </module:boundary>
 
@@ -366,17 +378,25 @@
             </module:group>
         </module:gui>
         <module:gui type="surface">
-            <module:group>
-            <module:quantity id="flow_velocity_x"
-                name="Velocity - x" shortname="vx"
-                shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
-                shortname_latex="v_\mathrm{x}" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;"
-                unit_latex="m\cdot s^{-1}"/>
-            <module:quantity id="flow_velocity_y"
-                name="Velocity - y" shortname="vy"
-                shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
-                shortname_latex="v_\mathrm{y}" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;"
-                unit_latex="m\cdot s^{-1}"/>
+            <module:group name="Velocity">
+                <module:quantity id="flow_velocity_x"
+                    name="Velocity - x" shortname="vx"
+                    shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;x&lt;/sub&gt;"
+                    shortname_latex="v_\mathrm{x}" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;"
+                    unit_latex="m\cdot s^{-1}"/>
+                <module:quantity id="flow_velocity_y"
+                    name="Velocity - y" shortname="vy"
+                    shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;y&lt;/sub&gt;"
+                    shortname_latex="v_\mathrm{y}" unit="m/s" unit_html="m.s&lt;sup&gt;-1&lt;/sup&gt;"
+                    unit_latex="m\cdot s^{-1}"/>
+            </module:group>
+
+            <module:group name="Pressure">
+                <module:quantity id="flow_pressure"
+                    name="Pressure" shortname="p"
+                    shortname_html="&lt;i&gt;p&lt;/i&gt;&lt;"
+                    shortname_latex="p" unit="Pa" unit_html="Pa"
+                    unit_latex="Pa"/>
             </module:group>
         </module:gui>
     </module:preprocessor>
@@ -393,12 +413,21 @@
             </module:localvariable>
             <module:localvariable id="flow_pressure"
                     name="Pressure" type="scalar" shortname="p" shortname_html="&lt;i&gt;p&lt;/i&gt;"
-                    shortname_latex="p" unit="Pa" unit_html="Pa" unit_latex="Pa">
+                    shortname_latex="p" unit="Pa" unit_html="m" unit_latex="Pa">
                     <module:expression analysistype="steadystate"
                             planar="value3" axi="value3" />
                     <module:expression analysistype="transient"
                             planar="value3" axi="value3" />
             </module:localvariable>
+            <module:localvariable id="flow_vorticity"
+                    name="Vorticity" type="scalar" shortname="vt" shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub>t&lt;/sub>"
+                    shortname_latex="vt" unit="1/s" unit_html="s&lt;sup>-1&lt;/sup>" unit_latex="s^{-1}">
+                    <module:expression analysistype="steadystate"
+                            planar="dx2 - dy1" axi="dx2 - dy1" />
+                    <module:expression analysistype="transient"
+                            planar="dx2 - dy1" axi="dx2 - dy1" />
+            </module:localvariable>
+
             <module:localvariable id="flow_density"
                     name="Density" type="scalar" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>"
                     shortname_latex="\rho" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}">

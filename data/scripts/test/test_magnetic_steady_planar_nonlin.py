@@ -29,7 +29,6 @@ magnetic.add_material("Civka 2", {"magnetic_conductivity" : 0, "magnetic_current
 magnetic.add_material("Iron", {"magnetic_conductivity" : 0, "magnetic_current_density_external_real" : 0, "magnetic_permeability" : { "value" : 995, "x" : [0,0.2,0.5,0.8,1.15,1.3,1.45,1.6,1.69,2,2.2,2.5,3,5,10,20], "y" : [995,995,991,933,771,651,473,311,245,40,30,25,20,8,5,2] }, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_angular" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0})
 magnetic.add_material("Air", {"magnetic_conductivity" : 0, "magnetic_current_density_external_real" : 0, "magnetic_permeability" : 1, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_angular" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0})
 
-
 # geometry
 geometry = agros2d.geometry
 

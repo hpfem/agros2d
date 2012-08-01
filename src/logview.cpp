@@ -246,8 +246,8 @@ void LogDialog::printMessage(const QString &module, const QString &message)
         }
         else
         {
-            m_chartStep.clear();
-            m_chartNorm.clear();
+            // m_chartStep.clear();
+            // m_chartNorm.clear();
         }
     }    
 }
