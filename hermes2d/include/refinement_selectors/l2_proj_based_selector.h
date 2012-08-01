@@ -22,7 +22,6 @@ namespace Hermes
   namespace Hermes2D
   {
     namespace RefinementSelectors {
-
       /// A projection-based selector for L2 space. \ingroup g_selectors
       /** This class is designed to be used with the class L2Adapt.
       *  Since an initialization of the class may take a long time,
@@ -37,7 +36,7 @@ namespace Hermes
         *  \param[in] max_order A maximum order which considered. If ::H2DRS_DEFAULT_ORDER, a maximum order supported by the selector is used, see HcurlProjBasedSelector::H2DRS_MAX_L2_ORDER.
         *  \param[in] user_shapeset A shapeset. If NULL, it will use internal instance of the class L2Shapeset. */
         L2ProjBasedSelector(CandList cand_list = H2D_HP_ANISO, double conv_exp = 1.0, int max_order = H2DRS_DEFAULT_ORDER, L2Shapeset* user_shapeset = NULL);
-        
+
         /// Cloning for paralelism.
         virtual Selector<Scalar>* clone();
 
@@ -53,7 +52,7 @@ namespace Hermes
         Scalar* precalc_rvals[H2D_MAX_ELEMENT_SONS][H2D_L2FE_NUM]; ///< Array of arrays of precalculates. The first index is an index of a subdomain, the second index is an index of a function expansion (see enum LocalFuncExpansion).
 
         /// Sets OptimumSelector::current_max_order and OptimumSelector::current_min_order.
-        /** The default order range is [1, 8]. If curved, the upper boundary of the range becomes lower.
+        /** The default order range is[1, 8]. If curved, the upper boundary of the range becomes lower.
         *  Overriden function. For details, see OptimumSelector::set_current_order_range().
         *  \todo Replace calculations inside with calculations that uses symbolic constants instead of fixed numbers.
         *  \todo The original implementation uses subtracts 1 in H1 and Hcurl while L2 subtracts 2. Why? */

@@ -69,6 +69,7 @@ namespace Hermes
     const int H2D_FN_COMPONENT_0 = H2D_FN_VAL_0 | H2D_FN_DX_0 | H2D_FN_DY_0 | H2D_FN_DXX_0 | H2D_FN_DYY_0 | H2D_FN_DXY_0;
     const int H2D_FN_COMPONENT_1 = H2D_FN_VAL_1 | H2D_FN_DX_1 | H2D_FN_DY_1 | H2D_FN_DXX_1 | H2D_FN_DYY_1 | H2D_FN_DXY_1;
 
+    /// @ingroup meshFunctions
     /// \brief Represents an arbitrary function defined on an element.
     ///
     /// The Function class is an abstraction of a function defined in integration points on an
@@ -105,55 +106,55 @@ namespace Hermes
       int get_num_components() const;
 
       /// \brief Returns function values.
-      /// \param component [in] The component of the function (0 or 1).
+      /// \param component[in] The component of the function (0 or 1).
       /// \return The values of the function at all points of the current integration rule.
       Scalar* get_fn_values(int component = 0);
 
       /// \brief Returns the x partial derivative.
-      /// \param component [in] The component of the function (0 or 1).
+      /// \param component[in] The component of the function (0 or 1).
       /// \return The x partial derivative of the function at all points of the current integration rule.
       Scalar* get_dx_values(int component = 0);
 
       /// \brief Returns the y partial derivative.
-      /// \param component [in] The component of the function (0 or 1).
+      /// \param component[in] The component of the function (0 or 1).
       /// \return The y partial derivative of the function at all points of the current integration rule.
       Scalar* get_dy_values(int component = 0);
 
       /// \brief Returns both x and y partial derivatives.
       /// This function provides the both often-used dx and dy values in one call.
-      /// \param dx [out] Variable which receives the pointer to the first partial derivatives by x
-      /// \param dy [out] Variable which receives the pointer to the first partial derivatives by y
-      /// \param component [in] The component of the function (0 or 1).
+      /// \param dx[out] Variable which receives the pointer to the first partial derivatives by x
+      /// \param dy[out] Variable which receives the pointer to the first partial derivatives by y
+      /// \param component[in] The component of the function (0 or 1).
       void get_dx_dy_values(Scalar*& dx, Scalar*& dy, int component = 0);
 
       /// \brief Returns the second x partial derivative.
-      /// \param component [in] The component of the function (0 or 1).
+      /// \param component[in] The component of the function (0 or 1).
       /// \return The x second partial derivative of the function at all points of the current integration rule.
       Scalar* get_dxx_values(int component = 0);
 
       /// \brief Returns the second y partial derivative.
-      /// \param component [in] The component of the function (0 or 1).
+      /// \param component[in] The component of the function (0 or 1).
       /// \return The y second partial derivative of the function at all points of the current integration rule.
       Scalar* get_dyy_values(int component = 0);
 
       /// \brief Returns the second mixed derivative.
-      /// \param component [in] The component of the function (0 or 1).
+      /// \param component[in] The component of the function (0 or 1).
       /// \return The second mixed derivative of the function at all points of the current integration rule.
       Scalar* get_dxy_values(int component = 0);
-      
+
       /// \brief Returns the current quadrature points.
       Quad2D* get_quad_2d() const;
 
       /// Activates an integration rule of the specified order. Subsequent calls to
       /// get_values(), get_dx_values() etc. will be returning function values at these points.
-      /// \param order [in] Integration rule order.
-      /// \param mask [in] A combination of one or more of the constants H2D_FN_VAL, H2D_FN_DX, H2D_FN_DY,
+      /// \param order[in] Integration rule order.
+      /// \param mask[in] A combination of one or more of the constants H2D_FN_VAL, H2D_FN_DX, H2D_FN_DY,
       ///   H2D_FN_DXX, H2D_FN_DYY, H2D_FN_DXY specifying the values which should be precalculated. The default is
       ///   H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY. You can also use H2D_FN_ALL to precalculate everything.
       void set_quad_order(unsigned int order, int mask = H2D_FN_DEFAULT);
-      
+
       Scalar* get_values(int a, int b);
-      
+
       /// \brief Returns the polynomial degree of the function being represented by the class.
       int get_fn_order() const;
 
@@ -162,7 +163,7 @@ namespace Hermes
       /// \details It is possible to switch back and forth between different quadrature
       /// points: no precalculated values are freed. The standard quadrature is
       /// always selected by default already.
-      /// \param quad_2d [in] The quadrature points.
+      /// \param quad_2d[in] The quadrature points.
       virtual void set_quad_2d(Quad2D* quad_2d);
 
       /// \brief Frees all precalculated tables.
@@ -184,9 +185,8 @@ namespace Hermes
         Node& operator=(const Node& other) { return *this; }; ///< Assignment is not allowed.
       };
 
-
       /// \brief Returns the polynomial degree of the function at given edge. To be overridden in derived classes.
-      /// \param edge [in] Edge at which the order should be evaluated. (0-3)
+      /// \param edge[in] Edge at which the order should be evaluated. (0-3)
       virtual int get_edge_fn_order(int edge) const;
 
       /// precalculates the current function at the current integration points.
@@ -230,7 +230,7 @@ namespace Hermes
       void replace_cur_node(Node* node);
 
       static void check_params(int component, Node* cur_node, int num_components);
-    
+
       static void check_table(int component, Node* cur_node, int n, const char* msg);
 
       static int idx2mask[6][2];  ///< index to mask table
@@ -242,7 +242,7 @@ namespace Hermes
       friend class Views::Orderizer;
       friend class Views::Vectorizer;
       friend class Views::Linearizer;
-      
+
       template<typename T> friend class DiscontinuousFunc;
       template<typename T> friend class DiscreteProblem;
       template<typename T> friend class DiscreteProblemLinear;

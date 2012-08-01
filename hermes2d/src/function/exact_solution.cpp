@@ -19,13 +19,13 @@ namespace Hermes
   namespace Hermes2D
   {
     template<typename Scalar>
-    ExactSolution<Scalar>::ExactSolution(Mesh* mesh) : Solution<Scalar>(mesh)
+    ExactSolution<Scalar>::ExactSolution(const Mesh* mesh) : Solution<Scalar>(mesh)
     {
       this->sln_type = HERMES_EXACT;
       this->num_dofs = -1;
       this->exact_multiplicator = 1.0;
     }
-    
+
     template<typename Scalar>
     MeshFunction<Scalar>* ExactSolution<Scalar>::clone()
     {
@@ -34,7 +34,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ExactSolutionScalar<Scalar>::ExactSolutionScalar(Mesh* mesh) : ExactSolution<Scalar>(mesh)
+    ExactSolutionScalar<Scalar>::ExactSolutionScalar(const Mesh* mesh) : ExactSolution<Scalar>(mesh)
     {
       this->num_components = 1;
     }
@@ -46,7 +46,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ExactSolutionVector<Scalar>::ExactSolutionVector(Mesh* mesh) : ExactSolution<Scalar>(mesh)
+    ExactSolutionVector<Scalar>::ExactSolutionVector(const Mesh* mesh) : ExactSolution<Scalar>(mesh)
     {
       this->num_components = 2;
     }
@@ -58,7 +58,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ConstantSolution<Scalar>::ConstantSolution(Mesh* mesh, Scalar constant) : ExactSolutionScalar<Scalar>(mesh), constant(constant) {};
+    ConstantSolution<Scalar>::ConstantSolution(const Mesh* mesh, Scalar constant) : ExactSolutionScalar<Scalar>(mesh), constant(constant) {};
 
     template<typename Scalar>
     Scalar ConstantSolution<Scalar>::value (double x, double y) const {
@@ -86,14 +86,13 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ZeroSolution<Scalar>::ZeroSolution(Mesh* mesh) : ExactSolutionScalar<Scalar>(mesh) {};
+    ZeroSolution<Scalar>::ZeroSolution(const Mesh* mesh) : ExactSolutionScalar<Scalar>(mesh) {};
 
     template<typename Scalar>
     Scalar ZeroSolution<Scalar>::value (double x, double y) const {
       return 0.0;
     };
 
-    
     template<typename Scalar>
     MeshFunction<Scalar>* ZeroSolution<Scalar>::clone()
     {
@@ -115,9 +114,8 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ConstantSolutionVector<Scalar>::ConstantSolutionVector(Mesh* mesh, Scalar constantX, Scalar constantY) : ExactSolutionVector<Scalar>(mesh), constantX(constantX), constantY(constantY) {};
+    ConstantSolutionVector<Scalar>::ConstantSolutionVector(const Mesh* mesh, Scalar constantX, Scalar constantY) : ExactSolutionVector<Scalar>(mesh), constantX(constantX), constantY(constantY) {};
 
-    
     template<typename Scalar>
     MeshFunction<Scalar>* ConstantSolutionVector<Scalar>::clone()
     {
@@ -144,7 +142,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ZeroSolutionVector<Scalar>::ZeroSolutionVector(Mesh* mesh) : ExactSolutionVector<Scalar>(mesh) {};
+    ZeroSolutionVector<Scalar>::ZeroSolutionVector(const Mesh* mesh) : ExactSolutionVector<Scalar>(mesh) {};
 
     template<typename Scalar>
     Scalar2<Scalar> ZeroSolutionVector<Scalar>::value (double x, double y) const {
@@ -161,7 +159,7 @@ namespace Hermes
     Ord ZeroSolutionVector<Scalar>::ord(Ord x, Ord y) const {
       return Ord(0);
     }
-    
+
     template<typename Scalar>
     MeshFunction<Scalar>* ZeroSolutionVector<Scalar>::clone()
     {

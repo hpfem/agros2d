@@ -97,7 +97,7 @@ void SurfaceIntegralValue::calculate()
         for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             sln[k]->set_quad_2d(quad);
 
-        Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
+        const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
         for (int i = 0; i<Util::scene()->edges->length(); i++)
         {
             if (Util::scene()->edges->at(i)->isSelected())
@@ -115,7 +115,7 @@ void SurfaceIntegralValue::calculate()
                             {
                                 boundary = true;
                             }
-                            if ((atoi(mesh->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
+                            if ((atoi(Util::problem()->meshInitial(m_fieldInfo)->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
                             {
                                 integrate = true;
                             }

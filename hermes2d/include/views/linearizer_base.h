@@ -96,6 +96,8 @@ namespace Hermes
 
         double max;
 
+        void regularize_triangle(int iv0, int iv1, int iv2, int mid0, int mid1, int mid2);
+
         bool auto_max;
 
         int3* tris;      ///< triangles: vertex index triplets
@@ -105,8 +107,6 @@ namespace Hermes
 
         int vertex_count, triangle_count, edges_count; ///< Real numbers of vertices, triangles and edges
         int vertex_size, triangle_size, edges_size; ///< Size of arrays of vertices, triangles and edges
-
-        bool curved;
 
         double eps;
 
@@ -122,6 +122,8 @@ namespace Hermes
         int hash(int p1, int p2);
 
         mutable pthread_mutex_t data_mutex;
+
+        Hermes::Exceptions::Exception* caughtException;
 
         /// Calculates AABB from an array of X-axis and Y-axis coordinates. The distance between values in the array is stride bytes.
         static void calc_aabb(double* x, double* y, int stride, int num, double* min_x, double* max_x, double* min_y, double* max_y);

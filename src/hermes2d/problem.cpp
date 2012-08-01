@@ -546,12 +546,12 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     }
     catch (Hermes::Exceptions::Exception& e)
     {
-        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString::fromStdString(e.getMsg()));
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
         return;
     }
     catch (Hermes::Exceptions::Exception* e)
     {
-        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString::fromStdString(e->getMsg()));
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e->what()));
         return;
     }
     catch (mu::ParserError& e)

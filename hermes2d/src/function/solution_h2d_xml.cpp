@@ -99,30 +99,6 @@ namespace XMLSolution
     this->component_ = s;
   }
 
-  const solution::sln_vector_type& solution::
-  sln_vector () const
-  {
-    return this->sln_vector_.get ();
-  }
-
-  solution::sln_vector_type& solution::
-  sln_vector ()
-  {
-    return this->sln_vector_.get ();
-  }
-
-  void solution::
-  sln_vector (const sln_vector_type& x)
-  {
-    this->sln_vector_.set (x);
-  }
-
-  void solution::
-  sln_vector (::std::auto_ptr< sln_vector_type > x)
-  {
-    this->sln_vector_.set (x);
-  }
-
   const solution::num_components_type& solution::
   num_components () const
   {
@@ -175,24 +151,6 @@ namespace XMLSolution
   num_coeffs (const num_coeffs_type& x)
   {
     this->num_coeffs_.set (x);
-  }
-
-  const solution::num_dofs_type& solution::
-  num_dofs () const
-  {
-    return this->num_dofs_.get ();
-  }
-
-  solution::num_dofs_type& solution::
-  num_dofs ()
-  {
-    return this->num_dofs_.get ();
-  }
-
-  void solution::
-  num_dofs (const num_dofs_type& x)
-  {
-    this->num_dofs_.set (x);
   }
 
 
@@ -346,28 +304,6 @@ namespace XMLSolution
   }
 
 
-  // sln_vector
-  // 
-
-  const sln_vector::sln_coeff_sequence& sln_vector::
-  sln_coeff () const
-  {
-    return this->sln_coeff_;
-  }
-
-  sln_vector::sln_coeff_sequence& sln_vector::
-  sln_coeff ()
-  {
-    return this->sln_coeff_;
-  }
-
-  void sln_vector::
-  sln_coeff (const sln_coeff_sequence& s)
-  {
-    this->sln_coeff_ = s;
-  }
-
-
   // elem_coeffs
   // 
 
@@ -406,70 +342,6 @@ namespace XMLSolution
   {
     this->coeff_.set (x);
   }
-
-
-  // sln_coeff
-  // 
-
-  const sln_coeff::id_type& sln_coeff::
-  id () const
-  {
-    return this->id_.get ();
-  }
-
-  sln_coeff::id_type& sln_coeff::
-  id ()
-  {
-    return this->id_.get ();
-  }
-
-  void sln_coeff::
-  id (const id_type& x)
-  {
-    this->id_.set (x);
-  }
-
-  const sln_coeff::real_type& sln_coeff::
-  real () const
-  {
-    return this->real_.get ();
-  }
-
-  sln_coeff::real_type& sln_coeff::
-  real ()
-  {
-    return this->real_.get ();
-  }
-
-  void sln_coeff::
-  real (const real_type& x)
-  {
-    this->real_.set (x);
-  }
-
-  const sln_coeff::imaginary_optional& sln_coeff::
-  imaginary () const
-  {
-    return this->imaginary_;
-  }
-
-  sln_coeff::imaginary_optional& sln_coeff::
-  imaginary ()
-  {
-    return this->imaginary_;
-  }
-
-  void sln_coeff::
-  imaginary (const imaginary_type& x)
-  {
-    this->imaginary_.set (x);
-  }
-
-  void sln_coeff::
-  imaginary (const imaginary_optional& x)
-  {
-    this->imaginary_ = x;
-  }
 }
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
@@ -480,38 +352,16 @@ namespace XMLSolution
   //
 
   solution::
-  solution (const sln_vector_type& sln_vector,
-            const num_components_type& num_components,
+  solution (const num_components_type& num_components,
             const num_elems_type& num_elems,
-            const num_coeffs_type& num_coeffs,
-            const num_dofs_type& num_dofs)
+            const num_coeffs_type& num_coeffs)
   : ::xml_schema::type (),
     mono_coeffs_ (::xml_schema::flags (), this),
     elem_orders_ (::xml_schema::flags (), this),
     component_ (::xml_schema::flags (), this),
-    sln_vector_ (sln_vector, ::xml_schema::flags (), this),
     num_components_ (num_components, ::xml_schema::flags (), this),
     num_elems_ (num_elems, ::xml_schema::flags (), this),
-    num_coeffs_ (num_coeffs, ::xml_schema::flags (), this),
-    num_dofs_ (num_dofs, ::xml_schema::flags (), this)
-  {
-  }
-
-  solution::
-  solution (::std::auto_ptr< sln_vector_type >& sln_vector,
-            const num_components_type& num_components,
-            const num_elems_type& num_elems,
-            const num_coeffs_type& num_coeffs,
-            const num_dofs_type& num_dofs)
-  : ::xml_schema::type (),
-    mono_coeffs_ (::xml_schema::flags (), this),
-    elem_orders_ (::xml_schema::flags (), this),
-    component_ (::xml_schema::flags (), this),
-    sln_vector_ (sln_vector, ::xml_schema::flags (), this),
-    num_components_ (num_components, ::xml_schema::flags (), this),
-    num_elems_ (num_elems, ::xml_schema::flags (), this),
-    num_coeffs_ (num_coeffs, ::xml_schema::flags (), this),
-    num_dofs_ (num_dofs, ::xml_schema::flags (), this)
+    num_coeffs_ (num_coeffs, ::xml_schema::flags (), this)
   {
   }
 
@@ -523,11 +373,9 @@ namespace XMLSolution
     mono_coeffs_ (x.mono_coeffs_, f, this),
     elem_orders_ (x.elem_orders_, f, this),
     component_ (x.component_, f, this),
-    sln_vector_ (x.sln_vector_, f, this),
     num_components_ (x.num_components_, f, this),
     num_elems_ (x.num_elems_, f, this),
-    num_coeffs_ (x.num_coeffs_, f, this),
-    num_dofs_ (x.num_dofs_, f, this)
+    num_coeffs_ (x.num_coeffs_, f, this)
   {
   }
 
@@ -539,11 +387,9 @@ namespace XMLSolution
     mono_coeffs_ (f, this),
     elem_orders_ (f, this),
     component_ (f, this),
-    sln_vector_ (f, this),
     num_components_ (f, this),
     num_elems_ (f, this),
-    num_coeffs_ (f, this),
-    num_dofs_ (f, this)
+    num_coeffs_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -595,28 +441,7 @@ namespace XMLSolution
         continue;
       }
 
-      // sln_vector
-      //
-      if (n.name () == "sln_vector" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< sln_vector_type > r (
-          sln_vector_traits::create (i, f, this));
-
-        if (!sln_vector_.present ())
-        {
-          this->sln_vector_.set (r);
-          continue;
-        }
-      }
-
       break;
-    }
-
-    if (!sln_vector_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_element< char > (
-        "sln_vector",
-        "");
     }
 
     while (p.more_attributes ())
@@ -642,12 +467,6 @@ namespace XMLSolution
         this->num_coeffs_.set (num_coeffs_traits::create (i, f, this));
         continue;
       }
-
-      if (n.name () == "num_dofs" && n.namespace_ ().empty ())
-      {
-        this->num_dofs_.set (num_dofs_traits::create (i, f, this));
-        continue;
-      }
     }
 
     if (!num_components_.present ())
@@ -668,13 +487,6 @@ namespace XMLSolution
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "num_coeffs",
-        "");
-    }
-
-    if (!num_dofs_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "num_dofs",
         "");
     }
   }
@@ -960,76 +772,6 @@ namespace XMLSolution
   {
   }
 
-  // sln_vector
-  //
-
-  sln_vector::
-  sln_vector ()
-  : ::xml_schema::type (),
-    sln_coeff_ (::xml_schema::flags (), this)
-  {
-  }
-
-  sln_vector::
-  sln_vector (const sln_vector& x,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
-  : ::xml_schema::type (x, f, c),
-    sln_coeff_ (x.sln_coeff_, f, this)
-  {
-  }
-
-  sln_vector::
-  sln_vector (const ::xercesc::DOMElement& e,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
-  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    sln_coeff_ (f, this)
-  {
-    if ((f & ::xml_schema::flags::base) == 0)
-    {
-      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
-      this->parse (p, f);
-    }
-  }
-
-  void sln_vector::
-  parse (::xsd::cxx::xml::dom::parser< char >& p,
-         ::xml_schema::flags f)
-  {
-    for (; p.more_elements (); p.next_element ())
-    {
-      const ::xercesc::DOMElement& i (p.cur_element ());
-      const ::xsd::cxx::xml::qualified_name< char > n (
-        ::xsd::cxx::xml::dom::name< char > (i));
-
-      // sln_coeff
-      //
-      if (n.name () == "sln_coeff" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< sln_coeff_type > r (
-          sln_coeff_traits::create (i, f, this));
-
-        this->sln_coeff_.push_back (r);
-        continue;
-      }
-
-      break;
-    }
-  }
-
-  sln_vector* sln_vector::
-  _clone (::xml_schema::flags f,
-          ::xml_schema::container* c) const
-  {
-    return new class sln_vector (*this, f, c);
-  }
-
-  sln_vector::
-  ~sln_vector ()
-  {
-  }
-
   // elem_coeffs
   //
 
@@ -1116,102 +858,6 @@ namespace XMLSolution
   ~elem_coeffs ()
   {
   }
-
-  // sln_coeff
-  //
-
-  sln_coeff::
-  sln_coeff (const id_type& id,
-             const real_type& real)
-  : ::xml_schema::type (),
-    id_ (id, ::xml_schema::flags (), this),
-    real_ (real, ::xml_schema::flags (), this),
-    imaginary_ (::xml_schema::flags (), this)
-  {
-  }
-
-  sln_coeff::
-  sln_coeff (const sln_coeff& x,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-  : ::xml_schema::type (x, f, c),
-    id_ (x.id_, f, this),
-    real_ (x.real_, f, this),
-    imaginary_ (x.imaginary_, f, this)
-  {
-  }
-
-  sln_coeff::
-  sln_coeff (const ::xercesc::DOMElement& e,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    id_ (f, this),
-    real_ (f, this),
-    imaginary_ (f, this)
-  {
-    if ((f & ::xml_schema::flags::base) == 0)
-    {
-      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
-      this->parse (p, f);
-    }
-  }
-
-  void sln_coeff::
-  parse (::xsd::cxx::xml::dom::parser< char >& p,
-         ::xml_schema::flags f)
-  {
-    while (p.more_attributes ())
-    {
-      const ::xercesc::DOMAttr& i (p.next_attribute ());
-      const ::xsd::cxx::xml::qualified_name< char > n (
-        ::xsd::cxx::xml::dom::name< char > (i));
-
-      if (n.name () == "id" && n.namespace_ ().empty ())
-      {
-        this->id_.set (id_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "real" && n.namespace_ ().empty ())
-      {
-        this->real_.set (real_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "imaginary" && n.namespace_ ().empty ())
-      {
-        this->imaginary_.set (imaginary_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    if (!id_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "id",
-        "");
-    }
-
-    if (!real_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "real",
-        "");
-    }
-  }
-
-  sln_coeff* sln_coeff::
-  _clone (::xml_schema::flags f,
-          ::xml_schema::container* c) const
-  {
-    return new class sln_coeff (*this, f, c);
-  }
-
-  sln_coeff::
-  ~sln_coeff ()
-  {
-  }
 }
 
 #include <ostream>
@@ -1242,11 +888,9 @@ namespace XMLSolution
       o << ::std::endl << "component: " << *b;
     }
 
-    o << ::std::endl << "sln_vector: " << i.sln_vector ();
     o << ::std::endl << "num_components: " << i.num_components ();
     o << ::std::endl << "num_elems: " << i.num_elems ();
     o << ::std::endl << "num_coeffs: " << i.num_coeffs ();
-    o << ::std::endl << "num_dofs: " << i.num_dofs ();
     return o;
   }
 
@@ -1290,36 +934,10 @@ namespace XMLSolution
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const sln_vector& i)
-  {
-    for (sln_vector::sln_coeff_const_iterator
-         b (i.sln_coeff ().begin ()), e (i.sln_coeff ().end ());
-         b != e; ++b)
-    {
-      o << ::std::endl << "sln_coeff: " << *b;
-    }
-
-    return o;
-  }
-
-  ::std::ostream&
   operator<< (::std::ostream& o, const elem_coeffs& i)
   {
     o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "coeff: " << i.coeff ();
-    return o;
-  }
-
-  ::std::ostream&
-  operator<< (::std::ostream& o, const sln_coeff& i)
-  {
-    o << ::std::endl << "id: " << i.id ();
-    o << ::std::endl << "real: " << i.real ();
-    if (i.imaginary ())
-    {
-      o << ::std::endl << "imaginary: " << *i.imaginary ();
-    }
-
     return o;
   }
 }
@@ -1812,17 +1430,6 @@ namespace XMLSolution
       s << *b;
     }
 
-    // sln_vector
-    //
-    {
-      ::xercesc::DOMElement& s (
-        ::xsd::cxx::xml::dom::create_element (
-          "sln_vector",
-          e));
-
-      s << i.sln_vector ();
-    }
-
     // num_components
     //
     {
@@ -1854,17 +1461,6 @@ namespace XMLSolution
           e));
 
       a << i.num_coeffs ();
-    }
-
-    // num_dofs
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "num_dofs",
-          e));
-
-      a << i.num_dofs ();
     }
   }
 
@@ -1969,26 +1565,6 @@ namespace XMLSolution
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const sln_vector& i)
-  {
-    e << static_cast< const ::xml_schema::type& > (i);
-
-    // sln_coeff
-    //
-    for (sln_vector::sln_coeff_const_iterator
-         b (i.sln_coeff ().begin ()), n (i.sln_coeff ().end ());
-         b != n; ++b)
-    {
-      ::xercesc::DOMElement& s (
-        ::xsd::cxx::xml::dom::create_element (
-          "sln_coeff",
-          e));
-
-      s << *b;
-    }
-  }
-
-  void
   operator<< (::xercesc::DOMElement& e, const elem_coeffs& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
@@ -2013,46 +1589,6 @@ namespace XMLSolution
           e));
 
       a << i.coeff ();
-    }
-  }
-
-  void
-  operator<< (::xercesc::DOMElement& e, const sln_coeff& i)
-  {
-    e << static_cast< const ::xml_schema::type& > (i);
-
-    // id
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "id",
-          e));
-
-      a << i.id ();
-    }
-
-    // real
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "real",
-          e));
-
-      a << ::xml_schema::as_decimal(i.real ());
-    }
-
-    // imaginary
-    //
-    if (i.imaginary ())
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "imaginary",
-          e));
-
-      a << ::xml_schema::as_decimal(*i.imaginary ());
     }
   }
 }

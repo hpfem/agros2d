@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __H2D_OGPROJECTION_H
 #define __H2D_OGPROJECTION_H
 
@@ -25,15 +24,10 @@ namespace Hermes
 {
   namespace Hermes2D
   {
-    /**
-     \class OGProjection
-    
-     \brief Class for (global) orthogonal projecting. If the projection is not necessary (if a solution belongs to the space), then its solution vector is used.
-    
-     \author  LK
-     \date  10/29/2011
-     */
+    /// @defgroup projections Projections
 
+    /// @ingroup projections
+    /// \brief Class for (global) orthogonal projecting. If the projection is not necessary (if a solution belongs to the space), then its solution vector is used.
     template<typename Scalar>
     class HERMES_API OGProjection : public Hermes::Mixins::Loggable
     {
@@ -41,7 +35,7 @@ namespace Hermes
       OGProjection();
 
       /// Main functionality is in the protected method project_internal().
-      /// This is a wrapper that delivers a Solution instead of a coefficient vector.   
+      /// This is a wrapper that delivers a Solution instead of a coefficient vector.
       void project_global(const Space<Scalar>* space,
           MatrixFormVol<Scalar>* custom_projection_jacobian,
           VectorFormVol<Scalar>* custom_projection_residual,
@@ -52,44 +46,44 @@ namespace Hermes
        \fn  static void OGProjection::project_global(Space<Scalar>* space,
         MeshFunction<Scalar>* source_meshfn, Scalar* target_vec,
         ProjNormType proj_norm = HERMES_UNSET_NORM, double newton_tol = 1e-6, int newton_max_iter = 10);
-      
+
        \brief The method checks source_meshfn if it is an instance of Solution, if so, it checks its sln_vector, and space_seq
               if they can be used directly.
-      
+
        \author  LK
        \date  10/29/2011
-      
-       \param [in]  space         If non-null, the space.
-       \param [in]  source_meshfn If non-null, source meshfn.
-       \param [out]  target_vec    If non-null, target vector.
+
+       \param[in]  space         If non-null, the space.
+       \param[in]  source_meshfn If non-null, source meshfn.
+       \param[out]  target_vec    If non-null, target vector.
        \param matrix_solver           (optional) the matrix solver.
        \param proj_norm               (optional) the project normalise.
        \param newton_tol              (optional) the newton tolerance.
        \param newton_max_iter         (optional) the newton maximum iterator.
        */
       void project_global(const Space<Scalar>* space, MeshFunction<Scalar>* source_meshfn,
-          Scalar* target_vec, ProjNormType proj_norm = HERMES_UNSET_NORM, 
+          Scalar* target_vec, ProjNormType proj_norm = HERMES_UNSET_NORM,
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
-      /// Wrapper that delivers a Solution instead of coefficient vector. 
+      /// Wrapper that delivers a Solution instead of coefficient vector.
       void project_global(const Space<Scalar>* space,
           Solution<Scalar>* source_sln, Solution<Scalar>* target_sln,
-          ProjNormType proj_norm = HERMES_UNSET_NORM, 
+          ProjNormType proj_norm = HERMES_UNSET_NORM,
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
-      /// Wrapper for multiple source MeshFunctions that delivers coefficient vector. 
+      /// Wrapper for multiple source MeshFunctions that delivers coefficient vector.
       void project_global(Hermes::vector<const Space<Scalar>*> spaces, Hermes::vector<MeshFunction<Scalar>*> source_meshfns,
-          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), 
+          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(),
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
-      /// Wrapper for multiple source Solutions that delivers coefficient vector. 
+      /// Wrapper for multiple source Solutions that delivers coefficient vector.
       void project_global(Hermes::vector<const Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> source_slns,
-          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), 
+          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(),
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
       void project_global(Hermes::vector<const Space<Scalar>*> spaces,
           Hermes::vector<Solution<Scalar>*> source_slns, Hermes::vector<Solution<Scalar>*> target_slns,
-          Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), bool delete_old_mesh = false, 
+          Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), bool delete_old_mesh = false,
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
     protected:
@@ -282,9 +276,9 @@ namespace Hermes
         {
           SolFunctionDomain result = SolFunctionDomain(0);
           for (int i = 0; i < n; i++)
-            result += wt[i] * ((u_ext[this->i]->val[i] - ext->fn[0]->val[i]) * v->val[i]
-          + (u_ext[this->i]->dx[i] - ext->fn[0]->dx[i]) * v->dx[i]
-          + (u_ext[this->i]->dy[i] - ext->fn[0]->dy[i]) * v->dy[i]);
+            result += wt[i] * ((ext->fn[0]->val[i]) * v->val[i]
+          + (ext->fn[0]->dx[i]) * v->dx[i]
+          + (ext->fn[0]->dy[i]) * v->dy[i]);
           return result;
         }
 
@@ -294,8 +288,8 @@ namespace Hermes
         {
           SolFunctionDomain result = SolFunctionDomain(0);
           for (int i = 0; i < n; i++)
-            result += wt[i] * ((u_ext[this->i]->dx[i] - ext->fn[0]->dx[i]) * v->dx[i]
-          + (u_ext[this->i]->dy[i] - ext->fn[0]->dy[i]) * v->dy[i]);
+            result += wt[i] * ((ext->fn[0]->dx[i]) * v->dx[i]
+          + (ext->fn[0]->dy[i]) * v->dy[i]);
           return result;
         }
 
@@ -305,7 +299,7 @@ namespace Hermes
         {
           SolFunctionDomain result = SolFunctionDomain(0);
           for (int i = 0; i < n; i++)
-            result += wt[i] * (u_ext[this->i]->val[i] - ext->fn[0]->val[i]) * v->val[i];
+            result += wt[i] * (ext->fn[0]->val[i]) * v->val[i];
           return result;
         }
 
@@ -315,9 +309,9 @@ namespace Hermes
         {
           SolFunctionDomain result = SolFunctionDomain(0);
           for (int i = 0; i < n; i++) {
-            result += wt[i] * (u_ext[this->i]->curl[i] - ext->fn[0]->curl[i]) * conj(v->curl[i]);
-            result += wt[i] * ((u_ext[this->i]->val0[i] - ext->fn[0]->val0[i]) * conj(v->val0[i])
-              + (u_ext[this->i]->val1[i] - ext->fn[0]->val1[i]) * conj(v->val1[i]));
+            result += wt[i] * (ext->fn[0]->curl[i]) * conj(v->curl[i]);
+            result += wt[i] * ((ext->fn[0]->val0[i]) * conj(v->val0[i])
+              + (ext->fn[0]->val1[i]) * conj(v->val1[i]));
           }
 
           return result;
@@ -329,9 +323,9 @@ namespace Hermes
         {
           SolFunctionDomain result = SolFunctionDomain(0);
           for (int i = 0; i < n; i++) {
-            result += wt[i] * (u_ext[this->i]->div[i] - ext->fn[0]->div[i]) * conj(v->div[i]);
-            result += wt[i] * ((u_ext[this->i]->val0[i] - ext->fn[0]->val0[i]) * conj(v->val0[i])
-              + (u_ext[this->i]->val1[i] - ext->fn[0]->val1[i]) * conj(v->val1[i]));
+            result += wt[i] * (ext->fn[0]->div[i]) * conj(v->div[i]);
+            result += wt[i] * ((ext->fn[0]->val0[i]) * conj(v->val0[i])
+              + (ext->fn[0]->val1[i]) * conj(v->val1[i]));
           }
 
           return result;

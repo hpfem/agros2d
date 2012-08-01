@@ -103,14 +103,14 @@ namespace Hermes
         uint64_t vmid = (r.t + r.b) >> 1;
         int son;
 
-        if (s->cr.r <= hmid && s->cr.t <= vmid) son = 0;
-        else if (s->cr.l >= hmid && s->cr.t <= vmid) son = 1;
-        else if (s->cr.l >= hmid && s->cr.b >= vmid) son = 2;
-        else if (s->cr.r <= hmid && s->cr.b >= vmid) son = 3;
-        else if (s->cr.r <= hmid) son = 6;
-        else if (s->cr.l >= hmid) son = 7;
-        else if (s->cr.t <= vmid) son = 4;
-        else if (s->cr.b >= vmid) son = 5;
+        if(s->cr.r <= hmid && s->cr.t <= vmid) son = 0;
+        else if(s->cr.l >= hmid && s->cr.t <= vmid) son = 1;
+        else if(s->cr.l >= hmid && s->cr.b >= vmid) son = 2;
+        else if(s->cr.r <= hmid && s->cr.b >= vmid) son = 3;
+        else if(s->cr.r <= hmid) son = 6;
+        else if(s->cr.l >= hmid) son = 7;
+        else if(s->cr.t <= vmid) son = 4;
+        else if(s->cr.b >= vmid) son = 5;
         else assert(0);
 
         s->push_transform(son, i, s->rep->is_triangle());
@@ -160,7 +160,6 @@ namespace Hermes
 
     void Traverse::State::push_transform(int son, int i, bool is_triangle)
     {
-      
       this->sub_idx[i] = (sub_idx[i] << 3) + son + 1;
 
       if(is_triangle)
@@ -199,10 +198,9 @@ namespace Hermes
 
     Traverse::State* Traverse::push_state(int* top_by_ref)
     {
-      
       int* top_f = (top_by_ref == NULL) ? &this->top : top_by_ref;
 
-      if(*top_f >= size) 
+      if(*top_f >= size)
         throw Hermes::Exceptions::Exception("Stack overflow. Increase stack size.");
 
       if(stack[*top_f].e == NULL)
@@ -226,9 +224,9 @@ namespace Hermes
     {
       Element* e = NULL;
       for (int i = 0; i < num; i++)
-        if ((e = s->e[i]) != NULL) break;
+        if((e = s->e[i]) != NULL) break;
 
-      if (s->rep->is_triangle())
+      if(s->rep->is_triangle())
       {
         for (int i = 0; i < 3; i++)
           (s->bnd[i] = (s->bnd[i] && e->en[i]->bnd));
@@ -242,7 +240,7 @@ namespace Hermes
       }
     }
 
-    int Traverse::get_num_states(Hermes::vector<Mesh*> meshes)
+    int Traverse::get_num_states(Hermes::vector<const Mesh*> meshes)
     {
       // This will be returned.
       int count = 0;
@@ -306,7 +304,7 @@ namespace Hermes
 
           (id)++;
 
-          if (s->rep->is_triangle())
+          if(s->rep->is_triangle())
             for (i = 0; i < 3; i++)
               s->bnd[i] = true;
         }
@@ -316,9 +314,9 @@ namespace Hermes
         for (i = 0; i < num; i++)
         {
           // ..where the element is used ..
-          if (s->e[i] != NULL)
-            if (s->sub_idx[i] == 0 && s->e[i]->active)
-              if (!s->rep->is_triangle())
+          if(s->e[i] != NULL)
+            if(s->sub_idx[i] == 0 && s->e[i]->active)
+              if(!s->rep->is_triangle())
                 init_transforms(s, i);
         }
 
@@ -368,7 +366,7 @@ namespace Hermes
               {
                 ns->e[i] = s->e[i]->sons[son];
                 // If the son's element is active.
-                if (ns->e[i]->active)
+                if(ns->e[i]->active)
                   ns->sub_idx[i] = 0;
                 if(ns->e[i] != NULL)
                   ns->rep = ns->e[i];
@@ -376,7 +374,7 @@ namespace Hermes
             }
 
             // Determine boundary flags and positions for the new state.
-            if (son < 3)
+            if(son < 3)
             {
               memcpy(ns->bnd, s->bnd, sizeof(ns->bnd));
 
@@ -431,7 +429,7 @@ namespace Hermes
                     ns->e[i] = s->e[i]->sons[current_sons[i][son] & 3];
                     // Sets the son's "current mesh" rectangle correctly.
                     move_to_son(ns->er + i, s->er + i, current_sons[i][son]);
-                    if (ns->e[i]->active)
+                    if(ns->e[i]->active)
                       ns->sub_idx[i] = 0;
                   }
                   if(ns->e[i] != NULL)
@@ -441,10 +439,10 @@ namespace Hermes
             }
           }
           // V or h split, recur to two sons.
-          else if (split > 0)
+          else if(split > 0)
           {
             int son0 = 4, son1 = 5;
-            if (split == 2) { son0 = 6; son1 = 7; }
+            if(split == 2) { son0 = 6; son1 = 7; }
 
             for (son = son0; son <= son1; son++)
             {
@@ -470,7 +468,7 @@ namespace Hermes
                   {
                     ns->e[i] = s->e[i]->sons[current_sons[i][j] & 3];
                     move_to_son(ns->er + i, s->er + i, current_sons[i][j]);
-                    if (ns->e[i]->active) 
+                    if(ns->e[i]->active)
                       ns->sub_idx[i] = 0;
                   }
                   if(ns->e[i] != NULL)
@@ -492,7 +490,7 @@ namespace Hermes
               {
                 ns->e[i] = NULL;
               }
-              else if (s->e[i]->active)
+              else if(s->e[i]->active)
               {
                 ns->e[i] = s->e[i];
                 memcpy(&ns->er[i], &ns->cr, sizeof(Rect));
@@ -501,7 +499,7 @@ namespace Hermes
               {
                 ns->e[i] = s->e[i]->sons[current_sons[i][0] & 3];
                 move_to_son(ns->er + i, s->er + i, current_sons[i][0]);
-                if (ns->e[i]->active)
+                if(ns->e[i]->active)
                   ns->sub_idx[i] = 0;
                 if(ns->e[i] != NULL)
                   ns->rep = ns->e[i];
@@ -572,7 +570,7 @@ namespace Hermes
 
           (*id_f)++;
 
-          if (s->rep->is_triangle())
+          if(s->rep->is_triangle())
             for (i = 0; i < 3; i++)
               s->bnd[i] = true;
         }
@@ -582,9 +580,9 @@ namespace Hermes
         for (i = 0; i < num; i++)
         {
           // ..where the element is used ..
-          if (s->e[i] != NULL)
-            if (s->sub_idx[i] == 0 && s->e[i]->active)
-              if (!s->rep->is_triangle())
+          if(s->e[i] != NULL)
+            if(s->sub_idx[i] == 0 && s->e[i]->active)
+              if(!s->rep->is_triangle())
                 init_transforms(s, i);
         }
 
@@ -641,7 +639,7 @@ namespace Hermes
               {
                 ns->e[i] = s->e[i]->sons[son];
                 // If the son's element is active.
-                if (ns->e[i]->active)
+                if(ns->e[i]->active)
                   ns->sub_idx[i] = 0;
                 if(ns->e[i] != NULL)
                   ns->rep = ns->e[i];
@@ -649,7 +647,7 @@ namespace Hermes
             }
 
             // Determine boundary flags and positions for the new state.
-            if (son < 3)
+            if(son < 3)
             {
               memcpy(ns->bnd, s->bnd, sizeof(ns->bnd));
 
@@ -691,7 +689,7 @@ namespace Hermes
                 {
                   ns->e[i] = NULL;
                 }
-                else if (s->e[i]->active)
+                else if(s->e[i]->active)
                 {
                   ns->e[i] = s->e[i];
                   ns->sub_idx[i] = s->sub_idx[i];
@@ -702,7 +700,7 @@ namespace Hermes
                   ns->e[i] = s->e[i]->sons[current_sons[i][son] & 3];
                   // Sets the son's "current mesh" rectangle correctly.
                   move_to_son(ns->er + i, s->er + i, current_sons[i][son]);
-                  if (ns->e[i]->active)
+                  if(ns->e[i]->active)
                     ns->sub_idx[i] = 0;
                 }
                 if(ns->e[i] != NULL)
@@ -711,10 +709,10 @@ namespace Hermes
             }
           }
           // V or h split, recur to two sons.
-          else if (split > 0)
+          else if(split > 0)
           {
             int son0 = 4, son1 = 5;
-            if (split == 2) { son0 = 6; son1 = 7; }
+            if(split == 2) { son0 = 6; son1 = 7; }
 
             for (son = son0; son <= son1; son++)
             {
@@ -740,7 +738,7 @@ namespace Hermes
                   {
                     ns->e[i] = s->e[i]->sons[current_sons[i][j] & 3];
                     move_to_son(ns->er + i, s->er + i, current_sons[i][j]);
-                    if (ns->e[i]->active) 
+                    if(ns->e[i]->active)
                       ns->sub_idx[i] = 0;
                   }
                   if(ns->e[i] != NULL)
@@ -762,7 +760,7 @@ namespace Hermes
               {
                 ns->e[i] = NULL;
               }
-              else if (s->e[i]->active)
+              else if(s->e[i]->active)
               {
                 ns->e[i] = s->e[i];
                 memcpy(&ns->er[i], &ns->cr, sizeof(Rect));
@@ -771,7 +769,7 @@ namespace Hermes
               {
                 ns->e[i] = s->e[i]->sons[current_sons[i][0] & 3];
                 move_to_son(ns->er + i, s->er + i, current_sons[i][0]);
-                if (ns->e[i]->active)
+                if(ns->e[i]->active)
                   ns->sub_idx[i] = 0;
                 if(ns->e[i] != NULL)
                   ns->rep = ns->e[i];
@@ -783,7 +781,7 @@ namespace Hermes
       }
     }
 
-    void Traverse::begin(int n, Mesh** meshes, Transformable** fn)
+    void Traverse::begin(int n, const Mesh** meshes, Transformable** fn)
     {
       //if(stack != NULL) finish();
 
@@ -801,7 +799,7 @@ namespace Hermes
 
         sons = new int4[num];
         subs = new uint64_t[num];
-      
+
         id = 0;
         top = 0;
 
@@ -814,9 +812,9 @@ namespace Hermes
 
         Element* e;
         // Test whether areas of corresponding elements are the same.
-        double *areas = new double [base_elem_num];
+        double *areas = new double[base_elem_num];
         memset(areas, 0, base_elem_num*sizeof(double));
-        if(areas == NULL) throw Hermes::Exceptions::Exception("Not enough memory in Traverse::begin().");
+
         // Read base element areas from the first mesh,
         // Also get minimum element area.
         int counter = 0;
@@ -831,7 +829,7 @@ namespace Hermes
             if(areas[counter] < min_elem_area)
               min_elem_area = areas[counter];
           }
-          
+
           counter++;
         }
         // take one mesh at a time and compare element areas to the areas[] array
@@ -869,12 +867,11 @@ namespace Hermes
 
     void Traverse::finish()
     {
-      
       if(master)
       {
         delete [] subs;
         delete [] sons;
-        
+
         if(stack == NULL) return;
 
         for (int i = 0; i < size; i++)
@@ -1064,7 +1061,7 @@ namespace Hermes
       Rect cr;
 
       this->unimesh = unimesh;
-      unimesh->copy_base(meshes[0]);
+      unimesh->copy_base(const_cast<Mesh*>(meshes[0]));
 
       udsize = 0;
       unidata = new UniData*[num];

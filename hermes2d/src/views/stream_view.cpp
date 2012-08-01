@@ -24,7 +24,6 @@ namespace Hermes
   {
     namespace Views
     {
-
       StreamView::StreamView(const char* title, WinGeom* wg)
         : View(title, wg), vec(NULL)
       {
@@ -37,7 +36,6 @@ namespace Hermes
         root_y_max = -1e100;
         root = NULL;
       }
-
 
       StreamView::StreamView(char* title, WinGeom* wg)
         : View(title, wg), vec(NULL)
@@ -52,12 +50,11 @@ namespace Hermes
         root = NULL;
       }
 
-
       void StreamView::show(MeshFunction<double>* xsln, MeshFunction<double>* ysln, int marker, double step, double eps)
       {
         if(this->vec == NULL)
           this->vec = new Vectorizer;
-        if (xsln == ysln)
+        if(xsln == ysln)
           throw Hermes::Exceptions::Exception("Identical solutions passed to the two-argument version of show(). This is most likely a mistake.");
         show(xsln, ysln, marker, step, eps, H2D_FN_VAL_0, H2D_FN_VAL_0);
       }
@@ -75,21 +72,20 @@ namespace Hermes
         double b = ((x1 - x3) * (y - y3) - (y1 - y3) * (x - x3));
         double c = jac - a - b;
         bar[0] = a / jac; bar[1] = b / jac; bar[2] = c / jac;
-        if ((a >= - eps && a <= jac + eps) && (b >= - eps && b <= jac + eps) && (c >= - eps && c <= jac + eps))
+        if((a >= - eps && a <= jac + eps) && (b >= - eps && b <= jac + eps) && (c >= - eps && c <= jac + eps))
           return true;
         else
           return false;
       }
 
-
       void StreamView::add_element_to_tree(Node* father, int e_idx, double x_min, double x_max, double y_min, double y_max)
       {
         double4* vert = vec->get_vertices();
         int3* xtris = vec->get_triangles();
-        if (father->leaf == true)
+        if(father->leaf == true)
         {
           father->elements[father->num_elem++] = e_idx;
-          if (father->num_elem >= 100) // too many elements
+          if(father->num_elem >= 100) // too many elements
           {
             father->leaf = false;
             for (int k = 0; k < 2; k++)
@@ -108,23 +104,22 @@ namespace Hermes
           double x_mid = (x_min + x_max)/2;
           double y_mid = (y_min + y_max)/2;
           int3& tri = xtris[e_idx];
-          if (father->level % 2) // level = 1, 3, 5, ...
+          if(father->level % 2) // level = 1, 3, 5, ...
           {
-            if (vert[tri[0]][1] <= y_mid || vert[tri[1]][1] <= y_mid || vert[tri[2]][1] <= y_mid)
+            if(vert[tri[0]][1] <= y_mid || vert[tri[1]][1] <= y_mid || vert[tri[2]][1] <= y_mid)
               add_element_to_tree(father->sons[0], e_idx, x_min, x_max, y_min, y_mid);
-            if (vert[tri[0]][1] >= y_mid || vert[tri[1]][1] >= y_mid || vert[tri[2]][1] >= y_mid)
+            if(vert[tri[0]][1] >= y_mid || vert[tri[1]][1] >= y_mid || vert[tri[2]][1] >= y_mid)
               add_element_to_tree(father->sons[1], e_idx, x_min, x_max, y_mid, y_max);
           }
           else // level 0, 2, 4, ...
           {
-            if (vert[tri[0]][0] <= x_mid || vert[tri[1]][0] <= x_mid || vert[tri[2]][0] <= x_mid)
+            if(vert[tri[0]][0] <= x_mid || vert[tri[1]][0] <= x_mid || vert[tri[2]][0] <= x_mid)
               add_element_to_tree(father->sons[0], e_idx, x_min, x_mid, y_min, y_max);
-            if (vert[tri[0]][0] >= x_mid || vert[tri[1]][0] >= x_mid || vert[tri[2]][0] >= x_mid)
+            if(vert[tri[0]][0] >= x_mid || vert[tri[1]][0] >= x_mid || vert[tri[2]][0] >= x_mid)
               add_element_to_tree(father->sons[1], e_idx, x_mid, x_max, y_min, y_max);
           }
         }
       }
-
 
       void StreamView::build_tree()
       {
@@ -137,17 +132,16 @@ namespace Hermes
         }
       }
 
-
       int StreamView::find_triangle_in_tree(double x, double y, Node* father, double x_min, double x_max, double y_min, double y_max, double3& bar)
       {
-        if (father->leaf == true)
+        if(father->leaf == true)
         {
           double4* vert = vec->get_vertices();
           int3* xtris = vec->get_triangles();
           for (int idx = 0; idx < father->num_elem; idx++)
           {
             int i = father->elements[idx];
-            if (is_in_triangle(i, x, y, bar)) return i;
+            if(is_in_triangle(i, x, y, bar)) return i;
           }
           return -1;
         }
@@ -155,19 +149,18 @@ namespace Hermes
         {
           double x_mid = (x_max + x_min)/2;
           double y_mid = (y_max + y_min)/2;
-          if (father->level % 2) // level = 1, 3, 5, ...
-            if (y <= y_mid)
+          if(father->level % 2) // level = 1, 3, 5, ...
+            if(y <= y_mid)
               return find_triangle_in_tree(x, y, father->sons[0], x_min, x_max, y_min, y_mid, bar);
             else
               return find_triangle_in_tree(x, y, father->sons[1], x_min, x_max, y_mid, y_max, bar);
           else // level 0, 2, 4, ...
-            if (x <= x_mid)
+            if(x <= x_mid)
               return find_triangle_in_tree(x, y, father->sons[0], x_min, x_mid, y_min, y_max, bar);
             else
               return find_triangle_in_tree(x, y, father->sons[1], x_mid, x_max, y_min, y_max, bar);
         }
       }
-
 
       bool StreamView::get_solution_values(double x, double y, double& xval, double& yval)
       {
@@ -175,24 +168,22 @@ namespace Hermes
         int3* xtris = vec->get_triangles();
         double3 bar;
         int e_idx;
-        if ((e_idx = find_triangle_in_tree(x, y, root, root_x_min, root_x_max, root_y_min, root_y_max, bar)) == -1) return false;
+        if((e_idx = find_triangle_in_tree(x, y, root, root_x_min, root_x_max, root_y_min, root_y_max, bar)) == -1) return false;
         int3& tri = xtris[e_idx];
         xval = bar[0] * vert[tri[0]][2] + bar[1] * vert[tri[1]][2] + bar[2] * vert[tri[2]][2];
         yval = bar[0] * vert[tri[0]][3] + bar[1] * vert[tri[1]][3] + bar[2] * vert[tri[2]][3];
         return true;
       }
 
-
       void StreamView::delete_tree(Node* father)
       {
-        if (father->leaf == false)
+        if(father->leaf == false)
         {
           delete_tree(father->sons[0]);
           delete_tree(father->sons[1]);
         }
         delete [] father;
       }
-
 
       int StreamView::create_streamline(double x_start, double y_start, int idx)
       {
@@ -214,64 +205,63 @@ namespace Hermes
 
         while(1)
         {
-          if (get_solution_values(x, y, k1, l1) == false) // point (x, y) does not lie in the domain
+          if(get_solution_values(x, y, k1, l1) == false) // point (x, y) does not lie in the domain
           {
             tau = tau/2;  // draw streamline to the end of the domain
-            if (tau < min_tau) break;
+            if(tau < min_tau) break;
             continue;
           }
-          if (fabs(k1) / max_mag  < 1e-5 && fabs(l1) / max_mag < 1e-5) break;  // stop streamline when zero solution
+          if(fabs(k1) / max_mag  < 1e-5 && fabs(l1) / max_mag < 1e-5) break;  // stop streamline when zero solution
 
           // add new point to steamline
           buffer[k][0] = x;
           buffer[k][1] = y;
           k++;
-          if (k >= buffer_length) break;
+          if(k >= buffer_length) break;
 
           do
           {
-            if (almost_end_of_domain)  // draw streamline to the end of the domain
+            if(almost_end_of_domain)  // draw streamline to the end of the domain
             {
               almost_end_of_domain = false;
               tau = tau/2;
-              if (tau < min_tau) { end = true; break; }
+              if(tau < min_tau) { end = true; break; }
             }
 
             // Merson's adaptive Runge-Kutta method
             x1 = x + 1.0/3.0 * tau * k1; y1 = y + 1.0/3.0 * tau * l1;
-            if (get_solution_values(x1, y1, k2, l2) == false) {  almost_end_of_domain = true;  continue;  }
+            if(get_solution_values(x1, y1, k2, l2) == false) {  almost_end_of_domain = true;  continue;  }
             x2 = x + 1.0/6.0 * tau * (k1 + k2); y2 = y + 1.0/6.0 * tau * (l1 + l2);
-            if (get_solution_values(x2, y2, k3, l3) == false) {  almost_end_of_domain = true;  continue;  }
+            if(get_solution_values(x2, y2, k3, l3) == false) {  almost_end_of_domain = true;  continue;  }
             x3 = x + tau * (0.125 * k1 + 0.375 * k3); y3 = y + tau * (0.125 * l1 + 0.375 * l3);
-            if (get_solution_values(x3, y3, k4, l4) == false) {  almost_end_of_domain = true;  continue;  }
+            if(get_solution_values(x3, y3, k4, l4) == false) {  almost_end_of_domain = true;  continue;  }
             x4 = x + tau * (0.5 * k1 - 1.5 * k3 + 2.0 * k4); y4 = y + tau * (0.5 * l1 - 1.5 * l3 + 2.0 * l4);
-            if (get_solution_values(x4, y4, k5, l5) == false) {  almost_end_of_domain = true;  continue;  }
+            if(get_solution_values(x4, y4, k5, l5) == false) {  almost_end_of_domain = true;  continue;  }
             x5 = x + tau * 1.0/6.0 * (k1 + 4.0 * k4 + k5); y5 = y + tau * 1.0/6.0 * (l1 + 4.0 * l4 + l5);
 
             // error according to Merson
             double x_err = 1.0/5.0 * (x4 - x5) / (root_x_max - root_x_min);
             double y_err = 1.0/5.0 * (y4 - y5) / (root_y_max - root_y_min);
             double err = std::max(fabs(x_err), fabs(y_err));
-            if (err < ODE_EPS)
+            if(err < ODE_EPS)
             {
               tau_ok = true;  x = x5;  y = y5;
             }
             else
             {
               tau_ok = false; tau = tau/2;
-              if (tau < min_tau)  tau = min_tau;
+              if(tau < min_tau)  tau = min_tau;
             }
 
-            if (err < ODE_EPS/32)
+            if(err < ODE_EPS/32)
             {
               // new tau according to Merson
               tau = 0.8 * tau * pow(ODE_EPS/err, 0.2);
-              if (tau > max_tau)  tau = max_tau;
+              if(tau > max_tau)  tau = max_tau;
             }
           }
           while (!tau_ok);
-          if (end) break; // get out from both while cycles
-
+          if(end) break; // get out from both while cycles
         }
 
         streamlines[idx] = new double2[k];
@@ -290,15 +280,14 @@ namespace Hermes
         double y1 = comp_vert[(*e1)[0]][1];
         double x2 = comp_vert[(*e2)[0]][0];
         double y2 = comp_vert[(*e2)[0]][1];
-        if (x1 < x2) return -1;
-        if (x1 == x2 && y1 < y2) return -1;
-        if (x1 > x2) return 1;
-        if (x1 == x2 && y1 > y2) return 1;
-        if (x1 == x2 && y1 == y2) return 0;
+        if(x1 < x2) return -1;
+        if(x1 == x2 && y1 < y2) return -1;
+        if(x1 > x2) return 1;
+        if(x1 == x2 && y1 > y2) return 1;
+        if(x1 == x2 && y1 == y2) return 0;
         throw Hermes::Exceptions::Exception("internal error: reached end of non-void function");
         return 0;
       }
-
 
       int StreamView::find_initial_edge(int num_edges, int3* edges)
       {
@@ -306,12 +295,12 @@ namespace Hermes
         double4* vert = vec->get_vertices();
         for (i = 0; i < num_edges; i++)
         {
-          if (edges[i][2] == 0) // not visited yet
+          if(edges[i][2] == 0) // not visited yet
           {
             for (j = 0; j < num_edges; j++)
-              if (vert[edges[j][1]][0] == vert[edges[i][0]][0] && vert[edges[j][1]][1] == vert[edges[i][0]][1])
+              if(vert[edges[j][1]][0] == vert[edges[i][0]][0] && vert[edges[j][1]][1] == vert[edges[i][0]][1])
                 break;
-            if (j == num_edges) return i;
+            if(j == num_edges) return i;
           }
         }
         return -1;
@@ -322,12 +311,11 @@ namespace Hermes
         int3 key;
         key[0] = b_idx;
         int3* edge = (int3*) bsearch(&key, edges, num_edges, sizeof(int3), compare);
-        if (edge == NULL)
+        if(edge == NULL)
           return -1; // not found
         else
           return edge - edges;
       }
-
 
       void StreamView::find_initial_points(int marker, double step, double2*& initial_points)
       {
@@ -338,7 +326,7 @@ namespace Hermes
         int3* bnd_edges = new int3[ne];
         for (int i = 0; i < ne; i++)
         {
-          if (edges[i][2] == marker)
+          if(edges[i][2] == marker)
           {
             bnd_edges[k][0] = edges[i][0];
             bnd_edges[k][1] = edges[i][1];
@@ -380,13 +368,11 @@ namespace Hermes
             tmp_step = tmp_step - remaining_len;
           }
           while ((idx = find_next_edge(num_edges, bnd_edges, bnd_edges[idx][1])) != -1);
-
         }
         num_stream = k;
 
         delete [] bnd_edges;
       }
-
 
       void StreamView::show(MeshFunction<double>* xsln, MeshFunction<double>* ysln, int marker, double step, double eps, int xitem, int yitem)
       {
@@ -395,7 +381,7 @@ namespace Hermes
         vec->process_solution(xsln, ysln, xitem, yitem, eps);
 
         vec->lock_data();
-        if (range_auto)
+        if(range_auto)
         {
           range_min = vec->get_min_value();
           range_max = vec->get_max_value();
@@ -406,10 +392,10 @@ namespace Hermes
         double4* vert = vec->get_vertices();
         for (int i = 0; i < vec->get_num_vertices(); i++)
         {
-          if (vert[i][0] < root_x_min) root_x_min = vert[i][0];
-          if (vert[i][0] > root_x_max) root_x_max = vert[i][0];
-          if (vert[i][1] < root_y_min) root_y_min = vert[i][1];
-          if (vert[i][1] > root_y_max) root_y_max = vert[i][1];
+          if(vert[i][0] < root_x_min) root_x_min = vert[i][0];
+          if(vert[i][0] > root_x_max) root_x_max = vert[i][0];
+          if(vert[i][1] < root_y_min) root_y_min = vert[i][1];
+          if(vert[i][1] > root_y_max) root_y_max = vert[i][1];
         }
 
         initial_tau = std::max(root_x_max - root_x_min, root_y_max - root_y_min) / 100;
@@ -440,10 +426,9 @@ namespace Hermes
         wait_for_draw();
       }
 
-
       void StreamView::add_streamline(double x, double y)
       {
-        if (root == NULL)
+        if(root == NULL)
           throw Hermes::Exceptions::Exception("Function add_streamline must be called after StreamView::show().");
         this->tick();
         streamlines = (double2**) realloc(streamlines, sizeof(double2*) * (num_stream + 1));
@@ -456,7 +441,6 @@ namespace Hermes
       static int n_vert(int i) { return (i + 1) % 3; }
       static int p_vert(int i) { return (i + 2) % 3; }
 
-
       void StreamView::on_display()
       {
         set_ortho_projection();
@@ -464,7 +448,6 @@ namespace Hermes
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_TEXTURE_1D);
         glPolygonMode(GL_FRONT_AND_BACK, pmode ? GL_LINE : GL_FILL);
-
 
         // transform all vertices
         vec->lock_data();
@@ -481,10 +464,10 @@ namespace Hermes
 
         // value range
         double min = range_min, max = range_max;
-        if (range_auto) { min = vec->get_min_value(); max = vec->get_max_value(); }
+        if(range_auto) { min = vec->get_min_value(); max = vec->get_max_value(); }
         double irange = 1.0 / (max - min);
         // special case: constant solution
-        if (fabs(min - max) < 1e-8) { irange = 1.0; min -= 0.5; }
+        if(fabs(min - max) < 1e-8) { irange = 1.0; min -= 0.5; }
 
         // draw all triangles
         int3* xtris = vec->get_triangles();
@@ -516,7 +499,7 @@ namespace Hermes
         int3* edges = vec->get_edges();
         for (i = 0; i < vec->get_num_edges(); i++)
         {
-          if (lines || edges[i][2] != 0)
+          if(lines || edges[i][2] != 0)
           {
             glVertex2d(tvert[edges[i][0]][0], tvert[edges[i][0]][1]);
             glVertex2d(tvert[edges[i][1]][0], tvert[edges[i][1]][1]);
@@ -542,12 +525,10 @@ namespace Hermes
         vec->unlock_data();
       }
 
-
       void StreamView::on_mouse_move(int x, int y)
       {
         View::on_mouse_move(x, y);
       }
-
 
       void StreamView::on_key_down(unsigned char key, int x, int y)
       {
@@ -574,7 +555,7 @@ namespace Hermes
 
           // delete last streamline
         case 26: // ctrl z
-          if (num_stream > 0)
+          if(num_stream > 0)
           {
             num_stream--;
             delete [] streamlines[num_stream];
@@ -588,13 +569,12 @@ namespace Hermes
         }
       }
 
-
       void StreamView::on_left_mouse_down(int x, int y)
       {
         View::on_left_mouse_down(x, y);
 
         // adding streamline (initial point set at (x, y))
-        if (!scale_focused && glutGetModifiers() == GLUT_ACTIVE_CTRL)
+        if(!scale_focused && glutGetModifiers() == GLUT_ACTIVE_CTRL)
         {
           this->tick();
           streamlines = (double2**) realloc(streamlines, sizeof(double2*) * (num_stream + 1));
@@ -604,7 +584,6 @@ namespace Hermes
           refresh();
         }
       }
-
 
       const char* StreamView::get_help_text() const
       {
@@ -624,7 +603,6 @@ namespace Hermes
           "  F1 - this help\n"
           "  Esc, Q - quit";
       }
-
 
       StreamView::~StreamView()
       {

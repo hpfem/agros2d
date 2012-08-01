@@ -38,8 +38,8 @@ namespace Hermes
       *  \section s_override Expanding
       *  In order to implement a support for a new space or a new approach to calculation of squared error,
       *  implement following methods:
-      *  - precalc_shapes() [optional]
-      *  - precalc_ortho_shapes() [optional]
+      *  - precalc_shapes()[optional]
+      *  - precalc_ortho_shapes()[optional]
       *  - precalc_ref_solution()
       *  - build_projection_matrix()
       *  - evaluate_rhs_subdomain()
@@ -66,7 +66,7 @@ namespace Hermes
         double get_error_weight_h() const;
         double get_error_weight_p() const;
         double get_error_weight_aniso() const;
-        
+
         /// Evaluated shapes for all possible transformations for all points. The first index is a transformation, the second index is an index of a shape function.
         typedef Hermes::vector<TrfShapeExp> TrfShape[H2D_TRF_NUM];
 
@@ -92,11 +92,11 @@ namespace Hermes
 
           /// Desructor.
           virtual ~TrfShapeExp();
-          
+
           /// Assignment operator. Prevent unauthorized copying of the pointer.
           const TrfShapeExp& operator = (const TrfShapeExp& other)
           {
-            delete[] values; values = NULL;
+            delete [] values; values = NULL;
             if(other.values == NULL)
               throw Exceptions::Exception("Unable to assign a non-empty values. Use references instead.");
             return *this;
@@ -105,7 +105,7 @@ namespace Hermes
           int num_gip; ///< A number of integration points.
           int num_expansion; ///< A number of expansions.
           double** values; ///< Values. The first index is index of a functions expansion, the second index is an index of a an integration point.
-          
+
           /// Allocates a space for function expansions.
           /** \param[in] num_expansion A number of expansions.
           *  \param[in] num_gip A number of itegration points. */
@@ -317,7 +317,7 @@ namespace Hermes
         *  it is suggested to provide pointers to attributes of the class rather than to dynamically allocate
         *  an array.
         *  The method can assume that the an element is refined into ::H2D_MAX_ELEMENT_SONS elements (sons) in the reference mesh.
-        *  \param[in] inx_son An index of a son of an element, i.e., an index of a subdomain. The index is in a range [0, H2D_MAX_ELEMENT_SONS - 1].
+        *  \param[in] inx_son An index of a son of an element, i.e., an index of a subdomain. The index is in a range[0, H2D_MAX_ELEMENT_SONS - 1].
         *  \param[in] rsln A reference solution.
         *  \param[in] element An element of the coarse solution. An element of both the same geometry and the same ID have to be present in the mesh of the reference solution.
         *  \param[in] intr_gip_order An order of quadrature integration. The number of quadrature points should be retrieved through a quadrature stored in the paremeter \a rsln.

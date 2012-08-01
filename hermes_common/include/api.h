@@ -23,16 +23,18 @@
 #define __HERMES_API_H_
 
 #include "compat.h"
+#include <map>
 
 namespace Hermes
 {
+  /// Enumeration of potential keys in the Api::parameters storage.
   enum HermesCommonApiParam
   {
     exceptionsPrintCallstack,
     matrixSolverType
   };
 
-  /// API Class containing settings for the whole Hermes.
+  /// API Class containing settings for the whole HermesCommon.
   class HERMES_API Api
   {
   public:
@@ -54,14 +56,14 @@ namespace Hermes
     /// The storage of parameters.
     /// This storage is not optimized for speed, but for comfort of users.
     /// There should not be any parameters, values of which are sought very often, because of the above reason.
-
     std::map<HermesCommonApiParam, Parameter*> parameters;
+
   public:
     int getParamValue(HermesCommonApiParam);
     void setParamValue(HermesCommonApiParam, int value);
   };
 
-  // Global declarations.
+  /// Global instance used inside Hermes which is also accessible to users.
   extern HERMES_API Hermes::Api HermesCommonApi;
 }
 #endif

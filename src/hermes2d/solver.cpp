@@ -347,7 +347,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
         }
         catch (Hermes::Exceptions::Exception e)
         {
-            QString error = QString(e.getMsg());
+            QString error = QString("%1").arg(e.what());
             Util::log()->printDebug(m_solverID, QObject::tr("Linear solver failed: %1").arg(error));
             throw;
         }
@@ -363,6 +363,8 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
         NewtonSolver<Scalar> newton(&dp);
         newton.set_verbose_output(true);
         newton.set_verbose_callback(processSolverOutput);
+        newton.set_newton_tol(m_block->nonlinearTolerance());
+        newton.set_newton_max_iter(m_block->nonlinearSteps());
 
         // newton.set_max_allowed_residual_norm(1e15);
         try
@@ -383,7 +385,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
             else
                 memset(coeff_vec, 0, ndof*sizeof(Scalar));
 
-            newton.solve(coeff_vec, m_block->nonlinearTolerance(), m_block->nonlinearSteps());
+            newton.solve(coeff_vec);
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
@@ -396,7 +398,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
         }
         catch (Hermes::Exceptions::Exception e)
         {
-            QString error = QString(e.getMsg());
+            QString error = QString(e.what());
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
             throw;
         }
@@ -436,7 +438,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
         }
         catch (Hermes::Exceptions::Exception e)
         {
-            QString error = QString(e.getMsg());
+            QString error = QString("%1").arg(e.what());
             Util::log()->printDebug(m_solverID, QObject::tr("Picard's solver failed: %1").arg(error));
             throw;
         }

@@ -227,7 +227,7 @@ void SceneViewMesh::exportVTKOrderView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Orderizer orderView;
-        orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_space(),
+        orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).space.data(),
                                         fn.toStdString().c_str());
 
         if (!fn.isEmpty())

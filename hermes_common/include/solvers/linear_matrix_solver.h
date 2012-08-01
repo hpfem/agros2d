@@ -29,12 +29,6 @@
 
 using namespace Hermes::Algebra;
 
-/// @defgroup solvers Solvers
-///
-///\todo description
-///
-/*@{*/ // Beginning of documentation group Solvers.
-
 /// \brief General namespace for the Hermes library.
 namespace Hermes
 {
@@ -131,7 +125,6 @@ namespace Hermes
       int error;
       double time;  ///< Time spent on solving (in secs).
     };
-
 
     /// \brief Base class for defining interface for direct linear solvers.
     ///

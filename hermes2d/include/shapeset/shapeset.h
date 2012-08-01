@@ -51,6 +51,7 @@ namespace Hermes
       HERMES_INVALID_SPACE = -9999
     };
 
+    /// @ingroup spaces
     /// \brief Defines a set of shape functions.
     ///
     /// This class stores mainly the definitions of the polynomials for all shape functions,
@@ -72,8 +73,8 @@ namespace Hermes
     /// All shape functions are defined on the reference domain. For triangles, this is the
     /// standard triangle (-1,-1), (1,-1), (-1,1), and for quads this is the square (-1,1)^2.
     ///
-    /// The polynomial degree (or 'order') is an integer typically in the range [1-10] for H1
-    /// shapesets and [0-10] for H(curl) shapesets. Quadrilaterals are allowed to have different
+    /// The polynomial degree (or 'order') is an integer typically in the range[1-10] for H1
+    /// shapesets and[0-10] for H(curl) shapesets. Quadrilaterals are allowed to have different
     /// orders in the x and y directions (of the reference domain). The 'order' for quads thus
     /// has to be formed with the macro H2D_MAKE_QUAD_ORDER(), see h2d_common.h.
     ///
@@ -86,10 +87,10 @@ namespace Hermes
     {
     public:
       ~Shapeset();
-      
+
       /// Shape-function function type. Internal.
       typedef double (*shape_fn_t)(double, double);
-      
+
       /// Returns the polynomial degree of the specified shape function.
       /// If on quads, it returns encoded orders. The orders has to be decoded through macros
       /// H2D_GET_H_ORDER and H2D_GET_V_ORDER.
@@ -97,15 +98,15 @@ namespace Hermes
 
       virtual Shapeset* clone() = 0;
 
+      /// Returns 2 if this is a vector shapeset, 1 otherwise.
+      int get_num_components() const;
+
     protected:
       /// Returns the maximum poly degree for all shape functions.
       int get_max_order() const;
 
       /// Returns the highest shape function index.
       int get_max_index(ElementMode2D mode) const;
-
-      /// Returns 2 if this is a vector shapeset, 1 otherwise.
-      int get_num_components() const;
 
       /// Returns the index of a vertex shape function associated with the specified vertex.
       int get_vertex_index(int vertex, ElementMode2D mode) const;

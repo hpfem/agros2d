@@ -31,10 +31,13 @@ namespace Hermes
     /// \brief Base class for defining interface for nonlinear solvers.
     ///
     template <typename Scalar>
-    class LinearSolver : public Hermes::Mixins::Loggable
+    class LinearSolver : public Hermes::Mixins::Loggable, public Hermes::Mixins::IntegrableWithGlobalOrder, public Hermes::Mixins::SettableComputationTime, public Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>
     {
     public:
       LinearSolver(DiscreteProblemLinear<Scalar>* dp);
+      LinearSolver(const WeakForm<Scalar>* wf, const Space<Scalar>* space);
+      LinearSolver(const WeakForm<Scalar>* wf, Hermes::vector<const Space<Scalar>*> spaces);
+      void init();
 
       ~LinearSolver();
 
@@ -42,6 +45,15 @@ namespace Hermes
       virtual void solve();
 
       Scalar *get_sln_vector();
+      
+      /// set time information for time-dependent problems.
+      virtual void setTime(double time);
+      virtual void setTimeStep(double timeStep);
+
+      virtual void set_spaces(Hermes::vector<const Space<Scalar>*> spaces);
+      virtual void set_space(const Space<Scalar>* space);
+      virtual Hermes::vector<const Space<Scalar>*> get_spaces() const;
+      
     protected:
       DiscreteProblemLinear<Scalar>* dp; ///< FE problem being solved.
 
@@ -56,6 +68,9 @@ namespace Hermes
 
       /// Linear solver.
       LinearMatrixSolver<Scalar>* matrix_solver;
+      
+      /// This instance owns its DP.
+      const bool own_dp;
     };
   }
 }

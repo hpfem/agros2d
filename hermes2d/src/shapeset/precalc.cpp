@@ -24,7 +24,7 @@ namespace Hermes
     PrecalcShapeset::PrecalcShapeset(Shapeset* shapeset) : Function<double>()
     {
       if(shapeset == NULL)
-        throw new Exceptions::NullException(0);
+        throw Exceptions::NullException(0);
       this->shapeset = shapeset;
       master_pss = NULL;
       num_components = shapeset->get_num_components();
@@ -32,7 +32,6 @@ namespace Hermes
       update_max_index();
       set_quad_2d(&g_quad_2d_std);
     }
-
 
     PrecalcShapeset::PrecalcShapeset(PrecalcShapeset* pss) : Function<double>()
     {
@@ -50,7 +49,6 @@ namespace Hermes
       max_index[0] = shapeset->get_max_index(HERMES_MODE_TRIANGLE);
       max_index[1] = shapeset->get_max_index(HERMES_MODE_QUAD);
     }
-
 
     void PrecalcShapeset::set_quad_2d(Quad2D* quad_2d)
     {
@@ -95,7 +93,6 @@ namespace Hermes
       order = std::max(H2D_GET_H_ORDER(shapeset->get_order(index, element->get_mode())), H2D_GET_V_ORDER(shapeset->get_order(index, element->get_mode())));
     }
 
-
     void PrecalcShapeset::set_active_element(Element* e)
     {
       Transformable::set_active_element(e);
@@ -119,9 +116,9 @@ namespace Hermes
       {
         for (k = 0; k < 6; k++)
         {
-          if (newmask & idx2mask[k][j])
+          if(newmask & idx2mask[k][j])
           {
-            if (oldmask & idx2mask[k][j])
+            if(oldmask & idx2mask[k][j])
               memcpy(node->values[j][k], cur_node->values[j][k], np * sizeof(double));
             else
               for (i = 0; i < np; i++)
@@ -139,10 +136,9 @@ namespace Hermes
       cur_node = node;
     }
 
-
     void PrecalcShapeset::free()
     {
-      if (master_pss != NULL) return;
+      if(master_pss != NULL) return;
 
       for(unsigned int i = 0; i < tables.get_size(); i++)
         if(tables.present(i))
@@ -187,17 +183,17 @@ namespace Hermes
         update_nodes_ptr();
     }
 
-    int PrecalcShapeset::get_active_shape() const 
+    int PrecalcShapeset::get_active_shape() const
     {
-      return index; 
+      return index;
     };
 
-    Shapeset* PrecalcShapeset::get_shapeset() const 
+    Shapeset* PrecalcShapeset::get_shapeset() const
     {
-      return shapeset; 
+      return shapeset;
     }
 
-    SpaceType PrecalcShapeset::get_space_type() const 
+    SpaceType PrecalcShapeset::get_space_type() const
     {
       return shapeset->get_space_type();
     }
@@ -211,14 +207,14 @@ namespace Hermes
       ctm = stack + top;
     }
 
-    int PrecalcShapeset::get_edge_fn_order(int edge) 
+    int PrecalcShapeset::get_edge_fn_order(int edge)
     {
       return H2D_MAKE_EDGE_ORDER(element->get_mode(), edge, shapeset->get_order(index, element->get_mode()));
     }
 
     bool PrecalcShapeset::is_slave() const
     {
-      return master_pss != NULL; 
+      return master_pss != NULL;
     }
 
     void PrecalcShapeset::force_transform(uint64_t sub_idx, Trf* ctm)

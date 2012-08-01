@@ -23,9 +23,10 @@ namespace Hermes
   namespace Hermes2D
   {
     /// H(curl) shapeset based on Legendre polynomials.
+    /// @ingroup spaces
     class HERMES_API HcurlShapesetLegendre : public Shapeset
     {
-    public: 
+    public:
       HcurlShapesetLegendre();
       virtual Shapeset* clone() { return new HcurlShapesetLegendre(*this); };
     protected:
@@ -35,9 +36,10 @@ namespace Hermes
     };
 
     // Experimental.
+    /// @ingroup spaces
     class HERMES_API HcurlShapesetEigen2 : public Shapeset
     {
-    public: 
+    public:
       HcurlShapesetEigen2();
       virtual Shapeset* clone() { return new HcurlShapesetEigen2(*this); };
     protected:
@@ -47,9 +49,10 @@ namespace Hermes
     };
 
     /// Experimental.
+    /// @ingroup spaces
     class HERMES_API HcurlShapesetGradEigen : public Shapeset
     {
-    public: 
+    public:
       HcurlShapesetGradEigen();
       virtual Shapeset* clone() { return new HcurlShapesetGradEigen(*this); };
     protected:
@@ -59,9 +62,10 @@ namespace Hermes
     };
 
     /// H(curl) shapeset with Legendre bubbles and gradients of H1 functions as edges
+    /// @ingroup spaces
     class HERMES_API HcurlShapesetGradLeg : public Shapeset
     {
-    public: 
+    public:
       HcurlShapesetGradLeg();
       virtual Shapeset* clone() { return new HcurlShapesetGradLeg(*this); };
     protected:

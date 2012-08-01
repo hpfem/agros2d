@@ -51,13 +51,13 @@ namespace Hermes
     /// solution gradients across the element boundaries defines the element error.
     ///
     /// References:
-    ///   [1] Kelly D. W., Gago O. C., Zienkiewicz O. C., Babuska I.:
+    ///  [1] Kelly D. W., Gago O. C., Zienkiewicz O. C., Babuska I.:
     ///       A posteriori error analysis and adaptive processes in the finite element method: Part I—error analysis.
     ///       Int. J. Numer. Methods Engng. 1983;19:1593–619.
-    ///   [2] Gratsch T., Bathe K. J.:
+    ///  [2] Gratsch T., Bathe K. J.:
     ///       A posteriori error estimation techniques in practical finite element analysis.
     ///       Computers and Structures 83 (2005) 235–265.
-    ///   [3] Zienkiewicz O. C., Taylor R. L., Zhu J. Z.:
+    ///  [3] Zienkiewicz O. C., Taylor R. L., Zhu J. Z.:
     ///       The finite element method: its basis and fundamentals (Section 13.7.1).
     ///       6th ed. (2005), Elsevier.
     ///
@@ -104,7 +104,7 @@ namespace Hermes
                              Func<Scalar> *u, Geom<double> *e,
                              ExtData<Scalar> *ext) const
         {
-          throw new Exceptions::FunctionNotOverridenException("KellyTypeAdapt::ErrorEstimatorForm::value()");
+          throw Exceptions::FunctionNotOverridenException("KellyTypeAdapt::ErrorEstimatorForm::value()");
           return 0.0;
         }
 
@@ -113,7 +113,7 @@ namespace Hermes
                                 Func<Hermes::Ord> *u, Geom<Hermes::Ord> *e,
                                 ExtData<Hermes::Ord> *ext) const
         {
-          throw new Exceptions::FunctionNotOverridenException("KellyTypeAdapt::ErrorEstimatorForm::ord().");
+          throw Exceptions::FunctionNotOverridenException("KellyTypeAdapt::ErrorEstimatorForm::ord().");
           return Hermes::Ord();
         }
 
@@ -214,7 +214,6 @@ namespace Hermes
                        interface_scaling_fns_ = Hermes::vector<const InterfaceEstimatorScalingFunction*>(),
                      Hermes::vector<ProjNormType> norms_ = Hermes::vector<ProjNormType>());
 
-
       KellyTypeAdapt(Space<Scalar>* space,
                      bool ignore_visited_segments = true,
                      const InterfaceEstimatorScalingFunction* interface_scaling_fn_ = NULL,
@@ -269,13 +268,12 @@ namespace Hermes
       double calc_err_est(Solution<Scalar>*sln,
                           unsigned int error_flags = HERMES_TOTAL_ERROR_REL | HERMES_ELEMENT_ERROR_REL)
       {
-        if (this->num != 1)
+        if(this->num != 1)
           throw Exceptions::Exception("Wrong number of solutions.");
         Hermes::vector<Solution<Scalar>*> slns;
         slns.push_back(sln);
         return calc_err_est(slns, NULL, error_flags);
       }
-
 
       double calc_err_est(Hermes::vector<Solution<Scalar>*> slns,
                           Hermes::vector<double>* component_errors = NULL,
@@ -302,7 +300,7 @@ namespace Hermes
     /// Original error estimator that Kelly et. al. ([1]) derived for the Laplace equation with constant
     /// coefficient, approximated on a quadrilateral mesh. The error of each element is estimated by the
     /// L2 norm of jumps of gradients across element faces (the contribution of the residual norm is
-    /// relatively insignificant and is neglected, see [3]). Note that the estimator has been successfully
+    /// relatively insignificant and is neglected, see[3]). Note that the estimator has been successfully
     /// used also for other problems than that for which it had been originally derived.
     ///
     ///\todo Add handling of boundary conditions.

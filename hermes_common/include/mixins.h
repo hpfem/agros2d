@@ -28,6 +28,9 @@
 
 namespace Hermes
 {
+  /// \brief Namespace for mixin classes.
+  /// These classes always serve one particular purpose that multiple classes of the entire Hermes library
+  /// could use - logging, time measurement, ...
   namespace Mixins
   {
     /// Class the output of which is loggable, i.e. that uses functionality of info(), warn()
@@ -44,12 +47,19 @@ namespace Hermes
       bool get_verbose_output() const;
 
       /// Provides a callback for logging.
-      /// \param [in] callback Function to be called for the messaging when verbose_output is set to yes.
+      /// \param[in] callback Function to be called for the messaging when verbose_output is set to yes.
       void set_verbose_callback(callbackFn callback);
     public:
       /// Returns the current value of verbose_callback;
       callbackFn get_verbose_callback() const;
 
+      /// For static logging in user programs.
+      class HERMES_API Static
+      {
+      public:
+        static void info(const char* msg, ...);
+        static void warn(const char* msg, ...);
+      };
     protected:
       Loggable(bool verbose_output = false, callbackFn verbose_callback = NULL);
 
@@ -57,7 +67,7 @@ namespace Hermes
       void warn_if(bool cond, const char* msg, ...) const;
       void info(const char* msg, ...) const;
       void info_if(bool cond, const char* msg, ...) const;
-            
+
       /* file operations */
       void hermes_fwrite(const void* ptr, size_t size, size_t nitems, FILE* stream) const;
       void hermes_fread(void* ptr, size_t size, size_t nitems, FILE* stream) const;
@@ -70,7 +80,7 @@ namespace Hermes
       bool write_console(const char code, const char* text) const;
 
       /// Info about a log record. Used for output log function. \internal
-      class HERMES_API HermesLogEventInfo 
+      class HERMES_API HermesLogEventInfo
       {
       public:
         HermesLogEventInfo(const char code, const char* log_file, const char* src_function, const char* src_file, const int src_line);
@@ -85,21 +95,21 @@ namespace Hermes
 
       /// Logging output monitor. \internal \ingroup g_logging
       /** This class protects a logging function __hermes_log_message_if() in multithreded environment. */
-      class LoggerMonitor 
+      class LoggerMonitor
       {
         pthread_mutexattr_t mutex_attr; ///< Mutext attributes.
         pthread_mutex_t mutex; ///< Mutex that protects monitor.
 
       public:
         /// Constructor. Creates a mutex.
-        LoggerMonitor() 
+        LoggerMonitor()
         {
           pthread_mutexattr_init(&mutex_attr);
           pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE);
           pthread_mutex_init(&mutex, &mutex_attr);
         };
         /// Destructor. Deletes a mutex.
-        ~LoggerMonitor() 
+        ~LoggerMonitor()
         {
           pthread_mutex_destroy(&mutex);
           pthread_mutexattr_destroy(&mutex_attr);
@@ -124,7 +134,7 @@ namespace Hermes
       *  \param[in] code Code of the message.
       *  \param[in] msg A message. */
       void hermes_log_message(const char code, const char* msg) const;
-    
+
       /// Verbose output.
       /// Set to 'true' by default.
       bool verbose_output;
@@ -167,7 +177,7 @@ namespace Hermes
 
       /// Returns last measured period in human readable form.
       std::string last_str() const;
-  
+
     private:
   #ifdef WIN32 //Windows
       typedef uint64_t SysTime;
@@ -183,6 +193,28 @@ namespace Hermes
       SysTime get_time() const; ///< Returns current time (in platform-dependent units).
       double period_in_seconds(const SysTime& begin, const SysTime& end) const; ///< Calculates distance between times (in platform specific units) and returns it in seconds.
       std::string to_string(const double time) const; ///< Converts time from seconds to human readable form.
+    };
+  
+    /// Class that allows overriding integration order in its discrete problems
+    class HERMES_API IntegrableWithGlobalOrder
+    {
+    public:
+      IntegrableWithGlobalOrder();
+      void setGlobalIntegrationOrder(unsigned int order);
+      bool globalIntegrationOrderSet;
+      unsigned int globalIntegrationOrder;
+    };
+
+    /// Class that allows overriding integration order in its discrete problems
+    class HERMES_API SettableComputationTime
+    {
+    public:
+      SettableComputationTime();
+      /// set time information for time-dependent problems.
+      virtual void setTime(double time);
+      virtual void setTimeStep(double timeStep);
+      double time;
+      double timeStep;
     };
   }
 }

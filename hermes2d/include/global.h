@@ -41,7 +41,7 @@
 
     /// Constant used by Adapt::calc_eror().
 #define HERMES_TOTAL_ERROR_REL  0x00  ///< A flag which defines interpretation of the total error. \ingroup g_adapt
-    ///  The total error is divided by the norm and therefore it should be in a range [0, 1].
+    ///  The total error is divided by the norm and therefore it should be in a range[0, 1].
     ///  \note Used by Adapt::calc_errors_internal().. This flag is mutually exclusive with ::H2D_TOTAL_ERROR_ABS.
 #define HERMES_TOTAL_ERROR_ABS  0x01  ///< A flag which defines interpretation of the total error. \ingroup g_adapt
     ///  The total error is absolute, i.e., it is an integral over squares of differencies.
@@ -54,7 +54,16 @@
 #define HERMES_ELEMENT_ERROR_ABS 0x10 ///< A flag which defines interpretation of of an error of an element. \ingroup g_adapt
     ///  An error of an element is a square of an asolute error, i.e., it is an integral over squares of differencies.
     ///  \note Used by Adapt::calc_errors_internal(). This flag is mutually exclusive with ::HERMES_ELEMENT_ERROR_REL.
-  
+
+    /// A total number of valid transformation of a triangle to a sub-domain.
+    static const int H2D_TRF_TRI_NUM = 4;
+    /// A total number of valid transformation of a quad to a sub-domain.
+    static const int H2D_TRF_QUAD_NUM = 8;
+    /// A total number of transformations.
+    static const int H2D_TRF_NUM = (H2D_TRF_QUAD_NUM + 1);
+    /// An index of identity transformation.
+    static const int H2D_TRF_IDENTITY = H2D_TRF_QUAD_NUM;
+    
     /// Enabling second derivatives in weak forms. Turned on by default. Second
     /// derivatives are employed, among others, by stabilization methods for
     /// transport equations. For usage see the example linear-convection-diffusion.
@@ -88,7 +97,7 @@ namespace Hermes
     class Quad2D;
     class Quad1DStd;
     class Quad2DStd;
-    
+
     /// How many bits the encoded_order number takes.
     const int H2D_ORDER_BITS = 5;
     const int H2D_ORDER_MASK = (1 << H2D_ORDER_BITS) - 1;
@@ -98,7 +107,7 @@ namespace Hermes
     #define H2D_GET_V_ORDER(encoded_order) ((encoded_order) >> H2D_ORDER_BITS)
     #define H2D_MAKE_QUAD_ORDER(h_encoded_order, v_encoded_order) (((v_encoded_order) << H2D_ORDER_BITS) + (h_encoded_order))
     #define H2D_MAKE_EDGE_ORDER(mode, edge, order) ((mode == HERMES_MODE_TRIANGLE || edge == 0 || edge == 2) ? H2D_GET_H_ORDER(order) : H2D_GET_V_ORDER(order))
-    
+
     /// Class for global functions.
     template<typename Scalar>
     class HERMES_API Global : public Hermes::Mixins::Loggable
@@ -152,7 +161,7 @@ namespace Hermes
       HERMES_HDIV_NORM,
       HERMES_UNSET_NORM
     };
-      
+
     enum ElementMode2D {
       HERMES_MODE_TRIANGLE = 0,
       HERMES_MODE_QUAD = 1

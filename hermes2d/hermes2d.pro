@@ -30,7 +30,6 @@ INCLUDEPATH += include \
                ../hermes_common/include/solvers/ \
 
 SOURCES +=      ../hermes_common/src/api.cpp \
-                ../hermes_common/src/mixins.cpp \
                 ../hermes_common/src/callstack.cpp \
                 ../hermes_common/src/matrix.cpp \
                 ../hermes_common/src/tables.cpp \
@@ -55,6 +54,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 ../hermes_common/src/solvers/precond_ml.cpp \
                 ../hermes_common/src/solvers/precond_ifpack.cpp \
                 src/api2d.cpp \
+                src/mixins2d.cpp \
                 src/forms.cpp \
                 src/asmlist.cpp \
                 src/linear_solver.cpp \

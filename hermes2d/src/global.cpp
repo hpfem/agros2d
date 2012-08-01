@@ -14,6 +14,7 @@
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "global.h"
+#include <algorithm>
 #include "quadrature/quad_all.h"
 #include "mesh.h"
 #include "traverse.h"
@@ -45,14 +46,14 @@ namespace Hermes
     double Global<Scalar>::calc_abs_error(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, int norm_type)
     {
       // sanity checks
-      if (sln1 == NULL) throw Hermes::Exceptions::Exception("sln1 is NULL in calc_abs_error().");
-      if (sln2 == NULL) throw Hermes::Exceptions::Exception("sln2 is NULL in calc_abs_error().");
+      if(sln1 == NULL) throw Hermes::Exceptions::Exception("sln1 is NULL in calc_abs_error().");
+      if(sln2 == NULL) throw Hermes::Exceptions::Exception("sln2 is NULL in calc_abs_error().");
 
       Quad2D* quad = &g_quad_2d_std;
       sln1->set_quad_2d(quad);
       sln2->set_quad_2d(quad);
 
-      Mesh* meshes[2] = { sln1->get_mesh(), sln2->get_mesh() };
+      const Mesh* meshes[2] = { sln1->get_mesh(), sln2->get_mesh() };
       Transformable* tr[2] = { sln1, sln2 };
       Traverse trav(true);
       trav.begin(2, meshes, tr);
@@ -103,7 +104,7 @@ namespace Hermes
 
       double norm = 0.0;
       Element* e;
-      Mesh* mesh = sln->get_mesh();
+      const Mesh* mesh = sln->get_mesh();
 
       for_all_active_elements(e, mesh)
       {
@@ -277,7 +278,6 @@ namespace Hermes
       sln1->set_quad_order(o);
       sln2->set_quad_order(o);
 
-
       Scalar *uval0 = sln1->get_fn_values(0), *uval1 = sln1->get_fn_values(1);
       Scalar *udx1  = sln1->get_dx_values(1), *udy0  = sln1->get_dy_values(0);
       Scalar *vval0 = sln2->get_fn_values(0), *vval1 = sln2->get_fn_values(1);
@@ -317,7 +317,6 @@ namespace Hermes
 
       sln1->set_quad_order(o);
       sln2->set_quad_order(o);
-
 
       Scalar *uval0 = sln1->get_fn_values(0), *uval1 = sln1->get_fn_values(1);
       Scalar *vval0 = sln2->get_fn_values(0), *vval1 = sln2->get_fn_values(1);
@@ -359,7 +358,6 @@ namespace Hermes
       sln1->set_quad_order(o);
       sln2->set_quad_order(o);
 
-
       Scalar *uval0 = sln1->get_fn_values(0), *uval1 = sln1->get_fn_values(1);
       Scalar *udx1  = sln1->get_dx_values(1), *udy0  = sln1->get_dy_values(0);
       Scalar *vval0 = sln2->get_fn_values(0), *vval1 = sln2->get_fn_values(1);
@@ -391,7 +389,7 @@ namespace Hermes
       h1_integrate_expression(Hermes::sqr(uval0[i]) + Hermes::sqr(uval1[i]) + Hermes::sqr(udx1[i] - udy0[i]));
       return result;
     }
-    
+
     template class HERMES_API Global<double>;
     template class HERMES_API Global<std::complex<double> >;
   }

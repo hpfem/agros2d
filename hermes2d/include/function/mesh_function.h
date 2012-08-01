@@ -25,6 +25,7 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    /// @ingroup meshFunctions
     /// \brief Represents a function defined on a mesh.
     ///
     /// MeshFunction is a base class for all classes representing an arbitrary function
@@ -40,7 +41,7 @@ namespace Hermes
     public:
 
       MeshFunction();
-      MeshFunction(Mesh *mesh);
+      MeshFunction(const Mesh *mesh);
       virtual ~MeshFunction();
 
       virtual void init();
@@ -50,7 +51,7 @@ namespace Hermes
 
       virtual void set_active_element(Element* e);
 
-      Mesh*   get_mesh() const;
+      const Mesh* get_mesh() const;
       RefMap* get_refmap(bool update = true);
       void set_refmap(RefMap* refmap_to_set);
 
@@ -67,15 +68,16 @@ namespace Hermes
 
       virtual void pop_transform();
 
-      virtual MeshFunction<Scalar>* clone() 
+      virtual MeshFunction<Scalar>* clone()
       {
-        throw Hermes::Exceptions::Exception("You need to implement MeshFunction::clone() to be able to use paralellization"); return NULL; 
+        throw Hermes::Exceptions::Exception("You need to implement MeshFunction::clone() to be able to use paralellization");
+        return NULL;
       }
 
     protected:
 
       ElementMode2D mode;
-      Mesh* mesh;
+      const Mesh* mesh;
       RefMap* refmap;
 
     public:
@@ -90,7 +92,7 @@ namespace Hermes
       friend class RefMap;
       template<typename T> friend class KellyTypeAdapt;
       template<typename T> friend class Adapt;
-      
+
       template<typename T> friend class Func;
       template<typename T> friend class Geom;
 

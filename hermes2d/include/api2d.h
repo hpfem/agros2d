@@ -29,12 +29,13 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    /// Enumeration of potential keys in the Api2D::parameters storage.
     enum Hermes2DApiParam
     {
       numThreads
     };
-    
-    /// API Class containing settings for the whole Hermes.
+
+    /// API Class containing settings for the whole Hermes2D.
     class HERMES_API Api2D
     {
     public:
@@ -53,6 +54,7 @@ namespace Hermes
         int userVal;
         int defaultVal;
       };
+
       /// The storage of parameters.
       /// This storage is not optimized for speed, but for comfort of users.
       /// There should not be any parameters, values of which are sought very often, because of the above reason.
@@ -63,7 +65,7 @@ namespace Hermes
       void setParamValue(Hermes2DApiParam, int value);
     };
 
-    // Global declarations.
+    /// Global instance used inside Hermes which is also accessible to users.
     extern HERMES_API Hermes::Hermes2D::Api2D Hermes2DApi;
   }
 }

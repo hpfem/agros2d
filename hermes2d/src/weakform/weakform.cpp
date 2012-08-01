@@ -27,7 +27,6 @@ namespace Hermes
     template<typename Scalar>
     WeakForm<Scalar>::WeakForm(unsigned int neq, bool mat_free)
     {
-      
       this->neq = neq;
       this->seq = 0;
       this->is_matfree = mat_free;
@@ -38,7 +37,7 @@ namespace Hermes
     {
       delete_all();
     }
-    
+
     template<typename Scalar>
     void WeakForm<Scalar>::delete_all()
     {
@@ -236,14 +235,13 @@ namespace Hermes
     template<typename Scalar>
     void WeakForm<Scalar>::add_matrix_form(MatrixFormVol<Scalar>* form)
     {
-      
-      if (form->i >= neq || form->j >= neq)
+      if(form->i >= neq || form->j >= neq)
         throw Hermes::Exceptions::Exception("Invalid equation number.");
-      if (form->sym < -1 || form->sym > 1)
+      if(form->sym < -1 || form->sym > 1)
         throw Hermes::Exceptions::Exception("\"sym\" must be -1, 0 or 1.");
-      if (form->sym < 0 && form->i == form->j)
+      if(form->sym < 0 && form->i == form->j)
         throw Hermes::Exceptions::Exception("Only off-diagonal forms can be antisymmetric.");
-      if (mfvol.size() > 100)
+      if(mfvol.size() > 100)
       {
         this->warn("Large number of forms (> 100). Is this the intent?");
       }
@@ -256,7 +254,7 @@ namespace Hermes
     template<typename Scalar>
     void WeakForm<Scalar>::add_matrix_form_surf(MatrixFormSurf<Scalar>* form)
     {
-      if (form->i >= neq || form->j >= neq)
+      if(form->i >= neq || form->j >= neq)
         throw Hermes::Exceptions::Exception("Invalid equation number.");
 
       form->set_weakform(this);
@@ -267,7 +265,7 @@ namespace Hermes
     template<typename Scalar>
     void WeakForm<Scalar>::add_vector_form(VectorFormVol<Scalar>* form)
     {
-      if (form->i >= neq)
+      if(form->i >= neq)
         throw Hermes::Exceptions::Exception("Invalid equation number.");
       form->set_weakform(this);
       vfvol.push_back(form);
@@ -277,7 +275,7 @@ namespace Hermes
     template<typename Scalar>
     void WeakForm<Scalar>::add_vector_form_surf(VectorFormSurf<Scalar>* form)
     {
-      if (form->i >= neq)
+      if(form->i >= neq)
         throw Hermes::Exceptions::Exception("Invalid equation number.");
 
       form->set_weakform(this);
@@ -314,20 +312,20 @@ namespace Hermes
       {
         for (unsigned int j = 0; j < neq; j++)
           blocks[i][j] = false;
-        if (force_diagonal_blocks)
+        if(force_diagonal_blocks)
           blocks[i][i] = true;
       }
       for (unsigned i = 0; i < mfvol.size(); i++)
       {
-        if (fabs(mfvol[i]->scaling_factor) > 1e-12)
+        if(fabs(mfvol[i]->scaling_factor) > 1e-12)
           blocks[mfvol[i]->i][mfvol[i]->j] = true;
-        if (mfvol[i]->sym)
-          if (fabs(mfvol[i]->scaling_factor) > 1e-12)
+        if(mfvol[i]->sym)
+          if(fabs(mfvol[i]->scaling_factor) > 1e-12)
             blocks[mfvol[i]->j][mfvol[i]->i] = true;
       }
       for (unsigned i = 0; i < mfsurf.size(); i++)
       {
-        if (fabs(mfsurf[i]->scaling_factor) > 1e-12)
+        if(fabs(mfsurf[i]->scaling_factor) > 1e-12)
           blocks[mfsurf[i]->i][mfsurf[i]->j] = true;
       }
 
@@ -344,6 +342,18 @@ namespace Hermes
     double WeakForm<Scalar>::get_current_time() const
     {
       return current_time;
+    }
+
+    template<typename Scalar>
+    void WeakForm<Scalar>::set_current_time_step(double time_step)
+    {
+      current_time_step = time_step;
+    }
+
+    template<typename Scalar>
+    double WeakForm<Scalar>::get_current_time_step() const
+    {
+      return current_time_step;
     }
 
     template class HERMES_API WeakForm<double>;

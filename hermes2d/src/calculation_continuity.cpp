@@ -25,6 +25,80 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    CalculationContinuityException::CalculationContinuityException() : Exception()
+    {
+    }
+
+    CalculationContinuityException::CalculationContinuityException(exceptionEntityType type, const char * reason) : Exception()
+    {
+      this->init(type, reason);
+    }
+
+    void CalculationContinuityException::init(exceptionEntityType type, const char * reason)
+    {
+      char * msg =  new char[34 + strlen(reason)];
+      char * typeMsg = new char[15];
+      switch(type)
+      {
+      case meshes:
+        sprintf(typeMsg, "meshes");
+        break;
+      case spaces:
+        sprintf(typeMsg, "spaces");
+        break;
+      case solutions:
+        sprintf(typeMsg, "solutions");
+        break;
+      case time_steps:
+        sprintf(typeMsg, "time steps");
+        break;
+      case error:
+        sprintf(typeMsg, "error info");
+        break;
+      case general:
+        sprintf(typeMsg, "general");
+        break;
+      }
+
+      sprintf(msg, "Exception in CalculationContinuity (%s): \"%s\"", typeMsg, reason);
+      message = msg;
+      delete [] typeMsg;
+    }
+
+    IOCalculationContinuityException::IOCalculationContinuityException(exceptionEntityType type, inputOutput inputOutput, const char * filename) : CalculationContinuityException()
+    {
+      char * msg =  new char[34 + strlen(filename)];
+      char * typeMsg = new char[7];
+      switch(inputOutput)
+      {
+      case input:
+        sprintf(typeMsg, "input");
+        break;
+      case output:
+        sprintf(typeMsg, "output");
+        break;
+      }
+      sprintf(msg, "I/O exception: %s, filename: \"%s\"", typeMsg, filename);
+      this->init(type, msg);
+    }
+
+    IOCalculationContinuityException::IOCalculationContinuityException(exceptionEntityType type, inputOutput inputOutput, const char * filename, const char * reason) : CalculationContinuityException()
+    {
+      char * msg =  new char[34 + strlen(filename)];
+      char * typeMsg = new char[7];
+      switch(inputOutput)
+      {
+      case input:
+        sprintf(typeMsg, "input");
+        break;
+      case output:
+        sprintf(typeMsg, "output");
+        break;
+      }
+      sprintf(msg, "I/O exception: %s, filename: \"%s\", reason: %s", typeMsg, filename, reason);
+      this->init(type, msg);
+    }
+
     template<typename Scalar>
     CalculationContinuity<Scalar>::CalculationContinuity(IdentificationMethod identification_method) : last_record(NULL), record_available(false), identification_method(identification_method), num(0)
     {
@@ -91,24 +165,65 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void CalculationContinuity<Scalar>::add_record(double time, unsigned int number)
+    void CalculationContinuity<Scalar>::add_record(double time, unsigned int number, Mesh* mesh, Space<Scalar>* space, Solution<Scalar>* sln, double time_step, double time_step_n_minus_one, double error)
     {
-      if(last_record != NULL)
+      std::ofstream ofile("timeAndNumber.h2d", std::ios_base::app);
+      if(ofile)
       {
-        std::ofstream ofile("timeAndNumber.h2d", std::ios_base::app);
-        if(ofile)
-        {
-          ofile << time << ' ' << number << std::endl;
-          ofile.close();
-        }
+        ofile << time << ' ' << number << std::endl;
+        ofile.close();
       }
+      else
+        throw IOCalculationContinuityException(CalculationContinuityException::general, IOCalculationContinuityException::output, "timeAndNumber.h2d");
+
       CalculationContinuity<Scalar>::Record* record = new CalculationContinuity<Scalar>::Record(time, number);
+      record->save_mesh(mesh);
+      if(space != NULL)
+        record->save_space(space);
+      if(sln != NULL)
+        record->save_solution(sln);
+      if(time_step > 0.0)
+        record->save_time_step_length(time_step);
+      if(time_step_n_minus_one > 0.0)
+        record->save_time_step_length_n_minus_one(time_step_n_minus_one);
+      if(error > 0.0)
+        record->save_error(error);
+
       this->records.insert(std::pair<std::pair<double, unsigned int>, CalculationContinuity<Scalar>::Record*>(std::pair<double, unsigned int>(time, number), record));
       this->last_record = record;
     }
 
     template<typename Scalar>
-    void CalculationContinuity<Scalar>::add_record(double time)
+    void CalculationContinuity<Scalar>::add_record(double time, unsigned int number, Hermes::vector<Mesh*> meshes, Hermes::vector<Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> slns, double time_step, double time_step_n_minus_one, double error)
+    {
+      std::ofstream ofile("timeAndNumber.h2d", std::ios_base::app);
+      if(ofile)
+      {
+        ofile << time << ' ' << number << std::endl;
+        ofile.close();
+      }
+      else
+        throw IOCalculationContinuityException(CalculationContinuityException::general, IOCalculationContinuityException::output, "timeAndNumber.h2d");
+
+      CalculationContinuity<Scalar>::Record* record = new CalculationContinuity<Scalar>::Record(time, number);
+      record->save_meshes(meshes);
+      if(spaces != Hermes::vector<Space<Scalar>*>())
+        record->save_spaces(spaces);
+      if(slns != Hermes::vector<Solution<Scalar>*>())
+        record->save_solutions(slns);
+      if(time_step > 0.0)
+        record->save_time_step_length(time_step);
+      if(time_step_n_minus_one > 0.0)
+        record->save_time_step_length_n_minus_one(time_step_n_minus_one);
+      if(error > 0.0)
+        record->save_error(error);
+
+      this->records.insert(std::pair<std::pair<double, unsigned int>, CalculationContinuity<Scalar>::Record*>(std::pair<double, unsigned int>(time, number), record));
+      this->last_record = record;
+    }
+
+    template<typename Scalar>
+    void CalculationContinuity<Scalar>::add_record(double time, Mesh* mesh, Space<Scalar>* space, Solution<Scalar>* sln, double time_step, double time_step_n_minus_one, double error)
     {
       std::ofstream ofile("onlyTime.h2d", std::ios_base::app);
       if(ofile)
@@ -116,24 +231,106 @@ namespace Hermes
         ofile << time << std::endl;
         ofile.close();
       }
+      else
+        throw IOCalculationContinuityException(CalculationContinuityException::general, IOCalculationContinuityException::output, "onlyTime.h2d");
+
       CalculationContinuity<Scalar>::Record* record = new CalculationContinuity<Scalar>::Record(time);
+      record->save_mesh(mesh);
+      if(space != NULL)
+        record->save_space(space);
+      if(sln != NULL)
+        record->save_solution(sln);
+      if(time_step > 0.0)
+        record->save_time_step_length(time_step);
+      if(time_step_n_minus_one > 0.0)
+        record->save_time_step_length_n_minus_one(time_step_n_minus_one);
+      if(error > 0.0)
+        record->save_error(error);
+
       this->time_records.insert(std::pair<double, CalculationContinuity<Scalar>::Record*>(time, record));
       this->last_record = record;
     }
 
     template<typename Scalar>
-    void CalculationContinuity<Scalar>::add_record(unsigned int number)
+    void CalculationContinuity<Scalar>::add_record(double time, Hermes::vector<Mesh*> meshes, Hermes::vector<Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> slns, double time_step, double time_step_n_minus_one, double error)
     {
-      if(last_record != NULL)
+      std::ofstream ofile("onlyTime.h2d", std::ios_base::app);
+      if(ofile)
       {
-        std::ofstream ofile("onlyNumber.h2d", std::ios_base::app);
-        if(ofile)
-        {
-          ofile << number << std::endl;
-          ofile.close();
-        }
+        ofile << time << std::endl;
+        ofile.close();
       }
+      else
+        throw IOCalculationContinuityException(CalculationContinuityException::general, IOCalculationContinuityException::output, "onlyTime.h2d");
+      CalculationContinuity<Scalar>::Record* record = new CalculationContinuity<Scalar>::Record(time);
+      record->save_meshes(meshes);
+      if(spaces != Hermes::vector<Space<Scalar>*>())
+        record->save_spaces(spaces);
+      if(slns != Hermes::vector<Solution<Scalar>*>())
+        record->save_solutions(slns);
+      if(time_step > 0.0)
+        record->save_time_step_length(time_step);
+      if(time_step_n_minus_one > 0.0)
+        record->save_time_step_length_n_minus_one(time_step_n_minus_one);
+      if(error > 0.0)
+        record->save_error(error);
+      this->time_records.insert(std::pair<double, CalculationContinuity<Scalar>::Record*>(time, record));
+      this->last_record = record;
+    }
+
+    template<typename Scalar>
+    void CalculationContinuity<Scalar>::add_record(unsigned int number, Mesh* mesh, Space<Scalar>* space, Solution<Scalar>* sln, double time_step, double time_step_n_minus_one, double error)
+    {
+      std::ofstream ofile("onlyNumber.h2d", std::ios_base::app);
+      if(ofile)
+      {
+        ofile << number << std::endl;
+        ofile.close();
+      }
+      else
+        throw IOCalculationContinuityException(CalculationContinuityException::general, IOCalculationContinuityException::output, "onlyNumber.h2d");
+
       CalculationContinuity<Scalar>::Record* record = new CalculationContinuity<Scalar>::Record(number);
+      record->save_mesh(mesh);
+      if(space != NULL)
+        record->save_space(space);
+      if(sln != NULL)
+        record->save_solution(sln);
+      if(time_step > 0.0)
+        record->save_time_step_length(time_step);
+      if(time_step_n_minus_one > 0.0)
+        record->save_time_step_length_n_minus_one(time_step_n_minus_one);
+      if(error > 0.0)
+        record->save_error(error);
+
+      this->numbered_records.insert(std::pair<unsigned int, CalculationContinuity<Scalar>::Record*>(number, record));
+      this->last_record = record;
+    }
+
+    template<typename Scalar>
+    void CalculationContinuity<Scalar>::add_record(unsigned int number, Hermes::vector<Mesh*> meshes, Hermes::vector<Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> slns, double time_step, double time_step_n_minus_one, double error)
+    {
+      std::ofstream ofile("onlyNumber.h2d", std::ios_base::app);
+      if(ofile)
+      {
+        ofile << number << std::endl;
+        ofile.close();
+      }
+      else
+        throw IOCalculationContinuityException(CalculationContinuityException::general, IOCalculationContinuityException::output, "onlyNumber.h2d");
+
+      CalculationContinuity<Scalar>::Record* record = new CalculationContinuity<Scalar>::Record(number);
+      record->save_meshes(meshes);
+      if(spaces != Hermes::vector<Space<Scalar>*>())
+        record->save_spaces(spaces);
+      if(slns != Hermes::vector<Solution<Scalar>*>())
+        record->save_solutions(slns);
+      if(time_step > 0.0)
+        record->save_time_step_length(time_step);
+      if(time_step_n_minus_one > 0.0)
+        record->save_time_step_length_n_minus_one(time_step_n_minus_one);
+      if(error > 0.0)
+        record->save_error(error);
       this->numbered_records.insert(std::pair<unsigned int, CalculationContinuity<Scalar>::Record*>(number, record));
       this->last_record = record;
     }
@@ -162,7 +359,10 @@ namespace Hermes
     template<typename Scalar>
     typename CalculationContinuity<Scalar>::Record* CalculationContinuity<Scalar>::get_last_record() const
     {
-      return this->last_record;
+      if(this->last_record != NULL)
+        return this->last_record;
+      else
+        throw CalculationContinuityException(CalculationContinuityException::general, "no last_record in get_last_record()");
     }
 
     template<typename Scalar>
@@ -179,7 +379,14 @@ namespace Hermes
       {
         std::stringstream filename;
         filename << CalculationContinuity<Scalar>::meshFileName << i << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-        reader.save(filename.str().c_str(), meshes[i]);
+        try
+        {
+          reader.save(filename.str().c_str(), meshes[i]);
+        }
+        catch(std::exception& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::meshes, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+        }
       }
     }
     template<typename Scalar>
@@ -188,7 +395,14 @@ namespace Hermes
       MeshReaderH2DXML reader;
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::meshFileName << 0 << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      reader.save(filename.str().c_str(), mesh);
+      try
+      {
+        reader.save(filename.str().c_str(), mesh);
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::meshes, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -198,7 +412,14 @@ namespace Hermes
       {
         std::stringstream filename;
         filename << CalculationContinuity<Scalar>::spaceFileName << i << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-        spaces[i]->save(filename.str().c_str());
+        try
+        {
+          spaces[i]->save(filename.str().c_str());
+        }
+        catch(std::exception& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+        }
       }
     }
 
@@ -207,9 +428,15 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::spaceFileName << 0 << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      space->save(filename.str().c_str());
+      try
+      {
+        space->save(filename.str().c_str());
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+      }
     }
-
 
     template<typename Scalar>
     void CalculationContinuity<Scalar>::Record::save_solutions(Hermes::vector<Solution<Scalar>*> solutions)
@@ -218,7 +445,15 @@ namespace Hermes
       {
         std::stringstream filename;
         filename << CalculationContinuity<Scalar>::solutionFileName << i << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-        solutions[i]->save(filename.str().c_str());
+
+        try
+        {
+          solutions[i]->save(filename.str().c_str());
+        }
+        catch(Hermes::Exceptions::SolutionSaveFailureException& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::solutions, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+        }
       }
     }
     template<typename Scalar>
@@ -226,7 +461,14 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::solutionFileName << 0 << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      solution->save(filename.str().c_str());
+      try
+      {
+        solution->save(filename.str().c_str());
+      }
+      catch(Hermes::Exceptions::SolutionSaveFailureException& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::solutions, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -234,9 +476,16 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::timeStepFileName << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      std::ofstream out(filename.str().c_str());
-      out << time_step_length_to_save;
-      out.close();
+      try
+      {
+        std::ofstream out(filename.str().c_str());
+        out << time_step_length_to_save;
+        out.close();
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::time_steps, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -244,9 +493,16 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::timeStepNMinusOneFileName << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      std::ofstream out(filename.str().c_str());
-      out << time_step_length_to_save;
-      out.close();
+      try
+      {
+        std::ofstream out(filename.str().c_str());
+        out << time_step_length_to_save;
+        out.close();
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::time_steps, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -254,9 +510,16 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::errorFileName << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      std::ofstream out(filename.str().c_str());
-      out << error;
-      out.close();
+      try
+      {
+        std::ofstream out(filename.str().c_str());
+        out << error;
+        out.close();
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::error, IOCalculationContinuityException::output, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -267,7 +530,14 @@ namespace Hermes
       {
         std::stringstream filename;
         filename << CalculationContinuity<Scalar>::meshFileName << i << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-        reader.load(filename.str().c_str(), meshes[i]);
+        try
+        {
+          reader.load(filename.str().c_str(), meshes[i]);
+        }
+        catch(Hermes::Exceptions::MeshLoadFailureException& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::meshes, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+        }
       }
     }
     template<typename Scalar>
@@ -276,7 +546,15 @@ namespace Hermes
       MeshReaderH2DXML reader;
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::meshFileName << 0 << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      reader.load(filename.str().c_str(), mesh);
+
+      try
+      {
+        reader.load(filename.str().c_str(), mesh);
+      }
+      catch(Hermes::Exceptions::MeshLoadFailureException& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::meshes, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -292,21 +570,31 @@ namespace Hermes
         filename << CalculationContinuity<Scalar>::spaceFileName << i << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
 
         spaces[i]->free();
-
-        switch(space_types[i])
+        try
         {
-        case HERMES_H1_SPACE:
-          dynamic_cast<H1Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], essential_bcs[i], shapesets[i]);
-          break;
-        case HERMES_HCURL_SPACE:
-          dynamic_cast<HcurlSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], essential_bcs[i], shapesets[i]);
-          break;
-        case HERMES_HDIV_SPACE:
-          dynamic_cast<HdivSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], essential_bcs[i], shapesets[i]);
-          break;
-        case HERMES_L2_SPACE:
-          dynamic_cast<L2Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
-          break;
+          switch(space_types[i])
+          {
+          case HERMES_H1_SPACE:
+            dynamic_cast<H1Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], essential_bcs[i], shapesets[i]);
+            break;
+          case HERMES_HCURL_SPACE:
+            dynamic_cast<HcurlSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], essential_bcs[i], shapesets[i]);
+            break;
+          case HERMES_HDIV_SPACE:
+            dynamic_cast<HdivSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], essential_bcs[i], shapesets[i]);
+            break;
+          case HERMES_L2_SPACE:
+            dynamic_cast<L2Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
+            break;
+          }
+        }
+        catch(Hermes::Exceptions::SpaceLoadFailureException& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+        }
+        catch(std::exception& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
         }
       }
     }
@@ -325,20 +613,31 @@ namespace Hermes
 
         spaces[i]->free();
 
-        switch(space_types[i])
+        try
         {
-        case HERMES_H1_SPACE:
-          dynamic_cast<H1Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
-          break;
-        case HERMES_HCURL_SPACE:
-          dynamic_cast<HcurlSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
-          break;
-        case HERMES_HDIV_SPACE:
-          dynamic_cast<HdivSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
-          break;
-        case HERMES_L2_SPACE:
-          dynamic_cast<L2Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
-          break;
+          switch(space_types[i])
+          {
+          case HERMES_H1_SPACE:
+            dynamic_cast<H1Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
+            break;
+          case HERMES_HCURL_SPACE:
+            dynamic_cast<HcurlSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
+            break;
+          case HERMES_HDIV_SPACE:
+            dynamic_cast<HdivSpace<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
+            break;
+          case HERMES_L2_SPACE:
+            dynamic_cast<L2Space<Scalar>*>(spaces[i])->load(filename.str().c_str(), meshes[i], shapesets[i]);
+            break;
+          }
+        }
+        catch(Hermes::Exceptions::SpaceLoadFailureException& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+        }
+        catch(std::exception& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
         }
       }
     }
@@ -351,29 +650,40 @@ namespace Hermes
 
       space->free();
 
-      switch(space_type)
+      try
       {
-      case HERMES_H1_SPACE:
-        if(essential_bcs == NULL)
-          dynamic_cast<H1Space<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
-        else
-          dynamic_cast<H1Space<Scalar>*>(space)->load(filename.str().c_str(), mesh, essential_bcs, shapeset);
-        break;
-      case HERMES_HCURL_SPACE:
-        if(essential_bcs == NULL)
-          dynamic_cast<HcurlSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
-        else
-          dynamic_cast<HcurlSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, essential_bcs, shapeset);
-        break;
-      case HERMES_HDIV_SPACE:
-        if(essential_bcs == NULL)
-          dynamic_cast<HdivSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
-        else
-          dynamic_cast<HdivSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, essential_bcs, shapeset);
-        break;
-      case HERMES_L2_SPACE:
-        dynamic_cast<L2Space<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
-        break;
+        switch(space_type)
+        {
+        case HERMES_H1_SPACE:
+          if(essential_bcs == NULL)
+            dynamic_cast<H1Space<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
+          else
+            dynamic_cast<H1Space<Scalar>*>(space)->load(filename.str().c_str(), mesh, essential_bcs, shapeset);
+          break;
+        case HERMES_HCURL_SPACE:
+          if(essential_bcs == NULL)
+            dynamic_cast<HcurlSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
+          else
+            dynamic_cast<HcurlSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, essential_bcs, shapeset);
+          break;
+        case HERMES_HDIV_SPACE:
+          if(essential_bcs == NULL)
+            dynamic_cast<HdivSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
+          else
+            dynamic_cast<HdivSpace<Scalar>*>(space)->load(filename.str().c_str(), mesh, essential_bcs, shapeset);
+          break;
+        case HERMES_L2_SPACE:
+          dynamic_cast<L2Space<Scalar>*>(space)->load(filename.str().c_str(), mesh, shapeset);
+          break;
+        }
+      }
+      catch(Hermes::Exceptions::SpaceLoadFailureException& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::spaces, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
       }
     }
 
@@ -386,10 +696,19 @@ namespace Hermes
       {
         std::stringstream filename;
         filename << CalculationContinuity<Scalar>::solutionFileName << i << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-        solutions[i]->load(filename.str().c_str(), spaces[i]->get_mesh());
-        solutions[i]->space = spaces[i];
-        solutions[i]->space_type = spaces[i]->get_type();
-        solutions[i]->space_seq = spaces[i]->get_seq();
+        try
+        {
+          solutions[i]->load(filename.str().c_str(), spaces[i]->get_mesh());
+          solutions[i]->space_type = spaces[i]->get_type();
+        }
+        catch(Hermes::Exceptions::SolutionLoadFailureException& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::solutions, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+        }
+        catch(std::exception& e)
+        {
+          throw IOCalculationContinuityException(CalculationContinuityException::solutions, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+        }
       }
     }
     template<typename Scalar>
@@ -397,10 +716,19 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::solutionFileName << 0 << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      solution->load(filename.str().c_str(), space->get_mesh());
-      solution->space = space;
-      solution->space_type = space->get_type();
-      solution->space_seq = space->get_seq();
+      try
+      {
+        solution->load(filename.str().c_str(), space->get_mesh());
+        solution->space_type = space->get_type();
+      }
+      catch(Hermes::Exceptions::SolutionLoadFailureException& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::solutions, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::solutions, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -408,9 +736,16 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::timeStepFileName << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      std::ifstream in(filename.str().c_str());
-      in >> time_step_length;
-      in.close();
+      try
+      {
+        std::ifstream in(filename.str().c_str());
+        in >> time_step_length;
+        in.close();
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::time_steps, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -418,9 +753,16 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::timeStepNMinusOneFileName << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      std::ifstream in(filename.str().c_str());
-      in >> time_step_length;
-      in.close();
+      try
+      {
+        std::ifstream in(filename.str().c_str());
+        in >> time_step_length;
+        in.close();
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::time_steps, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>
@@ -428,9 +770,16 @@ namespace Hermes
     {
       std::stringstream filename;
       filename << CalculationContinuity<Scalar>::errorFileName << '_' << (std::string)"t = " << this->time << (std::string)"n = " << this->number << (std::string)".h2d";
-      std::ifstream in(filename.str().c_str());
-      in >> error;
-      in.close();
+      try
+      {
+        std::ifstream in(filename.str().c_str());
+        in >> error;
+        in.close();
+      }
+      catch(std::exception& e)
+      {
+        throw IOCalculationContinuityException(CalculationContinuityException::error, IOCalculationContinuityException::input, filename.str().c_str(), e.what());
+      }
     }
 
     template<typename Scalar>

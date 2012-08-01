@@ -23,7 +23,6 @@ namespace Hermes
   namespace Hermes2D
   {
     namespace RefinementSelectors {
-
       /// A projection-based selector for Hcurl space. \ingroup g_selectors
       /** This class is designed to be used with the class HcurlAdapt.
       *  Since an initialization of the class may take a long time,
@@ -37,7 +36,7 @@ namespace Hermes
         *  \param[in] max_order A maximum order which considered. If ::H2DRS_DEFAULT_ORDER, a maximum order supported by the selector is used, see HcurlProjBasedSelector::H2DRS_MAX_HCURL_ORDER.
         *  \param[in] user_shapeset A shapeset. If NULL, it will use internal instance of the class HcurlShapeset. */
         HcurlProjBasedSelector(CandList cand_list = H2D_HP_ANISO, double conv_exp = 1.0, int max_order = H2DRS_DEFAULT_ORDER, HcurlShapeset* user_shapeset = NULL);
-        
+
         /// Cloning for paralelism.
         virtual Selector<std::complex<double> >* clone();
 
@@ -59,7 +58,7 @@ namespace Hermes
         static const int H2DRS_MAX_HCURL_ORDER; ///< A maximum used order in this Hcurl-space selector. \todo Replace the numerical constant after a symbolic constant is added to Hcurl shapeset which would declare the maximum supported order.
 
         /// Sets OptimumSelector::current_max_order and OptimumSelector::current_min_order.
-        /** The default order range is [1, ::H2DRS_MAX_HCURL_ORDER]. If curved, the upper boundary of the range becomes lower.
+        /** The default order range is[1, ::H2DRS_MAX_HCURL_ORDER]. If curved, the upper boundary of the range becomes lower.
         *  Overriden function. For details, see OptimumSelector::set_current_order_range(). */
         virtual void set_current_order_range(Element* element);
 

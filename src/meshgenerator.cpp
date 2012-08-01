@@ -140,7 +140,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             {
                 m_isError = true;
 
-                Util::log()->printError(tr("Mesh generator"), e.getMsg());
+                Util::log()->printError(tr("Mesh generator"), QString("%1").arg(e.what()));
             }
         }
         else

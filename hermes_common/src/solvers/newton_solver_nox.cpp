@@ -16,7 +16,7 @@
 \brief NOX (nonliner) solver interface.
 */
 #include "newton_solver_nox.h"
-#if (defined HAVE_NOX && defined HAVE_EPETRA && defined HAVE_TEUCHOS)
+#if(defined HAVE_NOX && defined HAVE_EPETRA && defined HAVE_TEUCHOS)
 
 namespace Hermes
 {
@@ -54,7 +54,7 @@ namespace Hermes
       Epetra_RowMatrix *jac = dynamic_cast<Epetra_RowMatrix *>(&op);
       assert(jac != NULL);
 
-      EpetraVector<Scalar> xx(x);			// wrap our structures around core Epetra objects
+      EpetraVector<Scalar> xx(x);      // wrap our structures around core Epetra objects
       EpetraMatrix<Scalar> jacob(*jac);
 
       jacob.zero();
@@ -73,7 +73,7 @@ namespace Hermes
       Teuchos::ParameterList *precParams)
     {
       assert(precond != Teuchos::null);
-      EpetraVector<Scalar> xx(x);			// wrap our structures around core Epetra objects
+      EpetraVector<Scalar> xx(x);      // wrap our structures around core Epetra objects
 
       jacobian.zero();
 
@@ -91,15 +91,15 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Teuchos::RCP<Precond<Scalar> > DiscreteProblemNOX<Scalar>::get_precond() 
-    { 
-      return precond; 
+    Teuchos::RCP<Precond<Scalar> > DiscreteProblemNOX<Scalar>::get_precond()
+    {
+      return precond;
     }
 
     template<typename Scalar>
-    EpetraMatrix<Scalar> *DiscreteProblemNOX<Scalar>::get_jacobian() 
-    { 
-      return &jacobian; 
+    EpetraMatrix<Scalar> *DiscreteProblemNOX<Scalar>::get_jacobian()
+    {
+      return &jacobian;
     }
 
     template<typename Scalar>
@@ -149,11 +149,20 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    void NewtonSolverNOX<Scalar>::setTime(double time)
+    {
+    }
+      
+    template<typename Scalar>
+    void NewtonSolverNOX<Scalar>::setTimeStep(double timeStep)
+    {
+    }
+
+    template<typename Scalar>
     NewtonSolverNOX<Scalar>::~NewtonSolverNOX()
     {
       // FIXME: this does not destroy the "interface_", and Trilinos
       // complains at closing main.cpp.
-      this->dp->invalidate_matrix();
     }
 
     template<typename Scalar>
@@ -331,9 +340,8 @@ namespace Hermes
       /// Solve.
       NOX::StatusTest::StatusType status = solver->solve();
 
-
       if(!this->dp->is_matrix_free())
-        jac_mat.release();	// release the ownership (we take care of jac_mat by ourselves)
+        jac_mat.release();  // release the ownership (we take care of jac_mat by ourselves)
 
       if(status == NOX::StatusTest::Converged)
       {
@@ -354,90 +362,88 @@ namespace Hermes
         this->sln_vector = new double[n];
         memset(this->sln_vector, 0, n * sizeof(double));
         f_sln.ExtractCopy(this->sln_vector);
-
       }
       else // not converged
-      { 
+      {
         num_iters = -1;
         throw Exceptions::Exception("Nox solver did not converge");
       }
     }
 
-
     template<typename Scalar>
-    int NewtonSolverNOX<Scalar>::get_num_iters() 
-    { 
-      return num_iters; 
+    int NewtonSolverNOX<Scalar>::get_num_iters()
+    {
+      return num_iters;
     }
 
     template<typename Scalar>
-    double NewtonSolverNOX<Scalar>::get_residual()  
-    { 
-      return residual; 
+    double NewtonSolverNOX<Scalar>::get_residual()
+    {
+      return residual;
     }
 
     template<typename Scalar>
-    int NewtonSolverNOX<Scalar>::get_num_lin_iters() 
-    { 
-      return num_lin_iters; 
+    int NewtonSolverNOX<Scalar>::get_num_lin_iters()
+    {
+      return num_lin_iters;
     }
 
     template<typename Scalar>
-    double NewtonSolverNOX<Scalar>::get_achieved_tol()  
-    { 
-      return achieved_tol; 
+    double NewtonSolverNOX<Scalar>::get_achieved_tol()
+    {
+      return achieved_tol;
     }
 
     template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::set_norm_type(NOX::Abstract::Vector::NormType type)  
-    { 
-      conv.norm_type = type; 
+    void NewtonSolverNOX<Scalar>::set_norm_type(NOX::Abstract::Vector::NormType type)
+    {
+      conv.norm_type = type;
     }
 
     template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::set_scale_type(NOX::StatusTest::NormF::ScaleType type)  
-    { 
-      conv.stype = type; 
-    }
-    
-    template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::set_conv_iters(int iters)        
-    { 
-      conv.max_iters = iters; 
-    }
-    
-    template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::set_conv_abs_resid(double resid) 
-    { 
-      conv_flag.absresid = 1; 
-      conv.abs_resid = resid; 
-    }
-    
-    template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::set_conv_rel_resid(double resid) 
-    { 
-      conv_flag.relresid = 1; 
-      conv.rel_resid = resid; 
-    }
-    
-    template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::disable_abs_resid() 
-    { 
-      conv_flag.absresid = 0; 
+    void NewtonSolverNOX<Scalar>::set_scale_type(NOX::StatusTest::NormF::ScaleType type)
+    {
+      conv.stype = type;
     }
 
     template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::disable_rel_resid() 
-    { 
-      conv_flag.relresid = 0; 
+    void NewtonSolverNOX<Scalar>::set_conv_iters(int iters)
+    {
+      conv.max_iters = iters;
     }
 
     template<typename Scalar>
-    void NewtonSolverNOX<Scalar>::set_conv_update(double update)   
-    { 
-      conv_flag.update = 1; 
-      conv.update = update; 
-    }    
+    void NewtonSolverNOX<Scalar>::set_conv_abs_resid(double resid)
+    {
+      conv_flag.absresid = 1;
+      conv.abs_resid = resid;
+    }
+
+    template<typename Scalar>
+    void NewtonSolverNOX<Scalar>::set_conv_rel_resid(double resid)
+    {
+      conv_flag.relresid = 1;
+      conv.rel_resid = resid;
+    }
+
+    template<typename Scalar>
+    void NewtonSolverNOX<Scalar>::disable_abs_resid()
+    {
+      conv_flag.absresid = 0;
+    }
+
+    template<typename Scalar>
+    void NewtonSolverNOX<Scalar>::disable_rel_resid()
+    {
+      conv_flag.relresid = 0;
+    }
+
+    template<typename Scalar>
+    void NewtonSolverNOX<Scalar>::set_conv_update(double update)
+    {
+      conv_flag.update = 1;
+      conv.update = update;
+    }
 
     template<typename Scalar>
     void NewtonSolverNOX<Scalar>::set_conv_wrms(double rtol, double atol)

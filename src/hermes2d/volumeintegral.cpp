@@ -90,7 +90,7 @@ void VolumeIntegralValue::calculate()
 
         sln[0]->set_quad_2d(quad);
 
-        Hermes::Hermes2D::Mesh *mesh = sln[0]->get_mesh();
+        const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
         Hermes::Hermes2D::Element *e;
 
         foreach (SceneLabel *label, Util::scene()->labels->items())
@@ -108,7 +108,7 @@ void VolumeIntegralValue::calculate()
 
                 for_all_active_elements(e, mesh)
                 {
-                    if (mesh->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(index).toStdString())
+                    if (Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(index).toStdString())
                     {
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 

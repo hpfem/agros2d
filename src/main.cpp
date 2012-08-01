@@ -25,7 +25,7 @@ public:
         }
         catch (Hermes::Exceptions::Exception& e)
         {
-            qCritical() << "Hermes exception thrown: " << e.getMsg();
+            qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.what());
             throw;
         }
         catch (mu::Parser::exception_type &e)

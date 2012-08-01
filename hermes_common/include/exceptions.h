@@ -30,7 +30,7 @@ namespace Hermes
   namespace Exceptions
   {
     /// \brief Exception interface
-    class HERMES_API Exception
+    class HERMES_API Exception : public std::exception
     {
       public:
         /// \brief Init exception with default message.
@@ -41,12 +41,14 @@ namespace Hermes
         /// \brief print error message to stderr
         void printMsg() const;
         /// \brief get pointer to error message
-        const char * getMsg() const;
+        virtual const char * what() const throw();
         /// \return name of function where exception was created.
         const char * getFuncName() const;
-        virtual ~Exception(){};
+        virtual ~Exception() throw() {};
+
+        virtual Exception* clone();
       protected:
-        const char * message;
+        char * message;
     };
 
     /// \brief Null parameter exception.
@@ -65,8 +67,9 @@ namespace Hermes
         int getParamIdx() const;
         /// \return index of null item in array parameter. Returns -1 if bad parrameter is not array with null item.
         int getItemIdx() const;
-        ~NullException();
+        ~NullException() throw() {};
         NullException(const NullException & e);
+        virtual Exception* clone();
       private:
         int paramIdx, itemIdx;
     };
@@ -95,8 +98,9 @@ namespace Hermes
         int getFirstLength() const;
         /// \return expected length of first parameter.
         int getExpectedLength() const;
-        ~LengthException();
+        ~LengthException() throw() {};
         LengthException(const LengthException & e);
+        virtual Exception* clone();
       private:
         int fstParamIdx, sndParamIdx, wrong, right;
     };
@@ -110,8 +114,9 @@ namespace Hermes
         /// Linear solver failed from spevific reason.
         /// \param[in] reason specification of solver fail.
         LinearMatrixSolverException(const char * reason);
-        ~LinearMatrixSolverException();
+        ~LinearMatrixSolverException() throw() {};
         LinearMatrixSolverException(const LinearMatrixSolverException & e);
+        virtual Exception* clone();
     };
 
     /// \brief Numeric value is out of allowed range
@@ -135,8 +140,9 @@ namespace Hermes
         double getValue() const;
         /// return allowed value of variable.
         double getAllowed() const;
-        ~ValueException();
+        ~ValueException() throw() {};
         ValueException(const ValueException & e);
+        virtual Exception* clone();
       private:
         double value, allowed;
     };
@@ -148,8 +154,9 @@ namespace Hermes
         /// Constructor
         /// \param[in] name Name of the function.
         FunctionNotOverridenException(const char * msg, ...);
-        ~FunctionNotOverridenException();
+        ~FunctionNotOverridenException() throw() {};
         FunctionNotOverridenException(const FunctionNotOverridenException & e);
+        virtual Exception* clone();
     };
 
     /// \brief Linear solver failed.
@@ -159,8 +166,9 @@ namespace Hermes
         /// Constructor
         /// \param[in] name Name of the function.
         MeshLoadFailureException(const char * msg, ...);
-        ~MeshLoadFailureException();
+        ~MeshLoadFailureException() throw() {};
         MeshLoadFailureException(const MeshLoadFailureException & e);
+        virtual Exception* clone();
     };
 
     /// \brief Linear solver failed.
@@ -170,8 +178,9 @@ namespace Hermes
         /// Constructor
         /// \param[in] name Name of the function.
         SpaceLoadFailureException(const char * msg, ...);
-        ~SpaceLoadFailureException();
+        ~SpaceLoadFailureException() throw() {};
         SpaceLoadFailureException(const SpaceLoadFailureException & e);
+        virtual Exception* clone();
     };
 
     /// \brief Linear solver failed.
@@ -181,8 +190,9 @@ namespace Hermes
         /// Constructor
         /// \param[in] name Name of the function.
         SolutionSaveFailureException(const char * msg, ...);
-        ~SolutionSaveFailureException();
+        ~SolutionSaveFailureException() throw() {};
         SolutionSaveFailureException(const SolutionSaveFailureException & e);
+        virtual Exception* clone();
     };
 
     /// \brief Linear solver failed.
@@ -192,11 +202,10 @@ namespace Hermes
         /// Constructor
         /// \param[in] name Name of the function.
         SolutionLoadFailureException(const char * msg, ...);
-        ~SolutionLoadFailureException();
+        ~SolutionLoadFailureException() throw() {};
         SolutionLoadFailureException(const SolutionLoadFailureException & e);
+        virtual Exception* clone();
     };
-
-
   }
 }
 #endif

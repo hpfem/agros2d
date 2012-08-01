@@ -29,7 +29,7 @@ namespace Hermes
   namespace Solvers
   {
     template<typename Scalar>
-    NonlinearSolver<Scalar>::NonlinearSolver(DiscreteProblemInterface<Scalar>* dp) : Hermes::Mixins::Loggable(true, NULL), dp(dp), sln_vector(NULL), time(-1.0)
+    NonlinearSolver<Scalar>::NonlinearSolver(DiscreteProblemInterface<Scalar>* dp) : Hermes::Mixins::Loggable(true, NULL), dp(dp), sln_vector(NULL)
     {
     }
 
@@ -51,12 +51,6 @@ namespace Hermes
     Scalar *NonlinearSolver<Scalar>::get_sln_vector()
     {
       return sln_vector;
-    }
-
-    template<typename Scalar>
-    double NonlinearSolver<Scalar>::get_time()
-    {
-      return time;
     }
 
     template<typename Scalar>

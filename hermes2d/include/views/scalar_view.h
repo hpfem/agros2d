@@ -39,7 +39,7 @@ namespace Hermes
 # ifdef ENABLE_VIEWER_GUI
 #   include <AntTweakBar.h>
 #   define VIEWER_GUI(__def) __def
-#   define VIEWER_GUI_CALLBACK(__clbk) if (__clbk) { refresh(); } else
+#   define VIEWER_GUI_CALLBACK(__clbk) if(__clbk) { refresh(); } else
 # else
 #   define TW_WND_ID_NONE -1
 #   define VIEWER_GUI(__def)
@@ -75,7 +75,6 @@ namespace Hermes
         void set_vertical_scaling(double sc);  ///< Sets the scaling on the vertical axis programmatically.
         void set_min_max_range(double min, double max);  ///< Sets the limits on displayed values.
 
-
       public:
         Linearizer* lin;
 
@@ -100,7 +99,7 @@ namespace Hermes
         const int node_pixel_radius; ///< A radius of node selection, in pixels.
         const int node_widget_vert_cnt; ///< A number of vertices for a mesh node widget.
 
-        void init_vertex_nodes(Mesh* mesh); ///< Creates a copy of vertex nodes for purpose of displaying and selection.
+        void init_vertex_nodes(const Mesh* mesh); ///< Creates a copy of vertex nodes for purpose of displaying and selection.
         VertexNodeInfo* find_nearest_node_in_range(float x, float y, float radius); ///< Finds nearest node in range.
         static bool compare_vertex_nodes_x(const VertexNodeInfo& a, const VertexNodeInfo& b); ///< Returns true, if a's X-axis coordinate is lower than b's one. Used to sort mesh nodes for searching purposes.
         void draw_vertex_nodes(); ///< Draws vertex nodes.
@@ -110,8 +109,8 @@ namespace Hermes
       protected:
         struct ElementInfo ///< element info structure
         {
-          float x, y; ///< location of center [in physical coordinates]
-          float width, height; ///< width, height of AABB [in physical coordinates]
+          float x, y; ///< location of center[in physical coordinates]
+          float width, height; ///< width, height of AABB[in physical coordinates]
           int id; ///< element ID
           ElementInfo() : x(0), y(0), width(0), height(0), id(-1) {};
           ElementInfo(int id, float x, float y, float width, float height) : x(x), y(y), width(width), height(height), id(id) {};
@@ -122,7 +121,7 @@ namespace Hermes
 
         bool show_element_info; ///< true, to draw element info (currently ID) in 2D mode
 
-        void init_element_info(Mesh* mesh); ///< Creates element info from mesh.
+        void init_element_info(const Mesh* mesh); ///< Creates element info from mesh.
         void create_element_info_widgets(); ///< Creates element ID widgets if not created already.
         void draw_element_infos_2d(); ///< Draws elements infos in 2D mode.
 
@@ -163,7 +162,6 @@ namespace Hermes
 
         void draw_normals_3d(); ////< Draws normals of the 3d mesh. Used for debugging purposses only.
 
-
       protected: //edges
         bool show_edges; ///< true to show edges of mesh
         bool show_aabb;  ///< true to show the bounding box
@@ -197,7 +195,6 @@ namespace Hermes
         double value_irange, value_range_avg;
 
         double3* normals;
-
 
         /// This function calculates the distance that the model (3D plot of the solution over the whole solution domain) must be
         /// translated along the z-axis of the eye coordinate system, so that it fills the actual viewport without being clipped.
@@ -235,7 +232,6 @@ namespace Hermes
         virtual void on_left_mouse_up(int x, int y);
         virtual void on_right_mouse_up(int x, int y);
         virtual void on_reshape(int width, int height);
-
       };
 #else
 class HERMES_API ScalarView : public View

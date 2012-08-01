@@ -53,7 +53,6 @@ namespace Hermes
       return current_time;
     }
 
-
     template<typename Scalar>
     DefaultEssentialBCConst<Scalar>::DefaultEssentialBCConst(Hermes::vector<std::string> markers, Scalar value_const) : EssentialBoundaryCondition<Scalar>(markers)
     {
@@ -73,7 +72,6 @@ namespace Hermes
       this->warn("EssentialBoundaryCondition::Function used either for a constant condition, or not redefined for nonconstant condition.");
       return 0.0;
     }
-
 
     template<typename Scalar>
     DefaultEssentialBCNonConst<Scalar>::DefaultEssentialBCNonConst(Hermes::vector<std::string> markers_,
@@ -96,13 +94,13 @@ namespace Hermes
       return exact_solution->value(x, y);
     };
 
-
     template<typename Scalar>
     DefaultEssentialBCNonConstHcurl<Scalar>::DefaultEssentialBCNonConstHcurl(Hermes::vector<std::string> markers_,
       ExactSolutionVector<Scalar>* exact_solution2)
       : EssentialBoundaryCondition<Scalar>(Hermes::vector<std::string>()), exact_solution2(exact_solution2)
     {
-      for (unsigned int i = 0; i < this->markers.size(); i++) this->markers.push_back(markers_[i]);
+      for (unsigned int i = 0; i < this->markers.size(); i++)
+        this->markers.push_back(markers_[i]);
     };
 
     template<typename Scalar>
@@ -118,7 +116,6 @@ namespace Hermes
       Scalar2<Scalar> val = exact_solution2->value(x, y);
       return val.val[0] * t_x + val.val[1] * t_y;
     };
-
 
     template<typename Scalar>
     EssentialBCs<Scalar>::EssentialBCs()
@@ -180,12 +177,11 @@ namespace Hermes
       for(this->iterator = begin(); iterator != end(); iterator++)
         for(Hermes::vector<std::string>::const_iterator it = (*iterator)->markers.begin(); it != (*iterator)->markers.end(); it++)
         {
-          if (this->markers[*it] != NULL)
+          if(this->markers[*it] != NULL)
             throw Hermes::Exceptions::Exception("Attempt to define more than one description of the BC on the same part of the boundary with marker '%s'.", it->c_str());
           this->markers[*it] = *iterator;
         }
     }
-
 
     template<typename Scalar>
     EssentialBoundaryCondition<Scalar>* EssentialBCs<Scalar>::get_boundary_condition(std::string marker)

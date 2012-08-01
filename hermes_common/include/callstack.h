@@ -32,7 +32,7 @@
     class MyStackWalker : public StackWalker
     {
     public:
-      MyStackWalker() : StackWalker(StackWalker::RetrieveSymbol & StackWalker::RetrieveLine, NULL, GetCurrentProcessId(), GetCurrentProcess()) 
+      MyStackWalker() : StackWalker(StackWalker::RetrieveSymbol & StackWalker::RetrieveLine, NULL, GetCurrentProcessId(), GetCurrentProcess())
       {
         int a = 1;
       }
@@ -48,7 +48,7 @@
 class HERMES_API CallStack
 {
 public:
-	// dump the call stack objects to standard error
-	static void dump(int signalCode);
+  // dump the call stack objects to standard error
+  static void dump(int signalCode);
 };
 #endif

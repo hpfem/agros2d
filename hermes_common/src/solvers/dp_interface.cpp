@@ -26,5 +26,11 @@ namespace Hermes
 {
   namespace Solvers
   {
+    template<typename Scalar>
+    DiscreteProblemInterface<Scalar>::DiscreteProblemInterface()
+    {}
+
+    template class HERMES_API DiscreteProblemInterface<double>;
+    template class HERMES_API DiscreteProblemInterface<std::complex<double> >;
   }
 }

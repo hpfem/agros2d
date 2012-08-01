@@ -22,7 +22,6 @@ namespace Hermes
   namespace Hermes2D
   {
     namespace RefinementSelectors {
-
       /// A projection-based selector for H1 space. \ingroup g_selectors
       /** This class is designed to be used with the class H1Adapt.
       *  Since an initialization of the class may take a long time,
@@ -55,7 +54,7 @@ namespace Hermes
         Scalar* precalc_rvals[H2D_MAX_ELEMENT_SONS][H2D_H1FE_NUM]; ///< Array of arrays of precalculates. The first index is an index of a subdomain, the second index is an index of a function expansion (see enum LocalFuncExpansion).
 
         /// Sets OptimumSelector::current_max_order and OptimumSelector::current_min_order.
-        /** The default order range is [1, 9]. If curved, the upper boundary of the range becomes lower.
+        /** The default order range is[1, 9]. If curved, the upper boundary of the range becomes lower.
         *  Overriden function. For details, see OptimumSelector::set_current_order_range().
         *  \todo Replace calculations inside with calculations that uses symbolic constants instead of fixed numbers. */
         virtual void set_current_order_range(Element* element);

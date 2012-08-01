@@ -21,10 +21,9 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    /// @ingroup spaces
     /// L2Space represents a space of Scalar functions with discontinuities along
     /// mesh edges.
-    ///
-    ///
     template<typename Scalar>
     class HERMES_API L2Space : public Space<Scalar>
     {
@@ -38,9 +37,9 @@ namespace Hermes
 
       /// Loads this space from a file.
       void load(const char *filename, Mesh* mesh, Shapeset* shapeset = NULL);
-      
+
       virtual Scalar* get_bc_projection(SurfPos* surf_pos, int order);
-      
+
       virtual void get_element_assembly_list(Element* e, AsmList<Scalar>* al, unsigned int first_dof = 0) const;
 
     protected:
@@ -54,7 +53,7 @@ namespace Hermes
 
       /// Common code for the constructors.
       void init(Shapeset* shapeset, int p_init);
-      
+
       struct L2Data
       {
         int vdof[4];

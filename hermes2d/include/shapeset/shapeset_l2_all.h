@@ -25,9 +25,10 @@ namespace Hermes
   namespace Hermes2D
   {
     /// L2 shapeset - products of legendre polynomials
+    /// @ingroup spaces
     class HERMES_API L2ShapesetLegendre : public Shapeset
     {
-    public: 
+    public:
       L2ShapesetLegendre();
       virtual Shapeset* clone() { return new L2ShapesetLegendre(*this); };
     protected:

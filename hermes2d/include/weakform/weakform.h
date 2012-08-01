@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __H2D_WEAKFORM_H
 #define __H2D_WEAKFORM_H
 
@@ -102,14 +101,16 @@ namespace Hermes
 
       /// For time-dependent right-hand side functions.
       void set_current_time(double time);
+      void set_current_time_step(double time_step);
 
       virtual double get_current_time() const;
+      virtual double get_current_time_step() const;
 
       Hermes::vector<MatrixFormVol<Scalar> *> get_mfvol();
       Hermes::vector<MatrixFormSurf<Scalar> *> get_mfsurf();
       Hermes::vector<VectorFormVol<Scalar> *> get_vfvol();
       Hermes::vector<VectorFormSurf<Scalar> *> get_vfsurf();
-      
+
       /// Deletes all volumetric and surface forms.
       void delete_all();
 
@@ -117,10 +118,10 @@ namespace Hermes
       /// Internal. Used by DiscreteProblem to detect changes in the weakform.
       int get_seq() const { return seq; }
 
-
       bool** get_blocks(bool force_diagonal_blocks) const;
 
       double current_time;
+      double current_time_step;
 
       unsigned int neq;
 
@@ -205,7 +206,7 @@ namespace Hermes
       virtual ~MatrixForm() {};
 
       unsigned int j;
-      
+
       int sym;
 
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,

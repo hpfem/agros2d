@@ -22,9 +22,9 @@ namespace Hermes
     template<typename Scalar>
     void Function<Scalar>::check_params(int component, typename Function<Scalar>::Node* cur_node, int num_components)
     {
-      if (component < 0 || component > num_components)
+      if(component < 0 || component > num_components)
         throw Hermes::Exceptions::Exception("Invalid component. You are probably using Scalar-valued shapeset for an Hcurl / Hdiv problem.");
-      if (cur_node == NULL)
+      if(cur_node == NULL)
         throw Hermes::Exceptions::Exception("Invalid node. Did you call set_quad_order()?");
     }
 
@@ -32,7 +32,7 @@ namespace Hermes
     template<typename Scalar>
     void Function<Scalar>::check_table(int component, typename Function<Scalar>::Node* cur_node, int n, const char* msg)
     {
-      if (cur_node->values[component][n] == NULL)
+      if(cur_node->values[component][n] == NULL)
         throw Hermes::Exceptions::Exception("%s not precalculated for component %d. Did you call set_quad_order() with correct mask?", msg, component);
     }
 
@@ -51,7 +51,7 @@ namespace Hermes
 
     template<typename Scalar>
     int Function<Scalar>::get_fn_order() const
-    { 
+    {
       return order;
     }
 
@@ -149,7 +149,7 @@ namespace Hermes
 
       // check to see if we already have the quadrature
       for (i = 0; i < 4; i++)
-        if (quads[i] == quad_2d)
+        if(quads[i] == quad_2d)
         {
           cur_quad = i;
           return;
@@ -157,7 +157,7 @@ namespace Hermes
 
       // if not, add the quadrature to a free slot
       for (i = 0; i < 4; i++)
-        if (quads[i] == NULL)
+        if(quads[i] == NULL)
         {
           quads[i] = quad_2d;
           cur_quad = i;
@@ -168,9 +168,9 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Quad2D* Function<Scalar>::get_quad_2d() const 
+    Quad2D* Function<Scalar>::get_quad_2d() const
     {
-      return quads[cur_quad]; 
+      return quads[cur_quad];
     }
 
     template<typename Scalar>
@@ -180,13 +180,12 @@ namespace Hermes
       { H2D_FN_DXX_0, H2D_FN_DXX_1 }, { H2D_FN_DYY_0, H2D_FN_DYY_1 }, { H2D_FN_DXY_0, H2D_FN_DXY_1 }
     };
 
-
     template<typename Scalar>
     typename Function<Scalar>::Node* Function<Scalar>::new_node(int mask, int num_points)
     {
       // get the number of tables
       int nt = 0, m = mask;
-      if (num_components < 2) m &= H2D_FN_VAL_0 | H2D_FN_DX_0 | H2D_FN_DY_0 | H2D_FN_DXX_0 | H2D_FN_DYY_0 | H2D_FN_DXY_0;
+      if(num_components < 2) m &= H2D_FN_VAL_0 | H2D_FN_DX_0 | H2D_FN_DY_0 | H2D_FN_DXX_0 | H2D_FN_DYY_0 | H2D_FN_DXY_0;
       while (m) { nt += m & 1; m >>= 1; }
 
       // allocate a node including its data part, init table pointers
@@ -198,21 +197,21 @@ namespace Hermes
       Scalar* data = node->data;
       for (int j = 0; j < num_components; j++) {
         for (int i = 0; i < 6; i++)
-          if (mask & idx2mask[i][j]) {
+          if(mask & idx2mask[i][j]) {
             node->values[j][i] = data;
             data += num_points;
           }
       }
 
       total_mem += size;
-      if (max_mem < total_mem) max_mem = total_mem;
+      if(max_mem < total_mem) max_mem = total_mem;
       return node;
     }
 
     template<typename Scalar>
     void Function<Scalar>::update_nodes_ptr()
     {
-      if (sub_idx > H2D_MAX_IDX)
+      if(sub_idx > H2D_MAX_IDX)
         handle_overflow_idx();
       else {
         if(sub_tables->find(sub_idx) == sub_tables->end())
@@ -232,8 +231,8 @@ namespace Hermes
     template<typename Scalar>
     void Function<Scalar>::replace_cur_node(Node* node)
     {
-      if (node == NULL) throw Exceptions::NullException(1);
-      if (cur_node != NULL) {
+      if(node == NULL) throw Exceptions::NullException(1);
+      if(cur_node != NULL) {
         total_mem -= cur_node->size;
         ::free(cur_node);
       }

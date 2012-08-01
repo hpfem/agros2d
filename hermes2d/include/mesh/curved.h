@@ -39,7 +39,6 @@ namespace Hermes
     /// "http://devworld.apple.com/dev/techsupport/develop/issue25/schneider.html">
     /// here</a>.
     ///
-
     struct HERMES_API Nurbs
     {
       Nurbs()
@@ -59,7 +58,6 @@ namespace Hermes
       double angle; ///< arc angle
     };
 
-
     /// CurvMap is a structure storing complete information on the curved edges of
     /// an element. There are two variants of this structure. The first is for
     /// top-level (master mesh) elements.
@@ -72,7 +70,7 @@ namespace Hermes
         coeffs = NULL;};
         CurvMap(CurvMap* cm);
         ~CurvMap();
-    private: 
+    private:
       /// this structure defines a curved mapping of an element; it has two
       /// modes, depending on the value of 'toplevel'
       bool toplevel;
@@ -126,7 +124,7 @@ namespace Hermes
       // Nurbs curve: t goes from -1 to 1, function returns x, y coordinates in plane
       // as well as the unit normal and unit tangential vectors. This is done using
       // the Wikipedia page http://en.wikipedia.org/wiki/Non-uniform_rational_B-spline.
-      static void nurbs_edge(Element* e, Nurbs* nurbs, int edge, double t, double& x, 
+      static void nurbs_edge(Element* e, Nurbs* nurbs, int edge, double t, double& x,
         double& y, double& n_x, double& n_y, double& t_x, double& t_y);
 
       static const double2 ref_vert[2][4];

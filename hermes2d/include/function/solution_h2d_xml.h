@@ -615,9 +615,7 @@ namespace XMLSolution
   class mono_coeffs;
   class elem_orders;
   class component;
-  class sln_vector;
   class elem_coeffs;
-  class sln_coeff;
 }
 
 
@@ -841,64 +839,6 @@ namespace XMLSolution
     //@}
 
     /**
-     * @name sln_vector
-     *
-     * @brief Accessor and modifier functions for the %sln_vector
-     * required element.
-     */
-    //@{
-
-    /**
-     * @brief Element type.
-     */
-    typedef ::XMLSolution::sln_vector sln_vector_type;
-
-    /**
-     * @brief Element traits type.
-     */
-    typedef ::xsd::cxx::tree::traits< sln_vector_type, char > sln_vector_traits;
-
-    /**
-     * @brief Return a read-only (constant) reference to the element.
-     *
-     * @return A constant reference to the element.
-     */
-    const sln_vector_type&
-    sln_vector () const;
-
-    /**
-     * @brief Return a read-write reference to the element.
-     *
-     * @return A reference to the element.
-     */
-    sln_vector_type&
-    sln_vector ();
-
-    /**
-     * @brief Set the element value.
-     *
-     * @param x A new value to set.
-     *
-     * This function makes a copy of its argument and sets it as
-     * the new value of the element.
-     */
-    void
-    sln_vector (const sln_vector_type& x);
-
-    /**
-     * @brief Set the element value without copying.
-     *
-     * @param p A new value to use.
-     *
-     * This function will try to use the passed value directly
-     * instead of making a copy.
-     */
-    void
-    sln_vector (::std::auto_ptr< sln_vector_type > p);
-
-    //@}
-
-    /**
      * @name num_components
      *
      * @brief Accessor and modifier functions for the %num_components
@@ -1040,53 +980,6 @@ namespace XMLSolution
     //@}
 
     /**
-     * @name num_dofs
-     *
-     * @brief Accessor and modifier functions for the %num_dofs
-     * required attribute.
-     */
-    //@{
-
-    /**
-     * @brief Attribute type.
-     */
-    typedef ::xml_schema::integer num_dofs_type;
-
-    /**
-     * @brief Attribute traits type.
-     */
-    typedef ::xsd::cxx::tree::traits< num_dofs_type, char > num_dofs_traits;
-
-    /**
-     * @brief Return a read-only (constant) reference to the attribute.
-     *
-     * @return A constant reference to the attribute.
-     */
-    const num_dofs_type&
-    num_dofs () const;
-
-    /**
-     * @brief Return a read-write reference to the attribute.
-     *
-     * @return A reference to the attribute.
-     */
-    num_dofs_type&
-    num_dofs ();
-
-    /**
-     * @brief Set the attribute value.
-     *
-     * @param x A new value to set.
-     *
-     * This function makes a copy of its argument and sets it as
-     * the new value of the attribute.
-     */
-    void
-    num_dofs (const num_dofs_type& x);
-
-    //@}
-
-    /**
      * @name Constructors
      */
     //@{
@@ -1095,25 +988,9 @@ namespace XMLSolution
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    solution (const sln_vector_type&,
-              const num_components_type&,
+    solution (const num_components_type&,
               const num_elems_type&,
-              const num_coeffs_type&,
-              const num_dofs_type&);
-
-    /**
-     * @brief Create an instance from the ultimate base and
-     * initializers for required elements and attributes
-     * (auto_ptr version).
-     *
-     * This constructor will try to use the passed values directly
-     * instead of making copies.
-     */
-    solution (::std::auto_ptr< sln_vector_type >&,
-              const num_components_type&,
-              const num_elems_type&,
-              const num_coeffs_type&,
-              const num_dofs_type&);
+              const num_coeffs_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1177,11 +1054,9 @@ namespace XMLSolution
     mono_coeffs_sequence mono_coeffs_;
     elem_orders_sequence elem_orders_;
     component_sequence component_;
-    ::xsd::cxx::tree::one< sln_vector_type > sln_vector_;
     ::xsd::cxx::tree::one< num_components_type > num_components_;
     ::xsd::cxx::tree::one< num_elems_type > num_elems_;
     ::xsd::cxx::tree::one< num_coeffs_type > num_coeffs_;
-    ::xsd::cxx::tree::one< num_dofs_type > num_dofs_;
 
     //@endcond
   };
@@ -1824,153 +1699,6 @@ namespace XMLSolution
   };
 
   /**
-   * @brief Class corresponding to the %sln_vector schema type.
-   *
-   * @nosubgrouping
-   */
-  class sln_vector: public ::xml_schema::type
-  {
-    public:
-    /**
-     * @name sln_coeff
-     *
-     * @brief Accessor and modifier functions for the %sln_coeff
-     * sequence element.
-     */
-    //@{
-
-    /**
-     * @brief Element type.
-     */
-    typedef ::XMLSolution::sln_coeff sln_coeff_type;
-
-    /**
-     * @brief Element sequence container type.
-     */
-    typedef ::xsd::cxx::tree::sequence< sln_coeff_type > sln_coeff_sequence;
-
-    /**
-     * @brief Element iterator type.
-     */
-    typedef sln_coeff_sequence::iterator sln_coeff_iterator;
-
-    /**
-     * @brief Element constant iterator type.
-     */
-    typedef sln_coeff_sequence::const_iterator sln_coeff_const_iterator;
-
-    /**
-     * @brief Element traits type.
-     */
-    typedef ::xsd::cxx::tree::traits< sln_coeff_type, char > sln_coeff_traits;
-
-    /**
-     * @brief Return a read-only (constant) reference to the element
-     * sequence.
-     *
-     * @return A constant reference to the sequence container.
-     */
-    const sln_coeff_sequence&
-    sln_coeff () const;
-
-    /**
-     * @brief Return a read-write reference to the element sequence.
-     *
-     * @return A reference to the sequence container.
-     */
-    sln_coeff_sequence&
-    sln_coeff ();
-
-    /**
-     * @brief Copy elements from a given sequence.
-     *
-     * @param s A sequence to copy elements from.
-     *
-     * For each element in @a s this function makes a copy and adds it 
-     * to the sequence. Note that this operation completely changes the 
-     * sequence and all old elements will be lost.
-     */
-    void
-    sln_coeff (const sln_coeff_sequence& s);
-
-    //@}
-
-    /**
-     * @name Constructors
-     */
-    //@{
-
-    /**
-     * @brief Create an instance from the ultimate base and
-     * initializers for required elements and attributes.
-     */
-    sln_vector ();
-
-    /**
-     * @brief Create an instance from a DOM element.
-     *
-     * @param e A DOM element to extract the data from.
-     * @param f Flags to create the new instance with.
-     * @param c A pointer to the object that will contain the new
-     * instance.
-     */
-    sln_vector (const ::xercesc::DOMElement& e,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
-
-    /**
-     * @brief Copy constructor.
-     *
-     * @param x An instance to make a copy of.
-     * @param f Flags to create the copy with.
-     * @param c A pointer to the object that will contain the copy.
-     *
-     * For polymorphic object models use the @c _clone function instead.
-     */
-    sln_vector (const sln_vector& x,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
-
-    /**
-     * @brief Copy the instance polymorphically.
-     *
-     * @param f Flags to create the copy with.
-     * @param c A pointer to the object that will contain the copy.
-     * @return A pointer to the dynamically allocated copy.
-     *
-     * This function ensures that the dynamic type of the instance is
-     * used for copying and should be used for polymorphic object
-     * models instead of the copy constructor.
-     */
-    virtual sln_vector*
-    _clone (::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0) const;
-
-    //@}
-
-    /**
-     * @brief Destructor.
-     */
-    virtual 
-    ~sln_vector ();
-
-    // Implementation.
-    //
-
-    //@cond
-
-    protected:
-    void
-    parse (::xsd::cxx::xml::dom::parser< char >&,
-           ::xml_schema::flags);
-
-    protected:
-    sln_coeff_sequence sln_coeff_;
-
-    //@endcond
-  };
-
-  /**
    * @brief Class corresponding to the %elem_coeffs schema type.
    *
    * @nosubgrouping
@@ -2148,251 +1876,6 @@ namespace XMLSolution
 
     //@endcond
   };
-
-  /**
-   * @brief Class corresponding to the %sln_coeff schema type.
-   *
-   * @nosubgrouping
-   */
-  class sln_coeff: public ::xml_schema::type
-  {
-    public:
-    /**
-     * @name id
-     *
-     * @brief Accessor and modifier functions for the %id
-     * required attribute.
-     */
-    //@{
-
-    /**
-     * @brief Attribute type.
-     */
-    typedef ::xml_schema::integer id_type;
-
-    /**
-     * @brief Attribute traits type.
-     */
-    typedef ::xsd::cxx::tree::traits< id_type, char > id_traits;
-
-    /**
-     * @brief Return a read-only (constant) reference to the attribute.
-     *
-     * @return A constant reference to the attribute.
-     */
-    const id_type&
-    id () const;
-
-    /**
-     * @brief Return a read-write reference to the attribute.
-     *
-     * @return A reference to the attribute.
-     */
-    id_type&
-    id ();
-
-    /**
-     * @brief Set the attribute value.
-     *
-     * @param x A new value to set.
-     *
-     * This function makes a copy of its argument and sets it as
-     * the new value of the attribute.
-     */
-    void
-    id (const id_type& x);
-
-    //@}
-
-    /**
-     * @name real
-     *
-     * @brief Accessor and modifier functions for the %real
-     * required attribute.
-     */
-    //@{
-
-    /**
-     * @brief Attribute type.
-     */
-    typedef ::xml_schema::decimal real_type;
-
-    /**
-     * @brief Attribute traits type.
-     */
-    typedef ::xsd::cxx::tree::traits< real_type, char, ::xsd::cxx::tree::schema_type::decimal > real_traits;
-
-    /**
-     * @brief Return a read-only (constant) reference to the attribute.
-     *
-     * @return A constant reference to the attribute.
-     */
-    const real_type&
-    real () const;
-
-    /**
-     * @brief Return a read-write reference to the attribute.
-     *
-     * @return A reference to the attribute.
-     */
-    real_type&
-    real ();
-
-    /**
-     * @brief Set the attribute value.
-     *
-     * @param x A new value to set.
-     *
-     * This function makes a copy of its argument and sets it as
-     * the new value of the attribute.
-     */
-    void
-    real (const real_type& x);
-
-    //@}
-
-    /**
-     * @name imaginary
-     *
-     * @brief Accessor and modifier functions for the %imaginary
-     * optional attribute.
-     */
-    //@{
-
-    /**
-     * @brief Attribute type.
-     */
-    typedef ::xml_schema::decimal imaginary_type;
-
-    /**
-     * @brief Attribute optional container type.
-     */
-    typedef ::xsd::cxx::tree::optional< imaginary_type > imaginary_optional;
-
-    /**
-     * @brief Attribute traits type.
-     */
-    typedef ::xsd::cxx::tree::traits< imaginary_type, char, ::xsd::cxx::tree::schema_type::decimal > imaginary_traits;
-
-    /**
-     * @brief Return a read-only (constant) reference to the attribute
-     * container.
-     *
-     * @return A constant reference to the optional container.
-     */
-    const imaginary_optional&
-    imaginary () const;
-
-    /**
-     * @brief Return a read-write reference to the attribute container.
-     *
-     * @return A reference to the optional container.
-     */
-    imaginary_optional&
-    imaginary ();
-
-    /**
-     * @brief Set the attribute value.
-     *
-     * @param x A new value to set.
-     *
-     * This function makes a copy of its argument and sets it as
-     * the new value of the attribute.
-     */
-    void
-    imaginary (const imaginary_type& x);
-
-    /**
-     * @brief Set the attribute value.
-     *
-     * @param x An optional container with the new value to set.
-     *
-     * If the value is present in @a x then this function makes a copy 
-     * of this value and sets it as the new value of the attribute.
-     * Otherwise the attribute container is set the 'not present' state.
-     */
-    void
-    imaginary (const imaginary_optional& x);
-
-    //@}
-
-    /**
-     * @name Constructors
-     */
-    //@{
-
-    /**
-     * @brief Create an instance from the ultimate base and
-     * initializers for required elements and attributes.
-     */
-    sln_coeff (const id_type&,
-               const real_type&);
-
-    /**
-     * @brief Create an instance from a DOM element.
-     *
-     * @param e A DOM element to extract the data from.
-     * @param f Flags to create the new instance with.
-     * @param c A pointer to the object that will contain the new
-     * instance.
-     */
-    sln_coeff (const ::xercesc::DOMElement& e,
-               ::xml_schema::flags f = 0,
-               ::xml_schema::container* c = 0);
-
-    /**
-     * @brief Copy constructor.
-     *
-     * @param x An instance to make a copy of.
-     * @param f Flags to create the copy with.
-     * @param c A pointer to the object that will contain the copy.
-     *
-     * For polymorphic object models use the @c _clone function instead.
-     */
-    sln_coeff (const sln_coeff& x,
-               ::xml_schema::flags f = 0,
-               ::xml_schema::container* c = 0);
-
-    /**
-     * @brief Copy the instance polymorphically.
-     *
-     * @param f Flags to create the copy with.
-     * @param c A pointer to the object that will contain the copy.
-     * @return A pointer to the dynamically allocated copy.
-     *
-     * This function ensures that the dynamic type of the instance is
-     * used for copying and should be used for polymorphic object
-     * models instead of the copy constructor.
-     */
-    virtual sln_coeff*
-    _clone (::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0) const;
-
-    //@}
-
-    /**
-     * @brief Destructor.
-     */
-    virtual 
-    ~sln_coeff ();
-
-    // Implementation.
-    //
-
-    //@cond
-
-    protected:
-    void
-    parse (::xsd::cxx::xml::dom::parser< char >&,
-           ::xml_schema::flags);
-
-    protected:
-    ::xsd::cxx::tree::one< id_type > id_;
-    ::xsd::cxx::tree::one< real_type > real_;
-    imaginary_optional imaginary_;
-
-    //@endcond
-  };
 }
 
 #include <iosfwd>
@@ -2412,13 +1895,7 @@ namespace XMLSolution
   operator<< (::std::ostream&, const component&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const sln_vector&);
-
-  ::std::ostream&
   operator<< (::std::ostream&, const elem_coeffs&);
-
-  ::std::ostream&
-  operator<< (::std::ostream&, const sln_coeff&);
 }
 
 #include <iosfwd>
@@ -2865,13 +2342,7 @@ namespace XMLSolution
   operator<< (::xercesc::DOMElement&, const component&);
 
   void
-  operator<< (::xercesc::DOMElement&, const sln_vector&);
-
-  void
   operator<< (::xercesc::DOMElement&, const elem_coeffs&);
-
-  void
-  operator<< (::xercesc::DOMElement&, const sln_coeff&);
 }
 
 #include <xsd/cxx/post.hxx>

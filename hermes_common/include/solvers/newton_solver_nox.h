@@ -25,13 +25,13 @@
 #include "linear_matrix_solver.h"
 #include "nonlinear_solver.h"
 #include "epetra.h"
-#if (defined HAVE_NOX && defined HAVE_EPETRA && defined HAVE_TEUCHOS)
+#if(defined HAVE_NOX && defined HAVE_EPETRA && defined HAVE_TEUCHOS)
 #include <NOX.H>
 #ifdef _POSIX_C_SOURCE
-# undef _POSIX_C_SOURCE	// pyconfig.h included by NOX_Epetra defines it
+# undef _POSIX_C_SOURCE  // pyconfig.h included by NOX_Epetra defines it
 #endif
 #ifdef _XOPEN_SOURCE
-# undef _XOPEN_SOURCE	// pyconfig.h included by NOX_Epetra defines it
+# undef _XOPEN_SOURCE  // pyconfig.h included by NOX_Epetra defines it
 #endif
 #include <NOX_Epetra.H>
 #include "exceptions.h"
@@ -40,7 +40,6 @@ namespace Hermes
 {
   namespace Solvers
   {
-
     /// \brief discrete problem used in NOX solver
     /// Implents interfaces needed by NOX Epetra
     template <typename Scalar>
@@ -94,6 +93,10 @@ namespace Hermes
 
       virtual ~NewtonSolverNOX();
 
+      /// set time information for time-dependent problems.
+      virtual void setTime(double time);
+      virtual void setTimeStep(double timeStep);
+
       virtual void solve(Scalar* coeff_vec);
 
       virtual int get_num_iters();
@@ -112,7 +115,6 @@ namespace Hermes
 
       /// \name linear solver setters
       ///@{
-
       ///Determine the iterative technique used in the solve. The following options are valid:
       /// - "GMRES" - Restarted generalized minimal residual (default).
       /// - "CG" - Conjugate gradient.
@@ -131,7 +133,6 @@ namespace Hermes
 
       /// \name convergence params
       /// @{
-
       /// Type of norm
       /// - NOX::Abstract::Vector::OneNorm \f[ \|x\| = \sum_{i = 1}^n \| x_i \| \f]
       /// - NOX::Abstract::Vector::TwoNorm \f[ \|x\| = \sqrt{\sum_{i = 1}^n \| x_i^2 \|} \f]

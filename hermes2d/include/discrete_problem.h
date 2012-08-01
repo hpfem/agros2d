@@ -25,6 +25,7 @@
 #include "neighbor.h"
 #include "refinement_selectors/selector.h"
 #include "exceptions.h"
+#include "mixins2d.h"
 
 namespace Hermes
 {
@@ -32,6 +33,7 @@ namespace Hermes
   {
     class PrecalcShapeset;
 
+    /// @ingroup inner
     /// Multimesh neighbors traversal class.
     class NeighborNode
     {
@@ -52,12 +54,13 @@ namespace Hermes
       template<typename Scalar> friend class KellyTypeAdapt;
     };
 
+    /// @ingroup inner
     /// Discrete problem class.
     ///
     /// This class does assembling into external matrix / vector structures.
     ///
     template<typename Scalar>
-    class HERMES_API DiscreteProblem : public DiscreteProblemInterface<Scalar>
+    class HERMES_API DiscreteProblem : public DiscreteProblemInterface<Scalar>, public Hermes::Mixins::TimeMeasurable, public Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>
     {
     public:
       /// Constructor for multiple components / equations.
@@ -65,13 +68,43 @@ namespace Hermes
 
       /// Constructor for one equation.
       DiscreteProblem(const WeakForm<Scalar>* wf, const Space<Scalar>* space);
+      
+      /// Set this problem to Finite Volume (no integration order calculation).
+      void set_fvm();
 
-      /// Non-parameterized constructor (currently used only in KellyTypeAdapt to gain access to NeighborSearch methods).
+      /// Sets new spaces for the instance.
+      virtual void set_spaces(Hermes::vector<const Space<Scalar>*> spaces);
+      virtual void set_space(const Space<Scalar>* space);
+      
+      /// Non-parameterized constructor.
       DiscreteProblem();
 
       /// Destuctor.
       virtual ~DiscreteProblem();
 
+      /// If the cache should not be used for any reason.
+      inline void setDoNotUseCache() { this->doNotUseCache = true; }
+
+      // GET functions.
+      /// Get the weak forms.
+      const WeakForm<Scalar>* get_weak_formulation() const;
+
+      /// Get all spaces as a Hermes::vector.
+      virtual Hermes::vector<const Space<Scalar>*> get_spaces() const;
+
+       /// Get the number of unknowns.
+      int get_num_dofs() const;
+
+      /// Get info about presence of a matrix.
+      bool is_matrix_free() const;
+      
+      /// set time information for time-dependent problems.
+      virtual void setTime(double time);
+      virtual void setTimeStep(double timeStep);
+
+      void delete_cache();
+
+    protected:
       /// Assembling.
       /// General assembling procedure for nonlinear problems. coeff_vec is the
       /// previous Newton vector. If force_diagonal_block == true, then (zero) matrix
@@ -100,17 +133,10 @@ namespace Hermes
       void assemble(Vector<Scalar>* rhs = NULL, bool force_diagonal_blocks = false,
         Table* block_weights = NULL);
 
-      void invalidate_matrix();
-
-      /// Set this problem to Finite Volume.
-      void set_fvm();
-
-    protected:
-
-      void init_assembling(Scalar* coeff_vec, PrecalcShapeset*** pss , PrecalcShapeset*** spss, RefMap*** refmaps, Solution<Scalar>*** u_ext, AsmList<Scalar>*** als, Hermes::vector<MeshFunction<Scalar>*>& ext_functions, MeshFunction<Scalar>*** ext, 
+      void init_assembling(Scalar* coeff_vec, PrecalcShapeset*** pss , PrecalcShapeset*** spss, RefMap*** refmaps, Solution<Scalar>*** u_ext, AsmList<Scalar>*** als, Hermes::vector<MeshFunction<Scalar>*>& ext_functions, MeshFunction<Scalar>*** ext,
           Hermes::vector<MatrixFormVol<Scalar>*>* mfvol, Hermes::vector<MatrixFormSurf<Scalar>*>* mfsurf, Hermes::vector<VectorFormVol<Scalar>*>* vfvol, Hermes::vector<VectorFormSurf<Scalar>*>* vfsurf);
 
-      void deinit_assembling(PrecalcShapeset*** pss , PrecalcShapeset*** spss, RefMap*** refmaps, Solution<Scalar>*** u_ext, AsmList<Scalar>*** als, Hermes::vector<MeshFunction<Scalar>*>& ext_functions, MeshFunction<Scalar>*** ext, 
+      void deinit_assembling(PrecalcShapeset*** pss , PrecalcShapeset*** spss, RefMap*** refmaps, Solution<Scalar>*** u_ext, AsmList<Scalar>*** als, Hermes::vector<MeshFunction<Scalar>*>& ext_functions, MeshFunction<Scalar>*** ext,
           Hermes::vector<MatrixFormVol<Scalar>*>* mfvol, Hermes::vector<MatrixFormSurf<Scalar>*>* mfsurf, Hermes::vector<VectorFormVol<Scalar>*>* vfvol, Hermes::vector<VectorFormSurf<Scalar>*>* vfsurf);
 
       /// The form will be assembled.
@@ -122,23 +148,7 @@ namespace Hermes
       bool form_to_be_assembled(VectorFormSurf<Scalar>* form, Traverse::State* current_state);
 
       // Return scaling coefficient.
-      double block_scaling_coeff(MatrixForm<Scalar>* form);
-      
-      /// Get the number of unknowns.
-      int get_num_dofs();
-
-      /// Get info about presence of a matrix.
-      bool is_matrix_free();
-
-      // GET functions.
-      /// Get pointer to n-th space.
-      const Space<Scalar>* get_space(int n);
-
-      /// Get the weak forms.
-      const WeakForm<Scalar>* get_weak_formulation();
-
-      /// Get all spaces as a Hermes::vector.
-      Hermes::vector<const Space<Scalar>*> get_spaces();
+      double block_scaling_coeff(MatrixForm<Scalar>* form) const;
 
       /// Preassembling.
       /// Precalculate matrix sparse structure.
@@ -160,7 +170,7 @@ namespace Hermes
       /// Assemble one state.
       void assemble_one_state(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als, Traverse::State* current_state,
            MatrixFormVol<Scalar>** current_mfvol, MatrixFormSurf<Scalar>** current_mfsurf, VectorFormVol<Scalar>** current_vfvol, VectorFormSurf<Scalar>** current_vfsurf);
- 
+
       /// Adjusts order to refmaps.
       void adjust_order_to_refmaps(Form<Scalar> *form, int& order, Hermes::Ord* o, RefMap** current_refmaps);
 
@@ -170,17 +180,23 @@ namespace Hermes
       /// Matrix volumetric forms - assemble the form.
       virtual void assemble_matrix_form(MatrixForm<Scalar>* form, int order, Func<double>** base_fns, Func<double>** test_fns, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als, Traverse::State* current_state);
 
+      virtual void assemble_matrix_form(MatrixForm<Scalar>* form, int order, Func<double>** base_fns, Func<double>** test_fns, Solution<Scalar>** current_u_ext, 
+      AsmList<Scalar>* current_als_i, AsmList<Scalar>* current_als_j, Traverse::State* current_state, int n_quadrature_points, Geom<double>* geometry, double* jacobian_x_weights);
+
       /// Vector volumetric forms - calculate the integration order.
       int calc_order_vector_form(VectorForm<Scalar>* mfv, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, Traverse::State* current_state);
 
       /// Vector volumetric forms - assemble the form.
       void assemble_vector_form(VectorForm<Scalar>* form, int order, Func<double>** test_fns, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als, Traverse::State* current_state);
 
+      void assemble_vector_form(VectorForm<Scalar>* form, int order, Func<double>** test_fns, Solution<Scalar>** current_u_ext, 
+      AsmList<Scalar>* current_als, Traverse::State* current_state, int n_quadrature_points, Geom<double>* geometry, double* jacobian_x_weights);
+
       /// \ingroup Helper methods inside {calc_order_*, assemble_*}
       /// Init geometry, jacobian * weights, return the number of integration points.
       int init_geometry_points(RefMap* reference_mapping, int order, Geom<double>*& geometry, double*& jacobian_x_weights);
       int init_surface_geometry_points(RefMap* reference_mapping, int& order, Traverse::State* current_state, Geom<double>*& geometry, double*& jacobian_x_weights);
-      
+
       /// \ingroup Helper methods inside {calc_order_*, assemble_*}
       /// Calculates orders for external functions.
       void init_ext_orders(Form<Scalar> *form, Func<Hermes::Ord>** oi, ExtData<Hermes::Ord>* oext, Solution<Scalar>** current_u_ext, Traverse::State* current_state);
@@ -194,12 +210,12 @@ namespace Hermes
       /// \ingroup Helper methods inside {calc_order_*, assemble_*}
       /// Cleans up after init_ext.
       void deinit_ext(Form<Scalar> *form, Func<Scalar>** u_ext, ExtData<Scalar>* ext);
-      
+
       /// Init function. Common code for the constructors.
       void init();
 
       /// Matrix structure as well as spaces and weak formulation is up-to-date.
-      bool is_up_to_date();
+      bool is_up_to_date() const;
 
       /// Weak formulation.
       const WeakForm<Scalar>* wf;
@@ -209,6 +225,7 @@ namespace Hermes
 
       /// Space instances for all equations in the system.
       Hermes::vector<const Space<Scalar>*> spaces;
+
       Hermes::vector<unsigned int> spaces_first_dofs;
 
       /// Seq numbers of Space instances in spaces.
@@ -249,27 +266,63 @@ namespace Hermes
       bool current_force_diagonal_blocks;
       Table* current_block_weights;
 
-      ///* DG *///
+      /// Caching.
+      class CacheRecordPerElement
+      {
+      public:
+        void clear();
+        int asmlistCnt;
+        int* asmlistIdx;
+        int order;
+      };
+
+      class CacheRecordPerSubIdx
+      {
+      public:
+        void clear(CacheRecordPerElement* elementCacheInfo, int nvert);
+        Func<double>** fns;
+        Func<double>*** fnsSurface;
+        Geom<double>* geometry;
+        Geom<double>** geometrySurface;
+        double* jacobian_x_weights;
+        double** jacobian_x_weightsSurface;
+        int n_quadrature_points;
+        int* n_quadrature_pointsSurface;
+        int* orderSurface;
+        int* asmlistSurfaceCnt;
+      };
+
+      std::map<uint64_t, CacheRecordPerSubIdx*>*** cache_records_sub_idx;
+      CacheRecordPerElement*** cache_records_element;
+      bool** cache_element_stored;
+      int cache_size;
+      bool doNotUseCache;
+
+      /// Exception caught in a parallel region.
+      Hermes::Exceptions::Exception* caughtException;
+    
       
+      ///* DG *///
+
       /// Assemble DG forms.
-      void assemble_one_DG_state(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als, 
+      void assemble_one_DG_state(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als,
         Traverse::State* current_state, MatrixFormSurf<Scalar>** current_mfsurf, VectorFormSurf<Scalar>** current_vfsurf, Transformable** fn);
 
       /// Assemble one DG neighbor.
-      void assemble_DG_one_neighbor(bool edge_processed, unsigned int neighbor_i, 
-        PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als, 
-        Traverse::State* current_state, MatrixFormSurf<Scalar>** current_mfsurf, VectorFormSurf<Scalar>** current_vfsurf, Transformable** fn, 
-        std::map<unsigned int, PrecalcShapeset *> npss, std::map<unsigned int, PrecalcShapeset *> nspss, std::map<unsigned int, RefMap *> nrefmap, 
+      void assemble_DG_one_neighbor(bool edge_processed, unsigned int neighbor_i,
+        PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als,
+        Traverse::State* current_state, MatrixFormSurf<Scalar>** current_mfsurf, VectorFormSurf<Scalar>** current_vfsurf, Transformable** fn,
+        std::map<unsigned int, PrecalcShapeset *> npss, std::map<unsigned int, PrecalcShapeset *> nspss, std::map<unsigned int, RefMap *> nrefmap,
         LightArray<NeighborSearch<Scalar>*>& neighbor_searches, unsigned int min_dg_mesh_seq);
 
       /// Assemble DG matrix forms.
-      void assemble_DG_matrix_forms(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als, 
+      void assemble_DG_matrix_forms(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als,
         Traverse::State* current_state, MatrixFormSurf<Scalar>** current_mfsurf, std::map<unsigned int, PrecalcShapeset*> npss,
         std::map<unsigned int, PrecalcShapeset*> nspss, std::map<unsigned int, RefMap*> nrefmap, LightArray<NeighborSearch<Scalar>*>& neighbor_searches);
 
       /// Assemble DG vector forms.
-      void assemble_DG_vector_forms(PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als, 
-        Traverse::State* current_state, VectorFormSurf<Scalar>** current_vfsurf, std::map<unsigned int, PrecalcShapeset*> nspss, 
+      void assemble_DG_vector_forms(PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als,
+        Traverse::State* current_state, VectorFormSurf<Scalar>** current_vfsurf, std::map<unsigned int, PrecalcShapeset*> nspss,
         std::map<unsigned int, RefMap*> nrefmap, LightArray<NeighborSearch<Scalar>*>& neighbor_searches);
 
       DiscontinuousFunc<Hermes::Ord>* init_ext_fn_ord(NeighborSearch<Scalar>* ns, MeshFunction<Scalar>* fu);
@@ -284,12 +337,12 @@ namespace Hermes
         PrecalcShapeset* fu, PrecalcShapeset* fv, RefMap* ru_central, RefMap* ru_actual, RefMap* rv,
         bool neighbor_supp_u, bool neighbor_supp_v,
         SurfPos* surf_pos, LightArray<NeighborSearch<Scalar>*>& neighbor_searches, int neighbor_index_u, int neighbor_index_v);
-      
+
       /// Calculates integration order for DG vector forms.
       int calc_order_dg_vector_form(VectorFormSurf<Scalar>* vfs, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* ru, SurfPos* surf_pos,
         LightArray<NeighborSearch<Scalar>*>& neighbor_searches, int neighbor_index_v);
-      
+
       /// Evaluates DG vector forms on an edge between elements identified by ru_actual, rv.
       Scalar eval_dg_form(VectorFormSurf<Scalar>* vfs, Hermes::vector<Solution<Scalar>*> u_ext,
         PrecalcShapeset* fv, RefMap* rv,
@@ -333,7 +386,6 @@ namespace Hermes
       /// Traverse the multimesh subtree. Used in the function update_ns_subtree().
       void traverse_multimesh_subtree(NeighborNode* node, Hermes::vector<Hermes::vector<unsigned int>*>& running_central_transformations,
         Hermes::vector<Hermes::vector<unsigned int>*>& running_neighbor_transformations, const typename NeighborSearch<Scalar>::NeighborEdgeInfo& edge_info, const int& active_edge, const int& mode);
-
 
       template<typename T> friend class KellyTypeAdapt;
       template<typename T> friend class NewtonSolver;

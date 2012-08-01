@@ -22,11 +22,9 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    /// @ingroup spaces
     /// HdivSpace represents a space of vector functions with continuous normal
     /// components over a domain (mesh).
-    ///
-    ///
-    ///
     template<typename Scalar>
     class HERMES_API HdivSpace : public Space<Scalar>
     {
@@ -46,7 +44,7 @@ namespace Hermes
       void load(const char *filename, Mesh* mesh, Shapeset* shapeset = NULL);
 
       virtual void set_shapeset(Shapeset* shapeset);
-      
+
       virtual Scalar* get_bc_projection(SurfPos* surf_pos, int order);
 
     protected:
@@ -77,7 +75,6 @@ namespace Hermes
 
       void update_constrained_nodes(Element* e, EdgeInfo* ei0, EdgeInfo* ei1, EdgeInfo* ei2, EdgeInfo* ei3);
       virtual void update_constraints();
-
     };
   }
 }

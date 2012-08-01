@@ -23,13 +23,13 @@
 #include "../weakform/weakform.h"
 
 //#include "epetra.h"
-#if (defined HAVE_NOX && defined HAVE_EPETRA && defined HAVE_TEUCHOS)
+#if(defined HAVE_NOX && defined HAVE_EPETRA && defined HAVE_TEUCHOS)
 #include <NOX.H>
 #ifdef _POSIX_C_SOURCE
-# undef _POSIX_C_SOURCE	// pyconfig.h included by NOX_Epetra defines it
+# undef _POSIX_C_SOURCE  // pyconfig.h included by NOX_Epetra defines it
 #endif
 #ifdef _XOPEN_SOURCE
-# undef _XOPEN_SOURCE	// pyconfig.h included by NOX_Epetra defines it
+# undef _XOPEN_SOURCE  // pyconfig.h included by NOX_Epetra defines it
 #endif
 #include <NOX_Epetra.H>
 
@@ -37,8 +37,7 @@ namespace Hermes
 {
   namespace Hermes2D
   {
-    //const ProjNormType HERMES_DEFAULT_PROJ_NORM = HERMES_H1_NORM;
-
+    /// @ingroup projections
     template<typename Scalar>
     class HERMES_API OGProjectionNOX : public Hermes::Mixins::Loggable
     {
@@ -46,7 +45,7 @@ namespace Hermes
       OGProjectionNOX();
 
       /// Main functionality is in the protected method project_internal().
-      /// This is a wrapper that delivers a Solution instead of a coefficient vector.   
+      /// This is a wrapper that delivers a Solution instead of a coefficient vector.
       void project_global(const Space<Scalar>* space,
           MatrixFormVol<Scalar>* custom_projection_jacobian,
           VectorFormVol<Scalar>* custom_projection_residual,
@@ -56,44 +55,44 @@ namespace Hermes
        \fn  static void OGProjection::project_global(Space<Scalar>* space,
         MeshFunction<Scalar>* source_meshfn, Scalar* target_vec,
         ProjNormType proj_norm = HERMES_UNSET_NORM, double newton_tol = 1e-6, int newton_max_iter = 10);
-      
+
        \brief The method checks source_meshfn if it is an instance of Solution, if so, it checks its sln_vector, and space_seq
               if they can be used directly.
-      
+
        \author  LK
        \date  10/29/2011
-      
-       \param [in]  space         If non-null, the space.
-       \param [in]  source_meshfn If non-null, source meshfn.
-       \param [out]  target_vec    If non-null, target vector.
+
+       \param[in]  space         If non-null, the space.
+       \param[in]  source_meshfn If non-null, source meshfn.
+       \param[out]  target_vec    If non-null, target vector.
        \param matrix_solver           (optional) the matrix solver.
        \param proj_norm               (optional) the project normalise.
        \param newton_tol              (optional) the newton tolerance.
        \param newton_max_iter         (optional) the newton maximum iterator.
        */
       void project_global(const Space<Scalar>* space, MeshFunction<Scalar>* source_meshfn,
-          Scalar* target_vec, ProjNormType proj_norm = HERMES_UNSET_NORM, 
+          Scalar* target_vec, ProjNormType proj_norm = HERMES_UNSET_NORM,
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
-      /// Wrapper that delivers a Solution instead of coefficient vector. 
+      /// Wrapper that delivers a Solution instead of coefficient vector.
       void project_global(const Space<Scalar>* space,
           Solution<Scalar>* source_sln, Solution<Scalar>* target_sln,
-          ProjNormType proj_norm = HERMES_UNSET_NORM, 
+          ProjNormType proj_norm = HERMES_UNSET_NORM,
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
-      /// Wrapper for multiple source MeshFunctions that delivers coefficient vector. 
+      /// Wrapper for multiple source MeshFunctions that delivers coefficient vector.
       void project_global(Hermes::vector<const Space<Scalar>*> spaces, Hermes::vector<MeshFunction<Scalar>*> source_meshfns,
-          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), 
+          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(),
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
-      /// Wrapper for multiple source Solutions that delivers coefficient vector. 
+      /// Wrapper for multiple source Solutions that delivers coefficient vector.
       void project_global(Hermes::vector<const Space<Scalar>*> spaces, Hermes::vector<Solution<Scalar>*> source_slns,
-          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), 
+          Scalar* target_vec, Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(),
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
       void project_global(Hermes::vector<const Space<Scalar>*> spaces,
           Hermes::vector<Solution<Scalar>*> source_slns, Hermes::vector<Solution<Scalar>*> target_slns,
-          Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), bool delete_old_mesh = false, 
+          Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>(), bool delete_old_mesh = false,
           double newton_tol = 1e-6, int newton_max_iter = 10);
 
     protected:
@@ -271,7 +270,7 @@ namespace Hermes
             return Hermes::Ord();
           }
         }
-        
+
         VectorFormVol<Scalar>* clone()
         {
           return new ProjectionVectorFormVol(*this);

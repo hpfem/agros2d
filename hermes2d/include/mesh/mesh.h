@@ -99,13 +99,13 @@ namespace Hermes
     /// The element can be a triangle or a quad (nvert == 3 or nvert = 4), active or inactive.
     ///
     /// Vertex/node index number
-    ///        [2]
+    ///       [2]
     ///   (3)-------(2)
     ///    |         |
-    /// [3]|  quad.  |[1]
+    ///[3]|  quad.  |[1]
     ///    |         |
     ///   (0)-------(1)
-    ///        [0]
+    ///       [0]
     /// Active elements are actual existing elements in the mesh, which take part in the
     /// computation. Inactive elements are those which have once been active, but were refined,
     /// ie., replaced by several other (smaller) son elements. The purpose of the union is the
@@ -126,7 +126,7 @@ namespace Hermes
       Element* parent;     ///< pointer to the parent element for the current son
       bool visited;        ///< true if the element has been visited during assembling
       unsigned int get_num_surf();  ///< returns number of edges (same as number of vertices)
-      
+
       /// Calculates the area of the element. For curved elements, this is only
       /// an approximation: the curvature is not accounted for.
       double get_area() const;
@@ -134,7 +134,7 @@ namespace Hermes
       /// Returns the length of the longest edge for triangles, and the
       /// length of the longer diagonal for quads. Ignores element curvature.
       double get_diameter() const;
-      
+
       Node* vn[4];   ///< vertex node pointers
       union
       {
@@ -153,7 +153,7 @@ namespace Hermes
       bool is_quad() const;
       bool is_curved() const;
       int get_nvert() const;
-      
+
       bool hsplit() const;
       bool vsplit() const;
       bool bsplit() const;
@@ -222,7 +222,6 @@ namespace Hermes
       Mesh();
       ~Mesh() {
         free();
-        dump_hash_stat();
       }
 
       /// Rescales the mesh.
@@ -260,15 +259,15 @@ namespace Hermes
       int get_max_element_id() const;
 
       /// Refines an element.
-      /// \param id [in] Element id number.
-      /// \param refinement [in] Ignored for triangles. If the element
+      /// \param id[in] Element id number.
+      /// \param refinement[in] Ignored for triangles. If the element
       /// is a quad, 0 means refine in both directions, 1 means refine
       /// horizontally (with respect to the reference domain), 2 means
       /// refine vertically.
       void refine_element_id(int id, int refinement = 0);
 
       /// Refines all elements.
-      /// \param refinement [in] Same meaning as in refine_element_id().
+      /// \param refinement[in] Same meaning as in refine_element_id().
       void refine_all_elements(int refinement = 0, bool mark_as_initial = false);
 
       /// Selects elements to refine according to a given criterion and
@@ -311,20 +310,15 @@ namespace Hermes
       /// original state. However, it is not exactly an inverse to
       /// refine_all_elements().
       void unrefine_all_elements(bool keep_initial_refinements = true);
-      
+
       /// For internal use.
       Element* get_element_fast(int id) const;
-      
+
       /// For internal use.
       unsigned get_seq() const;
 
       /// For internal use.
       void set_seq(unsigned seq);
-
-      /// Refines all triangle elements to quads.
-      /// It can refine a triangle element into three quadrilaterals.
-      /// Note: this function creates a base mesh.
-      void convert_triangles_to_quads();
 
     private:
       /// For internal use.
@@ -441,7 +435,7 @@ namespace Hermes
         friend class Space<std::complex<double> >;
         friend class Mesh;
       };
-      
+
       /// \brief Curved element exception.
       /// Exception occurs when there is a curved element where we only process not curved.
       class HERMES_API CurvedException : public Hermes::Exceptions::Exception
@@ -510,6 +504,8 @@ namespace Hermes
       template<typename Scalar> friend class L2Space;
       friend class Views::ScalarView;
       friend class Views::Orderizer;
+      friend class VolumeIntegralValue;
+      friend class PostprocessorIntegralValue;
     public:
       ElementMarkersConversion &get_element_markers_conversion();
       BoundaryMarkersConversion &get_boundary_markers_conversion();
@@ -561,7 +557,6 @@ namespace Hermes
                                                   vn[0]      vn[1]   vn[0]        vn[1]
         vn[0]           en[0]           vn[1]
 
-
         node and son numbering on a quad:          refinement '0':
 
         vn[3]           en[2]           vn[2]       vn[3]        vn[2] vn[3]        vn[2]
@@ -583,7 +578,6 @@ namespace Hermes
             *-------------*-------------*
                                                     vn[0]        vn[1] vn[0]        vn[1]
         vn[0]           en[0]           vn[1]
-
 
       refinement '1':                             refinement '2':
 
@@ -641,39 +635,39 @@ namespace Hermes
     /// Helper macros for easy iteration through all elements, nodes etc. in a Mesh.
     #define for_all_elements(e, mesh) \
             for (int _id = 0, _max = (mesh)->get_max_element_id(); _id < _max; _id++) \
-              if (((e) = (mesh)->get_element_fast(_id))->used)
+              if(((e) = (mesh)->get_element_fast(_id))->used)
 
     #define for_all_base_elements(e, mesh) \
             for (int _id = 0; _id < (mesh)->get_num_base_elements(); _id++) \
-              if (((e) = (mesh)->get_element_fast(_id))->used)
+              if(((e) = (mesh)->get_element_fast(_id))->used)
 
     #define for_all_base_elements_incl_inactive(e, mesh) \
             for (int _id = 0; _id < (mesh)->get_num_base_elements(); _id++) \
-              if (((e) = (mesh)->get_element_fast(_id))->used || !((e) = (mesh)->get_element_fast(_id))->used)
+              if(((e) = (mesh)->get_element_fast(_id))->used || !((e) = (mesh)->get_element_fast(_id))->used)
 
     #define for_all_active_elements(e, mesh) \
             for (int _id = 0, _max = (mesh)->get_max_element_id(); _id < _max; _id++) \
-              if (((e) = (mesh)->get_element_fast(_id))->used) \
-                if ((e)->active)
+              if(((e) = (mesh)->get_element_fast(_id))->used) \
+                if((e)->active)
 
     #define for_all_inactive_elements(e, mesh) \
             for (int _id = 0, _max = (mesh)->get_max_element_id(); _id < _max; _id++) \
-              if (((e) = (mesh)->get_element_fast(_id))->used) \
-                if (!(e)->active)
+              if(((e) = (mesh)->get_element_fast(_id))->used) \
+                if(!(e)->active)
 
     #define for_all_nodes(n, mesh) \
             for (int _id = 0, _max = (mesh)->get_max_node_id(); _id < _max; _id++) \
-              if (((n) = (mesh)->get_node(_id))->used)
+              if(((n) = (mesh)->get_node(_id))->used)
 
     #define for_all_vertex_nodes(n, mesh) \
             for (int _id = 0, _max = (mesh)->get_max_node_id(); _id < _max; _id++) \
-              if (((n) = (mesh)->get_node(_id))->used) \
-                if (!(n)->type)
+              if(((n) = (mesh)->get_node(_id))->used) \
+                if(!(n)->type)
 
     #define for_all_edge_nodes(n, mesh) \
             for (int _id = 0, _max = (mesh)->get_max_node_id(); _id < _max; _id++) \
-              if (((n) = (mesh)->get_node(_id))->used) \
-                if ((n)->type)
+              if(((n) = (mesh)->get_node(_id))->used) \
+                if((n)->type)
 
     const int TOP_LEVEL_REF = 123456;
   }

@@ -140,7 +140,6 @@ namespace Hermes
   inline double pow(double x, double y) { return std::pow(x, y); }
   inline double log(double x) { return std::log(x); }
 
-  
   /* log file */
   #undef HERMES_LOG_FILE
   #ifdef HERMES_REPORT_NO_FILE
@@ -160,7 +159,7 @@ namespace Hermes
   /* event codes */
   #define HERMES_EC_WARNING 'W' ///< An event code: warnings. \internal
   #define HERMES_EC_INFO 'I' ///< An event code: info about results. \internal
-  
+
   /// A size of a delimiter in a log file. \internal \ingroup g_logging
   #define HERMES_LOG_FILE_DELIM_SIZE 80
   #define BUF_SZ 2048
@@ -185,7 +184,7 @@ namespace Hermes
   /// This is to be used by weak forms specifying numerical flux through interior edges.
   /// Forms with this identifier will receive DiscontinuousFunc representations of shape
   /// and ext. functions, which they may query for values on either side of given interface.
-  const std::string H2D_DG_INNER_EDGE = "-1234567";    
+  const std::string H2D_DG_INNER_EDGE = "-1234567";
   // For internal use.
   const int H2D_DG_INNER_EDGE_INT = -1234567;
 
@@ -209,7 +208,7 @@ namespace Hermes
 
     // Complex part.
 #ifdef __cplusplus
-    extern "C" 
+    extern "C"
     {
 #endif
       extern int zscal_(int *, std::complex<double> *, std::complex<double> *, int *);
@@ -250,4 +249,53 @@ namespace Hermes
 This manual documents the source code of hermes_common. It is intended for the developers of
 the library. If you are only interested in using hermes_common together with hermesNd, please refer to the User's Manual.
 
+The Hermes Common library encompasses the functionality shared by the code for any number of dimensions (1, 2, 3). The uppermost-level API is provided by the class
+<a href="classHermes_1_1Api.html"><h1>Api</a></h1>
+
+Hermes Common provides utility features, like
+<center>
+
+<h1><a href="namespaceHermes_1_1Mixins.html" style="color:lime">Mixin classes</a></h1>
+General representation of a 1,2,3-dimensional functions: <a href="classHermes_1_1Hermes1DFunction.html" style="color:lime">Hermes 1D function</a>, <a href="classHermes_1_1Hermes2DFunction.html" style="color:lime">Hermes 2D function</a>, <a href="classHermes_1_1Hermes3DFunction.html" style="color:lime">Hermes 3D function</a><br />
+<h1><a href="classHermes_1_1vector.html" style="color:lime">Own std::vector-based vector class</a></h1>
+<h1><a href="classHermes_1_1ButcherTable.html" style="color:lime">Butcher's tables</a></h1>
+<h1><a href="classCallStack.html" style="color:lime">Call stack printing</a></h1>
+<h1><a href="classHermes_1_1Exceptions_1_1Exception.html" style="color:lime">Exceptions</a></h1>
+<h2><a href="classHermes_1_1Exceptions_1_1Exception.html" style="color:lime">- base class & general exceptions</a>.</h2>
+</center>
+
+The library provides also stand-alone functionality, needed to solve problems shared by codes for all dimensions. The first big part is
+
+<h1><a href="namespaceHermes_1_1Algebra.html">Linear algebra</a></h1>
+<h2>Matrix structures</h2>
+These structures correspond to the most widely used storage type for matrices - sparse matrices.
+<img src="classHermes_1_1Algebra_1_1Matrix.png">
+<center>
+<a href="classHermes_1_1Algebra_1_1Matrix.html">Matrix structures</a>
+</center>
+
+<h2><a href="namespaceHermes_1_1Algebra_1_1DenseMatrixOperations.html">Dense matrix structures</a></h2>
+These routines are here to support occasional needs to handle dense matrices, that are so small that storing them using sparse structures would be ineffective.
+
+
+<h2>Vector structures</h2>
+<img src="classHermes_1_1Algebra_1_1Vector.png">
+<center>
+<a href="classHermes_1_1Algebra_1_1Vector.html">Vector structures</a>
+</center>
+
+after one is able to store / load, and do other operations with linear algebraic structures, one would like to solve Ax = b:
+
+<a href="namespaceHermes_1_1Solvers.html"><h1>Linear matrix solvers</a></h1>
+<img src="classHermes_1_1Solvers_1_1LinearMatrixSolver.png">
+<center>
+<a href="classHermes_1_1Solvers_1_1LinearMatrixSolver.html">Linear matrix solvers</a>
+</center>
+... possibly with
+
+<a href="namespaceHermes_1_1Preconditioners.html"><h1>Preconditioners</a></h1>
+<img src="classHermes_1_1Preconditioners_1_1Precond.png">
+<center>
+<a href="classHermes_1_1Preconditioners_1_1Precond.html">Preconditioners</a>
+</center>
 */

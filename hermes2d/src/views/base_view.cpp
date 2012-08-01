@@ -1,10 +1,5 @@
 // This file is part of Hermes2D.
 //
-// Copyright 2005-2008 Jakub Cerveny <jakub.cerveny@gmail.com>
-// Copyright 2005-2008 Lenka Dubcova <dubcova@gmail.com>
-// Copyright 2005-2008 Pavel Solin <solin@unr.edu>
-// Copyright 2009-2010 Ivo Hanak <hanak@byte.cz>
-//
 // Hermes2D is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
@@ -73,9 +68,9 @@ namespace Hermes
       template<typename Scalar>
       void BaseView<Scalar>::free()
       {
-        if (pss != NULL) { delete pss; pss = NULL; }
-        if (sln != NULL) { delete sln; sln = NULL; }
-        if (space != NULL) { delete space; space = NULL; }
+        if(pss != NULL) { delete pss; pss = NULL; }
+        if(sln != NULL) { delete sln; sln = NULL; }
+        if(space != NULL) { delete space; space = NULL; }
       }
 
       template<>
@@ -83,9 +78,9 @@ namespace Hermes
       {
         double* coeffs = new double[ndof];
         memset(coeffs, 0, sizeof(double) * ndof);
-        if (base_index >= 0)
+        if(base_index >= 0)
         {
-          if (base_index < ndof) coeffs[base_index] = 1.0;
+          if(base_index < ndof) coeffs[base_index] = 1.0;
           Solution<double>::vector_to_solution(coeffs, space, sln, pss, false);
         }
         else
@@ -103,9 +98,9 @@ namespace Hermes
       {
         std::complex<double>* coeffs = new std::complex<double>[ndof];
         memset(coeffs, 0, sizeof(std::complex<double>) * ndof);
-        if (base_index >= 0)
+        if(base_index >= 0)
         {
-          if (base_index < ndof) coeffs[base_index] = 1.0;
+          if(base_index < ndof) coeffs[base_index] = 1.0;
           Solution<std::complex<double> >::vector_to_solution(coeffs, space, sln, pss, false);
         }
         else
@@ -126,7 +121,7 @@ namespace Hermes
       {
         std::stringstream str;
         str << basic_title << " - dof = " << base_index;
-        if (base_index < 0)
+        if(base_index < 0)
           str << " (Dirichlet lift)";
         View::set_title(str.str().c_str());
       }
@@ -137,12 +132,12 @@ namespace Hermes
         switch (key)
         {
         case GLUT_KEY_LEFT:
-          if (base_index > -1) base_index--;
+          if(base_index > -1) base_index--;
           update_solution();
           break;
 
         case GLUT_KEY_RIGHT:
-          if (base_index < ndof-1) base_index++;
+          if(base_index < ndof-1) base_index++;
           update_solution();
           break;
 
@@ -150,7 +145,6 @@ namespace Hermes
           ScalarView::on_special_key(key, x, y);
         }
       }
-
 
       template<typename Scalar>
       const char* BaseView<Scalar>::get_help_text() const

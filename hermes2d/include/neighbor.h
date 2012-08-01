@@ -1,5 +1,5 @@
-#ifndef NEIGHBOR_H_
-#define NEIGHBOR_H_
+#ifndef __H2D_NEIGHBOR_H
+#define __H2D_NEIGHBOR_H
 
 #include "mesh/mesh.h"
 #include "quadrature/quad.h"
@@ -74,7 +74,7 @@ namespace Hermes
       /// \param[in]  el    Central element of the neighborhood (current active element in the assembling procedure).
       /// \param[in]  mesh  Mesh on which we search for the neighbors.
       ///
-      NeighborSearch(Element* el, Mesh* mesh);
+      NeighborSearch(Element* el, const Mesh* mesh);
       NeighborSearch(const NeighborSearch& ns);
 
       /// Destructor.
@@ -299,7 +299,7 @@ namespace Hermes
         void apply_on(Transformable* tr) const;
 
         void apply_on(const Hermes::vector<Transformable*>& tr) const;
-        
+
         template<typename T> friend class NeighborSearch;
         template<typename T> friend class KellyTypeAdapt;
         template<typename T> friend class Adapt;
@@ -311,7 +311,7 @@ namespace Hermes
 
     private:
 
-      Mesh* mesh;
+      const Mesh* mesh;
 
       /*** Transformations. ***/
 
@@ -327,11 +327,9 @@ namespace Hermes
       Element* central_el;          ///< Central (currently assembled) element.
       Element* neighb_el;           ///< Currently selected neighbor element (on the other side of active segment).
 
-
       int active_edge;               ///< Local number of the currently assembled edge, w.r.t. the central element.
       NeighborEdgeInfo neighbor_edge;///< Assembled edge, w.r.t. the element on the other side.
       int active_segment;            ///< Part of the active edge shared by central and neighbor elements.
-
 
       Hermes::vector<NeighborEdgeInfo> neighbor_edges;   ///< Active edge information from each neighbor.
       Hermes::vector<Element*> neighbors;                ///< Vector with pointers to the neighbor elements.
@@ -386,7 +384,6 @@ namespace Hermes
       /// \param[in] n_sons             Number of sons that lead to the current neighbor's counterpart.
       ///
       void find_act_elem_down( Node* vertex, int* bounding_verts_id, int* sons, unsigned int n_sons);
-
 
       /// Determine relative orientation of the neighbor edge w.r.t. the active edge.
       ///
