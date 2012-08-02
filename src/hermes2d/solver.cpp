@@ -366,7 +366,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
         newton.set_newton_tol(m_block->nonlinearTolerance());
         newton.set_newton_max_iter(m_block->nonlinearSteps());
 
-        // newton.set_max_allowed_residual_norm(1e15);
+        newton.set_max_allowed_residual_norm(1e15);
         try
         {
             int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));
@@ -456,7 +456,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
 
     MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
     if(timeStep > 0)
-        previousTSMultiSolutionArray = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep - 1, adaptivityStep, SolutionMode_Normal));;
+        previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));;
 
     cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 

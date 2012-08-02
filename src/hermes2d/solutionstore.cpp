@@ -118,6 +118,21 @@ int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType)
     return timeStep;
 }
 
+MultiSolutionArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID)
+{
+    MultiSolutionArray<double> msa;
+    foreach(Field *field, solutionID.group->fields())
+    {
+        FieldSolutionID fieldSolutionID = solutionID.fieldSolutionID(field->fieldInfo());
+        fieldSolutionID.timeStep = nearestTimeStep(field->fieldInfo(), solutionID.timeStep - 1);
+        msa.append(multiSolution(fieldSolutionID));
+    }
+
+    return msa;
+
+}
+
+
 int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
 {
     int ts = timeStep;

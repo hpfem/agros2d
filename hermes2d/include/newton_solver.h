@@ -57,7 +57,7 @@ namespace Hermes
       void solve_keep_jacobian(Scalar* coeff_vec = NULL);
 
       /// Sets the maximum allowed norm of the residual during the calculation.
-      void set_max_allowed_residual_norm(double max_allowed_residual_norm_to_set);
+      void set_max_allowed_residual_norm(double max_allowed_residual_norm_to_set) {max_allowed_residual_norm = max_allowed_residual_norm_to_set;}
 
       /// Sets minimum damping coefficient.
       void set_min_allowed_damping_coeff(double min_allowed_damping_coeff);
