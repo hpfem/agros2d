@@ -107,6 +107,19 @@ protected:
     QLineEdit *txtAxiNewton;
 };
 
+class ModulePreprocessorDialog : public ModuleItemDialog
+{
+    Q_OBJECT
+public:
+    ModulePreprocessorDialog(XMLModule::quantity *quant, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::quantity *m_quant;
+};
+
 class ModuleItemLocalValueDialog : public ModuleItemDialog
 {
     Q_OBJECT
@@ -214,6 +227,8 @@ private:
     QLineEdit *txtName;
     QLineEdit *txtName2;
     QPlainTextEdit *txtDescription;
+
+    void preprocessorDialog(QTreeWidgetItem *item, int role, bool isMaterial);
 };
 
 

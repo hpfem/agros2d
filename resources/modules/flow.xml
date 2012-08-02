@@ -83,7 +83,7 @@
                 <module:vector_form i="1" j="1"
                     planar_linear="fl_fx * vval"
                     axi_linear="0"
-                    planar_newton="fl_mu * (dx1 * vdx + dy1 * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval - fl_fx * vval"
+                    planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval - fl_fx * vval"
                     axi_newton="0"
                 />
                 <module:vector_form i="1" j="2"
@@ -107,7 +107,7 @@
                 <module:vector_form i="2" j="2"
                     planar_linear="fl_fy * vval"
                     axi_linear="0"
-                    planar_newton="fl_mu * (dx2 * vdx + dy2 * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval - fl_fy * vval"
+                    planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval - fl_fy * vval"
                     axi_newton="0"
                 />
                 <module:vector_form i="2" j="3"

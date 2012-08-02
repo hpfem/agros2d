@@ -192,7 +192,7 @@ namespace Hermes
   {
     inline void fprint_num(FILE*f, double x)
     {
-      fprintf(f, "%lf", x);
+      fprintf(f, "%g", x);
     }
 
     inline void fprint_num(FILE*f, std::complex<double> x)

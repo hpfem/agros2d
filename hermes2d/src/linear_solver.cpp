@@ -103,6 +103,14 @@ namespace Hermes
     {
       dp->assemble(this->jacobian, this->residual);
 
+//      char filename[20], varname[20];
+//      sprintf(filename, "jacobian_lin1.m");
+//      sprintf(varname, "jac_lin1");
+//      FILE* jacfile = fopen(filename, "w");
+//      jacobian->dump(jacfile, varname);
+//      fclose(jacfile);
+
+
       this->matrix_solver->solve();
 
       this->sln_vector = matrix_solver->get_sln_vector();

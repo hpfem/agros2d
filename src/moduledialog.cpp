@@ -168,6 +168,45 @@ ModuleWeakform::ModuleWeakform(WeakFormKind weakForm, QWidget *parent)
 
 // ***********************************************************************************************************************
 
+ModulePreprocessorDialog::ModulePreprocessorDialog(XMLModule::quantity *quant, QWidget *parent)
+    : ModuleItemDialog(parent), m_quant(quant)
+{
+    txtId->setText(QString::fromStdString(quant->id()));
+    if (quant->name().present())
+        txtName->setText(QString::fromStdString(quant->name().get()));
+    if (quant->shortname().present())
+        txtShortname->setText(QString::fromStdString(quant->shortname().get()));
+    if (quant->shortname_html().present())
+        txtShortnameHtml->setText(QString::fromStdString(quant->shortname_html().get()));
+    if (quant->shortname_latex().present())
+        txtShortnameLatex->setText(QString::fromStdString(quant->shortname_latex().get()));
+    if (quant->unit().present())
+        txtUnit->setText(QString::fromStdString(quant->unit().get()));
+    if (quant->unit_html().present())
+        txtUnitHtml->setText(QString::fromStdString(quant->unit_html().get()));
+    if (quant->unit_latex().present())
+        txtUnitLatex->setText(QString::fromStdString(quant->unit_latex().get()));
+
+    layoutMain->addStretch();
+    layoutMain->addWidget(buttonBox);
+}
+
+void ModulePreprocessorDialog::doAccept()
+{
+    m_quant->id(txtId->text().toStdString());
+    m_quant->name(txtName->text().toStdString());
+    m_quant->shortname(txtShortname->text().toStdString());
+    m_quant->shortname_html(txtShortnameHtml->text().toStdString());
+    m_quant->shortname_latex(txtShortnameLatex->text().toStdString());
+    m_quant->unit(txtUnit->text().toStdString());
+    m_quant->unit_html(txtUnitHtml->text().toStdString());
+    m_quant->unit_latex(txtUnitLatex->text().toStdString());
+
+    accept();
+}
+
+// ***********************************************************************************************************************
+
 ModuleItemLocalValueDialog::ModuleItemLocalValueDialog(XMLModule::localvariable *lv, QWidget *parent)
     : ModuleItemDialog(parent), m_lv(lv)
 {
@@ -566,22 +605,22 @@ void ModuleDialog::createControls()
     QSize sizeItem(131, 85);
 
     // listView items
-    QListWidgetItem *itemMain = new QListWidgetItem(icon("options-main"), tr("Main"), lstView);
+    QListWidgetItem *itemMain = new QListWidgetItem(icon("document-properties"), tr("Main"), lstView);
     itemMain->setTextAlignment(Qt::AlignHCenter);
     itemMain->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemMain->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemWeakforms = new QListWidgetItem(icon("options-main"), tr("Weakforms"), lstView);
+    QListWidgetItem *itemWeakforms = new QListWidgetItem(icon("options-weakform"), tr("Weakforms"), lstView);
     itemWeakforms->setTextAlignment(Qt::AlignHCenter);
     itemWeakforms->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemWeakforms->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemPreprocessor = new QListWidgetItem(icon("options-main"), tr("Preprocessor"), lstView);
+    QListWidgetItem *itemPreprocessor = new QListWidgetItem(icon("scene-geometry"), tr("Preprocessor"), lstView);
     itemPreprocessor->setTextAlignment(Qt::AlignHCenter);
     itemPreprocessor->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemPreprocessor->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemPostprocessor = new QListWidgetItem(icon("options-main"), tr("Postprocessor"), lstView);
+    QListWidgetItem *itemPostprocessor = new QListWidgetItem(icon("scene-post2d"), tr("Postprocessor"), lstView);
     itemPostprocessor->setTextAlignment(Qt::AlignHCenter);
     itemPostprocessor->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemPostprocessor->setSizeHint(sizeItem);
@@ -866,10 +905,43 @@ void ModuleDialog::analysisDoubleClicked(QTreeWidgetItem *item, int role)
 
 void ModuleDialog::materialDoubleClicked(QTreeWidgetItem *item, int role)
 {
+    preprocessorDialog(item, role, true);
 }
 
 void ModuleDialog::boundaryDoubleClicked(QTreeWidgetItem *item, int role)
 {
+    preprocessorDialog(item, role, false);
+}
+
+void ModuleDialog::preprocessorDialog(QTreeWidgetItem *item, int role, bool isMaterial)
+{
+    XMLModule::module *module = m_module_xsd.get();
+    for (int i = 0; i < module->preprocessor().gui().size(); i++)
+    {
+        XMLModule::gui *ui = &module->preprocessor().gui().at(i);
+        // filter material and boundaries
+        if ((ui->type() == "volume" && !isMaterial) || (ui->type() == "surface" && isMaterial))
+            continue;
+
+        for (int i = 0; i < ui->group().size(); i++)
+        {
+            XMLModule::group *grp = &ui->group().at(i);
+            for (int i = 0; i < grp->quantity().size(); i++)
+            {
+                XMLModule::quantity *quant = &grp->quantity().at(i);
+                if (item->data(0, Qt::UserRole).toString().toStdString() == quant->id())
+                {
+                    ModulePreprocessorDialog dialog(quant, this);
+                    if (dialog.exec())
+                    {
+                        item->setText(0, QString::fromStdString(quant->name().get()));
+                        item->setText(1, QString::fromStdString(quant->shortname().get()));
+                        item->setText(2, QString::fromStdString(quant->unit().get()));
+                    }
+                }
+            }
+        }
+    }
 }
 
 void ModuleDialog::localItemDoubleClicked(QTreeWidgetItem *item, int role)
@@ -886,7 +958,7 @@ void ModuleDialog::localItemDoubleClicked(QTreeWidgetItem *item, int role)
                 item->setText(0, QString::fromStdString(lv->name()));
                 item->setText(1, QString::fromStdString(lv->shortname()));
                 item->setText(2, QString::fromStdString(lv->unit()));
-                item->setText(3, QString::fromStdString(lv->type()));                
+                item->setText(3, QString::fromStdString(lv->type()));
             }
         }
     }

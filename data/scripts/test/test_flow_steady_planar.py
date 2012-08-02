@@ -2,15 +2,15 @@ import agros2d
 
 # problem
 problem = agros2d.problem(clear = True)
+problem.name = "unnamed"
 problem.coordinate_type = "planar"
-problem.mesh_type = "quad_join"
+problem.mesh_type = "quad_fine_division"
 problem.matrix_solver = "umfpack"
 
 # fields
 # flow
 flow = agros2d.field("flow")
 flow.analysis_type = "steadystate"
-flow.number_of_refinements = 3
 flow.polynomial_order = 2
 flow.linearity_type = "linear"
 flow.adaptivity_type = "disabled"
