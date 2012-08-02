@@ -11,14 +11,17 @@ problem.matrix_solver = "umfpack"
 # flow
 flow = agros2d.field("flow")
 flow.analysis_type = "steadystate"
+flow.number_of_refinements = 1
 flow.polynomial_order = 2
-flow.linearity_type = "linear"
+flow.linearity_type = "newton"
+flow.nonlinear_tolerance = 0.001
+flow.nonlinear_steps = 10
 flow.adaptivity_type = "disabled"
 flow.weak_forms = "compiled"
 
 flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : 1, "flow_velocity_y" : 0})
 flow.add_boundary("Wall", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : 0})
-flow.add_boundary("Outlet", "fluid_pressure", {"flow_pressure" : 0})
+flow.add_boundary("Outlet", "fluid_outlet", {})
 
 flow.add_material("Water", {"flow_density" : 1, "flow_force_x" : 0, "flow_force_y" : 0, "flow_viscosity" : 0.001})
 
