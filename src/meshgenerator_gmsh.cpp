@@ -235,7 +235,6 @@ bool MeshGeneratorGMSH::writeToGmsh()
     }
 
     /*
-
     // holes
     int holesCount = 0;
     foreach (SceneLabel *label, Util::scene()->labels->items())
@@ -282,28 +281,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
     out << outLabels;
     */
 
-    // find loops
-    QList<int> loop;
-    for (int i = 0; i<Util::scene()->edges->length(); i++)
-    {
-        SceneEdge *edge = Util::scene()->edges->items().at(i);
-
-        if (loop.isEmpty())
-        {
-            loop.append(i);
-        }
-        else
-        {
-            for (int j = 0; j<Util::scene()->edges->length(); j++)
-            {
-                SceneEdge *edgeNew = Util::scene()->edges->items().at(j);
-                if (i != j)
-                {
-
-                }
-            }
-        }
-    }
+    // TODO: find loops
 
     QString outLoops;
     outLoops.append(QString("Line Loop(1) = {0, 3, 2, 1};\n"));
