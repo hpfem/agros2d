@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class SLineEditDouble;
+class LineEditDouble;
 
 class SceneViewPostInterface;
 
@@ -55,7 +55,7 @@ private:
     QPushButton *btnAnimate;
     QProgressBar *progressBar;
 
-    SLineEditDouble *txtDelay;
+    LineEditDouble *txtDelay;
     QLabel *lblStep;
     QLabel *lblStepLabel;
 

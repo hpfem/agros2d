@@ -592,17 +592,17 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     // log scale
     chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
-    txtScalarFieldRangeBase = new SLineEditDouble(SCALARFIELDRANGEBASE);
+    txtScalarFieldRangeBase = new LineEditDouble(SCALARFIELDRANGEBASE);
     connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
 
     QPalette palette;
     palette.setColor(QPalette::WindowText, Qt::red);
 
-    txtScalarFieldRangeMin = new SLineEditDouble(0.1, true);
+    txtScalarFieldRangeMin = new LineEditDouble(0.1, true);
     connect(txtScalarFieldRangeMin, SIGNAL(textChanged(QString)), this, SLOT(doScalarFieldRangeMinChanged()));
     lblScalarFieldRangeMinError = new QLabel("");
     lblScalarFieldRangeMinError->setPalette(palette);
-    txtScalarFieldRangeMax = new SLineEditDouble(0.1, true);
+    txtScalarFieldRangeMax = new LineEditDouble(0.1, true);
     connect(txtScalarFieldRangeMax, SIGNAL(textChanged(QString)), this, SLOT(doScalarFieldRangeMaxChanged()));
     lblScalarFieldRangeMaxError = new QLabel("");
     lblScalarFieldRangeMaxError->setPalette(palette);
@@ -720,18 +720,18 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     txtParticleNumberOfParticles = new QSpinBox(this);
     txtParticleNumberOfParticles->setMinimum(1);
     txtParticleNumberOfParticles->setMaximum(200);
-    txtParticleStartingRadius = new SLineEditDouble();
-    txtParticleMass = new SLineEditDouble();
-    txtParticleConstant = new SLineEditDouble();
-    txtParticlePointX = new SLineEditDouble();
-    txtParticlePointY = new SLineEditDouble();
-    txtParticleVelocityX = new SLineEditDouble();
-    txtParticleVelocityY = new SLineEditDouble();
-    txtParticleMaximumRelativeError = new SLineEditDouble();
-    txtParticleMinimumStep = new SLineEditDouble();
+    txtParticleStartingRadius = new LineEditDouble();
+    txtParticleMass = new LineEditDouble();
+    txtParticleConstant = new LineEditDouble();
+    txtParticlePointX = new LineEditDouble();
+    txtParticlePointY = new LineEditDouble();
+    txtParticleVelocityX = new LineEditDouble();
+    txtParticleVelocityY = new LineEditDouble();
+    txtParticleMaximumRelativeError = new LineEditDouble();
+    txtParticleMinimumStep = new LineEditDouble();
     chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflect on different material"));
     chkParticleReflectOnBoundary = new QCheckBox(tr("Reflect on boundary"));
-    txtParticleCoefficientOfRestitution = new SLineEditDouble(0.0, true);
+    txtParticleCoefficientOfRestitution = new LineEditDouble(0.0, true);
     txtParticleCoefficientOfRestitution->setBottom(0.0);
     txtParticleCoefficientOfRestitution->setTop(1.0);
     lblParticlePointX = new QLabel();
@@ -744,9 +744,9 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     txtParticleMaximumNumberOfSteps->setMinimum(10);
     txtParticleMaximumNumberOfSteps->setMaximum(100000);
     txtParticleMaximumNumberOfSteps->setSingleStep(10);
-    txtParticleDragDensity = new SLineEditDouble();
-    txtParticleDragCoefficient = new SLineEditDouble();
-    txtParticleDragReferenceArea = new SLineEditDouble();
+    txtParticleDragDensity = new LineEditDouble();
+    txtParticleDragCoefficient = new LineEditDouble();
+    txtParticleDragReferenceArea = new LineEditDouble();
     lblParticleMotionEquations = new QLabel();
 
     QPushButton *btnParticleDefault = new QPushButton(tr("Default"));

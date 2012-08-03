@@ -23,7 +23,7 @@
 #include "util.h"
 #include "hermes2d/marker.h"
 
-class SLineEditDouble;
+class LineEditDouble;
 class ValueLineEdit;
 
 class SceneBoundary;

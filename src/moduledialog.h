@@ -26,8 +26,9 @@
 struct SceneViewSettings;
 class ScriptEditor;
 
-class SLineEditDouble;
+class LineEditDouble;
 class ValueLineEdit;
+class HtmlValueEdit;
 
 class ModuleItem : public QWidget
 {
@@ -77,10 +78,10 @@ protected:
     QLineEdit *txtName;
     QComboBox *txtType;
     QLineEdit *txtShortname;
-    QLineEdit *txtShortnameHtml;
+    HtmlValueEdit *txtShortnameHtml;
     QLineEdit *txtShortnameLatex;
     QLineEdit *txtUnit;
-    QLineEdit *txtUnitHtml;
+    HtmlValueEdit *txtUnitHtml;
     QLineEdit *txtUnitLatex;
 
     QList<ModuleItem *> items;

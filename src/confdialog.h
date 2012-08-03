@@ -25,7 +25,7 @@
 struct SceneViewSettings;
 class ScriptEditor;
 
-class SLineEditDouble;
+class LineEditDouble;
 class ValueLineEdit;
 
 class ConfigDialog : public QDialog
@@ -54,7 +54,7 @@ private:
     QComboBox *cmbGUIStyle;
     QComboBox *cmbLanguage;
     QComboBox *cmbDefaultPhysicField;
-    SLineEditDouble *txtCollaborationServerURL;
+    LineEditDouble *txtCollaborationServerURL;
 
     // delete files
     QCheckBox *chkDeleteTriangleMeshFiles;
@@ -88,9 +88,9 @@ private:
     QSpinBox *txtMaxDOFs;
     //QCheckBox *chkIsoOnly;
     //QLabel *lblIsoOnly;
-    SLineEditDouble *txtConvExp;
+    LineEditDouble *txtConvExp;
     QLabel *lblConvExp;
-    SLineEditDouble *txtThreshold;
+    LineEditDouble *txtThreshold;
     QLabel *lblThreshold;
     QComboBox *cmbStrategy;
     QLabel *lblStrategy;

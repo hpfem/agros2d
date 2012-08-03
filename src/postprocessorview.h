@@ -26,7 +26,7 @@ class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
-class SLineEditDouble;
+class LineEditDouble;
 
 class PostprocessorWidget : public QWidget
 {
@@ -77,8 +77,8 @@ private:
     QCheckBox *chkScalarFieldRangeAuto;
     QLabel *lblScalarFieldRangeMin;
     QLabel *lblScalarFieldRangeMax;
-    SLineEditDouble *txtScalarFieldRangeMin;
-    SLineEditDouble *txtScalarFieldRangeMax;
+    LineEditDouble *txtScalarFieldRangeMin;
+    LineEditDouble *txtScalarFieldRangeMax;
     QLabel *lblScalarFieldRangeMinError;
     QLabel *lblScalarFieldRangeMaxError;
 
@@ -101,7 +101,7 @@ private:
     QSpinBox *txtPaletteSteps;
     QComboBox *cmbLinearizerQuality;
     QCheckBox *chkScalarFieldRangeLog;
-    SLineEditDouble *txtScalarFieldRangeBase;
+    LineEditDouble *txtScalarFieldRangeBase;
     QSpinBox *txtScalarDecimalPlace;
 
     // contours
@@ -122,16 +122,16 @@ private:
     // particle tracing
     QCheckBox *chkParticleIncludeGravitation;
     QSpinBox *txtParticleNumberOfParticles;
-    SLineEditDouble *txtParticleStartingRadius;
-    SLineEditDouble *txtParticleMass;
-    SLineEditDouble *txtParticleConstant;
-    SLineEditDouble *txtParticlePointX;
-    SLineEditDouble *txtParticlePointY;
-    SLineEditDouble *txtParticleVelocityX;
-    SLineEditDouble *txtParticleVelocityY;
+    LineEditDouble *txtParticleStartingRadius;
+    LineEditDouble *txtParticleMass;
+    LineEditDouble *txtParticleConstant;
+    LineEditDouble *txtParticlePointX;
+    LineEditDouble *txtParticlePointY;
+    LineEditDouble *txtParticleVelocityX;
+    LineEditDouble *txtParticleVelocityY;
     QCheckBox *chkParticleReflectOnDifferentMaterial;
     QCheckBox *chkParticleReflectOnBoundary;
-    SLineEditDouble *txtParticleCoefficientOfRestitution;
+    LineEditDouble *txtParticleCoefficientOfRestitution;
     QLabel *lblParticlePointX;
     QLabel *lblParticlePointY;
     QLabel *lblParticleVelocityX;
@@ -139,12 +139,12 @@ private:
     QLabel *lblParticleMotionEquations;
     QCheckBox *chkParticleColorByVelocity;
     QCheckBox *chkParticleShowPoints;
-    SLineEditDouble *txtParticleMaximumRelativeError;
-    SLineEditDouble *txtParticleMinimumStep;
+    LineEditDouble *txtParticleMaximumRelativeError;
+    LineEditDouble *txtParticleMinimumStep;
     QSpinBox *txtParticleMaximumNumberOfSteps;
-    SLineEditDouble *txtParticleDragDensity;
-    SLineEditDouble *txtParticleDragCoefficient;
-    SLineEditDouble *txtParticleDragReferenceArea;
+    LineEditDouble *txtParticleDragDensity;
+    LineEditDouble *txtParticleDragCoefficient;
+    LineEditDouble *txtParticleDragReferenceArea;
 
     // toolbar
     QToolBox *tbxPostprocessor;

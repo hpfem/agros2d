@@ -97,10 +97,10 @@ ModuleItemDialog::ModuleItemDialog(QWidget *parent)
     txtId = new QLineEdit();
     txtName = new QLineEdit();
     txtShortname = new QLineEdit();
-    txtShortnameHtml = new QLineEdit();
+    txtShortnameHtml = new HtmlValueEdit();
     txtShortnameLatex = new QLineEdit();
     txtUnit = new QLineEdit();
-    txtUnitHtml = new QLineEdit();
+    txtUnitHtml = new HtmlValueEdit();
     txtUnitLatex = new QLineEdit();
 
     QGridLayout *layoutGeneral = new QGridLayout();

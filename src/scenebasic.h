@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class SLineEditDouble;
+class LineEditDouble;
 class ValueLineEdit;
 
 struct Point;

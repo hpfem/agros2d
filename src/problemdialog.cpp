@@ -144,7 +144,7 @@ void FieldWidget::createContent()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new SLineEditDouble(1);
+    txtAdaptivityTolerance = new LineEditDouble(1);
 
     // mesh
     txtNumberOfRefinements = new QSpinBox(this);
@@ -170,7 +170,7 @@ void FieldWidget::createContent()
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
-    txtNonlinearTolerance = new SLineEditDouble(1);
+    txtNonlinearTolerance = new LineEditDouble(1);
 
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
@@ -779,7 +779,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     cmbMeshType = new QComboBox();
 
     // harmonic
-    txtFrequency = new SLineEditDouble();
+    txtFrequency = new LineEditDouble();
 
     // transient
     txtTransientTimeStep = new ValueLineEdit();

@@ -260,7 +260,7 @@ QWidget *ConfigDialog::createMainWidget()
     grpGeneral->setLayout(layoutGeneral);
 
     // collaboration
-    txtCollaborationServerURL = new SLineEditDouble();
+    txtCollaborationServerURL = new LineEditDouble();
 
     QVBoxLayout *layoutCollaboration = new QVBoxLayout();
     layoutCollaboration->addWidget(new QLabel(tr("Collaboration server URL:")));
@@ -355,9 +355,9 @@ QWidget *ConfigDialog::createSolverWidget()
                                "<tr><td><b>false</b></td><td>anisotropic refinement</td></tr>"
                                "</table>"));
     */
-    txtConvExp = new SLineEditDouble();
+    txtConvExp = new LineEditDouble();
     lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
-    txtThreshold = new SLineEditDouble();
+    txtThreshold = new LineEditDouble();
     lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
     cmbStrategy = new QComboBox();
     cmbStrategy->addItem(tr("0"), 0);

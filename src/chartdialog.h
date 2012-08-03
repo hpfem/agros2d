@@ -23,7 +23,7 @@
 #include "util.h"
 
 class Chart;
-class SLineEditDouble;
+class LineEditDouble;
 class ValueLineEdit;
 class LocalPointValue;
 class FieldInfo;

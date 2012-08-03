@@ -39,11 +39,30 @@ void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *c
 void fillComboBoxSolutionType(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
-class SLineEditDouble : public QLineEdit
+
+class HtmlValueEdit : public QWidget
+{
+    Q_OBJECT
+
+public:
+    HtmlValueEdit(QWidget *parent = NULL, const QString &str = "");
+
+    inline void setText(const QString &str) { txtLineEdit->setText(str); evaluate(); }
+    inline QString text() { return txtLineEdit->text(); }
+
+private slots:
+    bool evaluate();
+
+private:
+    QLineEdit *txtLineEdit;
+    QLabel *lblValue;
+};
+
+class LineEditDouble : public QLineEdit
 {
     Q_OBJECT
 public:
-    SLineEditDouble(double val = 0, bool validator = false, QWidget *parent = 0) : QLineEdit(parent),
+    LineEditDouble(double val = 0, bool validator = false, QWidget *parent = 0) : QLineEdit(parent),
         m_validator(NULL)
     {
         if (validator)
@@ -54,7 +73,7 @@ public:
 
         setValue(val);
     }
-    ~SLineEditDouble()
+    ~LineEditDouble()
     {
         if (m_validator)
             delete m_validator;
@@ -164,10 +183,10 @@ private:
     QLabel *lblImage;
     QLabel *lblImageFileName;
 
-    SLineEditDouble *txtX;
-    SLineEditDouble *txtY;
-    SLineEditDouble *txtWidth;
-    SLineEditDouble *txtHeight;
+    LineEditDouble *txtX;
+    LineEditDouble *txtY;
+    LineEditDouble *txtWidth;
+    LineEditDouble *txtHeight;
 
     void createControls();
 };

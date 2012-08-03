@@ -104,7 +104,7 @@ void VideoDialog::createControls()
     layoutButton->addWidget(btnAnimate);
     layoutButton->addWidget(btnClose);
 
-    txtDelay = new SLineEditDouble(0.1);
+    txtDelay = new LineEditDouble(0.1);
     lblStepLabel = new QLabel("");
     lblStep = new QLabel("0.0");
 

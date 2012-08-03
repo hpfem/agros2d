@@ -42,6 +42,35 @@
 #include "qwt_plot_magnifier.h"
 #include "qwt_plot_rescaler.h"
 
+HtmlValueEdit::HtmlValueEdit(QWidget *parent, const QString &str)
+    : QWidget(parent)
+{
+    // create controls
+    txtLineEdit = new QLineEdit(this);
+    txtLineEdit->setToolTip(tr("This textedit allows using HTML entities."));
+    txtLineEdit->setText(str);
+    connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
+    connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
+
+    lblValue = new QLabel(this);
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(txtLineEdit, 1);
+    layout->addWidget(lblValue, 0, Qt::AlignRight);
+
+    setLayout(layout);
+
+    evaluate();
+}
+
+bool HtmlValueEdit::evaluate()
+{
+    lblValue->setText(txtLineEdit->text());
+}
+
+// *************************************************************************************************
+
 void readPixmap(QLabel *lblEquation, const QString &name)
 {
     QPixmap pixmap;
@@ -715,10 +744,10 @@ void ImageLoaderDialog::createControls()
     layoutFileName->addWidget(btnRemoveImage);
     layoutFileName->addWidget(btnLoadImage);
 
-    txtX = new SLineEditDouble(0.0);
-    txtY = new SLineEditDouble(0.0);
-    txtWidth = new SLineEditDouble(1.0);
-    txtHeight = new SLineEditDouble(1.0);
+    txtX = new LineEditDouble(0.0);
+    txtY = new LineEditDouble(0.0);
+    txtWidth = new LineEditDouble(1.0);
+    txtHeight = new LineEditDouble(1.0);
 
     QGridLayout *layoutPosition = new QGridLayout();
     layoutPosition->addWidget(new QLabel(tr("X:")), 0, 0);

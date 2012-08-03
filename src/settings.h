@@ -27,7 +27,7 @@ class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
-class SLineEditDouble;
+class LineEditDouble;
 
 class SettingsWidget : public QWidget
 {

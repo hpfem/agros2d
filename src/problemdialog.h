@@ -27,7 +27,7 @@ class FieldInfo;
 class CouplingInfo;
 class ScriptEditor;
 
-class SLineEditDouble;
+class LineEditDouble;
 class ValueLineEdit;
 
 class FieldInfo;
@@ -104,7 +104,7 @@ private:
 
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
-    SLineEditDouble *txtAdaptivityTolerance;
+    LineEditDouble *txtAdaptivityTolerance;
 
     QComboBox *cmbLinearityType;
 
@@ -114,7 +114,7 @@ private:
 
     // linearity
     QSpinBox *txtNonlinearSteps;
-    SLineEditDouble *txtNonlinearTolerance;
+    LineEditDouble *txtNonlinearTolerance;
 
     // transient
     ValueLineEdit *txtTransientInitialCondition;
@@ -204,7 +204,7 @@ private:
 
     // harmonic
     QGroupBox *grpHarmonicAnalysis;
-    SLineEditDouble *txtFrequency;
+    LineEditDouble *txtFrequency;
 
     // transient
     QGroupBox *grpTransientAnalysis;
