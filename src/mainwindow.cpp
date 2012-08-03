@@ -108,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(settingsWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
 
-    // preprocessor   
+    // preprocessor
     connect(problemWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
@@ -162,7 +162,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     Util::scene()->clear();
 
-    problemWidget->actProperties->trigger();    
+    problemWidget->actProperties->trigger();
     sceneViewPreprocessor->doZoomBestFit();
 
     // set recent files
@@ -465,8 +465,9 @@ void MainWindow::createMenus()
     mnuFileImportExport->addAction(actDocumentSaveImage);
     mnuFileImportExport->addAction(actDocumentSaveGeometry);
     mnuFileImportExport->addSeparator();
-    mnuFileImportExport->addAction(sceneViewPost2D->actExportVTKScalar);
+    mnuFileImportExport->addAction(sceneViewMesh->actExportVTKMesh);
     mnuFileImportExport->addAction(sceneViewMesh->actExportVTKOrder);
+    mnuFileImportExport->addAction(sceneViewPost2D->actExportVTKScalar);
 
     QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
     mnuServer->addAction(actDocumentDownloadFromServer);
@@ -1514,6 +1515,8 @@ void MainWindow::setControls()
         sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
 
+    actDocumentExportMeshFile->setEnabled(Util::problem()->isMeshed());
+
     actSolveAdaptiveStep->setEnabled((!Util::problem()->isTransient())); // FIXME: timedep
     actChart->setEnabled(Util::problem()->isSolved());
 
@@ -1578,58 +1581,27 @@ void MainWindow::doHideControlPanel()
 
 void MainWindow::doDocumentExportMeshFile()
 {
-    // generate mesh file
-    bool commutator = Util::config()->deleteHermes2DMeshFile;
-    if (commutator)
-        Util::config()->deleteHermes2DMeshFile = !commutator;
-
-    Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
-        tabViewLayout->setCurrentWidget(sceneViewPreprocessor);
-        Util::config()->showInitialMeshView = true;
-        sceneViewPreprocessor->refresh();
-
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.mesh)"));
-        fileName.remove(".mesh");
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.xml)"));
+        fileName.remove(".xml");
         QFileInfo fileInfo(fileName);
-
-        // move mesh file
-        if (!Util::problem()->config()->fileName().isEmpty())
-        {
-            QString sourceFileName = Util::problem()->config()->fileName();
-            sourceFileName.replace("a2d", "mesh");
-            if (!fileName.isEmpty())
-            {
-                // remove existing file
-                if (QFile::exists(fileName + ".mesh"))
-                    QFile::remove(fileName + ".mesh");
-
-                // copy file
-                QFile::copy(sourceFileName, fileName + ".mesh");
-                if (fileInfo.absoluteDir() != tempProblemDir())
-                    settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
-            }
-
-            QFile::remove(sourceFileName);
-        }
 
         if (!fileName.isEmpty())
         {
-            QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
+            // remove existing file
+            if (QFile::exists(fileName + ".xml"))
+                QFile::remove(fileName + ".xml");
+
+            // copy file
+            QFile::copy(tempProblemDir() + "/temp.xml", fileName + ".xml");
             if (fileInfo.absoluteDir() != tempProblemDir())
                 settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }
-
-        QFile::remove(tempProblemFileName() + ".mesh");
     }
-
-    Util::config()->deleteHermes2DMeshFile = commutator;
-
-    setControls();
 }
 
 void MainWindow::doLoadBackground()

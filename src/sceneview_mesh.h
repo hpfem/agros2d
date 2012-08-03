@@ -81,6 +81,7 @@ public:
 
     QAction *actSceneModeMesh;
     QAction *actExportVTKOrder;
+    QAction *actExportVTKMesh;
 
     virtual QIcon iconView() { return icon("scene-mesh"); }
     virtual QString labelView() { return tr("Mesh and polynomial order view"); }
@@ -89,6 +90,8 @@ public slots:
     virtual void refresh();
     void setControls();
     virtual void clear();
+    void exportVTK(const QString &fileName = QString(), bool exportMeshOnly = false);
+    void exportVTKMesh(const QString &fileName = QString());
     void exportVTKOrderView(const QString &fileName = QString());
 
 protected:

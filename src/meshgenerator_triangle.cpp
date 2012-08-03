@@ -111,7 +111,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Util::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
-            if ((!Util::config()->deleteHermes2DMeshFile) && (!Util::problem()->config()->fileName().isEmpty()))
+            if ((!Util::config()->deleteHermesMeshFile) && (!Util::problem()->config()->fileName().isEmpty()))
             {
                 QFileInfo fileInfoOrig(Util::problem()->config()->fileName());
 

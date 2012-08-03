@@ -70,7 +70,7 @@ void ConfigDialog::load()
 
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteMeshFiles);
-    chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermes2DMeshFile);
+    chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermesMeshFile);
 
     // save problem with solution
     if (Util::config()->showExperimentalFeatures)
@@ -140,7 +140,7 @@ void ConfigDialog::save()
 
     // delete files
     Util::config()->deleteMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
-    Util::config()->deleteHermes2DMeshFile = chkDeleteHermes2DMeshFile->isChecked();
+    Util::config()->deleteHermesMeshFile = chkDeleteHermes2DMeshFile->isChecked();
 
     // save problem with solution
     if (Util::config()->showExperimentalFeatures)

@@ -54,7 +54,7 @@ public:
 
     // delete files
     bool deleteMeshFiles;
-    bool deleteHermes2DMeshFile;
+    bool deleteHermesMeshFile;
 
     // mesh
     bool showInitialMeshView;

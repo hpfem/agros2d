@@ -79,6 +79,7 @@ namespace Hermes
             p += strlen(buffer + p) + 1;
           }
         }
+        tris_orders = NULL;
       }
 
       int Orderizer::add_vertex()
@@ -131,6 +132,7 @@ namespace Hermes
         // reuse or allocate vertex, triangle and edge arrays
         verts = (double3*) realloc(verts, sizeof(double3) * vertex_size);
         tris = (int3*) realloc(tris, sizeof(int3) * triangle_size);
+        tris_orders = (int*) realloc(tris_orders, sizeof(int) * triangle_size);
         edges = (int3*) realloc(edges, sizeof(int3) * edges_size);
         info = NULL;
         lvert = (int*) realloc(lvert, sizeof(int) * label_size);
@@ -171,7 +173,7 @@ namespace Hermes
             make_vert(id[i-1], x[i], y[i], o[(int) pt[i][2]]);
 
           for (int i = 0; i < num_elem[mode][type]; i++)
-            LinearizerBase::add_triangle(id[ord_elem[mode][type][i][0]], id[ord_elem[mode][type][i][1]], id[ord_elem[mode][type][i][2]]);
+            this->add_triangle(id[ord_elem[mode][type][i][0]], id[ord_elem[mode][type][i][1]], id[ord_elem[mode][type][i][2]], o[4]);
 
           for (int i = 0; i < num_edge[mode][type]; i++)
           {
@@ -199,6 +201,32 @@ namespace Hermes
         refmap.set_quad_2d(&g_quad_2d_std);
       }
 
+      void Orderizer::add_triangle(int iv0, int iv1, int iv2, int order)
+      {
+        int index;
+#pragma omp critical(realloc_triangles)
+        {
+          if(this->del_slot >= 0) // reuse a slot after a deleted triangle
+          {
+            index = this->del_slot;
+            del_slot = -1;
+          }
+          {
+            if(triangle_count >= triangle_size)
+            {
+              tris = (int3*) realloc(tris, sizeof(int3) * (triangle_size = triangle_size * 2));
+              tris_orders = (int*) realloc(tris_orders, sizeof(int) * (triangle_size = triangle_size * 2));
+            }
+            index = triangle_count++;
+
+            tris[index][0] = iv0;
+            tris[index][1] = iv1;
+            tris[index][2] = iv2;
+            tris_orders[index] = order;
+          }
+        }
+      }
+
       Orderizer::~Orderizer()
       {
         if(lvert != NULL)
@@ -215,6 +243,11 @@ namespace Hermes
         {
           ::free(lbox);
           lbox = NULL;
+        }
+        if(tris_orders != NULL)
+        {
+          ::free(tris_orders);
+          tris_orders = NULL;
         }
       }
 
@@ -259,14 +292,59 @@ namespace Hermes
         // This outputs double solution values. Look into Hermes2D/src/output/vtk.cpp
         // for how it is done for vectors.
         fprintf(f, "\n");
-        fprintf(f, "POINT_DATA %d\n", this->vertex_count);
+        fprintf(f, "CELL_DATA %d\n", this->triangle_count);
         fprintf(f, "SCALARS %s %s %d\n", "Mesh", "float", 1);
         fprintf(f, "LOOKUP_TABLE %s\n", "default");
-        for (int i = 0; i < this->vertex_count; i++)
+        for (int i = 0; i < this->triangle_count; i++)
         {
-          fprintf(f, "%g\n", this->verts[i][2]);
+          fprintf(f, "%i\n", this->tris_orders[i]);
         }
 
+        unlock_data();
+        fclose(f);
+      }
+
+      template<typename Scalar>
+      void Orderizer::save_mesh_vtk(const Space<Scalar>* space, const char* file_name)
+      {
+        process_space(space);
+
+        FILE* f = fopen(file_name, "wb");
+        if(f == NULL) throw Hermes::Exceptions::Exception("Could not open %s for writing.", file_name);
+        lock_data();
+
+        // Output header for vertices.
+        fprintf(f, "# vtk DataFile Version 2.0\n");
+        fprintf(f, "\n");
+        fprintf(f, "ASCII\n\n");
+        fprintf(f, "DATASET UNSTRUCTURED_GRID\n");
+
+        // Output vertices.
+        fprintf(f, "POINTS %d %s\n", this->vertex_count, "float");
+        for (int i = 0; i < this->vertex_count; i++)
+          fprintf(f, "%g %g %g\n", this->verts[i][0], this->verts[i][1], 0.0);
+
+        // Output elements.
+        fprintf(f, "\n");
+        fprintf(f, "CELLS %d %d\n", this->edges_count, + 3 * this->edges_count);
+        for (int i = 0; i < this->edges_count; i++)
+          fprintf(f, "2 %d %d\n", this->edges[i][0], this->edges[i][1]);
+
+        // Output cell types.
+        fprintf(f, "\n");
+        fprintf(f, "CELL_TYPES %d\n", this->edges_count);
+
+        for (int i = 0; i < this->edges_count; i++)
+          fprintf(f, "3\n");    // The "5" means triangle in VTK.
+
+        // This outputs double solution values. Look into Hermes2D/src/output/vtk.cpp
+        // for how it is done for vectors.
+        fprintf(f, "\n");
+        fprintf(f, "CELL_DATA %d\n", this->edges_count);
+        fprintf(f, "SCALARS %s %s %d\n", "Mesh", "float", 1);
+        fprintf(f, "LOOKUP_TABLE %s\n", "default");
+        for (int i = 0; i < this->edges_count; i++)
+          fprintf(f, "0 \n");
         unlock_data();
         fclose(f);
       }
@@ -297,6 +375,8 @@ namespace Hermes
 
       template HERMES_API void Orderizer::save_orders_vtk<double>(const Space<double>* space, const char* file_name);
       template HERMES_API void Orderizer::save_orders_vtk<std::complex<double> >(const Space<std::complex<double> >* space, const char* file_name);
+      template HERMES_API void Orderizer::save_mesh_vtk<double>(const Space<double>* space, const char* file_name);
+      template HERMES_API void Orderizer::save_mesh_vtk<std::complex<double> >(const Space<std::complex<double> >* space, const char* file_name);
       template HERMES_API void Orderizer::process_space<double>(const Space<double>* space);
       template HERMES_API void Orderizer::process_space<std::complex<double> >(const Space<std::complex<double> >* space);
     }

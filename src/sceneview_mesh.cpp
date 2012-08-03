@@ -20,6 +20,7 @@
 #include "sceneview_mesh.h"
 #include "util.h"
 #include "scene.h"
+#include "hermes2d/field.h"
 #include "logview.h"
 
 #include "scenebasic.h"
@@ -94,7 +95,7 @@ void MeshHermes::processSolutionMesh()
         m_linSolutionMeshView.process_solution(&solution);
 
         m_solutionMeshIsPrepared = true;
-    }    
+    }
 }
 
 void MeshHermes::processMeshed()
@@ -153,6 +154,10 @@ void SceneViewMesh::createActionsMesh()
     actExportVTKOrder = new QAction(tr("Export VTK order..."), this);
     actExportVTKOrder->setStatusTip(tr("Export order view as VTK file"));
     connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(exportVTKOrderView()));
+
+    actExportVTKMesh = new QAction(tr("Export VTK mesh..."), this);
+    actExportVTKMesh->setStatusTip(tr("Export mesh as VTK file"));
+    connect(actExportVTKMesh, SIGNAL(triggered()), this, SLOT(exportVTKMesh()));
 }
 
 void SceneViewMesh::refresh()
@@ -190,6 +195,7 @@ void SceneViewMesh::setControls()
 {
     // actions
     actSceneModeMesh->setEnabled(Util::problem()->isMeshed());
+    actExportVTKMesh->setEnabled(Util::problem()->isSolved());
     actExportVTKOrder->setEnabled(Util::problem()->isSolved());
 }
 
@@ -202,7 +208,18 @@ void SceneViewMesh::clear()
     SceneViewCommon2D::clear();
 }
 
+void SceneViewMesh::exportVTKMesh(const QString &fileName)
+{
+    exportVTK(fileName, true);
+}
+
 void SceneViewMesh::exportVTKOrderView(const QString &fileName)
+{
+    exportVTK(fileName, false);
+}
+
+
+void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
 {
     if (Util::problem()->isSolved())
     {
@@ -227,8 +244,12 @@ void SceneViewMesh::exportVTKOrderView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Orderizer orderView;
-        orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).space.data(),
-                                        fn.toStdString().c_str());
+        if (exportMeshOnly)
+            orderView.save_mesh_vtk(Util::scene()->activeMultiSolutionArray().component(0).space.data(),
+                                    fn.toStdString().c_str());
+        else
+            orderView.save_orders_vtk(Util::scene()->activeMultiSolutionArray().component(0).space.data(),
+                                      fn.toStdString().c_str());
 
         if (!fn.isEmpty())
         {

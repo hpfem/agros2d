@@ -68,7 +68,7 @@ void Config::loadWorkspace()
 
     // delete files
     deleteMeshFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).toBool();
-    deleteHermes2DMeshFile = settings.value("Solver/DeleteHermes2DMeshFile", true).toBool();
+    deleteHermesMeshFile = settings.value("Solver/DeleteHermes2DMeshFile", true).toBool();
 
     // colors
     colorBackground = settings.value("SceneViewSettings/ColorBackground", COLORBACKGROUND).value<QColor>();
@@ -262,7 +262,7 @@ void Config::saveWorkspace()
 
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", deleteMeshFiles);
-    settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermes2DMeshFile);
+    settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermesMeshFile);
 
     // font
     settings.setValue("SceneViewSettings/SceneFont", sceneFont);
