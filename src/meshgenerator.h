@@ -144,6 +144,12 @@ protected:
     };
     */
 
+    QList<Point> nodeList;
+    QList<MeshEdge> edgeList;
+    QList<MeshElement> elementList;
+
+    bool writeToHermes();
+
     bool m_isError;
 };
 

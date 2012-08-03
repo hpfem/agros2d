@@ -30,7 +30,7 @@ class MeshGeneratorTriangle : public MeshGenerator
 private slots:
     void meshTriangleCreated(int exitCode);
     bool writeToTriangle();
-    bool triangleToHermes2D();
+    bool readTriangleMeshFormat();
 
 public:
     MeshGeneratorTriangle();

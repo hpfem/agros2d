@@ -30,7 +30,7 @@ class MeshGeneratorGMSH : public MeshGenerator
 private slots:
     void meshGmshCreated(int exitCode);
     bool writeToGmsh();
-    bool gmshToHermes2D();
+    bool readGmshMeshFile();
 
 public:
     MeshGeneratorGMSH();
