@@ -463,9 +463,11 @@ enum WeakFormKind
 enum MeshType
 {
     MeshType_Triangle,
-    MeshType_QuadFineDivision,
-    MeshType_QuadRoughDivision,
-    MeshType_QuadJoin
+    MeshType_Triangle_QuadFineDivision,
+    MeshType_Triangle_QuadRoughDivision,
+    MeshType_Triangle_QuadJoin,
+    MeshType_GMSH_Triangle,
+    MeshType_GMSH_Quad
 };
 
 enum PhysicFieldVariableComp

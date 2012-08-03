@@ -64,9 +64,6 @@ bool MeshGeneratorGMSH::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh"))
             gmshBinary = QApplication::applicationDirPath() + QDir::separator() + "gmsh";
 
-        qDebug() << QString(Util::config()->commandGmsh).
-                    arg(gmshBinary).
-                    arg(tempProblemFileName());
         processGmsh.start(QString(Util::config()->commandGmsh).
                           arg(gmshBinary).
                           arg(tempProblemFileName()));
@@ -289,12 +286,22 @@ bool MeshGeneratorGMSH::writeToGmsh()
     outLoops.append(QString("Line Loop(2) = {4, 5, 6, -1};\n"));
     outLoops.append(QString("Plane Surface(2) = {2};\n"));
     outLoops.append("\n");
-    outLoops.append(QString("Recombine Surface {1, 2};\n"));
 
+    // quad mesh
+    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+        outLoops.append(QString("Recombine Surface {1, 2};\n"));
+
+    // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
     QString outCommands;
-    outCommands.append(QString("Mesh.Algorithm = 8;\n")); // 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
-    // outCommands.append(QString("Mesh.CharacteristicLengthFactor = 5;\n"));
-    outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
+    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    {
+        outCommands.append(QString("Mesh.Algorithm = 8;\n"));
+        outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
+    }
+    else if (Util::problem()->config()->meshType() == MeshType_GMSH_Triangle)
+    {
+        outCommands.append(QString("Mesh.Algorithm = 2;\n"));
+    }
 
     outNodes.insert(0, QString("\n// nodes\n"));
     out << outNodes;

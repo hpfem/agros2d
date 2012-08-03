@@ -77,7 +77,7 @@ Problem::Problem()
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));        
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));
 }
 
 Problem::~Problem()
@@ -273,11 +273,29 @@ bool Problem::mesh()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
-    // MeshGeneratorTriangle pim;
-    MeshGeneratorGMSH pim;
-    if (pim.mesh())
+    MeshGenerator *pim = NULL;
+    switch (Util::problem()->config()->meshType())
+    {
+    case MeshType_Triangle:
+    case MeshType_Triangle_QuadFineDivision:
+    case MeshType_Triangle_QuadRoughDivision:
+    case MeshType_Triangle_QuadJoin:
+        pim = new MeshGeneratorTriangle();
+        break;
+    case MeshType_GMSH_Triangle:
+    case MeshType_GMSH_Quad:
+        pim = new MeshGeneratorGMSH();
+        break;
+    default:
+        QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(Util::problem()->config()->meshType())));
+        break;
+    }
+
+    if (pim && pim->mesh())
     {
         emit meshed();
+        delete pim;
+
         return true;
     }
 
@@ -398,13 +416,13 @@ void Problem::solveAction()
                 }
                 else
                 {
-//                    if(block->isTransient())
-//                    {
-//                        // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
-//                        // vezmu treba pred pred posledni adaptivni krok a tim budu mit derefinement
-//                        QMessageBox::warning(QApplication::activeWindow(), "Solver Error", "Adaptivity not implemented for transient problems");
-//                        return;
-//                    }
+                    //                    if(block->isTransient())
+                    //                    {
+                    //                        // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
+                    //                        // vezmu treba pred pred posledni adaptivni krok a tim budu mit derefinement
+                    //                        QMessageBox::warning(QApplication::activeWindow(), "Solver Error", "Adaptivity not implemented for transient problems");
+                    //                        return;
+                    //                    }
 
                     solver->createInitialSpace(timeStep);
                     int adaptStep = 1;
@@ -567,11 +585,11 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
         return;
     }
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
-//                        catch (...)
-//                        {
-//                            // Util::log()->printError(tr("Problem"), QString::fromStdString(e.what()));
-//                            return;
-//                        }
+    //                        catch (...)
+    //                        {
+    //                            // Util::log()->printError(tr("Problem"), QString::fromStdString(e.what()));
+    //                            return;
+    //                        }
 
 }
 

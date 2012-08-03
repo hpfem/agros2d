@@ -460,13 +460,13 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         assert(marker > 0);
 
         if (Util::problem()->config()->meshType() == MeshType_Triangle ||
-                Util::problem()->config()->meshType() == MeshType_QuadJoin ||
-                Util::problem()->config()->meshType() == MeshType_QuadRoughDivision)
+                Util::problem()->config()->meshType() == MeshType_Triangle_QuadJoin ||
+                Util::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
         {
             elementList.append(MeshElement(node[0], node[1], node[2], marker - 1)); // marker conversion from triangle, where it starts from 1
         }
 
-        if (Util::problem()->config()->meshType() == MeshType_QuadFineDivision)
+        if (Util::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
         {
             // add additional node
             nodeList.append(Point((nodeList[node[0]].x + nodeList[node[1]].x + nodeList[node[2]].x) / 3.0,
@@ -531,7 +531,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
 
     // heterogeneous mesh
     // element division
-    if (Util::problem()->config()->meshType() == MeshType_QuadFineDivision)
+    if (Util::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
     {
         for (int i = 0; i < edgeCountLinear; i++)
         {
@@ -552,7 +552,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         }
     }
 
-    if (Util::problem()->config()->meshType() == MeshType_QuadRoughDivision)
+    if (Util::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
     {
         for (int i = 0; i < elementCountLinear; i++)
         {
@@ -594,7 +594,7 @@ bool MeshGeneratorTriangle::triangleToHermes2D()
         }
     }
 
-    if (Util::problem()->config()->meshType() == MeshType_QuadJoin)
+    if (Util::problem()->config()->meshType() == MeshType_Triangle_QuadJoin)
     {
         for (int i = 0; i < elementCountLinear; i++)
         {

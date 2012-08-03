@@ -141,9 +141,11 @@ void initLists()
 
     // Mesh Type
     meshTypeList.insert(MeshType_Triangle, "triangle");
-    meshTypeList.insert(MeshType_QuadFineDivision, "quad_fine_division");
-    meshTypeList.insert(MeshType_QuadRoughDivision, "quad_rough_division");
-    meshTypeList.insert(MeshType_QuadJoin, "quad_join");
+    meshTypeList.insert(MeshType_Triangle_QuadFineDivision, "triangle_quad_fine_division");
+    meshTypeList.insert(MeshType_Triangle_QuadRoughDivision, "triangle_quad_rough_division");
+    meshTypeList.insert(MeshType_Triangle_QuadJoin, "triangle_quad_join");
+    meshTypeList.insert(MeshType_GMSH_Triangle, "gmsh_triangle");
+    meshTypeList.insert(MeshType_GMSH_Quad, "gmsh_quad");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -370,12 +372,16 @@ QString meshTypeString(MeshType meshType)
     {
     case MeshType_Triangle:
         return QObject::tr("Triangle");
-    case MeshType_QuadFineDivision:
-        return QObject::tr("Quad fine div.");
-    case MeshType_QuadRoughDivision:
-        return QObject::tr("Quad rough div.");
-    case MeshType_QuadJoin:
-        return QObject::tr("Quad join");
+    case MeshType_Triangle_QuadFineDivision:
+        return QObject::tr("Triangle - quad fine div.");
+    case MeshType_Triangle_QuadRoughDivision:
+        return QObject::tr("Triangle - quad rough div.");
+    case MeshType_Triangle_QuadJoin:
+        return QObject::tr("Triangle - quad join");
+    case MeshType_GMSH_Triangle:
+        return QObject::tr("GMSH - triangle");
+    case MeshType_GMSH_Quad:
+        return QObject::tr("GMSH - quad");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;
