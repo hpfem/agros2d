@@ -17,8 +17,25 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#ifndef MESHGENERATOR_GMSH_H
+#define MESHGENERATOR_GMSH_H
+
+#include "util.h"
 #include "meshgenerator.h"
 
-MeshGenerator::MeshGenerator() : QObject()
-{    
-}
+class MeshGeneratorGMSH : public MeshGenerator
+{
+    Q_OBJECT
+
+private slots:
+    void meshGmshCreated(int exitCode);
+    bool writeToGmsh();
+    bool gmshToHermes2D();
+
+public:
+    MeshGeneratorGMSH();
+
+    virtual bool mesh();
+};
+
+#endif //MESHGENERATOR_GMSH_H

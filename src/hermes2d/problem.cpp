@@ -32,7 +32,8 @@
 #include "module_agros.h"
 #include "coupling.h"
 #include "solver.h"
-#include "meshgenerator.h"
+#include "meshgenerator_triangle.h"
+#include "meshgenerator_gmsh.h"
 #include "logview.h"
 
 ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
@@ -272,7 +273,8 @@ bool Problem::mesh()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
-    MeshGeneratorTriangle pim;
+    // MeshGeneratorTriangle pim;
+    MeshGeneratorGMSH pim;
     if (pim.mesh())
     {
         emit meshed();

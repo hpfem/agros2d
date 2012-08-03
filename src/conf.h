@@ -53,7 +53,7 @@ public:
     bool zoomToMouse;
 
     // delete files
-    bool deleteTriangleMeshFiles;
+    bool deleteMeshFiles;
     bool deleteHermes2DMeshFile;
 
     // mesh
@@ -179,6 +179,7 @@ public:
 
     // command argument
     QString commandTriangle;
+    QString commandGmsh;
 
     // number of threads
     int numberOfThreads;

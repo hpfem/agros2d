@@ -17,8 +17,25 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#ifndef MESHGENERATOR_TRIANGLE_H
+#define MESHGENERATOR_TRIANGLE_H
+
+#include "util.h"
 #include "meshgenerator.h"
 
-MeshGenerator::MeshGenerator() : QObject()
-{    
-}
+class MeshGeneratorTriangle : public MeshGenerator
+{
+    Q_OBJECT
+
+private slots:
+    void meshTriangleCreated(int exitCode);
+    bool writeToTriangle();
+    bool triangleToHermes2D();
+
+public:
+    MeshGeneratorTriangle();
+
+    virtual bool mesh();
+};
+
+#endif //MESHGENERATOR_TRIANGLE_H

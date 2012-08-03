@@ -80,6 +80,8 @@ SOURCES += util.cpp \
     sceneview_post2d.cpp \
     sceneview_post3d.cpp \
     meshgenerator.cpp \
+    meshgenerator_triangle.cpp \
+    meshgenerator_gmsh.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
@@ -151,6 +153,8 @@ HEADERS += util.h \
     sceneview_post2d.h \
     sceneview_post3d.h \
     meshgenerator.h \
+    meshgenerator_triangle.h \
+    meshgenerator_gmsh.h \
     chartdialog.h \
     problemdialog.h \
     scenetransformdialog.h \

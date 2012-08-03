@@ -69,7 +69,7 @@ void ConfigDialog::load()
     txtNumOfThreads->setValue(Util::config()->numberOfThreads);
 
     // delete files
-    chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteTriangleMeshFiles);
+    chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteMeshFiles);
     chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermes2DMeshFile);
 
     // save problem with solution
@@ -87,6 +87,7 @@ void ConfigDialog::load()
 
     // command argument
     txtArgumentTriangle->setText(Util::config()->commandTriangle);
+    txtArgumentGmsh->setText(Util::config()->commandGmsh);
 
     // experimental features
     chkExperimentalFeatures->setChecked(Util::config()->showExperimentalFeatures);
@@ -138,7 +139,7 @@ void ConfigDialog::save()
     Util::config()->numberOfThreads = txtNumOfThreads->value();
 
     // delete files
-    Util::config()->deleteTriangleMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
+    Util::config()->deleteMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
     Util::config()->deleteHermes2DMeshFile = chkDeleteHermes2DMeshFile->isChecked();
 
     // save problem with solution
@@ -156,6 +157,7 @@ void ConfigDialog::save()
 
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();
+    Util::config()->commandGmsh = txtArgumentGmsh->text();
 
     // experimental features
     Util::config()->showExperimentalFeatures = chkExperimentalFeatures->isChecked();
@@ -410,6 +412,7 @@ QWidget *ConfigDialog::createSolverWidget()
 
     // commands
     txtArgumentTriangle = new QLineEdit("");
+    txtArgumentGmsh = new QLineEdit("");
 
     // default
     QPushButton *btnCommandsDefault = new QPushButton(tr("Default"));
@@ -418,6 +421,8 @@ QWidget *ConfigDialog::createSolverWidget()
     QVBoxLayout *layoutCommands = new QVBoxLayout();
     layoutCommands->addWidget(new QLabel(tr("Triangle")));
     layoutCommands->addWidget(txtArgumentTriangle);
+    layoutCommands->addWidget(new QLabel(tr("GMSH")));
+    layoutCommands->addWidget(txtArgumentGmsh);
     layoutCommands->addStretch();
     layoutCommands->addWidget(btnCommandsDefault, 0, Qt::AlignLeft);
 
@@ -499,5 +504,6 @@ void ConfigDialog::doAdaptivityDefault()
 void ConfigDialog::doCommandsDefault()
 {
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
+    txtArgumentGmsh->setText(COMMANDS_GMSH);
 }
 

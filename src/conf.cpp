@@ -67,7 +67,7 @@ void Config::loadWorkspace()
     zoomToMouse = settings.value("Geometry/ZoomToMouse", true).toBool();
 
     // delete files
-    deleteTriangleMeshFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).toBool();
+    deleteMeshFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).toBool();
     deleteHermes2DMeshFile = settings.value("Solver/DeleteHermes2DMeshFile", true).toBool();
 
     // colors
@@ -216,6 +216,7 @@ void Config::loadAdvanced()
     projNormType = (Hermes::Hermes2D::ProjNormType) settings.value("Adaptivity/ProjNormType", ADAPTIVITY_PROJNORMTYPE).toInt();
 
     // command argument
+    commandGmsh = settings.value("Commands/Gmsh", COMMANDS_GMSH).toString();
     commandTriangle = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
     // add quadratic elements (added points on the middle of edge used by rough triangle division)
     if (!commandTriangle.contains("-o2"))
@@ -260,7 +261,7 @@ void Config::saveWorkspace()
         saveProblemWithSolution = false;
 
     // delete files
-    settings.setValue("Solver/DeleteTriangleMeshFiles", deleteTriangleMeshFiles);
+    settings.setValue("Solver/DeleteTriangleMeshFiles", deleteMeshFiles);
     settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermes2DMeshFile);
 
     // font
@@ -409,6 +410,7 @@ void Config::saveAdvanced()
 
     // command argument
     settings.setValue("Commands/Triangle", commandTriangle);
+    settings.setValue("Commands/Gmsh", commandGmsh);
 
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);

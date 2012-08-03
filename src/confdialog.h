@@ -101,6 +101,7 @@ private:
     QSpinBox *txtNumOfThreads;
 
     QLineEdit *txtArgumentTriangle;
+    QLineEdit *txtArgumentGmsh;
 
     // global script
     ScriptEditor *txtGlobalScript;

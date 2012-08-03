@@ -22,20 +22,16 @@
 
 #include "util.h"
 
-class MeshGeneratorTriangle : public QObject
+class MeshGenerator : public QObject
 {
     Q_OBJECT
 
-private slots:
-    void meshTriangleCreated(int exitCode);
-    bool writeToTriangle();
-    bool triangleToHermes2D();
-
 public:
-    MeshGeneratorTriangle();
-    bool mesh();
+    MeshGenerator();
 
-private:
+    virtual bool mesh() = 0;
+
+protected:
     struct MeshEdge
     {
         MeshEdge()
