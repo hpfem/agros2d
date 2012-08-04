@@ -4,7 +4,7 @@ import agros2d
 problem = agros2d.problem(clear = True)
 problem.name = "unnamed"
 problem.coordinate_type = "planar"
-problem.mesh_type = "quad_fine_division"
+problem.mesh_type = "triangle_quad_fine_division"
 problem.matrix_solver = "umfpack"
 
 # fields
