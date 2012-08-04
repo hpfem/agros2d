@@ -182,6 +182,47 @@ SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEn
     return NULL;
 }
 
+RectPoint SceneEdgeContainer::boundingBox() const
+{
+    Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
+    Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
+
+    foreach (SceneEdge *edge, data)
+    {
+        if (edge->isStraight())
+        {
+            min.x = qMin(min.x, qMin(edge->nodeStart()->point().x, edge->nodeEnd()->point().x));
+            max.x = qMax(max.x, qMax(edge->nodeStart()->point().x, edge->nodeEnd()->point().x));
+            min.y = qMin(min.y, qMin(edge->nodeStart()->point().y, edge->nodeEnd()->point().y));
+            max.y = qMax(max.y, qMax(edge->nodeStart()->point().y, edge->nodeEnd()->point().y));
+        }
+        else
+        {
+            int segments = 4;
+            double theta = deg2rad(edge->angle()) / double(segments);
+            Point center = edge->center();
+            double radius = edge->radius();
+
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                      center.x - edge->nodeStart()->point().x) - M_PI;
+
+            for (int i = 0; i < segments + 1; i++)
+            {
+                double arc = startAngle + i*theta;
+
+                double x = center.x + radius * cos(arc);
+                double y = center.y + radius * sin(arc);
+
+                min.x = qMin(min.x, x);
+                max.x = qMax(max.x, x);
+                min.y = qMin(min.y, y);
+                max.y = qMax(max.y, y);
+            }
+        }
+    }
+
+    return RectPoint(min, max);
+}
 
 // *************************************************************************************************************************************
 

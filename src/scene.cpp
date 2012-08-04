@@ -554,13 +554,23 @@ void Scene::clear()
 
 RectPoint Scene::boundingBox() const
 {
-    if (nodes->isEmpty())
+    if (nodes->isEmpty() && edges->isEmpty() && labels->isEmpty())
     {
         return RectPoint(Point(-0.5, -0.5), Point(0.5, 0.5));
     }
     else
     {
-        return nodes->boundingBox();
+        // nodes bounding box
+        RectPoint nodesBoundingBox = nodes->boundingBox();
+        // edges bounding box
+        RectPoint edgesBoundingBox = edges->boundingBox();
+        // labels bounding box
+        RectPoint labelsBoundingBox = labels->boundingBox();
+
+        return RectPoint(Point(qMin(qMin(nodesBoundingBox.start.x, edgesBoundingBox.start.x), labelsBoundingBox.start.x),
+                               qMin(qMin(nodesBoundingBox.start.y, edgesBoundingBox.start.y), labelsBoundingBox.start.y)),
+                         Point(qMax(qMax(nodesBoundingBox.end.x, edgesBoundingBox.end.x), labelsBoundingBox.end.x),
+                               qMax(qMax(nodesBoundingBox.end.y, edgesBoundingBox.end.y), labelsBoundingBox.end.y)));
     }
 }
 

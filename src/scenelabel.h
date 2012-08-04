@@ -53,9 +53,14 @@ private:
 class SceneLabelContainer : public MarkedSceneBasicContainer<SceneMaterial, SceneLabel>
 {
 public:
-    /// if container contains the same label, returns it. Otherwise returns NULL
+    /// if container contains object with the same coordinates as label, returns it. Otherwise returns NULL
     SceneLabel* get(SceneLabel* label) const;
+
+    /// returns label with given coordinates or NULL
     SceneLabel* get(const Point& point) const;
+
+    /// returns bounding box, assumes container not empty
+    RectPoint boundingBox() const;
 };
 
 

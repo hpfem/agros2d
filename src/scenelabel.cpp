@@ -84,6 +84,22 @@ SceneLabel* SceneLabelContainer::get(const Point& point) const
     return NULL;
 }
 
+RectPoint SceneLabelContainer::boundingBox() const
+{
+    Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
+    Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
+
+    foreach (SceneLabel *label, data)
+    {
+        min.x = qMin(min.x, label->point().x);
+        max.x = qMax(max.x, label->point().x);
+        min.y = qMin(min.y, label->point().y);
+        max.y = qMax(max.y, label->point().y);
+    }
+
+    return RectPoint(min, max);
+}
+
 // *************************************************************************************************************************************
 
 SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWidget *parent)

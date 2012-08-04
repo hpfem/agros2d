@@ -975,7 +975,7 @@ void SceneViewPreprocessor::paintGeometry()
             glLineWidth(Util::config()->edgeWidth + 2.0);
         }
 
-        if (fabs(edge->angle()) < EPS_ZERO)
+        if (edge->isStraight())
         {
             glBegin(GL_LINES);
             glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);

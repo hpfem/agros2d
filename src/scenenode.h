@@ -57,8 +57,6 @@ private:
 class SceneNodeContainer : public SceneBasicContainer<SceneNode>
 {
 public:
- //   SceneNodeContainer();
-
     /// if container contains object with the same coordinates as node, returns it. Otherwise returns NULL
     SceneNode* get(SceneNode* node) const;
 
