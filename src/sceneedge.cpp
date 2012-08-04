@@ -189,14 +189,13 @@ RectPoint SceneEdgeContainer::boundingBox() const
 
     foreach (SceneEdge *edge, data)
     {
-        if (edge->isStraight())
-        {
-            min.x = qMin(min.x, qMin(edge->nodeStart()->point().x, edge->nodeEnd()->point().x));
-            max.x = qMax(max.x, qMax(edge->nodeStart()->point().x, edge->nodeEnd()->point().x));
-            min.y = qMin(min.y, qMin(edge->nodeStart()->point().y, edge->nodeEnd()->point().y));
-            max.y = qMax(max.y, qMax(edge->nodeStart()->point().y, edge->nodeEnd()->point().y));
-        }
-        else
+        // start and end node
+        min.x = qMin(min.x, qMin(edge->nodeStart()->point().x, edge->nodeEnd()->point().x));
+        max.x = qMax(max.x, qMax(edge->nodeStart()->point().x, edge->nodeEnd()->point().x));
+        min.y = qMin(min.y, qMin(edge->nodeStart()->point().y, edge->nodeEnd()->point().y));
+        max.y = qMax(max.y, qMax(edge->nodeStart()->point().y, edge->nodeEnd()->point().y));
+
+        if (!edge->isStraight())
         {
             int segments = 4;
             double theta = deg2rad(edge->angle()) / double(segments);
@@ -206,7 +205,7 @@ RectPoint SceneEdgeContainer::boundingBox() const
             double startAngle = atan2(center.y - edge->nodeStart()->point().y,
                                       center.x - edge->nodeStart()->point().x) - M_PI;
 
-            for (int i = 0; i < segments + 1; i++)
+            for (int i = 1; i < segments; i++)
             {
                 double arc = startAngle + i*theta;
 
