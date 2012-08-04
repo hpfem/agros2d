@@ -435,6 +435,39 @@ void ModuleDialog::load()
         item->setText(1, QString::fromStdString((quantity.shortname().present()) ? quantity.shortname().get() : ""));
     }
 
+    // volume weakforms
+    for (int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume wf = module->volume().weakforms_volume().weakform_volume().at(i);
+
+        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeVolumeWeakforms);
+        analysis->setExpanded(true);
+        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf.analysistype()))));
+
+        // weakform
+        for (int i = 0; i < wf.matrix_form().size(); i++)
+        {
+            XMLModule::matrix_form form = wf.matrix_form().at(i);
+
+            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+
+            item->setText(0, tr("Matrix form"));
+            item->setText(1, QString::number(form.i()));
+            item->setText(2, QString::number(form.j()));
+        }
+
+        for (int i = 0; i < wf.vector_form().size(); i++)
+        {
+            XMLModule::vector_form form = wf.vector_form().at(i);
+
+            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+
+            item->setText(0, tr("Vector form"));
+            item->setText(1, QString::number(form.i()));
+            item->setText(2, QString::number(form.j()));
+        }
+    }
+
     // surface weakform quantities
     treeSurfaceQuantity->clear();
     for (int i = 0; i < module->surface().quantity().size(); i++)
@@ -446,6 +479,41 @@ void ModuleDialog::load()
         item->setData(0, Qt::UserRole, QString::fromStdString(quantity.id()));
         item->setText(0, QString::fromStdString(quantity.id()));
         item->setText(1, QString::fromStdString((quantity.shortname().present()) ? quantity.shortname().get() : ""));
+    }
+
+    // surface weakforms
+    for (int i = 0; i < module->surface().weakforms_surface().weakform_surface().size(); i++)
+    {
+        /*
+        XMLModule::weakforms_surface wf = module->surface().weakform_surface().weakform_surface().at(i);
+
+        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeSurfaceWeakforms);
+        analysis->setExpanded(true);
+        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf.analysistype()))));
+
+        // weakform
+        for (int i = 0; i < wf.matrix_form().size(); i++)
+        {
+            XMLModule::matrix_form form = wf.matrix_form().at(i);
+
+            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+
+            item->setText(0, tr("Matrix form"));
+            item->setText(1, QString::number(form.i()));
+            item->setText(2, QString::number(form.j()));
+        }
+
+        for (int i = 0; i < wf.vector_form().size(); i++)
+        {
+            XMLModule::vector_form form = wf.vector_form().at(i);
+
+            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+
+            item->setText(0, tr("Vector form"));
+            item->setText(1, QString::number(form.i()));
+            item->setText(2, QString::number(form.j()));
+        }
+        */
     }
 
     // materials and boundaries
@@ -560,6 +628,12 @@ void ModuleDialog::load()
 
 void ModuleDialog::save()
 {
+    XMLModule::module *module = m_module_xsd.get();
+
+    // main
+    module->general().name(txtName->text().toStdString());
+    module->general().description(txtDescription->toPlainText().toStdString());
+
     try
     {
         std::string mesh_schema_location("");
@@ -725,8 +799,26 @@ QWidget *ModuleDialog::createWeakforms()
     QWidget *volumeQuantities = new QWidget(this);
     volumeQuantities->setLayout(layoutVolumeQuantity);
 
+    treeVolumeWeakforms = new QTreeWidget(this);
+    treeVolumeWeakforms->setMouseTracking(true);
+    treeVolumeWeakforms->setColumnCount(3);
+    treeVolumeWeakforms->setColumnWidth(0, 200);
+    treeVolumeWeakforms->setIndentation(12);
+    QStringList headVolumeWeakforms;
+    headVolumeWeakforms << tr("Type") << tr("i") << tr("j");
+    treeVolumeWeakforms->setHeaderLabels(headVolumeWeakforms);
+
+    // connect(treeVolumeQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(volumeQuantityDoubleClicked(QTreeWidgetItem *, int)));
+
+    QVBoxLayout *layoutVolumeWeakforms = new QVBoxLayout();
+    layoutVolumeWeakforms->addWidget(treeVolumeWeakforms);
+
+    QWidget *volumeWeakforms = new QWidget(this);
+    volumeWeakforms->setLayout(layoutVolumeWeakforms);
+
     QVBoxLayout *layoutVolume = new QVBoxLayout();
     layoutVolume->addWidget(volumeQuantities);
+    layoutVolume->addWidget(volumeWeakforms);
     layoutVolume->addStretch();
 
     QWidget *weakformVolume = new QWidget(this);

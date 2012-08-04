@@ -214,6 +214,8 @@ private:
     QTreeWidget *treeVolumeQuantity;
     QTreeWidget *treeSurfaceQuantity;
 
+    QTreeWidget *treeVolumeWeakforms;
+
     // preprocessor
     QTreeWidget *treeMaterials;
     QTreeWidget *treeBoundaries;
