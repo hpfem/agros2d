@@ -813,6 +813,8 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
     glColor3d(0.0, 0.53, 0.0);
 
     Point p = position(m_lastPos.x(), m_lastPos.y());
+    Point rulersArea = rulersAreaWidth();
+    double rulersNumbers = rulersNumbersWidth();
 
     Point snapPoint = p;
     if (m_snapToGrid)
@@ -826,28 +828,28 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
 
         glLineWidth(1.0);
         glBegin(GL_LINES);
-        glVertex2d(snapPoint.x, cornerMax.y - m_rulersAreaWidth.y);
+        glVertex2d(snapPoint.x, cornerMax.y - rulersArea.y);
         glVertex2d(snapPoint.x, cornerMin.y);
-        glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x, snapPoint.y);
+        glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x, snapPoint.y);
         glVertex2d(cornerMax.x, snapPoint.y);
         glEnd();
 
         glDisable(GL_LINE_STIPPLE);
 
-        renderTextPos(snapPoint.x + m_rulersAreaWidth.x, snapPoint.y - m_rulersAreaWidth.y,
+        renderTextPos(snapPoint.x + rulersArea.x, snapPoint.y - rulersArea.y,
                       QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
     }
 
     // ticks
     glLineWidth(3.0);
     glBegin(GL_TRIANGLES);
-    glVertex2d(snapPoint.x, cornerMax.y - m_rulersAreaWidth.y);
-    glVertex2d(snapPoint.x + m_rulersAreaWidth.x * 2.0/7.0, cornerMax.y - m_rulersAreaWidth.y * 2.0/3.0);
-    glVertex2d(snapPoint.x - m_rulersAreaWidth.x * 2.0/7.0, cornerMax.y - m_rulersAreaWidth.y * 2.0/3.0);
+    glVertex2d(snapPoint.x, cornerMax.y - rulersArea.y);
+    glVertex2d(snapPoint.x + rulersArea.x * 2.0/7.0, cornerMax.y - rulersArea.y * 2.0/3.0);
+    glVertex2d(snapPoint.x - rulersArea.x * 2.0/7.0, cornerMax.y - rulersArea.y * 2.0/3.0);
 
-    glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x, snapPoint.y);
-    glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x * 2.0/3.0, snapPoint.y + m_rulersAreaWidth.y * 2.0/7.0);
-    glVertex2d(cornerMin.x + m_rulersNumbersWidth + m_rulersAreaWidth.x * 2.0/3.0, snapPoint.y - m_rulersAreaWidth.y * 2.0/7.0);
+    glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x, snapPoint.y);
+    glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x * 2.0/3.0, snapPoint.y + rulersArea.y * 2.0/7.0);
+    glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x * 2.0/3.0, snapPoint.y - rulersArea.y * 2.0/7.0);
     glEnd();
 }
 

@@ -177,6 +177,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     if (settings.value("General/CheckVersion", true).value<bool>())
         checkForNewVersion(true);
 
+    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
+    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
+    splitter->restoreState(settings.value("MainWindow/SplitterState").toByteArray());
+    // show/hide control panel
+    actHideControlPanel->setChecked(settings.value("MainWindow/ControlPanel", true).toBool());
+    doHideControlPanel();
+
+    setControls();
+
     // parameters
     QStringList args = QCoreApplication::arguments();
     for (int i = 1; i < args.count(); i++)
@@ -205,15 +214,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QString fileName = args[i];
         open(fileName);
     }
-
-    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
-    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
-    splitter->restoreState(settings.value("MainWindow/SplitterState").toByteArray());
-    // show/hide control panel
-    actHideControlPanel->setChecked(settings.value("MainWindow/ControlPanel", true).toBool());
-    doHideControlPanel();
-
-    setControls();
 }
 
 MainWindow::~MainWindow()

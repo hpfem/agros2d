@@ -75,6 +75,11 @@ protected:
     inline Point position(double x, double y) const { return position(Point(x, y)); }
     Point position(const Point &point) const;
 
+    // rulers
+    QFont fontLabel();
+    Point rulersAreaWidth();
+    double rulersNumbersWidth();
+
 private slots:
     void updatePosition(const Point &point);
 };
