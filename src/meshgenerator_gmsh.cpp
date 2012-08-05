@@ -153,6 +153,15 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
     }
 }
 
+// todo: create different exceptions for different errors and pass arguments as labels, lists of edges etc.. to be used in preprocessor
+class AgrosMeshException
+{
+public:
+    AgrosMeshException(QString str) { this->str = str; }
+    QString str;
+};
+
+
 const int NON_EXISTING = -100000;
 
 struct NodeEdgeData
@@ -277,7 +286,41 @@ void Graph::print()
     cout << "\n";
 }
 
-QList<QList<NodeEdgeData> > findLoops()
+double windingNumber(Point point, QList<NodeEdgeData> loop)
+{
+    QList<double> angles;
+    foreach(NodeEdgeData ned, loop)
+    {
+        Point nodePoint = Util::scene()->nodes->at(ned.node)->point();
+        double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
+        assert((angle <= M_PI) && (angle >= -M_PI));
+
+        // move to interval <0, 2*pi)
+        if(angle < 0)
+            angle += 2 * M_PI;
+        angles.append(angle);
+    }
+
+    double totalAngle = 0;
+    for(int i = 0; i < angles.size(); i++)
+    {
+        double angle = angles[(i+1) % angles.size()] - angles[i];
+        //cout << ""
+        if(angle < - M_PI)
+            angle = 2*M_PI + angle;
+        if(angle > M_PI)
+            angle = -2*M_PI + angle;
+        assert((angle <= M_PI) && (angle >= -M_PI));
+        totalAngle += angle;
+    }
+
+    double winding = fabs(totalAngle / (2*M_PI));
+    int intWinding = round(winding);
+    assert(winding - (double)intWinding < 0.00001);
+    return intWinding;
+}
+
+QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
 {
     Graph graph(Util::scene()->nodes->length());
     for (int i = 0; i < Util::scene()->edges->length(); i++)
@@ -322,7 +365,58 @@ QList<QList<NodeEdgeData> > findLoops()
         }
     }
 
-    return loops;
+    QList<QList< SceneLabel* > > correspondingLabels;
+
+    for(int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
+    {
+        correspondingLabels.push_back(QList<SceneLabel*>());
+        for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
+        {
+            SceneLabel* label = Util::scene()->labels->at(labelIdx);
+            int wn = windingNumber(label->point(), loops[loopIdx]);
+            cout << "winding number " << wn << endl;
+            assert(wn < 2);
+            if(wn == 1)
+                correspondingLabels[loopIdx].push_back(label);
+        }
+    }
+
+    // todo: improve exceptions strings
+
+    int idxOuterLoop = -1;
+    for(int i = 0; i < correspondingLabels.size(); i++)
+    {
+        if(correspondingLabels[i].size() == Util::scene()->labels->count())
+            idxOuterLoop = i;
+    }
+    if(idxOuterLoop == -1)
+        throw(AgrosMeshException("There is a label outside the domain"));
+
+    QMap<SceneLabel*, QList<NodeEdgeData> > loopsMap;
+
+    for(int i = 0; i < correspondingLabels.size(); i++)
+    {
+        int numLabels = correspondingLabels[i].size();
+        if( numLabels == 0 )
+        {
+            throw(AgrosMeshException("There is no label in some domain"));
+        }
+        else if(numLabels > 1)
+        {
+            if(i != idxOuterLoop)
+                throw(AgrosMeshException("There are two labels in some domain"));
+        }
+        else
+        {
+            SceneLabel* label = correspondingLabels[i][0];
+            if(loopsMap.contains(label))
+                assert((correspondingLabels.size() == 2) && (Util::scene()->labels->count() == 1));
+            else
+                loopsMap[label] = loops[i];
+        }
+    }
+
+    return loopsMap;
 }
 
 bool MeshGeneratorGMSH::writeToGmsh()
@@ -452,11 +546,21 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     // TODO: find loops
 
-    QList<QList<NodeEdgeData> > loops = findLoops();
+    QMap<SceneLabel*, QList<NodeEdgeData> > loopsMap;
+    try{
+         loopsMap = findLoops();
+    }
+    catch(AgrosMeshException& ame)
+    {
+        cout << ame.str.toStdString() << endl;
+    }
+
+    QList<QList<NodeEdgeData> > loops = loopsMap.values();
+
     QString outLoops;
     for(int i = 0; i < loops.size(); i++)
     {
-        outLoops.append(QString("Line Loop(%1) = {").arg(i));
+        outLoops.append(QString("Line Loop(%1) = {").arg(i+1));
         for(int j = 0; j < loops[i].size(); j++)
         {
             if(loops[i][j].reverse)
@@ -466,10 +570,22 @@ bool MeshGeneratorGMSH::writeToGmsh()
                 outLoops.append(",");
         }
         outLoops.append(QString("};\n"));
-        outLoops.append(QString("Plane Surface(%1) = {%2};\n").arg(i).arg(i));
+        outLoops.append(QString("Plane Surface(%1) = {%1};\n").arg(i+1));
     }
     outLoops.append("\n");
 
+    // quad mesh
+    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    {
+        outLoops.append(QString("Recombine Surface {"));
+        for(int i = 0; i < loops.size(); i++)
+        {
+            outLoops.append(QString("%1").arg(i+1));
+            if(i < loops.size() - 1)
+                outLoops.append(",");
+        }
+        outLoops.append(QString("};\n"));
+    }
 //    QString outLoops;
 //    outLoops.append(QString("Line Loop(1) = {0, 1, 2, 3};\n"));
 //    outLoops.append(QString("Plane Surface(1) = {1};\n"));
@@ -477,9 +593,9 @@ bool MeshGeneratorGMSH::writeToGmsh()
 //    outLoops.append(QString("Plane Surface(2) = {2};\n"));
 //    outLoops.append("\n");
 
-    // quad mesh
-    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
-        outLoops.append(QString("Recombine Surface {1, 2};\n"));
+//    // quad mesh
+//    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+//        outLoops.append(QString("Recombine Surface {1, 2};\n"));
 
     // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
     QString outCommands;
