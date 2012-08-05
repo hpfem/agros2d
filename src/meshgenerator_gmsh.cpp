@@ -175,14 +175,6 @@ struct NodeEdgeData
     bool visited;
 };
 
-void normalizeAngle(double &angle)
-{
-    while(angle < 0)
-        angle += M_PI;
-    while(angle >= M_PI)
-        angle -= M_PI;
-}
-
 struct Node
 {
     void insertEdge(int endNode, int edgeIdx, bool reverse,  double angle);
@@ -244,7 +236,7 @@ void Node::insertEdge(int endNode, int edgeIdx, bool reverse, double angle)
     int index = 0;
 
     for(int i = 0; i < data.size(); i++)
-        if(angle > data[i].angle)
+        if(angle < data[i].angle)
             index = i+1;
     data.insert(index, NodeEdgeData(endNode, edgeIdx, reverse, angle));
 }
@@ -267,7 +259,8 @@ Graph::Graph(int numNodes)
 void Graph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
 {
     double angle2 = angle + M_PI;
-    normalizeAngle(angle2);
+    if(angle2 >= 2 * M_PI)
+        angle2 -= 2 * M_PI;
 
     data[startNode].insertEdge(endNode, edgeIdx, false, angle);
     data[endNode].insertEdge(startNode, edgeIdx, true, angle2);
@@ -331,7 +324,8 @@ QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
         int endNodeIdx = Util::scene()->nodes->items().indexOf(endNode);
 
         double angle = atan2(endNode->point().y - startNode->point().y, endNode->point().x - startNode->point().x);
-        normalizeAngle(angle);
+        if(angle < 0)
+            angle += 2 * M_PI;
 
         graph.addEdge(startNodeIdx, endNodeIdx, i, angle);
     }
