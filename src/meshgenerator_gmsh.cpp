@@ -153,6 +153,272 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
     }
 }
 
+// todo: create different exceptions for different errors and pass arguments as labels, lists of edges etc.. to be used in preprocessor
+class AgrosMeshException
+{
+public:
+    AgrosMeshException(QString str) { this->str = str; }
+    QString str;
+};
+
+
+const int NON_EXISTING = -100000;
+
+struct NodeEdgeData
+{
+    NodeEdgeData(): node(NON_EXISTING) {}
+    NodeEdgeData(int node, int edge, bool reverse,  double angle) : node(node), edge(edge), reverse(reverse), angle(angle), visited(false) {}
+    int node;
+    int edge;
+    bool reverse;
+    double angle;
+    bool visited;
+};
+
+void normalizeAngle(double &angle)
+{
+    while(angle < 0)
+        angle += M_PI;
+    while(angle >= M_PI)
+        angle -= M_PI;
+}
+
+struct Node
+{
+    void insertEdge(int endNode, int edgeIdx, bool reverse,  double angle);
+    bool hasUnvisited();
+    NodeEdgeData startLoop();
+    NodeEdgeData continueLoop(int previousNode);
+    void setVisited(int index) {data[index].visited = true;}
+
+    QList<NodeEdgeData> data;
+};
+
+bool Node::hasUnvisited()
+{
+    foreach(NodeEdgeData ned, data)
+        if(!ned.visited)
+            return true;
+
+    return false;
+}
+
+NodeEdgeData Node::startLoop()
+{
+    for(int i = 0; i < data.size(); i++){
+        NodeEdgeData ned = data.at(i);
+        if(!ned.visited){
+            data[i].visited = true;
+            cout << "start loop " << i << endl;
+            return ned;
+        }
+    }
+
+    assert(0);
+}
+
+NodeEdgeData Node::continueLoop(int previousNode)
+{
+    NodeEdgeData previousNED;
+    int index;
+    for(int i = 0; i < data.size(); i++){
+        NodeEdgeData ned = data.at(i);
+        if(ned.node == previousNode){
+            previousNED = ned;
+            index = i;
+            break;
+        }
+    }
+
+    assert(previousNED.node != NON_EXISTING);
+
+    int nextIdx = (index + 1) % data.size();
+    cout << "continue loop " << previousNode << ", " << data[nextIdx].node << endl;
+    assert(!data.at(nextIdx).visited);
+    data[nextIdx].visited = true;
+    return data[nextIdx];
+}
+
+void Node::insertEdge(int endNode, int edgeIdx, bool reverse, double angle)
+{
+    int index = 0;
+
+    for(int i = 0; i < data.size(); i++)
+        if(angle > data[i].angle)
+            index = i+1;
+    data.insert(index, NodeEdgeData(endNode, edgeIdx, reverse, angle));
+}
+
+struct Graph
+{
+    Graph(int numNodes);
+    void addEdge(int startNode, int endNode, int edgeIdx, double angle);
+    void print();
+
+    QList<Node> data;
+};
+
+Graph::Graph(int numNodes)
+{
+    for (int i = 0; i < numNodes; i++)
+        data.push_back(Node());
+}
+
+void Graph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
+{
+    double angle2 = angle + M_PI;
+    normalizeAngle(angle2);
+
+    data[startNode].insertEdge(endNode, edgeIdx, false, angle);
+    data[endNode].insertEdge(startNode, edgeIdx, true, angle2);
+}
+
+void Graph::print()
+{
+    for(int i = 0; i < data.size(); i++)
+    {
+        cout << "node " << i << "\n";
+        foreach(NodeEdgeData ned, data[i].data)
+        {
+            cout << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited << "\n";
+        }
+    }
+    cout << "\n";
+}
+
+double windingNumber(Point point, QList<NodeEdgeData> loop)
+{
+    QList<double> angles;
+    foreach(NodeEdgeData ned, loop)
+    {
+        Point nodePoint = Util::scene()->nodes->at(ned.node)->point();
+        double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
+        assert((angle <= M_PI) && (angle >= -M_PI));
+
+        // move to interval <0, 2*pi)
+        if(angle < 0)
+            angle += 2 * M_PI;
+        angles.append(angle);
+    }
+
+    double totalAngle = 0;
+    for(int i = 0; i < angles.size(); i++)
+    {
+        double angle = angles[(i+1) % angles.size()] - angles[i];
+        //cout << ""
+        if(angle < - M_PI)
+            angle = 2*M_PI + angle;
+        if(angle > M_PI)
+            angle = -2*M_PI + angle;
+        assert((angle <= M_PI) && (angle >= -M_PI));
+        totalAngle += angle;
+    }
+
+    double winding = fabs(totalAngle / (2*M_PI));
+    int intWinding = round(winding);
+    assert(winding - (double)intWinding < 0.00001);
+    return intWinding;
+}
+
+QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
+{
+    Graph graph(Util::scene()->nodes->length());
+    for (int i = 0; i < Util::scene()->edges->length(); i++)
+    {
+        SceneNode* startNode = Util::scene()->edges->at(i)->nodeStart();
+        SceneNode* endNode = Util::scene()->edges->at(i)->nodeEnd();
+        int startNodeIdx = Util::scene()->nodes->items().indexOf(startNode);
+        int endNodeIdx = Util::scene()->nodes->items().indexOf(endNode);
+
+        double angle = atan2(endNode->point().y - startNode->point().y, endNode->point().x - startNode->point().x);
+        normalizeAngle(angle);
+
+        graph.addEdge(startNodeIdx, endNodeIdx, i, angle);
+    }
+
+    graph.print();
+
+    QList<QList<NodeEdgeData> > loops;
+    for(int i = 0; i < graph.data.size(); i++)
+    {
+        cout << "** starting with node " << i << endl;
+        Node& node = graph.data[i];
+        int previousNodeIdx, currentNodeIdx;
+        while(node.hasUnvisited()){
+
+            graph.print();
+
+            QList<NodeEdgeData> loop;
+            NodeEdgeData ned = node.startLoop();
+            previousNodeIdx = i;
+            loop.push_back(ned);
+            do{
+                currentNodeIdx = ned.node;
+                Node& actualNode = graph.data[currentNodeIdx];
+                cout << "call continue loop with node " << currentNodeIdx << "and previous node " << previousNodeIdx << endl;
+                ned = actualNode.continueLoop(previousNodeIdx);
+                previousNodeIdx = currentNodeIdx;
+                loop.push_back(ned);
+            } while(ned.node != i);
+
+            loops.push_back(loop);
+        }
+    }
+
+    QList<QList< SceneLabel* > > correspondingLabels;
+
+    for(int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
+    {
+        correspondingLabels.push_back(QList<SceneLabel*>());
+        for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
+        {
+            SceneLabel* label = Util::scene()->labels->at(labelIdx);
+            int wn = windingNumber(label->point(), loops[loopIdx]);
+            cout << "winding number " << wn << endl;
+            assert(wn < 2);
+            if(wn == 1)
+                correspondingLabels[loopIdx].push_back(label);
+        }
+    }
+
+    // todo: improve exceptions strings
+
+    int idxOuterLoop = -1;
+    for(int i = 0; i < correspondingLabels.size(); i++)
+    {
+        if(correspondingLabels[i].size() == Util::scene()->labels->count())
+            idxOuterLoop = i;
+    }
+    if(idxOuterLoop == -1)
+        throw(AgrosMeshException("There is a label outside the domain"));
+
+    QMap<SceneLabel*, QList<NodeEdgeData> > loopsMap;
+
+    for(int i = 0; i < correspondingLabels.size(); i++)
+    {
+        int numLabels = correspondingLabels[i].size();
+        if( numLabels == 0 )
+        {
+            throw(AgrosMeshException("There is no label in some domain"));
+        }
+        else if(numLabels > 1)
+        {
+            if(i != idxOuterLoop)
+                throw(AgrosMeshException("There are two labels in some domain"));
+        }
+        else
+        {
+            SceneLabel* label = correspondingLabels[i][0];
+            if(loopsMap.contains(label))
+                assert((correspondingLabels.size() == 2) && (Util::scene()->labels->count() == 1));
+            else
+                loopsMap[label] = loops[i];
+        }
+    }
+
+    return loopsMap;
+}
+
 bool MeshGeneratorGMSH::writeToGmsh()
 {
     // basic check
@@ -280,16 +546,56 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     // TODO: find loops
 
+    QMap<SceneLabel*, QList<NodeEdgeData> > loopsMap;
+    try{
+         loopsMap = findLoops();
+    }
+    catch(AgrosMeshException& ame)
+    {
+        cout << ame.str.toStdString() << endl;
+    }
+
+    QList<QList<NodeEdgeData> > loops = loopsMap.values();
+
     QString outLoops;
-    outLoops.append(QString("Line Loop(1) = {0, 3, 2, 1};\n"));
-    outLoops.append(QString("Plane Surface(1) = {1};\n"));
-    outLoops.append(QString("Line Loop(2) = {4, 5, 6, -1};\n"));
-    outLoops.append(QString("Plane Surface(2) = {2};\n"));
+    for(int i = 0; i < loops.size(); i++)
+    {
+        outLoops.append(QString("Line Loop(%1) = {").arg(i+1));
+        for(int j = 0; j < loops[i].size(); j++)
+        {
+            if(loops[i][j].reverse)
+                outLoops.append("-");
+            outLoops.append(QString("%1").arg(loops[i][j].edge));
+            if(j < loops[i].size() - 1)
+                outLoops.append(",");
+        }
+        outLoops.append(QString("};\n"));
+        outLoops.append(QString("Plane Surface(%1) = {%1};\n").arg(i+1));
+    }
     outLoops.append("\n");
 
     // quad mesh
     if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
-        outLoops.append(QString("Recombine Surface {1, 2};\n"));
+    {
+        outLoops.append(QString("Recombine Surface {"));
+        for(int i = 0; i < loops.size(); i++)
+        {
+            outLoops.append(QString("%1").arg(i+1));
+            if(i < loops.size() - 1)
+                outLoops.append(",");
+        }
+        outLoops.append(QString("};\n"));
+    }
+//    QString outLoops;
+//    outLoops.append(QString("Line Loop(1) = {0, 1, 2, 3};\n"));
+//    outLoops.append(QString("Plane Surface(1) = {1};\n"));
+//    outLoops.append(QString("Line Loop(2) = {4, 5, 6, -1};\n"));
+//    outLoops.append(QString("Plane Surface(2) = {2};\n"));
+//    outLoops.append("\n");
+
+//    // quad mesh
+//    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+//        outLoops.append(QString("Recombine Surface {1, 2};\n"));
 
     // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
     QString outCommands;
