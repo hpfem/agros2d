@@ -346,9 +346,6 @@ bool isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
 
 Intersection intersects(Point point, double tangent, SceneEdge* edge)
 {
-    if(tangent == 1)
-        return Intersection_Uncertain;
-
     double x1 = edge->nodeStart()->point().x;
     double y1 = edge->nodeStart()->point().y;
     double x2 = edge->nodeEnd()->point().x;
@@ -360,8 +357,8 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge)
         double yC = edge->center().y;
 
         double coef = - tangent * point.x + point.y - yC;
-        double a = 1 - tangent*tangent;
-        double b = - 2*xC + 2*coef;
+        double a = 1 + tangent*tangent;
+        double b = - 2*xC + 2*tangent*coef;
         double c = xC*xC + coef*coef - edge->radius() * edge->radius();
 
         double disc = b*b - 4*c*a;
@@ -372,8 +369,8 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge)
             double xI1 = (-b + sqrt(disc))/ (2*a);
             double xI2 = (-b - sqrt(disc))/ (2*a);
 
-            double yI1 = coef * (xI1 - point.x) + point.y;
-            double yI2 = coef * (xI2 - point.x) + point.y;
+            double yI1 = tangent * (xI1 - point.x) + point.y;
+            double yI2 = tangent * (xI2 - point.x) + point.y;
 
             double angle1 = atan2(yI1 - yC, xI1 - xC);
             double angle2 = atan2(yI2 - yC, xI2 - xC);
@@ -384,24 +381,27 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge)
             int leftInter = 0;
             int rightInter = 0;
 
-            cout << "xI1 "<< xI1 << ", xI2 "<< xI2 << ", yI1 "<< yI1 << ", yI2 "<< yI2 << endl;
-            cout << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << endl;
-            cout << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << endl;
+            cout << "circle center " << xC << ", " << yC << ", radius " << edge->radius() << endl;
+            cout << "xI1 "<< xI1 << ", yI1 "<< yI1 << ", xI2 "<< xI2 << ", yI2 "<< yI2 << endl;
+            cout << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle1) << endl;
+            cout << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle2) << endl;
 
             if(isInsideSeg(angleSegStart, angleSegEnd, angle1))
             {
-                if(x1 < point.x)
+                if(xI1 < point.x)
                     leftInter++;
                 else
                     rightInter++;
             }
             if(isInsideSeg(angleSegStart, angleSegEnd, angle2))
             {
-                if(x2 < point.x)
+                if(xI2 < point.x)
                     leftInter++;
                 else
                     rightInter++;
             }
+
+            cout << "left " << leftInter << ", right " << rightInter << endl;
 
             if(leftInter == 2)
                 return Intersection_No;
