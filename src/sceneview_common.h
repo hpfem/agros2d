@@ -119,17 +119,6 @@ signals:
     void labelRight(const QString &right);
 
 protected:
-    void initializeGL();
-    virtual void resizeGL(int w, int h);
-    virtual void paintGL() = 0;
-    void setupViewport(int w, int h);
-    void loadProjectionViewPort();
-
-    void closeEvent(QCloseEvent *event);
-
-    inline double aspect() const { return (double) width() / (double) height(); }
-
-protected:
     QMainWindow *m_mainWindow;
 
     QPoint m_lastPos; // last position of cursor
@@ -139,10 +128,6 @@ protected:
     // helper for zoom region
     bool m_zoomRegion;
     QPointF m_zoomRegionPos;
-
-    // rulers
-    Point m_rulersAreaWidth;
-    double m_rulersNumbersWidth;
 
     QActionGroup *actMaterialGroup;
     QActionGroup *actBoundaryGroup;
@@ -154,6 +139,16 @@ protected:
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
     virtual void setZoom(double power) = 0;
+
+    void initializeGL();
+    virtual void resizeGL(int w, int h);
+    virtual void paintGL() = 0;
+    void setupViewport(int w, int h);
+    void loadProjectionViewPort();
+
+    void closeEvent(QCloseEvent *event);
+
+    inline double aspect() const { return (double) width() / (double) height(); }
 
 private slots:
     void doMaterialGroup(QAction *action);
