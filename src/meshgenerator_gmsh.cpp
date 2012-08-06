@@ -262,9 +262,8 @@ void Graph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
     if(angle2 >= 2 * M_PI)
         angle2 -= 2 * M_PI;
 
-    // increase edge index to count from 1
-    data[startNode].insertEdge(endNode, edgeIdx+1, false, angle);
-    data[endNode].insertEdge(startNode, edgeIdx+1, true, angle2);
+    data[startNode].insertEdge(endNode, edgeIdx, false, angle);
+    data[endNode].insertEdge(startNode, edgeIdx, true, angle2);
 }
 
 void Graph::print()
@@ -280,7 +279,7 @@ void Graph::print()
     cout << "\n";
 }
 
-double windingNumber(Point point, QList<NodeEdgeData> loop)
+int windingNumber(Point point, QList<NodeEdgeData> loop)
 {
     QList<double> angles;
     foreach(NodeEdgeData ned, loop)
@@ -312,6 +311,99 @@ double windingNumber(Point point, QList<NodeEdgeData> loop)
     int intWinding = round(winding);
     assert(winding - (double)intWinding < 0.00001);
     return intWinding;
+}
+
+enum Intersection
+{
+    Intersection_Uncertain,
+    Intersection_Left,
+    Intersection_Right,
+    Intersection_No
+};
+
+const double TOL = 0.001;
+
+Intersection intersects(Point point, double tangent, SceneEdge* edge)
+{
+    double x1 = edge->nodeStart()->point().x;
+    double y1 = edge->nodeStart()->point().y;
+    double x2 = edge->nodeEnd()->point().x;
+    double y2 = edge->nodeEnd()->point().y;
+
+    if(fabs(x2-x1) > fabs(y2-y1))
+    {
+        double tangentSeg = (y2-y1) / (x2-x1);
+        if(fabs(tangent - tangentSeg) < TOL)
+            return Intersection_Uncertain;
+        double xI = (tangentSeg * x1 - tangent * point.x - y1 + point.y) / (tangentSeg - tangent);
+
+        if(fabs(x1 - xI) < TOL * edge->length())
+            return Intersection_Uncertain;
+        if(fabs(x2 - xI) < TOL * edge->length())
+            return Intersection_Uncertain;
+
+        if((xI > max(x1, x2)) || (xI < min(x1, x2)))
+            return Intersection_No;
+
+        if(xI < point.x)
+            return Intersection_Left;
+        else
+            return Intersection_Right;
+    }
+    else
+    {
+        double invTangentSeg = (x2-x1) / (y2-y1);
+        if(fabs(1/tangent - invTangentSeg) < TOL)
+            return Intersection_Uncertain;
+        double yI = (invTangentSeg * y1 - 1/tangent * point.y - x1 + point.x) / (invTangentSeg - 1/tangent);
+
+        if(fabs(y1 - yI) < TOL * edge->length())
+            return Intersection_Uncertain;
+        if(fabs(y2 - yI) < TOL * edge->length())
+            return Intersection_Uncertain;
+
+        if((yI > max(y1, y2)) || (yI < min(y1, y2)))
+            return Intersection_No;
+
+        if(yI < point.y)
+            return Intersection_Left;
+        else
+            return Intersection_Right;
+    }
+}
+
+int intersectionsParity(Point point, QList<NodeEdgeData> loop)
+{
+    bool rejectTangent;
+    double tangent = 0.9;
+    int left, right;
+    do{
+        tangent += 0.1;
+        cout << "IntersectionParity, tangent " << tangent << endl;
+        assert(tangent < 10);
+        rejectTangent = false;
+        left = right = 0;
+
+        foreach(NodeEdgeData ned, loop)
+        {
+            Intersection result = intersects(point, tangent, Util::scene()->edges->at(ned.edge));
+            if(result == Intersection_Uncertain)
+            {
+                rejectTangent = true;
+                cout << "rejected tangent\n";
+                break;
+            }
+            else if(result == Intersection_Left)
+                left++;
+            else if(result == Intersection_Right)
+                right++;
+
+        }
+
+    }while(rejectTangent);
+
+    assert(left%2 == right%2);
+    return left%2;
 }
 
 QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
@@ -368,24 +460,27 @@ QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
         for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
         {
             SceneLabel* label = Util::scene()->labels->at(labelIdx);
-            int wn = windingNumber(label->point(), loops[loopIdx]);
-            cout << "winding number " << wn << endl;
-            assert(wn < 2);
-            if(wn == 1)
+//            int wn = windingNumber(label->point(), loops[loopIdx]);
+//            cout << "winding number " << wn << endl;
+//            assert(wn < 2);
+//            if(wn == 1)
+//                correspondingLabels[loopIdx].push_back(label);
+            int ip = intersectionsParity(label->point(), loops[loopIdx]);
+            if(ip == 1)
                 correspondingLabels[loopIdx].push_back(label);
         }
     }
 
     // todo: improve exceptions strings
 
-    int idxOuterLoop = -1;
-    for(int i = 0; i < correspondingLabels.size(); i++)
-    {
-        if(correspondingLabels[i].size() == Util::scene()->labels->count())
-            idxOuterLoop = i;
-    }
-    if(idxOuterLoop == -1)
-        throw(AgrosMeshException("There is a label outside the domain"));
+//    int idxOuterLoop = -1;
+//    for(int i = 0; i < correspondingLabels.size(); i++)
+//    {
+//        if(correspondingLabels[i].size() == Util::scene()->labels->count())
+//            idxOuterLoop = i;
+//    }
+//    if(idxOuterLoop == -1)
+//        throw(AgrosMeshException("There is a label outside the domain"));
 
     QMap<SceneLabel*, QList<NodeEdgeData> > loopsMap;
 
@@ -398,14 +493,16 @@ QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
         }
         else if(numLabels > 1)
         {
-            if(i != idxOuterLoop)
-                throw(AgrosMeshException("There are two labels in some domain"));
+//            if(i != idxOuterLoop)
+//                throw(AgrosMeshException("There are two labels in some domain"));
         }
         else
         {
             SceneLabel* label = correspondingLabels[i][0];
             if(loopsMap.contains(label))
-                assert((correspondingLabels.size() == 2) && (Util::scene()->labels->count() == 1));
+            {
+//                assert((correspondingLabels.size() == 2) && (Util::scene()->labels->count() == 1));
+            }
             else
                 loopsMap[label] = loops[i];
         }
@@ -560,7 +657,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
         {
             if(loops[i][j].reverse)
                 outLoops.append("-");
-            outLoops.append(QString("%1").arg(loops[i][j].edge));
+            outLoops.append(QString("%1").arg(loops[i][j].edge + 1));
             if(j < loops[i].size() - 1)
                 outLoops.append(",");
         }
