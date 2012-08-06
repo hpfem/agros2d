@@ -262,8 +262,9 @@ void Graph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
     if(angle2 >= 2 * M_PI)
         angle2 -= 2 * M_PI;
 
-    data[startNode].insertEdge(endNode, edgeIdx, false, angle);
-    data[endNode].insertEdge(startNode, edgeIdx, true, angle2);
+    // increase edge index to count from 1
+    data[startNode].insertEdge(endNode, edgeIdx+1, false, angle);
+    data[endNode].insertEdge(startNode, edgeIdx+1, true, angle2);
 }
 
 void Graph::print()
@@ -463,9 +464,9 @@ bool MeshGeneratorGMSH::writeToGmsh()
     {
         if (Util::scene()->edges->at(i)->angle() == 0)
         {
-            // line
+            // line .. increase edge index to count from 1
             outEdges += QString("Line(%1) = {%2, %3};\n").
-                    arg(edgesCount).
+                    arg(edgesCount+1).
                     arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart())).
                     arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd()));
             edgesCount++;
@@ -482,7 +483,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
             nodesCount++;
 
             outEdges += QString("Circle(%1) = {%2, %3, %4};\n").
-                    arg(edgesCount).
+                    arg(edgesCount+1).
                     arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart())).
                     arg(nodesCount - 1).
                     arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd()));
@@ -667,7 +668,7 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
         {
             // edge
             if (type == 1)
-                edgeList.append(MeshEdge(quad[0] - 1, quad[1] - 1, marker)); // marker conversion from gmsh, where it starts from 1
+                edgeList.append(MeshEdge(quad[0] - 1, quad[1] - 1, marker - 1)); // marker conversion from gmsh, where it starts from 1
             // triangle
             if (type == 2)
                 elementList.append(MeshElement(quad[0] - 1, quad[1] - 1, quad[2] - 1, marker - 1)); // marker conversion from gmsh, where it starts from 1
