@@ -318,17 +318,107 @@ enum Intersection
     Intersection_Uncertain,
     Intersection_Left,
     Intersection_Right,
+    Intersection_Both,
     Intersection_No
 };
 
 const double TOL = 0.001;
 
+bool isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
+{
+    if(angleSegEnd > angleSegStart)
+    {
+        if((angle >= angleSegStart) && (angle <= angleSegEnd))
+            return true;
+        else
+            return false;
+    }
+    else
+    {
+        assert(angleSegStart >= 0);
+        assert(angleSegEnd <= 0);
+        if((angle >= angleSegStart) || (angle <= angleSegEnd))
+            return true;
+        else
+            return false;
+    }
+}
+
 Intersection intersects(Point point, double tangent, SceneEdge* edge)
 {
+    if(tangent == 1)
+        return Intersection_Uncertain;
+
     double x1 = edge->nodeStart()->point().x;
     double y1 = edge->nodeStart()->point().y;
     double x2 = edge->nodeEnd()->point().x;
     double y2 = edge->nodeEnd()->point().y;
+
+    if(edge->angle() != 0)
+    {
+        double xC = edge->center().x;
+        double yC = edge->center().y;
+
+        double coef = - tangent * point.x + point.y - yC;
+        double a = 1 - tangent*tangent;
+        double b = - 2*xC + 2*coef;
+        double c = xC*xC + coef*coef - edge->radius() * edge->radius();
+
+        double disc = b*b - 4*c*a;
+        if(disc <= 0)
+            return Intersection_No;
+        else
+        {
+            double xI1 = (-b + sqrt(disc))/ (2*a);
+            double xI2 = (-b - sqrt(disc))/ (2*a);
+
+            double yI1 = coef * (xI1 - point.x) + point.y;
+            double yI2 = coef * (xI2 - point.x) + point.y;
+
+            double angle1 = atan2(yI1 - yC, xI1 - xC);
+            double angle2 = atan2(yI2 - yC, xI2 - xC);
+
+            double angleSegStart = atan2(y1 - yC, x1 - xC);
+            double angleSegEnd = atan2(y2 - yC, x2 - xC);
+
+            int leftInter = 0;
+            int rightInter = 0;
+
+            cout << "xI1 "<< xI1 << ", xI2 "<< xI2 << ", yI1 "<< yI1 << ", yI2 "<< yI2 << endl;
+            cout << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << endl;
+            cout << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << endl;
+
+            if(isInsideSeg(angleSegStart, angleSegEnd, angle1))
+            {
+                if(x1 < point.x)
+                    leftInter++;
+                else
+                    rightInter++;
+            }
+            if(isInsideSeg(angleSegStart, angleSegEnd, angle2))
+            {
+                if(x2 < point.x)
+                    leftInter++;
+                else
+                    rightInter++;
+            }
+
+            if(leftInter == 2)
+                return Intersection_No;
+            else if(rightInter == 2)
+                return Intersection_No;
+            else if((leftInter == 1) && (rightInter == 0))
+                return Intersection_Left;
+            else if((leftInter == 0) && (rightInter == 1))
+                return Intersection_Right;
+            else if((leftInter == 1) && (rightInter == 1))
+                return Intersection_Both;
+            else if((leftInter == 0) && (rightInter == 0))
+                return Intersection_No;
+            else
+                assert(0);
+        }
+    }
 
     if(fabs(x2-x1) > fabs(y2-y1))
     {
@@ -375,7 +465,7 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge)
 int intersectionsParity(Point point, QList<NodeEdgeData> loop)
 {
     bool rejectTangent;
-    double tangent = 0.9;
+    double tangent = 0.;
     int left, right;
     do{
         tangent += 0.1;
@@ -397,11 +487,17 @@ int intersectionsParity(Point point, QList<NodeEdgeData> loop)
                 left++;
             else if(result == Intersection_Right)
                 right++;
+            else if(result == Intersection_Both)
+            {
+                left++;
+                right++;
+            }
 
         }
 
     }while(rejectTangent);
 
+    cout << "intersections left " << left << ", right " << right << endl;
     assert(left%2 == right%2);
     return left%2;
 }
