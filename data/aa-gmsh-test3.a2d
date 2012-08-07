@@ -11,7 +11,7 @@
             <edge end="1" id="0" start="0" angle="90"/>
             <edge end="2" id="1" start="1" angle="0"/>
             <edge end="0" id="2" start="3" angle="0"/>
-            <edge end="3" id="3" start="2" angle="0"/>
+            <edge end="3" id="3" start="2" angle="90"/>
         </edges>
         <labels>
             <label x="-15" y="15.5275" id="0" area="0"/>

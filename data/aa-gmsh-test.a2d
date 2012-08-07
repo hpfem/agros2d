@@ -32,6 +32,12 @@
             <node x="-3" y="0.5" id="27"/>
             <node x="0" y="-6" id="28"/>
             <node x="1" y="-5" id="29"/>
+            <node x="7.800000000000001" y="-12.95" id="30"/>
+            <node x="11.5" y="-5.25" id="31"/>
+            <node x="11.5" y="-11.2" id="32"/>
+            <node x="10.7" y="-11.3" id="33"/>
+            <node x="16.45" y="-5.95" id="34"/>
+            <node x="15.62883848683605" y="-14.76368496444073" id="35"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="0" angle="0"/>
@@ -69,6 +75,13 @@
             <edge end="28" id="32" start="23" angle="0"/>
             <edge end="29" id="33" start="28" angle="0"/>
             <edge end="6" id="34" start="29" angle="0"/>
+            <edge end="32" id="35" start="33" angle="0"/>
+            <edge end="31" id="36" start="32" angle="150"/>
+            <edge end="34" id="37" start="31" angle="0"/>
+            <edge end="35" id="38" start="34" angle="0"/>
+            <edge end="30" id="39" start="35" angle="0"/>
+            <edge end="7" id="40" start="30" angle="90"/>
+            <edge end="10" id="41" start="33" angle="150"/>
         </edges>
         <labels>
             <label x="6.701642105263159" y="6.380631578947367" id="0" area="3"/>
@@ -77,6 +90,7 @@
             <label x="14.9787" y="11.3359" id="3" area="0"/>
             <label x="-3.5" y="0" id="4" area="0"/>
             <label x="-0.430351" y="-3.61051" id="5" area="0"/>
+            <label x="12.6551" y="-8.24432" id="6" area="0"/>
         </labels>
     </geometry>
     <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_triangle" time_step="0.1" name="unnamed" time_total="60">
@@ -91,7 +105,6 @@
                         <edge edge="3"/>
                         <edge edge="8"/>
                         <edge edge="9"/>
-                        <edge edge="10"/>
                         <edge edge="11"/>
                         <edge edge="12"/>
                         <edge edge="13"/>
@@ -104,6 +117,13 @@
                         <edge edge="32"/>
                         <edge edge="33"/>
                         <edge edge="34"/>
+                        <edge edge="35"/>
+                        <edge edge="36"/>
+                        <edge edge="37"/>
+                        <edge edge="38"/>
+                        <edge edge="39"/>
+                        <edge edge="40"/>
+                        <edge edge="41"/>
                     </boundary>
                     <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="U = 0 V">
                         <edge edge="15"/>
@@ -129,6 +149,7 @@
                         <label label="2"/>
                         <label label="4"/>
                         <label label="5"/>
+                        <label label="6"/>
                     </material>
                     <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2">
                         <label label="1"/>
