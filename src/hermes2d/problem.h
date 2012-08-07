@@ -33,7 +33,7 @@ public:
     void setName(const QString &name) { m_name = name; }
 
     inline QString fileName() const { return m_fileName; }
-    void setFileName(const QString &fileName) { m_fileName = fileName; emit changed(); }
+    void setFileName(const QString &fileName) { m_fileName = fileName; }
 
     inline CoordinateType coordinateType() const { return m_coordinateType; }
     void setCoordinateType(const CoordinateType coordinateType) { m_coordinateType = coordinateType; emit changed(); }
