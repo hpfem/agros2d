@@ -152,8 +152,10 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
     else
     {
         m_isError = true;
-        QString errorMessage = readFileContent(Util::problem()->config()->fileName() + ".triangle.out");
-        Util::log()->printError(tr("Mesh generator"), errorMessage);
+        QString errorMessage = readFileContent(tempProblemFileName() + ".triangle.err");
+        errorMessage.insert(0, "\n");
+        errorMessage.append("\n");
+        Util::log()->printError(tr("Mesh generator"), errorMessage.replace("\n", "<br/>"), false);
     }
 }
 

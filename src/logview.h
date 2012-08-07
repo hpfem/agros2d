@@ -28,16 +28,16 @@ class Log: public QObject
 public:
     Log();
 
-    inline void printMessage(const QString &module, const QString &message) { emit messageMsg(module, message); }
-    inline void printError(const QString &module, const QString &message) { emit errorMsg(module, message); }
-    inline void printWarning(const QString &module, const QString &message) { emit warningMsg(module, message); }
-    inline void printDebug(const QString &module, const QString &message) { emit debugMsg(module, message); }
+    inline void printMessage(const QString &module, const QString &message, bool escaped = true) { emit messageMsg(module, message, escaped); }
+    inline void printError(const QString &module, const QString &message, bool escaped = true) { emit errorMsg(module, message, escaped); }
+    inline void printWarning(const QString &module, const QString &message, bool escaped = true) { emit warningMsg(module, message, escaped); }
+    inline void printDebug(const QString &module, const QString &message, bool escaped = true) { emit debugMsg(module, message, escaped); }
 
 signals:
-    void messageMsg(const QString &module, const QString &message);
-    void errorMsg(const QString &module, const QString &message);
-    void warningMsg(const QString &module, const QString &message);
-    void debugMsg(const QString &module, const QString &message);
+    void messageMsg(const QString &module, const QString &message, bool escaped);
+    void errorMsg(const QString &module, const QString &message, bool escaped);
+    void warningMsg(const QString &module, const QString &message, bool escaped);
+    void debugMsg(const QString &module, const QString &message, bool escaped);
 };
 
 class LogWidget : public QTextEdit
@@ -51,17 +51,18 @@ public:
 private slots:
     void contextMenu(const QPoint &pos);
 
-    void printMessage(const QString &module, const QString &message);
-    void printError(const QString &module, const QString &message);
-    void printWarning(const QString &module, const QString &message);
-    void printDebug(const QString &module, const QString &message);
+    void printMessage(const QString &module, const QString &message, bool escaped = true);
+    void printError(const QString &module, const QString &message, bool escaped = true);
+    void printWarning(const QString &module, const QString &message, bool escaped = true);
+    void printDebug(const QString &module, const QString &message, bool escaped = true);
 
 
     void showTimestamp();
     void showDebug();
 
 protected:
-     void print(const QString &module, const QString &message, const QString &color = false);
+    void print(const QString &module, const QString &message,
+               const QString &color = "", bool escaped = true);
 
 private:
      QMenu *mnuInfo;
@@ -102,7 +103,7 @@ private:
      void createControls();
 
 private slots:
-     void printMessage(const QString &module, const QString &message);
+     void printMessage(const QString &module, const QString &message, bool escaped = true);
 };
 
 class LogStdOut : public QObject
@@ -112,10 +113,10 @@ public:
     LogStdOut(QWidget *parent = 0);
 
 private slots:
-    void printMessage(const QString &module, const QString &message);
-    void printError(const QString &module, const QString &message);
-    void printWarning(const QString &module, const QString &message);
-    void printDebug(const QString &module, const QString &message);
+    void printMessage(const QString &module, const QString &message, bool escaped = true);
+    void printError(const QString &module, const QString &message, bool escaped = true);
+    void printWarning(const QString &module, const QString &message, bool escaped = true);
+    void printDebug(const QString &module, const QString &message, bool escaped = true);
 };
 
 #endif // TOOLTIPVIEW_H

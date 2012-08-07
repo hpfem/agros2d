@@ -46,10 +46,10 @@ LogWidget::LogWidget(QWidget *parent) : QTextEdit(parent)
     mnuInfo->addAction(actCopy);
     mnuInfo->addAction(actClear);
 
-    connect(Util::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
-    connect(Util::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
-    connect(Util::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
-    connect(Util::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
+    connect(Util::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+    connect(Util::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
+    connect(Util::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
+    connect(Util::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
@@ -93,30 +93,30 @@ void LogWidget::showDebug()
     settings.setValue("LogWidget/ShowDebug", actShowDebug->isChecked());
 }
 
-void LogWidget::printMessage(const QString &module, const QString &message)
+void LogWidget::printMessage(const QString &module, const QString &message, bool escaped)
 {
-    print(module, message, "black");
+    print(module, message, "black", escaped);
 }
 
-void LogWidget::printError(const QString &module, const QString &message)
+void LogWidget::printError(const QString &module, const QString &message, bool escaped)
 {
-    print(module, message, "red");
+    print(module, message, "red", escaped);
 }
 
-void LogWidget::printWarning(const QString &module, const QString &message)
+void LogWidget::printWarning(const QString &module, const QString &message, bool escaped)
 {
-    print(module, message, "blue");
+    print(module, message, "blue", escaped);
 }
 
-void LogWidget::printDebug(const QString &module, const QString &message)
+void LogWidget::printDebug(const QString &module, const QString &message, bool escaped)
 {
 #ifndef QT_NO_DEBUG_OUTPUT
     if (actShowDebug->isChecked())
-        print(module, message, "gray");
+        print(module, message, "gray", escaped);
 #endif
 }
 
-void LogWidget::print(const QString &module, const QString &message, const QString &color)
+void LogWidget::print(const QString &module, const QString &message, const QString &color, bool escaped)
 {
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
@@ -136,10 +136,15 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     }
 
     // message
-    str += "<span style=\"color: " + color + ";\">";
+    if (!color.isEmpty())
+        str += "<span style=\"color: " + color + ";\">";
     str += "<strong>" + Qt::escape(module) + "</strong>: ";
-    str += Qt::escape(message);
-    str += "</span>";
+    if (escaped)
+        str += Qt::escape(message);
+    else
+        str += message;
+    if (!color.isEmpty())
+        str += "</span>";
 
     insertHtml(str);
 
@@ -189,7 +194,7 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
-    connect(Util::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
+    connect(Util::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
 
     logWidget = new LogWidget(this);
 
@@ -220,7 +225,7 @@ void LogDialog::createControls()
     setLayout(layout);
 }
 
-void LogDialog::printMessage(const QString &module, const QString &message)
+void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
 {
     if (Util::problem()->isNonlinear())
     {
@@ -249,35 +254,35 @@ void LogDialog::printMessage(const QString &module, const QString &message)
             // m_chartStep.clear();
             // m_chartNorm.clear();
         }
-    }    
+    }
 }
 
 // *******************************************************************************************
 
 LogStdOut::LogStdOut(QWidget *parent) : QObject(parent)
 {
-    connect(Util::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
-    connect(Util::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
-    connect(Util::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
-    connect(Util::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
+    connect(Util::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+    connect(Util::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
+    connect(Util::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
+    connect(Util::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
 }
 
-void LogStdOut::printMessage(const QString &module, const QString &message)
+void LogStdOut::printMessage(const QString &module, const QString &message, bool escaped)
 {
     qWarning() << QString("%1: %2").arg(module).arg(message);
 }
 
-void LogStdOut::printError(const QString &module, const QString &message)
+void LogStdOut::printError(const QString &module, const QString &message, bool escaped)
 {
     qCritical() << QString("%1: %2").arg(module).arg(message);
 }
 
-void LogStdOut::printWarning(const QString &module, const QString &message)
+void LogStdOut::printWarning(const QString &module, const QString &message, bool escaped)
 {
     qWarning() << QString("%1: %2").arg(module).arg(message);
 }
 
-void LogStdOut::printDebug(const QString &module, const QString &message)
+void LogStdOut::printDebug(const QString &module, const QString &message, bool escaped)
 {
     qDebug() << QString("%1: %2").arg(module).arg(message);
 }

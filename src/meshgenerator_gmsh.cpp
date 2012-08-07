@@ -50,7 +50,7 @@ bool MeshGeneratorGMSH::mesh()
     // create gmsh files
     if (writeToGmsh())
     {
-        Util::log()->printDebug(tr("Mesh generator"), tr("Poly file was created"));
+        Util::log()->printDebug(tr("Mesh generator"), tr("GMSH geo file was created"));
 
         // exec triangle
         QProcess processGmsh;
@@ -148,8 +148,10 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
     else
     {
         m_isError = true;
-        QString errorMessage = readFileContent(Util::problem()->config()->fileName() + ".gmsh.out");
-        Util::log()->printError(tr("Mesh generator"), errorMessage);
+        QString errorMessage = readFileContent(tempProblemFileName() + ".gmsh.err");
+        errorMessage.insert(0, "\n");
+        errorMessage.append("\n");
+        Util::log()->printError(tr("Mesh generator"), errorMessage.replace("\n", "<br/>"), false);
     }
 }
 
