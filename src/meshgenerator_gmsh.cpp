@@ -789,12 +789,12 @@ bool MeshGeneratorGMSH::writeToGmsh()
     QString outCommands;
     if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
     {
-        outCommands.append(QString("Mesh.Algorithm = 8;\n"));
+        outCommands.append(QString("Mesh.Algorithm = 8;\n")); // 8
         outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
     }
     else if (Util::problem()->config()->meshType() == MeshType_GMSH_Triangle)
     {
-        outCommands.append(QString("Mesh.Algorithm = 2;\n"));
+        outCommands.append(QString("Mesh.Algorithm = 2;\n")); // 2
     }
 
     outNodes.insert(0, QString("\n// nodes\n"));
@@ -879,7 +879,6 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
         */
         labelMarkersCheck.insert(marker - 1);
     }
-    int elementCountLinear = elementList.count();
 
     fileGMSH.close();
 
@@ -888,5 +887,7 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
     nodeList.clear();
     edgeList.clear();
     elementList.clear();  
+
+    return true;
 }
 
