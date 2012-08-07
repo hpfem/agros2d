@@ -325,17 +325,14 @@ namespace Hermes
       switch (fmt)
       {
       case DF_MATLAB_SPARSE:
-        fprintf(file, "%% Size: %dx%d\n%% Nonzeros: %d\ntemp =[\n",
+        fprintf(file, "%% Size: %dx%d\n%% Nonzeros: %d\ntemp = zeros(%d, 3);\ntemp =[\n",
           this->size, this->size, nnz, nnz);
         for (unsigned int j = 0; j < this->size; j++)
           for (int i = Ap[j]; i < Ap[j + 1]; i++)
           {
-              if (fabs(Ax[i]) > 1e-6)
-              {
-                fprintf(file, "%d %d ", Ai[i] + 1, j + 1);
-                Hermes::Helpers::fprint_num(file, Ax[i]);
-                fprintf(file, "\n");
-              }
+            fprintf(file, "%d %d ", Ai[i] + 1, j + 1);
+            Hermes::Helpers::fprint_num(file, Ax[i]);
+            fprintf(file, "\n");
           }
           fprintf(file, "];\n%s = spconvert(temp);\n", var_name);
 

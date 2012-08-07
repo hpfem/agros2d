@@ -504,8 +504,6 @@ namespace Hermes
       template<typename Scalar> friend class L2Space;
       friend class Views::ScalarView;
       friend class Views::Orderizer;
-      friend class VolumeIntegralValue;
-      friend class PostprocessorIntegralValue;
     public:
       ElementMarkersConversion &get_element_markers_conversion();
       BoundaryMarkersConversion &get_boundary_markers_conversion();

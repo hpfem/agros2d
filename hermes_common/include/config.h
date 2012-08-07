@@ -18,6 +18,7 @@
 
 // stacktrace
 /* #undef WITH_STACKTRACE */
+/* #undef EXECINFO_FOUND */
 
 // trilinos
 /* #undef WITH_TRILINOS */
