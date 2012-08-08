@@ -38,6 +38,10 @@
             <node x="10.7" y="-11.3" id="33"/>
             <node x="16.45" y="-5.95" id="34"/>
             <node x="15.62883848683605" y="-14.76368496444073" id="35"/>
+            <node x="2.05" y="5.600000000000001" id="36"/>
+            <node x="1.95" y="1.55" id="37"/>
+            <node x="6.300000000000001" y="1.4" id="38"/>
+            <node x="6.100000000000001" y="5.7" id="39"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="0" angle="0"/>
@@ -82,6 +86,10 @@
             <edge end="30" id="39" start="35" angle="0"/>
             <edge end="7" id="40" start="30" angle="90"/>
             <edge end="10" id="41" start="33" angle="150"/>
+            <edge end="39" id="42" start="36" angle="0"/>
+            <edge end="38" id="43" start="39" angle="0"/>
+            <edge end="37" id="44" start="38" angle="0"/>
+            <edge end="36" id="45" start="37" angle="0"/>
         </edges>
         <labels>
             <label x="6.701642105263159" y="6.380631578947367" id="0" area="3"/>
@@ -91,6 +99,7 @@
             <label x="-3.5" y="0" id="4" area="0"/>
             <label x="-0.430351" y="-3.61051" id="5" area="0"/>
             <label x="12.6551" y="-8.24432" id="6" area="0"/>
+            <label x="4.18441" y="2.48097" id="7" area="0"/>
         </labels>
     </geometry>
     <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_triangle" time_step="0.1" name="unnamed" time_total="60">
@@ -154,6 +163,7 @@
                     <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2">
                         <label label="1"/>
                         <label label="3"/>
+                        <label label="7"/>
                     </material>
                 </materials>
             </field>
