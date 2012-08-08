@@ -558,11 +558,11 @@ QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
         for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
         {
             SceneLabel* label = Util::scene()->labels->at(labelIdx);
-//            int wn = windingNumber(label->point(), loops[loopIdx]);
-//            cout << "winding number " << wn << endl;
-//            assert(wn < 2);
-//            if(wn == 1)
-//                correspondingLabels[loopIdx].push_back(label);
+            //            int wn = windingNumber(label->point(), loops[loopIdx]);
+            //            cout << "winding number " << wn << endl;
+            //            assert(wn < 2);
+            //            if(wn == 1)
+            //                correspondingLabels[loopIdx].push_back(label);
             int ip = intersectionsParity(label->point(), loops[loopIdx]);
             if(ip == 1)
                 correspondingLabels[loopIdx].push_back(label);
@@ -571,14 +571,14 @@ QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
 
     // todo: improve exceptions strings
 
-//    int idxOuterLoop = -1;
-//    for(int i = 0; i < correspondingLabels.size(); i++)
-//    {
-//        if(correspondingLabels[i].size() == Util::scene()->labels->count())
-//            idxOuterLoop = i;
-//    }
-//    if(idxOuterLoop == -1)
-//        throw(AgrosMeshException("There is a label outside the domain"));
+    //    int idxOuterLoop = -1;
+    //    for(int i = 0; i < correspondingLabels.size(); i++)
+    //    {
+    //        if(correspondingLabels[i].size() == Util::scene()->labels->count())
+    //            idxOuterLoop = i;
+    //    }
+    //    if(idxOuterLoop == -1)
+    //        throw(AgrosMeshException("There is a label outside the domain"));
 
     QMap<SceneLabel*, QList<NodeEdgeData> > loopsMap;
 
@@ -591,15 +591,15 @@ QMap<SceneLabel*, QList<NodeEdgeData> > findLoops()
         }
         else if(numLabels > 1)
         {
-//            if(i != idxOuterLoop)
-//                throw(AgrosMeshException("There are two labels in some domain"));
+            //            if(i != idxOuterLoop)
+            //                throw(AgrosMeshException("There are two labels in some domain"));
         }
         else
         {
             SceneLabel* label = correspondingLabels[i][0];
             if(loopsMap.contains(label))
             {
-//                assert((correspondingLabels.size() == 2) && (Util::scene()->labels->count() == 1));
+                //                assert((correspondingLabels.size() == 2) && (Util::scene()->labels->count() == 1));
             }
             else
                 loopsMap[label] = loops[i];
@@ -638,6 +638,9 @@ bool MeshGeneratorGMSH::writeToGmsh()
     }
     QTextStream out(&file);
 
+    // mesh size
+    // RectPoint rect = Util::scene()->boundingBox();
+    // out << QString("mesh_size = %1;\n").arg(qMin(rect.width(), rect.height()) / 6.0);
     out << QString("mesh_size = 0;\n");
 
     // nodes
@@ -738,7 +741,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     QMap<SceneLabel*, QList<NodeEdgeData> > loopsMap;
     try{
-         loopsMap = findLoops();
+        loopsMap = findLoops();
     }
     catch(AgrosMeshException& ame)
     {
@@ -765,7 +768,8 @@ bool MeshGeneratorGMSH::writeToGmsh()
     outLoops.append("\n");
 
     // quad mesh
-    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad ||
+            Util::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
     {
         outLoops.append(QString("Recombine Surface {"));
         for(int i = 0; i < loops.size(); i++)
@@ -776,27 +780,32 @@ bool MeshGeneratorGMSH::writeToGmsh()
         }
         outLoops.append(QString("};\n"));
     }
-//    QString outLoops;
-//    outLoops.append(QString("Line Loop(1) = {0, 1, 2, 3};\n"));
-//    outLoops.append(QString("Plane Surface(1) = {1};\n"));
-//    outLoops.append(QString("Line Loop(2) = {4, 5, 6, -1};\n"));
-//    outLoops.append(QString("Plane Surface(2) = {2};\n"));
-//    outLoops.append("\n");
+    //    QString outLoops;
+    //    outLoops.append(QString("Line Loop(1) = {0, 1, 2, 3};\n"));
+    //    outLoops.append(QString("Plane Surface(1) = {1};\n"));
+    //    outLoops.append(QString("Line Loop(2) = {4, 5, 6, -1};\n"));
+    //    outLoops.append(QString("Plane Surface(2) = {2};\n"));
+    //    outLoops.append("\n");
 
-//    // quad mesh
-//    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
-//        outLoops.append(QString("Recombine Surface {1, 2};\n"));
+    //    // quad mesh
+    //    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    //        outLoops.append(QString("Recombine Surface {1, 2};\n"));
 
     // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
     QString outCommands;
-    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    if (Util::problem()->config()->meshType() == MeshType_GMSH_Triangle)
     {
-        outCommands.append(QString("Mesh.Algorithm = 8;\n")); // 8
+        outCommands.append(QString("Mesh.Algorithm = 2;\n"));
+    }
+    else if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    {
+        outCommands.append(QString("Mesh.Algorithm = 2;\n"));
         outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
     }
-    else if (Util::problem()->config()->meshType() == MeshType_GMSH_Triangle)
+    else if (Util::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
     {
-        outCommands.append(QString("Mesh.Algorithm = 2;\n")); // 2
+        outCommands.append(QString("Mesh.Algorithm = 8;\n"));
+        outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
     }
 
     outNodes.insert(0, QString("\n// nodes\n"));
@@ -888,7 +897,7 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
 
     nodeList.clear();
     edgeList.clear();
-    elementList.clear();  
+    elementList.clear();
 
     return true;
 }

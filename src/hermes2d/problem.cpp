@@ -284,6 +284,7 @@ bool Problem::mesh()
         break;
     case MeshType_GMSH_Triangle:
     case MeshType_GMSH_Quad:
+    case MeshType_GMSH_QuadDelaunay_Experimental:
         pim = new MeshGeneratorGMSH();
         break;
     default:

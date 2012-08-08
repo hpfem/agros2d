@@ -146,6 +146,7 @@ void initLists()
     meshTypeList.insert(MeshType_Triangle_QuadJoin, "triangle_quad_join");
     meshTypeList.insert(MeshType_GMSH_Triangle, "gmsh_triangle");
     meshTypeList.insert(MeshType_GMSH_Quad, "gmsh_quad");
+    meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -382,6 +383,8 @@ QString meshTypeString(MeshType meshType)
         return QObject::tr("GMSH - triangle");
     case MeshType_GMSH_Quad:
         return QObject::tr("GMSH - quad");
+    case MeshType_GMSH_QuadDelaunay_Experimental:
+        return QObject::tr("GMSH - quad Delaunay (exp.)");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;

@@ -467,7 +467,8 @@ enum MeshType
     MeshType_Triangle_QuadRoughDivision,
     MeshType_Triangle_QuadJoin,
     MeshType_GMSH_Triangle,
-    MeshType_GMSH_Quad
+    MeshType_GMSH_Quad,
+    MeshType_GMSH_QuadDelaunay_Experimental
 };
 
 enum PhysicFieldVariableComp
