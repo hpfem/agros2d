@@ -705,7 +705,7 @@ void SceneViewPost2D::paintScalarField()
             glVertex2d(linVertScalar[linTrisScalar[i][j]][0], linVertScalar[linTrisScalar[i][j]][1]);
         }
     }
-    glEnd();  
+    glEnd();
 
     m_post2DHermes->linScalarView().unlock_data();
     */
@@ -726,7 +726,7 @@ void SceneViewPost2D::paintContours()
         m_post2DHermes->linContourView().lock_data();
 
         double3* tvert = m_post2DHermes->linContourView().get_vertices();
-        int3* tris = m_post2DHermes->linContourView().get_triangles();
+        int3* tris = m_post2DHermes->linContourView().get_contour_triangles();
 
         // transform variable
         double rangeMin =  numeric_limits<double>::max();
@@ -753,7 +753,7 @@ void SceneViewPost2D::paintContours()
                   Util::config()->colorContours.blueF());
 
         glBegin(GL_LINES);
-        for (int i = 0; i < m_post2DHermes->linContourView().get_num_triangles(); i++)
+        for (int i = 0; i < m_post2DHermes->linContourView().get_num_contour_triangles(); i++)
         {
             if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
             {
