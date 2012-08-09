@@ -43,6 +43,9 @@ public:
     SceneLabelCommandAdd* getAddCommand();
     SceneLabelCommandRemove* getRemoveCommand();
 
+    // returns true if markers for all fields are noneMarkers
+    bool isHole();
+
     int showDialog(QWidget *parent, bool isNew = false);
 
 private:

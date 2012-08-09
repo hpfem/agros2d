@@ -41,6 +41,16 @@ double SceneLabel::distance(const Point &point) const
     return (this->point() - point).magnitude();
 }
 
+bool SceneLabel::isHole()
+{
+    foreach (FieldInfo* field, Util::problem()->fieldInfos())
+    {
+        if(!marker(field)->isNone())
+            return false;
+    }
+    return true;
+}
+
 int SceneLabel::showDialog(QWidget *parent, bool isNew)
 {
     SceneLabelDialog *dialog = new SceneLabelDialog(this, parent, isNew);
