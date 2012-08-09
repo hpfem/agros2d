@@ -42,6 +42,54 @@
             <node x="1.95" y="1.55" id="37"/>
             <node x="6.300000000000001" y="1.4" id="38"/>
             <node x="6.100000000000001" y="5.7" id="39"/>
+            <node x="3" y="9.9" id="40"/>
+            <node x="3.1" y="8.450000000000001" id="41"/>
+            <node x="0.9500000000000001" y="8.550000000000001" id="42"/>
+            <node x="1.15" y="7.75" id="43"/>
+            <node x="5.600000000000001" y="7.7" id="44"/>
+            <node x="7.4" y="11.05" id="45"/>
+            <node x="5.25" y="9.35" id="46"/>
+            <node x="4.4" y="11.4" id="47"/>
+            <node x="5.7" y="10.65" id="48"/>
+            <node x="24.36992627464043" y="-19.58279850994425" id="49"/>
+            <node x="20.1" y="-18.2" id="50"/>
+            <node x="36.9" y="-18.55" id="51"/>
+            <node x="49.05" y="-18.3" id="52"/>
+            <node x="48.1" y="-7.2" id="53"/>
+            <node x="35.55" y="-4" id="54"/>
+            <node x="25.15" y="-5.100000000000001" id="55"/>
+            <node x="27.3" y="-6.15" id="56"/>
+            <node x="27.45" y="-18.3" id="57"/>
+            <node x="38.85" y="-17.4" id="58"/>
+            <node x="39.1" y="-6.550000000000001" id="59"/>
+            <node x="28.55" y="-8.200000000000001" id="60"/>
+            <node x="29.1" y="-15.45" id="61"/>
+            <node x="33.45" y="-16.1" id="62"/>
+            <node x="36.5" y="-8.300000000000001" id="63"/>
+            <node x="32.45" y="-7.850000000000001" id="64"/>
+            <node x="30.4" y="-10.1" id="65"/>
+            <node x="30.75" y="-13.35" id="66"/>
+            <node x="35.4" y="-13.5" id="67"/>
+            <node x="35.45" y="-9.700000000000001" id="68"/>
+            <node x="33.2" y="-12.4" id="69"/>
+            <node x="31.9" y="-11.1" id="70"/>
+            <node x="33.9" y="-11" id="71"/>
+            <node x="32.65" y="-10.5" id="72"/>
+            <node x="40.35" y="-11.65" id="73"/>
+            <node x="37.5" y="-16.75" id="74"/>
+            <node x="39.1" y="-14.65" id="75"/>
+            <node x="30.85" y="-14.05" id="76"/>
+            <node x="30.95" y="-14.65" id="77"/>
+            <node x="32" y="-14.65" id="78"/>
+            <node x="32" y="-13.95" id="79"/>
+            <node x="33.3" y="-14" id="80"/>
+            <node x="33.45" y="-14.85" id="81"/>
+            <node x="31.05" y="-11.85" id="82"/>
+            <node x="31.05" y="-12.5" id="83"/>
+            <node x="31.55" y="-11.9" id="84"/>
+            <node x="31.7" y="-12.6" id="85"/>
+            <node x="32.45" y="-12.1" id="86"/>
+            <node x="32.55" y="-12.75" id="87"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="0" angle="0"/>
@@ -90,6 +138,60 @@
             <edge end="38" id="43" start="39" angle="0"/>
             <edge end="37" id="44" start="38" angle="0"/>
             <edge end="36" id="45" start="37" angle="0"/>
+            <edge end="42" id="46" start="41" angle="0"/>
+            <edge end="43" id="47" start="42" angle="0"/>
+            <edge end="44" id="48" start="43" angle="50"/>
+            <edge end="46" id="49" start="44" angle="0"/>
+            <edge end="45" id="50" start="46" angle="10"/>
+            <edge end="47" id="51" start="45" angle="0"/>
+            <edge end="40" id="52" start="41" angle="0"/>
+            <edge end="48" id="53" start="40" angle="30"/>
+            <edge end="47" id="54" start="48" angle="0"/>
+            <edge end="50" id="55" start="35" angle="0"/>
+            <edge end="49" id="56" start="50" angle="0"/>
+            <edge end="49" id="57" start="51" angle="0"/>
+            <edge end="52" id="58" start="51" angle="0"/>
+            <edge end="53" id="59" start="52" angle="0"/>
+            <edge end="54" id="60" start="53" angle="0"/>
+            <edge end="55" id="61" start="54" angle="0"/>
+            <edge end="34" id="62" start="55" angle="0"/>
+            <edge end="57" id="63" start="56" angle="0"/>
+            <edge end="58" id="64" start="57" angle="0"/>
+            <edge end="59" id="65" start="58" angle="80"/>
+            <edge end="56" id="66" start="59" angle="0"/>
+            <edge end="62" id="67" start="61" angle="0"/>
+            <edge end="73" id="68" start="62" angle="0"/>
+            <edge end="63" id="69" start="73" angle="0"/>
+            <edge end="64" id="70" start="63" angle="0"/>
+            <edge end="60" id="71" start="64" angle="0"/>
+            <edge end="61" id="72" start="60" angle="0"/>
+            <edge end="67" id="73" start="66" angle="0"/>
+            <edge end="68" id="74" start="67" angle="0"/>
+            <edge end="65" id="75" start="68" angle="0"/>
+            <edge end="66" id="76" start="65" angle="0"/>
+            <edge end="70" id="77" start="69" angle="0"/>
+            <edge end="72" id="78" start="70" angle="0"/>
+            <edge end="71" id="79" start="72" angle="0"/>
+            <edge end="69" id="80" start="71" angle="0"/>
+            <edge end="74" id="81" start="62" angle="0"/>
+            <edge end="75" id="82" start="74" angle="0"/>
+            <edge end="73" id="83" start="75" angle="0"/>
+            <edge end="77" id="84" start="76" angle="0"/>
+            <edge end="78" id="85" start="77" angle="0"/>
+            <edge end="81" id="86" start="78" angle="0"/>
+            <edge end="80" id="87" start="81" angle="0"/>
+            <edge end="79" id="88" start="80" angle="0"/>
+            <edge end="76" id="89" start="79" angle="0"/>
+            <edge end="78" id="90" start="79" angle="0"/>
+            <edge end="85" id="91" start="84" angle="0"/>
+            <edge end="83" id="92" start="85" angle="0"/>
+            <edge end="82" id="93" start="83" angle="0"/>
+            <edge end="84" id="94" start="82" angle="0"/>
+            <edge end="86" id="95" start="84" angle="0"/>
+            <edge end="87" id="96" start="86" angle="0"/>
+            <edge end="85" id="97" start="87" angle="0"/>
+            <edge end="62" id="98" start="81" angle="0"/>
+            <edge end="61" id="99" start="77" angle="0"/>
         </edges>
         <labels>
             <label x="6.701642105263159" y="6.380631578947367" id="0" area="3"/>
@@ -100,6 +202,18 @@
             <label x="-0.430351" y="-3.61051" id="5" area="0"/>
             <label x="12.6551" y="-8.24432" id="6" area="0"/>
             <label x="4.18441" y="2.48097" id="7" area="0"/>
+            <label x="1.809983975072938" y="8.324328027178842" id="8" area="0"/>
+            <label x="41.2585" y="-12.9122" id="9" area="0"/>
+            <label x="40.2817" y="-12.9122" id="10" area="0"/>
+            <label x="38.52342104091464" y="-11.41438937162487" id="11" area="0"/>
+            <label x="34.2906" y="-12.5866" id="12" area="0"/>
+            <label x="33.24861960350157" y="-11.28414736082454" id="13" area="0"/>
+            <label x="35.7883" y="-15.517" id="14" area="0"/>
+            <label x="31.4947" y="-14.2507" id="15" area="0"/>
+            <label x="32.6208" y="-14.4149" id="16" area="0"/>
+            <label x="31.1429" y="-12.2567" id="17" area="0"/>
+            <label x="31.9874" y="-12.327" id="18" area="0"/>
+            <label x="32.9951" y="-15.2737" id="19" area="0"/>
         </labels>
     </geometry>
     <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_triangle" time_step="0.1" name="unnamed" time_total="60">
@@ -133,6 +247,38 @@
                         <edge edge="39"/>
                         <edge edge="40"/>
                         <edge edge="41"/>
+                        <edge edge="46"/>
+                        <edge edge="47"/>
+                        <edge edge="48"/>
+                        <edge edge="49"/>
+                        <edge edge="50"/>
+                        <edge edge="51"/>
+                        <edge edge="52"/>
+                        <edge edge="53"/>
+                        <edge edge="54"/>
+                        <edge edge="55"/>
+                        <edge edge="56"/>
+                        <edge edge="57"/>
+                        <edge edge="58"/>
+                        <edge edge="59"/>
+                        <edge edge="60"/>
+                        <edge edge="61"/>
+                        <edge edge="62"/>
+                        <edge edge="68"/>
+                        <edge edge="69"/>
+                        <edge edge="70"/>
+                        <edge edge="71"/>
+                        <edge edge="72"/>
+                        <edge edge="73"/>
+                        <edge edge="74"/>
+                        <edge edge="75"/>
+                        <edge edge="76"/>
+                        <edge edge="77"/>
+                        <edge edge="78"/>
+                        <edge edge="79"/>
+                        <edge edge="80"/>
+                        <edge edge="98"/>
+                        <edge edge="99"/>
                     </boundary>
                     <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="U = 0 V">
                         <edge edge="15"/>
@@ -146,6 +292,12 @@
                         <edge edge="23"/>
                         <edge edge="24"/>
                         <edge edge="25"/>
+                        <edge edge="84"/>
+                        <edge edge="85"/>
+                        <edge edge="86"/>
+                        <edge edge="87"/>
+                        <edge edge="88"/>
+                        <edge edge="89"/>
                     </boundary>
                     <boundary type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0">
                         <edge edge="2"/>
@@ -159,11 +311,20 @@
                         <label label="4"/>
                         <label label="5"/>
                         <label label="6"/>
+                        <label label="9"/>
+                        <label label="14"/>
+                        <label label="16"/>
+                        <label label="17"/>
+                        <label label="18"/>
+                        <label label="19"/>
                     </material>
                     <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2">
                         <label label="1"/>
                         <label label="3"/>
                         <label label="7"/>
+                        <label label="10"/>
+                        <label label="12"/>
+                        <label label="15"/>
                     </material>
                 </materials>
             </field>

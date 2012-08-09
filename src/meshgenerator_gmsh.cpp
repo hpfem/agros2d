@@ -535,6 +535,19 @@ int longerLoop(QList<QList<NodeEdgeData> > loops, int idx1, int idx2)
         assert(0);
 }
 
+int shareEdge(QList<QList<NodeEdgeData> > loops, int idx1, int idx2)
+{
+    foreach(NodeEdgeData ned1, loops[idx1])
+    {
+        foreach(NodeEdgeData ned2, loops[idx2])
+        {
+            if(ned1.edge == ned2.edge)
+                return true;
+        }
+    }
+    return false;
+}
+
 struct LoopsInfo
 {
     QList<QList<NodeEdgeData> > loops;
@@ -658,13 +671,14 @@ LoopsInfo findLoops()
                     swap(loopsWithLabel[j+1], loopsWithLabel[j]);
             }
         }
-        assert(labelsInsideLoop[loopsWithLabel[0]].size() == 1);
-        assert(labelsInsideLoop[loopsWithLabel[0]][0] == actualLabel);
-
-        principalLoopOfLabel[actualLabel] = loopsWithLabel[0];
+//        assert(labelsInsideLoop[loopsWithLabel[0]].size() == 1);
+//        assert(labelsInsideLoop[loopsWithLabel[0]][0] == actualLabel);
 
         int indexOfOutmost = loopsWithLabel[loopsWithLabel.size() - 1];
-        if(labelsInsideLoop[indexOfOutmost].size() > 1)
+        int indexOfInmost = loopsWithLabel[0];
+        principalLoopOfLabel[actualLabel] = indexOfInmost;
+
+        if((labelsInsideLoop[indexOfOutmost].size() > 1) && (indexOfOutmost != indexOfInmost) && shareEdge(loops, indexOfOutmost, indexOfInmost))
             outsideLoops.push_back(indexOfOutmost);
 
         for(int j = 0; j < loopsWithLabel.size() -1; j++)
@@ -679,10 +693,20 @@ LoopsInfo findLoops()
 
         for(int i = 0; i < loopsWithLabel.size() - 1; i++)
         {
-            superDomains[i] = loopsWithLabel[i+1];
-            subDomains[i+1].append(loopsWithLabel[i]);
+            int smallerLoop = loopsWithLabel[i];
+            int biggerLoop = loopsWithLabel[i+1];
+            assert(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1);
+            superDomains[smallerLoop] = biggerLoop;
+            if(!subDomains[biggerLoop].contains(smallerLoop))
+                subDomains[biggerLoop].append(smallerLoop);
         }
     }
+
+//    for(int i = 0; i < superDomains.size(); i++)
+//    {
+//        if(superDomains[i] == -1)
+//            assert(outsideLoops.contains(i));
+//    }
 
 //    for(int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
 //    {
