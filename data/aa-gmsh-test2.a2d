@@ -14,6 +14,8 @@
             <node x="-11.45" y="16" id="9"/>
             <node x="-9.300000000000001" y="15.4" id="10"/>
             <node x="-9.15" y="17.5" id="11"/>
+            <node x="-21.2" y="23.45" id="12"/>
+            <node x="-20.8" y="9.550000000000001" id="13"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="0" angle="0"/>
@@ -28,14 +30,24 @@
             <edge end="10" id="9" start="9" angle="0"/>
             <edge end="11" id="10" start="10" angle="0"/>
             <edge end="8" id="11" start="11" angle="0"/>
+            <edge end="12" id="12" start="4" angle="0"/>
+            <edge end="13" id="13" start="12" angle="0"/>
+            <edge end="5" id="14" start="13" angle="0"/>
+            <edge end="4" id="15" start="0" angle="0"/>
+            <edge end="6" id="16" start="2" angle="0"/>
+            <edge end="1" id="17" start="9" angle="0"/>
+            <edge end="3" id="18" start="11" angle="0"/>
         </edges>
         <labels>
             <label x="-12.3851" y="15.5275" id="0" area="0"/>
             <label x="-15.0346" y="15.0012" id="1" area="0"/>
-            <label x="-11.01006787330317" y="16.68989441930619" id="2" area="0"/>
+            <label x="-11.0101" y="16.6899" id="2" area="0"/>
+            <label x="-19.1998" y="16.567" id="3" area="0"/>
+            <label x="-11.2094" y="14.4347" id="4" area="0"/>
+            <label x="-6.61693" y="14.4554" id="5" area="0"/>
         </labels>
     </geometry>
-    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_quad" time_step="0.1" name="unnamed" time_total="60">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_triangle" time_step="0.1" name="unnamed" time_total="60">
         <startup_script></startup_script>
         <description></description>
         <fields>
@@ -44,23 +56,28 @@
                 <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary electrostatic_potential="1" type="electrostatic_potential" id="1" name="U = 1 V">
-                        <edge edge="0"/>
-                        <edge edge="1"/>
-                        <edge edge="2"/>
-                        <edge edge="3"/>
-                        <edge edge="4"/>
+                        <edge edge="12"/>
+                        <edge edge="13"/>
+                        <edge edge="14"/>
+                    </boundary>
+                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="U = 0 V">
                         <edge edge="5"/>
                         <edge edge="6"/>
                         <edge edge="7"/>
                     </boundary>
-                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="U = 0 V"/>
                     <boundary type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0"/>
                 </boundaries>
                 <materials>
                     <material id="1" electrostatic_charge_density="0" name="Material" electrostatic_permittivity="1">
                         <label label="1"/>
+                        <label label="2"/>
+                        <label label="4"/>
                     </material>
-                    <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2"/>
+                    <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2">
+                        <label label="0"/>
+                        <label label="3"/>
+                        <label label="5"/>
+                    </material>
                 </materials>
             </field>
         </fields>

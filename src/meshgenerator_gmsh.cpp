@@ -960,6 +960,15 @@ bool MeshGeneratorGMSH::writeToGmsh()
         }
     }
 
+//    outLoops.append(QString("Physical Surface(1) = {"));
+//    for(int i = 0; i < surfaceCount; i++)
+//    {
+//        outLoops.append(QString("%1").arg(i+1));
+//        if(i < surfaceCount - 1)
+//            outLoops.append(",");
+//    }
+//    outLoops.append(QString("};\n"));
+
     // quad mesh
     if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad ||
             Util::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
@@ -972,7 +981,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
                 outLoops.append(",");
         }
         outLoops.append(QString("};\n"));
-    }
+    }    
     //    QString outLoops;
     //    outLoops.append(QString("Line Loop(1) = {0, 1, 2, 3};\n"));
     //    outLoops.append(QString("Plane Surface(1) = {1};\n"));
