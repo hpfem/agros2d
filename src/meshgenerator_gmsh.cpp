@@ -309,7 +309,7 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
         totalAngle += angle;
     }
 
-    double winding = fabs(totalAngle / (2*M_PI));
+    double winding = totalAngle / (2*M_PI);
     int intWinding = round(winding);
     assert(winding - (double)intWinding < 0.00001);
     return intWinding;
@@ -555,6 +555,16 @@ struct LoopsInfo
     QList<int> outsideLoops;
 };
 
+void switchOrientation(QList<QList<NodeEdgeData> >& loops, int idx)
+{
+    QList<NodeEdgeData>& loop = loops[idx];
+    for(int i = 0; i < loop.size() / 2; i++)
+        swap(loop[i], loop[loop.size() - 1 - i]);
+    for(int i = 0; i < loop.size(); i++)
+        loop[i].reverse = !loop[i].reverse;
+
+}
+
 LoopsInfo findLoops()
 {
     // find loops
@@ -608,6 +618,8 @@ LoopsInfo findLoops()
     QMap<SceneLabel*, QList<int> > loopsContainingLabel;
     QMap<SceneLabel*, int> principalLoopOfLabel;
 
+    QMap<QPair<SceneLabel*, int>, int> windingNumbers;
+
     //find what labels are inside what loops
     for(int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
     {
@@ -615,12 +627,12 @@ LoopsInfo findLoops()
         for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
         {
             SceneLabel* label = Util::scene()->labels->at(labelIdx);
-            //            int wn = windingNumber(label->point(), loops[loopIdx]);
-            //            cout << "winding number " << wn << endl;
-            //            assert(wn < 2);
-            //            if(wn == 1)
-            //                correspondingLabels[loopIdx].push_back(label);
+            int wn = windingNumber(label->point(), loops[loopIdx]);
+            cout << "winding number " << wn << endl;
+            assert(wn < 2);
+            windingNumbers[QPair<SceneLabel*, int>(label, loopIdx)] = wn;
             int ip = intersectionsParity(label->point(), loops[loopIdx]);
+            assert(abs(wn) == ip);
             if(ip == 1){
                 labelsInsideLoop[loopIdx].push_back(label);
                 if(!loopsContainingLabel.contains(label))
@@ -678,6 +690,12 @@ LoopsInfo findLoops()
         int indexOfInmost = loopsWithLabel[0];
         principalLoopOfLabel[actualLabel] = indexOfInmost;
 
+        //swith orientation if neccessary
+        int windNum = windingNumbers[QPair<SceneLabel*, int>(actualLabel, indexOfInmost)];
+        assert(abs(windNum) == 1);
+        if(windNum == -1)
+            switchOrientation(loops, indexOfInmost);
+
         if((labelsInsideLoop[indexOfOutmost].size() > 1) && (indexOfOutmost != indexOfInmost) && shareEdge(loops, indexOfOutmost, indexOfInmost))
             outsideLoops.push_back(indexOfOutmost);
 
@@ -701,61 +719,6 @@ LoopsInfo findLoops()
                 subDomains[biggerLoop].append(smallerLoop);
         }
     }
-
-//    for(int i = 0; i < superDomains.size(); i++)
-//    {
-//        if(superDomains[i] == -1)
-//            assert(outsideLoops.contains(i));
-//    }
-
-//    for(int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
-//    {
-//        if(labelsInsideLoop[loopIdx].size() == 0)
-//            throw(AgrosMeshException("There is no label in some subdomain"));
-//        else if(labelsInsideLoop[loopIdx].size() == 1)
-//        {
-//            SceneLabel* actualLabel = labelsInsideLoop[loopIdx][0];
-//            QList<int> loopsWithLabel = loopsContainingLabel[actualLabel];
-
-
-
-//            //sort
-//            for(int i = 0; i < loopsWithLabel.size(); i++)
-//            {
-//                for(int j = 0; j < loopsWithLabel.size() - 1; j++)
-//                {
-//                    int numLabelsJ = labelsInsideLoop[loopsWithLabel[j]].size();
-//                    int numLabelsJPlus1 = labelsInsideLoop[loopsWithLabel[j+1]].size();
-//                    if(numLabelsJ > numLabelsJPlus1)
-//                        swap(loopsWithLabel[j+1], loopsWithLabel[j]);
-//                }
-//            }
-//            assert(labelsInsideLoop[loopsWithLabel[0]].size() == 1);
-//            assert(labelsInsideLoop[loopsWithLabel[0]][0] == actualLabel);
-
-//            principalLoopOfLabel[actualLabel] = loopsWithLabel[0];
-
-//            int indexOfOutmost = loopsWithLabel[loopsWithLabel.size() - 1];
-//            if(labelsInsideLoop[indexOfOutmost].size() > 1)
-//                outsideLoops.push_back(indexOfOutmost);
-
-//            for(int j = 0; j < loopsWithLabel.size() -1; j++)
-//            {
-//                int numLabelsJ = labelsInsideLoop[loopsWithLabel[j]].size();
-//                int numLabelsPlus1 = labelsInsideLoop[loopsWithLabel[j+1]].size();
-//                if(numLabelsJ == numLabelsPlus1)
-//                {
-//                    throw(AgrosMeshException("There is no label in some subdomain"));
-//                }
-//            }
-
-//            for(int i = 0; i < loopsWithLabel.size() - 1; i++)
-//            {
-//                superDomains[i] = loopsWithLabel[i+1];
-//                subDomains[i+1].append(loopsWithLabel[i]);
-//            }
-//        }
-//    }
 
     QMap<SceneLabel*, QList<int> > labelLoopsInfo;
 
@@ -941,6 +904,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
     }
     outLoops.append("\n");
 
+    QList<int> surfaces;
     QMap<SceneLabel*, QList<int> > labelInfo = loopsInfo.labelToLoops;
     int surfaceCount = 0;
     for(int i = 0; i < Util::scene()->labels->count(); i++)
@@ -949,6 +913,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
         SceneLabel* label = Util::scene()->labels->at(i);
         if(!label->isHole())
         {
+            surfaces.push_back(surfaceCount);
             outLoops.append(QString("Plane Surface(%1) = {").arg(surfaceCount));
             for(int j = 0; j < labelInfo[label].count(); j++)
             {
@@ -974,10 +939,10 @@ bool MeshGeneratorGMSH::writeToGmsh()
             Util::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
     {
         outLoops.append(QString("Recombine Surface {"));
-        for(int i = 0; i < surfaceCount; i++)
+        for(int i = 0; i <  surfaces.count(); i++)
         {
-            outLoops.append(QString("%1").arg(i+1));
-            if(i < surfaceCount - 1)
+            outLoops.append(QString("%1").arg(surfaces.at(i)));
+            if(i < surfaces.count() - 1)
                 outLoops.append(",");
         }
         outLoops.append(QString("};\n"));
