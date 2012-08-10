@@ -142,6 +142,25 @@ protected:
     QLineEdit *txtValue;
 };
 
+class ModuleItemAnalysisDialog : public ModuleItemEmptyDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemAnalysisDialog(XMLModule::analysis *analysis, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::analysis *m_analysis;
+
+protected:
+    QLineEdit *txtID;
+    QLineEdit *txtName;
+    QLineEdit *txtType;
+    QLineEdit *txtSolutions;
+};
+
 class ModulePreprocessorDialog : public ModuleItemDialog
 {
     Q_OBJECT

@@ -222,6 +222,54 @@ void ModuleItemConstantDialog::doAccept()
 
 // ***********************************************************************************************************************
 
+ModuleItemAnalysisDialog::ModuleItemAnalysisDialog(XMLModule::analysis *analysis, QWidget *parent)
+    : ModuleItemEmptyDialog(parent), m_analysis(analysis)
+{
+    txtID = new QLineEdit();
+    txtID->setText(QString::fromStdString(analysis->id()));
+
+    txtName = new QLineEdit();
+    txtName->setText(QString::fromStdString(analysis->name()));
+
+    txtType = new QLineEdit();
+    txtType->setText(QString::fromStdString(analysis->type()));
+
+    txtSolutions = new QLineEdit();
+    txtSolutions->setText(QString::number(analysis->solutions()));
+
+    QGridLayout *layoutGeneral = new QGridLayout(this);
+    layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
+    layoutGeneral->addWidget(txtID, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Name:")), 1, 0);
+    layoutGeneral->addWidget(txtName, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Type:")), 2, 0);
+    layoutGeneral->addWidget(txtType, 2, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Solution:")), 3, 0);
+    layoutGeneral->addWidget(txtSolutions, 3, 1);
+
+    layoutMain->addLayout(layoutGeneral);
+    layoutMain->addStretch();
+    layoutMain->addWidget(buttonBox);
+}
+
+void ModuleItemAnalysisDialog::doAccept()
+{
+    m_analysis->name(txtName->text().toStdString());
+    m_analysis->type(txtType->text().toStdString());
+    m_analysis->solutions(txtSolutions->text().toInt());
+
+    foreach (ModuleItem *item, items)
+    {
+        item->save();
+        delete item;
+    }
+    items.clear();
+
+    accept();
+}
+
+// ***********************************************************************************************************************
+
 ModulePreprocessorDialog::ModulePreprocessorDialog(XMLModule::quantity *quant, QWidget *parent)
     : ModuleItemDialog(parent), m_quant(quant)
 {
@@ -471,9 +519,10 @@ void ModuleDialog::load()
         QTreeWidgetItem *item = new QTreeWidgetItem(treeAnalyses);
 
         item->setData(0, Qt::UserRole, QString::fromStdString(analysis.id()));
-        item->setText(0, QString::fromStdString(analysis.name()));
-        item->setText(1, QString::fromStdString(analysis.type()));
-        item->setText(2, QString::number(analysis.solutions()));
+        item->setText(0, QString::fromStdString(analysis.id()));
+        item->setText(1, QString::fromStdString(analysis.name()));
+        item->setText(2, QString::fromStdString(analysis.type()));
+        item->setText(3, QString::number(analysis.solutions()));
     }
 
     // volume weakform quantities
@@ -790,7 +839,7 @@ QWidget *ModuleDialog::createMainWidget()
     treeConstants->setColumnWidth(0, 200);
     treeConstants->setIndentation(5);
     QStringList headConstants;
-    headConstants << tr("Name") << tr("Type");
+    headConstants << tr("ID") << tr("Type");
     treeConstants->setHeaderLabels(headConstants);
 
     connect(treeConstants, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(constantDoubleClicked(QTreeWidgetItem *, int)));
@@ -802,7 +851,7 @@ QWidget *ModuleDialog::createMainWidget()
     treeAnalyses->setColumnWidth(0, 200);
     treeAnalyses->setIndentation(5);
     QStringList headAnalyses;
-    headAnalyses << tr("Name") << tr("Type") << tr("Number of Solution");
+    headAnalyses << tr("ID") << tr("Name") << tr("Type") << tr("Number of Solution");
     treeAnalyses->setHeaderLabels(headAnalyses);
 
     connect(treeAnalyses, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(analysisDoubleClicked(QTreeWidgetItem *, int)));
@@ -820,12 +869,9 @@ QWidget *ModuleDialog::createMainWidget()
     layoutGeneral->addWidget(new QLabel(tr("Analyses:")), 6, 0);
     layoutGeneral->addWidget(treeAnalyses, 7, 0, 1, 2);
 
-    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
-    grpGeneral->setLayout(layoutGeneral);
-
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpGeneral);
+    layout->addLayout(layoutGeneral);
     layout->addStretch();
 
     mainWidget->setLayout(layout);
@@ -1061,6 +1107,22 @@ void ModuleDialog::constantDoubleClicked(QTreeWidgetItem *item, int role)
 
 void ModuleDialog::analysisDoubleClicked(QTreeWidgetItem *item, int role)
 {
+    XMLModule::module *module = m_module_xsd.get();
+    for (int i = 0; i < module->general().analyses().analysis().size(); i++)
+    {
+        XMLModule::analysis *analysis = &module->general().analyses().analysis().at(i);
+        if (item->data(0, Qt::UserRole).toString().toStdString() == analysis->id())
+        {
+            ModuleItemAnalysisDialog dialog(analysis, this);
+            if (dialog.exec())
+            {
+                item->setText(0, QString::fromStdString(analysis->id()));
+                item->setText(1, QString::fromStdString(analysis->name()));
+                item->setText(2, QString::fromStdString(analysis->type()));
+                item->setText(3, QString::number(analysis->solutions()));
+            }
+        }
+    }
 }
 
 void ModuleDialog::materialDoubleClicked(QTreeWidgetItem *item, int role)
