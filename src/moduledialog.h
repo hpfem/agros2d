@@ -63,6 +63,23 @@ private:
     XMLModule::expression *m_expr;
 };
 
+class ModuleItemEmptyDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    ModuleItemEmptyDialog(QWidget *parent);
+
+protected slots:
+    virtual void doAccept() = 0;
+
+protected:
+    QList<ModuleItem *> items;
+
+    QVBoxLayout *layoutMain;
+    QDialogButtonBox *buttonBox;
+};
+
 class ModuleItemDialog : public QDialog
 {
     Q_OBJECT
@@ -106,6 +123,23 @@ protected:
     QLineEdit *txtAxiLinear;
     QLineEdit *txtPlanarNewton;
     QLineEdit *txtAxiNewton;
+};
+
+class ModuleItemConstantDialog : public ModuleItemEmptyDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemConstantDialog(XMLModule::constant *constant, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::constant *m_constant;
+
+protected:
+    QLineEdit *txtID;
+    QLineEdit *txtValue;
 };
 
 class ModulePreprocessorDialog : public ModuleItemDialog
@@ -187,7 +221,7 @@ private slots:
 
 
 private:
-    QString m_fieldId;    
+    QString m_fieldId;
     std::auto_ptr<XMLModule::module> m_module_xsd;
 
     QListWidget *lstView;
@@ -204,7 +238,7 @@ private:
     QWidget *createMainWidget();
     QWidget *createWeakforms();
     QWidget *createPreprocessor();
-    QWidget *createPostprocessor();       
+    QWidget *createPostprocessor();
 
     // constant
     QTreeWidget *treeConstants;

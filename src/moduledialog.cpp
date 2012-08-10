@@ -33,7 +33,7 @@ ModuleItem::ModuleItem(QWidget *parent)
 
 ModuleItemLocalValue::ModuleItemLocalValue(const QString &type, XMLModule::expression *expr, QWidget *parent)
     : ModuleItem(parent), m_type(type), m_expr(expr)
-{        
+{
     QGridLayout *layout = new QGridLayout(this);
 
     if (m_type == "scalar")
@@ -86,6 +86,23 @@ void ModuleItemLocalValue::save()
         m_expr->axi_r(txtAxiR->text().toStdString());
         m_expr->axi_z(txtAxiZ->text().toStdString());
     }
+}
+
+ModuleItemEmptyDialog::ModuleItemEmptyDialog(QWidget *parent)
+    : QDialog(parent)
+{
+    setWindowIcon(icon(""));
+    setWindowTitle(tr("Item editor"));
+
+    // dialog buttons
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    // layout
+    layoutMain = new QVBoxLayout();
+
+    setLayout(layoutMain);
 }
 
 ModuleItemDialog::ModuleItemDialog(QWidget *parent)
@@ -164,6 +181,43 @@ ModuleWeakform::ModuleWeakform(WeakFormKind weakForm, QWidget *parent)
     layout->addWidget(txtPlanarLinear, 3, 1, 1, 2);
     layout->addWidget(new QLabel(tr("Axisymmetric - Newton:")), 4, 0);
     layout->addWidget(txtAxiLinear, 4, 1, 1, 2);
+}
+
+// ***********************************************************************************************************************
+
+ModuleItemConstantDialog::ModuleItemConstantDialog(XMLModule::constant *constant, QWidget *parent)
+    : ModuleItemEmptyDialog(parent), m_constant(constant)
+{
+    txtID = new QLineEdit();
+    txtID->setText(QString::fromStdString(constant->id()));
+
+    txtValue = new QLineEdit();
+    txtValue->setText(QString::number(constant->value()));
+
+    QGridLayout *layoutGeneral = new QGridLayout(this);
+    layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
+    layoutGeneral->addWidget(txtID, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Value:")), 1, 0);
+    layoutGeneral->addWidget(txtValue, 1, 1);
+
+    layoutMain->addLayout(layoutGeneral);
+    layoutMain->addStretch();
+    layoutMain->addWidget(buttonBox);
+}
+
+void ModuleItemConstantDialog::doAccept()
+{
+    m_constant->id(txtID->text().toStdString());
+    m_constant->value(txtValue->text().toDouble());
+
+    foreach (ModuleItem *item, items)
+    {
+        item->save();
+        delete item;
+    }
+    items.clear();
+
+    accept();
 }
 
 // ***********************************************************************************************************************
@@ -989,6 +1043,20 @@ void ModuleDialog::doReject()
 
 void ModuleDialog::constantDoubleClicked(QTreeWidgetItem *item, int role)
 {
+    XMLModule::module *module = m_module_xsd.get();
+    for (int i = 0; i < module->constants().constant().size(); i++)
+    {
+        XMLModule::constant *constant = &module->constants().constant().at(i);
+        if (item->data(0, Qt::UserRole).toString().toStdString() == constant->id())
+        {
+            ModuleItemConstantDialog dialog(constant, this);
+            if (dialog.exec())
+            {
+                item->setText(0, QString::fromStdString(constant->id()));
+                item->setText(1, QString::number(constant->value()));
+            }
+        }
+    }
 }
 
 void ModuleDialog::analysisDoubleClicked(QTreeWidgetItem *item, int role)
