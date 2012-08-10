@@ -249,7 +249,7 @@ namespace Hermes
           if(this->cache_records_sub_idx[i][j] != NULL)
           {
             for(typename std::map<uint64_t, CacheRecordPerSubIdx*>::iterator it = this->cache_records_sub_idx[i][j]->begin(); it != this->cache_records_sub_idx[i][j]->end(); it++)
-              it->second->clear(this->cache_records_element[i][j], spaces[i]->get_mesh()->get_element(j)->nvert);
+              it->second->clear(spaces[i]->get_mesh()->get_element(j)->nvert);
 
             this->cache_records_sub_idx[i][j]->clear();
             delete this->cache_records_sub_idx[i][j];
@@ -274,6 +274,14 @@ namespace Hermes
 
       this->spaces = spacesToSet;
       have_matrix = false;
+
+      unsigned int first_dof_running = 0;
+      this->spaces_first_dofs.clear();
+      for(unsigned int i = 0; i < spaces.size(); i++)
+      {
+        this->spaces_first_dofs.push_back(first_dof_running);
+        first_dof_running += spaces.at(i)->get_num_dofs();
+      }
 
       int max_size = spacesToSet[0]->get_mesh()->get_max_element_id();
       for(unsigned int i = 1; i < spacesToSet.size(); i++)
@@ -308,7 +316,7 @@ namespace Hermes
             if(this->cache_records_sub_idx[i][j] != NULL)
             {
               for(typename std::map<uint64_t, CacheRecordPerSubIdx*>::iterator it = this->cache_records_sub_idx[i][j]->begin(); it != this->cache_records_sub_idx[i][j]->end(); it++)
-                it->second->clear(this->cache_records_element[i][j], spaces[i]->get_mesh()->get_element(j)->nvert);
+                it->second->clear(spaces[i]->get_mesh()->get_element(j)->nvert);
 
               this->cache_records_sub_idx[i][j]->clear();
               delete this->cache_records_sub_idx[i][j];
@@ -1213,9 +1221,9 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void DiscreteProblem<Scalar>::CacheRecordPerSubIdx::clear(CacheRecordPerElement* elementCacheInfo, int nvert)
+    void DiscreteProblem<Scalar>::CacheRecordPerSubIdx::clear(int nvert)
     {
-      for(unsigned int i = 0; i < elementCacheInfo->asmlistCnt; i++)
+      for(unsigned int i = 0; i < this->asmlistCnt; i++)
       {
         this->fns[i]->free_fn();
         delete this->fns[i];
@@ -1326,7 +1334,7 @@ namespace Hermes
             {
               typename std::map<uint64_t, CacheRecordPerSubIdx*>::iterator it = this->cache_records_sub_idx[i][current_state->e[i]->id]->find(current_state->sub_idx[i]); 
               if(it != this->cache_records_sub_idx[i][current_state->e[i]->id]->end())
-                (*it).second->clear(this->cache_records_element[i][current_state->e[i]->id], current_state->rep->nvert);
+                (*it).second->clear(current_state->rep->nvert);
               else
                 this->cache_records_sub_idx[i][current_state->e[i]->id]->insert(std::pair<uint64_t, CacheRecordPerSubIdx*>(current_state->sub_idx[i], new CacheRecordPerSubIdx));
             }
@@ -1338,6 +1346,51 @@ namespace Hermes
         for(unsigned int i = 0; i < this->spaces.size(); i++)
           if(current_state->e[i] != NULL)
             current_refmaps[i]->set_active_element(current_state->e[i]);
+
+        int order = this->globalIntegrationOrderSet ? this->globalIntegrationOrder : 0;
+        
+        if(order == 0)
+        {
+          for(int current_mfvol_i = 0; current_mfvol_i < wf->mfvol.size(); current_mfvol_i++)
+          {
+            if(!form_to_be_assembled(current_mfvol[current_mfvol_i], current_state))
+              continue;
+            int orderTemp = calc_order_matrix_form(current_mfvol[current_mfvol_i], current_refmaps, current_u_ext, current_state);
+            if(order < orderTemp)
+              order = orderTemp;
+          }
+          for(int current_vfvol_i = 0; current_vfvol_i < wf->vfvol.size(); current_vfvol_i++)
+          {
+            if(!form_to_be_assembled(current_vfvol[current_vfvol_i], current_state))
+              continue;
+            int orderTemp = calc_order_vector_form(current_vfvol[current_vfvol_i], current_refmaps, current_u_ext, current_state);
+            if(order < orderTemp)
+              order = orderTemp;
+          }
+
+          for (current_state->isurf = 0; current_state->isurf < current_state->rep->nvert; current_state->isurf++)
+          {
+            if(!current_state->bnd[current_state->isurf])
+              continue;
+            for(int current_mfsurf_i = 0; current_mfsurf_i < wf->mfsurf.size(); current_mfsurf_i++)
+            {
+              if(!form_to_be_assembled(current_mfsurf[current_mfsurf_i], current_state))
+                continue;
+              int orderTemp = calc_order_matrix_form(current_mfsurf[current_mfsurf_i], current_refmaps, current_u_ext, current_state);
+              if(order < orderTemp)
+                order = orderTemp;
+            }
+
+            for(int current_vfsurf_i = 0; current_vfsurf_i < wf->vfsurf.size(); current_vfsurf_i++)
+            {
+              if(!form_to_be_assembled(current_vfsurf[current_vfsurf_i], current_state))
+                continue;
+              int orderTemp = calc_order_vector_form(current_vfsurf[current_vfsurf_i], current_refmaps, current_u_ext, current_state);
+              if(order < orderTemp)
+                order = orderTemp;
+            }
+          }
+        }
 
         for(unsigned int i = 0; i < this->spaces.size(); i++)
         {
@@ -1353,57 +1406,11 @@ namespace Hermes
               else
                 this->cache_records_element[i][current_state->e[i]->id]->clear();
 
-              int order = this->globalIntegrationOrderSet ? this->globalIntegrationOrder : 0;
               
               this->cache_records_element[i][current_state->e[i]->id]->asmlistCnt = current_als[i]->cnt;
               this->cache_records_element[i][current_state->e[i]->id]->asmlistIdx = new int[current_als[i]->cnt];
               for(unsigned int asmlist_i = 0; asmlist_i < current_als[i]->cnt; asmlist_i++)
                 this->cache_records_element[i][current_state->e[i]->id]->asmlistIdx[asmlist_i] = current_als[i]->idx[asmlist_i];
-              
-              if(order == 0)
-              {
-                for(int current_mfvol_i = 0; current_mfvol_i < wf->mfvol.size(); current_mfvol_i++)
-                {
-                  if(!form_to_be_assembled(current_mfvol[current_mfvol_i], current_state))
-                    continue;
-                  int orderTemp = calc_order_matrix_form(current_mfvol[current_mfvol_i], current_refmaps, current_u_ext, current_state);
-                  if(order < orderTemp)
-                    order = orderTemp;
-                }
-                for(int current_vfvol_i = 0; current_vfvol_i < wf->vfvol.size(); current_vfvol_i++)
-                {
-                  if(!form_to_be_assembled(current_vfvol[current_vfvol_i], current_state))
-                    continue;
-                  int orderTemp = calc_order_vector_form(current_vfvol[current_vfvol_i], current_refmaps, current_u_ext, current_state);
-                  if(order < orderTemp)
-                    order = orderTemp;
-                }
-
-                for (current_state->isurf = 0; current_state->isurf < current_state->rep->nvert; current_state->isurf++)
-                {
-                  if(!current_state->bnd[current_state->isurf])
-                    continue;
-                  for(int current_mfsurf_i = 0; current_mfsurf_i < wf->mfsurf.size(); current_mfsurf_i++)
-                  {
-                    if(!form_to_be_assembled(current_mfsurf[current_mfsurf_i], current_state))
-                      continue;
-                    int orderTemp = calc_order_matrix_form(current_mfsurf[current_mfsurf_i], current_refmaps, current_u_ext, current_state);
-                    if(order < orderTemp)
-                      order = orderTemp;
-                  }
-
-                  for(int current_vfsurf_i = 0; current_vfsurf_i < wf->vfsurf.size(); current_vfsurf_i++)
-                  {
-                    if(!form_to_be_assembled(current_vfsurf[current_vfsurf_i], current_state))
-                      continue;
-                    int orderTemp = calc_order_vector_form(current_vfsurf[current_vfsurf_i], current_refmaps, current_u_ext, current_state);
-                    if(order < orderTemp)
-                      order = orderTemp;
-                  }
-                }
-              }
-
-              this->cache_records_element[i][current_state->e[i]->id]->order = order;
               this->cache_element_stored[i][current_state->e[i]->id] = true;
             }
           }
@@ -1411,7 +1418,7 @@ namespace Hermes
           CacheRecordPerSubIdx* newRecord;
 #pragma omp critical (cache_for_subidx_preparation)
           newRecord = (*this->cache_records_sub_idx[i][current_state->e[i]->id]->find(current_state->sub_idx[i])).second;
-                
+          newRecord->order = order;
           // Set active element to all test functions.
           current_spss[i]->set_active_element(current_state->e[i]);
           current_spss[i]->set_master_transform();
@@ -1419,10 +1426,11 @@ namespace Hermes
           // Set active element to reference mappings.
           current_refmaps[i]->force_transform(current_pss[i]->get_transform(), current_pss[i]->get_ctm());
           newRecord->fns = new Func<double>*[current_als[i]->cnt];
+          newRecord->asmlistCnt = current_als[i]->cnt;
           for (unsigned int j = 0; j < current_als[i]->cnt; j++)
           {
             current_spss[i]->set_active_shape(current_als[i]->idx[j]);
-            newRecord->fns[j] = init_fn(current_spss[i], current_refmaps[i], this->cache_records_element[i][current_state->e[i]->id]->order);
+            newRecord->fns[j] = init_fn(current_spss[i], current_refmaps[i], newRecord->order);
           }
 
           newRecord->fnsSurface = new Func<double>**[current_state->rep->nvert];
@@ -1435,14 +1443,14 @@ namespace Hermes
           newRecord->orderSurface = new int[current_state->rep->nvert];
           newRecord->asmlistSurfaceCnt = new int[current_state->rep->nvert];
 
-          int order = this->cache_records_element[i][current_state->e[i]->id]->order;
+          int order = newRecord->order;
           for (current_state->isurf = 0; current_state->isurf < current_state->rep->nvert; current_state->isurf++)
           {
             if(!current_state->bnd[current_state->isurf])
               continue;
             newRecord->n_quadrature_pointsSurface[current_state->isurf] = init_surface_geometry_points(current_refmaps[i], order, current_state, newRecord->geometrySurface[current_state->isurf], newRecord->jacobian_x_weightsSurface[current_state->isurf]);
             newRecord->orderSurface[current_state->isurf] = order;
-            order = this->cache_records_element[i][current_state->e[i]->id]->order;
+            order = newRecord->order;
           }
 
           for (current_state->isurf = 0; current_state->isurf < current_state->rep->nvert; current_state->isurf++)
@@ -1459,7 +1467,7 @@ namespace Hermes
             }
           }
             
-          newRecord->n_quadrature_points = init_geometry_points(current_refmaps[i], this->cache_records_element[i][current_state->e[i]->id]->order, newRecord->geometry, newRecord->jacobian_x_weights);
+          newRecord->n_quadrature_points = init_geometry_points(current_refmaps[i], newRecord->order, newRecord->geometry, newRecord->jacobian_x_weights);
         }
       }
 
@@ -1477,7 +1485,7 @@ namespace Hermes
           CacheRecordPerSubIdxJ = this->cache_records_sub_idx[current_mfvol[current_mfvol_i]->j][current_state->e[current_mfvol[current_mfvol_i]->j]->id]->find(current_state->sub_idx[current_mfvol[current_mfvol_i]->j])->second;
 
           assemble_matrix_form(current_mfvol[current_mfvol_i], 
-            this->cache_records_element[current_mfvol[current_mfvol_i]->i][current_state->e[current_mfvol[current_mfvol_i]->i]->id]->order, 
+            CacheRecordPerSubIdxI->order, 
             CacheRecordPerSubIdxJ->fns, 
             CacheRecordPerSubIdxI->fns, 
             current_u_ext, 
@@ -1501,7 +1509,7 @@ namespace Hermes
           CacheRecordPerSubIdxI = this->cache_records_sub_idx[current_vfvol[current_vfvol_i]->i][current_state->e[current_vfvol[current_vfvol_i]->i]->id]->find(current_state->sub_idx[current_vfvol[current_vfvol_i]->i])->second;
 
           assemble_vector_form(current_vfvol[current_vfvol_i], 
-            this->cache_records_element[current_vfvol[current_vfvol_i]->i][current_state->e[current_vfvol[current_vfvol_i]->i]->id]->order, 
+            CacheRecordPerSubIdxI->order, 
             CacheRecordPerSubIdxI->fns, 
             current_u_ext, 
             current_als[current_vfvol[current_vfvol_i]->i], 

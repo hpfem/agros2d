@@ -29,7 +29,10 @@ namespace Hermes
       freeze_jacobian(false), newton_tol(1e-6), newton_max_iter(20), newton_damping_coeff(1.0), newton_max_allowed_residual_norm(1e10)
     {
       for(unsigned int i = 0; i < spaces.size(); i++)
+      {
         this->spaces.push_back(spaces.at(i));
+        this->spaces_seqs.push_back(spaces.at(i)->get_seq());
+      }
       for(unsigned int i = 0; i < spaces.size(); i++)
         this->spaces_mutable.push_back(const_cast<Space<Scalar>*>(spaces.at(i)));
 
@@ -63,8 +66,9 @@ namespace Hermes
       stage_wf_left(1), start_from_zero_K_vector(false), block_diagonal_jacobian(false), residual_as_vector(true), iteration(0),
       freeze_jacobian(false), newton_tol(1e-6), newton_max_iter(20), newton_damping_coeff(1.0), newton_max_allowed_residual_norm(1e10)
     {
-      spaces.push_back(space);
-      spaces_mutable.push_back(const_cast<Space<Scalar>*>(space));
+      this->spaces.push_back(space);
+      this->spaces_seqs.push_back(space->get_seq());
+      this->spaces_mutable.push_back(const_cast<Space<Scalar>*>(space));
 
       if(bt==NULL) throw Exceptions::NullException(2);
 
@@ -92,16 +96,65 @@ namespace Hermes
     template<typename Scalar>
     void RungeKutta<Scalar>::set_spaces(Hermes::vector<const Space<Scalar>*> spaces)
     {
-      static_cast<DiscreteProblem<Scalar>*>(this->stage_dp_left)->set_spaces(spaces);
+      bool delete_K_vector = false;
+      for(unsigned int i = 0; i < spaces.size(); i++)
+      {
+        if(spaces[i]->get_seq() != this->spaces_seqs[i])
+          delete_K_vector = true;
+      }
+
       this->spaces = spaces;
+      this->spaces_seqs.clear();
+      for(unsigned int i = 0; i < spaces.size(); i++)
+        this->spaces_seqs.push_back(spaces.at(i)->get_seq());
+      this->spaces_mutable.clear();
+      for(unsigned int i = 0; i < this->spaces.size(); i++)
+        this->spaces_mutable.push_back(const_cast<Space<Scalar>*>(this->spaces.at(i)));
+
+      if(delete_K_vector)
+      {
+        delete [] K_vector;
+        K_vector = new Scalar[num_stages * Space<Scalar>::get_num_dofs(this->spaces)];
+        this->info("K vectors are being set to zero, as the spaces changed during computation.");
+        memset(K_vector, 0, num_stages * Space<Scalar>::get_num_dofs(this->spaces) * sizeof(Scalar));
+      }
+      delete [] u_ext_vec;
+      u_ext_vec = new Scalar[num_stages * Space<Scalar>::get_num_dofs(this->spaces)];
+      delete [] vector_left;
+      vector_left = new Scalar[num_stages*  Space<Scalar>::get_num_dofs(this->spaces)];
+
+      if(this->stage_dp_left != NULL)
+        static_cast<DiscreteProblem<Scalar>*>(this->stage_dp_left)->set_spaces(this->spaces);
     }
 
     template<typename Scalar>
     void RungeKutta<Scalar>::set_space(const Space<Scalar>* space)
     {
-      static_cast<DiscreteProblem<Scalar>*>(this->stage_dp_left)->set_space(space);
+      bool delete_K_vector = false;
+      if(space->get_seq() != this->spaces_seqs[0])
+        delete_K_vector = true;
+      
       this->spaces.clear();
       this->spaces.push_back(space);
+      this->spaces_seqs.clear();
+      this->spaces_seqs.push_back(space->get_seq());
+      this->spaces_mutable.clear();
+      this->spaces_mutable.push_back(const_cast<Space<Scalar>*>(space));
+
+      if(delete_K_vector)
+      {
+        delete [] K_vector;
+        K_vector = new Scalar[num_stages * Space<Scalar>::get_num_dofs(this->spaces)];
+        this->info("K vector is being set to zero, as the spaces changed during computation.");
+        memset(K_vector, 0, num_stages * Space<Scalar>::get_num_dofs(this->spaces) * sizeof(Scalar));
+      }
+      delete [] u_ext_vec;
+      u_ext_vec = new Scalar[num_stages * Space<Scalar>::get_num_dofs(this->spaces)];
+      delete [] vector_left;
+      vector_left = new Scalar[num_stages*  Space<Scalar>::get_num_dofs(this->spaces)];
+
+      if(this->stage_dp_left != NULL)
+        static_cast<DiscreteProblem<Scalar>*>(this->stage_dp_left)->set_space(space);
     }
     
     template<typename Scalar>
@@ -361,6 +414,7 @@ namespace Hermes
           // Adding the block mass matrix M to matrix_right. This completes the
           // resulting tensor Jacobian.
           matrix_right->add_sparse_to_diagonal_blocks(num_stages, matrix_left);
+
           matrix_right->finish();
         }
         else

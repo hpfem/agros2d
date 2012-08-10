@@ -271,15 +271,16 @@ namespace Hermes
       {
       public:
         void clear();
-        int asmlistCnt;
         int* asmlistIdx;
-        int order;
+        int asmlistCnt;
       };
 
       class CacheRecordPerSubIdx
       {
       public:
-        void clear(CacheRecordPerElement* elementCacheInfo, int nvert);
+        int order;
+        void clear(int nvert);
+        int asmlistCnt;
         Func<double>** fns;
         Func<double>*** fnsSurface;
         Geom<double>* geometry;
