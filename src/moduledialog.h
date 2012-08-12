@@ -161,6 +161,50 @@ protected:
     QLineEdit *txtSolutions;
 };
 
+class ModuleItemWeakformsQuantityDialog : public ModuleItemEmptyDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemWeakformsQuantityDialog(XMLModule::quantity *quantity, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::quantity *m_quantity;
+
+protected:
+    QLineEdit *txtID;
+    QLineEdit *txtShortname;
+};
+
+class ModuleItemWeakformDialog : public ModuleItemEmptyDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemWeakformDialog(XMLModule::matrix_form *form, QWidget *parent);
+    ModuleItemWeakformDialog(XMLModule::vector_form *form, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::matrix_form *m_formMatrix;
+    XMLModule::vector_form *m_formVector;
+
+    void createControls();
+
+protected:
+    QComboBox *cmbAnalysisType;
+
+    QLineEdit *txtI;
+    QLineEdit *txtJ;
+    QLineEdit *txtPlanarLinear;
+    QLineEdit *txtPlanarNewton;
+    QLineEdit *txtAxiLinear;
+    QLineEdit *txtAxiNewton;
+};
+
 class ModulePreprocessorDialog : public ModuleItemDialog
 {
     Q_OBJECT
@@ -229,10 +273,17 @@ private slots:
     void doReject();
 
     void constantDoubleClicked(QTreeWidgetItem *item, int role);
+    void doAddConstant();
+
     void analysisDoubleClicked(QTreeWidgetItem *item, int role);
 
     void volumeIntegralDoubleClicked(QTreeWidgetItem *item, int role);
     void surfaceIntegralDoubleClicked(QTreeWidgetItem *item, int role);
+
+    void volumeQuantityDoubleClicked(QTreeWidgetItem *item, int role);
+    void surfaceQuantityDoubleClicked(QTreeWidgetItem *item, int role);
+
+    void volumeWeakformDoubleClicked(QTreeWidgetItem *item, int role);
 
     void materialDoubleClicked(QTreeWidgetItem *item, int role);
     void boundaryDoubleClicked(QTreeWidgetItem *item, int role);
@@ -284,6 +335,7 @@ private:
     QLineEdit *txtName2;
     QPlainTextEdit *txtDescription;
 
+    void weakformsQuantityDialog(QTreeWidgetItem *item, int role, bool isVolume);
     void preprocessorDialog(QTreeWidgetItem *item, int role, bool isMaterial);
 };
 

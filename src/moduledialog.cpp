@@ -270,6 +270,129 @@ void ModuleItemAnalysisDialog::doAccept()
 
 // ***********************************************************************************************************************
 
+ModuleItemWeakformsQuantityDialog::ModuleItemWeakformsQuantityDialog(XMLModule::quantity *quantity, QWidget *parent)
+    : ModuleItemEmptyDialog(parent), m_quantity(quantity)
+{
+    txtID = new QLineEdit();
+    txtID->setText(QString::fromStdString(quantity->id()));
+
+    txtShortname = new QLineEdit();
+    txtShortname->setText(QString::fromStdString(quantity->shortname().get()));
+
+    QGridLayout *layoutGeneral = new QGridLayout(this);
+    layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
+    layoutGeneral->addWidget(txtID, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Shortname:")), 1, 0);
+    layoutGeneral->addWidget(txtShortname, 1, 1);
+
+    layoutMain->addLayout(layoutGeneral);
+    layoutMain->addStretch();
+    layoutMain->addWidget(buttonBox);
+}
+
+void ModuleItemWeakformsQuantityDialog::doAccept()
+{
+    m_quantity->id(txtID->text().toStdString());
+    m_quantity->shortname(txtShortname->text().toStdString());
+
+    foreach (ModuleItem *item, items)
+    {
+        item->save();
+        delete item;
+    }
+    items.clear();
+
+    accept();
+}
+
+// ***********************************************************************************************************************
+
+ModuleItemWeakformDialog::ModuleItemWeakformDialog(XMLModule::matrix_form *form, QWidget *parent)
+    : ModuleItemEmptyDialog(parent), m_formMatrix(form)
+{
+    createControls();
+
+    txtI->setText(QString::number(m_formMatrix->i()));
+    txtJ->setText(QString::number(m_formMatrix->j()));
+    txtPlanarLinear->setText(QString::fromStdString(m_formMatrix->planar_linear()));
+    txtAxiLinear->setText(QString::fromStdString(m_formMatrix->axi_linear()));
+    txtPlanarNewton->setText(QString::fromStdString(m_formMatrix->planar_newton()));
+    txtAxiNewton->setText(QString::fromStdString(m_formMatrix->axi_newton()));
+}
+
+ModuleItemWeakformDialog::ModuleItemWeakformDialog(XMLModule::vector_form *form, QWidget *parent)
+    : ModuleItemEmptyDialog(parent), m_formVector(form)
+{
+    createControls();
+
+    txtI->setText(QString::number(m_formVector->i()));
+    txtJ->setText(QString::number(m_formVector->j()));
+    txtPlanarLinear->setText(QString::fromStdString(m_formVector->planar_linear()));
+    txtAxiLinear->setText(QString::fromStdString(m_formVector->axi_linear()));
+    txtPlanarNewton->setText(QString::fromStdString(m_formVector->planar_newton()));
+    txtAxiNewton->setText(QString::fromStdString(m_formVector->axi_newton()));
+}
+
+void ModuleItemWeakformDialog::createControls()
+{
+    cmbAnalysisType = new QComboBox();
+
+    /*
+    XMLModule::module *module = m_module_xsd.get();
+    for (int i = 0; i < module->general().analyses().analysis().size(); i++)
+    {
+        XMLModule::analysis analysis = module->general().analyses().analysis().at(i);
+        cmbAnalysisType->addItem(QString::fromStdString(analysis.name()));
+    }
+    */
+
+    txtI = new QLineEdit();
+    txtJ = new QLineEdit();
+    txtPlanarLinear = new QLineEdit();
+    txtPlanarNewton = new QLineEdit();
+    txtAxiLinear = new QLineEdit();
+    txtAxiNewton = new QLineEdit();
+
+    QGridLayout *layoutGeneral = new QGridLayout(this);
+    layoutGeneral->addWidget(new QLabel(tr("Analysis type:")), 0, 0, 1, 2);
+    layoutGeneral->addWidget(cmbAnalysisType, 0, 3, 1, 2);
+    layoutGeneral->addWidget(new QLabel(tr("I:")), 1, 0);
+    layoutGeneral->addWidget(txtI, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("J:")), 1, 2);
+    layoutGeneral->addWidget(txtJ, 1, 3);
+
+    QGridLayout *layoutLinear = new QGridLayout(this);
+    layoutLinear->addWidget(new QLabel(tr("Planar:")), 0, 0);
+    layoutLinear->addWidget(txtPlanarLinear, 1, 0);
+    layoutLinear->addWidget(new QLabel(tr("Axisymetric:")), 2, 0);
+    layoutLinear->addWidget(txtAxiLinear, 3, 0);
+
+    QGroupBox *grpLinear = new QGroupBox(tr("Linear"));
+    grpLinear->setLayout(layoutLinear);
+
+    QGridLayout *layoutNewton = new QGridLayout(this);
+    layoutNewton->addWidget(new QLabel(tr("Planar:")), 0, 0);
+    layoutNewton->addWidget(txtPlanarNewton, 0, 1);
+    layoutNewton->addWidget(new QLabel(tr("Axisymmetric:")), 1, 0);
+    layoutNewton->addWidget(txtAxiNewton, 1, 1);
+
+    QGroupBox *grpNewton = new QGroupBox(tr("Nonlinear"));
+    grpNewton->setLayout(layoutNewton);
+
+    layoutMain->addLayout(layoutGeneral);
+    layoutMain->addWidget(grpLinear);
+    layoutMain->addWidget(grpNewton);
+    layoutMain->addStretch();
+    layoutMain->addWidget(buttonBox);
+}
+
+void ModuleItemWeakformDialog::doAccept()
+{
+    accept();
+}
+
+// ***********************************************************************************************************************
+
 ModulePreprocessorDialog::ModulePreprocessorDialog(XMLModule::quantity *quant, QWidget *parent)
     : ModuleItemDialog(parent), m_quant(quant)
 {
@@ -833,6 +956,13 @@ QWidget *ModuleDialog::createMainWidget()
     txtDescription = new QPlainTextEdit();
 
     // constants
+    QPushButton *btnAddConstant = new QPushButton(tr("Add constant"));
+    connect(btnAddConstant, SIGNAL(clicked()), this, SLOT(doAddConstant()));
+
+    QHBoxLayout *layoutConstantsButtons = new QHBoxLayout();
+    layoutConstantsButtons->addStretch();
+    layoutConstantsButtons->addWidget(btnAddConstant);
+
     treeConstants = new QTreeWidget(this);
     treeConstants->setMouseTracking(true);
     treeConstants->setColumnCount(2);
@@ -857,7 +987,6 @@ QWidget *ModuleDialog::createMainWidget()
     connect(treeAnalyses, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(analysisDoubleClicked(QTreeWidgetItem *, int)));
 
     QGridLayout *layoutGeneral = new QGridLayout();
-
     layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
     layoutGeneral->addWidget(txtId, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Name:")), 1, 0);
@@ -866,8 +995,9 @@ QWidget *ModuleDialog::createMainWidget()
     layoutGeneral->addWidget(txtDescription, 3, 0, 1, 2);
     layoutGeneral->addWidget(new QLabel(tr("Constants:")), 4, 0);
     layoutGeneral->addWidget(treeConstants, 5, 0, 1, 2);
-    layoutGeneral->addWidget(new QLabel(tr("Analyses:")), 6, 0);
-    layoutGeneral->addWidget(treeAnalyses, 7, 0, 1, 2);
+    layoutGeneral->addLayout(layoutConstantsButtons, 6, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Analyses:")), 7, 0);
+    layoutGeneral->addWidget(treeAnalyses, 8, 0, 1, 2);
 
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
@@ -891,7 +1021,7 @@ QWidget *ModuleDialog::createWeakforms()
     headVolumeQuantity << tr("ID") << tr("Shortname");
     treeVolumeQuantity->setHeaderLabels(headVolumeQuantity);
 
-    // connect(treeVolumeQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(volumeQuantityDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeVolumeQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(volumeQuantityDoubleClicked(QTreeWidgetItem *, int)));
 
     QVBoxLayout *layoutVolumeQuantity = new QVBoxLayout();
     layoutVolumeQuantity->addWidget(treeVolumeQuantity);
@@ -908,7 +1038,7 @@ QWidget *ModuleDialog::createWeakforms()
     headVolumeWeakforms << tr("Type") << tr("i") << tr("j");
     treeVolumeWeakforms->setHeaderLabels(headVolumeWeakforms);
 
-    // connect(treeVolumeQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(volumeQuantityDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeVolumeWeakforms, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(volumeWeakformDoubleClicked(QTreeWidgetItem *, int)));
 
     QVBoxLayout *layoutVolumeWeakforms = new QVBoxLayout();
     layoutVolumeWeakforms->addWidget(treeVolumeWeakforms);
@@ -1105,6 +1235,10 @@ void ModuleDialog::constantDoubleClicked(QTreeWidgetItem *item, int role)
     }
 }
 
+void ModuleDialog::doAddConstant()
+{
+}
+
 void ModuleDialog::analysisDoubleClicked(QTreeWidgetItem *item, int role)
 {
     XMLModule::module *module = m_module_xsd.get();
@@ -1120,6 +1254,71 @@ void ModuleDialog::analysisDoubleClicked(QTreeWidgetItem *item, int role)
                 item->setText(1, QString::fromStdString(analysis->name()));
                 item->setText(2, QString::fromStdString(analysis->type()));
                 item->setText(3, QString::number(analysis->solutions()));
+            }
+        }
+    }
+}
+
+void ModuleDialog::volumeQuantityDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    weakformsQuantityDialog(item, role, true);
+}
+
+void ModuleDialog::surfaceQuantityDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    weakformsQuantityDialog(item, role, false);
+}
+
+void ModuleDialog::weakformsQuantityDialog(QTreeWidgetItem *item, int role, bool isVolume)
+{
+    XMLModule::module *module = m_module_xsd.get();
+    int quantities = (isVolume) ? module->volume().quantity().size() :
+                                  module->surface().quantity().size();
+
+    for (int i = 0; i < quantities; i++)
+    {
+        XMLModule::quantity *quantity = (isVolume) ? &module->volume().quantity().at(i) :
+                                                     &module->surface().quantity().at(i);
+
+        if (item->data(0, Qt::UserRole).toString().toStdString() == quantity->id())
+        {
+            ModuleItemWeakformsQuantityDialog dialog(quantity, this);
+            if (dialog.exec())
+            {
+                item->setText(0, QString::fromStdString(quantity->id()));
+                item->setText(1, QString::fromStdString(quantity->shortname().get()));
+            }
+        }
+    }
+}
+
+void ModuleDialog::volumeWeakformDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    XMLModule::module *module = m_module_xsd.get();
+
+    for (int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume *weakform = &module->volume().weakforms_volume().weakform_volume().at(i);
+        XMLModule::matrix_form *matrixForm = &weakform->matrix_form().at(i);
+        XMLModule::vector_form *vectorForm = &weakform->vector_form().at(i);
+
+        // TODO: (Franta)
+        if ((item->data(0, role).toString() == tr("Matrix form")) &&
+                (item->data(1, role).toString().toInt() == matrixForm->i()) &&
+                (item->data(2, role).toString().toInt() == matrixForm->j()))
+        {
+            ModuleItemWeakformDialog dialog(matrixForm, this);
+            if (dialog.exec())
+            {
+            }
+        }
+        else if ((item->data(0, role).toString() == tr("Vector form")) &&
+                 (item->data(1, role).toString().toInt() == vectorForm->i()) &&
+                 (item->data(2, role).toString().toInt() == vectorForm->j()))
+        {
+            ModuleItemWeakformDialog dialog(vectorForm, this);
+            if (dialog.exec())
+            {
             }
         }
     }
