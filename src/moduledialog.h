@@ -157,7 +157,7 @@ private:
 protected:
     QLineEdit *txtID;
     QLineEdit *txtName;
-    QLineEdit *txtType;
+    QComboBox *cmbType;
     QLineEdit *txtSolutions;
 };
 
@@ -184,6 +184,7 @@ class ModuleItemWeakformDialog : public ModuleItemEmptyDialog
 public:
     ModuleItemWeakformDialog(XMLModule::matrix_form *form, QWidget *parent);
     ModuleItemWeakformDialog(XMLModule::vector_form *form, QWidget *parent);
+    ModuleItemWeakformDialog(XMLModule::essential_form *form, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -191,6 +192,7 @@ protected slots:
 private:
     XMLModule::matrix_form *m_formMatrix;
     XMLModule::vector_form *m_formVector;
+    XMLModule::essential_form *m_formEssential;
 
     void createControls();
 
@@ -314,6 +316,7 @@ private:
     QTreeWidget *treeSurfaceQuantity;
 
     QTreeWidget *treeVolumeWeakforms;
+    QTreeWidget *treeSurfaceWeakforms;
 
     // preprocessor
     QTreeWidget *treeMaterials;
@@ -327,7 +330,6 @@ private:
     // main
     QLineEdit *txtId;
     QLineEdit *txtName;
-    QLineEdit *txtName2;
     QPlainTextEdit *txtDescription;
 };
 
