@@ -31,13 +31,13 @@
         <description></description>
         <fields>
             <field field_id="flow" initial_condition="0.0" polynomial_order="2" time_steps_skip="1" number_of_refinements="1" weak_forms="compiled" analysis_type="steadystate">
-                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="5"/>
                 <solver linearity_type="newton" nonlinear_steps="20" nonlinear_tolerance="0.005"/>
                 <boundaries>
-                    <boundary flow_pressure="0" type="flow_velocity" id="1" name="inlet" flow_velocity_x="10" flow_velocity_y="0">
+                    <boundary type="flow_velocity" id="1" name="inlet" flow_velocity_x="10" flow_velocity_y="0">
                         <edge edge="0"/>
                     </boundary>
-                    <boundary flow_pressure="0" type="flow_velocity" id="2" name="wall" flow_velocity_x="0" flow_velocity_y="0">
+                    <boundary type="flow_velocity" id="2" name="wall" flow_velocity_x="0" flow_velocity_y="0">
                         <edge edge="1"/>
                         <edge edge="3"/>
                         <edge edge="4"/>
@@ -45,7 +45,7 @@
                         <edge edge="6"/>
                         <edge edge="7"/>
                     </boundary>
-                    <boundary flow_pressure="0" type="fluid_outlet" id="3" name="outlet" flow_velocity_x="0" flow_velocity_y="0">
+                    <boundary type="fluid_outlet" id="3" name="outlet">
                         <edge edge="2"/>
                     </boundary>
                 </boundaries>
