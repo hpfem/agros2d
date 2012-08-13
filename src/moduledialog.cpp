@@ -26,6 +26,8 @@
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
 
+Q_DECLARE_METATYPE(XMLModule::constant *)
+
 ModuleItem::ModuleItem(QWidget *parent)
     : QWidget(parent)
 {
@@ -624,13 +626,13 @@ void ModuleDialog::load()
     treeConstants->clear();
     for (int i = 0; i < module->constants().constant().size(); i++)
     {
-        XMLModule::constant cnst = module->constants().constant().at(i);
+        XMLModule::constant *cnst = &module->constants().constant().at(i);
 
         QTreeWidgetItem *item = new QTreeWidgetItem(treeConstants);
 
-        item->setData(0, Qt::UserRole, QString::fromStdString(cnst.id()));
-        item->setText(0, QString::fromStdString(cnst.id()));
-        item->setText(1, QString::number(cnst.value()));
+        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::constant *>(cnst));
+        item->setText(0, QString::fromStdString(cnst->id()));
+        item->setText(1, QString::number(cnst->value()));
     }
 
     // analyses
@@ -1219,18 +1221,14 @@ void ModuleDialog::doReject()
 
 void ModuleDialog::constantDoubleClicked(QTreeWidgetItem *item, int role)
 {
-    XMLModule::module *module = m_module_xsd.get();
-    for (int i = 0; i < module->constants().constant().size(); i++)
+    XMLModule::constant *constant = item->data(0, Qt::UserRole).value<XMLModule::constant *>();
+    if (constant)
     {
-        XMLModule::constant *constant = &module->constants().constant().at(i);
-        if (item->data(0, Qt::UserRole).toString().toStdString() == constant->id())
+        ModuleItemConstantDialog dialog(constant, this);
+        if (dialog.exec())
         {
-            ModuleItemConstantDialog dialog(constant, this);
-            if (dialog.exec())
-            {
-                item->setText(0, QString::fromStdString(constant->id()));
-                item->setText(1, QString::number(constant->value()));
-            }
+            item->setText(0, QString::fromStdString(constant->id()));
+            item->setText(1, QString::number(constant->value()));
         }
     }
 }
