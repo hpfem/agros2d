@@ -50,7 +50,7 @@ HtmlValueEdit::HtmlValueEdit(QWidget *parent, const QString &str)
     txtLineEdit->setToolTip(tr("This textedit allows using HTML entities."));
     txtLineEdit->setText(str);
     connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
-    connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(evaluate()));
+    connect(txtLineEdit, SIGNAL(editingFinished()), this, SLOT(evaluate()));
 
     lblValue = new QLabel(this);
 

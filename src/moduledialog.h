@@ -157,15 +157,15 @@ private:
 protected:
     QLineEdit *txtID;
     QLineEdit *txtName;
-    QLineEdit *txtType;
+    QComboBox *cmbType;
     QLineEdit *txtSolutions;
 };
 
-class ModuleItemWeakformsQuantityDialog : public ModuleItemEmptyDialog
+class ModuleItemQuantityDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemWeakformsQuantityDialog(XMLModule::quantity *quantity, QWidget *parent);
+    ModuleItemQuantityDialog(XMLModule::quantity *quantity, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -184,6 +184,7 @@ class ModuleItemWeakformDialog : public ModuleItemEmptyDialog
 public:
     ModuleItemWeakformDialog(XMLModule::matrix_form *form, QWidget *parent);
     ModuleItemWeakformDialog(XMLModule::vector_form *form, QWidget *parent);
+    ModuleItemWeakformDialog(XMLModule::essential_form *form, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -191,12 +192,11 @@ protected slots:
 private:
     XMLModule::matrix_form *m_formMatrix;
     XMLModule::vector_form *m_formVector;
+    XMLModule::essential_form *m_formEssential;
 
     void createControls();
 
 protected:
-    QComboBox *cmbAnalysisType;
-
     QLineEdit *txtI;
     QLineEdit *txtJ;
     QLineEdit *txtPlanarLinear;
@@ -277,17 +277,14 @@ private slots:
 
     void analysisDoubleClicked(QTreeWidgetItem *item, int role);
 
+    void quantityDoubleClicked(QTreeWidgetItem *item, int role);
+    void weakformDoubleClicked(QTreeWidgetItem *item, int role);
+
+    void preprocessorDoubleClicked(QTreeWidgetItem *item, int role);
+
+    void localItemDoubleClicked(QTreeWidgetItem *item, int role);
     void volumeIntegralDoubleClicked(QTreeWidgetItem *item, int role);
     void surfaceIntegralDoubleClicked(QTreeWidgetItem *item, int role);
-
-    void volumeQuantityDoubleClicked(QTreeWidgetItem *item, int role);
-    void surfaceQuantityDoubleClicked(QTreeWidgetItem *item, int role);
-
-    void volumeWeakformDoubleClicked(QTreeWidgetItem *item, int role);
-
-    void materialDoubleClicked(QTreeWidgetItem *item, int role);
-    void boundaryDoubleClicked(QTreeWidgetItem *item, int role);
-    void localItemDoubleClicked(QTreeWidgetItem *item, int role);
 
 
 private:
@@ -319,6 +316,7 @@ private:
     QTreeWidget *treeSurfaceQuantity;
 
     QTreeWidget *treeVolumeWeakforms;
+    QTreeWidget *treeSurfaceWeakforms;
 
     // preprocessor
     QTreeWidget *treeMaterials;
@@ -332,11 +330,7 @@ private:
     // main
     QLineEdit *txtId;
     QLineEdit *txtName;
-    QLineEdit *txtName2;
     QPlainTextEdit *txtDescription;
-
-    void weakformsQuantityDialog(QTreeWidgetItem *item, int role, bool isVolume);
-    void preprocessorDialog(QTreeWidgetItem *item, int role, bool isMaterial);
 };
 
 
