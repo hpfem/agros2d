@@ -360,7 +360,8 @@ private:
     // weakforms
     QTreeWidget *treeVolumeQuantityGlobal;
     QTreeWidget *treeVolumeQuantityAnalysis;
-    QTreeWidget *treeSurfaceQuantity;
+    QTreeWidget *treeSurfaceQuantityGlobal;
+    QTreeWidget *treeSurfaceQuantityAnalysis;
 
     QTreeWidget *treeVolumeWeakforms;
     QTreeWidget *treeSurfaceWeakforms;

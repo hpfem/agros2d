@@ -794,16 +794,55 @@ void ModuleDialog::load()
     }
 
     // surface weakform quantities
-    treeSurfaceQuantity->clear();
+    treeSurfaceQuantityGlobal->clear();
     for (int i = 0; i < module->surface().quantity().size(); i++)
     {
         XMLModule::quantity *quantity = &module->surface().quantity().at(i);
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeSurfaceQuantity);
+        QTreeWidgetItem *item = new QTreeWidgetItem(treeSurfaceQuantityGlobal);
 
         item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
         item->setText(0, QString::fromStdString(quantity->id()));
         item->setText(1, QString::fromStdString((quantity->shortname().present()) ? quantity->shortname().get() : ""));
+    }
+
+    treeSurfaceQuantityAnalysis->clear();
+    for (int i = 0; i < module->surface().weakforms_surface().weakform_surface().size(); i++)
+    {
+        XMLModule::weakform_surface *wf = &module->surface().weakforms_surface().weakform_surface().at(i);
+
+        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeSurfaceQuantityAnalysis);
+        analysis->setExpanded(true);
+        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
+        for (int i = 0; i < wf->boundary().size(); i++)
+        {
+            XMLModule::boundary *bnd = &wf->boundary().at(i);
+
+            QTreeWidgetItem *boundary = new QTreeWidgetItem(analysis);
+            boundary->setExpanded(true);
+            boundary->setText(0, QString::fromStdString(bnd->name()));
+
+            for (int i = 0; i < bnd->quantity().size(); i++)
+            {
+                XMLModule::quantity *quantity = &bnd->quantity().at(i);
+
+                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+
+                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
+                item->setText(0, QString::fromStdString(quantity->id()));
+
+                item->setText(1, tr("linear"));
+                if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
+                {
+                    if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
+                            !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
+                        item->setText(1, tr("nonlinear"));
+                }
+
+                item->setText(2, (quantity->dependence().present() && !QString::fromStdString(quantity->dependence().get()).isEmpty()) ?
+                                  QString::fromStdString(quantity->dependence().get()) : "");
+            }
+        }
     }
 
     // surface weakforms
@@ -1073,34 +1112,44 @@ QWidget *ModuleDialog::createMainWidget()
 {
     QWidget *mainWidget = new QWidget(this);
 
+    // general
     txtId = new QLineEdit();
     txtName = new QLineEdit();
     txtDescription = new QPlainTextEdit();
 
+    QGridLayout *layoutGeneral = new QGridLayout();
+    layoutGeneral->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layoutGeneral->addWidget(txtName, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 2);
+    layoutGeneral->addWidget(txtId, 0, 3);
+    layoutGeneral->addWidget(new QLabel(tr("Description:")), 1, 0);
+
     // constants
+    treeConstants = new QTreeWidget(this);
+    treeConstants->setMouseTracking(true);
+    treeConstants->setColumnCount(2);
+    treeConstants->setColumnWidth(0, 150);
+    treeConstants->setIndentation(5);
+    QStringList headConstants;
+    headConstants << tr("ID") << tr("Value");
+    treeConstants->setHeaderLabels(headConstants);
+
+    connect(treeConstants, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(constantDoubleClicked(QTreeWidgetItem *, int)));
+
+    /*
     QPushButton *btnAddConstant = new QPushButton(tr("Add constant"));
     connect(btnAddConstant, SIGNAL(clicked()), this, SLOT(doAddConstant()));
 
     QHBoxLayout *layoutConstantsButtons = new QHBoxLayout();
     layoutConstantsButtons->addStretch();
-    //layoutConstantsButtons->addWidget(btnAddConstant);
-
-    treeConstants = new QTreeWidget(this);
-    treeConstants->setMouseTracking(true);
-    treeConstants->setColumnCount(2);
-    treeConstants->setColumnWidth(0, 200);
-    treeConstants->setIndentation(5);
-    QStringList headConstants;
-    headConstants << tr("ID") << tr("Type");
-    treeConstants->setHeaderLabels(headConstants);
-
-    connect(treeConstants, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(constantDoubleClicked(QTreeWidgetItem *, int)));
+    layoutConstantsButtons->addWidget(btnAddConstant);
+    */
 
     // analyses
     treeAnalyses = new QTreeWidget(this);
     treeAnalyses->setMouseTracking(true);
     treeAnalyses->setColumnCount(3);
-    treeAnalyses->setColumnWidth(0, 200);
+    treeAnalyses->setColumnWidth(0, 150);
     treeAnalyses->setIndentation(5);
     QStringList headAnalyses;
     headAnalyses << tr("Name") << tr("Type") << tr("Number of Solution");
@@ -1108,26 +1157,20 @@ QWidget *ModuleDialog::createMainWidget()
 
     connect(treeAnalyses, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(analysisDoubleClicked(QTreeWidgetItem *, int)));
 
-    QGridLayout *layoutGeneral = new QGridLayout();
-    layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
-    layoutGeneral->addWidget(txtId, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Name:")), 1, 0);
-    layoutGeneral->addWidget(txtName, 1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Description:")), 2, 0);
-    layoutGeneral->addWidget(txtDescription, 3, 0, 1, 2);
-    layoutGeneral->addWidget(new QLabel(tr("Constants:")), 4, 0);
-    layoutGeneral->addWidget(treeConstants, 5, 0, 1, 2);
-    layoutGeneral->addLayout(layoutConstantsButtons, 6, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Analyses:")), 7, 0);
-    layoutGeneral->addWidget(treeAnalyses, 8, 0, 1, 2);
+    QGridLayout *layoutConstantsAnalysis = new QGridLayout();
+    layoutConstantsAnalysis->addWidget(txtDescription, 2, 0, 1, 4);
+    layoutConstantsAnalysis->addWidget(new QLabel(tr("Constants:")), 3, 0);
+    layoutConstantsAnalysis->addWidget(new QLabel(tr("Analysis:")), 3, 2);
+    layoutConstantsAnalysis->addWidget(treeConstants, 4, 0, 1, 2);
+    layoutConstantsAnalysis->addWidget(treeAnalyses, 4, 2, 1, 1);
+    //layoutConstantsAnalysis->addLayout(layoutConstantsButtons, 5, 0, 1, 1);
 
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutGeneral);
-    layout->addStretch();
+    layout->addLayout(layoutConstantsAnalysis);
 
     mainWidget->setLayout(layout);
-
     return mainWidget;
 }
 
@@ -1137,7 +1180,7 @@ QWidget *ModuleDialog::createWeakforms()
     treeVolumeQuantityGlobal = new QTreeWidget(this);
     treeVolumeQuantityGlobal->setMouseTracking(true);
     treeVolumeQuantityGlobal->setColumnCount(2);
-    treeVolumeQuantityGlobal->setColumnWidth(0, 200);
+    treeVolumeQuantityGlobal->setColumnWidth(0, 150);
     treeVolumeQuantityGlobal->setIndentation(12);
     QStringList headVolumeQuantityGlobal;
     headVolumeQuantityGlobal << tr("ID") << tr("Shortname");
@@ -1148,25 +1191,27 @@ QWidget *ModuleDialog::createWeakforms()
     treeVolumeQuantityAnalysis = new QTreeWidget(this);
     treeVolumeQuantityAnalysis->setMouseTracking(true);
     treeVolumeQuantityAnalysis->setColumnCount(3);
-    treeVolumeQuantityAnalysis->setColumnWidth(0, 200);
+    treeVolumeQuantityAnalysis->setColumnWidth(0, 150);
     treeVolumeQuantityAnalysis->setIndentation(12);
     QStringList headVolumeQuantityAnalysis;
-    headVolumeQuantityAnalysis << tr("Quantity") << tr("Linearity") << tr("Dependence");
+    headVolumeQuantityAnalysis << tr("ID") << tr("Linearity") << tr("Dependence");
     treeVolumeQuantityAnalysis->setHeaderLabels(headVolumeQuantityAnalysis);
 
     connect(treeVolumeQuantityAnalysis, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityAnalysisDoubleClicked(QTreeWidgetItem *, int)));
 
-    QHBoxLayout *layoutVolumeQuantity = new QHBoxLayout();
-    layoutVolumeQuantity->addWidget(treeVolumeQuantityGlobal);
-    layoutVolumeQuantity->addWidget(treeVolumeQuantityAnalysis);
+    QGridLayout *layoutVolumeQuantity = new QGridLayout();
+    layoutVolumeQuantity->addWidget(new QLabel(tr("Definitions:")), 0, 0);
+    layoutVolumeQuantity->addWidget(new QLabel(tr("Parameters for partial analysis:")), 0, 2);
+    layoutVolumeQuantity->addWidget(treeVolumeQuantityGlobal, 1, 0, 1, 2);
+    layoutVolumeQuantity->addWidget(treeVolumeQuantityAnalysis, 1, 2, 1, 1);
 
-    QWidget *volumeQuantities = new QWidget(this);
-    volumeQuantities->setLayout(layoutVolumeQuantity);
+    QGroupBox *grpVolumeQuantities = new QGroupBox(tr("Quantities"));
+    grpVolumeQuantities->setLayout(layoutVolumeQuantity);
 
     treeVolumeWeakforms = new QTreeWidget(this);
     treeVolumeWeakforms->setMouseTracking(true);
     treeVolumeWeakforms->setColumnCount(3);
-    treeVolumeWeakforms->setColumnWidth(0, 200);
+    treeVolumeWeakforms->setColumnWidth(0, 150);
     treeVolumeWeakforms->setIndentation(12);
     QStringList headVolumeWeakforms;
     headVolumeWeakforms << tr("Type") << tr("i") << tr("j");
@@ -1177,38 +1222,52 @@ QWidget *ModuleDialog::createWeakforms()
     QVBoxLayout *layoutVolumeWeakforms = new QVBoxLayout();
     layoutVolumeWeakforms->addWidget(treeVolumeWeakforms);
 
-    QWidget *volumeWeakforms = new QWidget(this);
-    volumeWeakforms->setLayout(layoutVolumeWeakforms);
+    QGroupBox *grpVolumeWeakforms = new QGroupBox(tr("Weakforms"));
+    grpVolumeWeakforms->setLayout(layoutVolumeWeakforms);
 
     QVBoxLayout *layoutVolume = new QVBoxLayout();
-    layoutVolume->addWidget(volumeQuantities);
-    layoutVolume->addWidget(volumeWeakforms);
+    layoutVolume->addWidget(grpVolumeQuantities);
+    layoutVolume->addWidget(grpVolumeWeakforms);
 
     QWidget *weakformVolume = new QWidget(this);
     weakformVolume->setLayout(layoutVolume);
 
     // surface weakforms
-    treeSurfaceQuantity = new QTreeWidget(this);
-    treeSurfaceQuantity->setMouseTracking(true);
-    treeSurfaceQuantity->setColumnCount(2);
-    treeSurfaceQuantity->setColumnWidth(0, 200);
-    treeSurfaceQuantity->setIndentation(5);
+    treeSurfaceQuantityGlobal = new QTreeWidget(this);
+    treeSurfaceQuantityGlobal->setMouseTracking(true);
+    treeSurfaceQuantityGlobal->setColumnCount(2);
+    treeSurfaceQuantityGlobal->setColumnWidth(0, 150);
+    treeSurfaceQuantityGlobal->setIndentation(5);
     QStringList headSurfaceQuantity;
     headSurfaceQuantity << tr("ID") << tr("Shortname");
-    treeSurfaceQuantity->setHeaderLabels(headSurfaceQuantity);
+    treeSurfaceQuantityGlobal->setHeaderLabels(headSurfaceQuantity);
 
-    connect(treeSurfaceQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityGlobalDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeSurfaceQuantityGlobal, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityGlobalDoubleClicked(QTreeWidgetItem *, int)));
 
-    QVBoxLayout *layoutSurfaceQuantity = new QVBoxLayout();
-    layoutSurfaceQuantity->addWidget(treeSurfaceQuantity);
+    treeSurfaceQuantityAnalysis = new QTreeWidget(this);
+    treeSurfaceQuantityAnalysis->setMouseTracking(true);
+    treeSurfaceQuantityAnalysis->setColumnCount(3);
+    treeSurfaceQuantityAnalysis->setColumnWidth(0, 150);
+    treeSurfaceQuantityAnalysis->setIndentation(12);
+    QStringList headSurfaceQuantityAnalysis;
+    headSurfaceQuantityAnalysis << tr("ID") << tr("Linearity") << tr("Dependence");
+    treeSurfaceQuantityAnalysis->setHeaderLabels(headSurfaceQuantityAnalysis);
 
-    QWidget *surfaceQuantities = new QWidget(this);
-    surfaceQuantities->setLayout(layoutSurfaceQuantity);
+    connect(treeSurfaceQuantityAnalysis, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityAnalysisDoubleClicked(QTreeWidgetItem *, int)));
+
+    QGridLayout *layoutSurfaceQuantity = new QGridLayout();
+    layoutSurfaceQuantity->addWidget(new QLabel(tr("Definitions:")), 0, 0);
+    layoutSurfaceQuantity->addWidget(new QLabel(tr("Parameters for partial analysis:")), 0, 2);
+    layoutSurfaceQuantity->addWidget(treeSurfaceQuantityGlobal, 1, 0, 1, 2);
+    layoutSurfaceQuantity->addWidget(treeSurfaceQuantityAnalysis, 1, 2, 1, 1);
+
+    QGroupBox *grpSurfaceQuantities = new QGroupBox(tr("Quantities"));
+    grpSurfaceQuantities->setLayout(layoutSurfaceQuantity);
 
     treeSurfaceWeakforms = new QTreeWidget(this);
     treeSurfaceWeakforms->setMouseTracking(true);
     treeSurfaceWeakforms->setColumnCount(3);
-    treeSurfaceWeakforms->setColumnWidth(0, 200);
+    treeSurfaceWeakforms->setColumnWidth(0, 150);
     treeSurfaceWeakforms->setIndentation(12);
     QStringList headSurfaceWeakforms;
     headSurfaceWeakforms << tr("Type") << tr("i") << tr("j");
@@ -1219,12 +1278,12 @@ QWidget *ModuleDialog::createWeakforms()
     QVBoxLayout *layoutSurfaceWeakforms = new QVBoxLayout();
     layoutSurfaceWeakforms->addWidget(treeSurfaceWeakforms);
 
-    QWidget *surfaceWeakforms = new QWidget(this);
-    surfaceWeakforms->setLayout(layoutSurfaceWeakforms);
+    QGroupBox *grpSurfaceWeakforms = new QGroupBox(tr("Weakforms"));
+    grpSurfaceWeakforms->setLayout(layoutSurfaceWeakforms);
 
     QVBoxLayout *layoutSurface = new QVBoxLayout();
-    layoutSurface->addWidget(surfaceQuantities);
-    layoutSurface->addWidget(surfaceWeakforms);
+    layoutSurface->addWidget(grpSurfaceQuantities);
+    layoutSurface->addWidget(grpSurfaceWeakforms);
 
     QWidget *weakformSurface = new QWidget(this);
     weakformSurface->setLayout(layoutSurface);
