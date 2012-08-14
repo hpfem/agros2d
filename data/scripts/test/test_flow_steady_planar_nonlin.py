@@ -2,16 +2,15 @@ import agros2d
 
 # problem
 problem = agros2d.problem(clear = True)
-problem.name = "unnamed"
 problem.coordinate_type = "planar"
-problem.mesh_type = "triangle_quad_fine_division"
+problem.mesh_type = "gmsh_quad_delaunay"
 problem.matrix_solver = "umfpack"
 
 # fields
 # flow
 flow = agros2d.field("flow")
 flow.analysis_type = "steadystate"
-flow.number_of_refinements = 1
+flow.number_of_refinements = 2
 flow.polynomial_order = 2
 flow.linearity_type = "newton"
 flow.nonlinear_tolerance = 0.001
@@ -57,10 +56,10 @@ problem.solve()
 
 # point value
 point = flow.local_values(-0.023486, 0.117842)
-testp = agros2d.test("Pressure", point["p"], 1.258049)
-testv = agros2d.test("Velocity", point["v"], 0.821971)
-testvx = agros2d.test("Velocity - x", point["vx"], 0.618507)
-testvy = agros2d.test("Velocity - y", point["vy"], -0.541373)
+testp = agros2d.test("Pressure", point["p"], 1.257356)
+testv = agros2d.test("Velocity", point["v"], 0.580049)
+testvx = agros2d.test("Velocity - x", point["vx"], 0.448922)
+testvy = agros2d.test("Velocity - y", point["vy"], -0.367323)
 
 # volume integral
 volume = flow.volume_integrals([0])
