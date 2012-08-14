@@ -1776,7 +1776,7 @@ namespace Hermes
         if(current_als_i->dof[i] < 0)
           continue;
 
-        if((!tra || surface_form) && current_als_j->dof[i] < 0)
+        if((!tra || surface_form) && current_als_i->dof[i] < 0)
           continue;
         if(std::abs(current_als_i->coef[i]) < 1e-12)
           continue;
@@ -2394,8 +2394,8 @@ namespace Hermes
           if(!form_to_be_assembled((MatrixForm<Scalar>*)current_mfsurf[current_mfsurf_i], current_state))
             continue;
 
-          int order = 24;
-          int order_base = 24;
+          int order = 20;
+          int order_base = 20;
 
           MatrixFormSurf<Scalar>* mfs = current_mfsurf[current_mfsurf_i];
           if(mfs->areas[0] != H2D_DG_INNER_EDGE)
@@ -2548,8 +2548,8 @@ namespace Hermes
       {
         for (unsigned int ww = 0; ww < wf->vfsurf.size(); ww++)
         {
-          int order = 24;
-          int order_base = 24;
+          int order = 20;
+          int order_base = 20;
 
           VectorFormSurf<Scalar>* vfs = current_vfsurf[ww];
           if(vfs->areas[0] != H2D_DG_INNER_EDGE)
