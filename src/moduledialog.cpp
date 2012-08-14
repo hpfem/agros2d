@@ -272,7 +272,7 @@ void ModuleItemAnalysisDialog::doAccept()
 
 // ***********************************************************************************************************************
 
-ModuleItemQuantityDialog::ModuleItemQuantityDialog(XMLModule::quantity *quantity, QWidget *parent)
+ModuleItemQuantityGlobalDialog::ModuleItemQuantityGlobalDialog(XMLModule::quantity *quantity, QWidget *parent)
     : ModuleItemEmptyDialog(parent), m_quantity(quantity)
 {
     txtID = new QLineEdit();
@@ -292,10 +292,47 @@ ModuleItemQuantityDialog::ModuleItemQuantityDialog(XMLModule::quantity *quantity
     layoutMain->addWidget(buttonBox);
 }
 
-void ModuleItemQuantityDialog::doAccept()
+void ModuleItemQuantityGlobalDialog::doAccept()
 {
     m_quantity->id(txtID->text().toStdString());
     m_quantity->shortname(txtShortname->text().toStdString());
+
+    accept();
+}
+
+ModuleItemQuantityAnalysisDialog::ModuleItemQuantityAnalysisDialog(XMLModule::quantity *quantity, QWidget *parent)
+    : ModuleItemEmptyDialog(parent), m_quantity(quantity)
+{
+    txtPlanarNonlinearity = new QLineEdit();
+    if (quantity->nonlinearity_planar().present())
+        txtPlanarNonlinearity->setText(QString::fromStdString(quantity->nonlinearity_planar().get()));
+
+    txtAxiNonlinearity = new QLineEdit();
+    if (quantity->nonlinearity_axi().present())
+        txtAxiNonlinearity->setText(QString::fromStdString(quantity->nonlinearity_axi().get()));
+
+    txtDependence = new QLineEdit();
+    if (quantity->dependence().present())
+        txtDependence->setText(QString::fromStdString(quantity->dependence().get()));
+
+    QGridLayout *layoutGeneral = new QGridLayout(this);
+    layoutGeneral->addWidget(new QLabel(tr("Planar nelinearity:")), 0, 0);
+    layoutGeneral->addWidget(txtPlanarNonlinearity, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Axisymmetric nelinearity:")), 1, 0);
+    layoutGeneral->addWidget(txtAxiNonlinearity, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Dependence:")), 2, 0);
+    layoutGeneral->addWidget(txtDependence, 2, 1);
+
+    layoutMain->addLayout(layoutGeneral);
+    layoutMain->addStretch();
+    layoutMain->addWidget(buttonBox);
+}
+
+void ModuleItemQuantityAnalysisDialog::doAccept()
+{
+    m_quantity->nonlinearity_planar(txtPlanarNonlinearity->text().toStdString());
+    m_quantity->nonlinearity_axi(txtAxiNonlinearity->text().toStdString());
+    m_quantity->dependence(txtDependence->text().toStdString());
 
     accept();
 }
@@ -677,16 +714,47 @@ void ModuleDialog::load()
     }
 
     // volume weakform quantities
-    treeVolumeQuantity->clear();
+    treeVolumeQuantityGlobal->clear();
     for (int i = 0; i < module->volume().quantity().size(); i++)
     {
         XMLModule::quantity *quantity = &module->volume().quantity().at(i);
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeVolumeQuantity);
+        QTreeWidgetItem *item = new QTreeWidgetItem(treeVolumeQuantityGlobal);
 
         item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
         item->setText(0, QString::fromStdString(quantity->id()));
         item->setText(1, QString::fromStdString((quantity->shortname().present()) ? quantity->shortname().get() : ""));
+    }
+
+    treeVolumeQuantityAnalysis->clear();
+    for (int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume *wf = &module->volume().weakforms_volume().weakform_volume().at(i);
+
+        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeVolumeQuantityAnalysis);
+        analysis->setExpanded(true);
+        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
+
+        for (int i = 0; i < wf->quantity().size(); i++)
+        {
+            XMLModule::quantity *quantity = &wf->quantity().at(i);
+
+            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+
+            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
+            item->setText(0, QString::fromStdString(quantity->id()));
+
+            item->setText(1, tr("linear"));
+            if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
+            {
+                if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
+                    !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
+                    item->setText(1, tr("nonlinear"));
+            }
+
+            item->setText(2, (quantity->dependence().present() && !QString::fromStdString(quantity->dependence().get()).isEmpty()) ?
+                              QString::fromStdString(quantity->dependence().get()) : "");
+        }
     }
 
     // volume weakforms
@@ -1066,19 +1134,31 @@ QWidget *ModuleDialog::createMainWidget()
 QWidget *ModuleDialog::createWeakforms()
 {
     // volume weakforms
-    treeVolumeQuantity = new QTreeWidget(this);
-    treeVolumeQuantity->setMouseTracking(true);
-    treeVolumeQuantity->setColumnCount(2);
-    treeVolumeQuantity->setColumnWidth(0, 200);
-    treeVolumeQuantity->setIndentation(5);
-    QStringList headVolumeQuantity;
-    headVolumeQuantity << tr("ID") << tr("Shortname");
-    treeVolumeQuantity->setHeaderLabels(headVolumeQuantity);
+    treeVolumeQuantityGlobal = new QTreeWidget(this);
+    treeVolumeQuantityGlobal->setMouseTracking(true);
+    treeVolumeQuantityGlobal->setColumnCount(2);
+    treeVolumeQuantityGlobal->setColumnWidth(0, 200);
+    treeVolumeQuantityGlobal->setIndentation(12);
+    QStringList headVolumeQuantityGlobal;
+    headVolumeQuantityGlobal << tr("ID") << tr("Shortname");
+    treeVolumeQuantityGlobal->setHeaderLabels(headVolumeQuantityGlobal);
 
-    connect(treeVolumeQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeVolumeQuantityGlobal, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityGlobalDoubleClicked(QTreeWidgetItem *, int)));
 
-    QVBoxLayout *layoutVolumeQuantity = new QVBoxLayout();
-    layoutVolumeQuantity->addWidget(treeVolumeQuantity);
+    treeVolumeQuantityAnalysis = new QTreeWidget(this);
+    treeVolumeQuantityAnalysis->setMouseTracking(true);
+    treeVolumeQuantityAnalysis->setColumnCount(3);
+    treeVolumeQuantityAnalysis->setColumnWidth(0, 200);
+    treeVolumeQuantityAnalysis->setIndentation(12);
+    QStringList headVolumeQuantityAnalysis;
+    headVolumeQuantityAnalysis << tr("Quantity") << tr("Linearity") << tr("Dependence");
+    treeVolumeQuantityAnalysis->setHeaderLabels(headVolumeQuantityAnalysis);
+
+    connect(treeVolumeQuantityAnalysis, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityAnalysisDoubleClicked(QTreeWidgetItem *, int)));
+
+    QHBoxLayout *layoutVolumeQuantity = new QHBoxLayout();
+    layoutVolumeQuantity->addWidget(treeVolumeQuantityGlobal);
+    layoutVolumeQuantity->addWidget(treeVolumeQuantityAnalysis);
 
     QWidget *volumeQuantities = new QWidget(this);
     volumeQuantities->setLayout(layoutVolumeQuantity);
@@ -1117,7 +1197,7 @@ QWidget *ModuleDialog::createWeakforms()
     headSurfaceQuantity << tr("ID") << tr("Shortname");
     treeSurfaceQuantity->setHeaderLabels(headSurfaceQuantity);
 
-    connect(treeSurfaceQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeSurfaceQuantity, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(quantityGlobalDoubleClicked(QTreeWidgetItem *, int)));
 
     QVBoxLayout *layoutSurfaceQuantity = new QVBoxLayout();
     layoutSurfaceQuantity->addWidget(treeSurfaceQuantity);
@@ -1320,16 +1400,38 @@ void ModuleDialog::analysisDoubleClicked(QTreeWidgetItem *item, int role)
     }
 }
 
-void ModuleDialog::quantityDoubleClicked(QTreeWidgetItem *item, int role)
+void ModuleDialog::quantityGlobalDoubleClicked(QTreeWidgetItem *item, int role)
 {
     XMLModule::quantity *quantity = item->data(0, Qt::UserRole).value<XMLModule::quantity *>();
     if (quantity)
     {
-        ModuleItemQuantityDialog dialog(quantity, this);
+        ModuleItemQuantityGlobalDialog dialog(quantity, this);
         if (dialog.exec())
         {
             item->setText(0, QString::fromStdString(quantity->id()));
             item->setText(1, QString::fromStdString(quantity->shortname().get()));
+        }
+    }
+}
+
+void ModuleDialog::quantityAnalysisDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    XMLModule::quantity *quantity = item->data(0, Qt::UserRole).value<XMLModule::quantity *>();
+    if (quantity)
+    {
+        ModuleItemQuantityAnalysisDialog dialog(quantity, this);
+        if (dialog.exec())
+        {
+            item->setText(1, tr("linear"));
+            if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
+            {
+                if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
+                    !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
+                    item->setText(1, tr("nonlinear"));
+            }
+
+            item->setText(2, (quantity->dependence().present() && !QString::fromStdString(quantity->dependence().get()).isEmpty()) ?
+                              QString::fromStdString(quantity->dependence().get()) : "");
         }
     }
 }
