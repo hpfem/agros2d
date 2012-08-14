@@ -161,11 +161,11 @@ protected:
     QLineEdit *txtSolutions;
 };
 
-class ModuleItemQuantityDialog : public ModuleItemEmptyDialog
+class ModuleItemQuantityGlobalDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemQuantityDialog(XMLModule::quantity *quantity, QWidget *parent);
+    ModuleItemQuantityGlobalDialog(XMLModule::quantity *quantity, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -176,6 +176,24 @@ private:
 protected:
     QLineEdit *txtID;
     QLineEdit *txtShortname;
+};
+
+class ModuleItemQuantityAnalysisDialog : public ModuleItemEmptyDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemQuantityAnalysisDialog(XMLModule::quantity *quantity, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::quantity *m_quantity;
+
+protected:
+    QLineEdit *txtPlanarNonlinearity;
+    QLineEdit *txtAxiNonlinearity;
+    QLineEdit *txtDependence;
 };
 
 class ModuleItemWeakformDialog : public ModuleItemEmptyDialog
@@ -304,7 +322,8 @@ private slots:
 
     void analysisDoubleClicked(QTreeWidgetItem *item, int role);
 
-    void quantityDoubleClicked(QTreeWidgetItem *item, int role);
+    void quantityGlobalDoubleClicked(QTreeWidgetItem *item, int role);
+    void quantityAnalysisDoubleClicked(QTreeWidgetItem *item, int role);
     void weakformDoubleClicked(QTreeWidgetItem *item, int role);
 
     void preprocessorDoubleClicked(QTreeWidgetItem *item, int role);
@@ -339,8 +358,10 @@ private:
     QTreeWidget *treeAnalyses;
 
     // weakforms
-    QTreeWidget *treeVolumeQuantity;
-    QTreeWidget *treeSurfaceQuantity;
+    QTreeWidget *treeVolumeQuantityGlobal;
+    QTreeWidget *treeVolumeQuantityAnalysis;
+    QTreeWidget *treeSurfaceQuantityGlobal;
+    QTreeWidget *treeSurfaceQuantityAnalysis;
 
     QTreeWidget *treeVolumeWeakforms;
     QTreeWidget *treeSurfaceWeakforms;
