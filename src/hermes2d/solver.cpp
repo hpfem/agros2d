@@ -36,6 +36,66 @@
 
 using namespace Hermes::Hermes2D;
 
+template<typename Scalar>
+class NewtonSolverAgros : public NewtonSolver<Scalar>
+{
+public:
+    NewtonSolverAgros(DiscreteProblem<Scalar>* dp)
+        : NewtonSolver<Scalar>(dp) {}
+
+    virtual void onInitialization()
+    {
+
+    }
+
+    virtual void onStepBegin()
+    {
+
+    }
+
+    virtual void onStepEnd()
+    {
+        // implement to the chart
+        // qDebug() << "residual_norm = " << Global<Scalar>::get_l2_norm(this->residual);
+    }
+
+    virtual void onFinish()
+    {
+
+    }
+};
+
+template<typename Scalar>
+class PicardSolverAgros : public PicardSolver<Scalar>
+{
+public:
+    PicardSolverAgros(DiscreteProblemLinear<Scalar>* dp, Solution<Scalar>* sln_prev_iter)
+        : PicardSolver<Scalar>(dp, sln_prev_iter) {}
+    PicardSolverAgros(DiscreteProblemLinear<Scalar>* dp, Hermes::vector<Solution<Scalar>* > slns_prev_iter)
+        : PicardSolver<Scalar>(dp, slns_prev_iter) {}
+
+    virtual void onInitialization()
+    {
+
+    }
+
+    virtual void onStepBegin()
+    {
+
+    }
+
+    virtual void onStepEnd()
+    {
+        // implement to the chart
+        // qDebug() << "residual_norm = " << Global<Scalar>::get_l2_norm(this->residual);
+    }
+
+    virtual void onFinish()
+    {
+
+    }
+};
+
 int DEBUG_COUNTER = 0;
 
 void processSolverOutput(const char* aha)
@@ -360,7 +420,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
         DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
 
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-        NewtonSolver<Scalar> newton(&dp);
+        NewtonSolverAgros<Scalar> newton(&dp);
         newton.set_verbose_output(true);
         newton.set_verbose_callback(processSolverOutput);
         newton.set_newton_tol(m_block->nonlinearTolerance());
@@ -417,7 +477,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
             Hermes::Hermes2D::Space<Scalar> *spc = space.data();
             slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
         }
-        PicardSolver<Scalar> picard(&dp, slns);
+        PicardSolverAgros<Scalar> picard(&dp, slns);
         // picard.attach_timer(&timer);
         picard.set_verbose_output(true);
         picard.set_verbose_callback(processSolverOutput);
