@@ -182,27 +182,54 @@ class ModuleItemWeakformDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemWeakformDialog(XMLModule::matrix_form *form, QWidget *parent);
-    ModuleItemWeakformDialog(XMLModule::vector_form *form, QWidget *parent);
-    ModuleItemWeakformDialog(XMLModule::essential_form *form, QWidget *parent);
+    ModuleItemWeakformDialog(QWidget *parent);
+
+protected:
+    QLineEdit *txtI;
+    QLineEdit *txtJ;
+    QTextEdit *txtPlanarLinear;
+    QTextEdit *txtPlanarNewton;
+    QTextEdit *txtAxiLinear;
+    QTextEdit *txtAxiNewton;
+};
+
+class ModuleItemMatrixFormDialog : public ModuleItemWeakformDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemMatrixFormDialog(XMLModule::matrix_form *form, QWidget *parent);
 
 protected slots:
     void doAccept();
 
 private:
-    XMLModule::matrix_form *m_formMatrix;
-    XMLModule::vector_form *m_formVector;
-    XMLModule::essential_form *m_formEssential;
+    XMLModule::matrix_form *m_form;
+};
 
-    void createControls();
+class ModuleItemVectorFormDialog : public ModuleItemWeakformDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemVectorFormDialog(XMLModule::vector_form *form, QWidget *parent);
 
-protected:
-    QLineEdit *txtI;
-    QLineEdit *txtJ;
-    QLineEdit *txtPlanarLinear;
-    QLineEdit *txtPlanarNewton;
-    QLineEdit *txtAxiLinear;
-    QLineEdit *txtAxiNewton;
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::vector_form *m_form;
+};
+
+class ModuleItemEssentialFormDialog : public ModuleItemWeakformDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemEssentialFormDialog(XMLModule::essential_form *form, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::essential_form *m_form;
 };
 
 class ModulePreprocessorDialog : public ModuleItemDialog

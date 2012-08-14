@@ -220,13 +220,6 @@ void ModuleItemConstantDialog::doAccept()
     m_constant->id(txtID->text().toStdString());
     m_constant->value(txtValue->text().toDouble());
 
-    foreach (ModuleItem *item, items)
-    {
-        item->save();
-        delete item;
-    }
-    items.clear();
-
     accept();
 }
 
@@ -269,16 +262,10 @@ ModuleItemAnalysisDialog::ModuleItemAnalysisDialog(XMLModule::analysis *analysis
 
 void ModuleItemAnalysisDialog::doAccept()
 {
+    m_analysis->id(txtID->text().toStdString());
     m_analysis->name(txtName->text().toStdString());
     m_analysis->type(cmbType->currentText().toStdString());
     m_analysis->solutions(txtSolutions->text().toInt());
-
-    foreach (ModuleItem *item, items)
-    {
-        item->save();
-        delete item;
-    }
-    items.clear();
 
     accept();
 }
@@ -310,66 +297,28 @@ void ModuleItemQuantityDialog::doAccept()
     m_quantity->id(txtID->text().toStdString());
     m_quantity->shortname(txtShortname->text().toStdString());
 
-    foreach (ModuleItem *item, items)
-    {
-        item->save();
-        delete item;
-    }
-    items.clear();
-
     accept();
 }
 
 // ***********************************************************************************************************************
 
-ModuleItemWeakformDialog::ModuleItemWeakformDialog(XMLModule::matrix_form *form, QWidget *parent)
-    : ModuleItemEmptyDialog(parent), m_formMatrix(form)
-{
-    createControls();
-
-    txtI->setText(QString::number(m_formMatrix->i()));
-    txtJ->setText(QString::number(m_formMatrix->j()));
-    txtPlanarLinear->setText(QString::fromStdString(m_formMatrix->planar_linear()));
-    txtAxiLinear->setText(QString::fromStdString(m_formMatrix->axi_linear()));
-    txtPlanarNewton->setText(QString::fromStdString(m_formMatrix->planar_newton()));
-    txtAxiNewton->setText(QString::fromStdString(m_formMatrix->axi_newton()));
-}
-
-ModuleItemWeakformDialog::ModuleItemWeakformDialog(XMLModule::vector_form *form, QWidget *parent)
-    : ModuleItemEmptyDialog(parent), m_formVector(form)
-{
-    createControls();
-
-    txtI->setText(QString::number(m_formVector->i()));
-    txtJ->setText(QString::number(m_formVector->j()));
-    txtPlanarLinear->setText(QString::fromStdString(m_formVector->planar_linear()));
-    txtAxiLinear->setText(QString::fromStdString(m_formVector->axi_linear()));
-    txtPlanarNewton->setText(QString::fromStdString(m_formVector->planar_newton()));
-    txtAxiNewton->setText(QString::fromStdString(m_formVector->axi_newton()));
-}
-
-ModuleItemWeakformDialog::ModuleItemWeakformDialog(XMLModule::essential_form *form, QWidget *parent)
-    : ModuleItemEmptyDialog(parent), m_formEssential(form)
-{
-    createControls();
-
-    txtI->setText(QString::number(m_formEssential->i()));
-    txtJ->setText("");
-    txtJ->setDisabled(true);
-    txtPlanarLinear->setText(QString::fromStdString(m_formEssential->planar_linear()));
-    txtAxiLinear->setText(QString::fromStdString(m_formEssential->axi_linear()));
-    txtPlanarNewton->setText(QString::fromStdString(m_formEssential->planar_newton()));
-    txtAxiNewton->setText(QString::fromStdString(m_formEssential->axi_newton()));
-}
-
-void ModuleItemWeakformDialog::createControls()
+ModuleItemWeakformDialog::ModuleItemWeakformDialog(QWidget *parent)
+    : ModuleItemEmptyDialog(parent)
 {
     txtI = new QLineEdit();
     txtJ = new QLineEdit();
-    txtPlanarLinear = new QLineEdit();
-    txtPlanarNewton = new QLineEdit();
-    txtAxiLinear = new QLineEdit();
-    txtAxiNewton = new QLineEdit();
+
+    txtPlanarLinear = new QTextEdit();
+    txtPlanarLinear->setAcceptRichText(false);
+
+    txtPlanarNewton = new QTextEdit();
+    txtPlanarLinear->setAcceptRichText(false);
+
+    txtAxiLinear = new QTextEdit();
+    txtPlanarLinear->setAcceptRichText(false);
+
+    txtAxiNewton = new QTextEdit();
+    txtPlanarLinear->setAcceptRichText(false);
 
     QGridLayout *layoutGeneral = new QGridLayout(this);
     layoutGeneral->addWidget(new QLabel(tr("I:")), 0, 0);
@@ -402,8 +351,72 @@ void ModuleItemWeakformDialog::createControls()
     layoutMain->addWidget(buttonBox);
 }
 
-void ModuleItemWeakformDialog::doAccept()
+ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(XMLModule::matrix_form *form, QWidget *parent)
+    : ModuleItemWeakformDialog(parent), m_form(form)
 {
+    txtI->setText(QString::number(m_form->i()));
+    txtJ->setText(QString::number(m_form->j()));
+    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
+    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
+    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
+    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+}
+
+void ModuleItemMatrixFormDialog::doAccept()
+{
+    m_form->i(txtI->text().toInt());
+    m_form->j(txtJ->text().toInt());
+    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
+    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
+    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
+    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
+
+    accept();
+}
+
+ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(XMLModule::vector_form *form, QWidget *parent)
+    : ModuleItemWeakformDialog(parent), m_form(form)
+{
+    txtI->setText(QString::number(m_form->i()));
+    txtJ->setText(QString::number(m_form->j()));
+    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
+    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
+    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
+    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+}
+
+void ModuleItemVectorFormDialog::doAccept()
+{
+    m_form->i(txtI->text().toInt());
+    m_form->j(txtJ->text().toInt());
+    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
+    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
+    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
+    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
+
+    accept();
+}
+
+ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(XMLModule::essential_form *form, QWidget *parent)
+    : ModuleItemWeakformDialog(parent), m_form(form)
+{
+    txtI->setText(QString::number(m_form->i()));
+    txtJ->setText("");
+    txtJ->setDisabled(true);
+    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
+    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
+    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
+    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+}
+
+void ModuleItemEssentialFormDialog::doAccept()
+{
+    m_form->i(txtI->text().toInt());
+    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
+    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
+    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
+    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
+
     accept();
 }
 
@@ -1052,7 +1065,7 @@ QWidget *ModuleDialog::createMainWidget()
 
 QWidget *ModuleDialog::createWeakforms()
 {
-    // volume
+    // volume weakforms
     treeVolumeQuantity = new QTreeWidget(this);
     treeVolumeQuantity->setMouseTracking(true);
     treeVolumeQuantity->setColumnCount(2);
@@ -1090,12 +1103,11 @@ QWidget *ModuleDialog::createWeakforms()
     QVBoxLayout *layoutVolume = new QVBoxLayout();
     layoutVolume->addWidget(volumeQuantities);
     layoutVolume->addWidget(volumeWeakforms);
-    layoutVolume->addStretch();
 
     QWidget *weakformVolume = new QWidget(this);
     weakformVolume->setLayout(layoutVolume);
 
-    // surface
+    // surface weakforms
     treeSurfaceQuantity = new QTreeWidget(this);
     treeSurfaceQuantity->setMouseTracking(true);
     treeSurfaceQuantity->setColumnCount(2);
@@ -1133,7 +1145,6 @@ QWidget *ModuleDialog::createWeakforms()
     QVBoxLayout *layoutSurface = new QVBoxLayout();
     layoutSurface->addWidget(surfaceQuantities);
     layoutSurface->addWidget(surfaceWeakforms);
-    layoutSurface->addStretch();
 
     QWidget *weakformSurface = new QWidget(this);
     weakformSurface->setLayout(layoutSurface);
@@ -1302,9 +1313,9 @@ void ModuleDialog::analysisDoubleClicked(QTreeWidgetItem *item, int role)
         ModuleItemAnalysisDialog dialog(analysis, this);
         if (dialog.exec())
         {
-            item->setText(1, QString::fromStdString(analysis->name()));
-            item->setText(2, QString::fromStdString(analysis->type()));
-            item->setText(3, QString::number(analysis->solutions()));
+            item->setText(0, QString::fromStdString(analysis->name()));
+            item->setText(1, QString::fromStdString(analysis->type()));
+            item->setText(2, QString::number(analysis->solutions()));
         }
     }
 }
@@ -1330,9 +1341,11 @@ void ModuleDialog::weakformDoubleClicked(QTreeWidgetItem *item, int role)
         XMLModule::matrix_form *form = item->data(0, Qt::UserRole).value<XMLModule::matrix_form *>();
         if (form)
         {
-            ModuleItemWeakformDialog dialog(form, this);
+            ModuleItemMatrixFormDialog dialog(form, this);
             if (dialog.exec())
             {
+                item->setText(1, QString::number(form->i()));
+                item->setText(2, QString::number(form->j()));
             }
         }
     }
@@ -1341,9 +1354,11 @@ void ModuleDialog::weakformDoubleClicked(QTreeWidgetItem *item, int role)
         XMLModule::vector_form *form = item->data(0, Qt::UserRole).value<XMLModule::vector_form *>();
         if (form)
         {
-            ModuleItemWeakformDialog dialog(form, this);
+            ModuleItemVectorFormDialog dialog(form, this);
             if (dialog.exec())
             {
+                item->setText(1, QString::number(form->i()));
+                item->setText(2, QString::number(form->j()));
             }
         }
     }
@@ -1352,9 +1367,10 @@ void ModuleDialog::weakformDoubleClicked(QTreeWidgetItem *item, int role)
         XMLModule::essential_form *form = item->data(0, Qt::UserRole).value<XMLModule::essential_form *>();
         if (form)
         {
-            ModuleItemWeakformDialog dialog(form, this);
+            ModuleItemEssentialFormDialog dialog(form, this);
             if (dialog.exec())
             {
+                item->setText(1, QString::number(form->i()));
             }
         }
     }
