@@ -87,12 +87,16 @@ private:
     QComboBox *cmbMaterial;
     QPushButton *btnMaterial;
 
+    QSpinBox *txtAreaRefinement;
+    QCheckBox *chkAreaRefinement;
+
     QSpinBox *txtPolynomialOrder;
     QCheckBox *chkPolynomialOrder;
 
 private slots:
     void doMaterialChanged(int index);
     void doMaterialClicked();
+    void doAreaRefinement(int);
     void doPolynomialOrder(int);
 };
 

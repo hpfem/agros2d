@@ -276,6 +276,8 @@ void SceneEdgeMarker::load()
 bool SceneEdgeMarker::save()
 {
     m_edge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
+
+    // edge refinement
     if (chkRefineTowardsEdge->isChecked())
         m_fieldInfo->setEdgeRefinement(m_edge, txtRefineTowardsEdge->text().toInt());
     else

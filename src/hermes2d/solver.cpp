@@ -165,7 +165,7 @@ QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
         }
         boundaries.clear();
 
-        refineMesh(fieldInfo, mesh, true, true);
+        refineMesh(fieldInfo, mesh, true, true, true);
     }
 
     Util::problem()->setMeshesInitial(meshes);

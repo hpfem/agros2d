@@ -114,6 +114,19 @@ int FieldInfo::edgeRefinement(SceneEdge *edge)
     return 0;
 }
 
+int FieldInfo::labelRefinement(SceneLabel *label)
+{
+    QMapIterator<SceneLabel *, int> i(labelsRefinement);
+    while (i.hasNext()) {
+        i.next();
+        if (i.key() == label)
+            return i.value();
+    }
+
+    return 0;
+}
+
+
 int FieldInfo::labelPolynomialOrder(SceneLabel *label)
 {
     QMapIterator<SceneLabel *, int> i(labelsPolynomialOrder);

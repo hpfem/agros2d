@@ -1170,7 +1170,7 @@ void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
     setlocale(LC_NUMERIC, plocale);
 }
 
-void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
+void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
 {
     // refine mesh - global
     if (refineGlobal)
@@ -1187,6 +1187,19 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
                         fieldInfo->edgeRefinement(edge));
             }
         }
+
+    // refine mesh - elements
+    /*
+    TODO: (Franta)
+    if (refineArea)
+    {
+        foreach (SceneLabel *label, Util::scene()->labels->items())
+        {
+            if (fieldInfo->labelRefinement(label) > 0)
+                mesh->refine_element(Util::scene()->labels->items().indexOf(label), fieldInfo->labelRefinement(label));
+        }
+    }
+    */
 }
 
 template class WeakFormAgros<double>;

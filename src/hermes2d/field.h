@@ -65,6 +65,10 @@ public:
     void setEdgeRefinement(SceneEdge *edge, int refinement) { edgesRefinement[edge] = refinement; }
     void removeEdgeRefinement(SceneEdge *edge) { edgesRefinement.remove(edge); }
 
+    int labelRefinement(SceneLabel *label);
+    void setLabelRefinement(SceneLabel *label, int refinement) { labelsRefinement[label] = refinement; }
+    void removeLabelRefinement(SceneLabel *label) { labelsRefinement.remove(label); }
+
     int labelPolynomialOrder(SceneLabel *label);
     void setLabelPolynomialOrder(SceneLabel *label, int order) { labelsPolynomialOrder[label] = order; }
     void removeLabelPolynomialOrder(SceneLabel *label) { labelsPolynomialOrder.remove(label); }
@@ -126,6 +130,7 @@ private:
 
     // TODO: (Franta) gmsh
     QMap<SceneEdge *, int> edgesRefinement;
+    QMap<SceneLabel *, int> labelsRefinement;
 
     QMap<SceneLabel *, int> labelsPolynomialOrder;
 

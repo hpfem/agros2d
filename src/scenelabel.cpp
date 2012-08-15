@@ -129,11 +129,22 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
     layoutBoundary->addWidget(cmbMaterial, 1);
     layoutBoundary->addWidget(btnMaterial);
 
+    txtAreaRefinement = new QSpinBox(this);
+    txtAreaRefinement->setMinimum(0);
+    txtAreaRefinement->setMaximum(10);
+
+    chkAreaRefinement = new QCheckBox();
+    connect(chkAreaRefinement, SIGNAL(stateChanged(int)), this, SLOT(doAreaRefinement(int)));
+
+    QHBoxLayout *layoutAreaRefinement = new QHBoxLayout();
+    layoutAreaRefinement->addWidget(chkAreaRefinement);
+    layoutAreaRefinement->addWidget(txtAreaRefinement);
+
+    // order
     txtPolynomialOrder = new QSpinBox(this);
     txtPolynomialOrder->setMinimum(0);
     txtPolynomialOrder->setMaximum(10);
 
-    // order
     chkPolynomialOrder = new QCheckBox();
     connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
 
@@ -145,6 +156,7 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
 
     QFormLayout *layoutBoundaries = new QFormLayout();
     layoutBoundaries->addRow(tr("Material:"), layoutBoundary);
+    layoutBoundaries->addRow(tr("Area refinement (-):"), layoutAreaRefinement);
     layoutBoundaries->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
 
     setLayout(layoutBoundaries);
@@ -153,6 +165,12 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
 void SceneLabelMarker::load()
 {
     cmbMaterial->setCurrentIndex(cmbMaterial->findData(m_label->marker(m_fieldInfo)->variant()));
+
+    // refine area
+    int refinement = m_fieldInfo->labelRefinement(m_label);
+    chkAreaRefinement->setChecked(refinement > 0);
+    txtAreaRefinement->setEnabled(chkAreaRefinement->isChecked());
+    txtAreaRefinement->setValue(refinement);
 
     // polynomial order
     int order = m_fieldInfo->labelPolynomialOrder(m_label);
@@ -165,12 +183,24 @@ bool SceneLabelMarker::save()
 {
     m_label->addMarker(cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>());
 
+    // refine area
+    if (chkAreaRefinement->isChecked())
+        m_fieldInfo->setLabelRefinement(m_label, txtAreaRefinement->text().toInt());
+    else
+        m_fieldInfo->removeLabelRefinement(m_label);
+
+    // polynomial order
     if (chkPolynomialOrder->isChecked())
         m_fieldInfo->setLabelPolynomialOrder(m_label, txtPolynomialOrder->text().toInt());
     else
         m_fieldInfo->removeLabelPolynomialOrder(m_label);
 
     return true;
+}
+
+void SceneLabelMarker::doAreaRefinement(int state)
+{
+    txtAreaRefinement->setEnabled(chkAreaRefinement->isChecked());
 }
 
 void SceneLabelMarker::doPolynomialOrder(int state)
