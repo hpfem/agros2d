@@ -104,7 +104,7 @@ void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 
 int FieldInfo::edgeRefinement(SceneEdge *edge)
 {
-    QMapIterator<SceneEdge *, int> i(edgesRefinement);
+    QMapIterator<SceneEdge *, int> i(m_edgesRefinement);
     while (i.hasNext()) {
         i.next();
         if (i.key() == edge)
@@ -116,7 +116,7 @@ int FieldInfo::edgeRefinement(SceneEdge *edge)
 
 int FieldInfo::labelRefinement(SceneLabel *label)
 {
-    QMapIterator<SceneLabel *, int> i(labelsRefinement);
+    QMapIterator<SceneLabel *, int> i(m_labelsRefinement);
     while (i.hasNext()) {
         i.next();
         if (i.key() == label)
@@ -129,7 +129,7 @@ int FieldInfo::labelRefinement(SceneLabel *label)
 
 int FieldInfo::labelPolynomialOrder(SceneLabel *label)
 {
-    QMapIterator<SceneLabel *, int> i(labelsPolynomialOrder);
+    QMapIterator<SceneLabel *, int> i(m_labelsPolynomialOrder);
     while (i.hasNext()) {
         i.next();
         if (i.key() == label)
@@ -141,12 +141,21 @@ int FieldInfo::labelPolynomialOrder(SceneLabel *label)
 
 void FieldInfo::clear()
 {
+    // mesh
     m_numberOfRefinements = 1;
     m_polynomialOrder = 2;
+
+    m_edgesRefinement.clear();
+    m_labelsRefinement.clear();
+
+    m_labelsPolynomialOrder.clear();
+
+    // adaptivity
     m_adaptivityType = AdaptivityType_None;
     m_adaptivitySteps = 0;
     m_adaptivityTolerance = 1.0;
 
+    // transient
     m_initialCondition = Value("0.0", false);
     m_timeStepsSkip = Value("1", false);
 

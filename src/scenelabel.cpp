@@ -139,6 +139,8 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
     QHBoxLayout *layoutAreaRefinement = new QHBoxLayout();
     layoutAreaRefinement->addWidget(chkAreaRefinement);
     layoutAreaRefinement->addWidget(txtAreaRefinement);
+    layoutAreaRefinement->addWidget(new QLabel(tr("Global refinement is %1.").arg(fieldInfo->numberOfRefinements())));
+    layoutAreaRefinement->addStretch();
 
     // order
     txtPolynomialOrder = new QSpinBox(this);
@@ -151,8 +153,8 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
     QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
     layoutPolynomialOrder->addWidget(chkPolynomialOrder);
     layoutPolynomialOrder->addWidget(txtPolynomialOrder);
-
     layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(fieldInfo->polynomialOrder())));
+    layoutPolynomialOrder->addStretch();
 
     QFormLayout *layoutBoundaries = new QFormLayout();
     layoutBoundaries->addRow(tr("Material:"), layoutBoundary);
@@ -227,6 +229,8 @@ void SceneLabelMarker::fillComboBox()
 void SceneLabelMarker::doMaterialChanged(int index)
 {
     btnMaterial->setEnabled(cmbMaterial->currentIndex() > 0);
+    chkAreaRefinement->setEnabled(cmbMaterial->currentIndex() > 0);
+    chkPolynomialOrder->setEnabled(cmbMaterial->currentIndex() > 0);
 }
 
 void SceneLabelMarker::doMaterialClicked()

@@ -251,9 +251,9 @@ SceneEdgeMarker::SceneEdgeMarker(SceneEdge *edge, FieldInfo *fieldInfo, QWidget 
     txtRefineTowardsEdge->setMaximum(10);
 
     QHBoxLayout *layoutRefineTowardsEdge = new QHBoxLayout();
-    layoutRefineTowardsEdge->addStretch(1);
     layoutRefineTowardsEdge->addWidget(chkRefineTowardsEdge);
     layoutRefineTowardsEdge->addWidget(txtRefineTowardsEdge);
+    layoutRefineTowardsEdge->addStretch();
 
     QFormLayout *layoutBoundaries = new QFormLayout();
     layoutBoundaries->addRow(tr("Boundary condition:"), layoutBoundary);

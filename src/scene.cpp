@@ -1365,6 +1365,48 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         // number of refinements
         field->setNumberOfRefinements(eleField.toElement().attribute("number_of_refinements").toInt());
 
+        // edges refinement
+        QDomNode eleRefinement = eleField.toElement().elementsByTagName("refinement").at(0);
+
+        QDomNode eleEdgesRefinement = eleRefinement.toElement().elementsByTagName("edges").at(0);
+        QDomNode nodeEdgeRefinement = eleEdgesRefinement.firstChild();
+        while (!nodeEdgeRefinement.isNull())
+        {
+            QDomElement eleEdge = nodeEdgeRefinement.toElement();
+            int edge = eleEdge.toElement().attribute("edge").toInt();
+            int refinement = eleEdge.toElement().attribute("refinement").toInt();
+            field->setEdgeRefinement(Util::scene()->edges->items().at(edge), refinement);
+
+            nodeEdgeRefinement = nodeEdgeRefinement.nextSibling();
+        }
+
+        // labels refinement
+        QDomNode eleLabelsRefinement = eleRefinement.toElement().elementsByTagName("labels").at(0);
+        QDomNode nodeLabelRefinement = eleLabelsRefinement.firstChild();
+        while (!nodeLabelRefinement.isNull())
+        {
+            QDomElement eleLabel = nodeLabelRefinement.toElement();
+            int label = eleLabel.toElement().attribute("label").toInt();
+            int refinement = eleLabel.toElement().attribute("refinement").toInt();
+            field->setLabelRefinement(Util::scene()->labels->items().at(label), refinement);
+
+            nodeLabelRefinement = nodeLabelRefinement.nextSibling();
+        }
+
+        // polynomial order
+        // labels refinement
+        QDomNode eleLabelsPolynomialOrder = eleField.toElement().elementsByTagName("polynomial_order").at(0);
+        QDomNode nodeLabelPolynomialOrder = eleLabelsPolynomialOrder.firstChild();
+        while (!nodeLabelPolynomialOrder.isNull())
+        {
+            QDomElement eleLabel = nodeLabelPolynomialOrder.toElement();
+            int label = eleLabel.toElement().attribute("label").toInt();
+            int order = eleLabel.toElement().attribute("order").toInt();
+            field->setLabelPolynomialOrder(Util::scene()->labels->items().at(label), order);
+
+            nodeLabelPolynomialOrder = nodeLabelPolynomialOrder.nextSibling();
+        }
+
         // adaptivity
         QDomNode eleFieldAdaptivity = eleField.toElement().elementsByTagName("adaptivity").at(0);
 
@@ -1663,6 +1705,58 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
         // number of refinements
         eleField.setAttribute("number_of_refinements", fieldInfo->numberOfRefinements());
+
+        eleField.setAttribute("number_of_refinements", fieldInfo->numberOfRefinements());
+
+        // refinement
+        QDomElement eleRefinement = doc.createElement("refinement");
+
+        // edges
+        QDomElement eleEdgesRefinement = doc.createElement("edges");
+        QMapIterator<SceneEdge *, int> edgeIterator(fieldInfo->edgesRefinement());
+        while (edgeIterator.hasNext()) {
+            edgeIterator.next();
+            QDomElement eleEdge = doc.createElement("edge");
+
+            eleEdge.setAttribute("edge", QString::number(Util::scene()->edges->items().indexOf(edgeIterator.key())));
+            eleEdge.setAttribute("refinement", QString::number(edgeIterator.value()));
+
+            eleEdgesRefinement.appendChild(eleEdge);
+        }
+
+        eleRefinement.appendChild(eleEdgesRefinement);
+
+        // labels
+        QDomElement eleLabelsRefinement = doc.createElement("labels");
+        QMapIterator<SceneLabel *, int> labelIterator(fieldInfo->labelsRefinement());
+        while (labelIterator.hasNext()) {
+            labelIterator.next();
+            QDomElement eleLabel = doc.createElement("label");
+
+            eleLabel.setAttribute("label", QString::number(Util::scene()->labels->items().indexOf(labelIterator.key())));
+            eleLabel.setAttribute("refinement", QString::number(labelIterator.value()));
+
+            eleLabelsRefinement.appendChild(eleLabel);
+        }
+
+        eleRefinement.appendChild(eleLabelsRefinement);
+        eleField.appendChild(eleRefinement);
+
+        // polynomial order
+        QDomElement eleLabelPolynomialOrder = doc.createElement("polynomial_order");
+
+        QMapIterator<SceneLabel *, int> labelOrderIterator(fieldInfo->labelsPolynomialOrder());
+        while (labelOrderIterator.hasNext()) {
+            labelOrderIterator.next();
+            QDomElement eleLabel = doc.createElement("label");
+
+            eleLabel.setAttribute("label", QString::number(Util::scene()->labels->items().indexOf(labelOrderIterator.key())));
+            eleLabel.setAttribute("order", QString::number(labelOrderIterator.value()));
+
+            eleLabelPolynomialOrder.appendChild(eleLabel);
+        }
+
+        eleField.appendChild(eleLabelPolynomialOrder);
 
         // adaptivity
         QDomElement eleAdaptivity = doc.createElement("adaptivity");

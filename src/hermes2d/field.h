@@ -61,17 +61,20 @@ public:
     inline int numberOfRefinements() const { return m_numberOfRefinements; }
     void setNumberOfRefinements(const int nr) {m_numberOfRefinements = nr; emit changed(); }
 
+    const QMap<SceneEdge *, int> edgesRefinement() { return m_edgesRefinement; }
     int edgeRefinement(SceneEdge *edge);
-    void setEdgeRefinement(SceneEdge *edge, int refinement) { edgesRefinement[edge] = refinement; }
-    void removeEdgeRefinement(SceneEdge *edge) { edgesRefinement.remove(edge); }
+    void setEdgeRefinement(SceneEdge *edge, int refinement) { m_edgesRefinement[edge] = refinement; }
+    void removeEdgeRefinement(SceneEdge *edge) { m_edgesRefinement.remove(edge); }
 
+    const QMap<SceneLabel *, int> labelsRefinement() { return m_labelsRefinement; }
     int labelRefinement(SceneLabel *label);
-    void setLabelRefinement(SceneLabel *label, int refinement) { labelsRefinement[label] = refinement; }
-    void removeLabelRefinement(SceneLabel *label) { labelsRefinement.remove(label); }
+    void setLabelRefinement(SceneLabel *label, int refinement) { m_labelsRefinement[label] = refinement; }
+    void removeLabelRefinement(SceneLabel *label) { m_labelsRefinement.remove(label); }
 
+    const QMap<SceneLabel *, int> labelsPolynomialOrder() { return m_labelsPolynomialOrder; }
     int labelPolynomialOrder(SceneLabel *label);
-    void setLabelPolynomialOrder(SceneLabel *label, int order) { labelsPolynomialOrder[label] = order; }
-    void removeLabelPolynomialOrder(SceneLabel *label) { labelsPolynomialOrder.remove(label); }
+    void setLabelPolynomialOrder(SceneLabel *label, int order) { m_labelsPolynomialOrder[label] = order; }
+    void removeLabelPolynomialOrder(SceneLabel *label) { m_labelsPolynomialOrder.remove(label); }
 
     inline int polynomialOrder() const { return m_polynomialOrder; }
     void setPolynomialOrder(const int po) { m_polynomialOrder = po; emit changed(); }
@@ -129,10 +132,10 @@ private:
     int m_polynomialOrder;
 
     // TODO: (Franta) gmsh
-    QMap<SceneEdge *, int> edgesRefinement;
-    QMap<SceneLabel *, int> labelsRefinement;
+    QMap<SceneEdge *, int> m_edgesRefinement;
+    QMap<SceneLabel *, int> m_labelsRefinement;
 
-    QMap<SceneLabel *, int> labelsPolynomialOrder;
+    QMap<SceneLabel *, int> m_labelsPolynomialOrder;
 
     AdaptivityType m_adaptivityType;
     int m_adaptivitySteps;

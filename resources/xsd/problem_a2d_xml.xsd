@@ -25,7 +25,6 @@
                     <xsd:element maxOccurs="unbounded" name="edge">
                       <xsd:complexType>
                         <xsd:attribute name="end" type="xsd:int" />
-                        <xsd:attribute name="refine_towards" type="xsd:int" />
                         <xsd:attribute name="id" type="xsd:int" />
                         <xsd:attribute name="start" type="xsd:int" />
                         <xsd:attribute name="angle" type="xsd:float" />
@@ -41,7 +40,6 @@
                       <xsd:complexType>
                         <xsd:attribute name="x" type="xsd:float" />
                         <xsd:attribute name="y" type="xsd:float" />
-                        <xsd:attribute name="polynomial_order" type="xsd:int" />
                         <xsd:attribute name="id" type="xsd:int" />
                         <xsd:attribute name="area" type="xsd:float" />
                       </xsd:complexType>
@@ -63,6 +61,36 @@
                     <xsd:element minOccurs="1" name="field">
                       <xsd:complexType>
                         <xsd:sequence>
+                          <xsd:element name="refinement">
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element maxOccurs="unbounded" name="edges">
+                                  <xsd:complexType>
+                                    <xsd:attribute name="edge" type="xsd:int" />
+                                    <xsd:attribute name="refinement" type="xsd:int" />
+                                  </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element maxOccurs="unbounded" name="labels">
+                                  <xsd:complexType>
+                                    <xsd:attribute name="label" type="xsd:int" />
+                                    <xsd:attribute name="refinement" type="xsd:int" />
+                                  </xsd:complexType>
+                                </xsd:element>
+                              </xsd:sequence>
+                            </xsd:complexType>
+                          </xsd:element>
+                          <xsd:element name="polynomial_order">
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element maxOccurs="unbounded" name="label">
+                                  <xsd:complexType>
+                                    <xsd:attribute name="label" type="xsd:int" />
+                                    <xsd:attribute name="refinement" type="xsd:int" />
+                                  </xsd:complexType>
+                                </xsd:element>
+                              </xsd:sequence>
+                            </xsd:complexType>
+                          </xsd:element>
                           <xsd:element name="adaptivity">
                             <xsd:complexType>
                               <xsd:attribute name="adaptivity_tolerance" type="xsd:float" />
