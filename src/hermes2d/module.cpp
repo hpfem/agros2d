@@ -104,24 +104,31 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                                             const QString &area, ParserFormExpression *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
-    foreach (QObject *plugin, QPluginLoader::staticInstances())
-    {
-        if (problemId.analysisTypeSource == marker->fieldId())
-        {
-            WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
+    // TODO: coupling forms
 
-            if(type == WeakForm_MatVol)
-                return weakform->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
-            else if(type == WeakForm_MatSurf)
-                return weakform->matrixFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
-            else if(type == WeakForm_VecVol)
-                return weakform->vectorFormVol(problemId, form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
-            else if(type == WeakForm_VecSurf)
-                return weakform->vectorFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
-            else
-                assert(0);
-        }
-    }
+    // load plugin
+    QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
+                         .arg(datadir())
+                         .arg(problemId.materialSourceFieldId));
+
+    QObject *plugin = loader.instance();
+    assert(plugin);
+
+    WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
+
+    if (type == WeakForm_MatVol)
+        return weakform->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+    else if (type == WeakForm_MatSurf)
+        return weakform->matrixFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+    else if (type == WeakForm_VecVol)
+        return weakform->vectorFormVol(problemId, form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+    else if (type == WeakForm_VecSurf)
+        return weakform->vectorFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+    else
+        assert(0);
+
+    // unload plugin
+    loader.unload();
 }
 
 template <typename Scalar>

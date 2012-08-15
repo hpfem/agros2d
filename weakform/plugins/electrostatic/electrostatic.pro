@@ -11,6 +11,17 @@ INCLUDEPATH += ../../../hermes2d/include \
     ../../../src/hermes2d \
     ../../interface
 
+LIBS += -lhermes2d
+
+linux-g++|linux-g++-64|linux-g++-32 {
+    LIBS += -L../../hermes2d/build/lib
+}
+
+win32-msvc2010 {
+    LIBS += -L../hermes2d/debug/build/lib
+    LIBS += -L../hermes2d/release/build/lib
+}
+
 HEADERS      += electrostatic_interface.h
 SOURCES      += electrostatic_interface.cpp
 

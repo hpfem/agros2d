@@ -186,6 +186,25 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
+
+        ProblemID problemId;
+
+        problemId.materialSourceFieldId = fieldInfo->fieldId();
+        problemId.analysisTypeSource = analysisTypeToStringKey(fieldInfo->module()->analysisType());
+        problemId.coordinateType = coordinateTypeToStringKey(fieldInfo->module()->coordinateType());
+        problemId.linearityType = linearityTypeToStringKey(fieldInfo->linearityType());
+        //  or ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") ???
+
+        // load plugin
+        QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
+                             .arg(datadir())
+                             .arg(fieldInfo->fieldId()));
+
+        QObject *plugin = loader.instance();
+        assert(plugin);
+
+        WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
+
         int index = 0;
         foreach(SceneEdge* edge, Util::scene()->edges->items())
         {
@@ -202,35 +221,10 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     // compiled form
                     if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                     {
-                        ProblemID problemId;
-
-                        problemId.materialSourceFieldId = fieldInfo->fieldId();
-                        problemId.analysisTypeSource = analysisTypeToStringKey(fieldInfo->module()->analysisType());
-                        problemId.coordinateType = coordinateTypeToStringKey(fieldInfo->module()->coordinateType());
-                        problemId.linearityType = linearityTypeToStringKey(fieldInfo->linearityType());
-                        //  or ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") ???
+                        ExactSolutionScalar<double> *function = weakform->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
+                        custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
                         /*
-                        QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
-                                             .arg(datadir())
-                                             .arg(fieldInfo->fieldId()));
-
-                        QPluginLoader loader2("/home/karban/Projects/tmp/plugandpaint/plugins/libpnp_extrafilters.so");
-
-
-                        qDebug() << loader2.fileName() << loader2.errorString();
-                        qDebug() << loader.fileName() << loader.errorString();
-
-                        QObject *plugin = loader.instance();
-
-                        qDebug() << plugin;
-                        assert(plugin);
-                        if (loader.instance())
-                        {
-                            WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
-                        }
-                        */
-
                         foreach (QObject *plugin, QPluginLoader::staticInstances())
                         {
                             if (problemId.analysisTypeSource == fieldInfo->fieldId())
@@ -240,6 +234,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                                 custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                             }
                         }
+                        */
                     }
 
                     if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
@@ -290,7 +285,11 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                 }
             }
         }
+
+        // unload plugin
+        loader.unload();
     }
+
 
     msa.createEmpty(space.size());
     msa.setSpaces(space);
