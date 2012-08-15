@@ -51,7 +51,7 @@ double actualTime;
 QMap<QString, QString> availableModules()
 {
     static QMap<QString, QString> modules;
-    
+
     // read modules
     if (modules.size() == 0)
     {
@@ -70,27 +70,27 @@ QMap<QString, QString> availableModules()
             modules[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general().name());
         }
     }
-    
+
     // custom module
     // modules["custom"] = "Custom field";
-    
+
     return modules;
 }
 
 QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId)
 {
     QMap<AnalysisType, QString> analyses;
-    
+
     std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId.toStdString() + ".xml").c_str());
     XMLModule::module *mod = module_xsd.get();
-    
+
     for (int i = 0; i < mod->general().analyses().analysis().size(); i++)
     {
         XMLModule::analysis an = mod->general().analyses().analysis().at(i);
 
         analyses[analysisTypeFromStringKey(QString::fromStdString(an.id()))] = QString::fromStdString(an.name());
     }
-    
+
     return analyses;
 }
 
@@ -351,31 +351,31 @@ void WeakFormAgros<Scalar>::registerForms()
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        
+
         // boundary conditions
         for (int edgeNum = 0; edgeNum<Util::scene()->edges->count(); edgeNum++)
         {
-            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->marker(fieldInfo);            
+            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->marker(fieldInfo);
             if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
             {
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
-                
+
                 foreach (ParserFormExpression *expression, boundary_type->wfMatrixSurface())
                     registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
-                
+
                 foreach (ParserFormExpression *expression, boundary_type->wfVectorSurface())
                     registerForm(WeakForm_VecSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
             }
         }
-        
+
         // materials
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
             cout << "material " << labelNum << endl;
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
-            
+
             assert(material);
             if (material != Util::scene()->materials->getNone(fieldInfo))
             {
@@ -407,7 +407,7 @@ void WeakFormAgros<Scalar>::registerForms()
             }
         }
     }
-    
+
     // hard coupling
     foreach (CouplingInfo* couplingInfo, m_block->couplings())
     {
@@ -415,24 +415,24 @@ void WeakFormAgros<Scalar>::registerForms()
         Coupling* coupling = couplingInfo->coupling();
         Field* sourceField = m_block->field(couplingInfo->sourceField());
         Field* targetField = m_block->field(couplingInfo->targetField());
-        
-        
+
+
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
             SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->marker(sourceField->fieldInfo());
             SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->marker(targetField->fieldInfo());
-            
+
             if (sourceMaterial && (sourceMaterial != Util::scene()->materials->getNone(sourceField->fieldInfo()))
                     && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
             {
-                
+
                 qDebug() << "hard coupling form on marker " << labelNum;
 
                 foreach (ParserFormExpression *pars, coupling->wfMatrixVolumeExpression())
                     registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
-                
+
                 foreach (ParserFormExpression *pars, coupling->wfVectorVolumeExpression())
                     registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
@@ -454,9 +454,9 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
     m_shortnameHtml = (lv.shortname_html().present()) ? QString::fromStdString(lv.shortname_html().get()) : m_shortname;
     m_unit = QString::fromStdString(lv.unit());
     m_unitHtml = (lv.unit_html().present()) ? QString::fromStdString(lv.unit_html().get()) : m_unit;
-    
+
     m_isScalar = (lv.type() == "scalar");
-    
+
     for (int i = 0; i < lv.expression().size(); i++)
     {
         XMLModule::expression exp = lv.expression().at(i);
@@ -496,12 +496,12 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
 {
     m_id = QString::fromStdString(bdy.id());
     m_name = QString::fromStdString(bdy.name());
-    
+
     // variables
     for (int i = 0; i < bdy.quantity().size(); i++)
     {
         XMLModule::quantity qty = bdy.quantity().at(i);
-        
+
         foreach (Module::BoundaryTypeVariable old, boundary_type_variables)
         {
             if (old.id().toStdString() == qty.id())
@@ -512,12 +512,12 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
 
                 Module::BoundaryTypeVariable *var = new Module::BoundaryTypeVariable(
                             old.id(), old.shortname(), old.defaultValue(), isTimeDep);
-                
+
                 m_variables.append(var);
             }
         }
     }
-    
+
     // weakform
     for (int i = 0; i < bdy.matrix_form().size(); i++)
     {
@@ -527,7 +527,7 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
                                                           (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton(),
                                                           form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
     }
-    
+
     for (int i = 0; i < bdy.vector_form().size(); i++)
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
@@ -535,7 +535,7 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
                                                           (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
                                                           (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
     }
-    
+
     // essential
     for (int i = 0; i < bdy.essential_form().size(); i++)
     {
@@ -561,21 +561,21 @@ Module::BoundaryType::~BoundaryType()
 {
     // essential
     m_essential.clear();
-    
+
     // variables
     foreach (Module::BoundaryTypeVariable *variable, m_variables)
         delete variable;
     m_variables.clear();
-    
+
     // volume weak form
     foreach (ParserFormExpression *expression, m_wfMatrixSurface)
         delete expression;
     m_wfMatrixSurface.clear();
-    
+
     foreach (ParserFormExpression *expression, m_wfVectorSurface)
         delete expression;
     m_wfVectorSurface.clear();
-    
+
     foreach (ParserFormExpression *expression, m_wfVectorSurface)
         delete expression;
     m_wfVectorSurface.clear();
@@ -597,7 +597,7 @@ Module::DialogRow::DialogRow(XMLModule::quantity qty)
     m_unit = (qty.unit().present()) ? QString::fromStdString(qty.unit().get()) : "";
     m_unitHtml = (qty.unit_html().present()) ? QString::fromStdString(qty.unit_html().get()) : "";
     m_unitLatex = (qty.unit_latex().present()) ? QString::fromStdString(qty.unit_latex().get()) : "";
-    
+
     m_defaultValue = (qty.default_().present()) ? qty.default_().get() : 0.0;
     m_condition = (qty.condition().present()) ? QString::fromStdString(qty.condition().get()) : "0.0";
 }
@@ -611,7 +611,7 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
 
         // group name
         QString name = (grp.name().present()) ? QString::fromStdString(grp.name().get()) : "";
-        
+
         QList<Module::DialogRow> materials;
         for (int i = 0; i < grp.quantity().size(); i++)
         {
@@ -620,7 +620,7 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
             // append material
             materials.append(Module::DialogRow(quant));
         }
-        
+
         m_groups[name] = materials;
     }
 }
@@ -1182,13 +1182,9 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
     if (refineTowardsEdge)
         foreach (SceneEdge *edge, Util::scene()->edges->items())
         {
-            // TODO: add refine towards edge
-            /*
-            if (edge->refineTowardsEdge > 0)
-                mesh->refine_towards_boundary(QString::number(((edge->getMarker(fieldInfo)
-                                                                != SceneBoundaryContainer::getNone(fieldInfo)) ? i + 1 : -i)).toStdString(),
-                                              edge->refineTowardsEdge);
-            */
+            if (fieldInfo->edgeRefinement(edge) > 0)
+                mesh->refine_towards_boundary(QString::number(Util::scene()->edges->items().indexOf(edge)).toStdString(),
+                        fieldInfo->edgeRefinement(edge));
             i++;
         }
 }
