@@ -190,10 +190,9 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         ProblemID problemId;
 
         problemId.materialSourceFieldId = fieldInfo->fieldId();
-        problemId.analysisTypeSource = analysisTypeToStringKey(fieldInfo->module()->analysisType());
-        problemId.coordinateType = coordinateTypeToStringKey(fieldInfo->module()->coordinateType());
-        problemId.linearityType = linearityTypeToStringKey(fieldInfo->linearityType());
-        //  or ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") ???
+        problemId.analysisTypeSource = fieldInfo->module()->analysisType();
+        problemId.coordinateType = fieldInfo->module()->coordinateType();
+        problemId.linearityType = fieldInfo->linearityType();
 
         // load plugin
         QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")

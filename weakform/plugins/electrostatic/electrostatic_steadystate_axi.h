@@ -113,7 +113,9 @@ private:
  mutable Value el_rho;
 
     unsigned int j;
-};template<typename Scalar>
+};
+
+ template<typename Scalar>
 class CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_ : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
 {
 public:

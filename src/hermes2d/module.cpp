@@ -194,9 +194,9 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     ProblemID problemId;
 
     problemId.materialSourceFieldId = field->fieldInfo()->fieldId();
-    problemId.analysisTypeSource = analysisTypeToStringKey(field->fieldInfo()->module()->analysisType());
-    problemId.coordinateType = coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType());
-    problemId.linearityType = linearityTypeToStringKey(field->fieldInfo()->linearityType());
+    problemId.analysisTypeSource = field->fieldInfo()->module()->analysisType();
+    problemId.coordinateType = field->fieldInfo()->module()->coordinateType();
+    problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, form, marker, NULL, offsetI, offsetJ);
@@ -231,13 +231,13 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
     problemId.materialSourceFieldId = materialSource->fieldInfo()->fieldId();
     problemId.materialTargetFieldId = materialTarget->fieldInfo()->fieldId();
-    problemId.analysisTypeSource = analysisTypeToStringKey(materialSource->fieldInfo()->module()->analysisType());
-    problemId.analysisTypeTarget = analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType());
-    problemId.coordinateType = coordinateTypeToStringKey(materialTarget->fieldInfo()->module()->coordinateType());
-    problemId.linearityType = linearityTypeToStringKey(materialTarget->fieldInfo()->linearityType());
-    problemId.couplingType = couplingTypeToStringKey(couplingInfo->couplingType());
+    problemId.analysisTypeSource = materialSource->fieldInfo()->module()->analysisType();
+    problemId.analysisTypeTarget = materialTarget->fieldInfo()->module()->analysisType();
+    problemId.coordinateType = materialTarget->fieldInfo()->module()->coordinateType();
+    problemId.linearityType = materialTarget->fieldInfo()->linearityType();
+    problemId.couplingType = couplingInfo->couplingType();
 
-    if(materialTarget->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
+    if (materialTarget->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
     {
         throw AgrosSolverException("Interpreted weak forms are not supported at the moment");
     }

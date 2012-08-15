@@ -16,6 +16,7 @@
 // hp-FEM group (http://hpfem.org/)
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+
 #include "electrostatic_steadystate_axi.h"
 
 #include "util.h"
@@ -23,6 +24,7 @@
 #include "hermes2d.h"
 #include "module.h"
 #include "problem.h"
+#include "value.h"
 
 using namespace electrostaticsteadystateaxi;
 
@@ -36,7 +38,11 @@ CustomMatrixFormVol__1_1_steadystate_linear_<Scalar>::CustomMatrixFormVol__1_1_s
 						)
     : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), m_materialSource(materialSource), m_materialTarget(materialTarget), m_sym(sym)
 {
+    assert(0);
+
  el_epsr = m_materialSource->value("electrostatic_permittivity");
+
+ qDebug() << el_epsr.text();
  el_rho = m_materialSource->value("electrostatic_charge_density");
 	
 }
@@ -253,7 +259,10 @@ template <typename Scalar>
 CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_<Scalar>::CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), m_boundarySource(boundary)
 {
+
+    qDebug() << "m_boundarySource" << m_boundarySource;
  V = m_boundarySource->value("electrostatic_potential");
+ qDebug() << V.text();
  sigma = m_boundarySource->value("electrostatic_surface_charge_density");
 
 }
@@ -265,6 +274,7 @@ CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_<Scalar>:
 template <typename Scalar>
 Scalar CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_<Scalar>::value(double x, double y) const
 {
+    qDebug() << "value";
     double result = (V.number());
     return result;
 }

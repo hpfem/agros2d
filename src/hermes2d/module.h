@@ -26,18 +26,24 @@
 
 struct ProblemID
 {
-    // TODO: constructor
+    ProblemID() :
+        materialSourceFieldId(""), materialTargetFieldId(""),
+        analysisTypeSource(AnalysisType_Undefined), analysisTypeTarget(AnalysisType_Undefined),
+        coordinateType(CoordinateType_Undefined), linearityType(LinearityType_Undefined),
+        couplingType(CouplingType_Undefined) {}
+
+    // TODO: set/get methods
     QString materialSourceFieldId;
     QString materialTargetFieldId;
-    QString analysisTypeSource;
-    QString analysisTypeTarget;
-    QString coordinateType;
-    QString linearityType;
-    QString couplingType;
+    AnalysisType analysisTypeSource;
+    AnalysisType analysisTypeTarget;
+    CoordinateType coordinateType;
+    LinearityType linearityType;
+    CouplingType couplingType;
 
     QString toString()
     {
-        // TODO: implement toString method
+        // TODO: implement toString() method
         return "TODO";
     }
 };
