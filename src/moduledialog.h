@@ -276,6 +276,23 @@ private:
     XMLModule::localvariable *m_lv;
 };
 
+class ModuleItemViewDefaultsDialog : public ModuleItemEmptyDialog
+{
+    Q_OBJECT
+public:
+    ModuleItemViewDefaultsDialog(XMLModule::default_ *def, XMLModule::localvariables *lv, QWidget *parent);
+
+protected slots:
+    void doAccept();
+
+private:
+    XMLModule::default_ *m_def;
+    XMLModule::localvariables *m_lv;
+
+protected:
+    QComboBox *cmbLocalVariable;
+};
+
 class ModuleVolumeIntegralValueDialog : public ModuleItemDialog
 {
     Q_OBJECT
@@ -329,6 +346,7 @@ private slots:
     void preprocessorDoubleClicked(QTreeWidgetItem *item, int role);
 
     void localItemDoubleClicked(QTreeWidgetItem *item, int role);
+    void viewDefaultsItemDoubleClicked(QTreeWidgetItem *item, int role);
     void volumeIntegralDoubleClicked(QTreeWidgetItem *item, int role);
     void surfaceIntegralDoubleClicked(QTreeWidgetItem *item, int role);
 
@@ -372,6 +390,7 @@ private:
 
     // postprocessor
     QTreeWidget *treeLocalVariables;
+    QTreeWidget *treeViewDefaults;
     QTreeWidget *treeVolumeIntegrals;
     QTreeWidget *treeSurfaceIntegrals;
 

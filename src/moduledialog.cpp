@@ -33,6 +33,7 @@ Q_DECLARE_METATYPE(XMLModule::matrix_form *)
 Q_DECLARE_METATYPE(XMLModule::vector_form *)
 Q_DECLARE_METATYPE(XMLModule::essential_form *)
 Q_DECLARE_METATYPE(XMLModule::localvariable *)
+Q_DECLARE_METATYPE(XMLModule::default_ *)
 Q_DECLARE_METATYPE(XMLModule::surfaceintegral *)
 Q_DECLARE_METATYPE(XMLModule::volumeintegral *)
 
@@ -557,6 +558,35 @@ void ModuleItemLocalValueDialog::doAccept()
 
 // ***********************************************************************************************************************
 
+ModuleItemViewDefaultsDialog::ModuleItemViewDefaultsDialog(XMLModule::default_ *def, XMLModule::localvariables *lv, QWidget *parent)
+    : ModuleItemEmptyDialog(parent), m_def(def), m_lv(lv)
+{
+    cmbLocalVariable = new QComboBox();
+    for (int i = 0; i < lv->localvariable().size(); i++)
+    {
+        XMLModule::localvariable *variable = &lv->localvariable().at(i);
+        cmbLocalVariable->addItem(QString::fromStdString(variable->id()));
+    }
+    cmbLocalVariable->setCurrentIndex(cmbLocalVariable->findText(QString::fromStdString(m_def->id())));
+
+    QGridLayout *layoutGeneral = new QGridLayout(this);
+    layoutGeneral->addWidget(new QLabel(tr("Local variable:")), 0, 0);
+    layoutGeneral->addWidget(cmbLocalVariable, 0, 1);
+
+    layoutMain->addLayout(layoutGeneral);
+    layoutMain->addStretch();
+    layoutMain->addWidget(buttonBox);
+}
+
+void ModuleItemViewDefaultsDialog::doAccept()
+{
+    m_def->id(cmbLocalVariable->currentText().toStdString());
+
+    accept();
+}
+
+// ***********************************************************************************************************************
+
 ModuleVolumeIntegralValueDialog::ModuleVolumeIntegralValueDialog(XMLModule::volumeintegral *vol, QWidget *parent)
     : ModuleItemDialog(parent), m_vol(vol)
 {
@@ -748,7 +778,7 @@ void ModuleDialog::load()
             if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
             {
                 if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
-                    !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
+                        !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
                     item->setText(1, tr("nonlinear"));
             }
 
@@ -962,6 +992,40 @@ void ModuleDialog::load()
         if (analyses.length() > 0)
             analyses = analyses.left(analyses.length() - 2);
         item->setText(4, analyses);
+    }
+
+    // view defaults
+    treeViewDefaults->clear();
+    QTreeWidgetItem *scalarView = new QTreeWidgetItem(treeViewDefaults);
+    scalarView->setExpanded(true);
+    scalarView->setText(0, tr("Scalar view"));
+
+    XMLModule::scalar_view *sv = &module->postprocessor().view().scalar_view();
+
+    for (int i = 0; i < sv->default_().size(); i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(scalarView);
+
+        XMLModule::default_ *def = &sv->default_().at(i);
+        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::default_ *>(def));
+        item->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(def->analysistype()))));
+        item->setText(1, QString::fromStdString(def->id()));
+    }
+
+    QTreeWidgetItem *vectorView = new QTreeWidgetItem(treeViewDefaults);
+    vectorView->setExpanded(true);
+    vectorView->setText(0, tr("Vector view"));
+
+    XMLModule::vector_view *vv = &module->postprocessor().view().vector_view();
+
+    for (int i = 0; i < vv->default_().size(); i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(vectorView);
+
+        XMLModule::default_ *def = &vv->default_().at(i);
+        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::default_ *>(def));
+        item->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(def->analysistype()))));
+        item->setText(1, QString::fromStdString(def->id()));
     }
 
     // surface integrals
@@ -1357,8 +1421,21 @@ QWidget *ModuleDialog::createPostprocessor()
 
     connect(treeLocalVariables, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(localItemDoubleClicked(QTreeWidgetItem *, int)));
 
+    // view defaults
+    treeViewDefaults = new QTreeWidget(this);
+    treeViewDefaults->setMouseTracking(true);
+    treeViewDefaults->setColumnCount(2);
+    treeViewDefaults->setColumnWidth(0, 200);
+    treeLocalVariables->setIndentation(5);
+    QStringList headViewDefaults;
+    headViewDefaults << tr("View") << tr("Local variable");
+    treeViewDefaults->setHeaderLabels(headViewDefaults);
+
+    connect(treeViewDefaults, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(viewDefaultsItemDoubleClicked(QTreeWidgetItem *, int)));
+
     QVBoxLayout *layoutLocalVariables = new QVBoxLayout();
     layoutLocalVariables->addWidget(treeLocalVariables);
+    layoutLocalVariables->addWidget(treeViewDefaults);
     // layoutLocalVariables->addStretch();
 
     QWidget *localVariables = new QWidget(this);
@@ -1485,7 +1562,7 @@ void ModuleDialog::quantityAnalysisDoubleClicked(QTreeWidgetItem *item, int role
             if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
             {
                 if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
-                    !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
+                        !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
                     item->setText(1, tr("nonlinear"));
             }
 
@@ -1566,6 +1643,20 @@ void ModuleDialog::localItemDoubleClicked(QTreeWidgetItem *item, int role)
             item->setText(2, QString::fromStdString(lv->unit()));
             item->setText(3, QString::fromStdString(lv->type()));
         }
+    }
+}
+
+void ModuleDialog::viewDefaultsItemDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    XMLModule::default_ *def = item->data(0, Qt::UserRole).value<XMLModule::default_ *>();
+    if (def)
+    {
+        XMLModule::module *module = m_module_xsd.get();
+        XMLModule::localvariables *lv = &module->postprocessor().localvariables();
+
+        ModuleItemViewDefaultsDialog dialog(def, lv, this);
+        if (dialog.exec())
+            item->setText(1, QString::fromStdString(def->id()));
     }
 }
 
