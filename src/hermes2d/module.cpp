@@ -24,7 +24,7 @@
 #include "problem.h"
 #include "logview.h"
 
-#include "../weakform/src/weakform_factory.h"
+#include "../weakform/src/weakform_factory_interface.h"
 
 #include "util.h"
 #include "scene.h"
@@ -105,15 +105,16 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const QString &pr
                                             const QString &area, ParserFormExpression *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
+    WeakFormFactory<Scalar> factory;
     cout <<"ID: " << problemId.toStdString() << ", " << type << ", form position (" << form->i << ", " << form->j << ")"<< ", offset (" << offsetI << ", " << offsetJ << ")" << endl;
     if(type == WeakForm_MatVol)
-        return factoryMatrixFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+        return factory.MatrixFormVol(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
     else if(type == WeakForm_MatSurf)
-        return factoryMatrixFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+        return factory.MatrixFormSurf(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
     else if(type == WeakForm_VecVol)
-        return factoryVectorFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+        return factory.VectorFormVol(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
     else if(type == WeakForm_VecSurf)
-        return factoryVectorFormSurf<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+        return factory.VectorFormSurf(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
     else
         assert(0);
 }

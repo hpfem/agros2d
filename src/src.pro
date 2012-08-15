@@ -236,6 +236,7 @@ INCLUDEPATH += ../hermes_common/include
 LIBS += -lhermes2d
 LIBS += -llib
 LIBS += -lweakform
+LIBS += -Lplugins
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp

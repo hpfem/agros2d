@@ -7,9 +7,10 @@
 QT += core gui network xml webkit xmlpatterns
 
 TEMPLATE = lib
-TARGET = build/lib/weakform
+DESTDIR = build/lib/weakform/plugins
+TARGET  = weakform_factory
 OBJECTS_DIR = build
-CONFIG += staticlib
+CONFIG += plugin
 CONFIG += warn_off
 
 INCLUDEPATH += ../hermes2d/include \
@@ -19,9 +20,9 @@ INCLUDEPATH += ../hermes2d/include \
     ../src/ \
     ../src/hermes2d
 
-linux-g++|linux-g++-64|linux-g++-32 {
-    system(python ./xml_parser.py)
-}
+#linux-g++|linux-g++-64|linux-g++-32 {
+#    system(python ./xml_parser.py)
+#}
 
 OTHER_FILES += \
     xml_parser.py

@@ -207,7 +207,8 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                                 coordinateTypeToStringKey(fieldInfo->module()->coordinateType()).toStdString() + "_" +
                                 ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
 
-                        ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
+                        WeakFormFactory<double> factory;
+                        ExactSolutionScalar<double> * function = factory.ExactSolution(problemId, form->i, meshes[fieldInfo], boundary);
                         custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
                     }
 
