@@ -243,12 +243,12 @@ SceneEdgeMarker::SceneEdgeMarker(SceneEdge *edge, FieldInfo *fieldInfo, QWidget 
     layoutBoundary->addWidget(btnBoundary);
 
     // refine towards edge
+    chkRefineTowardsEdge = new QCheckBox();
+    connect(chkRefineTowardsEdge, SIGNAL(stateChanged(int)), this, SLOT(doRefineTowardsEdge(int)));
+
     txtRefineTowardsEdge = new QSpinBox(this);
     txtRefineTowardsEdge->setMinimum(0);
     txtRefineTowardsEdge->setMaximum(10);
-
-    chkRefineTowardsEdge = new QCheckBox();
-    connect(chkRefineTowardsEdge, SIGNAL(stateChanged(int)), this, SLOT(doRefineTowardsEdge(int)));
 
     QHBoxLayout *layoutRefineTowardsEdge = new QHBoxLayout();
     layoutRefineTowardsEdge->addStretch(1);
@@ -266,18 +266,20 @@ void SceneEdgeMarker::load()
 {
     cmbBoundary->setCurrentIndex(cmbBoundary->findData(m_edge->marker(m_fieldInfo)->variant()));
 
-    // TODO: load refine
-    // chkRefineTowardsEdge->setChecked(m_edge->refineTowardsEdge > 0.0);
+    // edge refinement
+    int refinement = m_fieldInfo->edgeRefinement(m_edge);
+    chkRefineTowardsEdge->setChecked(refinement > 0);
     txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
-    // txtRefineTowardsEdge->setValue(m_edge->refineTowardsEdge);
+    txtRefineTowardsEdge->setValue(refinement);
 }
 
 bool SceneEdgeMarker::save()
 {
     m_edge->addMarker(cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>());
-
-    // TODO: save refine
-    // m_edge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
+    if (chkRefineTowardsEdge->isChecked())
+        m_fieldInfo->setEdgeRefinement(m_edge, txtRefineTowardsEdge->text().toInt());
+    else
+        m_fieldInfo->removeEdgeRefinement(m_edge);
 
     return true;
 }
@@ -301,7 +303,6 @@ void SceneEdgeMarker::fillComboBox()
 void SceneEdgeMarker::doBoundaryChanged(int index)
 {
     btnBoundary->setEnabled(cmbBoundary->currentIndex() > 0);
-    doRefineTowardsEdge(0);
 }
 
 void SceneEdgeMarker::doBoundaryClicked()
@@ -316,8 +317,7 @@ void SceneEdgeMarker::doBoundaryClicked()
 
 void SceneEdgeMarker::doRefineTowardsEdge(int state)
 {
-    chkRefineTowardsEdge->setEnabled(cmbBoundary->currentIndex() > 0);
-    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked() && cmbBoundary->currentIndex() > 0);
+    txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
 }
 
 SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) : SceneBasicDialog(parent, isNew)

@@ -21,6 +21,7 @@
 #define FIELD_H
 
 #include "util.h"
+#include "sceneedge.h"
 
 namespace Module
 {
@@ -58,6 +59,10 @@ public:
 
     inline int numberOfRefinements() const { return m_numberOfRefinements; }
     void setNumberOfRefinements(const int nr) {m_numberOfRefinements = nr; emit changed(); }
+
+    int edgeRefinement(SceneEdge *edge);
+    void setEdgeRefinement(SceneEdge *edge, int refinement) { edgesRefinements[edge] = refinement; }
+    void removeEdgeRefinement(SceneEdge *edge) { edgesRefinements.remove(edge); }
 
     inline int polynomialOrder() const { return m_polynomialOrder; }
     void setPolynomialOrder(const int po) { m_polynomialOrder = po; emit changed(); }
@@ -113,6 +118,9 @@ private:
 
     int m_numberOfRefinements;
     int m_polynomialOrder;
+
+    // TODO: (Franta) gmsh
+    QMap<SceneEdge *, int> edgesRefinements;
 
     AdaptivityType m_adaptivityType;
     int m_adaptivitySteps;

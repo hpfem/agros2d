@@ -102,6 +102,18 @@ void FieldInfo::setAnalysisType(const AnalysisType analysisType)
                                        m_analysisType);
 }
 
+int FieldInfo::edgeRefinement(SceneEdge *edge)
+{
+    QMapIterator<SceneEdge *, int> i(edgesRefinements);
+    while (i.hasNext()) {
+        i.next();
+        if (i.key() == edge)
+            return i.value();
+    }
+
+    return 0;
+}
+
 void FieldInfo::clear()
 {
     m_numberOfRefinements = 1;
