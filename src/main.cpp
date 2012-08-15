@@ -8,6 +8,10 @@
 #include "util.h"
 #include "mainwindow.h"
 
+QT_BEGIN_NAMESPACE
+Q_IMPORT_PLUGIN(electrostatic)
+QT_END_NAMESPACE
+
 class MyApplication : public QApplication {
 public:
     MyApplication(int& argc, char ** argv) : QApplication(argc, argv) {}

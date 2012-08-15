@@ -37,32 +37,30 @@
 #include "hermes2d/marker.h"
 #include "hermes2d/localpoint.h"
 #include "hermes2d/weakform_parser.h"
+#include "hermes2d/weakform_interface.h"
 
-#include "weakform_factory_interface.h"
-
-template <typename Scalar>
-class WeakFormFactory : public QObject, public WeakFormFactoryInterface<Scalar>
+class ElectrostaticInterface : public QObject, public WeakFormInterface
 {
     Q_OBJECT
-    Q_INTERFACES(WeakFormFactoryInterface)
+    Q_INTERFACES(WeakFormInterface)
 
 public:
 
-    virtual ~WeakFormFactory() {}
+    virtual ~ElectrostaticInterface() {}
 
-    virtual Hermes::Hermes2D::MatrixFormVol<Scalar> *MatrixFormVol(const std::string &problemId, int i, int j,
+    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                                   SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ );    
-    virtual Hermes::Hermes2D::VectorFormVol<Scalar> *VectorFormVol(const std::string &problemId, int i, int j,
+    virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ);
 
-    virtual Hermes::Hermes2D::MatrixFormSurf<Scalar> *MatrixFormSurf(const std::string &problemId, int i, int j,
+    virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
 
 
-    virtual Hermes::Hermes2D::VectorFormSurf<Scalar> *VectorFormSurf(const std::string &problemId, int i, int j,
+    virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
 
-    virtual Hermes::Hermes2D::ExactSolutionScalar<Scalar> *ExactSolution(const std::string &problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
+    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 };
 #endif

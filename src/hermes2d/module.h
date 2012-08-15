@@ -23,6 +23,25 @@
 #include "util.h"
 #include "hermes2d.h"
 
+
+struct ProblemID
+{
+    // TODO: constructor
+    QString materialSourceFieldId;
+    QString materialTargetFieldId;
+    QString analysisTypeSource;
+    QString analysisTypeTarget;
+    QString coordinateType;
+    QString linearityType;
+    QString couplingType;
+
+    QString toString()
+    {
+        // TODO: implement toString method
+        return "TODO";
+    }
+};
+
 extern double actualTime;
 
 namespace XMLModule

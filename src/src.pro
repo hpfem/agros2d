@@ -32,7 +32,7 @@ RC_FILE = src.rc
 RESOURCES = src.qrc
 TARGET = agros2d
 DESTDIR = ../
-TEMPLATE = app
+# TEMPLATE = app
 CONFIG += warn_off
 # QMAKE_CXXFLAGS_DEBUG += -Wno-builtin-macro-redefined -Wunused-variable -Wreturn-type
 # QMAKE_CXXFLAGS += -fno-strict-aliasing -Wno-builtin-macro-redefined
@@ -99,7 +99,7 @@ SOURCES += util.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
-    hermes2d/weakform_parser.cpp\
+    hermes2d/weakform_parser.cpp\    
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
@@ -173,6 +173,7 @@ HEADERS += util.h \
     collaboration.h \
     resultsview.h \
     hermes2d/weakform_parser.h \
+    hermes2d/weakform_interface.h \
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \
@@ -235,8 +236,9 @@ INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
 LIBS += -lhermes2d
 LIBS += -llib
-LIBS += -lweakform
-LIBS += -Lplugins
+
+LIBS += -L../resources/plugins
+LIBS += -lelectrostatic
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
@@ -251,7 +253,6 @@ linux-g++|linux-g++-64|linux-g++-32 {
 
     LIBS += -L../hermes2d/build/lib
     LIBS += -L../lib/build/lib
-    LIBS += -L../weakform/build/lib
 
     LIBS += -lumfpack
     LIBS += -lxerces-c

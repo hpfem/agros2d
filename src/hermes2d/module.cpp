@@ -24,8 +24,6 @@
 #include "problem.h"
 #include "logview.h"
 
-#include "../weakform/src/weakform_factory_interface.h"
-
 #include "util.h"
 #include "scene.h"
 #include "scenebasic.h"
@@ -36,6 +34,7 @@
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/post_values.h"
+#include "hermes2d/weakform_interface.h"
 
 #include "mesh/mesh_reader_h2d.h"
 
@@ -101,22 +100,28 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const QString &problemId,
+Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, ParserFormExpression *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
-    WeakFormFactory<Scalar> factory;
-    cout <<"ID: " << problemId.toStdString() << ", " << type << ", form position (" << form->i << ", " << form->j << ")"<< ", offset (" << offsetI << ", " << offsetJ << ")" << endl;
-    if(type == WeakForm_MatVol)
-        return factory.MatrixFormVol(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
-    else if(type == WeakForm_MatSurf)
-        return factory.MatrixFormSurf(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
-    else if(type == WeakForm_VecVol)
-        return factory.VectorFormVol(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
-    else if(type == WeakForm_VecSurf)
-        return factory.VectorFormSurf(problemId.toStdString(), form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
-    else
-        assert(0);
+    foreach (QObject *plugin, QPluginLoader::staticInstances())
+    {
+        if (problemId.analysisTypeSource == marker->fieldId())
+        {
+            WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
+
+            if(type == WeakForm_MatVol)
+                return weakform->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+            else if(type == WeakForm_MatSurf)
+                return weakform->matrixFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+            else if(type == WeakForm_VecVol)
+                return weakform->vectorFormVol(problemId, form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+            else if(type == WeakForm_VecSurf)
+                return weakform->vectorFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+            else
+                assert(0);
+        }
+    }
 }
 
 template <typename Scalar>
@@ -179,24 +184,20 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ, Marker* marker)
 {
-    string problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
-            analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-            coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-            ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
+    ProblemID problemId;
 
-    if(field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
-    {
-        //Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Interpreted weak forms are not supported at the moment"));
-        throw AgrosSolverException("Interpreted weak forms are not supported at the moment");
-    }
+    problemId.materialSourceFieldId = field->fieldInfo()->fieldId();
+    problemId.analysisTypeSource = analysisTypeToStringKey(field->fieldInfo()->module()->analysisType());
+    problemId.coordinateType = coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType());
+    problemId.linearityType = linearityTypeToStringKey(field->fieldInfo()->linearityType());
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker, NULL, offsetI, offsetJ);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, form, marker, NULL, offsetI, offsetJ);
 
     if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
     {
         Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2). %3, (%4, %5)").
-                                  arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)).arg(QString::fromStdString(problemId)).arg(offsetI).arg(offsetJ));
+                                  arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)).arg(problemId.toString()).arg(offsetI).arg(offsetJ));
         throw AgrosSolverException("Compiled form not found");
     }
 
@@ -216,16 +217,18 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
-                                         SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
+                                                 SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
-    string problemId =
-            materialSource->fieldInfo()->fieldId().toStdString() + "_" +
-            materialTarget->fieldInfo()->fieldId().toStdString() + "_" +
-            analysisTypeToStringKey(materialSource->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-            analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-            coordinateTypeToStringKey(materialTarget->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-            ((materialTarget->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_" +
-            couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
+
+    ProblemID problemId;
+
+    problemId.materialSourceFieldId = materialSource->fieldInfo()->fieldId();
+    problemId.materialTargetFieldId = materialTarget->fieldInfo()->fieldId();
+    problemId.analysisTypeSource = analysisTypeToStringKey(materialSource->fieldInfo()->module()->analysisType());
+    problemId.analysisTypeTarget = analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType());
+    problemId.coordinateType = coordinateTypeToStringKey(materialTarget->fieldInfo()->module()->coordinateType());
+    problemId.linearityType = linearityTypeToStringKey(materialTarget->fieldInfo()->linearityType());
+    problemId.couplingType = couplingTypeToStringKey(couplingInfo->couplingType());
 
     if(materialTarget->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
     {
@@ -235,12 +238,13 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // compiled form
     //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, materialTarget, materialSource, offsetI, offsetJ);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
+                                                                      area, form, materialTarget, materialSource, offsetI, offsetJ);
 
     if (!custom_form)
     {
         Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %2. %3, (%4, %5)").
-                                  arg(weakFormString(type)).arg(QString::fromStdString(problemId)).arg(offsetI).arg(offsetJ));
+                                  arg(weakFormString(type)).arg(problemId.toString()).arg(offsetI).arg(offsetJ));
         throw AgrosSolverException("Compiled form not found");
     }
 
@@ -401,7 +405,7 @@ void WeakFormAgros<Scalar>::registerForms()
                         {
                             cout << "register coupling form " << expression << endl;
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                         m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
+                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
                         }
                     }
                 }
@@ -431,13 +435,13 @@ void WeakFormAgros<Scalar>::registerForms()
 
                 foreach (ParserFormExpression *pars, coupling->wfMatrixVolumeExpression())
                     registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
-                                 m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
-                                 sourceMaterial, targetMaterial, couplingInfo);
-
+                                         m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
+                                         sourceMaterial, targetMaterial, couplingInfo);
+                
                 foreach (ParserFormExpression *pars, coupling->wfVectorVolumeExpression())
                     registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
-                                 m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
-                                 sourceMaterial, targetMaterial, couplingInfo);
+                                         m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
+                                         sourceMaterial, targetMaterial, couplingInfo);
 
             }
         }

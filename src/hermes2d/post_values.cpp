@@ -29,7 +29,7 @@
 #include "scene.h"
 #include "scenelabel.h"
 
-#include "../weakform/src/weakform_factory.h"
+#include "hermes2d/weakform_interface.h"
 #include "solutionstore.h"
 
 #include <muParserDef.h>

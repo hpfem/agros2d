@@ -35,33 +35,34 @@
 
 #include "hermes2d/marker.h"
 #include "hermes2d/localpoint.h"
-#include "hermes2d/weakform_parser.h"
+#include "weakform_parser.h"
 
-template <typename Scalar>
-class WeakFormFactoryInterface
+class WeakFormInterface
 {
 public:
 
-    virtual ~WeakFormFactoryInterface() {}
+    virtual ~WeakFormInterface() {}
 
-    virtual Hermes::Hermes2D::MatrixFormVol<Scalar> *MatrixFormVol(const std::string &problemId, int i, int j,
+    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                    const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                                    SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
-    virtual Hermes::Hermes2D::VectorFormVol<Scalar> *VectorFormVol(const std::string &problemId, int i, int j,
+
+    virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
                                                                    const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ) = 0;
 
-    virtual Hermes::Hermes2D::MatrixFormSurf<Scalar> *MatrixFormSurf(const std::string &problemId, int i, int j,
+    virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
                                                                      const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;
 
 
-    virtual Hermes::Hermes2D::VectorFormSurf<Scalar> *VectorFormSurf(const std::string &problemId, int i, int j,
+    virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
                                                                      const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;
 
-    virtual Hermes::Hermes2D::ExactSolutionScalar<Scalar> *ExactSolution(const std::string &problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) = 0;
+    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) = 0;
 };
 
+
 QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(WeakFormFactoryInterface<Scalar>,"com.trolltech.PlugAndPaint.BrushInterface/1.0")
+Q_DECLARE_INTERFACE(WeakFormInterface, "agros2d.WeakformInterface/1.0")
 QT_END_NAMESPACE
 
 #endif // WEAKFORM_FACTORY_INTERFACE_H

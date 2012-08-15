@@ -30,9 +30,9 @@
 #include "module_agros.h"
 #include "solutionstore.h"
 #include "weakform_parser.h"
+#include "weakform_interface.h"
 #include "logview.h"
 #include "util.h"
-#include "../weakform/src/weakform_factory.h"
 
 using namespace Hermes::Hermes2D;
 
@@ -202,14 +202,44 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     // compiled form
                     if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                     {
-                        string problemId = fieldInfo->fieldId().toStdString() + "_" +
-                                analysisTypeToStringKey(fieldInfo->module()->analysisType()).toStdString()  + "_" +
-                                coordinateTypeToStringKey(fieldInfo->module()->coordinateType()).toStdString() + "_" +
-                                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
+                        ProblemID problemId;
 
-                        WeakFormFactory<double> factory;
-                        ExactSolutionScalar<double> * function = factory.ExactSolution(problemId, form->i, meshes[fieldInfo], boundary);
-                        custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
+                        problemId.materialSourceFieldId = fieldInfo->fieldId();
+                        problemId.analysisTypeSource = analysisTypeToStringKey(fieldInfo->module()->analysisType());
+                        problemId.coordinateType = coordinateTypeToStringKey(fieldInfo->module()->coordinateType());
+                        problemId.linearityType = linearityTypeToStringKey(fieldInfo->linearityType());
+                        //  or ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") ???
+
+                        /*
+                        QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
+                                             .arg(datadir())
+                                             .arg(fieldInfo->fieldId()));
+
+                        QPluginLoader loader2("/home/karban/Projects/tmp/plugandpaint/plugins/libpnp_extrafilters.so");
+
+
+                        qDebug() << loader2.fileName() << loader2.errorString();
+                        qDebug() << loader.fileName() << loader.errorString();
+
+                        QObject *plugin = loader.instance();
+
+                        qDebug() << plugin;
+                        assert(plugin);
+                        if (loader.instance())
+                        {
+                            WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
+                        }
+                        */
+
+                        foreach (QObject *plugin, QPluginLoader::staticInstances())
+                        {
+                            if (problemId.analysisTypeSource == fieldInfo->fieldId())
+                            {
+                                WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
+                                ExactSolutionScalar<double> *function = weakform->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
+                                custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
+                            }
+                        }
                     }
 
                     if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
