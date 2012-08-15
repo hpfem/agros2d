@@ -154,24 +154,28 @@ void SceneLabelMarker::load()
 {
     cmbMaterial->setCurrentIndex(cmbMaterial->findData(m_label->marker(m_fieldInfo)->variant()));
 
-    // txtPolynomialOrder->setValue(m_label->polynomialOrder);
-    // chkPolynomialOrder->setChecked(m_label->polynomialOrder > 0);
+    // polynomial order
+    int order = m_fieldInfo->labelPolynomialOrder(m_label);
+    chkPolynomialOrder->setChecked(order != m_fieldInfo->polynomialOrder());
     txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
+    txtPolynomialOrder->setValue(order);
 }
 
 bool SceneLabelMarker::save()
 {
     m_label->addMarker(cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>());
 
-    // TODO: sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
+    if (chkPolynomialOrder->isChecked())
+        m_fieldInfo->setLabelPolynomialOrder(m_label, txtPolynomialOrder->text().toInt());
+    else
+        m_fieldInfo->removeLabelPolynomialOrder(m_label);
 
     return true;
 }
 
 void SceneLabelMarker::doPolynomialOrder(int state)
 {
-    chkPolynomialOrder->setEnabled(cmbMaterial->currentIndex() > 0);
-    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked() && cmbMaterial->currentIndex() > 0);
+    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 }
 
 void SceneLabelMarker::fillComboBox()
@@ -193,7 +197,6 @@ void SceneLabelMarker::fillComboBox()
 void SceneLabelMarker::doMaterialChanged(int index)
 {
     btnMaterial->setEnabled(cmbMaterial->currentIndex() > 0);
-    doPolynomialOrder(0);
 }
 
 void SceneLabelMarker::doMaterialClicked()

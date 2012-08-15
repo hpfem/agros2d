@@ -249,17 +249,14 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
             cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             space.push_back(QSharedPointer<Space<Scalar> >(actualSpace));
 
-            int j = 0;
             // set order by element
-            foreach(SceneLabel* label, Util::scene()->labels->items()){
-                if (!label->marker(fieldInfo)->isNone())
+            foreach(SceneLabel* label, Util::scene()->labels->items())
+            {
+                if (!label->marker(fieldInfo)->isNone() &&
+                        (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder()))
                 {
-                    // TODO: set order in space
-                    // space.at(i)->set_uniform_order(label->polynomialOrder > 0 ? label->polynomialOrder : fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i),
-                    //                                QString::number(j).toStdString());
-                    space.at(i)->set_uniform_order(fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i),
-                                                   QString::number(j).toStdString());
-                    j++;
+                    space.at(i)->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
+                                                   QString::number(Util::scene()->labels->items().indexOf(label)).toStdString());
                 }
             }
         }

@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "sceneedge.h"
+#include "scenelabel.h"
 
 namespace Module
 {
@@ -61,8 +62,12 @@ public:
     void setNumberOfRefinements(const int nr) {m_numberOfRefinements = nr; emit changed(); }
 
     int edgeRefinement(SceneEdge *edge);
-    void setEdgeRefinement(SceneEdge *edge, int refinement) { edgesRefinements[edge] = refinement; }
-    void removeEdgeRefinement(SceneEdge *edge) { edgesRefinements.remove(edge); }
+    void setEdgeRefinement(SceneEdge *edge, int refinement) { edgesRefinement[edge] = refinement; }
+    void removeEdgeRefinement(SceneEdge *edge) { edgesRefinement.remove(edge); }
+
+    int labelPolynomialOrder(SceneLabel *label);
+    void setLabelPolynomialOrder(SceneLabel *label, int order) { labelsPolynomialOrder[label] = order; }
+    void removeLabelPolynomialOrder(SceneLabel *label) { labelsPolynomialOrder.remove(label); }
 
     inline int polynomialOrder() const { return m_polynomialOrder; }
     void setPolynomialOrder(const int po) { m_polynomialOrder = po; emit changed(); }
@@ -120,7 +125,9 @@ private:
     int m_polynomialOrder;
 
     // TODO: (Franta) gmsh
-    QMap<SceneEdge *, int> edgesRefinements;
+    QMap<SceneEdge *, int> edgesRefinement;
+
+    QMap<SceneLabel *, int> labelsPolynomialOrder;
 
     AdaptivityType m_adaptivityType;
     int m_adaptivitySteps;

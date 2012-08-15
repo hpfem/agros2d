@@ -1178,14 +1178,14 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
             mesh->refine_all_elements(0);
 
     // refine mesh - boundary
-    int i = 0;
     if (refineTowardsEdge)
         foreach (SceneEdge *edge, Util::scene()->edges->items())
         {
             if (fieldInfo->edgeRefinement(edge) > 0)
+            {
                 mesh->refine_towards_boundary(QString::number(Util::scene()->edges->items().indexOf(edge)).toStdString(),
                         fieldInfo->edgeRefinement(edge));
-            i++;
+            }
         }
 }
 

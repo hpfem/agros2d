@@ -104,7 +104,7 @@ void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 
 int FieldInfo::edgeRefinement(SceneEdge *edge)
 {
-    QMapIterator<SceneEdge *, int> i(edgesRefinements);
+    QMapIterator<SceneEdge *, int> i(edgesRefinement);
     while (i.hasNext()) {
         i.next();
         if (i.key() == edge)
@@ -112,6 +112,18 @@ int FieldInfo::edgeRefinement(SceneEdge *edge)
     }
 
     return 0;
+}
+
+int FieldInfo::labelPolynomialOrder(SceneLabel *label)
+{
+    QMapIterator<SceneLabel *, int> i(labelsPolynomialOrder);
+    while (i.hasNext()) {
+        i.next();
+        if (i.key() == label)
+            return i.value();
+    }
+
+    return m_polynomialOrder;
 }
 
 void FieldInfo::clear()
