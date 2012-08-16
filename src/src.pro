@@ -238,7 +238,7 @@ LIBS += -lhermes2d
 LIBS += -llib
 
 LIBS += -L../resources/plugins
-LIBS += -lelectrostatic
+include(../weakform/plugins/plugins.pri)
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
