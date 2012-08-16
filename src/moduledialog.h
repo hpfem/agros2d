@@ -63,6 +63,34 @@ private:
     XMLModule::expression *m_expr;
 };
 
+/*
+class ModuleWeakform : public QWidget
+{
+    Q_OBJECT
+
+public:
+    ModuleWeakform(WeakFormKind weakForm, QWidget *parent);
+
+    void save();
+
+protected:
+    QSpinBox *txtI;
+    QSpinBox *txtJ;
+    QLineEdit *txtPlanarLinear;
+    QLineEdit *txtAxiLinear;
+    QLineEdit *txtPlanarNewton;
+    QLineEdit *txtAxiNewton;
+};
+*/
+
+class ModuleDialogTextEdit: public QTextEdit
+{
+public:
+    ModuleDialogTextEdit() {}
+
+    QSize sizeHint() const;
+};
+
 class ModuleItemEmptyDialog : public QDialog
 {
     Q_OBJECT
@@ -105,24 +133,6 @@ protected:
 
     QVBoxLayout *layoutMain;
     QDialogButtonBox *buttonBox;
-};
-
-class ModuleWeakform : public QWidget
-{
-    Q_OBJECT
-
-public:
-    ModuleWeakform(WeakFormKind weakForm, QWidget *parent);
-
-    void save();
-
-protected:
-    QSpinBox *txtI;
-    QSpinBox *txtJ;
-    QLineEdit *txtPlanarLinear;
-    QLineEdit *txtAxiLinear;
-    QLineEdit *txtPlanarNewton;
-    QLineEdit *txtAxiNewton;
 };
 
 class ModuleItemConstantDialog : public ModuleItemEmptyDialog
@@ -205,10 +215,10 @@ public:
 protected:
     QLineEdit *txtI;
     QLineEdit *txtJ;
-    QTextEdit *txtPlanarLinear;
-    QTextEdit *txtPlanarNewton;
-    QTextEdit *txtAxiLinear;
-    QTextEdit *txtAxiNewton;
+    ModuleDialogTextEdit *txtPlanarLinear;
+    ModuleDialogTextEdit *txtPlanarNewton;
+    ModuleDialogTextEdit *txtAxiLinear;
+    ModuleDialogTextEdit *txtAxiNewton;
 };
 
 class ModuleItemMatrixFormDialog : public ModuleItemWeakformDialog

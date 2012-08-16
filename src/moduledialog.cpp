@@ -99,6 +99,11 @@ void ModuleItemLocalValue::save()
     }
 }
 
+QSize ModuleDialogTextEdit::sizeHint() const
+{
+    return QSize(400, 50);
+}
+
 ModuleItemEmptyDialog::ModuleItemEmptyDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -165,6 +170,7 @@ ModuleItemDialog::ModuleItemDialog(QWidget *parent)
     setLayout(layoutMain);
 }
 
+/*
 ModuleWeakform::ModuleWeakform(WeakFormKind weakForm, QWidget *parent)
 {
     txtI = new QSpinBox();
@@ -193,6 +199,7 @@ ModuleWeakform::ModuleWeakform(WeakFormKind weakForm, QWidget *parent)
     layout->addWidget(new QLabel(tr("Axisymmetric - Newton:")), 4, 0);
     layout->addWidget(txtAxiLinear, 4, 1, 1, 2);
 }
+*/
 
 // ***********************************************************************************************************************
 
@@ -346,16 +353,16 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(QWidget *parent)
     txtI = new QLineEdit();
     txtJ = new QLineEdit();
 
-    txtPlanarLinear = new QTextEdit();
+    txtPlanarLinear = new ModuleDialogTextEdit();
     txtPlanarLinear->setAcceptRichText(false);
 
-    txtPlanarNewton = new QTextEdit();
+    txtPlanarNewton = new ModuleDialogTextEdit();
     txtPlanarLinear->setAcceptRichText(false);
 
-    txtAxiLinear = new QTextEdit();
+    txtAxiLinear = new ModuleDialogTextEdit();
     txtPlanarLinear->setAcceptRichText(false);
 
-    txtAxiNewton = new QTextEdit();
+    txtAxiNewton = new ModuleDialogTextEdit();
     txtPlanarLinear->setAcceptRichText(false);
 
     QGridLayout *layoutGeneral = new QGridLayout(this);
@@ -1166,7 +1173,6 @@ void ModuleDialog::createControls()
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutHorizontal);
-    // layout->addStretch();
     layout->addWidget(buttonBox);
 
     setLayout(layout);
@@ -1265,7 +1271,7 @@ QWidget *ModuleDialog::createWeakforms()
 
     QGridLayout *layoutVolumeQuantity = new QGridLayout();
     layoutVolumeQuantity->addWidget(new QLabel(tr("Definitions:")), 0, 0);
-    layoutVolumeQuantity->addWidget(new QLabel(tr("Parameters for partial analysis:")), 0, 2);
+    layoutVolumeQuantity->addWidget(new QLabel(tr("Parameters for particular analysis:")), 0, 2);
     layoutVolumeQuantity->addWidget(treeVolumeQuantityGlobal, 1, 0, 1, 2);
     layoutVolumeQuantity->addWidget(treeVolumeQuantityAnalysis, 1, 2, 1, 1);
 
@@ -1376,7 +1382,6 @@ QWidget *ModuleDialog::createPreprocessor()
 
     QVBoxLayout *layoutMaterials = new QVBoxLayout();
     layoutMaterials->addWidget(treeMaterials);
-    // layoutLocalVariables->addStretch();
 
     QWidget *materials = new QWidget(this);
     materials->setLayout(layoutMaterials);
@@ -1395,7 +1400,6 @@ QWidget *ModuleDialog::createPreprocessor()
 
     QVBoxLayout *layoutBoundaries = new QVBoxLayout();
     layoutBoundaries->addWidget(treeBoundaries);
-    // layoutVolume->addStretch();
 
     QWidget *boundaries = new QWidget(this);
     boundaries->setLayout(layoutBoundaries);
@@ -1436,7 +1440,6 @@ QWidget *ModuleDialog::createPostprocessor()
     QVBoxLayout *layoutLocalVariables = new QVBoxLayout();
     layoutLocalVariables->addWidget(treeLocalVariables);
     layoutLocalVariables->addWidget(treeViewDefaults);
-    // layoutLocalVariables->addStretch();
 
     QWidget *localVariables = new QWidget(this);
     localVariables->setLayout(layoutLocalVariables);
@@ -1455,7 +1458,6 @@ QWidget *ModuleDialog::createPostprocessor()
 
     QVBoxLayout *layoutVolume = new QVBoxLayout();
     layoutVolume->addWidget(treeVolumeIntegrals);
-    // layoutVolume->addStretch();
 
     QWidget *volumeIntegrals = new QWidget(this);
     volumeIntegrals->setLayout(layoutVolume);
@@ -1474,7 +1476,6 @@ QWidget *ModuleDialog::createPostprocessor()
 
     QVBoxLayout *layoutSurface = new QVBoxLayout();
     layoutSurface->addWidget(treeSurfaceIntegrals);
-    // layoutSurface->addStretch();
 
     QWidget *surfaceIntegrals = new QWidget(this);
     surfaceIntegrals->setLayout(layoutSurface);
