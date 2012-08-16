@@ -39,6 +39,15 @@
 #include "htmlparser/statemachine.h"
 #include "htmlparser/jsparser.h"
 
+// Annoying stuff for windows in opensource-land -- make sure clients
+// (in this case unittests) can import the functions.
+#ifndef CTEMPLATE_DLL_DECL
+# ifdef _MSC_VER
+#   define CTEMPLATE_DLL_DECL  __declspec(dllimport)
+# else
+#   define CTEMPLATE_DLL_DECL  /* should be the empty string for non-windows */
+# endif
+#endif
 
 #ifdef __cplusplus
 namespace HTMLPARSER_NAMESPACE {
@@ -199,7 +208,7 @@ typedef struct htmlparser_ctx_s {
  * statemachine are reset to its original values as if the object was just
  * created.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 void htmlparser_reset(htmlparser_ctx *ctx);
 
 /* Resets the parser to its initial state and changes the parser mode.
@@ -217,7 +226,7 @@ void htmlparser_reset(htmlparser_ctx *ctx);
  *                                following context: <a $template>
  *
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 void htmlparser_reset_mode(htmlparser_ctx *ctx, int mode);
 
 /* Initializes a new htmlparser instance.
@@ -226,7 +235,7 @@ void htmlparser_reset_mode(htmlparser_ctx *ctx, int mode);
  * Initialization failure is fatal, and if this function fails it may not
  * deallocate all previsouly allocated memory.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 htmlparser_ctx *htmlparser_new(void);
 
 /* Copies the context of the htmlparser pointed to by src to the htmlparser dst.
@@ -235,14 +244,14 @@ htmlparser_ctx *htmlparser_new(void);
  * entity filter but not the statemachine definition since this one is read
  * only.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 void htmlparser_copy(htmlparser_ctx *dst, const htmlparser_ctx *src);
 
 /* Receives an htmlparser context and returns the current html state.
  *
  * The return value will be one of the states of htmlparser_state_external_enum.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_state(htmlparser_ctx *ctx);
 
 /* Parses the input html stream and returns the finishing state.
@@ -252,18 +261,18 @@ int htmlparser_state(htmlparser_ctx *ctx);
  * unspecified. At this point, htmlparser_reset() or htmlparser_reset_mode()
  * can be called to reset the state.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_parse(htmlparser_ctx *ctx, const char *str, int size);
 
 /* Returns true if the parser is inside an attribute value and the value is
  * surrounded by single or double quotes. */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_is_attr_quoted(htmlparser_ctx *ctx);
 
 /* Returns true if the parser is currently in javascript. This can be a
  * an attribute that takes javascript, a javascript block or the parser
  * can just be in MODE_JS. */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_in_js(htmlparser_ctx *ctx);
 
 /* Returns the current tag or NULL if not available or we haven't seen the
@@ -289,19 +298,19 @@ int htmlparser_in_js(htmlparser_ctx *ctx);
  * tracking stack in the future for completeness.
  *
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 const char *htmlparser_tag(htmlparser_ctx *ctx);
 
 /* Returns the current attribute name if after an attribute name or in an
  * attribute value. Returns NULL otherwise. */
-extern 
+extern CTEMPLATE_DLL_DECL
 const char *htmlparser_attr(htmlparser_ctx *ctx);
 
 /* Returns the contents of the current attribute value.
  *
  * Returns NULL if not inside an attribute value.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 const char *htmlparser_value(htmlparser_ctx *ctx);
 
 /* Returns true if the parser is currently inside a CSS construct.
@@ -310,25 +319,25 @@ const char *htmlparser_value(htmlparser_ctx *ctx);
  * the parser was reset in HTMLPARSER_MODE_CSS using
  * htmlparser_reset_mode().
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_in_css(htmlparser_ctx *ctx);
 
 /* Returns the current state of the javascript state machine.
  *
  * Currently only present for testing purposes.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_js_state(htmlparser_ctx *ctx);
 
 /* Returns non-zero if currently inside a javascript string literal and zero
  * otherwise.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_is_js_quoted(htmlparser_ctx *ctx);
 
 /* Returns non-zero if currently inside an attribute value and zero otherwise.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_value_index(htmlparser_ctx *ctx);
 
 /* Returns true if this is the first character of a url inside an attribute.
@@ -347,7 +356,7 @@ int htmlparser_value_index(htmlparser_ctx *ctx);
  *
  * For any other attributes, the result will always be false.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_is_url_start(htmlparser_ctx *ctx);
 
 /* Returns the current attribute type.
@@ -359,30 +368,30 @@ int htmlparser_is_url_start(htmlparser_ctx *ctx);
  *   HTMLPARSER_ATTR_JS - Inside a javascript attribute.
  *   HTMLPARSER_ATTR_STYLE - Inside a css style attribute.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_attr_type(htmlparser_ctx *ctx);
 
 /* Return the current line number. */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_get_line_number(htmlparser_ctx *ctx);
 
 /* Set the current line number. */
-extern 
+extern CTEMPLATE_DLL_DECL
 void htmlparser_set_line_number(htmlparser_ctx *ctx, int line);
 
 /* Return the current column number. */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_get_column_number(htmlparser_ctx *ctx);
 
 /* Set the current column number. */
-extern 
+extern CTEMPLATE_DLL_DECL
 void htmlparser_set_column_number(htmlparser_ctx *ctx, int column);
 
 /* Retrieve a human readable error message in case an error occurred.
  *
  * NULL is returned if the parser didn't encounter an error.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 const char *htmlparser_get_error_msg(htmlparser_ctx *ctx);
 
 /* Invoked by the caller when text is expanded by the caller.
@@ -409,12 +418,12 @@ const char *htmlparser_get_error_msg(htmlparser_ctx *ctx);
  *
  * and would interpret alt=alternate_text as the value of the href attribute.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 int htmlparser_insert_text(htmlparser_ctx *ctx);
 
 /* Deallocates an htmlparser context object.
  */
-extern 
+extern CTEMPLATE_DLL_DECL
 void htmlparser_delete(htmlparser_ctx *ctx);
 
 #define htmlparser_parse_chr(a,b) htmlparser_parse(a, &(b), 1);

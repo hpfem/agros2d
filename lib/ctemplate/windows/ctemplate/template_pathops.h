@@ -35,26 +35,33 @@
 
 #include <string>
 
+// NOTE: if you are statically linking the template library into your binary
+// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
+// as a compiler flag in your project file to turn off the dllimports.
+#ifndef CTEMPLATE_DLL_DECL
+# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
+#endif
+
 namespace ctemplate {
 
-extern 
+extern CTEMPLATE_DLL_DECL
 const char kCWD[];       // a string that's equivalent to "./"
-extern 
+extern CTEMPLATE_DLL_DECL
 const char kRootdir[];   // a string that's equivalent to "/"
 
-extern 
+extern CTEMPLATE_DLL_DECL
 std::string PathJoin(const std::string& a, const std::string& b);
 
-extern 
+extern CTEMPLATE_DLL_DECL
 bool IsAbspath(const std::string& path);
 
-extern 
+extern CTEMPLATE_DLL_DECL
 bool IsDirectory(const std::string& path);         // checks if path ends with /
 
-extern 
+extern CTEMPLATE_DLL_DECL
 void NormalizeDirectory(std::string* dir);         // adds trailing / if needed
 
-extern 
+extern CTEMPLATE_DLL_DECL
 std::string Basename(const std::string& path);          // everything after last /
 
 // Returns true iff text contains the word as a full word, i.e. delimited by one
@@ -63,7 +70,7 @@ std::string Basename(const std::string& path);          // everything after last
 // the auto-escape mode specified by it.
 // NOTE: This assumes that the word doesn't contain any of the delimiter
 // characters.
-extern 
+extern CTEMPLATE_DLL_DECL
 bool ContainsFullWord(const std::string& text, const std::string& word);
 
 }

@@ -40,10 +40,16 @@
 #include <sys/types.h>     // for size_t
 #include <string>
 
+// NOTE: if you are statically linking the template library into your binary
+// (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
+// as a compiler flag in your project file to turn off the dllimports.
+#ifndef CTEMPLATE_DLL_DECL
+# define CTEMPLATE_DLL_DECL  __declspec(dllimport)
+#endif
 
 namespace ctemplate {
 
-class  ExpandEmitter {
+class CTEMPLATE_DLL_DECL ExpandEmitter {
  public:
   ExpandEmitter() {}
   virtual ~ExpandEmitter() {}
@@ -54,7 +60,7 @@ class  ExpandEmitter {
 };
 
 
-class  StringEmitter : public ExpandEmitter {
+class CTEMPLATE_DLL_DECL StringEmitter : public ExpandEmitter {
   std::string* const outbuf_;
  public:
   StringEmitter(std::string* outbuf) : outbuf_(outbuf) {}

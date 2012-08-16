@@ -281,10 +281,20 @@
 
 _START_GOOGLE_NAMESPACE_
 
+// Annoying stuff for windows -- make sure clients (in this case
+// unittests) can import the class definitions and variables.
+#ifndef CTEMPLATE_DLL_DECL
+# ifdef _MSC_VER
+#   define CTEMPLATE_DLL_DECL  __declspec(dllimport)
+# else
+#   define CTEMPLATE_DLL_DECL  /* should be the empty string for non-windows */
+# endif
+#endif
+
 // This class is "thread-compatible": different threads can access the
 // arena at the same time without locking, as long as they use only
 // const methods.
-class  BaseArena {
+class CTEMPLATE_DLL_DECL BaseArena {
  protected:         // You can't make an arena directly; only a subclass of one
   BaseArena(char* first_block, const size_t block_size, bool align_to_page);
  public:
@@ -442,7 +452,7 @@ class  BaseArena {
   DISALLOW_COPY_AND_ASSIGN(BaseArena);
 };
 
-class  UnsafeArena : public BaseArena {
+class CTEMPLATE_DLL_DECL UnsafeArena : public BaseArena {
  public:
   // Allocates a thread-compatible arena with the specified block size.
   explicit UnsafeArena(const size_t block_size)
@@ -557,7 +567,7 @@ class  UnsafeArena : public BaseArena {
 // virtual methods for allocation/deallocation.  This means, however,
 // I have to copy the definitions of strdup, strndup, etc. :-(
 
-class  SafeArena : public BaseArena {
+class CTEMPLATE_DLL_DECL SafeArena : public BaseArena {
  public:
   // Allocates a thread-safe arena with the specified block size.
   explicit SafeArena(const size_t block_size)
