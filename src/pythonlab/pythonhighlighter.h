@@ -31,30 +31,12 @@
 
 class QTextDocument;
 
-struct ParenthesisInfo
-{
-    char character;
-    int position;
-};
-
-class TextBlockData : public QTextBlockUserData
-{
-public:
-    TextBlockData();
-
-    QVector<ParenthesisInfo *> parentheses();
-    void insert(ParenthesisInfo *info);
-
-private:
-    QVector<ParenthesisInfo *> m_parentheses;
-};
-
-class QPythonHighlighter : public QSyntaxHighlighter
+class PythonHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 
 public:
-    QPythonHighlighter(QTextDocument *parent = 0);
+    PythonHighlighter(QTextDocument *parent = 0);
 
 protected:
     void highlightBlock(const QString &text);

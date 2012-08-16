@@ -1149,10 +1149,10 @@ bool PythonEditorDialog::isScriptModified()
     return txtEditor->document()->isModified();
 }
 
-// ******************************************************************************************************
+// ********************************************************************************
 
 ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
-    : QPlainTextEdit(parent), pythonEngine(pythonEngine)
+    : PlainTextEditParenthesis(parent), pythonEngine(pythonEngine)
 {
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
@@ -1162,7 +1162,7 @@ ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
     setTabChangesFocus(false);
 
     // highlighter
-    new QPythonHighlighter(document());
+    new PythonHighlighter(document());
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(updateLineNumberArea(const QRect &, int)));
@@ -1481,120 +1481,6 @@ int ScriptEditor::lineNumberAreaWidth()
     int space = 15 + fontMetrics().width(QLatin1Char('9')) * digits;
 
     return space;
-}
-
-void ScriptEditor::matchParentheses(char left, char right)
-{
-    TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
-
-    if (data)
-    {
-        QVector<ParenthesisInfo *> infos = data->parentheses();
-
-        int pos = textCursor().block().position();
-        for (int i = 0; i < infos.size(); ++i)
-        {
-            ParenthesisInfo *info = infos.at(i);
-
-            int curPos = textCursor().position() - textCursor().block().position();
-            if (info->position == curPos - 1 && info->character == left)
-            {
-                if (matchLeftParenthesis(left, right, textCursor().block(), i + 1, 0))
-                    createParenthesisSelection(pos + info->position);
-            }
-            else if (info->position == curPos - 1 && info->character == right)
-            {
-                if (matchRightParenthesis(left, right, textCursor().block(), i - 1, 0))
-                    createParenthesisSelection(pos + info->position);
-            }
-        }
-    }
-}
-
-bool ScriptEditor::matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int i, int numLeftParentheses)
-{
-    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
-    QVector<ParenthesisInfo *> infos = data->parentheses();
-
-    int docPos = currentBlock.position();
-    for (; i < infos.size(); ++i)
-    {
-        ParenthesisInfo *info = infos.at(i);
-
-        if (info->character == left)
-        {
-            ++numLeftParentheses;
-            continue;
-        }
-
-        if (info->character == right && numLeftParentheses == 0)
-        {
-            createParenthesisSelection(docPos + info->position);
-            return true;
-        }
-        else
-        {
-            --numLeftParentheses;
-        }
-    }
-
-    currentBlock = currentBlock.next();
-    if (currentBlock.isValid())
-        return matchLeftParenthesis(left, right, currentBlock, 0, numLeftParentheses);
-
-    return false;
-}
-
-bool ScriptEditor::matchRightParenthesis(char left, char right, QTextBlock currentBlock, int i, int numRightParentheses)
-{
-    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
-    QVector<ParenthesisInfo *> parentheses = data->parentheses();
-
-    int docPos = currentBlock.position();
-    for (; i > -1 && parentheses.size() > 0; --i)
-    {
-        ParenthesisInfo *info = parentheses.at(i);
-        if (info->character == right)
-        {
-            ++numRightParentheses;
-            continue;
-        }
-        if (info->character == left && numRightParentheses == 0)
-        {
-            createParenthesisSelection(docPos + info->position);
-            return true;
-        }
-        else
-        {
-            --numRightParentheses;
-        }
-    }
-
-    currentBlock = currentBlock.previous();
-    if (currentBlock.isValid())
-        return matchRightParenthesis(left, right, currentBlock, 0, numRightParentheses);
-
-    return false;
-}
-
-void ScriptEditor::createParenthesisSelection(int pos)
-{
-    QList<QTextEdit::ExtraSelection> selections = extraSelections();
-
-    QTextEdit::ExtraSelection selection;
-    QTextCharFormat format = selection.format;
-    format.setForeground(Qt::red);
-    // format.setBackground(Qt::lightGray);
-    selection.format = format;
-
-    QTextCursor cursor = textCursor();
-    cursor.setPosition(pos);
-    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-    selection.cursor = cursor;
-
-    selections.append(selection);
-
-    setExtraSelections(selections);
 }
 
 void ScriptEditor::insertCompletion(const QString& completion)

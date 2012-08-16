@@ -37,31 +37,14 @@
 #include <QTextBlock>
 #include <QTextBlockUserData>
 
+#include "gui.h"
+
 const int ParenthesisMatcherPropertyId = QTextFormat::UserProperty;
 const int ErrorMarkerPropertyId = QTextFormat::UserProperty + 1;
 
-TextBlockData::TextBlockData()
-{
-
-}
-
-QVector<ParenthesisInfo *> TextBlockData::parentheses()
-{
-    return m_parentheses;
-}
-
-void TextBlockData::insert(ParenthesisInfo *info)
-{
-    int i = 0;
-    while (i < m_parentheses.size() && info->position > m_parentheses.at(i)->position)
-        ++i;
-
-    m_parentheses.insert(i, info);
-}
-
 // ************************************************************************************************************
 
-QPythonHighlighter::QPythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
+PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
     HighlightingRule rule;
 
@@ -126,7 +109,7 @@ QPythonHighlighter::QPythonHighlighter(QTextDocument *parent) : QSyntaxHighlight
     multiLineCommentFormat.setForeground(Qt::red);
 }
 
-void QPythonHighlighter::highlightBlock(const QString &text)
+void PythonHighlighter::highlightBlock(const QString &text)
 {
     foreach (const HighlightingRule &rule, highlightingRules)
     {
@@ -173,7 +156,7 @@ void QPythonHighlighter::highlightBlock(const QString &text)
     // highlightBlockParenthesis(text, '{', '}');
 }
 
-void QPythonHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
+void PythonHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
 {
     TextBlockData *data = new TextBlockData();
 

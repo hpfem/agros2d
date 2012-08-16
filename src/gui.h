@@ -40,6 +40,40 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
 
+struct ParenthesisInfo
+{
+    char character;
+    int position;
+};
+
+class TextBlockData : public QTextBlockUserData
+{
+public:
+    TextBlockData();
+
+    QVector<ParenthesisInfo *> parentheses();
+    void insert(ParenthesisInfo *info);
+
+private:
+    QVector<ParenthesisInfo *> m_parentheses;
+};
+
+class PlainTextEditParenthesis : public QPlainTextEdit
+{
+    Q_OBJECT
+
+public:
+   PlainTextEditParenthesis(QWidget *parent = 0);
+
+protected slots:    
+   void matchParentheses(char left = '(', char right = ')');
+
+protected:
+    bool matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int index, int numRightParentheses);
+    bool matchRightParenthesis(char left, char right, QTextBlock currentBlock, int index, int numLeftParentheses);
+    void createParenthesisSelection(int pos);
+};
+
 class HtmlValueEdit : public QWidget
 {
     Q_OBJECT

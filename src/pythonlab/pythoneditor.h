@@ -22,6 +22,8 @@
 
 #include <QtGui>
 #include <QtCore>
+#include "gui.h"
+
 
 class PythonEngine;
 class PythonScriptingConsole;
@@ -201,7 +203,7 @@ private slots:
     void doOptionsPrintStacktrace();
 };
 
-class ScriptEditor : public QPlainTextEdit
+class ScriptEditor : public PlainTextEditParenthesis
 {
     Q_OBJECT
 
@@ -234,8 +236,6 @@ private slots:
     void commentSelection();
     void uncommentSelection();
 
-    void matchParentheses(char left, char right);
-
     void insertCompletion(const QString& completion);
 
 private:
@@ -243,10 +243,6 @@ private:
     QCompleter* completer;
 
     QWidget *lineNumberArea;
-
-    bool matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int index, int numRightParentheses);
-    bool matchRightParenthesis(char left, char right, QTextBlock currentBlock, int index, int numLeftParentheses);
-    void createParenthesisSelection(int pos);
 };
 
 class ScriptEditorLineNumberArea : public QWidget

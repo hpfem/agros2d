@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "moduledialog.h"
+#include "pythonlab/pythonhighlighter.h"
 
 #include "gui.h"
 
@@ -37,6 +38,96 @@ Q_DECLARE_METATYPE(XMLModule::default_ *)
 Q_DECLARE_METATYPE(XMLModule::surfaceintegral *)
 Q_DECLARE_METATYPE(XMLModule::volumeintegral *)
 
+ModuleHighlighter::ModuleHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
+{
+    HighlightingRule rule;
+
+    quotationFormat.setForeground(Qt::darkGreen);
+    rule.format = quotationFormat;
+    rule.pattern = QRegExp("\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"");
+    highlightingRules.append(rule);
+    rule.pattern = QRegExp("'[^'\\\\]*(\\\\.[^'\\\\]*)*'");
+    highlightingRules.append(rule);
+
+    operatorFormat.setForeground(Qt::black);
+    rule.pattern = QRegExp("[\\\\|\\<|\\>|\\=|\\!|\\+|\\-|\\*|\\/|\\%]+");
+    rule.pattern.setMinimal(true);
+    rule.format = operatorFormat;
+    highlightingRules.append(rule);
+
+    numberFormat.setForeground(Qt::blue);
+    rule.format = numberFormat;
+    rule.pattern = QRegExp("\\b[+-]?[0-9]+[lL]?\\b");
+    highlightingRules.append(rule);
+    rule.pattern = QRegExp("\\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\\b");
+    highlightingRules.append(rule);
+    rule.pattern = QRegExp("\\b[+-]?[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b");
+    highlightingRules.append(rule);
+}
+
+void ModuleHighlighter::setKeywords(QStringList patterns, const QColor &color)
+{
+    keywordFormat.setForeground(color);
+
+    HighlightingRule rule;
+    foreach (const QString &pattern, patterns)
+    {
+        rule.pattern = QRegExp("\\b" + pattern + "\\b", Qt::CaseInsensitive);
+        rule.format = keywordFormat;
+        highlightingRules.append(rule);
+    }
+}
+
+void ModuleHighlighter::highlightBlock(const QString &text)
+{
+    foreach (const HighlightingRule &rule, highlightingRules)
+    {
+        QRegExp expression(rule.pattern);
+        int index = expression.indexIn(text);
+        while (index >= 0)
+        {
+            int length = expression.matchedLength();
+            setFormat(index, length, rule.format);
+            index = expression.indexIn(text, index + length);
+        }
+    }
+    setCurrentBlockState(0);
+
+    // parenthesis
+    highlightBlockParenthesis(text, '(', ')');
+}
+
+void ModuleHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
+{
+    TextBlockData *data = new TextBlockData();
+
+    int leftPos = text.indexOf(left);
+    while (leftPos != -1)
+    {
+        ParenthesisInfo *info = new ParenthesisInfo();
+        info->character = left;
+        info->position = leftPos;
+
+        data->insert(info);
+        leftPos = text.indexOf(left, leftPos + 1);
+    }
+
+    int rightPos = text.indexOf(right);
+    while (rightPos != -1)
+    {
+        ParenthesisInfo *info = new ParenthesisInfo();
+        info->character = right;
+        info->position = rightPos;
+
+        data->insert(info);
+        rightPos = text.indexOf(right, rightPos + 1);
+    }
+
+    setCurrentBlockUserData(data);
+}
+
+// ********************************************************************************************
+
 ModuleItem::ModuleItem(QWidget *parent)
     : QWidget(parent)
 {
@@ -49,8 +140,10 @@ ModuleItemLocalValue::ModuleItemLocalValue(const QString &type, XMLModule::expre
 
     if (m_type == "scalar")
     {
-        txtPlanar = new QLineEdit();
-        txtAxi = new QLineEdit();
+        txtPlanar = new ModuleDialogTextEdit(this, 1);
+        txtPlanar->setPostprocessorHighlighter(1, CoordinateType_Planar);
+        txtAxi = new ModuleDialogTextEdit(this, 1);
+        txtAxi->setPostprocessorHighlighter(1, CoordinateType_Axisymmetric);
 
         layout->addWidget(new QLabel(tr("Planar:")), 0, 0);
         layout->addWidget(txtPlanar, 0, 1);
@@ -62,10 +155,14 @@ ModuleItemLocalValue::ModuleItemLocalValue(const QString &type, XMLModule::expre
     }
     else
     {
-        txtPlanarX = new QLineEdit();
-        txtPlanarY = new QLineEdit();
-        txtAxiR = new QLineEdit();
-        txtAxiZ = new QLineEdit();
+        txtPlanarX = new ModuleDialogTextEdit(this, 1);
+        txtPlanarX->setPostprocessorHighlighter(1, CoordinateType_Planar);
+        txtPlanarY = new ModuleDialogTextEdit(this, 1);
+        txtPlanarY->setPostprocessorHighlighter(1, CoordinateType_Planar);
+        txtAxiR = new ModuleDialogTextEdit(this, 1);
+        txtAxiR->setPostprocessorHighlighter(1, CoordinateType_Axisymmetric);
+        txtAxiZ = new ModuleDialogTextEdit(this, 1);
+        txtAxiZ->setPostprocessorHighlighter(1, CoordinateType_Axisymmetric);
 
         layout->addWidget(new QLabel(tr("Planar X:")), 0, 0);
         layout->addWidget(txtPlanarX, 0, 1);
@@ -99,9 +196,107 @@ void ModuleItemLocalValue::save()
     }
 }
 
+ModuleDialogTextEdit::ModuleDialogTextEdit(QWidget *parent, int rows)
+    : PlainTextEditParenthesis(parent), m_rows(rows)
+{
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(matchParentheses()));
+
+    // set minimum size
+    setMinimumSize(sizeHint());
+}
+
+void ModuleDialogTextEdit::setWeakformHighlighter(int numberOfSolutions, CoordinateType coordinateType)
+{
+    ModuleHighlighter *highlighter = new ModuleHighlighter(this->document());
+
+    QStringList patternsCoordinates;
+    QStringList patterns;
+
+    if (coordinateType == CoordinateType_Planar)
+    {
+        patternsCoordinates.append("x");
+        patternsCoordinates.append("y");
+
+        patterns.append("uval");
+        patterns.append("udx");
+        patterns.append("udy");
+
+        patterns.append("upval");
+        patterns.append("updx");
+        patterns.append("updy");
+
+        patterns.append("vval");
+        patterns.append("vdx");
+        patterns.append("vdy");
+    }
+    else
+    {
+        patternsCoordinates.append("r");
+        patternsCoordinates.append("z");
+
+        patterns.append("uval");
+        patterns.append("udr");
+        patterns.append("udz");
+
+        patterns.append("upval");
+        patterns.append("updr");
+        patterns.append("updz");
+
+        patterns.append("vval");
+        patterns.append("vdr");
+        patterns.append("vdz");
+    }
+    // TODO: add more variables
+
+    highlighter->setKeywords(patterns, Qt::darkMagenta);
+    highlighter->setKeywords(patternsCoordinates, Qt::darkBlue);
+}
+
+void ModuleDialogTextEdit::setPostprocessorHighlighter(int numberOfSolutions, CoordinateType coordinateType)
+{
+    ModuleHighlighter *highlighter = new ModuleHighlighter(this->document());
+
+    QStringList patternsCoordinates;
+    QStringList patterns;
+
+    if (coordinateType == CoordinateType_Planar)
+    {
+        patternsCoordinates.append("x");
+        patternsCoordinates.append("y");
+    }
+    else
+    {
+        patternsCoordinates.append("r");
+        patternsCoordinates.append("z");
+    }
+
+    for (int i = 1; i < numberOfSolutions + 1; i++)
+    {
+        patterns.append(QString("value%1").arg(i));
+        if (coordinateType == CoordinateType_Planar)
+        {
+            patterns.append(QString("dx%1").arg(i));
+            patterns.append(QString("dy%1").arg(i));
+        }
+        else
+        {
+            patterns.append(QString("dr%1").arg(i));
+            patterns.append(QString("dz%1").arg(i));
+        }
+        patterns.append(QString("value%1").arg(i));
+    }
+
+    highlighter->setKeywords(patterns, Qt::darkMagenta);
+    highlighter->setKeywords(patternsCoordinates, Qt::darkBlue);
+}
+
 QSize ModuleDialogTextEdit::sizeHint() const
 {
-    return QSize(400, 50);
+    QFontMetrics fm(font());
+    int h = fm.height();
+    int w = fm.width(QLatin1Char('m'));
+
+    return QSize(30 * w, 8 + h* m_rows);
 }
 
 ModuleItemEmptyDialog::ModuleItemEmptyDialog(QWidget *parent)
@@ -353,17 +548,14 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(QWidget *parent)
     txtI = new QLineEdit();
     txtJ = new QLineEdit();
 
-    txtPlanarLinear = new ModuleDialogTextEdit();
-    txtPlanarLinear->setAcceptRichText(false);
-
-    txtPlanarNewton = new ModuleDialogTextEdit();
-    txtPlanarLinear->setAcceptRichText(false);
-
-    txtAxiLinear = new ModuleDialogTextEdit();
-    txtPlanarLinear->setAcceptRichText(false);
-
-    txtAxiNewton = new ModuleDialogTextEdit();
-    txtPlanarLinear->setAcceptRichText(false);
+    txtPlanarLinear = new ModuleDialogTextEdit(this, 3);
+    txtPlanarLinear->setWeakformHighlighter(1, CoordinateType_Planar);
+    txtPlanarNewton = new ModuleDialogTextEdit(this, 3);
+    txtPlanarNewton->setWeakformHighlighter(1, CoordinateType_Planar);
+    txtAxiLinear = new ModuleDialogTextEdit(this, 3);
+    txtAxiLinear->setWeakformHighlighter(1, CoordinateType_Axisymmetric);
+    txtAxiNewton = new ModuleDialogTextEdit(this, 3);
+    txtAxiNewton->setWeakformHighlighter(1, CoordinateType_Axisymmetric);
 
     QGridLayout *layoutGeneral = new QGridLayout(this);
     layoutGeneral->addWidget(new QLabel(tr("I:")), 0, 0);

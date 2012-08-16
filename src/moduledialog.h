@@ -21,6 +21,7 @@
 #define WEAKFORMDIALOG_H
 
 #include "util.h"
+#include "gui.h"
 #include "../../resources_source/classes/module_xml.h"
 
 struct SceneViewSettings;
@@ -30,6 +31,51 @@ class LineEditDouble;
 class ValueLineEdit;
 class HtmlValueEdit;
 
+class ModuleHighlighter : public QSyntaxHighlighter
+{
+    Q_OBJECT
+
+public:
+    ModuleHighlighter(QTextDocument *parent);
+
+    void setKeywords(QStringList patterns, const QColor &color);
+
+protected:
+    void highlightBlock(const QString &text);
+    void highlightBlockParenthesis(const QString &text, char left, char right);
+
+private:
+    struct HighlightingRule
+    {
+        QRegExp pattern;
+        QTextCharFormat format;
+    };
+
+    QVector<HighlightingRule> highlightingRules;
+
+    QTextCharFormat keywordFormat;
+    QTextCharFormat quotationFormat;
+    QTextCharFormat operatorFormat;
+    QTextCharFormat numberFormat;
+};
+
+
+class ModuleDialogTextEdit : public PlainTextEditParenthesis
+{
+public:
+    ModuleDialogTextEdit(QWidget *parent = NULL, int rows = 1);
+
+    void setWeakformHighlighter(int numberOfSolutions, CoordinateType coordinateType);
+    void setPostprocessorHighlighter(int numberOfSolutions, CoordinateType coordinateType);
+
+    QSize sizeHint() const;
+    inline void setText(const QString &text) { this->setPlainText(text); }
+    inline QString text() const { return this->toPlainText(); }
+
+private:
+    int m_rows;
+};
+
 class ModuleItem : public QWidget
 {
     Q_OBJECT
@@ -37,14 +83,14 @@ class ModuleItem : public QWidget
 public:
     ModuleItem(QWidget *parent);
 
-    QLineEdit *txtPlanar;
-    QLineEdit *txtPlanarX;
-    QLineEdit *txtPlanarY;
-    QLineEdit *txtPlanarZ;
-    QLineEdit *txtAxi;
-    QLineEdit *txtAxiR;
-    QLineEdit *txtAxiZ;
-    QLineEdit *txtAxiPhi;
+    ModuleDialogTextEdit *txtPlanar;
+    ModuleDialogTextEdit *txtPlanarX;
+    ModuleDialogTextEdit *txtPlanarY;
+    ModuleDialogTextEdit *txtPlanarZ;
+    ModuleDialogTextEdit *txtAxi;
+    ModuleDialogTextEdit *txtAxiR;
+    ModuleDialogTextEdit *txtAxiZ;
+    ModuleDialogTextEdit *txtAxiPhi;
 
     virtual void save() = 0;
 };
@@ -82,14 +128,6 @@ protected:
     QLineEdit *txtAxiNewton;
 };
 */
-
-class ModuleDialogTextEdit: public QTextEdit
-{
-public:
-    ModuleDialogTextEdit() {}
-
-    QSize sizeHint() const;
-};
 
 class ModuleItemEmptyDialog : public QDialog
 {
