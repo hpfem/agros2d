@@ -43,6 +43,8 @@ public:
 
     virtual ~WeakFormInterface() {}
 
+    virtual QString fieldId() = 0;
+
     virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                    const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                                    SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
@@ -52,7 +54,6 @@ public:
 
     virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
                                                                      const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;
-
 
     virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
                                                                      const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;

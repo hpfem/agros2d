@@ -104,17 +104,26 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                                             const QString &area, ParserFormExpression *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
-    // TODO: coupling forms
-
     // load plugin
-    QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
-                         .arg(datadir())
-                         .arg(problemId.materialSourceFieldId));
+    //    QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
+    //                         .arg(datadir())
+    //                         .arg(problemId.materialSourceFieldId));
 
-    QObject *plugin = loader.instance();
-    assert(plugin);
+    //    QObject *plugin = loader.instance();
+    //    assert(plugin);
+    //     WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
 
-    WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
+    // TODO: improve!!!
+    QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
+                analysisTypeToStringKey(problemId.analysisTypeSource) : analysisTypeToStringKey(problemId.analysisTypeSource) + "_" + analysisTypeToStringKey(problemId.analysisTypeTarget);
+
+    WeakFormInterface *weakform = NULL;
+    foreach (QObject *plugin, QPluginLoader::staticInstances())
+    {
+        weakform = qobject_cast<WeakFormInterface *>(plugin);
+        if (weakform->fieldId() == fieldId)
+            break;
+    }
 
     if (type == WeakForm_MatVol)
         return weakform->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
@@ -128,7 +137,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         assert(0);
 
     // unload plugin
-    loader.unload();
+    // loader.unload();
 }
 
 template <typename Scalar>
@@ -226,7 +235,6 @@ template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
                                                  SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
-
     ProblemID problemId;
 
     problemId.materialSourceFieldId = materialSource->fieldInfo()->fieldId();

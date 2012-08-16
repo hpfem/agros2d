@@ -48,6 +48,8 @@ public:
 
     virtual ~ElectrostaticInterface() {}
 
+    inline virtual QString fieldId() { return "electrostatic"; }
+
     virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                                   SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ );    

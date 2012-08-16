@@ -1,7 +1,7 @@
 QT += core gui network xml webkit xmlpatterns
 
 TEMPLATE = lib
-CONFIG += plugin
+CONFIG += plugin static
 
 INCLUDEPATH += ../../../hermes2d/include \
     ../../../hermes_common/include \
@@ -12,14 +12,18 @@ INCLUDEPATH += ../../../hermes2d/include \
     ../../interface
 
 LIBS += -lhermes2d
+LIBS += -llib
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    LIBS += -L../../../lib/build/lib
     LIBS += -L../../hermes2d/build/lib
 }
 
 win32-msvc2010 {
-    LIBS += -L../hermes2d/debug/build/lib
-    LIBS += -L../hermes2d/release/build/lib
+    LIBS += -L../../hermes2d/debug/build/lib
+    LIBS += -L../../hermes2d/release/build/lib
+    LIBS += -L../../lib/debug/build/lib
+    LIBS += -L../../lib/release/build/lib
 }
 
 HEADERS      += electrostatic_interface.h

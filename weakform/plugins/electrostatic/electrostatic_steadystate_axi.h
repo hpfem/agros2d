@@ -121,7 +121,7 @@ class CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_ : 
 public:
     CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
-    Scalar value(double x, double y) const;
+    inline Scalar value(double x, double y) const;
     void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;
 
     Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y) const

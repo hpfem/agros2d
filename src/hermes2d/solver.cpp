@@ -194,16 +194,6 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         problemId.coordinateType = fieldInfo->module()->coordinateType();
         problemId.linearityType = fieldInfo->linearityType();
 
-        // load plugin
-        QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
-                             .arg(datadir())
-                             .arg(fieldInfo->fieldId()));
-
-        QObject *plugin = loader.instance();
-        assert(plugin);
-
-        WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
-
         int index = 0;
         foreach(SceneEdge* edge, Util::scene()->edges->items())
         {
@@ -220,21 +210,9 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     // compiled form
                     if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                     {
-                        ExactSolutionScalar<double> *function = weakform->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
+                        ExactSolutionScalar<double> *function = field->fieldInfo()->weakform()->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
                         custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
-
-                        /*
-                        foreach (QObject *plugin, QPluginLoader::staticInstances())
-                        {
-                            if (problemId.analysisTypeSource == fieldInfo->fieldId())
-                            {
-                                WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
-                                ExactSolutionScalar<double> *function = weakform->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
-                                custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
-                            }
-                        }
-                        */
-                    }
+                     }
 
                     if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
                         Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled EssentialBoundaryCondition()."));
@@ -286,7 +264,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         }
 
         // unload plugin
-        loader.unload();
+        // loader.unload();
     }
 
 

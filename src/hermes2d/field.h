@@ -32,6 +32,7 @@ namespace Module
 class ProblemConfig;
 class CouplingInfo;
 class LocalForceValue;
+class WeakFormInterface;
 
 class FieldInfo : public QObject
 {
@@ -99,6 +100,8 @@ public:
 
     inline LocalForceValue *forceValue() { return m_forceValue; }
 
+    inline WeakFormInterface *weakform() { return m_weakform; }
+
     // module
     QString name();
     // description
@@ -119,6 +122,12 @@ private:
 
     /// field force calculation
     LocalForceValue *m_forceValue;
+
+    // weakforms
+    WeakFormsType m_weakFormsType;
+
+    // weakform factory
+    WeakFormInterface *m_weakform;
 
     // analysis type
     AnalysisType m_analysisType;
@@ -145,8 +154,6 @@ private:
     Value m_initialCondition;
     Value m_timeStepsSkip;
 
-    // weakforms
-    WeakFormsType m_weakFormsType;
 };
 
 ostream& operator<<(ostream& output, FieldInfo& id);

@@ -38,11 +38,7 @@ CustomMatrixFormVol__1_1_steadystate_linear_<Scalar>::CustomMatrixFormVol__1_1_s
 						)
     : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), m_materialSource(materialSource), m_materialTarget(materialTarget), m_sym(sym)
 {
-    assert(0);
-
  el_epsr = m_materialSource->value("electrostatic_permittivity");
-
- qDebug() << el_epsr.text();
  el_rho = m_materialSource->value("electrostatic_charge_density");
 	
 }
@@ -259,22 +255,15 @@ template <typename Scalar>
 CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_<Scalar>::CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), m_boundarySource(boundary)
 {
-
-    qDebug() << "m_boundarySource" << m_boundarySource;
  V = m_boundarySource->value("electrostatic_potential");
- qDebug() << V.text();
  sigma = m_boundarySource->value("electrostatic_surface_charge_density");
-
 }
-
-
 
 
 
 template <typename Scalar>
 Scalar CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_<Scalar>::value(double x, double y) const
 {
-    qDebug() << "value";
     double result = (V.number());
     return result;
 }
@@ -286,7 +275,6 @@ Scalar CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_<S
 template <typename Scalar>
 void CustomEssentialFormSurf_electrostatic_potential_1_0_steadystate_linear_<Scalar>::derivatives (double x, double y, Scalar& dx, Scalar& dy) const
 {
-
 }
 
 
