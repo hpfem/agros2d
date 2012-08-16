@@ -1138,18 +1138,24 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMeshesFromFile(const QString &file
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    // load the mesh file
-    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
+    // prepare mesh array
     Hermes::vector<Hermes::Hermes2D::Mesh*> meshes;
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesMap;
-    foreach(FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
     {
         Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
+
         meshes.push_back(mesh);
         meshesMap[fieldInfo] = mesh;
     }
 
+    // load mesh from file
+    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.load(fileName.toStdString().c_str(), meshes);
+
+    // refine mesh
+    foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+        refineMesh(fieldInfo, meshesMap[fieldInfo], true, true, true);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

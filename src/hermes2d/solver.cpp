@@ -142,9 +142,9 @@ QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
             {
                 int marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
 
-                assert(marker >= 0);
+                assert(marker >= 0 || marker == -999);
 
-                if (Util::scene()->edges->at(marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
+                if (marker >= 0 && Util::scene()->edges->at(marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
                     boundaries.insert(marker);
             }
         }
@@ -160,12 +160,11 @@ QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
 
             foreach(Mesh* delMesh, meshes)
                 delete delMesh;
+
             meshes.clear();
             return meshes;
         }
         boundaries.clear();
-
-        refineMesh(fieldInfo, mesh, true, true, true);
     }
 
     Util::problem()->setMeshesInitial(meshes);
