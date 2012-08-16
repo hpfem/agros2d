@@ -8,19 +8,23 @@
             <node x="-17.75" y="23.65" id="3"/>
             <node x="-14.5" y="23.5" id="4"/>
             <node x="-13.85" y="7.300000000000001" id="5"/>
+            <node x="-20.7" y="16.85" id="6"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="2" angle="0"/>
-            <edge end="3" id="1" start="0" angle="0"/>
+            <edge end="3" id="1" start="0" angle="90"/>
             <edge end="4" id="2" start="3" angle="0"/>
             <edge end="2" id="3" start="4" angle="0"/>
             <edge end="5" id="4" start="1" angle="0"/>
             <edge end="0" id="5" start="5" angle="0"/>
             <edge end="4" id="6" start="5" angle="0"/>
+            <edge end="6" id="7" start="3" angle="0"/>
+            <edge end="0" id="8" start="6" angle="0"/>
         </edges>
         <labels>
             <label x="-12.3851" y="15.5275" id="0" area="0"/>
             <label x="-16.8565" y="16.9737" id="1" area="0"/>
+            <label x="-16.5237" y="8.26895" id="2" area="0"/>
         </labels>
     </geometry>
     <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_quad" time_step="0.1" name="unnamed" time_total="60">
@@ -33,11 +37,12 @@
                 <boundaries>
                     <boundary electrostatic_potential="1" type="electrostatic_potential" id="1" name="U = 1 V">
                         <edge edge="0"/>
-                        <edge edge="1"/>
                         <edge edge="2"/>
                         <edge edge="3"/>
                         <edge edge="4"/>
                         <edge edge="5"/>
+                        <edge edge="7"/>
+                        <edge edge="8"/>
                     </boundary>
                     <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="U = 0 V"/>
                     <boundary type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0"/>
@@ -48,6 +53,7 @@
                     </material>
                     <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2">
                         <label label="1"/>
+                        <label label="2"/>
                     </material>
                 </materials>
             </field>

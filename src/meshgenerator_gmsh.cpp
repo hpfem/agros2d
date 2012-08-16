@@ -173,7 +173,7 @@ struct NodeEdgeData
     int node;
     int edge;
     bool reverse;
-    double angle;
+    double angle; // to order edges going from node (anti)clockwise
     bool visited;
 };
 
@@ -281,40 +281,6 @@ void Graph::print()
     cout << "\n";
 }
 
-int windingNumber(Point point, QList<NodeEdgeData> loop)
-{
-    QList<double> angles;
-    foreach(NodeEdgeData ned, loop)
-    {
-        Point nodePoint = Util::scene()->nodes->at(ned.node)->point();
-        double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
-        assert((angle <= M_PI) && (angle >= -M_PI));
-
-        // move to interval <0, 2*pi)
-        if(angle < 0)
-            angle += 2 * M_PI;
-        angles.append(angle);
-    }
-
-    double totalAngle = 0;
-    for(int i = 0; i < angles.size(); i++)
-    {
-        double angle = angles[(i+1) % angles.size()] - angles[i];
-        //cout << ""
-        if(angle < - M_PI)
-            angle = 2*M_PI + angle;
-        if(angle > M_PI)
-            angle = -2*M_PI + angle;
-        assert((angle <= M_PI) && (angle >= -M_PI));
-        totalAngle += angle;
-    }
-
-    double winding = totalAngle / (2*M_PI);
-    int intWinding = round(winding);
-    assert(winding - (double)intWinding < 0.00001);
-    return intWinding;
-}
-
 enum Intersection
 {
     Intersection_Uncertain,
@@ -346,7 +312,7 @@ bool isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
     }
 }
 
-Intersection intersects(Point point, double tangent, SceneEdge* edge)
+Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& intersection)
 {
     double x1 = edge->nodeStart()->point().x;
     double y1 = edge->nodeStart()->point().y;
@@ -394,6 +360,8 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge)
                     leftInter++;
                 else
                     rightInter++;
+                intersection.x = xI1;
+                intersection.y = yI1;
             }
             if(isInsideSeg(angleSegStart, angleSegEnd, angle2))
             {
@@ -401,6 +369,8 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge)
                     leftInter++;
                 else
                     rightInter++;
+                intersection.x = xI2;
+                intersection.y = yI2;
             }
 
             cout << "left " << leftInter << ", right " << rightInter << endl;
@@ -464,6 +434,13 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge)
     }
 }
 
+Intersection intersects(Point point, double tangent, SceneEdge* edge)
+{
+    Point intersection;
+    return intersects(point, tangent, edge, intersection);
+}
+
+
 int intersectionsParity(Point point, QList<NodeEdgeData> loop)
 {
     bool rejectTangent;
@@ -502,6 +479,67 @@ int intersectionsParity(Point point, QList<NodeEdgeData> loop)
     cout << "intersections left " << left << ", right " << right << endl;
     assert(left%2 == right%2);
     return left%2;
+}
+
+int windingNumber(Point point, QList<NodeEdgeData> loop)
+{
+    QList<double> angles;
+    foreach(NodeEdgeData ned, loop)
+    {
+        // use two segments instead of arc. Point on arc to be found as intersection of arc with line going through
+        // edge center and point
+        SceneEdge* edge = Util::scene()->edges->at(ned.edge);
+        if(edge->angle() != 0)
+        {
+            Point intersection;
+            Point edgePoint = edge->center();
+
+            // if impossible to define tangent, we use different point on the edge (not center)
+            if(fabs(edgePoint.x - point.x)/edge->length() < 0.00001)
+                edgePoint = (edge->center() + edge->nodeEnd()->point()) / 2;
+
+            double tangent = (edgePoint.y - point.y) / (edgePoint.x - point.x);
+            Intersection intersectionType = intersects(point, tangent, edge, intersection);
+            if((intersectionType == Intersection_Left) || (intersectionType == Intersection_Right))
+            {
+                double additionalAngle = atan2(intersection.y - point.y, intersection.x - point.x);
+                //todo:remove interval schift together with previous
+                if(additionalAngle < 0)
+                    additionalAngle += 2 * M_PI;
+                angles.append(additionalAngle);
+            }
+        }
+
+        // regular points
+        Point nodePoint = Util::scene()->nodes->at(ned.node)->point();
+        double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
+        assert((angle <= M_PI) && (angle >= -M_PI));
+
+        // move to interval <0, 2*pi)
+        //todo:remove interval schift together with folowing
+        if(angle < 0)
+            angle += 2 * M_PI;
+        angles.append(angle);
+
+    }
+
+    double totalAngle = 0;
+    for(int i = 0; i < angles.size(); i++)
+    {
+        double angle = angles[(i+1) % angles.size()] - angles[i];
+        //cout << ""
+        if(angle < - M_PI)
+            angle = 2*M_PI + angle;
+        if(angle > M_PI)
+            angle = -2*M_PI + angle;
+        assert((angle <= M_PI) && (angle >= -M_PI));
+        totalAngle += angle;
+    }
+
+    double winding = totalAngle / (2*M_PI);
+    int intWinding = round(winding);
+    assert(winding - (double)intWinding < 0.00001);
+    return intWinding;
 }
 
 bool areSameLoops(QList<NodeEdgeData> loop1, QList<NodeEdgeData> loop2)
