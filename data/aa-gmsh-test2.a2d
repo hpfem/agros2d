@@ -16,6 +16,10 @@
             <node x="-9.15" y="17.5" id="11"/>
             <node x="-21.2" y="23.45" id="12"/>
             <node x="-20.8" y="9.550000000000001" id="13"/>
+            <node x="-11.25" y="15.1" id="14"/>
+            <node x="-11.85" y="13.95" id="15"/>
+            <node x="-10.65" y="13.65" id="16"/>
+            <node x="-9.950000000000001" y="14.65" id="17"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="0" angle="0"/>
@@ -37,6 +41,14 @@
             <edge end="6" id="16" start="2" angle="0"/>
             <edge end="1" id="17" start="9" angle="0"/>
             <edge end="3" id="18" start="11" angle="0"/>
+            <edge end="8" id="19" start="0" angle="0"/>
+            <edge end="2" id="20" start="10" angle="0"/>
+            <edge end="5" id="21" start="1" angle="0"/>
+            <edge end="14" id="22" start="9" angle="0"/>
+            <edge end="15" id="23" start="14" angle="0"/>
+            <edge end="16" id="24" start="15" angle="0"/>
+            <edge end="17" id="25" start="16" angle="0"/>
+            <edge end="14" id="26" start="17" angle="0"/>
         </edges>
         <labels>
             <label x="-12.3851" y="15.5275" id="0" area="0"/>
@@ -45,9 +57,13 @@
             <label x="-19.1998" y="16.567" id="3" area="0"/>
             <label x="-11.2094" y="14.4347" id="4" area="0"/>
             <label x="-6.61693" y="14.4554" id="5" area="0"/>
+            <label x="-10.2578" y="10.6904" id="6" area="0"/>
+            <label x="-10.0303" y="18.3653" id="7" area="0"/>
+            <label x="-8.954560000000001" y="16.0483" id="8" area="0"/>
+            <label x="-9.69929" y="13.8141" id="9" area="0"/>
         </labels>
     </geometry>
-    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_triangle" time_step="0.1" name="unnamed" time_total="60">
+    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_quad" time_step="0.1" name="unnamed" time_total="60">
         <startup_script></startup_script>
         <description></description>
         <fields>
@@ -56,9 +72,13 @@
                 <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary electrostatic_potential="1" type="electrostatic_potential" id="1" name="U = 1 V">
+                        <edge edge="3"/>
+                        <edge edge="11"/>
                         <edge edge="12"/>
                         <edge edge="13"/>
                         <edge edge="14"/>
+                        <edge edge="18"/>
+                        <edge edge="19"/>
                     </boundary>
                     <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="U = 0 V">
                         <edge edge="5"/>
@@ -72,6 +92,9 @@
                         <label label="1"/>
                         <label label="2"/>
                         <label label="4"/>
+                        <label label="6"/>
+                        <label label="8"/>
+                        <label label="9"/>
                     </material>
                     <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2">
                         <label label="0"/>

@@ -16,38 +16,38 @@
 
 	<coupling:volume>
             <coupling:weakforms_volume>
-<!--            <coupling:weakform_volume couplingtype="hard"
+            <coupling:weakform_volume couplingtype="hard"
                     sourceanalysis="steadystate" targetanalysis="steadystate">
                     <coupling:matrix_form i="4" j="1"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * uval * dx4 * vval"
+                        planar_newton="0 * he_rho * he_cp * uval * dx4 * vval"
                         axi_newton="0"
                     />
                     <coupling:matrix_form i="4" j="2"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * uval * dx4 * vval"
+                        planar_newton="0 * he_rho * he_cp * uval * dx4 * vval"
                         axi_newton="0"
                     />
 
                     <coupling:vector_form i="4" j="1"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * upval * dx4 * vval"
+                        planar_newton="0 * he_rho * he_cp * upval * dx4 * vval"
                         axi_newton="0"
                     />
                     <coupling:vector_form i="4" j="2"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * upval * dx4 * vval"
+                        planar_newton="0 * he_rho * he_cp * upval * dx4 * vval"
                         axi_newton="0"
                     />
 
             </coupling:weakform_volume>
--->
 
-<!--            <coupling:weakform_volume couplingtype="hard"
+
+            <coupling:weakform_volume couplingtype="hard"
                     sourceanalysis="transient" targetanalysis="transient">
                     <coupling:matrix_form i="4" j="1"
                         planar_linear="0"
@@ -75,7 +75,7 @@
                         axi_newton="0"
                     />
 
-            </coupling:weakform_volume>-->
+<!--            </coupling:weakform_volume>
             <coupling:weakform_volume couplingtype="hard"
                     sourceanalysis="transient" targetanalysis="transient">
                     <coupling:matrix_form i="4" j="1"
@@ -103,6 +103,35 @@
                         planar_newton="0"
                         axi_newton="0"
                     />
+
+            </coupling:weakform_volume>
+            <coupling:weakform_volume couplingtype="hard"
+                    sourceanalysis="steadystate" targetanalysis="steadystate">
+                    <coupling:matrix_form i="4" j="1"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0"
+                    />
+                    <coupling:matrix_form i="4" j="2"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0"
+                    />
+
+                    <coupling:vector_form i="4" j="1"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0"
+                    />
+                    <coupling:vector_form i="4" j="2"
+                        planar_linear="0"
+                        axi_linear="0"
+                        planar_newton="0"
+                        axi_newton="0"
+                    />-->
 
             </coupling:weakform_volume>
 
