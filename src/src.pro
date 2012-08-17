@@ -24,6 +24,7 @@ linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) {
     system(cd ../ && ./agros2d.sh lang release)
     #system(cd ../ && ./agros2d.sh help)
 }
+
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
