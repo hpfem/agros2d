@@ -1065,7 +1065,7 @@ void PyGeometry::setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refin
     }
 }
 
-void PyGeometry::addLabel(double x, double y, double area, int order, map<char*, char*> materials)
+void PyGeometry::addLabel(double x, double y, double area, map<char *, int> refinements, map<char *, int> orders, map<char *, char *> materials)
 {
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area must be positive.").toStdString());
@@ -1106,6 +1106,30 @@ void PyGeometry::addLabel(double x, double y, double area, int order, map<char*,
     }
 
     Util::scene()->addLabel(sceneLabel);
+
+    // refinements
+    for (map<char*, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
+    {
+        if (!Util::problem()->hasField(QString((*i).first)))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+
+        if (((*i).second < 0) || ((*i).second > 10))
+            throw out_of_range(QObject::tr("Number of refinements '%1' is out of range (0 - 10).").arg((*i).second).toStdString());
+
+        Util::problem()->fieldInfo(QString((*i).first))->setLabelRefinement(sceneLabel, (*i).second);
+    }
+
+    // orders
+    for (map<char*, int>::iterator i = orders.begin(); i != orders.end(); ++i)
+    {
+        if (!Util::problem()->hasField(QString((*i).first)))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+
+        if (((*i).second < 1) || ((*i).second > 10))
+            throw out_of_range(QObject::tr("Polynomial order '%1' is out of range (1 - 10).").arg((*i).second).toStdString());
+
+        Util::problem()->fieldInfo(QString((*i).first))->setLabelPolynomialOrder(sceneLabel, (*i).second);
+    }
 }
 
 void PyGeometry::removeNode(int index)

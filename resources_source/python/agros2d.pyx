@@ -114,7 +114,7 @@ cdef extern from "../../src/pythonlabagros.h":
         void addNode(double, double) except +
         void addEdge(double, double, double, double, double, map[char*, int], map[char*, char*]) except +
         void addEdgeByNodes(int, int, double, map[char*, int], map[char*, char*]) except +
-        void addLabel(double, double, double, int, map[char*, char*]) except +
+        void addLabel(double, double, double, map[char*, int], map[char*, int], map[char*, char*]) except +
 
         void removeNode(int index) except +
         void removeEdge(int index) except +
@@ -741,8 +741,22 @@ cdef class __Geometry__:
     def remove_edge(self, int index):
         self.thisptr.removeEdge(index)
 
-    # add_label(x, y, area, order, materials)
-    def add_label(self, double x, double y, double area = 0.0, int order = 0, materials = {}):
+    # add_label(x, y, area, refinements, orders, materials)
+    def add_label(self, double x, double y, double area = 0.0, refinements = {}, orders = {}, materials = {}):
+
+        cdef map[char*, int] refinements_map
+        cdef pair[char*, int] refinement
+        for key in refinements:
+            refinement.first = key
+            refinement.second = refinements[key]
+            refinements_map.insert(refinement)
+
+        cdef map[char*, int] orders_map
+        cdef pair[char*, int] order
+        for key in orders:
+            order.first = key
+            order.second = orders[key]
+            orders_map.insert(order)
 
         cdef map[char*, char*] materials_map
         cdef pair[char*, char *] material
@@ -751,7 +765,7 @@ cdef class __Geometry__:
             material.second = materials[key]
             materials_map.insert(material)
 
-        self.thisptr.addLabel(x, y, area, order, materials_map)
+        self.thisptr.addLabel(x, y, area, refinements_map, orders_map, materials_map)
 
     # remove_label(index)
     def remove_label(self, int index):

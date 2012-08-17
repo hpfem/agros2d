@@ -257,7 +257,7 @@ class PyGeometry
         void addEdge(double x1, double y1, double x2, double y2, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
         void addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
         void setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements);
-        void addLabel(double x, double y, double area, int order, map<char*, char*> materials);
+        void addLabel(double x, double y, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
 
         // remove operations
         void removeNode(int index);
