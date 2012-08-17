@@ -53,7 +53,7 @@ class WeakFormGenerator:
         file_text = "TEMPLATE      = subdirs\n"
         for module in self.modules:
             file_text += "SUBDIRS       +=" + module.id + "\n"          
-        file_text += "HEADERS      += plugins.h"
+        # file_text += "HEADERS      += plugins.h"
         fwrite.write(file_text)        
         fwrite.close()
                                 
@@ -218,6 +218,7 @@ class WeakFormGenerator:
                 node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
                 string = node.childNodes[0].nodeValue      
                 string = string.replace('//conditions', weakform_string)            
+                string = string.replace("Module", module.id.capitalize() + "Interface")            
                 interface_cpp_str += string                
                 
             node = self.templates[key].getElementsByTagName('footer')[0]  
@@ -965,8 +966,8 @@ class Module:
         return file_strings , factory_codes
        
 if __name__ == '__main__':
-#    coupling_parser = WeakFormGenerator(['flow', 'acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat', 'flow-heat'])
+    coupling_parser = WeakFormGenerator(['flow', 'acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat', 'flow-heat'])
 #    coupling_parser = WeakFormGenerator(['flow', 'heat'], ['flow-heat'])
-    coupling_parser = WeakFormGenerator(['electrostatic', 'current'], [])
+#    coupling_parser = WeakFormGenerator(['electrostatic', 'current'], [])
     coupling_parser.process()    
 

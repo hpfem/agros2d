@@ -115,7 +115,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 
     // TODO: improve!!!
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
-                analysisTypeToStringKey(problemId.analysisTypeSource) : analysisTypeToStringKey(problemId.analysisTypeSource) + "_" + analysisTypeToStringKey(problemId.analysisTypeTarget);
+                problemId.sourceFieldId : problemId.sourceFieldId + "_" + problemId.targetFieldId;
 
     WeakFormInterface *weakform = NULL;
     foreach (QObject *plugin, QPluginLoader::staticInstances())
@@ -202,7 +202,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 {
     ProblemID problemId;
 
-    problemId.materialSourceFieldId = field->fieldInfo()->fieldId();
+    problemId.sourceFieldId = field->fieldInfo()->fieldId();
     problemId.analysisTypeSource = field->fieldInfo()->module()->analysisType();
     problemId.coordinateType = field->fieldInfo()->module()->coordinateType();
     problemId.linearityType = field->fieldInfo()->linearityType();
@@ -237,8 +237,8 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 {
     ProblemID problemId;
 
-    problemId.materialSourceFieldId = materialSource->fieldInfo()->fieldId();
-    problemId.materialTargetFieldId = materialTarget->fieldInfo()->fieldId();
+    problemId.sourceFieldId = materialSource->fieldInfo()->fieldId();
+    problemId.targetFieldId = materialTarget->fieldInfo()->fieldId();
     problemId.analysisTypeSource = materialSource->fieldInfo()->module()->analysisType();
     problemId.analysisTypeTarget = materialTarget->fieldInfo()->module()->analysisType();
     problemId.coordinateType = materialTarget->fieldInfo()->module()->coordinateType();

@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef WEAKFORM_FACTORY_H
-#define WEAKFORM_FACTORY_H
+#ifndef ModuleInterface_FACTORY_H
+#define ModuleInterface_FACTORY_H
 
 #include <QObject>
 

@@ -189,7 +189,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 
         ProblemID problemId;
 
-        problemId.materialSourceFieldId = fieldInfo->fieldId();
+        problemId.sourceFieldId = fieldInfo->fieldId();
         problemId.analysisTypeSource = fieldInfo->module()->analysisType();
         problemId.coordinateType = fieldInfo->module()->coordinateType();
         problemId.linearityType = fieldInfo->linearityType();

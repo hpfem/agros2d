@@ -27,14 +27,14 @@
 struct ProblemID
 {
     ProblemID() :
-        materialSourceFieldId(""), materialTargetFieldId(""),
+        sourceFieldId(""), targetFieldId(""),
         analysisTypeSource(AnalysisType_Undefined), analysisTypeTarget(AnalysisType_Undefined),
         coordinateType(CoordinateType_Undefined), linearityType(LinearityType_Undefined),
         couplingType(CouplingType_Undefined) {}
 
     // TODO: set/get methods
-    QString materialSourceFieldId;
-    QString materialTargetFieldId;
+    QString sourceFieldId;
+    QString targetFieldId;
     AnalysisType analysisTypeSource;
     AnalysisType analysisTypeTarget;
     CoordinateType coordinateType;
