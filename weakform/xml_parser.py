@@ -153,31 +153,28 @@ class WeakFormGenerator:
         self.write()        
         
         files = []
-        conditions = []            
+            
         template_module_pro_file = open(Config.templates_dir + "template_module_pro.tem") 
         template_module_pro_text = template_module_pro_file.read()
         template_module_pro_file.close()
         replace_string = "" 
         template_interface_h_file = open(Config.templates_dir + "template_interface_h.tem", "r")
         template_interface_h_text = template_interface_h_file.read()                
-        template_interface_h_file.close()
-                
-        for module in self.modules:                                          
+        template_interface_h_file.close()                
+        for module in self.modules:
+            conditions = []
+            replace_string = ""                                          
             module_dir = Config.plugin_dir + module.id +  "/"
             interface_file = open(module_dir + module.id + "_interface" + ".h", 'w')                    
             interface_replace = (module.id).capitalize()            
-            interface_text = template_interface_h_text.replace("Module", interface_replace)
+            interface_text = template_interface_h_text.replace("Module", interface_replace)            
             interface_text = interface_text.replace("module", module.id)
             interface_file.write(interface_text)            
             interface_file.close()
                   
             module_files, module_conditions = module.get_code(self.templates)                                                                            
-            conditions.extend(module_conditions)                                      
-            files.extend(module_files)                                
-            module_pro_file = open(module_dir + module.id + ".pro", 'w')                                                                        
-                          
-
-                                                            
+            conditions.extend(module_conditions)                                                                              
+            module_pro_file = open(module_dir + module.id + ".pro", 'w')                                                                                                        
             for filename in module_files.iterkeys():                                                                                             
                 suffix = filename.split('.')[-1] # file suffix                                
                 if suffix == "h":
@@ -187,23 +184,30 @@ class WeakFormGenerator:
                 output_file = open(module_dir + "/" + filename , 'w')
                 output_file.write(module_files[filename])            
                 output_file.close()
+            interfaces_str = "HEADERS      += " + module.id + "_interface.h" + "\n"
+            interfaces_str += "SOURCES     += " + module.id + "_interface.cpp"
             module_pro_text = template_module_pro_text.replace("//sources", replace_string)
+            module_pro_text = module_pro_text.replace("//interfaces", interfaces_str)
             module_pro_text = module_pro_text.replace("//target", module.id)
+                        
             module_pro_file.write(module_pro_text)
             module_pro_file.close() 
             
             # writes module_interface.cpp         
-            factory_code_str = ''    
+            interface_cpp_str = ""            
             key = 'template_interface_cpp.xml'        
             node = self.templates[key].getElementsByTagName('head')[0]  
-            factory_code_str += node.childNodes[0].nodeValue                  
-            for module_file in files:                                
-                if module_file[::-1][:2][::-1] == '.h':      #Todo: get suffix by more elegant way          
-                    node = self.templates[key].getElementsByTagName('includes')[0]  
-                    string = node.childNodes[0].nodeValue 
-                    string = string.replace("general_weakform.h", module_file)
-                    factory_code_str += string
+            interface_cpp_str += node.childNodes[0].nodeValue 
+            interface_cpp_str = interface_cpp_str.replace("module_interface.h", module.id + "_interface.h")                                          
+            node = self.templates[key].getElementsByTagName('includes')[0]
+            string = node.childNodes[0].nodeValue            
+            include_string = ""
+            for module_file in module_files:                                                            
+                if module_file[::-1][:2][::-1] == '.h':      #Todo: get suffix by more elegant way                                                                         
+                    include_string += string.replace("module.h", module_file)                    
+            interface_cpp_str += include_string
     
+            
             weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
                                'CustomMatrixFormSurf','CustomVectorFormSurf', 'CustomEssentialFormSurf']                    
             for weakform_temp in weakform_temps:                            
@@ -214,16 +218,15 @@ class WeakFormGenerator:
                 node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
                 string = node.childNodes[0].nodeValue      
                 string = string.replace('//conditions', weakform_string)            
-                factory_code_str += string
-                                
+                interface_cpp_str += string                
+                
             node = self.templates[key].getElementsByTagName('footer')[0]  
             footer_text = node.childNodes[0].nodeValue
             footer_text = footer_text.replace("module", module.id)
-            footer_text = footer_text.replace("Module", module.id.capitalize())
-            factory_code_str += footer_text                     
-            interface_file = open(module_dir + module.id + '_interface.cpp', 'w')        
-            print module.id
-            interface_file.write(factory_code_str)
+            footer_text = footer_text.replace("Module", module.id.capitalize() + "Interface")            
+            interface_cpp_str += footer_text                     
+            interface_file = open(module_dir + module.id + '_interface.cpp', 'w')                    
+            interface_file.write(interface_cpp_str)
             interface_file.close()
             
         
@@ -510,9 +513,9 @@ class WeakForm:
                 string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
         
                      
-        string = string.replace('"CoordinateType"', self.coordinate_type)
-        string = string.replace('"LinearityType"', self.solver_type)
-        string = string.replace('axi', 'axisymmetric')                        
+        string = string.replace('"CoordinateType"', self.coordinate_type.capitalize())
+        string = string.replace('"LinearityType"', "LinearityType_" + self.solver_type.capitalize())
+        string = string.replace('Axi', 'Axisymmetric')        
         if (self.type != 'essential'):
             string = string.replace('row_index', str(self.i))                        
             string = string.replace('column_index', str(self.j))
@@ -521,13 +524,13 @@ class WeakForm:
             string = string.replace('column_index', str(self.j))
 
         string = string.replace('boundary_type', self.boundary_type)        
-        namespace = self.id.replace('_','')
-        string = string.replace('namespace', namespace)
         function_name = self.get_class_name();        
         string = string.replace('FunctionName', function_name)
         factory_code = []
-        factory_code.append(self.get_temp_class_name())
-        factory_code.append(string)                                        
+        factory_code.append(self.get_temp_class_name())                                                        
+        namespace =  (self.id.split(".")[0]).replace("_", "")
+        string = string.replace("namespace", namespace)
+        factory_code.append(string)
         return factory_code
         
     def get_h_code(self, h_template):                                        
@@ -917,14 +920,9 @@ class Module:
                 
         part_modules = self.extract_modules()                                                
         factory_codes = []                   
-        
-        module_dir = Config.plugin_dir + self.id +  "/"                     
-        template_pro_file = open(Config.templates_dir + "template_module_pro.tem", "r")
-        template_pro_text = template_pro_file.read()
-        template_pro_file.close()
-        replace_string = ""
-                
-        for part_module in part_modules:                                                
+                        
+        for part_module in part_modules:
+            replace_string = ""                                                
             filename = (part_module.id)                                                                                    
             for key in templates.iterkeys():                           
                 file_string_name = filename + key
@@ -933,10 +931,10 @@ class Module:
                 file_strings[file_string_name] = string 
                 node = templates[key].getElementsByTagName('includes')[0]            
                 string = node.childNodes[0].nodeValue                                              
-                string = string.replace('general_weakform', filename)           
+                string = string.replace('general_weakform', filename)                       
                 file_strings[file_string_name] += string  
                 node = templates[key].getElementsByTagName('namespaces')[0]            
-                string = node.childNodes[0].nodeValue                                              
+                string = node.childNodes[0].nodeValue                                                            
                 string = string.replace('general_weakform', filename)
                 string = string.replace('_', '')
                 file_strings[file_string_name] += string
@@ -957,13 +955,13 @@ class Module:
                     replace_string += "SOURCES      += "  + filename + ".cpp\n"                        
                     for class_name in class_names:
                         string = node.childNodes[0].nodeValue                        
-                        string = string.replace('ClassName', class_name)                        
+                        string = string.replace('ClassName', class_name)                                                
                         file_strings[file_string_name] += string             
                
                 if key == '.h':       
                     string = node.childNodes[0].nodeValue                                     
                     file_strings[file_string_name] += string
-                    replace_string += "HEADERS      += "  + filename + ".h\n"                                                                                                              
+                    replace_string += "HEADERS      += "  + filename + ".h\n"                                                                                                                              
         return file_strings , factory_codes
        
 if __name__ == '__main__':

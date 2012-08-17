@@ -27,6 +27,7 @@ win32-msvc2010 {
     LIBS += -L../../lib/release/build/lib
 }
 
+//interfaces
 //sources
 
 TARGET        = $$qtLibraryTarget(//target)

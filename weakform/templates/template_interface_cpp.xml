@@ -20,11 +20,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 #ifndef INTERFACE_CPP
 #define INTERFACE_CPP
-</head>
-<includes>
+
 #include &lt;QtPlugin&gt;
 
-#include "electrostatic_interface.h"
+
 #include "weakform_interface.h"
 
 #include "util.h"
@@ -42,8 +41,12 @@
 #include "hermes2d/marker.h"
 #include "hermes2d/localpoint.h"
 #include "hermes2d/weakform_parser.h"
-#include "electrostatic_steadystate_planar.h"
-#include "electrostatic_steadystate_axi.h"</includes>
+#include "module_interface.h"
+</head>
+
+<includes>
+#include "module.h"
+</includes>
 
 <condition_exact_solution>
         if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
@@ -51,32 +54,32 @@
 </condition_exact_solution>
 
 <condition_matrix_vol>
-        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index)
         &amp;&amp;(j == column_index))
             return new namespace::FunctionName&lt;double&gt;(i-1 + offsetI, j-1+ offsetJ , area, sym, materialSource, materialTarget);
 </condition_matrix_vol> 
 
 <condition_vector_vol>
-        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index)
         &amp;&amp;(j == column_index))
             return new namespace::FunctionName&lt;double&gt;(i-1+ offsetI, j-1+ offsetJ, area, materialSource, materialTarget);
 </condition_vector_vol>
 
 <condition_matrix_surf>
-        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
-        (j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index)
+        &amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(i-1+ offsetI, j-1+ offsetJ, area, boundary);
 </condition_matrix_surf>
 
 <condition_vector_surf>
-        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
-        (j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index)
+        &amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(i-1+ offsetI, j-1+ offsetJ, area, boundary);
 </condition_vector_surf>
 
 <CustomEssentialFormSurf>
 template &lt;typename Scalar&gt;
-Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt; *factoryExactSolution(const std::string &amp;problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
+Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt; *factoryExactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
 {
     //conditions 
     return NULL;
@@ -85,7 +88,7 @@ Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt; *factoryExactSolution(const 
 
 <CustomMatrixFormVol>
 template &lt;typename Scalar&gt;
-Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const std::string &amp;problemId, int i, int j,
+Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const ProblemID problemId, int i, int j,
                                                               const std::string &amp;area, Hermes::Hermes2D::SymFlag sym,
                                                               SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ )
 {
@@ -96,7 +99,7 @@ Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt; *factoryMatrixFormVol(const std::s
 
 <CustomVectorFormVol>
 template &lt;typename Scalar&gt;
-Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const std::string &amp;problemId, int i, int j,
+Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const ProblemID problemId, int i, int j,
                                                               const std::string &amp;area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
 {
     //conditions 
@@ -106,7 +109,7 @@ Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt; *factoryVectorFormVol(const std::s
 
 <CustomMatrixFormSurf>
 template &lt;typename Scalar&gt;
-Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt; *factoryMatrixFormSurf(const std::string &amp;problemId, int i, int j,
+Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt; *factoryMatrixFormSurf(const ProblemID problemId, int i, int j,
                                                                 const std::string &amp;area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
     //conditions 
@@ -116,7 +119,7 @@ Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt; *factoryMatrixFormSurf(const std:
 
 <CustomVectorFormSurf>
 template &lt;typename Scalar&gt;
-Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt; *factoryVectorFormSurf(const std::string &amp;problemId, int i, int j,
+Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt; *factoryVectorFormSurf(const ProblemID problemId, int i, int j,
                                                                 const std::string &amp;area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
     //conditions 
