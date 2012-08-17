@@ -52,8 +52,10 @@ heat.add_material("Fe", {"heat_conductivity" : 60, "heat_volume_heat" : 0})
 
 geometry = agros2d.geometry
 
-#geometry.add_node(0, 0)
-#geometry.remove_node(0)
+geometry.add_node(0, 0)
+geometry.add_node(1, 0)
+geometry.add_edge_by_nodes(0, 1, 90, refinements = {"magnetic" : 5, "heat" : 1})
+geometry.remove_node(0)
 
 geometry.add_edge(0, -0.1, 0.05, -0.1, boundaries = {"heat" : "Convection"})
 geometry.add_edge(0.05, -0.1, 0.05, 0.1, refinements = {"magnetic" : 3, "heat" : 2}, boundaries = {"heat" : "Convection"})
