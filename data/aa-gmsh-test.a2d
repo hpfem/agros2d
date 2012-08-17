@@ -120,6 +120,17 @@
             <node x="21.45" y="-11.35" id="115"/>
             <node x="18.45" y="-9.600000000000001" id="116"/>
             <node x="18.7" y="-12.8" id="117"/>
+            <node x="21.2" y="-14.1" id="118"/>
+            <node x="23.55" y="-13.35" id="119"/>
+            <node x="24.35" y="-10.25" id="120"/>
+            <node x="22.3" y="-8.4" id="121"/>
+            <node x="21.35" y="-16.85" id="122"/>
+            <node x="25.25" y="-17.35" id="123"/>
+            <node x="26.45" y="-14.25" id="124"/>
+            <node x="23.65" y="-15.65" id="125"/>
+            <node x="18.35" y="-14.95" id="126"/>
+            <node x="19.1" y="-16.6" id="127"/>
+            <node x="19.85" y="-15" id="128"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="0" angle="0"/>
@@ -222,7 +233,7 @@
             <edge end="85" id="97" start="87" angle="0"/>
             <edge end="62" id="98" start="81" angle="0"/>
             <edge end="61" id="99" start="77" angle="0"/>
-            <edge end="90" id="100" start="88" angle="90"/>
+            <edge end="90" id="100" start="88" angle="0"/>
             <edge end="91" id="101" start="90" angle="0"/>
             <edge end="89" id="102" start="91" angle="90"/>
             <edge end="88" id="103" start="89" angle="90"/>
@@ -255,6 +266,31 @@
             <edge end="117" id="130" start="116" angle="0"/>
             <edge end="117" id="131" start="115" angle="0"/>
             <edge end="116" id="132" start="115" angle="0"/>
+            <edge end="121" id="133" start="116" angle="0"/>
+            <edge end="120" id="134" start="121" angle="0"/>
+            <edge end="119" id="135" start="120" angle="0"/>
+            <edge end="118" id="136" start="119" angle="0"/>
+            <edge end="117" id="137" start="118" angle="0"/>
+            <edge end="115" id="138" start="118" angle="0"/>
+            <edge end="120" id="139" start="115" angle="0"/>
+            <edge end="115" id="140" start="121" angle="0"/>
+            <edge end="119" id="141" start="115" angle="0"/>
+            <edge end="118" id="142" start="122" angle="0"/>
+            <edge end="125" id="143" start="118" angle="0"/>
+            <edge end="125" id="144" start="119" angle="0"/>
+            <edge end="124" id="145" start="119" angle="0"/>
+            <edge end="123" id="146" start="124" angle="0"/>
+            <edge end="125" id="147" start="123" angle="0"/>
+            <edge end="123" id="148" start="122" angle="0"/>
+            <edge end="122" id="149" start="125" angle="0"/>
+            <edge end="122" id="150" start="127" angle="0"/>
+            <edge end="126" id="151" start="127" angle="0"/>
+            <edge end="117" id="152" start="126" angle="0"/>
+            <edge end="128" id="153" start="126" angle="0"/>
+            <edge end="127" id="154" start="128" angle="0"/>
+            <edge end="118" id="155" start="128" angle="0"/>
+            <edge end="122" id="156" start="128" angle="0"/>
+            <edge end="117" id="157" start="128" angle="0"/>
         </edges>
         <labels>
             <label x="6.701642105263159" y="6.380631578947367" id="0" area="3"/>
@@ -287,6 +323,20 @@
             <label x="15.0812" y="3.22168" id="27" area="0"/>
             <label x="10.77004582087739" y="5.043275947445339" id="28" area="0"/>
             <label x="19.0314" y="-11.6075" id="29" area="0"/>
+            <label x="20.6674" y="-12.6185" id="30" area="0"/>
+            <label x="22.0517" y="-12.822" id="31" area="0"/>
+            <label x="22.6217" y="-11.682" id="32" area="0"/>
+            <label x="22.9881" y="-10.0942" id="33" area="0"/>
+            <label x="20.9117" y="-9.40207" id="34" area="0"/>
+            <label x="22.011" y="-15.4277" id="35" area="0"/>
+            <label x="22.9067" y="-14.3284" id="36" area="0"/>
+            <label x="24.1688" y="-15.0206" id="37" area="0"/>
+            <label x="23.6803" y="-16.6491" id="38" area="0"/>
+            <label x="19.6496" y="-14.0027" id="39" area="0"/>
+            <label x="20.7081" y="-15.102" id="40" area="0"/>
+            <label x="20.016" y="-16.1606" id="41" area="0"/>
+            <label x="18.876" y="-15.3056" id="42" area="0"/>
+            <label x="18.8353" y="-14.3691" id="43" area="0"/>
         </labels>
     </geometry>
     <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_quad" time_step="0.1" name="unnamed" time_total="60">
@@ -361,6 +411,12 @@
                         <edge edge="115"/>
                         <edge edge="116"/>
                         <edge edge="117"/>
+                        <edge edge="130"/>
+                        <edge edge="131"/>
+                        <edge edge="132"/>
+                        <edge edge="135"/>
+                        <edge edge="139"/>
+                        <edge edge="141"/>
                     </boundary>
                     <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="U = 0 V">
                         <edge edge="15"/>
@@ -413,6 +469,11 @@
                         <label label="23"/>
                         <label label="26"/>
                         <label label="27"/>
+                        <label label="30"/>
+                        <label label="35"/>
+                        <label label="37"/>
+                        <label label="40"/>
+                        <label label="41"/>
                     </material>
                     <material id="2" electrostatic_charge_density="0" name="Material 2" electrostatic_permittivity="2">
                         <label label="2"/>
@@ -422,7 +483,14 @@
                         <label label="14"/>
                         <label label="22"/>
                         <label label="25"/>
-                        <label label="29"/>
+                        <label label="31"/>
+                        <label label="33"/>
+                        <label label="34"/>
+                        <label label="36"/>
+                        <label label="38"/>
+                        <label label="39"/>
+                        <label label="42"/>
+                        <label label="43"/>
                     </material>
                 </materials>
             </field>

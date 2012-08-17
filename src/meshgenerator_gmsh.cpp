@@ -503,9 +503,6 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
             if((intersectionType == Intersection_Left) || (intersectionType == Intersection_Right))
             {
                 double additionalAngle = atan2(intersection.y - point.y, intersection.x - point.x);
-                //todo:remove interval schift together with previous
-                if(additionalAngle < 0)
-                    additionalAngle += 2 * M_PI;
                 angles.append(additionalAngle);
             }
         }
@@ -515,10 +512,6 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
         double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
         assert((angle <= M_PI) && (angle >= -M_PI));
 
-        // move to interval <0, 2*pi)
-        //todo:remove interval schift together with folowing
-        if(angle < 0)
-            angle += 2 * M_PI;
         angles.append(angle);
 
     }
@@ -554,7 +547,7 @@ bool areSameLoops(QList<NodeEdgeData> loop1, QList<NodeEdgeData> loop2)
         nodes2.push_back(ned.node);
 
     for(int i = 0; i < nodes1.size(); i++)
-        if(!nodes2.contains(nodes1.at(1)))
+        if(!nodes2.contains(nodes1.at(i)))
             return false;
 
     return true;
