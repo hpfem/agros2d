@@ -31,12 +31,14 @@ class LineEditDouble;
 class ValueLineEdit;
 class HtmlValueEdit;
 
+class ModuleDialog;
+
 class ModuleHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 
 public:
-    ModuleHighlighter(QTextDocument *parent);
+    ModuleHighlighter(QTextDocument *textDocument);
 
     void setKeywords(QStringList patterns, const QColor &color);
 
@@ -65,8 +67,17 @@ class ModuleDialogTextEdit : public PlainTextEditParenthesis
 public:
     ModuleDialogTextEdit(QWidget *parent = NULL, int rows = 1);
 
-    void setWeakformHighlighter(int numberOfSolutions, CoordinateType coordinateType);
-    void setPostprocessorHighlighter(int numberOfSolutions, CoordinateType coordinateType);
+    void addToolTip(const QString &label, QStringList patterns);
+
+    void setCoordinates(CoordinateType coordinateType);
+
+    void setWeakformFuntions(CoordinateType coordinateType);
+    void setWeakformVolumeHighlighter(XMLModule::volume::quantity_sequence sequence, int numberOfSolutions, CoordinateType coordinateType);
+    void setWeakformSurfaceHighlighter(XMLModule::surface::quantity_sequence sequence, int numberOfSolutions, CoordinateType coordinateType);
+
+    void setPostprocessorFuntions(int numberOfSolutions, CoordinateType coordinateType);
+    void setPostprocessorVolumeHighlighter(XMLModule::volume::quantity_sequence sequence, int numberOfSolutions, CoordinateType coordinateType);
+    void setPostprocessorSurfaceHighlighter(XMLModule::surface::quantity_sequence sequence, int numberOfSolutions, CoordinateType coordinateType);
 
     QSize sizeHint() const;
     inline void setText(const QString &text) { this->setPlainText(text); }
@@ -74,6 +85,7 @@ public:
 
 private:
     int m_rows;
+    ModuleHighlighter *m_highlighter;
 };
 
 class ModuleItem : public QWidget
@@ -100,12 +112,13 @@ class ModuleItemLocalValue : public ModuleItem
     Q_OBJECT
 
 public:
-    ModuleItemLocalValue(const QString &type, XMLModule::expression *expr, QWidget *parent);
+    ModuleItemLocalValue(ModuleDialog *moduleDialog, const QString &type,
+                         XMLModule::expression *expr, QWidget *parent);
 
     void save();
 
 private:
-    QString m_type;
+    QString m_type;    
     XMLModule::expression *m_expr;
 };
 
@@ -134,12 +147,14 @@ class ModuleItemEmptyDialog : public QDialog
     Q_OBJECT
 
 public:
-    ModuleItemEmptyDialog(QWidget *parent);
+    ModuleItemEmptyDialog(ModuleDialog *moduleDialog, QWidget *parent);
 
 protected slots:
     virtual void doAccept() = 0;
 
 protected:
+    ModuleDialog *m_module;
+
     QList<ModuleItem *> items;
 
     QVBoxLayout *layoutMain;
@@ -177,7 +192,7 @@ class ModuleItemConstantDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemConstantDialog(XMLModule::constant *constant, QWidget *parent);
+    ModuleItemConstantDialog(ModuleDialog *moduleDialog, XMLModule::constant *constant, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -194,7 +209,7 @@ class ModuleItemAnalysisDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemAnalysisDialog(XMLModule::analysis *analysis, QWidget *parent);
+    ModuleItemAnalysisDialog(ModuleDialog *moduleDialog, XMLModule::analysis *analysis, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -213,7 +228,7 @@ class ModuleItemQuantityGlobalDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemQuantityGlobalDialog(XMLModule::quantity *quantity, QWidget *parent);
+    ModuleItemQuantityGlobalDialog(ModuleDialog *moduleDialog, XMLModule::quantity *quantity, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -230,7 +245,7 @@ class ModuleItemQuantityAnalysisDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemQuantityAnalysisDialog(XMLModule::quantity *quantity, QWidget *parent);
+    ModuleItemQuantityAnalysisDialog(ModuleDialog *moduleDialog, XMLModule::quantity *quantity, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -248,7 +263,7 @@ class ModuleItemWeakformDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemWeakformDialog(QWidget *parent);
+    ModuleItemWeakformDialog(ModuleDialog *moduleDialog, QWidget *parent);
 
 protected:
     QLineEdit *txtI;
@@ -263,7 +278,8 @@ class ModuleItemMatrixFormDialog : public ModuleItemWeakformDialog
 {
     Q_OBJECT
 public:
-    ModuleItemMatrixFormDialog(XMLModule::matrix_form *form, QWidget *parent);
+    ModuleItemMatrixFormDialog(ModuleDialog *moduleDialog, QString type, int numberOfSolutions,
+                               XMLModule::matrix_form *form, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -276,7 +292,8 @@ class ModuleItemVectorFormDialog : public ModuleItemWeakformDialog
 {
     Q_OBJECT
 public:
-    ModuleItemVectorFormDialog(XMLModule::vector_form *form, QWidget *parent);
+    ModuleItemVectorFormDialog(ModuleDialog *moduleDialog, QString type, int numberOfSolutions,
+                               XMLModule::vector_form *form, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -289,7 +306,7 @@ class ModuleItemEssentialFormDialog : public ModuleItemWeakformDialog
 {
     Q_OBJECT
 public:
-    ModuleItemEssentialFormDialog(XMLModule::essential_form *form, QWidget *parent);
+    ModuleItemEssentialFormDialog(ModuleDialog *moduleDialog, int numberOfSolutions, XMLModule::essential_form *form, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -302,7 +319,7 @@ class ModulePreprocessorDialog : public ModuleItemDialog
 {
     Q_OBJECT
 public:
-    ModulePreprocessorDialog(XMLModule::quantity *quant, QWidget *parent);
+    ModulePreprocessorDialog(ModuleDialog *moduleDialog, XMLModule::quantity *quant, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -315,7 +332,7 @@ class ModuleItemLocalValueDialog : public ModuleItemDialog
 {
     Q_OBJECT
 public:
-    ModuleItemLocalValueDialog(XMLModule::localvariable *lv, QWidget *parent);
+    ModuleItemLocalValueDialog(ModuleDialog *moduleDialog, XMLModule::localvariable *lv, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -328,7 +345,9 @@ class ModuleItemViewDefaultsDialog : public ModuleItemEmptyDialog
 {
     Q_OBJECT
 public:
-    ModuleItemViewDefaultsDialog(XMLModule::default_ *def, XMLModule::localvariables *lv, QWidget *parent);
+    ModuleItemViewDefaultsDialog(ModuleDialog *moduleDialog,
+                                 XMLModule::default_ *def, XMLModule::localvariables *lv,
+                                 QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -345,7 +364,7 @@ class ModuleVolumeIntegralValueDialog : public ModuleItemDialog
 {
     Q_OBJECT
 public:
-    ModuleVolumeIntegralValueDialog(XMLModule::volumeintegral *vol, QWidget *parent);
+    ModuleVolumeIntegralValueDialog(ModuleDialog *moduleDialog, XMLModule::volumeintegral *vol, QWidget *parent);
 
 protected slots:
     void doAccept();
@@ -358,7 +377,7 @@ class ModuleSurfaceIntegralValueDialog : public ModuleItemDialog
 {
     Q_OBJECT
 public:
-    ModuleSurfaceIntegralValueDialog(XMLModule::surfaceintegral *sur, QWidget *parent);
+    ModuleSurfaceIntegralValueDialog(ModuleDialog *moduleDialog, XMLModule::surfaceintegral *sur, QWidget *parent);
 
 protected:
     void addExpressions(QLayout *layout) {}
@@ -375,6 +394,9 @@ class ModuleDialog : public QDialog
     Q_OBJECT
 public:
     ModuleDialog(const QString &fieldId, QWidget *parent);
+
+    inline XMLModule::module *module() { return m_module_xsd.get(); }
+    int numberOfSolutions(std::string analysisType);
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
@@ -397,7 +419,6 @@ private slots:
     void viewDefaultsItemDoubleClicked(QTreeWidgetItem *item, int role);
     void volumeIntegralDoubleClicked(QTreeWidgetItem *item, int role);
     void surfaceIntegralDoubleClicked(QTreeWidgetItem *item, int role);
-
 
 private:
     QString m_fieldId;
