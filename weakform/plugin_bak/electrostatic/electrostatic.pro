@@ -1,3 +1,4 @@
+
 QT += core gui network xml webkit xmlpatterns
 
 TEMPLATE = lib

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<weakform_factory_h>
+<template_interface_h>
 <head>// This file is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
@@ -18,9 +18,14 @@
 // hp-FEM group (http://hpfem.org/)
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+#ifndef INTERFACE_CPP
+#define INTERFACE_CPP
+</head>
+<includes>
+#include &lt;QtPlugin&gt;
 
-#ifndef WEAKFORM_FACTORY_H
-#define WEAKFORM_FACTORY_H
+#include "electrostatic_interface.h"
+#include "weakform_interface.h"
 
 #include "util.h"
 #include "hermes2d.h"
@@ -37,33 +42,35 @@
 #include "hermes2d/marker.h"
 #include "hermes2d/localpoint.h"
 #include "hermes2d/weakform_parser.h"
-</head>
-
-<includes>#include "general_weakform.h"
-</includes>
+#include "electrostatic_steadystate_planar.h"
+#include "electrostatic_steadystate_axi.h"</includes>
 
 <condition_exact_solution>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
             return new namespace::FunctionName&lt;double&gt;(mesh, boundary);
 </condition_exact_solution>
 
 <condition_matrix_vol>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
+        &amp;&amp;(j == column_index))
             return new namespace::FunctionName&lt;double&gt;(i-1 + offsetI, j-1+ offsetJ , area, sym, materialSource, materialTarget);
 </condition_matrix_vol> 
 
 <condition_vector_vol>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
+        &amp;&amp;(j == column_index))
             return new namespace::FunctionName&lt;double&gt;(i-1+ offsetI, j-1+ offsetJ, area, materialSource, materialTarget);
 </condition_vector_vol>
 
 <condition_matrix_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
+        (j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(i-1+ offsetI, j-1+ offsetJ, area, boundary);
 </condition_matrix_surf>
 
 <condition_vector_surf>
-        if ((problemId == "class_name")&amp;&amp;(i == row_index)&amp;&amp;(j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
+        if ((problemId.coordinateType == CoordinateType_"CoordinateType")&amp;&amp; (problemId.linearityType == "LinearityType") &amp;&amp;(i == row_index))
+        (j == column_index)&amp;&amp;(boundary->getType() == "boundary_type"))
             return new namespace::FunctionName&lt;double&gt;(i-1+ offsetI, j-1+ offsetJ, area, boundary);
 </condition_vector_surf>
 
@@ -116,7 +123,9 @@ Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt; *factoryVectorFormSurf(const std:
     return NULL;
 }
 </CustomVectorFormSurf>
+
 <footer>
+Q_EXPORT_PLUGIN2(module, Module)
 #endif
 </footer>
-</weakform_factory_h>
+</template_interface_h>

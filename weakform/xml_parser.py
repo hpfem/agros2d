@@ -6,21 +6,24 @@ from xml.dom import minidom
 import os
 from expression_parser import NumericStringParser
 
+  
 class Config:     
     modules_dir = '../resources/modules/'
     couplings_dir = '../resources/couplings/'
     templates_dir = './templates/'
-    weakform_dir = './src/'        
-    factory_dir = './src/' 
+    plugin_name = 'plugins'
+    plugin_dir = './' + plugin_name +'/'            
     doc_dir = '../resources_source/doc/source/modules/'
-   
     
-    templates = ['template_weakform_cpp.xml', 'template_weakform_h.xml', 'template_weakform_factory_h.xml']
+    main_project_file = plugin_name + ".pro"    
+    main_project_string = "TEMPLATE = subdirs"  + "\n" +  "SUBDIRS = plugins" 
+    
+    templates = ['template_weakform_cpp.xml', 'template_weakform_h.xml', 'template_interface_cpp.xml']
     project_file = 'weakform.pri'
   
     
-class XmlParser:    
-    def __init__(self, modules, couplings):               
+class WeakFormGenerator:                
+    def __init__(self, modules, couplings):                               
         self.module_files = [] 
         self.coupling_files = []
         for module_name in modules:
@@ -45,6 +48,48 @@ class XmlParser:
                 #print 'I/O error({0}): {1} "{2}".'.format(errno, strerror, 														  template_file)
                 raise
                                   
+    def write_main_project_file(self):                
+        fwrite = open(Config.plugin_dir + Config.main_project_file, "w") 
+        file_text = "TEMPLATE      = subdirs\n"
+        for module in self.modules:
+            file_text += "SUBDIRS       +=" + module.id + "\n"          
+        file_text += "HEADERS      += plugins.h"
+        fwrite.write(file_text)        
+        fwrite.close()
+                                
+    def write_main_project_pri_file(self):
+        fwrite = open(Config.plugin_dir + Config.plugin_name + ".pri", "w")        
+        file_text = ""
+        for module in self.modules:
+            file_text += "LIBS += -l" + module.id + "\n"         
+        fwrite.write(file_text)
+        fwrite.close()
+        
+    def write_main_project_header_file(self):
+        template_file = open (Config.templates_dir +  "template_plugins_h.tem", 'r')
+        template_text = template_file.read()
+        template_file.close()
+        replace_string = ""
+        for module in self.modules:
+            replace_string += "Q_IMPORT_PLUGIN(" + module.id + ") \n"
+        template_text = template_text.replace("//import", replace_string)            
+        fwrite = open(Config.plugin_dir + Config.plugin_name + ".h", "w") 
+        fwrite.write(template_text)
+        fwrite.close()
+ 
+    
+    def write(self):
+        # create directory
+        from os import mkdir                             
+        self.write_main_project_file()
+        self.write_main_project_pri_file()
+        self.write_main_project_header_file() 
+               
+        for module in self.modules:
+            if not((module.id) in os.listdir(Config.plugin_dir)):    
+                mkdir(Config.plugin_dir + module.id)
+                              
+    
     def process(self):                                      
         for module_file in self.module_files:        
             self.parse_xml_file(module_file)            
@@ -72,8 +117,7 @@ class XmlParser:
                                     if module_name == coupled_module_names[0]:
                                         tmp_quantity.field  = 'Target'
                                     coupled_quantities_planar.append(tmp_quantity)                                    
-                                    quantity_ids_planar.append(quantity.id)
-                                    #print quantity.id                                
+                                    quantity_ids_planar.append(quantity.id)                                                                    
                                                                                                     
                             for quantity in volume.quantities_axi:                                
                                 if not(quantity.id in quantity_ids_axi):
@@ -84,12 +128,7 @@ class XmlParser:
                                     coupled_quantities_axi.append(tmp_quantity)
                                     quantity_ids_axi.append(quantity.id)
                                     
-                    
 
-            #for quantity in coupled_quantities_planar:
-                # print quantity.id
-            # print "----------------------------------"                
-            
             self.parse_xml_coupling(coupling_file)
             for module in self.modules:
                 if module.id == (file_name).replace('-','_'):
@@ -100,56 +139,93 @@ class XmlParser:
             
         # create src directory
         try:
-            os.mkdir(Config.weakform_dir)
+            os.mkdir(Config.plugin_dir)
         except:
             pass
 
         # remove pri file
         try:
-            os.remove(Config.weakform_dir + Config.project_file)
+            os.remove(Config.plugin_dir + Config.project_file)
         except:
             pass
         
+        # writes structure
+        self.write()        
+        
         files = []
-        conditions = []
-        
-        for module in self.modules:                                                
-            module_files, module_conditions = module.get_code(self.templates)             
-            module.write_code(Config.weakform_dir, self.templates)                                       
-            conditions.extend(module_conditions)                                      
-            files.extend(module_files)
+        conditions = []            
+        template_module_pro_file = open(Config.templates_dir + "template_module_pro.tem") 
+        template_module_pro_text = template_module_pro_file.read()
+        template_module_pro_file.close()
+        replace_string = "" 
+        template_interface_h_file = open(Config.templates_dir + "template_interface_h.tem", "r")
+        template_interface_h_text = template_interface_h_file.read()                
+        template_interface_h_file.close()
                 
-        # writes weakform_factory.h         
-        factory_code_str = ''    
-        key = 'template_weakform_factory_h.xml'        
-        node = self.templates[key].getElementsByTagName('head')[0]  
-        factory_code_str += node.childNodes[0].nodeValue      
-       
-        for module_file in files:                                
-            if module_file[::-1][:2][::-1] == '.h':                
-                node = self.templates[key].getElementsByTagName('includes')[0]  
-                string = node.childNodes[0].nodeValue 
-                string = string.replace("general_weakform.h", module_file)
-                factory_code_str += string
+        for module in self.modules:                                          
+            module_dir = Config.plugin_dir + module.id +  "/"
+            interface_file = open(module_dir + module.id + "_interface" + ".h", 'w')                    
+            interface_replace = (module.id).capitalize()            
+            interface_text = template_interface_h_text.replace("Module", interface_replace)
+            interface_text = interface_text.replace("module", module.id)
+            interface_file.write(interface_text)            
+            interface_file.close()
+                  
+            module_files, module_conditions = module.get_code(self.templates)                                                                            
+            conditions.extend(module_conditions)                                      
+            files.extend(module_files)                                
+            module_pro_file = open(module_dir + module.id + ".pro", 'w')                                                                        
+                          
 
-        weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
-                           'CustomMatrixFormSurf','CustomVectorFormSurf', 'CustomEssentialFormSurf']                    
-        for weakform_temp in weakform_temps:                            
-            weakform_string = ''            
-            for condition in conditions:                                  
-                if condition[0] == weakform_temp:                    
-                    weakform_string += condition[1]                                    
-            node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
-            string = node.childNodes[0].nodeValue      
-            string = string.replace('//conditions', weakform_string)            
-            factory_code_str += string
-                            
-        node = self.templates[key].getElementsByTagName('footer')[0]  
-        factory_code_str += node.childNodes[0].nodeValue         
-        factory_file = open(Config.factory_dir+'weakform_factory.h', 'w')        
-        factory_file.write(factory_code_str)
-        factory_file.close()
-        
+                                                            
+            for filename in module_files.iterkeys():                                                                                             
+                suffix = filename.split('.')[-1] # file suffix                                
+                if suffix == "h":
+                    replace_string += "HEADERS      += " + filename + "\n"
+                if suffix == "cpp":    
+                    replace_string += "SOURCES      += " + filename + "\n"
+                output_file = open(module_dir + "/" + filename , 'w')
+                output_file.write(module_files[filename])            
+                output_file.close()
+            module_pro_text = template_module_pro_text.replace("//sources", replace_string)
+            module_pro_text = module_pro_text.replace("//target", module.id)
+            module_pro_file.write(module_pro_text)
+            module_pro_file.close() 
+            
+            # writes module_interface.cpp         
+            factory_code_str = ''    
+            key = 'template_interface_cpp.xml'        
+            node = self.templates[key].getElementsByTagName('head')[0]  
+            factory_code_str += node.childNodes[0].nodeValue                  
+            for module_file in files:                                
+                if module_file[::-1][:2][::-1] == '.h':      #Todo: get suffix by more elegant way          
+                    node = self.templates[key].getElementsByTagName('includes')[0]  
+                    string = node.childNodes[0].nodeValue 
+                    string = string.replace("general_weakform.h", module_file)
+                    factory_code_str += string
+    
+            weakform_temps = ['CustomMatrixFormVol','CustomVectorFormVol',
+                               'CustomMatrixFormSurf','CustomVectorFormSurf', 'CustomEssentialFormSurf']                    
+            for weakform_temp in weakform_temps:                            
+                weakform_string = ''            
+                for condition in conditions:                                  
+                    if condition[0] == weakform_temp:                    
+                        weakform_string += condition[1]                                    
+                node = self.templates[key].getElementsByTagName(weakform_temp)[0]                          
+                string = node.childNodes[0].nodeValue      
+                string = string.replace('//conditions', weakform_string)            
+                factory_code_str += string
+                                
+            node = self.templates[key].getElementsByTagName('footer')[0]  
+            footer_text = node.childNodes[0].nodeValue
+            footer_text = footer_text.replace("module", module.id)
+            footer_text = footer_text.replace("Module", module.id.capitalize())
+            factory_code_str += footer_text                     
+            interface_file = open(module_dir + module.id + '_interface.cpp', 'w')        
+            print module.id
+            interface_file.write(factory_code_str)
+            interface_file.close()
+            
         
     def gen_doc(self):                   
         index_string = '.. toctree::\n    :maxdepth: 2\n\n'
@@ -196,7 +272,7 @@ class XmlParser:
         # modules        
         for ds_weakform in ds_module.volume.weakforms_volume.weakform_volume:
             volume = Volume()                 
-            volume.name =  ds_weakform.analysistype
+            volume.name =  ds_weakform.analysistype            
             for ds_quantity in ds_weakform.quantity:
                 for module_quantity in quantities:
                     for coordinate_type in coordinate_types:
@@ -251,7 +327,7 @@ class XmlParser:
                         weakform.solver_type = solver_type
                         weakform.coordinate_type = coordinate_type                                                     
                         weakform.i = ds_matrix.i
-                        weakform.j = ds_matrix.j    
+                        weakform.j = ds_matrix.j                            
                         volume.weakforms.append(weakform)                
                 i = i + 1
             module.volumes.append(volume)
@@ -398,10 +474,12 @@ class WeakForm:
         self.field = ''
         self.i = 0
         self.j = 0
-        self.expression = ''
-        self.name = ''
+        self.expression = ''        
         self.quantities = []
         
+    def get_folder_name(self):        
+        return self.field
+    
     def get_temp_class_name(self):
         class_name =  'Custom' + self.type.capitalize() + 'Form'  \
             + self.integral_type.capitalize()                                        
@@ -432,7 +510,8 @@ class WeakForm:
                 string = factory_template.getElementsByTagName('condition_matrix_surf')[0].childNodes[0].nodeValue
         
                      
-        string = string.replace('class_name', self.id + '_' + self.solver_type + '_' + self.coupling_type)
+        string = string.replace('"CoordinateType"', self.coordinate_type)
+        string = string.replace('"LinearityType"', self.solver_type)
         string = string.replace('axi', 'axisymmetric')                        
         if (self.type != 'essential'):
             string = string.replace('row_index', str(self.i))                        
@@ -448,7 +527,7 @@ class WeakForm:
         string = string.replace('FunctionName', function_name)
         factory_code = []
         factory_code.append(self.get_temp_class_name())
-        factory_code.append(string)                        
+        factory_code.append(string)                                        
         return factory_code
         
     def get_h_code(self, h_template):                                        
@@ -655,8 +734,7 @@ class WeakForm:
 
 class Volume:
     def __init__(self):
-        self.id = ''        
-        self.name = ''
+        self.id = ''                
         self.type = ''                
         self.weakforms = []        
         self.quantities_planar = []
@@ -664,8 +742,7 @@ class Volume:
         
 class Surface:
     def __init__(self):
-        self.id = ''
-        self.name = ''
+        self.id = ''        
         self.type = ''        
         self.weakforms = []
         self.quantities = []
@@ -673,8 +750,7 @@ class Surface:
 class Quantity:
     def __init__(self):
         self.id = ''
-        self.type = ''        
-        self.name = ''
+        self.type = ''                
         self.short_name = ''
         self.units = ''  
         self.expression = None
@@ -690,8 +766,7 @@ class Constant:
 
 class PartModule:
     def __init__(self):        
-        self.id = ''
-        self.name = ''
+        self.id = ''        
         self.description = ''        
         self.analysis = ''
         self.coordinate_type = '' 
@@ -702,8 +777,7 @@ class PartModule:
 #        
 class Module:
     def __init__(self):
-        self.id = ''
-        self.name = ''
+        self.id = ''        
         self.description = ''        
         self.target = ''
         self.source = ''
@@ -714,8 +788,7 @@ class Module:
         
         
     def info(self):        
-        print 'ID: ', self.id
-        print 'Name: ', self.name
+        print 'ID: ', self.id        
         print 'Description: ', self.description
         i = 0                                
         print  '\nConstants:'        
@@ -752,7 +825,7 @@ class Module:
         return under_string                           
     
     def gen_doc(self):                
-        doc_string = self.underline(self.name, '*')
+        doc_string = self.underline(self.id, '*')
         doc_string += self.underline('Description ', '=')\
                       + self.description + '\n\n'
         i = 0                                
@@ -802,9 +875,9 @@ class Module:
                 else:
                     module_types.append(part_module_id)                    
                     part_module = PartModule()                    
-                    part_module.name = self.name
+                    part_module.name = self.id
                     part_module.id = self.id + '_' + volume.name + '_' \
-                    + weakform.coordinate_type                                        
+                    + weakform.coordinate_type                                                          
                     part_module.description = self.description
                     part_module.coordinate_type = weakform.coordinate_type
                     part_module.constants = self.constants
@@ -836,17 +909,23 @@ class Module:
         
                                                                                           
     
-    def get_code(self, param_templates):
+    def get_code(self, param_templates):        
         templates = dict() 
         templates['.cpp'] = param_templates['template_weakform_cpp.xml']
         templates['.h'] = param_templates['template_weakform_h.xml']
-        file_strings = dict()
-       
+        file_strings = dict()     
                 
         part_modules = self.extract_modules()                                                
         factory_codes = []                   
+        
+        module_dir = Config.plugin_dir + self.id +  "/"                     
+        template_pro_file = open(Config.templates_dir + "template_module_pro.tem", "r")
+        template_pro_text = template_pro_file.read()
+        template_pro_file.close()
+        replace_string = ""
+                
         for part_module in part_modules:                                                
-            filename = (part_module.id)                                                            
+            filename = (part_module.id)                                                                                    
             for key in templates.iterkeys():                           
                 file_string_name = filename + key
                 node = templates[key].getElementsByTagName('head')[0]            
@@ -868,13 +947,14 @@ class Module:
                     if key == '.cpp':
                         class_names.add(weakform.get_class_name())
                         file_strings[file_string_name] += weakform.get_cpp_code(templates[key])            
-                        factory_code =  weakform.get_factory_code(param_templates['template_weakform_factory_h.xml'])
+                        factory_code =  weakform.get_factory_code(param_templates['template_interface_cpp.xml'])
                         factory_codes.append(factory_code)
                     if key == '.h':                        
                         file_strings[file_string_name] += weakform.get_h_code(templates[key])                                
 
                 node = templates[key].getElementsByTagName('footer')[0]                            
-                if key == '.cpp':                        
+                if key == '.cpp':
+                    replace_string += "SOURCES      += "  + filename + ".cpp\n"                        
                     for class_name in class_names:
                         string = node.childNodes[0].nodeValue                        
                         string = string.replace('ClassName', class_name)                        
@@ -882,31 +962,13 @@ class Module:
                
                 if key == '.h':       
                     string = node.childNodes[0].nodeValue                                     
-                    file_strings[file_string_name] += string                                                                  
-
+                    file_strings[file_string_name] += string
+                    replace_string += "HEADERS      += "  + filename + ".h\n"                                                                                                              
         return file_strings , factory_codes
        
-                                       
-    def write_code(self, weakform_dir, param_templates):                                                     
-            weakform_pri_file = open(weakform_dir + 'weakform.pri', 'a')            
-            files, conditions = self.get_code(param_templates)            
-
-            for filename in files.iterkeys():                                            
-                output_file = open(weakform_dir + filename , 'w')
-                output_file.write(files[filename])            
-                output_file.close()                            
-               
-                # append to weakform.pri                
-                suffix = filename.split('.')[-1]
-                if suffix == 'cpp':                
-                    weakform_pri_file.write('SOURCES += ' + Config.weakform_dir + filename + '\n')
-                if suffix == 'h':            
-                    weakform_pri_file.write('HEADERS += ' + Config.weakform_dir + filename + '\n')
-                    
-            weakform_pri_file.write('HEADERS += ' + Config.weakform_dir + 'weakform_factory.h' + '\n')
-            weakform_pri_file.close()
-
 if __name__ == '__main__':
-    coupling_parser = XmlParser(['flow', 'acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat', 'flow-heat'])
-    # coupling_parser = XmlParser(['flow', 'heat'], ['flow-heat'])
-    coupling_parser.process()
+#    coupling_parser = WeakFormGenerator(['flow', 'acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat', 'flow-heat'])
+#    coupling_parser = WeakFormGenerator(['flow', 'heat'], ['flow-heat'])
+    coupling_parser = WeakFormGenerator(['electrostatic', 'current'], [])
+    coupling_parser.process()    
+
