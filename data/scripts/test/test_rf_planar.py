@@ -16,7 +16,6 @@ rf.analysis_type = "harmonic"
 rf.number_of_refinements = 1
 rf.polynomial_order = 2
 rf.linearity_type = "linear"
-rf.weak_forms = "compiled"
 
 # boundaries
 rf.add_boundary("Perfect electric conductor", "rf_te_electric_field")

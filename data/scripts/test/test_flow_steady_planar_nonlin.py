@@ -16,7 +16,6 @@ flow.linearity_type = "newton"
 flow.nonlinear_tolerance = 0.001
 flow.nonlinear_steps = 10
 flow.adaptivity_type = "disabled"
-flow.weak_forms = "compiled"
 
 flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : 1, "flow_velocity_y" : 0})
 flow.add_boundary("Wall", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : 0})

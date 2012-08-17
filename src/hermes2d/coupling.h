@@ -108,9 +108,6 @@ public:
 
     bool isRelated(FieldInfo* fieldInfo) { return((fieldInfo == sourceField()) || (fieldInfo == targetField())); }
 
-    /// weakforms
-    WeakFormsType weakFormsType;
-
     /// reloads the Coupling ("module"). Should be called when couplingType or AnalysisType of either fields changes
     void reload();
 

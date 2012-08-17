@@ -119,43 +119,6 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const QString &pr
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *factoryParserForm(WeakFormKind type, int i, int j, const QString &area,
-                                                  Hermes::Hermes2D::SymFlag sym, string expression, FieldInfo *fieldInfo,
-                                                  CouplingInfo *couplingInfo,
-                                                  Marker* marker, Material* markerSecond)
-{
-    if (type == WeakForm_MatVol)
-        return new CustomParserMatrixFormVol<Scalar>(i, j,
-                                                     area.toStdString(),
-                                                     sym,
-                                                     expression,
-                                                     fieldInfo,
-                                                     couplingInfo,
-                                                     (SceneMaterial*) marker,
-                                                     markerSecond);
-    else if (type == WeakForm_MatSurf)
-        return new CustomParserMatrixFormSurf<Scalar>(i, j,
-                                                      area.toStdString(),
-                                                      expression,
-                                                      (SceneBoundary*) marker);
-    else if (type == WeakForm_VecVol)
-        return new CustomParserVectorFormVol<Scalar>(i, j,
-                                                     area.toStdString(),
-                                                     expression,
-                                                     fieldInfo,
-                                                     couplingInfo,
-                                                     (SceneMaterial*) marker,
-                                                     markerSecond);
-    else if (type == WeakForm_VecSurf)
-        return new CustomParserVectorFormSurf<Scalar>(i, j,
-                                                      area.toStdString(),
-                                                      expression,
-                                                      (SceneBoundary*) marker);
-    else
-        assert(0);
-}
-
-template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
     // Util::log()->printDebug("WeakFormAgros", QString("addForm: type: %1, i: %2, area: %3").
@@ -183,16 +146,10 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
             coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
             ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
 
-    if(field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
-    {
-        //Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Interpreted weak forms are not supported at the moment"));
-        throw AgrosSolverException("Interpreted weak forms are not supported at the moment");
-    }
-
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker, NULL, offsetI, offsetJ);
 
-    if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
+    if (custom_form == NULL)
     {
         Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2). %3, (%4, %5)").
                                   arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)).arg(QString::fromStdString(problemId)).arg(offsetI).arg(offsetJ));
@@ -225,11 +182,6 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
             coordinateTypeToStringKey(materialTarget->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
             ((materialTarget->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_" +
             couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
-
-    if(materialTarget->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
-    {
-        throw AgrosSolverException("Interpreted weak forms are not supported at the moment");
-    }
 
     // compiled form
     //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

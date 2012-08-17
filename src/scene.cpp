@@ -1355,10 +1355,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         // initial condition
         field->setInitialCondition(eleField.toElement().attribute("initial_condition", "0.0"));
 
-        // weakforms
-        field->setWeakFormsType(weakFormsTypeFromStringKey(eleField.toElement().attribute("weak_forms",
-                                                                                          weakFormsTypeToStringKey(WeakFormsType_Compiled))));
-
         // polynomial order
         field->setPolynomialOrder(eleField.toElement().attribute("polynomial_order").toInt());
 
@@ -1654,8 +1650,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleField.setAttribute("analysis_type", analysisTypeToStringKey(fieldInfo->analysisType()));
         // initial condition
         eleField.setAttribute("initial_condition", fieldInfo->initialCondition().text());
-        // weakforms
-        eleField.setAttribute("weak_forms", weakFormsTypeToStringKey(fieldInfo->weakFormsType()));
         // polynomial order
         eleField.setAttribute("polynomial_order", fieldInfo->polynomialOrder());
         // time steps skip

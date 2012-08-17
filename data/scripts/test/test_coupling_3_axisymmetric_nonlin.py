@@ -15,7 +15,6 @@ agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
 # fields
 current = agros2d.field("current")
 current.analysis_type = "steadystate"
-current.weak_forms = "compiled"
 current.number_of_refinements = 1
 current.polynomial_order = 2
 current.linearity_type = "linear"
@@ -30,7 +29,6 @@ current.add_material("Material", {"current_conductivity" : 100000})
 
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
-heat.weak_forms = "compiled"
 heat.number_of_refinements = 2
 heat.polynomial_order = 3
 heat.linearity_type = "newton"
@@ -44,7 +42,6 @@ heat.add_material("Material", {"heat_conductivity" : { "value" : 385, "x" : [0,1
 
 elasticity = agros2d.field("elasticity")
 elasticity.analysis_type = "steadystate"
-elasticity.weak_forms = "compiled"
 elasticity.number_of_refinements = 1
 elasticity.polynomial_order = 3
 elasticity.linearity_type = "newton"

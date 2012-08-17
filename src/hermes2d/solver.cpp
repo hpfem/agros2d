@@ -200,36 +200,21 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                 {
                     EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
-                    // compiled form
-                    if (fieldInfo->weakFormsType() == WeakFormsType_Compiled)
-                    {
-                        string problemId = fieldInfo->fieldId().toStdString() + "_" +
-                                analysisTypeToStringKey(fieldInfo->module()->analysisType()).toStdString()  + "_" +
-                                coordinateTypeToStringKey(fieldInfo->module()->coordinateType()).toStdString() + "_" +
-                                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
+                    string problemId = fieldInfo->fieldId().toStdString() + "_" +
+                            analysisTypeToStringKey(fieldInfo->module()->analysisType()).toStdString()  + "_" +
+                            coordinateTypeToStringKey(fieldInfo->module()->coordinateType()).toStdString() + "_" +
+                            ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
 
-                        ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
-                        custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
-                    }
+                    ExactSolutionScalar<double> * function = factoryExactSolution<double>(problemId, form->i, meshes[fieldInfo], boundary);
+                    custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
-                    if (!custom_form && fieldInfo->weakFormsType() == WeakFormsType_Compiled)
+                    if (!custom_form)
                         Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled EssentialBoundaryCondition()."));
-
-                    // interpreted form
-                    if (!custom_form || fieldInfo->weakFormsType() == WeakFormsType_Interpreted)
-                    {
-                        {
-                            CustomExactSolution<double> *function = new CustomExactSolution<double>(meshes[fieldInfo],
-                                                                                                    ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? form->expressionNewton : form->expressionLinear),
-                                                                                                    boundary);
-                            custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
-                        }
-                    }
 
                     if (custom_form)
                     {
                         bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
-                        //                        cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
+                        //  cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                     }
                 }
             }

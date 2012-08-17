@@ -17,7 +17,6 @@ magnetic.analysis_type = "transient"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 3
 magnetic.linearity_type = "linear"
-magnetic.weak_forms = "compiled"
 magnetic.nonlinear_tolerance = 0.001
 magnetic.nonlinear_steps = 10
 

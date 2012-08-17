@@ -154,9 +154,6 @@ void FieldWidget::createContent()
     txtPolynomialOrder->setMinimum(1);
     txtPolynomialOrder->setMaximum(10);
 
-    // weak forms
-    cmbWeakForms = new QComboBox();
-
     // transient
     cmbAnalysisType = new QComboBox();
     txtTransientInitialCondition = new ValueLineEdit();
@@ -187,8 +184,6 @@ void FieldWidget::createContent()
     layoutGeneral->setColumnStretch(1, 1);
     layoutGeneral->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
     layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Weak forms:")), 2, 0);
-    layoutGeneral->addWidget(cmbWeakForms, 2, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
@@ -289,10 +284,6 @@ void FieldWidget::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
-    cmbWeakForms->clear();
-    cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Compiled), WeakFormsType_Compiled);
-    cmbWeakForms->addItem(weakFormsTypeString(WeakFormsType_Interpreted), WeakFormsType_Interpreted);
-
     cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
     // if (hermesField->hasNonlinearity())
     {
@@ -318,8 +309,6 @@ void FieldWidget::load()
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType()));
     txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps());
     txtAdaptivityTolerance->setValue(m_fieldInfo->adaptivityTolerance());
-    // weakforms
-    cmbWeakForms->setCurrentIndex(cmbWeakForms->findData(m_fieldInfo->weakFormsType()));
     //mesh
     txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements());
     txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder());
@@ -343,8 +332,6 @@ bool FieldWidget::save()
     m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
     m_fieldInfo->setAdaptivitySteps(txtAdaptivitySteps->value());
     m_fieldInfo->setAdaptivityTolerance(txtAdaptivityTolerance->value());
-    // weakforms
-    m_fieldInfo->setWeakFormsType((WeakFormsType) cmbWeakForms->itemData(cmbWeakForms->currentIndex()).toInt());
     //mesh
     m_fieldInfo->setNumberOfRefinements(txtNumberOfRefinements->value());
     m_fieldInfo->setPolynomialOrder(txtPolynomialOrder->value());
@@ -540,11 +527,9 @@ void FieldsToobar::refresh()
         QString hint = tr("<h3>%1</h3>"
                           "<table>").arg(fieldInfo->name());
         hint += tr("<tr><td><b>Analysis:</b></td><td>%1</td></tr>"
-                   "<tr><td><b>Weak forms:</b></td><td>%2</td></tr>"
-                   "<tr><td><b>Number of refinements:</b></td><td>%3</td></tr>"
-                   "<tr><td><b>Polynomial order:</b></td><td>%4</td></tr>")
+                   "<tr><td><b>Number of refinements:</b></td><td>%2</td></tr>"
+                   "<tr><td><b>Polynomial order:</b></td><td>%3</td></tr>")
                 .arg(analysisTypeString(fieldInfo->analysisType()))
-                .arg(weakFormsTypeString(fieldInfo->weakFormsType()))
                 .arg(fieldInfo->numberOfRefinements())
                 .arg(fieldInfo->polynomialOrder());
 

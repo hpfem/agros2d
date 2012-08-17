@@ -175,10 +175,6 @@ QString createPythonFromModel()
                     arg(fieldInfo->adaptivityTolerance());
         }
 
-        str += QString("%1.weak_forms = \"%2\"\n").
-                arg(fieldInfo->fieldId()).
-                arg(weakFormsTypeToStringKey(fieldInfo->weakFormsType()));
-
         str += "\n";
 
         //str += "\n# boundaries\n";
@@ -620,14 +616,6 @@ void PyField::setTimeStepsSkip(const int timeStepsSkip)
         Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeStepsSkip(Value(QString::number(timeStepsSkip)));
     else
         throw invalid_argument(QObject::tr("Time steps skip is out of range (1 - %1).").arg(Util::problem()->config()->timeTotal().number()-1).toStdString());
-}
-
-void PyField::setWeakForms(const char *weakForms)
-{
-    if (weakFormsTypeStringKeys().contains(QString(weakForms)))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setWeakFormsType(weakFormsTypeFromStringKey(QString(weakForms)));
-    else
-        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(weakFormsTypeStringKeys())).toStdString());
 }
 
 void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
