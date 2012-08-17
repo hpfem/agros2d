@@ -99,7 +99,6 @@ SOURCES += util.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
-    hermes2d/weakform_parser.cpp\
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
@@ -172,7 +171,6 @@ HEADERS += util.h \
     indicators/indicator_unity.h \
     collaboration.h \
     resultsview.h \
-    hermes2d/weakform_parser.h \
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \

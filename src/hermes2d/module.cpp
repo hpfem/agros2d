@@ -102,7 +102,7 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const QString &problemId,
-                                            const QString &area, ParserFormExpression *form,
+                                            const QString &area, FormInfo *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
     cout <<"ID: " << problemId.toStdString() << ", " << type << ", form position (" << form->i << ", " << form->j << ")"<< ", offset (" << offsetI << ", " << offsetJ << ")" << endl;
@@ -139,7 +139,7 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ, Marker* marker)
+void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker* marker)
 {
     string problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
             analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
@@ -171,7 +171,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
+void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ,
                                          SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     string problemId =
@@ -312,11 +312,11 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
                 
-                foreach (ParserFormExpression *expression, boundary_type->wfMatrixSurface())
+                foreach (FormInfo *expression, boundary_type->wfMatrixSurface())
                     registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
                 
-                foreach (ParserFormExpression *expression, boundary_type->wfVectorSurface())
+                foreach (FormInfo *expression, boundary_type->wfVectorSurface())
                     registerForm(WeakForm_VecSurf, field, QString::number(edgeNum), expression,
                                  m_block->offset(field), m_block->offset(field), boundary);
             }
@@ -331,19 +331,19 @@ void WeakFormAgros<Scalar>::registerForms()
             assert(material);
             if (material != Util::scene()->materials->getNone(fieldInfo))
             {
-                foreach (ParserFormExpression *expression, fieldInfo->module()->wfMatrixVolumeExpression())
+                foreach (FormInfo *expression, fieldInfo->module()->wfMatrixVolumeExpression())
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
 
 
-                foreach (ParserFormExpression *expression, fieldInfo->module()->wfVectorVolumeExpression())
+                foreach (FormInfo *expression, fieldInfo->module()->wfVectorVolumeExpression())
                     registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
 
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                 {
-                    foreach (ParserFormExpression *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
+                    foreach (FormInfo *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
                     {
                         SceneMaterial* materialSource = Util::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
                         assert(materialSource);
@@ -380,12 +380,12 @@ void WeakFormAgros<Scalar>::registerForms()
                 
                 qDebug() << "hard coupling form on marker " << labelNum;
 
-                foreach (ParserFormExpression *pars, coupling->wfMatrixVolumeExpression())
+                foreach (FormInfo *pars, coupling->wfMatrixVolumeExpression())
                     registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
                 
-                foreach (ParserFormExpression *pars, coupling->wfVectorVolumeExpression())
+                foreach (FormInfo *pars, coupling->wfVectorVolumeExpression())
                     registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                  m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                  sourceMaterial, targetMaterial, couplingInfo);
@@ -474,27 +474,20 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     for (int i = 0; i < bdy.matrix_form().size(); i++)
     {
         XMLModule::matrix_form form = bdy.matrix_form().at(i);
-        m_wfMatrixSurface.append(new ParserFormExpression(form.i(), form.j(),
-                                                          (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
-                                                          (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton(),
-                                                          form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+        m_wfMatrixSurface.append(new FormInfo(form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
     }
     
     for (int i = 0; i < bdy.vector_form().size(); i++)
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
-        m_wfVectorSurface.append(new ParserFormExpression(form.i(), form.j(),
-                                                          (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
-                                                          (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
+        m_wfVectorSurface.append(new FormInfo(form.i(), form.j()));
     }
     
     // essential
     for (int i = 0; i < bdy.essential_form().size(); i++)
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
-        m_essential.append(new ParserFormEssential(form.i(),
-                                                   (problem_type == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
-                                                   (problem_type == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
+        m_essential.append(new FormInfo(form.i()));
     }
 }
 
@@ -520,15 +513,15 @@ Module::BoundaryType::~BoundaryType()
     m_variables.clear();
     
     // volume weak form
-    foreach (ParserFormExpression *expression, m_wfMatrixSurface)
+    foreach (FormInfo *expression, m_wfMatrixSurface)
         delete expression;
     m_wfMatrixSurface.clear();
     
-    foreach (ParserFormExpression *expression, m_wfVectorSurface)
+    foreach (FormInfo *expression, m_wfVectorSurface)
         delete expression;
     m_wfVectorSurface.clear();
     
-    foreach (ParserFormExpression *expression, m_wfVectorSurface)
+    foreach (FormInfo *expression, m_wfVectorSurface)
         delete expression;
     m_wfVectorSurface.clear();
 }
@@ -714,18 +707,13 @@ void Module::BasicModule::read(const QString &filename)
             for (int i = 0; i < wf.matrix_form().size(); i++)
             {
                 XMLModule::matrix_form form = wf.matrix_form().at(i);
-                m_wfMatrixVolumeExpression.append(new ParserFormExpression(form.i(), form.j(),
-                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
-                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton(),
-                                                                           form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+                m_wfMatrixVolumeExpression.append(new FormInfo(form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
             }
 
             for (int i = 0; i < wf.vector_form().size(); i++)
             {
                 XMLModule::vector_form form = wf.vector_form().at(i);
-                m_wfVectorVolumeExpression.append(new ParserFormExpression(form.i(), form.j(),
-                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
-                                                                           (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
+                m_wfVectorVolumeExpression.append(new FormInfo(form.i(), form.j()));
             }
         }
     }
@@ -915,11 +903,11 @@ void Module::BasicModule::clear()
     m_volumeIntegrals.clear();
 
     // volume weak form
-    for (QList<ParserFormExpression *>::iterator it = m_wfMatrixVolumeExpression.begin(); it < m_wfMatrixVolumeExpression.end(); ++it)
+    for (QList<FormInfo *>::iterator it = m_wfMatrixVolumeExpression.begin(); it < m_wfMatrixVolumeExpression.end(); ++it)
         delete *it;
     m_wfMatrixVolumeExpression.clear();
 
-    for (QList<ParserFormExpression *>::iterator it = m_wfVectorVolumeExpression.begin(); it < m_wfVectorVolumeExpression.end(); ++it)
+    for (QList<FormInfo *>::iterator it = m_wfVectorVolumeExpression.begin(); it < m_wfVectorVolumeExpression.end(); ++it)
         delete *it;
     m_wfVectorVolumeExpression.clear();
 

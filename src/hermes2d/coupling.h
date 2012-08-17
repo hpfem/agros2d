@@ -24,7 +24,7 @@
 
 class FieldInfo;
 class ProblemConfig;
-class ParserFormExpression;
+class FormInfo;
 
 // namespace Module
 // {
@@ -47,8 +47,8 @@ struct Coupling
     inline QMap<QString, double> constants() const { return m_constants; }
 
     // weak forms
-    inline QList<ParserFormExpression *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
-    inline QList<ParserFormExpression *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
+    inline QList<FormInfo *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
+    inline QList<FormInfo *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
 
     mu::Parser *expressionParser();
 
@@ -72,8 +72,8 @@ private:
     QMap<QString, double> m_constants;
 
     // weak forms
-    QList<ParserFormExpression *> m_wfMatrixVolumeExpression;
-    QList<ParserFormExpression *> m_wfVectorVolumeExpression;
+    QList<FormInfo *> m_wfMatrixVolumeExpression;
+    QList<FormInfo *> m_wfVectorVolumeExpression;
 
     void read(const QString &filename);
     void clear();

@@ -36,7 +36,6 @@
 
 #include "hermes2d/marker.h"
 #include "hermes2d/localpoint.h"
-#include "hermes2d/weakform_parser.h"
 </head>
 
 <includes>#include "general_weakform.h"

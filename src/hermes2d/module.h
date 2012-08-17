@@ -51,13 +51,28 @@ class Block;
 struct SceneViewSettings;
 template <typename Scalar> struct SolutionArray;
 template <typename Scalar> class ViewScalarFilter;
-class ParserFormExpression;
-class ParserFormEssential;
 
 class ProgressItemSolve;
 
 class FieldInfo;
 class CouplingInfo;
+
+struct FormInfo
+{
+    FormInfo() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM) {}
+    FormInfo(int i, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
+        : i(i), j(j), sym(sym) {}
+
+    // position
+    int i;
+    int j;
+
+    // symmetric flag
+    Hermes::Hermes2D::SymFlag sym;
+};
+
+const int maxSourceFieldComponents = 2;
+
 
 template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
@@ -72,8 +87,8 @@ public:
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ, Marker *marker);
-    void registerFormCoupling(WeakFormKind type, QString area, ParserFormExpression *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
+    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker *marker);
+    void registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
 //    void registerFormOld(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
 //                         SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo);
@@ -254,11 +269,11 @@ struct BoundaryType
     inline QList<BoundaryTypeVariable *> variables() const { return m_variables; }
 
     // weakform
-    inline QList<ParserFormExpression *> wfMatrixSurface() const { return m_wfMatrixSurface; }
-    inline QList<ParserFormExpression *> wfVectorSurface() const { return m_wfVectorSurface; }
+    inline QList<FormInfo *> wfMatrixSurface() const { return m_wfMatrixSurface; }
+    inline QList<FormInfo *> wfVectorSurface() const { return m_wfVectorSurface; }
 
     // essential
-    inline QList<ParserFormEssential *> essential() const { return m_essential; }
+    inline QList<FormInfo *> essential() const { return m_essential; }
 
 private:
     // id
@@ -270,11 +285,11 @@ private:
     QList<BoundaryTypeVariable *> m_variables;
 
     // weakform
-    QList<ParserFormExpression *> m_wfMatrixSurface;
-    QList<ParserFormExpression *> m_wfVectorSurface;
+    QList<FormInfo *> m_wfMatrixSurface;
+    QList<FormInfo *> m_wfVectorSurface;
 
     // essential
-    QList<ParserFormEssential *> m_essential;
+    QList<FormInfo *> m_essential;
 };
 
 // surface and volume integral value
@@ -404,8 +419,8 @@ struct BasicModule
     BoundaryType *boundaryTypeDefault() const { return m_boundaryTypeDefault; }
 
     // weak forms
-    inline QList<ParserFormExpression *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
-    inline QList<ParserFormExpression *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
+    inline QList<FormInfo *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
+    inline QList<FormInfo *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
 
     // all physical variables
     QList<LocalVariable *> variables;
@@ -549,8 +564,8 @@ private:
     LocalVariable *m_defaultViewVectorVariable;
 
     // weak forms
-    QList<ParserFormExpression *> m_wfMatrixVolumeExpression;
-    QList<ParserFormExpression *> m_wfVectorVolumeExpression;
+    QList<FormInfo *> m_wfMatrixVolumeExpression;
+    QList<FormInfo *> m_wfVectorVolumeExpression;
 
     // read form xml
     void read(const QString &filename);

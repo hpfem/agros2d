@@ -29,7 +29,6 @@
 #include "scenemarkerdialog.h"
 #include "module_agros.h"
 #include "solutionstore.h"
-#include "weakform_parser.h"
 #include "logview.h"
 #include "util.h"
 #include "../weakform/src/weakform_factory.h"
@@ -196,7 +195,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
             {
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
 
-                foreach (ParserFormEssential *form, boundary_type->essential())
+                foreach (FormInfo *form, boundary_type->essential())
                 {
                     EssentialBoundaryCondition<Scalar> *custom_form = NULL;
 
