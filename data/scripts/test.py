@@ -56,7 +56,10 @@ geometry = agros2d.geometry
 #geometry.remove_node(0)
 
 geometry.add_edge(0, -0.1, 0.05, -0.1, boundaries = {"heat" : "Convection"})
-geometry.add_edge(0.05, -0.1, 0.05, 0.1, boundaries = {"heat" : "Convection"})
+geometry.add_edge(0.05, -0.1, 0.05, 0.1, refinements = {"magnetic" : 3, "heat" : 2}, boundaries = {"heat" : "Convection"})
+#geometry.add_edge(0.05, -0.1, 0.05, 0.1, refinements = {"agnetic" : 3, "heat" : 2}, boundaries = {"heat" : "Convection"})
+#geometry.add_edge(0.05, -0.1, 0.05, 0.1, refinements = {"magnetic" : -1, "heat" : 2}, boundaries = {"heat" : "Convection"})
+#geometry.add_edge(0.05, -0.1, 0.05, 0.1, refinements = {"magnetic" : 3, "heat" : 11}, boundaries = {"heat" : "Convection"})
 geometry.add_edge(0.05, 0.1, 0, 0.1, boundaries = {"heat" : "Convection"})
 geometry.add_edge(0, 0.1, 0, -0.1, boundaries = {"magnetic" : "A = 0", "heat" : "Flux"})
 

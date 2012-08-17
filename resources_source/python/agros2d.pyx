@@ -112,7 +112,7 @@ cdef extern from "../../src/pythonlabagros.h":
         void activate()
 
         void addNode(double, double) except +
-        void addEdge(double, double, double, double, double, int, map[char*, char*]) except +
+        void addEdge(double, double, double, double, double, map[char*, int], map[char*, char*]) except +
         void addEdgeByNodes(int, int, double, int, map[char*, char*]) except +
         void addLabel(double, double, double, int, map[char*, char*]) except +
 
@@ -699,8 +699,15 @@ cdef class __Geometry__:
     def remove_node(self, int index):
         self.thisptr.removeNode(index)
 
-    # add_edge(x1, y1, x2, y2, angle, refinement, boundaries)
-    def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, int refinement = 0, boundaries = {}):
+    # add_edge(x1, y1, x2, y2, angle, refinements, boundaries)
+    def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, refinements = {}, boundaries = {}):
+
+        cdef map[char*, int] refinements_map
+        cdef pair[char*, int] refinement
+        for key in refinements:
+            refinement.first = key
+            refinement.second = refinements[key]
+            refinements_map.insert(refinement)
 
         cdef map[char*, char*] boundaries_map
         cdef pair[char*, char *] boundary
@@ -709,7 +716,7 @@ cdef class __Geometry__:
             boundary.second = boundaries[key]
             boundaries_map.insert(boundary)
 
-        self.thisptr.addEdge(x1, y1, x2, y2, angle, refinement, boundaries_map)
+        self.thisptr.addEdge(x1, y1, x2, y2, angle, refinements_map, boundaries_map)
 
     # add_edge_by_nodes(start_node_index, end_node_index, angle, refinement, boundaries)
     def add_edge_by_nodes(self, int start_node_index, int end_node_index, double angle = 0.0, int refinement = 0, boundaries = {}):

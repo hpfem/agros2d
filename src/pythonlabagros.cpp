@@ -954,7 +954,7 @@ void PyGeometry::addNode(double x, double y)
     Util::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
-void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int refinement, map<char*, char*> boundaries)
+void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, map<char*, int> refinements, map<char*, char*> boundaries)
 {
     // nodes
     SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
@@ -963,9 +963,6 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     // angle
     if (angle > 90.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
-
-    // refinement
-    // TOOD: if (refinement < 0) throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(angle).toStdString());
 
     SceneEdge *sceneEdge = new SceneEdge(nodeStart, nodeEnd, angle);
 
@@ -997,6 +994,18 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
     }
 
     Util::scene()->addEdge(sceneEdge);
+
+    // refinements
+    for (map<char*, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
+    {
+        if (!Util::problem()->hasField(QString((*i).first)))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+
+        if (((*i).second < 0) || ((*i).second > 10))
+            throw out_of_range(QObject::tr("Number of refinements '%1' is out of range (0 - 10).").arg((*i).second).toStdString());
+
+        Util::problem()->fieldInfo(QString((*i).first))->setEdgeRefinement(sceneEdge, (*i).second);
+    }
 }
 
 void PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int refinement, map<char*, char*> boundaries)
