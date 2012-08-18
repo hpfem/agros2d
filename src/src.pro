@@ -5,9 +5,6 @@ OBJECTS_DIR = build
 MOC_DIR = build
 
 TEMPLATE = lib
-CONFIG(debug) {
-    CONFIG += staticlib
-}
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
