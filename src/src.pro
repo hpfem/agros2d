@@ -1,25 +1,18 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
-QT += opengl \
-    xml \
-    network \
-    webkit \
-    svg \
-    xmlpatterns
 
-DEFINES += VERSION_MAJOR=3
-DEFINES += VERSION_MINOR=0
-DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=1971
-DEFINES += VERSION_YEAR=2012
-DEFINES += VERSION_MONTH=5
-DEFINES += VERSION_DAY=27
+TARGET = ../libs/agros2d
+OBJECTS_DIR = build
+MOC_DIR = build
 
-DEFINES += WEAKFORM_FACTORY
+TEMPLATE = lib
+CONFIG(debug) {
+    CONFIG += staticlib
+}
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
-linux-g++|linux-g++-64|linux-g++-32 :CONFIG(release) {
+linux-g++|linux-g++-64|linux-g++-32 : CONFIG(release) {
     system(cython --cplus ../resources_source/python/agros2d.pyx)
     system(cd ../ && ./agros2d.sh lang release)
     #system(cd ../ && ./agros2d.sh help)
@@ -31,19 +24,7 @@ TRANSLATIONS = lang/cs_CZ.ts \
 CODECFORTR = UTF-8
 RC_FILE = src.rc
 RESOURCES = src.qrc
-TARGET = agros2d
-DESTDIR = ../
-# TEMPLATE = app
-CONFIG += warn_off
-# QMAKE_CXXFLAGS_DEBUG += -Wno-builtin-macro-redefined -Wunused-variable -Wreturn-type
-# QMAKE_CXXFLAGS += -fno-strict-aliasing -Wno-builtin-macro-redefined
-# QMAKE_CXXFLAGS_DEBUG += -w
-# QMAKE_CXXFLAGS += -w
-# QMAKE_CXXFLAGS_DEBUG += -Wuninitialized
-# QMAKE_CXXFLAGS += -Wuninitialized
-OBJECTS_DIR = build
-MOC_DIR = build
-SUBDIRS += src
+
 SOURCES += util.cpp \
     value.cpp \
     scene.cpp \
@@ -65,7 +46,6 @@ SOURCES += util.cpp \
     pythonlab/pythonbrowser.cpp \
     pythonlab/pythoneditor.cpp \
     pythonlabagros.cpp \
-    main.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
@@ -199,15 +179,6 @@ HEADERS += util.h \
     parser/nonrecursive_parser.h \
     parser/tree.h
 
-INCLUDEPATH += . \
-    ../lib \
-    ../lib/ctemplate \
-    ../lib/muparser \
-    ../lib/dxflib \
-    ../lib/rapidxml \
-    ../hermes_common \
-    ../hermes2d
-
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml \
@@ -239,60 +210,17 @@ OTHER_FILES += python/agros2d.pyx \
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
-LIBS += -lhermes2d
-LIBS += -llib
-
-LIBS += -L../resources/plugins
-include(../weakform/plugins/plugins.pri)
+LIBS += -lagros2d_hermes2d
+LIBS += -lagros2d_3dparty
 
 linux-g++|linux-g++-64|linux-g++-32 {
-    QMAKE_LFLAGS += -fopenmp
-    QMAKE_CXXFLAGS += -fopenmp
     # DEFINES += WITH_UNITY
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../lib/ctemplate/unix
-
-    LIBS += -L../hermes2d/build/lib
-    LIBS += -L../lib/build/lib
-
-    LIBS += -lumfpack
-    LIBS += -lxerces-c
-    LIBS += -lamd
-    LIBS += -lblas
-    LIBS += -lpthread
-    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
-    LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
-    # qwt
-    INCLUDEPATH += /usr/include/qwt
-    LIBS += -lqwt
-
-    # mumps
-    contains(CONFIG, WITH_MUMPS) {
-        DEFINES += WITH_MUMPS
-        LIBS += -ldmumps_seq
-        LIBS += -lzmumps_seq
-    }
-    # superlu
-    contains(CONFIG, WITH_SUPERLU) {
-        DEFINES += WITH_SUPERLU
-        INCLUDEPATH += /usr/include/superlu
-        LIBS += -lsuperlu
-    }
-
-    # unity
-    contains(CONFIG, WITH_UNITY) {
-        DEFINES += WITH_UNITY
-        INCLUDEPATH += /usr/include/unity/unity
-        INCLUDEPATH += /usr/include/glib-2.0
-        INCLUDEPATH += /usr/lib/x86_64-linux-gnu/glib-2.0/include
-        INCLUDEPATH += /usr/include/dee-1.0
-        INCLUDEPATH += /usr/include/libdbusmenu-0.4
-        LIBS += -lunity
-    }
+    INCLUDEPATH += ../3dparty/ctemplate/unix
 }
 
 macx-g++ {
@@ -308,7 +236,7 @@ macx-g++ {
 
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
-    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
+    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/3dparty/python2.7/config
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lpthread
     LIBS += -lpython2.7
@@ -326,29 +254,11 @@ win32-msvc2010 {
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
-	
+
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
-    INCLUDEPATH += ../lib/ctemplate/windows
-	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
-
-    LIBS += -L../hermes2d/debug/build/lib
-    LIBS += -L../lib/debug/build/lib
-    LIBS += -L../weakform/debug/build/lib
-    LIBS += -L../hermes2d/release/build/lib
-    LIBS += -L../lib/release/build/lib
-    LIBS += -L../weakform/release/build/lib
-
-    LIBS += -Lc:/Python27/libs
-    LIBS += -L../../qwt-6.0.1/lib
-    LIBS += -lvcomp
-    LIBS += -lqwt
-    LIBS += -lpython27
-    LIBS += -llibumfpack
-    LIBS += -llibamd
-    LIBS += -llibpthreadVCE2
-    #LIBS += -lmsvcrt
-    LIBS += -lxerces-c_static_3
-    LIBS += -ladvapi32
-    LIBS += -lws2_32
+    INCLUDEPATH += ../3dparty/ctemplate/windows
+    INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 }
+
+include(../agros2d.pri)

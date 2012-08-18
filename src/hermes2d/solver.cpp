@@ -204,19 +204,16 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 
                 foreach (FormInfo *form, boundary_type->essential())
                 {
-                    EssentialBoundaryCondition<Scalar> *custom_form = NULL;
+                    // get weakform
+                    WeakFormInterface *weakform = Util::weakForms()[fieldInfo->fieldId()];
+                    assert(weakform);
 
-                        ExactSolutionScalar<double> *function = field->fieldInfo()->weakform()->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
-                        custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
+                    ExactSolutionScalar<double> *function = weakform->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
+                    EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
-                    if (!custom_form)
-                        Util::log()->printMessage(QObject::tr("Weakform"), QObject::tr("Cannot find compiled EssentialBoundaryCondition()."));
-
-                    if (custom_form)
-                    {
-                        bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
-                        //  cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
-                    }
+                    assert(custom_form);
+                    bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
+                    //  cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                 }
             }
             index++;

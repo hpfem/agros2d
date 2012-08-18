@@ -57,14 +57,6 @@ class WeakFormGenerator:
         fwrite.write(file_text)        
         fwrite.close()
                                 
-    def write_main_project_pri_file(self):
-        fwrite = open(Config.plugin_dir + Config.plugin_name + ".pri", "w")        
-        file_text = ""
-        for module in self.modules:
-            file_text += "LIBS += -l" + module.id + "\n"         
-        fwrite.write(file_text)
-        fwrite.close()
-        
     def write_main_project_header_file(self):
         template_file = open (Config.templates_dir +  "template_plugins_h.tem", 'r')
         template_text = template_file.read()
@@ -82,7 +74,6 @@ class WeakFormGenerator:
         # create directory
         from os import mkdir                             
         self.write_main_project_file()
-        self.write_main_project_pri_file()
         self.write_main_project_header_file() 
                
         for module in self.modules:
@@ -968,6 +959,6 @@ class Module:
 if __name__ == '__main__':
     coupling_parser = WeakFormGenerator(['flow', 'acoustic', 'current', 'elasticity', 'electrostatic', 'heat', 'magnetic', 'rf'], ['current-heat', 'heat-elasticity', 'magnetic-heat', 'flow-heat'])
 #    coupling_parser = WeakFormGenerator(['flow', 'heat'], ['flow-heat'])
-#    coupling_parser = WeakFormGenerator(['electrostatic', 'current'], [])
+#    coupling_parser = WeakFormGenerator(['electrostatic'], [])
     coupling_parser.process()    
 

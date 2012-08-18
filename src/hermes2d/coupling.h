@@ -29,6 +29,9 @@ class FormInfo;
 // namespace Module
 // {
 
+// available couplings
+QMap<QString, QString> availableCouplings();
+
 struct Coupling
 {
     Coupling(const QString &couplingId,

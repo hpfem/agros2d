@@ -1,8 +1,13 @@
 QT -= GUI
-TARGET = build/lib/hermes2d
+
+TARGET = ../libs/agros2d_hermes2d
 OBJECTS_DIR = build
+
 TEMPLATE = lib
-CONFIG += staticlib
+CONFIG(debug) {
+#    CONFIG += staticlib
+}
+
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
 DEFINES += H2D_DISABLE_MULTIMESH_TESTS

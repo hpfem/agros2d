@@ -97,8 +97,6 @@ public:
 
     inline LocalForceValue *forceValue() { return m_forceValue; }
 
-    inline WeakFormInterface *weakform() { return m_weakform; }
-
     // module
     QString name();
     // description
@@ -119,9 +117,6 @@ private:
 
     /// field force calculation
     LocalForceValue *m_forceValue;
-
-    // weakform factory
-    WeakFormInterface *m_weakform;
 
     // analysis type
     AnalysisType m_analysisType;

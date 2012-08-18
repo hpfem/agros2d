@@ -27,6 +27,32 @@
 
 #include "../../resources_source/classes/coupling_xml.h"
 
+QMap<QString, QString> availableCouplings()
+{
+    static QMap<QString, QString> couplings;
+
+    // read modules
+    if (couplings.size() == 0)
+    {
+        QDir dir(datadir() + COUPLINGROOT);
+
+        QStringList filter;
+        filter << "*.xml";
+        QStringList list = dir.entryList(filter);
+
+        foreach (QString filename, list)
+        {
+            std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + filename.toStdString()).c_str());
+            XMLCoupling::coupling *mod = coupling_xsd.get();
+
+            // module name
+            couplings[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general().name());
+        }
+    }
+
+    return couplings;
+}
+
 // TODO: in each module should be implicit value
 CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField,
                            CouplingType couplingType) :

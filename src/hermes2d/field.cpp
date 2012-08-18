@@ -85,34 +85,12 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 
     clear();
 
-
-    // load plugin
-//    QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
-//                         .arg(datadir())
-//                         .arg(m_fieldId));
-
-//    QObject *plugin = loader.instance();
-//    assert(plugin);
-
-//    m_weakform = qobject_cast<WeakFormInterface *>(plugin);
-
-    foreach (QObject *plugin, QPluginLoader::staticInstances())
-    {
-        WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
-        if (weakform->fieldId() == fieldId)
-        {
-            m_weakform = weakform;
-            break;
-        }
-    }
-
     m_forceValue = new LocalForceValue(this);
 }
 
 FieldInfo::~FieldInfo()
 {
     if (m_module) delete m_module;
-    if (m_weakform) delete m_weakform;
 }
 
 void FieldInfo::setAnalysisType(const AnalysisType analysisType)

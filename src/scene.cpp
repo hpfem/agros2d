@@ -42,6 +42,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
+#include "hermes2d/weakform_interface.h"
 
 ostream& operator<<(ostream& output, FieldInfo& id)
 {
@@ -141,6 +142,9 @@ Util::Util()
 
     // log
     m_log = new Log();
+
+    // plugins
+
 }
 
 Util::~Util()
@@ -151,6 +155,9 @@ Util::~Util()
     delete m_problem;
     delete m_solutionStore;
     delete m_log;
+
+    // clear plugins
+
 }
 
 void Util::createSingleton()
@@ -161,6 +168,44 @@ void Util::createSingleton()
 Util *Util::singleton()
 {
     return m_singleton;
+}
+
+void Util::loadPlugins(QStringList plugins)
+{
+    // unload plugins and clear list
+    foreach (WeakFormInterface *weakForm, Util::singleton()->m_weakForms)
+        delete weakForm;
+    Util::singleton()->m_weakForms.clear();
+
+    // load plugins
+    foreach (QString file, plugins)
+    {
+        QPluginLoader *loader = NULL;
+
+        if (QFile::exists(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file)))
+            loader = new QPluginLoader(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file));
+
+#ifdef Q_WS_X11
+        if (!loader)
+        {
+            if (QFile::exists(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file)))
+                loader = new QPluginLoader(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file));
+            else if (QFile::exists(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file)))
+                loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file));
+            else
+            {
+                std::cout << "Could not load '" << QString("libagros2d_plugin_%1.so").arg(file).toStdString() << "'" << std::endl;
+                exit(0);
+            }
+        }
+#endif
+
+        assert(loader->instance());
+        Util::singleton()->m_weakForms[file] = qobject_cast<WeakFormInterface *>(loader->instance());
+        delete loader;
+
+        qDebug() << file << Util::singleton()->m_weakForms[file];
+    }
 }
 
 // ************************************************************************************************************************

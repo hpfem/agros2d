@@ -34,7 +34,7 @@
 #include "hermes2d/field.h"
 //#include "hermes2d/problem.h"
 
-#include "../lib/gl2ps/gl2ps.h"
+#include "gl2ps/gl2ps.h"
 
 SceneViewPreprocessor::SceneViewPreprocessor(QWidget *parent): SceneViewCommon2D(parent)
 {

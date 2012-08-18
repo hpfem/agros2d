@@ -349,6 +349,19 @@ void Problem::solve()
     if (isSolving())
         return;
 
+    // load plugins
+    QStringList modules = Util::problem()->fieldInfos().keys();
+    QStringList couplings;
+    foreach (CouplingInfo *info, Util::problem()->couplingInfos().values())
+        couplings.append(info->couplingId().replace("-", "_"));
+
+    QStringList plugins;
+    plugins.append(modules);
+    plugins.append(couplings);
+
+    Util::loadPlugins(plugins);
+
+    // start
     QTime elapsedTime;
     elapsedTime.start();
 

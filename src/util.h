@@ -26,6 +26,7 @@
 #include <QDomDocument>
 #include <QtWebKit>
 #include <QtXmlPatterns>
+#include <QtPlugin>
 
 #include <muParser.h>
 

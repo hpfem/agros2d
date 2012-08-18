@@ -70,9 +70,6 @@ QMap<QString, QString> availableModules()
         }
     }
 
-    // custom module
-    // modules["custom"] = "Custom field";
-
     return modules;
 }
 
@@ -103,27 +100,14 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
-{
-    // load plugin
-    //    QPluginLoader loader(QString("%1/resources/plugins/lib%2.so")
-    //                         .arg(datadir())
-    //                         .arg(problemId.materialSourceFieldId));
-
-    //    QObject *plugin = loader.instance();
-    //    assert(plugin);
-    //     WeakFormInterface *weakform = qobject_cast<WeakFormInterface *>(plugin);
-
+{    
     // TODO: improve!!!
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "_" + problemId.targetFieldId;
 
-    WeakFormInterface *weakform = NULL;
-    foreach (QObject *plugin, QPluginLoader::staticInstances())
-    {
-        weakform = qobject_cast<WeakFormInterface *>(plugin);
-        if (weakform->fieldId() == fieldId)
-            break;
-    }
+    // get weakform
+    WeakFormInterface *weakform = Util::weakForms()[fieldId];
+    assert(weakform);
 
     if (type == WeakForm_MatVol)
         return weakform->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
@@ -135,9 +119,6 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         return weakform->vectorFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
     else
         assert(0);
-
-    // unload plugin
-    // loader.unload();
 }
 
 template <typename Scalar>

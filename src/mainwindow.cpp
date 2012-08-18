@@ -49,7 +49,7 @@
 #include "hermes2d/problem.h"
 #include "scenetransformdialog.h"
 
-#include "../lib/gl2ps/gl2ps.h"
+#include "gl2ps/gl2ps.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {

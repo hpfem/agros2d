@@ -1,8 +1,7 @@
 QT -= GUI
-TARGET = build/lib/lib
+TARGET = ../libs/agros2d_3dparty
 OBJECTS_DIR = build
 TEMPLATE = lib
-CONFIG += staticlib
 
 contains(CONFIG, HERMES_DEBUG) {
     CONFIG += debug

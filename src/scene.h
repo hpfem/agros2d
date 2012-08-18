@@ -57,6 +57,8 @@ class Problem;
 class SolutionStore;
 class Log;
 
+class WeakFormInterface;
+
 class DxfFilter : public DL_CreationAdapter
 {
 public:
@@ -241,6 +243,9 @@ public:
     static inline SolutionStore *solutionStore() { return Util::singleton()->m_solutionStore; }
     static inline Log *log() { return Util::singleton()->m_log; }
 
+    static void loadPlugins(QStringList plugins);
+    static QMap<QString, WeakFormInterface *> weakForms() { return Util::singleton()->m_weakForms; }
+
 protected:
     Util();
     Util(const Util &);
@@ -256,6 +261,8 @@ private:
     SolutionStore *m_solutionStore;
     ScriptEngineRemote *m_scriptEngineRemote;
     Log *m_log;
+
+    QMap<QString, WeakFormInterface *> m_weakForms;
 };
 
 #endif /* SCENE_H */

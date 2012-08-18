@@ -4,22 +4,24 @@ OBJECTS_DIR = ../../build
 MOC_DIR = ../../build
 
 TEMPLATE = lib
-CONFIG += plugin static
+CONFIG += plugin 
 
 INCLUDEPATH += ../../../hermes2d/include \
     ../../../hermes_common/include \
     ../../../src \
-    ../../../lib/muparser \
-    ../../../lib/dxflib \
     ../../../src/hermes2d \
-    ../../interface
+    ../../../3dparty/muparser \
+    ../../../3dparty/dxflib
 
-LIBS += -lhermes2d
-LIBS += -llib
+INCLUDEPATH += ../hermes2d/include
+INCLUDEPATH += ../hermes_common/include
+
+LIBS += -lagros2d_hermes2d
+LIBS += -lagros2d_3dparty
+LIBS += -lagros2d
 
 linux-g++|linux-g++-64|linux-g++-32 {
-    LIBS += -L../../../lib/build/lib
-    LIBS += -L../../hermes2d/build/lib
+    LIBS += -L../../../libs
 }
 
 win32-msvc2010 {
@@ -32,5 +34,5 @@ win32-msvc2010 {
 //interfaces
 //sources
 
-TARGET        = $$qtLibraryTarget(//target)
-DESTDIR       = ../../../resources/plugins
+TARGET        = $$qtLibraryTarget(agros2d_plugin_//target)
+DESTDIR       = ../../../libs

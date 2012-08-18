@@ -8,8 +8,6 @@
 #include "util.h"
 #include "mainwindow.h"
 
-#include "../weakform/plugins/plugins.h"
-
 class MyApplication : public QApplication {
 public:
     MyApplication(int& argc, char ** argv) : QApplication(argc, argv) {}

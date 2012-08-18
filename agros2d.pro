@@ -1,9 +1,9 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
-SUBDIRS += lib
+SUBDIRS += 3dparty
 SUBDIRS += hermes2d
-SUBDIRS += weakform
-SUBDIRS += src-remote
 SUBDIRS += src
+SUBDIRS += weakform
+SUBDIRS += binary
 
 CONFIG += ordered
 TEMPLATE = subdirs
