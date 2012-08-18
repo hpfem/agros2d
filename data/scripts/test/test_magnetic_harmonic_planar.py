@@ -17,7 +17,6 @@ magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 3
 magnetic.linearity_type = "linear"
-magnetic.weak_forms = "compiled"
 
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})

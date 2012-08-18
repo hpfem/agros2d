@@ -100,7 +100,10 @@ SOURCES += util.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
+<<<<<<< HEAD
     hermes2d/weakform_parser.cpp\    
+=======
+>>>>>>> kus/coupling
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
@@ -176,8 +179,11 @@ HEADERS += util.h \
     indicators/indicator_unity.h \
     collaboration.h \
     resultsview.h \
+<<<<<<< HEAD
     hermes2d/weakform_parser.h \
     hermes2d/weakform_interface.h \
+=======
+>>>>>>> kus/coupling
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \

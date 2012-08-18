@@ -34,7 +34,6 @@ static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<Mode, QString> modeList;
 static QHash<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
-static QHash<WeakFormsType, QString> weakFormsTypeList;
 static QHash<WeakFormKind, QString> weakFormList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<SolutionMode, QString> solutionTypeList;
@@ -58,10 +57,6 @@ AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return ana
 QStringList couplingTypeStringKeys() { return couplingTypeList.values(); }
 QString couplingTypeToStringKey(CouplingType couplingType) { return couplingTypeList[couplingType]; }
 CouplingType couplingTypeFromStringKey(const QString &couplingType) { return couplingTypeList.key(couplingType); }
-
-QStringList weakFormsTypeStringKeys() { return weakFormsTypeList.values(); }
-QString weakFormsTypeToStringKey(WeakFormsType weakFormsType) { return weakFormsTypeList[weakFormsType]; }
-WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType) { return weakFormsTypeList.key(weakFormsType); }
 
 QStringList weakFormStringKeys() { return weakFormList.values(); }
 QString weakFormToStringKey(WeakFormKind weakForm) { return weakFormList[weakForm]; }
@@ -128,11 +123,6 @@ void initLists()
     couplingTypeList.insert(CouplingType_Hard, "hard");
     couplingTypeList.insert(CouplingType_Weak, "weak");
     couplingTypeList.insert(CouplingType_None, "none");
-
-    // WeakForms Type
-    weakFormsTypeList.insert(WeakFormsType_Undefined, "");
-    weakFormsTypeList.insert(WeakFormsType_Interpreted, "interpreted");
-    weakFormsTypeList.insert(WeakFormsType_Compiled, "compiled");
 
     weakFormList.insert(WeakForm_MatVol, "matvol");
     weakFormList.insert(WeakForm_MatSurf, "matsur");
@@ -331,20 +321,6 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
-        throw;
-    }
-}
-
-QString weakFormsTypeString(WeakFormsType weakFormsType)
-{
-    switch (weakFormsType)
-    {
-    case WeakFormsType_Interpreted:
-        return QObject::tr("Interpreted");
-    case WeakFormsType_Compiled:
-        return QObject::tr("Compiled");
-    default:
-        std::cerr << "Weak forms type '" + QString::number(weakFormsType).toStdString() + "' is not implemented. weakFormsTypeString(WeakFormsType weakFormsType)" << endl;
         throw;
     }
 }

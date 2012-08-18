@@ -16,7 +16,6 @@ acoustic.analysis_type = "harmonic"
 acoustic.number_of_refinements = 3
 acoustic.polynomial_order = 2
 acoustic.linearity_type = "linear"
-acoustic.weak_forms = "compiled"
 
 acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 0, "acoustic_normal_acceleration_imag" : 0})
 acoustic.add_boundary("Source acceleration", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 10, "acoustic_normal_acceleration_imag" : 0})

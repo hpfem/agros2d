@@ -121,9 +121,6 @@ private:
     ValueLineEdit *txtTransientTimeStepsSkip;
     QLabel *lblTransientTimeStepsSkip;
 
-    // weak forms
-    QComboBox *cmbWeakForms;
-
     // equation
     QLabel *lblEquationPixmap;
 

@@ -15,7 +15,6 @@ elasticity.analysis_type = "steadystate"
 elasticity.number_of_refinements = 2
 elasticity.polynomial_order = 3
 elasticity.linearity_type = "linear"
-elasticity.weak_forms = "compiled"
 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
 elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})

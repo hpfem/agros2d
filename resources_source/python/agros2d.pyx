@@ -88,9 +88,6 @@ cdef extern from "../../src/pythonlabagros.h":
         double getTimeStepsSkip()
         void setTimeStepsSkip(int) except +
 
-        char *getWeakForms()
-        void setWeakForms(char*) except +
-
         void addBoundary(char*, char*, map[char*, double]) except +
         void setBoundary(char*, char*, map[char*, double]) except +
         void removeBoundary(char*)
@@ -515,13 +512,6 @@ cdef class __Field__:
             return self.thisptr.getTimeStepsSkip()
         def __set__(self, skip):
             self.thisptr.setTimeStepsSkip(skip)
-
-    # weak_forms
-    property weak_forms:
-        def __get__(self):
-            return self.thisptr.getWeakForms()
-        def __set__(self, weak_forms):
-            self.thisptr.setWeakForms(weak_forms)
 
     # boundaries
     def add_boundary(self, char *name, char *type, parameters = {}):

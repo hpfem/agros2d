@@ -14,7 +14,6 @@ agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
 # fields
 current = agros2d.field("current")
 current.analysis_type = "steadystate"
-current.weak_forms = "compiled"
 current.polynomial_order = 2
 current.linearity_type = "linear"
 
@@ -26,7 +25,6 @@ current.add_material("Cu", {"current_conductivity" : 33e6})
 
 heat = agros2d.field("heat")
 heat.analysis_type = "transient"
-heat.weak_forms = "compiled"
 heat.polynomial_order = 2
 heat.linearity_type = "linear"
 heat.initial_condition = 20

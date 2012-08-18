@@ -22,7 +22,6 @@
 #include "scene.h"
 #include "util.h"
 #include "module.h"
-#include "weakform_parser.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
@@ -210,18 +209,14 @@ void Coupling::read(const QString &filename)
             for (int i = 0; i < wf.matrix_form().size(); i++)
             {
                 XMLCoupling::matrix_form form = wf.matrix_form().at(i);
-                m_wfMatrixVolumeExpression.push_back(new ParserFormExpression(form.i(), form.j(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
+                m_wfMatrixVolumeExpression.push_back(new FormInfo(form.i(), form.j()));
             }
 
             // vector form
             for (int i = 0; i < wf.vector_form().size(); i++)
             {
                 XMLCoupling::vector_form form = wf.vector_form().at(i);
-                m_wfVectorVolumeExpression.push_back(new ParserFormExpression(form.i(), form.j(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_linear() : form.axi_linear(),
-                                                                              (m_coordinateType == CoordinateType_Planar) ? form.planar_newton() : form.axi_newton()));
+                m_wfVectorVolumeExpression.push_back(new FormInfo(form.i(), form.j()));
             }
         }
     }

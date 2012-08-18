@@ -18,7 +18,6 @@ heat.analysis_type = "transient"
 heat.number_of_refinements = 1
 heat.polynomial_order = 5
 heat.linearity_type = "linear"
-heat.weak_forms = "compiled"
 heat.nonlinear_tolerance = 0.001
 heat.nonlinear_steps = 10
 heat.initial_condition = 20

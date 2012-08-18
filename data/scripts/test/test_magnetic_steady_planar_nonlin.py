@@ -15,7 +15,6 @@ agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
 # fields
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
-magnetic.weak_forms = "compiled"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
 magnetic.linearity_type = "newton"

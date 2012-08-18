@@ -445,13 +445,6 @@ enum CouplingType
     CouplingType_Hard
 };
 
-enum WeakFormsType
-{
-    WeakFormsType_Undefined,
-    WeakFormsType_Interpreted,
-    WeakFormsType_Compiled
-};
-
 enum WeakFormKind
 {
     WeakForm_MatVol,
@@ -590,7 +583,6 @@ QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString coordinateTypeString(CoordinateType coordinateType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
-QString weakFormsTypeString(WeakFormsType weakFormsType);
 QString weakFormString(WeakFormKind weakForm);
 QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);
@@ -632,10 +624,6 @@ AnalysisType analysisTypeFromStringKey(const QString &analysisType);
 QStringList couplingTypeStringKeys();
 QString couplingTypeToStringKey(CouplingType couplingType);
 CouplingType couplingTypeFromStringKey(const QString &couplingType);
-
-QStringList weakFormsTypeStringKeys();
-QString weakFormsTypeToStringKey(WeakFormsType weakFormsType);
-WeakFormsType weakFormsTypeFromStringKey(const QString &weakFormsType);
 
 QStringList weakFormStringKeys();
 QString weakFormToStringKey(WeakFormKind weakForm);

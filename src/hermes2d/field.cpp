@@ -182,9 +182,6 @@ void FieldInfo::clear()
     m_initialCondition = Value("0.0", false);
     m_timeStepsSkip = Value("1", false);
 
-    // weakforms
-    m_weakFormsType = WeakFormsType_Compiled;
-
     // linearity
     m_linearityType = LinearityType_Linear;
     m_nonlinearTolerance = 1e-3;

@@ -37,8 +37,11 @@
 
 #include "hermes2d/marker.h"
 #include "hermes2d/localpoint.h"
+<<<<<<< HEAD:weakform/templates/template_interface_cpp.xml
 #include "hermes2d/weakform_parser.h"
 #include "module_interface.h"
+=======
+>>>>>>> kus/coupling:weakform/templates/template_weakform_factory_h.xml
 </head>
 
 <includes>

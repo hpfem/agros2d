@@ -95,9 +95,6 @@ public:
     inline Value timeStepsSkip() const { return m_timeStepsSkip; }
     void setTimeStepsSkip(const Value& value) { m_timeStepsSkip = value; emit changed(); }
 
-    inline WeakFormsType weakFormsType() const { return m_weakFormsType; }
-    void setWeakFormsType(const WeakFormsType wft) { m_weakFormsType = wft; emit changed(); }
-
     inline LocalForceValue *forceValue() { return m_forceValue; }
 
     inline WeakFormInterface *weakform() { return m_weakform; }
@@ -153,7 +150,6 @@ private:
     // transient
     Value m_initialCondition;
     Value m_timeStepsSkip;
-
 };
 
 ostream& operator<<(ostream& output, FieldInfo& id);

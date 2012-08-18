@@ -216,10 +216,6 @@ class PyField
         inline const int getTimeStepsSkip() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->timeStepsSkip().number(); }
         void setTimeStepsSkip(const int timeStepsSkip);
 
-        // weak forms
-        inline const char *getWeakForms() { return weakFormsTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->weakFormsType()).toStdString().c_str(); }
-        void setWeakForms(const char *weakForms);
-
         // boundaries
         void addBoundary(char *name, char *type, map<char*, double> parameters);
         void setBoundary(char *name, char *type, map<char*, double> parameters);
