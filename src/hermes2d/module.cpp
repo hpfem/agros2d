@@ -100,7 +100,6 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 }
 
 template <typename Scalar>
-<<<<<<< HEAD
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
@@ -209,13 +208,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     problemId.linearityType = materialTarget->fieldInfo()->linearityType();
     problemId.couplingType = couplingInfo->couplingType();
 
-    if (materialTarget->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
-    {
-        throw AgrosSolverException("Interpreted weak forms are not supported at the moment");
-    }
-
     // compiled form
-    //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
                                                                       area, form, materialTarget, materialSource, offsetI, offsetJ);

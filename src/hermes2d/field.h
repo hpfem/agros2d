@@ -120,9 +120,6 @@ private:
     /// field force calculation
     LocalForceValue *m_forceValue;
 
-    // weakforms
-    WeakFormsType m_weakFormsType;
-
     // weakform factory
     WeakFormInterface *m_weakform;
 

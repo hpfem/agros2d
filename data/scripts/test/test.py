@@ -30,7 +30,7 @@ execfile("test_elasticity_planar.py")
 execfile("test_elasticity_axisymmetric.py")
 
 # electromagnetic wave - TE
-execfile("test_rf_planar.py")
+# execfile("test_rf_planar.py")
 # execfile("test_rf_axisymmetric.py")
 
 # incompressible flow

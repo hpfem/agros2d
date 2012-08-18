@@ -1,5 +1,7 @@
-
 QT += core gui network xml webkit xmlpatterns
+
+OBJECTS_DIR = ../../build
+MOC_DIR = ../../build
 
 TEMPLATE = lib
 CONFIG += plugin static
