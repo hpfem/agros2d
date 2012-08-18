@@ -118,7 +118,10 @@ SOURCES += util.cpp \
     hermes2d/solutionstore.cpp \
     ../resources_source/classes/module_xml.cpp \
     ../resources_source/classes/coupling_xml.cpp \
-    moduledialog.cpp
+    moduledialog.cpp \
+    parser/lex.cpp \
+    parser/nonrecursive_parser.cpp \
+    parser/tree.cpp
 
 HEADERS += util.h \
     value.h \
@@ -193,7 +196,10 @@ HEADERS += util.h \
     hermes2d/field.h \
     hermes2d/block.h \
     hermes2d/solutionstore.h \
-    moduledialog.h
+    moduledialog.h \
+    parser/lex.h \
+    parser/nonrecursive_parser.h \
+    parser/tree.h
 
 INCLUDEPATH += . \
     ../lib \
