@@ -46,11 +46,12 @@ linux-g++ {
 
     # install binary
     system(touch agros2d)
-    system(touch src-remote/agros2d-remote)
     target.path = $${PREFIX}/bin
     target.files = agros2d
-    target-remote.path = $${PREFIX}/bin
-    target-remote.files = src-remote/agros2d-remote
+    
+    # install libraries
+    script.path = $${PREFIX}/lib/
+    script.files = libs/*
 
     # "make install" configuration options
     INSTALLS *= target \
