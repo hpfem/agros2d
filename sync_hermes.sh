@@ -21,6 +21,9 @@ cp -R ../hermes/hermes2d/include/* hermes2d/include/
 cp -R ../hermes/hermes_common/src/* hermes_common/src/
 cp -R ../hermes/hermes_common/include/* hermes_common/include/
 
+cp ../hermes/COPYING hermes2d
+cp ../hermes/AUTHORS hermes2d
+
 # copy remove temp file
 cp hermes2d.pro hermes2d
 rm hermes2d.pro
