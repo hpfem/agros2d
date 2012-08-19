@@ -42,12 +42,14 @@ void Agros2DGenerator::run()
 
     // generate project file
     root.mkpath(GENERATOR_PLUGINROOT + "/" + module);
-    generateProjectFile(module);
+
+    generatePluginProjectFile(module);
+    generatePluginInterfaceFiles(module);
 
     exit(0);
 }
 
-void Agros2DGenerator::generateProjectFile(const QString &id)
+void Agros2DGenerator::generatePluginProjectFile(const QString &id)
 {
     ctemplate::TemplateDictionary output("output");
 
@@ -79,4 +81,38 @@ void Agros2DGenerator::generateProjectFile(const QString &id)
                        arg(id),
                        QString::fromStdString(text));
 }
+
+void Agros2DGenerator::generatePluginInterfaceFiles(const QString &id)
+{
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", id.toStdString());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/interface_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_interface.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    ctemplate::ExpandTemplate(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_interface.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
 

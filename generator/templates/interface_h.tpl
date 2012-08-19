@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef ModuleInterface_FACTORY_H
-#define ModuleInterface_FACTORY_H
+#ifndef {{ID}}_INTERFACE_H
+#define {{ID}}_INTERFACE_H
 
 #include <QObject>
 
@@ -39,16 +39,16 @@
 
 #include "weakform_interface.h"
 
-class ModuleInterface : public QObject, public WeakFormInterface
+class {{CLASS}}Interface : public QObject, public WeakFormInterface
 {
     Q_OBJECT
     Q_INTERFACES(WeakFormInterface)
 
 public:
 
-    virtual ~ModuleInterface() {}
+    virtual ~{{CLASS}}Interface() {}
 
-    inline virtual QString fieldId() { return "module"; }
+    inline virtual QString fieldId() { return "{{ID}}"; }
 
     virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
@@ -65,4 +65,5 @@ public:
 
     virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 };
-#endif
+
+#endif {{ID}}_INTERFACE_H

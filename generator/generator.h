@@ -37,7 +37,8 @@ private:
     std::auto_ptr<XMLModule::module> m_module_xsd;
     XMLModule::module *m_module;
 
-    void generateProjectFile(const QString &id);
+    void generatePluginProjectFile(const QString &id);
+    void generatePluginInterfaceFiles(const QString &id);
 
     inline QStringList coordinateList() { QStringList list; list << "planar" << "axisymmetric"; return list; }
 };
