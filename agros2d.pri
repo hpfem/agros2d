@@ -8,8 +8,6 @@ DEFINES += VERSION_YEAR=2012
 DEFINES += VERSION_MONTH=5
 DEFINES += VERSION_DAY=27
 
-DEFINES += WEAKFORM_FACTORY
-
 INCLUDEPATH += ./ \
     ../src \
     ../3dparty \
@@ -27,7 +25,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../lib/ctemplate/unix
+    INCLUDEPATH += ../3dparty/ctemplate/unix
 
     LIBS += -L../libs
 
@@ -96,14 +94,14 @@ win32-msvc2010 {
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
-    INCLUDEPATH += ../lib/ctemplate/windows
+    INCLUDEPATH += ../3dparty/ctemplate/windows
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
     LIBS += -L../hermes2d/debug/build/lib
-    LIBS += -L../lib/debug/build/lib
+    LIBS += -L../3dparty/debug/build/lib
     LIBS += -L../weakform/debug/build/lib
     LIBS += -L../hermes2d/release/build/lib
-    LIBS += -L../lib/release/build/lib
+    LIBS += -L../3dparty/release/build/lib
     LIBS += -L../weakform/release/build/lib
 
     LIBS += -Lc:/Python27/libs

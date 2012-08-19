@@ -21,6 +21,7 @@
 #define GENERATOR_H
 
 #include "util.h"
+#include "../../resources_source/classes/module_xml.h"
 
 class Agros2DGenerator : public QCoreApplication
 {
@@ -31,6 +32,14 @@ public:
 
 public slots:
     void run();
+
+private:
+    std::auto_ptr<XMLModule::module> m_module_xsd;
+    XMLModule::module *m_module;
+
+    void generateProjectFile(const QString &id);
+
+    inline QStringList coordinateList() { QStringList list; list << "planar" << "axisymmetric"; return list; }
 };
 
 #endif // GENERATOR_H
