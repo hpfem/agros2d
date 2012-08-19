@@ -766,6 +766,11 @@ QString readFileContent(const QString &fileName)
     return NULL;
 }
 
+void writeStringContent(const QString &fileName, QString content)
+{
+    writeStringContent(fileName, &content);
+}
+
 void writeStringContent(const QString &fileName, QString *content)
 {
     QFile file(fileName);

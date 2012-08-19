@@ -21,14 +21,11 @@
 
 #include "ctemplate/template.h"
 
-const QString GENERATOR_ROOT = "generator";
-const QString GENERATOR_TEMPLATEROOT = "templates";
-const QString GENERATOR_PLUGINROOT = "plugins";
+const QString GENERATOR_TEMPLATEROOT = "generator/templates";
+const QString GENERATOR_PLUGINROOT = "weakform_new/plugins/";
 
 Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(argc, argv)
 {
-    QDir appDir(QString("%1/%2").arg(QApplication::applicationDirPath()).arg(GENERATOR_ROOT));
-    appDir.mkdir(GENERATOR_PLUGINROOT);
 }
 
 void Agros2DGenerator::run()
@@ -39,6 +36,12 @@ void Agros2DGenerator::run()
     m_module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + module.toStdString() + ".xml").c_str());
     m_module = m_module_xsd.get();
 
+    // create directory
+    QDir root(QApplication::applicationDirPath());
+    root.mkpath(GENERATOR_PLUGINROOT);
+
+    // generate project file
+    root.mkpath(GENERATOR_PLUGINROOT + "/" + module);
     generateProjectFile(module);
 
     exit(0);
@@ -46,11 +49,8 @@ void Agros2DGenerator::run()
 
 void Agros2DGenerator::generateProjectFile(const QString &id)
 {
-    // create directory
-    QDir dir(QString("%1/%2/%3").arg(QApplication::applicationDirPath()).arg(GENERATOR_ROOT).arg(GENERATOR_PLUGINROOT));
-    dir.mkdir(id);
-
     ctemplate::TemplateDictionary output("output");
+
     output.SetValue("ID", id.toStdString());
 
     for (int i = 0; i < m_module->general().analyses().analysis().size(); i++)
@@ -67,20 +67,16 @@ void Agros2DGenerator::generateProjectFile(const QString &id)
         }
     }
 
+    // expand template
     std::string text;
-    ctemplate::ExpandTemplate(QString("%1/%2/%3/module_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_ROOT).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+    ctemplate::ExpandTemplate(QString("%1/%2/module_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
-    // TODO: -> function
     // save to file
-    QFile file(QString("%1/%2/%3/%4/%4.pro").
-               arg(QApplication::applicationDirPath()).
-               arg(GENERATOR_ROOT).
-               arg(GENERATOR_PLUGINROOT).
-               arg(id));
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
-    out << QString::fromStdString(text);
-    file.close();
+    writeStringContent(QString("%1/%2/%3/%3.pro").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
 }
 

@@ -116,6 +116,7 @@ QByteArray readFileContentByteArray(const QString &fileName);
 QString readFileContent(const QString &fileName);
 
 // write content into the file
+void writeStringContent(const QString &fileName, QString content);
 void writeStringContent(const QString &fileName, QString *content);
 void writeStringContentByteArray(const QString &fileName, QByteArray content);
 
