@@ -18,8 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "generator.h"
+#include "hermes2d/module.h"
 
 #include "ctemplate/template.h"
+
 
 const QString GENERATOR_TEMPLATEROOT = "generator/templates";
 const QString GENERATOR_PLUGINROOT = "weakform_new/plugins/";
@@ -30,34 +32,40 @@ Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(ar
 
 void Agros2DGenerator::run()
 {
-    QString module = "electrostatic";
-
-    // read module
-    m_module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + module.toStdString() + ".xml").c_str());
-    m_module = m_module_xsd.get();
-
     // create directory
     QDir root(QApplication::applicationDirPath());
     root.mkpath(GENERATOR_PLUGINROOT);
 
-    // generate project file
-    root.mkpath(GENERATOR_PLUGINROOT + "/" + module);
+    QMap<QString, QString> modules = availableModules();
 
-    generatePluginProjectFile(module);
-    generatePluginInterfaceFiles(module);
+    foreach (QString moduleId, modules.keys())
+    {
+        // read module
+        std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + moduleId.toStdString() + ".xml").c_str());
+        XMLModule::module *module = module_xsd.get();
+
+        // generate project file
+        root.mkpath(GENERATOR_PLUGINROOT + "/" + moduleId);
+
+        generatePluginProjectFile(module);
+        generatePluginInterfaceFiles(module);
+        generatePluginFilterFiles(module);
+    }
 
     exit(0);
 }
 
-void Agros2DGenerator::generatePluginProjectFile(const QString &id)
+void Agros2DGenerator::generatePluginProjectFile(XMLModule::module *module)
 {
+    QString id = QString::fromStdString(module->general().id());
+
     ctemplate::TemplateDictionary output("output");
 
     output.SetValue("ID", id.toStdString());
 
-    for (int i = 0; i < m_module->general().analyses().analysis().size(); i++)
+    for (int i = 0; i < module->general().analyses().analysis().size(); i++)
     {
-        XMLModule::analysis analysis = m_module->general().analyses().analysis().at(i);
+        XMLModule::analysis analysis = module->general().analyses().analysis().at(i);
 
         foreach (QString coordinate, coordinateList())
         {
@@ -82,11 +90,13 @@ void Agros2DGenerator::generatePluginProjectFile(const QString &id)
                        QString::fromStdString(text));
 }
 
-void Agros2DGenerator::generatePluginInterfaceFiles(const QString &id)
+void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
 {
+    QString id = QString::fromStdString(module->general().id());
+
     ctemplate::TemplateDictionary output("output");
 
-    output.SetValue("ID", id.toStdString());
+    output.SetValue("ID", module->general().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
     std::string text;
@@ -114,5 +124,41 @@ void Agros2DGenerator::generatePluginInterfaceFiles(const QString &id)
                        arg(id),
                        QString::fromStdString(text));
 }
+
+void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
+{
+    QString id = QString::fromStdString(module->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", id.toStdString());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/filter_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_filter.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    ctemplate::ExpandTemplate(QString("%1/%2/filter_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_filter.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
 
 

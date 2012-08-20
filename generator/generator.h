@@ -34,11 +34,9 @@ public slots:
     void run();
 
 private:
-    std::auto_ptr<XMLModule::module> m_module_xsd;
-    XMLModule::module *m_module;
-
-    void generatePluginProjectFile(const QString &id);
-    void generatePluginInterfaceFiles(const QString &id);
+    void generatePluginProjectFile(XMLModule::module *module);
+    void generatePluginInterfaceFiles(XMLModule::module *module);
+    void generatePluginFilterFiles(XMLModule::module *module);
 
     inline QStringList coordinateList() { QStringList list; list << "planar" << "axisymmetric"; return list; }
 };
