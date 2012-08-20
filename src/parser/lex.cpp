@@ -2,10 +2,10 @@
 #include "lex.h"
 
 
-Token::Token(Token_type type, QString text)
+Token::Token(TokenType type, QString text)
 {
-    this->text = text;
-    this->type = type;
+    this->m_text = text;
+    this->m_type = type;
 }
 
 void LexicalAnalyser::sortByLength(QStringList & list)
@@ -37,24 +37,24 @@ void LexicalAnalyser::print(const QStringList & list)
     }
 }
 
-QList<Token> LexicalAnalyser::getTokens()
+QList<Token> LexicalAnalyser::tokens()
 {
-    return this->tokens;
+    return this->m_tokens;
 }
 
 QString get_expression( QList<Token> const & symbol_que, int position = 0)
 {
     int n = symbol_que.count();
-    int nesting_level = symbol_que[position].nesting_level;
+    int nesting_level = symbol_que[position].nestingLevel;
     QString expression =  "neco";
     for(int i = position; i < n; i++)
     {
-        if (nesting_level < symbol_que[i].nesting_level)
+        if (nesting_level < symbol_que[i].nestingLevel)
         {
             nesting_level++;
         }
 
-        if (nesting_level > symbol_que[i].nesting_level)
+        if (nesting_level > symbol_que[i].nestingLevel)
         {
             nesting_level--;
         }
@@ -64,7 +64,7 @@ QString get_expression( QList<Token> const & symbol_que, int position = 0)
 }
 
 
-LexicalAnalyser::LexicalAnalyser(QString expression)
+LexicalAnalyser::LexicalAnalyser(const QString &expression)
 {
     QTextStream qout(stdout);
     QStringList variables;
@@ -74,14 +74,14 @@ LexicalAnalyser::LexicalAnalyser(QString expression)
 
     variables << "x" << "yy" << "y" << "xx";
     sortByLength(variables);
-    terminals.append(Terminals(VARIABLE, variables));
+    terminals.append(Terminals(TokenType_VARIABLE, variables));
 
     operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" ;
     sortByLength(operators);
-    terminals.append(Terminals(OPERATOR, operators));
+    terminals.append(Terminals(TokenType_OPERATOR, operators));
     functions << "sin" << "cos" << "log" << "log10";
     sortByLength(functions);
-    terminals.append(Terminals(FUNCTION, functions));
+    terminals.append(Terminals(TokenType_FUNCTION, functions));
 
     int pos = 0;
 
@@ -100,15 +100,15 @@ LexicalAnalyser::LexicalAnalyser(QString expression)
         if(index == pos)
         {
             QString text = r_exp.capturedTexts().takeFirst();
-            Token symbol(NUMBER, text);
-            symbol.nesting_level = nesting_level;
+            Token symbol(TokenType_NUMBER, text);
+            symbol.nestingLevel = nesting_level;
             pos += text.count();
-            tokens.append(symbol);
+            m_tokens.append(symbol);
         }
 
         foreach(Terminals terminal_symbols, terminals)
         {
-            terminal_symbols.find(expression, tokens, pos, nesting_level);
+            terminal_symbols.find(expression, m_tokens, pos, nesting_level);
         }
 
         if (old_pos == pos)
@@ -131,43 +131,43 @@ LexicalAnalyser::LexicalAnalyser(QString expression)
     } */
 
 
-    get_expression(tokens);
+    get_expression(m_tokens);
 }
 
 
-Terminals::Terminals(Token_type terminal_type, QStringList terminal_list)
+Terminals::Terminals(TokenType terminal_type, QStringList terminal_list)
 {
 
     int n = terminal_list.count();
     for(int i = 0; i < n; i++)
     {
         Token symbol = Token(terminal_type, terminal_list[i]);
-        this->list.append(symbol);
+        this->m_list.append(symbol);
     }
 }
 
-void Terminals::find(QString s, QList<Token> & symbol_que, int & pos, int & nesting_level)
+void Terminals::find(const QString &s, QList<Token> &symbol_que, int &pos, int &nesting_level)
 {
     Token symbol;
-    int n = this->list.count();
+    int n = this->m_list.count();
     for (int i = 0; i < n; i++)
     {
-        int loc_pos = s.indexOf(list[i].get_text(), pos);
+        int loc_pos = s.indexOf(m_list[i].text(), pos);
         if (loc_pos == pos) {
-            symbol = Token(list[i].get_type(), list[i].get_text());
+            symbol = Token(m_list[i].type(), m_list[i].text());
 
-            if (symbol.get_text() == "(")
+            if (symbol.text() == "(")
             {
-                symbol.nesting_level = nesting_level++;
+                symbol.nestingLevel = nesting_level++;
             } else
-                if (symbol.get_text() == ")")
+                if (symbol.text() == ")")
                 {
-                    symbol.nesting_level = --nesting_level;
+                    symbol.nestingLevel = --nesting_level;
                 }
                 else
-                    symbol.nesting_level = nesting_level;
+                    symbol.nestingLevel = nesting_level;
 
-            pos += list[i].get_text().count();
+            pos += m_list[i].text().count();
             symbol_que.append(symbol);
             break;
         }
@@ -177,9 +177,9 @@ void Terminals::find(QString s, QList<Token> & symbol_que, int & pos, int & nest
 void Terminals::print()
 {
     QTextStream qout(stdout);
-    int n =this->list.count();
+    int n =this->m_list.count();
     for(int i = 0; i < n; i++)
     {
-        qout << this->list[i].get_text() << endl;
+        qout << this->m_list[i].text() << endl;
     }
 }

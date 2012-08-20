@@ -25,65 +25,64 @@
 
 TreeNode::TreeNode(TreeNode * left_node, TreeNode * right_node, QString operation)
 {
-    this->m_node_type = OPERATOR;
+    this->m_nodeType = TokenType_OPERATOR;
     this->m_operator = operation;
     this->m_leaf = false;
-    this->m_left_tree = left_node;
-    this->m_right_tree = right_node;
+    this->m_leftTree = left_node;
+    this->m_rightTree = right_node;
     this->m_value = 0;
     this->m_text = "";
 }
 
 TreeNode::TreeNode(double value)
 {
-    this->m_node_type = NUMBER;
+    this->m_nodeType = TokenType_NUMBER;
     this->m_operator = "";
     this->m_leaf = true;
-    this->m_left_tree = 0;
-    this->m_right_tree = 0;
+    this->m_leftTree = 0;
+    this->m_rightTree = 0;
     this->m_value = value;
     this->m_text = "";
 }
 
-TreeNode::TreeNode(double * variable)
+TreeNode::TreeNode(double *variable)
 {
-    this->m_node_type = VARIABLE;
+    this->m_nodeType = TokenType_VARIABLE;
     this->m_operator = "";
     this->m_leaf = true;
-    this->m_left_tree = 0;
-    this->m_right_tree = 0;
+    this->m_leftTree = 0;
+    this->m_rightTree = 0;
     this->m_variable = variable;
     this->m_value = 0;
     this->m_text = "";
 }
 
-void SyntacticAnalyser::Parse(QList<Token> tokens)
+void SyntacticAnalyser::parse(QList<Token> tokens)
 {
-    this->tokens = tokens;
-    if(this->tokens.count() != 0)
+    this->m_tokens = tokens;
+    if(this->m_tokens.count() != 0)
     {
-        this->current_symbol = this->tokens.takeFirst();
-        this->syntax_tree = this->parseExpression();
+        this->m_currentSymbol = this->m_tokens.takeFirst();
+        this->m_syntaxTree = this->parseExpression();
     }
 }
 
 TreeNode *  SyntacticAnalyser::parseExpression()
 {
-
     TreeNode * left_node = 0;
     TreeNode * right_node = 0;
     TreeNode * operator_node = 0;
 
     left_node = parseTerm();
 
-    while (((current_symbol.get_type() == OPERATOR)&&((current_symbol.get_text() == "+") ||
-                                                      (current_symbol.get_text() == "-"))))
+    while (((m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.text() == "+") ||
+                                                      (m_currentSymbol.text() == "-"))))
     {
 
-        QString operation = current_symbol.get_text();
-        if (this->tokens.count() != 0)
+        QString operation = m_currentSymbol.text();
+        if (this->m_tokens.count() != 0)
         {
-            current_symbol = tokens.takeFirst();
+            m_currentSymbol = m_tokens.takeFirst();
         }
         right_node = parseTerm();
 
@@ -114,14 +113,14 @@ TreeNode *  SyntacticAnalyser::parseTerm()
 
     left_node = parseExponent();
 
-    while ((tokens.length() != 0) && (current_symbol.get_type() == OPERATOR)&&((current_symbol.get_text() == "*") ||
-                                                                               (current_symbol.get_text() == "/")))
+    while ((m_tokens.length() != 0) && (m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.text() == "*") ||
+                                                                               (m_currentSymbol.text() == "/")))
     {
 
-        QString operation = current_symbol.get_text();
-        if (this->tokens.count() != 0)
+        QString operation = m_currentSymbol.text();
+        if (this->m_tokens.count() != 0)
         {
-            current_symbol = tokens.takeFirst();
+            m_currentSymbol = m_tokens.takeFirst();
         }
         right_node = parseExponent();
 
@@ -153,14 +152,14 @@ TreeNode *  SyntacticAnalyser::parseExponent()
 
     left_node = parseFactor();
 
-    while ((tokens.length() != 0) && (current_symbol.get_type() == OPERATOR)&&((current_symbol.get_text() == "**") ||
-                                                                               (current_symbol.get_text() == "^")))
+    while ((m_tokens.length() != 0) && (m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.text() == "**") ||
+                                                                               (m_currentSymbol.text() == "^")))
     {
 
-        QString operation = current_symbol.get_text();
-        if (this->tokens.count() != 0)
+        QString operation = m_currentSymbol.text();
+        if (this->m_tokens.count() != 0)
         {
-            current_symbol = tokens.takeFirst();
+            m_currentSymbol = m_tokens.takeFirst();
         }
         right_node = parseFactor();
 
@@ -189,68 +188,68 @@ TreeNode *  SyntacticAnalyser::parseFactor()
     TreeNode * node = 0;
     static double sign = 1;
 
-    if ((current_symbol.get_text() == "-") || (current_symbol.get_text() == "+"))
+    if ((m_currentSymbol.text() == "-") || (m_currentSymbol.text() == "+"))
     {
-        if (current_symbol.get_text() == "-")
+        if (m_currentSymbol.text() == "-")
         {
             sign = sign * (-1);
         }
 
-        if (this->tokens.count() != 0)
+        if (this->m_tokens.count() != 0)
         {
-            current_symbol = tokens.takeFirst();
+            m_currentSymbol = m_tokens.takeFirst();
         }
         node = this->parseFactor();
     }
     else
     {
 
-        if (current_symbol.get_type() == NUMBER)
+        if (m_currentSymbol.type() == TokenType_NUMBER)
         {
-            double value = current_symbol.get_text().toDouble() * sign;
+            double value = m_currentSymbol.text().toDouble() * sign;
             node = new TreeNode(value);
-            if (this->tokens.count() != 0)
+            if (this->m_tokens.count() != 0)
             {
-                current_symbol = tokens.takeFirst();
+                m_currentSymbol = m_tokens.takeFirst();
             }
         }
-        if (current_symbol.get_type() == VARIABLE)
+        if (m_currentSymbol.type() == TokenType_VARIABLE)
         {
-            node = new TreeNode((this->m_variable_map.value(current_symbol.get_text())));
-            if (this->tokens.count() != 0)
+            node = new TreeNode((this->m_variable_map.value(m_currentSymbol.text())));
+            if (this->m_tokens.count() != 0)
             {
-                current_symbol = tokens.takeFirst();
+                m_currentSymbol = m_tokens.takeFirst();
             }
         }
     }
 
 
-    if (current_symbol.get_type() == FUNCTION)
+    if (m_currentSymbol.type() == TokenType_FUNCTION)
     {
-        QString function_name = current_symbol.get_text();
-        if (this->tokens.count() != 0)
+        QString function_name = m_currentSymbol.text();
+        if (this->m_tokens.count() != 0)
         {
-            current_symbol = tokens.takeFirst();
+            m_currentSymbol = m_tokens.takeFirst();
         }
         node = new TreeNode(parseFactor(), 0, function_name);
     }
 
 
-    if ((current_symbol.get_text() == "("))
+    if ((m_currentSymbol.text() == "("))
     {
-        while((current_symbol.get_text() != ")") && (tokens.length() != 0))
+        while((m_currentSymbol.text() != ")") && (m_tokens.length() != 0))
         {
-            if (this->tokens.count() != 0)
+            if (this->m_tokens.count() != 0)
             {
-                current_symbol = tokens.takeFirst();
+                m_currentSymbol = m_tokens.takeFirst();
             }
 
             node = parseExpression();
         }
 
-        if (this->tokens.count() != 0)
+        if (this->m_tokens.count() != 0)
         {
-            current_symbol = tokens.takeFirst();
+            m_currentSymbol = m_tokens.takeFirst();
         }
     }
 
@@ -260,7 +259,7 @@ TreeNode *  SyntacticAnalyser::parseFactor()
 void SyntacticAnalyser::printTree()
 {
     QTextStream qout(stdout);
-    goThroughTree(this->syntax_tree);
+    goThroughTree(this->m_syntaxTree);
 }
 
 void SyntacticAnalyser::goThroughTree(TreeNode * node)
@@ -276,7 +275,7 @@ void SyntacticAnalyser::goThroughTree(TreeNode * node)
 
 SyntacticAnalyser::~SyntacticAnalyser()
 {
-    deleteTree(this->syntax_tree);
+    deleteTree(this->m_syntaxTree);
 }
 
 void SyntacticAnalyser::deleteTree(TreeNode * node)
@@ -296,7 +295,7 @@ void SyntacticAnalyser::deleteTree(TreeNode * node)
 
 double SyntacticAnalyser::evalTree()
 {
-    return evalTree(this->syntax_tree);
+    return evalTree(this->m_syntaxTree);
 }
 
 double SyntacticAnalyser::evalTree(TreeNode * node)
@@ -304,10 +303,10 @@ double SyntacticAnalyser::evalTree(TreeNode * node)
     double result;
     if (node->isLeaf())
     {
-        if (node->getNodeType() == NUMBER)
-            result = node->getValue();
-        if (node->getNodeType() == VARIABLE)
-            result = * node->getVariable();
+        if (node->nodeType() == TokenType_NUMBER)
+            result = node->value();
+        if (node->nodeType() == TokenType_VARIABLE)
+            result = * node->variable();
     }
     else
     {

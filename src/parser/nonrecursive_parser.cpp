@@ -24,7 +24,7 @@
 
 #define ERROR 1
 
-void NonRecursiveParser::Parse()
+void NonRecursiveParser::parse()
 {
 
 }
@@ -34,39 +34,39 @@ ParserTable::ParserTable()
 
 }
 
-int ParserTable::Next(Token_type i, Token_type j)
+int ParserTable::next(TokenType i, TokenType j)
 {
     switch(i)
     {
-    case EXPRESION:
+    case TokenType_EXPRESION:
         switch(j)
         {
-        case VARIABLE:
-        case LANGLE:
-            stack.append(Token(EXPRESSION1));
-            stack.append(Token(TERM));
-            break;
+        case TokenType_VARIABLE:
+        // case TokenType_LANGLE:
+        //     stack.append(Token(TokenType_EXPRESSION1));
+        //     stack.append(Token(TokenType_TERM));
+        //     break;
         default:
             return ERROR;
         }
         break;
 
-    case EXPRESSION1:
+    case TokenType_EXPRESSION1:
         switch(j)
         {
-        case PLUS:
-            stack.append(EXPRESSION1);
-            stack.append(TERM);
-            stack.append(PLUS);
+        case TokenType_PLUS:
+            stack.append(TokenType_EXPRESSION1);
+            stack.append(TokenType_TERM);
+            stack.append(TokenType_PLUS);
             break;
          default:
             return ERROR;
         }
-    case TERM:
+    case TokenType_TERM:
         break;
-    case TERM1:
+    case TokenType_TERM1:
         break;
-    case FACTOR:
+    case TokenType_FACTOR:
         break;
     default:
         ;

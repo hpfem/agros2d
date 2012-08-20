@@ -26,10 +26,12 @@
 class NonRecursiveParser
 {
 public:
-    NonRecursiveParser(QList<Token> tokens) {this->tokens = tokens;}
-    void Parse();
+    NonRecursiveParser(QList<Token> tokens) {this->m_tokens = tokens;}
+
+    void parse();
+
 private:
-    QList<Token> tokens;
+    QList<Token> m_tokens;
 };
 
 class ParserTable
@@ -37,7 +39,8 @@ class ParserTable
 public:
     ParserTable();
     QStack <Token> stack;
-    int Next(Token_type i, Token_type j);
+
+    int next(TokenType i, TokenType j);
 };
 
 #endif // NONRECURSIVE_PARSER_H

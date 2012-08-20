@@ -27,46 +27,66 @@
 #include <QtCore/QDebug>
 #include <QStringList>
 
-enum Token_type {OPERATOR = 0, PLUS = 1, MINUS = 2, TIMES = 3, DIVIDE = 4, LANGLE = 5, RANGLE = 6, VARIABLE = 10, CONSTANT = 20, FUNCTION = 30, NUMBER = 40, EXPRESION = 100, EXPRESSION1 = 101, TERM = 102, TERM1 = 103, FACTOR = 104};
+enum TokenType
+{
+    TokenType_OPERATOR = 0,
+    TokenType_PLUS = 1,
+    TokenType_MINUS = 2,
+    TokenType_TIMES = 3,
+    TokenType_DIVIDE = 4,
+    TokenType_ = 5,
+    TokenType_RANGLE = 6,
+    TokenType_VARIABLE = 10,
+    TokenType_CONSTANT = 20,
+    TokenType_FUNCTION = 30,
+    TokenType_NUMBER = 40,
+    TokenType_EXPRESION = 100,
+    TokenType_EXPRESSION1 = 101,
+    TokenType_TERM = 102,
+    TokenType_TERM1 = 103,
+    TokenType_FACTOR = 104
+};
 
 class Token
 {
 public:
-    Token(){;}
-    Token(Token_type) {this->type = type;}
-    Token(Token_type type, QString text);
-    Token_type get_type() {return this->type;}
-    QString get_text() {return this->text;}
-    int nesting_level;
+    Token() {}
+    Token(TokenType type) { this->m_type = type; }
+    Token(TokenType m_type, QString m_text);
+
+    inline TokenType type() { return this->m_type; }
+    inline QString text() { return this->m_text; }
+
+    int nestingLevel;
 
 private:
-    Token_type type;
-    QString text;
+    TokenType m_type;
+    QString m_text;
 };
 
 
 class LexicalAnalyser
 {
 public:
-    QList<Token> getTokens();
-    void print(const QStringList & list);
+    QList<Token> tokens();
+    void print(const QStringList &list);
 
 private:
-    void sortByLength(QStringList & list);
-    QList<Token> tokens;
+    void sortByLength(QStringList &list);
+    QList<Token> m_tokens;
 
 public:
-    LexicalAnalyser(QString s);
+    LexicalAnalyser(const QString &expression);
 };
 
 class Terminals
 {
-    QList<Token> list;
+    QList<Token> m_list;
 
 public:
 
-    Terminals(Token_type terminal_type, QStringList terminal_list);
-    void find(QString s, QList<Token> & symbol_que, int & pos, int & nesting_level);
+    Terminals(TokenType terminal_type, QStringList terminal_list);
+    void find(const QString &s, QList<Token> &symbol_que, int &pos, int &nesting_level);
     void print();
 };
 #endif // LEX_H
