@@ -19,3 +19,58 @@
 
 #include "nonrecursive_parser.h"
 
+#include "nonrecursive_parser.h"
+#include "lex.h"
+
+#define ERROR 1
+
+void NonRecursiveParser::Parse()
+{
+
+}
+
+ParserTable::ParserTable()
+{
+
+}
+
+int ParserTable::Next(Token_type i, Token_type j)
+{
+    switch(i)
+    {
+    case EXPRESION:
+        switch(j)
+        {
+        case VARIABLE:
+        case LANGLE:
+            stack.append(Token(EXPRESSION1));
+            stack.append(Token(TERM));
+            break;
+        default:
+            return ERROR;
+        }
+        break;
+
+    case EXPRESSION1:
+        switch(j)
+        {
+        case PLUS:
+            stack.append(EXPRESSION1);
+            stack.append(TERM);
+            stack.append(PLUS);
+            break;
+         default:
+            return ERROR;
+        }
+    case TERM:
+        break;
+    case TERM1:
+        break;
+    case FACTOR:
+        break;
+    default:
+        ;
+    }
+
+    return 0;
+}

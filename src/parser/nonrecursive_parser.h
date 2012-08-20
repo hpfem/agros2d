@@ -19,17 +19,25 @@
 
 #ifndef NONRECURSIVE_PARSER_H
 #define NONRECURSIVE_PARSER_H
-
 #include <QtCore/QList>
+#include <QtCore/QStack>
 #include "lex.h"
 
 class NonRecursiveParser
 {
 public:
-    NonRecursiveParser(QList<Token> tokens) { this->m_tokens = tokens;}
-
+    NonRecursiveParser(QList<Token> tokens) {this->tokens = tokens;}
+    void Parse();
 private:
-    QList<Token> m_tokens;
+    QList<Token> tokens;
+};
+
+class ParserTable
+{
+public:
+    ParserTable();
+    QStack <Token> stack;
+    int Next(Token_type i, Token_type j);
 };
 
 #endif // NONRECURSIVE_PARSER_H

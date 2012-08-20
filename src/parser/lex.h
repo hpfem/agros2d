@@ -27,40 +27,33 @@
 #include <QtCore/QDebug>
 #include <QStringList>
 
-enum TokenType
-{
-    OPERATOR = 100,
-    VARIABLE = 101,
-    CONSTANT = 102,
-    FUNCTION = 103,
-    NUMBER = 104
-};
+enum Token_type {OPERATOR = 0, PLUS = 1, MINUS = 2, TIMES = 3, DIVIDE = 4, LANGLE = 5, RANGLE = 6, VARIABLE = 10, CONSTANT = 20, FUNCTION = 30, NUMBER = 40, EXPRESION = 100, EXPRESSION1 = 101, TERM = 102, TERM1 = 103, FACTOR = 104};
 
-enum NonTerminals
+class Token
 {
-    EXPRESION = 0,
-    EXPRESSION1 = 1,
-    TERM = 2,
-    TERM1 = 3,
-    FACTOR = 4
-};
+public:
+    Token(){;}
+    Token(Token_type) {this->type = type;}
+    Token(Token_type type, QString text);
+    Token_type get_type() {return this->type;}
+    QString get_text() {return this->text;}
+    int nesting_level;
 
-struct Token
-{
-    TokenType type;
+private:
+    Token_type type;
     QString text;
-    int nestingLevel;
 };
+
 
 class LexicalAnalyser
 {
 public:
-    QList<Token> tokens();
+    QList<Token> getTokens();
     void print(const QStringList & list);
 
 private:
     void sortByLength(QStringList & list);
-    QList<Token> m_tokens;
+    QList<Token> tokens;
 
 public:
     LexicalAnalyser(QString s);
@@ -68,14 +61,12 @@ public:
 
 class Terminals
 {
-public:
-    Terminals(TokenType terminal_type, QStringList terminal_list);
-
-    void find(QString s, QList<Token> &symbol_que, int &pos, int &nesting_level);
-    void print();
-
-private:
     QList<Token> list;
-};
 
+public:
+
+    Terminals(Token_type terminal_type, QStringList terminal_list);
+    void find(QString s, QList<Token> & symbol_que, int & pos, int & nesting_level);
+    void print();
+};
 #endif // LEX_H

@@ -23,59 +23,69 @@
 #include <QString>
 #include "lex.h"
 
+
+// ToDo: Make derivred classes for diferent types of nodes i.e
+// opreator node, variable node, konstant node, function node etc.
+
 class TreeNode
 {
-public:
-    TreeNode(double value);
-    TreeNode(TreeNode *leftNode, TreeNode *rightNode, QString operation);
-
-    inline void setLeftTree(TreeNode *left_tree) { m_left_tree = left_tree; }
-    inline void setRightTree(TreeNode *right_tree) { m_right_tree = right_tree; }
-    inline TreeNode *leftTree() { return m_left_tree;}
-    inline TreeNode *rightTree() { return m_right_tree;}
-
-    inline void setNodeType(TokenType node_type) { this->m_node_type = node_type; }
-    inline TokenType nodeType() { return m_node_type;}
-
-    inline void setLeaf(bool leaf) { this->m_leaf = leaf; }
-    inline bool isLeaf() { return m_leaf; }
-
-    inline double value() { return m_value; }
-    inline QString getOperator() { return m_operator; }
-
 private:
     bool m_leaf;
     TreeNode * m_left_tree;
     TreeNode * m_right_tree;
-    TokenType m_node_type;
+    Token_type m_node_type;
     double m_value;
+    double * m_variable;
     QString m_text;
     QString m_operator;
+
+
+public:
+    TreeNode(double value);
+    TreeNode(double * variable);
+    TreeNode(TreeNode * leftNode, TreeNode * rightNode, QString operation);
+    bool isLeaf() {return m_leaf;}
+    TreeNode * leftTree(){return m_left_tree;}
+    TreeNode * rightTree(){return m_right_tree;}
+
+    void setLeftTree(TreeNode * left_tree){m_left_tree = left_tree;}
+    void setRightTree(TreeNode * right_tree){m_right_tree = right_tree;}
+
+    QString getText(){return this->m_text;}
+    double * getVariable() {return this->m_variable;}
+    Token_type getNodeType(){return m_node_type;}
+    void setNodeType(Token_type node_type){this->m_node_type = node_type;}
+    void setLeaf(bool leaf) {this->m_leaf = leaf;}
+    double getValue() {return m_value;}
+    QString getOperator() {return m_operator;}
 };
 
 
 class SyntacticAnalyser
 {
-public:
-    SyntacticAnalyser(QList<Token> tokens);
-    ~SyntacticAnalyser();
+private:
+    QList<Token> tokens;
+    Token current_symbol;
+    TreeNode * syntax_tree;
+    void deleteTree(TreeNode * node);
 
+
+public:
+    QHash<QString, double *> m_variable_map; // ToDo: Make it private
+    SyntacticAnalyser(){}
+    void Parse(QList<Token> tokens);
+    ~SyntacticAnalyser();
     void deleteTree();
     void printTree();
-    void goThroughTree(TreeNode *node);
-    TreeNode *parseExpression();
-    TreeNode *parseTerm();
-    TreeNode *parseFactor();
-    TreeNode *buildNode(TreeNode *left_node, TreeNode *right_node, QString operation);
-    TreeNode *bildLeaf(TreeNode *left_node, TreeNode *right_node, QString operation);
-    double evalTree(TreeNode *node);
-
-private:
-    QList<Token> m_tokens;
-    Token m_currentSymbol;
-    TreeNode *m_syntaxTree;
-
-    void deleteTree(TreeNode * node);
+    void goThroughTree(TreeNode * node);
+    TreeNode * parseExpression();
+    TreeNode * parseTerm();
+    TreeNode * parseFactor();
+    TreeNode * parseExponent();
+    TreeNode * buildNode(TreeNode * left_node, TreeNode * right_node, QString operation);
+    TreeNode * bildLeaf(TreeNode * left_node, TreeNode * right_node, QString operation);
+    double evalTree(TreeNode * node);
+    double evalTree();
 };
 
 #endif // TREE_H
