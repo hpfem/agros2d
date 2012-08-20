@@ -68,13 +68,13 @@ void Agros2DGenerator::generatePluginProjectFile(XMLModule::module *module)
     {
         XMLModule::analysis analysis = module->general().analyses().analysis().at(i);
 
-        foreach (QString coordinate, coordinateList())
+        foreach (CoordinateType coordinateType, coordinateTypeList())
         {
             ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
 
             field->SetValue("ID", id.toStdString());
             field->SetValue("ANALYSIS_TYPE", analysis.id());
-            field->SetValue("COORDINATE_TYPE", coordinate.toStdString());
+            field->SetValue("COORDINATE_TYPE", coordinateTypeToStringKey(coordinateType).toStdString());
         }
     }
 
@@ -119,24 +119,26 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
     {
         foreach(XMLModule::matrix_form matrix_form, weakform.matrix_form())
         {
-            foreach(QString linearityType, linearityTypeList())
+            foreach(LinearityType linearityType, linearityTypeList())
             {
-                std::cout << module->general().id() << endl;
-                std::cout << weakform.analysistype() << endl;
-                std::cout << (linearityType).toStdString();
-                ctemplate::TemplateDictionary *field = output.AddSectionDictionary("EXACT_SOURCE");
-                field->SetValue("FUNCTION_NAME", "CustomMatrixFormVol_" +linearityType.toStdString());
-                field->SetValue("COORDINATE_TYPE",  "CoordinateType_Axisymmetric");
-                field->SetValue("LINEARITY_TYPE", "LinearityType_Linear");
-                field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
+                foreach (CoordinateType coordinateType, coordinateTypeList())
+                {
+                    ctemplate::TemplateDictionary *field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
+                    field->SetValue("FUNCTION_NAME", linearityTypeStringEnum(linearityType).toLower().toStdString());
+                    field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
+                    field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
+                    field->SetValue("LINEARITY_TYPE", linearityTypeStringEnum(linearityType).toLower().toStdString());
+                    field->SetValue("LINEARITY_TYPE_CAP", linearityTypeStringEnum(linearityType).toStdString());
+                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                    field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
+                    field->SetValue("COLUMN_INDEX", QString::number(matrix_form.i()).toStdString());
+                    field->SetValue("MODULE_ID", module->general().id());
+                }
             }
         }
     }
-
-
     ctemplate::ExpandTemplate(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
-
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_interface.cpp").
                        arg(QApplication::applicationDirPath()).
@@ -144,6 +146,10 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
                        arg(id),
                        QString::fromStdString(text));
 }
+
+
+
+
 
 void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
 {
@@ -159,6 +165,41 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
     // header - expand template
     ctemplate::ExpandTemplate(QString("%1/%2/filter_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
+
+    for (int i = 0; i < module->postprocessor().localvariables().localvariable().size(); i++)
+    {
+        XMLModule::localvariable lv = module->postprocessor().localvariables().localvariable().at(i);
+
+        for (int j = 0; j < lv.expression().size(); j++)
+        {
+            XMLModule::expression expr = lv.expression().at(j);
+
+            foreach (CoordinateType coordinateType, coordinateTypeList())
+            {
+                std::string exprVar;
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    if (expr.planar().present())
+                        exprVar = expr.planar().get();
+                }
+                else
+                {
+                    if (expr.axi().present())
+                        exprVar = expr.axi().get();
+                }
+
+                if (!exprVar.empty())
+                {
+                    ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
+
+                    expression->SetValue("VARIABLE", lv.id());
+                    expression->SetValue("ANALYSIS_TYPE", analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()))).toStdString());
+                    expression->SetValue("COORDINATE_TYPE", coordinateTypeStringEnum(coordinateType).toStdString());
+                    expression->SetValue("EXPRESSION", exprVar);
+                }
+            }
+        }
+    }
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_filter.h").

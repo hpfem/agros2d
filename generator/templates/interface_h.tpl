@@ -37,7 +37,7 @@
 #include "hermes2d/marker.h"
 #include "hermes2d/localpoint.h"
 
-#include "weakform_interface.h"
+#include "hermes2d/weakform_interface.h"
 
 class {{CLASS}}Interface : public QObject, public WeakFormInterface
 {

@@ -38,8 +38,53 @@ private:
     void generatePluginInterfaceFiles(XMLModule::module *module);
     void generatePluginFilterFiles(XMLModule::module *module);
 
-    inline QStringList coordinateList() { QStringList list; list << "planar" << "axisymmetric"; return list; }
-    inline QStringList linearityTypeList() { QStringList list; list << "linear" << "newton" << "picard"; return list; }
+    inline QStringList weakFormTypeList(){ QStringList list; list << "EXACT_SOURCE" << "MATRIX_VOL_SOURCE" << "VECTOR_VOL_SOURCE" << "MATRIX_SURF_SOURCE" << "VECTOR_SURF_SOURCE"; return list; }
+
+    inline QList<LinearityType> linearityTypeList() { QList<LinearityType> list; list << LinearityType_Linear << LinearityType_Newton << LinearityType_Picard << LinearityType_Undefined; return list; }
+    QString linearityTypeStringEnum(LinearityType linearityType)
+    {
+        switch (linearityType)
+        {
+            case LinearityType_Linear:
+                return ("Linear");
+                break;
+            case LinearityType_Newton:
+                return ("Newton");
+                break;
+            case LinearityType_Picard:
+                return ("Picard");
+                break;
+            case LinearityType_Undefined:
+                return ("Undefined");
+                break;
+            default:
+                assert(0);
+        }
+    }
+
+    inline QList<CoordinateType> coordinateTypeList() { QList<CoordinateType> list; list << CoordinateType_Planar << CoordinateType_Axisymmetric; return list; }
+    QString coordinateTypeStringEnum(CoordinateType coordinateType)
+    {
+        if (coordinateType == CoordinateType_Planar)
+            return "Planar";
+        else if (coordinateType == CoordinateType_Axisymmetric)
+            return "Axisymmetric";
+        else
+            assert(0);
+    }
+
+    QString analysisTypeStringEnum(AnalysisType analysisType)
+    {
+        if (analysisType == AnalysisType_SteadyState)
+            return "AnalysisType_SteadyState";
+        else if (analysisType == AnalysisType_Transient)
+            return "AnalysisType_Transient";
+        else if (analysisType == AnalysisType_Harmonic)
+            return "AnalysisType_Harmonic";
+        else
+            assert(0);
+    }
+
 };
 
 #endif // GENERATOR_H

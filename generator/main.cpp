@@ -12,6 +12,9 @@ int main(int argc, char *argv[])
 {
     Agros2DGenerator a(argc, argv);
 
+    // init lists
+    initLists();
+
     QTimer::singleShot(0, &a, SLOT(run()));
 
     return a.exec();
