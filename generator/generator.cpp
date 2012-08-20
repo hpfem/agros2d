@@ -17,6 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+
 #include "generator.h"
 #include "hermes2d/module.h"
 
@@ -114,6 +115,25 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
 
     // source - expand template
     text.clear();
+    foreach(XMLModule::weakform_volume weakform, module->volume().weakforms_volume().weakform_volume())
+    {
+        foreach(XMLModule::matrix_form matrix_form, weakform.matrix_form())
+        {
+            foreach(QString linearityType, linearityTypeList())
+            {
+                std::cout << module->general().id() << endl;
+                std::cout << weakform.analysistype() << endl;
+                std::cout << (linearityType).toStdString();
+                ctemplate::TemplateDictionary *field = output.AddSectionDictionary("EXACT_SOURCE");
+                field->SetValue("FUNCTION_NAME", "CustomMatrixFormVol_" +linearityType.toStdString());
+                field->SetValue("COORDINATE_TYPE",  "CoordinateType_Axisymmetric");
+                field->SetValue("LINEARITY_TYPE", "LinearityType_Linear");
+                field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
+            }
+        }
+    }
+
+
     ctemplate::ExpandTemplate(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 

@@ -39,6 +39,7 @@ private:
     void generatePluginFilterFiles(XMLModule::module *module);
 
     inline QStringList coordinateList() { QStringList list; list << "planar" << "axisymmetric"; return list; }
+    inline QStringList linearityTypeList() { QStringList list; list << "linear" << "newton" << "picard"; return list; }
 };
 
 #endif // GENERATOR_H
