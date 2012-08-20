@@ -97,8 +97,8 @@ SOURCES += util.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     parser/nonrecursive_parser.cpp \
-    parser/tree.cpp \
-    ../weakform_new/plugins/electrostatic/electrostatic_filter.cpp
+    parser/tree.cpp
+    # ../weakform_new/plugins/electrostatic/electrostatic_filter.cpp
 
 
 HEADERS += util.h \
@@ -176,8 +176,8 @@ HEADERS += util.h \
     moduledialog.h \
     parser/lex.h \
     parser/nonrecursive_parser.h \
-    parser/tree.h \
-    ../weakform_new/plugins/electrostatic/electrostatic_filter.h
+    parser/tree.h
+    # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
 
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
