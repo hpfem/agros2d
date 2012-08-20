@@ -67,13 +67,13 @@ void Agros2DGenerator::generatePluginProjectFile(XMLModule::module *module)
     {
         XMLModule::analysis analysis = module->general().analyses().analysis().at(i);
 
-        foreach (QString coordinate, coordinateList())
+        foreach (CoordinateType coordinateType, coordinateTypeList())
         {
             ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
 
             field->SetValue("ID", id.toStdString());
             field->SetValue("ANALYSIS_TYPE", analysis.id());
-            field->SetValue("COORDINATE_TYPE", coordinate.toStdString());
+            field->SetValue("COORDINATE_TYPE", coordinateTypeToStringKey(coordinateType).toStdString());
         }
     }
 
@@ -139,6 +139,41 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
     // header - expand template
     ctemplate::ExpandTemplate(QString("%1/%2/filter_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
+
+    for (int i = 0; i < module->postprocessor().localvariables().localvariable().size(); i++)
+    {
+        XMLModule::localvariable lv = module->postprocessor().localvariables().localvariable().at(i);
+
+        for (int j = 0; j < lv.expression().size(); j++)
+        {
+            XMLModule::expression expr = lv.expression().at(j);
+
+            foreach (CoordinateType coordinateType, coordinateTypeList())
+            {
+                std::string exprVar;
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    if (expr.planar().present())
+                        exprVar = expr.planar().get();
+                }
+                else
+                {
+                    if (expr.axi().present())
+                        exprVar = expr.axi().get();
+                }
+
+                if (!exprVar.empty())
+                {
+                    ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
+
+                    expression->SetValue("VARIABLE", lv.id());
+                    expression->SetValue("ANALYSIS_TYPE", expr.analysistype());
+                    expression->SetValue("COORDINATE_TYPE", coordinateTypeToStringKey(coordinateType).toStdString());
+                    expression->SetValue("EXPRESSION", exprVar);
+                }
+            }
+        }
+    }
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_filter.h").

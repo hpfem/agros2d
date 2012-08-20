@@ -38,7 +38,7 @@ private:
     void generatePluginInterfaceFiles(XMLModule::module *module);
     void generatePluginFilterFiles(XMLModule::module *module);
 
-    inline QStringList coordinateList() { QStringList list; list << "planar" << "axisymmetric"; return list; }
+    inline QList<CoordinateType> coordinateTypeList() { QList<CoordinateType> list; list << CoordinateType_Planar << CoordinateType_Axisymmetric; return list; }
 };
 
 #endif // GENERATOR_H

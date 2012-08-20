@@ -25,4 +25,31 @@
 #include "util.h"
 #include "hermes2d.h"
 
+class {{CLASS}}ViewScalarFilter : public Hermes::Hermes2D::Filter<double>
+{
+public:
+    {{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
+                     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
+                     const QString &variable,
+                     const QString &analysisType,
+                     const QString &coordinateType);
+    ~{{CLASS}}ViewScalarFilter();
+
+    double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
+
+    {{CLASS}}ViewScalarFilter* clone();
+
+protected:
+    typename Hermes::Hermes2D::Function<double>::Node* node;
+
+    void precalculate(int order, int mask);
+    
+private:
+	FieldInfo *m_fieldInfo; 
+	
+    QString m_variable;
+    QString m_analysisType;
+	QString m_coordinateType;
+};
+
 #endif {{ID}}_FILTER_H

@@ -17,41 +17,45 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "post_values.h"
-#include "module.h"
-#include "module_agros.h"
-#include "field.h"
-#include "block.h"
-#include "problem.h"
-#include "logview.h"
+#include "{{ID}}_filter.h"
+
+#include "hermes2d/post_values.h"
+#include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
+#include "hermes2d/field.h"
+#include "hermes2d/block.h"
+#include "hermes2d/problem.h"
+#include "hermes2d/solutionstore.h"
 
 #include "util.h"
 #include "scene.h"
 #include "scenelabel.h"
+#include "logview.h"
 
 #include "hermes2d/weakform_interface.h"
-#include "solutionstore.h"
 
 
-{{CLASS}}ViewScalarFilter<double>::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
+{{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
-                                           QString variable)
-    : Hermes::Hermes2D::Filter<double>(sln), m_variable(variable)
+                                           const QString &variable,
+                                           const QString &analysisType,
+                                           const QString &coordinateType)
+    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_analysisType(analysisType), m_coordinateType(coordinateType)
 {
    
 }
 
-{{CLASS}}ViewScalarFilter<double>::~{{CLASS}}ViewScalarFilter()
+{{CLASS}}ViewScalarFilter::~{{CLASS}}ViewScalarFilter()
 {
     
 }
 
-double {{CLASS}}ViewScalarFilter<double>::get_pt_value(double x, double y, int item)
+double {{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, int item)
 {
     return 0.0;
 }
 
-void {{CLASS}}ViewScalarFilter<double>::precalculate(int order, int mask)
+void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 {
     bool isLinear = (m_fieldInfo->linearityType() == LinearityType_Linear);
 
@@ -80,34 +84,21 @@ void {{CLASS}}ViewScalarFilter<double>::precalculate(int order, int mask)
     SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
                                                              get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
-    foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        if (isLinear || variable->expressionNonlinear().isEmpty())
-            m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
-
     for (int i = 0; i < np; i++)
     {
-        px = x[i];
-        py = y[i];
+        // k = solution
+        // px = x[i];
+        // py = y[i];
+        // pvalue[k] = value[k][i];
+        // pdx[k] = dudx[k][i];
+        // pdy[k] = dudy[k][i];
+        // linear: material->value(variable->id()).number()
+        // nonlinear: material->value(variable->id()).value(exp)
 
-        for (int k = 0; k < Hermes::Hermes2D::Filter<double>::num; k++)
-        {
-            pvalue[k] = value[k][i];
-            pdx[k] = dudx[k][i];
-            pdy[k] = dudy[k][i];
-        }
-
-        // init nonlinear material
-        setNonlinearMaterial(material);
-
-        // parse expression
-        try
-        {
-            node->values[0][0][i] = m_parsers[0]->Eval();
-        }
-        catch (mu::Parser::exception_type &e)
-        {
-            std::cout << "Scalar view: " << e.GetMsg() << std::endl;
-        }
+		{{#VARIABLE_SOURCE}}
+        if ((m_variable == "{{VARIABLE}}") && (m_analysisType == "{{ANALYSIS_TYPE}}") && (m_coordinateType == "{{COORDINATE_TYPE}}"))
+        	node->values[0][0][i] = 0; // {{EXPRESSION}};
+		{{/VARIABLE_SOURCE}}        	
     }
 
     delete [] value;
@@ -123,13 +114,13 @@ void {{CLASS}}ViewScalarFilter<double>::precalculate(int order, int mask)
     Hermes::Hermes2D::Function<double>::cur_node = node;
 }
 
-{{CLASS}}ViewScalarFilter<double>* {{CLASS}}ViewScalarFilter<double>::clone()
+{{CLASS}}ViewScalarFilter* {{CLASS}}ViewScalarFilter::clone()
 {
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> slns;
 
     for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]->clone());
 
-    return new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable);
+    return new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_analysisType, m_coordinateType);
 }
 
