@@ -31,8 +31,8 @@ public:
     {{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                      const QString &variable,
-                     const QString &analysisType,
-                     const QString &coordinateType);
+                     AnalysisType analysisType,
+                     CoordinateType coordinateType);
     ~{{CLASS}}ViewScalarFilter();
 
     double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
@@ -48,8 +48,8 @@ private:
 	FieldInfo *m_fieldInfo; 
 	
     QString m_variable;
-    QString m_analysisType;
-	QString m_coordinateType;
+    AnalysisType m_analysisType;
+	CoordinateType m_coordinateType;
 };
 
 #endif {{ID}}_FILTER_H

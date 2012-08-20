@@ -167,8 +167,8 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
                     ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
 
                     expression->SetValue("VARIABLE", lv.id());
-                    expression->SetValue("ANALYSIS_TYPE", expr.analysistype());
-                    expression->SetValue("COORDINATE_TYPE", coordinateTypeToStringKey(coordinateType).toStdString());
+                    expression->SetValue("ANALYSIS_TYPE", analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()))).toStdString());
+                    expression->SetValue("COORDINATE_TYPE", coordinateTypeStringEnum(coordinateType).toStdString());
                     expression->SetValue("EXPRESSION", exprVar);
                 }
             }

@@ -39,6 +39,27 @@ private:
     void generatePluginFilterFiles(XMLModule::module *module);
 
     inline QList<CoordinateType> coordinateTypeList() { QList<CoordinateType> list; list << CoordinateType_Planar << CoordinateType_Axisymmetric; return list; }
+    QString coordinateTypeStringEnum(CoordinateType coordinateType)
+    {
+        if (coordinateType == CoordinateType_Planar)
+            return "CoordinateType_Planar";
+        else if (coordinateType == CoordinateType_Axisymmetric)
+            return "CoordinateType_Axisymmetric";
+        else
+            assert(0);
+    }
+
+    QString analysisTypeStringEnum(AnalysisType analysisType)
+    {
+        if (analysisType == AnalysisType_SteadyState)
+            return "AnalysisType_SteadyState";
+        else if (analysisType == AnalysisType_Transient)
+            return "AnalysisType_Transient";
+        else if (analysisType == AnalysisType_Harmonic)
+            return "AnalysisType_Harmonic";
+        else
+            assert(0);
+    }
 };
 
 #endif // GENERATOR_H

@@ -38,8 +38,8 @@
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                            const QString &variable,
-                                           const QString &analysisType,
-                                           const QString &coordinateType)
+                                           AnalysisType analysisType,
+                                           CoordinateType coordinateType)
     : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_analysisType(analysisType), m_coordinateType(coordinateType)
 {
    
@@ -96,7 +96,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
         // nonlinear: material->value(variable->id()).value(exp)
 
 		{{#VARIABLE_SOURCE}}
-        if ((m_variable == "{{VARIABLE}}") && (m_analysisType == "{{ANALYSIS_TYPE}}") && (m_coordinateType == "{{COORDINATE_TYPE}}"))
+        if ((m_variable == "{{VARIABLE}}") && (m_analysisType == {{ANALYSIS_TYPE}}) && (m_coordinateType == {{COORDINATE_TYPE}}))
         	node->values[0][0][i] = 0; // {{EXPRESSION}};
 		{{/VARIABLE_SOURCE}}        	
     }
