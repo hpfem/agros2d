@@ -97,9 +97,9 @@ SOURCES += util.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     parser/nonrecursive_parser.cpp \
-    parser/tree.cpp
+    parser/tree.cpp \
+    hermes2d/bdf2.cpp
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.cpp
-
 
 HEADERS += util.h \
     value.h \
@@ -176,8 +176,18 @@ HEADERS += util.h \
     moduledialog.h \
     parser/lex.h \
     parser/nonrecursive_parser.h \
-    parser/tree.h
+    parser/tree.h \
+    hermes2d/bdf2.h
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
+
+INCLUDEPATH += . \
+    ../lib \
+    ../lib/ctemplate \
+    ../lib/muparser \
+    ../lib/dxflib \
+    ../lib/rapidxml \
+    ../hermes_common \
+    ../hermes2d
 
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
