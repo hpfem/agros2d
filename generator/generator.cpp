@@ -23,12 +23,23 @@
 
 #include "ctemplate/template.h"
 
+#include "parser/lex.h"
+#include "parser/tree.h"
 
 const QString GENERATOR_TEMPLATEROOT = "generator/templates";
 const QString GENERATOR_PLUGINROOT = "weakform_new/plugins/";
 
 Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(argc, argv)
 {
+    /*
+    QString expr = "0.5 * el_epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)";
+
+    LexicalAnalyser lex(expr);
+    SyntacticAnalyser synt;
+
+    synt.parse(lex.tokens());
+    synt.printTree();
+    */
 }
 
 void Agros2DGenerator::run()

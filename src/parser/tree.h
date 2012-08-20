@@ -63,25 +63,26 @@ private:
 class SyntacticAnalyser
 {
 public:
-    QHash<QString, double *> m_variable_map; // ToDo: Make it private
-
     SyntacticAnalyser() {}
     ~SyntacticAnalyser();
 
     void parse(QList<Token> tokens);
     void deleteTree();
     void printTree();
-    void goThroughTree(TreeNode * node);
+    void goThroughTree(TreeNode *node);
+
     TreeNode *parseExpression();
     TreeNode *parseTerm();
     TreeNode *parseFactor();
     TreeNode *parseExponent();
     TreeNode *buildNode(TreeNode *left_node, TreeNode *right_node, QString operation);
     TreeNode *buildLeaf(TreeNode *left_node, TreeNode *right_node, QString operation);
+
     double evalTree(TreeNode *node);
     double evalTree();
 
 private:
+    QHash<QString, double *> m_variableMap;
     QList<Token> m_tokens;
     Token m_currentSymbol;
     TreeNode * m_syntaxTree;

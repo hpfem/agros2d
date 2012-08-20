@@ -68,15 +68,14 @@ private:
 class LexicalAnalyser
 {
 public:
+    LexicalAnalyser(const QString &expression);
+
     QList<Token> tokens();
     void print(const QStringList &list);
 
 private:
     void sortByLength(QStringList &list);
     QList<Token> m_tokens;
-
-public:
-    LexicalAnalyser(const QString &expression);
 };
 
 class Terminals
