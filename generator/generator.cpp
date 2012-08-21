@@ -31,28 +31,32 @@ const QString GENERATOR_PLUGINROOT = "weakform_new/plugins/";
 
 Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(argc, argv)
 {
+    /*
+    QString expr = "0.5  * (dx1 * dx1 + dy1 * dy1)   ";
 
+    LexicalAnalyser lex;
+    lex.addVariable("dx1");
+    lex.addVariable("dy1");
+    lex.addVariable("epsr");
+    lex.addVariable("EPS0");
+
+    lex.setExpression(expr);
+    lex.printTokens();
+    */
+    /*
     double dx1 = 2;
     double dy1 = 3;
     double el_epsr = 5;
     double eps0 = 4;
 
-
-    // ToDo: erase white characters before processing
-    // It's impossible to use gaps now.
-    QString expr = "0.5*(dx1*dx1+dy1*dy1)";
-
-    LexicalAnalyser lex;
-    lex.m_variables << "dx1" << "dy1" << "epsr" << "EPS0";
-    lex.Parse(expr);
-
     SyntacticAnalyser synt;
-    synt.m_variableMap.insert("dx1",&dx1);
-    synt.m_variableMap.insert("dy1",&dy1);
-    synt.m_variableMap.insert("epsr",&el_epsr);
-    synt.m_variableMap.insert("EPS0",&eps0);
+    synt.m_variableMap.insert("dx1", &dx1);
+    synt.m_variableMap.insert("dy1", &dy1);
+    synt.m_variableMap.insert("epsr", &el_epsr);
+    synt.m_variableMap.insert("EPS0", &eps0);
     synt.parse(lex.tokens());
     std::cout << synt.evalTree();
+    */
 }
 
 void Agros2DGenerator::run()
@@ -334,7 +338,7 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
                 }
             }
 
-        /*    foreach(XMLModule::boundary boundary, weakform.boundary())
+            /*    foreach(XMLModule::boundary boundary, weakform.boundary())
             {
                 foreach(XMLModule::essential_form essential_form, boundary.essential_form())
                 {
@@ -397,10 +401,6 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
                        QString::fromStdString(text));
 }
 
-
-
-
-
 void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
 {
     QString id = QString::fromStdString(module->general().id());
@@ -426,26 +426,26 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
 
             foreach (CoordinateType coordinateType, coordinateTypeList())
             {
-                std::string exprVar;
+                QString exprVar;
                 if (coordinateType == CoordinateType_Planar)
                 {
                     if (expr.planar().present())
-                        exprVar = expr.planar().get();
+                        exprVar = QString::fromStdString(expr.planar().get());
                 }
                 else
                 {
                     if (expr.axi().present())
-                        exprVar = expr.axi().get();
+                        exprVar = QString::fromStdString(expr.axi().get());
                 }
 
-                if (!exprVar.empty())
+                if (!exprVar.isEmpty())
                 {
                     ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
 
                     expression->SetValue("VARIABLE", lv.id());
                     expression->SetValue("ANALYSIS_TYPE", analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()))).toStdString());
                     expression->SetValue("COORDINATE_TYPE", coordinateTypeStringEnum(coordinateType).toStdString());
-                    expression->SetValue("EXPRESSION", exprVar);
+                    expression->SetValue("EXPRESSION", parsePostprocessorExpression(module, analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())), coordinateType, exprVar).toStdString());
                 }
             }
         }
@@ -471,5 +471,145 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
                        QString::fromStdString(text));
 }
 
+QString Agros2DGenerator::parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr)
+{
+    QTextStream qout(stdout);
+    qout << expr << endl;
 
+    int numOfSol = numberOfSolutions(module->general().analyses(), analysisType);
 
+    LexicalAnalyser lex;
+
+    // coordinates
+    if (coordinateType == CoordinateType_Planar)
+    {
+        lex.addVariable(QString("x"));
+        lex.addVariable(QString("y"));
+    }
+    else
+    {
+        lex.addVariable(QString("r"));
+        lex.addVariable(QString("z"));
+    }
+
+    // functions
+    for (int i = 1; i < numOfSol + 1; i++)
+    {
+        lex.addVariable(QString("value%1").arg(i));
+        if (coordinateType == CoordinateType_Planar)
+        {
+            lex.addVariable(QString("dx%1").arg(i));
+            lex.addVariable(QString("dy%1").arg(i));
+        }
+        else
+        {
+            lex.addVariable(QString("dr%1").arg(i));
+            lex.addVariable(QString("dz%1").arg(i));
+        }
+    }
+
+    // constants
+    lex.addVariable("M_PI");
+    lex.addVariable("f");
+    for (int i = 0; i < module->constants().constant().size(); i++)
+    {
+        XMLModule::constant cnst = module->constants().constant().at(i);
+        lex.addVariable(QString::fromStdString(cnst.id()));
+    }
+
+    // variables
+    for (int i = 0; i < module->volume().quantity().size(); i++)
+    {
+        XMLModule::quantity quantity = module->volume().quantity().at(i);
+
+        if (quantity.shortname().present())
+            lex.addVariable(QString::fromStdString(quantity.shortname().get()));
+    }
+
+    lex.setExpression(expr);
+
+    // replace tokens
+    QString exprCpp;
+    foreach (Token token, lex.tokens())
+    {
+        QString repl = token.toString();
+
+        bool isReplaced = false;
+
+        // coordinates
+        if (coordinateType == CoordinateType_Planar)
+        {
+            if (repl == "x") { exprCpp += "x[i]"; isReplaced = true; }
+            if (repl == "y") { exprCpp += "y[i]"; isReplaced = true; }
+        }
+        else
+        {
+            if (repl == "r") { exprCpp += "x[i]"; isReplaced = true; }
+            if (repl == "z") { exprCpp += "y[i]"; isReplaced = true; }
+        }
+
+        // constants
+        if (repl == "M_PI") { exprCpp += "M_PI"; isReplaced = true; }
+        if (repl == "f") { exprCpp += "Util::problem()->config()->frequency()"; isReplaced = true; }
+        for (int i = 0; i < module->constants().constant().size(); i++)
+        {
+            XMLModule::constant cnst = module->constants().constant().at(i);
+            if (repl == QString::fromStdString(cnst.id())) { exprCpp += QString::number(cnst.value()); isReplaced = true; }
+        }
+
+        // functions
+        for (int i = 1; i < numOfSol + 1; i++)
+        {
+            if (repl == QString("value%1").arg(i)) { exprCpp += QString("value[%1][i]").arg(i-1); isReplaced = true; }
+            if (coordinateType == CoordinateType_Planar)
+            {
+                if (repl == QString("dx%1").arg(i)) { exprCpp += QString("dudx[%1][i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("dy%1").arg(i)) { exprCpp += QString("dudy[%1][i]").arg(i-1); isReplaced = true; }
+            }
+            else
+            {
+                if (repl == QString("dr%1").arg(i)) { exprCpp += QString("dudx[%1][i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("dz%1").arg(i)) { exprCpp += QString("dudy[%1][i]").arg(i-1); isReplaced = true; }
+            }
+        }
+
+        // variables
+        for (int i = 0; i < module->volume().quantity().size(); i++)
+        {
+            XMLModule::quantity quantity = module->volume().quantity().at(i);
+
+            if (quantity.shortname().present())
+                if (repl == QString::fromStdString(quantity.shortname().get()))
+                {
+                    if (!quantity.dependence().present())
+                        // linear material
+                        exprCpp += QString("material->value(\"%1\").number()").arg(QString::fromStdString(quantity.shortname().get()));
+                    else
+                        // nonlinear material
+                        exprCpp += QString("material->value(%1).value(%2)").
+                                arg(QString::fromStdString(quantity.shortname().get())).
+                                arg(parsePostprocessorExpression(module, analysisType, coordinateType, QString::fromStdString(quantity.dependence().get())));
+
+                    isReplaced = true;
+                }
+        }
+
+        // operators and other
+        if (!isReplaced)
+           exprCpp += repl;
+    }
+
+    return exprCpp;
+}
+
+int Agros2DGenerator::numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType)
+{
+    for (int i = 0; i < analyses.analysis().size(); i++)
+    {
+        XMLModule::analysis analysis = analyses.analysis().at(i);
+        if (analysis.id() == analysisTypeToStringKey(analysisType).toStdString())
+            return analysis.solutions();
+    }
+
+    return -1;
+}

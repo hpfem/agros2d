@@ -12,12 +12,7 @@ LIBS += -lagros2d_3dparty
 LIBS += -lagros2d
 
 HEADERS += generator.h \
-    templates/weakform_h.tpl \
-    templates/weakform_cpp.tpl \
-    templates/interface_h.tpl \
-    templates/interface_cpp.tpl \
-    templates/filter_h.tpl \
-    templates/filter_cpp.tpl
+    templates/weakform_h
 
 SOURCES += main.cpp \
            generator.cpp

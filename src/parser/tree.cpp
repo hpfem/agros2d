@@ -75,11 +75,11 @@ TreeNode *  SyntacticAnalyser::parseExpression()
 
     left_node = parseTerm();
 
-    while (((m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.text() == "+") ||
-                                                      (m_currentSymbol.text() == "-"))))
+    while (((m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.toString() == "+") ||
+                                                      (m_currentSymbol.toString() == "-"))))
     {
 
-        QString operation = m_currentSymbol.text();
+        QString operation = m_currentSymbol.toString();
         if (this->m_tokens.count() != 0)
         {
             m_currentSymbol = m_tokens.takeFirst();
@@ -113,11 +113,11 @@ TreeNode *  SyntacticAnalyser::parseTerm()
 
     left_node = parseExponent();
 
-    while ((m_tokens.length() != 0) && (m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.text() == "*") ||
-                                                                               (m_currentSymbol.text() == "/")))
+    while ((m_tokens.length() != 0) && (m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.toString() == "*") ||
+                                                                               (m_currentSymbol.toString() == "/")))
     {
 
-        QString operation = m_currentSymbol.text();
+        QString operation = m_currentSymbol.toString();
         if (this->m_tokens.count() != 0)
         {
             m_currentSymbol = m_tokens.takeFirst();
@@ -152,11 +152,11 @@ TreeNode *  SyntacticAnalyser::parseExponent()
 
     left_node = parseFactor();
 
-    while ((m_tokens.length() != 0) && (m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.text() == "**") ||
-                                                                               (m_currentSymbol.text() == "^")))
+    while ((m_tokens.length() != 0) && (m_currentSymbol.type() == TokenType_OPERATOR)&&((m_currentSymbol.toString() == "**") ||
+                                                                               (m_currentSymbol.toString() == "^")))
     {
 
-        QString operation = m_currentSymbol.text();
+        QString operation = m_currentSymbol.toString();
         if (this->m_tokens.count() != 0)
         {
             m_currentSymbol = m_tokens.takeFirst();
@@ -188,9 +188,9 @@ TreeNode *  SyntacticAnalyser::parseFactor()
     TreeNode * node = 0;
     static double sign = 1;
 
-    if ((m_currentSymbol.text() == "-") || (m_currentSymbol.text() == "+"))
+    if ((m_currentSymbol.toString() == "-") || (m_currentSymbol.toString() == "+"))
     {
-        if (m_currentSymbol.text() == "-")
+        if (m_currentSymbol.toString() == "-")
         {
             sign = sign * (-1);
         }
@@ -206,7 +206,7 @@ TreeNode *  SyntacticAnalyser::parseFactor()
 
         if (m_currentSymbol.type() == TokenType_NUMBER)
         {
-            double value = m_currentSymbol.text().toDouble() * sign;
+            double value = m_currentSymbol.toString().toDouble() * sign;
             node = new TreeNode(value);
             if (this->m_tokens.count() != 0)
             {
@@ -215,7 +215,7 @@ TreeNode *  SyntacticAnalyser::parseFactor()
         }
         if (m_currentSymbol.type() == TokenType_VARIABLE)
         {
-            node = new TreeNode((this->m_variableMap.value(m_currentSymbol.text())));
+            node = new TreeNode((this->m_variableMap.value(m_currentSymbol.toString())));
             if (this->m_tokens.count() != 0)
             {
                 m_currentSymbol = m_tokens.takeFirst();
@@ -226,7 +226,7 @@ TreeNode *  SyntacticAnalyser::parseFactor()
 
     if (m_currentSymbol.type() == TokenType_FUNCTION)
     {
-        QString function_name = m_currentSymbol.text();
+        QString function_name = m_currentSymbol.toString();
         if (this->m_tokens.count() != 0)
         {
             m_currentSymbol = m_tokens.takeFirst();
@@ -235,9 +235,9 @@ TreeNode *  SyntacticAnalyser::parseFactor()
     }
 
 
-    if ((m_currentSymbol.text() == "("))
+    if ((m_currentSymbol.toString() == "("))
     {
-        while((m_currentSymbol.text() != ")") && (m_tokens.length() != 0))
+        while((m_currentSymbol.toString() != ")") && (m_tokens.length() != 0))
         {
             if (this->m_tokens.count() != 0)
             {

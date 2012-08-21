@@ -38,6 +38,9 @@ private:
     void generatePluginInterfaceFiles(XMLModule::module *module);
     void generatePluginFilterFiles(XMLModule::module *module);
 
+    QString parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+    int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
+
     inline QList<WeakFormKind> weakFormTypeList() { QList<WeakFormKind> list; list << WeakForm_MatVol << WeakForm_MatSurf << WeakForm_VecVol << WeakForm_VecSurf << WeakForm_ExactSol; return list; }
 
     inline QList<LinearityType> linearityTypeList() { QList<LinearityType> list; list << LinearityType_Linear << LinearityType_Newton << LinearityType_Picard << LinearityType_Undefined; return list; }
@@ -86,7 +89,7 @@ private:
     }
 
 
-    // QString getExpression(CoordinateType coordinate)
+
 
 };
 

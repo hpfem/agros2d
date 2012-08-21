@@ -64,6 +64,12 @@ public:
                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
 
     virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
+
+    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
+                                                     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
+                                                     const QString &variable,
+                                                     AnalysisType analysisType,
+                                                     CoordinateType coordinateType);
 };
 
 #endif {{ID}}_INTERFACE_H

@@ -21,6 +21,7 @@
 
 #include "weakform_interface.h"
 #include "{{ID}}_interface.h"
+#include "{{ID}}_filter.h"
 {{#SOURCE}}
 #include "{{ID}}_{{ANALYSIS_TYPE}}_{{COORDINATE_TYPE}}.h"
 {{/SOURCE}}
@@ -98,6 +99,15 @@ Hermes::Hermes2D::ExactSolutionScalar<double> *{{CLASS}}Interface::exactSolution
 	{{/EXACT_SOURCE}}
 	
     return NULL;
+}
+
+Hermes::Hermes2D::Filter<double> *{{CLASS}}Interface::filter(FieldInfo *fieldInfo,
+                                                     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
+                                                     const QString &variable,
+                                                     AnalysisType analysisType,
+                                                     CoordinateType coordinateType)
+{
+    return new {{CLASS}}ViewScalarFilter(fieldInfo, sln, variable, analysisType, coordinateType);
 }
 
 Q_EXPORT_PLUGIN2({{ID}}, {{CLASS}}Interface)

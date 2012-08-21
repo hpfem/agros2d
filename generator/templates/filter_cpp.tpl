@@ -97,7 +97,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 
 		{{#VARIABLE_SOURCE}}
         if ((m_variable == "{{VARIABLE}}") && (m_analysisType == {{ANALYSIS_TYPE}}) && (m_coordinateType == {{COORDINATE_TYPE}}))
-        	node->values[0][0][i] = 0; // {{EXPRESSION}};
+            node->values[0][0][i] = {{EXPRESSION}};
 		{{/VARIABLE_SOURCE}}        	
     }
 
