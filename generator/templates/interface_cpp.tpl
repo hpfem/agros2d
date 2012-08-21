@@ -21,9 +21,7 @@
 
 #include "weakform_interface.h"
 #include "{{ID}}_interface.h"
-{{#SOURCE}}
-#include "{{ID}}_{{ANALYSIS_TYPE}}_{{COORDINATE_TYPE}}.h"
-{{/SOURCE}}
+#include "{{ID}}.h"
 
 #include "util.h"
 #include "hermes2d.h"
@@ -46,9 +44,9 @@ Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const
                                                               SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
 {
 	{{#MATRIX_VOL_SOURCE}}
-    if ((problemId.coordinateType == CoordinateType_{{COORDINATE_TYPE_CAP}}) && (problemId.linearityType == LinearityType_{{LINEARITY_TYPE_CAP}}) && (i == {{ROW_INDEX}})
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}))
-        return new {{ANALYSIS_TYPE}}{{MODULE_ID}}{{COORDINATE_TYPE}}::CustomMatrixFormVol_{{FUNCTION_NAME}}_{{ROW_INDEX}}_{{COLUMN_INDEX}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}<double>(i-1 + offsetI, j-1+ offsetJ , area, sym, materialSource, materialTarget);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1+ offsetJ , area, sym, materialSource, materialTarget);
 	{{/MATRIX_VOL_SOURCE}}
 
     return NULL;
@@ -58,9 +56,9 @@ Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const
                                                               const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
 {
 	{{#VECTOR_VOL_SOURCE}}
-    if ((problemId.coordinateType == CoordinateType_{{COORDINATE_TYPE_CAP}} && (problemId.linearityType == LinearityType_{{LINEARITY_TYPE_CAP}}) && (i == {{ROW_INDEX}})
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}))
-    	return new {{ANALYSIS_TYPE}}{{MODULE_ID}}{{COORDINATE_TYPE}}::CustomVectorFormVol_{{FUNCTION_NAME}}_{{ROW_INDEX}}_{{COLUMN_INDEX}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}<double>(i-1+ offsetI, j-1+ offsetJ, area, materialSource, materialTarget);
+    	return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, area, materialSource, materialTarget);
 	{{/VECTOR_VOL_SOURCE}}
 
     return NULL;
@@ -70,9 +68,9 @@ Hermes::Hermes2D::MatrixFormSurf<double> *{{CLASS}}Interface::matrixFormSurf(con
                                                                 const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
 	{{#MATRIX_SURF_SOURCE}}
-    if ((problemId.coordinateType == CoordinateType_{{COORDINATE_TYPE_CAP}} && (problemId.linearityType == LinearityType_{{LINEARITY_TYPE_CAP}}) && (i == {{ROW_INDEX}})
-        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == {{BOUNDARY_TYPE}}))
-        return new {{ANALYSIS_TYPE}}{{MODULE_ID}}{{COORDINATE_TYPE}}::CustomMatrixFormSurf_{{FUNCTION_NAME}}_{{ROW_INDEX}}_{{COLUMN_INDEX}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}<double>(i-1+ offsetI, j-1+ offsetJ, area, boundary);
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
+        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}"))
+        return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, area, boundary);
 	{{/MATRIX_SURF_SOURCE}}
 
     return NULL;
@@ -82,9 +80,9 @@ Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(con
                                                                 const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
 	{{#VECTOR_SURF_SOURCE}}
-    if ((problemId.coordinateType == CoordinateType_{{COORDINATE_TYPE_CAP}} && (problemId.linearityType == LinearityType_{{LINEARITY_TYPE_CAP}}) && (i == {{ROW_INDEX}})
-        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == {{BOUNDARY_TYPE}}))
-        return {{ANALYSIS_TYPE}}{{MODULE_ID}}{{COORDINATE_TYPE}}::CustomVectorFormSurf_{{FUNCTION_NAME}}_{{ROW_INDEX}}_{{COLUMN_INDEX}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}<double>(i-1 + offsetI, j-1 + offsetJ, area, boundary);
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
+        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}"))
+        return {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, area, boundary);
 	{{/VECTOR_SURF_SOURCE}}
 
     return NULL;
@@ -93,8 +91,8 @@ Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(con
 Hermes::Hermes2D::ExactSolutionScalar<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
 {
 	{{#EXACT_SOURCE}}
-    if ((problemId.coordinateType == CoordinateType_{{COORDINATE_TYPE_CAP}} && (problemId.linearityType == LinearityType_{{LINEARITY_TYPE_CAP}}) && (i == {{ROW_INDEX}}))
-        return new {{ANALYSIS_TYPE}}{{MODULE_ID}}{{COORDINATE_TYPE}}::CustomEssentialFormSurf_{{FUNCTION_NAME}}_{{ROW_INDEX}}_{{COLUMN_INDEX}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}<double>(mesh, boundary);
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}}))
+        return new {{FUNCTION_NAME}}<double>(mesh, boundary);
 	{{/EXACT_SOURCE}}
 	
     return NULL;

@@ -37,8 +37,8 @@ SOURCES      += {{ID}}_interface.h
 
 # headers and sources
 {{#SOURCE}}
-HEADERS      += {{ID}}_{{ANALYSIS_TYPE}}_{{COORDINATE_TYPE}}.h
-SOURCES      += {{ID}}_{{ANALYSIS_TYPE}}_{{COORDINATE_TYPE}}.cpp
+HEADERS      += {{ID}}.h
+SOURCES      += {{ID}}.cpp
 {{/SOURCE}}
 
 TARGET        = $$qtLibraryTarget(agros2d_plugin_{{ID}})
