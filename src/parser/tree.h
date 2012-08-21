@@ -81,8 +81,9 @@ public:
     double evalTree(TreeNode *node);
     double evalTree();
 
-private:
     QHash<QString, double *> m_variableMap;
+
+private:    
     QList<Token> m_tokens;
     Token m_currentSymbol;
     TreeNode * m_syntaxTree;

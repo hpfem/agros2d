@@ -85,6 +85,9 @@ private:
             assert(0);
     }
 
+
+    // QString getExpression(CoordinateType coordinate)
+
 };
 
 #endif // GENERATOR_H

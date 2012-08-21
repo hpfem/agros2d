@@ -64,17 +64,15 @@ QString get_expression( QList<Token> const & symbol_que, int position = 0)
 }
 
 
-LexicalAnalyser::LexicalAnalyser(const QString &expression)
+void LexicalAnalyser::Parse(const QString &expression)
 {
-    QTextStream qout(stdout);
-    QStringList variables;
+    QTextStream qout(stdout);    
     QStringList operators;
     QStringList functions;
     QList<Terminals>  terminals;
 
-    variables << "x" << "yy" << "y" << "xx";
-    sortByLength(variables);
-    terminals.append(Terminals(TokenType_VARIABLE, variables));
+    sortByLength(m_variables);
+    terminals.append(Terminals(TokenType_VARIABLE, m_variables));
 
     operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" ;
     sortByLength(operators);
@@ -113,7 +111,7 @@ LexicalAnalyser::LexicalAnalyser(const QString &expression)
 
         if (old_pos == pos)
         {
-            qout << "Unexpected symbol:" << "\"z\"" << " on position: " << pos << endl;
+            qout << "Unexpected symbol:" <<  expression[pos]  << " on position: " << pos << endl;
             qout << expression.at(pos).toAscii() << endl;
             break;
         }
