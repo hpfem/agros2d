@@ -55,7 +55,7 @@ public:
     Token(TokenType m_type, QString m_text);
 
     inline TokenType type() { return this->m_type; }
-    inline QString text() { return this->m_text; }
+    inline QString toString() { return this->m_text; }
 
     int nestingLevel;
 
@@ -69,14 +69,27 @@ class LexicalAnalyser
 {
 public:
     LexicalAnalyser() {}
-    void Parse(const QString &expression);
+
+    void setExpression(const QString &expr);
+
+    // return all tokens
     QList<Token> tokens();
-    void print(const QStringList &list);
-    QStringList m_variables;
+
+    // print tokens
+    void printTokens();
+
+    // variables
+    inline QStringList variables() { return m_variables; }
+    inline void addVariable(const QString &variable) { if (!m_variables.contains(variable)) m_variables.append(variable); }
+    inline void addVariables(const QStringList &list) { m_variables.append(list); }
+    inline void removeVariable(const QString &variable) { m_variables.removeAll(variable); }
+    inline void clearVariables() { m_variables.clear(); }
 
 private:
-    void sortByLength(QStringList &list);
     QList<Token> m_tokens;
+    QStringList m_variables;
+
+    void sortByLength(QStringList &list);
 };
 
 class Terminals

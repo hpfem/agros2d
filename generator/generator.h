@@ -35,6 +35,21 @@ public slots:
     void run();
 
 private:
+    void generatePluginProjectFile(XMLModule::module *module);
+    void generatePluginInterfaceFiles(XMLModule::module *module);
+    void generatePluginFilterFiles(XMLModule::module *module);
+    void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
+    void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
+    void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
+    void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
+    void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
+    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form);
+    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form);
+    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
+
+    QString parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+    int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
+
     inline QList<WeakFormKind> weakFormTypeList() { QList<WeakFormKind> list; list << WeakForm_MatVol << WeakForm_MatSurf << WeakForm_VecVol << WeakForm_VecSurf << WeakForm_ExactSol; return list; }
     QString weakFormTypeStringEnum(WeakFormKind weakformType)
     {
@@ -109,18 +124,6 @@ private:
     {
         return boundaryName.toLower().replace(" ","_");
     }
-
-    void generatePluginProjectFile(XMLModule::module *module);
-    void generatePluginInterfaceFiles(XMLModule::module *module);
-    void generatePluginFilterFiles(XMLModule::module *module);
-    void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
-    void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
-    void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
-    void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
-    void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
-    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form);
-    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form);
-    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
 };
 
 

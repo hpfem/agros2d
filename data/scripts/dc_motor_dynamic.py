@@ -1,4 +1,5 @@
 import numpy as np
+import pylab as pl
 from scipy.integrate import odeint
 from scipy.interpolate import interp1d
 
@@ -15,7 +16,12 @@ pl.plot([0, 180], [0, 0], '--k')
 pl.xlabel("$\\phi~\mathrm{(deg.)}$")
 pl.ylabel("$T~\mathrm{(Nm)}$")
 pl.legend(loc="lower right")
-pl.show()
+fn_chart_static = pythonlab.tempname("png")
+pl.savefig(fn_chart_static, dpi=60)
+pl.close()
+
+# show in console
+pythonlab.image(fn_chart_static)
 
 J = 7.5e-5;
 k = 2e-4
@@ -44,4 +50,9 @@ pl.plot(time, y[:,1]/2/np.pi*60, 'r-')
 pl.xlabel("$t~\mathrm{(s)}$")
 pl.ylabel("$n~\mathrm{(rev./min.)}$")
 pl.xlim(0, 1.41)
-pl.show()
+fn_chart_dynamic = pythonlab.tempname("png")
+pl.savefig(fn_chart_dynamic, dpi=60)
+pl.close()
+
+# show in console
+pythonlab.image(fn_chart_dynamic)
