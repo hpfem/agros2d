@@ -127,5 +127,4 @@ private:
     }
 };
 
-
 #endif // GENERATOR_H

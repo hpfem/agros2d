@@ -189,6 +189,7 @@ void Agros2DGenerator::generatePluginWeakFormFiles(XMLModule::module *module)
     {
         foreach(XMLModule::boundary boundary, weakform.boundary())
         {
+
             generateSurfaceMatrixForm(boundary, output, module, weakform);
             generateSurfaceVectorForm(boundary, output, module, weakform);
             generateExactSolution(boundary, output, module, weakform);
@@ -275,6 +276,18 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
                        QString::fromStdString(text));
+}
+
+int Agros2DGenerator::numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType)
+{
+    for (int i = 0; i < analyses.analysis().size(); i++)
+    {
+        XMLModule::analysis analysis = analyses.analysis().at(i);
+        if (analysis.id() == analysisTypeToStringKey(analysisType).toStdString())
+            return analysis.solutions();
+    }
+
+    return -1;
 }
 
 QString Agros2DGenerator::parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr)
@@ -406,18 +419,6 @@ QString Agros2DGenerator::parsePostprocessorExpression(XMLModule::module *module
     }
 
     return exprCpp;
-}
-
-int Agros2DGenerator::numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType)
-{
-    for (int i = 0; i < analyses.analysis().size(); i++)
-    {
-        XMLModule::analysis analysis = analyses.analysis().at(i);
-        if (analysis.id() == analysisTypeToStringKey(analysisType).toStdString())
-            return analysis.solutions();
-    }
-
-    return -1;
 }
 
 QString Agros2DGenerator::getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form)
