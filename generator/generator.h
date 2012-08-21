@@ -38,6 +38,7 @@ private:
     void generatePluginProjectFile(XMLModule::module *module);
     void generatePluginInterfaceFiles(XMLModule::module *module);
     void generatePluginFilterFiles(XMLModule::module *module);
+    void generatePluginWeakFormFiles(XMLModule::module *module);
     void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
     void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
     void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);

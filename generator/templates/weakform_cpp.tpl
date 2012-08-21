@@ -75,7 +75,7 @@ template <typename Scalar>
 
 
 {{#VECTOR_VOL_SOURCE}}
-{FUNCTION_NAME}<Scalar>::{FUNCTION_NAME}(unsigned int i, unsigned int j,
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                  std::string area, 
                                                  Material* materialSource, Material* materialTarget)
     : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
@@ -86,7 +86,7 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-Scalar {FUNCTION_NAME}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                                           Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
     double result = 0;
@@ -100,7 +100,7 @@ Scalar {FUNCTION_NAME}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<
 
 
 template <typename Scalar>
-Hermes::Ord {FUNCTION_NAME}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     	{{#VARIABLE_DEFINITIONS}}
@@ -115,16 +115,16 @@ Hermes::Ord {FUNCTION_NAME}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Fu
 }
 
 
-{FUNCTION_NAME}<Scalar>* {FUNCTION_NAME}<Scalar>::clone()
+{{FUNCTION_NAME}}<Scalar>* {{FUNCTION_NAME}}<Scalar>::clone()
 {
-    return new {FUNCTION_NAME}(this->i, this->j, this->areas[0],
+    return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],
                                          this->m_materialSource, this->m_materialTarget);
 }
-{{#VECTOR_VOL_SOURCE}}
+{{/VECTOR_VOL_SOURCE}}
 
 {{#MATRIX_SURF_SOURCE}}
 template <typename Scalar>
-{FUNCTION_NAME}<Scalar>::{FUNCTION_NAME}(unsigned int i, unsigned int j,
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                    std::string area, 
                                                    Boundary *boundary)
     : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), m_boundarySource(boundary)
@@ -135,7 +135,7 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-Scalar {FUNCTION_NAME}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
+Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                                            Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
     	{{#VARIABLE_DEFINITIONS}}
@@ -150,7 +150,7 @@ Scalar {FUNCTION_NAME}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<
 }
 
 template <typename Scalar>
-Hermes::Ord {FUNCTION_NAME}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
+Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                               Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     	{{#VARIABLE_DEFINITIONS}}
@@ -167,16 +167,16 @@ Hermes::Ord {FUNCTION_NAME}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Fu
 }
 
 template <typename Scalar>
-{FUNCTION_NAME}<Scalar>* {FUNCTION_NAME}<Scalar>::clone()
+{{FUNCTION_NAME}}<Scalar>* {{FUNCTION_NAME}}<Scalar>::clone()
 {
-    return new {FUNCTION_NAME}(this->i, this->j, this->areas[0],
+    return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],
                                          this->m_boundarySource);
 }
-{{#MATRIX_SURF_SOURCE}}
+{{/MATRIX_SURF_SOURCE}}
 
 {{#VECTOR_SUTF_SOURCE}}
 template <typename Scalar>
-{FUNCTION_NAME}<Scalar>::{FUNCTION_NAME}(unsigned int i, unsigned int j,
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                    std::string area, 
                                                    Boundary *boundary)
 
@@ -188,7 +188,7 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-Scalar {FUNCTION_NAME}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                                            Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
     double result = 0;    
@@ -200,7 +200,7 @@ Scalar {FUNCTION_NAME}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<
 }
 
 template <typename Scalar>
-Hermes::Ord {FUNCTION_NAME}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                               Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     Hermes::Ord result(0);    
@@ -212,16 +212,16 @@ Hermes::Ord {FUNCTION_NAME}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Fu
 
 }
 
-{FUNCTION_NAME}<Scalar>* {FUNCTION_NAME}<Scalar>::clone()
+{{FUNCTION_NAME}}<Scalar>* {{FUNCTION_NAME}}<Scalar>::clone()
 {
-    return new {FUNCTION_NAME}(this->i, this->j, this->areas[0],  
+    return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],  
                                          this->m_boundarySource);
 }
 {{/VECTOR_SUTF_SOURCE}}
 
-{{#EXACT_SURCE}}
+{{#EXACT_SOURCE}}
 template <typename Scalar>
-{FUNCTION_NAME}<Scalar>::{FUNCTION_NAME}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), m_boundarySource(boundary)
 {
 	{{#VARIABLE_DEFINITIONS}}
@@ -231,20 +231,21 @@ template <typename Scalar>
 
 
 template <typename Scalar>
-Scalar {FUNCTION_NAME}<Scalar>::value(double x, double y) const
+Scalar {{FUNCTION_NAME}}<Scalar>::value(double x, double y) const
 {
     double result = {{EXPRESSION}}
     return result;
 }
 
 template <typename Scalar>
-void {FUNCTION_NAME}<Scalar>::derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy) const
+void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy) const
 {
 
 }
-{{#EXACT_SURCE}}
+{{/EXACT_SOURCE}}
 
-{{#SOURCE}}
-template class {{FUNCTION_NAME}}<double>;
+
+{{#SOURCE}}template class {{FUNCTION_NAME}}<double>;
 {{/SOURCE}}
+
 
