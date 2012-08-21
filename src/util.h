@@ -452,7 +452,8 @@ enum WeakFormKind
     WeakForm_MatVol,
     WeakForm_MatSurf,
     WeakForm_VecVol,
-    WeakForm_VecSurf
+    WeakForm_VecSurf,
+    WeakForm_ExactSol
 };
 
 enum MeshType

@@ -119,20 +119,45 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
     {
         foreach(XMLModule::matrix_form matrix_form, weakform.matrix_form())
         {
-            foreach(LinearityType linearityType, linearityTypeList())
+            foreach(WeakFormKind weakFormType, weakFormTypeList())
             {
-                foreach (CoordinateType coordinateType, coordinateTypeList())
+                foreach(LinearityType linearityType, linearityTypeList())
                 {
-                    ctemplate::TemplateDictionary *field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
-                    field->SetValue("FUNCTION_NAME", linearityTypeStringEnum(linearityType).toLower().toStdString());
-                    field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
-                    field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
-                    field->SetValue("LINEARITY_TYPE", linearityTypeStringEnum(linearityType).toLower().toStdString());
-                    field->SetValue("LINEARITY_TYPE_CAP", linearityTypeStringEnum(linearityType).toStdString());
-                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
-                    field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
-                    field->SetValue("COLUMN_INDEX", QString::number(matrix_form.i()).toStdString());
-                    field->SetValue("MODULE_ID", module->general().id());
+                    foreach (CoordinateType coordinateType, coordinateTypeList())
+                    {
+                        ctemplate::TemplateDictionary *field;
+                        switch (weakFormType)
+                        {
+                        case WeakForm_MatVol:
+                            field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
+                            break;
+                        case WeakForm_MatSurf:
+                            field = output.AddSectionDictionary("MATRIX_SURF_SOURCE");
+                            break;
+                        case WeakForm_VecVol:
+                            field = output.AddSectionDictionary("VECTOR_VOL_SOURCE");
+                            break;
+                        case WeakForm_VecSurf:
+                            field = output.AddSectionDictionary("VECTOR_SURF_SOURCE");
+                            break;
+                        case WeakForm_ExactSol:
+                            field = output.AddSectionDictionary("EXACT_SOURCE");
+                            break;
+                        default:
+                            assert(0);
+                        }
+                        QString strLinearityTypeCap = linearityTypeStringEnum(linearityType).replace("LinearityType_","");
+                        QString strLinearityType = strLinearityTypeCap.toLower();
+                        field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
+                        field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
+                        field->SetValue("LINEARITY_TYPE", strLinearityType.toStdString());
+                        field->SetValue("LINEARITY_TYPE_CAP", strLinearityTypeCap.toStdString());
+                        field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                        field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
+                        field->SetValue("COLUMN_INDEX", QString::number(matrix_form.i()).toStdString());
+                        field->SetValue("MODULE_ID", module->general().id());
+
+                    }
                 }
             }
         }

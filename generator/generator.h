@@ -38,7 +38,7 @@ private:
     void generatePluginInterfaceFiles(XMLModule::module *module);
     void generatePluginFilterFiles(XMLModule::module *module);
 
-    inline QStringList weakFormTypeList(){ QStringList list; list << "EXACT_SOURCE" << "MATRIX_VOL_SOURCE" << "VECTOR_VOL_SOURCE" << "MATRIX_SURF_SOURCE" << "VECTOR_SURF_SOURCE"; return list; }
+    inline QList<WeakFormKind> weakFormTypeList() { QList<WeakFormKind> list; list << WeakForm_MatVol << WeakForm_MatSurf << WeakForm_VecVol << WeakForm_VecSurf << WeakForm_ExactSol; return list; }
 
     inline QList<LinearityType> linearityTypeList() { QList<LinearityType> list; list << LinearityType_Linear << LinearityType_Newton << LinearityType_Picard << LinearityType_Undefined; return list; }
     QString linearityTypeStringEnum(LinearityType linearityType)
@@ -46,16 +46,16 @@ private:
         switch (linearityType)
         {
             case LinearityType_Linear:
-                return ("Linear");
+                return ("LinearityType_Linear");
                 break;
             case LinearityType_Newton:
-                return ("Newton");
+                return ("LinearityType_Newton");
                 break;
             case LinearityType_Picard:
-                return ("Picard");
+                return ("LinearityType_Picard");
                 break;
             case LinearityType_Undefined:
-                return ("Undefined");
+                return ("LinearityType_Undefined");
                 break;
             default:
                 assert(0);
