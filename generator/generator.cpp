@@ -77,7 +77,8 @@ void Agros2DGenerator::run()
         generatePluginProjectFile(module);
         generatePluginInterfaceFiles(module);
         generatePluginFilterFiles(module);
-        generatePluginWeakFormFiles(module);
+        generatePluginWeakFormSourceFiles(module);
+        generatePluginWeakFormHeaderFiles(module);
     }
 
     exit(0);
@@ -155,7 +156,7 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
                        QString::fromStdString(text));
 }
 
-void Agros2DGenerator::generatePluginWeakFormFiles(XMLModule::module *module)
+void Agros2DGenerator::generatePluginWeakFormSourceFiles(XMLModule::module *module)
 {
     QString id = QString::fromStdString(module->general().id());
 
@@ -165,17 +166,6 @@ void Agros2DGenerator::generatePluginWeakFormFiles(XMLModule::module *module)
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
     std::string text;
-
-//    // header - expand template
-//    ctemplate::ExpandTemplate(QString("%1/%2/interface_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
-//                              ctemplate::DO_NOT_STRIP, &output, &text);
-
-//    // header - save to file
-//    writeStringContent(QString("%1/%2/%3/%3_interface.h").
-//                       arg(QApplication::applicationDirPath()).
-//                       arg(GENERATOR_PLUGINROOT).
-//                       arg(id),
-//                       QString::fromStdString(text));
 
     // source - expand template
     text.clear();
@@ -196,12 +186,53 @@ void Agros2DGenerator::generatePluginWeakFormFiles(XMLModule::module *module)
         }
     }
 
-
     ctemplate::ExpandTemplate(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_weakform.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+void Agros2DGenerator::generatePluginWeakFormHeaderFiles(XMLModule::module *module)
+{
+    QString id = QString::fromStdString(module->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", module->general().id());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    text.clear();
+    foreach(XMLModule::weakform_volume weakform, module->volume().weakforms_volume().weakform_volume())
+    {
+        generateVolumeMatrixForm(weakform, output, module);
+        generateVolumeVectorForm(weakform, output, module);
+    }
+
+    foreach(XMLModule::weakform_surface weakform, module->surface().weakforms_surface().weakform_surface())
+    {
+        foreach(XMLModule::boundary boundary, weakform.boundary())
+        {
+
+            generateSurfaceMatrixForm(boundary, output, module, weakform);
+            generateSurfaceVectorForm(boundary, output, module, weakform);
+            generateExactSolution(boundary, output, module, weakform);
+        }
+    }
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_weakform.h").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),

@@ -1,6 +1,4 @@
-<?xml version="1.0"?>
-<weakform_h>
-<head>// This file is part of Agros2D.
+// This file is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,115 +11,126 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
 //
 // hp-FEM group (http://hpfem.org/)
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
-</head>
 
-<includes>#ifndef general_weakform
+#ifndef general_weakform
 #define general_weakform
 
 #include "util.h"
-#include &lt;weakform/weakform.h&gt;
+#include <weakform/weakform.h>
 #include "hermes2d/marker.h"
-</includes>
-
-<namespaces>namespace general_weakform
-{</namespaces>			
   		
-<variable_declaration> mutable Value variable_short;
-</variable_declaration>
-
-<custom_matrix_form_vol>template&lt;typename Scalar&gt;
-class CustomMatrixFormVol : public Hermes::Hermes2D::MatrixFormVol&lt;Scalar&gt;
+{{#MATRIX_VOL_SOURCE}}
+template<typename Scalar>
+class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormVol<Scalar>
 {
 public:
-    CustomMatrixFormVol(unsigned int i, unsigned int j,
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                               std::string area,
                               Hermes::Hermes2D::SymFlag sym,
                               Material *materialSource,
 			      Material *materialTarget);
 
-    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u,
-                         Hermes::Hermes2D::Func&lt;double&gt; *v, Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
-    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u,
-                            Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v, Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;   	    
-    CustomMatrixFormVol&lt;Scalar&gt;* clone();
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
+                         Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
+    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
+                            Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;   	    
+    {{FUNCTION_NAME}}<Scalar>* clone();
 private:
     Material *m_materialSource;
     Material *m_materialTarget;	
     Hermes::Hermes2D::SymFlag m_sym;
-    //variable_declaration	    	
-};</custom_matrix_form_vol> 
-  
 
-<custom_vector_form_vol>template&lt;typename Scalar&gt;
-class CustomVectorFormVol : public Hermes::Hermes2D::VectorFormVol&lt;Scalar&gt;
+    {{#VARIABLES_DECLARATION}}
+    mutable Value {{VARIABLE_SHORT}};
+    {{/VARIABLES_DECLARATION}}	
+
+};
+{{/MATRIX_VOL_SOURCE}}
+
+{{#VECTOR_VOL_SOURCE}}
+template<typename Scalar>
+class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormVol<Scalar>
 {
 public:
-    CustomVectorFormVol(unsigned int i, unsigned int j,
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                               std::string area, 
                               Material *materialSource,
 			      Material *materialTarget	
 				
     );
 
-    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
-                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
-    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
-                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
-    CustomVectorFormVol&lt;Scalar&gt;* clone();	
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
+    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+    {{FUNCTION_NAME}}<Scalar>* clone();	
 private:		
     Material *m_materialSource;
     Material *m_materialTarget;	
-    //variable_declaration
+    {{#VARIABLES_DECLARATION}}
+    mutable Value {{VARIABLE_SHORT}};
+    {{/VARIABLES_DECLARATION}}	
+
     unsigned int j;
-};</custom_vector_form_vol>
-  
-<custom_matrix_form_surf>template&lt;typename Scalar&gt;
-class CustomMatrixFormSurf : public Hermes::Hermes2D::MatrixFormSurf&lt;Scalar&gt;
+};
+{{/VECTOR_VOL_SOURCE}}  
+
+{{#MATRIX_SURF_SOURCE}}
+class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormSurf<Scalar>
 {
 public:
-    CustomMatrixFormSurf(unsigned int i, unsigned int j,
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                std::string area, 
                                Boundary *boundary);
 
-    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *u, Hermes::Hermes2D::Func&lt;double&gt; *v,
-                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
-    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
-                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
-    CustomMatrixFormSurf&lt;Scalar&gt;* clone(); 
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
+    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+    {{FUNCTION_NAME}}<Scalar>* clone(); 
 private:
     Boundary *m_boundarySource;
-    //variable_declaration	
-};</custom_matrix_form_surf>
+    {{#VARIABLES_DECLARATION}}
+    mutable Value {{VARIABLE_SHORT}};
+    {{/VARIABLES_DECLARATION}}	
+	
+};
+{{/MATRIX_SURF_SOURCE}}
 
-<custom_vector_form_surf>template&lt;typename Scalar&gt;
-class CustomVectorFormSurf : public Hermes::Hermes2D::VectorFormSurf&lt;Scalar&gt;
+{{#VECTOR_SURF_SOURCE}}
+class CustomVectorFormSurf : public Hermes::Hermes2D::VectorFormSurf<Scalar>
 {
 public:
-    CustomVectorFormSurf(unsigned int i, unsigned int j,
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                std::string area, 
                                Boundary *boundary);
 
-    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func&lt;Scalar&gt; *u_ext[], Hermes::Hermes2D::Func&lt;double&gt; *v,
-                         Hermes::Hermes2D::Geom&lt;double&gt; *e, Hermes::Hermes2D::ExtData&lt;Scalar&gt; *ext) const;
-    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *u_ext[], Hermes::Hermes2D::Func&lt;Hermes::Ord&gt; *v,
-                            Hermes::Hermes2D::Geom&lt;Hermes::Ord&gt; *e, Hermes::Hermes2D::ExtData&lt;Hermes::Ord&gt; *ext) const;
-    CustomVectorFormSurf&lt;Scalar&gt;* clone();
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
+    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+    {{FUNCTION_NAME}}<Scalar>* clone();
 private:
     Boundary *m_boundarySource;
-    //variable_declaration
-    unsigned int j;
-};</custom_vector_form_surf>
+    {{#VARIABLES_DECLARATION}}
+    mutable Value {{VARIABLE_SHORT}};
+    {{/VARIABLES_DECLARATION}}	
 
-<custom_essential_form_surf>template&lt;typename Scalar&gt;
-class CustomEssentialFormSurf : public Hermes::Hermes2D::ExactSolutionScalar&lt;Scalar&gt;
+    unsigned int j;
+};
+{{/VECTOR_SURF_SOURCE}}
+
+{{#EXACT_SOURCE}}
+template<typename Scalar>
+class CustomEssentialFormSurf : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
 {
 public:
-    CustomEssentialFormSurf(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
+    {{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
     Scalar value(double x, double y) const;
     void derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy) const;
@@ -132,9 +141,10 @@ public:
     }
 private:
     Boundary *m_boundarySource;  
-    //variable_declaration	
-};</custom_essential_form_surf>
+    {{#VARIABLES_DECLARATION}}
+    mutable Value {{VARIABLE_SHORT}};
+    {{/VARIABLES_DECLARATION}}		
+};
+{{/EXACT_SOURCE}}
 
-<footer> }
-#endif </footer>	
-</weakform_h>
+
