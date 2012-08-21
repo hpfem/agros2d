@@ -1,7 +1,6 @@
 #include <QTextStream>
 #include "lex.h"
 
-
 Token::Token(TokenType type, QString text)
 {
     this->m_text = text;
@@ -114,9 +113,10 @@ void LexicalAnalyser::setExpression(const QString &expr)
 
         if (old_pos == pos)
         {
-            // TODO: exception
-            qout << "Unexpected symbol:" <<  exprTrimmed[pos]  << " on position: " << pos << endl;
-            qout << exprTrimmed.at(pos).toAscii() << endl;
+            throw ParserException(QString("Unexpected symbol '%1' on position %2 in expression '%3'").arg(exprTrimmed[pos]).arg(pos).arg(expr),
+                                  expr,
+                                  pos,
+                                  exprTrimmed.at(pos));
             break;
         }
         else

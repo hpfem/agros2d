@@ -47,6 +47,29 @@ enum TokenType
     TokenType_FACTOR = 104
 };
 
+class ParserException
+{
+public:
+    ParserException(const QString &what, const QString &expr, int pos, const QString &symbol)
+    {
+        m_what = what;
+        m_expr = expr;
+        m_pos = pos;
+        m_symbol = symbol;
+    }
+
+    inline QString what() { return m_what; }
+    inline QString expression() { return m_expr; }
+    inline int position() { return m_pos; }
+    inline QString symbol() { return m_symbol; }
+
+private:
+    QString m_what;
+    QString m_expr;
+    int m_pos;
+    QString m_symbol;
+};
+
 class Token
 {
 public:
