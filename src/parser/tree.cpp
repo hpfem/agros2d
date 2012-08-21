@@ -215,7 +215,7 @@ TreeNode *  SyntacticAnalyser::parseFactor()
         }
         if (m_currentSymbol.type() == TokenType_VARIABLE)
         {
-            node = new TreeNode((this->m_variable_map.value(m_currentSymbol.text())));
+            node = new TreeNode((this->m_variableMap.value(m_currentSymbol.text())));
             if (this->m_tokens.count() != 0)
             {
                 m_currentSymbol = m_tokens.takeFirst();
