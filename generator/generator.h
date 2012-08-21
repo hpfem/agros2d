@@ -21,6 +21,7 @@
 #define GENERATOR_H
 
 #include "util.h"
+#include "ctemplate/template.h"
 #include "../../resources_source/classes/module_xml.h"
 
 class Agros2DGenerator : public QCoreApplication
@@ -34,34 +35,53 @@ public slots:
     void run();
 
 private:
-    void generatePluginProjectFile(XMLModule::module *module);
-    void generatePluginInterfaceFiles(XMLModule::module *module);
-    void generatePluginFilterFiles(XMLModule::module *module);
-
     QString parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
     int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
 
     inline QList<WeakFormKind> weakFormTypeList() { QList<WeakFormKind> list; list << WeakForm_MatVol << WeakForm_MatSurf << WeakForm_VecVol << WeakForm_VecSurf << WeakForm_ExactSol; return list; }
+    QString weakFormTypeStringEnum(WeakFormKind weakformType)
+    {
+        switch (weakformType)
+        {
+        case WeakForm_MatVol:
+            return("WeakForm_MatVol");
+            break;
+        case WeakForm_MatSurf:
+            return("WeakForm_MatSurf");
+            break;
+        case WeakForm_VecVol:
+            return("WeakForm_VecVol");
+            break;
+        case WeakForm_VecSurf:
+            return("WeakForm_VecSurf");
+            break;
+        case WeakForm_ExactSol:
+            return("WeakForm_ExactSol");
+            break;
+        default:
+            assert(0);
+        }
+    }
 
     inline QList<LinearityType> linearityTypeList() { QList<LinearityType> list; list << LinearityType_Linear << LinearityType_Newton << LinearityType_Picard << LinearityType_Undefined; return list; }
     QString linearityTypeStringEnum(LinearityType linearityType)
     {
         switch (linearityType)
         {
-            case LinearityType_Linear:
-                return ("LinearityType_Linear");
-                break;
-            case LinearityType_Newton:
-                return ("LinearityType_Newton");
-                break;
-            case LinearityType_Picard:
-                return ("LinearityType_Picard");
-                break;
-            case LinearityType_Undefined:
-                return ("LinearityType_Undefined");
-                break;
-            default:
-                assert(0);
+        case LinearityType_Linear:
+            return ("LinearityType_Linear");
+            break;
+        case LinearityType_Newton:
+            return ("LinearityType_Newton");
+            break;
+        case LinearityType_Picard:
+            return ("LinearityType_Picard");
+            break;
+        case LinearityType_Undefined:
+            return ("LinearityType_Undefined");
+            break;
+        default:
+            assert(0);
         }
     }
 
@@ -69,9 +89,9 @@ private:
     QString coordinateTypeStringEnum(CoordinateType coordinateType)
     {
         if (coordinateType == CoordinateType_Planar)
-            return "Planar";
+            return "CoordinateType_Planar";
         else if (coordinateType == CoordinateType_Axisymmetric)
-            return "Axisymmetric";
+            return "CoordinateType_Axisymmetric";
         else
             assert(0);
     }
@@ -88,9 +108,25 @@ private:
             assert(0);
     }
 
+    QString boundaryTypeString(const QString boundaryName)
+    {
+        return boundaryName.toLower().replace(" ","_");
+    }
 
 
+    void generatePluginProjectFile(XMLModule::module *module);
+    void generatePluginInterfaceFiles(XMLModule::module *module);
+    void generatePluginFilterFiles(XMLModule::module *module);
+    void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
+    void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
+    void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
+    void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
+    void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
 
+    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form);
+    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form);
+    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
 };
+
 
 #endif // GENERATOR_H
