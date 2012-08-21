@@ -31,15 +31,28 @@ const QString GENERATOR_PLUGINROOT = "weakform_new/plugins/";
 
 Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(argc, argv)
 {
-    /*
-    QString expr = "0.5 * el_epsr * EPS0 * (dx1 * dx1 + dy1 * dy1)";
 
-    LexicalAnalyser lex(expr);
+    double dx1 = 2;
+    double dy1 = 3;
+    double el_epsr = 5;
+    double eps0 = 4;
+
+
+    // ToDo: erase white characters before processing
+    // It's impossible to use gaps now.
+    QString expr = "0.5*(dx1*dx1+dy1*dy1)";
+
+    LexicalAnalyser lex;
+    lex.m_variables << "dx1" << "dy1" << "epsr" << "EPS0";
+    lex.Parse(expr);
+
     SyntacticAnalyser synt;
-
+    synt.m_variableMap.insert("dx1",&dx1);
+    synt.m_variableMap.insert("dy1",&dy1);
+    synt.m_variableMap.insert("epsr",&el_epsr);
+    synt.m_variableMap.insert("EPS0",&eps0);
     synt.parse(lex.tokens());
-    synt.printTree();
-    */
+    std::cout << synt.evalTree();
 }
 
 void Agros2DGenerator::run()
@@ -134,20 +147,246 @@ void Agros2DGenerator::generatePluginInterfaceFiles(XMLModule::module *module)
             {
                 foreach (CoordinateType coordinateType, coordinateTypeList())
                 {
-                    ctemplate::TemplateDictionary *field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
-                    field->SetValue("FUNCTION_NAME", linearityTypeStringEnum(linearityType).toLower().toStdString());
-                    field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
-                    field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
-                    field->SetValue("LINEARITY_TYPE", linearityTypeStringEnum(linearityType).toLower().toStdString());
-                    field->SetValue("LINEARITY_TYPE_CAP", linearityTypeStringEnum(linearityType).toStdString());
-                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
-                    field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
-                    field->SetValue("COLUMN_INDEX", QString::number(matrix_form.i()).toStdString());
-                    field->SetValue("MODULE_ID", module->general().id());
+
+                    QString expression;
+                    if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+                    {
+                        expression = matrix_form.planar_linear().c_str();
+                    }
+
+                    if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+                    {
+                        expression = matrix_form.planar_newton().c_str();
+                    }
+
+                    if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+                    {
+                        expression = matrix_form.axi_linear().c_str();
+                    }
+                    if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+                    {
+                        expression = matrix_form.axi_newton().c_str();
+                    }
+
+                    if(expression != "")
+                    {
+                        ctemplate::TemplateDictionary *field;
+                        field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
+                        QString strLinearityTypeCap = linearityTypeStringEnum(linearityType).replace("LinearityType_","");
+                        QString strLinearityType = strLinearityTypeCap.toLower();
+                        field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
+                        field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
+                        field->SetValue("LINEARITY_TYPE", strLinearityType.toStdString());
+                        field->SetValue("LINEARITY_TYPE_CAP", strLinearityTypeCap.toStdString());
+                        field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                        field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
+                        field->SetValue("COLUMN_INDEX", QString::number(matrix_form.i()).toStdString());
+                        field->SetValue("MODULE_ID", module->general().id());
+                    }
+
+                }
+            }
+
+            foreach(XMLModule::vector_form vector_form, weakform.vector_form())
+            {
+                foreach(LinearityType linearityType, linearityTypeList())
+                {
+                    foreach (CoordinateType coordinateType, coordinateTypeList())
+                    {
+                        QString expression;
+
+                        if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+                        {
+                            expression = vector_form.planar_linear().c_str();
+                        }
+
+                        if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+                        {
+                            expression = vector_form.planar_newton().c_str();
+                        }
+
+                        if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+                        {
+                            expression = vector_form.axi_linear().c_str();
+                        }
+                        if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+                        {
+                            expression = vector_form.axi_newton().c_str();
+                        }
+
+                        if(expression != "")
+                        {
+                            ctemplate::TemplateDictionary *field;
+                            field = output.AddSectionDictionary("VECTOR_VOL_SOURCE");
+                            QString strLinearityTypeCap = linearityTypeStringEnum(linearityType).replace("LinearityType_","");
+                            QString strLinearityType = strLinearityTypeCap.toLower();
+                            field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
+                            field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
+                            field->SetValue("LINEARITY_TYPE", strLinearityType.toStdString());
+                            field->SetValue("LINEARITY_TYPE_CAP", strLinearityTypeCap.toStdString());
+                            field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                            field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
+                            field->SetValue("COLUMN_INDEX", QString::number(matrix_form.i()).toStdString());
+                            field->SetValue("MODULE_ID", module->general().id());
+                        }
+                    }
                 }
             }
         }
     }
+
+    foreach(XMLModule::weakform_surface weakform, module->surface().weakforms_surface().weakform_surface())
+    {
+        foreach(XMLModule::boundary boundary, weakform.boundary())
+        {
+            foreach(XMLModule::matrix_form matrix_form, boundary.matrix_form())
+            {
+                foreach(LinearityType linearityType, linearityTypeList())
+                {
+                    foreach (CoordinateType coordinateType, coordinateTypeList())
+                    {
+                        QString expression;
+
+                        if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+                        {
+                            expression = matrix_form.planar_linear().c_str();
+                        }
+
+                        if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+                        {
+                            expression = matrix_form.planar_newton().c_str();
+                        }
+
+                        if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+                        {
+                            expression = matrix_form.axi_linear().c_str();
+                        }
+                        if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+                        {
+                            expression = matrix_form.axi_newton().c_str();
+                        }
+
+                        if(expression != "")
+                        {
+                            ctemplate::TemplateDictionary *field;
+                            field = output.AddSectionDictionary("MATRIX_SURF_SOURCE");
+                            QString strLinearityTypeCap = linearityTypeStringEnum(linearityType).replace("LinearityType_","");
+                            QString strLinearityType = strLinearityTypeCap.toLower();
+                            field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
+                            field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
+                            field->SetValue("LINEARITY_TYPE", strLinearityType.toStdString());
+                            field->SetValue("LINEARITY_TYPE_CAP", strLinearityTypeCap.toStdString());
+                            field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                            field->SetValue("ROW_INDEX", QString::number(matrix_form.j()).toStdString());
+                            field->SetValue("COLUMN_INDEX", QString::number(matrix_form.i()).toStdString());
+                            field->SetValue("MODULE_ID", module->general().id());
+                        }
+                    }
+                }
+            }
+
+            foreach(XMLModule::boundary boundary, weakform.boundary())
+            {
+                foreach(XMLModule::vector_form vector_form, boundary.vector_form())
+                {
+                    foreach(LinearityType linearityType, linearityTypeList())
+                    {
+                        foreach (CoordinateType coordinateType, coordinateTypeList())
+                        {
+                            QString expression;
+
+                            if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+                            {
+                                expression = vector_form.planar_linear().c_str();
+                            }
+
+                            if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+                            {
+                                expression = vector_form.planar_newton().c_str();
+                            }
+
+                            if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+                            {
+                                expression = vector_form.axi_linear().c_str();
+                            }
+                            if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+                            {
+                                expression = vector_form.axi_newton().c_str();
+                            }
+
+                            if(expression != "")
+                            {
+                                ctemplate::TemplateDictionary *field;
+                                field = output.AddSectionDictionary("VECTOR_SURF_SOURCE");
+                                QString strLinearityTypeCap = linearityTypeStringEnum(linearityType).replace("LinearityType_","");
+                                QString strLinearityType = strLinearityTypeCap.toLower();
+                                field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
+                                field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
+                                field->SetValue("LINEARITY_TYPE", strLinearityType.toStdString());
+                                field->SetValue("LINEARITY_TYPE_CAP", strLinearityTypeCap.toStdString());
+                                field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                                field->SetValue("ROW_INDEX", QString::number(vector_form.j()).toStdString());
+                                field->SetValue("COLUMN_INDEX", QString::number(vector_form.i()).toStdString());
+                                field->SetValue("MODULE_ID", module->general().id());
+                            }
+                        }
+                    }
+                }
+            }
+
+        /*    foreach(XMLModule::boundary boundary, weakform.boundary())
+            {
+                foreach(XMLModule::essential_form essential_form, boundary.essential_form())
+                {
+                    foreach(LinearityType linearityType, linearityTypeList())
+                    {
+                        foreach (CoordinateType coordinateType, coordinateTypeList())
+                        {
+                            QString expression;
+
+                            if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+                            {
+                                expression = vector_form.planar_linear().c_str();
+                            }
+
+                            if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+                            {
+                                expression = vector_form.planar_newton().c_str();
+                            }
+
+                            if((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+                            {
+                                expression = vector_form.axi_linear().c_str();
+                            }
+                            if((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+                            {
+                                expression = vector_form.axi_newton().c_str();
+                            }
+
+                            if(expression != "")
+                            {
+                                ctemplate::TemplateDictionary *field;
+                                field = output.AddSectionDictionary("VECTOR_SURF_SOURCE");
+                                QString strLinearityTypeCap = linearityTypeStringEnum(linearityType).replace("LinearityType_","");
+                                QString strLinearityType = strLinearityTypeCap.toLower();
+                                field->SetValue("COORDINATE_TYPE_CAP",  coordinateTypeStringEnum(coordinateType).toStdString());
+                                field->SetValue("COORDINATE_TYPE",  coordinateTypeStringEnum(coordinateType).toLower().toStdString());
+                                field->SetValue("LINEARITY_TYPE", strLinearityType.toStdString());
+                                field->SetValue("LINEARITY_TYPE_CAP", strLinearityTypeCap.toStdString());
+                                field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                                field->SetValue("ROW_INDEX", QString::number(vector_form.j()).toStdString());
+                                field->SetValue("COLUMN_INDEX", QString::number(vector_form.i()).toStdString());
+                                field->SetValue("MODULE_ID", module->general().id());
+                            }
+                        }
+                    }
+                }
+            } */
+
+        }
+    }
+
+
     ctemplate::ExpandTemplate(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
     // source - save to file
