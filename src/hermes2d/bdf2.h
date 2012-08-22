@@ -100,6 +100,38 @@ private:
 };
 
 
+/////////////////////////////////////////////////////////////////////////////////////
+// TIME DISCRETISATION - VECTOR
+/////////////////////////////////////////////////////////////////////////////////////
+
+template<typename Scalar>
+class CustomVectorFormVol_time : public Hermes::Hermes2D::VectorFormVol<Scalar>
+{
+public:
+    CustomVectorFormVol_time(unsigned int i, unsigned int j,
+                              std::string area,
+                              Material *materialSource, BDF2Table* table
+    );
+
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
+    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+    CustomVectorFormVol_time<Scalar>* clone();
+private:
+    BDF2Table* m_table;
+
+    Material *m_materialSource;
+    mutable Value he_lambda;
+    mutable Value he_p;
+    mutable Value he_vx;
+    mutable Value he_vy;
+    mutable Value he_va;
+    mutable Value he_rho;
+    mutable Value he_cp;
+
+    unsigned int j;
+};
 
 /////////////////////////////////////////////////////////////////////////////////////
 // TIME RESIDUAL
@@ -112,10 +144,7 @@ class CustomVectorFormVol_time_residual : public Hermes::Hermes2D::VectorFormVol
 public:
     CustomVectorFormVol_time_residual(unsigned int i, unsigned int j,
                               std::string area,
-                              Material *materialSource,
-                              Material *materialTarget
-
-    );
+                              Material *materialSource);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -124,7 +153,6 @@ public:
     CustomVectorFormVol_time_residual<Scalar>* clone();
 private:
     Material *m_materialSource;
-    Material *m_materialTarget;
     mutable Value he_lambda;
     mutable Value he_p;
     mutable Value he_vx;

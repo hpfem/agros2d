@@ -57,6 +57,8 @@ class ProgressItemSolve;
 class FieldInfo;
 class CouplingInfo;
 
+class BDF2Table;
+
 struct FormInfo
 {
     FormInfo() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM) {}
@@ -90,8 +92,8 @@ private:
     void registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker *marker);
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
-//    void registerFormOld(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
-//                         SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo);
+    void registerTimeForms(Field* field, QString area, Marker* marker, BDF2Table* table);
+
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;

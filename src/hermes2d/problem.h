@@ -199,6 +199,9 @@ private:
     void solveInit();
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
     void solveAction(); //called by solve, can throw SolverException
+
+    void solveActionBDF();
+
     void solveAdaptiveStepAction();
 
     double m_actualTime;

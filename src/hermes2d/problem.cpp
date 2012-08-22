@@ -459,6 +459,72 @@ void Problem::solveAction()
     emit solved();
 }
 
+
+void Problem::solveActionBDF()
+{
+    clearSolution();
+
+    Util::scene()->blockSignals(true);
+
+    solveInit();
+
+    assert(isMeshed());
+
+    QMap<Block*, Solver<double>* > solvers;
+
+    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+
+    Util::scene()->setActiveAdaptivityStep(0);
+    Util::scene()->setActiveTimeStep(0);
+    Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
+
+    foreach (Block* block, m_blocks)
+    {
+        solvers[block] = block->prepareSolver();
+        if (block->isTransient())
+            solvers[block]->solveInitialTimeStep();
+    }
+
+    //just for transient heat so far
+    assert(Util::problem()->isTransient());
+    assert(m_blocks.size() == 1);
+    assert(m_blocks.at(0)->fields().size() == 1);
+    assert(m_blocks.at(0)->fields().at(0)->fieldInfo()->fieldId() == "heat");
+
+
+    int timeStep = 0;
+    bool doNextTimeStep = true;
+    while(doNextTimeStep)
+    {
+        foreach (Block* block, m_blocks)
+        {
+            Solver<double>* solver = solvers[block];
+            Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("transient step %1/%2").
+                                      arg(timeStep + 1).
+                                      arg(Util::problem()->config()->numTimeSteps()));
+
+            solver->createInitialSpace(timeStep);
+            solver->solveSimple(timeStep, 0, false);
+
+        }
+        timeStep++;
+        doNextTimeStep = Util::problem()->isTransient() && (timeStep <= Util::problem()->config()->numTimeSteps());
+
+        Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+        Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+        Util::scene()->setActiveSolutionType(SolutionMode_Normal);
+        cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+
+        addToActualTime(Util::problem()->config()->timeStep().value());
+    }
+
+
+    Util::scene()->blockSignals(false);
+
+    m_isSolved = true;
+    emit solved();
+}
+
 void Problem::solveAdaptiveStep()
 {
     if (isSolving())
@@ -566,7 +632,8 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
         if(adaptiveStepOnly)
             solveAdaptiveStepAction();
         else
-            solveAction();
+            solveActionBDF();
+            //solveAction();
     }
     catch (Hermes::Exceptions::Exception& e)
     {

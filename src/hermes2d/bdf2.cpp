@@ -181,7 +181,7 @@ void BDF2Table::test()
 
 
 /////////////////////////////////////////////////////////////////////////////////////
-// TIME DISCRETISATION
+// TIME DISCRETISATION - MATRIX
 /////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -209,13 +209,10 @@ Scalar CustomMatrixFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes
     double* alpha = m_table->alpha();
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * alpha[0] * u->val[i] * v->val[i];
-        for(int ps = 0; ps < m_table->n(); ps++)
-        {
-            result += wt[i] * alpha[ps + 1] * ext->fn[ps]->val[i] * v->val[i];
-        }
+        result += wt[i] * alpha[0] * he_rho.value(0)*he_cp.value(0) * u->val[i] * v->val[i];
     }
     result /= Util::problem()->config()->timeStep().number();
+
     return result;
 }
 
@@ -239,6 +236,67 @@ CustomMatrixFormVol_time<Scalar>* CustomMatrixFormVol_time<Scalar>::clone()
     return new CustomMatrixFormVol_time(this->i, this->j, this->areas[0], this->m_sym, this->m_materialSource, this->m_table);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////
+// TIME DISCRETISATION - VECTOR
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+template <typename Scalar>
+CustomVectorFormVol_time<Scalar>::CustomVectorFormVol_time(unsigned int i, unsigned int j,
+                                                 std::string area,
+                                                 Material* materialSource, BDF2Table *table)
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), j(j), m_table(table)
+{
+ he_lambda = m_materialSource->value("heat_conductivity");
+ he_p = m_materialSource->value("heat_volume_heat");
+ he_vx = m_materialSource->value("heat_velocity_x");
+ he_vy = m_materialSource->value("heat_velocity_y");
+ he_va = m_materialSource->value("heat_velocity_angular");
+ he_rho = m_materialSource->value("heat_density");
+ he_cp = m_materialSource->value("heat_specific_heat");
+
+}
+
+template <typename Scalar>
+Scalar CustomVectorFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
+{
+    double result = 0;
+
+    double* alpha = m_table->alpha();
+    for (int i = 0; i < n; i++)
+    {
+        for(int ps = 0; ps < m_table->n(); ps++)
+        {
+            result += wt[i] * alpha[ps + 1] * he_rho.value(0)*he_cp.value(0) * ext->fn[ps]->val[i] * v->val[i];
+        }
+    }
+    result /= Util::problem()->config()->timeStep().number();
+
+    return result;
+}
+
+
+template <typename Scalar>
+Hermes::Ord CustomVectorFormVol_time<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
+{
+    //variable_definition
+    Hermes::Ord result(10);
+//    for (int i = 0; i < n; i++)
+//    {
+//       result += wt[i] * (1*(u_ext[this->j]->dx[i]*v->dx[i]+u_ext[this->j]->dy[i]*v->dy[i])-1*v->val[i]+1*1*((1-e->y[i]*1)*u_ext[this->j]->dx[i]+(1+e->x[i]*1)*u_ext[this->j]->dy[i])*v->val[i]);
+//    }
+    return result;
+}
+
+template <typename Scalar>
+CustomVectorFormVol_time<Scalar>* CustomVectorFormVol_time<Scalar>::clone()
+{
+    return new CustomVectorFormVol_time(this->i, this->j, this->areas[0],
+                                         this->m_materialSource, m_table);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // TIME RESIDUAL
@@ -248,8 +306,8 @@ CustomMatrixFormVol_time<Scalar>* CustomMatrixFormVol_time<Scalar>::clone()
 template <typename Scalar>
 CustomVectorFormVol_time_residual<Scalar>::CustomVectorFormVol_time_residual(unsigned int i, unsigned int j,
                                                  std::string area,
-                                                 Material* materialSource, Material* materialTarget)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
+                                                 Material* materialSource)
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), j(j)
 {
  he_lambda = m_materialSource->value("heat_conductivity");
  he_p = m_materialSource->value("heat_volume_heat");
@@ -301,9 +359,10 @@ template <typename Scalar>
 CustomVectorFormVol_time_residual<Scalar>* CustomVectorFormVol_time_residual<Scalar>::clone()
 {
     return new CustomVectorFormVol_time_residual(this->i, this->j, this->areas[0],
-                                         this->m_materialSource, this->m_materialTarget);
+                                         this->m_materialSource);
 }
 
 
 template class CustomMatrixFormVol_time<double>;
+template class CustomVectorFormVol_time<double>;
 template class CustomVectorFormVol_time_residual<double>;
