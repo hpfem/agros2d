@@ -22,20 +22,25 @@
 
 #include "util.h"
 
+class Material;
+
 class BDF2Table
 {
 public:
     BDF2Table() : m_calculated(false) {}
-    void setOrder(int m_order);
+    void setOrder(int order);
     void setPreviousSteps(QList<double> previousSteps);
 
-    QVector<double> alpha() { assert(m_calculated); return m_alpha; }
+    int n() { return m_n;}
+    int order() { return m_n;}
+
+    double* alpha() { assert(m_calculated); return m_alpha; }
 
     // coefficient of linear combination that combines solutions of A and B method to produce final solution
     // has different meaning than in diploma thesis - here we ADD solutions (instead of substract), multiplied by corresponding delta
     double delta() { assert(m_calculated); return m_delta; }
 
-    QVector<double> gamma() { assert(m_calculated); return m_gamma; }
+    double* gamma() { assert(m_calculated); return m_gamma; }
 
     double testCalcValue(double step, QList<double> values, double fVal, double fPrevVal);
     static void test();
@@ -43,11 +48,11 @@ public:
 protected:
     virtual void recalculate() = 0;
 
-    int m_order;
-    QList<double> th;
-    QVector<double> m_alpha;
+    int m_n;
+    double th[10];
+    double m_alpha[10];
     double m_delta;
-    QVector<double> m_gamma;
+    double m_gamma[10];
     bool m_calculated;
 };
 
@@ -61,4 +66,73 @@ class BDF2BTable : public BDF2Table
     virtual void recalculate();
 };
 
+
+/////////////////////////////////////////////////////////////////////////////////////
+// TIME DISCRETISATION
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+template<typename Scalar>
+class CustomMatrixFormVol_time : public Hermes::Hermes2D::MatrixFormVol<Scalar>
+{
+public:
+    CustomMatrixFormVol_time(unsigned int i, unsigned int j, std::string area,
+                             Hermes::Hermes2D::SymFlag sym, Material *materialSource, BDF2Table* table);
+
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
+                         Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
+    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
+                            Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+    CustomMatrixFormVol_time<Scalar>* clone();
+
+private:
+    Hermes::Hermes2D::SymFlag m_sym;
+    BDF2Table* m_table;
+
+    Material *m_materialSource;
+    mutable Value he_lambda;
+    mutable Value he_p;
+    mutable Value he_vx;
+    mutable Value he_vy;
+    mutable Value he_va;
+    mutable Value he_rho;
+    mutable Value he_cp;
+};
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+// TIME RESIDUAL
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+template<typename Scalar>
+class CustomVectorFormVol_time_residual : public Hermes::Hermes2D::VectorFormVol<Scalar>
+{
+public:
+    CustomVectorFormVol_time_residual(unsigned int i, unsigned int j,
+                              std::string area,
+                              Material *materialSource,
+                              Material *materialTarget
+
+    );
+
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
+                         Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
+    virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
+                            Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
+    CustomVectorFormVol_time_residual<Scalar>* clone();
+private:
+    Material *m_materialSource;
+    Material *m_materialTarget;
+    mutable Value he_lambda;
+    mutable Value he_p;
+    mutable Value he_vx;
+    mutable Value he_vy;
+    mutable Value he_va;
+    mutable Value he_rho;
+    mutable Value he_cp;
+
+    unsigned int j;
+};
 #endif // BDF2_H

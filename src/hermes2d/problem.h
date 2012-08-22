@@ -65,6 +65,11 @@ public:
 
     void refresh() { emit changed(); }
 
+    bool adaptiveTimeStep() const {return m_adaptiveTimeStep; }
+    void setAdaptiveTimeStep(bool adaptiveTS) { m_adaptiveTimeStep = adaptiveTS; }
+    int timeOrder() const { return m_timeOrder; }
+    void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
+
 signals:
     void changed();
 
@@ -88,6 +93,9 @@ private:
 
     QString m_startupscript;
     QString m_description;
+
+    bool m_adaptiveTimeStep;
+    int m_timeOrder;
 };
 
 /// intented as central for solution process
@@ -168,6 +176,9 @@ public:
     void setActualTime(double time) { m_actualTime = time; }
     void addToActualTime(double time) { m_actualTime += time; }
 
+    void logTimeStep(double step) { m_timeSteps.push_back(step); }
+    QList<double> timeSteps() const { return m_timeSteps; }
+
 private:
     ProblemConfig *m_config;
     QList<Block*> m_blocks;
@@ -179,6 +190,8 @@ private:
     bool m_isSolving;
     int m_timeStep;
     bool m_isSolved;
+
+    QList<double> m_timeSteps;
 
     // todo: move to Field
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)

@@ -61,6 +61,9 @@ void ProblemConfig::clear()
     // transient
     m_timeStep = Value("1.0", false);
     m_timeTotal = Value("1.0", false);
+
+    m_adaptiveTimeStep = false;
+    m_timeOrder = 1;
 }
 
 
