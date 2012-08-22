@@ -35,6 +35,7 @@ public slots:
     void run();
 
 private:
+    QHash<QString, QString> m_variables; // dictionary for variables    
     void generatePluginProjectFile(XMLModule::module *module);
     void generatePluginInterfaceFiles(XMLModule::module *module);
     void generatePluginFilterFiles(XMLModule::module *module);

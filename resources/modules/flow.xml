@@ -383,9 +383,9 @@
                     name="Vorticity" type="scalar" shortname="vt" shortname_html="&lt;i&gt;v&lt;/i&gt;&lt;sub>t&lt;/sub>"
                     shortname_latex="vt" unit="1/s" unit_html="s&lt;sup>-1&lt;/sup>" unit_latex="s^{-1}">
                     <module:expression analysistype="steadystate"
-                            planar="dx2 - dy1" axi="dx2 - dy1" />
+                            planar="dx2 - dy1" axi="dr2 - dz1" />
                     <module:expression analysistype="transient"
-                            planar="dx2 - dy1" axi="dx2 - dy1" />
+                            planar="dx2 - dy1" axi="dr2 - dz1" />
             </module:localvariable>
 
             <module:localvariable id="flow_density"

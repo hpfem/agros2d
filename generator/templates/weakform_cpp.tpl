@@ -35,9 +35,8 @@ template <typename Scalar>
 						)
     : Hermes::Hermes2D::MatrixFormVol::CustomMatrixFormVol<Scalar>(i, j, area, sym), m_materialSource(materialSource), m_materialTarget(materialTarget), m_sym(sym)
 {
-	{{#VARIABLE_DEFINITIONS}}
-		{{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}		
+	{{#VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}		
 }
 
 
@@ -80,9 +79,8 @@ template <typename Scalar>
                                                  Material* materialSource, Material* materialTarget)
     : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
 {
-	{{#VARIABLE_DEFINITIONS}}
-		{{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}	
+	{{#VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}	
 }
 
 template <typename Scalar>
@@ -103,9 +101,9 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
-    	{{#VARIABLE_DEFINITIONS}}
+    	{{#VARIABLE_SOURCE}}
 		{{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}
+{{/VARIABLE_SOURCE}}
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
@@ -129,18 +127,16 @@ template <typename Scalar>
                                                    Boundary *boundary)
     : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j, area), m_boundarySource(boundary)
 {
-    	{{#VARIABLE_DEFINITIONS}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}
+    	{{#VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                                            Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
 {
-    	{{#VARIABLE_DEFINITIONS}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}
+    	{{#VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
     double result = 0;    
     for (int i = 0; i < n; i++)
     {
@@ -153,9 +149,8 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                               Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
-    	{{#VARIABLE_DEFINITIONS}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}
+    	{{#VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
@@ -174,7 +169,7 @@ template <typename Scalar>
 }
 {{/MATRIX_SURF_SOURCE}}
 
-{{#VECTOR_SUTF_SOURCE}}
+{{#VECTOR_SURF_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                    std::string area, 
@@ -182,9 +177,8 @@ template <typename Scalar>
 
     : Hermes::Hermes2D::VectorFormSurf<Scalar>(i, area), m_boundarySource(boundary), j(j)
 {
-	{{#VARIABLE_DEFINITIONS}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}
+	{{#VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -217,16 +211,15 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],  
                                          this->m_boundarySource);
 }
-{{/VECTOR_SUTF_SOURCE}}
+{{/VECTOR_SURF_SOURCE}}
 
 {{#EXACT_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), m_boundarySource(boundary)
 {
-	{{#VARIABLE_DEFINITIONS}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");
-	{{/VARIABLE_DEFINITIONS}}
+	{{#VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 
 

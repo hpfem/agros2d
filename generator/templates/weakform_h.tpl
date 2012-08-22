@@ -45,9 +45,8 @@ private:
     Material *m_materialTarget;	
     Hermes::Hermes2D::SymFlag m_sym;
 
-    {{#VARIABLES_DECLARATION}}
-    mutable Value {{VARIABLE_SHORT}};
-    {{/VARIABLES_DECLARATION}}	
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 
 };
 {{/MATRIX_VOL_SOURCE}}
@@ -72,9 +71,8 @@ public:
 private:		
     Material *m_materialSource;
     Material *m_materialTarget;	
-    {{#VARIABLES_DECLARATION}}
-    mutable Value {{VARIABLE_SHORT}};
-    {{/VARIABLES_DECLARATION}}	
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 
     unsigned int j;
 };
@@ -95,9 +93,8 @@ public:
     {{FUNCTION_NAME}}<Scalar>* clone(); 
 private:
     Boundary *m_boundarySource;
-    {{#VARIABLES_DECLARATION}}
-    mutable Value {{VARIABLE_SHORT}};
-    {{/VARIABLES_DECLARATION}}	
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 	
 };
 {{/MATRIX_SURF_SOURCE}}
@@ -117,9 +114,8 @@ public:
     {{FUNCTION_NAME}}<Scalar>* clone();
 private:
     Boundary *m_boundarySource;
-    {{#VARIABLES_DECLARATION}}
-    mutable Value {{VARIABLE_SHORT}};
-    {{/VARIABLES_DECLARATION}}	
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 
     unsigned int j;
 };
@@ -141,9 +137,8 @@ public:
     }
 private:
     Boundary *m_boundarySource;  
-    {{#VARIABLES_DECLARATION}}
-    mutable Value {{VARIABLE_SHORT}};
-    {{/VARIABLES_DECLARATION}}		
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}		
 };
 {{/EXACT_SOURCE}}
 

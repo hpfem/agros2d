@@ -44,7 +44,7 @@ QString expression(QList<Token> const &symbol_que, int position = 0)
 {
     int n = symbol_que.count();
     int nesting_level = symbol_que[position].nestingLevel;
-    QString expression =  "neco";
+    QString expression;
     for(int i = position; i < n; i++)
     {
         if (nesting_level < symbol_que[i].nestingLevel)
@@ -56,7 +56,6 @@ QString expression(QList<Token> const &symbol_que, int position = 0)
         {
             nesting_level--;
         }
-
     }
     return expression;
 }
@@ -74,7 +73,7 @@ void LexicalAnalyser::setExpression(const QString &expr)
     sortByLength(m_variables);
     terminals.append(Terminals(TokenType_VARIABLE, m_variables));
 
-    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=";
+    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":";
     sortByLength(operators);
     terminals.append(Terminals(TokenType_OPERATOR, operators));
     functions << "sin" << "cos" << "tan" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<

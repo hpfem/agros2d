@@ -62,6 +62,7 @@ public:
     inline QString expression() { return m_expr; }
     inline int position() { return m_pos; }
     inline QString symbol() { return m_symbol; }
+    inline QString toString(){ return m_what; }
 
 private:
     QString m_what;
