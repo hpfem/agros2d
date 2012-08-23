@@ -1,3 +1,4 @@
+#include<iostream>
 #include <QTextStream>
 #include "lex.h"
 
@@ -6,6 +7,7 @@ Token::Token(TokenType type, QString text)
     this->m_text = text;
     this->m_type = type;
 }
+
 
 void LexicalAnalyser::sortByLength(QStringList & list)
 {
@@ -122,6 +124,55 @@ void LexicalAnalyser::setExpression(const QString &expr)
         {
             old_pos = pos;
         }
+    }
+}
+
+//ToDo: Awful and slow - improve
+void LexicalAnalyser::replaceOperatorByFunction()
+{        
+    QList<Token> newTokens;
+    int position = 0;
+    for(int i = 0; i < m_tokens.count(); i++)
+    {
+        if(m_tokens[i].toString() == "^")
+            position = i;
+    }
+
+    if (position != 0)
+    {
+        if(m_tokens[position-1].toString() == ")")
+        {
+            int j = position - 1;
+            while(m_tokens[j].toString() != "(" )
+            {
+                j = j - 1;
+            }
+
+            Token exponent = m_tokens[position+1];
+            for(int k = 0; k < j; k++ )
+            {
+                newTokens << m_tokens[k];
+            }
+            newTokens << Token(TokenType_FUNCTION, "pow");
+            newTokens << Token(TokenType_OPERATOR, "(");
+            for(int k = j + 1; k < position - 1; k++)
+            {
+                newTokens << m_tokens[k];
+            }
+            newTokens << Token(TokenType_OPERATOR, ",");
+            newTokens << exponent;
+            newTokens << Token(TokenType_OPERATOR, ")");
+            for(int k = position + 2; k < m_tokens.count(); k++)
+            {
+                newTokens << m_tokens[k];
+            }
+        }
+        else
+        {
+            std::cout << "number";
+        }
+        m_tokens.clear();
+        m_tokens = newTokens;
     }
 }
 

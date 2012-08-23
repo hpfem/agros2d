@@ -51,6 +51,7 @@ private:
     QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
 
     QString parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+    QString parseWeakFormExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
     int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
 
     inline QList<WeakFormKind> weakFormTypeList() { QList<WeakFormKind> list; list << WeakForm_MatVol << WeakForm_MatSurf << WeakForm_VecVol << WeakForm_VecSurf << WeakForm_ExactSol; return list; }

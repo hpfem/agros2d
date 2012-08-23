@@ -62,7 +62,7 @@ public:
     inline QString expression() { return m_expr; }
     inline int position() { return m_pos; }
     inline QString symbol() { return m_symbol; }
-    inline QString toString(){ return m_what; }
+    inline QString toString(){ return m_what; }    
 
 private:
     QString m_what;
@@ -77,6 +77,7 @@ public:
     Token() {}
     Token(TokenType type) { this->m_type = type; }
     Token(TokenType m_type, QString m_text);
+    Token(TokenType m_type, QString m_text, int nestingLevel);
 
     inline TokenType type() { return this->m_type; }
     inline QString toString() { return this->m_text; }
@@ -108,6 +109,7 @@ public:
     inline void addVariables(const QStringList &list) { m_variables.append(list); }
     inline void removeVariable(const QString &variable) { m_variables.removeAll(variable); }
     inline void clearVariables() { m_variables.clear(); }
+    void replaceOperatorByFunction();
 
 private:
     QList<Token> m_tokens;
