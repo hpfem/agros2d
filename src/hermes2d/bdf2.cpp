@@ -268,7 +268,7 @@ Scalar CustomVectorFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes
     {
         for(int ps = 0; ps < m_table->n(); ps++)
         {
-            result += wt[i] * alpha[ps + 1] * he_rho.value(0)*he_cp.value(0) * ext->fn[ps]->val[i] * v->val[i];
+            result += wt[i] * (-alpha[ps + 1]) * he_rho.value(0)*he_cp.value(0) * ext->fn[ps]->val[i] * v->val[i];
         }
     }
     result /= Util::problem()->config()->timeStep().number();

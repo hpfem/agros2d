@@ -16,13 +16,13 @@ FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
     }
     assert(contains);
 
-    return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionType);
+    return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
 }
 
 BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
 {
     assert(block->contains(this->group));
-    return BlockSolutionID(block, timeStep, adaptivityStep, solutionType);
+    return BlockSolutionID(block, timeStep, adaptivityStep, solutionMode);
 }
 
 QString FieldSolutionID::toString()
@@ -31,7 +31,7 @@ QString FieldSolutionID::toString()
             arg(group->fieldId()).
             arg(timeStep).
             arg(adaptivityStep).
-            arg(solutionTypeToStringKey(solutionType));
+            arg(solutionTypeToStringKey(solutionMode));
 
     return str;
 }

@@ -173,15 +173,54 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerTimeForms(Field *field, QString area, Marker *marker, BDF2Table *table)
+void WeakFormAgros<Scalar>::registerTimeForms(BDF2Table *table)
 {
-    Hermes::Hermes2D::Form<Scalar> *matrixForm = new CustomMatrixFormVol_time<Scalar>(0, 0, area.toStdString(), Hermes::Hermes2D::HERMES_NONSYM, (Material*)marker, table);
-    Hermes::Hermes2D::Form<Scalar> *vectorForm = new CustomVectorFormVol_time<Scalar>(0, 0, area.toStdString(), (Material*)marker, table);
-    Hermes::Hermes2D::Form<Scalar> *residualForm = new CustomVectorFormVol_time_residual<Scalar>(0, 0, area.toStdString(), (Material*)marker);
+    foreach(Field* field, m_block->fields())
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        assert(fieldInfo->fieldId() == "heat");
 
-    addForm(WeakForm_MatVol, matrixForm);
-    addForm(WeakForm_VecVol, vectorForm);
-    addForm(WeakForm_VecVol, residualForm);
+        // materials
+        for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
+        {
+            SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
+
+            assert(material);
+            if (material != Util::scene()->materials->getNone(fieldInfo))
+            {
+                Hermes::Hermes2D::Form<Scalar> *matrixForm = new CustomMatrixFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), Hermes::Hermes2D::HERMES_NONSYM, material, table);
+                Hermes::Hermes2D::Form<Scalar> *vectorForm = new CustomVectorFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), material, table);
+                Hermes::Hermes2D::Form<Scalar> *residualForm = new CustomVectorFormVol_time_residual<Scalar>(0, 0, QString::number(labelNum).toStdString(), material);
+
+                // push previous solution in this order:
+                // first all components of the solution in time level n-1
+                // than all components of the solution in time level n-2
+                // etc.
+                int lastTimeStep = Util::solutionStore()->lastTimeStep(field->fieldInfo(), SolutionMode_Normal);
+                for(int backLevel = 0; backLevel < table->n(); backLevel++)
+                {
+                    int timeStep = lastTimeStep - backLevel;
+                    int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
+                    FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
+                    if(! Util::solutionStore()->contains(solutionID))
+                        solutionID.solutionMode = SolutionMode_Normal;
+                    assert(Util::solutionStore()->contains(solutionID));
+
+                    for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
+                    {
+                        matrixForm->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+                        vectorForm->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+                        //residualForm->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+                    }
+                }
+
+
+                addForm(WeakForm_MatVol, matrixForm);
+                addForm(WeakForm_VecVol, vectorForm);
+                //addForm(WeakForm_VecVol, residualForm);
+            }
+        }
+    }
 }
 
 //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

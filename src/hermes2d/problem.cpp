@@ -462,6 +462,7 @@ void Problem::solveAction()
 
 void Problem::solveActionBDF()
 {
+    logTimeStep(config()->timeStep().value());
     clearSolution();
 
     Util::scene()->blockSignals(true);
@@ -492,7 +493,7 @@ void Problem::solveActionBDF()
     assert(m_blocks.at(0)->fields().at(0)->fieldInfo()->fieldId() == "heat");
 
 
-    int timeStep = 0;
+    int timeStep = 1;
     bool doNextTimeStep = true;
     while(doNextTimeStep)
     {

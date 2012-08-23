@@ -83,6 +83,7 @@ public:
     WeakFormAgros(Block* block);
 
     void registerForms();
+    void registerTimeForms(BDF2Table *table);
 
     //    // previous solution
     //    QList<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
@@ -92,7 +93,6 @@ private:
     void registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker *marker);
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
-    void registerTimeForms(Field* field, QString area, Marker* marker, BDF2Table* table);
 
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
