@@ -21,7 +21,7 @@
 
 #include "weakform_interface.h"
 #include "{{ID}}_interface.h"
-#include "{{ID}}.h"
+#include "{{ID}}_weakform.h"
 #include "{{ID}}_filter.h"
 
 #include "util.h"
@@ -58,7 +58,7 @@ Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const
 {
 	{{#VECTOR_VOL_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
-        && (j == {{COLUMN_INDEX}}))
+        && (j == {{COLUMN_INDEX}})))
     	return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, area, materialSource, materialTarget);
 	{{/VECTOR_VOL_SOURCE}}
 
@@ -70,7 +70,7 @@ Hermes::Hermes2D::MatrixFormSurf<double> *{{CLASS}}Interface::matrixFormSurf(con
 {
 	{{#MATRIX_SURF_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
-        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}"))
+        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}")))
         return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, area, boundary);
 	{{/MATRIX_SURF_SOURCE}}
 
@@ -82,8 +82,8 @@ Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(con
 {
 	{{#VECTOR_SURF_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
-        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}"))
-        return {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, area, boundary);
+        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}")))
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, area, boundary);
 	{{/VECTOR_SURF_SOURCE}}
 
     return NULL;
@@ -92,7 +92,7 @@ Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(con
 Hermes::Hermes2D::ExactSolutionScalar<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
 {
 	{{#EXACT_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}}))
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})))
         return new {{FUNCTION_NAME}}<double>(mesh, boundary);
 	{{/EXACT_SOURCE}}
 	

@@ -23,7 +23,7 @@
 #include "hermes2d.h"
 #include "module.h"
 #include "problem.h"
-#include "{{ID}}.h"
+#include "{{ID}}_weakform.h"
  		
 {{#MATRIX_VOL_SOURCE}}
 template <typename Scalar>
@@ -33,7 +33,7 @@ template <typename Scalar>
                                                  Material *materialSource,
 						 Material *materialTarget
 						)
-    : Hermes::Hermes2D::MatrixFormVol::CustomMatrixFormVol<Scalar>(i, j, area, sym), m_materialSource(materialSource), m_materialTarget(materialTarget), m_sym(sym)
+    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j, area, sym), m_materialSource(materialSource), m_materialTarget(materialTarget), m_sym(sym)
 {
 	{{#VARIABLE_SOURCE}}
 		{{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}		
@@ -47,7 +47,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     double result = 0;    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}}
+       result += wt[i] * {{EXPRESSION}};
     }
     return result;
 }
@@ -59,7 +59,7 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}}
+       result += wt[i] * {{EXPRESSION}};
     }	
     return result;
 }
@@ -74,6 +74,7 @@ template <typename Scalar>
 
 
 {{#VECTOR_VOL_SOURCE}}
+template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                  std::string area, 
                                                  Material* materialSource, Material* materialTarget)
@@ -91,7 +92,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
 
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * {{EXPRESSION}}
+        result += wt[i] * {{EXPRESSION}};
     }
     return result;
 }
@@ -107,12 +108,12 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}}
+       result += wt[i] * {{EXPRESSION}};
     }	
     return result;
 }
 
-
+template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>* {{FUNCTION_NAME}}<Scalar>::clone()
 {
     return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],
@@ -121,6 +122,7 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
 {{/VECTOR_VOL_SOURCE}}
 
 {{#MATRIX_SURF_SOURCE}}
+
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                    std::string area, 
@@ -140,7 +142,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     double result = 0;    
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * {{EXPRESSION}}
+        result += wt[i] * {{EXPRESSION}};
     }
     return result;
 }
@@ -155,7 +157,7 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}}
+       result += wt[i] * {{EXPRESSION}};
     }	
     return result;
 
@@ -188,7 +190,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     double result = 0;    
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * {{EXPRESSION}}
+        result += wt[i] * {{EXPRESSION}};
     }
     return result;
 }
@@ -200,12 +202,13 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}}
+       result += wt[i] * {{EXPRESSION}};
     }	
     return result;
 
 }
 
+template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>* {{FUNCTION_NAME}}<Scalar>::clone()
 {
     return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],  
@@ -219,19 +222,19 @@ template <typename Scalar>
     : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), m_boundarySource(boundary)
 {
 	{{#VARIABLE_SOURCE}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
+		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 
 
 template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(double x, double y) const
 {
-    double result = {{EXPRESSION}}
+    double result = {{EXPRESSION}};
     return result;
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy) const
+void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar& dx, Scalar& dy) const
 {
 
 }

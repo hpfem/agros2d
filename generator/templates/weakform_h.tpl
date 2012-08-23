@@ -79,6 +79,7 @@ private:
 {{/VECTOR_VOL_SOURCE}}  
 
 {{#MATRIX_SURF_SOURCE}}
+template<typename Scalar>
 class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormSurf<Scalar>
 {
 public:
@@ -100,7 +101,8 @@ private:
 {{/MATRIX_SURF_SOURCE}}
 
 {{#VECTOR_SURF_SOURCE}}
-class CustomVectorFormSurf : public Hermes::Hermes2D::VectorFormSurf<Scalar>
+template<typename Scalar>
+class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormSurf<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
@@ -123,13 +125,13 @@ private:
 
 {{#EXACT_SOURCE}}
 template<typename Scalar>
-class CustomEssentialFormSurf : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
+class {{FUNCTION_NAME}} : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
     Scalar value(double x, double y) const;
-    void derivatives (double x, double y, Scalar&amp; dx, Scalar&amp; dy) const;
+    void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;
 
     Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y) const
     {
@@ -142,4 +144,4 @@ private:
 };
 {{/EXACT_SOURCE}}
 
-
+#endif

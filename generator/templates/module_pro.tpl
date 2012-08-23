@@ -33,13 +33,11 @@ win32-msvc2010 {
 
 # interface
 HEADERS      += {{ID}}_interface.h
-SOURCES      += {{ID}}_interface.h
+SOURCES      += {{ID}}_interface.cpp
 
 # headers and sources
-{{#SOURCE}}
-HEADERS      += {{ID}}.h
-SOURCES      += {{ID}}.cpp
-{{/SOURCE}}
+HEADERS      += {{ID}}_weakform.h
+SOURCES      += {{ID}}_weakform.cpp
 
 TARGET        = $$qtLibraryTarget(agros2d_plugin_{{ID}})
 DESTDIR       = ../../../libs
