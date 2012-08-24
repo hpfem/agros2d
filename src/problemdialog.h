@@ -207,6 +207,8 @@ private:
     QGroupBox *grpTransientAnalysis;
     ValueLineEdit *txtTransientTimeStep;
     ValueLineEdit *txtTransientTimeTotal;
+    QSpinBox *txtTransientOrder;
+    QComboBox *cmbTransientMethod;
     QLabel *lblTransientSteps;
 
     // startup script

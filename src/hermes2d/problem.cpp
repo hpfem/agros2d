@@ -62,7 +62,7 @@ void ProblemConfig::clear()
     m_timeStep = Value("1.0", false);
     m_timeTotal = Value("1.0", false);
 
-    m_adaptiveTimeStep = false;
+    m_timeStepMethod = TimeStepMethod_Fixed;
     m_timeOrder = 1;
 }
 
@@ -462,7 +462,6 @@ void Problem::solveAction()
 
 void Problem::solveActionBDF()
 {
-    logTimeStep(config()->timeStep().value());
     clearSolution();
 
     Util::scene()->blockSignals(true);
@@ -497,6 +496,7 @@ void Problem::solveActionBDF()
     bool doNextTimeStep = true;
     while(doNextTimeStep)
     {
+        logTimeStep(config()->timeStep().value());
         foreach (Block* block, m_blocks)
         {
             Solver<double>* solver = solvers[block];

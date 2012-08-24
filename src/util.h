@@ -429,6 +429,12 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum TimeStepMethod
+{
+    TimeStepMethod_Fixed,
+    TimeStepMethod_BDF2
+};
+
 enum LinearityType
 {
     LinearityType_Undefined,
@@ -583,6 +589,7 @@ QString teModeString(Mode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString coordinateTypeString(CoordinateType coordinateType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString timeStepMethodString(TimeStepMethod timeStepMethod);
 QString weakFormString(WeakFormKind weakForm);
 QString meshTypeString(MeshType meshType);
 QString linearityTypeString(LinearityType linearityType);
@@ -640,6 +647,10 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QStringList adaptivityTypeStringKeys();
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+QStringList TimeStepMethodStringKeys();
+QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod);
+TimeStepMethod timeStepMethodFromStringKey(const QString &timeStepMethod);
 
 QStringList solutionTypeStringKeys();
 QString solutionTypeToStringKey(SolutionMode solutionType);

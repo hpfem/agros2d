@@ -523,8 +523,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_wf->registerForms();
 
     BDF2ATable bdf2ATable;
-    int timeOrder = 1;
-    bdf2ATable.setOrder(min(timeStep, timeOrder));
+    //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
+    bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
     bdf2ATable.setPreviousSteps(Util::problem()->timeSteps());
     m_wf->registerTimeForms(&bdf2ATable);
 

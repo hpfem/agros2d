@@ -769,10 +769,16 @@ QWidget *ProblemWidget::createControlsGeneral()
     // transient
     txtTransientTimeStep = new ValueLineEdit();
     txtTransientTimeTotal = new ValueLineEdit();
+    txtTransientOrder = new QSpinBox();
+    txtTransientOrder->setMinimum(1);
+    txtTransientOrder->setMaximum(2);
+    cmbTransientMethod = new QComboBox();
     lblTransientSteps = new QLabel("0");
 
     connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
     connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
+    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
+    connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(doTransientChanged()));
 
     // fill combobox
     fillComboBox();
@@ -800,7 +806,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     grpHarmonicAnalysis = new QGroupBox(tr("Harmonic analysis"));
     grpHarmonicAnalysis->setLayout(layoutHarmonicAnalysis);
 
-    // harmonic analysis
+    // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
     layoutTransientAnalysis->setColumnMinimumWidth(0, minWidth);
     layoutTransientAnalysis->setColumnStretch(1, 1);
@@ -808,8 +814,12 @@ QWidget *ProblemWidget::createControlsGeneral()
     layoutTransientAnalysis->addWidget(txtTransientTimeStep, 0, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 1, 0);
     layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 2, 0);
-    layoutTransientAnalysis->addWidget(lblTransientSteps, 2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Order:")), 2, 0);
+    layoutTransientAnalysis->addWidget(txtTransientOrder, 2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Method:")), 3, 0);
+    layoutTransientAnalysis->addWidget(cmbTransientMethod, 3, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 4, 0);
+    layoutTransientAnalysis->addWidget(lblTransientSteps, 4, 1);
 
     grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
@@ -891,6 +901,9 @@ void ProblemWidget::fillComboBox()
 #ifdef WITH_SUPERLU
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
 #endif
+
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_Fixed), TimeStepMethod_Fixed);
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDF2), TimeStepMethod_BDF2);
 }
 
 void ProblemWidget::updateControls()
@@ -915,6 +928,11 @@ void ProblemWidget::updateControls()
     // txtTransientTimeStep->setEnabled(Util::problem()->isTransient());
     txtTransientTimeTotal->setValue(Util::problem()->config()->timeTotal());
     // txtTransientTimeTotal->setEnabled(Util::problem()->isTransient());
+    txtTransientOrder->setValue(Util::problem()->config()->timeOrder());
+    cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Util::problem()->config()->timeStepMethod()));
+    if (cmbTransientMethod->currentIndex() == -1)
+        cmbTransientMethod->setCurrentIndex(0);
+
 
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Util::problem()->config()->matrixSolver()));
@@ -949,6 +967,8 @@ bool ProblemWidget::save()
 
     Util::problem()->config()->setTimeStep(txtTransientTimeStep->value());
     Util::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
+    Util::problem()->config()->setTimeOrder(txtTransientOrder->value());
+    Util::problem()->config()->setTimeStepMethod((TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
 
     Util::problem()->config()->setDescription(txtDescription->toPlainText());
 

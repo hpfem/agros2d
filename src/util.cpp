@@ -36,6 +36,7 @@ static QHash<Mode, QString> modeList;
 static QHash<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
 static QHash<WeakFormKind, QString> weakFormList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
+static QHash<TimeStepMethod, QString> timeStepMethodList;
 static QHash<SolutionMode, QString> solutionTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
 static QHash<CouplingType, QString> couplingTypeList;
@@ -73,6 +74,10 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QStringList adaptivityTypeStringKeys() { return adaptivityTypeList.values(); }
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QStringList timeStepMethodStringKeys() { return timeStepMethodList.values(); }
+QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod) { return timeStepMethodList[timeStepMethod]; }
+TimeStepMethod timeStepMethodFromStringKey(const QString &timeStepMethod) { return timeStepMethodList.key(timeStepMethod); }
 
 QStringList solutionTypeStringKeys() { return solutionTypeList.values(); }
 QString solutionTypeToStringKey(SolutionMode solutionType) { return solutionTypeList[solutionType]; }
@@ -137,6 +142,9 @@ void initLists()
     meshTypeList.insert(MeshType_GMSH_Triangle, "gmsh_triangle");
     meshTypeList.insert(MeshType_GMSH_Quad, "gmsh_quad");
     meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
+
+    timeStepMethodList.insert(TimeStepMethod_Fixed, "fixed");
+    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -321,6 +329,20 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+    }
+}
+
+QString timeStepMethodString(TimeStepMethod timeStepMethod)
+{
+    switch (timeStepMethod)
+    {
+    case TimeStepMethod_Fixed:
+        return QObject::tr("fixed");
+    case TimeStepMethod_BDF2:
+        return QObject::tr("adaptive");
+    default:
+        std::cerr << "Time step method '" + QString::number(timeStepMethod).toStdString() + "' is not implemented. timeStepMethodString(TimeStepMethod timeStepMethod)" << endl;
         throw;
     }
 }

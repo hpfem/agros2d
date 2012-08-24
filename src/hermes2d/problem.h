@@ -65,10 +65,11 @@ public:
 
     void refresh() { emit changed(); }
 
-    bool adaptiveTimeStep() const {return m_adaptiveTimeStep; }
-    void setAdaptiveTimeStep(bool adaptiveTS) { m_adaptiveTimeStep = adaptiveTS; }
+    TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
+    void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
     int timeOrder() const { return m_timeOrder; }
     void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
+
 
 signals:
     void changed();
@@ -84,6 +85,8 @@ private:
     // transient
     Value m_timeStep;
     Value m_timeTotal;
+    TimeStepMethod m_timeStepMethod;
+    int m_timeOrder;
 
     // matrix solver
     Hermes::MatrixSolverType m_matrixSolver;
@@ -94,8 +97,6 @@ private:
     QString m_startupscript;
     QString m_description;
 
-    bool m_adaptiveTimeStep;
-    int m_timeOrder;
 };
 
 /// intented as central for solution process
