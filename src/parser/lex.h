@@ -109,7 +109,7 @@ public:
     inline void addVariables(const QStringList &list) { m_variables.append(list); }
     inline void removeVariable(const QString &variable) { m_variables.removeAll(variable); }
     inline void clearVariables() { m_variables.clear(); }
-    void replaceOperatorByFunction();
+    QString replaceOperatorByFunction(QString expr);
 
 private:
     QList<Token> m_tokens;

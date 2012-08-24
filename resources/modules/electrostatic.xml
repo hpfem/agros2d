@@ -20,7 +20,7 @@
         <module:quantity id="electrostatic_permittivity"/>
         <module:quantity id="electrostatic_charge_density"/>
         <module:matrix_form axi_linear="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" axi_newton="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" i="1" j="1" planar_linear="el_epsr * EPS0 * (udx * vdx + udy * vdy)" planar_newton="el_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:vector_form axi_linear="el_rho * r * vval" axi_newton="el_epsr * EPS0 * r *(updx * vdx + updy * vdy) - r * el_rho * vval" i="1" j="1" planar_linear="el_rho * vval" planar_newton="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"/>
+        <module:vector_form axi_linear="el_rho * r * vval" axi_newton="el_epsr * EPS0 * r *(updr * vdr + updz * vdz) - r * el_rho * vval" i="1" j="1" planar_linear="el_rho * vval" planar_newton="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>

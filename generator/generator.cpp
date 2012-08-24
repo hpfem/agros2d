@@ -598,9 +598,8 @@ QString Agros2DGenerator::parseWeakFormExpression(XMLModule::module *module, Ana
     }
 
     try
-    {
-        lex.setExpression(expr);        
-        lex.replaceOperatorByFunction();
+    {               
+        lex.setExpression(expr);
 
         // replace tokens
         QString exprCpp;
@@ -661,7 +660,7 @@ QString Agros2DGenerator::parseWeakFormExpression(XMLModule::module *module, Ana
 
             for (int i = 1; i < numOfSol + 1; i++)
             {
-                if (repl == QString("value%1").arg(i)) { exprCpp += QString("value[%1][i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("value%1").arg(i)) { exprCpp += QString("u_ext[%1]->val[i]").arg(i-1); isReplaced = true; }
                 if (coordinateType == CoordinateType_Planar)
                 {
                     if (repl == QString("dx%1").arg(i)) { exprCpp += QString("u_ext[%1]->dx[i]").arg(i-1); isReplaced = true; }
@@ -674,29 +673,11 @@ QString Agros2DGenerator::parseWeakFormExpression(XMLModule::module *module, Ana
                 }
             }
 
-            // variables            
-            QString variableStr;
+            // variables
             foreach (XMLModule::quantity quantity, module->volume().quantity())
             {
                 if (quantity.shortname().present())
-                    if (repl == QString::fromStdString(quantity.shortname().get()))
-                    {
-                        if (!quantity.dependence().present())
-                            // linear material
-                            exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
-                        else
-                            // nonlinear material
-                            exprCpp += QString("%1.value()").
-                                    arg(QString::fromStdString(quantity.shortname().get()));
-                        isReplaced = true;                        
-                    }
-                variableStr = QString::fromStdString(quantity.shortname().get());
-            }
-
-            foreach (XMLModule::quantity quantity, module->surface().quantity())
-            {
-                if (quantity.shortname().present())
-                    if ((repl == QString::fromStdString(quantity.shortname().get())) && QString::fromStdString(quantity.shortname().get()) != variableStr) //the same variable in volume and surface
+                    if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d"+quantity.shortname().get()))
                     {
                         if (!quantity.dependence().present())
                             // linear material
@@ -709,11 +690,30 @@ QString Agros2DGenerator::parseWeakFormExpression(XMLModule::module *module, Ana
                     }
             }
 
+            if (!isReplaced)
+            {
+                foreach (XMLModule::quantity quantity, module->surface().quantity())
+                {
+                    if (quantity.shortname().present())
+                        if (repl == QString::fromStdString(quantity.shortname().get()))
+                        {
+                            if (!quantity.dependence().present())
+                                // linear material
+                                exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
+                            else
+                                // nonlinear material
+                                exprCpp += QString("%1.value()").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                            isReplaced = true;
+                        }
+                }
+            }
+
             // operators and other
             if (!isReplaced)
                 exprCpp += repl;
-        }
-
+        }                     
+        exprCpp = lex.replaceOperatorByFunction(exprCpp);
         return exprCpp;
     }
     catch (ParserException e)

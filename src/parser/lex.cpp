@@ -1,11 +1,19 @@
 #include<iostream>
 #include <QTextStream>
 #include "lex.h"
+#include <QRegExp>
 
 Token::Token(TokenType type, QString text)
 {
     this->m_text = text;
     this->m_type = type;
+}
+
+Token::Token(TokenType type, QString text, int nestingLevel)
+{
+    this->m_text = text;
+    this->m_type = type;
+    this->nestingLevel = nestingLevel;
 }
 
 
@@ -75,12 +83,12 @@ void LexicalAnalyser::setExpression(const QString &expr)
     sortByLength(m_variables);
     terminals.append(Terminals(TokenType_VARIABLE, m_variables));
 
-    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":";
+    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":" << ",";
     sortByLength(operators);
     terminals.append(Terminals(TokenType_OPERATOR, operators));
     functions << "sin" << "cos" << "tan" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<
                  "tanh" << "asinh" << "acosh" << "atanh" << "log2" << "log10" << "log" <<
-                 "exp" << "sqrt" << "sign" << "abs" << "min" << "max" << "sum" << "avg";
+                 "exp" << "sqrt" << "sign" << "abs" << "min" << "max" << "sum" << "avg" << "pow";
     sortByLength(functions);
     terminals.append(Terminals(TokenType_FUNCTION, functions));
 
@@ -128,52 +136,63 @@ void LexicalAnalyser::setExpression(const QString &expr)
 }
 
 //ToDo: Awful and slow - improve
-void LexicalAnalyser::replaceOperatorByFunction()
-{        
-    QList<Token> newTokens;
+QString LexicalAnalyser::replaceOperatorByFunction(QString expression)
+{
+    QRegExp re("(\\^)([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
+    QString expr = expression;
     int position = 0;
-    for(int i = 0; i < m_tokens.count(); i++)
+    bool isReplaced = false;
+    while (position != -1)
     {
-        if(m_tokens[i].toString() == "^")
-            position = i;
+
+        position = re.indexIn(expr);
+        if (position != -1)
+        {
+            isReplaced = true;
+            QString replace = "";
+            QString exponent = re.capturedTexts()[2];
+            //std::cout << position << " " << exponent.toStdString() << std::endl;
+            if (expr[position-1] == ')')
+            {
+                int j = position - 1;
+                int level = 0;
+                do
+                {
+                    if (expr[j] == '(' )
+                        level = level - 1;
+                    if (expr[j] == ')' )
+                        level = level + 1;
+                    j = j - 1;
+                } while (level != 0);
+
+                for (int k = 0; k <= j; k++ )
+                {
+                    replace += expr[k];
+                }
+
+                replace += "pow";
+
+                for (int k = j+1; k < position - 1; k++ )
+                {
+                    replace += expr[k];
+                }
+
+                replace += ", " + exponent + ")";
+
+                for (int k = position + 1 + exponent.length(); k < expr.length(); k++)
+                {
+                    replace += expr[k];
+                }
+            }
+            std::cout << replace.toStdString();
+            expr = replace;
+        }
     }
 
-    if (position != 0)
-    {
-        if(m_tokens[position-1].toString() == ")")
-        {
-            int j = position - 1;
-            while(m_tokens[j].toString() != "(" )
-            {
-                j = j - 1;
-            }
-
-            Token exponent = m_tokens[position+1];
-            for(int k = 0; k < j; k++ )
-            {
-                newTokens << m_tokens[k];
-            }
-            newTokens << Token(TokenType_FUNCTION, "pow");
-            newTokens << Token(TokenType_OPERATOR, "(");
-            for(int k = j + 1; k < position - 1; k++)
-            {
-                newTokens << m_tokens[k];
-            }
-            newTokens << Token(TokenType_OPERATOR, ",");
-            newTokens << exponent;
-            newTokens << Token(TokenType_OPERATOR, ")");
-            for(int k = position + 2; k < m_tokens.count(); k++)
-            {
-                newTokens << m_tokens[k];
-            }
-        }
-        else
-        {
-            std::cout << "number";
-        }
-        m_tokens.clear();
-        m_tokens = newTokens;
-    }
+    if (isReplaced == true)
+        return expr;
+    else
+        return expression;
 }
 
 
