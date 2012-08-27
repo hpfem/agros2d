@@ -68,7 +68,7 @@ void Agros2DGenerator::run()
     QMap<QString, QString> modules = availableModules();
     QMap<QString, QString> couplings = availableCouplings();
 
-    ctemplate::TemplateDictionary output("project_output");    
+    ctemplate::TemplateDictionary output("project_output");
 
     foreach (QString moduleId, modules.keys())
     {
@@ -304,45 +304,62 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
             {
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    if (expr.planar().present() && (lv.type() == "scalar"))
+                    if (lv.type() == "scalar")
                         createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
                                                       analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                                       coordinateType,
                                                       PhysicFieldVariableComp_Scalar,
                                                       QString::fromStdString(expr.planar().get()));
-                    if (expr.planar_x().present() && (lv.type() == "vector"))
+                    if (lv.type() == "vector")
+                    {
                         createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
                                                       analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                                       coordinateType,
                                                       PhysicFieldVariableComp_X,
                                                       QString::fromStdString(expr.planar_x().get()));
-                    if (expr.planar_y().present() && (lv.type() == "vector"))
+
                         createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
                                                       analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                                       coordinateType,
                                                       PhysicFieldVariableComp_Y,
                                                       QString::fromStdString(expr.planar_y().get()));
+
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_Magnitude,
+                                                      QString("sqrt(pow(%1, 2) + pow(%2, 2))").arg(QString::fromStdString(expr.planar_x().get())).arg(QString::fromStdString(expr.planar_y().get())));
+
+                    }
                 }
                 else
                 {
-                    if (expr.axi().present() && (lv.type() == "scalar"))
+                    if (lv.type() == "scalar")
                         createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
                                                       analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                                       coordinateType,
                                                       PhysicFieldVariableComp_Scalar,
                                                       QString::fromStdString(expr.axi().get()));
-                    if (expr.axi_r().present() && (lv.type() == "vector"))
+                    if (lv.type() == "vector")
+                    {
                         createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
                                                       analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                                       coordinateType,
                                                       PhysicFieldVariableComp_X,
                                                       QString::fromStdString(expr.axi_r().get()));
-                    if (expr.axi_z().present() && (lv.type() == "vector"))
+
                         createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
                                                       analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                                       coordinateType,
                                                       PhysicFieldVariableComp_Y,
                                                       QString::fromStdString(expr.axi_z().get()));
+
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_Magnitude,
+                                                      QString("sqrt(pow(%1, 2) + pow(%2, 2))").arg(QString::fromStdString(expr.axi_r().get())).arg(QString::fromStdString(expr.axi_z().get())));
+                    }
                 }
             }
         }
@@ -496,7 +513,6 @@ QString Agros2DGenerator::parsePostprocessorExpression(XMLModule::module *module
             }
 
             // functions
-
             for (int i = 1; i < numOfSol + 1; i++)
             {
                 if (repl == QString("value%1").arg(i)) { exprCpp += QString("value[%1][i]").arg(i-1); isReplaced = true; }
@@ -522,11 +538,11 @@ QString Agros2DGenerator::parsePostprocessorExpression(XMLModule::module *module
                     {
                         if (!quantity.dependence().present())
                             // linear material
-                            exprCpp += QString("material->value(\"%1\").number()").arg(QString::fromStdString(quantity.shortname().get()));
+                            exprCpp += QString("material->value(\"%1\").number()").arg(QString::fromStdString(quantity.id()));
                         else
                             // nonlinear material
                             exprCpp += QString("material->value(%1).value(%2)").
-                                    arg(QString::fromStdString(quantity.shortname().get())).
+                                    arg(QString::fromStdString(quantity.id())).
                                     arg(parsePostprocessorExpression(module, analysisType, coordinateType, QString::fromStdString(quantity.dependence().get())));
 
                         isReplaced = true;
