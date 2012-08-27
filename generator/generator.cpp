@@ -883,21 +883,22 @@ QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType
 {
     QString expression;
 
-    if ((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
         expression = matrix_form.planar_linear().c_str();
     }
 
-    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
         expression = matrix_form.planar_newton().c_str();
     }
 
-    if ((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
         expression = matrix_form.axi_linear().c_str();
     }
-    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
         expression = matrix_form.axi_newton().c_str();
     }
@@ -909,21 +910,22 @@ QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType
 {
     QString expression;
 
-    if ((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
         expression = vector_form.planar_linear().c_str();
     }
 
-    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
         expression = vector_form.planar_newton().c_str();
     }
 
-    if ((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
         expression = vector_form.axi_linear().c_str();
     }
-    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
         expression = vector_form.axi_newton().c_str();
     }
@@ -935,21 +937,22 @@ QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType
 {
     QString expression;
 
-    if ((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Planar))
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
         expression = essential_form.planar_linear().c_str();
     }
 
-    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
         expression = essential_form.planar_newton().c_str();
     }
 
-    if ((linearityType == LinearityType_Linear) && (coordinateType == CoordinateType_Axisymmetric))
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
         expression = essential_form.axi_linear().c_str();
     }
-    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
         expression = essential_form.axi_newton().c_str();
     }
