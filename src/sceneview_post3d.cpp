@@ -116,7 +116,7 @@ void Post3DHermes::processRangeScalar()
 
         processInitialMesh();
 
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
+        Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,

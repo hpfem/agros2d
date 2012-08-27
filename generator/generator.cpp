@@ -25,7 +25,7 @@
 #include "parser/tree.h"
 
 const QString GENERATOR_TEMPLATEROOT = "generator/templates";
-const QString GENERATOR_PLUGINROOT = "weakform_new/plugins/";
+const QString GENERATOR_PLUGINROOT = "plugins";
 
 Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(argc, argv)
 {
@@ -68,10 +68,11 @@ void Agros2DGenerator::run()
 
     foreach (QString moduleId, modules.keys())
     {
+        root.mkpath(QString("%1/%2").arg(GENERATOR_PLUGINROOT).arg(moduleId));
+
         // read module
         std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + moduleId.toStdString() + ".xml").c_str());
         XMLModule::module *module = module_xsd.get();
-
 
         ctemplate::TemplateDictionary *field;
         field = output.AddSectionDictionary("SOURCE");
@@ -96,18 +97,6 @@ void Agros2DGenerator::run()
                        arg(GENERATOR_PLUGINROOT),
                        QString::fromStdString(text));
 
-
-    // generate plugins project file
-    // expand template
-    text = "";
-    ctemplate::ExpandTemplate(QString("%1/%2/plugins_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
-                              ctemplate::DO_NOT_STRIP, &output, &text);
-
-    // save to file
-    writeStringContent(QString("%1/%2/plugins.h").
-                       arg(QApplication::applicationDirPath()).
-                       arg(GENERATOR_PLUGINROOT),
-                       QString::fromStdString(text));
     exit(0);
 }
 
@@ -308,26 +297,47 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
 
             foreach (CoordinateType coordinateType, coordinateTypeList())
             {
-                QString exprVar;
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    if (expr.planar().present())
-                        exprVar = QString::fromStdString(expr.planar().get());
+                    if (expr.planar().present() && (lv.type() == "scalar"))
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_Scalar,
+                                                      QString::fromStdString(expr.planar().get()));
+                    if (expr.planar_x().present() && (lv.type() == "vector"))
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_X,
+                                                      QString::fromStdString(expr.planar_x().get()));
+                    if (expr.planar_y().present() && (lv.type() == "vector"))
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_Y,
+                                                      QString::fromStdString(expr.planar_y().get()));
                 }
                 else
                 {
-                    if (expr.axi().present())
-                        exprVar = QString::fromStdString(expr.axi().get());
-                }
-
-                if (!exprVar.isEmpty())
-                {
-                    ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
-
-                    expression->SetValue("VARIABLE", lv.id());
-                    expression->SetValue("ANALYSIS_TYPE", analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()))).toStdString());
-                    expression->SetValue("COORDINATE_TYPE", coordinateTypeStringEnum(coordinateType).toStdString());
-                    expression->SetValue("EXPRESSION", parsePostprocessorExpression(module, analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())), coordinateType, exprVar).toStdString());
+                    if (expr.axi().present() && (lv.type() == "scalar"))
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_Scalar,
+                                                      QString::fromStdString(expr.axi().get()));
+                    if (expr.axi_r().present() && (lv.type() == "vector"))
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_X,
+                                                      QString::fromStdString(expr.axi_r().get()));
+                    if (expr.axi_z().present() && (lv.type() == "vector"))
+                        createPostprocessorExpression(module, output, QString::fromStdString(lv.id()),
+                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                      coordinateType,
+                                                      PhysicFieldVariableComp_Y,
+                                                      QString::fromStdString(expr.axi_z().get()));
                 }
             }
         }
@@ -351,6 +361,26 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
                        QString::fromStdString(text));
+}
+
+void Agros2DGenerator::createPostprocessorExpression(XMLModule::module *module,
+                                                     ctemplate::TemplateDictionary &output,
+                                                     const QString &variable,
+                                                     AnalysisType analysisType,
+                                                     CoordinateType coordinateType,
+                                                     PhysicFieldVariableComp physicFieldVariableComp,
+                                                     const QString &expr)
+{
+    if (!expr.isEmpty())
+    {
+        ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
+
+        expression->SetValue("VARIABLE", variable.toStdString());
+        expression->SetValue("ANALYSIS_TYPE", analysisTypeStringEnum(analysisType).toStdString());
+        expression->SetValue("COORDINATE_TYPE", coordinateTypeStringEnum(coordinateType).toStdString());
+        expression->SetValue("PHYSICFIELDVARIABLECOMP_TYPE", physicFieldVariableCompStringEnum(physicFieldVariableComp).toStdString());
+        expression->SetValue("EXPRESSION", parsePostprocessorExpression(module, analysisType, coordinateType, expr).toStdString());
+    }
 }
 
 int Agros2DGenerator::numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType)
@@ -598,7 +628,7 @@ QString Agros2DGenerator::parseWeakFormExpression(XMLModule::module *module, Ana
     }
 
     try
-    {               
+    {
         lex.setExpression(expr);
 
         // replace tokens
@@ -712,7 +742,7 @@ QString Agros2DGenerator::parseWeakFormExpression(XMLModule::module *module, Ana
             // operators and other
             if (!isReplaced)
                 exprCpp += repl;
-        }                     
+        }
         exprCpp = lex.replaceOperatorByFunction(exprCpp);
         return exprCpp;
     }

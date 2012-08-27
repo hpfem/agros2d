@@ -81,7 +81,7 @@
   <module:postprocessor>
     <module:localvariables>
       <module:localvariable id="current_potential" name="Scalar potential" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" type="scalar" unit="V" unit_html="V" unit_latex="V">
-        <module:expression analysistype="harmonic" axi="sqrt(value1^2 + value2^2)" planar="sqrt(value1^2 + value2^2)"/>
+        <module:expression analysistype="harmonic" axi="sqrt(value1*value1 + value2*value2)" planar="sqrt(value1*value1 + value2*value2)"/>
       </module:localvariable>
       <module:localvariable id="current_potential_real" name="Scalar potential - real" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" type="scalar" unit="V" unit_html="V" unit_latex="V">
         <module:expression analysistype="steadystate" axi="value1" planar="value1"/>
@@ -91,7 +91,7 @@
         <module:expression analysistype="harmonic" axi="value2" planar="value2"/>
       </module:localvariable>
       <module:localvariable id="current_electric_field" name="Electric field" shortname="E" shortname_html="&lt;i>E&lt;/i>" shortname_latex="E" type="scalar" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi="sqrt(dr1^2 + dz1^2 + dr2^2 + dz2^2)" planar="sqrt(dx1^2 + dy1^2 + dx2^2 + dy2^2)"/>
+        <module:expression analysistype="harmonic" axi="sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
       <module:localvariable id="current_electric_field_real" name="Electric field - real" shortname="Er" shortname_html="&lt;i>E&lt;/i>" shortname_latex="E_\mathrm{r}" type="vector" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
         <module:expression analysistype="steadystate" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1"/>
@@ -101,7 +101,7 @@
         <module:expression analysistype="harmonic" axi_r="- dr2" axi_z="- dz2" planar_x="- dx2" planar_y="- dy2"/>
       </module:localvariable>
       <module:localvariable id="current_displacement" name="Displacement" shortname="D" shortname_html="&lt;i>D&lt;/i>" shortname_latex="D" type="scalar" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="cu_epsr * EPS0 * sqrt(dr1^2 + dz1^2 + dr2^2 + dz2^2)" planar="cu_epsr * EPS0 * sqrt(dx1^2 + dy1^2 + dx2^2 + dy2^2)"/>
+        <module:expression analysistype="harmonic" axi="cu_epsr * EPS0 * sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="cu_epsr * EPS0 * sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
       <module:localvariable id="current_displacement_real" name="Displacement - real" shortname="Dr" shortname_html="&lt;i>D&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="D" type="vector" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi_r="- cu_epsr * EPS0 * dr1" axi_z="- cu_epsr * EPS0 * dz1" planar_x="- cu_epsr * EPS0 * dx1" planar_y="- cu_epsr * EPS0 * dy1"/>
@@ -110,7 +110,7 @@
         <module:expression analysistype="harmonic" axi_r="- cu_epsr * EPS0 * dr2" axi_z="- cu_epsr * EPS0 * dz2" planar_x="- cu_epsr * EPS0 * dx2" planar_y="- cu_epsr * EPS0 * dy2"/>
       </module:localvariable>
       <module:localvariable id="current_current_density_conductive" name="Current density - conductive" shortname="Jc" shortname_html="&lt;i>J&lt;/i>&lt;sub>cond&lt;/sub>" shortname_latex="J" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="cu_gamma * sqrt(dr1^2 + dz1^2 + dr2^2 + dz2^2)" planar="cu_gamma * sqrt(dx1^2 + dy1^2 + dx2^2 + dy2^2)"/>
+        <module:expression analysistype="harmonic" axi="cu_gamma * sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="cu_gamma * sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
       <module:localvariable id="current_current_density_conductive_real" name="Current density - conductive - real" shortname="Jrc" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,cond&lt;/sub>" shortname_latex="J" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="steadystate" axi_r="- cu_gamma * dr1" axi_z="- cu_gamma * dz1" planar_x="- cu_gamma * dx1" planar_y="- cu_gamma * dy1"/>
@@ -120,7 +120,7 @@
         <module:expression analysistype="harmonic" axi_r="- cu_gamma * dr2" axi_z="- cu_gamma * dz2" planar_x="- cu_gamma * dx2" planar_y="- cu_gamma * dy2"/>
       </module:localvariable>
       <module:localvariable id="current_current_density_displacement" name="Current density - displacement" shortname="Jd" shortname_html="&lt;i>J&lt;/i>&lt;sub>cond&lt;/sub>" shortname_latex="J" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="2 * PI * f * cu_epsr * EPS0 * sqrt(dr1^2 + dz1^2 + dr2^2 + dz2^2)" planar="2 * PI * f * cu_epsr * EPS0 * sqrt(dx1^2 + dy1^2 + dx2^2 + dy2^2)"/>
+        <module:expression analysistype="harmonic" axi="2 * PI * f * cu_epsr * EPS0 * sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="2 * PI * f * cu_epsr * EPS0 * sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
       <module:localvariable id="current_current_density_displacement_real" name="Current density - displacement - real" shortname="Jrd" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,cond&lt;/sub>" shortname_latex="J" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi_r="2 * PI * f * cu_epsr * EPS0 * dr2" axi_z="2 * PI * f * cu_epsr * EPS0 * dz2" planar_x="2 * PI * f * cu_epsr * EPS0 * dx2" planar_y="2 * PI * f * cu_epsr * EPS0 * dy2"/>
@@ -129,7 +129,7 @@
         <module:expression analysistype="harmonic" axi_r="- 2 * PI * f * cu_epsr * EPS0 * dr2" axi_z="- 2 * PI * f * cu_epsr * EPS0 * dz2" planar_x="- 2 * PI * f * cu_epsr * EPS0 * dx2" planar_y="- 2 * PI * f * cu_epsr * EPS0 * dy2"/>
       </module:localvariable>
       <module:localvariable id="current_current_density_total" name="Current density - total" shortname="J" shortname_html="&lt;i>J&lt;/i>" shortname_latex="J" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="(cu_gamma + 2 * PI * f * cu_epsr * EPS0) * sqrt(dr1^2 + dz1^2 + dr2^2 + dz2^2)" planar="(cu_gamma + 2 * PI * f * cu_epsr * EPS0) * sqrt(dx1^2 + dy1^2 + dx2^2 + dy2^2)"/>
+        <module:expression analysistype="harmonic" axi="(cu_gamma + 2 * PI * f * cu_epsr * EPS0) * sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="(cu_gamma + 2 * PI * f * cu_epsr * EPS0) * sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
       <module:localvariable id="current_current_density_total_real" name="Current density - total - real" shortname="Jr" shortname_html="&lt;i>J&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="J" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="steadystate" axi_r="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dr1" axi_z="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dz1" planar_x="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dx1" planar_y="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dy1"/>

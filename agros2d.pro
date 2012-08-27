@@ -3,7 +3,7 @@ SUBDIRS += 3dparty
 SUBDIRS += hermes2d
 SUBDIRS += src
 SUBDIRS += generator
-# SUBDIRS += weakform
+SUBDIRS += plugins
 SUBDIRS += binary
 
 CONFIG += ordered

@@ -1,17 +1,17 @@
 QT += core gui network xml webkit xmlpatterns
 
-OBJECTS_DIR = ../../build
-MOC_DIR = ../../build
+OBJECTS_DIR = ../build
+MOC_DIR = ../build
 
 TEMPLATE = lib
 CONFIG += plugin 
 
-INCLUDEPATH += ../../../hermes2d/include \
-    ../../../hermes_common/include \
-    ../../../src \
-    ../../../src/hermes2d \
-    ../../../3dparty/muparser \
-    ../../../3dparty/dxflib
+INCLUDEPATH += ../../hermes2d/include \
+    ../../hermes_common/include \
+    ../../src \
+    ../../src/hermes2d \
+    ../../3dparty/muparser \
+    ../../3dparty/dxflib
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
@@ -21,7 +21,7 @@ LIBS += -lagros2d_3dparty
 LIBS += -lagros2d
 
 linux-g++|linux-g++-64|linux-g++-32 {
-    LIBS += -L../../../libs
+    LIBS += -L../../libs
 }
 
 win32-msvc2010 {
@@ -38,6 +38,8 @@ SOURCES      += {{ID}}_interface.cpp
 # headers and sources
 HEADERS      += {{ID}}_weakform.h
 SOURCES      += {{ID}}_weakform.cpp
+HEADERS      += {{ID}}_filter.h
+SOURCES      += {{ID}}_filter.cpp
 
 TARGET        = $$qtLibraryTarget(agros2d_plugin_{{ID}})
-DESTDIR       = ../../../libs
+DESTDIR       = ../../libs

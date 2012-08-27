@@ -51,6 +51,7 @@ private:
     QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
 
     QString parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+    void createPostprocessorExpression(XMLModule::module *module, ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
     QString parseWeakFormExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
     int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
 
@@ -99,6 +100,20 @@ private:
         default:
             assert(0);
         }
+    }
+
+    QString physicFieldVariableCompStringEnum(PhysicFieldVariableComp physicFieldVariableComp)
+    {
+        if (physicFieldVariableComp == PhysicFieldVariableComp_Scalar)
+            return "PhysicFieldVariableComp_Scalar";
+        else if (physicFieldVariableComp == PhysicFieldVariableComp_Magnitude)
+            return "PhysicFieldVariableComp_Magnitude";
+        else if (physicFieldVariableComp == PhysicFieldVariableComp_X)
+            return "PhysicFieldVariableComp_X";
+        else if (physicFieldVariableComp == PhysicFieldVariableComp_Y)
+            return "PhysicFieldVariableComp_Y";
+        else
+            assert(0);
     }
 
     inline QList<CoordinateType> coordinateTypeList() { QList<CoordinateType> list; list << CoordinateType_Planar << CoordinateType_Axisymmetric; return list; }

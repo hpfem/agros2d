@@ -68,8 +68,9 @@ public:
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
+                                                     PhysicFieldVariableComp physicFieldVariableComp,
                                                      AnalysisType analysisType,
                                                      CoordinateType coordinateType);
 };
 
-#endif {{ID}}_INTERFACE_H
+#endif // {{ID}}_INTERFACE_H

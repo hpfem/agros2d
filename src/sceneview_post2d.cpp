@@ -83,7 +83,7 @@ void Post2DHermes::processRangeContour()
         if (!variable)
             qDebug() << "error, trying to get variable " << variableName << " from module " << Util::scene()->activeViewField()->fieldId();
 
-        ViewScalarFilter<double> *slnContourView = NULL;
+        Hermes::Hermes2D::Filter<double> *slnContourView = NULL;
         if (variable->isScalar())
             slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
                                                                                             PhysicFieldVariableComp_Scalar);
@@ -130,7 +130,7 @@ void Post2DHermes::processRangeScalar()
 
         Util::log()->printMessage(tr("Post2DView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
+        Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
@@ -178,10 +178,10 @@ void Post2DHermes::processRangeVector()
 
         Util::log()->printMessage(tr("Post2DView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
 
-        ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_X);
 
-        ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
@@ -227,10 +227,10 @@ void Post2DHermes::processParticleTracing()
         Util::log()->printMessage(tr("Post2DView"), tr("particle view (%1)").arg(Util::config()->vectorVariable));
 
         /*
-        ViewScalarFilter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_X);
 
-        ViewScalarFilter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
                                                                                                                   PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
@@ -1325,7 +1325,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        ViewScalarFilter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
+        Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
                                                                                                                  Util::config()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,

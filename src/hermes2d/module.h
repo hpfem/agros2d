@@ -491,7 +491,7 @@ struct BasicModule
 
 
     // scalar filter
-    ViewScalarFilter<double> *viewScalarFilter(Module::LocalVariable *physicFieldVariable,
+    Hermes::Hermes2D::Filter<double> *viewScalarFilter(Module::LocalVariable *physicFieldVariable,
                                                PhysicFieldVariableComp physicFieldVariableComp);
 
     // variable by name

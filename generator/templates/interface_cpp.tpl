@@ -102,10 +102,11 @@ Hermes::Hermes2D::ExactSolutionScalar<double> *{{CLASS}}Interface::exactSolution
 Hermes::Hermes2D::Filter<double> *{{CLASS}}Interface::filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
+                                                     PhysicFieldVariableComp physicFieldVariableComp,
                                                      AnalysisType analysisType,
                                                      CoordinateType coordinateType)
 {
-    return new {{CLASS}}ViewScalarFilter(fieldInfo, sln, variable, analysisType, coordinateType);
+    return new {{CLASS}}ViewScalarFilter(fieldInfo, sln, variable, physicFieldVariableComp, analysisType, coordinateType);
 }
 
 Q_EXPORT_PLUGIN2({{ID}}, {{CLASS}}Interface)

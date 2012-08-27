@@ -1018,7 +1018,7 @@ QString Module::BasicModule::expression(Module::LocalVariable *physicFieldVariab
     }
 }
 
-ViewScalarFilter<double> *Module::BasicModule::viewScalarFilter(Module::LocalVariable *physicFieldVariable,
+Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::LocalVariable *physicFieldVariable,
                                                                 PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
@@ -1033,9 +1033,19 @@ ViewScalarFilter<double> *Module::BasicModule::viewScalarFilter(Module::LocalVar
         FieldSolutionID fsid(Util::scene()->activeViewField(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
     }
+
+    return Util::weakForms()[Util::scene()->activeViewField()->fieldId()]->filter(Util::scene()->activeViewField(),
+                                                                                  sln,
+                                                                                  physicFieldVariable->id(),
+                                                                                  physicFieldVariableComp,
+                                                                                  Util::scene()->activeViewField()->module()->analysisType(),
+                                                                                  Util::scene()->activeViewField()->module()->coordinateType());
+
+    /*
     return new ViewScalarFilter<double>(Util::scene()->activeViewField(),
                                         sln,
-                                        expression(physicFieldVariable, physicFieldVariableComp));
+                                        expression(physicFieldVariable, physicFieldVariableComp));    
+    */
 }
 
 // ***********************************************************************************************
@@ -1136,7 +1146,7 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
             if (fieldInfo->edgeRefinement(edge) > 0)
             {
                 mesh->refine_towards_boundary(QString::number(Util::scene()->edges->items().indexOf(edge)).toStdString(),
-                        fieldInfo->edgeRefinement(edge));
+                                              fieldInfo->edgeRefinement(edge));
             }
         }
 

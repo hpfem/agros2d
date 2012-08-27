@@ -38,9 +38,11 @@
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                            const QString &variable,
+                                           PhysicFieldVariableComp physicFieldVariableComp,
                                            AnalysisType analysisType,
                                            CoordinateType coordinateType)
-    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_analysisType(analysisType), m_coordinateType(coordinateType)
+    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp),
+                                             m_analysisType(analysisType), m_coordinateType(coordinateType)
 {
    
 }
@@ -96,9 +98,10 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
         // nonlinear: material->value(variable->id()).value(exp)
 
 		{{#VARIABLE_SOURCE}}
-        if ((m_variable == "{{VARIABLE}}") && (m_analysisType == {{ANALYSIS_TYPE}}) && (m_coordinateType == {{COORDINATE_TYPE}}))
+        if ((m_variable == "{{VARIABLE}}") && (m_analysisType == {{ANALYSIS_TYPE}}) && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}) && (m_coordinateType == {{COORDINATE_TYPE}}))
             node->values[0][0][i] = {{EXPRESSION}};
 		{{/VARIABLE_SOURCE}}        	
+
     }
 
     delete [] value;
@@ -121,6 +124,6 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]->clone());
 
-    return new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_analysisType, m_coordinateType);
+    return new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_physicFieldVariableComp, m_analysisType, m_coordinateType);
 }
 

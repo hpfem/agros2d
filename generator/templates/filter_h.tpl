@@ -31,6 +31,7 @@ public:
     {{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                      const QString &variable,
+                     PhysicFieldVariableComp physicFieldVariableComp,
                      AnalysisType analysisType,
                      CoordinateType coordinateType);
     ~{{CLASS}}ViewScalarFilter();
@@ -48,8 +49,9 @@ private:
 	FieldInfo *m_fieldInfo; 
 	
     QString m_variable;
+    PhysicFieldVariableComp m_physicFieldVariableComp;
     AnalysisType m_analysisType;
-	CoordinateType m_coordinateType;
+	CoordinateType m_coordinateType;    
 };
 
 #endif {{ID}}_FILTER_H
