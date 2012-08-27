@@ -23,6 +23,7 @@
 #include "util.h"
 #include "ctemplate/template.h"
 #include "../../resources_source/classes/module_xml.h"
+#include "../../resources_source/classes/coupling_xml.h"
 
 class Agros2DGenerator : public QCoreApplication
 {

@@ -18,8 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 
+#include <QDir>
 #include "generator.h"
 #include "hermes2d/module.h"
+#include "hermes2d/coupling.h"
 
 #include "parser/lex.h"
 #include "parser/tree.h"
@@ -64,7 +66,9 @@ void Agros2DGenerator::run()
     root.mkpath(GENERATOR_PLUGINROOT);
 
     QMap<QString, QString> modules = availableModules();
-    ctemplate::TemplateDictionary output("project_output");
+    QMap<QString, QString> couplings = availableCouplings();
+
+    ctemplate::TemplateDictionary output("project_output");    
 
     foreach (QString moduleId, modules.keys())
     {
@@ -78,6 +82,7 @@ void Agros2DGenerator::run()
         field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", moduleId.toStdString());
 
+        QDir().mkdir(GENERATOR_PLUGINROOT + "/" + moduleId);
         generatePluginProjectFile(module);
         generatePluginInterfaceFiles(module);
         generatePluginFilterFiles(module);
