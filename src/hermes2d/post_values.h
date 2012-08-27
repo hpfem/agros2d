@@ -94,31 +94,5 @@ private:
     double *pdy;
 };
 
-template <typename Scalar>
-class ViewScalarFilter : public Hermes::Hermes2D::Filter<Scalar>, public PostprocessorValue
-{
-public:
-    ViewScalarFilter(FieldInfo *fieldInfo,
-                     Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar> *> sln,
-                     QString expression);
-    ~ViewScalarFilter();
-
-    double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
-
-    ViewScalarFilter<Scalar>* clone();
-
-protected:
-    typename Hermes::Hermes2D::Function<Scalar>::Node* node;
-
-    void initParser(const QString &expression);
-    void precalculate(int order, int mask);
-
-private:
-    double px;
-    double py;
-    double *pvalue;
-    double *pdx;
-    double *pdy;
-};
 
 #endif // POST_VALUES_H

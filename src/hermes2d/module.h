@@ -75,7 +75,6 @@ class Block;
 
 struct SceneViewSettings;
 template <typename Scalar> struct SolutionArray;
-template <typename Scalar> class ViewScalarFilter;
 
 class ProgressItemSolve;
 

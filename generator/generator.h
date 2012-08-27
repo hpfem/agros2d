@@ -86,6 +86,8 @@ private:
     QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form);
     QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
 
+    QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
+
     QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
     void createPostprocessorExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
 

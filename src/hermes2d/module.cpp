@@ -1040,12 +1040,6 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
                                                                                   physicFieldVariableComp,
                                                                                   Util::scene()->activeViewField()->module()->analysisType(),
                                                                                   Util::scene()->activeViewField()->module()->coordinateType());
-
-    /*
-    return new ViewScalarFilter<double>(Util::scene()->activeViewField(),
-                                        sln,
-                                        expression(physicFieldVariable, physicFieldVariableComp));    
-    */
 }
 
 // ***********************************************************************************************

@@ -47,7 +47,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     double result = 0;    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}};
+        result += wt[i] * ({{EXPRESSION}});
     }
     return result;
 }
@@ -59,7 +59,7 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}};
+       result += wt[i] * ({{EXPRESSION}});
     }	
     return result;
 }
@@ -92,7 +92,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
 
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * {{EXPRESSION}};
+        result += wt[i] * ({{EXPRESSION}});
     }
     return result;
 }
@@ -108,7 +108,7 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}};
+       result += wt[i] * ({{EXPRESSION}});
     }	
     return result;
 }
@@ -142,7 +142,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     double result = 0;    
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * {{EXPRESSION}};
+        result += wt[i] * ({{EXPRESSION}});
     }
     return result;
 }
@@ -157,7 +157,7 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}};
+       result += wt[i] * ({{EXPRESSION}});
     }	
     return result;
 
@@ -190,7 +190,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     double result = 0;    
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * {{EXPRESSION}};
+        result += wt[i] * ({{EXPRESSION}});
     }
     return result;
 }
@@ -202,7 +202,7 @@ Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::
     Hermes::Ord result(0);    
     for (int i = 0; i < n; i++)
     {
-       result += wt[i] * {{EXPRESSION}};
+       result += wt[i] * ({{EXPRESSION}});
     }	
     return result;
 
