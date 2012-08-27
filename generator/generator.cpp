@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 
+#include <QDir>
 #include "generator.h"
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
@@ -26,7 +27,7 @@
 #include "parser/tree.h"
 
 const QString GENERATOR_TEMPLATEROOT = "generator/templates";
-const QString GENERATOR_PLUGINROOT = "weakform_new/plugins/";
+const QString GENERATOR_PLUGINROOT = "weakform/plugins/";
 
 Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(argc, argv)
 {
@@ -80,6 +81,7 @@ void Agros2DGenerator::run()
         field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", moduleId.toStdString());
 
+        QDir().mkdir(GENERATOR_PLUGINROOT + "/" + moduleId);
         generatePluginProjectFile(module);
         generatePluginInterfaceFiles(module);
         generatePluginFilterFiles(module);
