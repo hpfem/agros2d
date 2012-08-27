@@ -32,118 +32,63 @@ class Agros2DGenerator : public QCoreApplication
 public:
     Agros2DGenerator(int &argc, char **argv);
 
+    // static methods
+    static QList<WeakFormKind> weakFormTypeList();
+    static QString weakFormTypeStringEnum(WeakFormKind weakformType);
+
+    static QList<LinearityType> linearityTypeList();
+    static QString linearityTypeStringEnum(LinearityType linearityType);
+
+    static QString physicFieldVariableCompStringEnum(PhysicFieldVariableComp physicFieldVariableComp);
+
+    static QList<CoordinateType> coordinateTypeList();
+    static QString coordinateTypeStringEnum(CoordinateType coordinateType);
+
+    static QString analysisTypeStringEnum(AnalysisType analysisType);
+
+    static QString boundaryTypeString(const QString boundaryName);
+    static int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
+
 public slots:
     void run();
+};
+
+class Agros2DGeneratorModule : public QObject
+{
+    Q_OBJECT
+
+public:
+    Agros2DGeneratorModule(const QString &moduleId);
+
+    void generatePluginProjectFile();
+    void generatePluginFilterFiles();
+    void generatePluginInterfaceFiles();
+    void generatePluginWeakFormFiles();
 
 private:
-    QHash<QString, QString> m_variables; // dictionary for variables    
-    void generatePluginProjectFile(XMLModule::module *module);
-    void generatePluginInterfaceFiles(XMLModule::module *module);
-    void generatePluginFilterFiles(XMLModule::module *module);
-    void generatePluginWeakFormSourceFiles(XMLModule::module *module);
-    void generatePluginWeakFormHeaderFiles(XMLModule::module *module);
-    void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
-    void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output, XMLModule::module *module);
-    void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
-    void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
-    void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::module *module, XMLModule::weakform_surface weakform);
-    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form);
-    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form);
-    QString getExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
+    std::auto_ptr<XMLModule::module> module_xsd;
+    XMLModule::module *m_module;
 
-    QString parsePostprocessorExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
-    void createPostprocessorExpression(XMLModule::module *module, ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
-    QString parseWeakFormExpression(XMLModule::module *module, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
-    int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
+    // dictionary for variables used in weakforms
+    QHash<QString, QString> m_volumeVariables;
+    QHash<QString, QString> m_surfaceVariables;
 
-    inline QList<WeakFormKind> weakFormTypeList() { QList<WeakFormKind> list; list << WeakForm_MatVol << WeakForm_MatSurf << WeakForm_VecVol << WeakForm_VecSurf << WeakForm_ExactSol; return list; }
-    QString weakFormTypeStringEnum(WeakFormKind weakformType)
-    {
-        switch (weakformType)
-        {
-        case WeakForm_MatVol:
-            return("WeakForm_MatVol");
-            break;
-        case WeakForm_MatSurf:
-            return("WeakForm_MatSurf");
-            break;
-        case WeakForm_VecVol:
-            return("WeakForm_VecVol");
-            break;
-        case WeakForm_VecSurf:
-            return("WeakForm_VecSurf");
-            break;
-        case WeakForm_ExactSol:
-            return("WeakForm_ExactSol");
-            break;
-        default:
-            assert(0);
-        }
-    }
+    void generatePluginWeakFormSourceFiles();
+    void generatePluginWeakFormHeaderFiles();
 
-    inline QList<LinearityType> linearityTypeList() { QList<LinearityType> list; list << LinearityType_Linear << LinearityType_Newton << LinearityType_Picard << LinearityType_Undefined; return list; }
-    QString linearityTypeStringEnum(LinearityType linearityType)
-    {
-        switch (linearityType)
-        {
-        case LinearityType_Linear:
-            return ("LinearityType_Linear");
-            break;
-        case LinearityType_Newton:
-            return ("LinearityType_Newton");
-            break;
-        case LinearityType_Picard:
-            return ("LinearityType_Picard");
-            break;
-        case LinearityType_Undefined:
-            return ("LinearityType_Undefined");
-            break;
-        default:
-            assert(0);
-        }
-    }
+    void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output);
+    void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output);
+    void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
+    void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
+    void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
 
-    QString physicFieldVariableCompStringEnum(PhysicFieldVariableComp physicFieldVariableComp)
-    {
-        if (physicFieldVariableComp == PhysicFieldVariableComp_Scalar)
-            return "PhysicFieldVariableComp_Scalar";
-        else if (physicFieldVariableComp == PhysicFieldVariableComp_Magnitude)
-            return "PhysicFieldVariableComp_Magnitude";
-        else if (physicFieldVariableComp == PhysicFieldVariableComp_X)
-            return "PhysicFieldVariableComp_X";
-        else if (physicFieldVariableComp == PhysicFieldVariableComp_Y)
-            return "PhysicFieldVariableComp_Y";
-        else
-            assert(0);
-    }
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form);
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form);
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
 
-    inline QList<CoordinateType> coordinateTypeList() { QList<CoordinateType> list; list << CoordinateType_Planar << CoordinateType_Axisymmetric; return list; }
-    QString coordinateTypeStringEnum(CoordinateType coordinateType)
-    {
-        if (coordinateType == CoordinateType_Planar)
-            return "CoordinateType_Planar";
-        else if (coordinateType == CoordinateType_Axisymmetric)
-            return "CoordinateType_Axisymmetric";
-        else
-            assert(0);
-    }
-
-    QString analysisTypeStringEnum(AnalysisType analysisType)
-    {
-        if (analysisType == AnalysisType_SteadyState)
-            return "AnalysisType_SteadyState";
-        else if (analysisType == AnalysisType_Transient)
-            return "AnalysisType_Transient";
-        else if (analysisType == AnalysisType_Harmonic)
-            return "AnalysisType_Harmonic";
-        else
-            assert(0);
-    }
-
-    QString boundaryTypeString(const QString boundaryName)
-    {
-        return boundaryName.toLower().replace(" ","_");
-    }
+    QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+    void createPostprocessorExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
+    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 };
 
 #endif // GENERATOR_H
