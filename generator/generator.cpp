@@ -292,14 +292,10 @@ void Agros2DGenerator::generatePluginFilterFiles(XMLModule::module *module)
     ctemplate::ExpandTemplate(QString("%1/%2/filter_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
-    for (int i = 0; i < module->postprocessor().localvariables().localvariable().size(); i++)
+    foreach (XMLModule::localvariable lv, module->postprocessor().localvariables())
     {
-        XMLModule::localvariable lv = module->postprocessor().localvariables().localvariable().at(i);
-
-        for (int j = 0; j < lv.expression().size(); j++)
+        foreach (XMLModule::expression expr, lv.expression())
         {
-            XMLModule::expression expr = lv.expression().at(j);
-
             foreach (CoordinateType coordinateType, coordinateTypeList())
             {
                 if (coordinateType == CoordinateType_Planar)
