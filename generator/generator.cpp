@@ -143,12 +143,9 @@ QString Agros2DGenerator::boundaryTypeString(const QString boundaryName)
 
 int Agros2DGenerator::numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType)
 {
-    for (int i = 0; i < analyses.analysis().size(); i++)
-    {
-        XMLModule::analysis analysis = analyses.analysis().at(i);
+    foreach (XMLModule::analysis analysis, analyses.analysis())
         if (analysis.id() == analysisTypeToStringKey(analysisType).toStdString())
             return analysis.solutions();
-    }
 
     return -1;
 }
@@ -576,11 +573,8 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
     // constants
     lex.addVariable("PI");
     lex.addVariable("f");
-    for (int i = 0; i < m_module->constants().constant().size(); i++)
-    {
-        XMLModule::constant cnst = m_module->constants().constant().at(i);
+    foreach (XMLModule::constant cnst, m_module->constants().constant())
         lex.addVariable(QString::fromStdString(cnst.id()));
-    }
 
     // variables
     foreach(XMLModule::quantity quantity, m_module->volume().quantity())
@@ -627,11 +621,8 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
             // constants
             if (repl == "PI") { exprCpp += "M_PI"; isReplaced = true; }
             if (repl == "f") { exprCpp += "Util::problem()->config()->frequency()"; isReplaced = true; }
-            for (int i = 0; i < m_module->constants().constant().size(); i++)
-            {
-                XMLModule::constant cnst = m_module->constants().constant().at(i);
+            foreach (XMLModule::constant cnst, m_module->constants().constant())
                 if (repl == QString::fromStdString(cnst.id())) { exprCpp += QString::number(cnst.value()); isReplaced = true; }
-            }
 
             // functions
             for (int i = 1; i < numOfSol + 1; i++)
@@ -650,10 +641,8 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
             }
 
             // variables
-            for (int i = 0; i < m_module->volume().quantity().size(); i++)
+            foreach (XMLModule::quantity quantity, m_module->volume().quantity())
             {
-                XMLModule::quantity quantity = m_module->volume().quantity().at(i);
-
                 if (quantity.shortname().present())
                     if (repl == QString::fromStdString(quantity.shortname().get()))
                     {
@@ -744,14 +733,11 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     // constants
     lex.addVariable("PI");
     lex.addVariable("f");
-    for (int i = 0; i < m_module->constants().constant().size(); i++)
-    {
-        XMLModule::constant cnst = m_module->constants().constant().at(i);
+    foreach (XMLModule::constant cnst, m_module->constants().constant())
         lex.addVariable(QString::fromStdString(cnst.id()));
-    }
 
     // variables
-    foreach(XMLModule::quantity quantity, m_module->volume().quantity())
+    foreach (XMLModule::quantity quantity, m_module->volume().quantity())
     {
         if (quantity.shortname().present())
         {
@@ -760,7 +746,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         }
     }
 
-    foreach(XMLModule::quantity quantity, m_module->surface().quantity())
+    foreach (XMLModule::quantity quantity, m_module->surface().quantity())
     {
         if (quantity.shortname().present())
         {
@@ -796,11 +782,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             // constants
             if (repl == "PI") { exprCpp += "M_PI"; isReplaced = true; }
             if (repl == "f") { exprCpp += "Util::problem()->config()->frequency()"; isReplaced = true; }
-            for (int i = 0; i < m_module->constants().constant().size(); i++)
-            {
-                XMLModule::constant cnst = m_module->constants().constant().at(i);
+            foreach (XMLModule::constant cnst, m_module->constants().constant())
                 if (repl == QString::fromStdString(cnst.id())) { exprCpp += QString::number(cnst.value()); isReplaced = true; }
-            }
 
             // functions
 

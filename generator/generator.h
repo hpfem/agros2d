@@ -88,6 +88,7 @@ private:
 
     QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
     void createPostprocessorExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
+
     QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 };
 
