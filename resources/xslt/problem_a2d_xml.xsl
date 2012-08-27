@@ -1,15 +1,38 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="2.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:template name="edges">
+    <xsl:param name="id" />
+    <xsl:for-each select="/document/geometry/edges/edge[@marker=$id]">
+        <xsl:element name="edge">
+            <xsl:attribute name="edge">
+                <xsl:value-of select="@id" />
+            </xsl:attribute>
+        </xsl:element>
+    </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="labels">
+    <xsl:param name="id" />
+    <xsl:for-each select="/document/geometry/labels/label[@marker=$id]">
+        <xsl:element name="label">
+            <xsl:attribute name="label">
+                <xsl:value-of select="@id" />
+            </xsl:attribute>
+        </xsl:element>
+    </xsl:for-each>
+</xsl:template>
+
 <xsl:template match="/">
     <xsl:element name="document">
         <xsl:attribute name="version">2.1</xsl:attribute>
-        <xsl:variable name="current_version" select="document/@version" />
+        <xsl:variable name="current_version" select="/document/@version" />
 
         <!-- Geometry -->
         <xsl:element name="geometry">
-            <xsl:copy-of select="document/geometry/nodes"/>
+            <xsl:copy-of select="/document/geometry/nodes"/>
             <xsl:element name="edges">
-                <xsl:for-each select="document/geometry/edges/edge">
+                <xsl:for-each select="/document/geometry/edges/edge">
                     <xsl:element name="edge">
                         <xsl:attribute name="id">
                             <xsl:value-of select="@id" />
@@ -24,9 +47,9 @@
                             <xsl:value-of select="@angle" />
                         </xsl:attribute>
                         <xsl:attribute name="refine_towards">
-                            <xsl:variable name="refine_towards" select="document/geometry/edges/edge/@refine_towards" />
+                            <xsl:variable name="refine_towards" select="/document/geometry/edges/edge/@refine_towards" />
                             <xsl:choose>
-                                <xsl:when test="$refine_towards!=e">
+                                <xsl:when test="$refine_towards!=null">
                                     <xsl:value-of select="$refine_towards" />
                                 </xsl:when>
                                 <xsl:otherwise>0</xsl:otherwise>
@@ -36,7 +59,7 @@
                 </xsl:for-each>
             </xsl:element>
             <xsl:element name="labels">
-                <xsl:for-each select="document/geometry/labels/label">
+                <xsl:for-each select="/document/geometry/labels/label">
                     <xsl:element name="label">
                         <xsl:attribute name="id">
                             <xsl:value-of select="@id" />
@@ -51,7 +74,7 @@
                             <xsl:value-of select="@area" />
                         </xsl:attribute>
                         <xsl:attribute name="polynomial_order">
-                            <xsl:variable name="polynomial_order" select="document/geometry/labels/label/@polynomial_order" />
+                            <xsl:variable name="polynomial_order" select="/document/geometry/labels/label/@polynomial_order" />
                             <xsl:choose>
                                 <xsl:when test="$polynomial_order!=null">
                                     <xsl:value-of select="$polynomial_order" />
@@ -67,51 +90,51 @@
         <!-- Problem -->
         <xsl:element name="problem">
             <xsl:attribute name="coordinate_type">
-                <xsl:value-of select="document/problems/problem/@problemtype" />
+                <xsl:value-of select="/document/problems/problem/@problemtype" />
             </xsl:attribute>
             <xsl:attribute name="frequency">
-                <xsl:value-of select="document/problems/problem/@frequency" />
+                <xsl:value-of select="/document/problems/problem/@frequency" />
             </xsl:attribute>
             <xsl:attribute name="matrix_solver">
-                <xsl:value-of select="document/problems/problem/@matrix_solver" />
+                <xsl:value-of select="/document/problems/problem/@matrix_solver" />
             </xsl:attribute>
             <xsl:attribute name="time_total">
-                <xsl:value-of select="document/problems/problem/@timetotal" />
+                <xsl:value-of select="/document/problems/problem/@timetotal" />
             </xsl:attribute>
             <xsl:attribute name="mesh_type">
-                <xsl:value-of select="document/problems/problem/@meshtype" />
+                <xsl:value-of select="/document/problems/problem/@meshtype" />
             </xsl:attribute>
             <xsl:attribute name="time_step">
-                <xsl:value-of select="document/problems/problem/@timestep" />
+                <xsl:value-of select="/document/problems/problem/@timestep" />
             </xsl:attribute>
             <xsl:attribute name="name">
-                <xsl:value-of select="document/problems/problem/@name" />
+                <xsl:value-of select="/document/problems/problem/@name" />
             </xsl:attribute>
             <xsl:attribute name="date">
-                <xsl:value-of select="document/problems/problem/@date" />
+                <xsl:value-of select="/document/problems/problem/@date" />
             </xsl:attribute>
 
             <xsl:element name="description">
-                <xsl:value-of select="document/problems/problem/description" />
+                <xsl:value-of select="/document/problems/problem/description" />
             </xsl:element>
 
             <xsl:element name="startup_script">
-                <xsl:value-of select="document/problems/problem/scriptstartup" />
+                <xsl:value-of select="/document/problems/problem/scriptstartup" />
             </xsl:element>
 
             <xsl:element name="fields">
                 <xsl:element name="field">
                     <xsl:attribute name="field_id">
-                        <xsl:value-of select="document/problems/problem/@type" />
+                        <xsl:value-of select="/document/problems/problem/@type" />
                     </xsl:attribute>
                     <xsl:attribute name="number_of_refinements">
-                        <xsl:value-of select="document/problems/problem/@numberofrefinements" />
+                        <xsl:value-of select="/document/problems/problem/@numberofrefinements" />
                     </xsl:attribute>
                     <xsl:attribute name="analysis_type">
-                        <xsl:value-of select="document/problems/problem/@analysistype" />
+                        <xsl:value-of select="/document/problems/problem/@analysistype" />
                     </xsl:attribute>
                     <xsl:attribute name="polynomial_order">
-                        <xsl:variable name="polynomial_order" select="document/problems/problem/@polynomial_order" />
+                        <xsl:variable name="polynomial_order" select="/document/problems/problem/@polynomial_order" />
                         <xsl:choose>
                             <xsl:when test="$polynomial_order!=null">
                                 <xsl:value-of select="$polynomial_order" />
@@ -119,31 +142,22 @@
                             <xsl:otherwise>2</xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
-                    <xsl:attribute name="weak_forms">
-                        <xsl:variable name="weak_forms" select="document/problems/problem/@weakforms" />
-                        <xsl:choose>
-                            <xsl:when test="$weak_forms!=null">
-                                <xsl:value-of select="$weak_forms" />
-                            </xsl:when>
-                            <xsl:otherwise>interpreted</xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:attribute>
                     <xsl:attribute name="initial_condition">
-                        <xsl:value-of select="document/problems/problem/@initialcondition" />
+                        <xsl:value-of select="/document/problems/problem/@initialcondition" />
                     </xsl:attribute>
 
                     <xsl:element name="adaptivity">
                         <xsl:attribute name="adaptivity_tolerance">
-                            <xsl:value-of select="document/problems/problem/@adaptivitytolerance" />
+                            <xsl:value-of select="/document/problems/problem/@adaptivitytolerance" />
                         </xsl:attribute>
                         <xsl:attribute name="adaptivity_type">
-                            <xsl:value-of select="document/problems/problem/@adaptivitytype" />
+                            <xsl:value-of select="/document/problems/problem/@adaptivitytype" />
                         </xsl:attribute>
                         <xsl:attribute name="adaptivity_steps">
-                            <xsl:value-of select="document/problems/problem/@adaptivitysteps" />
+                            <xsl:value-of select="/document/problems/problem/@adaptivitysteps" />
                         </xsl:attribute>
                         <xsl:attribute name="max_dofs">
-                            <xsl:variable name="max_dofs" select="document/problems/problem/@maxdofs" />
+                            <xsl:variable name="max_dofs" select="/document/problems/problem/@maxdofs" />
                             <xsl:choose>
                                 <xsl:when test="$max_dofs!=null">
                                     <xsl:value-of select="$max_dofs" />
@@ -155,7 +169,7 @@
 
                     <xsl:element name="solver">
                         <xsl:attribute name="nonlinear_tolerance">
-                            <xsl:variable name="nonlinear_tolerance" select="document/problems/problem/@nonlineartolerance" />
+                            <xsl:variable name="nonlinear_tolerance" select="/document/problems/problem/@nonlineartolerance" />
                             <xsl:choose>
                                 <xsl:when test="$nonlinear_tolerance!=null">
                                     <xsl:value-of select="$nonlinear_tolerance" />
@@ -164,7 +178,7 @@
                             </xsl:choose>
                         </xsl:attribute>
                         <xsl:attribute name="nonlinear_steps">
-                            <xsl:variable name="nonlinear_steps" select="document/problems/problem/@nonlinearsteps" />
+                            <xsl:variable name="nonlinear_steps" select="/document/problems/problem/@nonlinearsteps" />
                             <xsl:choose>
                                 <xsl:when test="$nonlinear_steps!=null">
                                     <xsl:value-of select="$nonlinear_steps" />
@@ -173,7 +187,7 @@
                             </xsl:choose>
                         </xsl:attribute>
                         <xsl:attribute name="linearity_type">
-                            <xsl:variable name="linearity_type" select="document/problems/problem/@linearity" />
+                            <xsl:variable name="linearity_type" select="/document/problems/problem/@linearity" />
                             <xsl:choose>
                                 <xsl:when test="$linearity_type!=null">
                                     <xsl:value-of select="$linearity_type" />
@@ -188,31 +202,23 @@
                         <xsl:choose>
                             <!-- Transformation from version 2.0 -->
                             <xsl:when test="$current_version!=null">
-                                <xsl:variable name="edges" select="document/geometry/edges/*" />
-                                <xsl:for-each select="document/problems/problem/edges/edge">
+                                <xsl:variable name="edges" select="/document/geometry/edges/*" />
+                                <xsl:for-each select="/document/problems/problem/edges/edge">
                                     <xsl:element name="boundary">
                                         <xsl:for-each select="@*">
                                             <xsl:attribute name="{name()}">
                                                 <xsl:value-of select="."/>
                                             </xsl:attribute>
                                         </xsl:for-each>
-                                        <xsl:variable name="id" select="@id" />
-                                        <xsl:for-each select="$edges">
-                                            <xsl:if test="@marker=$id">
-                                                <xsl:element name="edge">
-                                                    <xsl:attribute name="edge">
-                                                        <xsl:value-of select="@id" />
-                                                    </xsl:attribute>
-                                                </xsl:element>
-                                            </xsl:if>
-                                        </xsl:for-each>
+                                        <xsl:call-template name="edges">
+                                            <xsl:with-param name="id" select="@id" />
+                                        </xsl:call-template>
                                     </xsl:element>
                                 </xsl:for-each>
                             </xsl:when>
                             <xsl:otherwise>
                                 <!-- Transformation from version 1.0 -->
-                                <xsl:variable name="edges" select="document/geometry/edges/*" />
-                                <xsl:for-each select="document/problems/problem/edges/edge">
+                                <xsl:for-each select="/document/problems/problem/edges/edge">
                                     <xsl:element name="boundary">
                                         <!-- Magnetic field -->
                                         <xsl:if test="@type='magnetic_vector_potential'">
@@ -421,16 +427,9 @@
                                             <xsl:value-of select="@name"/>
                                         </xsl:attribute>
 
-                                        <xsl:variable name="id" select="@id" />
-                                        <xsl:for-each select="$edges">
-                                            <xsl:if test="@marker=$id">
-                                                <xsl:element name="edge">
-                                                    <xsl:attribute name="edge">
-                                                        <xsl:value-of select="@id" />
-                                                    </xsl:attribute>
-                                                </xsl:element>
-                                            </xsl:if>
-                                        </xsl:for-each>
+                                        <xsl:call-template name="edges">
+                                            <xsl:with-param name="id" select="@id" />
+                                        </xsl:call-template>
                                     </xsl:element>
                                 </xsl:for-each>
                             </xsl:otherwise>
@@ -442,33 +441,25 @@
                         <xsl:choose>
                             <!-- Transformation from version 2.0 -->
                             <xsl:when test="$current_version!=null">
-                                <xsl:variable name="labels" select="document/geometry/labels/*" />
-                                <xsl:for-each select="document/problems/problem/labels/label">
+                                <xsl:variable name="labels" select="/document/geometry/labels/*" />
+                                <xsl:for-each select="/document/problems/problem/labels/label">
                                     <xsl:element name="material">
                                         <xsl:for-each select="@*">
                                             <xsl:attribute name="{name()}">
                                                 <xsl:value-of select="."/>
                                             </xsl:attribute>
                                         </xsl:for-each>
-                                        <xsl:variable name="id" select="@id" />
-                                        <xsl:for-each select="$labels">
-                                            <xsl:if test="@marker=$id">
-                                                <xsl:element name="label">
-                                                    <xsl:attribute name="label">
-                                                        <xsl:value-of select="@id" />
-                                                    </xsl:attribute>
-                                                </xsl:element>
-                                            </xsl:if>
-                                        </xsl:for-each>
-                                    </xsl:element>rf_matched_boundary
-
+                                        <xsl:call-template name="labels">
+                                            <xsl:with-param name="id" select="@id" />
+                                        </xsl:call-template>
+                                    </xsl:element>
                                 </xsl:for-each>
                             </xsl:when>
                             <xsl:otherwise>
                                 <!-- Transformation from version 1.0 -->
-                                <xsl:variable name="labels" select="document/geometry/labels/*" />
-                                <xsl:variable name="physical_field" select="document/problems/problem/@type" />
-                                <xsl:for-each select="document/problems/problem/labels/label">
+                                <xsl:variable name="labels" select="/document/geometry/labels/*" />
+                                <xsl:variable name="physical_field" select="/document/problems/problem/@type" />
+                                <xsl:for-each select="/document/problems/problem/labels/label">
                                     <xsl:element name="material">
                                         <!-- Magnetic field -->
                                         <xsl:if test="$physical_field='magnetic'">
@@ -489,7 +480,7 @@
                                             </xsl:if>
                                             <xsl:if test="@velocity_x">
                                                 <xsl:attribute name="magnetic_velocity_x">
-                                                    <xsl:value-of select="@velocity_x"/>label
+                                                    <xsl:value-of select="@velocity_x"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@velocity_y">
@@ -655,16 +646,9 @@
                                             <xsl:value-of select="@name"/>
                                         </xsl:attribute>
 
-                                        <xsl:variable name="id" select="@id" />
-                                        <xsl:for-each select="$labels">
-                                            <xsl:if test="@marker=$id">
-                                                <xsl:element name="label">
-                                                    <xsl:attribute name="label">
-                                                        <xsl:value-of select="@id" />
-                                                    </xsl:attribute>
-                                                </xsl:element>
-                                            </xsl:if>
-                                        </xsl:for-each>
+                                        <xsl:call-template name="labels">
+                                            <xsl:with-param name="id" select="@id" />
+                                        </xsl:call-template>
                                     </xsl:element>
                                 </xsl:for-each>
                             </xsl:otherwise>
