@@ -135,16 +135,16 @@ void LexicalAnalyser::setExpression(const QString &expr)
     }
 }
 
-//ToDo: Awful and slow - improve
+//ToDo: Improve, it should be within Syntax analyzer
 QString LexicalAnalyser::replaceOperatorByFunction(QString expression)
 {
+    // Reguler expression for ^any_number
     QRegExp re("(\\^)([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
     QString expr = expression;
     int position = 0;
     bool isReplaced = false;
     while (position != -1)
     {
-
         position = re.indexIn(expr);
         if (position != -1)
         {
@@ -169,22 +169,17 @@ QString LexicalAnalyser::replaceOperatorByFunction(QString expression)
                 {
                     replace += expr[k];
                 }
-
                 replace += "pow";
-
                 for (int k = j+1; k < position - 1; k++ )
                 {
                     replace += expr[k];
                 }
-
                 replace += ", " + exponent + ")";
-
                 for (int k = position + 1 + exponent.length(); k < expr.length(); k++)
                 {
                     replace += expr[k];
                 }
-            }
-            std::cout << replace.toStdString();
+            }            
             expr = replace;
         }
     }

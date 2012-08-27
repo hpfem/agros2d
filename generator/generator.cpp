@@ -20,6 +20,7 @@
 
 #include "generator.h"
 #include "hermes2d/module.h"
+#include "hermes2d/coupling.h"
 
 #include "parser/lex.h"
 #include "parser/tree.h"
@@ -64,7 +65,9 @@ void Agros2DGenerator::run()
     root.mkpath(GENERATOR_PLUGINROOT);
 
     QMap<QString, QString> modules = availableModules();
-    ctemplate::TemplateDictionary output("project_output");
+    QMap<QString, QString> couplings = availableCouplings();
+
+    ctemplate::TemplateDictionary output("project_output");    
 
     foreach (QString moduleId, modules.keys())
     {

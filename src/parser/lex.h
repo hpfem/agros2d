@@ -81,12 +81,12 @@ public:
 
     inline TokenType type() { return this->m_type; }
     inline QString toString() { return this->m_text; }
-
     int nestingLevel;
+
 
 private:
     TokenType m_type;
-    QString m_text;
+    QString m_text;    
 };
 
 
