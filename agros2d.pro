@@ -3,8 +3,8 @@ SUBDIRS += 3dparty
 SUBDIRS += hermes2d
 SUBDIRS += src
 SUBDIRS += generator
-SUBDIRS += plugins
 SUBDIRS += binary
+SUBDIRS += plugins
 
 CONFIG += ordered
 TEMPLATE = subdirs
