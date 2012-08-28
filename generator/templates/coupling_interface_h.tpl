@@ -55,7 +55,22 @@ public:
                                                                   const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ);
 
     virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ); 
+                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
+
+
+    virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
+                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) {return 0;}
+
+    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) {return 0;}
+
+    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
+                                                     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
+                                                     const QString &variable,
+                                                     PhysicFieldVariableComp physicFieldVariableComp,
+                                                     AnalysisType analysisType,
+                                                     CoordinateType coordinateType){return 0;}
+
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) {return 0;}
 };
 
 #endif // {{ID}}_INTERFACE_H
