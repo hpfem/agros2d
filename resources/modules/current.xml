@@ -3,7 +3,7 @@
 
   <module:general id="current" name="Current field">
     <module:description>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.
-		</module:description>
+        </module:description>
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate"/>
       <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic"/>

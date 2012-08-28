@@ -954,6 +954,8 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
                 exprCpp += repl;
         }
 
+        // TODO: move from lex
+        exprCpp = lex.replaceOperatorByFunction(exprCpp);
         return exprCpp;
     }
     catch (ParserException e)
@@ -1168,6 +1170,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             if (!isReplaced)
                 exprCpp += repl;
         }
+
+        // TODO: move from lex
         exprCpp = lex.replaceOperatorByFunction(exprCpp);
         return exprCpp;
     }
@@ -1909,6 +1913,8 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
             if (!isReplaced)
                 exprCpp += repl;
         }
+
+        // TODO: move from lex
         exprCpp = lex.replaceOperatorByFunction(exprCpp);
         return exprCpp;
     }
