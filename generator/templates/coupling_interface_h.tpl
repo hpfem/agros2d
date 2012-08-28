@@ -60,14 +60,19 @@ public:
 
     virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) {return 0;}
 
+    // postprocessor
+    // filter
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
-                                                     PhysicFieldVariableComp physicFieldVariableComp,
-                                                     AnalysisType analysisType,
-                                                     CoordinateType coordinateType){return 0;}
+                                                     PhysicFieldVariableComp physicFieldVariableComp) { assert(0); }
 
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) {return 0;}
+    // local values
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) { assert(0); }
+    // surface integrals
+    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo) { assert(0); }
+    // volume integrals
+    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) { assert(0); }
 };
 
 #endif // {{ID}}_INTERFACE_H
