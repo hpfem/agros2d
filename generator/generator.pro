@@ -24,6 +24,10 @@ OTHER_FILES += \
     templates/filter_h.tpl \
     templates/localvalue_cpp.tpl \
     templates/localvalue_h.tpl \
+    templates/surfaceintegral_cpp.tpl \
+    templates/surfaceintegral_h.tpl \
+    templates/volumeintegral_cpp.tpl \
+    templates/volumeintegral_h.tpl \
     templates/interface_cpp.tpl \
     templates/interface_h.tpl \
     templates/module_pro.tpl \

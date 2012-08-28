@@ -66,8 +66,11 @@ public:
     void generatePluginProjectFile();
     void generatePluginFilterFiles();
     void generatePluginLocalPointFiles();
+    void generatePluginSurfaceIntegralFiles();
+    void generatePluginVolumeIntegralFiles();
     void generatePluginInterfaceFiles();
     void generatePluginWeakFormFiles();
+
     QHash<QString, QString>  volumeVaribales() const {return m_volumeVariables;}
     QHash<QString, QString>  surfaceVaribales() const {return m_volumeVariables;}
 

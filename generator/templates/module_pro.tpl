@@ -42,6 +42,10 @@ HEADERS      += {{ID}}_filter.h
 SOURCES      += {{ID}}_filter.cpp
 HEADERS      += {{ID}}_localvalue.h
 SOURCES      += {{ID}}_localvalue.cpp
+HEADERS      += {{ID}}_surfaceintegral.h
+SOURCES      += {{ID}}_surfaceintegral.cpp
+HEADERS      += {{ID}}_volumeintegral.h
+SOURCES      += {{ID}}_volumeintegral.cpp
 
 TARGET        = $$qtLibraryTarget(agros2d_plugin_{{ID}})
 DESTDIR       = ../../libs

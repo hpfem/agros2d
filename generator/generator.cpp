@@ -173,6 +173,8 @@ void Agros2DGenerator::run()
         generator.generatePluginInterfaceFiles();
         generator.generatePluginFilterFiles();
         generator.generatePluginLocalPointFiles();
+        generator.generatePluginSurfaceIntegralFiles();
+        generator.generatePluginVolumeIntegralFiles();
         generator.generatePluginWeakFormFiles();
 
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
@@ -560,6 +562,136 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_localvalue.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
+{
+    qDebug() << tr("%1: generating plugin surface integral file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", id.toStdString());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/surfaceintegral_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    foreach (XMLModule::localvariable lv, m_module->postprocessor().localvariables().localvariable())
+    {
+        foreach (XMLModule::expression expr, lv.expression())
+        {
+            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+            {
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
+                                               (expr.planar_x().present() ? QString::fromStdString(expr.planar_x().get()) : ""),
+                                               (expr.planar_y().present() ? QString::fromStdString(expr.planar_y().get()) : ""));
+                }
+                else
+                {
+                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
+                                               (expr.axi_r().present() ? QString::fromStdString(expr.axi_r().get()) : ""),
+                                               (expr.axi_z().present() ? QString::fromStdString(expr.axi_z().get()) : ""));
+                }
+            }
+        }
+    }
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_surfaceintegral.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    ctemplate::ExpandTemplate(QString("%1/%2/surfaceintegral_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_surfaceintegral.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
+{
+    qDebug() << tr("%1: generating plugin volume integral file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", id.toStdString());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/volumeintegral_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    foreach (XMLModule::localvariable lv, m_module->postprocessor().localvariables().localvariable())
+    {
+        foreach (XMLModule::expression expr, lv.expression())
+        {
+            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+            {
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
+                                               (expr.planar_x().present() ? QString::fromStdString(expr.planar_x().get()) : ""),
+                                               (expr.planar_y().present() ? QString::fromStdString(expr.planar_y().get()) : ""));
+                }
+                else
+                {
+                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
+                                               (expr.axi_r().present() ? QString::fromStdString(expr.axi_r().get()) : ""),
+                                               (expr.axi_z().present() ? QString::fromStdString(expr.axi_z().get()) : ""));
+                }
+            }
+        }
+    }
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_volumeintegral.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    ctemplate::ExpandTemplate(QString("%1/%2/volumeintegral_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_volumeintegral.cpp").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),

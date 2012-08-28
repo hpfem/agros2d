@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef {{ID}}_LOCALVALUE_H
-#define {{ID}}_LOCALVALUE_H
+#ifndef {{ID}}_VOLUMEINTEGRAL_H
+#define {{ID}}_VOLUMEINTEGRAL_H
 
 #include <QObject>
 
@@ -29,12 +29,12 @@
 
 class FieldInfo;
 
-class {{CLASS}}LocalValue : public LocalValue
+class {{CLASS}}VolumeIntegral : public PostprocessorIntegralValue
 {
 public:
-    {{CLASS}}LocalValue(FieldInfo *fieldInfo, const Point &point);
+    {{CLASS}}VolumeIntegral(FieldInfo *fieldInfo, const Point &point);
 
     void calculate();
 };
 
-#endif // {{ID}}_LOCALVALUE_H
+#endif // {{ID}}_VOLUMEINTEGRAL_H
