@@ -29,7 +29,7 @@
 #include "scenemarkerdialog.h"
 #include "module_agros.h"
 #include "solutionstore.h"
-#include "weakform_interface.h"
+#include "plugin_interface.h"
 #include "logview.h"
 #include "util.h"
 

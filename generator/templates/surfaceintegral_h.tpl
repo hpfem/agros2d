@@ -25,14 +25,14 @@
 #include "util.h"
 #include "hermes2d.h"
 
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 class FieldInfo;
 
-class {{CLASS}}SurfaceIntegral : public PostprocessorIntegralValue
+class {{CLASS}}SurfaceIntegral : public IntegralValue
 {
 public:
-    {{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo, const Point &point);
+    {{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo);
 
     void calculate();
 };

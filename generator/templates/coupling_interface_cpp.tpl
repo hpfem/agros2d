@@ -19,7 +19,8 @@
 
 #include <QtPlugin>
 
-#include "weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
+
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
 
@@ -30,9 +31,6 @@
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-
-#include "hermes2d/volumeintegral.h"
-#include "hermes2d/surfaceintegral.h"
 
 #include "hermes2d/marker.h"
 

@@ -33,8 +33,7 @@
 #include "hermes2d/solver.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
-#include "hermes2d/post_values.h"
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 #include "mesh/mesh_reader_h2d.h"
 
@@ -941,6 +940,24 @@ Module::LocalVariable *Module::BasicModule::localVariable(const QString &id)
     return NULL;
 }
 
+Module::Integral *Module::BasicModule::surfaceIntegral(const QString &id)
+{
+    foreach (Module::Integral *surf, m_surfaceIntegrals)
+        if (surf->id() == id)
+            return surf;
+
+    return NULL;
+}
+
+Module::Integral *Module::BasicModule::volumeIntegral(const QString &id)
+{
+    foreach (Module::Integral *vol, m_volumeIntegrals)
+        if (vol->id() == id)
+            return vol;
+
+    return NULL;
+}
+
 Module::BoundaryType *Module::BasicModule::boundaryType(const QString &id)
 {
     foreach (Module::BoundaryType *boundaryType, m_boundaryTypes)
@@ -1037,9 +1054,7 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
     return Util::weakForms()[Util::scene()->activeViewField()->fieldId()]->filter(Util::scene()->activeViewField(),
                                                                                   sln,
                                                                                   physicFieldVariable->id(),
-                                                                                  physicFieldVariableComp,
-                                                                                  Util::scene()->activeViewField()->module()->analysisType(),
-                                                                                  Util::scene()->activeViewField()->module()->coordinateType());
+                                                                                  physicFieldVariableComp);
 }
 
 // ***********************************************************************************************

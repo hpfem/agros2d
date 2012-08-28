@@ -1,3 +1,5 @@
+#ifndef WEAKFORM_FACTORY_INTERFACE_H
+#define WEAKFORM_FACTORY_INTERFACE_H
 // This file is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
@@ -17,114 +19,96 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "post_values.h"
-#include "module.h"
-#include "module_agros.h"
-#include "field.h"
-#include "block.h"
-#include "problem.h"
-#include "logview.h"
+#include <QtPlugin>
 
 #include "util.h"
+#include "hermes2d.h"
+
 #include "scene.h"
-#include "scenelabel.h"
+#include "scenebasic.h"
+#include "scenemarker.h"
+#include "scenemarkerdialog.h"
 
-#include "hermes2d/weakform_interface.h"
-#include "solutionstore.h"
+#include "hermes2d/module.h"
+#include "hermes2d/marker.h"
 
-#include <muParserDef.h>
-
-PostprocessorValue::~PostprocessorValue()
+struct PointValue
 {
-    // delete parsers
-    foreach (mu::Parser *parser, m_parsers)
-        delete parser;
-    m_parsers.clear();
-
-    // delete parsers
-    foreach (mu::Parser *parser, m_parsersNonlinear.values())
-        delete parser;
-    m_parsersNonlinear.clear();
-
-    m_parserVariables.clear();
-}
-
-void PostprocessorValue::setMaterialToParsers(Material *material)
-{
-    m_parserVariables.clear();
-
-    // set material
-    foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        if (m_parserVariables.keys().indexOf(variable->shortname().toStdString()) == -1)
-            if ((m_fieldInfo->linearityType() == LinearityType_Linear) ||
-                    ((m_fieldInfo->linearityType() != LinearityType_Linear) && (m_parsers.length() > 0) && variable->expressionNonlinear().isEmpty()))
-                // linear variable
-                m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).number();
-            else
-                // nonlinear variable
-                m_parserVariables[variable->shortname().toStdString()] = 0.0;
-
-    // register value address
-    for (QMap<std::string, double>::iterator itv = m_parserVariables.begin(); itv != m_parserVariables.end(); ++itv)
-        foreach (mu::Parser *pars, m_parsers)
-            pars->DefineVar(itv.key(), &itv.value());
-}
-
-void PostprocessorValue::setNonlinearParsers()
-{
-    if ((m_fieldInfo->linearityType() != LinearityType_Linear) && (m_parsers.length() > 0))
+    PointValue()
     {
-        foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        {
-            if (!variable->expressionNonlinear().isEmpty())
-            {
-                mu::Parser *parser = m_fieldInfo->module()->expressionParser();
-                parser->SetExpr(variable->expressionNonlinear().toStdString());
-
-                // get variables
-                for (std::map<std::string, double *>::const_iterator item = m_parsers[0]->GetVar().begin(); item != m_parsers[0]->GetVar().end(); ++item)
-                    parser->DefineVar(item->first, item->second);
-
-                m_parsersNonlinear[variable] = parser;
-            }
-        }
+        this->scalar = 0.0;
+        this->vector = Point();
+        this->material = NULL;
     }
-}
 
-void PostprocessorValue::setNonlinearMaterial(Material *material)
-{
-    if (m_fieldInfo->linearityType() != LinearityType_Linear)
+    PointValue(double scalar, Point vector, SceneMaterial *material)
     {
-        foreach (Module::MaterialTypeVariable *variable, m_fieldInfo->module()->materialTypeVariables())
-        {
-            if (!variable->expressionNonlinear().isEmpty())
-            {
-                try
-                {
-                    double nonlinValue = m_parsersNonlinear[variable]->Eval();
-                    m_parserVariables[variable->shortname().toStdString()] = material->value(variable->id()).value(nonlinValue);
-                }
-                catch (mu::Parser::exception_type &e)
-                {
-                    std::cout << "Nonlinear value '" << variable->id().toStdString() << "'): " << e.GetMsg() << std::endl;
-                }
-            }
-        }
+        this->scalar = scalar;
+        this->vector = vector;
+        this->material = material;
     }
-}
 
-// *********************************************************************************************************************************************
+    double scalar;
+    Point vector;
+    SceneMaterial *material;
+};
 
-void PostprocessorIntegralValue::initParser(QList<Module::Integral *> list)
+class LocalValue
 {
-    foreach (Module::Integral *integral, list)
-    {
-        m_parsers.push_back(m_fieldInfo->module()->expressionParser(integral->expression()));
-        m_values[integral] = 0.0;
-    }
-}
+public:
+    LocalValue(FieldInfo *fieldInfo, const Point &point)
+        : m_fieldInfo(fieldInfo), m_point(point) {}
 
-// *********************************************************************************************************************************************
+    // point
+    inline Point point() { return m_point; }
+
+    // variables
+    QMap<Module::LocalVariable *, PointValue> values() const { return m_values; }
+
+    virtual void calculate() = 0;
+
+protected:
+    // point
+    Point m_point;
+    // field info
+    FieldInfo *m_fieldInfo;
+
+    // variables
+    QMap<Module::LocalVariable *, PointValue> m_values;
+};
+
+class IntegralValue
+{
+public:
+    IntegralValue(FieldInfo *fieldInfo)
+        : m_fieldInfo(fieldInfo) {}
+
+    // variables
+    inline QMap<Module::Integral*, double> values() const { return m_values; }
+
+protected:
+    // field info
+    FieldInfo *m_fieldInfo;
+
+    // variables
+    QMap<Module::Integral*, double> m_values;
+};
+
+class LocalForceValue
+{
+public:
+    LocalForceValue(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo) {}
+    ~LocalForceValue() {}
+
+    Point3 calculate(const Point3 &point, const Point3 &velocity = Point3()) {}
+
+private:
+    // field info
+    FieldInfo *m_fieldInfo;
+};
+
+/*
+
 
 LocalForceValue::LocalForceValue(FieldInfo *fieldInfo) : PostprocessorValue(fieldInfo)
 {
@@ -260,4 +244,49 @@ Point3 LocalForceValue::calculate(const Point3 &point, const Point3 &velocity)
 
     return res;
 }
+*/
 
+class WeakFormInterface
+{
+public:
+
+    virtual ~WeakFormInterface() {}
+
+    virtual QString fieldId() = 0;
+
+    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
+                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
+                                                                   SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
+
+    virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
+                                                                   const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ) = 0;
+
+    virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
+                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;
+
+    virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
+                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;
+
+    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) = 0;
+
+    // postprocessor
+    // filter
+    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
+                                                     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
+                                                     const QString &variable,
+                                                     PhysicFieldVariableComp physicFieldVariableComp) = 0;
+
+    // local values
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) = 0;
+    // surface integrals
+    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo) = 0;
+    // volume integrals
+    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) = 0;
+};
+
+
+QT_BEGIN_NAMESPACE
+Q_DECLARE_INTERFACE(WeakFormInterface, "agros2d.WeakformInterface/1.0")
+QT_END_NAMESPACE
+
+#endif // WEAKFORM_FACTORY_INTERFACE_H

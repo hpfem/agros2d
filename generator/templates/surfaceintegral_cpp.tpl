@@ -19,7 +19,6 @@
 
 #include "{{ID}}_surfaceintegral.h"
 
-#include "hermes2d/post_values.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -33,7 +32,7 @@
 #include "logview.h"
 
 {{CLASS}}SurfaceIntegral::{{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo)
-    : PostprocessorIntegralValue(fieldInfo)
+    : IntegralValue(fieldInfo)
 {
     calculate();
 }
@@ -42,63 +41,116 @@ void {{CLASS}}SurfaceIntegral::calculate()
 {
     m_values.clear();
 
-    // update time functions
-    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-    {
-        m_fieldInfo->module()->updateTimeFunctions(Util::problem()->config()->timeStepToTime(Util::scene()->activeTimeStep()));
-    }
-
     if (Util::problem()->isSolved())
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(m_fieldInfo), m_point);
-        if (index != -1)
+        // update time functions
+        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            // find marker
-            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial(m_fieldInfo)->get_element_fast(index);
-            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
-            SceneMaterial *material = label->marker(m_fieldInfo);
-
-            // set variables
-            double x = m_point.x;
-            double y = m_point.y;
-
-            double *value = new double[m_fieldInfo->module()->numberOfSolutions()];
-            double *dudx = new double[m_fieldInfo->module()->numberOfSolutions()];
-            double *dudy = new double[m_fieldInfo->module()->numberOfSolutions()];
-
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions());
-            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
-            {
-                // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
-                sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
-
-                double val;
-                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
-                    // const solution at first time step
-                    val = m_fieldInfo->initialCondition().number();
-                else
-                    val = sln[k]->get_pt_value(m_point.x, m_point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
-
-                Point derivative;
-                derivative.x = sln[k]->get_pt_value(m_point.x, m_point.y, Hermes::Hermes2D::H2D_FN_DX_0);
-                derivative.y = sln[k]->get_pt_value(m_point.x, m_point.y, Hermes::Hermes2D::H2D_FN_DY_0);
-
-                // set variables
-                value[k] = val;
-                dudx[k] = derivative.x;
-                dudy[k] = derivative.y;
-            }
-
-            // expressions
-            {{#VARIABLE_SOURCE}}
-            if ((m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values[m_fieldInfo->module()->localVariable("{{VARIABLE}}")] = PointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
-            {{/VARIABLE_SOURCE}}
-
-            delete [] value;
-            delete [] dudx;
-            delete [] dudy;
+            QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+            m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
         }
+
+        // solutions
+        Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
+        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+        {
+            // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
+            FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
+            sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
+        }
+
+        double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
+
+        Hermes::Hermes2D::Element *e;
+        Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
+
+        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+            sln[k]->set_quad_2d(quad);
+
+        const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
+        for (int i = 0; i<Util::scene()->edges->length(); i++)
+        {
+            if (Util::scene()->edges->at(i)->isSelected())
+            {
+                for_all_active_elements(e, mesh)
+                {
+                    for (unsigned edge = 0; edge < e->get_num_surf(); edge++)
+                    {
+                        bool integrate = false;
+                        bool boundary = false;
+
+                        if (e->en[edge]->marker != -1)
+                        {
+                            if (e->en[edge]->bnd == 1)
+                            {
+                                boundary = true;
+                            }
+                            if ((atoi(Util::problem()->meshInitial(m_fieldInfo)->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
+                            {
+                                integrate = true;
+                            }
+                        }
+
+                        // integral
+                        if (integrate)
+                        {
+                            Hermes::Hermes2D::update_limit_table(e->get_mode());
+
+                            int o = 0;
+                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                            {
+                                o += sln[k]->get_fn_order();
+                                sln[k]->set_active_element(e);
+                            }
+
+                            Hermes::Hermes2D::RefMap* ru = sln[0]->get_refmap();
+                            o += ru->get_inv_ref_order();
+
+                            Hermes::Hermes2D::Quad2D* quad = ru->get_quad_2d();
+                            int eo = quad->get_edge_points(edge, o, e->get_mode());
+                            double3 *pt = quad->get_points(eo, e->get_mode());
+                            double3 *tan = ru->get_tangent(edge);
+
+                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                            {
+                                sln[k]->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
+                                // value
+                                value[k] = sln[k]->get_fn_values();
+                                // derivative
+                                sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+                            }
+
+                            // x - coordinate
+                            double *x = ru->get_phys_x(eo);
+                            double *y = ru->get_phys_y(eo);
+
+                            int np = quad->get_num_points(eo, e->get_mode());
+
+                            // set material variable
+                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
+                                                                                     get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
+
+                            // expressions
+                            {{#VARIABLE_SOURCE}}
+                            if ((m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
+                                    && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
+                            {
+                                double result = 0.0;
+                                for (int i = 0; i < np; i++)
+                                    result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * ({{EXPRESSION}});
+                                m_values[m_fieldInfo->module()->surfaceIntegral("{{VARIABLE}}")] += result;
+                            }
+                            {{/VARIABLE_SOURCE}}
+                        }
+                    }
+                }
+            }
+        }
+
+        delete [] value;
+        delete [] dudx;
+        delete [] dudy;
     }
 }

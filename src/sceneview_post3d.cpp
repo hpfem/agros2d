@@ -31,9 +31,7 @@
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
-#include "hermes2d/post_values.h"
 #include "hermes2d/field.h"
-//#include "hermes2d/problem.h"
 
 static void computeNormal(double p0x, double p0y, double p0z,
                           double p1x, double p1y, double p1z,

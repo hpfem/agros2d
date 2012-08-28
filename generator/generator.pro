@@ -34,4 +34,9 @@ OTHER_FILES += \
     templates/weakform_cpp.tpl \
     templates/weakform_h.tpl \
     templates/weakform_pri.tpl \
-    templates/module_pro.tpl
+    templates/module_pro.tpl \
+    templates/plugins_pro.tpl \
+    templates/coupling_weakform_h.tpl \
+    templates/coupling_weakform_cpp.tpl \
+    templates/coupling_interface_h.tpl \
+    templates/coupling_interface_cpp.tpl

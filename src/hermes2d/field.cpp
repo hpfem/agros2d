@@ -24,8 +24,7 @@
 #include "scenemarker.h"
 #include "module.h"
 #include "module_agros.h"
-#include "post_values.h"
-#include "weakform_interface.h"
+#include "plugin_interface.h"
 
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {

@@ -22,7 +22,7 @@
 #include "gui.h"
 #include "scene.h"
 #include "sceneview_post2d.h"
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"

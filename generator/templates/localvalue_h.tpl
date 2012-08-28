@@ -25,7 +25,7 @@
 #include "util.h"
 #include "hermes2d.h"
 
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 class FieldInfo;
 

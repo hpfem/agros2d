@@ -35,9 +35,7 @@
 #include "scenemarkerdialog.h"
 #include "datatable.h"
 
-#include "hermes2d/surfaceintegral.h"
-#include "hermes2d/volumeintegral.h"
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
@@ -858,14 +856,15 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        SurfaceIntegralValue surfaceIntegralValue(fieldInfo());
-        QMapIterator<Module::Integral *, double> it(surfaceIntegralValue.values());
+        IntegralValue *integral = Util::weakForms()[fieldInfo()->fieldId()]->surfaceIntegral(fieldInfo());
+        QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {
             it.next();
 
             values[it.key()->shortname().toStdString()] = it.value();
         }
+        delete integral;
     }
     else
     {
@@ -916,14 +915,15 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        VolumeIntegralValue volumeIntegralValue(fieldInfo());
-        QMapIterator<Module::Integral *, double> it(volumeIntegralValue.values());
+        IntegralValue *integral = Util::weakForms()[fieldInfo()->fieldId()]->volumeIntegral(fieldInfo());
+        QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {
             it.next();
 
             values[it.key()->shortname().toStdString()] = it.value();
         }
+        delete integral;
     }
     else
     {

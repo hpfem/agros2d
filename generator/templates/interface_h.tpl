@@ -30,12 +30,9 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-#include "hermes2d/volumeintegral.h"
-#include "hermes2d/surfaceintegral.h"
-
 #include "hermes2d/marker.h"
 
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 class {{CLASS}}Interface : public QObject, public WeakFormInterface
 {
@@ -63,14 +60,19 @@ public:
 
     virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
+    // postprocessor
+    // filter
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
-                                                     PhysicFieldVariableComp physicFieldVariableComp,
-                                                     AnalysisType analysisType,
-                                                     CoordinateType coordinateType);
+                                                     PhysicFieldVariableComp physicFieldVariableComp);
 
+    // local values
     virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point);
+    // surface integrals
+    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo);
+    // volume integrals
+    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo);
 };
 
 #endif // {{ID}}_INTERFACE_H

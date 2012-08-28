@@ -27,7 +27,7 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenefunction.h"
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
@@ -42,7 +42,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 ostream& operator<<(ostream& output, FieldInfo& id)
 {

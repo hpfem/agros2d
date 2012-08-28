@@ -19,7 +19,6 @@
 
 #include "{{ID}}_filter.h"
 
-#include "hermes2d/post_values.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -32,17 +31,14 @@
 #include "scenelabel.h"
 #include "logview.h"
 
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                            const QString &variable,
-                                           PhysicFieldVariableComp physicFieldVariableComp,
-                                           AnalysisType analysisType,
-                                           CoordinateType coordinateType)
-    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp),
-                                             m_analysisType(analysisType), m_coordinateType(coordinateType)
+                                           PhysicFieldVariableComp physicFieldVariableComp)
+    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
 {
    
 }
@@ -98,7 +94,10 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
         // nonlinear: material->value(variable->id()).value(exp)
 
 		{{#VARIABLE_SOURCE}}
-        if ((m_variable == "{{VARIABLE}}") && (m_analysisType == {{ANALYSIS_TYPE}}) && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}) && (m_coordinateType == {{COORDINATE_TYPE}}))
+        if ((m_variable == "{{VARIABLE}}")
+                && (m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
+                && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}})
+                && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
             node->values[0][0][i] = {{EXPRESSION}};
 		{{/VARIABLE_SOURCE}}        	
 
@@ -124,6 +123,6 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]->clone());
 
-    return new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_physicFieldVariableComp, m_analysisType, m_coordinateType);
+    return new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_physicFieldVariableComp);
 }
 

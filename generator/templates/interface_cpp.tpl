@@ -19,11 +19,14 @@
 
 #include <QtPlugin>
 
-#include "weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
+
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
 #include "{{ID}}_filter.h"
 #include "{{ID}}_localvalue.h"
+#include "{{ID}}_surfaceintegral.h"
+#include "{{ID}}_volumeintegral.h"
 
 #include "util.h"
 #include "hermes2d.h"
@@ -32,9 +35,6 @@
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-
-#include "hermes2d/volumeintegral.h"
-#include "hermes2d/surfaceintegral.h"
 
 #include "hermes2d/marker.h"
 
@@ -100,16 +100,24 @@ Hermes::Hermes2D::ExactSolutionScalar<double> *{{CLASS}}Interface::exactSolution
 Hermes::Hermes2D::Filter<double> *{{CLASS}}Interface::filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
-                                                     PhysicFieldVariableComp physicFieldVariableComp,
-                                                     AnalysisType analysisType,
-                                                     CoordinateType coordinateType)
+                                                     PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return new {{CLASS}}ViewScalarFilter(fieldInfo, sln, variable, physicFieldVariableComp, analysisType, coordinateType);
+    return new {{CLASS}}ViewScalarFilter(fieldInfo, sln, variable, physicFieldVariableComp);
 }
 
 LocalValue *{{CLASS}}Interface::localValue(FieldInfo *fieldInfo, const Point &point)
 {
     return new {{CLASS}}LocalValue(fieldInfo, point);
+}
+
+IntegralValue *{{CLASS}}Interface::surfaceIntegral(FieldInfo *fieldInfo)
+{
+    return new {{CLASS}}SurfaceIntegral(fieldInfo);
+}
+
+IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo)
+{
+    return new {{CLASS}}VolumeIntegral(fieldInfo);
 }
 
 Q_EXPORT_PLUGIN2({{ID}}, {{CLASS}}Interface)

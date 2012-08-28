@@ -31,9 +31,7 @@ public:
     {{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                      const QString &variable,
-                     PhysicFieldVariableComp physicFieldVariableComp,
-                     AnalysisType analysisType,
-                     CoordinateType coordinateType);
+                     PhysicFieldVariableComp physicFieldVariableComp);
     ~{{CLASS}}ViewScalarFilter();
 
     double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
@@ -49,9 +47,7 @@ private:
 	FieldInfo *m_fieldInfo; 
 	
     QString m_variable;
-    PhysicFieldVariableComp m_physicFieldVariableComp;
-    AnalysisType m_analysisType;
-	CoordinateType m_coordinateType;    
+    PhysicFieldVariableComp m_physicFieldVariableComp;   
 };
 
 #endif {{ID}}_FILTER_H

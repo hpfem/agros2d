@@ -20,9 +20,7 @@
 #include "resultsview.h"
 #include "scene.h"
 #include "hermes2d.h"
-#include "hermes2d/volumeintegral.h"
-#include "hermes2d/surfaceintegral.h"
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -173,9 +171,9 @@ void ResultsView::showVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        QMap<Module::Integral*, double> values = VolumeIntegralValue(fieldInfo).values();
-
-        if(values.size() > 0)
+        IntegralValue *integral = Util::weakForms()[fieldInfo->fieldId()]->volumeIntegral(fieldInfo);
+        QMap<Module::Integral*, double> values = integral->values();
+        if (values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = volumeIntegrals.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
@@ -189,6 +187,7 @@ void ResultsView::showVolumeIntegral()
                 item->SetValue("UNIT", integral->unitHtml().toStdString());
             }
         }
+        delete integral;
     }
 
     // expand template
@@ -221,7 +220,8 @@ void ResultsView::showSurfaceIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        QMap<Module::Integral*, double> values = SurfaceIntegralValue(fieldInfo).values();
+        IntegralValue *integral = Util::weakForms()[fieldInfo->fieldId()]->surfaceIntegral(fieldInfo);
+        QMap<Module::Integral*, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
@@ -235,6 +235,7 @@ void ResultsView::showSurfaceIntegral()
                 item->SetValue("UNIT", integral->unitHtml().toStdString());
             }
         }
+        delete integral;
     }
 
     // expand template

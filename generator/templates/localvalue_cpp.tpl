@@ -19,7 +19,6 @@
 
 #include "{{ID}}_localvalue.h"
 
-#include "hermes2d/post_values.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -92,7 +91,8 @@ void {{CLASS}}LocalValue::calculate()
 
             // expressions
             {{#VARIABLE_SOURCE}}
-            if ((m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
+            if ((m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
+                    && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
                 m_values[m_fieldInfo->module()->localVariable("{{VARIABLE}}")] = PointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
             {{/VARIABLE_SOURCE}}
 

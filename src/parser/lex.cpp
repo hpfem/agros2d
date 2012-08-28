@@ -86,9 +86,10 @@ void LexicalAnalyser::setExpression(const QString &expr)
     operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":" << ",";
     sortByLength(operators);
     terminals.append(Terminals(TokenType_OPERATOR, operators));
-    functions << "sin" << "cos" << "tan" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<
+    functions << "sin" << "cos" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<
                  "tanh" << "asinh" << "acosh" << "atanh" << "log2" << "log10" << "log" <<
                  "exp" << "sqrt" << "sign" << "abs" << "min" << "max" << "sum" << "avg" << "pow";
+    // TODO: conflict "tan" with "tanx", "tany", "tanr", "tanz" in surface forms
     sortByLength(functions);
     terminals.append(Terminals(TokenType_FUNCTION, functions));
 

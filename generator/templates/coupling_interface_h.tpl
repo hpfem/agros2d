@@ -30,12 +30,9 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-#include "hermes2d/volumeintegral.h"
-#include "hermes2d/surfaceintegral.h"
-
 #include "hermes2d/marker.h"
 
-#include "hermes2d/weakform_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 class {{CLASS}}Interface : public QObject, public WeakFormInterface
 {

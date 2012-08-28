@@ -465,60 +465,60 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
                 if (coordinateType == CoordinateType_Planar)
                 {
                     if (lv.type() == "scalar")
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_Scalar,
-                                                      QString::fromStdString(expr.planar().get()));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_Scalar,
+                                               QString::fromStdString(expr.planar().get()));
                     if (lv.type() == "vector")
                     {
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_X,
-                                                      QString::fromStdString(expr.planar_x().get()));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_X,
+                                               QString::fromStdString(expr.planar_x().get()));
 
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_Y,
-                                                      QString::fromStdString(expr.planar_y().get()));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_Y,
+                                               QString::fromStdString(expr.planar_y().get()));
 
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_Magnitude,
-                                                      QString("sqrt(pow(%1, 2) + pow(%2, 2))").arg(QString::fromStdString(expr.planar_x().get())).arg(QString::fromStdString(expr.planar_y().get())));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_Magnitude,
+                                               QString("sqrt(pow(%1, 2) + pow(%2, 2))").arg(QString::fromStdString(expr.planar_x().get())).arg(QString::fromStdString(expr.planar_y().get())));
 
                     }
                 }
                 else
                 {
                     if (lv.type() == "scalar")
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_Scalar,
-                                                      QString::fromStdString(expr.axi().get()));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_Scalar,
+                                               QString::fromStdString(expr.axi().get()));
                     if (lv.type() == "vector")
                     {
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_X,
-                                                      QString::fromStdString(expr.axi_r().get()));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_X,
+                                               QString::fromStdString(expr.axi_r().get()));
 
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_Y,
-                                                      QString::fromStdString(expr.axi_z().get()));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_Y,
+                                               QString::fromStdString(expr.axi_z().get()));
 
-                        createPostprocessorExpression(output, QString::fromStdString(lv.id()),
-                                                      analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                                      coordinateType,
-                                                      PhysicFieldVariableComp_Magnitude,
-                                                      QString("sqrt(pow(%1, 2) + pow(%2, 2))").arg(QString::fromStdString(expr.axi_r().get())).arg(QString::fromStdString(expr.axi_z().get())));
+                        createFilterExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               PhysicFieldVariableComp_Magnitude,
+                                               QString("sqrt(pow(%1, 2) + pow(%2, 2))").arg(QString::fromStdString(expr.axi_r().get())).arg(QString::fromStdString(expr.axi_z().get())));
                     }
                 }
             }
@@ -627,29 +627,25 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
     ctemplate::ExpandTemplate(QString("%1/%2/surfaceintegral_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
-    foreach (XMLModule::localvariable lv, m_module->postprocessor().localvariables().localvariable())
+    foreach (XMLModule::surfaceintegral surf, m_module->postprocessor().surfaceintegrals().surfaceintegral())
     {
-        foreach (XMLModule::expression expr, lv.expression())
+        foreach (XMLModule::expression expr, surf.expression())
         {
             foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
             {
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                               coordinateType,
-                                               (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
-                                               (expr.planar_x().present() ? QString::fromStdString(expr.planar_x().get()) : ""),
-                                               (expr.planar_y().present() ? QString::fromStdString(expr.planar_y().get()) : ""));
+                    createIntegralExpression(output, QString::fromStdString(surf.id()),
+                                             analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                             coordinateType,
+                                             (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""));
                 }
                 else
                 {
-                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                               coordinateType,
-                                               (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
-                                               (expr.axi_r().present() ? QString::fromStdString(expr.axi_r().get()) : ""),
-                                               (expr.axi_z().present() ? QString::fromStdString(expr.axi_z().get()) : ""));
+                    createIntegralExpression(output, QString::fromStdString(surf.id()),
+                                             analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                             coordinateType,
+                                             (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""));
                 }
             }
         }
@@ -692,29 +688,25 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
     ctemplate::ExpandTemplate(QString("%1/%2/volumeintegral_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
-    foreach (XMLModule::localvariable lv, m_module->postprocessor().localvariables().localvariable())
+    foreach (XMLModule::volumeintegral vol, m_module->postprocessor().volumeintegrals().volumeintegral())
     {
-        foreach (XMLModule::expression expr, lv.expression())
+        foreach (XMLModule::expression expr, vol.expression())
         {
             foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
             {
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                               coordinateType,
-                                               (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
-                                               (expr.planar_x().present() ? QString::fromStdString(expr.planar_x().get()) : ""),
-                                               (expr.planar_y().present() ? QString::fromStdString(expr.planar_y().get()) : ""));
+                    createIntegralExpression(output, QString::fromStdString(vol.id()),
+                                             analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                             coordinateType,
+                                             (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""));
                 }
                 else
                 {
-                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
-                                               coordinateType,
-                                               (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
-                                               (expr.axi_r().present() ? QString::fromStdString(expr.axi_r().get()) : ""),
-                                               (expr.axi_z().present() ? QString::fromStdString(expr.axi_z().get()) : ""));
+                    createIntegralExpression(output, QString::fromStdString(vol.id()),
+                                             analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                             coordinateType,
+                                             (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""));
                 }
             }
         }
@@ -768,12 +760,12 @@ QString Agros2DGeneratorModule::nonlinearExpression(const QString &variable, Ana
     return "";
 }
 
-void Agros2DGeneratorModule::createPostprocessorExpression(ctemplate::TemplateDictionary &output,
-                                                           const QString &variable,
-                                                           AnalysisType analysisType,
-                                                           CoordinateType coordinateType,
-                                                           PhysicFieldVariableComp physicFieldVariableComp,
-                                                           const QString &expr)
+void Agros2DGeneratorModule::createFilterExpression(ctemplate::TemplateDictionary &output,
+                                                    const QString &variable,
+                                                    AnalysisType analysisType,
+                                                    CoordinateType coordinateType,
+                                                    PhysicFieldVariableComp physicFieldVariableComp,
+                                                    const QString &expr)
 {
     if (!expr.isEmpty())
     {
@@ -805,6 +797,23 @@ void Agros2DGeneratorModule::createLocalValueExpression(ctemplate::TemplateDicti
     expression->SetValue("EXPRESSION_VECTORY", exprVectorY.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprVectorY).replace("[i]", "").toStdString());
 }
 
+void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDictionary &output,
+                                                      const QString &variable,
+                                                      AnalysisType analysisType,
+                                                      CoordinateType coordinateType,
+                                                      const QString &expr)
+{
+    if (!expr.isEmpty())
+    {
+        ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
+
+        expression->SetValue("VARIABLE", variable.toStdString());
+        expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
+        expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+        expression->SetValue("EXPRESSION", parsePostprocessorExpression(analysisType, coordinateType, expr).toStdString());
+    }
+}
+
 QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr)
 {
     int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
@@ -816,11 +825,15 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
     {
         lex.addVariable(QString("x"));
         lex.addVariable(QString("y"));
+        lex.addVariable(QString("tanx"));
+        lex.addVariable(QString("tany"));
     }
     else
     {
         lex.addVariable(QString("r"));
         lex.addVariable(QString("z"));
+        lex.addVariable(QString("tanr"));
+        lex.addVariable(QString("tanz"));
     }
 
 
@@ -881,11 +894,15 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
             {
                 if (repl == "x") { exprCpp += "x[i]"; isReplaced = true; }
                 if (repl == "y") { exprCpp += "y[i]"; isReplaced = true; }
+                if (repl == "tanx") { exprCpp += "tan[i][0]"; isReplaced = true; }
+                if (repl == "tany") { exprCpp += "tan[i][1]"; isReplaced = true; }
             }
             else
             {
                 if (repl == "r") { exprCpp += "x[i]"; isReplaced = true; }
                 if (repl == "z") { exprCpp += "y[i]"; isReplaced = true; }
+                if (repl == "tanr") { exprCpp += "tan[i][0]"; isReplaced = true; }
+                if (repl == "tanz") { exprCpp += "tan[i][1]"; isReplaced = true; }
             }
 
             // constants

@@ -26,11 +26,8 @@ SOURCES += util.cpp \
     value.cpp \
     scene.cpp \
     gui.cpp \
-    hermes2d/volumeintegral.cpp \
-    hermes2d/surfaceintegral.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
-    hermes2d/post_values.cpp \
     hermes2d/solver.cpp \
     hermes2d/field.cpp \
     hermes2d/block.cpp \
@@ -104,11 +101,8 @@ HEADERS += util.h \
     value.h \
     scene.h \
     gui.h \
-    hermes2d/volumeintegral.h \
-    hermes2d/surfaceintegral.h \
     hermes2d/marker.h \
     hermes2d/module.h \
-    hermes2d/post_values.h \
     hermes2d/problem.h \
     pythonlab/pythonconsole.h \
     pythonlab/pythoncompleter.h \
@@ -152,7 +146,6 @@ HEADERS += util.h \
     indicators/indicator_unity.h \
     collaboration.h \
     resultsview.h \
-    hermes2d/weakform_interface.h \
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \
@@ -175,7 +168,8 @@ HEADERS += util.h \
     parser/lex.h \
     parser/nonrecursive_parser.h \
     parser/tree.h \
-    hermes2d/bdf2.h
+    hermes2d/bdf2.h \
+    hermes2d/plugin_interface.h
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
 
 INCLUDEPATH += . \

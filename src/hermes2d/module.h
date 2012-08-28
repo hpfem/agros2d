@@ -495,6 +495,8 @@ struct BasicModule
 
     // variable by name
     LocalVariable *localVariable(const QString &id);
+    Integral *surfaceIntegral(const QString &id);
+    Integral *volumeIntegral(const QString &id);
     BoundaryType *boundaryType(const QString &id);
     BoundaryTypeVariable *boundaryTypeVariable(const QString &id);
     MaterialTypeVariable *materialTypeVariable(const QString &id);
