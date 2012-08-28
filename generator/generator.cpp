@@ -154,32 +154,6 @@ int Agros2DGenerator::numberOfSolutions(XMLModule::analyses analyses, AnalysisTy
 
 Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(argc, argv)
 {
-    /*
-    QString expr = "0.5  * (dx1 * dx1 + dy1 * dy1)   ";
-
-    LexicalAnalyser lex;
-    lex.addVariable("dx1");
-    lex.addVariable("dy1");
-    lex.addVariable("epsr");
-    lex.addVariable("EPS0");
-
-    lex.setExpression(expr);
-    lex.printTokens();
-    */
-    /*
-    double dx1 = 2;
-    double dy1 = 3;
-    double el_epsr = 5;
-    double eps0 = 4;
-
-    SyntacticAnalyser synt;
-    synt.m_variableMap.insert("dx1", &dx1);
-    synt.m_variableMap.insert("dy1", &dy1);
-    synt.m_variableMap.insert("epsr", &el_epsr);
-    synt.m_variableMap.insert("EPS0", &eps0);
-    synt.parse(lex.tokens());
-    std::cout << synt.evalTree();
-    */
 }
 
 void Agros2DGenerator::run()
@@ -188,15 +162,13 @@ void Agros2DGenerator::run()
     QDir root(QApplication::applicationDirPath());
     root.mkpath(GENERATOR_PLUGINROOT);
 
+    ctemplate::TemplateDictionary output("project_output");
     QMap<QString, QString> modules = availableModules();
     QMap<QString, QString> couplings = availableCouplings();
 
-    ctemplate::TemplateDictionary output("project_output");
-
     foreach (QString moduleId, modules.keys())
     {
-        Agros2DGeneratorModule generator(moduleId);
-
+        Agros2DGeneratorModule generator(moduleId);        
         generator.generatePluginProjectFile();
         generator.generatePluginInterfaceFiles();
         generator.generatePluginFilterFiles();
@@ -205,6 +177,18 @@ void Agros2DGenerator::run()
 
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", moduleId.toStdString());
+    }
+
+    foreach (QString couplingId, couplings.keys())
+    {
+        Agros2DGeneratorCoupling generator(couplingId);
+        generator.generatePluginProjectFile();
+
+         generator.generatePluginInterfaceFiles();
+         generator.generatePluginWeakFormFiles();
+
+        ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
+        field->SetValue("ID", couplingId.toStdString());
     }
 
     // generate plugins project file
@@ -1004,82 +988,29 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     }
 }
 
-QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form)
+template <typename TForm>
+QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm)
 {
     QString expression;
 
     if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
-        expression = matrix_form.planar_linear().c_str();
+        expression = tForm.planar_linear().c_str();
     }
 
     if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
-        expression = matrix_form.planar_newton().c_str();
+        expression = tForm.planar_newton().c_str();
     }
 
     if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
-        expression = matrix_form.axi_linear().c_str();
+        expression = tForm.axi_linear().c_str();
     }
 
     if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
-        expression = matrix_form.axi_newton().c_str();
-    }
-
-    return expression;
-}
-
-QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form)
-{
-    QString expression;
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = vector_form.planar_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = vector_form.planar_newton().c_str();
-    }
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = vector_form.axi_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = vector_form.axi_newton().c_str();
-    }
-
-    return expression;
-}
-
-QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form)
-{
-    QString expression;
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = essential_form.planar_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = essential_form.planar_newton().c_str();
-    }
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = essential_form.axi_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = essential_form.axi_newton().c_str();
+        expression = tForm.axi_newton().c_str();
     }
 
     return expression;
@@ -1329,6 +1260,569 @@ void Agros2DGeneratorModule::generateExactSolution(XMLModule::boundary boundary,
                         subField = field->AddSectionDictionary("VARIABLE_SOURCE");
                         subField->SetValue("VARIABLE", quantity.id().c_str());
                         subField->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+                    }
+
+                    field = output.AddSectionDictionary("SOURCE");
+                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
+                }
+            }
+        }
+    }
+}
+
+/*********************************************************************************************************************************************/
+Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
+{
+    QDir root(QApplication::applicationDirPath());
+    root.mkpath(QString(GENERATOR_PLUGINROOT));
+    qDebug() << QString::fromStdString(datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + couplingId.toStdString() + ".xml");
+    coupling_xsd = XMLCoupling::coupling_((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + couplingId.toStdString() + ".xml").c_str());
+    m_coupling = coupling_xsd.get();
+
+    QString sourceModuleId = QString::fromStdString(m_coupling->general().modules().source().id().c_str());
+    QString targetModuleId = QString::fromStdString(m_coupling->general().modules().target().id().c_str());
+
+     m_source_module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + sourceModuleId.toStdString() + ".xml").c_str());
+     m_sourceModule = m_source_module_xsd.get();
+
+     m_target_module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + targetModuleId.toStdString() + ".xml").c_str());
+     m_targetModule = m_target_module_xsd.get();
+
+     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + couplingId);
+
+    // variables
+     foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
+    {
+        QString shortName = QString::fromStdString(quantity.shortname().get()).replace(" ", "");
+        QString iD = QString::fromStdString(quantity.id().c_str()).replace(" ", "");
+        m_sourceVariables.insert(iD, shortName);
+    }
+
+    foreach (XMLModule::quantity quantity, m_targetModule->volume().quantity())
+    {
+        QString shortName = QString::fromStdString(quantity.shortname().get()).replace(" ", "");
+        QString iD = QString::fromStdString(quantity.id().c_str()).replace(" ", "");
+        m_targetVariables.insert(iD, shortName);
+    }
+}
+
+void Agros2DGeneratorCoupling::generatePluginProjectFile()
+{
+    qDebug() << tr("%1: generating plugin project file.").arg(QString::fromStdString(m_coupling->general().id()));
+
+    QString id = QString::fromStdString(m_coupling->general().id().c_str());
+
+    ctemplate::TemplateDictionary output("output");
+    output.SetValue("ID", id.toStdString());
+
+    // expand template
+    std::string text;
+    ctemplate::ExpandTemplate(QString("%1/%2/module_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // save to file
+    writeStringContent(QString("%1/%2/%3/%3.pro").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
+{
+    qDebug() << tr("%1: generating plugin interface file.").arg(QString::fromStdString(m_coupling->general().id()));
+
+    QString id = QString::fromStdString(m_coupling->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", m_coupling->general().id());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/interface_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_interface.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    foreach(XMLCoupling::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
+    {
+        generateVolumeMatrixForm(weakform, output);
+        generateVolumeVectorForm(weakform, output);
+    }
+
+    ctemplate::ExpandTemplate(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_interface.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+void Agros2DGeneratorCoupling::generatePluginWeakFormFiles()
+{
+    generatePluginWeakFormSourceFiles();
+    generatePluginWeakFormHeaderFiles();
+}
+
+void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
+{
+    qDebug() << tr("%1: generating plugin weakform header file.").arg(QString::fromStdString(m_coupling->general().id()));
+
+    QString id = QString::fromStdString(m_coupling->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", m_coupling->general().id());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    foreach(XMLCoupling::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
+    {
+        generateVolumeMatrixForm(weakform, output);
+        generateVolumeVectorForm(weakform, output);
+    }
+
+    // header - expand template
+    std::string text;
+    ctemplate::ExpandTemplate(QString("%1/%2/weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_weakform.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+
+void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
+{
+    qDebug() << tr("%1: generating plugin weakform source file.").arg(QString::fromStdString(m_coupling->general().id()));
+
+    QString id = QString::fromStdString(m_coupling->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", m_coupling->general().id());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    foreach(XMLCoupling::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
+    {
+        generateVolumeMatrixForm(weakform, output);
+        generateVolumeVectorForm(weakform, output);
+    }
+
+    std::string text;
+    ctemplate::ExpandTemplate(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_weakform.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+
+
+QString Agros2DGeneratorCoupling::nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType)
+{
+//    foreach (XMLCoupling::weakform_volume wf, m_coupling->volume().weakforms_volume().weakform_volume())
+//    {
+//        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+//        {
+//            foreach (XMLCoupling::quantity quantityAnalysis, wf.quantity())
+//            {
+//                if (quantityAnalysis.id() == variable.toStdString())
+//                {
+//                    if (coordinateType == CoordinateType_Planar)
+//                    {
+//                        if (quantityAnalysis.nonlinearity_planar().present())
+//                            return QString::fromStdString(quantityAnalysis.nonlinearity_planar().get());
+//                    }
+//                    else
+//                    {
+//                        if (quantityAnalysis.nonlinearity_axi().present())
+//                            return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    return "";
+}
+
+QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr)
+{
+    int numOfSol = Agros2DGenerator::numberOfSolutions(m_sourceModule->general().analyses(), sourceAnalysisType) +
+            Agros2DGenerator::numberOfSolutions(m_targetModule->general().analyses(), targetAnalysisType);
+
+    LexicalAnalyser lex;
+
+    lex.addVariable("uval");
+    lex.addVariable("upval");
+    lex.addVariable("uptval");
+    lex.addVariable("vval");
+
+    // coordinates
+    if (coordinateType == CoordinateType_Planar)
+    {
+        lex.addVariable("udx");
+        lex.addVariable("vdx");
+        lex.addVariable("udy");
+        lex.addVariable("vdy");
+        lex.addVariable("updx");
+        lex.addVariable("updy");
+        lex.addVariable(QString("x"));
+        lex.addVariable(QString("y"));
+    }
+    else
+    {
+        lex.addVariable("udr");
+        lex.addVariable("vdr");
+        lex.addVariable("udz");
+        lex.addVariable("vdz");
+        lex.addVariable("updr");
+        lex.addVariable("updz");
+        lex.addVariable(QString("r"));
+        lex.addVariable(QString("z"));
+    }
+
+    if (sourceAnalysisType == AnalysisType_Transient)
+    {
+        lex.addVariable("deltat");
+    }
+
+    if (targetAnalysisType == AnalysisType_Transient)
+    {
+        lex.addVariable("deltat");
+    }
+
+    // functions
+    for (int i = 0; i < numOfSol + 1; i++)
+    {
+        lex.addVariable(QString("value%1").arg(i));
+        if (coordinateType == CoordinateType_Planar)
+        {
+            lex.addVariable(QString("dx%1").arg(i));
+            lex.addVariable(QString("dy%1").arg(i));
+        }
+        else
+        {
+            lex.addVariable(QString("dr%1").arg(i));
+            lex.addVariable(QString("dz%1").arg(i));
+        }
+        lex.addVariable(QString("source%1").arg(i));
+        lex.addVariable(QString("source%1dx").arg(i));
+        lex.addVariable(QString("source%1dy").arg(i));
+        lex.addVariable(QString("source%1dr").arg(i));
+        lex.addVariable(QString("source%1dz").arg(i));
+    }
+
+    // constants
+    lex.addVariable("PI");
+    lex.addVariable("f");
+    foreach (XMLCoupling::constant cnst, m_coupling->constants().constant())
+        lex.addVariable(QString::fromStdString(cnst.id()));
+
+    // variables
+    foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            lex.addVariable(QString::fromStdString(quantity.shortname().get()));
+            lex.addVariable(QString::fromStdString("d" + quantity.shortname().get()));
+        }
+    }
+
+    foreach (XMLModule::quantity quantity, m_targetModule->volume().quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            lex.addVariable(QString::fromStdString(quantity.shortname().get()));
+            lex.addVariable(QString::fromStdString("d" + quantity.shortname().get()));
+        }
+    }
+
+    try
+    {
+        lex.setExpression(expr);
+
+        // replace tokens
+        QString exprCpp;
+        foreach (Token token, lex.tokens())
+        {
+            QString repl = token.toString();
+
+            bool isReplaced = false;
+
+            // coordinates
+            if (coordinateType == CoordinateType_Planar)
+            {
+                if (repl == "x") { exprCpp += "e->x[i]"; isReplaced = true; }
+                if (repl == "y") { exprCpp += "e->y[i]"; isReplaced = true; }
+            }
+            else
+            {
+                if (repl == "r") { exprCpp += "e->x[i]"; isReplaced = true; }
+                if (repl == "z") { exprCpp += "e->y[i]"; isReplaced = true; }
+            }
+
+            // constants
+            if (repl == "PI") { exprCpp += "M_PI"; isReplaced = true; }
+            if (repl == "f") { exprCpp += "Util::problem()->config()->frequency()"; isReplaced = true; }
+            foreach (XMLCoupling::constant cnst, m_coupling->constants().constant())
+                if (repl == QString::fromStdString(cnst.id())) { exprCpp += QString::number(cnst.value()); isReplaced = true; }
+
+            // functions
+
+            if (repl == QString("uval")) { exprCpp += QString("u->val[i]"); isReplaced = true; }
+            if (repl == QString("vval")) { exprCpp += QString("v->val[i]"); isReplaced = true; }
+            if (repl == QString("upval")) { exprCpp += QString("u_ext[this->j]->val[i]"); isReplaced = true; }
+            if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->i]->val[i]"); isReplaced = true; }
+            if (repl == QString("deltat")) { exprCpp += QString("Util::problem()->config()->timeStep().number()"); isReplaced = true; }
+
+            if (coordinateType == CoordinateType_Planar)
+            {
+                if (repl == QString("udx")) { exprCpp += QString("u->dx[i]"); isReplaced = true; }
+                if (repl == QString("vdx")) { exprCpp += QString("v->dx[i]"); isReplaced = true; }
+                if (repl == QString("udy")) { exprCpp += QString("u->dy[i]"); isReplaced = true; }
+                if (repl == QString("vdy")) { exprCpp += QString("v->dy[i]"); isReplaced = true; }
+                if (repl == QString("updx")) { exprCpp += QString("u_ext[this->j]->dx[i]"); isReplaced = true; }
+                if (repl == QString("updy")) { exprCpp += QString("u_ext[this->j]->dy[i]"); isReplaced = true; }
+
+            }
+            else
+            {
+                if (repl == QString("udr")) { exprCpp += QString("u->dx[i]"); isReplaced = true; }
+                if (repl == QString("vdr")) { exprCpp += QString("v->dx[i]"); isReplaced = true; }
+                if (repl == QString("udz")) { exprCpp += QString("u->dy[i]"); isReplaced = true; }
+                if (repl == QString("vdz")) { exprCpp += QString("v->dy[i]"); isReplaced = true; }
+                if (repl == QString("updr")) { exprCpp += QString("u_ext[this->j]->dx[i]"); isReplaced = true; }
+                if (repl == QString("updz")) { exprCpp += QString("u_ext[this->j]->dy[i]"); isReplaced = true; }
+            }
+
+            for (int i = 1; i < numOfSol + 1; i++)
+            {
+                if (repl == QString("value%1").arg(i)) { exprCpp += QString("u_ext[%1]->val[i]").arg(i-1); isReplaced = true; }
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    if (repl == QString("dx%1").arg(i)) { exprCpp += QString("u_ext[%1]->dx[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dy%1").arg(i)) { exprCpp += QString("u_ext[%1]->dy[i]").arg(i-1); isReplaced = true; }
+                }
+                else
+                {
+                    if (repl == QString("dr%1").arg(i)) { exprCpp += QString("u_ext[%1]->dx[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dz%1").arg(i)) { exprCpp += QString("u_ext[%1]->dx[i]").arg(i-1); isReplaced = true; }
+                }
+                if (repl == QString("source%1").arg(i)) { exprCpp += QString("ext->fn[%1]->val[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dx").arg(i)) { exprCpp += QString("ext->fn[%1]->dx[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dy").arg(i)) { exprCpp += QString("ext->fn[%1]->dy[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dr").arg(i)) { exprCpp += QString("ext->fn[%1]->dx[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dz").arg(i)) { exprCpp += QString("ext->fn[%1]->dy[i]").arg(i-1); isReplaced = true; }
+            }
+
+            // variables
+            foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
+            {
+                if (quantity.shortname().present())
+                    if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
+                    {
+                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
+                        if (nonlinearExpr.isEmpty())
+                            // linear material
+                            exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
+                        else
+                        {
+                            // nonlinear material
+                            if (repl == QString::fromStdString(quantity.shortname().get()))
+                                exprCpp += QString("%1.value(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
+                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
+                            if (repl == QString::fromStdString("d" + quantity.shortname().get()))
+                                exprCpp += QString("%1.derivative(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
+                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
+                        }
+
+                        isReplaced = true;
+                    }
+            }
+
+            // operators and other
+            if (!isReplaced)
+                exprCpp += repl;
+        }
+        exprCpp = lex.replaceOperatorByFunction(exprCpp);
+        return exprCpp;
+    }
+    catch (ParserException e)
+    {
+        qDebug() << e.toString() << "in coupling: " << QString::fromStdString(m_coupling->general().id());
+
+        return "";
+    }
+}
+
+template <typename TForm>
+QString Agros2DGeneratorCoupling::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm)
+{
+    QString expression;
+
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+    {
+        expression = tForm.planar_linear().c_str();
+    }
+
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+    {
+        expression = tForm.planar_newton().c_str();
+    }
+
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+    {
+        expression = tForm.axi_linear().c_str();
+    }
+
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+    {
+        expression = tForm.axi_newton().c_str();
+    }
+
+    return expression;
+}
+
+void Agros2DGeneratorCoupling::generateVolumeMatrixForm(XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output)
+{
+    foreach(XMLCoupling::matrix_form matrix_form, weakform.matrix_form())
+    {
+        foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
+        {
+            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+            {
+                QString expression = weakformExpression(coordinateType, linearityType, matrix_form);
+
+                if(expression != "")
+                {
+                    QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9").
+                            arg("volume_matrix").
+                            arg(QString::fromStdString(m_coupling->general().id())).
+                            arg(QString::fromStdString(weakform.sourceanalysis())).
+                            arg(QString::fromStdString(weakform.targetanalysis())).
+                            arg(coordinateTypeToStringKey(coordinateType)).
+                            arg(linearityTypeToStringKey(linearityType)).
+                            arg(QString::number(matrix_form.i())).
+                            arg(QString::number(matrix_form.j())).
+                            arg(QString::fromStdString(weakform.couplingtype().c_str()));
+
+                    ctemplate::TemplateDictionary *field = 0;
+                    field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
+                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
+                    field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+                    field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
+                    field->SetValue("ANALYSIS_TYPE", weakform.sourceanalysis() + weakform.targetanalysis());
+                    field->SetValue("ROW_INDEX", QString::number(matrix_form.i()).toStdString());
+                    field->SetValue("COLUMN_INDEX", QString::number(matrix_form.j()).toStdString());
+                    field->SetValue("MODULE_ID", m_coupling->general().id());
+                    QString exprCpp;
+                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis())),
+                                                      analysisTypeFromStringKey(QString::fromStdString(weakform.targetanalysis())),
+                                                      coordinateType,
+                                                      expression);
+                    field->SetValue("EXPRESSION", exprCpp.toStdString());
+
+                    foreach(XMLModule::quantity quantity, m_sourceModule->volume().quantity())
+                    {
+                        ctemplate::TemplateDictionary *subField = 0;
+                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
+                        subField->SetValue("VARIABLE", quantity.id().c_str());
+                        subField->SetValue("VARIABLE_SHORT", m_sourceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+                    }
+
+                    foreach(XMLModule::quantity quantity, m_targetModule->volume().quantity())
+                    {
+                        ctemplate::TemplateDictionary *subField = 0;
+                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
+                        subField->SetValue("VARIABLE", quantity.id().c_str());
+                        subField->SetValue("VARIABLE_SHORT", m_targetVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+                    }
+
+                    field = output.AddSectionDictionary("SOURCE");
+                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
+                }
+            }
+        }
+    }
+
+}
+
+void Agros2DGeneratorCoupling::generateVolumeVectorForm(XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output)
+{
+    foreach(XMLCoupling::vector_form vector_form, weakform.vector_form())
+    {
+        foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
+        {
+            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+            {
+                QString expression = weakformExpression(coordinateType, linearityType, vector_form);
+                if(expression != "")
+                {
+                    QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9").
+                            arg("volume_vector").
+                            arg(QString::fromStdString(m_coupling->general().id())).
+                            arg(QString::fromStdString(weakform.sourceanalysis())).
+                            arg(QString::fromStdString(weakform.targetanalysis())).
+                            arg(coordinateTypeToStringKey(coordinateType)).
+                            arg(linearityTypeToStringKey(linearityType)).
+                            arg(QString::number(vector_form.i())).
+                            arg(QString::number(vector_form.j())).
+                            arg(QString::fromStdString(weakform.couplingtype().c_str()));
+
+
+                    ctemplate::TemplateDictionary *field;
+                    field = output.AddSectionDictionary("VECTOR_VOL_SOURCE"); // parameter output
+                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
+                    field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+                    field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
+                    field->SetValue("ANALYSIS_TYPE", weakform.sourceanalysis() + weakform.targetanalysis());
+                    field->SetValue("ROW_INDEX", QString::number(vector_form.i()).toStdString());
+                    field->SetValue("COLUMN_INDEX", QString::number(vector_form.j()).toStdString());
+                    field->SetValue("MODULE_ID", m_coupling->general().id());
+                    QString exprCpp;
+                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis())),
+                                                      analysisTypeFromStringKey(QString::fromStdString(weakform.targetanalysis())),
+                                                      coordinateType,
+                                                      expression);
+                    field->SetValue("EXPRESSION", exprCpp.toStdString());
+
+                    foreach(XMLModule::quantity quantity, m_sourceModule->volume().quantity())
+                    {
+                        ctemplate::TemplateDictionary *subField = 0;
+                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
+                        subField->SetValue("VARIABLE", quantity.id().c_str());
+                        subField->SetValue("VARIABLE_SHORT", m_sourceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+                    }
+
+                    foreach(XMLModule::quantity quantity, m_targetModule->volume().quantity())
+                    {
+                        ctemplate::TemplateDictionary *subField = 0;
+                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
+                        subField->SetValue("VARIABLE", quantity.id().c_str());
+                        subField->SetValue("VARIABLE_SHORT", m_targetVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
                     }
 
                     field = output.AddSectionDictionary("SOURCE");

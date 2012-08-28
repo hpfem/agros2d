@@ -32,6 +32,9 @@ class Agros2DGenerator : public QCoreApplication
 public:
     Agros2DGenerator(int &argc, char **argv);
 
+    QList<XMLModule::module> m_modules;
+
+
     // static methods
     static QList<WeakFormKind> weakFormTypeList();
     static QString weakFormTypeStringEnum(WeakFormKind weakformType);
@@ -65,6 +68,8 @@ public:
     void generatePluginLocalPointFiles();
     void generatePluginInterfaceFiles();
     void generatePluginWeakFormFiles();
+    QHash<QString, QString>  volumeVaribales() const {return m_volumeVariables;}
+    QHash<QString, QString>  surfaceVaribales() const {return m_volumeVariables;}
 
 private:
     std::auto_ptr<XMLModule::module> module_xsd;
@@ -83,9 +88,8 @@ private:
     void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
     void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
 
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form matrix_form);
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form vector_form);
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form essential_form);
+    template <typename TForm>
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
 
@@ -95,6 +99,48 @@ private:
     void createLocalValueExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &exprScalar, const QString &exprVectorX, const QString &exprVectorY);
 
     QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+};
+
+class Agros2DGeneratorCoupling : public QObject
+{
+    Q_OBJECT
+
+public:
+    Agros2DGeneratorCoupling(const QString &couplingId);
+
+    void generatePluginProjectFile();
+    void generatePluginFilterFiles();
+    void generatePluginLocalPointFiles();
+    void generatePluginInterfaceFiles();
+    void generatePluginWeakFormFiles();
+    QHash<QString, QString>  sourceVaribales() const {return m_sourceVariables;}
+    QHash<QString, QString>  targetVaribales() const {return m_targetVariables;}
+
+private:
+    std::auto_ptr<XMLCoupling::coupling> coupling_xsd;
+    XMLCoupling::coupling *m_coupling;
+
+    std::auto_ptr<XMLModule::module> m_source_module_xsd;
+    XMLModule::module *m_sourceModule;
+
+    std::auto_ptr<XMLModule::module> m_target_module_xsd;
+    XMLModule::module *m_targetModule;
+
+    // dictionary for variables used in weakforms
+    QHash<QString, QString> m_sourceVariables;
+    QHash<QString, QString> m_targetVariables;
+
+    void generatePluginWeakFormSourceFiles();
+    void generatePluginWeakFormHeaderFiles();
+
+    void generateVolumeMatrixForm(XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output);
+    void generateVolumeVectorForm(XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output);
+
+    template <typename TForm>
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm);
+    QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
+
+    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);
 };
 
 #endif // GENERATOR_H
