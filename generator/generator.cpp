@@ -1510,7 +1510,7 @@ void Agros2DGeneratorCoupling::generatePluginProjectFile()
 
     // expand template
     std::string text;
-    ctemplate::ExpandTemplate(QString("%1/%2/module_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+    ctemplate::ExpandTemplate(QString("%1/%2/coupling_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
     // save to file
@@ -1632,28 +1632,52 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
 
 QString Agros2DGeneratorCoupling::nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType)
 {
-    //    foreach (XMLCoupling::weakform_volume wf, m_coupling->volume().weakforms_volume().weakform_volume())
-    //    {
-    //        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
-    //        {
-    //            foreach (XMLCoupling::quantity quantityAnalysis, wf.quantity())
-    //            {
-    //                if (quantityAnalysis.id() == variable.toStdString())
-    //                {
-    //                    if (coordinateType == CoordinateType_Planar)
-    //                    {
-    //                        if (quantityAnalysis.nonlinearity_planar().present())
-    //                            return QString::fromStdString(quantityAnalysis.nonlinearity_planar().get());
-    //                    }
-    //                    else
-    //                    {
-    //                        if (quantityAnalysis.nonlinearity_axi().present())
-    //                            return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
+    foreach (XMLModule::weakform_volume wf, m_targetModule->volume().weakforms_volume().weakform_volume())
+    {
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            foreach (XMLModule::quantity quantityAnalysis, wf.quantity())
+            {
+                if (quantityAnalysis.id() == variable.toStdString())
+                {
+                    if (coordinateType == CoordinateType_Planar)
+                    {
+                        if (quantityAnalysis.nonlinearity_planar().present())
+                            return QString::fromStdString(quantityAnalysis.nonlinearity_planar().get());
+                    }
+                    else
+                    {
+                        if (quantityAnalysis.nonlinearity_axi().present())
+                            return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
+                    }
+                }
+            }
+        }
+    }
+
+    foreach (XMLModule::weakform_volume wf, m_sourceModule->volume().weakforms_volume().weakform_volume())
+    {
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            foreach (XMLModule::quantity quantityAnalysis, wf.quantity())
+            {
+                if (quantityAnalysis.id() == variable.toStdString())
+                {
+                    if (coordinateType == CoordinateType_Planar)
+                    {
+                        if (quantityAnalysis.nonlinearity_planar().present())
+                            return QString::fromStdString(quantityAnalysis.nonlinearity_planar().get());
+                    }
+                    else
+                    {
+                        if (quantityAnalysis.nonlinearity_axi().present())
+                            return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
+                    }
+                }
+            }
+        }
+    }
+
 
     return "";
 }
@@ -1808,7 +1832,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                 if (repl == QString("updz")) { exprCpp += QString("u_ext[this->j]->dy[i]"); isReplaced = true; }
             }
 
-            for (int i = 1; i < numOfSol + 1; i++)
+            for (int i = 0; i < numOfSol + 1; i++)
             {
                 if (repl == QString("value%1").arg(i)) { exprCpp += QString("u_ext[%1]->val[i]").arg(i-1); isReplaced = true; }
                 if (coordinateType == CoordinateType_Planar)
@@ -1830,6 +1854,32 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
 
             // variables
             foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
+            {
+                if (quantity.shortname().present())
+                    if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
+                    {
+                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
+                        if (nonlinearExpr.isEmpty())
+                            // linear material
+                            exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
+                        else
+                        {
+                            // nonlinear material
+                            if (repl == QString::fromStdString(quantity.shortname().get()))
+                                exprCpp += QString("%1.value(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
+                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
+                            if (repl == QString::fromStdString("d" + quantity.shortname().get()))
+                                exprCpp += QString("%1.derivative(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
+                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
+                        }
+
+                        isReplaced = true;
+                    }
+            }
+
+            foreach (XMLModule::quantity quantity, m_targetModule->volume().quantity())
             {
                 if (quantity.shortname().present())
                     if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
