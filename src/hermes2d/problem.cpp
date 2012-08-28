@@ -588,11 +588,6 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
         Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e->what()));
         return;
     }
-    catch (mu::ParserError& e)
-    {
-        Util::log()->printError(QObject::tr("Solver"), "Error in XML Parser");
-        return;
-    }
     catch (AgrosSolverException& e)
     {
         Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.str);

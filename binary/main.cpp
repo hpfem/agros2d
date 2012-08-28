@@ -28,11 +28,6 @@ public:
             qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.what());
             throw;
         }
-        catch (mu::Parser::exception_type &e)
-        {
-            qCritical() << "mu::Parser " << QString::fromStdString(e.GetMsg());
-            throw;
-        }
         catch (...)
         {
             qCritical() << "Unknown exception thrown";

@@ -53,8 +53,6 @@ struct Coupling
     inline QList<FormInfo *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
     inline QList<FormInfo *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
 
-    mu::Parser *expressionParser();
-
     inline CoordinateType coordinateType() const { return m_coordinateType; }
 
 private:

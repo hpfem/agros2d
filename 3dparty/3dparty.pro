@@ -9,14 +9,6 @@ contains(CONFIG, HERMES_DEBUG) {
 
 SOURCES += dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
-    muparser/muParser.cpp \
-    muparser/muParserBase.cpp \
-    muparser/muParserTest.cpp \
-    muparser/muParserTokenReader.cpp \
-    muparser/muParserBytecode.cpp \
-    muparser/muParserCallback.cpp \
-    muparser/muParserError.cpp \
-    muparser/muParserInt.cpp \
     gl2ps/gl2ps.c \
     ctemplate/base/arena.cc \
     ctemplate/htmlparser/htmlparser.cc \

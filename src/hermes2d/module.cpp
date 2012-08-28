@@ -985,35 +985,6 @@ Module::MaterialTypeVariable *Module::BasicModule::materialTypeVariable(const QS
     return NULL;
 }
 
-mu::Parser *Module::BasicModule::expressionParser(const QString &expr)
-{
-    mu::Parser *parser = new mu::Parser();
-
-    // pi
-    parser->DefineConst("PI", M_PI);
-
-    // frequency
-    parser->DefineConst("f", Util::problem()->config()->frequency());
-
-    // timestep
-    parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
-
-    if (!expr.isEmpty())
-        parser->SetExpr(expr.toStdString());
-
-    QMapIterator<QString, double> itConstant(constants());
-    while (itConstant.hasNext())
-    {
-        itConstant.next();
-
-        parser->DefineConst(itConstant.key().toStdString(), itConstant.value());
-    }
-
-    parser->EnableOptimizer(true);
-
-    return parser;
-}
-
 QString Module::BasicModule::expression(Module::LocalVariable *physicFieldVariable,
                                         PhysicFieldVariableComp physicFieldVariableComp)
 {

@@ -28,8 +28,6 @@
 #include <QtXmlPatterns>
 #include <QtPlugin>
 
-#include <muParser.h>
-
 #include "hermes_common.h"
 #include "hermes2d.h"
 

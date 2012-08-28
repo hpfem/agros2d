@@ -175,7 +175,6 @@ HEADERS += util.h \
 INCLUDEPATH += . \
     ../lib \
     ../lib/ctemplate \
-    ../lib/muparser \
     ../lib/dxflib \
     ../lib/rapidxml \
     ../hermes_common \

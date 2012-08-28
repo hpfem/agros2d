@@ -170,31 +170,6 @@ void Coupling::clear()
     m_wfVectorVolumeExpression.clear();
 }
 
-mu::Parser* Coupling::expressionParser()
-{
-    mu::Parser *parser = new mu::Parser();
-
-    // pi
-    parser->DefineConst("PI", M_PI);
-
-    // frequency
-    parser->DefineConst("f", Util::problem()->config()->frequency());
-
-    // timestep
-    parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
-
-    QMapIterator<QString, double> it(m_constants);
-    while (it.hasNext())
-    {
-        it.next();
-        parser->DefineConst(it.key().toStdString(), it.value());
-    }
-
-    parser->EnableOptimizer(true);
-
-    return parser;
-}
-
 void Coupling::read(const QString &filename)
 {
     assert(QFile::exists(filename));
