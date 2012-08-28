@@ -36,6 +36,7 @@
 #include "hermes2d/post_values.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/weakform_interface.h"
 
 Post2DHermes::Post2DHermes()
 {

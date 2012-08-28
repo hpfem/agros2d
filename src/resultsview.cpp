@@ -22,6 +22,7 @@
 #include "hermes2d.h"
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
+#include "hermes2d/weakform_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -99,7 +100,10 @@ void ResultsView::showPoint(const Point &point)
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        QMap<Module::LocalVariable *, PointValue> values = LocalPointValue(fieldInfo, point).values();
+        LocalValue *value = Util::weakForms()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        QMap<Module::LocalVariable *, PointValue> values = value->values();
+        delete value;
+
         if (values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");

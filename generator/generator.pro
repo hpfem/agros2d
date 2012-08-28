@@ -22,6 +22,8 @@ include(../agros2d.pri)
 OTHER_FILES += \
     templates/filter_cpp.tpl \
     templates/filter_h.tpl \
+    templates/localvalue_cpp.tpl \
+    templates/localvalue_h.tpl \
     templates/interface_cpp.tpl \
     templates/interface_h.tpl \
     templates/module_pro.tpl \

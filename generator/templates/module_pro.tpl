@@ -40,6 +40,8 @@ HEADERS      += {{ID}}_weakform.h
 SOURCES      += {{ID}}_weakform.cpp
 HEADERS      += {{ID}}_filter.h
 SOURCES      += {{ID}}_filter.cpp
+HEADERS      += {{ID}}_localvalue.h
+SOURCES      += {{ID}}_localvalue.cpp
 
 TARGET        = $$qtLibraryTarget(agros2d_plugin_{{ID}})
 DESTDIR       = ../../libs

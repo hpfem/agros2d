@@ -30,12 +30,10 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-#include "hermes2d/localpoint.h"
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
 
 #include "hermes2d/marker.h"
-#include "hermes2d/localpoint.h"
 
 #include "hermes2d/weakform_interface.h"
 
@@ -71,6 +69,8 @@ public:
                                                      PhysicFieldVariableComp physicFieldVariableComp,
                                                      AnalysisType analysisType,
                                                      CoordinateType coordinateType);
+
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point);
 };
 
 #endif // {{ID}}_INTERFACE_H

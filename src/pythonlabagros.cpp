@@ -37,7 +37,7 @@
 
 #include "hermes2d/surfaceintegral.h"
 #include "hermes2d/volumeintegral.h"
-#include "hermes2d/localpoint.h"
+#include "hermes2d/weakform_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
@@ -797,8 +797,8 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
 
         Point point(x, y);
 
-        LocalPointValue value(fieldInfo(), point);
-        QMapIterator<Module::LocalVariable *, PointValue> it(value.values());
+        LocalValue *value = Util::weakForms()[fieldInfo()->fieldId()]->localValue(fieldInfo(), point);
+        QMapIterator<Module::LocalVariable *, PointValue> it(value->values());
         while (it.hasNext())
         {
             it.next();
@@ -814,6 +814,7 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
                 values[it.key()->shortname().toStdString() + Util::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
             }
         }
+        delete value;
     }
     else
     {

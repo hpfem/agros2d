@@ -200,6 +200,7 @@ void Agros2DGenerator::run()
         generator.generatePluginProjectFile();
         generator.generatePluginInterfaceFiles();
         generator.generatePluginFilterFiles();
+        generator.generatePluginLocalPointFiles();
         generator.generatePluginWeakFormFiles();
 
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
@@ -516,6 +517,71 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
                        QString::fromStdString(text));
 }
 
+void Agros2DGeneratorModule::generatePluginLocalPointFiles()
+{
+    qDebug() << tr("%1: generating plugin local point file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", id.toStdString());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/localvalue_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    foreach (XMLModule::localvariable lv, m_module->postprocessor().localvariables().localvariable())
+    {
+        foreach (XMLModule::expression expr, lv.expression())
+        {
+            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+            {
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
+                                               (expr.planar_x().present() ? QString::fromStdString(expr.planar_x().get()) : ""),
+                                               (expr.planar_y().present() ? QString::fromStdString(expr.planar_y().get()) : ""));
+                }
+                else
+                {
+                    createLocalValueExpression(output, QString::fromStdString(lv.id()),
+                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               coordinateType,
+                                               (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
+                                               (expr.axi_r().present() ? QString::fromStdString(expr.axi_r().get()) : ""),
+                                               (expr.axi_z().present() ? QString::fromStdString(expr.axi_z().get()) : ""));
+                }
+            }
+        }
+    }
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_localvalue.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    ctemplate::ExpandTemplate(QString("%1/%2/localvalue_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_localvalue.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
 QString Agros2DGeneratorModule::nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType)
 {
     foreach (XMLModule::weakform_volume wf, m_module->volume().weakforms_volume().weakform_volume())
@@ -561,6 +627,24 @@ void Agros2DGeneratorModule::createPostprocessorExpression(ctemplate::TemplateDi
         expression->SetValue("PHYSICFIELDVARIABLECOMP_TYPE", Agros2DGenerator::physicFieldVariableCompStringEnum(physicFieldVariableComp).toStdString());
         expression->SetValue("EXPRESSION", parsePostprocessorExpression(analysisType, coordinateType, expr).toStdString());
     }
+}
+
+void Agros2DGeneratorModule::createLocalValueExpression(ctemplate::TemplateDictionary &output,
+                                                        const QString &variable,
+                                                        AnalysisType analysisType,
+                                                        CoordinateType coordinateType,
+                                                        const QString &exprScalar,
+                                                        const QString &exprVectorX,
+                                                        const QString &exprVectorY)
+{
+    ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
+
+    expression->SetValue("VARIABLE", variable.toStdString());
+    expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
+    expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+    expression->SetValue("EXPRESSION_SCALAR", exprScalar.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprScalar).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_VECTORX", exprVectorX.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprVectorX).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_VECTORY", exprVectorY.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprVectorY).replace("[i]", "").toStdString());
 }
 
 QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr)

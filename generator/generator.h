@@ -62,6 +62,7 @@ public:
 
     void generatePluginProjectFile();
     void generatePluginFilterFiles();
+    void generatePluginLocalPointFiles();
     void generatePluginInterfaceFiles();
     void generatePluginWeakFormFiles();
 
@@ -90,6 +91,8 @@ private:
 
     QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
     void createPostprocessorExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
+
+    void createLocalValueExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &exprScalar, const QString &exprVectorX, const QString &exprVectorY);
 
     QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 };

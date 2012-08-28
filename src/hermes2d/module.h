@@ -494,10 +494,10 @@ struct BasicModule
                                                PhysicFieldVariableComp physicFieldVariableComp);
 
     // variable by name
-    LocalVariable *localVariable(const QString &m_fieldid);
-    BoundaryType *boundaryType(const QString &m_fieldid);
-    BoundaryTypeVariable *boundaryTypeVariable(const QString &m_fieldid);
-    MaterialTypeVariable *materialTypeVariable(const QString &m_fieldid);
+    LocalVariable *localVariable(const QString &id);
+    BoundaryType *boundaryType(const QString &id);
+    BoundaryTypeVariable *boundaryTypeVariable(const QString &id);
+    MaterialTypeVariable *materialTypeVariable(const QString &id);
 
     // get expression
     QString expression(LocalVariable *physicFieldVariable,

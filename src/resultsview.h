@@ -21,7 +21,6 @@
 #define LOCALVALUE_H
 
 #include "util.h"
-#include "hermes2d/localpoint.h"
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 

@@ -23,6 +23,7 @@
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
 #include "{{ID}}_filter.h"
+#include "{{ID}}_localvalue.h"
 
 #include "util.h"
 #include "hermes2d.h"
@@ -32,13 +33,10 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-#include "hermes2d/localpoint.h"
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
 
 #include "hermes2d/marker.h"
-#include "hermes2d/localpoint.h"
-
 
 Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,
                                                               const std::string &area, Hermes::Hermes2D::SymFlag sym,
@@ -107,6 +105,11 @@ Hermes::Hermes2D::Filter<double> *{{CLASS}}Interface::filter(FieldInfo *fieldInf
                                                      CoordinateType coordinateType)
 {
     return new {{CLASS}}ViewScalarFilter(fieldInfo, sln, variable, physicFieldVariableComp, analysisType, coordinateType);
+}
+
+LocalValue *{{CLASS}}Interface::localValue(FieldInfo *fieldInfo, const Point &point)
+{
+    return new {{CLASS}}LocalValue(fieldInfo, point);
 }
 
 Q_EXPORT_PLUGIN2({{ID}}, {{CLASS}}Interface)

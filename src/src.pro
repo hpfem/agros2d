@@ -26,7 +26,6 @@ SOURCES += util.cpp \
     value.cpp \
     scene.cpp \
     gui.cpp \
-    hermes2d/localpoint.cpp \
     hermes2d/volumeintegral.cpp \
     hermes2d/surfaceintegral.cpp \
     hermes2d/marker.cpp \
@@ -105,7 +104,6 @@ HEADERS += util.h \
     value.h \
     scene.h \
     gui.h \
-    hermes2d/localpoint.h \
     hermes2d/volumeintegral.h \
     hermes2d/surfaceintegral.h \
     hermes2d/marker.h \

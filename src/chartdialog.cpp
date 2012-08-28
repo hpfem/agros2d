@@ -22,7 +22,7 @@
 #include "gui.h"
 #include "scene.h"
 #include "sceneview_post2d.h"
-#include "hermes2d/localpoint.h"
+#include "hermes2d/weakform_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -409,7 +409,7 @@ void ChartDialog::plotGeometry()
     {
         foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
-            LocalPointValue localPointValue(fieldInfo, points.at(i));
+            LocalValue *value = Util::weakForms()[fieldInfo->fieldId()]->localValue(fieldInfo, points.at(i));
 
             // x value
             if (radAxisLength->isChecked())
@@ -434,7 +434,7 @@ void ChartDialog::plotGeometry()
             if (radAxisX->isChecked()) xval[i] = points.at(i).x;
             if (radAxisY->isChecked()) xval[i] = points.at(i).y;
 
-            addValue(&localPointValue, 0.0, yval, i, points.length(),
+            addValue(value, 0.0, yval, i, points.length(),
                      physicFieldVariableComp, physicFieldVariable);
         }
     }
@@ -504,9 +504,9 @@ void ChartDialog::plotTime()
         Util::scene()->setActiveTimeStep(i);
 
         Point point(txtPointX->value().number(), txtPointY->value().number());
-        LocalPointValue localPointValue(m_fieldInfo, point);
+        LocalValue *value = Util::weakForms()[m_fieldInfo->fieldId()]->localValue(m_fieldInfo, point);
 
-        addValue(&localPointValue, timeLevels[i], yval, i, timeLevels.count(),
+        addValue(value, timeLevels[i], yval, i, timeLevels.count(),
                  physicFieldVariableComp, physicFieldVariable);
 
         for (int j = 0; j < row.count(); j++)
@@ -547,15 +547,15 @@ QStringList ChartDialog::headers()
     return head;
 }
 
-void ChartDialog::addValue(LocalPointValue *localPointValue, double time, double *yval, int i, int N,
+void ChartDialog::addValue(LocalValue *localPointValue, double time, double *yval, int i, int N,
                            PhysicFieldVariableComp physicFieldVariableComp,
                            Module::LocalVariable *physicFieldVariable)
 {
     // coordinates
     trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 0,
-                      new QTableWidgetItem(QString("%1").arg(localPointValue->point.x, 0, 'e', 3)));
+                      new QTableWidgetItem(QString("%1").arg(localPointValue->point().x, 0, 'e', 3)));
     trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 1,
-                      new QTableWidgetItem(QString("%1").arg(localPointValue->point.y, 0, 'e', 3)));
+                      new QTableWidgetItem(QString("%1").arg(localPointValue->point().y, 0, 'e', 3)));
     // time
     trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 2,
                       new QTableWidgetItem(QString("%1").arg(time, 0, 'e', 3)));

@@ -25,7 +25,7 @@
 class Chart;
 class LineEditDouble;
 class ValueLineEdit;
-class LocalPointValue;
+class LocalValue;
 class FieldInfo;
 class SceneViewPost2D;
 
@@ -125,7 +125,7 @@ private:
     void plotTime();
 
     QStringList headers();
-    void addValue(LocalPointValue *localPointValue, double time, double *yval, int i, int N,
+    void addValue(LocalValue *localPointValue, double time, double *yval, int i, int N,
                   PhysicFieldVariableComp physicFieldVariableComp,
                   Module::LocalVariable *physicFieldVariable);
 

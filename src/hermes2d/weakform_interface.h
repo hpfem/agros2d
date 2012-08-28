@@ -29,12 +29,53 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-#include "hermes2d/localpoint.h"
 #include "hermes2d/volumeintegral.h"
 #include "hermes2d/surfaceintegral.h"
 
 #include "hermes2d/marker.h"
-#include "hermes2d/localpoint.h"
+
+struct PointValue
+{
+    PointValue()
+    {
+        this->scalar = 0.0;
+        this->vector = Point();
+        this->material = NULL;
+    }
+
+    PointValue(double scalar, Point vector, SceneMaterial *material)
+    {
+        this->scalar = scalar;
+        this->vector = vector;
+        this->material = material;
+    }
+
+    double scalar;
+    Point vector;
+    SceneMaterial *material;
+};
+
+class LocalValue
+{
+public:
+    LocalValue(FieldInfo *fieldInfo, const Point &point)
+        : m_fieldInfo(fieldInfo), m_point(point) {}
+
+    // point
+    inline Point point() { return m_point; }
+
+    // variables
+    QMap<Module::LocalVariable *, PointValue> values() const { return m_values; }
+
+    virtual void calculate() = 0;
+
+protected:
+    Point m_point;
+    FieldInfo *m_fieldInfo;
+
+    // variables
+    QMap<Module::LocalVariable *, PointValue> m_values;
+};
 
 class WeakFormInterface
 {
@@ -65,6 +106,8 @@ public:
                                                      PhysicFieldVariableComp physicFieldVariableComp,
                                                      AnalysisType analysisType,
                                                      CoordinateType coordinateType) = 0;
+
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) = 0;
 };
 
 

@@ -29,6 +29,8 @@ class SceneMaterial;
 //class SceneBoundaryContainer;
 //class SceneMaterialContainer;
 
+int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point);
+
 namespace Module
 {
 class LocalVariable;

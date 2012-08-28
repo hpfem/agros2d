@@ -27,7 +27,7 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenefunction.h"
-#include "hermes2d/localpoint.h"
+#include "hermes2d/weakform_interface.h"
 
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
