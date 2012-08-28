@@ -39,6 +39,10 @@ public:
     static QList<WeakFormKind> weakFormTypeList();
     static QString weakFormTypeStringEnum(WeakFormKind weakformType);
 
+    static QList<CouplingType> couplingFormTypeList();
+    static QString couplingTypeStringEnum(CouplingType couplingType);
+    static QString couplingTypeToString(QString couplingType);
+
     static QList<LinearityType> linearityTypeList();
     static QString linearityTypeStringEnum(LinearityType linearityType);
 
