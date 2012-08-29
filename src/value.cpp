@@ -292,7 +292,15 @@ bool ValueLineEdit::evaluate(bool quiet)
 
         if (val.evaluate(quiet))
         {
-            if (val.number() <= m_minimumSharp)
+            QString condition = m_condition;
+            condition.replace(QString("value"), QString::number(val.number()));
+            ExpressionResult result = runPythonExpression(condition, true);
+
+            if (!result.value)
+            {
+                setLabel(tr("%1").arg(m_condition), QColor(Qt::red), true);
+            }
+            else if (val.number() <= m_minimumSharp)
             {
                 setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
             }

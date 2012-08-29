@@ -85,6 +85,7 @@ public:
     inline void setMinimumSharp(double min) { m_minimumSharp = min; }
     inline void setMaximum(double max) { m_maximum = max; }
     inline void setMaximumSharp(double max) { m_maximumSharp = max; }
+    inline void setCondition(QString condition) { m_condition = condition; }
 
     inline void setLabelX(const QString &labelX) { m_labelX = labelX; }
     inline QString labelX() const { return m_labelX; }
@@ -110,6 +111,8 @@ private:
     double m_maximum;
     double m_maximumSharp;
     double m_number;
+
+    QString m_condition;
 
     bool m_hasTimeDep;
     bool m_hasNonlin;
