@@ -26,7 +26,7 @@
 #include "parser/lex.h"
 #include "parser/tree.h"
 
-const QString GENERATOR_TEMPLATEROOT = "generator/templates";
+const QString GENERATOR_TEMPLATEROOT = "resources/templates/generator";
 const QString GENERATOR_PLUGINROOT = "plugins";
 
 // functions
