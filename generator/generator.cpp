@@ -201,6 +201,30 @@ Agros2DGenerator::Agros2DGenerator(int &argc, char **argv) : QCoreApplication(ar
 
 void Agros2DGenerator::run()
 {
+    // generate structure
+    createStructure();
+
+    QStringList args = QCoreApplication::arguments();
+    if (args.count() == 2)
+    {
+        // generate one module or coupling
+        QMap<QString, QString> modules = availableModules();
+        QMap<QString, QString> couplings = availableCouplings();
+
+        if (modules.keys().contains(args[1]))
+            generateModule(args[1]);
+        else if (couplings.keys().contains(args[1]))
+            generateCoupling(args[1]);
+    }
+    else
+    {
+        // generate all sources
+        generateSources();
+    }
+}
+
+void Agros2DGenerator::createStructure()
+{
     // create directory
     QDir root(QApplication::applicationDirPath());
     root.mkpath(GENERATOR_PLUGINROOT);
@@ -210,27 +234,13 @@ void Agros2DGenerator::run()
     QMap<QString, QString> couplings = availableCouplings();
 
     foreach (QString moduleId, modules.keys())
-    {
-        Agros2DGeneratorModule generator(moduleId);
-        generator.generatePluginProjectFile();
-        generator.generatePluginInterfaceFiles();
-        generator.generatePluginFilterFiles();
-        generator.generatePluginLocalPointFiles();
-        generator.generatePluginSurfaceIntegralFiles();
-        generator.generatePluginVolumeIntegralFiles();
-        generator.generatePluginWeakFormFiles();
-
+    {     
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", moduleId.toStdString());
     }
 
     foreach (QString couplingId, couplings.keys())
     {
-        Agros2DGeneratorCoupling generator(couplingId);
-        generator.generatePluginProjectFile();
-        generator.generatePluginInterfaceFiles();
-        generator.generatePluginWeakFormFiles();
-
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", couplingId.replace("-", "").toStdString());
     }
@@ -248,6 +258,40 @@ void Agros2DGenerator::run()
                        QString::fromStdString(text));
 
     exit(0);
+}
+
+void Agros2DGenerator::generateSources()
+{
+    QMap<QString, QString> modules = availableModules();
+    QMap<QString, QString> couplings = availableCouplings();
+
+    foreach (QString moduleId, modules.keys())
+        generateModule(moduleId);
+
+    foreach (QString couplingId, couplings.keys())
+        generateCoupling(couplingId);
+}
+
+void Agros2DGenerator::generateModule(const QString &moduleId)
+{
+    Agros2DGeneratorModule generator(moduleId);
+
+    generator.generatePluginProjectFile();
+    generator.generatePluginInterfaceFiles();
+    generator.generatePluginFilterFiles();
+    generator.generatePluginLocalPointFiles();
+    generator.generatePluginSurfaceIntegralFiles();
+    generator.generatePluginVolumeIntegralFiles();
+    generator.generatePluginWeakFormFiles();
+}
+
+void Agros2DGenerator::generateCoupling(const QString &couplingId)
+{
+    Agros2DGeneratorCoupling generator(couplingId);
+
+    generator.generatePluginProjectFile();
+    generator.generatePluginInterfaceFiles();
+    generator.generatePluginWeakFormFiles();
 }
 
 // ********************************************************************************************************************

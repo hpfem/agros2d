@@ -141,6 +141,21 @@ inline QString versionString(int major, int minor, int sub, int git, int year, i
 // dirty html unit replace
 QString unitToHTML(const QString &str);
 
+class AgrosException
+{
+public:
+    AgrosException(const QString &what)
+        : m_what(what)
+    {
+    }
+
+    inline QString what() { return m_what; }
+    inline QString toString(){ return m_what; }
+
+protected:
+    QString m_what;
+};
+
 class CheckVersion : public QObject
 {
     Q_OBJECT

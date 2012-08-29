@@ -28,6 +28,12 @@ public:
             qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.what());
             throw;
         }
+        catch (AgrosException e)
+        {
+            qCritical() << "Exception thrown: " << e.what();
+            throw;
+        }
+
         catch (...)
         {
             qCritical() << "Unknown exception thrown";

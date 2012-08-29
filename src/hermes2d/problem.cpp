@@ -359,7 +359,15 @@ void Problem::solve()
     plugins.append(modules);
     plugins.append(couplings);
 
-    Util::loadPlugins(plugins);
+    try
+    {
+        Util::loadPlugins(plugins);
+    }
+    catch (AgrosException e)
+    {        
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
+        return;
+    }
 
     // start
     QTime elapsedTime;
@@ -590,7 +598,7 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     }
     catch (AgrosSolverException& e)
     {
-        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.str);
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.what());
         return;
     }
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated

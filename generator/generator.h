@@ -57,7 +57,12 @@ public:
     static int numberOfSolutions(XMLModule::analyses analyses, AnalysisType analysisType);
 
 public slots:
+
     void run();
+    void createStructure();
+    void generateSources();
+    void generateModule(const QString &moduleId);
+    void generateCoupling(const QString &couplingId);
 };
 
 class Agros2DGeneratorModule : public QObject

@@ -194,8 +194,8 @@ void Util::loadPlugins(QStringList plugins)
                 loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file));
             else
             {
-                std::cout << "Could not load '" << QString("libagros2d_plugin_%1.so").arg(file).toStdString() << "'" << std::endl;
-                exit(0);
+                throw AgrosException(QObject::tr("Could not load 'libagros2d_plugin_%1.so'").arg(file));
+                return;
             }
         }
 #endif
@@ -203,8 +203,6 @@ void Util::loadPlugins(QStringList plugins)
         assert(loader->instance());
         Util::singleton()->m_plugins[file] = qobject_cast<PluginInterface *>(loader->instance());
         delete loader;
-
-        qDebug() << file << Util::singleton()->m_plugins[file];
     }
 }
 

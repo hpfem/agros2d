@@ -146,6 +146,7 @@
         <file alias="equations/acoustic/acoustic_impedance_transient.png">../resources_source/images/equations/acoustic/acoustic_impedance_transient.png</file>
         <file alias="equations/acoustic_matched_boundary_harmonic.png">../resources_source/images/equations/acoustic/acoustic_matched_boundary_harmonic.png</file>
         <file alias="equations/acoustic_matched_boundary_transient.png">../resources_source/images/equations/acoustic/acoustic_matched_boundary_transient.png</file>
+		<file alias="fields/empty.png">../resources_source/images/fields/empty.png</file>
 		<file alias="fields/acoustic.png">../resources_source/images/fields/acoustic.png</file>
 		<file alias="fields/current.png">../resources_source/images/fields/current.png</file>
 		<file alias="fields/elasticity.png">../resources_source/images/fields/elasticity.png</file>
