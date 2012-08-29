@@ -81,6 +81,7 @@ public:
     QList<QString> ids;
     QList<QLabel *> labels;
     QList<ValueLineEdit *> values;
+    QList<QString> conditions;
 
     void createContent();
 

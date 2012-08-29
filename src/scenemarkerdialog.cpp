@@ -149,6 +149,8 @@ void SceneFieldWidget::createContent()
                 values.append(textEdit);
                 values.at(values.count() - 1)->setValue(Value(QString::number(row.defaultValue())));
 
+                conditions.append(row.condition());
+
                 int index = layoutGroup->rowCount();
                 layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
                 layoutGroup->addWidget(values.at(values.count() - 1), index, 1);
@@ -205,6 +207,9 @@ void SceneFieldWidgetMaterial::load()
 {
     for (int j = 0; j < ids.count(); j++)
         values.at(j)->setValue(material->value(ids.at(j)));
+
+    for (int j = 0; j < conditions.count(); j++)
+        values.at(j)->setCondition(conditions.at(j));
 }
 
 bool SceneFieldWidgetMaterial::save()

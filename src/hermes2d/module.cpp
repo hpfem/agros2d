@@ -99,7 +99,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
-{    
+{
     // TODO: improve!!!
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "_" + problemId.targetFieldId;
@@ -389,7 +389,7 @@ void WeakFormAgros<Scalar>::registerForms()
                     registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                          m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
                                          sourceMaterial, targetMaterial, couplingInfo);
-                
+
                 foreach (FormInfo *pars, coupling->wfVectorVolumeExpression())
                     registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                          m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
@@ -521,11 +521,11 @@ Module::BoundaryType::~BoundaryType()
     foreach (FormInfo *expression, m_wfMatrixSurface)
         delete expression;
     m_wfMatrixSurface.clear();
-    
+
     foreach (FormInfo *expression, m_wfVectorSurface)
         delete expression;
     m_wfVectorSurface.clear();
-    
+
     foreach (FormInfo *expression, m_wfVectorSurface)
         delete expression;
     m_wfVectorSurface.clear();
@@ -549,7 +549,7 @@ Module::DialogRow::DialogRow(XMLModule::quantity qty)
     m_unitLatex = (qty.unit_latex().present()) ? QString::fromStdString(qty.unit_latex().get()) : "";
 
     m_defaultValue = (qty.default_().present()) ? qty.default_().get() : 0.0;
-    m_condition = (qty.condition().present()) ? QString::fromStdString(qty.condition().get()) : "0.0";
+    m_condition = (qty.condition().present()) ? QString::fromStdString(qty.condition().get()) : "True";
 }
 
 // dialog UI
