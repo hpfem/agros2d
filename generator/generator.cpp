@@ -1521,7 +1521,8 @@ Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
     QString iD = couplingId;
     iD = iD.replace("-", "");
     QDir root(QApplication::applicationDirPath());
-    root.mkpath(QString(GENERATOR_PLUGINROOT));
+    root.mkpath(QString("%1/%2").arg(GENERATOR_PLUGINROOT).arg(iD));
+
     qDebug() << QString::fromStdString(datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + couplingId.toStdString() + ".xml");
     coupling_xsd = XMLCoupling::coupling_((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + couplingId.toStdString() + ".xml").c_str());
     m_coupling = coupling_xsd.get();
@@ -1554,7 +1555,7 @@ Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
 }
 
 void Agros2DGeneratorCoupling::generatePluginProjectFile()
-{    
+{
 
     QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-","");
     qDebug() << tr("%1: generating plugin project file.").arg(id);

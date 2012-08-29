@@ -144,7 +144,8 @@ void FieldWidget::createContent()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new LineEditDouble(1);
+    txtAdaptivityTolerance = new LineEditDouble(1, true);
+    txtAdaptivityTolerance->setBottom(0.0);
 
     // mesh
     txtNumberOfRefinements = new QSpinBox(this);
