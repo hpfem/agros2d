@@ -353,7 +353,7 @@ void Problem::solve()
     QStringList modules = Util::problem()->fieldInfos().keys();
     QStringList couplings;
     foreach (CouplingInfo *info, Util::problem()->couplingInfos().values())
-        couplings.append(info->couplingId().replace("-", "_"));
+        couplings.append(info->couplingId());
 
     QStringList plugins;
     plugins.append(modules);

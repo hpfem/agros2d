@@ -73,7 +73,6 @@ private:
     // scalar field
     QComboBox *cmbPostScalarFieldVariable;
     QComboBox *cmbPostScalarFieldVariableComp;
-    QLineEdit *txtPostScalarFieldExpression;
     QCheckBox *chkScalarFieldRangeAuto;
     QLabel *lblScalarFieldRangeMin;
     QLabel *lblScalarFieldRangeMax;

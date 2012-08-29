@@ -173,8 +173,8 @@ Util *Util::singleton()
 void Util::loadPlugins(QStringList plugins)
 {
     // unload plugins and clear list
-    foreach (PluginInterface *weakForm, Util::singleton()->m_plugins)
-        delete weakForm;
+    foreach (PluginInterface *plugin, Util::singleton()->m_plugins)
+        delete plugin;
     Util::singleton()->m_plugins.clear();
 
     // load plugins

@@ -242,7 +242,7 @@ void Agros2DGenerator::createStructure()
     foreach (QString couplingId, couplings.keys())
     {
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
-        field->SetValue("ID", couplingId.replace("-", "").toStdString());
+        field->SetValue("ID", couplingId.toStdString());
     }
 
     // generate plugins project file
@@ -328,7 +328,6 @@ void Agros2DGeneratorModule::generatePluginProjectFile()
     qDebug() << tr("%1: generating plugin project file.").arg(QString::fromStdString(m_module->general().id()));
 
     QString id = QString::fromStdString(m_module->general().id());
-    QString header = id.toLower();
 
     ctemplate::TemplateDictionary output("output");
     output.SetValue("ID", id.toStdString());
@@ -1266,7 +1265,7 @@ void Agros2DGeneratorModule::generateVolumeMatrixForm(XMLModule::weakform_volume
             {
                 QString expression = weakformExpression(coordinateType, linearityType, matrix_form);
 
-                if(expression != "")
+                if  (expression != "")
                 {
                     QString functionName = QString("%1_%2_%3_%4_%5_%6_%7").
                             arg("volume_matrix").
@@ -1516,10 +1515,10 @@ void Agros2DGeneratorModule::generateExactSolution(XMLModule::boundary boundary,
 }
 
 /*********************************************************************************************************************************************/
+
 Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
 {
     QString iD = couplingId;
-    iD = iD.replace("-", "");
     QDir root(QApplication::applicationDirPath());
     root.mkpath(QString("%1/%2").arg(GENERATOR_PLUGINROOT).arg(iD));
 
@@ -1556,8 +1555,8 @@ Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
 
 void Agros2DGeneratorCoupling::generatePluginProjectFile()
 {
+    QString id = (QString::fromStdString(m_coupling->general().id().c_str()));
 
-    QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-","");
     qDebug() << tr("%1: generating plugin project file.").arg(id);
 
     ctemplate::TemplateDictionary output("output");
@@ -1578,14 +1577,16 @@ void Agros2DGeneratorCoupling::generatePluginProjectFile()
 
 void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
 {
-    QString id = QString::fromStdString(m_coupling->general().id()).replace("-", "");
+    QString id = QString::fromStdString(m_coupling->general().id());
+    QStringList modules = QString::fromStdString(m_coupling->general().id()).split("-");
 
     qDebug() << tr("%1: generating plugin interface file.").arg(id);
 
     ctemplate::TemplateDictionary output("output");
 
     output.SetValue("ID", id.toStdString());
-    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+    output.SetValue("CLASS", (modules[0].left(1).toUpper() + modules[0].right(modules[0].length() - 1) +
+                              modules[1].left(1).toUpper() + modules[1].right(modules[1].length() - 1)).toStdString());
 
     std::string text;
 
@@ -1626,13 +1627,16 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormFiles()
 
 void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
 {
-    QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-","");
+    QString id = QString::fromStdString(m_coupling->general().id());
+    QStringList modules = QString::fromStdString(m_coupling->general().id()).split("-");
+
     qDebug() << tr("%1: generating plugin weakform header file.").arg(id);
 
     ctemplate::TemplateDictionary output("output");
 
     output.SetValue("ID", id.toStdString());
-    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+    output.SetValue("CLASS", (modules[0].left(1).toUpper() + modules[0].right(modules[0].length() - 1) +
+                              modules[1].left(1).toUpper() + modules[1].right(modules[1].length() - 1)).toStdString());
 
     foreach(XMLCoupling::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
     {
@@ -1656,14 +1660,16 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
 
 void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
 {
+    QString id = QString::fromStdString(m_coupling->general().id());
+    QStringList modules = QString::fromStdString(m_coupling->general().id()).split("-");
 
-
-    QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-","");
     qDebug() << tr("%1: generating plugin weakform source file.").arg(id);
+
     ctemplate::TemplateDictionary output("output");
 
     output.SetValue("ID", id.toStdString());
-    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+    output.SetValue("CLASS", (modules[0].left(1).toUpper() + modules[0].right(modules[0].length() - 1) +
+                              modules[1].left(1).toUpper() + modules[1].right(modules[1].length() - 1)).toStdString());
 
     foreach(XMLCoupling::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
     {
@@ -2017,7 +2023,7 @@ void Agros2DGeneratorCoupling::generateVolumeMatrixForm(XMLCoupling::weakform_vo
 
                 if(expression != "")
                 {
-                    QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-","");
+                    QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-", "_");
                     QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9").
                             arg("volume_matrix").
                             arg(id).
@@ -2085,7 +2091,7 @@ void Agros2DGeneratorCoupling::generateVolumeVectorForm(XMLCoupling::weakform_vo
                     QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-", "_");
                     QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9").
                             arg("volume_vector").
-                            arg(QString::fromStdString(id.toStdString())).
+                            arg(id).
                             arg(QString::fromStdString(weakform.sourceanalysis())).
                             arg(QString::fromStdString(weakform.targetanalysis())).
                             arg(coordinateTypeToStringKey(coordinateType)).

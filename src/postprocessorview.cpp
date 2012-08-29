@@ -218,10 +218,6 @@ void PostprocessorWidget::saveBasic()
     Util::config()->scalarRangeMin = txtScalarFieldRangeMin->value();
     Util::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
-    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
-    if (physicFieldVariable && physicFieldVariable->id() == "custom")
-        physicFieldVariable->expression().scalar() = txtPostScalarFieldExpression->text();
-
     // vector field
     Util::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
 }
@@ -399,7 +395,6 @@ QWidget *PostprocessorWidget::post2DWidget()
     connect(cmbPostScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
     cmbPostScalarFieldVariableComp = new QComboBox();
     connect(cmbPostScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
-    txtPostScalarFieldExpression = new QLineEdit();
 
     chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
@@ -411,8 +406,6 @@ QWidget *PostprocessorWidget::post2DWidget()
     layoutScalarField->addWidget(cmbPostScalarFieldVariable, 0, 1, 1, 3);
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
     layoutScalarField->addWidget(cmbPostScalarFieldVariableComp, 1, 1, 1, 3);
-    layoutScalarField->addWidget(new QLabel(tr("Expression:")), 2, 0);
-    layoutScalarField->addWidget(txtPostScalarFieldExpression, 2, 1, 1, 3);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -951,8 +944,6 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
     if (cmbPostScalarFieldVariable->currentIndex() == -1)
         return;
 
-    txtPostScalarFieldExpression->setText("");
-
     Module::LocalVariable *physicFieldVariable = NULL;
 
     // TODO: proc je tu index a cmb..->currentIndex?
@@ -964,30 +955,6 @@ void PostprocessorWidget::doScalarFieldVariableComp(int index)
         std::string fieldName(variableName.split("_")[0].toStdString());
 
         physicFieldVariable = Util::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
-    }
-
-    if (physicFieldVariable)
-    {
-        txtPostScalarFieldExpression->setEnabled(physicFieldVariable->id() == "custom");
-
-        // expression
-        switch ((PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt())
-        {
-        case PhysicFieldVariableComp_Scalar:
-            txtPostScalarFieldExpression->setText(physicFieldVariable->expression().scalar());
-            break;
-        case PhysicFieldVariableComp_Magnitude:
-            txtPostScalarFieldExpression->setText(QString("sqrt((%1)^2 + (%2)^2)").
-                                                  arg(physicFieldVariable->expression().compX()).
-                                                  arg(physicFieldVariable->expression().compY()));
-            break;
-        case PhysicFieldVariableComp_X:
-            txtPostScalarFieldExpression->setText(physicFieldVariable->expression().compX());
-            break;
-        case PhysicFieldVariableComp_Y:
-            txtPostScalarFieldExpression->setText(physicFieldVariable->expression().compY());
-            break;
-        }
     }
 }
 
@@ -1031,7 +998,6 @@ void PostprocessorWidget::refresh()
         // scalar view
         cmbPostScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
         cmbPostScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        txtPostScalarFieldExpression->setEnabled(false);
         if (chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked())
         {
             doScalarFieldRangeAuto(-1);
