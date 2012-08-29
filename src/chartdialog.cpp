@@ -409,7 +409,7 @@ void ChartDialog::plotGeometry()
     {
         foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
-            LocalValue *value = Util::weakForms()[fieldInfo->fieldId()]->localValue(fieldInfo, points.at(i));
+            LocalValue *value = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, points.at(i));
 
             // x value
             if (radAxisLength->isChecked())
@@ -504,7 +504,7 @@ void ChartDialog::plotTime()
         Util::scene()->setActiveTimeStep(i);
 
         Point point(txtPointX->value().number(), txtPointY->value().number());
-        LocalValue *value = Util::weakForms()[m_fieldInfo->fieldId()]->localValue(m_fieldInfo, point);
+        LocalValue *value = Util::plugins()[m_fieldInfo->fieldId()]->localValue(m_fieldInfo, point);
 
         addValue(value, timeLevels[i], yval, i, timeLevels.count(),
                  physicFieldVariableComp, physicFieldVariable);

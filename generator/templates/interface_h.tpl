@@ -34,10 +34,10 @@
 
 #include "hermes2d/plugin_interface.h"
 
-class {{CLASS}}Interface : public QObject, public WeakFormInterface
+class {{CLASS}}Interface : public QObject, public PluginInterface
 {
     Q_OBJECT
-    Q_INTERFACES(WeakFormInterface)
+    Q_INTERFACES(PluginInterface)
 
 public:
 
@@ -45,6 +45,7 @@ public:
 
     inline virtual QString fieldId() { return "{{ID}}"; }
 
+    // weakforms
     virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                                   SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ );    
@@ -54,13 +55,13 @@ public:
     virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
 
-
     virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
 
     virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
     // postprocessor
+
     // filter
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,

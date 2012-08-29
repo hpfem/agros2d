@@ -34,10 +34,10 @@
 
 #include "hermes2d/plugin_interface.h"
 
-class {{CLASS}}Interface : public QObject, public WeakFormInterface
+class {{CLASS}}Interface : public QObject, public PluginInterface
 {
     Q_OBJECT
-    Q_INTERFACES(WeakFormInterface)
+    Q_INTERFACES(PluginInterface)
 
 public:
 

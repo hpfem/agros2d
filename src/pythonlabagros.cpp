@@ -795,7 +795,7 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
 
         Point point(x, y);
 
-        LocalValue *value = Util::weakForms()[fieldInfo()->fieldId()]->localValue(fieldInfo(), point);
+        LocalValue *value = Util::plugins()[fieldInfo()->fieldId()]->localValue(fieldInfo(), point);
         QMapIterator<Module::LocalVariable *, PointValue> it(value->values());
         while (it.hasNext())
         {
@@ -856,7 +856,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        IntegralValue *integral = Util::weakForms()[fieldInfo()->fieldId()]->surfaceIntegral(fieldInfo());
+        IntegralValue *integral = Util::plugins()[fieldInfo()->fieldId()]->surfaceIntegral(fieldInfo());
         QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {
@@ -915,7 +915,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        IntegralValue *integral = Util::weakForms()[fieldInfo()->fieldId()]->volumeIntegral(fieldInfo());
+        IntegralValue *integral = Util::plugins()[fieldInfo()->fieldId()]->volumeIntegral(fieldInfo());
         QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {

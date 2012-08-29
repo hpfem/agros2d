@@ -205,7 +205,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                 foreach (FormInfo *form, boundary_type->essential())
                 {
                     // get weakform
-                    WeakFormInterface *weakform = Util::weakForms()[fieldInfo->fieldId()];
+                    PluginInterface *weakform = Util::plugins()[fieldInfo->fieldId()];
                     assert(weakform);
 
                     ExactSolutionScalar<double> *function = weakform->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);

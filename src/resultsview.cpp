@@ -98,7 +98,7 @@ void ResultsView::showPoint(const Point &point)
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        LocalValue *value = Util::weakForms()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        LocalValue *value = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
         QMap<Module::LocalVariable *, PointValue> values = value->values();
         delete value;
 
@@ -171,7 +171,7 @@ void ResultsView::showVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        IntegralValue *integral = Util::weakForms()[fieldInfo->fieldId()]->volumeIntegral(fieldInfo);
+        IntegralValue *integral = Util::plugins()[fieldInfo->fieldId()]->volumeIntegral(fieldInfo);
         QMap<Module::Integral*, double> values = integral->values();
         if (values.size() > 0)
         {
@@ -220,7 +220,7 @@ void ResultsView::showSurfaceIntegral()
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        IntegralValue *integral = Util::weakForms()[fieldInfo->fieldId()]->surfaceIntegral(fieldInfo);
+        IntegralValue *integral = Util::plugins()[fieldInfo->fieldId()]->surfaceIntegral(fieldInfo);
         QMap<Module::Integral*, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");

@@ -32,7 +32,7 @@ namespace Module
 class ProblemConfig;
 class CouplingInfo;
 class LocalForceValue;
-class WeakFormInterface;
+class PluginInterface;
 
 class FieldInfo : public QObject
 {

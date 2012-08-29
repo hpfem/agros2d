@@ -105,7 +105,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                 problemId.sourceFieldId : problemId.sourceFieldId + "_" + problemId.targetFieldId;
 
     // get weakform
-    WeakFormInterface *weakform = Util::weakForms()[fieldId];
+    PluginInterface *weakform = Util::plugins()[fieldId];
     assert(weakform);
 
     if (type == WeakForm_MatVol)
@@ -1022,7 +1022,7 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
         sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
     }
 
-    return Util::weakForms()[Util::scene()->activeViewField()->fieldId()]->filter(Util::scene()->activeViewField(),
+    return Util::plugins()[Util::scene()->activeViewField()->fieldId()]->filter(Util::scene()->activeViewField(),
                                                                                   sln,
                                                                                   physicFieldVariable->id(),
                                                                                   physicFieldVariableComp);

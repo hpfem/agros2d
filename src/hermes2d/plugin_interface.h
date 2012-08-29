@@ -1,5 +1,3 @@
-#ifndef WEAKFORM_FACTORY_INTERFACE_H
-#define WEAKFORM_FACTORY_INTERFACE_H
 // This file is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
@@ -18,6 +16,9 @@
 // hp-FEM group (http://hpfem.org/)
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+
+#ifndef PLUGIN_INTERFACE_H
+#define PLUGIN_INTERFACE_H
 
 #include <QtPlugin>
 
@@ -246,11 +247,11 @@ Point3 LocalForceValue::calculate(const Point3 &point, const Point3 &velocity)
 }
 */
 
-class WeakFormInterface
+class PluginInterface
 {
 public:
 
-    virtual ~WeakFormInterface() {}
+    virtual ~PluginInterface() {}
 
     virtual QString fieldId() = 0;
 
@@ -286,7 +287,7 @@ public:
 
 
 QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(WeakFormInterface, "agros2d.WeakformInterface/1.0")
+Q_DECLARE_INTERFACE(PluginInterface, "agros2d.PluginInterface/1.0")
 QT_END_NAMESPACE
 
-#endif // WEAKFORM_FACTORY_INTERFACE_H
+#endif // PLUGIN_INTERFACE_H

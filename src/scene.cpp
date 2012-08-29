@@ -173,9 +173,9 @@ Util *Util::singleton()
 void Util::loadPlugins(QStringList plugins)
 {
     // unload plugins and clear list
-    foreach (WeakFormInterface *weakForm, Util::singleton()->m_weakForms)
+    foreach (PluginInterface *weakForm, Util::singleton()->m_plugins)
         delete weakForm;
-    Util::singleton()->m_weakForms.clear();
+    Util::singleton()->m_plugins.clear();
 
     // load plugins
     foreach (QString file, plugins)
@@ -201,10 +201,10 @@ void Util::loadPlugins(QStringList plugins)
 #endif
 
         assert(loader->instance());
-        Util::singleton()->m_weakForms[file] = qobject_cast<WeakFormInterface *>(loader->instance());
+        Util::singleton()->m_plugins[file] = qobject_cast<PluginInterface *>(loader->instance());
         delete loader;
 
-        qDebug() << file << Util::singleton()->m_weakForms[file];
+        qDebug() << file << Util::singleton()->m_plugins[file];
     }
 }
 
