@@ -94,6 +94,7 @@ public:
 
 public slots:
     bool evaluate(bool quiet = true);
+    bool checkCondition(double value);
 
 signals:
     void editingFinished();
@@ -135,7 +136,7 @@ private:
 #endif
 
     void setLayoutValue();
-    void setLabel(const QString &text, QColor color, bool isVisible);
+    void setValueLabel(const QString &text, QColor color, bool isVisible);
 
 private slots:
     void doOpenValueTimeDialog();
