@@ -641,8 +641,11 @@ void ModuleItemQuantityAnalysisDialog::doAccept()
 ModuleItemWeakformDialog::ModuleItemWeakformDialog(ModuleDialog *moduleDialog, QWidget *parent)
     : ModuleItemEmptyDialog(moduleDialog, parent)
 {
-    txtI = new QLineEdit();
-    txtJ = new QLineEdit();
+    setWindowTitle(tr("Matrix form"));
+    setWindowIcon(icon("form-matrix"));
+
+    txtSolutionIndex = new QLineEdit();
+    txtTestFunctionIndex = new QLineEdit();
 
     txtPlanarLinear = new ModuleDialogTextEdit(this, 3);
     txtPlanarNewton = new ModuleDialogTextEdit(this, 3);
@@ -650,15 +653,15 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(ModuleDialog *moduleDialog, Q
     txtAxiNewton = new ModuleDialogTextEdit(this, 3);
 
     QGridLayout *layoutGeneral = new QGridLayout(this);
-    layoutGeneral->addWidget(new QLabel(tr("I:")), 0, 0);
-    layoutGeneral->addWidget(txtI, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("J:")), 0, 2);
-    layoutGeneral->addWidget(txtJ, 0, 3);
+    layoutGeneral->addWidget(new QLabel(tr("Solution index:")), 0, 0);
+    layoutGeneral->addWidget(txtSolutionIndex, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Test function index:")), 0, 2);
+    layoutGeneral->addWidget(txtTestFunctionIndex, 0, 3);
 
     QGridLayout *layoutLinear = new QGridLayout(this);
     layoutLinear->addWidget(new QLabel(tr("Planar:")), 0, 0);
     layoutLinear->addWidget(txtPlanarLinear, 1, 0);
-    layoutLinear->addWidget(new QLabel(tr("Axisymetric:")), 2, 0);
+    layoutLinear->addWidget(new QLabel(tr("Axisymmetric:")), 2, 0);
     layoutLinear->addWidget(txtAxiLinear, 3, 0);
 
     QGroupBox *grpLinear = new QGroupBox(tr("Linear"));
@@ -684,8 +687,8 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
                                                        XMLModule::matrix_form *form, QWidget *parent)
     : ModuleItemWeakformDialog(moduleDialog, parent), m_form(form)
 {
-    txtI->setText(QString::number(m_form->i()));
-    txtJ->setText(QString::number(m_form->j()));
+    txtSolutionIndex->setText(QString::number(m_form->i()));
+    txtTestFunctionIndex->setText(QString::number(m_form->j()));
 
     if (type == "volume")
     {
@@ -710,8 +713,8 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
 
 void ModuleItemMatrixFormDialog::doAccept()
 {
-    m_form->i(txtI->text().toInt());
-    m_form->j(txtJ->text().toInt());
+    m_form->i(txtSolutionIndex->text().toInt());
+    m_form->j(txtTestFunctionIndex->text().toInt());
     m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
     m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
     m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
@@ -724,8 +727,11 @@ ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(ModuleDialog *moduleDialo
                                                        XMLModule::vector_form *form, QWidget *parent)
     : ModuleItemWeakformDialog(moduleDialog, parent), m_form(form)
 {
-    txtI->setText(QString::number(m_form->i()));
-    txtJ->setText(QString::number(m_form->j()));
+    setWindowTitle(tr("Vector form"));
+    setWindowIcon(icon("form-vector"));
+
+    txtSolutionIndex->setText(QString::number(m_form->i()));
+    txtTestFunctionIndex->setText(QString::number(m_form->j()));
 
     if (type == "volume")
     {
@@ -750,8 +756,8 @@ ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(ModuleDialog *moduleDialo
 
 void ModuleItemVectorFormDialog::doAccept()
 {
-    m_form->i(txtI->text().toInt());
-    m_form->j(txtJ->text().toInt());
+    m_form->i(txtSolutionIndex->text().toInt());
+    m_form->j(txtTestFunctionIndex->text().toInt());
 
     m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
     m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
@@ -764,9 +770,12 @@ void ModuleItemVectorFormDialog::doAccept()
 ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *moduleDialog, int numberOfSolutions, XMLModule::essential_form *form, QWidget *parent)
     : ModuleItemWeakformDialog(moduleDialog, parent), m_form(form)
 {
-    txtI->setText(QString::number(m_form->i()));
-    txtJ->setText("");
-    txtJ->setDisabled(true);
+    setWindowTitle(tr("Essential form"));
+    setWindowIcon(icon("form-essential"));
+
+    txtSolutionIndex->setText(QString::number(m_form->i()));
+    txtTestFunctionIndex->setText("");
+    txtTestFunctionIndex->setDisabled(true);
 
     txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
     txtPlanarNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
@@ -781,7 +790,7 @@ ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *modul
 
 void ModuleItemEssentialFormDialog::doAccept()
 {
-    m_form->i(txtI->text().toInt());
+    m_form->i(txtSolutionIndex->text().toInt());
 
     m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
     m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
@@ -1142,6 +1151,7 @@ void ModuleDialog::load()
             item->setText(0, tr("Matrix form"));
             item->setText(1, QString::number(form->i()));
             item->setText(2, QString::number(form->j()));
+            item->setIcon(0, icon("form-matrix"));
         }
 
         // vector form
@@ -1158,6 +1168,7 @@ void ModuleDialog::load()
             item->setText(0, tr("Vector form"));
             item->setText(1, QString::number(form->i()));
             item->setText(2, QString::number(form->j()));
+            item->setIcon(0, icon("form-vector"));
         }
     }
 
@@ -1244,6 +1255,7 @@ void ModuleDialog::load()
                 item->setText(0, tr("Matrix form"));
                 item->setText(1, QString::number(form->i()));
                 item->setText(2, QString::number(form->j()));
+                item->setIcon(0, icon("form-matrix"));
             }
 
             // vector form
@@ -1260,6 +1272,7 @@ void ModuleDialog::load()
                 item->setText(0, tr("Vector form"));
                 item->setText(1, QString::number(form->i()));
                 item->setText(2, QString::number(form->j()));
+                item->setIcon(0, icon("form-vector"));
             }
 
             // essential form
@@ -1276,6 +1289,7 @@ void ModuleDialog::load()
                 item->setText(0, tr("Essential form"));
                 item->setText(1, QString::number(form->i()));
                 item->setText(2, "");
+                item->setIcon(0, icon("form-essential"));
             }
         }
     }
@@ -1590,8 +1604,9 @@ QWidget *ModuleDialog::createWeakforms()
     treeVolumeQuantityGlobal = new QTreeWidget(this);
     treeVolumeQuantityGlobal->setMouseTracking(true);
     treeVolumeQuantityGlobal->setColumnCount(2);
-    treeVolumeQuantityGlobal->setColumnWidth(0, 150);
-    treeVolumeQuantityGlobal->setIndentation(12);
+    treeVolumeQuantityGlobal->setColumnWidth(0, 250);
+    treeVolumeQuantityGlobal->setColumnWidth(1, 100);
+    treeVolumeQuantityGlobal->setIndentation(5);
     QStringList headVolumeQuantityGlobal;
     headVolumeQuantityGlobal << tr("ID") << tr("Shortname");
     treeVolumeQuantityGlobal->setHeaderLabels(headVolumeQuantityGlobal);
@@ -1611,9 +1626,9 @@ QWidget *ModuleDialog::createWeakforms()
 
     QGridLayout *layoutVolumeQuantity = new QGridLayout();
     layoutVolumeQuantity->addWidget(new QLabel(tr("Definitions:")), 0, 0);
-    layoutVolumeQuantity->addWidget(new QLabel(tr("Parameters for particular analysis:")), 0, 2);
-    layoutVolumeQuantity->addWidget(treeVolumeQuantityGlobal, 1, 0, 1, 2);
-    layoutVolumeQuantity->addWidget(treeVolumeQuantityAnalysis, 1, 2, 1, 1);
+    layoutVolumeQuantity->addWidget(new QLabel(tr("Parameters for particular analysis:")), 0, 1);
+    layoutVolumeQuantity->addWidget(treeVolumeQuantityGlobal, 1, 0);
+    layoutVolumeQuantity->addWidget(treeVolumeQuantityAnalysis, 1, 1);
 
     QGroupBox *grpVolumeQuantities = new QGroupBox(tr("Quantities"));
     grpVolumeQuantities->setLayout(layoutVolumeQuantity);
@@ -1621,10 +1636,12 @@ QWidget *ModuleDialog::createWeakforms()
     treeVolumeWeakforms = new QTreeWidget(this);
     treeVolumeWeakforms->setMouseTracking(true);
     treeVolumeWeakforms->setColumnCount(3);
-    treeVolumeWeakforms->setColumnWidth(0, 150);
+    treeVolumeWeakforms->setColumnWidth(0, 200);
+    treeVolumeWeakforms->setColumnWidth(1, 80);
+    treeVolumeWeakforms->setColumnWidth(2, 80);
     treeVolumeWeakforms->setIndentation(12);
     QStringList headVolumeWeakforms;
-    headVolumeWeakforms << tr("Type") << tr("i") << tr("j");
+    headVolumeWeakforms << tr("Type") << tr("Solution") << tr("Test function");
     treeVolumeWeakforms->setHeaderLabels(headVolumeWeakforms);
 
     connect(treeVolumeWeakforms, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(weakformDoubleClicked(QTreeWidgetItem *, int)));
@@ -1646,7 +1663,8 @@ QWidget *ModuleDialog::createWeakforms()
     treeSurfaceQuantityGlobal = new QTreeWidget(this);
     treeSurfaceQuantityGlobal->setMouseTracking(true);
     treeSurfaceQuantityGlobal->setColumnCount(2);
-    treeSurfaceQuantityGlobal->setColumnWidth(0, 150);
+    treeSurfaceQuantityGlobal->setColumnWidth(0, 250);
+    treeSurfaceQuantityGlobal->setColumnWidth(1, 100);
     treeSurfaceQuantityGlobal->setIndentation(5);
     QStringList headSurfaceQuantity;
     headSurfaceQuantity << tr("ID") << tr("Shortname");
@@ -1667,9 +1685,9 @@ QWidget *ModuleDialog::createWeakforms()
 
     QGridLayout *layoutSurfaceQuantity = new QGridLayout();
     layoutSurfaceQuantity->addWidget(new QLabel(tr("Definitions:")), 0, 0);
-    layoutSurfaceQuantity->addWidget(new QLabel(tr("Parameters for partial analysis:")), 0, 2);
-    layoutSurfaceQuantity->addWidget(treeSurfaceQuantityGlobal, 1, 0, 1, 2);
-    layoutSurfaceQuantity->addWidget(treeSurfaceQuantityAnalysis, 1, 2, 1, 1);
+    layoutSurfaceQuantity->addWidget(new QLabel(tr("Parameters for partial analysis:")), 0, 1);
+    layoutSurfaceQuantity->addWidget(treeSurfaceQuantityGlobal, 1, 0);
+    layoutSurfaceQuantity->addWidget(treeSurfaceQuantityAnalysis, 1, 1);
 
     QGroupBox *grpSurfaceQuantities = new QGroupBox(tr("Quantities"));
     grpSurfaceQuantities->setLayout(layoutSurfaceQuantity);
@@ -1677,10 +1695,12 @@ QWidget *ModuleDialog::createWeakforms()
     treeSurfaceWeakforms = new QTreeWidget(this);
     treeSurfaceWeakforms->setMouseTracking(true);
     treeSurfaceWeakforms->setColumnCount(3);
-    treeSurfaceWeakforms->setColumnWidth(0, 150);
+    treeSurfaceWeakforms->setColumnWidth(0, 200);
+    treeSurfaceWeakforms->setColumnWidth(1, 80);
+    treeSurfaceWeakforms->setColumnWidth(2, 80);
     treeSurfaceWeakforms->setIndentation(12);
     QStringList headSurfaceWeakforms;
-    headSurfaceWeakforms << tr("Type") << tr("i") << tr("j");
+    headSurfaceWeakforms << tr("Type") << tr("Solution") << tr("Test function");
     treeSurfaceWeakforms->setHeaderLabels(headSurfaceWeakforms);
 
     connect(treeSurfaceWeakforms, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(weakformDoubleClicked(QTreeWidgetItem *, int)));

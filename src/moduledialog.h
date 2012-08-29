@@ -266,8 +266,8 @@ public:
     ModuleItemWeakformDialog(ModuleDialog *moduleDialog, QWidget *parent);
 
 protected:
-    QLineEdit *txtI;
-    QLineEdit *txtJ;
+    QLineEdit *txtSolutionIndex;
+    QLineEdit *txtTestFunctionIndex;
     ModuleDialogTextEdit *txtPlanarLinear;
     ModuleDialogTextEdit *txtPlanarNewton;
     ModuleDialogTextEdit *txtAxiLinear;

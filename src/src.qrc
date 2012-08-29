@@ -109,7 +109,10 @@
 		<file alias="browser-variable-bool.png">../resources_source/images/browser-variable-bool.png</file>
 		<file alias="browser-variable-unknown.png">../resources_source/images/browser-variable-unknown.png</file>
 		<file alias="history-command.png">../resources_source/images/history-command.png</file>
-        <file alias="equations/current/current_steadystate.png">../resources_source/images/equations/current/current_steadystate.png</file>
+    	<file alias="form-matrix.png">../resources_source/images/form-matrix.png</file>
+		<file alias="form-vector.png">../resources_source/images/form-vector.png</file>
+		<file alias="form-essential.png">../resources_source/images/form-essential.png</file>
+	    <file alias="equations/current/current_steadystate.png">../resources_source/images/equations/current/current_steadystate.png</file>
         <file alias="equations/current/current_harmonic.png">../resources_source/images/equations/current/current_harmonic.png</file>
         <file alias="equations/current/current_potential.png">../resources_source/images/equations/current/current_potential.png</file>
         <file alias="equations/current/current_inward_current_flow.png">../resources_source/images/equations/current/current_inward_current_flow.png</file>
