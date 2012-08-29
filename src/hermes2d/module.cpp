@@ -188,9 +188,8 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     problemId.couplingType = couplingInfo->couplingType();
 
     // compiled form
-    //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
-                                                                      area, form, materialTarget, materialSource, offsetI, offsetJ);
+                                                                      area, form, materialSource, materialTarget, offsetI, offsetJ);
 
     if (!custom_form)
     {
