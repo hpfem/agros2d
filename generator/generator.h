@@ -106,7 +106,7 @@ private:
     void createLocalValueExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &exprScalar, const QString &exprVectorX, const QString &exprVectorY);
     void createIntegralExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 
-    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr);
 };
 
 class Agros2DGeneratorCoupling : public QObject

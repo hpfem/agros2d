@@ -966,7 +966,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
     }
 }
 //-----------------------------------------------------------------------------------------
-QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr)
+QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr)
 {
     int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
 
@@ -1127,7 +1127,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
                     {
                         QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
-                        if (nonlinearExpr.isEmpty())
+                        if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
                             // linear material
                             exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
                         else
@@ -1136,17 +1136,18 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                             if (repl == QString::fromStdString(quantity.shortname().get()))
                                 exprCpp += QString("%1.value(%2)").
                                         arg(QString::fromStdString(quantity.shortname().get())).
-                                        arg(parseWeakFormExpression(analysisType, coordinateType, nonlinearExpr));
+                                        arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
                             if (repl == QString::fromStdString("d" + quantity.shortname().get()))
                                 exprCpp += QString("%1.derivative(%2)").
                                         arg(QString::fromStdString(quantity.shortname().get())).
-                                        arg(parseWeakFormExpression(analysisType, coordinateType, nonlinearExpr));
+                                        arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
                         }
 
                         isReplaced = true;
                     }
             }
 
+            // FIXME: David, what is the reason of this block?
             if (!isReplaced)
             {
                 foreach (XMLModule::quantity quantity, m_module->surface().quantity())
@@ -1242,7 +1243,8 @@ void Agros2DGeneratorModule::generateVolumeMatrixForm(XMLModule::weakform_volume
                     field->SetValue("COLUMN_INDEX", QString::number(matrix_form.j()).toStdString());
                     field->SetValue("MODULE_ID", m_module->general().id());
                     QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, expression);
+                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                      coordinateType, linearityType, expression);
                     field->SetValue("EXPRESSION", exprCpp.toStdString());
 
                     foreach(XMLModule::quantity quantity, weakform.quantity())
@@ -1293,7 +1295,8 @@ void Agros2DGeneratorModule::generateVolumeVectorForm(XMLModule::weakform_volume
                     field->SetValue("COLUMN_INDEX", QString::number(vector_form.j()).toStdString());
                     field->SetValue("MODULE_ID", m_module->general().id());
                     QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, expression);
+                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                      coordinateType, linearityType, expression);
                     field->SetValue("EXPRESSION", exprCpp.toStdString());
 
                     foreach(XMLModule::quantity quantity, weakform.quantity())
@@ -1344,7 +1347,8 @@ void Agros2DGeneratorModule::generateSurfaceMatrixForm(XMLModule::boundary bound
                     field->SetValue("COLUMN_INDEX", QString::number(matrix_form.j()).toStdString());
                     field->SetValue("MODULE_ID", m_module->general().id());
                     QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, expression);
+                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                      coordinateType, linearityType, expression);
                     field->SetValue("EXPRESSION", exprCpp.toStdString());
 
                     foreach(XMLModule::quantity quantity, boundary.quantity())
@@ -1395,7 +1399,8 @@ void Agros2DGeneratorModule::generateSurfaceVectorForm(XMLModule::boundary bound
                     field->SetValue("COLUMN_INDEX", QString::number(vector_form.j()).toStdString());
                     field->SetValue("MODULE_ID", m_module->general().id());
                     QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, expression);
+                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                      coordinateType, linearityType, expression);
                     field->SetValue("EXPRESSION", exprCpp.toStdString());
 
                     foreach(XMLModule::quantity quantity, boundary.quantity())
@@ -1446,7 +1451,8 @@ void Agros2DGeneratorModule::generateExactSolution(XMLModule::boundary boundary,
                     field->SetValue("MODULE_ID", m_module->general().id());
 
                     QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, expression);
+                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                      coordinateType, linearityType, expression);
                     field->SetValue("EXPRESSION", exprCpp.toStdString());
 
                     foreach(XMLModule::quantity quantity, boundary.quantity())
