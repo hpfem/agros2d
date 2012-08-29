@@ -292,15 +292,7 @@ bool ValueLineEdit::evaluate(bool quiet)
 
         if (val.evaluate(quiet))
         {
-            QString condition = m_condition;
-            condition.replace(QString("value"), QString::number(val.number()));
-            ExpressionResult result = runPythonExpression(condition, true);
-
-            if (!result.value)
-            {
-                setLabel(tr("%1").arg(m_condition), QColor(Qt::red), true);
-            }
-            else if (val.number() <= m_minimumSharp)
+            if (val.number() <= m_minimumSharp)
             {
                 setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
             }
@@ -316,10 +308,34 @@ bool ValueLineEdit::evaluate(bool quiet)
             {
                 setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
             }
+            else if (!m_condition.isEmpty())
+            {
+                // FIXME: (Franta) replace -> LEX?
+                QString condition = m_condition;
+                condition.replace(QString("value"), QString::number(val.number()));
+
+                ExpressionResult result = runPythonExpression(condition, true);
+
+                if (result.error.isEmpty())
+                {
+                    if (fabs(result.value) < EPS_ZERO)
+                        setLabel(QString("%1").arg(m_condition), QColor(Qt::red), true);
+                    else
+                    {
+                        m_number = val.number();
+                        setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
+                                 Util::config()->lineEditValueShowResult);
+                        isOk = true;
+                    }
+                }
+                else
+                    setLabel(tr("condition couldn't be evaluated"), QColor(Qt::red), true);
+            }
             else
             {
                 m_number = val.number();
-                setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), Util::config()->lineEditValueShowResult);
+                setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
+                         Util::config()->lineEditValueShowResult);
                 isOk = true;
             }
         }
