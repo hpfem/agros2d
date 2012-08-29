@@ -11,8 +11,7 @@ LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3dparty
 LIBS += -lagros2d
 
-HEADERS += generator.h \
-    templates/weakform_h
+HEADERS += generator.h
 
 SOURCES += main.cpp \
            generator.cpp
@@ -20,23 +19,23 @@ SOURCES += main.cpp \
 include(../agros2d.pri)
 
 OTHER_FILES += \
-    templates/filter_cpp.tpl \
-    templates/filter_h.tpl \
-    templates/localvalue_cpp.tpl \
-    templates/localvalue_h.tpl \
-    templates/surfaceintegral_cpp.tpl \
-    templates/surfaceintegral_h.tpl \
-    templates/volumeintegral_cpp.tpl \
-    templates/volumeintegral_h.tpl \
-    templates/interface_cpp.tpl \
-    templates/interface_h.tpl \
-    templates/module_pro.tpl \
-    templates/weakform_cpp.tpl \
-    templates/weakform_h.tpl \
-    templates/weakform_pri.tpl \
-    templates/module_pro.tpl \
-    templates/plugins_pro.tpl \
-    templates/coupling_weakform_h.tpl \
-    templates/coupling_weakform_cpp.tpl \
-    templates/coupling_interface_h.tpl \
-    templates/coupling_interface_cpp.tpl
+    ../resources/templates/generator/filter_cpp.tpl \
+    ../resources/templates/generator/filter_h.tpl \
+    ../resources/templates/generator/localvalue_cpp.tpl \
+    ../resources/templates/generator/localvalue_h.tpl \
+    ../resources/templates/generator/surfaceintegral_cpp.tpl \
+    ../resources/templates/generator/surfaceintegral_h.tpl \
+    ../resources/templates/generator/volumeintegral_cpp.tpl \
+    ../resources/templates/generator/volumeintegral_h.tpl \
+    ../resources/templates/generator/interface_cpp.tpl \
+    ../resources/templates/generator/interface_h.tpl \
+    ../resources/templates/generator/module_pro.tpl \
+    ../resources/templates/generator/weakform_cpp.tpl \
+    ../resources/templates/generator/weakform_h.tpl \
+    ../resources/templates/generator/weakform_pri.tpl \
+    ../resources/templates/generator/module_pro.tpl \
+    ../resources/templates/generator/plugins_pro.tpl \
+    ../resources/templates/generator/coupling_weakform_h.tpl \
+    ../resources/templates/generator/coupling_weakform_cpp.tpl \
+    ../resources/templates/generator/coupling_interface_h.tpl \
+    ../resources/templates/generator/coupling_interface_cpp.tpl
