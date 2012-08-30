@@ -65,6 +65,15 @@ public slots:
     void generateCoupling(const QString &couplingId);
 };
 
+class Agros2DGeneratorBase : public QObject
+{
+    Q_OBJECT
+
+public:
+
+private:
+};
+
 class Agros2DGeneratorModule : public QObject
 {
     Q_OBJECT
@@ -83,7 +92,7 @@ public:
     QHash<QString, QString>  volumeVaribales() const {return m_volumeVariables;}
     QHash<QString, QString>  surfaceVaribales() const {return m_volumeVariables;}
 
-private:
+private:    
     std::auto_ptr<XMLModule::module> module_xsd;
     XMLModule::module *m_module;
 
@@ -94,8 +103,10 @@ private:
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
-    void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output);
-    void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output);
+    //ToDo: make up better names
+    template <typename WeakForm, typename Form>
+    void generateVolumeForm(WeakForm weakform, Form form, ctemplate::TemplateDictionary &output, QString weakFormType);
+
     void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
     void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
     void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
