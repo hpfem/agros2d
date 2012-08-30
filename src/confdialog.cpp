@@ -24,7 +24,9 @@
 #include "scene.h"
 #include "sceneview_common.h"
 #include "pythonlabagros.h"
+#include "moduledialog.h"
 #include "hermes2d/module.h"
+#include "hermes2d/coupling.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
@@ -108,8 +110,8 @@ void ConfigDialog::save()
     // language
     if (Util::config()->language != cmbLanguage->currentText())
         QMessageBox::warning(QApplication::activeWindow(),
-                                 tr("Language change"),
-                                 tr("Interface language has been changed. You must restart the application."));
+                             tr("Language change"),
+                             tr("Interface language has been changed. You must restart the application."));
     Util::config()->language = cmbLanguage->currentText();
 
     // default physic field
@@ -179,6 +181,7 @@ void ConfigDialog::createControls()
 
     panMain = createMainWidget();
     panSolver = createSolverWidget();
+    panPlugin = createPluginWidget();
     panGlobalScriptWidget = createGlobalScriptWidget();
 
     // List View
@@ -192,7 +195,7 @@ void ConfigDialog::createControls()
     lstView->setMaximumWidth(135);
     lstView->setMinimumHeight((45+fontMetrics().height()*4)*5);
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
-               this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
+            this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
 
     QSize sizeItem(131, 85);
 
@@ -207,6 +210,11 @@ void ConfigDialog::createControls()
     itemSolver->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemSolver->setSizeHint(sizeItem);
 
+    QListWidgetItem *itemPlugin = new QListWidgetItem(icon("options-plugin"), tr("Plugins"), lstView);
+    itemPlugin->setTextAlignment(Qt::AlignHCenter);
+    itemPlugin->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemPlugin->setSizeHint(sizeItem);
+
     QListWidgetItem *itemGlobalScript = new QListWidgetItem(icon("options-python"), tr("Python"), lstView);
     itemGlobalScript->setTextAlignment(Qt::AlignHCenter);
     itemGlobalScript->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -214,6 +222,7 @@ void ConfigDialog::createControls()
 
     pages->addWidget(panMain);
     pages->addWidget(panSolver);
+    pages->addWidget(panPlugin);
     pages->addWidget(panGlobalScriptWidget);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
@@ -364,10 +373,10 @@ QWidget *ConfigDialog::createSolverWidget()
     cmbStrategy->addItem(tr("1"), 1);
     cmbStrategy->addItem(tr("2"), 2);
     lblStrategy = new QLabel(tr("<table>"
-                                 "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
-                                 "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
-                                 "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
-                                 "</table>"));
+                                "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
+                                "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
+                                "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
+                                "</table>"));
     cmbMeshRegularity = new QComboBox();
     cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
     cmbMeshRegularity->addItem(tr("at most one-level hang. nodes"), 1);
@@ -435,6 +444,109 @@ QWidget *ConfigDialog::createSolverWidget()
     solverWidget->addTab(solverCommandsWidget, icon(""), tr("Commands"));
 
     return solverWidget;
+}
+
+QWidget *ConfigDialog::createPluginWidget()
+{
+    QWidget *pluginWidget = new QWidget(this);
+
+    QTreeWidget *treeModules = new QTreeWidget(this);
+    treeModules->setMouseTracking(true);
+    treeModules->setColumnCount(2);
+    treeModules->setColumnWidth(0, 250);
+    treeModules->setIndentation(20);
+    QStringList headModules;
+    headModules << tr("Name") << tr("Availability");
+    treeModules->setHeaderLabels(headModules);
+
+    // connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(constantDoubleClicked(QTreeWidgetItem *, int)));
+
+    QMapIterator<QString, QString> itModules(availableModules());
+    while (itModules.hasNext())
+    {
+        itModules.next();
+
+        QTreeWidgetItem *item = new QTreeWidgetItem(treeModules);
+        item->setText(0, itModules.value());
+        item->setData(0, Qt::UserRole, itModules.key());
+
+        try
+        {
+            Util::loadPlugins(QStringList(itModules.key()));
+            item->setText(1, tr("available"));
+        }
+        catch (AgrosException e)
+        {
+            item->setText(1, tr("missing"));
+            item->setForeground(1, QBrush(Qt::red));
+        }
+    }
+
+    // general
+    QGridLayout *layoutModules = new QGridLayout();
+    layoutModules->addWidget(treeModules);
+
+    QGroupBox *grpModules = new QGroupBox(tr("Modules"));
+    grpModules->setLayout(layoutModules);
+
+    QTreeWidget *treeCouplings = new QTreeWidget(this);
+    treeCouplings->setMouseTracking(true);
+    treeCouplings->setColumnCount(2);
+    treeCouplings->setColumnWidth(0, 250);
+    treeCouplings->setIndentation(5);
+    QStringList headCouplings;
+    headCouplings << tr("Name") << tr("Availability");
+    treeCouplings->setHeaderLabels(headCouplings);
+
+    connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(moduleDoubleClicked(QTreeWidgetItem *, int)));
+
+    QMapIterator<QString, QString> itCouplings(availableCouplings());
+    while (itCouplings.hasNext())
+    {
+        itCouplings.next();
+
+        QTreeWidgetItem *item = new QTreeWidgetItem(treeCouplings);
+        item->setText(0, itCouplings.value());
+        item->setData(0, Qt::UserRole, itCouplings.key());
+
+        try
+        {
+            Util::loadPlugins(QStringList(itCouplings.key()));
+            item->setText(1, tr("available"));
+        }
+        catch (AgrosException e)
+        {
+            item->setText(1, tr("missing"));
+            item->setForeground(1, QBrush(Qt::red));
+        }
+    }
+
+    // general
+    QGridLayout *layoutCouplings = new QGridLayout();
+    layoutCouplings->addWidget(treeCouplings);
+
+    QGroupBox *grpCouplings = new QGroupBox(tr("Couplings"));
+    grpCouplings ->setLayout(layoutCouplings);
+
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpModules, 3);
+    layout->addWidget(grpCouplings, 2);
+    layout->addStretch();
+
+    pluginWidget->setLayout(layout);
+
+    return pluginWidget;
+}
+
+void ConfigDialog::moduleDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    QString module = item->data(0, Qt::UserRole).toString();
+    if (!module.isEmpty())
+    {
+        ModuleDialog moduleDialog(module, this);
+        moduleDialog.exec();
+    }
 }
 
 QWidget *ConfigDialog::createGlobalScriptWidget()

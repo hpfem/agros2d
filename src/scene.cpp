@@ -142,9 +142,6 @@ Util::Util()
 
     // log
     m_log = new Log();
-
-    // plugins
-
 }
 
 Util::~Util()
@@ -156,8 +153,10 @@ Util::~Util()
     delete m_solutionStore;
     delete m_log;
 
-    // clear plugins
-
+    // unload plugins and clear list
+    foreach (PluginInterface *plugin, Util::singleton()->m_plugins)
+        delete plugin;
+    Util::singleton()->m_plugins.clear();
 }
 
 void Util::createSingleton()
@@ -192,13 +191,13 @@ void Util::loadPlugins(QStringList plugins)
                 loader = new QPluginLoader(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file));
             else if (QFile::exists(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file)))
                 loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file));
-            else
-            {
-                throw AgrosException(QObject::tr("Could not load 'libagros2d_plugin_%1.so'").arg(file));
-                return;
-            }
         }
 #endif
+        if (!loader || !loader->load())
+        {
+            throw AgrosException(QObject::tr("Could not load 'libagros2d_plugin_%1.so'").arg(file));
+            return;
+        }
 
         assert(loader->instance());
         Util::singleton()->m_plugins[file] = qobject_cast<PluginInterface *>(loader->instance());
