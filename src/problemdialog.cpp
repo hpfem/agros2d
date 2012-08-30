@@ -471,10 +471,7 @@ void FieldDialog::deleteField()
 void FieldDialog::moduleEditor()
 {
     ModuleDialog moduleDialog(fieldWidget->fieldInfo()->fieldId(), this);
-    if (moduleDialog.exec())
-    {
-
-    }
+    moduleDialog.exec();
 }
 
 // ********************************************************************************************

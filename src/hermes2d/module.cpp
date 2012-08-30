@@ -100,22 +100,21 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                                             const QString &area, FormInfo *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
-    // TODO: improve!!!
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
-                problemId.sourceFieldId : problemId.sourceFieldId + "_" + problemId.targetFieldId;
+                problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
 
     // get weakform
-    PluginInterface *weakform = Util::plugins()[fieldId];
-    assert(weakform);
+    PluginInterface *plugin = Util::plugins()[fieldId];
+    assert(plugin);
 
     if (type == WeakForm_MatVol)
-        return weakform->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+        return plugin->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
     else if (type == WeakForm_MatSurf)
-        return weakform->matrixFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+        return plugin->matrixFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
     else if (type == WeakForm_VecVol)
-        return weakform->vectorFormVol(problemId, form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+        return plugin->vectorFormVol(problemId, form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
     else if (type == WeakForm_VecSurf)
-        return weakform->vectorFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+        return plugin->vectorFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
     else
         assert(0);
 }
@@ -189,9 +188,8 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     problemId.couplingType = couplingInfo->couplingType();
 
     // compiled form
-    //TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
-                                                                      area, form, materialTarget, materialSource, offsetI, offsetJ);
+                                                                      area, form, materialSource, materialTarget, offsetI, offsetJ);
 
     if (!custom_form)
     {

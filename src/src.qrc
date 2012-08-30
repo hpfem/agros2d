@@ -39,6 +39,7 @@
         <file alias="options-advanced.png">../resources_source/images/options-advanced.png</file>
         <file alias="options-python.png">../resources_source/images/options-python.png</file>
         <file alias="options-weakform.png">../resources_source/images/options-weakform.png</file>
+        <file alias="options-plugin.png">../resources_source/images/options-plugin.png</file>
         <file alias="scene-node.png">../resources_source/images/scene-node.png</file>
         <file alias="scene-edge.png">../resources_source/images/scene-edge.png</file>
         <file alias="scene-label.png">../resources_source/images/scene-label.png</file>

@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef general_weakform
-#define general_weakform
+#ifndef {{ID}}_WEAKFORM_H
+#define {{ID}}_WEAKFORM_H
 
 #include "util.h"
 #include <weakform/weakform.h>

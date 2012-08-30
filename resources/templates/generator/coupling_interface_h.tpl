@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef {{ID}}_INTERFACE_H
-#define {{ID}}_INTERFACE_H
+#ifndef {{CLASS}}_INTERFACE_H
+#define {{CLASS}}_INTERFACE_H
 
 #include <QObject>
 
@@ -48,17 +48,17 @@ public:
     virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                                   SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ );    
+
     virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ);
 
     virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
-
+                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) { assert(0); }
 
     virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) {return 0;}
+                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) { assert(0); }
 
-    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) {return 0;}
+    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) { assert(0); }
 
     // postprocessor
     // filter
@@ -75,4 +75,4 @@ public:
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) { assert(0); }
 };
 
-#endif // {{ID}}_INTERFACE_H
+#endif // {{CLASS}}_INTERFACE_H

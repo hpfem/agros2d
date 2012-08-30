@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef general_weakform
-#define general_weakform
+#ifndef {{ID}}_WEAKFORM_H
+#define {{ID}}_WEAKFORM_H
 
 #include "util.h"
 #include <weakform/weakform.h>
@@ -47,7 +47,8 @@ private:
 
     {{#VARIABLE_SOURCE}}
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
-
+    {{#VARIABLE_TARGET}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 };
 {{/MATRIX_VOL_SOURCE}}
 
@@ -68,11 +69,14 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone();	
+
 private:		
     Material *m_materialSource;
     Material *m_materialTarget;	
     {{#VARIABLE_SOURCE}}
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
+    {{#VARIABLE_TARGET}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 
     unsigned int j;
 };
@@ -92,10 +96,13 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone(); 
+
 private:
     Boundary *m_boundarySource;
     {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    {{#VARIABLE_TARGET}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 	
 };
 {{/MATRIX_SURF_SOURCE}}
@@ -114,10 +121,13 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone();
+
 private:
     Boundary *m_boundarySource;
     {{#VARIABLE_SOURCE}}
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
+    {{#VARIABLE_TARGET}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 
     unsigned int j;
 };
@@ -137,10 +147,13 @@ public:
     {
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }
-private:
+
+    private:
     Boundary *m_boundarySource;  
     {{#VARIABLE_SOURCE}}
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}		
+    {{#VARIABLE_TARGET}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 };
 {{/EXACT_SOURCE}}
 

@@ -19,10 +19,10 @@
                 <coupling:weakform_volume couplingtype="weak"
                         sourceanalysis="steadystate" targetanalysis="steadystate">
                         <coupling:vector_form i="1" j="1"
-                                planar_linear="cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
-                                axi_linear="cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval"
-                                planar_newton="- cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
-                                axi_newton="- cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval"/>
+                                planar_linear="cu_gamma * (source1dx * source1dx + source1dy * source1dy) * vval"
+                                axi_linear="cu_gamma * (source1dr * source1dr + source1dz * source1dz) * r * vval"
+                                planar_newton="- cu_gamma * (source1dx * source1dx + source1dy * source1dy) * vval"
+                                axi_newton="- cu_gamma * (source1dr * source1dr + source1dz * source1dz) * r * vval"/>
                 </coupling:weakform_volume>
 
                 <coupling:weakform_volume couplingtype="hard"
@@ -43,10 +43,10 @@
                 <coupling:weakform_volume couplingtype="weak"
                         sourceanalysis="steadystate" targetanalysis="transient">
                         <coupling:vector_form i="1" j="1"
-                                planar_linear="cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
-                                axi_linear="cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval"
-                                planar_newton="- cu_gamma * (source0dx * source0dx + source0dy * source0dy) * vval"
-                                axi_newton="- cu_gamma * (source0dr * source0dr + source0dz * source0dz) * r * vval" />
+                                planar_linear="cu_gamma * (source1dx * source1dx + source1dy * source1dy) * vval"
+                                axi_linear="cu_gamma * (source1dr * source1dr + source1dz * source1dz) * r * vval"
+                                planar_newton="- cu_gamma * (source1dx * source1dx + source1dy * source1dy) * vval"
+                                axi_newton="- cu_gamma * (source1dr * source1dr + source1dz * source1dz) * r * vval" />
                 </coupling:weakform_volume>
 
                 <coupling:weakform_volume couplingtype="hard"

@@ -39,6 +39,8 @@ private slots:
     void doAdaptivityDefault();
     void doCommandsDefault();
 
+    void moduleDoubleClicked(QTreeWidgetItem *item, int role);
+
     void doAccept();
     void doReject();
 
@@ -46,8 +48,8 @@ private:
     QListWidget *lstView;
     QStackedWidget *pages;
     QWidget *panMain;
-    QWidget *panView;
     QWidget *panSolver;
+    QWidget *panPlugin;
     QWidget *panGlobalScriptWidget;
 
     // main
@@ -112,7 +114,7 @@ private:
     void createControls();
     QWidget *createMainWidget();
     QWidget *createSolverWidget();
-    QWidget *createColorsWidget();
+    QWidget *createPluginWidget();
     QWidget *createGlobalScriptWidget();
 
     void fillComboBoxPhysicField(QComboBox *cmbPhysicField);

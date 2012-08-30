@@ -49,6 +49,7 @@ public:
     virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                                   SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ );    
+
     virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
                                                                   const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ);
 
