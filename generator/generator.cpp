@@ -234,7 +234,7 @@ void Agros2DGenerator::createStructure()
     QMap<QString, QString> couplings = availableCouplings();
 
     foreach (QString moduleId, modules.keys())
-    {     
+    {
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", moduleId.toStdString());
     }
@@ -1191,6 +1191,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             }
 
             // FIXME: David, what is the reason of this block?
+            // There are surface and volume variables with the same name, so now the condition is necessary
+            // ToDo: Change in Modules?
             if (!isReplaced)
             {
                 foreach (XMLModule::quantity quantity, m_module->surface().quantity())
@@ -1198,13 +1200,9 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     if (quantity.shortname().present())
                         if (repl == QString::fromStdString(quantity.shortname().get()))
                         {
-                            if (!quantity.dependence().present())
-                                // linear material
-                                exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
-                            else
-                                // nonlinear material
-                                exprCpp += QString("%1.value()").
-                                        arg(QString::fromStdString(quantity.shortname().get()));
+                            // nonlinear material
+                            exprCpp += QString("%1.value()").
+                                    arg(QString::fromStdString(quantity.shortname().get()));
                             isReplaced = true;
                         }
                 }
