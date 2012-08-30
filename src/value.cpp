@@ -294,54 +294,35 @@ bool ValueLineEdit::evaluate(bool quiet)
         {
             if (val.number() <= m_minimumSharp)
             {
-                setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
+                setValueLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
             }
             else if (val.number() >= m_maximumSharp)
             {
-                setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
+                setValueLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
             }
             else if (val.number() < m_minimum)
             {
-                setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
+                setValueLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
             }
             else if (val.number() > m_maximum)
             {
-                setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
+                setValueLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
             }
-            else if (!m_condition.isEmpty())
+            else if (!checkCondition(val.number()))
             {
-                // FIXME: (Franta) replace -> LEX?
-                QString condition = m_condition;
-                condition.replace(QString("value"), QString::number(val.number()));
-
-                ExpressionResult result = runPythonExpression(condition, true);
-
-                if (result.error.isEmpty())
-                {
-                    if (fabs(result.value) < EPS_ZERO)
-                        setLabel(QString("%1").arg(m_condition), QColor(Qt::red), true);
-                    else
-                    {
-                        m_number = val.number();
-                        setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                                 Util::config()->lineEditValueShowResult);
-                        isOk = true;
-                    }
-                }
-                else
-                    setLabel(tr("condition couldn't be evaluated"), QColor(Qt::red), true);
+                setValueLabel(QString("%1").arg(m_condition), QColor(Qt::red), true);
             }
             else
             {
                 m_number = val.number();
-                setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
+                setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
                          Util::config()->lineEditValueShowResult);
                 isOk = true;
             }
         }
         else
         {
-            setLabel(tr("error"), QColor(Qt::red), true);
+            setValueLabel(tr("error"), QColor(Qt::red), true);
             setFocus();
         }
     }
@@ -361,6 +342,36 @@ bool ValueLineEdit::evaluate(bool quiet)
         emit evaluated(true);
         return false;
     }
+}
+
+bool ValueLineEdit::checkCondition(double value)
+{
+    if (m_condition.isEmpty()) return true;
+
+    bool isOK = false;
+
+    // FIXME: (Franta) replace -> LEX?
+    QString condition = m_condition;
+    condition.replace(QString("value"), QString::number(value));
+
+    ExpressionResult result = runPythonExpression(condition, true);
+
+    if (result.error.isEmpty())
+    {
+        if (!(fabs(result.value) < EPS_ZERO))
+            isOK = true;
+    }
+    else
+    {
+        QPalette palette = txtLineEdit->palette();
+        palette.setColor(QPalette::Text, QColor(Qt::red));
+        txtLineEdit->setPalette(palette);
+
+        txtLineEdit->setToolTip(tr("Condition couldn't evaluate:\n%1").arg(result.error));
+        isOK = true;
+    }
+
+    return isOK;
 }
 
 void ValueLineEdit::setLayoutValue()
@@ -390,7 +401,7 @@ void ValueLineEdit::setLayoutValue()
     btnEditTimeDep->setVisible(m_hasTimeDep && m_fieldInfo && m_fieldInfo->analysisType() == AnalysisType_Transient);
 }
 
-void ValueLineEdit::setLabel(const QString &text, QColor color, bool isVisible)
+void ValueLineEdit::setValueLabel(const QString &text, QColor color, bool isVisible)
 {
     lblValue->setText(text);
     QPalette palette = lblValue->palette();
