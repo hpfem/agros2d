@@ -821,6 +821,22 @@ ModulePreprocessorDialog::ModulePreprocessorDialog(ModuleDialog *moduleDialog, X
     if (quant->unit_latex().present())
         txtUnitLatex->setText(QString::fromStdString(quant->unit_latex().get()));
 
+    txtCondition = new QLineEdit();
+    if (quant->condition().present())
+        txtCondition->setText(QString::fromStdString(quant->condition().get()));
+
+    txtDefault = new QLineEdit();
+    txtDefault->setValidator(new QDoubleValidator(txtDefault));
+    if (quant->default_().present())
+        txtDefault->setText(QString::number(quant->default_().get()));
+
+    QGridLayout *layout = new QGridLayout;
+    layout->addWidget(new QLabel(tr("Condition:")), 0, 1);
+    layout->addWidget(txtCondition, 0, 2);
+    layout->addWidget(new QLabel(tr("Default:")), 0, 3);
+    layout->addWidget(txtDefault, 0, 4);
+
+    layoutMain->addLayout(layout);
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
 }
@@ -835,6 +851,8 @@ void ModulePreprocessorDialog::doAccept()
     m_quant->unit(txtUnit->text().toStdString());
     m_quant->unit_html(txtUnitHtml->text().toStdString());
     m_quant->unit_latex(txtUnitLatex->text().toStdString());
+    m_quant->condition(txtCondition->text().toStdString());
+    m_quant->default_(txtDefault->text().toDouble());
 
     accept();
 }
