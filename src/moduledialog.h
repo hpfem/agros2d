@@ -118,7 +118,7 @@ public:
     void save();
 
 private:
-    QString m_type;    
+    QString m_type;
     XMLModule::expression *m_expr;
 };
 
@@ -181,6 +181,10 @@ protected:
     QLineEdit *txtUnit;
     HtmlValueEdit *txtUnitHtml;
     QLineEdit *txtUnitLatex;
+
+    //ModuleDialogTextEdit *txtCondition;
+    QLineEdit *txtCondition;
+    QLineEdit *txtDefault;
 
     QList<ModuleItem *> items;
 
