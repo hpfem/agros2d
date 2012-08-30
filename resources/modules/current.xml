@@ -66,7 +66,7 @@
   <module:preprocessor>
     <module:gui type="volume">
       <module:group>
-        <module:quantity id="current_conductivity" name="Conductivity" condition="value > 0" default="33000000" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" shortname_latex="\gamma" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
+        <module:quantity condition="value > 0" default="33000000" id="current_conductivity" name="Conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" shortname_latex="\gamma" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
         <module:quantity id="current_permittivity" name="Permittivity" shortname="epsr" shortname_html="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\varepsilon_{r}" unit="F/m" unit_html="F.m&lt;sup>-1&lt;/sup>" unit_latex="F \cdot m^{-1}"/>
       </module:group>
     </module:gui>

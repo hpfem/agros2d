@@ -39,6 +39,28 @@ void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *c
 void fillComboBoxSolutionType(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
+class SystemOutputWidget : public QDialog
+{
+    Q_OBJECT
+public:
+    SystemOutputWidget(QWidget *parent = 0);
+    ~SystemOutputWidget();
+
+    void execute(const QString &command);
+
+private slots:
+    void updateError();
+    void updateText();
+    void finished(int exit);
+    void breakProcess();
+
+private:
+    QProcess *m_proc;
+
+    QTextEdit *m_output;
+};
+
+// ***************************************************************************************************
 
 struct ParenthesisInfo
 {
