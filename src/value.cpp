@@ -367,7 +367,7 @@ bool ValueLineEdit::checkCondition(double value)
         palette.setColor(QPalette::Text, QColor(Qt::red));
         txtLineEdit->setPalette(palette);
 
-        txtLineEdit->setToolTip(tr("Condition couldn't evaluate:\n%1").arg(result.error));
+        txtLineEdit->setToolTip(tr("Condition couldn't be evaluated:\n%1").arg(result.error));
         isOK = true;
     }
 
