@@ -2,6 +2,9 @@
 
 pluginPath="plugins/"
 
+# generate plugin
+./agros2d_generator "$1"
+
 # change directory
 cd "$pluginPath""$1"
 

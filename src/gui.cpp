@@ -106,13 +106,13 @@ void SystemOutputWidget::execute(const QString &command)
 
 void SystemOutputWidget::updateError()
 {
-    m_output->append(m_proc->readAllStandardError());
+    m_output->append(m_proc->readAllStandardError().trimmed());
     QApplication::processEvents();
 }
 
 void SystemOutputWidget::updateText()
 {
-    m_output->append(m_proc->readAllStandardOutput().replace("‘", "'").replace("’", "'"));
+    m_output->append(m_proc->readAllStandardOutput().trimmed().replace("‘", "'").replace("’", "'"));
     QApplication::processEvents();
 }
 
