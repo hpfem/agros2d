@@ -42,11 +42,11 @@ Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const
                                                               const std::string &area, Hermes::Hermes2D::SymFlag sym,
                                                               SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
 {
-	{{#MATRIX_VOL_SOURCE}}
+	{{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}))
         return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1+ offsetJ , area, sym, materialSource, materialTarget);
-	{{/MATRIX_VOL_SOURCE}}
+	{{/VOLUME_MATRIX_SOURCE}}
 
     return NULL;
 }
@@ -54,11 +54,11 @@ Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const
 Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
                                                               const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
 {
-	{{#VECTOR_VOL_SOURCE}}
+	{{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}})))
     	return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, area, materialSource, materialTarget);
-	{{/VECTOR_VOL_SOURCE}}
+	{{/VOLUME_VECTOR_SOURCE}}
 
     return NULL;
 }
@@ -66,11 +66,11 @@ Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const
 Hermes::Hermes2D::MatrixFormSurf<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, int i, int j,
                                                                 const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
-	{{#MATRIX_SURF_SOURCE}}
+	{{#SURFACE_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}")))
         return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, area, boundary);
-	{{/MATRIX_SURF_SOURCE}}
+	{{/SURFACE_MATRIX_SOURCE}}
 
     return NULL;
 }
@@ -78,11 +78,11 @@ Hermes::Hermes2D::MatrixFormSurf<double> *{{CLASS}}Interface::matrixFormSurf(con
 Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, int i, int j,
                                                                 const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ)
 {
-	{{#VECTOR_SURF_SOURCE}}
+	{{#SURFACE_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}")))
         return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, area, boundary);
-	{{/VECTOR_SURF_SOURCE}}
+	{{/SURFACE_VECTOR_SOURCE}}
 
     return NULL;
 }

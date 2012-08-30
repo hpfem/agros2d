@@ -25,7 +25,7 @@
 #include "problem.h"
 #include "{{ID}}_weakform.h"
  		
-{{#MATRIX_VOL_SOURCE}}
+{{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                  std::string area,
@@ -70,10 +70,10 @@ template <typename Scalar>
     return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0], this->m_sym, 
                                          this->m_materialSource, this->m_materialTarget);
 }
-{{/MATRIX_VOL_SOURCE}}
+{{/VOLUME_MATRIX_SOURCE}}
 
 
-{{#VECTOR_VOL_SOURCE}}
+{{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                  std::string area, 
@@ -116,9 +116,9 @@ template <typename Scalar>
     return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],
                                          this->m_materialSource, this->m_materialTarget);
 }
-{{/VECTOR_VOL_SOURCE}}
+{{/VOLUME_VECTOR_SOURCE}}
 
-{{#MATRIX_SURF_SOURCE}}
+{{#SURFACE_MATRIX_SOURCE}}
 
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
@@ -161,9 +161,9 @@ template <typename Scalar>
     return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],
                                          this->m_boundarySource);
 }
-{{/MATRIX_SURF_SOURCE}}
+{{/SURFACE_MATRIX_SOURCE}}
 
-{{#VECTOR_SURF_SOURCE}}
+{{#SURFACE_VECTOR_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                    std::string area, 
@@ -206,7 +206,7 @@ template <typename Scalar>
     return new {{FUNCTION_NAME}}(this->i, this->j, this->areas[0],  
                                          this->m_boundarySource);
 }
-{{/VECTOR_SURF_SOURCE}}
+{{/SURFACE_VECTOR_SOURCE}}
 
 {{#EXACT_SOURCE}}
 template <typename Scalar>

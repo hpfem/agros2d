@@ -24,7 +24,7 @@
 #include <weakform/weakform.h>
 #include "hermes2d/marker.h"
   		
-{{#MATRIX_VOL_SOURCE}}
+{{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormVol<Scalar>
 {
@@ -49,9 +49,9 @@ private:
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 
 };
-{{/MATRIX_VOL_SOURCE}}
+{{/VOLUME_MATRIX_SOURCE}}
 
-{{#VECTOR_VOL_SOURCE}}
+{{#VOLUME_VECTOR_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormVol<Scalar>
 {
@@ -76,9 +76,9 @@ private:
 
     unsigned int j;
 };
-{{/VECTOR_VOL_SOURCE}}  
+{{/VOLUME_VECTOR_SOURCE}}  
 
-{{#MATRIX_SURF_SOURCE}}
+{{#SURFACE_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormSurf<Scalar>
 {
@@ -98,9 +98,9 @@ private:
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 	
 };
-{{/MATRIX_SURF_SOURCE}}
+{{/SURFACE_MATRIX_SOURCE}}
 
-{{#VECTOR_SURF_SOURCE}}
+{{#SURFACE_VECTOR_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormSurf<Scalar>
 {
@@ -121,7 +121,7 @@ private:
 
     unsigned int j;
 };
-{{/VECTOR_SURF_SOURCE}}
+{{/SURFACE_VECTOR_SOURCE}}
 
 {{#EXACT_SOURCE}}
 template<typename Scalar>
