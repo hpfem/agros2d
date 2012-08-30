@@ -205,9 +205,11 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
 
 void SceneFieldWidgetMaterial::load()
 {
+    // variables
     for (int j = 0; j < ids.count(); j++)
         values.at(j)->setValue(material->value(ids.at(j)));
 
+    // conditions
     for (int j = 0; j < conditions.count(); j++)
         values.at(j)->setCondition(conditions.at(j));
 }
@@ -305,20 +307,24 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
 
 void SceneFieldWidgetBoundary::load()
 {
-    // load type
+    // type
     comboBox->setCurrentIndex(comboBox->findData(boundary->getType()));
 
-    // load variables
+    // variables
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setValue(boundary->value(ids.at(i)));
+
+    // conditions
+    for (int j = 0; j < conditions.count(); j++)
+        values.at(j)->setCondition(conditions.at(j));
 }
 
 bool SceneFieldWidgetBoundary::save()
 {
-    // save type
+    // type
     boundary->setType(comboBox->itemData(comboBox->currentIndex()).toString());
 
-    // save variables
+    // variables
     for (int i = 0; i < ids.count(); i++)
         if (values.at(i)->evaluate())
             boundary->setValue(ids.at(i), values.at(i)->value());

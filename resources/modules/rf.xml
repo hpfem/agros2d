@@ -78,8 +78,8 @@
   <module:preprocessor>
     <module:gui type="volume">
       <module:group>
-        <module:quantity id="rf_te_permittivity" name="Permittivity" shortname="epsr" shortname_html="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\varepsilon_{r}" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity id="rf_te_permeability" name="Permeability" shortname="mur" shortname_html="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\mu_{r}" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity id="rf_te_permittivity" name="Permittivity" condition="value > 0" default="1" shortname="epsr" shortname_html="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\varepsilon_{r}" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity id="rf_te_permeability" name="Permeability" condition="value > 0" default="1" shortname="mur" shortname_html="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\mu_{r}" unit="-" unit_html="-" unit_latex="-"/>
         <module:quantity id="rf_te_conductivity" name="Conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" shortname_latex="\gamma" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
         <module:quantity id="rf_te_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" shortname_latex="J_{r,ext}" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
         <module:quantity id="rf_te_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" shortname_latex="J_{r,ext}" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
@@ -93,7 +93,7 @@
         <module:quantity id="rf_te_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" shortname_html="&lt;i>H&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="H_{i}" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}"/>
         <module:quantity id="rf_te_surface_current_real" name="Surface current - real" shortname="Jr" shortname_html="&lt;i>J&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="J_{r}" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
         <module:quantity id="rf_te_surface_current_imag" name="Surface current - imag" shortname="Ji" shortname_html="&lt;i>J&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="J_{i}" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
-        <module:quantity id="rf_te_impedance" name="Impedance" shortname="Z0" shortname_html="&lt;i>Z&lt;/i>&lt;sub>0&lt;/sub>" shortname_latex="Z_0" unit="" unit_html="&amp;Omega;" unit_latex="\Ohm"/>
+        <module:quantity id="rf_te_impedance" name="Impedance" condition="value > 0" default="377" shortname="Z0" shortname_html="&lt;i>Z&lt;/i>&lt;sub>0&lt;/sub>" shortname_latex="Z_0" unit="" unit_html="&amp;Omega;" unit_latex="\Ohm"/>
       </module:group>
     </module:gui>
   </module:preprocessor>
