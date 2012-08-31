@@ -103,13 +103,13 @@ private:
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
+    void generateWeakForms(ctemplate::TemplateDictionary &output);
     //ToDo: make up better names
-    template <typename WeakForm, typename Form>
-    void generateVolumeForm(WeakForm weakform, Form form, ctemplate::TemplateDictionary &output, QString weakFormType);
+    template <typename Form>
+    void generateVolumeForm(XMLModule::weakform_volume weakform, Form form, ctemplate::TemplateDictionary &output, QString weakFormType);
 
-    void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
-    void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
-    void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
+    template <typename Form>
+    void generateSurfaceForm(Form form,  XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform, QString weakFormType, int j);
 
     template <typename TForm>
     QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm);
