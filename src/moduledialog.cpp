@@ -403,6 +403,7 @@ ModuleItemEmptyDialog::ModuleItemEmptyDialog(ModuleDialog *moduleDialog, QWidget
 
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
@@ -1539,7 +1540,12 @@ void ModuleDialog::createControls()
     layoutHorizontal->addWidget(pages);
 
     // dialog buttons
+    QPushButton *btnBuild = new QPushButton(tr("Build plugin"));
+    btnBuild->setDefault(false);
+    connect(btnBuild, SIGNAL(clicked()), this, SLOT(buildPlugin()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnBuild, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -1892,6 +1898,12 @@ void ModuleDialog::doAccept()
 void ModuleDialog::doReject()
 {
     reject();
+}
+
+void ModuleDialog::buildPlugin()
+{
+    SystemOutputWidget *output = new SystemOutputWidget();
+    output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(QString::fromStdString(module()->general().id())));
 }
 
 void ModuleDialog::constantDoubleClicked(QTreeWidgetItem *item, int role)

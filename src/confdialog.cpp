@@ -28,6 +28,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
 
+
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("options"));
@@ -450,7 +451,15 @@ QWidget *ConfigDialog::createPluginWidget()
 {
     QWidget *pluginWidget = new QWidget(this);
 
-    QTreeWidget *treeModules = new QTreeWidget(this);
+    btnBuildModule = new QPushButton(tr("Build plugin"));
+    btnBuildModule->setEnabled(false);
+    connect(btnBuildModule, SIGNAL(clicked()), this, SLOT(buildModule()));
+
+    QHBoxLayout *layoutButtonsModule = new QHBoxLayout();
+    layoutButtonsModule->addStretch();
+    layoutButtonsModule->addWidget(btnBuildModule);
+
+    treeModules = new QTreeWidget(this);
     treeModules->setMouseTracking(true);
     treeModules->setColumnCount(2);
     treeModules->setColumnWidth(0, 250);
@@ -459,8 +468,126 @@ QWidget *ConfigDialog::createPluginWidget()
     headModules << tr("Name") << tr("Availability");
     treeModules->setHeaderLabels(headModules);
 
-    // connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(constantDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(moduleDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeModules, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(moduleClicked(QTreeWidgetItem *, int)));
+    connect(treeModules, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(moduleClicked(QTreeWidgetItem *, int)));
 
+    // module
+    QVBoxLayout *layoutModules = new QVBoxLayout();
+    layoutModules->addWidget(treeModules);
+    layoutModules->addLayout(layoutButtonsModule);
+
+    QGroupBox *grpModules = new QGroupBox(tr("Modules"));
+    grpModules->setLayout(layoutModules);
+
+    btnBuildCoupling = new QPushButton(tr("Build plugin"));
+    btnBuildCoupling->setEnabled(false);
+    connect(btnBuildCoupling, SIGNAL(clicked()), this, SLOT(buildCoupling()));
+
+    QHBoxLayout *layoutButtonsCoupling = new QHBoxLayout();
+    layoutButtonsCoupling->addStretch();
+    layoutButtonsCoupling->addWidget(btnBuildCoupling);
+
+    treeCouplings = new QTreeWidget(this);
+    treeCouplings->setMouseTracking(true);
+    treeCouplings->setColumnCount(2);
+    treeCouplings->setColumnWidth(0, 250);
+    treeCouplings->setIndentation(5);
+    QStringList headCouplings;
+    headCouplings << tr("Name") << tr("Availability");
+    treeCouplings->setHeaderLabels(headCouplings);
+
+    connect(treeCouplings, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(couplingDoubleClicked(QTreeWidgetItem *, int)));
+    connect(treeCouplings, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(couplingClicked(QTreeWidgetItem *, int)));
+    connect(treeCouplings, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(couplingClicked(QTreeWidgetItem *, int)));
+
+    // coupling
+    QVBoxLayout *layoutCouplings = new QVBoxLayout();
+    layoutCouplings->addWidget(treeCouplings);
+    layoutCouplings->addLayout(layoutButtonsCoupling);
+
+    QGroupBox *grpCouplings = new QGroupBox(tr("Couplings"));
+    grpCouplings ->setLayout(layoutCouplings);
+
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpModules, 3);
+    layout->addWidget(grpCouplings, 2);
+    layout->addStretch();
+
+    pluginWidget->setLayout(layout);
+
+    readModulesAndCouplings();
+
+    return pluginWidget;
+}
+
+void ConfigDialog::moduleClicked(QTreeWidgetItem *item, int role)
+{
+    btnBuildModule->setEnabled(item);
+}
+
+void ConfigDialog::moduleDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    QString module = item->data(0, Qt::UserRole).toString();
+    if (!module.isEmpty())
+    {
+        ModuleDialog moduleDialog(module, this);
+        moduleDialog.exec();
+
+        readModulesAndCouplings();
+    }
+}
+
+void ConfigDialog::couplingClicked(QTreeWidgetItem *item, int role)
+{
+    btnBuildCoupling->setEnabled(item);
+}
+
+void ConfigDialog::couplingDoubleClicked(QTreeWidgetItem *item, int role)
+{
+    QString module = item->data(0, Qt::UserRole).toString();
+    if (!module.isEmpty())
+    {
+        // TODO: implement
+    }
+}
+
+void ConfigDialog::buildModule()
+{
+    if (treeModules->selectedItems().count() == 1)
+    {
+        QString module = treeModules->selectedItems()[0]->data(0, Qt::UserRole).toString();
+        if (!module.isEmpty())
+        {
+            buildModuleOrCoupling(module);
+        }
+    }
+}
+
+void ConfigDialog::buildCoupling()
+{
+    if (treeCouplings->selectedItems().count() == 1)
+    {
+        QString coupling = treeCouplings->selectedItems()[0]->data(0, Qt::UserRole).toString();
+        if (!coupling.isEmpty())
+        {
+            buildModuleOrCoupling(coupling);
+        }
+    }
+}
+
+void ConfigDialog::buildModuleOrCoupling(const QString &id)
+{
+    SystemOutputWidget *output = new SystemOutputWidget();
+    output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(id));
+
+    readModulesAndCouplings();
+}
+
+void ConfigDialog::readModulesAndCouplings()
+{
+    treeModules->clear();
     QMapIterator<QString, QString> itModules(availableModules());
     while (itModules.hasNext())
     {
@@ -482,24 +609,7 @@ QWidget *ConfigDialog::createPluginWidget()
         }
     }
 
-    // general
-    QGridLayout *layoutModules = new QGridLayout();
-    layoutModules->addWidget(treeModules);
-
-    QGroupBox *grpModules = new QGroupBox(tr("Modules"));
-    grpModules->setLayout(layoutModules);
-
-    QTreeWidget *treeCouplings = new QTreeWidget(this);
-    treeCouplings->setMouseTracking(true);
-    treeCouplings->setColumnCount(2);
-    treeCouplings->setColumnWidth(0, 250);
-    treeCouplings->setIndentation(5);
-    QStringList headCouplings;
-    headCouplings << tr("Name") << tr("Availability");
-    treeCouplings->setHeaderLabels(headCouplings);
-
-    connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(moduleDoubleClicked(QTreeWidgetItem *, int)));
-
+    treeCouplings->clear();
     QMapIterator<QString, QString> itCouplings(availableCouplings());
     while (itCouplings.hasNext())
     {
@@ -519,33 +629,6 @@ QWidget *ConfigDialog::createPluginWidget()
             item->setText(1, tr("missing"));
             item->setForeground(1, QBrush(Qt::red));
         }
-    }
-
-    // general
-    QGridLayout *layoutCouplings = new QGridLayout();
-    layoutCouplings->addWidget(treeCouplings);
-
-    QGroupBox *grpCouplings = new QGroupBox(tr("Couplings"));
-    grpCouplings ->setLayout(layoutCouplings);
-
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpModules, 3);
-    layout->addWidget(grpCouplings, 2);
-    layout->addStretch();
-
-    pluginWidget->setLayout(layout);
-
-    return pluginWidget;
-}
-
-void ConfigDialog::moduleDoubleClicked(QTreeWidgetItem *item, int role)
-{
-    QString module = item->data(0, Qt::UserRole).toString();
-    if (!module.isEmpty())
-    {
-        ModuleDialog moduleDialog(module, this);
-        moduleDialog.exec();
     }
 }
 

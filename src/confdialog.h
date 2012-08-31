@@ -39,7 +39,12 @@ private slots:
     void doAdaptivityDefault();
     void doCommandsDefault();
 
+    void moduleClicked(QTreeWidgetItem *item, int role);
     void moduleDoubleClicked(QTreeWidgetItem *item, int role);
+    void couplingClicked(QTreeWidgetItem *item, int role);
+    void couplingDoubleClicked(QTreeWidgetItem *item, int role);
+    void buildModule();
+    void buildCoupling();
 
     void doAccept();
     void doReject();
@@ -108,6 +113,12 @@ private:
     // global script
     ScriptEditor *txtGlobalScript;
 
+    // modules and couplings
+    QTreeWidget *treeModules;
+    QTreeWidget *treeCouplings;
+    QPushButton *btnBuildModule;
+    QPushButton *btnBuildCoupling;
+
     void load();
     void save();
 
@@ -116,6 +127,9 @@ private:
     QWidget *createSolverWidget();
     QWidget *createPluginWidget();
     QWidget *createGlobalScriptWidget();
+
+    void buildModuleOrCoupling(const QString &id);
+    void readModulesAndCouplings();
 
     void fillComboBoxPhysicField(QComboBox *cmbPhysicField);
 };

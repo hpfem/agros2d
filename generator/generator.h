@@ -65,6 +65,15 @@ public slots:
     void generateCoupling(const QString &couplingId);
 };
 
+class Agros2DGeneratorBase : public QObject
+{
+    Q_OBJECT
+
+public:
+
+private:
+};
+
 class Agros2DGeneratorModule : public QObject
 {
     Q_OBJECT
@@ -80,28 +89,24 @@ public:
     void generatePluginInterfaceFiles();
     void generatePluginWeakFormFiles();
 
-    QHash<QString, QString>  volumeVaribales() const {return m_volumeVariables;}
-    QHash<QString, QString>  surfaceVaribales() const {return m_volumeVariables;}
-
-private:
+private:    
     std::auto_ptr<XMLModule::module> module_xsd;
     XMLModule::module *m_module;
 
     // dictionary for variables used in weakforms
-    QHash<QString, QString> m_volumeVariables;
-    QHash<QString, QString> m_surfaceVariables;
+    QHash<QString, QString> m_variables;
 
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
-    void generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output);
-    void generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output);
-    void generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
-    void generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
-    void generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform);
+    void generateWeakForms(ctemplate::TemplateDictionary &output);
 
-    template <typename TForm>
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm);
+    //ToDo: make up better names
+    template <typename Form, typename WeakForm>
+    void generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary, int j);
+
+    template <typename Form>
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
 

@@ -407,6 +407,7 @@ private slots:
 
     void doAccept();
     void doReject();
+    void buildPlugin();
 
     void constantDoubleClicked(QTreeWidgetItem *item, int role);
     void doAddConstant();

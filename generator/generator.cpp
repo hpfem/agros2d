@@ -312,14 +312,14 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
     {
         QString shortName = QString::fromStdString(quantity.shortname().get()).replace(" ", "");
         QString iD = QString::fromStdString(quantity.id().c_str()).replace(" ", "");
-        m_volumeVariables.insert(iD, shortName);
+        m_variables.insert(iD, shortName);
     }
 
     foreach (XMLModule::quantity quantity, m_module->surface().quantity())
     {
         QString shortName = QString::fromStdString(quantity.shortname().get()).replace(" ", "");
         QString iD = QString::fromStdString(quantity.id().c_str()).replace(" ", "");
-        m_surfaceVariables.insert(iD, shortName);
+        m_variables.insert(iD, shortName);
     }
 }
 
@@ -371,21 +371,7 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 
     // source - expand template
     text.clear();
-    foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
-    {
-        generateVolumeMatrixForm(weakform, output);
-        generateVolumeVectorForm(weakform, output);
-    }
-
-    foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
-    {
-        foreach(XMLModule::boundary boundary, weakform.boundary())
-        {
-            generateSurfaceMatrixForm(boundary, output, weakform);
-            generateSurfaceVectorForm(boundary, output, weakform);
-            generateExactSolution(boundary, output, weakform);
-        }
-    }
+    generateWeakForms(output);
 
     ctemplate::ExpandTemplate(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
@@ -403,6 +389,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormFiles()
     generatePluginWeakFormHeaderFiles();
 }
 
+
 void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 {
     qDebug() << tr("%1: generating plugin weakform source file.").arg(QString::fromStdString(m_module->general().id()));
@@ -414,21 +401,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
     output.SetValue("ID", m_module->general().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
-    foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
-    {
-        generateVolumeMatrixForm(weakform, output);
-        generateVolumeVectorForm(weakform, output);
-    }
-
-    foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
-    {
-        foreach(XMLModule::boundary boundary, weakform.boundary())
-        {
-            generateSurfaceMatrixForm(boundary, output, weakform);
-            generateSurfaceVectorForm(boundary, output, weakform);
-            generateExactSolution(boundary, output, weakform);
-        }
-    }
+    generateWeakForms(output);
 
     std::string text;
     ctemplate::ExpandTemplate(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
@@ -453,21 +426,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
     output.SetValue("ID", m_module->general().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
-    foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
-    {
-        generateVolumeMatrixForm(weakform, output);
-        generateVolumeVectorForm(weakform, output);
-    }
-
-    foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
-    {
-        foreach(XMLModule::boundary boundary, weakform.boundary())
-        {
-            generateSurfaceMatrixForm(boundary, output, weakform);
-            generateSurfaceVectorForm(boundary, output, weakform);
-            generateExactSolution(boundary, output, weakform);
-        }
-    }
+    generateWeakForms(output);
 
     // header - expand template
     std::string text;
@@ -480,6 +439,41 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
                        QString::fromStdString(text));
+}
+
+void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &output)
+{
+    foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
+    {
+        foreach(XMLModule::matrix_form form, weakform.matrix_form())
+        {
+            generateForm(form, output, weakform, "VOLUME_MATRIX", 0, form.j());
+        }
+        foreach(XMLModule::vector_form form, weakform.vector_form())
+        {
+            generateForm(form, output, weakform, "VOLUME_VECTOR", 0, form.j());
+        }
+    }
+
+
+    foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
+    {
+        foreach(XMLModule::boundary boundary, weakform.boundary())
+        {
+            foreach(XMLModule::matrix_form form, boundary.matrix_form())
+            {
+                generateForm(form, output, weakform, "SURFACE_MATRIX", &boundary, form.j());
+            }
+            foreach(XMLModule::vector_form form, boundary.vector_form())
+            {
+                generateForm(form, output, weakform, "SURFACE_VECTOR", &boundary, form.j());
+            }
+            foreach(XMLModule::essential_form form, boundary.essential_form())
+            {
+                generateForm(form, output, weakform, "EXACT",  &boundary, 0);
+            }
+        }
+    }
 }
 
 void Agros2DGeneratorModule::generatePluginFilterFiles()
@@ -1008,6 +1002,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
         return "";
     }
 }
+
 //-----------------------------------------------------------------------------------------
 QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr)
 {
@@ -1190,9 +1185,6 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     }
             }
 
-            // FIXME: David, what is the reason of this block?
-            // There are surface and volume variables with the same name, so now the condition is necessary
-            // ToDo: Change in Modules?
             if (!isReplaced)
             {
                 foreach (XMLModule::quantity quantity, m_module->surface().quantity())
@@ -1225,292 +1217,106 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     }
 }
 
-template <typename TForm>
-QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm)
+template <typename Form>
+QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form)
 {
     QString expression;
 
     if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
-        expression = tForm.planar_linear().c_str();
+        expression = form.planar_linear().c_str();
     }
 
     if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
     {
-        expression = tForm.planar_newton().c_str();
+        expression = form.planar_newton().c_str();
     }
 
     if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
-        expression = tForm.axi_linear().c_str();
+        expression = form.axi_linear().c_str();
     }
 
     if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
     {
-        expression = tForm.axi_newton().c_str();
+        expression = form.axi_newton().c_str();
     }
 
     return expression;
 }
 
-void Agros2DGeneratorModule::generateVolumeMatrixForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output)
-{
-    foreach(XMLModule::matrix_form matrix_form, weakform.matrix_form())
+template <typename Form, typename WeakForm>
+void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0, int j = 0)
+{    
+    foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
     {
-        foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
+        foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
         {
-            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+            QString expression = weakformExpression(coordinateType, linearityType, form);
+            if(expression != "")
             {
-                QString expression = weakformExpression(coordinateType, linearityType, matrix_form);
+                ctemplate::TemplateDictionary *field;
+                field = output.AddSectionDictionary(weakFormType.toStdString() + "_SOURCE");
 
-                if  (expression != "")
+                QString functionName = QString("%1_%2_%3_%4_%5_%6").
+                        arg(weakFormType.toLower()).
+                        arg(QString::fromStdString(m_module->general().id())).
+                        arg(QString::fromStdString(weakform.analysistype())).
+                        arg(coordinateTypeToStringKey(coordinateType)).
+                        arg(linearityTypeToStringKey(linearityType)).
+                        arg(QString::number(form.i()));
+
+                if (j != 0)
                 {
-                    QString functionName = QString("%1_%2_%3_%4_%5_%6_%7").
-                            arg("volume_matrix").
-                            arg(QString::fromStdString(m_module->general().id())).
-                            arg(QString::fromStdString(weakform.analysistype())).
-                            arg(coordinateTypeToStringKey(coordinateType)).
-                            arg(linearityTypeToStringKey(linearityType)).
-                            arg(QString::number(matrix_form.i())).
-                            arg(QString::number(matrix_form.j()));
-
-                    ctemplate::TemplateDictionary *field = 0;
-                    field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                    field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-                    field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
-                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
-                    field->SetValue("ROW_INDEX", QString::number(matrix_form.i()).toStdString());
-                    field->SetValue("COLUMN_INDEX", QString::number(matrix_form.j()).toStdString());
-                    field->SetValue("MODULE_ID", m_module->general().id());
-                    QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                      coordinateType, linearityType, expression);
-                    field->SetValue("EXPRESSION", exprCpp.toStdString());
-
-                    foreach(XMLModule::quantity quantity, weakform.quantity())
-                    {
-                        ctemplate::TemplateDictionary *subField = 0;
-                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
-                        subField->SetValue("VARIABLE", quantity.id().c_str());
-                        subField->SetValue("VARIABLE_SHORT", m_volumeVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
-                    }
-
-                    field = output.AddSectionDictionary("SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
+                    field->SetValue("COLUMN_INDEX", QString::number(j).toStdString());
+                    functionName += "_" + QString::number(j);
                 }
-            }
-        }
-    }
-
-}
-
-void Agros2DGeneratorModule::generateVolumeVectorForm(XMLModule::weakform_volume weakform, ctemplate::TemplateDictionary &output)
-{
-    foreach(XMLModule::vector_form vector_form, weakform.vector_form())
-    {
-        foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
-        {
-            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
-            {
-                QString expression = weakformExpression(coordinateType, linearityType, vector_form);
-                if(expression != "")
+                    else
                 {
-                    QString functionName = QString("%1_%2_%3_%4_%5_%6_%7").
-                            arg("volume_vector").
-                            arg(QString::fromStdString(m_module->general().id())).
-                            arg(QString::fromStdString(weakform.analysistype())).
-                            arg(coordinateTypeToStringKey(coordinateType)).
-                            arg(linearityTypeToStringKey(linearityType)).
-                            arg(QString::number(vector_form.i())).
-                            arg(QString::number(vector_form.j()));
-
-
-                    ctemplate::TemplateDictionary *field;
-                    field = output.AddSectionDictionary("VECTOR_VOL_SOURCE"); // parameter output
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                    field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-                    field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
-                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
-                    field->SetValue("ROW_INDEX", QString::number(vector_form.i()).toStdString());
-                    field->SetValue("COLUMN_INDEX", QString::number(vector_form.j()).toStdString());
-                    field->SetValue("MODULE_ID", m_module->general().id());
-                    QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                      coordinateType, linearityType, expression);
-                    field->SetValue("EXPRESSION", exprCpp.toStdString());
-
-                    foreach(XMLModule::quantity quantity, weakform.quantity())
-                    {
-                        ctemplate::TemplateDictionary *subField = 0;
-                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
-                        subField->SetValue("VARIABLE", quantity.id().c_str());
-                        subField->SetValue("VARIABLE_SHORT", m_volumeVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
-                    }
-
-                    field = output.AddSectionDictionary("SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                }
-            }
-        }
-    }
-}
-
-void Agros2DGeneratorModule::generateSurfaceMatrixForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform)
-{
-    foreach(XMLModule::matrix_form matrix_form, boundary.matrix_form())
-    {
-        foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
-        {
-            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
-            {
-                QString expression = weakformExpression(coordinateType, linearityType, matrix_form);
-                if(expression != "")
-                {
-                    QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8").
-                            arg("surface_matrix").
-                            arg(QString::fromStdString(m_module->general().id())).
-                            arg(QString::fromStdString(weakform.analysistype())).
-                            arg(coordinateTypeToStringKey(coordinateType)).
-                            arg(linearityTypeToStringKey(linearityType)).
-                            arg( QString::fromStdString(boundary.id())).
-                            arg(QString::number(matrix_form.i())).
-                            arg(QString::number(matrix_form.j()));
-
-                    ctemplate::TemplateDictionary *field;
-                    field = output.AddSectionDictionary("MATRIX_SURF_SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                    field->SetValue("BOUNDARY_TYPE", boundary.id());
-                    field->SetValue("COORDINATE_TYPE",  Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-                    field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
-                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
-                    field->SetValue("ROW_INDEX", QString::number(matrix_form.i()).toStdString());
-                    field->SetValue("COLUMN_INDEX", QString::number(matrix_form.j()).toStdString());
-                    field->SetValue("MODULE_ID", m_module->general().id());
-                    QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                      coordinateType, linearityType, expression);
-                    field->SetValue("EXPRESSION", exprCpp.toStdString());
-
-                    foreach(XMLModule::quantity quantity, boundary.quantity())
-                    {
-                        ctemplate::TemplateDictionary *subField = 0;
-                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
-                        subField->SetValue("VARIABLE", quantity.id().c_str());
-                        subField->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
-                    }
-
-                    field = output.AddSectionDictionary("SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                }
-            }
-        }
-    }
-}
-
-void Agros2DGeneratorModule::generateSurfaceVectorForm(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform)
-{
-    foreach(XMLModule::vector_form vector_form, boundary.vector_form())
-    {
-        foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
-        {
-            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
-            {
-                QString expression = weakformExpression(coordinateType, linearityType, vector_form);
-                if(expression != "")
-                {
-                    QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8").
-                            arg("surface_vector").
-                            arg(QString::fromStdString(m_module->general().id())).
-                            arg(QString::fromStdString(weakform.analysistype())).
-                            arg(coordinateTypeToStringKey(coordinateType)).
-                            arg(linearityTypeToStringKey(linearityType)).
-                            arg( QString::fromStdString(boundary.id())).
-                            arg(QString::number(vector_form.i())).
-                            arg(QString::number(vector_form.j()));
-
-                    ctemplate::TemplateDictionary *field;
-                    field = output.AddSectionDictionary("VECTOR_SURF_SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                    field->SetValue("BOUNDARY_TYPE", boundary.id());
-                    field->SetValue("COORDINATE_TYPE",  Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-                    field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
-                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
-                    field->SetValue("ROW_INDEX", QString::number(vector_form.i()).toStdString());
-                    field->SetValue("COLUMN_INDEX", QString::number(vector_form.j()).toStdString());
-                    field->SetValue("MODULE_ID", m_module->general().id());
-                    QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                      coordinateType, linearityType, expression);
-                    field->SetValue("EXPRESSION", exprCpp.toStdString());
-
-                    foreach(XMLModule::quantity quantity, boundary.quantity())
-                    {
-                        ctemplate::TemplateDictionary *subField = 0;
-                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
-                        subField->SetValue("VARIABLE", quantity.id().c_str());
-                        subField->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
-                    }
-
-                    field = output.AddSectionDictionary("SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                }
-            }
-        }
-    }
-}
-
-void Agros2DGeneratorModule::generateExactSolution(XMLModule::boundary boundary, ctemplate::TemplateDictionary &output, XMLModule::weakform_surface weakform)
-{
-    foreach(XMLModule::essential_form essential_form, boundary.essential_form())
-    {
-        foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
-        {
-            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
-            {
-                QString expression = weakformExpression(coordinateType, linearityType, essential_form);
-                if(expression != "")
-                {
-                    QString functionName = QString("%1_%2_%3_%4_%5_%6_%7").
-                            arg("exact_source").
-                            arg(QString::fromStdString(m_module->general().id())).
-                            arg(QString::fromStdString(weakform.analysistype())).
-                            arg(coordinateTypeToStringKey(coordinateType)).
-                            arg(linearityTypeToStringKey(linearityType)).
-                            arg( QString::fromStdString(boundary.id())).
-                            arg(QString::number(essential_form.i()));
-
-                    ctemplate::TemplateDictionary *field;
-                    field = output.AddSectionDictionary("EXACT_SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                    field->SetValue("BOUNDARY_TYPE", boundary.id());
-                    field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-                    field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
-                    field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
-                    field->SetValue("ROW_INDEX", QString::number(essential_form.i()).toStdString());
                     field->SetValue("COLUMN_INDEX", "0");
-                    field->SetValue("MODULE_ID", m_module->general().id());
+                    functionName += "_0";
+                }
 
-                    QString exprCpp;
-                    exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                      coordinateType, linearityType, expression);
-                    field->SetValue("EXPRESSION", exprCpp.toStdString());
-
-                    foreach(XMLModule::quantity quantity, boundary.quantity())
+                if (boundary != 0)
+                {
+                    field->SetValue("BOUNDARY_TYPE", boundary->id().c_str());
+                    functionName += "_" + QString::fromStdString((boundary->id().c_str()));
+                    foreach(XMLModule::quantity quantity, boundary->quantity())
                     {
                         ctemplate::TemplateDictionary *subField = 0;
                         subField = field->AddSectionDictionary("VARIABLE_SOURCE");
                         subField->SetValue("VARIABLE", quantity.id().c_str());
-                        subField->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+                        subField->SetValue("VARIABLE_SHORT", m_variables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
                     }
-
-                    field = output.AddSectionDictionary("SOURCE");
-                    field->SetValue("FUNCTION_NAME", functionName.toStdString());
+                } else
+                {
+                    foreach(XMLModule::quantity quantity, weakform.quantity())
+                    {
+                        ctemplate::TemplateDictionary *subField = 0;
+                        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
+                        subField->SetValue("VARIABLE", quantity.id().c_str());
+                        subField->SetValue("VARIABLE_SHORT", m_variables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+                    }
                 }
+
+                field->SetValue("FUNCTION_NAME", functionName.toStdString());
+                field->SetValue("COORDINATE_TYPE",  Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+                field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
+                field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
+                field->SetValue("ROW_INDEX", QString::number(form.i()).toStdString());
+                field->SetValue("MODULE_ID", m_module->general().id());
+
+                QString exprCpp;
+                exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                  coordinateType, linearityType, expression);
+                field->SetValue("EXPRESSION", exprCpp.toStdString());
+                field = output.AddSectionDictionary("SOURCE");
+                field->SetValue("FUNCTION_NAME", functionName.toStdString());
             }
         }
     }
 }
+
 
 /*********************************************************************************************************************************************/
 
@@ -2034,7 +1840,7 @@ void Agros2DGeneratorCoupling::generateVolumeMatrixForm(XMLCoupling::weakform_vo
                             arg(QString::fromStdString(weakform.couplingtype()));
 
                     ctemplate::TemplateDictionary *field = 0;
-                    field = output.AddSectionDictionary("MATRIX_VOL_SOURCE");
+                    field = output.AddSectionDictionary("VOLUME_MATRIX_SOURCE");
                     field->SetValue("FUNCTION_NAME", functionName.toStdString());
                     field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
                     field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
@@ -2098,7 +1904,7 @@ void Agros2DGeneratorCoupling::generateVolumeVectorForm(XMLCoupling::weakform_vo
 
 
                     ctemplate::TemplateDictionary *field;
-                    field = output.AddSectionDictionary("VECTOR_VOL_SOURCE"); // parameter output
+                    field = output.AddSectionDictionary("VOLUME_VECTOR_SOURCE"); // parameter output
                     field->SetValue("FUNCTION_NAME", functionName.toStdString());
                     field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
                     field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
