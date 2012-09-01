@@ -94,7 +94,8 @@ private:
     XMLModule::module *m_module;
 
     // dictionary for variables used in weakforms
-    QHash<QString, QString> m_variables;
+    QHash<QString, QString> m_volumeVariables;
+    QHash<QString, QString> m_surfaceVariables;
 
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
@@ -151,11 +152,11 @@ private:
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
-    void generateVolumeMatrixForm(XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output);
-    void generateVolumeVectorForm(XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output);
+    template <typename Form>
+    void generateForm(Form form, XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output, QString weakFormType);
 
-    template <typename TForm>
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, TForm tForm);
+    template <typename Form>
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
 
     QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);
