@@ -71,12 +71,15 @@ class Agros2DGeneratorBase : public QObject
 
 public:
 
+protected:
+    template <typename Form>
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
+
 private:
 };
 
-class Agros2DGeneratorModule : public QObject
-{
-    Q_OBJECT
+class Agros2DGeneratorModule : public Agros2DGeneratorBase
+{    
 
 public:
     Agros2DGeneratorModule(const QString &moduleId);
@@ -106,11 +109,7 @@ private:
     template <typename Form, typename WeakForm>
     void generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary, int j);
 
-    template <typename Form>
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
-
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
-
     QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 
     void createFilterExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
@@ -120,9 +119,8 @@ private:
     QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr);
 };
 
-class Agros2DGeneratorCoupling : public QObject
-{
-    Q_OBJECT
+class Agros2DGeneratorCoupling : public Agros2DGeneratorBase
+{    
 
 public:
     Agros2DGeneratorCoupling(const QString &couplingId);
@@ -155,8 +153,8 @@ private:
     template <typename Form>
     void generateForm(Form form, XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output, QString weakFormType);
 
-    template <typename Form>
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
+    //template <typename Form>
+    //QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
 
     QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);

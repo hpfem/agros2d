@@ -296,6 +296,36 @@ void Agros2DGenerator::generateCoupling(const QString &couplingId)
 
 // ********************************************************************************************************************
 
+template <typename Form>
+QString Agros2DGeneratorBase::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form)
+{
+    QString expression;
+
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+    {
+        expression = form.planar_linear().c_str();
+    }
+
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+    {
+        expression = form.planar_newton().c_str();
+    }
+
+    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+    {
+        expression = form.axi_linear().c_str();
+    }
+
+    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+    {
+        expression = form.axi_newton().c_str();
+    }
+
+    return expression;
+}
+
+// ********************************************************************************************************************
+
 Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
 {
     QDir root(QApplication::applicationDirPath());
@@ -1217,34 +1247,6 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     }
 }
 
-template <typename Form>
-QString Agros2DGeneratorModule::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form)
-{
-    QString expression;
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = form.planar_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = form.planar_newton().c_str();
-    }
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = form.axi_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = form.axi_newton().c_str();
-    }
-
-    return expression;
-}
-
 template <typename Form, typename WeakForm>
 void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0, int j = 0)
 {    
@@ -1809,33 +1811,6 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
     }
 }
 
-template <typename Form>
-QString Agros2DGeneratorCoupling::weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form)
-{
-    QString expression;
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = form.planar_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-    {
-        expression = form.planar_newton().c_str();
-    }
-
-    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = form.axi_linear().c_str();
-    }
-
-    if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-    {
-        expression = form.axi_newton().c_str();
-    }
-
-    return expression;
-}
 
 template <typename Form>
 void Agros2DGeneratorCoupling::generateForm(Form form, XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output, QString weakFormType)
