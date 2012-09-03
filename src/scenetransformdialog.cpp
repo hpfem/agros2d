@@ -118,9 +118,17 @@ void SceneTransformDialog::createControls()
     chkCopy = new QCheckBox(tr("Copy objects"));
 
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Apply | QDialogButtonBox::Close);
-    connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(doTransform()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doClose()));
+    QPushButton *btnApply = new QPushButton(tr("Apply"));
+    connect(btnApply, SIGNAL(clicked()), this, SLOT(doTransform()));
+    btnApply->setDefault(true);
+
+    QPushButton *btnClose = new QPushButton(tr("Close"));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
+
+    QHBoxLayout *layoutButtonBox = new QHBoxLayout();
+    layoutButtonBox->addStretch();
+    layoutButtonBox->addWidget(btnApply);
+    layoutButtonBox->addWidget(btnClose);
 
     // tab widget
     tabWidget = new QTabWidget();
@@ -132,7 +140,7 @@ void SceneTransformDialog::createControls()
     layout->addWidget(tabWidget);
     layout->addWidget(chkCopy);
     layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addLayout(layoutButtonBox);
 
     setLayout(layout);
 }
