@@ -56,7 +56,7 @@ public:
     bool evaluateAllVariables();
 
     int isNone() const { return m_isNone;}
-    void setNone() {m_isNone = true;}
+    void setNone() { m_isNone = true; }
 
 private:
     QString m_name;
@@ -79,18 +79,18 @@ private:
 class Boundary : public Marker
 {
 public:
-    Boundary(FieldInfo *m_fieldInfo, QString m_name = "", QString type = "",
+    Boundary(FieldInfo *m_fieldInfo, QString m_name = "", QString m_type = "",
              QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     /// get type
-    const QString getType() const {return type;}
+    const QString type() const { return m_type; }
 
     /// set type
-    void setType(QString p_type) { type = p_type; }
+    void setType(const QString &type);
 
 private:
     /// type of boundary condition, taken from respective module
-    QString type;
+    QString m_type;
 
 
 };

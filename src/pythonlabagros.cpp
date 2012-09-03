@@ -178,7 +178,7 @@ QString createPythonFromModel()
         //str += "\n# boundaries\n";
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
-            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->getType());
+            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->type());
 
             QString variables = "{";
             const QMap<QString, Value> values = boundary->values();
@@ -195,7 +195,7 @@ QString createPythonFromModel()
             str += QString("%1.add_boundary(\"%2\", \"%3\", %4)\n").
                     arg(fieldInfo->fieldId()).
                     arg(boundary->name()).
-                    arg(boundary->getType()).
+                    arg(boundary->type()).
                     arg(variables);
         }
 
@@ -670,7 +670,7 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
     }
 
     // browse boundary parameters
-    Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(sceneBoundary->getType());
+    Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(sceneBoundary->type());
     for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;

@@ -308,7 +308,7 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
 void SceneFieldWidgetBoundary::load()
 {
     // type
-    comboBox->setCurrentIndex(comboBox->findData(boundary->getType()));
+    comboBox->setCurrentIndex(comboBox->findData(boundary->type()));
 
     // variables
     for (int i = 0; i < ids.count(); i++)

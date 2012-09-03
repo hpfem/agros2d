@@ -1817,14 +1817,14 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             QDomElement eleBoundary = doc.createElement("boundary");
 
             eleBoundary.setAttribute("name", boundary->name());
-            if (boundary->getType() == "")
+            if (boundary->type() == "")
                 eleBoundary.setAttribute("type", "none");
 
             // if (iboundary > 0)
             {
                 // write marker
                 eleBoundary.setAttribute("id", iboundary);
-                eleBoundary.setAttribute("type", boundary->getType());
+                eleBoundary.setAttribute("type", boundary->type());
 
                 const QMap<QString, Value> values = boundary->values();
                 for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)

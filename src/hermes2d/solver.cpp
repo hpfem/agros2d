@@ -200,7 +200,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 
             if (boundary && (!boundary->isNone()))
             {
-                Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
+                Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->type());
 
                 foreach (FormInfo *form, boundary_type->essential())
                 {

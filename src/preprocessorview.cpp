@@ -207,7 +207,7 @@ void PreprocessorWidget::refresh()
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
-            Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
+            Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->type());
 
             item->setText(0, QString("%1 (%2)").arg(boundary->name()).arg(boundary_type->name()));
             item->setIcon(0, (Util::scene()->edges->haveMarker(boundary).count() > 0) ? icon("scene-edgemarker") : icon("scene-edgemarker-notused"));
