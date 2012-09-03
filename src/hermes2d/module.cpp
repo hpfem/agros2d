@@ -313,7 +313,7 @@ void WeakFormAgros<Scalar>::registerForms()
             SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->marker(fieldInfo);
             if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
             {
-                Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->getType());
+                Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->type());
 
                 foreach (FormInfo *expression, boundary_type->wfMatrixSurface())
                     registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression,
