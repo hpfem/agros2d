@@ -29,11 +29,9 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormVol<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                              std::string area,
-                              Hermes::Hermes2D::SymFlag sym,
-                              Material *materialSource,
-			      Material *materialTarget);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,                              
+                      Material *materialSource,
+                      Material *materialTarget);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -43,7 +41,6 @@ public:
 private:
     Material *m_materialSource;
     Material *m_materialTarget;	
-    Hermes::Hermes2D::SymFlag m_sym;
 
     {{#VARIABLE_SOURCE}}
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
@@ -56,12 +53,9 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormVol<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                              std::string area, 
-                              Material *materialSource,
-			      Material *materialTarget	
-				
-    );
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,                              
+                      Material *materialSource,
+                      Material *materialTarget);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -84,8 +78,7 @@ class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormSurf<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                               std::string area, 
-                               Boundary *boundary);
+                      Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -106,8 +99,7 @@ class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormSurf<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                               std::string area, 
-                               Boundary *boundary);
+                      Boundary *boundary);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;

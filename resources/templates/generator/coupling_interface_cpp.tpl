@@ -34,26 +34,27 @@
 
 #include "hermes2d/marker.h"
 
-Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,
-                                                              const std::string &area, Hermes::Hermes2D::SymFlag sym,
-                                                              SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
+Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,                                                              
+                                                              Material *materialSource,
+                                                              Material *materialTarget, int offsetI, int offsetJ)
 {
 	{{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
-        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ , area, sym, materialSource, materialTarget);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, materialSource, materialTarget);
 	{{/VOLUME_MATRIX_SOURCE}}
 
     return NULL;
 }
 
 Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
-                                                              const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ)
+                                                                           Material *materialSource,
+                                                                           Material *materialTarget, int offsetI, int offsetJ)
 {
 	{{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
-        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, area, materialSource, materialTarget);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, materialSource, materialTarget);
 	{{/VOLUME_VECTOR_SOURCE}}
 
     return NULL;

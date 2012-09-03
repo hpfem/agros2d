@@ -46,18 +46,17 @@ public:
     inline virtual QString fieldId() { return "{{ID}}"; }
 
     // weakforms
-    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
-                                                                  const std::string &area, Hermes::Hermes2D::SymFlag sym,
-                                                                  SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ );    
+    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,                                                                  
+                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ );
 
     virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
-                                                                  const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ);
+                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ);
 
     virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
+                                                                     Boundary *boundary, int offsetI, int offsetJ);
 
     virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                                    const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ);
+                                                                     Boundary *boundary, int offsetI, int offsetJ);
 
     virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 

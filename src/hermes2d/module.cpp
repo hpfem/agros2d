@@ -98,7 +98,8 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
-                                            Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
+                                            Marker* marker, Material *markerSecond,
+                                            int offsetI, int offsetJ)
 {
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
@@ -107,16 +108,33 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     PluginInterface *plugin = Util::plugins()[fieldId];
     assert(plugin);
 
+    Hermes::Hermes2D::Form<Scalar> *weakForm = NULL;
+
     if (type == WeakForm_MatVol)
-        return plugin->matrixFormVol(problemId, form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+    {
+        weakForm = plugin->matrixFormVol(problemId, form->i, form->j, static_cast<Material *>(marker), markerSecond, offsetI, offsetJ);
+        static_cast<Hermes::Hermes2D::MatrixFormVol<double> *>(weakForm)->setSymFlag(form->sym);
+    }
     else if (type == WeakForm_MatSurf)
-        return plugin->matrixFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
+    {
+        weakForm = plugin->matrixFormSurf(problemId, form->i, form->j, static_cast<Boundary *>(marker), offsetI, offsetJ);
+    }
     else if (type == WeakForm_VecVol)
-        return plugin->vectorFormVol(problemId, form->i, form->j, area.toStdString(), (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
+    {
+        weakForm = plugin->vectorFormVol(problemId, form->i, form->j, static_cast<Material *>(marker), markerSecond, offsetI, offsetJ);
+    }
     else if (type == WeakForm_VecSurf)
-        return plugin->vectorFormSurf(problemId, form->i, form->j, area.toStdString(), (SceneBoundary*) marker, offsetI, offsetJ);
-    else
+    {
+        weakForm = plugin->vectorFormSurf(problemId, form->i, form->j, static_cast<Boundary *>(marker), offsetI, offsetJ);
+    }
+
+    if (!weakForm)
         assert(0);
+
+    // set area
+    weakForm->setArea(area.toStdString());
+
+    return weakForm;
 }
 
 template <typename Scalar>
@@ -164,15 +182,15 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
         FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Finer);
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
         {
-            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+            custom_form->setExt(Util::solutionStore()->solution(solutionID, comp).sln.data());
         }
     }
 
     addForm(type, custom_form);
 }
 
-//TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//TODO Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// TODO: Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// TODO: Still? Check it, please.
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ,
                                                  SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
@@ -209,7 +227,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
         {
-            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+            custom_form->setExt(Util::solutionStore()->solution(solutionID, comp).sln.data());
         }
     }
 

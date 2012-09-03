@@ -42,7 +42,7 @@ struct PointValue
         this->material = NULL;
     }
 
-    PointValue(double scalar, Point vector, SceneMaterial *material)
+    PointValue(double scalar, Point vector, Material *material)
     {
         this->scalar = scalar;
         this->vector = vector;
@@ -51,7 +51,7 @@ struct PointValue
 
     double scalar;
     Point vector;
-    SceneMaterial *material;
+    Material *material;
 };
 
 class LocalValue
@@ -103,18 +103,17 @@ public:
 
     virtual QString fieldId() = 0;
 
-    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
-                                                                   const std::string &area, Hermes::Hermes2D::SymFlag sym,
-                                                                   SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
+    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,                                                                   
+                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
 
     virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
-                                                                   const std::string &area, SceneMaterial *materialSource, Material *materialTarget, int offsetI, int offsetJ) = 0;
+                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ) = 0;
 
     virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;
+                                                                     Boundary *boundary, int offsetI, int offsetJ) = 0;
 
     virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                                     const std::string &area, SceneBoundary *boundary, int offsetI, int offsetJ) = 0;
+                                                                     Boundary *boundary, int offsetI, int offsetJ) = 0;
 
     virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) = 0;
 

@@ -432,12 +432,15 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
             newton.solve(coeff_vec);
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
+            // TODO: temporarily disabled
+            /*
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
                                     arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                     arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
             msa.setAssemblyTime(newton.get_assemble_time() * 1000.0);
             msa.setSolveTime(newton.get_solve_time() * 1000.0);
+            */
             delete coeff_vec;
         }
         catch (Hermes::Exceptions::Exception e)
@@ -462,13 +465,14 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
             slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
         }
         PicardSolverAgros<Scalar> picard(&dp, slns);
-        // picard.attach_timer(&timer);
+        picard.set_picard_tol(m_block->nonlinearTolerance());
+        picard.set_picard_max_iter(m_block->nonlinearSteps());
         picard.set_verbose_output(true);
         picard.set_verbose_callback(processSolverOutput);
 
         try
         {
-            picard.solve(m_block->nonlinearTolerance(), m_block->nonlinearSteps());
+            picard.solve();
             Solution<Scalar>::vector_to_solutions(picard.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             /*
