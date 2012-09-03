@@ -117,7 +117,7 @@
   <module:preprocessor>
     <module:gui type="volume">
       <module:group name="Material properties">
-        <module:quantity id="magnetic_permeability" name="Permeability" condition="value > 0" default="1" shortname="mur" shortname_dependence="B" shortname_dependence_html="&lt;i>B&lt;/i>" shortname_html="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value > 0" default="1" id="magnetic_permeability" name="Permeability" shortname="mur" shortname_dependence="B" shortname_dependence_html="&lt;i>B&lt;/i>" shortname_html="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" unit="-" unit_html="-" unit_latex="-"/>
         <module:quantity id="magnetic_conductivity" name="Electrical conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
       </module:group>
       <module:group name="Source">
@@ -136,10 +136,10 @@
     </module:gui>
     <module:gui type="surface">
       <module:group>
-        <module:quantity id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" shortname_html="&lt;i>A&lt;/i>&lt;sub>r&lt;/sub>" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}"/>
-        <module:quantity id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" shortname_html="&lt;i>A&lt;/i>&lt;sub>i&lt;/sub>" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}"/>
-        <module:quantity id="magnetic_surface_current_real" name="Surface current - real" shortname="Jr" shortname_html="&lt;i>J&lt;/i>&lt;sub>r&lt;/sub>" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}"/>
-        <module:quantity id="magnetic_surface_current_imag" name="Surface current - imag" shortname="Ji" shortname_html="&lt;i>J&lt;/i>&lt;sub>i&lt;/sub>" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}"/>
+        <module:quantity condition="" default="0" id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" shortname_html="&lt;i>A&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}"/>
+        <module:quantity condition="" default="0" id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" shortname_html="&lt;i>A&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}"/>
+        <module:quantity condition="" default="0" id="magnetic_surface_current_real" name="Surface current - real" shortname="Jr" shortname_html="&lt;i>J&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}"/>
+        <module:quantity condition="" default="0" id="magnetic_surface_current_imag" name="Surface current - imag" shortname="Ji" shortname_html="&lt;i>J&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}"/>
       </module:group>
     </module:gui>
   </module:preprocessor>

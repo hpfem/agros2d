@@ -86,7 +86,7 @@ public:
     const QString type() const { return m_type; }
 
     /// set type
-    void setType(const QString &type);
+    void setType(const QString &type) { m_type = type; }
 
 private:
     /// type of boundary condition, taken from respective module

@@ -27,7 +27,7 @@
 
 Marker::Marker(FieldInfo *fieldInfo, QString name)
     : m_fieldInfo(fieldInfo), m_name(name), m_isNone(false)
-{    
+{
 }
 
 Marker::~Marker()
@@ -70,23 +70,16 @@ QString Marker::fieldId()
 Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
                    QMap<QString, Value> values) : Marker(fieldInfo, name)
 {
-    // name and type
-    this->m_values = values;
-
+    // type
     setType(type);
-}
-
-void Boundary::setType(const QString &type)
-{
-    m_type = type;
 
     // set values
+    this->m_values = values;
     if (!isNone() && !m_type.isEmpty())
     {
         if (this->m_values.size() == 0)
         {
-            Module::BoundaryType *boundaryType = m_fieldInfo->module()->boundaryType(m_type);
-            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+            foreach (Module::BoundaryTypeVariable *variable, fieldInfo->module()->boundaryTypeVariables())
                 this->m_values[variable->id()] = Value(QString::number(variable->defaultValue()));
         }
     }

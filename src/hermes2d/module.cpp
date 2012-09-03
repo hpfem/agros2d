@@ -680,6 +680,11 @@ void Module::BasicModule::read(const QString &filename)
         // default
         m_boundaryTypeDefault = boundaryType(QString::fromStdString(wf.default_().get()));
     }
+
+    // TODO: (Franta)
+    foreach (Module::BoundaryTypeVariable variable, boundary_type_variables_tmp)
+        m_boundaryTypeVariables.append(new Module::BoundaryTypeVariable(variable.id(), variable.shortname(),
+                                                                        variable.defaultValue(), variable.isTimeDep()));
     boundary_type_variables_tmp.clear();
 
     // volumetric weakforms
