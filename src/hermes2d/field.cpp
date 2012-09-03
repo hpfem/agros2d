@@ -83,8 +83,6 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
     }
 
     clear();
-
-    m_forceValue = new LocalForceValue(this);
 }
 
 FieldInfo::~FieldInfo()

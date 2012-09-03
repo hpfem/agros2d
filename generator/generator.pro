@@ -21,6 +21,8 @@ include(../agros2d.pri)
 OTHER_FILES += \
     ../resources/templates/generator/filter_cpp.tpl \
     ../resources/templates/generator/filter_h.tpl \
+    ../resources/templates/generator/force_cpp.tpl \
+    ../resources/templates/generator/force_h.tpl \
     ../resources/templates/generator/localvalue_cpp.tpl \
     ../resources/templates/generator/localvalue_h.tpl \
     ../resources/templates/generator/surfaceintegral_cpp.tpl \

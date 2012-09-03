@@ -95,8 +95,6 @@ public:
     inline Value timeStepsSkip() const { return m_timeStepsSkip; }
     void setTimeStepsSkip(const Value& value) { m_timeStepsSkip = value; emit changed(); }
 
-    inline LocalForceValue *forceValue() { return m_forceValue; }
-
     // module
     QString name();
     // description
@@ -114,9 +112,6 @@ private:
 
     /// unique field info
     QString m_fieldId;
-
-    /// field force calculation
-    LocalForceValue *m_forceValue;
 
     // analysis type
     AnalysisType m_analysisType;

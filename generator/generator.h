@@ -86,6 +86,7 @@ public:
 
     void generatePluginProjectFile();
     void generatePluginFilterFiles();
+    void generatePluginForceFiles();
     void generatePluginLocalPointFiles();
     void generatePluginSurfaceIntegralFiles();
     void generatePluginVolumeIntegralFiles();

@@ -24,6 +24,7 @@
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
 #include "{{ID}}_filter.h"
+#include "{{ID}}_force.h"
 #include "{{ID}}_localvalue.h"
 #include "{{ID}}_surfaceintegral.h"
 #include "{{ID}}_volumeintegral.h"
@@ -68,7 +69,7 @@ Hermes::Hermes2D::MatrixFormSurf<double> *{{CLASS}}Interface::matrixFormSurf(con
 {
 	{{#SURFACE_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
-        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}")))
+        && (j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
         return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, area, boundary);
 	{{/SURFACE_MATRIX_SOURCE}}
 
@@ -80,7 +81,7 @@ Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(con
 {
 	{{#SURFACE_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
-        && (j == {{COLUMN_INDEX}}) && (boundary->getType() == "{{BOUNDARY_TYPE}}")))
+        && (j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
         return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, area, boundary);
 	{{/SURFACE_VECTOR_SOURCE}}
 
@@ -119,5 +120,11 @@ IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo)
 {
     return new {{CLASS}}VolumeIntegral(fieldInfo);
 }
+
+Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity)
+{
+    return force{{CLASS}}(fieldInfo, point, velocity);
+}
+
 
 Q_EXPORT_PLUGIN2({{ID}}, {{CLASS}}Interface)

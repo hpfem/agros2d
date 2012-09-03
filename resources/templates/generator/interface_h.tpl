@@ -75,6 +75,9 @@ public:
     virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo);
     // volume integrals
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo);
+
+    // force calculation
+    Point3 force(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity);
 };
 
 #endif // {{ID}}_INTERFACE_H

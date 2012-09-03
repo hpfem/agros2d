@@ -2114,7 +2114,7 @@ ErrorResult Scene::checkGeometryResult()
 void Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
 {
     // Lorentz force
-    Point3 forceLorentz = fieldInfo->forceValue()->calculate(position, velocity) * Util::config()->particleConstant;
+    Point3 forceLorentz = Util::plugins()[fieldInfo->fieldId()]->force(fieldInfo, position, velocity) * Util::config()->particleConstant;
 
     // Gravitational force
     Point3 forceGravitational;

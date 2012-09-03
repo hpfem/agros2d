@@ -279,6 +279,7 @@ void Agros2DGenerator::generateModule(const QString &moduleId)
     generator.generatePluginProjectFile();
     generator.generatePluginInterfaceFiles();
     generator.generatePluginFilterFiles();
+    generator.generatePluginForceFiles();
     generator.generatePluginLocalPointFiles();
     generator.generatePluginSurfaceIntegralFiles();
     generator.generatePluginVolumeIntegralFiles();
@@ -612,6 +613,81 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
                        QString::fromStdString(text));
 }
 
+void Agros2DGeneratorModule::generatePluginForceFiles()
+{
+    qDebug() << tr("%1: generating plugin force file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", id.toStdString());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(QString("%1/%2/force_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+
+    // force
+    XMLModule::force force = m_module->postprocessor().force();
+    foreach (XMLModule::expression expr, force.expression())
+    {
+        AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()));
+
+        foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+        {
+            ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
+
+            expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
+            expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+
+            if (coordinateType == CoordinateType_Planar)
+            {
+                expression->SetValue("EXPRESSION_X", parsePostprocessorExpression(analysisType, coordinateType,
+                                                                                  QString::fromStdString(expr.planar_x().get())).replace("[i]", "").toStdString());
+                expression->SetValue("EXPRESSION_Y", parsePostprocessorExpression(analysisType, coordinateType,
+                                                                                  QString::fromStdString(expr.planar_y().get())).replace("[i]", "").toStdString());
+                expression->SetValue("EXPRESSION_Z", parsePostprocessorExpression(analysisType, coordinateType,
+                                                                                  QString::fromStdString(expr.planar_z().get())).replace("[i]", "").toStdString());
+            }
+            else
+            {
+                {
+                    expression->SetValue("EXPRESSION_X", parsePostprocessorExpression(analysisType, coordinateType,
+                                                                                      QString::fromStdString(expr.axi_r().get())).replace("[i]", "").toStdString());
+                    expression->SetValue("EXPRESSION_Y", parsePostprocessorExpression(analysisType, coordinateType,
+                                                                                      QString::fromStdString(expr.axi_z().get())).replace("[i]", "").toStdString());
+                    expression->SetValue("EXPRESSION_Z", parsePostprocessorExpression(analysisType, coordinateType,
+                                                                                      QString::fromStdString(expr.axi_phi().get())).replace("[i]", "").toStdString());
+                }
+            }
+        }
+    }
+
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_force.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    ctemplate::ExpandTemplate(QString("%1/%2/force_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_force.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
 void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 {
     qDebug() << tr("%1: generating plugin local point file.").arg(QString::fromStdString(m_module->general().id()));
@@ -894,6 +970,9 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
         lex.addVariable(QString("y"));
         lex.addVariable(QString("tanx"));
         lex.addVariable(QString("tany"));
+        lex.addVariable(QString("velx"));
+        lex.addVariable(QString("vely"));
+        lex.addVariable(QString("velz"));
     }
     else
     {
@@ -901,6 +980,9 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
         lex.addVariable(QString("z"));
         lex.addVariable(QString("tanr"));
         lex.addVariable(QString("tanz"));
+        lex.addVariable(QString("velr"));
+        lex.addVariable(QString("velz"));
+        lex.addVariable(QString("velphi"));
     }
 
 
@@ -961,15 +1043,25 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
             {
                 if (repl == "x") { exprCpp += "x[i]"; isReplaced = true; }
                 if (repl == "y") { exprCpp += "y[i]"; isReplaced = true; }
+                // surface integral
                 if (repl == "tanx") { exprCpp += "tan[i][0]"; isReplaced = true; }
                 if (repl == "tany") { exprCpp += "tan[i][1]"; isReplaced = true; }
+                // velocity (force calculation)
+                if (repl == "velx") { exprCpp += "velocity.x"; isReplaced = true; }
+                if (repl == "vely") { exprCpp += "velocity.y"; isReplaced = true; }
+                if (repl == "velz") { exprCpp += "velocity.z"; isReplaced = true; }
             }
             else
             {
                 if (repl == "r") { exprCpp += "x[i]"; isReplaced = true; }
                 if (repl == "z") { exprCpp += "y[i]"; isReplaced = true; }
+                // surface integral
                 if (repl == "tanr") { exprCpp += "tan[i][0]"; isReplaced = true; }
                 if (repl == "tanz") { exprCpp += "tan[i][1]"; isReplaced = true; }
+                // velocity (force calculation)
+                if (repl == "velr") { exprCpp += "velocity.x"; isReplaced = true; }
+                if (repl == "velz") { exprCpp += "velocity.y"; isReplaced = true; }
+                if (repl == "velphi") { exprCpp += "velocity.z"; isReplaced = true; }
             }
 
             // constants

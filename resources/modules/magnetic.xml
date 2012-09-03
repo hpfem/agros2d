@@ -337,7 +337,7 @@
       </module:surfaceintegral>
     </module:surfaceintegrals>
     <module:force>
-      <module:expression analysistype="steadystate" axi_phi="vely * dz1 + velx * (dr1 + value1 / (r + 1e-12))" axi_r="- velz * (r * dr1 + value1)" axi_z="- velz * r * (dz1)" planar_x="- velz * (-dx1)" planar_y="velz * dy1" planar_z="velx * (-dx1) - vely * dy1"/>
+      <module:expression analysistype="steadystate" axi_phi="velz * dz1 + velr * (dr1 + value1 / (r + 1e-12))" axi_r="- velphi * (r * dr1 + value1)" axi_z="- velphi * r * (dz1)" planar_x="- velz * (-dx1)" planar_y="velz * dy1" planar_z="velx * (-dx1) - vely * dy1"/>
     </module:force>
   </module:postprocessor>
 
