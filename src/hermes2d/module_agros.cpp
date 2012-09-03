@@ -102,8 +102,14 @@ SceneBoundary *Module::ModuleAgros::newBoundary()
     // TODO: add dialog
     FieldInfo *field = Util::problem()->fieldInfo(this->m_fieldid);
 
-    return new SceneBoundary(field, tr("new boundary"),
-                             field->module()->boundaryTypeDefault()->id());
+    // TODO: (Franta) default of other boundary types
+    SceneBoundary *boundary = new SceneBoundary(field, tr("new boundary"),
+                                 field->module()->boundaryTypeDefault()->id());
+
+    foreach (Module::BoundaryTypeVariable *variable, boundary->fieldInfo()->module()->boundaryTypeVariables())
+        boundary->setValue(variable->id(), Value(variable->defaultValue()));
+
+    return boundary;
 }
 
 SceneMaterial *Module::ModuleAgros::newMaterial()
@@ -111,7 +117,11 @@ SceneMaterial *Module::ModuleAgros::newMaterial()
     // TODO: add dialog
     FieldInfo *field = Util::problem()->fieldInfo(this->m_fieldid);
 
-    return new SceneMaterial(field, tr("new material"));
+    SceneMaterial *material = new SceneMaterial(field, tr("new material"));
+    foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
+        material->setValue(variable->id(), Value(variable->defaultValue()));
+
+    return material;
 }
 
 //SceneBoundaryContainer Module::ModuleAgros::boundaries()

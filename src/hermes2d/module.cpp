@@ -643,6 +643,26 @@ void Module::BasicModule::read(const QString &filename)
     for (int i = 0; i < mod->surface().quantity().size(); i++)
     {
         XMLModule::quantity quant = mod->surface().quantity().at(i);
+
+        // TODO: (Franta)
+        for (int i = 0; i < mod->preprocessor().gui().size(); i++)
+        {
+            XMLModule::gui *ui = &mod->preprocessor().gui().at(i);
+            if (ui->type() == "surface")
+            {
+                for (int i = 0; i < ui->group().size(); i++)
+                {
+                    XMLModule::group *grp = &ui->group().at(i);
+                    for (int i = 0; i < grp->quantity().size(); i++)
+                    {
+                        XMLModule::quantity *quant_gui = &grp->quantity().at(i);
+                        if ((quant_gui->id() == quant.id()) && quant_gui->default_().present())
+                            quant.default_() = quant_gui->default_().get();
+                    }
+                }
+            }
+        }
+
         boundary_type_variables_tmp.append(Module::BoundaryTypeVariable(quant));
     }
 
@@ -667,6 +687,26 @@ void Module::BasicModule::read(const QString &filename)
     for (int i = 0; i < mod->volume().quantity().size(); i++)
     {
         XMLModule::quantity quant = mod->volume().quantity().at(i);
+
+        // TODO: (Franta)
+        for (int i = 0; i < mod->preprocessor().gui().size(); i++)
+        {
+            XMLModule::gui *ui = &mod->preprocessor().gui().at(i);
+            if (ui->type() == "volume")
+            {
+                for (int i = 0; i < ui->group().size(); i++)
+                {
+                    XMLModule::group *grp = &ui->group().at(i);
+                    for (int i = 0; i < grp->quantity().size(); i++)
+                    {
+                        XMLModule::quantity *quant_gui = &grp->quantity().at(i);
+                        if ((quant_gui->id() == quant.id()) && quant_gui->default_().present())
+                            quant.default_() = quant_gui->default_().get();
+                    }
+                }
+            }
+        }
+
         material_type_variables_tmp.append(Module::MaterialTypeVariable(quant, m_coordinateType));
     }
 
