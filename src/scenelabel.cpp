@@ -144,7 +144,7 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
 
     // order
     txtPolynomialOrder = new QSpinBox(this);
-    txtPolynomialOrder->setMinimum(0);
+    txtPolynomialOrder->setMinimum(1);
     txtPolynomialOrder->setMaximum(10);
 
     chkPolynomialOrder = new QCheckBox();

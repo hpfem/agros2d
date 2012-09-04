@@ -1180,17 +1180,15 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
         }
 
     // refine mesh - elements
-    /*
-    TODO: (Franta)
     if (refineArea)
     {
         foreach (SceneLabel *label, Util::scene()->labels->items())
         {
             if (fieldInfo->labelRefinement(label) > 0)
-                mesh->refine_element(Util::scene()->labels->items().indexOf(label), fieldInfo->labelRefinement(label));
+                mesh->refine_in_area(QString::number(Util::scene()->labels->items().indexOf(label)).toStdString(),
+                                     fieldInfo->labelRefinement(label));
         }
     }
-    */
 }
 
 template class WeakFormAgros<double>;
