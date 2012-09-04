@@ -41,13 +41,13 @@ eps1 = 10
 eps2 = 3</startup_script>
         <description>This model is an example.</description>
         <fields>
-            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" time_steps_skip="1" number_of_refinements="0" weak_forms="compiled" analysis_type="steadystate">
+            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" time_steps_skip="1" number_of_refinements="0" analysis_type="steadystate">
                 <refinement>
                     <edges>
+                        <edge refinement="1" edge="12"/>
                         <edge refinement="1" edge="1"/>
                         <edge refinement="1" edge="6"/>
                         <edge refinement="1" edge="8"/>
-                        <edge refinement="1" edge="12"/>
                     </edges>
                     <labels/>
                 </refinement>
@@ -58,16 +58,16 @@ eps2 = 3</startup_script>
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
-                    <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source">
+                    <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source" electrostatic_surface_charge_density="5">
                         <edge edge="1"/>
                         <edge edge="12"/>
                     </boundary>
-                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground">
+                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground" electrostatic_surface_charge_density="5">
                         <edge edge="6"/>
                         <edge edge="7"/>
                         <edge edge="8"/>
                     </boundary>
-                    <boundary type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0">
+                    <boundary electrostatic_potential="1000" type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0">
                         <edge edge="0"/>
                         <edge edge="2"/>
                         <edge edge="5"/>

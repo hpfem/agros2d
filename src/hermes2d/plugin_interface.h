@@ -103,7 +103,7 @@ public:
 
     virtual QString fieldId() = 0;
 
-    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,                                                                   
+    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                    Material *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
 
     virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
