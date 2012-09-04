@@ -17,9 +17,7 @@ heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
 heat.number_of_refinements = 1
 heat.polynomial_order = 2
-# TODO - linear doesn't work
-#heat.linearity_type = "linear"
-heat.linearity_type = "newton"
+heat.linearity_type = "linear"
 heat.nonlinear_tolerance = 0.001
 heat.nonlinear_steps = 10
 
