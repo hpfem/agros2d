@@ -364,9 +364,10 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa)
+void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa)
 {
     Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
+    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));
 
     // Linear solver
     if (m_block->linearityType() == LinearityType_Linear)
@@ -378,6 +379,10 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, MultiSolutionArr
         try
         {
             linear.solve();
+
+            memcpy(solutionVector, linear.get_sln_vector(), ndof * sizeof(Scalar));
+
+            // todo: this probably should not be done here, since we return solution vector
             Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             /*
@@ -413,23 +418,20 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, MultiSolutionArr
         newton.set_max_allowed_residual_norm(1e15);
         try
         {
-            int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));
-
-            // Initial coefficient vector for the Newton's method.
-            Scalar* coeff_vec = new Scalar[ndof];
-
             if(previousMsa)
             {
                 OGProjection<double> ogProjection;
                 ogProjection.project_global(castConst(desmartize(msa.spaces())),
                                             desmartize(previousMsa->solutions()),
-                                            coeff_vec, m_block->projNormTypeVector());
+                                            solutionVector, m_block->projNormTypeVector());
 
             }
             else
-                memset(coeff_vec, 0, ndof*sizeof(Scalar));
+                memset(solutionVector, 0, ndof*sizeof(Scalar));
 
-            newton.solve(coeff_vec);
+            newton.solve(solutionVector);
+
+            // todo: this probably should not be done here, since we return solution vector
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
             Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
@@ -438,7 +440,6 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, MultiSolutionArr
                                     arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
             msa.setAssemblyTime(newton.get_assemble_time() * 1000.0);
             msa.setSolveTime(newton.get_solve_time() * 1000.0);
-            delete coeff_vec;
         }
         catch (Hermes::Exceptions::Exception e)
         {
@@ -451,6 +452,7 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, MultiSolutionArr
     // Picard solver
     if (m_block->linearityType() == LinearityType_Picard)
     {
+        assert(0); // redo after refact with solutionVector
         // Initialize the FE problem.
         DiscreteProblemLinear<Scalar> dp(wf, castConst(desmartize(msa.spaces())));
 
@@ -527,9 +529,29 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     bdf2ATable.setPreviousSteps(Util::problem()->timeSteps());
     wf.registerTimeForms(&bdf2ATable);
 
-    solveOneProblem(&wf, multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
+    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
+    Scalar coefVec[ndof];
+    //Scalar* coeffVec = new Scalar[ndof];
+
+    solveOneProblem(&wf, coefVec, multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
+
+    if(Util::problem()->config()->timeStepMethod() == TimeStepMethod_BDF2)
+    {
+        WeakFormAgros<double> wf2(m_block);
+        wf2.set_current_time(Util::problem()->actualTime());
+        wf2.registerForms();
+
+        BDF2BTable bdf2BTable;
+        //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
+        bdf2BTable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
+        bdf2BTable.setPreviousSteps(Util::problem()->timeSteps());
+        wf2.registerTimeForms(&bdf2BTable);
+
+        Scalar coefVec2[ndof];
+        solveOneProblem(&wf2, coefVec2, multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
+    }
 
     // output
     BlockSolutionID solutionID;
@@ -594,8 +616,11 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // create solutions
     createNewSolutions(msaRef);
 
+    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msaRef.spaces())));
+    Scalar* coeffVec = new Scalar[ndof];
+
     // solve reference problem
-    solveOneProblem(&wf, msaRef);
+    solveOneProblem(&wf, coeffVec, msaRef);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
