@@ -169,21 +169,16 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, form, marker, NULL, offsetI, offsetJ);
-
-    if (custom_form == NULL)
-    {
-        Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2). %3, (%4, %5)").
-                                  arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)).arg(problemId.toString()).arg(offsetI).arg(offsetJ));
-        throw AgrosSolverException("Compiled form not found");
-    }
+    assert(custom_form);
 
     if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
     {
         FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Finer);
+        Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-        {
-            custom_form->setExt(Util::solutionStore()->solution(solutionID, comp).sln.data());
-        }
+            slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+
+        custom_form->setExt(slns);
     }
 
     addForm(type, custom_form);
@@ -208,27 +203,22 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
                                                                       area, form, materialSource, materialTarget, offsetI, offsetJ);
-
-    if (!custom_form)
-    {
-        Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %2. %3, (%4, %5)").
-                                  arg(weakFormString(type)).arg(problemId.toString()).arg(offsetI).arg(offsetJ));
-        throw AgrosSolverException("Compiled form not found");
-    }
+    assert(custom_form);
 
     // TODO at the present moment, it is impossible to have more sources !
     //assert(field->m_couplingSources.size() <= 1);
 
     // push external solution for weak coupling
-    if(couplingInfo->isWeak())
+    if (couplingInfo->isWeak())
     {
         FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
         assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
 
+        Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-        {
-            custom_form->setExt(Util::solutionStore()->solution(solutionID, comp).sln.data());
-        }
+            slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+
+        custom_form->setExt(slns);
     }
 
     addForm(type, custom_form);
