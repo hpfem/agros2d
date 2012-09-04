@@ -68,10 +68,7 @@ template<typename Scalar>
 class PicardSolverAgros : public PicardSolver<Scalar>
 {
 public:
-    PicardSolverAgros(DiscreteProblemLinear<Scalar>* dp, Solution<Scalar>* sln_prev_iter)
-        : PicardSolver<Scalar>(dp, sln_prev_iter) {}
-    PicardSolverAgros(DiscreteProblemLinear<Scalar>* dp, Hermes::vector<Solution<Scalar>* > slns_prev_iter)
-        : PicardSolver<Scalar>(dp, slns_prev_iter) {}
+    PicardSolverAgros(DiscreteProblemLinear<Scalar>* dp) : PicardSolver<Scalar>(dp) {}
 
     virtual void onInitialization()
     {
@@ -464,7 +461,8 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
             Hermes::Hermes2D::Space<Scalar> *spc = space.data();
             slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
         }
-        PicardSolverAgros<Scalar> picard(&dp, slns);
+        PicardSolverAgros<Scalar> picard(&dp);
+        picard.setPreviousSolutions(slns);
         picard.set_picard_tol(m_block->nonlinearTolerance());
         picard.set_picard_max_iter(m_block->nonlinearSteps());
         picard.set_verbose_output(true);
