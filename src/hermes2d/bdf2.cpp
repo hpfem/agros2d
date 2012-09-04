@@ -209,7 +209,7 @@ Scalar CustomMatrixFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes
     double* alpha = m_table->alpha();
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * alpha[0] * he_rho.value(0)*he_cp.value(0) * u->val[i] * v->val[i];
+        result += wt[i] * alpha[0]/m_table->gamma()[0] * he_rho.value(0)*he_cp.value(0) * u->val[i] * v->val[i];
     }
     result /= Util::problem()->config()->timeStep().number();
 
@@ -222,7 +222,7 @@ template <typename Scalar>
 Hermes::Ord CustomMatrixFormVol_time<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                                              Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
-    Hermes::Ord result(10);
+    Hermes::Ord result(20);
 //    for (int i = 0; i < n; i++)
 //    {
 //       result += wt[i] * (10);
@@ -268,7 +268,7 @@ Scalar CustomVectorFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes
     {
         for(int ps = 0; ps < m_table->n(); ps++)
         {
-            result += wt[i] * (-alpha[ps + 1]) * he_rho.value(0)*he_cp.value(0) * ext->fn[ps]->val[i] * v->val[i];
+            result += wt[i] * (-alpha[ps + 1]/m_table->gamma()[0]) * he_rho.value(0)*he_cp.value(0) * ext->fn[ps]->val[i] * v->val[i];
         }
     }
     result /= Util::problem()->config()->timeStep().number();
@@ -282,7 +282,7 @@ Hermes::Ord CustomVectorFormVol_time<Scalar>::ord(int n, double *wt, Hermes::Her
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     //variable_definition
-    Hermes::Ord result(10);
+    Hermes::Ord result(20);
 //    for (int i = 0; i < n; i++)
 //    {
 //       result += wt[i] * (1*(u_ext[this->j]->dx[i]*v->dx[i]+u_ext[this->j]->dy[i]*v->dy[i])-1*v->val[i]+1*1*((1-e->y[i]*1)*u_ext[this->j]->dx[i]+(1+e->x[i]*1)*u_ext[this->j]->dy[i])*v->val[i]);
@@ -306,8 +306,8 @@ CustomVectorFormVol_time<Scalar>* CustomVectorFormVol_time<Scalar>::clone()
 template <typename Scalar>
 CustomVectorFormVol_time_residual<Scalar>::CustomVectorFormVol_time_residual(unsigned int i, unsigned int j,
                                                  std::string area,
-                                                 Material* materialSource)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), j(j)
+                                                 Material* materialSource, BDF2Table* table)
+    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), j(j), m_table(table)
 {
  he_lambda = m_materialSource->value("heat_conductivity");
  he_p = m_materialSource->value("heat_volume_heat");
@@ -331,7 +331,7 @@ Scalar CustomVectorFormVol_time_residual<Scalar>::value(int n, double *wt, Herme
 
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * (he_lambda.value(ext->fn[0]->val[i])*(ext->fn[0]->dx[i]*v->dx[i]+ext->fn[0]->dy[i]*v->dy[i])-he_p.number()*v->val[i]+he_rho.value(ext->fn[0]->val[i])*he_cp.value(ext->fn[0]->val[i])*((he_vx.number()-e->y[i]*he_va.number())*ext->fn[0]->dx[i]+(he_vy.number()+e->x[i]*he_va.number())*ext->fn[0]->dy[i])*v->val[i]);
+        result += wt[i] * m_table->gamma()[1] / m_table->gamma()[0] * (he_lambda.value(ext->fn[0]->val[i])*(ext->fn[0]->dx[i]*v->dx[i]+ext->fn[0]->dy[i]*v->dy[i])-he_p.number()*v->val[i]+he_rho.value(ext->fn[0]->val[i])*he_cp.value(ext->fn[0]->val[i])*((he_vx.number()-e->y[i]*he_va.number())*ext->fn[0]->dx[i]+(he_vy.number()+e->x[i]*he_va.number())*ext->fn[0]->dy[i])*v->val[i]);
     }
     return result;
 }
@@ -345,7 +345,7 @@ Hermes::Ord CustomVectorFormVol_time_residual<Scalar>::ord(int n, double *wt, He
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
 {
     //variable_definition
-    Hermes::Ord result(10);
+    Hermes::Ord result(20);
 //    for (int i = 0; i < n; i++)
 //    {
 //       result += wt[i] * (1*(u_ext[this->j]->dx[i]*v->dx[i]+u_ext[this->j]->dy[i]*v->dy[i])-1*v->val[i]+1*1*((1-e->y[i]*1)*u_ext[this->j]->dx[i]+(1+e->x[i]*1)*u_ext[this->j]->dy[i])*v->val[i]);
@@ -359,7 +359,7 @@ template <typename Scalar>
 CustomVectorFormVol_time_residual<Scalar>* CustomVectorFormVol_time_residual<Scalar>::clone()
 {
     return new CustomVectorFormVol_time_residual(this->i, this->j, this->areas[0],
-                                         this->m_materialSource);
+                                         this->m_materialSource, this->m_table);
 }
 
 

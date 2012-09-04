@@ -144,7 +144,7 @@ class CustomVectorFormVol_time_residual : public Hermes::Hermes2D::VectorFormVol
 public:
     CustomVectorFormVol_time_residual(unsigned int i, unsigned int j,
                               std::string area,
-                              Material *materialSource);
+                              Material *materialSource, BDF2Table* table);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -152,6 +152,8 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     CustomVectorFormVol_time_residual<Scalar>* clone();
 private:
+    BDF2Table* m_table;
+
     Material *m_materialSource;
     mutable Value he_lambda;
     mutable Value he_p;

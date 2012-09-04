@@ -38,9 +38,7 @@ Solver<double>* Block::prepareSolver()
             assert(0); //TODO co to znamena?
     }
 
-    m_wf = new WeakFormAgros<double>(this);
-
-    solver->init(m_wf, this);
+    solver->init(this);
 
     return solver;
 }

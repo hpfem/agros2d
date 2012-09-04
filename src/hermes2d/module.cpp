@@ -190,7 +190,7 @@ void WeakFormAgros<Scalar>::registerTimeForms(BDF2Table *table)
             {
                 Hermes::Hermes2D::Form<Scalar> *matrixForm = new CustomMatrixFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), Hermes::Hermes2D::HERMES_NONSYM, material, table);
                 Hermes::Hermes2D::Form<Scalar> *vectorForm = new CustomVectorFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), material, table);
-                Hermes::Hermes2D::Form<Scalar> *residualForm = new CustomVectorFormVol_time_residual<Scalar>(0, 0, QString::number(labelNum).toStdString(), material);
+                Hermes::Hermes2D::Form<Scalar> *residualForm = new CustomVectorFormVol_time_residual<Scalar>(0, 0, QString::number(labelNum).toStdString(), material, table);
 
                 // push previous solution in this order:
                 // first all components of the solution in time level n-1
@@ -210,14 +210,15 @@ void WeakFormAgros<Scalar>::registerTimeForms(BDF2Table *table)
                     {
                         matrixForm->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
                         vectorForm->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
-                        //residualForm->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+                        residualForm->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
                     }
                 }
 
 
                 addForm(WeakForm_MatVol, matrixForm);
                 addForm(WeakForm_VecVol, vectorForm);
-                //addForm(WeakForm_VecVol, residualForm);
+                if(table->gamma()[1] != 0.0)
+                    addForm(WeakForm_VecVol, residualForm);
             }
         }
     }

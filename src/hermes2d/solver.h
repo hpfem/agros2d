@@ -41,7 +41,7 @@ template <typename Scalar>
 class Solver
 {
 public:
-    void init( WeakFormAgros<Scalar> *wf, Block* block);
+    void init(Block* block);
     void clear();
 
     void solveInitialTimeStep();
@@ -59,7 +59,7 @@ private:
     double m_elapsedTime;
 
     // weak form
-    WeakFormAgros<Scalar> *m_wf;
+    //WeakFormAgros<Scalar> *m_wf;
 
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMesh();
     void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
@@ -75,7 +75,7 @@ private:
 
 //    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
 //                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    void solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa = NULL);
+    void solveOneProblem(WeakFormAgros<Scalar> *wf, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa = NULL);
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);

@@ -105,10 +105,9 @@ void processSolverOutput(const char* aha)
 }
 
 template <typename Scalar>
-void Solver<Scalar>::init(WeakFormAgros<Scalar> *wf, Block* block)
+void Solver<Scalar>::init(Block* block)
 {
     m_block = block;
-    m_wf = wf;
 
     m_solverID = QObject::tr("Solver") + " (";
     QListIterator<Field*> iter(m_block->fields());
@@ -365,7 +364,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa)
+void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa)
 {
     Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
@@ -373,7 +372,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
     if (m_block->linearityType() == LinearityType_Linear)
     {
         // Initialize the FE problem.
-        DiscreteProblemLinear<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
+        DiscreteProblemLinear<Scalar> dp(wf, castConst(desmartize(msa.spaces())));
 
         LinearSolver<Scalar> linear(&dp);
         try
@@ -402,7 +401,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
     if (m_block->linearityType() == LinearityType_Newton)
     {
         // Initialize the FE problem.
-        DiscreteProblem<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
+        DiscreteProblem<Scalar> dp(wf, castConst(desmartize(msa.spaces())));
 
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         NewtonSolverAgros<Scalar> newton(&dp);
@@ -453,7 +452,7 @@ void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSoluti
     if (m_block->linearityType() == LinearityType_Picard)
     {
         // Initialize the FE problem.
-        DiscreteProblemLinear<Scalar> dp(m_wf, castConst(desmartize(msa.spaces())));
+        DiscreteProblemLinear<Scalar> dp(wf, castConst(desmartize(msa.spaces())));
 
         Hermes::vector<Solution<Scalar>* > slns;
         for (int i = 0; i < msa.spaces().size(); i++)
@@ -517,18 +516,18 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
-    m_wf->set_current_time(Util::problem()->actualTime());
 
-    m_wf->delete_all();
-    m_wf->registerForms();
+    WeakFormAgros<double> wf(m_block);
+    wf.set_current_time(Util::problem()->actualTime());
+    wf.registerForms();
 
     BDF2ATable bdf2ATable;
     //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
     bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
     bdf2ATable.setPreviousSteps(Util::problem()->timeSteps());
-    m_wf->registerTimeForms(&bdf2ATable);
+    wf.registerTimeForms(&bdf2ATable);
 
-    solveOneProblem(multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
+    solveOneProblem(&wf, multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
@@ -584,10 +583,10 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
         field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msa.spaces()), Util::problem()->actualTime());
-    m_wf->set_current_time(Util::problem()->actualTime());
 
-    m_wf->delete_all();
-    m_wf->registerForms();
+    WeakFormAgros<double> wf(m_block);
+    wf.set_current_time(Util::problem()->actualTime());
+    wf.registerForms();
 
     msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msaRef.spaces()), Util::problem()->actualTime());
@@ -596,7 +595,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     createNewSolutions(msaRef);
 
     // solve reference problem
-    solveOneProblem(msaRef);
+    solveOneProblem(&wf, msaRef);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
