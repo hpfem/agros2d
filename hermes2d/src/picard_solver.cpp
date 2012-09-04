@@ -139,7 +139,7 @@ namespace Hermes
     template<typename Scalar>
     void calculate_anderson_coeffs(Scalar** previous_vectors, Scalar* anderson_coeffs, int num_last_vectors_used, int ndof)
     {
-      if(num_last_vectors_used <= 1) throw Hermes::Exceptions::Exception("Anderson acceleration makes sense only if at least two last iterations are used.");
+      if(num_last_vectors_used <= 1) throw Hermes::Exceptions::Exception("Picard: Anderson acceleration makes sense only if at least two last iterations are used.");
 
       // If num_last_vectors_used is 2, then there is only one residual, and thus only one alpha coeff which is 1.0.
       if(num_last_vectors_used == 2)
@@ -235,9 +235,11 @@ namespace Hermes
     template<typename Scalar>
     void PicardSolver<Scalar>::solve()
     {
+      this->tick();
+
       // Sanity check.
       if(num_last_vectors_used < 1)
-        throw Hermes::Exceptions::Exception("PicardSolver: Bad number of last iterations to be used (must be at least one).");
+        throw Hermes::Exceptions::Exception("Picard: Bad number of last iterations to be used (must be at least one).");
 
       // Preliminaries.
       int num_spaces = this->slns_prev_iter.size();
@@ -247,6 +249,14 @@ namespace Hermes
       for(unsigned int i = 0; i < spaces.size(); i++)
         add_dir_lift.push_back(false);
       LinearSolver<Scalar> linear_solver(static_cast<DiscreteProblemLinear<Scalar>*>(this->dp));
+      
+      linear_solver.setRhsEMatrixDumpFormat(this->RhsFormat);
+      linear_solver.setRhsFilename(this->RhsFilename);
+      linear_solver.setRhsVarname(this->RhsVarname);
+
+      linear_solver.setMatrixEMatrixDumpFormat(this->matrixFormat);
+      linear_solver.setMatrixFilename(this->matrixFilename);
+      linear_solver.setMatrixVarname(this->matrixVarname);
 
       linear_solver.set_verbose_output(this->verbose_output_linear_solver);
       linear_solver.set_verbose_callback(this->get_verbose_callback());
@@ -260,7 +270,7 @@ namespace Hermes
 
       // Project slns_prev_iter on the FE space(s) to obtain initial
       // coefficient vector for the Picard's method.
-      this->info("Projecting to obtain initial vector for the Picard's method.");
+      this->info("Picard: projecting to obtain initial vector for the method.");
       this->sln_vector = new Scalar[ndof];
 
       OGProjection<Scalar> ogProjection;
@@ -282,6 +292,16 @@ namespace Hermes
       while (true)
       {
         this->onStepBegin();
+        if(this->outputRhsOn && (this->outputRhsIterations == -1 || this->outputRhsIterations >= it))
+          linear_solver.outputRhs(1);
+        else
+          linear_solver.outputRhs(0);
+
+        if(this->outputMatrixOn && (this->outputMatrixIterations == -1 || this->outputMatrixIterations >= it))
+          linear_solver.outputMatrix(1);
+        else
+          linear_solver.outputMatrix(0);
+          
         linear_solver.solve();
         memcpy(this->sln_vector, linear_solver.get_sln_vector(), sizeof(Scalar)*ndof);
 
@@ -301,7 +321,7 @@ namespace Hermes
         double rel_error = abs_error / last_iter_vec_norm;
 
         // Output for the user.
-        this->info("---- Picard iter %d, ndof %d, rel. error %g%%", it, ndof, rel_error);
+        this->info("Picard: iteration %d, nDOFs %d, relative error %g%%", it, ndof, rel_error);
 
         // Stopping because error is sufficiently low.
         if(rel_error < tol)
@@ -310,6 +330,8 @@ namespace Hermes
           Solution<Scalar>::vector_to_solutions(this->sln_vector, spaces,  slns_prev_iter);
           static_cast<DiscreteProblemLinear<Scalar>*>(this->dp)->have_matrix = false;
 
+          this->tick();
+          this->info("Picard: solution duration: %f s.\n", this->last());
           this->onFinish();
           return;
         }
@@ -320,8 +342,11 @@ namespace Hermes
           delete [] last_iter_vector;
           static_cast<DiscreteProblemLinear<Scalar>*>(this->dp)->have_matrix = false;
           
+          this->tick();
+          this->info("Picard: solution duration: %f s.\n", this->last());
+          
           this->onFinish();
-          throw Hermes::Exceptions::Exception("Maximum allowed number of Picard iterations exceeded.");
+          throw Hermes::Exceptions::Exception("Picard: maximum allowed number of Picard iterations exceeded.");
           return;
         }
         this->onStepEnd();

@@ -408,6 +408,7 @@ private slots:
     void doAccept();
     void doReject();
     void buildPlugin();
+    void showXML();
 
     void constantDoubleClicked(QTreeWidgetItem *item, int role);
     void doAddConstant();

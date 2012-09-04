@@ -29,11 +29,11 @@
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
         <module:matrix_form axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz)" axi_newton="0" i="1" j="1" planar_linear="1 / ac_rho * (udx * vdx + udy * vdy)" planar_newton="0" symmetric="1"/>
-        <module:matrix_form axi_linear="r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi_newton="0" i="2" j="1" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * uval * vval / deltat" planar_newton="0" symmetric="1"/>
-        <module:matrix_form axi_linear="- r * uval * vval" axi_newton="0" i="2" j="2" planar_linear="- uval * vval" planar_newton="0"/>
-        <module:matrix_form axi_linear="r * uval * vval / deltat" axi_newton="0" i="1" j="2" planar_linear="uval * vval / deltat" planar_newton="0"/>
-        <module:vector_form axi_linear="r * 1 / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat" axi_newton="0" i="2" j="1" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat" planar_newton="0"/>
-        <module:vector_form axi_linear="r * uptval * vval / deltat" axi_newton="0" i="1" j="2" planar_linear="uptval * vval / deltat" planar_newton="0"/>
+        <module:matrix_form axi_linear="- r / (ac_rho * ac_vel * ac_vel) * uval * vval / deltat" axi_newton="0" i="1" j="2" planar_linear="- 1 / (ac_rho * ac_vel * ac_vel) * uval * vval / deltat" planar_newton="0"/>
+        <module:matrix_form axi_linear="- r * uval * vval" axi_newton="0" i="2" j="2" planar_linear="- uval * vval" planar_newton="0" symmetric="1"/>
+        <module:matrix_form axi_linear="r * uval * vval / deltat" axi_newton="0" i="2" j="1" planar_linear="uval * vval / deltat" planar_newton="0"/>
+        <module:vector_form axi_linear="- r / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat" axi_newton="0" i="1" j="1" planar_linear="- 1 / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat" planar_newton="0"/>
+        <module:vector_form axi_linear="r * uptval * vval / deltat" axi_newton="0" i="2" j="2" planar_linear="uptval * vval / deltat" planar_newton="0"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
@@ -69,13 +69,13 @@
       <module:weakform_surface analysistype="transient" default="acoustic_pressure">
         <module:boundary id="acoustic_pressure" name="Pressure">
           <module:quantity dependence="time" id="acoustic_pressure_real"/>
-          <module:essential_form axi_linear="ac_pr" axi_newton="ac_pr" i="1" planar_linear="ac_pr" planar_newton="ac_pr"/>
           <module:essential_form axi_linear="0" axi_newton="0" i="2" planar_linear="0" planar_newton="0"/>
+          <module:essential_form axi_linear="ac_pr" axi_newton="ac_pr" i="1" planar_linear="ac_pr" planar_newton="ac_pr"/>
         </module:boundary>
         <module:boundary id="acoustic_normal_acceleration" name="Normal acceleration">
           <module:quantity dependence="time" id="acoustic_normal_acceleration_real"/>
           <module:vector_form axi_linear="ac_anr * r * vval" axi_newton="- ac_anr * r * vval" i="1" j="1" planar_linear="ac_anr * vval" planar_newton="- ac_anr * vval"/>
-          <module:vector_form axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>
+          <module:essential_form axi_linear="0" axi_newton="0" i="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
@@ -84,8 +84,8 @@
   <module:preprocessor>
     <module:gui type="volume">
       <module:group>
-        <module:quantity condition="value > 0" default="1.2041" id="acoustic_density" name="Mass density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}"/>
-        <module:quantity condition="value > 0" default="343.20999999999998" id="acoustic_speed" name="Speed of sound" shortname="vel" shortname_html="&lt;i>c&lt;/i>" shortname_latex="c" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity condition="value > 0" default="1.25" id="acoustic_density" name="Mass density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}"/>
+        <module:quantity condition="value > 0" default="343" id="acoustic_speed" name="Speed of sound" shortname="vel" shortname_html="&lt;i>c&lt;/i>" shortname_latex="c" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
       </module:group>
     </module:gui>
     <module:gui type="surface">
@@ -94,7 +94,7 @@
         <module:quantity id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" shortname_html="&lt;i>p&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="p_{i}" unit="Pa" unit_html="Pa" unit_latex="Pa"/>
         <module:quantity id="acoustic_normal_acceleration_real" name="Normal acceleration - real" shortname="anr" shortname_html="&lt;i>an&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="an_{r}" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}"/>
         <module:quantity id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag" shortname="ani" shortname_html="&lt;i>an&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="an_{i}" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}"/>
-        <module:quantity condition="value > 0" default="413.300000000000011" id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" shortname_html="&lt;i>Z&lt;/i>&lt;sub>0&lt;/sub>" shortname_latex="Z_{0}" unit="Pa.s/m" unit_html="Pa.s.m&lt;sup>-1&lt;/sup>" unit_latex="Pa \cdot s \cdot m^{-1}"/>
+        <module:quantity condition="value > 0" default="428.75" id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" shortname_html="&lt;i>Z&lt;/i>&lt;sub>0&lt;/sub>" shortname_latex="Z_{0}" unit="Pa.s/m" unit_html="Pa.s.m&lt;sup>-1&lt;/sup>" unit_latex="Pa \cdot s \cdot m^{-1}"/>
       </module:group>
     </module:gui>
   </module:preprocessor>
@@ -121,6 +121,9 @@
       </module:localvariable>
       <module:localvariable id="acoustic_local_acceleration_imag" name="Local acceleration - imag" shortname="ai" shortname_html="&lt;i>a&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="a_{i}" type="vector" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}">
         <module:expression analysistype="harmonic" axi_r="- dr2 / ac_rho" axi_z="- dz2 / ac_rho" planar_x="- dx2 / ac_rho" planar_y="- dy2 / ac_rho"/>
+      </module:localvariable>
+      <module:localvariable id="acoustic_pressure derivative" name="Pressure derivative" shortname="dpr" shortname_html="&lt;i>dpr&lt;/i>" shortname_latex="c" type="scalar" unit="Pa/s" unit_html="Pa.s&lt;sup>-1&lt;/sup>" unit_latex="Pa \cdot s^{-1}">
+        <module:expression analysistype="transient" axi="value2" planar="value2"/>
       </module:localvariable>
       <module:localvariable id="acoustic_density" name="Mass density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" type="scalar" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}">
         <module:expression analysistype="harmonic" axi="ac_rho" planar="ac_rho"/>

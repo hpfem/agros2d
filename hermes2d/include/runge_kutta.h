@@ -73,8 +73,9 @@ namespace Hermes
     /// @defgroup userSolvingAPI Top-level solving
 
     /// @ingroup userSolvingAPI
+    /// Runge-Kutta methods implementation for time-dependent problems.
     template<typename Scalar>
-    class HERMES_API RungeKutta : public Hermes::Mixins::Loggable, public Hermes::Mixins::IntegrableWithGlobalOrder, public Hermes::Mixins::SettableComputationTime, public Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>
+    class HERMES_API RungeKutta : public Hermes::Mixins::Loggable, public Hermes::Mixins::TimeMeasurable, public Hermes::Mixins::IntegrableWithGlobalOrder, public Hermes::Mixins::SettableComputationTime, public Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>, public Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>
     {
     public:
       /// Constructor.

@@ -115,7 +115,7 @@ namespace Hermes
       {
         delete [] K_vector;
         K_vector = new Scalar[num_stages * Space<Scalar>::get_num_dofs(this->spaces)];
-        this->info("K vectors are being set to zero, as the spaces changed during computation.");
+        this->info("Runge-Kutta: K vectors are being set to zero, as the spaces changed during computation.");
         memset(K_vector, 0, num_stages * Space<Scalar>::get_num_dofs(this->spaces) * sizeof(Scalar));
       }
       delete [] u_ext_vec;
@@ -145,7 +145,7 @@ namespace Hermes
       {
         delete [] K_vector;
         K_vector = new Scalar[num_stages * Space<Scalar>::get_num_dofs(this->spaces)];
-        this->info("K vector is being set to zero, as the spaces changed during computation.");
+        this->info("Runge-Kutta: K vector is being set to zero, as the spaces changed during computation.");
         memset(K_vector, 0, num_stages * Space<Scalar>::get_num_dofs(this->spaces) * sizeof(Scalar));
       }
       delete [] u_ext_vec;
@@ -298,6 +298,8 @@ namespace Hermes
                                           Hermes::vector<Solution<Scalar>*> slns_time_new,
                                           Hermes::vector<Solution<Scalar>*> error_fns)
     {
+      this->tick();
+
       int ndof = Space<Scalar>::get_num_dofs(spaces);
 
       if(this->stage_dp_left == NULL)
@@ -310,7 +312,7 @@ namespace Hermes
       if(error_fns != Hermes::vector<Solution<Scalar>*>() && bt->is_embedded() == false)
         throw Hermes::Exceptions::Exception("rk_time_step_newton(): R-K method must be embedded if temporal error estimate is requested.");
 
-      info("Runge-Kutta time step, time: %f, time step: %f", this->time, this->timeStep);
+      info("Runge-Kutta: time step, time: %f, time step: %f", this->time, this->timeStep);
 
       // Set the correct time to the essential boundary conditions.
       for (unsigned int stage_i = 0; stage_i < num_stages; stage_i++)
@@ -370,6 +372,17 @@ namespace Hermes
         // Multiply the residual vector with -1 since the matrix
         // equation reads J(Y^n) \deltaY^{n + 1} = -F(Y^n).
         vector_right->change_sign();
+        if(this->outputRhsOn && (this->outputRhsIterations == -1 || this->outputRhsIterations >= it))
+        {
+          char* fileName = new char[this->RhsFilename.length() + 5];
+          if(this->RhsFormat == Hermes::Algebra::DF_MATLAB_SPARSE)
+            sprintf(fileName, "%s%i.m", this->RhsFilename.c_str(), it);
+          else
+            sprintf(fileName, "%s%i", this->RhsFilename.c_str(), it);
+          FILE* rhs_file = fopen(fileName, "w+");
+          vector_right->dump(rhs_file, this->RhsVarname.c_str(), this->RhsFormat);
+          fclose(rhs_file);
+        }
 
         // Measure the residual norm.
         if(residual_as_vector)
@@ -388,9 +401,9 @@ namespace Hermes
 
         // Info for the user.
         if(it == 1)
-          this->info("---- Newton initial residual norm: %g", residual_norm);
+          this->info("Runge-Kutta: Newton initial residual norm: %g", residual_norm);
         else
-          this->info("---- Newton iter %d, residual norm: %g", it-1, residual_norm);
+          this->info("Runge-Kutta: Newton iteration %d, residual norm: %g", it-1, residual_norm);
 
         // If maximum allowed residual norm is exceeded, fail.
         if(residual_norm > newton_max_allowed_residual_norm)
@@ -415,6 +428,19 @@ namespace Hermes
           // resulting tensor Jacobian.
           matrix_right->add_sparse_to_diagonal_blocks(num_stages, matrix_left);
 
+          if(this->outputMatrixOn && (this->outputMatrixIterations == -1 || this->outputMatrixIterations >= it))
+          {
+            char* fileName = new char[this->matrixFilename.length() + 5];
+            if(this->matrixFormat == Hermes::Algebra::DF_MATLAB_SPARSE)
+              sprintf(fileName, "%s%i.m", this->matrixFilename.c_str(), it);
+            else
+              sprintf(fileName, "%s%i", this->matrixFilename.c_str(), it);
+            FILE* matrix_file = fopen(fileName, "w+");
+
+            matrix_right->dump(matrix_file, this->matrixVarname.c_str(), this->matrixFormat);
+            fclose(matrix_file);
+          }
+
           matrix_right->finish();
         }
         else
@@ -435,6 +461,8 @@ namespace Hermes
       // If max number of iterations was exceeded, fail.
       if(it >= newton_max_iter)
       {
+        this->tick();
+        this->info("Runge-Kutta: time step duration: %f s.\n", this->last());
         throw Exceptions::ValueException("Newton iterations", it, newton_max_iter);
       }
 
@@ -500,6 +528,8 @@ namespace Hermes
       delete [] coeff_vec;
 
       iteration++;
+      this->tick();
+      this->info("Runge-Kutta: time step duration: %f s.\n", this->last());
     }
 
     template<typename Scalar>

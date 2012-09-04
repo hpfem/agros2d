@@ -51,6 +51,7 @@ namespace Hermes
       this->jacobian = create_matrix<Scalar>();
       this->residual = create_vector<Scalar>();
       this->matrix_solver = create_linear_solver<Scalar>(this->jacobian, this->residual);
+      this->set_verbose_output(true);
     }
     
     template<typename Scalar>
@@ -101,15 +102,43 @@ namespace Hermes
     template<typename Scalar>
     void LinearSolver<Scalar>::solve()
     {
+      this->tick();
+
       this->onInitialization();
 
       dp->assemble(this->jacobian, this->residual);
+      if(this->outputRhsOn && (this->outputRhsIterations == -1 || this->outputRhsIterations >= 1))
+      {
+        char* fileName = new char[this->RhsFilename.length() + 5];
+        if(this->RhsFormat == Hermes::Algebra::DF_MATLAB_SPARSE)
+          sprintf(fileName, "%s%i.m", this->RhsFilename.c_str(), 1);
+        else
+          sprintf(fileName, "%s%i", this->RhsFilename.c_str(), 1);
+        FILE* rhs_file = fopen(fileName, "w+");
+        residual->dump(rhs_file, this->RhsVarname.c_str(), this->RhsFormat);
+        fclose(rhs_file);
+      }
+      if(this->outputMatrixOn && (this->outputMatrixIterations == -1 || this->outputMatrixIterations >= 1))
+        {
+          char* fileName = new char[this->matrixFilename.length() + 5];
+          if(this->matrixFormat == Hermes::Algebra::DF_MATLAB_SPARSE)
+            sprintf(fileName, "%s%i.m", this->matrixFilename.c_str(), 1);
+          else
+            sprintf(fileName, "%s%i", this->matrixFilename.c_str(), 1);
+          FILE* matrix_file = fopen(fileName, "w+");
+
+          jacobian->dump(matrix_file, this->matrixVarname.c_str(), this->matrixFormat);
+          fclose(matrix_file);
+        }
 
       this->matrix_solver->solve();
 
       this->sln_vector = matrix_solver->get_sln_vector();
 
       this->onFinish();
+      
+      this->tick();
+      this->info("Linear solver solution duration: %f s.\n", this->last());
     }
 
     template<typename Scalar>

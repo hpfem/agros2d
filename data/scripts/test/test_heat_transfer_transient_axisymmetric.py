@@ -63,11 +63,11 @@ geometry.add_edge(0.009, 0.0395, 0.009, 0.03, 0,)
 geometry.add_edge(0.009, 0.03, 0.0135, 0.03, 0, boundaries = {"heat" : "Convection"})
 
 # labels
-geometry.add_label(0.0308709, 0.171031, 0, 0, materials = {"heat" : "Fe"})
-geometry.add_label(0.00316251, 0.011224, 0, 0, materials = {"heat" : "Fe"})
-geometry.add_label(0.0163723, 0.144289, 0, 0, materials = {"heat" : "Cu"})
-geometry.add_label(0.00380689, 0.151055, 0, 0, materials = {"heat" : "Air"})
-geometry.add_label(0.0112064, 0.0336487, 0, 0, materials = {"heat" : "Brass"})
+geometry.add_label(0.0308709, 0.171031, materials = {"heat" : "Fe"})
+geometry.add_label(0.00316251, 0.011224, materials = {"heat" : "Fe"})
+geometry.add_label(0.0163723, 0.144289, materials = {"heat" : "Cu"})
+geometry.add_label(0.00380689, 0.151055, materials = {"heat" : "Air"})
+geometry.add_label(0.0112064, 0.0336487, materials = {"heat" : "Brass"})
 
 geometry.zoom_best_fit()
 

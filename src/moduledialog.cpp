@@ -1060,7 +1060,7 @@ ModuleDialog::ModuleDialog(const QString &fieldId, QWidget *parent)
 
     createControls();
 
-    m_module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + m_fieldId.toStdString() + ".xml").c_str());
+    m_module_xsd = XMLModule::module_(QString("%1%2/%3.xml").arg(datadir()).arg(MODULEROOT).arg(m_fieldId).toStdString().c_str());
 
     load();
 
@@ -1540,12 +1540,17 @@ void ModuleDialog::createControls()
     layoutHorizontal->addWidget(pages);
 
     // dialog buttons
-    QPushButton *btnBuild = new QPushButton(tr("Build plugin"));
-    btnBuild->setDefault(false);
-    connect(btnBuild, SIGNAL(clicked()), this, SLOT(buildPlugin()));
+    QPushButton *btnBuildModule = new QPushButton(tr("Build plugin"));
+    btnBuildModule->setDefault(false);
+    connect(btnBuildModule, SIGNAL(clicked()), this, SLOT(buildPlugin()));
+
+    QPushButton *btnShowXML = new QPushButton(tr("XML file"));
+    btnShowXML->setDefault(false);
+    connect(btnShowXML, SIGNAL(clicked()), this, SLOT(showXML()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttonBox->addButton(btnBuild, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(btnBuildModule, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(btnShowXML, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -1902,8 +1907,17 @@ void ModuleDialog::doReject()
 
 void ModuleDialog::buildPlugin()
 {
+    save();
+
     SystemOutputWidget *output = new SystemOutputWidget();
     output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(QString::fromStdString(module()->general().id())));
+}
+
+void ModuleDialog::showXML()
+{
+    save();
+
+    QDesktopServices::openUrl(QUrl(QString("%1%2/%3.xml").arg(datadir()).arg(MODULEROOT).arg(m_fieldId)));
 }
 
 void ModuleDialog::constantDoubleClicked(QTreeWidgetItem *item, int role)
