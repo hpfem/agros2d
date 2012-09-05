@@ -478,6 +478,87 @@ void ChartDialog::plotGeometry()
     chart->setData(xval, yval);
 }
 
+void ChartDialog::plotTime()
+{
+    // variable
+    Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    if (!physicFieldVariable)
+        return;
+
+    // variable comp
+    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
+    if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
+
+    // time levels
+    QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+
+    // chart
+    chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
+                        arg(physicFieldVariable->name()).
+                        arg(physicFieldVariable->unit()));
+
+    chart->setAxisTitle(QwtPlot::xBottom, tr("time (s)"));
+
+    // table
+    QStringList head = headers();
+
+    trvTable->clear();
+    trvTable->setRowCount(timeLevels.count());
+    trvTable->setColumnCount(head.count());
+    trvTable->setHorizontalHeaderLabels(head);
+
+    // values
+    int timeStep = Util::scene()->activeTimeStep();
+
+    QList<double> xval;
+    QList<double> yval;
+
+    doChartLine();
+
+    QStringList row;
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    {
+        foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
+        {
+            if (physicFieldVariable->id() != variable->id()) continue;
+
+            for (int i = 0; i < timeLevels.count(); i++)
+            {
+                // change time level
+                Util::scene()->setActiveTimeStep(i);
+
+                Point point(txtPointX->value().number(), txtPointY->value().number());
+                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                QMap<Module::LocalVariable *, PointValue> values = localValue->values();
+
+                if (variable->isScalar())
+                    yval.append(values[variable].scalar);
+                else
+                {
+                    if (physicFieldVariableComp == PhysicFieldVariableComp_X)
+                        yval.append(values[variable].vector.x);
+                    else if (physicFieldVariableComp == PhysicFieldVariableComp_Y)
+                        yval.append(values[variable].vector.y);
+                    else
+                        yval.append(values[variable].vector.magnitude());
+                }
+
+                // horisontal axis
+                xval.append(i);
+
+                for (int j = 0; j < row.count(); j++)
+                    trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
+            }
+        }
+    }
+
+    chart->setData(xval, yval);
+
+    // restore previous timestep
+    Util::scene()->setActiveTimeStep(timeStep);
+    m_sceneViewPost2D->refresh();
+}
+
 void ChartDialog::addTableRow(LocalValue *localValue)
 {
     /*
@@ -521,73 +602,6 @@ void ChartDialog::addTableRow(LocalValue *localValue)
     */
 }
 
-void ChartDialog::plotTime()
-{
-    if (!txtPointX->evaluate()) return;
-    if (!txtPointY->evaluate()) return;
-
-    doChartLine();
-
-    QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-
-    // variable
-    Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
-    if (!physicFieldVariable)
-        return;
-
-    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
-    if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
-
-    // store timestep
-    int timeStep = Util::scene()->activeTimeStep();
-
-    double *xval = new double[timeLevels.count()];
-    double *yval = new double[timeLevels.count()];
-
-    // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
-    chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
-                        arg(physicFieldVariable->name()).
-                        arg(physicFieldVariable->unit()));
-
-    // headers
-    QStringList head = headers();
-
-    // table
-    trvTable->clear();
-    trvTable->setRowCount(timeLevels.count());
-    trvTable->setColumnCount(head.count());
-    trvTable->setHorizontalHeaderLabels(head);
-
-    // chart
-    chart->setAxisTitle(QwtPlot::xBottom, tr("time (s)"));
-
-    // calculate values
-    QStringList row;
-    for (int i = 0; i<timeLevels.count(); i++)
-    {
-        // change time level
-        Util::scene()->setActiveTimeStep(i);
-
-        Point point(txtPointX->value().number(), txtPointY->value().number());
-        LocalValue *value = Util::plugins()[m_fieldInfo->fieldId()]->localValue(m_fieldInfo, point);
-
-        addValue(value, timeLevels[i], yval, i, timeLevels.count(),
-                 physicFieldVariableComp, physicFieldVariable);
-
-        for (int j = 0; j < row.count(); j++)
-            trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
-    }
-
-    chart->setData(xval, yval, timeLevels.count());
-
-    delete[] xval;
-    delete[] yval;
-
-    // restore previous timestep
-    Util::scene()->setActiveTimeStep(timeStep);
-    m_sceneViewPost2D->refresh();
-}
-
 QStringList ChartDialog::headers()
 {
     QStringList head;
@@ -616,17 +630,24 @@ void ChartDialog::doPlot()
 {
     if (!Util::problem()->isSolved()) return;
 
-    if (!txtStartX->evaluate()) return;
-    if (!txtStartY->evaluate()) return;
-    if (!txtEndX->evaluate()) return;
-    if (!txtEndY->evaluate()) return;
-    if (!txtAngle->evaluate()) return;
-
     if (tabAnalysisType->currentWidget() == widGeometry)
+    {
+        if (!txtStartX->evaluate()) return;
+        if (!txtStartY->evaluate()) return;
+        if (!txtEndX->evaluate()) return;
+        if (!txtEndY->evaluate()) return;
+        if (!txtAngle->evaluate()) return;
+
         plotGeometry();
+    }
 
     if (tabAnalysisType->currentWidget() == widTime)
+    {
+        if (!txtPointX->evaluate()) return;
+        if (!txtPointY->evaluate()) return;
+
         plotTime();
+    }
 }
 
 void ChartDialog::doFieldVariable(int index)
