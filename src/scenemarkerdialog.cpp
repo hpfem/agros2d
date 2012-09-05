@@ -27,7 +27,8 @@
 #include "scenebasic.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
-#include "gui.h"
+
+#include "gui/common.h"
 
 SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, QString name, QString type,
                              QMap<QString, Value> values)

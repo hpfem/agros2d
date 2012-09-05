@@ -18,16 +18,16 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scenebasic.h"
+
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-#include "gui.h"
-
-#include "hermes2d/problem.h"
 #include "scene.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+
+#include "hermes2d/problem.h"
 
 SceneBasic::SceneBasic()
 {

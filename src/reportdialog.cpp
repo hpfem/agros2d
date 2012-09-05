@@ -28,6 +28,8 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
+#include "util/constants.h"
+
 ReportDialog::ReportDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
 {
     m_sceneView = sceneView;

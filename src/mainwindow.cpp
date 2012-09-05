@@ -19,7 +19,10 @@
 
 #include "mainwindow.h"
 
-#include "gui.h"
+#include "gui/about.h"
+#include "gui/imageloader.h"
+
+#include "util/checkversion.h"
 
 #include "scene.h"
 #include "scenebasic.h"

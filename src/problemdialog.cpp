@@ -19,13 +19,15 @@
 
 #include "problemdialog.h"
 
-#include "gui.h"
 #include "scene.h"
 #include "moduledialog.h"
 #include "pythonlabagros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/coupling.h"
+
+#include "gui/lineeditdouble.h"
+#include "gui/common.h"
 
 const int minWidth = 130;
 

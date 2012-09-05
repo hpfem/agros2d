@@ -37,7 +37,7 @@
 #include <QTextBlock>
 #include <QTextBlockUserData>
 
-#include "gui.h"
+#include "gui/textedit.h"
 
 const int ParenthesisMatcherPropertyId = QTextFormat::UserProperty;
 const int ErrorMarkerPropertyId = QTextFormat::UserProperty + 1;

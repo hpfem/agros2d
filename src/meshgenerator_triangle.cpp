@@ -19,7 +19,6 @@
 
 #include "meshgenerator_triangle.h"
 
-#include "gui.h"
 #include "scene.h"
 
 #include "scenebasic.h"

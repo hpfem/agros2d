@@ -19,7 +19,8 @@
 
 #include "logview.h"
 #include "scene.h"
-#include "gui.h"
+
+#include "gui/chart.h"
 
 #include "hermes2d/problem.h"
 

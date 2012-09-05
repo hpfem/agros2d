@@ -25,7 +25,9 @@
 #include "pythoncompleter.h"
 
 #include "util.h"
-#include "gui.h"
+#include "util/constants.h"
+#include "gui/filebrowser.h"
+#include "gui/about.h"
 
 const QString TABS = "    ";
 

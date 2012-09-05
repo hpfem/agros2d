@@ -19,12 +19,15 @@
 
 #include "confdialog.h"
 
-#include "gui.h"
+#include "util/constants.h"
+#include "gui/lineeditdouble.h"
+#include "gui/systemoutput.h"
 
 #include "scene.h"
 #include "sceneview_common.h"
 #include "pythonlabagros.h"
 #include "moduledialog.h"
+
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
 

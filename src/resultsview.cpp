@@ -27,6 +27,8 @@
 #include "hermes2d/problem.h"
 #include <ctemplate/template.h>
 
+#include "util/constants.h"
+
 ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
 {
     setMinimumWidth(280);

@@ -19,6 +19,8 @@
 
 #include "scene.h"
 
+#include "util/xml.h"
+
 #include "util.h"
 #include "logview.h"
 #include "scenebasic.h"

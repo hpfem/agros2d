@@ -19,7 +19,9 @@
 
 #include "config.h"
 #include "scene.h"
+
 #include "hermes2d/module.h"
+#include "util/constants.h"
 
 Config::Config() : eleConfig(NULL)
 {

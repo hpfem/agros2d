@@ -40,6 +40,8 @@
 #include <iostream>
 #include <Python.h>
 
+#include "util/constants.h"
+
 // static history for all consoles
 QStringList PythonScriptingConsole::history;
 int PythonScriptingConsole::historyPosition;

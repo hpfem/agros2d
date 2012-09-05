@@ -19,7 +19,8 @@
 
 #include "materialbrowserdialog.h"
 #include "datatable.h"
-#include "gui.h"
+
+#include "gui/chart.h"
 
 struct MaterialProperty
 {

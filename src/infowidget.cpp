@@ -20,7 +20,6 @@
 #include "infowidget.h"
 
 #include "scene.h"
-#include "gui.h"
 #include "scenebasic.h"
 #include "scenenode.h"
 #include "sceneedge.h"
@@ -35,6 +34,10 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
+
+#include "util/constants.h"
+#include "gui/chart.h"
+
 #include "ctemplate/template.h"
 
 InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)

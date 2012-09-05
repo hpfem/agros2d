@@ -19,6 +19,8 @@
 
 #include "preprocessorview.h"
 
+#include "util/constants.h"
+
 #include "scene.h"
 #include "logview.h"
 #include "scenebasic.h"

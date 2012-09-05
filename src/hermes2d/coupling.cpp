@@ -18,10 +18,14 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "coupling.h"
+
+#include "util/constants.h"
+
 #include "logview.h"
 #include "scene.h"
 #include "util.h"
 #include "module.h"
+
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 

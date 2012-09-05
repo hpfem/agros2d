@@ -41,6 +41,8 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
 
+#include "util/constants.h"
+
 // current python engine agros
 PythonEngineAgros *currentPythonEngineAgros()
 {

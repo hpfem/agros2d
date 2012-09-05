@@ -19,7 +19,6 @@
 
 #include "meshgenerator_gmsh.h"
 
-#include "gui.h"
 #include "scene.h"
 
 #include "scenebasic.h"

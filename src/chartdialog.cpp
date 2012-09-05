@@ -19,7 +19,6 @@
 
 #include "chartdialog.h"
 
-#include "gui.h"
 #include "scene.h"
 #include "sceneview_post2d.h"
 #include "hermes2d/module.h"
@@ -27,6 +26,9 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
+
+#include "gui/chart.h"
+#include "gui/common.h"
 
 QList<Point> ChartLine::getPoints()
 {

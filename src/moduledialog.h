@@ -21,7 +21,9 @@
 #define WEAKFORMDIALOG_H
 
 #include "util.h"
-#include "gui.h"
+
+#include "gui/textedit.h"
+
 #include "../../resources_source/classes/module_xml.h"
 
 struct SceneViewSettings;

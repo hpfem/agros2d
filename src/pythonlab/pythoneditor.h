@@ -22,8 +22,8 @@
 
 #include <QtGui>
 #include <QtCore>
-#include "gui.h"
 
+#include "gui/textedit.h"
 
 class PythonEngine;
 class PythonScriptingConsole;

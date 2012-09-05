@@ -40,7 +40,7 @@
 #include "newton_solver.h"
 #include "picard_solver.h"
 
-//#include "solver.h"
+#include "util/constants.h"
 
 #include "../../resources_source/classes/module_xml.h"
 

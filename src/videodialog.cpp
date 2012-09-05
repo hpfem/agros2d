@@ -19,11 +19,12 @@
 
 #include "videodialog.h"
 
-#include "gui.h"
 #include "scene.h"
 #include "sceneview_post2d.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
+
+#include "gui/lineeditdouble.h"
 
 VideoDialog::VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent) : QDialog(parent)
 {

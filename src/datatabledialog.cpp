@@ -19,10 +19,10 @@
 
 #include "datatabledialog.h"
 
-#include "gui.h"
 #include "pythonlabagros.h"
 #include "materialbrowserdialog.h"
 
+#include "gui/chart.h"
 #include "qwt_symbol.h"
 
 DataTableDialog::DataTableDialog(QWidget *parent, const QString &labelX, const QString &labelY)

@@ -18,9 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "settings.h"
-#include "gui.h"
 #include "scene.h"
 #include "pythonlabagros.h"
+
+#include "util/constants.h"
+#include "gui/common.h"
 
 const double minWidth = 110;
 

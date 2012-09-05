@@ -19,19 +19,23 @@
 
 #include "postprocessorview.h"
 
-#include "gui.h"
+#include "gui/lineeditdouble.h"
+#include "gui/common.h"
 
 #include "scene.h"
 #include "sceneview_geometry.h"
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
+#include "pythonlabagros.h"
+
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
-#include "pythonlabagros.h"
+
+#include "util/constants.h"
 
 const double minWidth = 110;
 

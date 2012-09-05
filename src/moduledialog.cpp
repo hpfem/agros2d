@@ -20,12 +20,16 @@
 #include "moduledialog.h"
 #include "pythonlab/pythonhighlighter.h"
 
-#include "gui.h"
-
 #include "scene.h"
 #include "sceneview_common.h"
 #include "pythonlabagros.h"
+
 #include "hermes2d/module.h"
+
+#include "util/constants.h"
+#include "gui/common.h"
+#include "gui/htmledit.h"
+#include "gui/systemoutput.h"
 
 Q_DECLARE_METATYPE(XMLModule::constant *)
 Q_DECLARE_METATYPE(XMLModule::analysis *)

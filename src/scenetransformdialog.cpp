@@ -19,8 +19,8 @@
 
 #include "scenetransformdialog.h"
 
-#include "gui.h"
 #include "scene.h"
+
 #include "hermes2d/problem.h"
 
 SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)

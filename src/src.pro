@@ -25,7 +25,18 @@ RESOURCES = src.qrc
 SOURCES += util.cpp \
     value.cpp \
     scene.cpp \
-    gui.cpp \
+    util/checkversion.cpp \
+    util/point.cpp \
+    util/xml.cpp \
+    gui/common.cpp \
+    gui/chart.cpp \
+    gui/filebrowser.cpp \
+    gui/imageloader.cpp \
+    gui/about.cpp \
+    gui/lineeditdouble.cpp \
+    gui/htmledit.cpp \
+    gui/textedit.cpp \
+    gui/systemoutput.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
@@ -100,7 +111,19 @@ SOURCES += util.cpp \
 HEADERS += util.h \
     value.h \
     scene.h \
-    gui.h \
+    util/constants.h \
+    util/checkversion.h \
+    util/point.h \
+    util/xml.h \
+    gui/common.h \
+    gui/chart.h \
+    gui/filebrowser.h \
+    gui/imageloader.h \
+    gui/about.h \
+    gui/lineeditdouble.h \
+    gui/htmledit.h \
+    gui/textedit.h \
+    gui/systemoutput.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \

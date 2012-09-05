@@ -22,7 +22,6 @@
 
 #include "util.h"
 #include "datatable.h"
-#include "gui.h"
 
 class Chart;
 
