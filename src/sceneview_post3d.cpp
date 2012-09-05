@@ -853,10 +853,9 @@ void SceneViewPost3D::paintParticleTracing()
         double max = qMax(rect.width(), rect.height());
         double depth = max / Util::config()->scalarView3DHeight;
 
-        /*
-        double3* linVert = Util::scene()->sceneSolution()->linScalarView().get_vertices();
-        int3* linTris = Util::scene()->sceneSolution()->linScalarView().get_triangles();
-        int3* linEdges = Util::scene()->sceneSolution()->linScalarView().get_edges();
+        double3* linVert = m_post3DHermes->linScalarView().get_vertices();
+        int3* linTris = m_post3DHermes->linScalarView().get_triangles();
+        int3* linEdges = m_post3DHermes->linScalarView().get_edges();
         Point point[3];
         double value[3];
 
@@ -873,10 +872,10 @@ void SceneViewPost3D::paintParticleTracing()
         // init normals
         double* normal = new double[3];
 
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < Util::scene()->sceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -885,10 +884,10 @@ void SceneViewPost3D::paintParticleTracing()
                     value[j]   = linVert[linTris[i][j]][2];
                 }
 
-                if (!Util::scene()ViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Util::scene()ViewSettings.scalarRangeMin || avgValue > Util::scene()ViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -920,7 +919,7 @@ void SceneViewPost3D::paintParticleTracing()
 
             // length
             glBegin(GL_QUADS);
-            for (int i = 0; i < Util::scene()->sceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -932,10 +931,10 @@ void SceneViewPost3D::paintParticleTracing()
                     value[j]   = linVert[linEdges[i][j]][2];
                 }
 
-                if (!Util::scene()ViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Util::scene()ViewSettings.scalarRangeMin || avgValue > Util::scene()ViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -956,7 +955,7 @@ void SceneViewPost3D::paintParticleTracing()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < Util::scene()->sceneSolution()->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -965,10 +964,10 @@ void SceneViewPost3D::paintParticleTracing()
                     value[j]   = linVert[linTris[i][j]][2];
                 }
 
-                if (!Util::scene()ViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Util::scene()ViewSettings.scalarRangeMin || avgValue > Util::scene()ViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -989,7 +988,7 @@ void SceneViewPost3D::paintParticleTracing()
 
             // symmetry
             glBegin(GL_QUADS);
-            for (int i = 0; i < Util::scene()->sceneSolution()->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -1001,10 +1000,10 @@ void SceneViewPost3D::paintParticleTracing()
                     value[j]   = linVert[linEdges[i][j]][2];
                 }
 
-                if (!Util::scene()ViewSettings.scalarRangeAuto)
+                if (!Util::config()->scalarRangeAuto)
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Util::scene()ViewSettings.scalarRangeMin || avgValue > Util::scene()ViewSettings.scalarRangeMax)
+                    if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
 
@@ -1033,7 +1032,7 @@ void SceneViewPost3D::paintParticleTracing()
         delete [] normal;
 
         // geometry
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
@@ -1041,27 +1040,27 @@ void SceneViewPost3D::paintParticleTracing()
             glLineWidth(Util::config()->edgeWidth);
 
             // top and bottom
-            foreach (SceneEdge *edge, Util::scene()->edges)
+            foreach (SceneEdge *edge, Util::scene()->edges->items())
             {
                 for (int j = 0; j < 2; j++)
                 {
                     if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
-                        glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, - depth/2.0 + j*depth);
-                        glVertex3d(edge->nodeEnd->point.x, edge->nodeEnd->point.y, - depth/2.0 + j*depth);
+                        glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, - depth/2.0 + j*depth);
+                        glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, - depth/2.0 + j*depth);
                         glEnd();
                     }
                     else
                     {
                         Point center = edge->center();
                         double radius = edge->radius();
-                        double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                        double theta = edge->angle / double(edge->angle/2 - 1);
+                        double theta = edge->angle() / double(edge->angle()/2 - 1);
 
                         glBegin(GL_LINE_STRIP);
-                        for (int i = 0; i < edge->angle/2; i++)
+                        for (int i = 0; i < edge->angle()/2; i++)
                         {
                             double arc = (startAngle + i*theta)/180.0*M_PI;
 
@@ -1077,10 +1076,10 @@ void SceneViewPost3D::paintParticleTracing()
 
             // side
             glBegin(GL_LINES);
-            foreach (SceneNode *node, Util::scene()->nodes)
+            foreach (SceneNode *node, Util::scene()->nodes->items())
             {
-                glVertex3d(node->point.x, node->point.y,  depth/2.0);
-                glVertex3d(node->point.x, node->point.y, -depth/2.0);
+                glVertex3d(node->point().x, node->point().y,  depth/2.0);
+                glVertex3d(node->point().x, node->point().y, -depth/2.0);
             }
             glEnd();
 
@@ -1095,31 +1094,31 @@ void SceneViewPost3D::paintParticleTracing()
             glLineWidth(Util::config()->edgeWidth);
 
             // top
-            foreach (SceneEdge *edge, Util::scene()->edges)
+            foreach (SceneEdge *edge, Util::scene()->edges->items())
             {
                 for (int j = 0; j <= 360; j = j + 90)
                 {
                     if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
-                        glVertex3d(edge->nodeStart->point.x * cos(j/180.0*M_PI),
-                                   edge->nodeStart->point.y,
-                                   edge->nodeStart->point.x * sin(j/180.0*M_PI));
-                        glVertex3d(edge->nodeEnd->point.x * cos(j/180.0*M_PI),
-                                   edge->nodeEnd->point.y,
-                                   edge->nodeEnd->point.x * sin(j/180.0*M_PI));
+                        glVertex3d(edge->nodeStart()->point().x * cos(j/180.0*M_PI),
+                                   edge->nodeStart()->point().y,
+                                   edge->nodeStart()->point().x * sin(j/180.0*M_PI));
+                        glVertex3d(edge->nodeEnd()->point().x * cos(j/180.0*M_PI),
+                                   edge->nodeEnd()->point().y,
+                                   edge->nodeEnd()->point().x * sin(j/180.0*M_PI));
                         glEnd();
                     }
                     else
                     {
                         Point center = edge->center();
                         double radius = edge->radius();
-                        double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                        double theta = edge->angle / double(edge->angle/2 - 1);
+                        double theta = edge->angle() / double(edge->angle()/2 - 1);
 
                         glBegin(GL_LINE_STRIP);
-                        for (int i = 0; i < edge->angle/2; i++)
+                        for (int i = 0; i < edge->angle()/2; i++)
                         {
                             double arc = (startAngle + i*theta)/180.0*M_PI;
 
@@ -1136,7 +1135,7 @@ void SceneViewPost3D::paintParticleTracing()
             }
 
             // side
-            foreach (SceneNode *node, Util::scene()->nodes)
+            foreach (SceneNode *node, Util::scene()->nodes->items())
             {
                 int count = 30;
                 double step = 360.0/count;
@@ -1144,19 +1143,19 @@ void SceneViewPost3D::paintParticleTracing()
                 glBegin(GL_LINE_STRIP);
                 for (int j = 0; j < count; j++)
                 {
-                    glVertex3d(node->point.x * cos((j+0)*step/180.0*M_PI),
-                               node->point.y,
-                               node->point.x * sin((j+0)*step/180.0*M_PI));
-                    glVertex3d(node->point.x * cos((j+1)*step/180.0*M_PI),
-                               node->point.y,
-                               node->point.x * sin((j+1)*step/180.0*M_PI));
+                    glVertex3d(node->point().x * cos((j+0)*step/180.0*M_PI),
+                               node->point().y,
+                               node->point().x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(node->point().x * cos((j+1)*step/180.0*M_PI),
+                               node->point().y,
+                               node->point().x * sin((j+1)*step/180.0*M_PI));
                 }
                 glEnd();
             }
 
             glLineWidth(1.0);
         }
-        */
+
         double velocityMin =  numeric_limits<double>::max();
         double velocityMax = -numeric_limits<double>::max();
 
