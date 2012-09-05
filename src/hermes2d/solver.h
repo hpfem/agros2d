@@ -65,8 +65,6 @@ private:
     void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
 //    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
-    // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
-    void createNewSolutions(MultiSolutionArray<Scalar>& msa);
     void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
                        Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);
     void deleteSelectors(Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);

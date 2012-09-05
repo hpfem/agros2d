@@ -124,7 +124,6 @@ template <typename Scalar>
 QMap<FieldInfo*, Mesh*> Solver<Scalar>::readMesh()
 {
     // load the mesh file
-    cout << "reading mesh in solver " << tempProblemFileName().toStdString() + ".xml" << endl;
     QMap<FieldInfo*, Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
 
     // check that all boundary edges have a marker assigned
@@ -230,7 +229,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                 actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i));
             else
                 assert(0);
-            cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
+            //cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             space.push_back(QSharedPointer<Space<Scalar> >(actualSpace));
 
             int j = 0;
@@ -253,15 +252,6 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
     msa.setSpaces(space);
 }
 
-template <typename Scalar>
-void  Solver<Scalar>::createNewSolutions(MultiSolutionArray<Scalar>& msa)
-{
-    for(int comp = 0; comp < msa.size(); comp++)
-    {
-        Mesh* mesh = msa.component(comp).space->get_mesh();
-        msa.setSolution(QSharedPointer<Solution<double> >(new Solution<double>(mesh)), comp);
-    }
-}
 
 template <typename Scalar>
 void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
@@ -504,7 +494,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     if(timeStep > 0)
         previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));;
 
-    cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
+    //cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
@@ -526,7 +516,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     BDF2ATable bdf2ATable;
     //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
     bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-    bdf2ATable.setPreviousSteps(Util::problem()->timeSteps());
+    bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
     wf.registerTimeForms(&bdf2ATable);
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
@@ -534,6 +524,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     //Scalar* coeffVec = new Scalar[ndof];
 
     solveOneProblem(&wf, coefVec, multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
+    //Solution<Scalar>::vector_to_solutions(coefVec, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
@@ -546,11 +537,24 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         BDF2BTable bdf2BTable;
         //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
         bdf2BTable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-        bdf2BTable.setPreviousSteps(Util::problem()->timeSteps());
+        bdf2BTable.setPreviousSteps(Util::problem()->timeStepLengths());
         wf2.registerTimeForms(&bdf2BTable);
 
         Scalar coefVec2[ndof];
-        solveOneProblem(&wf2, coefVec2, multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
+        MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
+        multiSolutionArray2.createNewSolutions();
+        solveOneProblem(&wf2, coefVec2, multiSolutionArray2, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
+
+        double error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+        cout << "error: " << error << endl;
+
+        // todo: move to gui?
+        double TOLERANCE = 0.1; //TODO
+
+        // todo: if error too big, refuse step and recalculate
+
+        // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
+        //double nextTimeStep = pow(TOLERANCE/error, 1./(Util::problem()->config()->timeOrder() + 1)) * Util::problem()->;
     }
 
     // output
@@ -580,7 +584,7 @@ void Solver<Scalar>::createInitialSpace(int timeStep)
     msa.setTime(Util::problem()->actualTime());
 
     // create solutions
-    createNewSolutions(msa);
+    msa.createNewSolutions();
 
     BlockSolutionID solutionID(m_block, timeStep, 0, SolutionMode_NonExisting);
     Util::solutionStore()->addSolution(solutionID, msa);
@@ -614,7 +618,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msaRef.spaces()), Util::problem()->actualTime());
 
     // create solutions
-    createNewSolutions(msaRef);
+    msaRef.createNewSolutions();
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msaRef.spaces())));
     Scalar* coeffVec = new Scalar[ndof];
@@ -647,7 +651,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     initSelectors(projNormType, selector);
 
     MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
-    createNewSolutions(msaNew);
+    msaNew.createNewSolutions();
 
     // calculate element errors and total error estimate.
     //cout << "adaptivity called with space " << msa.spacesNaked().at(0) << endl;

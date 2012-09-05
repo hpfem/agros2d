@@ -181,6 +181,17 @@ void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<QSharedPointer<Hermes:
 }
 
 template <typename Scalar>
+void  MultiSolutionArray<Scalar>::createNewSolutions()
+{
+    for(int comp = 0; comp < size(); comp++)
+    {
+        Mesh* mesh = component(comp).space->get_mesh();
+        setSolution(QSharedPointer<Solution<double> >(new Solution<double>(mesh)), comp);
+    }
+}
+
+
+template <typename Scalar>
 void MultiSolutionArray<Scalar>::setSolution(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, int component)
 {
     SolutionArray<Scalar> newSA(m_solutionArrays.at(component));

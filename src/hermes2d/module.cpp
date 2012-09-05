@@ -106,7 +106,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const QString &pr
                                             const QString &area, FormInfo *form,
                                             Marker* marker, Material* markerSecond, int offsetI, int offsetJ)
 {
-    cout <<"ID: " << problemId.toStdString() << ", " << type << ", form position (" << form->i << ", " << form->j << ")"<< ", offset (" << offsetI << ", " << offsetJ << ")" << endl;
+    //cout <<"ID: " << problemId.toStdString() << ", " << type << ", form position (" << form->i << ", " << form->j << ")"<< ", offset (" << offsetI << ", " << offsetJ << ")" << endl;
     if(type == WeakForm_MatVol)
         return factoryMatrixFormVol<Scalar>(problemId.toStdString(), form->i, form->j, area.toStdString(), form->sym, (SceneMaterial*) marker, markerSecond, offsetI, offsetJ);
     else if(type == WeakForm_MatSurf)
@@ -298,7 +298,7 @@ void WeakFormAgros<Scalar>::registerForms()
         // materials
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
-            cout << "material " << labelNum << endl;
+            //cout << "material " << labelNum << endl;
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
             
             assert(material);

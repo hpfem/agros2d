@@ -78,6 +78,9 @@ public:
     // returns the same multi solution array with spaces only (solutions are empty)
     MultiSolutionArray<Scalar> copySpaces();
 
+    // creates new solutions, spaces has to be allready created
+    void createNewSolutions();
+
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiSolutionArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);
 

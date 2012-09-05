@@ -59,7 +59,7 @@ void ProblemConfig::clear()
     m_frequency = 0.0;
 
     // transient
-    m_timeStep = Value("1.0", false);
+    m_initialTimeStep = Value("1.0", false);
     m_timeTotal = Value("1.0", false);
 
     m_timeStepMethod = TimeStepMethod_Fixed;
@@ -347,6 +347,15 @@ void Problem::solveInit()
     }
 }
 
+double Problem::timeStepToTime(int timeStepIndex) const
+{
+    double time = 0;
+    for(int ts = 0; ts < timeStepIndex; ts++)
+        time+= m_timeStepLengths[ts];
+
+    return time;
+}
+
 void Problem::solve()
 {
     if (isSolving())
@@ -413,7 +422,7 @@ void Problem::solveAction()
                 {
                     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("transient step %1/%2").
                                               arg(timeStep + 1).
-                                              arg(Util::problem()->config()->numTimeSteps()));
+                                              arg(Util::problem()->config()->numConstantTimeSteps()));
 
                     solver->createInitialSpace(timeStep);
                     solver->solveSimple(timeStep, 0, false);
@@ -442,14 +451,14 @@ void Problem::solveAction()
             }
         }
         timeStep++;
-        doNextTimeStep = Util::problem()->isTransient() && (timeStep <= Util::problem()->config()->numTimeSteps());
 
         Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-        cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+        //cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
 
-        addToActualTime(Util::problem()->config()->timeStep().value());
+        addToActualTime(Util::problem()->a timeStep().value());
+        doNextTimeStep = isTransient() && (actualTime() < config()->timeTotal().evaluate());
     }
 
 
@@ -496,7 +505,7 @@ void Problem::solveActionBDF()
     bool doNextTimeStep = true;
     while(doNextTimeStep)
     {
-        logTimeStep(config()->timeStep().value());
+        logTimeStepLength(config()->timeStep().value());
         foreach (Block* block, m_blocks)
         {
             Solver<double>* solver = solvers[block];
@@ -514,7 +523,7 @@ void Problem::solveActionBDF()
         Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-        cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+        //cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
 
         addToActualTime(Util::problem()->config()->timeStep().value());
     }
@@ -618,7 +627,7 @@ void Problem::solveAdaptiveStepAction()
     Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
     Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
     Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-    cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+    //cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
 
     Util::scene()->blockSignals(false);
 

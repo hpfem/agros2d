@@ -41,15 +41,13 @@ public:
     inline double frequency() const { return m_frequency; }
     void setFrequency(const double frequency) { m_frequency = frequency; emit changed(); }
 
-    inline Value timeStep() const { return m_timeStep; }
-    void setTimeStep(const Value &timeStep) { m_timeStep = timeStep; emit changed(); }
+    inline Value initialTimeStep() const { return m_initialTimeStep; }
+    void setInitialTimeStep(const Value &initialTimeStep) { m_initialTimeStep = initialTimeStep; emit changed(); }
 
     inline Value timeTotal() const { return m_timeTotal; }
     void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
 
-    inline int numTimeSteps() const { return floor(timeTotal().number() / timeStep().number()); }
-
-    inline double timeStepToTime(int timeStepIndex) {return m_timeStep.number() * timeStepIndex; }
+    inline int numConstantTimeSteps() const { return floor(timeTotal().number() / initialTimeStep().number()); }
 
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
     void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
@@ -83,7 +81,7 @@ private:
     double m_frequency;
 
     // transient
-    Value m_timeStep;
+    Value m_initialTimeStep;
     Value m_timeTotal;
     TimeStepMethod m_timeStepMethod;
     int m_timeOrder;
@@ -107,7 +105,7 @@ class Problem : public QObject
     Q_OBJECT
 
 signals:
-    void timeStepChanged();
+    //void timeStepChanged();
     void meshed();
     void solved();
 
@@ -177,8 +175,9 @@ public:
     void setActualTime(double time) { m_actualTime = time; }
     void addToActualTime(double time) { m_actualTime += time; }
 
-    void logTimeStep(double step) { m_timeSteps.push_back(step); }
-    QList<double> timeSteps() const { return m_timeSteps; }
+    void logTimeStepLength(double step) { m_timeStepLengths.push_back(step); }
+    QList<double> timeStepLengths() const { return m_timeStepLengths; }
+    inline double timeStepToTime(int timeStepIndex) const;
 
 private:
     ProblemConfig *m_config;
@@ -192,7 +191,7 @@ private:
     int m_timeStep;
     bool m_isSolved;
 
-    QList<double> m_timeSteps;
+    QList<double> m_timeStepLengths;
 
     // todo: move to Field
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)

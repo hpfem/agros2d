@@ -172,7 +172,7 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     cmbFieldVariable->blockSignals(false);
 }
 
-void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbFieldVariable)
+void fillComboBoxInitialTimeStep(FieldInfo* fieldInfo, QComboBox *cmbFieldVariable)
 {
     if (!Util::problem()->isSolved())
         return;
@@ -184,7 +184,7 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbFieldVariable)
     double timeValue;
     if (timeStep == -1){
         timeStep = Util::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
-        timeValue = Util::problem()->config()->timeStepToTime(timeStep);
+        timeValue = Util::problem()->timeStepToTime(timeStep);
     }
     else
     {

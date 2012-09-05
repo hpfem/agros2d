@@ -436,12 +436,12 @@ void PyProblem::setFrequency(const double frequency)
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 }
 
-void PyProblem::setTimeStep(const double timeStep)
+void PyProblem::setInitialTimeStep(const double timeStep)
 {
     if (timeStep >= 0.0)
-        Util::problem()->config()->setTimeStep(Value(QString::number(timeStep)));
+        Util::problem()->config()->setInitialTimeStep(Value(QString::number(timeStep)));
     else
-        throw invalid_argument(QObject::tr("The time step must be positive.").toStdString());
+        throw invalid_argument(QObject::tr("The initial time step must be positive.").toStdString());
 }
 
 void PyProblem::setTimeTotal(const double timeTotal)
