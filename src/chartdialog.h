@@ -127,7 +127,7 @@ private:
     void plotGeometry();
     void plotTime();
 
-    void addTableRow(LocalValue *localValue);
+    void fillTableRow(LocalValue *localValue, double time, int row);
 
     QStringList headers();
     void addValue(LocalValue *localPointValue, double time, double *yval, int i, int N,
