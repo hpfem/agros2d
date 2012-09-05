@@ -44,6 +44,9 @@ public:
     inline bool scalarIsPrepared() { return m_scalarIsPrepared; }
     inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
 
+    // particle tracing
+    inline bool particleTracingIsPrepared() { return m_particleTracingIsPrepared; }
+
 signals:
     void processed();
 
@@ -59,10 +62,14 @@ private:
     bool m_scalarIsPrepared;
     Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
 
+    // particle tracing
+    bool m_particleTracingIsPrepared;
+
 private slots:
     // process
     void processInitialMesh();
     void processRangeScalar();
+    void processParticleTracing();
 };
 
 class SceneViewPost3D : public SceneViewCommon3D
@@ -92,6 +99,7 @@ protected:
 
     void paintScalarField3D(); // paint scalar field 3d surface
     void paintScalarField3DSolid(); // paint scalar field 3d solid
+    void paintParticleTracing(); // paint scalar field contours
 
 private:
     // gl lists

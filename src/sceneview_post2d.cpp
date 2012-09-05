@@ -206,45 +206,7 @@ void Post2DHermes::processParticleTracing()
 
     if (Util::problem()->isSolved() && Util::config()->showParticleView)
     {
-        /*
-        bool contains = false;
-        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
-        {
-            if (variable->id() == Util::config()->vectorVariable)
-            {
-                contains = true;
-                break;
-            }
-        }
-
-        if (Util::config()->vectorVariable == "" || !contains)
-        {
-            // default values
-            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->defaultViewVectorVariable()->id();
-        }
-        */
-
-        Util::log()->printMessage(tr("Post2DView"), tr("particle view (%1)").arg(Util::config()->vectorVariable));
-
-        /*
-        Hermes::Hermes2D::Filter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
-                                                                                                                  PhysicFieldVariableComp_X);
-
-        Hermes::Hermes2D::Filter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
-                                                                                                                  PhysicFieldVariableComp_Y);
-
-        m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
-                                         Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         Hermes::Hermes2D::Views::HERMES_EPS_LOW);
-
-        // deformed shape
-        if (Util::config()->deformVector)
-            Util::scene()->activeViewField()->module()->deformShape(m_vecVectorView.get_vertices(),
-                                                                     m_vecVectorView.get_num_vertices());
-
-        delete slnVectorXView;
-        delete slnVectorYView;
-        */
+        Util::log()->printMessage(tr("Post2DView"), tr("particle view"));
 
         m_particleTracingIsPrepared = true;
     }
