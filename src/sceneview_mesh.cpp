@@ -47,7 +47,6 @@ SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent): SceneView
 
 SceneViewMesh::~SceneViewMesh()
 {
-    delete m_postHermes;
 }
 
 void SceneViewMesh::createActionsMesh()

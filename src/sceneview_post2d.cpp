@@ -57,8 +57,6 @@ SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent) : Scen
 
 SceneViewPost2D::~SceneViewPost2D()
 {
-    if (m_postHermes)
-        delete m_postHermes;
 }
 
 void SceneViewPost2D::createActionsPost2D()
