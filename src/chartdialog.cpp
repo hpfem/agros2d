@@ -459,7 +459,8 @@ void ChartDialog::plotGeometry()
                         yval.append(values[variable].vector.magnitude());
                 }
 
-                addTableRow(localValue);
+                // fill table row
+                fillTableRow(localValue, 0.0, points.indexOf(point));
             }
         }
     }
@@ -515,7 +516,6 @@ void ChartDialog::plotTime()
 
     doChartLine();
 
-    QStringList row;
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
         foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
@@ -526,6 +526,8 @@ void ChartDialog::plotTime()
             {
                 // change time level
                 Util::scene()->setActiveTimeStep(i);
+
+                xval.append(timeLevels.at(i));
 
                 Point point(txtPointX->value().number(), txtPointY->value().number());
                 LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
@@ -543,11 +545,8 @@ void ChartDialog::plotTime()
                         yval.append(values[variable].vector.magnitude());
                 }
 
-                // horisontal axis
-                xval.append(i);
-
-                for (int j = 0; j < row.count(); j++)
-                    trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
+                // fill table row
+                fillTableRow(localValue, timeLevels.at(i), i);
             }
         }
     }
@@ -559,47 +558,46 @@ void ChartDialog::plotTime()
     m_sceneViewPost2D->refresh();
 }
 
-void ChartDialog::addTableRow(LocalValue *localValue)
+void ChartDialog::fillTableRow(LocalValue *localValue, double time, int row)
 {
-    /*
+    int count = trvTable->rowCount();
+
     // coordinates
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 0,
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, 0,
                       new QTableWidgetItem(QString("%1").arg(localValue->point().x, 0, 'e', 3)));
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 1,
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, 1,
                       new QTableWidgetItem(QString("%1").arg(localValue->point().y, 0, 'e', 3)));
     // time
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 2,
-                      new QTableWidgetItem(QString("%1").arg(0.0, 0, 'e', 3)));
-
-    // counter
-    int n = 3;
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, 2,
+                      new QTableWidgetItem(QString("%1").arg(time, 0, 'e', 3)));
 
     // values
-    for (QMap<Module::LocalVariable *, PointValue>::iterator it = localPointValue->values().begin();
-         it != localPointValue->values().end(); ++it)
+    int n = 3;
+
+    QMap<Module::LocalVariable *, PointValue> values = localValue->values();
+    foreach (Module::LocalVariable *variable, values.keys())
     {
-        if (it.key()->isScalar())
+        if (variable->isScalar())
         {
             // scalar variable
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().scalar, 0, 'e', 3)));
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
+                              new QTableWidgetItem(QString("%1").arg(values[variable].scalar, 0, 'e', 3)));
             n++;
         }
         else
         {
             // vector variable
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().vector.x, 0, 'e', 3)));
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
+                              new QTableWidgetItem(QString("%1").arg(values[variable].vector.x, 0, 'e', 3)));
             n++;
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().vector.y, 0, 'e', 3)));
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
+                              new QTableWidgetItem(QString("%1").arg(values[variable].vector.y, 0, 'e', 3)));
             n++;
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().vector.magnitude(), 0, 'e', 3)));
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
+                              new QTableWidgetItem(QString("%1").arg(values[variable].vector.magnitude(), 0, 'e', 3)));
             n++;
         }
     }
-    */
 }
 
 QStringList ChartDialog::headers()
