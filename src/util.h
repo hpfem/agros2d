@@ -319,13 +319,6 @@ enum PhysicFieldVariableComp
     PhysicFieldVariableComp_Y
 };
 
-enum Mode
-{
-    Mode_0,
-    Mode_01,
-    Mode_02
-};
-
 enum SceneGeometryMode
 {
     SceneGeometryMode_OperateOnNodes,
@@ -422,101 +415,93 @@ enum SolutionMode
     SolutionMode_Finer  // used to choose reference if exists, normal otherwise
 };
 
-// captions
-QString analysisTypeString(AnalysisType analysisType);
-QString couplingTypeString(CouplingType couplingType);
-QString teModeString(Mode teMode);
-QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
-QString coordinateTypeString(CoordinateType coordinateType);
-QString adaptivityTypeString(AdaptivityType adaptivityType);
-QString weakFormString(WeakFormKind weakForm);
-QString meshTypeString(MeshType meshType);
-QString linearityTypeString(LinearityType linearityType);
-QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
-
-inline QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
-{
-    switch (projNormType)
-    {
-    case Hermes::Hermes2D::HERMES_H1_NORM:
-        return QObject::tr("H1 norm");
-    case Hermes::Hermes2D::HERMES_L2_NORM:
-        return QObject::tr("L2 norm");
-    case Hermes::Hermes2D::HERMES_H1_SEMINORM:
-        return QObject::tr("H1 seminorm");
-    case Hermes::Hermes2D::HERMES_HDIV_NORM:
-        return QObject::tr("Hdiv norm");
-    case Hermes::Hermes2D::HERMES_HCURL_NORM:
-        return QObject::tr("Hcurl norm");
-    default:
-        std::cerr << "Norm '" + QString::number(projNormType).toStdString() + "' is not implemented. QString errorNormString(ProjNormType projNormType)" << endl;
-        throw;
-    }
-}
-
 QString stringListToString(const QStringList &list);
 
 // keys
 void initLists();
 
+// error norm
+QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType);
+
+// coordinate type
+QString coordinateTypeString(CoordinateType coordinateType);
 QStringList coordinateTypeStringKeys();
 QString coordinateTypeToStringKey(CoordinateType coordinateType);
 CoordinateType coordinateTypeFromStringKey(const QString &coordinateType);
 
+// analysis type
+QString analysisTypeString(AnalysisType analysisType);
 QStringList analysisTypeStringKeys();
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);
 
+// coupling type
+QString couplingTypeString(CouplingType couplingType);
 QStringList couplingTypeStringKeys();
 QString couplingTypeToStringKey(CouplingType couplingType);
 CouplingType couplingTypeFromStringKey(const QString &couplingType);
 
+// weakform type
+QString weakFormString(WeakFormKind weakForm);
 QStringList weakFormStringKeys();
 QString weakFormToStringKey(WeakFormKind weakForm);
 WeakFormKind weakFormFromStringKey(const QString &weakForm);
 
+// mesh type
+QString meshTypeString(MeshType meshType);
 QStringList meshTypeStringKeys();
 QString meshTypeToStringKey(MeshType meshType);
 MeshType meshTypeFromStringKey(const QString &meshType);
 
+// physic field variable component
+QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QStringList physicFieldVariableCompTypeStringKeys();
 QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp);
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);
 
+// adaptivity type
+QString adaptivityTypeString(AdaptivityType adaptivityType);
 QStringList adaptivityTypeStringKeys();
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
+// solution mode
+QString solutionTypeString(SolutionMode solutionMode);
 QStringList solutionTypeStringKeys();
 QString solutionTypeToStringKey(SolutionMode solutionType);
 SolutionMode solutionTypeFromStringKey(const QString &solutionType);
 
+// matrix solver type
+QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
 QStringList matrixSolverTypeStringKeys();
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
+// linearity type
+QString linearityTypeString(LinearityType linearityType);
 QStringList linearityTypeStringKeys();
 QString linearityTypeToStringKey(LinearityType linearityType);
 LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
+// scene view 3d mode
 QStringList sceneViewPost3DModeStringKeys();
 QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode);
 SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPost3DMode);
 
-QString modeToStringKey(Mode teMode);
-Mode modeFromStringKey(const QString &teMode);
-
+// palette type
 QStringList paletteTypeStringKeys();
 QString paletteTypeToStringKey(PaletteType paletteType);
 PaletteType paletteTypeFromStringKey(const QString &paletteType);
 QString paletteTypeString(PaletteType paletteType);
 
+// palette quality
 QStringList paletteQualityStringKeys();
 QString paletteQualityToStringKey(PaletteQuality paletteQuality);
 PaletteQuality paletteQualityFromStringKey(const QString &quality);
 double paletteQualityToDouble(PaletteQuality paletteQuality);
 QString paletteQualityString(PaletteQuality paletteQuality);
 
+// palette order
 QStringList paletteOrderTypeStringKeys();
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);

@@ -114,7 +114,7 @@ private:
     QDoubleSpinBox *txtVectorScale;
 
     // polynomial order
-    QCheckBox *chkShowOrderScale;
+    QCheckBox *chkShowOrderColorbar;
     QComboBox *cmbOrderPaletteOrder;
     QCheckBox *chkOrderLabel;
 
@@ -160,12 +160,20 @@ private:
 
     QStackedLayout *widgetsLayout;
     QWidget *mesh;
+    QWidget *meshOrder;
     QWidget *post2d;
     QWidget *post3d;
+    QWidget *postScalar;
+    QWidget *postContour;
+    QWidget *postVector;
 
     QWidget *meshWidget();
+    QWidget *meshOrderWidget();
     QWidget *post2DWidget();
     QWidget *post3DWidget();
+    QWidget *postScalarWidget();
+    QWidget *postContourWidget();
+    QWidget *postVectorWidget();
 
     int selectedTimeStep();
     FieldInfo* selectedField();

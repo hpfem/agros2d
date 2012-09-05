@@ -81,6 +81,7 @@ void PostprocessorWidget::loadBasic()
     radPost3DScalarField3D->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D);
     radPost3DScalarField3DSolid->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid);
     radPost3DModel->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_Model);
+    radPost3DParticleTracing->setChecked(Util::config()->showPost3D == SceneViewPost3DMode_ParticleTracing);
     doPostprocessorGroupClicked(butPost3DGroup->checkedButton());
 
     chkShowPost2DContourView->setChecked(Util::config()->showContourView);
@@ -144,7 +145,7 @@ void PostprocessorWidget::loadAdvanced()
     txtVectorScale->setValue(Util::config()->vectorScale);
 
     // order view
-    chkShowOrderScale->setChecked(Util::config()->showOrderColorBar);
+    chkShowOrderColorbar->setChecked(Util::config()->showOrderColorBar);
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Util::config()->orderPaletteOrderType));
     chkOrderLabel->setChecked(Util::config()->orderLabel);
 
@@ -206,6 +207,7 @@ void PostprocessorWidget::saveBasic()
     if (radPost3DScalarField3D->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_ScalarView3D;
     if (radPost3DScalarField3DSolid->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_ScalarView3DSolid;
     if (radPost3DModel->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_Model;
+    if (radPost3DParticleTracing->isChecked()) Util::config()->showPost3D = SceneViewPost3DMode_ParticleTracing;
 
     Util::config()->showContourView = chkShowPost2DContourView->isChecked();
     Util::config()->showScalarView = chkShowPost2DScalarView->isChecked();
@@ -245,7 +247,7 @@ void PostprocessorWidget::saveAdvanced()
     Util::config()->vectorScale = txtVectorScale->value();
 
     // order view
-    Util::config()->showOrderColorBar = chkShowOrderScale->isChecked();
+    Util::config()->showOrderColorBar = chkShowOrderColorbar->isChecked();
     Util::config()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
     Util::config()->orderLabel = chkOrderLabel->isChecked();
 
@@ -296,7 +298,7 @@ void PostprocessorWidget::createControls()
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
+    layoutButtons->addStretch(1);
     layoutButtons->addWidget(btnOK);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
@@ -316,6 +318,27 @@ QWidget *PostprocessorWidget::meshWidget()
     chkShowSolutionMeshView = new QCheckBox(tr("Solution mesh"));
     chkShowOrderView = new QCheckBox(tr("Polynomial order"));
 
+    QVBoxLayout *gridLayoutMesh = new QVBoxLayout();
+    gridLayoutMesh->addWidget(chkShowInitialMeshView);
+    gridLayoutMesh->addWidget(chkShowSolutionMeshView);
+    gridLayoutMesh->addWidget(chkShowOrderView);
+
+    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh"));
+    grpShowMesh->setLayout(gridLayoutMesh);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpShowMesh);
+    layout->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorWidget::meshOrderWidget()
+{
     // layout order
     cmbOrderPaletteOrder = new QComboBox();
     cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
@@ -333,35 +356,22 @@ QWidget *PostprocessorWidget::meshWidget()
     cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
     cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
-    chkShowOrderScale = new QCheckBox(tr("Show order scale"), this);
+    chkShowOrderColorbar = new QCheckBox(tr("Show order colorbar"), this);
     chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
 
-    QHBoxLayout *gridLayoutMesh = new QHBoxLayout();
-    gridLayoutMesh->addWidget(chkShowInitialMeshView);
-    gridLayoutMesh->addWidget(chkShowSolutionMeshView);
-
     QGridLayout *gridLayoutOrder = new QGridLayout();
-    gridLayoutOrder->addWidget(chkShowOrderView, 0, 0);
-    gridLayoutOrder->addWidget(new QLabel(tr("Order palette:")), 1, 0);
-    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 1, 1);
-    gridLayoutOrder->addWidget(chkShowOrderScale, 2, 0, 1, 2);
-    gridLayoutOrder->addWidget(chkOrderLabel, 3, 0, 1, 2);
-
-    QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh"));
-    grpShowMesh->setLayout(gridLayoutMesh);
+    gridLayoutOrder->addWidget(new QLabel(tr("Order palette:")), 0, 0);
+    gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
+    gridLayoutOrder->addWidget(chkShowOrderColorbar, 1, 0, 1, 2);
+    gridLayoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
 
     QGroupBox *grpShowOrder = new QGroupBox(tr("Polynomial order"));
     grpShowOrder->setLayout(gridLayoutOrder);
 
-    //QPushButton *btnOrderDefault = new QPushButton(tr("Default"));
-    //connect(btnOrderDefault, SIGNAL(clicked()), this, SLOT(doOrderDefault()));
-
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
-    layout->addWidget(grpShowMesh);
     layout->addWidget(grpShowOrder);
-    layout->addStretch();
-    //layout->addWidget(btnOrderDefault, 0, Qt::AlignLeft);
+    layout->addStretch(1);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -383,17 +393,30 @@ QWidget *PostprocessorWidget::post2DWidget()
 
     QGridLayout *layoutPost2D = new QGridLayout();
     layoutPost2D->addWidget(chkShowPost2DScalarView, 0, 0);
-    layoutPost2D->addWidget(chkShowPost2DParticleView, 1, 0);
-    layoutPost2D->addWidget(chkShowPost2DContourView, 0, 1);
-    layoutPost2D->addWidget(chkShowPost2DVectorView, 1, 1);
+    layoutPost2D->addWidget(chkShowPost2DContourView, 1, 0);
+    layoutPost2D->addWidget(chkShowPost2DVectorView, 2, 0);
+    layoutPost2D->addWidget(chkShowPost2DParticleView, 0, 1);
 
     QHBoxLayout *layoutShowPost2D = new QHBoxLayout();
     layoutShowPost2D->addLayout(layoutPost2D);
-    layoutShowPost2D->addStretch();
+    layoutShowPost2D->addStretch(1);
 
     QGroupBox *grpShowPost2D = new QGroupBox(tr("Postprocessor 2D"));
     grpShowPost2D->setLayout(layoutShowPost2D);
 
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpShowPost2D);
+    layout->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorWidget::postScalarWidget()
+{
     // layout scalar field
     cmbPostScalarFieldVariable = new QComboBox();
     connect(cmbPostScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
@@ -414,6 +437,19 @@ QWidget *PostprocessorWidget::post2DWidget()
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
 
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpScalarField);
+    layout->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorWidget::postContourWidget()
+{
     // contour field
     cmbPost2DContourVariable = new QComboBox();
 
@@ -426,6 +462,19 @@ QWidget *PostprocessorWidget::post2DWidget()
     QGroupBox *grpContourField = new QGroupBox(tr("Contour field"));
     grpContourField->setLayout(layoutContourField);
 
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpContourField);
+    layout->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *PostprocessorWidget::postVectorWidget()
+{
     // vector field
     cmbPost2DVectorFieldVariable = new QComboBox();
 
@@ -440,11 +489,8 @@ QWidget *PostprocessorWidget::post2DWidget()
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
-    layout->addWidget(grpShowPost2D);
-    layout->addWidget(grpScalarField);
-    layout->addWidget(grpContourField);
     layout->addWidget(grpVectorField);
-    layout->addStretch();
+    layout->addStretch(1);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -478,7 +524,7 @@ QWidget *PostprocessorWidget::post3DWidget()
 
     QHBoxLayout *layoutShowPost3D = new QHBoxLayout();
     layoutShowPost3D->addLayout(layoutPost3D);
-    layoutShowPost3D->addStretch();
+    layoutShowPost3D->addStretch(1);
 
     QGroupBox *grpShowPost3D = new QGroupBox(tr("Postprocessor 3D"));
     grpShowPost3D->setLayout(layoutShowPost3D);
@@ -486,7 +532,7 @@ QWidget *PostprocessorWidget::post3DWidget()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->addWidget(grpShowPost3D);
-    layout->addStretch();
+    layout->addStretch(1);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -529,17 +575,21 @@ QWidget *PostprocessorWidget::controlsBasic()
     QGridLayout *layoutAdaptivity = new QGridLayout();
     layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
     layoutAdaptivity->setColumnStretch(1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity step:")), 0, 0);
+    layoutAdaptivity->addWidget(new QLabel(tr("Step:")), 0, 0);
     layoutAdaptivity->addWidget(cmbAdaptivityStep, 0, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Solution type:")), 1, 0);
+    layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 1, 0);
     layoutAdaptivity->addWidget(cmbAdaptivitySolutionType, 1, 1);
 
     grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
 
     mesh = meshWidget();
+    meshOrder = meshOrderWidget();
     post2d = post2DWidget();
     post3d = post3DWidget();
+    postScalar = postScalarWidget();
+    postContour = postContourWidget();
+    postVector = postVectorWidget();
 
     widgetsLayout = new QStackedLayout();
     widgetsLayout->addWidget(mesh);
@@ -551,17 +601,14 @@ QWidget *PostprocessorWidget::controlsBasic()
     layoutBasic->addWidget(grpTransient);
     layoutBasic->addWidget(grpAdaptivity);
     layoutBasic->addLayout(widgetsLayout);
-    layoutBasic->addStretch();
-
-    QWidget *basicWidget = new QWidget(this);
-    basicWidget->setLayout(layoutBasic);
-
-    // layout postprocessor
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(basicWidget);
+    layoutBasic->addWidget(meshOrder);
+    layoutBasic->addWidget(postScalar);
+    layoutBasic->addWidget(postContour);
+    layoutBasic->addWidget(postVector);
+    layoutBasic->addStretch(1);
 
     QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
+    widget->setLayout(layoutBasic);
 
     return widget;
 }
@@ -656,7 +703,7 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldPalette);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldColorbar);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldRange);
-    layoutScalarFieldAdvanced->addStretch();
+    layoutScalarFieldAdvanced->addStretch(1);
     layoutScalarFieldAdvanced->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
 
     QWidget *scalarFieldWidget = new QWidget();
@@ -706,7 +753,7 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     QVBoxLayout *layoutContoursVectors = new QVBoxLayout();
     layoutContoursVectors->addWidget(grpContours);
     layoutContoursVectors->addWidget(grpVectors);
-    layoutContoursVectors->addStretch();
+    layoutContoursVectors->addStretch(1);
     layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
 
     QWidget *contoursVectorsWidget = new QWidget();
@@ -841,7 +888,7 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
     layoutParticle->addLayout(gridLayoutParticle);
-    layoutParticle->addStretch();
+    layoutParticle->addStretch(1);
     layoutParticle->addWidget(btnParticleDefault, 0, Qt::AlignLeft);
 
     QWidget *particleWidget = new QWidget();
@@ -975,6 +1022,11 @@ void PostprocessorWidget::doPaletteFilter(int state)
 
 void PostprocessorWidget::refresh()
 {
+    meshOrder->setVisible(m_sceneMesh->actSceneModeMesh->isChecked());
+    postScalar->setVisible(m_scenePost2D->actSceneModePost2D->isChecked() || m_scenePost3D->actSceneModePost3D->isChecked());
+    postContour->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
+    postVector->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
+
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
         widgetsLayout->setCurrentWidget(mesh);
@@ -1119,7 +1171,7 @@ void PostprocessorWidget::doContoursVectorsDefault()
 void PostprocessorWidget::doOrderDefault()
 {
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
-    chkShowOrderScale->setChecked(SHOWORDERCOLORBAR);
+    chkShowOrderColorbar->setChecked(SHOWORDERCOLORBAR);
     chkOrderLabel->setChecked(ORDERLABEL);
 }
 

@@ -35,7 +35,6 @@
 
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
-static QHash<Mode, QString> modeList;
 static QHash<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
 static QHash<WeakFormKind, QString> weakFormList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
@@ -93,9 +92,6 @@ QStringList sceneViewPost3DModeStringKeys() { return sceneViewPost3DModeList.val
 QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode) { return sceneViewPost3DModeList[sceneViewPost3DMode]; }
 SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPost3DMode) { return sceneViewPost3DModeList.key(sceneViewPost3DMode); }
 
-QString modeToStringKey(Mode mode) { return modeList[mode]; }
-Mode modeFromStringKey(const QString &mode) { return modeList.key(mode); }
-
 QStringList paletteTypeStringKeys() { return paletteTypeList.values(); }
 QString paletteTypeToStringKey(PaletteType paletteType) { return paletteTypeList[paletteType]; }
 PaletteType paletteTypeFromStringKey(const QString &paletteType) { return paletteTypeList.key(paletteType); }
@@ -147,11 +143,6 @@ void initLists()
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Magnitude, "magnitude");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_X, "x");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Y, "y");
-
-    // TEMODE
-    modeList.insert(Mode_0, "mode_0");
-    modeList.insert(Mode_01, "mode_01");
-    modeList.insert(Mode_02, "mode_02");
 
     // post3d
     //sceneViewPost3DModeList.insert(SceneViewPost3DMode_Undefined, "");
@@ -240,6 +231,26 @@ QString stringListToString(const QStringList &list)
     return out;
 }
 
+QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
+{
+    switch (projNormType)
+    {
+    case Hermes::Hermes2D::HERMES_H1_NORM:
+        return QObject::tr("H1 norm");
+    case Hermes::Hermes2D::HERMES_L2_NORM:
+        return QObject::tr("L2 norm");
+    case Hermes::Hermes2D::HERMES_H1_SEMINORM:
+        return QObject::tr("H1 seminorm");
+    case Hermes::Hermes2D::HERMES_HDIV_NORM:
+        return QObject::tr("Hdiv norm");
+    case Hermes::Hermes2D::HERMES_HCURL_NORM:
+        return QObject::tr("Hcurl norm");
+    default:
+        std::cerr << "Norm '" + QString::number(projNormType).toStdString() + "' is not implemented. QString errorNormString(ProjNormType projNormType)" << endl;
+        throw;
+    }
+}
+
 QString analysisTypeString(AnalysisType analysisType)
 {
     switch (analysisType)
@@ -272,22 +283,6 @@ QString couplingTypeString(CouplingType couplingType)
     }
 }
 
-QString teModeString(Mode teMode)
-{
-    switch (teMode)
-    {
-    case Mode_0:
-        return QObject::tr("TE Mode 0");
-    case Mode_01:
-        return QObject::tr("TE Mode 01");
-    case Mode_02:
-        return QObject::tr("TE Mode 02");
-    default:
-        std::cerr << "TE mode '" + QString::number(teMode).toStdString() + "' is not implemented. TEModeString(TEMode teMode)" << endl;
-        throw;
-    }
-}
-
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp)
 {
     switch (physicFieldVariableComp)
@@ -308,6 +303,24 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
 QString coordinateTypeString(CoordinateType coordinateType)
 {
     return ((coordinateType == CoordinateType_Planar) ? QObject::tr("Planar") : QObject::tr("Axisymmetric"));
+}
+
+QString solutionTypeString(SolutionMode solutionMode)
+{
+    switch (solutionMode)
+    {
+    case SolutionMode_Normal:
+        return QObject::tr("Normal");
+    case SolutionMode_Reference:
+        return QObject::tr("Reference");
+    case SolutionMode_NonExisting:
+        return QObject::tr("Non-existing");
+    case SolutionMode_Finer:
+        return QObject::tr("Finer"); // used to choose reference if exists, normal otherwise
+    default:
+        std::cerr << "Solution mode '" + QString::number(solutionMode).toStdString() + "' is not implemented. solutionTypeString(SolutionMode solutionMode)" << endl;
+        throw;
+    }
 }
 
 QString adaptivityTypeString(AdaptivityType adaptivityType)
