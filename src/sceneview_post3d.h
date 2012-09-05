@@ -26,6 +26,7 @@
 template <typename Scalar> class SceneSolution;
 template <typename Scalar> class ViewScalarFilter;
 
+/*
 class Post3DHermes : public QObject
 {
     Q_OBJECT
@@ -72,6 +73,8 @@ private slots:
     void processParticleTracing();
 };
 
+*/
+
 class SceneViewPost3D : public SceneViewCommon3D
 {
     Q_OBJECT
@@ -81,7 +84,7 @@ public slots:
     virtual void clear();
 
 public:
-    SceneViewPost3D(QWidget *parent = 0);
+    SceneViewPost3D(PostHermes *postHermes, QWidget *parent = 0);
     ~SceneViewPost3D();
 
     QAction *actSceneModePost3D;
@@ -108,7 +111,7 @@ private:
     int m_listParticleTracing;
     int m_listModel;
 
-    Post3DHermes *m_post3DHermes;
+    PostHermes *m_postHermes;
 
     void createActionsPost3D();
 };

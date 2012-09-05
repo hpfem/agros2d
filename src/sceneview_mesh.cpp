@@ -31,116 +31,23 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/module.h"
 
-MeshHermes::MeshHermes()
-{
-    clear();
-}
-
-
-MeshHermes::~MeshHermes()
-{
-}
-
-void MeshHermes::clear()
-{
-    m_initialMeshIsPrepared = false;
-    m_solutionMeshIsPrepared = false;
-    m_orderIsPrepared = false;
-}
-
-void MeshHermes::processOrder()
-{
-    m_orderIsPrepared = false;
-
-    // init linearizer for order view
-    if (Util::problem()->isSolved())
-    {
-        Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
-
-        // ERROR: FIX component(0)
-        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).space.data());
-
-        m_orderIsPrepared = true;
-    }
-}
-
-void MeshHermes::processInitialMesh()
-{
-    m_initialMeshIsPrepared = false;
-
-    if (Util::problem()->isMeshed())
-    {
-        Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->activeMeshInitial()->get_num_active_elements()));
-
-        // init linearizer for initial mesh
-        Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
-        m_linInitialMeshView.process_solution(&initial);
-
-        m_initialMeshIsPrepared = true;
-    }
-}
-
-void MeshHermes::processSolutionMesh()
-{
-    m_solutionMeshIsPrepared = false;
-
-    if (Util::problem()->isSolved())
-    {
-        // ERROR: FIX component(0)
-        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh()->get_num_active_elements()));
-
-        // init linearizer for solution mesh
-        // ERROR: FIX component(0)
-        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
-        m_linSolutionMeshView.process_solution(&solution);
-
-        m_solutionMeshIsPrepared = true;
-    }
-}
-
-void MeshHermes::processMeshed()
-{
-    m_initialMeshIsPrepared = false;
-
-    processInitialMesh();
-    // QTimer::singleShot(0, this, SLOT(processInitialMesh()));
-    emit processed();
-}
-
-void MeshHermes::processSolved()
-{
-    m_solutionMeshIsPrepared = false;
-    m_orderIsPrepared = false;
-
-    processSolutionMesh();
-    processOrder();
-    // QTimer::singleShot(0, this, SLOT(processSolutionMesh()));
-    // QTimer::singleShot(0, this, SLOT(processOrder()));
-
-    //TODO timedependence rpoblemsm_timeStep * Util::problem()->config()->module()->number_of_solution())->space);
-    emit processed();
-}
-
-// ************************************************************************************************
-
-SceneViewMesh::SceneViewMesh(QWidget *parent): SceneViewCommon2D(parent),
+SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent): SceneViewCommon2D(parent),
+    m_postHermes(postHermes),
     m_listInitialMesh(-1),
     m_listSolutionMesh(-1),
     m_listOrder(-1)
 {
     createActionsMesh();
 
-    m_meshHermes = new MeshHermes();
-
     connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
 
-    connect(m_meshHermes, SIGNAL(processed()), this, SLOT(updateGL()));
+    connect(m_postHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
 
 SceneViewMesh::~SceneViewMesh()
 {
-    delete m_meshHermes;
+    delete m_postHermes;
 }
 
 void SceneViewMesh::createActionsMesh()
@@ -170,23 +77,7 @@ void SceneViewMesh::refresh()
     m_listSolutionMesh = -1;
     m_listOrder = -1;
 
-    m_meshHermes->clear();
-
     setControls();
-
-    if (Util::problem()->isMeshed() && !Util::problem()->isSolved())
-    {
-        m_meshHermes->processMeshed();
-    }
-
-    if (Util::problem()->isSolved())
-    {
-        m_meshHermes->blockSignals(true);
-        m_meshHermes->processMeshed();
-        m_meshHermes->blockSignals(false);
-
-        m_meshHermes->processSolved();
-    }
 
     SceneViewCommon::refresh();
 }
@@ -201,8 +92,6 @@ void SceneViewMesh::setControls()
 
 void SceneViewMesh::clear()
 {
-    m_meshHermes->clear();
-
     setControls();
 
     SceneViewCommon2D::clear();
@@ -347,14 +236,14 @@ void SceneViewMesh::paintGeometry()
 void SceneViewMesh::paintInitialMesh()
 {
     if (!Util::problem()->isMeshed()) return;
-    if (!m_meshHermes->initialMeshIsPrepared()) return;
+    if (!m_postHermes->initialMeshIsPrepared()) return;
 
     loadProjection2d(true);
 
-    m_meshHermes->linInitialMeshView().lock_data();
+    m_postHermes->linInitialMeshView().lock_data();
 
-    double3* linVert = m_meshHermes->linInitialMeshView().get_vertices();
-    int3* linEdges = m_meshHermes->linInitialMeshView().get_edges();
+    double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
+    int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
 
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -365,27 +254,27 @@ void SceneViewMesh::paintInitialMesh()
 
     // triangles
     glBegin(GL_LINES);
-    for (int i = 0; i < m_meshHermes->linInitialMeshView().get_num_edges(); i++)
+    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
     {
         glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
         glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
     }
     glEnd();
 
-    m_meshHermes->linInitialMeshView().unlock_data();
+    m_postHermes->linInitialMeshView().unlock_data();
 }
 
 void SceneViewMesh::paintSolutionMesh()
 {
     if (!Util::problem()->isSolved()) return;
-    if (!m_meshHermes->solutionMeshIsPrepared()) return;
+    if (!m_postHermes->solutionMeshIsPrepared()) return;
 
     loadProjection2d(true);
 
-    m_meshHermes->linSolutionMeshView().lock_data();
+    m_postHermes->linSolutionMeshView().lock_data();
 
-    double3* linVert = m_meshHermes->linSolutionMeshView().get_vertices();
-    int3* linEdges = m_meshHermes->linSolutionMeshView().get_edges();
+    double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
+    int3* linEdges = m_postHermes->linSolutionMeshView().get_edges();
 
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -397,20 +286,20 @@ void SceneViewMesh::paintSolutionMesh()
     // triangles
     // qDebug() << Util::problem()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
-    for (int i = 0; i < m_meshHermes->linSolutionMeshView().get_num_edges(); i++)
+    for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
     {
         glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
         glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
     }
     glEnd();
 
-    m_meshHermes->linSolutionMeshView().unlock_data();
+    m_postHermes->linSolutionMeshView().unlock_data();
 }
 
 void SceneViewMesh::paintOrder()
 {
     if (!Util::problem()->isSolved()) return;
-    if (!m_meshHermes->orderIsPrepared()) return;
+    if (!m_postHermes->orderIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -420,15 +309,15 @@ void SceneViewMesh::paintOrder()
         glNewList(m_listOrder, GL_COMPILE);
 
         // order scalar view
-        m_meshHermes->ordView().lock_data();
+        m_postHermes->ordView().lock_data();
 
-        double3* vert = m_meshHermes->ordView().get_vertices();
-        int3* tris = m_meshHermes->ordView().get_triangles();
+        double3* vert = m_postHermes->ordView().get_vertices();
+        int3* tris = m_postHermes->ordView().get_triangles();
 
         // draw mesh
         int min = 11;
         int max = 1;
-        for (int i = 0; i < m_meshHermes->ordView().get_num_triangles(); i++)
+        for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
@@ -439,7 +328,7 @@ void SceneViewMesh::paintOrder()
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_meshHermes->ordView().get_num_triangles(); i++)
+        for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
             glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
@@ -452,7 +341,7 @@ void SceneViewMesh::paintOrder()
 
         glDisable(GL_POLYGON_OFFSET_FILL);
 
-        m_meshHermes->ordView().unlock_data();
+        m_postHermes->ordView().unlock_data();
 
         glEndList();
 
@@ -469,13 +358,13 @@ void SceneViewMesh::paintOrder()
         QFont fontLabel = font();
         fontLabel.setPointSize(fontLabel.pointSize() - 3);
 
-        m_meshHermes->ordView().lock_data();
+        m_postHermes->ordView().lock_data();
 
-        double3* vert = m_meshHermes->ordView().get_vertices();
+        double3* vert = m_postHermes->ordView().get_vertices();
         int* lvert;
         char** ltext;
         double2* lbox;
-        int nl = m_meshHermes->ordView().get_labels(lvert, ltext, lbox);
+        int nl = m_postHermes->ordView().get_labels(lvert, ltext, lbox);
 
         Point size((2.0/width()*fontMetrics().width(" "))/m_scale2d*aspect(),
                    (2.0/height()*fontMetrics().height())/m_scale2d);
@@ -493,7 +382,7 @@ void SceneViewMesh::paintOrder()
             }
         }
 
-        m_meshHermes->ordView().unlock_data();
+        m_postHermes->ordView().unlock_data();
     }
 }
 
@@ -502,20 +391,20 @@ void SceneViewMesh::paintOrderColorBar()
     if (!Util::problem()->isSolved() || !Util::config()->showOrderColorBar) return;
 
     // order scalar view
-    m_meshHermes->ordView().lock_data();
+    m_postHermes->ordView().lock_data();
 
-    double3* vert = m_meshHermes->ordView().get_vertices();
-    int3* tris = m_meshHermes->ordView().get_triangles();
+    double3* vert = m_postHermes->ordView().get_vertices();
+    int3* tris = m_postHermes->ordView().get_triangles();
 
     int min = 11;
     int max = 1;
-    for (int i = 0; i < m_meshHermes->ordView().get_num_triangles(); i++)
+    for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
     {
         if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
         if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
     }
 
-    m_meshHermes->ordView().unlock_data();
+    m_postHermes->ordView().unlock_data();
 
     // order color map
     loadProjectionViewPort();

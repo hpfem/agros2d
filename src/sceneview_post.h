@@ -25,6 +25,88 @@
 
 template <typename Scalar> class SceneSolution;
 
+class PostHermes : public QObject
+{
+    Q_OBJECT
+
+public:
+    PostHermes();
+    ~PostHermes();
+
+    // mesh
+    inline bool initialMeshIsPrepared() { return m_initialMeshIsPrepared; }
+    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
+    inline bool solutionMeshIsPrepared() { return m_solutionMeshIsPrepared; }
+    inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
+
+    // order view
+    inline bool orderIsPrepared() { return m_orderIsPrepared; }
+    Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
+
+    // contour
+    inline bool contourIsPrepared() { return m_contourIsPrepared; }
+    inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
+
+    // scalar view
+    inline bool scalarIsPrepared() { return m_scalarIsPrepared; }
+    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
+
+    // vector view
+    inline bool vectorIsPrepared() { return m_vectorIsPrepared; }
+    inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
+
+    // particle tracing
+    inline bool particleTracingIsPrepared() { return m_particleTracingIsPrepared; }
+
+signals:
+    void processed();
+
+public slots:
+    void refresh();
+    void clear();
+
+private:
+    // initial mesh
+    bool m_initialMeshIsPrepared;
+    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
+
+    // solution mesh
+    bool m_solutionMeshIsPrepared;
+    Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
+
+    // order view
+    bool m_orderIsPrepared;
+    Hermes::Hermes2D::Views::Orderizer m_orderView;
+
+    // contour
+    bool m_contourIsPrepared;
+    Hermes::Hermes2D::Views::Linearizer m_linContourView;
+
+    // scalar view
+    bool m_scalarIsPrepared;
+    Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
+
+    // vector view
+    bool m_vectorIsPrepared;
+    Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
+
+    // particle tracing
+    bool m_particleTracingIsPrepared;
+
+private slots:
+    void processMeshed();
+    void processSolved();
+
+    void processInitialMesh();
+    void processSolutionMesh();
+    void processOrder();
+
+    void processRangeContour();
+    void processRangeScalar();
+    void processRangeVector();
+    void processParticleTracing();
+};
+
 class SceneViewPostInterface : public SceneViewCommon
 {
     Q_OBJECT

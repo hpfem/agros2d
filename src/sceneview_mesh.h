@@ -23,60 +23,12 @@
 #include "util.h"
 #include "sceneview_common2d.h"
 
-
-class MeshHermes : public QObject
-{
-    Q_OBJECT
-
-public:
-    MeshHermes();
-    ~MeshHermes();
-
-    void clear();
-
-    // mesh
-    inline bool initialMeshIsPrepared() { return m_initialMeshIsPrepared; }
-    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
-    inline bool solutionMeshIsPrepared() { return m_solutionMeshIsPrepared; }
-    inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
-
-    // order view
-    inline bool orderIsPrepared() { return m_orderIsPrepared; }
-    Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
-
-signals:
-    void processed();
-
-public slots:
-    virtual void processMeshed();
-    virtual void processSolved();
-
-private:
-    // initial mesh
-    bool m_initialMeshIsPrepared;
-    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
-
-    // solution mesh
-    bool m_solutionMeshIsPrepared;
-    Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
-
-    // order view
-    bool m_orderIsPrepared;
-    Hermes::Hermes2D::Views::Orderizer m_orderView;
-
-private slots:
-    // process
-    void processOrder();
-    void processInitialMesh();
-    void processSolutionMesh();
-};
-
 class SceneViewMesh : public SceneViewCommon2D
 {
     Q_OBJECT
 
 public:
-    SceneViewMesh(QWidget *parent = 0);
+    SceneViewMesh(PostHermes *postHermes, QWidget *parent = 0);
     ~SceneViewMesh();
 
     QAction *actSceneModeMesh;
@@ -112,7 +64,7 @@ private:
     int m_listSolutionMesh;
     int m_listOrder;
 
-    MeshHermes *m_meshHermes;
+    PostHermes *m_postHermes;
 
     void createActionsMesh();
 };

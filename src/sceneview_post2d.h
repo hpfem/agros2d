@@ -28,61 +28,6 @@ template <typename Scalar> class ViewScalarFilter;
 
 class FieldInfo;
 
-class Post2DHermes : public QObject
-{
-    Q_OBJECT
-
-public:
-    Post2DHermes();
-    ~Post2DHermes();
-
-    void clear();
-
-    // contour
-    inline bool contourIsPrepared() { return m_contourIsPrepared; }
-    inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
-
-    // scalar view
-    inline bool scalarIsPrepared() { return m_scalarIsPrepared; }
-    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
-
-    // vector view
-    inline bool vectorIsPrepared() { return m_vectorIsPrepared; }
-    inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
-
-    // particle tracing
-    inline bool particleTracingIsPrepared() { return m_particleTracingIsPrepared; }
-
-signals:
-    void processed();
-
-public slots:
-    virtual void processSolved();
-
-private:
-    // contour
-    bool m_contourIsPrepared;
-    Hermes::Hermes2D::Views::Linearizer m_linContourView;
-
-    // scalar view
-    bool m_scalarIsPrepared;
-    Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
-
-    // vector view
-    bool m_vectorIsPrepared;
-    Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
-
-    // particle tracing
-    bool m_particleTracingIsPrepared;
-
-private slots:
-    // process
-    void processRangeContour();
-    void processRangeScalar();
-    void processRangeVector();
-    void processParticleTracing();
-};
-
 class SceneViewPost2D : public SceneViewCommon2D
 {
     Q_OBJECT
@@ -98,7 +43,7 @@ public slots:
     void setChartLine(const ChartLine &chartLine);
 
 public:
-    SceneViewPost2D(QWidget *parent = 0);
+    SceneViewPost2D(PostHermes *postHermes, QWidget *parent = 0);
     ~SceneViewPost2D();
 
     QAction *actSceneModePost2D;
@@ -157,7 +102,7 @@ private:
     int m_listScalarField;
     int m_listParticleTracing;
 
-    Post2DHermes *m_post2DHermes;
+    PostHermes *m_postHermes;
 
     void createActionsPost2D();
 

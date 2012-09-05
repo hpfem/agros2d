@@ -30,10 +30,284 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
+#include "logview.h"
+
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+
+PostHermes::PostHermes()
+{
+    clear();
+}
+
+PostHermes::~PostHermes()
+{
+}
+
+void PostHermes::processInitialMesh()
+{
+    m_initialMeshIsPrepared = false;
+
+    if (Util::problem()->isMeshed())
+    {
+        Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->activeMeshInitial()->get_num_active_elements()));
+
+        // init linearizer for initial mesh
+        Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
+        m_linInitialMeshView.process_solution(&initial);
+
+        m_initialMeshIsPrepared = true;
+    }
+}
+
+void PostHermes::processSolutionMesh()
+{
+    m_solutionMeshIsPrepared = false;
+
+    if (Util::problem()->isSolved())
+    {
+        // ERROR: FIX component(0)
+        Util::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh()->get_num_active_elements()));
+
+        // init linearizer for solution mesh
+        // ERROR: FIX component(0)
+        Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
+        m_linSolutionMeshView.process_solution(&solution);
+
+        m_solutionMeshIsPrepared = true;
+    }
+}
+
+void PostHermes::processOrder()
+{
+    m_orderIsPrepared = false;
+
+    // init linearizer for order view
+    if (Util::problem()->isSolved())
+    {
+        Util::log()->printMessage(tr("MeshView"), tr("polynomial order"));
+
+        // ERROR: FIX component(0)
+        m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).space.data());
+
+        m_orderIsPrepared = true;
+    }
+}
+
+void PostHermes::processRangeContour()
+{
+    m_contourIsPrepared = false;
+
+    if (Util::problem()->isSolved() && Util::config()->showContourView)
+    {
+        bool contains = false;
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
+        {
+            if (variable->id() == Util::config()->contourVariable)
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->contourVariable == "" || !contains)
+        {
+            // default values
+            Util::config()->contourVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
+        }
+
+        Util::log()->printMessage(tr("PostView"), tr("contour view (%1)").arg(Util::config()->contourVariable));
+
+        QString variableName = Util::config()->contourVariable;
+        Module::LocalVariable* variable = Util::scene()->activeViewField()->module()->localVariable(variableName);
+        if (!variable)
+            qDebug() << "error, trying to get variable " << variableName << " from module " << Util::scene()->activeViewField()->fieldId();
+
+        Hermes::Hermes2D::Filter<double> *slnContourView = NULL;
+        if (variable->isScalar())
+            slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
+                                                                                            PhysicFieldVariableComp_Scalar);
+        else
+            slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
+                                                                                            PhysicFieldVariableComp_Magnitude);
+
+        m_linContourView.process_solution(slnContourView,
+                                          Hermes::Hermes2D::H2D_FN_VAL_0,
+                                          paletteQualityToDouble(Util::config()->linearizerQuality));
+
+        // deformed shape
+        if (Util::config()->deformContour)
+            Util::scene()->activeViewField()->module()->deformShape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
+
+        delete slnContourView;
+
+        m_contourIsPrepared = true;
+    }
+}
+
+void PostHermes::processRangeScalar()
+{
+    m_scalarIsPrepared = false;
+
+    if (Util::problem()->isSolved() && Util::config()->showScalarView)
+    {
+        bool contains = false;
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewScalarVariables())
+        {
+            if (variable->id() == Util::config()->scalarVariable)
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->scalarVariable == "" || !contains)
+        {
+            // default values
+            Util::config()->scalarVariable = Util::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
+            Util::config()->scalarVariableComp = Util::scene()->activeViewField()->module()->defaultViewScalarVariableComp();
+        }
+
+        Util::log()->printMessage(tr("PostView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
+
+        Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
+                                                                                                                 Util::config()->scalarVariableComp);
+
+        m_linScalarView.process_solution(slnScalarView,
+                                         Hermes::Hermes2D::H2D_FN_VAL_0,
+                                         paletteQualityToDouble(Util::config()->linearizerQuality));
+
+        // deformed shape
+        if (Util::config()->deformScalar)
+            Util::scene()->activeViewField()->module()->deformShape(m_linScalarView.get_vertices(),
+                                                                     m_linScalarView.get_num_vertices());
+
+        if (Util::config()->scalarRangeAuto)
+        {
+            Util::config()->scalarRangeMin = m_linScalarView.get_min_value();
+            Util::config()->scalarRangeMax = m_linScalarView.get_max_value();
+        }
+
+        delete slnScalarView;
+
+        m_scalarIsPrepared = true;
+    }
+}
+
+void PostHermes::processRangeVector()
+{
+    m_vectorIsPrepared = false;
+
+    if (Util::problem()->isSolved() && Util::config()->showVectorView)
+    {
+        bool contains = false;
+        foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->viewVectorVariables())
+        {
+            if (variable->id() == Util::config()->vectorVariable)
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (Util::config()->vectorVariable == "" || !contains)
+        {
+            // default values
+            Util::config()->vectorVariable = Util::scene()->activeViewField()->module()->defaultViewVectorVariable()->id();
+        }
+
+        Util::log()->printMessage(tr("PostView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
+
+        Hermes::Hermes2D::Filter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+                                                                                                                  PhysicFieldVariableComp_X);
+
+        Hermes::Hermes2D::Filter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
+                                                                                                                  PhysicFieldVariableComp_Y);
+
+        m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
+                                         Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
+                                         Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+
+        // deformed shape
+        if (Util::config()->deformVector)
+            Util::scene()->activeViewField()->module()->deformShape(m_vecVectorView.get_vertices(),
+                                                                     m_vecVectorView.get_num_vertices());
+
+        delete slnVectorXView;
+        delete slnVectorYView;
+
+        m_vectorIsPrepared = true;
+    }
+}
+
+void PostHermes::processParticleTracing()
+{
+    m_particleTracingIsPrepared = false;
+
+    if (Util::problem()->isSolved() && Util::config()->showParticleView)
+    {
+        Util::log()->printMessage(tr("PostView"), tr("particle view"));
+
+        m_particleTracingIsPrepared = true;
+    }
+}
+
+void PostHermes::refresh()
+{
+    if (Util::problem()->isMeshed())
+        processMeshed();
+
+    if (Util::problem()->isSolved())
+        processSolved();}
+
+void PostHermes::clear()
+{
+    m_initialMeshIsPrepared = false;
+    m_solutionMeshIsPrepared = false;
+    m_orderIsPrepared = false;
+
+    m_contourIsPrepared = false;
+    m_scalarIsPrepared = false;
+    m_vectorIsPrepared = false;
+    m_particleTracingIsPrepared = false;
+}
+
+void PostHermes::processMeshed()
+{
+    m_initialMeshIsPrepared = false;
+
+    processInitialMesh();
+
+    emit processed();
+}
+
+void PostHermes::processSolved()
+{
+    m_solutionMeshIsPrepared = false;
+    m_orderIsPrepared = false;
+
+    m_contourIsPrepared = false;
+    m_scalarIsPrepared = false;
+    m_vectorIsPrepared = false;
+
+    processSolutionMesh();
+    processOrder();
+
+    processRangeContour();
+    processRangeScalar();
+    processRangeVector();
+    processParticleTracing();
+
+    emit processed();
+
+    // QTimer::singleShot(0, this, SLOT(processRangeContour()));
+    // QTimer::singleShot(0, this, SLOT(processRangeScalar()));
+    // QTimer::singleShot(0, this, SLOT(processRangeVector()));
+}
+
+// ************************************************************************************************
 
 SceneViewPostInterface::SceneViewPostInterface(QWidget *parent): SceneViewCommon(parent)
 {

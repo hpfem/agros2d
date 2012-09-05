@@ -55,7 +55,7 @@ static void computeNormal(double p0x, double p0y, double p0z,
     // double p[3] = { nx*l, ny*l, nz*l };
 }
 
-
+/*
 Post3DHermes::Post3DHermes()
 {
     clear();
@@ -154,10 +154,12 @@ void Post3DHermes::processSolved()
 
     emit processed();
 }
+*/
 
 // ************************************************************************************************
 
-SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
+SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent) : SceneViewCommon3D(parent),
+    m_postHermes(postHermes),
     m_listScalarField3D(-1),
     m_listScalarField3DSolid(-1),
     m_listParticleTracing(-1),
@@ -168,11 +170,9 @@ SceneViewPost3D::SceneViewPost3D(QWidget *parent) : SceneViewCommon3D(parent),
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
 
-    m_post3DHermes = new Post3DHermes();
-
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
 
-    connect(m_post3DHermes, SIGNAL(processed()), this, SLOT(updateGL()));
+    connect(m_postHermes, SIGNAL(processed()), this, SLOT(updateGL()));
 }
 
 SceneViewPost3D::~SceneViewPost3D()
@@ -265,7 +265,7 @@ void SceneViewPost3D::resizeGL(int w, int h)
 void SceneViewPost3D::paintScalarField3D()
 {
     if (!Util::problem()->isSolved()) return;
-    if (!m_post3DHermes->scalarIsPrepared()) return;
+    if (!m_postHermes->scalarIsPrepared()) return;
 
     loadProjection3d(true);
 
@@ -289,10 +289,10 @@ void SceneViewPost3D::paintScalarField3D()
             irange = 1.0;
         }
 
-        m_post3DHermes->linScalarView().lock_data();
+        m_postHermes->linScalarView().lock_data();
 
-        double3* linVert = m_post3DHermes->linScalarView().get_vertices();
-        int3* linTris = m_post3DHermes->linScalarView().get_triangles();
+        double3* linVert = m_postHermes->linScalarView().get_vertices();
+        int3* linTris = m_postHermes->linScalarView().get_triangles();
         Point point[3];
         double value[3];
 
@@ -321,7 +321,7 @@ void SceneViewPost3D::paintScalarField3D()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
+        for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
         {
             point[0].x = linVert[linTris[i][0]][0];
             point[0].y = linVert[linTris[i][0]][1];
@@ -370,14 +370,14 @@ void SceneViewPost3D::paintScalarField3D()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
-        m_post3DHermes->linInitialMeshView().lock_data();
+        m_postHermes->linInitialMeshView().lock_data();
 
-        double3* linVertMesh = m_post3DHermes->linInitialMeshView().get_vertices();
-        int3* linTrisMesh = m_post3DHermes->linInitialMeshView().get_triangles();
+        double3* linVertMesh = m_postHermes->linInitialMeshView().get_vertices();
+        int3* linTrisMesh = m_postHermes->linInitialMeshView().get_triangles();
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_post3DHermes->linInitialMeshView().get_num_triangles(); i++)
+        for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
         {
             glVertex2d(linVertMesh[linTrisMesh[i][0]][0], linVertMesh[linTrisMesh[i][0]][1]);
             glVertex2d(linVertMesh[linTrisMesh[i][1]][0], linVertMesh[linTrisMesh[i][1]][1]);
@@ -385,7 +385,7 @@ void SceneViewPost3D::paintScalarField3D()
         }
         glEnd();
 
-        m_post3DHermes->linInitialMeshView().unlock_data();
+        m_postHermes->linInitialMeshView().unlock_data();
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
@@ -428,7 +428,7 @@ void SceneViewPost3D::paintScalarField3D()
 
         glPopMatrix();
 
-        m_post3DHermes->linScalarView().unlock_data();
+        m_postHermes->linScalarView().unlock_data();
 
         glEndList();
 
@@ -443,7 +443,7 @@ void SceneViewPost3D::paintScalarField3D()
 void SceneViewPost3D::paintScalarField3DSolid()
 {
     if (!Util::problem()->isSolved()) return;
-    if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid && !m_post3DHermes->scalarIsPrepared()) return;
+    if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid && !m_postHermes->scalarIsPrepared()) return;
 
     loadProjection3d(true);
 
@@ -472,11 +472,11 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         double phi = Util::config()->scalarView3DAngle;
 
-        m_post3DHermes->linScalarView().lock_data();
+        m_postHermes->linScalarView().lock_data();
 
-        double3* linVert = m_post3DHermes->linScalarView().get_vertices();
-        int3* linTris = m_post3DHermes->linScalarView().get_triangles();
-        int3* linEdges = m_post3DHermes->linScalarView().get_edges();
+        double3* linVert = m_postHermes->linScalarView().get_vertices();
+        int3* linTris = m_postHermes->linScalarView().get_triangles();
+        int3* linEdges = m_postHermes->linScalarView().get_edges();
         Point point[3];
         double value[3];
 
@@ -508,7 +508,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -560,7 +560,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             // length
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -603,7 +603,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -642,7 +642,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             // symmetry
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -823,7 +823,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         glPopMatrix();
 
-        m_post3DHermes->linScalarView().unlock_data();
+        m_postHermes->linScalarView().unlock_data();
 
         glEndList();
 
@@ -838,7 +838,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 void SceneViewPost3D::paintParticleTracing()
 {
     if (!Util::problem()->isSolved()) return;
-    if (!m_post3DHermes->particleTracingIsPrepared()) return;
+    if (!m_postHermes->particleTracingIsPrepared()) return;
 
     loadProjection3d(true);
     if (m_listParticleTracing == -1)
@@ -853,9 +853,9 @@ void SceneViewPost3D::paintParticleTracing()
         double max = qMax(rect.width(), rect.height());
         double depth = max / Util::config()->scalarView3DHeight;
 
-        double3* linVert = m_post3DHermes->linScalarView().get_vertices();
-        int3* linTris = m_post3DHermes->linScalarView().get_triangles();
-        int3* linEdges = m_post3DHermes->linScalarView().get_edges();
+        double3* linVert = m_postHermes->linScalarView().get_vertices();
+        int3* linTris = m_postHermes->linScalarView().get_triangles();
+        int3* linEdges = m_postHermes->linScalarView().get_edges();
         Point point[3];
         double value[3];
 
@@ -875,7 +875,7 @@ void SceneViewPost3D::paintParticleTracing()
         if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -919,7 +919,7 @@ void SceneViewPost3D::paintParticleTracing()
 
             // length
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -955,7 +955,7 @@ void SceneViewPost3D::paintParticleTracing()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -988,7 +988,7 @@ void SceneViewPost3D::paintParticleTracing()
 
             // symmetry
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_post3DHermes->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -1305,13 +1305,6 @@ void SceneViewPost3D::refresh()
     m_listScalarField3DSolid = -1;
     m_listParticleTracing = -1;
 
-    m_post3DHermes->clear();
-
-    if (Util::problem()->isSolved())
-    {
-        m_post3DHermes->processSolved();
-    }
-
     // actions
     actSceneModePost3D->setEnabled(Util::problem()->isSolved());
     actSetProjectionXY->setEnabled(Util::problem()->isSolved());
@@ -1323,7 +1316,5 @@ void SceneViewPost3D::refresh()
 
 void SceneViewPost3D::clear()
 {
-    m_post3DHermes->clear();
-
     SceneViewCommon3D::clear();
 }

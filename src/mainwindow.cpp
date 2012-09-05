@@ -69,10 +69,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createPythonEngine(new PythonEngineAgros());
 
     // scene
+    PostHermes *postHermes = new PostHermes();
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
-    sceneViewMesh = new SceneViewMesh(this);
-    sceneViewPost2D = new SceneViewPost2D(this);
-    sceneViewPost3D = new SceneViewPost3D(this);
+    sceneViewMesh = new SceneViewMesh(postHermes, this);
+    sceneViewPost2D = new SceneViewPost2D(postHermes, this);
+    sceneViewPost3D = new SceneViewPost3D(postHermes, this);
     sceneViewBlank = new SceneViewBlank(this);
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     // preprocessor
@@ -118,6 +119,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPreprocessor, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
+
+    // post hermes
+    connect(problemWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(meshed()), postHermes, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(solved()), postHermes, SLOT(refresh()));
+    connect(Util::scene(), SIGNAL(cleared()), postHermes, SLOT(clear()));
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
