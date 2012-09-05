@@ -137,7 +137,7 @@ ModuleItemLocalValue::ModuleItemLocalValue(ModuleDialog *moduleDialog, const QSt
                                            XMLModule::expression *expr, QWidget *parent)
     : ModuleItem(parent), m_type(type), m_expr(expr)
 {
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
 
     int numberOfSolutions = moduleDialog->numberOfSolutions(expr->analysistype());
 
@@ -477,7 +477,7 @@ ModuleWeakform::ModuleWeakform(WeakFormKind weakForm, QWidget *parent)
     txtPlanarNewton = new QLineEdit();
     txtAxiNewton = new QLineEdit();
 
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel(tr("I:")), 0, 0);
     layout->addWidget(txtI, 0, 1);
     layout->addWidget(new QLabel(tr("J:")), 0, 2);
@@ -504,7 +504,7 @@ ModuleItemConstantDialog::ModuleItemConstantDialog(ModuleDialog *moduleDialog, X
     txtValue = new QLineEdit();
     txtValue->setText(QString::number(constant->value()));
 
-    QGridLayout *layoutGeneral = new QGridLayout(this);
+    QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
     layoutGeneral->addWidget(txtID, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Value:")), 1, 0);
@@ -545,7 +545,7 @@ ModuleItemAnalysisDialog::ModuleItemAnalysisDialog(ModuleDialog *moduleDialog, X
     txtSolutions = new QLineEdit();
     txtSolutions->setText(QString::number(analysis->solutions()));
 
-    QGridLayout *layoutGeneral = new QGridLayout(this);
+    QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
     layoutGeneral->addWidget(txtID, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Name:")), 1, 0);
@@ -581,7 +581,7 @@ ModuleItemQuantityGlobalDialog::ModuleItemQuantityGlobalDialog(ModuleDialog *mod
     txtShortname = new QLineEdit();
     txtShortname->setText(QString::fromStdString(quantity->shortname().get()));
 
-    QGridLayout *layoutGeneral = new QGridLayout(this);
+    QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
     layoutGeneral->addWidget(txtID, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Shortname:")), 1, 0);
@@ -615,7 +615,7 @@ ModuleItemQuantityAnalysisDialog::ModuleItemQuantityAnalysisDialog(ModuleDialog 
     if (quantity->dependence().present())
         txtDependence->setText(QString::fromStdString(quantity->dependence().get()));
 
-    QGridLayout *layoutGeneral = new QGridLayout(this);
+    QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("Planar nelinearity:")), 0, 0);
     layoutGeneral->addWidget(txtPlanarNonlinearity, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Axisymmetric nelinearity:")), 1, 0);
@@ -653,13 +653,13 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(ModuleDialog *moduleDialog, Q
     txtAxiLinear = new ModuleDialogTextEdit(this, 3);
     txtAxiNewton = new ModuleDialogTextEdit(this, 3);
 
-    QGridLayout *layoutGeneral = new QGridLayout(this);
+    QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("Solution index:")), 0, 0);
     layoutGeneral->addWidget(txtSolutionIndex, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Test function index:")), 0, 2);
     layoutGeneral->addWidget(txtTestFunctionIndex, 0, 3);
 
-    QGridLayout *layoutLinear = new QGridLayout(this);
+    QGridLayout *layoutLinear = new QGridLayout();
     layoutLinear->addWidget(new QLabel(tr("Planar:")), 0, 0);
     layoutLinear->addWidget(txtPlanarLinear, 1, 0);
     layoutLinear->addWidget(new QLabel(tr("Axisymmetric:")), 2, 0);
@@ -668,7 +668,7 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(ModuleDialog *moduleDialog, Q
     QGroupBox *grpLinear = new QGroupBox(tr("Linear"));
     grpLinear->setLayout(layoutLinear);
 
-    QGridLayout *layoutNewton = new QGridLayout(this);
+    QGridLayout *layoutNewton = new QGridLayout();
     layoutNewton->addWidget(new QLabel(tr("Planar:")), 0, 0);
     layoutNewton->addWidget(txtPlanarNewton, 1, 0);
     layoutNewton->addWidget(new QLabel(tr("Axisymmetric:")), 2, 0);
@@ -929,7 +929,7 @@ ModuleItemViewDefaultsDialog::ModuleItemViewDefaultsDialog(ModuleDialog *moduleD
     }
     cmbLocalVariable->setCurrentIndex(cmbLocalVariable->findText(QString::fromStdString(m_def->id())));
 
-    QGridLayout *layoutGeneral = new QGridLayout(this);
+    QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("Local variable:")), 0, 0);
     layoutGeneral->addWidget(cmbLocalVariable, 0, 1);
 
@@ -970,7 +970,7 @@ ModuleVolumeIntegralValueDialog::ModuleVolumeIntegralValueDialog(ModuleDialog *m
         ModuleItemLocalValue *item = new ModuleItemLocalValue(moduleDialog, "scalar", expr, this);
         items.append(item);
 
-        QHBoxLayout *layoutGeneral = new QHBoxLayout(this);
+        QHBoxLayout *layoutGeneral = new QHBoxLayout();
         layoutGeneral->addWidget(item);
 
         QGroupBox *grpGeneral = new QGroupBox(analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(expr->analysistype()))));
@@ -1023,7 +1023,7 @@ ModuleSurfaceIntegralValueDialog::ModuleSurfaceIntegralValueDialog(ModuleDialog 
         ModuleItemLocalValue *item = new ModuleItemLocalValue(moduleDialog, "scalar", expr, this);
         items.append(item);
 
-        QHBoxLayout *layoutGeneral = new QHBoxLayout(this);
+        QHBoxLayout *layoutGeneral = new QHBoxLayout();
         layoutGeneral->addWidget(item);
 
         QGroupBox *grpGeneral = new QGroupBox(analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(expr->analysistype()))));

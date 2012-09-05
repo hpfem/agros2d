@@ -279,8 +279,6 @@ void SceneFieldWidgetBoundary::refresh()
 
 void SceneFieldWidgetBoundary::doTypeChanged(int index)
 {
-    setMinimumSize(sizeHint());
-
     // disable variables
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
@@ -300,9 +298,6 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
             .arg(comboBox->itemData(index).toString());
 
     readPixmap(equationImage, fileName);
-
-    // sizehint
-    // setMinimumSize(sizeHint());
 }
 
 void SceneFieldWidgetBoundary::load()
@@ -348,7 +343,6 @@ SceneBoundaryDialog::SceneBoundaryDialog(SceneBoundary *boundary, QWidget *paren
     createDialog();
 
     load();
-    setSize();
 }
 
 void SceneBoundaryDialog::createDialog()
@@ -376,7 +370,6 @@ void SceneBoundaryDialog::createContent()
 {
     fieldWidget = new SceneFieldWidgetBoundary(boundary->fieldInfo()->module()->boundaryUI(), boundary, this);
     fieldWidget->createContent();
-    fieldWidget->setMinimumSize(sizeHint());
 
     layout->addWidget(fieldWidget, 10, 0, 1, 3);
 }
@@ -412,11 +405,6 @@ bool SceneBoundaryDialog::save()
     return true;
 }
 
-void SceneBoundaryDialog::setSize()
-{
-    setMinimumSize(sizeHint());
-}
-
 void SceneBoundaryDialog::doAccept()
 {
     if (save())
@@ -447,7 +435,6 @@ SceneMaterialDialog::SceneMaterialDialog(SceneMaterial *material, QWidget *paren
     createDialog();
 
     load();
-    setSize();
 }
 
 void SceneMaterialDialog::createDialog()
@@ -476,9 +463,8 @@ void SceneMaterialDialog::createContent()
 {
     fieldWidget = new SceneFieldWidgetMaterial(material->fieldInfo()->module()->materialUI(), material, this);
     fieldWidget->createContent();
-    fieldWidget->setMinimumSize(sizeHint());
 
-    layout->addWidget(fieldWidget, 10, 0, 1, 3);
+    layout->addWidget(fieldWidget, 10, 0, 1, 3);   
 }
 
 void SceneMaterialDialog::load()
@@ -510,12 +496,6 @@ bool SceneMaterialDialog::save()
         return false;
 
     return true;
-}
-
-
-void SceneMaterialDialog::setSize()
-{
-    setMinimumSize(sizeHint());
 }
 
 void SceneMaterialDialog::doAccept()

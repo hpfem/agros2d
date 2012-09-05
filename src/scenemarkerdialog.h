@@ -174,8 +174,6 @@ protected:
     void load();
     bool save();
 
-    void setSize();
-
 protected slots:
     void evaluated(bool isError);
 
@@ -205,8 +203,6 @@ protected:
 
     void load();
     bool save();
-
-    void setSize();
 
 protected slots:
     void evaluated(bool isError);
