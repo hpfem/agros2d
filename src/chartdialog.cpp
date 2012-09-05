@@ -22,7 +22,6 @@
 #include "gui.h"
 #include "scene.h"
 #include "sceneview_post2d.h"
-#include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -122,6 +121,7 @@ ChartDialog::~ChartDialog()
 void ChartDialog::showDialog()
 {
     fillComboBoxScalarVariable(m_fieldInfo, cmbFieldVariable);
+    doFieldVariable(cmbFieldVariable->currentIndex());
     fillComboBoxTimeStep(m_fieldInfo, cmbTimeStep);
 
     // correct labels
@@ -353,93 +353,118 @@ void ChartDialog::createControls()
     setLayout(layout);
 }
 
+QList<double> ChartDialog::getHorizontalAxisValues(ChartLine *chartLine)
+{
+    QList<Point> points = chartLine->getPoints();
+    QList<double> xval;
+
+    if (radAxisLength->isChecked())
+    {
+        for (int i = 0; i < points.length(); i++)
+        {
+            if (i == 0)
+                xval.append(0.0);
+            else
+            {
+                if (fabs(chartLine->angle) < EPS_ZERO)
+                    xval.append(xval.at(i-1) + sqrt(Hermes::sqr(points.at(i).x - points.at(i-1).x) + Hermes::sqr(points.at(i).y - points.at(i-1).y)));
+                else
+                {
+                    Point center = centerPoint(points.at(i-1), points.at(i), chartLine->angle/(points.length() - 1));
+                    double radius = (points.at(i-1) - center).magnitude();
+                    double angle = atan2(points.at(i).y - center.y, points.at(i).x - center.x)
+                                   - atan2(points.at(i-1).y - center.y, points.at(i-1).x - center.x);
+                    xval.append(xval[i-1] + radius * angle);
+                }
+            }
+        }
+    }
+    else if (radAxisX->isChecked())
+    {
+        foreach (Point point, points)
+            xval.append(point.x);
+    }
+    else if (radAxisY->isChecked())
+    {
+        foreach (Point point, points)
+            xval.append(point.y);
+    }
+
+    return xval;
+}
+
 void ChartDialog::plotGeometry()
 {
-    if (!txtStartX->evaluate()) return;
-    if (!txtStartY->evaluate()) return;
-    if (!txtEndX->evaluate()) return;
-    if (!txtEndY->evaluate()) return;
-    if (!txtAngle->evaluate()) return;
-
-    doChartLine();
-
     // variable
     Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
-    if (!physicFieldVariable)
-        return;
+    if (!physicFieldVariable) return;
 
+    // variable component
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
     if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
 
+    // number of points
     int count = txtAxisPoints->value();
-    double *xval = new double[count];
-    double *yval = new double[count];
 
-    // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
+    // chart
     chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
                         arg(physicFieldVariable->name()).
                         arg(physicFieldVariable->unit()));
 
-    // headers
-    QStringList head = headers();
-
-    // table
-    trvTable->clear();
-    trvTable->setRowCount(count);
-    trvTable->setColumnCount(head.count());
-    trvTable->setHorizontalHeaderLabels(head);
-
-    // chart
     QString text;
     if (radAxisLength->isChecked()) text = tr("Length (m)");
     if (radAxisX->isChecked()) text = Util::problem()->config()->labelX() + " (m)";
     if (radAxisY->isChecked()) text = Util::problem()->config()->labelY() + " (m)";
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
-    // line
-    ChartLine chartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
-                        Point(txtEndX->value().number(), txtEndY->value().number()),
-                        txtAngle->value().number(),
-                        count);
+    // table
+    QStringList head = headers();
 
-    QList<Point> points = chartLine.getPoints();
+    trvTable->clear();
+    trvTable->setRowCount(count);
+    trvTable->setColumnCount(head.count());
+    trvTable->setHorizontalHeaderLabels(head);
 
-    // calculate values
-    for (int i = 0; i < points.length(); i++)
+    // values
+    ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                                         Point(txtEndX->value().number(), txtEndY->value().number()),
+                                         txtAngle->value().number(),
+                                         count);
+    doChartLine();
+
+    QList<Point> points = chartLine->getPoints();
+    QList<double> xval = getHorizontalAxisValues(chartLine);
+    QList<double> yval;
+
+    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+        foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
         {
-            LocalValue *value = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, points.at(i));
+            if (physicFieldVariable->id() != variable->id()) continue;
 
-            // x value
-            if (radAxisLength->isChecked())
+            foreach (Point point, points)
             {
-                if (i == 0)
-                    xval[i] = 0.0;
+                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                QMap<Module::LocalVariable *, PointValue> values = localValue->values();
+
+                if (variable->isScalar())
+                    yval.append(values[variable].scalar);
                 else
-                    if (fabs(chartLine.angle) < EPS_ZERO)
-                    {
-                        xval[i] = xval[i-1] + sqrt(Hermes::sqr(points.at(i).x - points.at(i-1).x) + Hermes::sqr(points.at(i).y - points.at(i-1).y));
-                    }
+                {
+                    if (physicFieldVariableComp == PhysicFieldVariableComp_X)
+                        yval.append(values[variable].vector.x);
+                    else if (physicFieldVariableComp == PhysicFieldVariableComp_Y)
+                        yval.append(values[variable].vector.y);
                     else
-                    {
-                        Point center = centerPoint(points.at(i-1), points.at(i), chartLine.angle/(points.length() - 1));
-                        double radius = (points.at(i-1) - center).magnitude();
-                        double angle = atan2(points.at(i).y - center.y, points.at(i).x - center.x) -
-                                atan2(points.at(i-1).y - center.y, points.at(i-1).x - center.x);
+                        yval.append(values[variable].vector.magnitude());
+                }
 
-                        xval[i] = xval[i-1] + radius * angle;
-                    }
+                addTableRow(localValue);
             }
-            if (radAxisX->isChecked()) xval[i] = points.at(i).x;
-            if (radAxisY->isChecked()) xval[i] = points.at(i).y;
-
-            addValue(value, 0.0, yval, i, points.length(),
-                     physicFieldVariableComp, physicFieldVariable);
         }
     }
 
-    // reverse vertical axis
+    // reverse x axis
     if (chkAxisPointsReverse->isChecked())
     {
         for (int i = 0; i < points.length() / 2; i++)
@@ -450,10 +475,50 @@ void ChartDialog::plotGeometry()
         }
     }
 
-    chart->setData(xval, yval, count);
+    chart->setData(xval, yval);
+}
 
-    delete[] xval;
-    delete[] yval;
+void ChartDialog::addTableRow(LocalValue *localValue)
+{
+    /*
+    // coordinates
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 0,
+                      new QTableWidgetItem(QString("%1").arg(localValue->point().x, 0, 'e', 3)));
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 1,
+                      new QTableWidgetItem(QString("%1").arg(localValue->point().y, 0, 'e', 3)));
+    // time
+    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 2,
+                      new QTableWidgetItem(QString("%1").arg(0.0, 0, 'e', 3)));
+
+    // counter
+    int n = 3;
+
+    // values
+    for (QMap<Module::LocalVariable *, PointValue>::iterator it = localPointValue->values().begin();
+         it != localPointValue->values().end(); ++it)
+    {
+        if (it.key()->isScalar())
+        {
+            // scalar variable
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it.value().scalar, 0, 'e', 3)));
+            n++;
+        }
+        else
+        {
+            // vector variable
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it.value().vector.x, 0, 'e', 3)));
+            n++;
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it.value().vector.y, 0, 'e', 3)));
+            n++;
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
+                              new QTableWidgetItem(QString("%1").arg(it.value().vector.magnitude(), 0, 'e', 3)));
+            n++;
+        }
+    }
+    */
 }
 
 void ChartDialog::plotTime()
@@ -547,74 +612,15 @@ QStringList ChartDialog::headers()
     return head;
 }
 
-void ChartDialog::addValue(LocalValue *localPointValue, double time, double *yval, int i, int N,
-                           PhysicFieldVariableComp physicFieldVariableComp,
-                           Module::LocalVariable *physicFieldVariable)
-{
-    // coordinates
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 0,
-                      new QTableWidgetItem(QString("%1").arg(localPointValue->point().x, 0, 'e', 3)));
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 1,
-                      new QTableWidgetItem(QString("%1").arg(localPointValue->point().y, 0, 'e', 3)));
-    // time
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, 2,
-                      new QTableWidgetItem(QString("%1").arg(time, 0, 'e', 3)));
-
-    // counter
-    int n = 3;
-
-    // local variables
-    // FIXME - wrong order!!!
-    for (QMap<Module::LocalVariable *, PointValue>::iterator it = localPointValue->values().begin();
-         it != localPointValue->values().end(); ++it)
-    {
-        // chart
-        if (it.key()->id() == physicFieldVariable->id())
-        {
-            if (physicFieldVariable->isScalar())
-            {
-                // scalar variable
-                yval[i] = it.value().scalar;
-            }
-            else
-            {
-                // vector variable
-                if (physicFieldVariableComp == PhysicFieldVariableComp_X)
-                    yval[i] = it.value().vector.x;
-                else if (physicFieldVariableComp == PhysicFieldVariableComp_Y)
-                    yval[i] = it.value().vector.y;
-                else
-                    yval[i] = it.value().vector.magnitude();
-            }
-        }
-
-        // table
-        if (it.key()->isScalar())
-        {
-            // scalar variable
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().scalar, 0, 'e', 3)));
-            n++;
-        }
-        else
-        {
-            // vector variable
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().vector.x, 0, 'e', 3)));
-            n++;
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().vector.y, 0, 'e', 3)));
-            n++;
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? N - 1 - i : i, n,
-                              new QTableWidgetItem(QString("%1").arg(it.value().vector.magnitude(), 0, 'e', 3)));
-            n++;
-        }
-    }
-}
-
 void ChartDialog::doPlot()
 {
     if (!Util::problem()->isSolved()) return;
+
+    if (!txtStartX->evaluate()) return;
+    if (!txtStartY->evaluate()) return;
+    if (!txtEndX->evaluate()) return;
+    if (!txtEndY->evaluate()) return;
+    if (!txtAngle->evaluate()) return;
 
     if (tabAnalysisType->currentWidget() == widGeometry)
         plotGeometry();
@@ -625,7 +631,7 @@ void ChartDialog::doPlot()
 
 void ChartDialog::doFieldVariable(int index)
 {
-    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(index).toString());
     if (!physicFieldVariable)
         return;
 

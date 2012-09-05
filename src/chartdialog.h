@@ -21,6 +21,7 @@
 #define CHARTDIALOG_H
 
 #include "util.h"
+#include "hermes2d/plugin_interface.h"
 
 class Chart;
 class LineEditDouble;
@@ -121,8 +122,12 @@ private:
 
     void createControls();
 
+    QList<double> getHorizontalAxisValues(ChartLine *chartLine);
+
     void plotGeometry();
     void plotTime();
+
+    void addTableRow(LocalValue *localValue);
 
     QStringList headers();
     void addValue(LocalValue *localPointValue, double time, double *yval, int i, int N,
