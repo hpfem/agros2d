@@ -298,14 +298,6 @@ void PostprocessorWidget::createControls()
 
     QWidget *advanced = controlsAdvanced();
 
-    /*
-    QVBoxLayout *layoutArea = new QVBoxLayout();
-    layoutArea->addWidget(advanced);
-
-    QScrollArea *scrollArea = new QScrollArea(this);
-    scrollArea->setLayout(layoutArea);
-    */
-
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(basic);
@@ -698,20 +690,24 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     QGroupBox *grpScalarFieldColorbar = new QGroupBox(tr("Colorbar"));
     grpScalarFieldColorbar->setLayout(gridLayoutScalarFieldColorbar);
 
-    QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
-    connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
+    // QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
+    // connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
 
     QVBoxLayout *layoutScalarFieldAdvanced = new QVBoxLayout();
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldPalette);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldColorbar);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldRange);
     layoutScalarFieldAdvanced->addStretch(1);
-    layoutScalarFieldAdvanced->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
+    // layoutScalarFieldAdvanced->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
 
-    QWidget *scalarFieldWidget = new QWidget();
-    scalarFieldWidget->setLayout(layoutScalarFieldAdvanced);
+    QWidget *scalarWidget = new QWidget();
+    scalarWidget->setLayout(layoutScalarFieldAdvanced);
 
-    return scalarFieldWidget;
+    QScrollArea *scalarWidgetArea = new QScrollArea();
+    scalarWidgetArea->setFrameShape(QFrame::NoFrame);
+    scalarWidgetArea->setWidget(scalarWidget);
+
+    return scalarWidgetArea;
 }
 
 QWidget *PostprocessorWidget::postContourAdvancedWidget()
@@ -727,18 +723,22 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
     gridLayoutContours->addWidget(txtContoursCount, 0, 1);
 
-    QPushButton *btnContourDefault = new QPushButton(tr("Default"));
-    connect(btnContourDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
+    // QPushButton *btnContourDefault = new QPushButton(tr("Default"));
+    // connect(btnContourDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
 
     QVBoxLayout *layoutContour = new QVBoxLayout();
     layoutContour->addLayout(gridLayoutContours);
     layoutContour->addStretch(1);
-    layoutContour->addWidget(btnContourDefault, 0, Qt::AlignLeft);
+    // layoutContour->addWidget(btnContourDefault, 0, Qt::AlignLeft);
 
-    QWidget *contourWidget = new QWidget();
+    QGroupBox *contourWidget = new QGroupBox("Advanced");
     contourWidget->setLayout(layoutContour);
 
-    return contourWidget;
+    QScrollArea *contourWidgetArea = new QScrollArea();
+    contourWidgetArea->setFrameShape(QFrame::NoFrame);
+    contourWidgetArea->setWidget(contourWidget);
+
+    return contourWidgetArea;
 }
 
 QWidget *PostprocessorWidget::postVectorAdvancedWidget()
@@ -755,8 +755,8 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     txtVectorScale->setMinimum(VECTORSSCALEMIN);
     txtVectorScale->setMaximum(VECTORSSCALEMAX);
 
-    QPushButton *btnVectorDefault = new QPushButton(tr("Default"));
-    connect(btnVectorDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
+    // QPushButton *btnVectorDefault = new QPushButton(tr("Default"));
+    // connect(btnVectorDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
 
     QGridLayout *gridLayoutVectors = new QGridLayout();
     gridLayoutVectors->addWidget(new QLabel(tr("Vectors:")), 0, 0);
@@ -769,12 +769,16 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     QVBoxLayout *layoutVector = new QVBoxLayout();
     layoutVector->addLayout(gridLayoutVectors);
     layoutVector->addStretch(1);
-    layoutVector->addWidget(btnVectorDefault, 0, Qt::AlignLeft);
+    // layoutVector->addWidget(btnVectorDefault, 0, Qt::AlignLeft);
 
-    QWidget *vectorWidget = new QWidget();
+    QGroupBox *vectorWidget = new QGroupBox("Advanced");
     vectorWidget->setLayout(layoutVector);
 
-    return vectorWidget;
+    QScrollArea *vectorWidgetArea = new QScrollArea();
+    vectorWidgetArea->setFrameShape(QFrame::NoFrame);
+    vectorWidgetArea->setWidget(vectorWidget);
+
+    return vectorWidgetArea;
 }
 
 QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
@@ -813,8 +817,8 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     txtParticleDragReferenceArea = new LineEditDouble();
     lblParticleMotionEquations = new QLabel();
 
-    QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
-    connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
+    // QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
+    // connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
 
     // Lorentz force
     QGridLayout *gridLayoutLorentzForce = new QGridLayout();
@@ -909,12 +913,16 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     QVBoxLayout *layoutParticle = new QVBoxLayout();
     layoutParticle->addLayout(gridLayoutParticle);
     layoutParticle->addStretch(1);
-    layoutParticle->addWidget(btnParticleDefault, 0, Qt::AlignLeft);
+    // layoutParticle->addWidget(btnParticleDefault, 0, Qt::AlignLeft);
 
     QWidget *particleWidget = new QWidget();
     particleWidget->setLayout(layoutParticle);
 
-    return particleWidget;
+    QScrollArea *particleWidgetArea = new QScrollArea();
+    particleWidgetArea->setFrameShape(QFrame::NoFrame);
+    particleWidgetArea->setWidget(particleWidget);
+
+    return particleWidgetArea;
 }
 
 void PostprocessorWidget::doCalculationFinished()
