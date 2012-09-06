@@ -20,6 +20,7 @@
 #include "postprocessorview.h"
 
 #include "gui/lineeditdouble.h"
+#include "gui/groupbox.h"
 #include "gui/common.h"
 
 #include "scene.h"
@@ -284,15 +285,7 @@ void PostprocessorWidget::saveAdvanced()
 }
 
 void PostprocessorWidget::createControls()
-{
-    // tab widget
-    basic = controlsBasic();
-    postprocessor = controlsPostprocessor();
-
-    QTabWidget *tabType = new QTabWidget(this);
-    tabType->addTab(basic, icon(""), tr("Basic"));
-    tabType->addTab(postprocessor, icon(""), tr("Postprocessor"));
-
+{    
     // dialog buttons
     btnOK = new QPushButton(tr("Apply"));
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
@@ -301,12 +294,31 @@ void PostprocessorWidget::createControls()
     layoutButtons->addStretch(1);
     layoutButtons->addWidget(btnOK);
 
+    basic = controlsBasic();
+
+    QWidget *advanced = controlsAdvanced();
+
+    /*
+    QVBoxLayout *layoutArea = new QVBoxLayout();
+    layoutArea->addWidget(advanced);
+
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setLayout(layoutArea);
+    */
+
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 5, 3, 5);
-    layoutMain->addWidget(tabType);
-    layoutMain->addLayout(layoutButtons);
+    layoutMain->addWidget(basic);
+    layoutMain->addWidget(advanced);
+    layoutMain->addStretch(1);
+    layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
 
     refresh();
+
+    groupPostScalarAdvanced->setVisible(false);
+    groupPostContourAdvanced->setVisible(false);
+    groupPostVectorAdvanced->setVisible(false);
+    groupPostParticalTracingAdvanced->setVisible(false);
 
     setLayout(layoutMain);
 }
@@ -326,15 +338,7 @@ QWidget *PostprocessorWidget::meshWidget()
     QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh"));
     grpShowMesh->setLayout(gridLayoutMesh);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(grpShowMesh);
-    layout->addStretch(1);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
+    return grpShowMesh;
 }
 
 QWidget *PostprocessorWidget::meshOrderWidget()
@@ -368,15 +372,7 @@ QWidget *PostprocessorWidget::meshOrderWidget()
     QGroupBox *grpShowOrder = new QGroupBox(tr("Polynomial order"));
     grpShowOrder->setLayout(gridLayoutOrder);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(grpShowOrder);
-    layout->addStretch(1);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
+    return grpShowOrder;
 }
 
 QWidget *PostprocessorWidget::post2DWidget()
@@ -404,15 +400,7 @@ QWidget *PostprocessorWidget::post2DWidget()
     QGroupBox *grpShowPost2D = new QGroupBox(tr("Postprocessor 2D"));
     grpShowPost2D->setLayout(layoutShowPost2D);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(grpShowPost2D);
-    layout->addStretch(1);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
+    return grpShowPost2D;
 }
 
 QWidget *PostprocessorWidget::postScalarWidget()
@@ -434,18 +422,12 @@ QWidget *PostprocessorWidget::postScalarWidget()
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
     layoutScalarField->addWidget(cmbPostScalarFieldVariableComp, 1, 1, 1, 3);
 
-    QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
+    CollapsableGroupBoxButton *grpScalarField = new CollapsableGroupBoxButton(tr("Scalar field"));
+    connect(grpScalarField, SIGNAL(collapseEvent(bool)), this, SLOT(doScalarFieldExpandCollapse(bool)));
+    grpScalarField->setCollapsed(true);
     grpScalarField->setLayout(layoutScalarField);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(grpScalarField);
-    layout->addStretch(1);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
+    return grpScalarField;
 }
 
 QWidget *PostprocessorWidget::postContourWidget()
@@ -459,18 +441,12 @@ QWidget *PostprocessorWidget::postContourWidget()
     layoutContourField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutContourField->addWidget(cmbPost2DContourVariable, 0, 1);
 
-    QGroupBox *grpContourField = new QGroupBox(tr("Contour field"));
+    CollapsableGroupBoxButton *grpContourField = new CollapsableGroupBoxButton(tr("Contour field"));
+    connect(grpContourField, SIGNAL(collapseEvent(bool)), this, SLOT(doContourFieldExpandCollapse(bool)));
+    grpContourField->setCollapsed(true);
     grpContourField->setLayout(layoutContourField);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(grpContourField);
-    layout->addStretch(1);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
+    return grpContourField;
 }
 
 QWidget *PostprocessorWidget::postVectorWidget()
@@ -484,18 +460,22 @@ QWidget *PostprocessorWidget::postVectorWidget()
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutVectorField->addWidget(cmbPost2DVectorFieldVariable, 0, 1);
 
-    QGroupBox *grpVectorField = new QGroupBox(tr("Vector field"));
+    CollapsableGroupBoxButton *grpVectorField = new CollapsableGroupBoxButton(tr("Vector field"));
+    connect(grpVectorField, SIGNAL(collapseEvent(bool)), this, SLOT(doVectorFieldExpandCollapse(bool)));
+    grpVectorField->setCollapsed(true);
     grpVectorField->setLayout(layoutVectorField);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(grpVectorField);
-    layout->addStretch(1);
+    return grpVectorField;
+}
 
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
+QWidget *PostprocessorWidget::postParticalTracingWidget()
+{
+    // particle tracing
+    CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Partical tracing"));
+    grpParticalTracing->setCollapsed(true);
+    connect(grpParticalTracing , SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
 
-    return widget;
+    return grpParticalTracing;
 }
 
 QWidget *PostprocessorWidget::post3DWidget()
@@ -583,28 +563,21 @@ QWidget *PostprocessorWidget::controlsBasic()
     grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
 
-    mesh = meshWidget();
-    meshOrder = meshOrderWidget();
-    post2d = post2DWidget();
-    post3d = post3DWidget();
-    postScalar = postScalarWidget();
-    postContour = postContourWidget();
-    postVector = postVectorWidget();
+    groupMesh = meshWidget();
+    groupMeshOrder = meshOrderWidget();
+    groupPost2d = post2DWidget();
+    groupPost3d = post3DWidget();
 
     widgetsLayout = new QStackedLayout();
-    widgetsLayout->addWidget(mesh);
-    widgetsLayout->addWidget(post2d);
-    widgetsLayout->addWidget(post3d);
+    widgetsLayout->addWidget(groupMesh);
+    widgetsLayout->addWidget(groupPost2d);
+    widgetsLayout->addWidget(groupPost3d);
 
     QVBoxLayout *layoutBasic = new QVBoxLayout();
     layoutBasic->addWidget(grpField);
     layoutBasic->addWidget(grpTransient);
     layoutBasic->addWidget(grpAdaptivity);
     layoutBasic->addLayout(widgetsLayout);
-    layoutBasic->addWidget(meshOrder);
-    layoutBasic->addWidget(postScalar);
-    layoutBasic->addWidget(postContour);
-    layoutBasic->addWidget(postVector);
     layoutBasic->addStretch(1);
 
     QWidget *widget = new QWidget(this);
@@ -613,7 +586,36 @@ QWidget *PostprocessorWidget::controlsBasic()
     return widget;
 }
 
-QWidget *PostprocessorWidget::controlsPostprocessor()
+QWidget *PostprocessorWidget::controlsAdvanced()
+{
+    groupPostScalar = postScalarWidget();
+    groupPostScalarAdvanced = postScalarAdvancedWidget();
+    groupPostContour = postContourWidget();
+    groupPostContourAdvanced = postContourAdvancedWidget();
+    groupPostVector = postVectorWidget();
+    groupPostVectorAdvanced = postVectorAdvancedWidget();
+    groupPostParticalTracing = postParticalTracingWidget();
+    groupPostParticalTracingAdvanced = postParticalTracingAdvancedWidget();
+
+    QVBoxLayout *layoutArea = new QVBoxLayout();
+    layoutArea->addWidget(groupMeshOrder);
+    layoutArea->addWidget(groupPostScalar);
+    layoutArea->addWidget(groupPostScalarAdvanced);
+    layoutArea->addWidget(groupPostContour);
+    layoutArea->addWidget(groupPostContourAdvanced);
+    layoutArea->addWidget(groupPostVector);
+    layoutArea->addWidget(groupPostVectorAdvanced);
+    layoutArea->addWidget(groupPostParticalTracing);
+    layoutArea->addWidget(groupPostParticalTracingAdvanced);
+    layoutArea->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layoutArea);
+
+    return widget;
+}
+
+QWidget *PostprocessorWidget::postScalarAdvancedWidget()
 {
     // scalar field
     // palette
@@ -709,12 +711,38 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     QWidget *scalarFieldWidget = new QWidget();
     scalarFieldWidget->setLayout(layoutScalarFieldAdvanced);
 
-    // contours and vectors
+    return scalarFieldWidget;
+}
+
+QWidget *PostprocessorWidget::postContourAdvancedWidget()
+{
     // contours
     txtContoursCount = new QSpinBox(this);
     txtContoursCount->setMinimum(CONTOURSCOUNTMIN);
     txtContoursCount->setMaximum(CONTOURSCOUNTMAX);
 
+    QGridLayout *gridLayoutContours = new QGridLayout();
+    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
+    gridLayoutContours->setColumnStretch(1, 1);
+    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
+    gridLayoutContours->addWidget(txtContoursCount, 0, 1);
+
+    QPushButton *btnContourDefault = new QPushButton(tr("Default"));
+    connect(btnContourDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
+
+    QVBoxLayout *layoutContour = new QVBoxLayout();
+    layoutContour->addLayout(gridLayoutContours);
+    layoutContour->addStretch(1);
+    layoutContour->addWidget(btnContourDefault, 0, Qt::AlignLeft);
+
+    QWidget *contourWidget = new QWidget();
+    contourWidget->setLayout(layoutContour);
+
+    return contourWidget;
+}
+
+QWidget *PostprocessorWidget::postVectorAdvancedWidget()
+{
     // vectors
     chkVectorProportional = new QCheckBox(tr("Proportional"), this);
     chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
@@ -727,17 +755,8 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     txtVectorScale->setMinimum(VECTORSSCALEMIN);
     txtVectorScale->setMaximum(VECTORSSCALEMAX);
 
-    QPushButton *btnContoursDefault = new QPushButton(tr("Default"));
-    connect(btnContoursDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
-
-    QGridLayout *gridLayoutContours = new QGridLayout();
-    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
-    gridLayoutContours->setColumnStretch(1, 1);
-    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
-    gridLayoutContours->addWidget(txtContoursCount, 0, 1);
-
-    QGroupBox *grpContours = new QGroupBox(tr("Contours"));
-    grpContours->setLayout(gridLayoutContours);
+    QPushButton *btnVectorDefault = new QPushButton(tr("Default"));
+    connect(btnVectorDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
 
     QGridLayout *gridLayoutVectors = new QGridLayout();
     gridLayoutVectors->addWidget(new QLabel(tr("Vectors:")), 0, 0);
@@ -747,18 +766,19 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     gridLayoutVectors->addWidget(txtVectorScale, 1, 1);
     gridLayoutVectors->addWidget(chkVectorColor, 1, 2);
 
-    QGroupBox *grpVectors = new QGroupBox(tr("Vectors"));
-    grpVectors->setLayout(gridLayoutVectors);
+    QVBoxLayout *layoutVector = new QVBoxLayout();
+    layoutVector->addLayout(gridLayoutVectors);
+    layoutVector->addStretch(1);
+    layoutVector->addWidget(btnVectorDefault, 0, Qt::AlignLeft);
 
-    QVBoxLayout *layoutContoursVectors = new QVBoxLayout();
-    layoutContoursVectors->addWidget(grpContours);
-    layoutContoursVectors->addWidget(grpVectors);
-    layoutContoursVectors->addStretch(1);
-    layoutContoursVectors->addWidget(btnContoursDefault, 0, Qt::AlignLeft);
+    QWidget *vectorWidget = new QWidget();
+    vectorWidget->setLayout(layoutVector);
 
-    QWidget *contoursVectorsWidget = new QWidget();
-    contoursVectorsWidget->setLayout(layoutContoursVectors);
+    return vectorWidget;
+}
 
+QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
+{
     // particle tracing
     chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
     txtParticleNumberOfParticles = new QSpinBox(this);
@@ -894,19 +914,7 @@ QWidget *PostprocessorWidget::controlsPostprocessor()
     QWidget *particleWidget = new QWidget();
     particleWidget->setLayout(layoutParticle);
 
-    tbxPostprocessor = new QToolBox();
-    tbxPostprocessor->addItem(scalarFieldWidget, icon(""), tr("Scalar view"));
-    tbxPostprocessor->addItem(contoursVectorsWidget, icon(""), tr("Contours and vectors"));
-    tbxPostprocessor->addItem(particleWidget, icon(""), tr("Particle tracing"));
-
-    // layout postprocessor
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tbxPostprocessor);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
+    return particleWidget;
 }
 
 void PostprocessorWidget::doCalculationFinished()
@@ -1022,15 +1030,19 @@ void PostprocessorWidget::doPaletteFilter(int state)
 
 void PostprocessorWidget::refresh()
 {
-    meshOrder->setVisible(m_sceneMesh->actSceneModeMesh->isChecked());
-    postScalar->setVisible(m_scenePost2D->actSceneModePost2D->isChecked() || m_scenePost3D->actSceneModePost3D->isChecked());
-    postContour->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
-    postVector->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
+    groupMeshOrder->setVisible(m_sceneMesh->actSceneModeMesh->isChecked());
+    groupPostScalar->setVisible(m_scenePost2D->actSceneModePost2D->isChecked() || m_scenePost3D->actSceneModePost3D->isChecked());
+    groupPostContour->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
+    groupPostVector->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
+    groupPostParticalTracing->setVisible(m_scenePost2D->actSceneModePost2D->isChecked() || m_scenePost3D->actSceneModePost3D->isChecked());
+
+    groupPostContour->setEnabled(false);
+    groupPostVector->setEnabled(false);
+    groupPostParticalTracing->setEnabled(false);
 
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
-        widgetsLayout->setCurrentWidget(mesh);
-        postprocessor->setEnabled(false);
+        widgetsLayout->setCurrentWidget(groupMesh);
 
         // mesh and order
         chkShowInitialMeshView->setEnabled(Util::problem()->isMeshed());
@@ -1040,8 +1052,7 @@ void PostprocessorWidget::refresh()
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
     {
-        widgetsLayout->setCurrentWidget(post2d);
-        postprocessor->setEnabled(true);
+        widgetsLayout->setCurrentWidget(groupPost2d);
 
         chkShowPost2DContourView->setEnabled(Util::problem()->isSolved() && (cmbPost2DContourVariable->count() > 0));
         chkShowPost2DScalarView->setEnabled(Util::problem()->isSolved() && (cmbPostScalarFieldVariable->count() > 0));
@@ -1049,7 +1060,8 @@ void PostprocessorWidget::refresh()
         chkShowPost2DParticleView->setEnabled(Util::problem()->isSolved());
 
         // contour
-        cmbPost2DContourVariable->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
+        groupPostContour->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
+        groupPostContourAdvanced->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
 
         // scalar view
         cmbPostScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
@@ -1060,13 +1072,18 @@ void PostprocessorWidget::refresh()
             doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
         }
 
-        cmbPost2DVectorFieldVariable->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
+        // vector view
+        groupPostVector->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
+        groupPostVectorAdvanced->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
+
+        // partical tracing
+        groupPostParticalTracing->setEnabled(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
+        groupPostParticalTracingAdvanced->setEnabled(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
     {
-        widgetsLayout->setCurrentWidget(post3d);
-        postprocessor->setEnabled(true);
+        widgetsLayout->setCurrentWidget(groupPost3d);
 
         // scalar view 3d
         radPost3DNone->setEnabled(Util::problem()->isSolved());
@@ -1074,6 +1091,10 @@ void PostprocessorWidget::refresh()
         radPost3DScalarField3DSolid->setEnabled(Util::problem()->isSolved());
         radPost3DModel->setEnabled(Util::problem()->isSolved());
         radPost3DParticleTracing->setEnabled(Util::problem()->isSolved());
+
+        // partical tracing
+        groupPostParticalTracing->setEnabled(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
+        groupPostParticalTracing->setEnabled(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked());
     }
 
     grpTransient->setVisible(false);
@@ -1145,6 +1166,26 @@ void PostprocessorWidget::doApply()
     emit apply();
 
     activateWindow();
+}
+
+void PostprocessorWidget::doScalarFieldExpandCollapse(bool collapsed)
+{
+    groupPostScalarAdvanced->setVisible(!collapsed);
+}
+
+void PostprocessorWidget::doContourFieldExpandCollapse(bool collapsed)
+{
+    groupPostContourAdvanced->setVisible(!collapsed);
+}
+
+void PostprocessorWidget::doVectorFieldExpandCollapse(bool collapsed)
+{
+    groupPostVectorAdvanced->setVisible(!collapsed);
+}
+
+void PostprocessorWidget::doParticleFieldExpandCollapse(bool collapsed)
+{
+    groupPostParticalTracingAdvanced->setVisible(!collapsed);
 }
 
 void PostprocessorWidget::doScalarFieldDefault()

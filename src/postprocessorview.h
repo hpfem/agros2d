@@ -49,7 +49,6 @@ private:
     SceneViewPost3D *m_scenePost3D;
 
     QWidget *basic;
-    QWidget *postprocessor;
 
     // basic
     QComboBox *cmbFieldInfo;
@@ -156,24 +155,34 @@ private:
 
     void createControls();
     QWidget *controlsBasic();
-    QWidget *controlsPostprocessor();
+    QWidget *controlsAdvanced();
 
     QStackedLayout *widgetsLayout;
-    QWidget *mesh;
-    QWidget *meshOrder;
-    QWidget *post2d;
-    QWidget *post3d;
-    QWidget *postScalar;
-    QWidget *postContour;
-    QWidget *postVector;
+    QWidget *groupMesh;
+    QWidget *groupMeshOrder;
+    QWidget *groupPost2d;
+    QWidget *groupPost3d;
+    QWidget *groupPostScalar;
+    QWidget *groupPostScalarAdvanced;
+    QWidget *groupPostContour;
+    QWidget *groupPostContourAdvanced;
+    QWidget *groupPostVector;
+    QWidget *groupPostVectorAdvanced;
+    QWidget *groupPostParticalTracing;
+    QWidget *groupPostParticalTracingAdvanced;
 
     QWidget *meshWidget();
     QWidget *meshOrderWidget();
     QWidget *post2DWidget();
     QWidget *post3DWidget();
     QWidget *postScalarWidget();
+    QWidget *postScalarAdvancedWidget();
     QWidget *postContourWidget();
+    QWidget *postContourAdvancedWidget();
     QWidget *postVectorWidget();
+    QWidget *postVectorAdvancedWidget();
+    QWidget *postParticalTracingWidget();
+    QWidget *postParticalTracingAdvancedWidget();
 
     int selectedTimeStep();
     FieldInfo* selectedField();
@@ -201,6 +210,10 @@ private slots:
     void doParticleDefault();
     void doOrderDefault();
     void doScalarFieldLog(int state);
+    void doScalarFieldExpandCollapse(bool collapsed);
+    void doContourFieldExpandCollapse(bool collapsed);
+    void doVectorFieldExpandCollapse(bool collapsed);
+    void doParticleFieldExpandCollapse(bool collapsed);
 };
 
 #endif // SCENEVIEWDIALOG_H

@@ -24,6 +24,8 @@
         <file alias="edit-find-replace.png">../resources_source/images/edit-find-replace.png</file>
         <file alias="edit-redo.png">../resources_source/images/edit-redo.png</file>
         <file alias="edit-undo.png">../resources_source/images/edit-undo.png</file>
+        <file alias="edit-right.png">../resources_source/images/edit-right.png</file>
+        <file alias="edit-down.png">../resources_source/images/edit-down.png</file>
         <file alias="edit-delete.png">../resources_source/images/edit-delete.png</file>
         <file alias="geometry.png">../resources_source/images/geometry.png</file>
         <file alias="chart.png">../resources_source/images/chart.png</file>
