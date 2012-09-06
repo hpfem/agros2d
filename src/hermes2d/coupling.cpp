@@ -155,7 +155,7 @@ mu::Parser* Coupling::expressionParser()
     parser->DefineConst("f", Util::problem()->config()->frequency());
 
     // timestep
-    parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
+    parser->DefineConst("dt", Util::problem()->actualTimeStepLength());
 
     QMapIterator<QString, double> it(m_constants);
     while (it.hasNext())

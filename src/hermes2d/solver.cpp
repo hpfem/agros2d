@@ -482,8 +482,9 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solution
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
+double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
+    double nextTimeStepLength = Util::problem()->config()->initialTimeStep().value();
     SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     Util::log()->printDebug(m_solverID, QObject::tr("solve"));
 
@@ -546,15 +547,16 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         solveOneProblem(&wf2, coefVec2, multiSolutionArray2, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
 
         double error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
-        cout << "error: " << error << endl;
 
         // todo: move to gui?
-        double TOLERANCE = 0.1; //TODO
+        double TOLERANCE = 0.3; //TODO
 
         // todo: if error too big, refuse step and recalculate
 
         // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
-        //double nextTimeStep = pow(TOLERANCE/error, 1./(Util::problem()->config()->timeOrder() + 1)) * Util::problem()->;
+        nextTimeStepLength = pow(TOLERANCE/error, 1./(Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
+
+        cout << "error: " << error << " -> step size " << nextTimeStepLength <<  endl;
     }
 
     // output
@@ -564,6 +566,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     solutionID.adaptivityStep = adaptivityStep;
 
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
+    return nextTimeStepLength;
 }
 
 template <typename Scalar>

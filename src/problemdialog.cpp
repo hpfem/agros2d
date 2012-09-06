@@ -375,15 +375,15 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 void FieldWidget::doTransientTimeStepsChanged()
 {
     QString timeSteps = "1";
-    for (int i = 2; i < Util::problem()->config()->numTimeSteps(); i++)
+    for (int i = 2; i < Util::problem()->numTimeSteps(); i++)
     {
         if ((txtTransientTimeStepsSkip->value().number() > 0)
                 && ((i % (int) txtTransientTimeStepsSkip->value().number()) == 0))
             timeSteps += QString(", %1").arg(i);
     }
 
-    if (Util::problem()->config()->numTimeSteps() > 1)
-        timeSteps += QString(", %1").arg(Util::problem()->config()->numTimeSteps());
+    if (Util::problem()->numTimeSteps() > 1)
+        timeSteps += QString(", %1").arg(Util::problem()->numTimeSteps());
 
     lblTransientTimeStepsSkip->setText(timeSteps);
 }
@@ -924,7 +924,7 @@ void ProblemWidget::updateControls()
 
     // transient
     grpTransientAnalysis->setVisible(Util::problem()->isTransient());
-    txtTransientTimeStep->setValue(Util::problem()->config()->timeStep());
+    txtTransientTimeStep->setValue(Util::problem()->config()->initialTimeStep());
     // txtTransientTimeStep->setEnabled(Util::problem()->isTransient());
     txtTransientTimeTotal->setValue(Util::problem()->config()->timeTotal());
     // txtTransientTimeTotal->setEnabled(Util::problem()->isTransient());
@@ -965,7 +965,7 @@ bool ProblemWidget::save()
 
     Util::problem()->config()->setFrequency(txtFrequency->value());
 
-    Util::problem()->config()->setTimeStep(txtTransientTimeStep->value());
+    Util::problem()->config()->setInitialTimeStep(txtTransientTimeStep->value());
     Util::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
     Util::problem()->config()->setTimeOrder(txtTransientOrder->value());
     Util::problem()->config()->setTimeStepMethod((TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());

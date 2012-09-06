@@ -946,7 +946,7 @@ mu::Parser *Module::BasicModule::expressionParser(const QString &expr)
     parser->DefineConst("f", Util::problem()->config()->frequency());
 
     // timestep
-    parser->DefineConst("dt", Util::problem()->config()->timeStep().number());
+    parser->DefineConst("dt", Util::problem()->actualTimeStepLength());
 
     if (!expr.isEmpty())
         parser->SetExpr(expr.toStdString());

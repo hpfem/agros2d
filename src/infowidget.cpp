@@ -113,7 +113,7 @@ void InfoWidget::showInfo()
     if (Util::problem()->isTransient())
         problemInfo.ShowSection("TRANSIENT");
     problemInfo.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-    problemInfo.SetValue("TIME_STEP", QString::number(Util::problem()->config()->timeStep().number()).toStdString() + " s");
+    problemInfo.SetValue("TIME_STEP", QString::number(Util::problem()->config()->initialTimeStep().number()).toStdString() + " s");
     problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
     problemInfo.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
 

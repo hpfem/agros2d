@@ -105,7 +105,7 @@ class Problem : public QObject
     Q_OBJECT
 
 signals:
-    //void timeStepChanged();
+    void timeStepChanged();
     void meshed();
     void solved();
 
@@ -123,7 +123,7 @@ public:
 
     QAction *actClearSolutions;
 
-    inline ProblemConfig *config() { return m_config; }
+    inline ProblemConfig *config() const { return m_config; }
 
     void createStructure();
 
@@ -171,13 +171,27 @@ public:
 
     inline QTime timeElapsed() const { return m_timeElapsed; }
 
-    double actualTime() const { return m_actualTime; }
-    void setActualTime(double time) { m_actualTime = time; }
-    void addToActualTime(double time) { m_actualTime += time; }
+    //void setActualTime(double time) { m_actualTime = time; }
+    //void addToActualTime(double time) { m_actualTime += time; }
 
-    void logTimeStepLength(double step) { m_timeStepLengths.push_back(step); }
+    //void logTimeStepLength(double step) { m_timeStepLengths.push_back(step); }
+
+    double actualTime() const;
+    double actualTimeStepLength() const;
     QList<double> timeStepLengths() const { return m_timeStepLengths; }
-    inline double timeStepToTime(int timeStepIndex) const;
+    double timeStepToTime(int timeStepIndex) const;
+    int timeToTimeStep(double time) const;
+
+    // terminology: time step from one time level to next one
+    int numTimeSteps() {return m_timeStepLengths.size(); }
+
+    // terminlolgy: time levels are actual times, whre calculations are performed
+    int numTimeLevels() {return m_timeStepLengths.size() + 1; }
+
+    // sets next time step lenght. If it would mean exceeding total time, smaller time step is used instead
+    // to fit the desired total time period. If we are allready at the end of the interval, returns false. True otherwise (to continue)
+    bool defineActualTimeStepLength(double ts);
+    void refuseLastTimeStepLength();
 
 private:
     ProblemConfig *m_config;
@@ -200,11 +214,9 @@ private:
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
     void solveAction(); //called by solve, can throw SolverException
 
-    void solveActionBDF();
-
     void solveAdaptiveStepAction();
 
-    double m_actualTime;
+    //double m_actualTime;
 };
 
 #endif // PROBLEM_H

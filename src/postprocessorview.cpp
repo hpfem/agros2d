@@ -894,7 +894,7 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
-        fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
+        fillComboBoxInitialTimeStep(fieldInfo, cmbTimeStep);
         doTimeStep(0);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
@@ -1091,7 +1091,7 @@ void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
 int PostprocessorWidget::selectedTimeStep()
 {
     double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
-    return int(actualTime/Util::problem()->config()->timeStep().number() + 0.5); // round
+    return Util::problem()->timeToTimeStep(actualTime);
 }
 
 FieldInfo* PostprocessorWidget::selectedField()
