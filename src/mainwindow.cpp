@@ -1196,11 +1196,11 @@ void MainWindow::doCreateVideo()
 {
     VideoDialog *videoDialog = NULL;
     if (sceneViewMesh->actSceneModeMesh->isChecked())
-        videoDialog = new VideoDialog(sceneViewMesh, this);
+        videoDialog = new VideoDialog(sceneViewMesh, sceneViewMesh->postHermes(), this);
     else if (sceneViewPost2D->actSceneModePost2D->isChecked())
-        videoDialog = new VideoDialog(sceneViewPost2D, this);
+        videoDialog = new VideoDialog(sceneViewPost2D, sceneViewPost2D->postHermes(), this);
     else if (sceneViewPost3D->actSceneModePost3D->isChecked())
-        videoDialog = new VideoDialog(sceneViewPost3D, this);
+        videoDialog = new VideoDialog(sceneViewPost3D, sceneViewPost3D->postHermes(), this);
 
     if (videoDialog)
     {

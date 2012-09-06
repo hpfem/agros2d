@@ -22,8 +22,8 @@
 
 #include "util.h"
 
+class PostHermes;
 class LineEditDouble;
-
 class SceneViewPostInterface;
 
 class VideoDialog : public QDialog
@@ -31,13 +31,14 @@ class VideoDialog : public QDialog
     Q_OBJECT
 
 public:
-    VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent = 0);
+    VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes *postHermes, QWidget *parent = 0);
     ~VideoDialog();
 
     void showDialog();
 
 private:
-    SceneViewPostInterface *m_sceneView;
+    SceneViewPostInterface *m_sceneViewInterface;
+    PostHermes *m_postHermes;
 
     int m_timeStep;
     QList<double> m_timeLevels;

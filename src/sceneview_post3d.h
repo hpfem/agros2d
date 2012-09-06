@@ -92,6 +92,9 @@ public:
     virtual QIcon iconView() { return icon("scene-post3d"); }
     virtual QString labelView() { return tr("Postprocessor 3D"); }
 
+    // TODO: remove
+    inline PostHermes *postHermes() { return m_postHermes; }
+
 protected:
     virtual int textureScalar() { return 3; }
 

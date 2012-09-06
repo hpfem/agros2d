@@ -22,6 +22,7 @@
 
 #include "util.h"
 
+class PostHermes;
 class SceneViewPost2D;
 class SceneViewPost3D;
 class SceneViewPreprocessor;
@@ -202,6 +203,8 @@ private:
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
     SceneViewWidget *sceneViewBlankWidget;
+
+    // PostHermes *postHermes;
 
     QStackedLayout *tabViewLayout;
     InfoWidget *sceneInfoWidget;

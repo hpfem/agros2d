@@ -26,10 +26,9 @@
 
 #include "gui/lineeditdouble.h"
 
-VideoDialog::VideoDialog(SceneViewPostInterface *sceneView, QWidget *parent) : QDialog(parent)
+VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes *postHermes, QWidget *parent)
+    : QDialog(parent), m_sceneViewInterface(sceneViewInterface), m_postHermes(postHermes)
 {
-    m_sceneView = sceneView;
-
     setModal(true);
     setWindowIcon(icon("video"));
     setWindowTitle(tr("Video"));
@@ -53,7 +52,7 @@ VideoDialog::~VideoDialog()
 {
     // restore previous timestep
     Util::scene()->setActiveTimeStep(m_timeStep);
-    m_sceneView->refresh();
+    m_postHermes->refresh();
 
     delete timer;
 }
@@ -243,7 +242,7 @@ void VideoDialog::doTransientSetStep(int index)
 {
     Util::scene()->setActiveTimeStep(index - 1);
 
-    m_sceneView->refresh();
+    m_postHermes->refresh();
 
     sldTransientAnimate->setValue(index);
 
@@ -279,7 +278,7 @@ void VideoDialog::doAdaptiveSetStep(int index)
 {
     Util::scene()->setActiveAdaptivityStep(index - 1);
 
-    m_sceneView->refresh();
+    m_postHermes->refresh();
 
     sldAdaptiveAnimate->setValue(index);
 
@@ -310,7 +309,7 @@ void VideoDialog::doCreateImages()
     {
         progressBar->setValue(i);
         Util::scene()->setActiveTimeStep(i);
-        m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
+        m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
     }
 
     btnClose->setEnabled(true);

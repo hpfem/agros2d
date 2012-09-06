@@ -38,6 +38,9 @@ public:
     virtual QIcon iconView() { return icon("scene-mesh"); }
     virtual QString labelView() { return tr("Mesh and polynomial order view"); }
 
+    // TODO: remove
+    inline PostHermes *postHermes() { return m_postHermes; }
+
 public slots:
     virtual void refresh();
     void setControls();

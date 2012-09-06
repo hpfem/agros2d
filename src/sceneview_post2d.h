@@ -66,6 +66,9 @@ public:
     virtual QIcon iconView() { return icon("scene-post2d"); }
     virtual QString labelView() { return tr("Postprocessor 2D"); }
 
+    // TODO: remove
+    inline PostHermes *postHermes() { return m_postHermes; }
+
 protected:
     virtual int textureScalar() { return 2; }
 
