@@ -260,7 +260,10 @@ void PostHermes::refresh()
         processMeshed();
 
     if (Util::problem()->isSolved())
-        processSolved();}
+        processSolved();
+
+    emit processed();
+}
 
 void PostHermes::clear()
 {
@@ -278,9 +281,7 @@ void PostHermes::processMeshed()
 {
     m_initialMeshIsPrepared = false;
 
-    processInitialMesh();
-
-    emit processed();
+    processInitialMesh();    
 }
 
 void PostHermes::processSolved()
@@ -299,8 +300,6 @@ void PostHermes::processSolved()
     processRangeScalar();
     processRangeVector();
     processParticleTracing();
-
-    emit processed();
 
     // QTimer::singleShot(0, this, SLOT(processRangeContour()));
     // QTimer::singleShot(0, this, SLOT(processRangeScalar()));

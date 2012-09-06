@@ -39,10 +39,7 @@ SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent): SceneView
 {
     createActionsMesh();
 
-    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
-
-    connect(m_postHermes, SIGNAL(processed()), this, SLOT(updateGL()));
+    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
 }
 
 SceneViewMesh::~SceneViewMesh()

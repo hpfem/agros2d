@@ -70,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // scene
     PostHermes *postHermes = new PostHermes();
+
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(postHermes, this);
     sceneViewPost2D = new SceneViewPost2D(postHermes, this);
@@ -130,9 +131,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
-    connect(problemWidget, SIGNAL(apply()), sceneViewMesh, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), sceneViewMesh, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), sceneViewMesh, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
 
     // postprocessor 2d
@@ -141,16 +139,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
-    connect(problemWidget, SIGNAL(apply()), sceneViewPost2D, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), sceneViewPost2D, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), sceneViewPost2D, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
     connect(Util::scene(), SIGNAL(cleared()), sceneViewPost3D, SLOT(clear()));
-    connect(problemWidget, SIGNAL(apply()), sceneViewPost3D, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), sceneViewPost3D, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), sceneViewPost3D, SLOT(refresh()));
     currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
     // info

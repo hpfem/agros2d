@@ -64,12 +64,9 @@ SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent) : Scen
 {
     createActionsPost3D();
 
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
 
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
-
-    connect(m_postHermes, SIGNAL(processed()), this, SLOT(updateGL()));
+    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
 }
 
 SceneViewPost3D::~SceneViewPost3D()

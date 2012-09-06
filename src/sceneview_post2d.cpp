@@ -47,12 +47,8 @@ SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent) : Scen
     createActionsPost2D();
 
     connect(this, SIGNAL(mousePressed(Point)), this, SLOT(selectedPoint(Point)));
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
-
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
-
-    connect(m_postHermes, SIGNAL(processed()), this, SLOT(updateGL()));
+    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
 }
 
 SceneViewPost2D::~SceneViewPost2D()
