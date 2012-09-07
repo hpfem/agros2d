@@ -489,6 +489,14 @@ void PyProblem::clear()
     Util::scene()->clear();
 }
 
+void PyProblem::refresh()
+{
+    Util::scene()->refresh();
+
+    // refresh post view
+    currentPythonEngineAgros()->postHermes()->refresh();
+}
+
 void PyProblem::solve()
 {
     Util::scene()->refresh();
@@ -497,6 +505,7 @@ void PyProblem::solve()
     if (Util::problem()->isSolved())
     {
         currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        // currentPythonEngineAgros()->postHermes()->refresh();
         // Util::scene()->refresh();
     }
 }
@@ -1293,7 +1302,7 @@ void PyGeometry::mesh()
     if (Util::problem()->isMeshed())
     {
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        Util::scene()->refresh();
+        // currentPythonEngineAgros()->postHermes()->refresh();
     }
 }
 

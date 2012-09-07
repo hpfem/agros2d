@@ -97,6 +97,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createToolBars();
     createMain();
 
+    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+
     connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
@@ -1225,8 +1228,6 @@ void MainWindow::doCreateMesh()
         // successful run
         logDialog->close();
     }
-
-    setControls();
 }
 
 void MainWindow::doSolve()
@@ -1251,7 +1252,6 @@ void MainWindow::doSolve()
         logDialog->close();
     }
 
-    setControls();
     setFocus();
     activateWindow();
 }
@@ -1278,7 +1278,6 @@ void MainWindow::doSolveAdaptiveStep()
         logDialog->close();
     }
 
-    setControls();
     setFocus();
     activateWindow();
 }

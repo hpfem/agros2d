@@ -22,6 +22,7 @@ cdef extern from "../../src/pythonlabagros.h":
         PyProblem(int clear)
 
         void clear()
+        void refresh()
 
         char *getName()
         void setName(char *name)
@@ -146,8 +147,6 @@ cdef extern from "../../src/pythonlabagros.h":
 
     # PyViewConfig
     cdef cppclass PyViewConfig:
-        void refresh()
-
         void setField(char *fieldid) except +
         char *getField()
 
@@ -175,8 +174,7 @@ cdef extern from "../../src/pythonlabagros.h":
     # PyViewMesh
     cdef cppclass PyViewMesh:
         void activate()
-        void refresh()
-
+        
         void setInitialMeshViewShow(bool show)
         bool getInitialMeshViewShow()
         void setSolutionMeshViewShow(bool show)
@@ -194,8 +192,7 @@ cdef extern from "../../src/pythonlabagros.h":
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
         void activate()
-        void refresh()
-
+       
         void setScalarViewShow(bool show)
         bool getScalarViewShow()
         void setScalarViewVariable(char *variable) except +
@@ -252,7 +249,6 @@ cdef extern from "../../src/pythonlabagros.h":
     # PyViewPost3D
     cdef cppclass PyViewPost3D:
         void activate()
-        void refresh()
 
         void setPost3DMode(char *mode) except +
         char *getPost3DMode()
@@ -361,6 +357,10 @@ cdef class __Problem__:
     def clear(self):
         self.thisptr.clear()
 
+    # refresh
+    def refresh(self):
+        self.thisptr.refresh()
+        
     # name
     property name:
         def __get__(self):
@@ -863,9 +863,6 @@ cdef class __ViewConfig__:
     def __dealloc__(self):
         del self.thisptr
 
-    def refresh(self):
-        self.thisptr.refresh()
-
     property field:
         def __get__(self):
             return self.thisptr.getField()
@@ -926,9 +923,6 @@ cdef class __ViewMesh__:
     def activate(self):
         self.thisptr.activate()
 
-    def refresh(self):
-        self.thisptr.refresh()
-
     property solution_mesh:
         def __get__(self):
             return self.thisptr.getSolutionMeshViewShow()
@@ -976,9 +970,6 @@ cdef class __ViewPost2D__:
 
     def activate(self):
         self.thisptr.activate()
-
-    def refresh(self):
-        self.thisptr.refresh()
 
     # scalar view
     property scalar:
@@ -1127,9 +1118,6 @@ cdef class __ViewPost3D__:
 
     def activate(self):
         self.thisptr.activate()
-
-    def refresh(self):
-        self.thisptr.refresh()
 
     def __cinit__(self):
         self.thisptr = new PyViewPost3D()

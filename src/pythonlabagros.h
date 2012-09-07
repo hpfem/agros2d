@@ -127,6 +127,9 @@ class PyProblem
         void clear();
         void field(char *fieldId);
 
+        // refresh
+        void refresh();
+
         // name
         inline const char *getName() { return Util::problem()->config()->name().toStdString().c_str(); }
         void setName(const char *name) { Util::problem()->config()->setName(QString(name)); }
