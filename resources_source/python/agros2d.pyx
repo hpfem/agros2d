@@ -1260,8 +1260,8 @@ cdef class ParticleTracing:
     # initial position
     property initial_position:
         def __get__(self):
-            cdef double x
-            cdef double y
+            cdef double x = 0.0
+            cdef double y = 0.0
             self.thisptr.initialPosition(x, y)
             return x, y
         def __set__(self, xy):
@@ -1270,8 +1270,8 @@ cdef class ParticleTracing:
     # initial velocity
     property initial_velocity:
         def __get__(self):
-            cdef double x
-            cdef double y
+            cdef double x = 0.0
+            cdef double y = 0.0
             self.thisptr.initialVelocity(x, y)
             return x, y
         def __set__(self, xy):
