@@ -118,7 +118,7 @@ template <typename Scalar>
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                    
                                              Boundary *boundary)
-    : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j), m_boundarySource(boundary)
+    : MatrixFormSurfAgros<Scalar>(i, j), m_boundarySource(boundary)
 {
     {{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
