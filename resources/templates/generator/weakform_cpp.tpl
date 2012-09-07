@@ -30,7 +30,7 @@ template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                 
                                              Material *materialSource,
                                              Material *materialTarget)
-    : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), m_materialSource(materialSource), m_materialTarget(materialTarget)
+    : MatrixFormVolAgros<Scalar>(i, j), m_materialSource(materialSource), m_materialTarget(materialTarget)
 {
 	{{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
@@ -74,7 +74,7 @@ template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                 
                                              Material *materialSource,
                                              Material *materialTarget)
-    : Hermes::Hermes2D::VectorFormVol<Scalar>(i), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
+    : VectorFormVolAgros<Scalar>(i), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
 {
 	{{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
@@ -161,7 +161,7 @@ template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
                                                    Boundary *boundary)
 
-    : Hermes::Hermes2D::VectorFormSurf<Scalar>(i), m_boundarySource(boundary), j(j)
+    : VectorFormSurfAgros<Scalar>(i), m_boundarySource(boundary), j(j)
 {
 	{{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
@@ -202,7 +202,7 @@ template <typename Scalar>
 {{#EXACT_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
-    : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), m_boundarySource(boundary)
+    : ExactSolutionScalarAgros<Scalar>(mesh), m_boundarySource(boundary)
 {
 	{{#VARIABLE_SOURCE}}
 		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}

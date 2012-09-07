@@ -39,7 +39,7 @@
 
 #include "hermes2d/marker.h"
 
-Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,
+MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,
                                                         Material *materialSource,
                                                         Material *materialTarget, int offsetI, int offsetJ)
 {
@@ -52,7 +52,7 @@ Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const
     return NULL;
 }
 
-Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
+VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
                                                               Material *materialSource,
                                                               Material *materialTarget, int offsetI, int offsetJ)
 {
@@ -65,7 +65,7 @@ Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const
     return NULL;
 }
 
-Hermes::Hermes2D::MatrixFormSurf<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, int i, int j,
+MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, int i, int j,
                                                                 Boundary *boundary, int offsetI, int offsetJ)
 {
 	{{#SURFACE_MATRIX_SOURCE}}
@@ -77,7 +77,7 @@ Hermes::Hermes2D::MatrixFormSurf<double> *{{CLASS}}Interface::matrixFormSurf(con
     return NULL;
 }
 
-Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, int i, int j,
+VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, int i, int j,
                                                                 Boundary *boundary, int offsetI, int offsetJ)
 {
 	{{#SURFACE_VECTOR_SOURCE}}
@@ -89,7 +89,7 @@ Hermes::Hermes2D::VectorFormSurf<double> *{{CLASS}}Interface::vectorFormSurf(con
     return NULL;
 }
 
-Hermes::Hermes2D::ExactSolutionScalar<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
+ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
 {
 	{{#EXACT_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})))

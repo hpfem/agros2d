@@ -46,19 +46,19 @@ public:
     inline virtual QString fieldId() { return "{{ID}}"; }
 
     // weakforms
-    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,                                                                  
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j,
                                                                    Material *materialSource, Material *materialTarget, int offsetI, int offsetJ );
 
-    virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j,
                                                                    Material *materialSource, Material *materialTarget, int offsetI, int offsetJ);
 
-    virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
                                                                      Boundary *boundary, int offsetI, int offsetJ);
 
-    virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
                                                                      Boundary *boundary, int offsetI, int offsetJ);
 
-    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
 
     // postprocessor
 

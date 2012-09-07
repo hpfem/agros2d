@@ -34,7 +34,7 @@
 
 #include "hermes2d/marker.h"
 
-Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,                                                              
+MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,
                                                               Material *materialSource,
                                                               Material *materialTarget, int offsetI, int offsetJ)
 {
@@ -47,7 +47,7 @@ Hermes::Hermes2D::MatrixFormVol<double> *{{CLASS}}Interface::matrixFormVol(const
     return NULL;
 }
 
-Hermes::Hermes2D::VectorFormVol<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
+VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
                                                                            Material *materialSource,
                                                                            Material *materialTarget, int offsetI, int offsetJ)
 {

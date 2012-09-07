@@ -22,11 +22,12 @@
 
 #include "util.h"
 #include <weakform/weakform.h>
+#include "hermes2d/plugin_interface.h"
 #include "hermes2d/marker.h"
-  		
+
 {{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
-class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormVol<Scalar>
+class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
@@ -51,7 +52,7 @@ private:
 
 {{#VOLUME_VECTOR_SOURCE}}
 template<typename Scalar>
-class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormVol<Scalar>
+class {{FUNCTION_NAME}} : public VectorFormVolAgros<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
@@ -80,7 +81,7 @@ private:
 
 {{#SURFACE_MATRIX_SOURCE}}
 template<typename Scalar>
-class {{FUNCTION_NAME}} : public Hermes::Hermes2D::MatrixFormSurf<Scalar>
+class {{FUNCTION_NAME}} : public MatrixFormSurfAgros<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
@@ -104,7 +105,7 @@ private:
 
 {{#SURFACE_VECTOR_SOURCE}}
 template<typename Scalar>
-class {{FUNCTION_NAME}} : public Hermes::Hermes2D::VectorFormSurf<Scalar>
+class {{FUNCTION_NAME}} : public VectorFormSurfAgros<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
@@ -129,7 +130,7 @@ private:
 
 {{#EXACT_SOURCE}}
 template<typename Scalar>
-class {{FUNCTION_NAME}} : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
+class {{FUNCTION_NAME}} : public ExactSolutionScalarAgros<Scalar>
 {
 public:
     {{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, SceneBoundary *boundary);

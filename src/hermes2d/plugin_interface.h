@@ -95,6 +95,49 @@ protected:
     QMap<Module::Integral*, double> m_values;
 };
 
+// weakforms
+template<typename Scalar>
+class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>
+{
+public:
+    MatrixFormVolAgros(unsigned int i, unsigned int j)
+        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j) {}
+};
+
+template<typename Scalar>
+class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>
+{
+public:
+    VectorFormVolAgros(unsigned int i)
+        : Hermes::Hermes2D::VectorFormVol<Scalar>(i) {}
+};
+
+template<typename Scalar>
+class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>
+{
+public:
+    MatrixFormSurfAgros(unsigned int i, unsigned int j)
+        : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j) {}
+};
+
+template<typename Scalar>
+class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>
+{
+public:
+    VectorFormSurfAgros(unsigned int i)
+        : Hermes::Hermes2D::VectorFormSurf<Scalar>(i) {}
+};
+
+template<typename Scalar>
+class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
+{
+public:
+    ExactSolutionScalarAgros(Hermes::Hermes2D::Mesh *mesh)
+        : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh) {}
+};
+
+
+// plugin interface
 class PluginInterface
 {
 public:
@@ -103,19 +146,19 @@ public:
 
     virtual QString fieldId() = 0;
 
-    virtual Hermes::Hermes2D::MatrixFormVol<double> *matrixFormVol(const ProblemID problemId, int i, int j,
-                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j,
+                                                      Material *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
 
-    virtual Hermes::Hermes2D::VectorFormVol<double> *vectorFormVol(const ProblemID problemId, int i, int j,
-                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ) = 0;
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j,
+                                                      Material *materialSource, Material *materialTarget, int offsetI, int offsetJ) = 0;
 
-    virtual Hermes::Hermes2D::MatrixFormSurf<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                     Boundary *boundary, int offsetI, int offsetJ) = 0;
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
+                                                        Boundary *boundary, int offsetI, int offsetJ) = 0;
 
-    virtual Hermes::Hermes2D::VectorFormSurf<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                                     Boundary *boundary, int offsetI, int offsetJ) = 0;
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
+                                                        Boundary *boundary, int offsetI, int offsetJ) = 0;
 
-    virtual Hermes::Hermes2D::ExactSolutionScalar<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) = 0;
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i, Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) = 0;
 
     // postprocessor
     // filter
