@@ -42,12 +42,14 @@ template <typename Scalar>
 class Solver
 {
 public:
-    void init( WeakFormAgros<Scalar> *wf, Block* block);
+    void init(Block* block);
     void clear();
 
     void solveInitialTimeStep();
     void createInitialSpace(int timeStep);
-    void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
+
+    // returns the value of the next time step lenght (for transient problems). Either calculated in the case of adaptive or initial
+    double solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
     bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
@@ -60,14 +62,12 @@ private:
     double m_elapsedTime;
 
     // weak form
-    WeakFormAgros<Scalar> *m_wf;
+    //WeakFormAgros<Scalar> *m_wf;
 
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMesh();
     void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
 //    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
-    // if copyPrevious == true, last solutions will be used (intented for doAdaptivityStep function)
-    void createNewSolutions(MultiSolutionArray<Scalar>& msa);
     void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
                        Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);
     void deleteSelectors(Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);
@@ -76,7 +76,7 @@ private:
 
 //    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
 //                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    void solveOneProblem(MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa = NULL);
+    void solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa = NULL);
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);

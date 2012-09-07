@@ -41,15 +41,13 @@ public:
     inline double frequency() const { return m_frequency; }
     void setFrequency(const double frequency) { m_frequency = frequency; emit changed(); }
 
-    inline Value timeStep() const { return m_timeStep; }
-    void setTimeStep(const Value &timeStep) { m_timeStep = timeStep; emit changed(); }
+    inline Value initialTimeStep() const { return m_initialTimeStep; }
+    void setInitialTimeStep(const Value &initialTimeStep) { m_initialTimeStep = initialTimeStep; emit changed(); }
 
     inline Value timeTotal() const { return m_timeTotal; }
     void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
 
-    inline int numTimeSteps() const { return floor(timeTotal().number() / timeStep().number()); }
-
-    inline double timeStepToTime(int timeStepIndex) {return m_timeStep.number() * timeStepIndex; }
+    inline int numConstantTimeSteps() const { return floor(timeTotal().number() / initialTimeStep().number()); }
 
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
     void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
@@ -65,6 +63,12 @@ public:
 
     void refresh() { emit changed(); }
 
+    TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
+    void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
+    int timeOrder() const { return m_timeOrder; }
+    void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
+
+
 signals:
     void changed();
 
@@ -77,8 +81,10 @@ private:
     double m_frequency;
 
     // transient
-    Value m_timeStep;
+    Value m_initialTimeStep;
     Value m_timeTotal;
+    TimeStepMethod m_timeStepMethod;
+    int m_timeOrder;
 
     // matrix solver
     Hermes::MatrixSolverType m_matrixSolver;
@@ -88,6 +94,7 @@ private:
 
     QString m_startupscript;
     QString m_description;
+
 };
 
 /// intented as central for solution process
@@ -116,7 +123,7 @@ public:
 
     QAction *actClearSolutions;
 
-    inline ProblemConfig *config() { return m_config; }
+    inline ProblemConfig *config() const { return m_config; }
 
     void createStructure();
 
@@ -164,9 +171,22 @@ public:
 
     inline QTime timeElapsed() const { return m_timeElapsed; }
 
-    double actualTime() const { return m_actualTime; }
-    void setActualTime(double time) { m_actualTime = time; }
-    void addToActualTime(double time) { m_actualTime += time; }
+    double actualTime() const;
+    double actualTimeStepLength() const;
+    QList<double> timeStepLengths() const { return m_timeStepLengths; }
+    double timeStepToTime(int timeStepIndex) const;
+    int timeToTimeStep(double time) const;
+
+    // terminology: time step from one time level to next one
+    int numTimeSteps() {return m_timeStepLengths.size(); }
+
+    // terminlolgy: time levels are actual times, whre calculations are performed
+    int numTimeLevels() {return m_timeStepLengths.size() + 1; }
+
+    // sets next time step lenght. If it would mean exceeding total time, smaller time step is used instead
+    // to fit the desired total time period. If we are allready at the end of the interval, returns false. True otherwise (to continue)
+    bool defineActualTimeStepLength(double ts);
+    void refuseLastTimeStepLength();
 
 private:
     ProblemConfig *m_config;
@@ -180,15 +200,17 @@ private:
     int m_timeStep;
     bool m_isSolved;
 
+    QList<double> m_timeStepLengths;
+
     // todo: move to Field
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
 
     void solveInit();
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
     void solveAction(); //called by solve, can throw SolverException
+
     void solveAdaptiveStepAction();
 
-    double m_actualTime;
 };
 
 #endif // PROBLEM_H

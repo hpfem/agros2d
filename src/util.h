@@ -274,6 +274,12 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum TimeStepMethod
+{
+    TimeStepMethod_Fixed,
+    TimeStepMethod_BDF2
+};
+
 enum LinearityType
 {
     LinearityType_Undefined,
@@ -464,6 +470,12 @@ QString adaptivityTypeString(AdaptivityType adaptivityType);
 QStringList adaptivityTypeStringKeys();
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+// time step method
+QString timeStepMethodString(TimeStepMethod timeStepMethod);
+QStringList TimeStepMethodStringKeys();
+QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod);
+TimeStepMethod timeStepMethodFromStringKey(const QString &timeStepMethod);
 
 // solution mode
 QString solutionTypeString(SolutionMode solutionMode);

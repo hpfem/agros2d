@@ -38,9 +38,7 @@ Solver<double>* Block::prepareSolver()
             assert(0); //TODO co to znamena?
     }
 
-    m_wf = new WeakFormAgros<double>(this);
-
-    solver->init(m_wf, this);
+    solver->init(this);
 
     return solver;
 }
@@ -58,8 +56,9 @@ bool Block::isTransient() const
 
 bool Block::skipThisTimeStep(int timeStep) const
 {
-    if (timeStep == Util::problem()->config()->numTimeSteps())
-        return false;
+    // todo: rewrite after introduction of adaptive time step
+//    if (timeStep == Util::problem()->config()->numTimeSteps())
+//        return false;
 
     int S = m_fields.at(0)->fieldInfo()->timeStepsSkip().number();
     foreach (Field *field, m_fields)

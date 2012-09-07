@@ -106,7 +106,7 @@ QString createPythonFromModel()
     if (Util::problem()->isTransient())
         str += QString("problem.time_step = %1\n"
                        "problem.time_total = %2\n").
-                arg(Util::problem()->config()->timeStep().text()).
+                arg(Util::problem()->config()->initialTimeStep().text()).
                 arg(Util::problem()->config()->timeTotal().text());
 
     // fields
@@ -436,12 +436,12 @@ void PyProblem::setFrequency(const double frequency)
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 }
 
-void PyProblem::setTimeStep(const double timeStep)
+void PyProblem::setInitialTimeStep(const double timeStep)
 {
     if (timeStep >= 0.0)
-        Util::problem()->config()->setTimeStep(Value(QString::number(timeStep)));
+        Util::problem()->config()->setInitialTimeStep(Value(QString::number(timeStep)));
     else
-        throw invalid_argument(QObject::tr("The time step must be positive.").toStdString());
+        throw invalid_argument(QObject::tr("The initial time step must be positive.").toStdString());
 }
 
 void PyProblem::setTimeTotal(const double timeTotal)
@@ -1357,15 +1357,15 @@ void PyViewConfig::setField(char* fieldid)
 
 void PyViewConfig::setActiveTimeStep(int timeStep)
 {
-    if (timeStep < 0 && timeStep > Util::problem()->config()->numTimeSteps())
-        throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Util::problem()->config()->numTimeSteps()).toStdString());
+    if (timeStep < 0 || timeStep >= Util::problem()->numTimeLevels())
+        throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Util::problem()->numTimeLevels()).toStdString());
 
     Util::scene()->setActiveTimeStep(timeStep);
 }
 
 void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
 {
-    if (adaptivityStep < 0 && adaptivityStep > Util::scene()->activeViewField()->adaptivitySteps())
+    if (adaptivityStep < 0 || adaptivityStep > Util::scene()->activeViewField()->adaptivitySteps())
         throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(Util::scene()->activeViewField()->fieldId()).arg(Util::scene()->activeViewField()->adaptivitySteps()).toStdString());
 
     Util::scene()->setActiveAdaptivityStep(adaptivityStep);

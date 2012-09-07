@@ -34,6 +34,7 @@
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
+#include "hermes2d/bdf2.h"
 
 #include "mesh/mesh_reader_h2d.h"
 
@@ -157,6 +158,8 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
         assert(0);
 }
 
+
+
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker* marker)
 {
@@ -171,6 +174,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, form, marker, NULL, offsetI, offsetJ);
     assert(custom_form);
 
+    // todo: remove, it will not be neccessary, since temporal forms will be handled separately
     if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
     {
         FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Finer);
@@ -182,6 +186,65 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     }
 
     addForm(type, custom_form);
+}
+
+//TODO  instead of this method add symbols to xml forms
+template <typename Scalar>
+void WeakFormAgros<Scalar>::registerTimeForms(BDF2Table *table)
+{
+    foreach(Field* field, m_block->fields())
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        assert(fieldInfo->fieldId() == "heat");
+
+        // materials
+        for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
+        {
+            SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
+
+            assert(material);
+            if (material != Util::scene()->materials->getNone(fieldInfo))
+            {
+
+
+
+                    //TODO  instead of this method add symbols to xml forms
+
+//                Hermes::Hermes2D::Form<Scalar> *matrixForm = new CustomMatrixFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), Hermes::Hermes2D::HERMES_NONSYM, material, table);
+//                Hermes::Hermes2D::Form<Scalar> *vectorForm = new CustomVectorFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), material, table);
+//                Hermes::Hermes2D::Form<Scalar> *residualForm = new CustomVectorFormVol_time_residual<Scalar>(0, 0, QString::number(labelNum).toStdString(), material, table);
+
+                // push previous solution in this order:
+                // first all components of the solution in time level n-1
+                // than all components of the solution in time level n-2
+                // etc.
+                int lastTimeStep = Util::solutionStore()->lastTimeStep(field->fieldInfo(), SolutionMode_Normal);
+                for(int backLevel = 0; backLevel < table->n(); backLevel++)
+                {
+                    int timeStep = lastTimeStep - backLevel;
+                    int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
+                    FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
+                    if(! Util::solutionStore()->contains(solutionID))
+                        solutionID.solutionMode = SolutionMode_Normal;
+                    assert(Util::solutionStore()->contains(solutionID));
+
+                    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
+                    for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
+                        slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+
+//                    matrixForm->setExt(slns);
+//                    vectorForm->setExt(slns);
+//                    residualForm->setExt(slns);
+                }
+
+
+//                addForm(WeakForm_MatVol, matrixForm);
+//                addForm(WeakForm_VecVol, vectorForm);
+//                if(table->hasResidual())
+//                    addForm(WeakForm_VecVol, residualForm);
+            }
+        }
+    }
 }
 
 // TODO: Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -224,89 +287,6 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     addForm(type, custom_form);
 }
 
-//template <typename Scalar>
-//void WeakFormAgros<Scalar>::registerFormOld(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
-//                                         Marker* marker, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
-//{
-//    string problemId;
-
-//    if (couplingInfo)
-//    {
-//        problemId =
-//                materialTarget->fieldInfo()->fieldId().toStdString() + "_" +
-//                field->fieldInfo()->fieldId().toStdString() + "_" +
-//                analysisTypeToStringKey(materialTarget->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-//                analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-//                coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-//                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_" +
-//                couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
-//    }
-//    else
-//    {
-//        problemId = field->fieldInfo()->fieldId().toStdString() + "_" +
-//                analysisTypeToStringKey(field->fieldInfo()->module()->analysisType()).toStdString()  + "_" +
-//                coordinateTypeToStringKey(field->fieldInfo()->module()->coordinateType()).toStdString() + "_" +
-//                ((field->fieldInfo()->linearityType() == LinearityType_Newton) ? "newton" : "linear") + "_";
-//    }
-
-//    Hermes::Hermes2D::Form<Scalar> *custom_form = NULL;
-
-//    // compiled form
-//    if (field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
-//    {
-//        custom_form = factoryForm<Scalar>(type, QString::fromStdString(problemId), area, form, marker, materialTarget, offsetI, offsetJ);
-//    }
-
-//    if ((custom_form == NULL) && field->fieldInfo()->weakFormsType() == WeakFormsType_Compiled)
-//    {
-//        Util::log()->printWarning(QObject::tr("WeakForm"), QObject::tr("Cannot find compiled %1 (%2). %3, (%4, %5)").
-//                                  arg(field->fieldInfo()->fieldId()).arg(weakFormString(type)).arg(QString::fromStdString(problemId)).arg(offsetI).arg(offsetJ));
-//    }
-
-//    // interpreted form
-//    if (!custom_form || field->fieldInfo()->weakFormsType() == WeakFormsType_Interpreted)
-//    {
-//        FieldInfo *fieldInfo = couplingInfo ? NULL : field->fieldInfo();
-//        custom_form = factoryParserForm<Scalar>(type, form->i - 1 + offsetI, form->j - 1 + offsetJ, area, form->sym,
-//                                                field->fieldInfo()->linearityType() == LinearityType_Newton ? form->expressionNewton : form->expressionLinear,
-//                                                fieldInfo, couplingInfo, marker, materialTarget);
-//    }
-
-//    // decide what solution to push, implicitly none
-//    FieldSolutionID solutionID(NULL, 0, 0, SolutionMode_NonExisting);
-
-//    // weak coupling, push solutions
-//    if (materialTarget && couplingInfo->isWeak())
-//    {
-//        // TODO at the present moment, it is impossible to have more sources !
-//        assert(field->m_couplingSources.size() <= 1);
-
-//        solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
-//        assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
-//    }
-//    else
-//    {
-//        if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
-//        {
-//            solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Finer);
-//        }
-//    }
-
-//    if (solutionID.solutionType != SolutionMode_NonExisting)
-//    {
-//        for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-//        {
-//            custom_form->ext.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
-//        }
-//    }
-
-//    if (custom_form)
-//    {
-//        addForm(type, custom_form);
-//    }
-
-//}
-
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms()
@@ -336,7 +316,7 @@ void WeakFormAgros<Scalar>::registerForms()
         // materials
         for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
         {
-            cout << "material " << labelNum << endl;
+            //cout << "material " << labelNum << endl;
             SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
 
             assert(material);

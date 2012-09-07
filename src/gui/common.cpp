@@ -142,7 +142,7 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
     double timeValue;
     if (timeStep == -1){
         timeStep = Util::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
-        timeValue = Util::problem()->config()->timeStepToTime(timeStep);
+        timeValue = Util::problem()->timeStepToTime(timeStep);
     }
     else
     {

@@ -16,13 +16,13 @@ FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
     }
     assert(contains);
 
-    return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionType);
+    return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
 }
 
 BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
 {
     assert(block->contains(this->group));
-    return BlockSolutionID(block, timeStep, adaptivityStep, solutionType);
+    return BlockSolutionID(block, timeStep, adaptivityStep, solutionMode);
 }
 
 QString FieldSolutionID::toString()
@@ -31,7 +31,7 @@ QString FieldSolutionID::toString()
             arg(group->fieldId()).
             arg(timeStep).
             arg(adaptivityStep).
-            arg(solutionTypeToStringKey(solutionType));
+            arg(solutionTypeToStringKey(solutionMode));
 
     return str;
 }
@@ -179,6 +179,17 @@ void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<QSharedPointer<Hermes:
         setSpace(spaces.at(comp), comp);
     }
 }
+
+template <typename Scalar>
+void  MultiSolutionArray<Scalar>::createNewSolutions()
+{
+    for(int comp = 0; comp < size(); comp++)
+    {
+        Mesh* mesh = component(comp).space->get_mesh();
+        setSolution(QSharedPointer<Solution<double> >(new Solution<double>(mesh)), comp);
+    }
+}
+
 
 template <typename Scalar>
 void MultiSolutionArray<Scalar>::setSolution(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, int component)

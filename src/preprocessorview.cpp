@@ -496,10 +496,10 @@ void PreprocessorWidget::showInfo()
         problem.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
         problem.ShowSection("FREQUENCY");
     }
-    if (Util::problem()->config()->timeStep().number() > 0)
+    if (Util::problem()->config()->initialTimeStep().number() > 0)
     {
         problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-        problem.SetValue("TIME_STEP", QString::number(Util::problem()->config()->timeStep().number()).toStdString() + " s");
+        problem.SetValue("TIME_STEP", QString::number(Util::problem()->config()->initialTimeStep().number()).toStdString() + " s");
         problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
         problem.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
         problem.ShowSection("TRANSIENT");

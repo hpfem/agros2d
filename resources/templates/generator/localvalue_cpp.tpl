@@ -44,7 +44,7 @@ void {{CLASS}}LocalValue::calculate()
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
-        m_fieldInfo->module()->updateTimeFunctions(Util::problem()->config()->timeStepToTime(Util::scene()->activeTimeStep()));
+        m_fieldInfo->module()->updateTimeFunctions(Util::problem()->timeStepToTime(Util::scene()->activeTimeStep()));
     }
 
     if (Util::problem()->isSolved())

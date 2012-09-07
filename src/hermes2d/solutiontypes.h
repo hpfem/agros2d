@@ -78,6 +78,9 @@ public:
     // returns the same multi solution array with spaces only (solutions are empty)
     MultiSolutionArray<Scalar> copySpaces();
 
+    // creates new solutions, spaces has to be allready created
+    void createNewSolutions();
+
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiSolutionArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);
 
@@ -117,13 +120,13 @@ struct SolutionID
     Group* group;
     int timeStep;
     int adaptivityStep;
-    SolutionMode solutionType;
+    SolutionMode solutionMode;
 
-    SolutionID() : group(NULL), timeStep(0), adaptivityStep(0), solutionType(SolutionMode_Normal) {}
-    SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionMode solutionType) :
-        group(group), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionType(solutionType) {}
+    SolutionID() : group(NULL), timeStep(0), adaptivityStep(0), solutionMode(SolutionMode_Normal) {}
+    SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionMode solutionMode) :
+        group(group), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionMode(solutionMode) {}
 
-    inline bool exists() { return solutionType != SolutionMode_NonExisting; }
+    inline bool exists() { return solutionMode != SolutionMode_NonExisting; }
 };
 
 template <typename Group>
@@ -138,7 +141,7 @@ inline bool operator<(const SolutionID<Group> &sid1, const SolutionID<Group> &si
     if (sid1.adaptivityStep != sid2.adaptivityStep)
         return sid1.adaptivityStep < sid2.adaptivityStep;
 
-    return sid1.solutionType < sid2.solutionType;
+    return sid1.solutionMode < sid2.solutionMode;
 }
 
 template <typename Group>
@@ -151,7 +154,7 @@ template <typename Group>
 ostream& operator<<(ostream& output, const SolutionID<Group>& id)
 {
     output << "(" << *id.group << ", timeStep " << id.timeStep << ", adaptStep " <<
-              id.adaptivityStep << ", type "<< id.solutionType << ")";
+              id.adaptivityStep << ", type "<< id.solutionMode << ")";
     return output;
 }
 

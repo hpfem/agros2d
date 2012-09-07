@@ -59,8 +59,11 @@ void ProblemConfig::clear()
     m_frequency = 0.0;
 
     // transient
-    m_timeStep = Value("1.0", false);
+    m_initialTimeStep = Value("1.0", false);
     m_timeTotal = Value("1.0", false);
+
+    m_timeStepMethod = TimeStepMethod_Fixed;
+    m_timeOrder = 1;
 }
 
 
@@ -126,6 +129,7 @@ void Problem::clearSolution()
     m_isSolving = false;
     m_timeStep = 0;
     m_timeElapsed = QTime(0, 0);
+    m_timeStepLengths.clear();
 
     foreach (Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
         if (mesh)
@@ -306,10 +310,10 @@ bool Problem::mesh()
 void Problem::solveInit()
 {
     m_isSolving = true;
+    m_timeStepLengths.clear();
 
     // open indicator progress
     Indicator::openProgress();
-
 
     // control geometry
     ErrorResult result = Util::scene()->checkGeometryResult();
@@ -344,6 +348,63 @@ void Problem::solveInit()
     }
 }
 
+double Problem::timeStepToTime(int timeStepIndex) const
+{
+    double time = 0;
+    for(int ts = 0; ts < timeStepIndex; ts++)
+        time += m_timeStepLengths[ts];
+
+    return time;
+}
+
+int Problem::timeToTimeStep(double time) const
+{
+    if(time == 0)
+        return 0;
+
+    double timeSum = 0;
+    for(int ts = 0; ts < m_timeStepLengths.size(); ts++)
+    {
+        timeSum += m_timeStepLengths.at(ts);
+        if(fabs(timeSum - time) < 1e-9* config()->timeTotal().value())
+            return ts+1;
+    }
+
+    assert(0);
+}
+
+bool Problem::defineActualTimeStepLength(double ts)
+{
+    // todo: do properly
+    const double eps = 1e-9 * config()->timeTotal().value();
+    assert(actualTime() < config()->timeTotal().value() + eps);
+    if(actualTime() > config()->timeTotal().value() - eps)
+        return false;
+    else{
+        double alteredTS = min(ts, config()->timeTotal().value() - actualTime());
+        m_timeStepLengths.push_back(alteredTS);
+        return true;
+    }
+}
+
+void Problem::refuseLastTimeStepLength()
+{
+    m_timeStepLengths.removeLast();
+}
+
+double Problem::actualTime() const
+{
+    timeStepToTime(m_timeStepLengths.size());
+}
+
+double Problem::actualTimeStepLength() const
+{
+    if(m_timeStepLengths.isEmpty())
+        return config()->timeTotal().value() / config()->initialTimeStep().value();
+
+    return m_timeStepLengths.last();
+}
+
 void Problem::solve()
 {
     if (isSolving())
@@ -373,7 +434,7 @@ void Problem::solve()
     QTime elapsedTime;
     elapsedTime.start();
 
-    setActualTime(0.);
+    //setActualTime(0.);
 
     solveActionCatchExceptions(false);
 
@@ -418,8 +479,16 @@ void Problem::solveAction()
             solvers[block]->solveInitialTimeStep();
     }
 
-    int timeStep = 0;
-    bool doNextTimeStep = true;
+    //just for transient heat so far
+    assert(Util::problem()->isTransient());
+    assert(m_blocks.size() == 1);
+    assert(m_blocks.at(0)->fields().size() == 1);
+    assert(m_blocks.at(0)->fields().at(0)->fieldInfo()->fieldId() == "heat");
+
+
+    int timeStep = 1;
+    double nextTimeStep = 0;
+    bool doNextTimeStep = defineActualTimeStepLength(config()->initialTimeStep().value());
     while(doNextTimeStep)
     {
         foreach (Block* block, m_blocks)
@@ -431,13 +500,14 @@ void Problem::solveAction()
                 {
                     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("transient step %1/%2").
                                               arg(timeStep).
-                                              arg(Util::problem()->config()->numTimeSteps()));
+                                              arg(Util::problem()->config()->numConstantTimeSteps()));
 
                     solver->createInitialSpace(timeStep);
-                    solver->solveSimple(timeStep, 0, false);
+                    nextTimeStep = solver->solveSimple(timeStep, 0, false);
                 }
                 else
                 {
+                    assert(0); // probably wont work
                     //                    if(block->isTransient())
                     //                    {
                     //                        // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
@@ -460,14 +530,13 @@ void Problem::solveAction()
             }
         }
         timeStep++;
-        doNextTimeStep = Util::problem()->isTransient() && (timeStep <= Util::problem()->config()->numTimeSteps());
 
         Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-        cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+        //cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
 
-        addToActualTime(Util::problem()->config()->timeStep().value());
+        doNextTimeStep = isTransient() && defineActualTimeStepLength(nextTimeStep);
     }
 
 
@@ -499,8 +568,9 @@ void Problem::solveAdaptiveStep()
         return;
     }
 
-    // since transients are not allowed, I can do this
-    setActualTime(0.);
+    assert(0); // todo: revise after time step treatment changed
+//    // since transients are not allowed, I can do this
+//    setActualTime(0.);
 
     solveActionCatchExceptions(true);
 
@@ -569,7 +639,7 @@ void Problem::solveAdaptiveStepAction()
     Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
     Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
     Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-    cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+    //cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
 
     Util::scene()->blockSignals(false);
 

@@ -99,7 +99,7 @@ int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType)
     int timeStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.group == fieldInfo) && (sid.solutionType == solutionType) && (sid.timeStep > timeStep))
+        if((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;
     }
 
@@ -185,7 +185,7 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionMode solutionT
     int adaptiveStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.group == fieldInfo) && (sid.solutionType == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
+        if((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
     }
 
@@ -225,7 +225,7 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo,
         solutionID.group = fieldInfo;
         solutionID.adaptivityStep = lastAdaptiveStep(fieldInfo, solutionType);
         solutionID.timeStep = lastTimeStep(fieldInfo, solutionType);
-        solutionID.solutionType = solutionType;
+        solutionID.solutionMode = solutionType;
     }
 
     return solutionID;
