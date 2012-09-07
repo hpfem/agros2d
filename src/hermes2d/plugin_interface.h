@@ -101,7 +101,12 @@ class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j)
-        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j) {}
+        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j)/*, m_table(NULL) */{}
+    // todo: unable to compile, when here. Had to move to form template
+    //void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
+
+protected:
+    //BDF2Table *m_table;
 };
 
 template<typename Scalar>
@@ -109,7 +114,11 @@ class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>
 {
 public:
     VectorFormVolAgros(unsigned int i)
-        : Hermes::Hermes2D::VectorFormVol<Scalar>(i) {}
+        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), m_table(NULL) {}
+    void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
+
+protected:
+    BDF2Table *m_table;
 };
 
 template<typename Scalar>

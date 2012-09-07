@@ -33,6 +33,8 @@ void BDF2Table::setPreviousSteps(QList<double> previousSteps)
 {
     int numSteps = previousSteps.length();
     assert(numSteps >= m_n);
+
+    m_actualTimeStep = previousSteps[numSteps-1];
     if(m_n >= 2)
         th[0] = previousSteps[numSteps-1] / previousSteps[numSteps - 2];
     if(m_n >= 3)
@@ -52,7 +54,19 @@ double BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::ExtData<double> *ext, 
         coef += (-alpha()[ps + 1]/gamma()[0]) * ext->fn[ps]->val[integrationPoint];
     }
 
-    return coef;
+    return coef / m_actualTimeStep;
+}
+
+Hermes::Ord BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::ExtData<Hermes::Ord> *ext, int integrationPoint)
+{
+    Hermes::Ord coef(0);
+
+    for(int ps = 0; ps < n(); ps++)
+    {
+        coef += (-alpha()[ps + 1]/gamma()[0]) * ext->fn[ps]->val[integrationPoint];
+    }
+
+    return coef / m_actualTimeStep;
 }
 
 void BDF2ATable::recalculate()

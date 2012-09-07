@@ -1167,6 +1167,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     if (analysisType == AnalysisType_Transient)
     {
         lex.addVariable("deltat");
+        lex.addVariable("timedermat");
+        lex.addVariable("timedervec");
     }
 
     // functions
@@ -1247,6 +1249,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             if (repl == QString("upval")) { exprCpp += QString("u_ext[this->j]->val[i]"); isReplaced = true; }
             if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->j]->val[i]"); isReplaced = true; }
             if (repl == QString("deltat")) { exprCpp += QString("Util::problem()->actualTimeStepLength()"); isReplaced = true; }
+            if (repl == QString("timedermat")) { exprCpp += QString("m_table->matrixFormCoefficient()"); isReplaced = true; }
+            if (repl == QString("timedervec")) { exprCpp += QString("m_table->vectorFormCoefficient(ext, i)"); isReplaced = true; }
 
             if (coordinateType == CoordinateType_Planar)
             {
@@ -1702,16 +1706,6 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
         lex.addVariable(QString("z"));
     }
 
-    if (sourceAnalysisType == AnalysisType_Transient)
-    {
-        lex.addVariable("deltat");
-    }
-
-    if (targetAnalysisType == AnalysisType_Transient)
-    {
-        lex.addVariable("deltat");
-    }
-
     // functions
     for (int i = 0; i < numOfSol + 1; i++)
     {
@@ -1794,7 +1788,6 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
             if (repl == QString("vval")) { exprCpp += QString("v->val[i]"); isReplaced = true; }
             if (repl == QString("upval")) { exprCpp += QString("u_ext[this->j]->val[i]"); isReplaced = true; }
             if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->i]->val[i]"); isReplaced = true; }
-            if (repl == QString("deltat")) { exprCpp += QString("Util::problem()->actualTimeStepLength()"); isReplaced = true; }
 
             if (coordinateType == CoordinateType_Planar)
             {

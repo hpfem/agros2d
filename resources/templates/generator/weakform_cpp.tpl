@@ -23,6 +23,7 @@
 #include "hermes2d.h"
 #include "module.h"
 #include "problem.h"
+#include "bdf2.h"
 #include "{{ID}}_weakform.h"
  		
 {{#VOLUME_MATRIX_SOURCE}}

@@ -35,8 +35,9 @@ public:
     int n() { return m_n;}
     int order() { return m_n;}
 
-    inline double matrixFormCoefficient() {return alpha()[0]/gamma()[0]; }
+    inline double matrixFormCoefficient() {return alpha()[0] / gamma()[0] / m_actualTimeStep; }
     double vectorFormCoefficient(Hermes::Hermes2D::ExtData<double> *ext, int integrationPoint);
+    Hermes::Ord vectorFormCoefficient(Hermes::Hermes2D::ExtData<Hermes::Ord> *ext, int integrationPoint);
     inline double residualCoefficient()  { return gamma()[1] / gamma()[0]; }
 
     inline bool hasResidual() { return gamma()[1] != 0.0; }
@@ -58,6 +59,7 @@ protected:
 
     int m_n;
     double th[10];
+    double m_actualTimeStep;
     double m_alpha[10];
     double m_delta;
     double m_gamma[10];

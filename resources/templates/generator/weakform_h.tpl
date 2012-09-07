@@ -38,10 +38,13 @@ public:
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;   	    
+    void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
+
     {{FUNCTION_NAME}}<Scalar>* clone();
 private:
     Material *m_materialSource;
     Material *m_materialTarget;	
+    BDF2Table* m_table;
 
     {{#VARIABLE_SOURCE}}
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
@@ -62,10 +65,13 @@ public:
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
-    {{FUNCTION_NAME}}<Scalar>* clone();	
+    void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
+
+    {{FUNCTION_NAME}}<Scalar>* clone();
 private:		
     Material *m_materialSource;
     Material *m_materialTarget;	
+    BDF2Table* m_table;
     {{#VARIABLE_SOURCE}}
     mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 
