@@ -129,6 +129,7 @@ void Problem::clearSolution()
     m_isSolving = false;
     m_timeStep = 0;
     m_timeElapsed = QTime(0, 0);
+    m_timeStepLengths.clear();
 
     foreach (Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
         if (mesh)
@@ -309,10 +310,10 @@ bool Problem::mesh()
 void Problem::solveInit()
 {
     m_isSolving = true;
+    m_timeStepLengths.clear();
 
     // open indicator progress
     Indicator::openProgress();
-
 
     // control geometry
     ErrorResult result = Util::scene()->checkGeometryResult();

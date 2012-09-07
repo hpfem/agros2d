@@ -548,6 +548,9 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
 
         double error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
 
+        double absError = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+        double norm = Global<Scalar>::calc_norms(desmartize(multiSolutionArray.solutions()));
+
         // todo: move to gui?
         double TOLERANCE = 0.3; //TODO
 
@@ -556,7 +559,7 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
         // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
         nextTimeStepLength = pow(TOLERANCE/error, 1./(Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
 
-        cout << "error: " << error << " -> step size " << nextTimeStepLength <<  endl;
+        cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << nextTimeStepLength <<  endl;
     }
 
     // output
