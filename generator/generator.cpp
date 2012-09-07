@@ -1244,7 +1244,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             if (repl == QString("uval")) { exprCpp += QString("u->val[i]"); isReplaced = true; }
             if (repl == QString("vval")) { exprCpp += QString("v->val[i]"); isReplaced = true; }
             if (repl == QString("upval")) { exprCpp += QString("u_ext[this->j]->val[i]"); isReplaced = true; }
-            if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->i]->val[i]"); isReplaced = true; }
+            if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->j]->val[i]"); isReplaced = true; }
             if (repl == QString("deltat")) { exprCpp += QString("Util::problem()->config()->timeStep().number()"); isReplaced = true; }
 
             if (coordinateType == CoordinateType_Planar)
