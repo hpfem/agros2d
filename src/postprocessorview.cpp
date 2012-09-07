@@ -321,6 +321,7 @@ QWidget *PostprocessorWidget::meshWidget()
     chkShowInitialMeshView = new QCheckBox(tr("Initial mesh"));
     chkShowSolutionMeshView = new QCheckBox(tr("Solution mesh"));
     chkShowOrderView = new QCheckBox(tr("Polynomial order"));
+    connect(chkShowOrderView, SIGNAL(clicked()), this, SLOT(refresh()));
 
     QVBoxLayout *gridLayoutMesh = new QVBoxLayout();
     gridLayoutMesh->addWidget(chkShowInitialMeshView);
@@ -395,7 +396,7 @@ QWidget *PostprocessorWidget::post2DWidget()
     return grpShowPost2D;
 }
 
-QWidget *PostprocessorWidget::postScalarWidget()
+CollapsableGroupBoxButton *PostprocessorWidget::postScalarWidget()
 {
     // layout scalar field
     cmbPostScalarFieldVariable = new QComboBox();
@@ -422,7 +423,7 @@ QWidget *PostprocessorWidget::postScalarWidget()
     return grpScalarField;
 }
 
-QWidget *PostprocessorWidget::postContourWidget()
+CollapsableGroupBoxButton *PostprocessorWidget::postContourWidget()
 {
     // contour field
     cmbPost2DContourVariable = new QComboBox();
@@ -441,7 +442,7 @@ QWidget *PostprocessorWidget::postContourWidget()
     return grpContourField;
 }
 
-QWidget *PostprocessorWidget::postVectorWidget()
+CollapsableGroupBoxButton *PostprocessorWidget::postVectorWidget()
 {
     // vector field
     cmbPost2DVectorFieldVariable = new QComboBox();
@@ -460,7 +461,7 @@ QWidget *PostprocessorWidget::postVectorWidget()
     return grpVectorField;
 }
 
-QWidget *PostprocessorWidget::postParticalTracingWidget()
+CollapsableGroupBoxButton *PostprocessorWidget::postParticalTracingWidget()
 {
     // particle tracing
     CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Partical tracing"));
@@ -731,7 +732,7 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     layoutContour->addStretch(1);
     // layoutContour->addWidget(btnContourDefault, 0, Qt::AlignLeft);
 
-    QGroupBox *contourWidget = new QGroupBox("Advanced");
+    QGroupBox *contourWidget = new QGroupBox("Contour properties");
     contourWidget->setLayout(layoutContour);
 
     QScrollArea *contourWidgetArea = new QScrollArea();
@@ -771,7 +772,7 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     layoutVector->addStretch(1);
     // layoutVector->addWidget(btnVectorDefault, 0, Qt::AlignLeft);
 
-    QGroupBox *vectorWidget = new QGroupBox("Advanced");
+    QGroupBox *vectorWidget = new QGroupBox("Vector properties");
     vectorWidget->setLayout(layoutVector);
 
     QScrollArea *vectorWidgetArea = new QScrollArea();
@@ -955,6 +956,8 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
         fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
+        fillComboBoxSolutionType(cmbAdaptivitySolutionType);
+
         doTimeStep(0);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
@@ -1038,16 +1041,6 @@ void PostprocessorWidget::doPaletteFilter(int state)
 
 void PostprocessorWidget::refresh()
 {
-    groupMeshOrder->setVisible(m_sceneMesh->actSceneModeMesh->isChecked());
-    groupPostScalar->setVisible(m_scenePost2D->actSceneModePost2D->isChecked() || m_scenePost3D->actSceneModePost3D->isChecked());
-    groupPostContour->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
-    groupPostVector->setVisible(m_scenePost2D->actSceneModePost2D->isChecked());
-    groupPostParticalTracing->setVisible(m_scenePost2D->actSceneModePost2D->isChecked() || m_scenePost3D->actSceneModePost3D->isChecked());
-
-    groupPostContour->setEnabled(false);
-    groupPostVector->setEnabled(false);
-    groupPostParticalTracing->setEnabled(false);
-
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
         widgetsLayout->setCurrentWidget(groupMesh);
@@ -1056,6 +1049,22 @@ void PostprocessorWidget::refresh()
         chkShowInitialMeshView->setEnabled(Util::problem()->isMeshed());
         chkShowSolutionMeshView->setEnabled(Util::problem()->isSolved());
         chkShowOrderView->setEnabled(Util::problem()->isSolved());
+
+        // mesh
+        groupMeshOrder->setVisible(Util::problem()->isSolved() && chkShowOrderView->isChecked());
+
+        // scalar
+        groupPostScalar->setVisible(false);
+        groupPostScalarAdvanced->setVisible(false);
+        // contour
+        groupPostContour->setVisible(false);
+        groupPostContourAdvanced->setVisible(false);
+        // vector
+        groupPostVector->setVisible(false);
+        groupPostVectorAdvanced->setVisible(false);
+        // particle tracing
+        groupPostParticalTracing->setVisible(false);
+        groupPostParticalTracingAdvanced->setVisible(false);
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -1067,31 +1076,32 @@ void PostprocessorWidget::refresh()
         chkShowPost2DVectorView->setEnabled(Util::problem()->isSolved() && (cmbPost2DVectorFieldVariable->count() > 0));
         chkShowPost2DParticleView->setEnabled(Util::problem()->isSolved());
 
+        // mesh
+        groupMeshOrder->setVisible(false);
+
         // contour
-        groupPostContour->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
-        groupPostContourAdvanced->setEnabled(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
+        groupPostContour->setVisible(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
+        groupPostContourAdvanced->setVisible(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked() && !groupPostScalar->isCollapsed());
 
         // scalar view
-        cmbPostScalarFieldVariable->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        cmbPostScalarFieldVariableComp->setEnabled(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        if (chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked())
-        {
-            doScalarFieldRangeAuto(-1);
-            doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
-        }
+        groupPostScalar->setVisible(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
+        groupPostScalarAdvanced->setVisible(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked() && !groupPostContour->isCollapsed());
 
         // vector view
-        groupPostVector->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
-        groupPostVectorAdvanced->setEnabled(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
+        groupPostVector->setVisible(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
+        groupPostVectorAdvanced->setVisible(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked() && !groupPostVector->isCollapsed());
 
         // partical tracing
-        groupPostParticalTracing->setEnabled(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
-        groupPostParticalTracingAdvanced->setEnabled(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
+        groupPostParticalTracing->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
+        groupPostParticalTracingAdvanced->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked() && !groupPostParticalTracing->isCollapsed());
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
     {
         widgetsLayout->setCurrentWidget(groupPost3d);
+
+        // mesh
+        groupMeshOrder->setVisible(false);
 
         // scalar view 3d
         radPost3DNone->setEnabled(Util::problem()->isSolved());
@@ -1100,9 +1110,31 @@ void PostprocessorWidget::refresh()
         radPost3DModel->setEnabled(Util::problem()->isSolved());
         radPost3DParticleTracing->setEnabled(Util::problem()->isSolved());
 
+        // scalar
+        groupPostScalar->setVisible((radPost3DScalarField3D->isEnabled() && radPost3DScalarField3D->isChecked())
+                                    || (radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked()));
+        groupPostScalarAdvanced->setVisible(((radPost3DScalarField3D->isEnabled() && radPost3DScalarField3D->isChecked())
+                                             || (radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked()))
+                                            && !groupPostScalar->isCollapsed());
+
+        // contour
+        groupPostContour->setVisible(false);
+        groupPostContourAdvanced->setVisible(false);
+
+        // vector
+        groupPostVector->setVisible(false);
+        groupPostVectorAdvanced->setVisible(false);
+
         // partical tracing
-        groupPostParticalTracing->setEnabled(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
-        groupPostParticalTracing->setEnabled(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked());
+        groupPostParticalTracing->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked());
+        groupPostParticalTracingAdvanced->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked() && !groupPostParticalTracing->isCollapsed());
+    }
+
+    // scalar view
+    if (groupPostScalar->isVisible())
+    {
+        doScalarFieldRangeAuto(-1);
+        doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
     }
 
     grpTransient->setVisible(false);
@@ -1126,9 +1158,6 @@ void PostprocessorWidget::updateControls()
 {
     fillComboBoxFieldInfo(cmbFieldInfo);
     doFieldInfo(cmbFieldInfo->currentIndex());
-    //fillComboBoxTimeStep(cmbTimeStep);
-    //fillComboBoxAdaptivityStep(cmbAdaptivityStep);
-    fillComboBoxSolutionType(cmbAdaptivitySolutionType);
 
     loadBasic();
     loadAdvanced();

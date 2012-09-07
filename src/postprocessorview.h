@@ -27,6 +27,7 @@ class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
 class LineEditDouble;
+class CollapsableGroupBoxButton;
 
 class PostprocessorWidget : public QWidget
 {
@@ -159,29 +160,31 @@ private:
 
     QStackedLayout *widgetsLayout;
     QWidget *groupMesh;
-    QWidget *groupMeshOrder;
     QWidget *groupPost2d;
     QWidget *groupPost3d;
-    QWidget *groupPostScalar;
+
+    QWidget *groupMeshOrder;
+    CollapsableGroupBoxButton *groupPostScalar;
     QWidget *groupPostScalarAdvanced;
-    QWidget *groupPostContour;
+    CollapsableGroupBoxButton *groupPostContour;
     QWidget *groupPostContourAdvanced;
-    QWidget *groupPostVector;
+    CollapsableGroupBoxButton *groupPostVector;
     QWidget *groupPostVectorAdvanced;
-    QWidget *groupPostParticalTracing;
+    CollapsableGroupBoxButton *groupPostParticalTracing;
     QWidget *groupPostParticalTracingAdvanced;
 
     QWidget *meshWidget();
-    QWidget *meshOrderWidget();
     QWidget *post2DWidget();
     QWidget *post3DWidget();
-    QWidget *postScalarWidget();
+
+    QWidget *meshOrderWidget();
+    CollapsableGroupBoxButton *postScalarWidget();
     QWidget *postScalarAdvancedWidget();
-    QWidget *postContourWidget();
+    CollapsableGroupBoxButton *postContourWidget();
     QWidget *postContourAdvancedWidget();
-    QWidget *postVectorWidget();
+    CollapsableGroupBoxButton *postVectorWidget();
     QWidget *postVectorAdvancedWidget();
-    QWidget *postParticalTracingWidget();
+    CollapsableGroupBoxButton *postParticalTracingWidget();
     QWidget *postParticalTracingAdvancedWidget();
 
     int selectedTimeStep();

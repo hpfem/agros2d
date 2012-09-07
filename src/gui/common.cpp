@@ -130,15 +130,15 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     cmbFieldVariable->blockSignals(false);
 }
 
-void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbFieldVariable)
+void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
 {
     if (!Util::problem()->isSolved())
         return;
 
-    cmbFieldVariable->blockSignals(true);
+    cmbTimeStep->blockSignals(true);
 
     // store variable
-    int timeStep = cmbFieldVariable->currentIndex();
+    int timeStep = cmbTimeStep->currentIndex();
     double timeValue;
     if (timeStep == -1){
         timeStep = Util::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
@@ -146,25 +146,27 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbFieldVariable)
     }
     else
     {
-        timeValue = cmbFieldVariable->currentText().toDouble();
+        timeValue = cmbTimeStep->currentText().toDouble();
     }
 
     // clear combo
-    cmbFieldVariable->clear();
+    cmbTimeStep->clear();
 
     QList<double> timeLevels = Util::solutionStore()->timeLevels(fieldInfo);
     int i = 0;
     timeStep = 0;
-    foreach(double time, timeLevels)
+    foreach (double time, timeLevels)
     {
-        cmbFieldVariable->addItem(QString::number(time, 'e', 2), i++);
-        if(time < timeValue)
+        cmbTimeStep->addItem(QString::number(time, 'e', 2), i++);
+        if (time < timeValue)
             timeStep = i;
     }
 
-    cmbFieldVariable->setCurrentIndex(timeStep);
-    cmbFieldVariable->blockSignals(false);
+    cmbTimeStep->setCurrentIndex(timeStep);
+    if (cmbTimeStep->currentIndex() == -1)
+        cmbTimeStep->setCurrentIndex(0);
 
+    cmbTimeStep->blockSignals(false);
 }
 
 void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *cmbFieldVariable)
