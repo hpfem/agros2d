@@ -34,6 +34,15 @@ public:
     int n() { return m_n;}
     int order() { return m_n;}
 
+    inline double matrixFormCoefficient() {return alpha()[0]/gamma()[0]; }
+    double vectorFormCoefficient(Hermes::Hermes2D::ExtData<double> *ext, int integrationPoint);
+    inline double residualCoefficient()  { return gamma()[1] / gamma()[0]; }
+
+    inline bool hasResidual() { return gamma()[1] != 0.0; }
+
+    static void test();
+
+protected:
     double* alpha() { assert(m_calculated); return m_alpha; }
 
     // coefficient of linear combination that combines solutions of A and B method to produce final solution
@@ -43,9 +52,7 @@ public:
     double* gamma() { assert(m_calculated); return m_gamma; }
 
     double testCalcValue(double step, QList<double> values, double fVal, double fPrevVal);
-    static void test();
 
-protected:
     virtual void recalculate() = 0;
 
     int m_n;

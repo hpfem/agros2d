@@ -43,6 +43,18 @@ void BDF2Table::setPreviousSteps(QList<double> previousSteps)
     m_calculated = true;
 }
 
+double BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::ExtData<double> *ext, int integrationPoint)
+{
+    double coef = 0;
+
+    for(int ps = 0; ps < n(); ps++)
+    {
+        coef += (-alpha()[ps + 1]/gamma()[0]) * ext->fn[ps]->val[integrationPoint];
+    }
+
+    return coef;
+}
+
 void BDF2ATable::recalculate()
 {
     if(m_n == 1)
@@ -206,12 +218,11 @@ Scalar CustomMatrixFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes
 {
     double result = 0;
 
-    double* alpha = m_table->alpha();
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * alpha[0]/m_table->gamma()[0] * he_rho.value(0)*he_cp.value(0) * u->val[i] * v->val[i];
+        result += wt[i] * m_table->matrixFormCoefficient() * he_rho.value(0)*he_cp.value(0) * u->val[i] * v->val[i];
     }
-    result /= Util::problem()->config()->timeStep().number();
+    result /= Util::problem()->actualTimeStepLength();
 
     return result;
 }
@@ -263,15 +274,11 @@ Scalar CustomVectorFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes
 {
     double result = 0;
 
-    double* alpha = m_table->alpha();
     for (int i = 0; i < n; i++)
     {
-        for(int ps = 0; ps < m_table->n(); ps++)
-        {
-            result += wt[i] * (-alpha[ps + 1]/m_table->gamma()[0]) * he_rho.value(0)*he_cp.value(0) * ext->fn[ps]->val[i] * v->val[i];
-        }
+        result += wt[i] * m_table->vectorFormCoefficient(ext, i) * he_rho.value(0)*he_cp.value(0) * v->val[i];
     }
-    result /= Util::problem()->config()->timeStep().number();
+    result /= Util::problem()->actualTimeStepLength();
 
     return result;
 }
@@ -331,7 +338,7 @@ Scalar CustomVectorFormVol_time_residual<Scalar>::value(int n, double *wt, Herme
 
     for (int i = 0; i < n; i++)
     {
-        result += wt[i] * m_table->gamma()[1] / m_table->gamma()[0] * (he_lambda.value(ext->fn[0]->val[i])*(ext->fn[0]->dx[i]*v->dx[i]+ext->fn[0]->dy[i]*v->dy[i])-he_p.number()*v->val[i]+he_rho.value(ext->fn[0]->val[i])*he_cp.value(ext->fn[0]->val[i])*((he_vx.number()-e->y[i]*he_va.number())*ext->fn[0]->dx[i]+(he_vy.number()+e->x[i]*he_va.number())*ext->fn[0]->dy[i])*v->val[i]);
+        result += wt[i] * m_table->residualCoefficient() * (he_lambda.value(ext->fn[0]->val[i])*(ext->fn[0]->dx[i]*v->dx[i]+ext->fn[0]->dy[i]*v->dy[i])-he_p.number()*v->val[i]+he_rho.value(ext->fn[0]->val[i])*he_cp.value(ext->fn[0]->val[i])*((he_vx.number()-e->y[i]*he_va.number())*ext->fn[0]->dx[i]+(he_vy.number()+e->x[i]*he_va.number())*ext->fn[0]->dy[i])*v->val[i]);
     }
     return result;
 }

@@ -217,7 +217,7 @@ void WeakFormAgros<Scalar>::registerTimeForms(BDF2Table *table)
 
                 addForm(WeakForm_MatVol, matrixForm);
                 addForm(WeakForm_VecVol, vectorForm);
-                if(table->gamma()[1] != 0.0)
+                if(table->hasResidual())
                     addForm(WeakForm_VecVol, residualForm);
             }
         }
