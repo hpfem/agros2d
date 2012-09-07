@@ -1250,7 +1250,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->j]->val[i]"); isReplaced = true; }
             if (repl == QString("deltat")) { exprCpp += QString("Util::problem()->actualTimeStepLength()"); isReplaced = true; }
             if (repl == QString("timedermat")) { exprCpp += QString("m_table->matrixFormCoefficient()"); isReplaced = true; }
-            if (repl == QString("timedervec")) { exprCpp += QString("m_table->vectorFormCoefficient(ext, i)"); isReplaced = true; }
+            if (repl == QString("timedervec")) { exprCpp += QString("m_table->vectorFormCoefficient(ext, this->j, m_materialSource->fieldInfo()->module()->numberOfSolutions(), i)"); isReplaced = true; }
 
             if (coordinateType == CoordinateType_Planar)
             {

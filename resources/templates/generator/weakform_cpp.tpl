@@ -22,6 +22,8 @@
 #include "scene.h"
 #include "hermes2d.h"
 #include "module.h"
+#include "module_agros.h"
+#include "field.h"
 #include "problem.h"
 #include "bdf2.h"
 #include "{{ID}}_weakform.h"

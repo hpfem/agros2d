@@ -512,15 +512,14 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
 
-    WeakFormAgros<double> wf(m_block);
-    wf.set_current_time(Util::problem()->actualTime());
-    wf.registerForms();
-
     BDF2ATable bdf2ATable;
     //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
     bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
     bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
-    wf.registerTimeForms(&bdf2ATable);
+
+    WeakFormAgros<double> wf(m_block);
+    wf.set_current_time(Util::problem()->actualTime());
+    wf.registerForms(&bdf2ATable);
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
     Scalar coefVec[ndof];
@@ -533,15 +532,14 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
 
     if(Util::problem()->config()->timeStepMethod() == TimeStepMethod_BDF2)
     {
-        WeakFormAgros<double> wf2(m_block);
-        wf2.set_current_time(Util::problem()->actualTime());
-        wf2.registerForms();
-
         BDF2BTable bdf2BTable;
         //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
         bdf2BTable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
         bdf2BTable.setPreviousSteps(Util::problem()->timeStepLengths());
-        wf2.registerTimeForms(&bdf2BTable);
+
+        WeakFormAgros<double> wf2(m_block);
+        wf2.set_current_time(Util::problem()->actualTime());
+        wf2.registerForms(&bdf2BTable);
 
         Scalar coefVec2[ndof];
         MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
@@ -620,7 +618,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 
     WeakFormAgros<double> wf(m_block);
     wf.set_current_time(Util::problem()->actualTime());
-    wf.registerForms();
+    wf.registerForms(NULL);
 
     msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msaRef.spaces()), Util::problem()->actualTime());

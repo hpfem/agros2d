@@ -106,15 +106,14 @@ class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 public:
     WeakFormAgros(Block* block);
 
-    void registerForms();
-    void registerTimeForms(BDF2Table *table);
+    void registerForms(BDF2Table *bdf2Table);
 
     //    // previous solution
     //    QList<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker *marker);
+    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker *marker, BDF2Table* bdf2Table = NULL);
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
 

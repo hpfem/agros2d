@@ -161,7 +161,7 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker* marker)
+void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker* marker, BDF2Table* bdf2Table)
 {
     ProblemID problemId;
 
@@ -174,13 +174,22 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, form, marker, NULL, offsetI, offsetJ);
     assert(custom_form);
 
-    // todo: remove, it will not be neccessary, since temporal forms will be handled separately
-    if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
+    if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
     {
-        FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(field->fieldInfo(), SolutionMode_Finer);
+        int lastTimeStep = Util::solutionStore()->lastTimeStep(field->fieldInfo(), SolutionMode_Normal);
         Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
-        for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-            slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+        for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
+        {
+            int timeStep = lastTimeStep - backLevel;
+            int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
+            FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
+            if(! Util::solutionStore()->contains(solutionID))
+                solutionID.solutionMode = SolutionMode_Normal;
+            assert(Util::solutionStore()->contains(solutionID));
+
+            for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
+                slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+        }
 
         custom_form->setExt(slns);
     }
@@ -188,64 +197,6 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     addForm(type, custom_form);
 }
 
-//TODO  instead of this method add symbols to xml forms
-template <typename Scalar>
-void WeakFormAgros<Scalar>::registerTimeForms(BDF2Table *table)
-{
-    foreach(Field* field, m_block->fields())
-    {
-        FieldInfo* fieldInfo = field->fieldInfo();
-        assert(fieldInfo->fieldId() == "heat");
-
-        // materials
-        for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
-        {
-            SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
-
-            assert(material);
-            if (material != Util::scene()->materials->getNone(fieldInfo))
-            {
-
-
-
-                    //TODO  instead of this method add symbols to xml forms
-
-//                Hermes::Hermes2D::Form<Scalar> *matrixForm = new CustomMatrixFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), Hermes::Hermes2D::HERMES_NONSYM, material, table);
-//                Hermes::Hermes2D::Form<Scalar> *vectorForm = new CustomVectorFormVol_time<Scalar>(0, 0, QString::number(labelNum).toStdString(), material, table);
-//                Hermes::Hermes2D::Form<Scalar> *residualForm = new CustomVectorFormVol_time_residual<Scalar>(0, 0, QString::number(labelNum).toStdString(), material, table);
-
-                // push previous solution in this order:
-                // first all components of the solution in time level n-1
-                // than all components of the solution in time level n-2
-                // etc.
-                int lastTimeStep = Util::solutionStore()->lastTimeStep(field->fieldInfo(), SolutionMode_Normal);
-                for(int backLevel = 0; backLevel < table->n(); backLevel++)
-                {
-                    int timeStep = lastTimeStep - backLevel;
-                    int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
-                    FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
-                    if(! Util::solutionStore()->contains(solutionID))
-                        solutionID.solutionMode = SolutionMode_Normal;
-                    assert(Util::solutionStore()->contains(solutionID));
-
-                    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
-                    for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-                        slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
-
-//                    matrixForm->setExt(slns);
-//                    vectorForm->setExt(slns);
-//                    residualForm->setExt(slns);
-                }
-
-
-//                addForm(WeakForm_MatVol, matrixForm);
-//                addForm(WeakForm_VecVol, vectorForm);
-//                if(table->hasResidual())
-//                    addForm(WeakForm_VecVol, residualForm);
-            }
-        }
-    }
-}
 
 // TODO: Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // TODO: Still? Check it, please.
@@ -289,7 +240,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForms()
+void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 {
     foreach(Field* field, m_block->fields())
     {
@@ -324,12 +275,12 @@ void WeakFormAgros<Scalar>::registerForms()
             {
                 foreach (FormInfo *expression, fieldInfo->module()->wfMatrixVolumeExpression())
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
-                                 m_block->offset(field), m_block->offset(field), material);
+                                 m_block->offset(field), m_block->offset(field), material, bdf2Table);
 
 
                 foreach (FormInfo *expression, fieldInfo->module()->wfVectorVolumeExpression())
                     registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
-                                 m_block->offset(field), m_block->offset(field), material);
+                                 m_block->offset(field), m_block->offset(field), material, bdf2Table);
 
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
