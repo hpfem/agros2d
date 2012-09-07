@@ -38,11 +38,7 @@ public:
     virtual QIcon iconView() { return icon("scene-mesh"); }
     virtual QString labelView() { return tr("Mesh and polynomial order view"); }
 
-    // TODO: remove
-    inline PostHermes *postHermes() { return m_postHermes; }
-
 public slots:
-    virtual void refresh();
     void setControls();
     virtual void clear();
     void exportVTK(const QString &fileName = QString(), bool exportMeshOnly = false);
@@ -59,17 +55,16 @@ protected:
     void paintOrder();
     void paintOrderColorBar();
 
-protected slots:
-
 private:
     // gl lists
     int m_listInitialMesh;
     int m_listSolutionMesh;
     int m_listOrder;
 
-    PostHermes *m_postHermes;
-
     void createActionsMesh();
+
+private slots:
+    virtual void refresh();
 };
 
 #endif // SCENEVIEWMESH_H

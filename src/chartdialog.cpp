@@ -75,7 +75,9 @@ QList<Point> ChartLine::getPoints()
 
 // **************************************************************************************************
 
-ChartDialog::ChartDialog(SceneViewPost2D *sceneView, FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent)
+ChartDialog::ChartDialog(SceneViewPost2D *sceneView,
+                         FieldInfo *fieldInfo,
+                         QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("chart"));
     setWindowFlags(Qt::Window);
@@ -557,7 +559,7 @@ void ChartDialog::plotTime()
 
     // restore previous timestep
     Util::scene()->setActiveTimeStep(timeStep);
-    m_sceneViewPost2D->refresh();
+    m_sceneViewPost2D->postHermes()->refresh();
 }
 
 void ChartDialog::fillTableRow(LocalValue *localValue, double time, int row)

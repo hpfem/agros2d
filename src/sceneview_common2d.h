@@ -32,7 +32,7 @@ public slots:
     virtual void clear();
 
 public:
-    SceneViewCommon2D(QWidget *parent = 0);
+    SceneViewCommon2D(PostHermes *postHermes, QWidget *parent = 0);
     ~SceneViewCommon2D();
 
     SceneNode *findClosestNode(const Point &point);

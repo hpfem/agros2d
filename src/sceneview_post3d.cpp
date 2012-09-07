@@ -55,8 +55,8 @@ static void computeNormal(double p0x, double p0y, double p0z,
     // double p[3] = { nx*l, ny*l, nz*l };
 }
 
-SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent) : SceneViewCommon3D(parent),
-    m_postHermes(postHermes),
+SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent)
+    : SceneViewCommon3D(postHermes, parent),
     m_listScalarField3D(-1),
     m_listScalarField3DSolid(-1),
     m_listParticleTracing(-1),

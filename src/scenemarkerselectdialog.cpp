@@ -29,7 +29,7 @@
 
 SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneViewPost2D *sceneView, SceneModePostprocessor mode, QWidget *parent) : QDialog(parent)
 {
-    m_sceneView = sceneView;
+    m_sceneViewPost2D = sceneView;
 
     setWindowIcon(icon(""));
     setWindowTitle(tr("Select by marker"));
@@ -104,7 +104,7 @@ void SceneMarkerSelectDialog::doAccept()
     if (tabWidget->currentWidget() == widSurface)
     {
         Util::scene()->selectNone();
-        m_sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+        m_sceneViewPost2D->actPostprocessorModeSurfaceIntegral->trigger();
         for (int i = 0; i < lstSurface->count(); i++)
         {
             if (lstSurface->item(i)->checkState() == Qt::Checked)
@@ -117,13 +117,13 @@ void SceneMarkerSelectDialog::doAccept()
                 }
             }
         }
-        m_sceneView->refresh();
+        m_sceneViewPost2D->postHermes()->refresh();
     }
 
     if (tabWidget->currentWidget() == widVolume)
     {
         Util::scene()->selectNone();
-        m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
+        m_sceneViewPost2D->actPostprocessorModeVolumeIntegral->trigger();
         for (int i = 0; i < lstVolume->count(); i++)
         {
             if (lstVolume->item(i)->checkState() == Qt::Checked)
@@ -136,7 +136,7 @@ void SceneMarkerSelectDialog::doAccept()
                 }
             }
         }
-        m_sceneView->refresh();
+        m_sceneViewPost2D->postHermes()->refresh();
     }
 
     accept();

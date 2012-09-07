@@ -308,7 +308,9 @@ void PostHermes::processSolved()
 
 // ************************************************************************************************
 
-SceneViewPostInterface::SceneViewPostInterface(QWidget *parent): SceneViewCommon(parent)
+SceneViewPostInterface::SceneViewPostInterface(PostHermes *postHermes, QWidget *parent)
+    : SceneViewCommon(parent),
+      m_postHermes(postHermes)
 {
     connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(timeStepChanged()));
 }

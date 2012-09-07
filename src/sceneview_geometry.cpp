@@ -36,7 +36,8 @@
 
 #include "gl2ps/gl2ps.h"
 
-SceneViewPreprocessor::SceneViewPreprocessor(QWidget *parent): SceneViewCommon2D(parent)
+SceneViewPreprocessor::SceneViewPreprocessor(QWidget *parent)
+    : SceneViewCommon2D(NULL, parent)
 {
     createActionsGeometry();
     createMenuGeometry();

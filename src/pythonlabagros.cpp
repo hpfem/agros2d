@@ -1398,12 +1398,6 @@ void PyViewMesh::activate()
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
 }
 
-void PyViewMesh::refresh()
-{
-    if (Util::problem()->isMeshed())
-        currentPythonEngineAgros()->sceneViewMesh()->refresh();
-}
-
 void PyViewMesh::setInitialMeshViewShow(bool show)
 {
     Util::config()->showInitialMeshView = show;
@@ -1443,12 +1437,6 @@ void PyViewPost2D::activate()
 {
     if (Util::problem()->isSolved())
         currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-}
-
-void PyViewPost2D::refresh()
-{
-    if (Util::problem()->isSolved())
-        currentPythonEngineAgros()->sceneViewPost2D()->refresh();
 }
 
 void PyViewPost2D::setScalarViewShow(bool show)
@@ -1637,12 +1625,6 @@ void PyViewPost3D::activate()
         currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
 }
 
-void PyViewPost3D::refresh()
-{
-    if (Util::problem()->isSolved())
-        currentPythonEngineAgros()->sceneViewPost3D()->refresh();
-}
-
 void PyViewPost3D::setPost3DMode(char* mode)
 {
     if (sceneViewPost3DModeStringKeys().contains(QString(mode)))
@@ -1764,7 +1746,7 @@ void PyParticleTracing::solve()
     m_velocities.clear();
 
     Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, false);
-    currentPythonEngineAgros()->sceneViewPost2D()->refresh();
+    currentPythonEngineAgros()->postHermes()->refresh();
 
     // restore values
     // Util::config()->particleStartingRadius = particleStartingRadius;

@@ -204,7 +204,7 @@ private:
     SceneViewWidget *sceneViewPost3DWidget;
     SceneViewWidget *sceneViewBlankWidget;
 
-    // PostHermes *postHermes;
+    PostHermes *postHermes;
 
     QStackedLayout *tabViewLayout;
     InfoWidget *sceneInfoWidget;

@@ -69,7 +69,9 @@ public slots:
     void doPlot();
 
 public:
-    ChartDialog(SceneViewPost2D *sceneView, FieldInfo *fieldInfo, QWidget *parent = 0);
+    ChartDialog(SceneViewPost2D *sceneView,
+                FieldInfo *fieldInfo,
+                QWidget *parent = 0);
     ~ChartDialog();
 
     void showDialog();

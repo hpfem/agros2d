@@ -40,7 +40,7 @@ protected:
     void createControls();
 
 private:
-    SceneViewPost2D *m_sceneView;
+    SceneViewPost2D *m_sceneViewPost2D;
 
     QTabWidget* tabWidget;
 

@@ -80,7 +80,6 @@ class SceneViewPost3D : public SceneViewCommon3D
     Q_OBJECT
 
 public slots:
-    virtual void refresh();
     virtual void clear();
 
 public:
@@ -91,9 +90,6 @@ public:
 
     virtual QIcon iconView() { return icon("scene-post3d"); }
     virtual QString labelView() { return tr("Postprocessor 3D"); }
-
-    // TODO: remove
-    inline PostHermes *postHermes() { return m_postHermes; }
 
 protected:
     virtual int textureScalar() { return 3; }
@@ -114,9 +110,10 @@ private:
     int m_listParticleTracing;
     int m_listModel;
 
-    PostHermes *m_postHermes;
-
     void createActionsPost3D();
+
+private slots:
+    virtual void refresh();
 };
 
 #endif // SCENEVIEWPOST3D_H

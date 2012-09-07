@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createPythonEngine(new PythonEngineAgros());
 
     // scene
-    PostHermes *postHermes = new PostHermes();
+    postHermes = new PostHermes();
 
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(postHermes, this);
@@ -128,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Util::problem(), SIGNAL(meshed()), postHermes, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(solved()), postHermes, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(cleared()), postHermes, SLOT(clear()));
+    currentPythonEngineAgros()->setPostHermes(postHermes);
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
@@ -1196,11 +1197,11 @@ void MainWindow::doCreateVideo()
 {
     VideoDialog *videoDialog = NULL;
     if (sceneViewMesh->actSceneModeMesh->isChecked())
-        videoDialog = new VideoDialog(sceneViewMesh, sceneViewMesh->postHermes(), this);
+        videoDialog = new VideoDialog(sceneViewMesh, postHermes, this);
     else if (sceneViewPost2D->actSceneModePost2D->isChecked())
-        videoDialog = new VideoDialog(sceneViewPost2D, sceneViewPost2D->postHermes(), this);
+        videoDialog = new VideoDialog(sceneViewPost2D, postHermes, this);
     else if (sceneViewPost3D->actSceneModePost3D->isChecked())
-        videoDialog = new VideoDialog(sceneViewPost3D, sceneViewPost3D->postHermes(), this);
+        videoDialog = new VideoDialog(sceneViewPost3D, postHermes, this);
 
     if (videoDialog)
     {
@@ -1296,7 +1297,7 @@ void MainWindow::doOptions()
     if (configDialog.exec())
     {
         sceneViewPost2D->timeStepChanged(false);
-        sceneViewPost2D->refresh();
+        postHermes->refresh();
     }
 
     activateWindow();

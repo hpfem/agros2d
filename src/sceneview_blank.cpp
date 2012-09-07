@@ -33,7 +33,8 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
-SceneViewBlank::SceneViewBlank(QWidget *parent): SceneViewCommon2D(parent)
+SceneViewBlank::SceneViewBlank(QWidget *parent)
+    : SceneViewCommon2D(NULL, parent)
 {
     connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
@@ -47,6 +48,7 @@ SceneViewBlank::~SceneViewBlank()
 void SceneViewBlank::refresh()
 {
     doZoomBestFit();
+
     SceneViewCommon::refresh();
 }
 

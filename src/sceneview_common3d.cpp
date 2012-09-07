@@ -34,7 +34,8 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-SceneViewCommon3D::SceneViewCommon3D(QWidget *parent): SceneViewPostInterface(parent)
+SceneViewCommon3D::SceneViewCommon3D(PostHermes *postHermes, QWidget *parent)
+    : SceneViewPostInterface(postHermes, parent)
 {
     createActions();
 }

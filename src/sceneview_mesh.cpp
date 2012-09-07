@@ -31,8 +31,8 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/module.h"
 
-SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent): SceneViewCommon2D(parent),
-    m_postHermes(postHermes),
+SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent)
+    : SceneViewCommon2D(postHermes, parent),
     m_listInitialMesh(-1),
     m_listSolutionMesh(-1),
     m_listOrder(-1)

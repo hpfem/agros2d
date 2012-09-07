@@ -34,7 +34,8 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-SceneViewCommon2D::SceneViewCommon2D(QWidget *parent): SceneViewPostInterface(parent)
+SceneViewCommon2D::SceneViewCommon2D(PostHermes *postHermes, QWidget *parent)
+    : SceneViewPostInterface(postHermes, parent)
 {
     connect(this, SIGNAL(mouseMoved(Point)), this, SLOT(updatePosition(Point)));
 }

@@ -36,7 +36,6 @@ public slots:
     void selectByMarker();
     void selectPoint();
     void doPostprocessorModeGroup(QAction *action);
-    virtual void refresh();
     void setControls();
     virtual void clear();
     void exportVTKScalarView(const QString &fileName = QString());
@@ -65,9 +64,6 @@ public:
 
     virtual QIcon iconView() { return icon("scene-post2d"); }
     virtual QString labelView() { return tr("Postprocessor 2D"); }
-
-    // TODO: remove
-    inline PostHermes *postHermes() { return m_postHermes; }
 
 protected:
     virtual int textureScalar() { return 2; }
@@ -105,13 +101,13 @@ private:
     int m_listScalarField;
     int m_listParticleTracing;
 
-    PostHermes *m_postHermes;
-
     void createActionsPost2D();
 
 private slots:
     void showGroup(QAction *action);
     void selectedPoint(const Point &p);
+
+    virtual void refresh();
 };
 
 #endif // SCENEVIEWPOST2D_H

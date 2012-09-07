@@ -36,7 +36,7 @@ public slots:
     void doSetProjectionYZ();
 
 public:
-    SceneViewCommon3D(QWidget *parent = 0);
+    SceneViewCommon3D(PostHermes *postHermes, QWidget *parent = 0);
     ~SceneViewCommon3D();
 
     QAction *actSetProjectionXY;
