@@ -1081,11 +1081,11 @@ void PostprocessorWidget::refresh()
 
         // contour
         groupPostContour->setVisible(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked());
-        groupPostContourAdvanced->setVisible(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked() && !groupPostScalar->isCollapsed());
+        groupPostContourAdvanced->setVisible(chkShowPost2DContourView->isEnabled() && chkShowPost2DContourView->isChecked() && !groupPostContour->isCollapsed());
 
         // scalar view
         groupPostScalar->setVisible(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked());
-        groupPostScalarAdvanced->setVisible(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked() && !groupPostContour->isCollapsed());
+        groupPostScalarAdvanced->setVisible(chkShowPost2DScalarView->isEnabled() && chkShowPost2DScalarView->isChecked() && !groupPostScalar->isCollapsed());
 
         // vector view
         groupPostVector->setVisible(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
