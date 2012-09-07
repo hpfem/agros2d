@@ -20,6 +20,7 @@
 
 #include <QDir>
 #include "generator.h"
+#include "util/constants.h"
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
 
@@ -1341,7 +1342,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
 template <typename Form, typename WeakForm>
 void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0, int j = 0)
-{    
+{
     foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
     {
         foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
@@ -1906,7 +1907,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
 
 template <typename Form>
 void Agros2DGeneratorCoupling::generateForm(Form form, XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output, QString weakFormType)
-{    
+{
     foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
     {
         foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
