@@ -29,11 +29,11 @@
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
         <module:matrix_form axi_linear="0" axi_newton="0" i="1" j="1" planar_linear="1 / ac_rho * (udx * vdx + udy * vdy)" planar_newton="0" symmetric="1"/>
-        <module:matrix_form axi_linear="0" axi_newton="0" i="1" j="2" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * timedermat * uval * vval" planar_newton="0"/>
+        <module:matrix_form axi_linear="0" axi_newton="0" i="1" j="2" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * uval * vval / deltat" planar_newton="0"/>
         <module:matrix_form axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="- uval * vval" planar_newton="0" symmetric="1"/>
-        <module:matrix_form axi_linear="0" axi_newton="0" i="2" j="1" planar_linear="timedermat * uval * vval" planar_newton="0"/>
-        <module:vector_form axi_linear="0" axi_newton="0" i="1" j="2" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * timedervec * vval" planar_newton="0"/>
-        <module:vector_form axi_linear="0" axi_newton="0" i="2" j="1" planar_linear="timedervec * vval" planar_newton="0"/>
+        <module:matrix_form axi_linear="0" axi_newton="0" i="2" j="1" planar_linear="uval * vval / deltat" planar_newton="0"/>
+        <module:vector_form axi_linear="0" axi_newton="0" i="1" j="2" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * uptval * vval / deltat" planar_newton="0"/>
+        <module:vector_form axi_linear="0" axi_newton="0" i="2" j="1" planar_linear="uptval * vval / deltat" planar_newton="0"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
