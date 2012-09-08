@@ -731,12 +731,11 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
 void SceneViewPost3D::paintParticleTracing()
 {
-    return;
-
     if (!Util::problem()->isSolved()) return;
     if (!m_postHermes->particleTracingIsPrepared()) return;
 
     loadProjection3d(true);
+
     if (m_listParticleTracing == -1)
     {
         m_listParticleTracing = glGenLists(1);
@@ -749,9 +748,9 @@ void SceneViewPost3D::paintParticleTracing()
         double max = qMax(rect.width(), rect.height());
         double depth = max / Util::config()->scalarView3DHeight;
 
-        double3* linVert = m_postHermes->linScalarView().get_vertices();
-        int3* linTris = m_postHermes->linScalarView().get_triangles();
-        int3* linEdges = m_postHermes->linScalarView().get_edges();
+        double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
+        int3* linTris = m_postHermes->linInitialMeshView().get_triangles();
+        int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
         Point point[3];
         double value[3];
 
@@ -771,7 +770,7 @@ void SceneViewPost3D::paintParticleTracing()
         if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -815,7 +814,7 @@ void SceneViewPost3D::paintParticleTracing()
 
             // length
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
@@ -851,7 +850,7 @@ void SceneViewPost3D::paintParticleTracing()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -884,7 +883,7 @@ void SceneViewPost3D::paintParticleTracing()
 
             // symmetry
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
             {
                 // draw only boundary edges
                 if (!linEdges[i][2]) continue;
