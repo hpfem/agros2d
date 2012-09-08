@@ -1188,9 +1188,13 @@ void PostprocessorWidget::doApply()
     int actualTimeStep = selectedTimeStep();
     qDebug() << "actualTimeStep : " << actualTimeStep;
     Util::scene()->setActiveTimeStep(actualTimeStep);
-    Util::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
-    Util::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());
 
+    // todo: this should be revised
+    if(this->selectedField()->adaptivityType() != AdaptivityType_None)
+    {
+        Util::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
+        Util::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());
+    }
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
     {
