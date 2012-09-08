@@ -37,6 +37,15 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;   	    
     {{FUNCTION_NAME}}<Scalar>* clone();
+
+    virtual void setMarkerSource(Marker *marker);
+    virtual void setMarkerTarget(Marker *marker);
+
+private:
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    {{#VARIABLE_TARGET}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 };
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -53,8 +62,16 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone();	
 
+    virtual void setMarkerSource(Marker *marker);
+    virtual void setMarkerTarget(Marker *marker);
+
 private:
     unsigned int j;
+
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    {{#VARIABLE_TARGET}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 };
 {{/VOLUME_VECTOR_SOURCE}}  
 
@@ -70,6 +87,12 @@ public:
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone(); 
+
+    virtual void setMarkerSource(Marker *marker);
+
+private:
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -86,8 +109,13 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone();
 
+    virtual void setMarkerSource(Marker *marker);
+
 private:
     unsigned int j;
+
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_VECTOR_SOURCE}}
 
@@ -105,6 +133,12 @@ public:
     {
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }
+
+    virtual void setMarkerSource(Marker *marker);
+
+private:
+    {{#VARIABLE_SOURCE}}
+    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/EXACT_SOURCE}}
 

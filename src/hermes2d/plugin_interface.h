@@ -101,11 +101,11 @@ public:
     FormAgrosInterface() : m_markerSource(NULL), m_markerTarget(NULL) {}
 
     // source or single marker
-    inline void setMarkerSource(Marker *marker) { m_markerSource = marker; }
+    virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; }
     inline Marker *markerSource() { assert(m_markerSource); return m_markerSource; }
 
     // target marker
-    inline void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
+    virtual inline void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
     inline Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
 
 protected:

@@ -43,7 +43,7 @@ Value Marker::value(QString id)
     return Value();
 }
 
-const QMap<QString, Value> Marker::values() const
+const QHash<QString, Value> Marker::values() const
 {
     return m_values;
 }
@@ -68,7 +68,7 @@ QString Marker::fieldId()
 }
 
 Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
-                   QMap<QString, Value> values) : Marker(fieldInfo, name)
+                   QHash<QString, Value> values) : Marker(fieldInfo, name)
 {
     // type
     setType(type);
@@ -86,7 +86,7 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
 }
 
 Material::Material(FieldInfo *fieldInfo, QString name,
-                   QMap<QString, Value> values) : Marker(fieldInfo, name)
+                   QHash<QString, Value> values) : Marker(fieldInfo, name)
 {
     // name and type
     this->m_values = values;

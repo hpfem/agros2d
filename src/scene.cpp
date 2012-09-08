@@ -1828,8 +1828,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
                 eleBoundary.setAttribute("id", iboundary);
                 eleBoundary.setAttribute("type", boundary->type());
 
-                const QMap<QString, Value> values = boundary->values();
-                for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                const QHash<QString, Value> values = boundary->values();
+                for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                     eleBoundary.setAttribute(it.key(), it.value().toString());
 
                 // add edges
@@ -1862,8 +1862,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             eleMaterial.setAttribute("id", imaterial);
             eleMaterial.setAttribute("name", material->name());
 
-            const QMap<QString, Value> values = material->values();
-            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QHash<QString, Value> values = material->values();
+            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                 eleMaterial.setAttribute(it.key(), it.value().toString());
 
             // add labels

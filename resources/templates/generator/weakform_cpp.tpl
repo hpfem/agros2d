@@ -29,7 +29,7 @@
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
     : MatrixFormVolAgros<Scalar>(i, j)
-{
+{       
 }
 
 
@@ -62,8 +62,27 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
+{
+    FormAgrosInterface::setMarkerTarget(marker);
+
+    {{#VARIABLE_TARGET}}
+    {{VARIABLE_SHORT}} = this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
+}
 {{/VOLUME_MATRIX_SOURCE}}
 
+// ***********************************************************************************************************************************
 
 {{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
@@ -85,7 +104,6 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     return result;
 }
 
-
 template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
@@ -103,14 +121,34 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
+{
+    FormAgrosInterface::setMarkerTarget(marker);
+
+    {{#VARIABLE_TARGET}}
+    {{VARIABLE_SHORT}} = this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
+}
 {{/VOLUME_VECTOR_SOURCE}}
+
+// ***********************************************************************************************************************************
 
 {{#SURFACE_MATRIX_SOURCE}}
 
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
     : MatrixFormSurfAgros<Scalar>(i, j)
-{    
+{
 }
 
 template <typename Scalar>
@@ -143,7 +181,18 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
 {{/SURFACE_MATRIX_SOURCE}}
+
+// ***********************************************************************************************************************************
 
 {{#SURFACE_VECTOR_SOURCE}}
 template <typename Scalar>
@@ -183,7 +232,18 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
 {{/SURFACE_VECTOR_SOURCE}}
+
+// ***********************************************************************************************************************************
 
 {{#EXACT_SOURCE}}
 template <typename Scalar>
@@ -204,10 +264,16 @@ void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar& dx, Sca
 {
 
 }
-{{/EXACT_SOURCE}}
 
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
+{{/EXACT_SOURCE}}
 
 {{#SOURCE}}template class {{FUNCTION_NAME}}<double>;
 {{/SOURCE}}
-
-

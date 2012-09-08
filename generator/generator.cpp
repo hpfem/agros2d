@@ -1292,17 +1292,17 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                         QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
                         if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
                             // linear material
-                            exprCpp += QString("this->m_markerSource->value(\"%1\").number()").arg(QString::fromStdString(quantity.id()));
+                            exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
                         else
                         {
                             // nonlinear material
                             if (repl == QString::fromStdString(quantity.shortname().get()))
-                                exprCpp += QString("this->m_markerSource->value(\"%1\").value(%2)").
-                                        arg(QString::fromStdString(quantity.id())).
+                                exprCpp += QString("%1.value(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
                                         arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
                             if (repl == QString::fromStdString("d" + quantity.shortname().get()))
-                                exprCpp += QString("this->m_markerSource->value(\"%1\").derivative(%2)").
-                                        arg(QString::fromStdString(quantity.id())).
+                                exprCpp += QString("%1.derivative(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
                                         arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
                         }
 
@@ -1318,8 +1318,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                         if (repl == QString::fromStdString(quantity.shortname().get()))
                         {
                             // nonlinear material
-                            exprCpp += QString("this->m_markerSource->value(\"%1\").value()").
-                                    arg(QString::fromStdString(quantity.id()));
+                            exprCpp += QString("%1.value()").
+                                    arg(QString::fromStdString(quantity.shortname().get()));
                             isReplaced = true;
                         }
                 }
@@ -1846,17 +1846,17 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                         QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
                         if (nonlinearExpr.isEmpty())
                             // linear material
-                            exprCpp += QString("this->m_markerSource->value(\"%1\").number()").arg(QString::fromStdString(quantity.id()));
+                            exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
                         else
                         {
                             // nonlinear material
                             if (repl == QString::fromStdString(quantity.shortname().get()))
-                                exprCpp += QString("this->m_markerSource->value(\"%1\").value(%2)").
-                                        arg(QString::fromStdString(quantity.id())).
+                                exprCpp += QString("%1.value(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
                                         arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
                             if (repl == QString::fromStdString("d" + quantity.shortname().get()))
-                                exprCpp += QString("this->m_markerSource->value(\"%1\").derivative(%2)").
-                                        arg(QString::fromStdString(quantity.id())).
+                                exprCpp += QString("%1.derivative(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
                                         arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
                         }
 
@@ -1872,17 +1872,17 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                         QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
                         if (nonlinearExpr.isEmpty())
                             // linear material
-                            exprCpp += QString("this->m_markerTarget->value(\"%1\").number()").arg(QString::fromStdString(quantity.id()));
+                            exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
                         else
                         {
                             // nonlinear material
                             if (repl == QString::fromStdString(quantity.shortname().get()))
-                                exprCpp += QString("this->m_markerTarget->value(\"%1\").value(%2)").
-                                        arg(QString::fromStdString(quantity.id())).
+                                exprCpp += QString("%1.value(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
                                         arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
-                            if (repl == QString::fromStdString("d" + quantity.id()))
-                                exprCpp += QString("this->m_markerTarget->value(\"%1\").derivative(%2)").
-                                        arg(QString::fromStdString(quantity.id())).
+                            if (repl == QString::fromStdString("d" + quantity.shortname().get()))
+                                exprCpp += QString("%1.derivative(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
                                         arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
                         }
 

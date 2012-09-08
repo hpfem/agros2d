@@ -183,8 +183,8 @@ QString createPythonFromModel()
             Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->type());
 
             QString variables = "{";
-            const QMap<QString, Value> values = boundary->values();
-            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QHash<QString, Value> values = boundary->values();
+            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
                     if (variable->id() == it.key())
@@ -207,8 +207,8 @@ QString createPythonFromModel()
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const QMap<QString, Value> values = material->values();
-            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QHash<QString, Value> values = material->values();
+            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 if (it.value().hasTable())
                 {
@@ -641,7 +641,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
         throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
 
     // browse boundary parameters
-    QMap<QString, Value> values;
+    QHash<QString, Value> values;
     for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
@@ -717,7 +717,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
     }
 
     // browse material parameters
-    QMap<QString, Value> values;
+    QHash<QString, Value> values;
     for (std::map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
