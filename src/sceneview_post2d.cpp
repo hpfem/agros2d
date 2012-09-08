@@ -229,7 +229,7 @@ void SceneViewPost2D::paintGL()
         if (Util::config()->showScalarView && Util::config()->showScalarColorBar)
             paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
         if (Util::config()->showParticleView && Util::config()->particleColorByVelocity)
-            paintParticleTracingColorBar(m_particleTracingVelocityMin, m_particleTracingVelocityMax);
+            paintParticleTracingColorBar(m_postHermes->particleTracingVelocityMin(), m_postHermes->particleTracingVelocityMax());
     }
 
     // rulers
@@ -553,33 +553,6 @@ void SceneViewPost2D::paintParticleTracing()
         if (bound < EPS_ZERO)
             return;
 
-        m_particleTracingVelocityMin = numeric_limits<double>::max();
-        m_particleTracingVelocityMax = -numeric_limits<double>::max();
-
-        QList<QList<Point3> > positionsList;
-        QList<QList<Point3> > velocitiesList;
-
-        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
-        {
-            // position and velocity cache
-            QList<Point3> positions;
-            QList<Point3> velocities;
-
-            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
-
-            // velocity min and max value
-            for (int i = 0; i < velocities.length(); i++)
-            {
-                double velocity = velocities[i].magnitude();
-
-                if (velocity < m_particleTracingVelocityMin) m_particleTracingVelocityMin = velocity;
-                if (velocity > m_particleTracingVelocityMax) m_particleTracingVelocityMax = velocity;
-            }
-
-            positionsList.append(positions);
-            velocitiesList.append(velocities);
-        }
-
         // visualization
         for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
         {
@@ -587,7 +560,7 @@ void SceneViewPost2D::paintParticleTracing()
             glPointSize(Util::config()->nodeSize * 1.2);
             glColor3d(0.0, 0.0, 0.0);
             glBegin(GL_POINTS);
-            glVertex2d(positionsList[k][0].x, positionsList[k][0].y);
+            glVertex2d(m_postHermes->particleTracingPositionsList()[k][0].x, m_postHermes->particleTracingPositionsList()[k][0].y);
             glEnd();
 
             // color
@@ -606,15 +579,15 @@ void SceneViewPost2D::paintParticleTracing()
             // lines
             glLineWidth(2.0);
             glBegin(GL_LINES);
-            for (int i = 0; i < positionsList[k].length() - 1; i++)
+            for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
             {
                 if (Util::config()->particleColorByVelocity)
-                    glColor3d(1.0 - 0.8 * (velocitiesList[k][i].magnitude() - m_particleTracingVelocityMin) / (m_particleTracingVelocityMax - m_particleTracingVelocityMin),
-                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - m_particleTracingVelocityMin) / (m_particleTracingVelocityMax - m_particleTracingVelocityMin),
-                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - m_particleTracingVelocityMin) / (m_particleTracingVelocityMax - m_particleTracingVelocityMin));
+                    glColor3d(1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()),
+                              1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()),
+                              1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()));
 
-                glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
-                glVertex2d(positionsList[k][i+1].x, positionsList[k][i+1].y);
+                glVertex2d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y);
+                glVertex2d(m_postHermes->particleTracingPositionsList()[k][i+1].x, m_postHermes->particleTracingPositionsList()[k][i+1].y);
             }
             glEnd();
 
@@ -627,22 +600,13 @@ void SceneViewPost2D::paintParticleTracing()
 
                 glPointSize(Util::config()->nodeSize * 4.0/5.0);
                 glBegin(GL_POINTS);
-                for (int i = 0; i < positionsList[k].length() - 1; i++)
+                for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
                 {
-                    glVertex2d(positionsList[k][i].x, positionsList[k][i].y);
+                    glVertex2d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y);
                 }
                 glEnd();
             }
         }
-
-        // clear position and velocity cache
-        foreach (QList<Point3> positions, positionsList)
-            positions.clear();
-        positionsList.clear();
-
-        foreach (QList<Point3> velocities, velocitiesList)
-            velocities.clear();
-        velocitiesList.clear();
 
         glDisable(GL_POLYGON_OFFSET_FILL);
 

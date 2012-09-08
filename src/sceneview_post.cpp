@@ -250,6 +250,51 @@ void PostHermes::processParticleTracing()
     {
         Util::log()->printMessage(tr("PostView"), tr("particle view"));
 
+        // clear lists
+        foreach (QList<Point3> list, m_particleTracingPositionsList)
+            list.clear();
+        m_particleTracingPositionsList.clear();
+
+        foreach (QList<Point3> list, m_particleTracingVelocitiesList)
+            list.clear();
+        m_particleTracingVelocitiesList.clear();
+
+        m_particleTracingVelocityMin =  numeric_limits<double>::max();
+        m_particleTracingVelocityMax = -numeric_limits<double>::max();
+
+        m_particleTracingPositionMin =  numeric_limits<double>::max();
+        m_particleTracingPositionMax = -numeric_limits<double>::max();
+
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        {
+            // position and velocity cache
+            QList<Point3> positions;
+            QList<Point3> velocities;
+
+            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
+
+            m_particleTracingPositionsList.append(positions);
+            m_particleTracingVelocitiesList.append(velocities);
+
+            // velocity min and max value
+            for (int i = 0; i < velocities.length(); i++)
+            {
+                double velocity = velocities[i].magnitude();
+
+                if (velocity < m_particleTracingVelocityMin) m_particleTracingVelocityMin = velocity;
+                if (velocity > m_particleTracingVelocityMax) m_particleTracingVelocityMax = velocity;
+            }
+
+            // position min and max value
+            for (int i = 0; i < positions.length(); i++)
+            {
+                double position = positions[i].z;
+
+                if (position < m_particleTracingPositionMin) m_particleTracingPositionMin = position;
+                if (position > m_particleTracingPositionMax) m_particleTracingPositionMax = position;
+            }
+        }
+
         m_particleTracingIsPrepared = true;
     }
 }

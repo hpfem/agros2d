@@ -113,7 +113,7 @@ void SceneViewPost3D::paintGL()
             paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
 
         if (Util::config()->showParticleView && Util::config()->particleColorByVelocity)
-            paintParticleTracingColorBar(m_particleTracingVelocityMin, m_particleTracingVelocityMax);
+            paintParticleTracingColorBar(m_postHermes->particleTracingVelocityMin(), m_postHermes->particleTracingVelocityMax());
     }
 
     switch (Util::config()->showPost3D)
@@ -731,6 +731,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
 void SceneViewPost3D::paintParticleTracing()
 {
+    return;
+
     if (!Util::problem()->isSolved()) return;
     if (!m_postHermes->particleTracingIsPrepared()) return;
 
@@ -1050,43 +1052,11 @@ void SceneViewPost3D::paintParticleTracing()
             glLineWidth(1.0);
         }
 
-        double velocityMin =  numeric_limits<double>::max();
-        double velocityMax = -numeric_limits<double>::max();
+        double velocityMin = m_postHermes->particleTracingVelocityMin();
+        double velocityMax = m_postHermes->particleTracingVelocityMax();
 
-        double positionMin =  numeric_limits<double>::max();
-        double positionMax = -numeric_limits<double>::max();
-
-        QList<QList<Point3> > positionsList;
-        QList<QList<Point3> > velocitiesList;
-
-        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
-        {
-            // position and velocity cache
-            QList<Point3> positions;
-            QList<Point3> velocities;
-
-            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
-
-            // velocity min and max value
-            for (int i = 0; i < velocities.length(); i++)
-            {
-                double velocity = velocities[i].magnitude();
-
-                if (velocity < velocityMin) velocityMin = velocity;
-                if (velocity > velocityMax) velocityMax = velocity;
-            }
-
-            for (int i = 0; i < positions.length(); i++)
-            {
-                double position = positions[i].z;
-
-                if (position < positionMin) positionMin = position;
-                if (position > positionMax) positionMax = position;
-            }
-
-            positionsList.append(positions);
-            velocitiesList.append(velocities);
-        }
+        double positionMin = m_postHermes->particleTracingPositionMin();
+        double positionMax = m_postHermes->particleTracingPositionMax();
 
         if ((positionMax - positionMin) < EPS_ZERO)
         {
@@ -1102,9 +1072,9 @@ void SceneViewPost3D::paintParticleTracing()
             glColor3d(0.0, 0.0, 0.0);
             glBegin(GL_POINTS);
             if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
-                glVertex3d(positionsList[k][0].x, positionsList[k][0].y, -depth/2.0 + (positionsList[k][0].z - positionMin) * depth/(positionMax - positionMin));
+                glVertex3d(m_postHermes->particleTracingPositionsList()[k][0].x, m_postHermes->particleTracingPositionsList()[k][0].y, -depth/2.0 + (m_postHermes->particleTracingPositionsList()[k][0].z - positionMin) * depth/(positionMax - positionMin));
             else
-                glVertex3d(positionsList[k][0].x * cos(positionsList[k][0].z), positionsList[k][0].y, positionsList[k][0].x * sin(positionsList[k][0].z));
+                glVertex3d(m_postHermes->particleTracingPositionsList()[k][0].x * cos(m_postHermes->particleTracingPositionsList()[k][0].z), m_postHermes->particleTracingPositionsList()[k][0].y, m_postHermes->particleTracingPositionsList()[k][0].x * sin(m_postHermes->particleTracingPositionsList()[k][0].z));
             glEnd();
 
             // color
@@ -1123,22 +1093,22 @@ void SceneViewPost3D::paintParticleTracing()
             // lines
             glLineWidth(2.0);
             glBegin(GL_LINES);
-            for (int i = 0; i < positionsList[k].length() - 1; i++)
+            for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
             {
                 if (Util::config()->particleColorByVelocity)
-                    glColor3d(1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
-                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
-                              1.0 - 0.8 * (velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
+                    glColor3d(1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                              1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                              1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
 
                 if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
                 {
-                    glVertex3d(positionsList[k][i].x, positionsList[k][i].y, -depth/2.0 + (positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
-                    glVertex3d(positionsList[k][i+1].x, positionsList[k][i+1].y, -depth/2.0 + (positionsList[k][i+1].z - positionMin) * depth/(positionMax - positionMin));
+                    glVertex3d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y, -depth/2.0 + (m_postHermes->particleTracingPositionsList()[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                    glVertex3d(m_postHermes->particleTracingPositionsList()[k][i+1].x, m_postHermes->particleTracingPositionsList()[k][i+1].y, -depth/2.0 + (m_postHermes->particleTracingPositionsList()[k][i+1].z - positionMin) * depth/(positionMax - positionMin));
                 }
                 else
                 {
-                    glVertex3d(positionsList[k][i].x * cos(positionsList[k][i].z), positionsList[k][i].y, positionsList[k][i].x * sin(positionsList[k][i].z));
-                    glVertex3d(positionsList[k][i+1].x * cos(positionsList[k][i+1].z), positionsList[k][i+1].y, positionsList[k][i+1].x * sin(positionsList[k][i+1].z));
+                    glVertex3d(m_postHermes->particleTracingPositionsList()[k][i].x * cos(m_postHermes->particleTracingPositionsList()[k][i].z), m_postHermes->particleTracingPositionsList()[k][i].y, m_postHermes->particleTracingPositionsList()[k][i].x * sin(m_postHermes->particleTracingPositionsList()[k][i].z));
+                    glVertex3d(m_postHermes->particleTracingPositionsList()[k][i+1].x * cos(m_postHermes->particleTracingPositionsList()[k][i+1].z), m_postHermes->particleTracingPositionsList()[k][i+1].y, m_postHermes->particleTracingPositionsList()[k][i+1].x * sin(m_postHermes->particleTracingPositionsList()[k][i+1].z));
                 }
             }
             glEnd();
@@ -1152,25 +1122,16 @@ void SceneViewPost3D::paintParticleTracing()
 
                 glPointSize(Util::config()->nodeSize * 3.0/5.0);
                 glBegin(GL_POINTS);
-                for (int i = 0; i < positionsList[k].length() - 1; i++)
+                for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
                 {
                     if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
-                        glVertex3d(positionsList[k][i].x, positionsList[k][i].y, -depth/2.0 + (positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                        glVertex3d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y, -depth/2.0 + (m_postHermes->particleTracingPositionsList()[k][i].z - positionMin) * depth/(positionMax - positionMin));
                     else
-                        glVertex3d(positionsList[k][i].x * cos(positionsList[k][i].z), positionsList[k][i].y, positionsList[k][i].x * sin(positionsList[k][i].z));
+                        glVertex3d(m_postHermes->particleTracingPositionsList()[k][i].x * cos(m_postHermes->particleTracingPositionsList()[k][i].z), m_postHermes->particleTracingPositionsList()[k][i].y, m_postHermes->particleTracingPositionsList()[k][i].x * sin(m_postHermes->particleTracingPositionsList()[k][i].z));
                 }
                 glEnd();
             }
         }
-
-        // clear position and velocity cache
-        foreach (QList<Point3> positions, positionsList)
-            positions.clear();
-        positionsList.clear();
-
-        foreach (QList<Point3> velocities, velocitiesList)
-            velocities.clear();
-        velocitiesList.clear();
 
         glDisable(GL_DEPTH_TEST);
         glPopMatrix();

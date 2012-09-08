@@ -58,7 +58,6 @@ SOURCES += util.cpp \
     sceneview_common.cpp \
     sceneview_common2d.cpp \
     sceneview_common3d.cpp \
-    sceneview_blank.cpp \
     sceneview_mesh.cpp \
     sceneview_geometry.cpp \
     sceneview_post.cpp \
@@ -145,7 +144,6 @@ HEADERS += util.h \
     sceneview_common2d.h \
     sceneview_common3d.h \
     sceneview_geometry.h \
-    sceneview_blank.h \
     sceneview_mesh.h \
     sceneview_post.h \
     sceneview_post2d.h \

@@ -57,6 +57,12 @@ public:
 
     // particle tracing
     inline bool particleTracingIsPrepared() { return m_particleTracingIsPrepared; }
+    inline QList<QList<Point3> > particleTracingPositionsList() const { return m_particleTracingPositionsList; }
+    inline QList<QList<Point3> > particleTracingVelocitiesList() const { return m_particleTracingVelocitiesList; }
+    inline double particleTracingPositionMin() { return m_particleTracingPositionMin; }
+    inline double particleTracingPositionMax() { return m_particleTracingPositionMax; }
+    inline double particleTracingVelocityMin() { return m_particleTracingVelocityMin; }
+    inline double particleTracingVelocityMax() { return m_particleTracingVelocityMax; }
 
 signals:
     void processed();
@@ -92,6 +98,13 @@ private:
 
     // particle tracing
     bool m_particleTracingIsPrepared;
+    QList<QList<Point3> > m_particleTracingPositionsList;
+    QList<QList<Point3> > m_particleTracingVelocitiesList;
+    double m_particleTracingPositionMin;
+    double m_particleTracingPositionMax;
+    double m_particleTracingVelocityMin;
+    double m_particleTracingVelocityMax;
+
 
 private slots:
     void processMeshed();
@@ -135,10 +148,6 @@ protected:
     void paletteCreate(int texture);
     void paletteFilter(int texture);
     void paletteUpdateTexAdjust();
-
-    // particle tracing
-    double m_particleTracingVelocityMin;
-    double m_particleTracingVelocityMax;
 
 public slots:
     void timeStepChanged(bool showViewProgress = false);

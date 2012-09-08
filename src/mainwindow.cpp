@@ -28,7 +28,6 @@
 #include "scenebasic.h"
 #include "sceneview_common.h"
 #include "sceneview_geometry.h"
-#include "sceneview_blank.h"
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
@@ -75,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewMesh = new SceneViewMesh(postHermes, this);
     sceneViewPost2D = new SceneViewPost2D(postHermes, this);
     sceneViewPost3D = new SceneViewPost3D(postHermes, this);
-    sceneViewBlank = new SceneViewBlank(this);
+    sceneViewBlank = new QLabel("TODO");
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
@@ -109,12 +108,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(postprocessorWidget, SIGNAL(apply()), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewPreprocessor, SLOT(refresh()));
-
-    // blank
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewBlank, SLOT(refresh()));
-    connect(problemWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
 
     // preprocessor
     connect(problemWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
@@ -159,7 +152,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
-    sceneViewBlank->clear();
     sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
@@ -910,7 +902,6 @@ void MainWindow::doDocumentNew()
         Util::problem()->addField(fieldInfo);
 
         problemWidget->actProperties->trigger();
-        sceneViewBlank->doZoomBestFit();
         sceneViewPreprocessor->doZoomBestFit();
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
@@ -948,7 +939,6 @@ void MainWindow::doDocumentOpen(const QString &fileName)
                 setRecentFiles();
 
                 problemWidget->actProperties->trigger();
-                sceneViewBlank->doZoomBestFit();
                 sceneViewPreprocessor->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();
                 sceneViewPost2D->doZoomBestFit();
@@ -1078,12 +1068,6 @@ void MainWindow::doDocumentClose()
     */
 
     Util::scene()->clear();
-    sceneViewBlank->clear();
-    sceneViewPreprocessor->clear();
-    sceneViewMesh->clear();
-    sceneViewPost2D->clear();
-    sceneViewPost3D->clear();
-    Util::scene()->refresh();
 
     sceneViewPreprocessor->actOperateOnNodes->trigger();
     sceneViewPreprocessor->doZoomBestFit();
@@ -1433,7 +1417,6 @@ void MainWindow::setControls()
     // set controls
     Util::scene()->actTransform->setEnabled(false);
 
-    sceneViewBlank->actSceneZoomRegion = NULL;
     sceneViewPreprocessor->actSceneZoomRegion = NULL;
     sceneViewMesh->actSceneZoomRegion = NULL;
     sceneViewPost2D->actSceneZoomRegion = NULL;
@@ -1455,11 +1438,6 @@ void MainWindow::setControls()
     {
         tabViewLayout->setCurrentWidget(sceneViewInfoWidget);
         tabControlsLayout->setCurrentWidget(problemWidget);
-
-        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
-        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
-        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
-        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
     if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
     {
@@ -1512,11 +1490,6 @@ void MainWindow::setControls()
     {
         tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
         tabControlsLayout->setCurrentWidget(settingsWidget);
-
-        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
-        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
-        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
-        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
 
     actDocumentExportMeshFile->setEnabled(Util::problem()->isMeshed());
