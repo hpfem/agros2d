@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef {{ID}}_WEAKFORM_H
-#define {{ID}}_WEAKFORM_H
+#ifndef {{CLASS}}_WEAKFORM_H
+#define {{CLASS}}_WEAKFORM_H
 
 #include "util.h"
 #include <weakform/weakform.h>
@@ -30,22 +30,13 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,                              
-                      Material *materialSource,
-                      Material *materialTarget);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;   	    
     {{FUNCTION_NAME}}<Scalar>* clone();
-private:
-    Material *m_materialSource;
-    Material *m_materialTarget;	
-
-    {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
-
 };
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -54,21 +45,15 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public VectorFormVolAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,                              
-                      Material *materialSource,
-                      Material *materialTarget);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone();	
-private:		
-    Material *m_materialSource;
-    Material *m_materialTarget;	
-    {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 
+private:
     unsigned int j;
 };
 {{/VOLUME_VECTOR_SOURCE}}  
@@ -78,19 +63,13 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormSurfAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                      Boundary *boundary);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone(); 
-private:
-    Boundary *m_boundarySource;
-    {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
-	
 };
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -99,19 +78,15 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public VectorFormSurfAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                      Boundary *boundary);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone();
-private:
-    Boundary *m_boundarySource;
-    {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}	
 
+private:
     unsigned int j;
 };
 {{/SURFACE_VECTOR_SOURCE}}
@@ -121,7 +96,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public ExactSolutionScalarAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
+    {{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh);
 
     Scalar value(double x, double y) const;
     void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;
@@ -130,11 +105,7 @@ public:
     {
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }
-private:
-    Boundary *m_boundarySource;  
-    {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}		
 };
 {{/EXACT_SOURCE}}
 
-#endif
+#endif // {{CLASS}}_INTERFACE_H

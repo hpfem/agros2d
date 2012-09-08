@@ -23,41 +23,29 @@
 #include <QObject>
 
 #include "util.h"
-#include "hermes2d.h"
-
-#include "scene.h"
-#include "scenebasic.h"
-#include "scenemarker.h"
-#include "scenemarkerdialog.h"
-
-#include "hermes2d/marker.h"
-
 #include "hermes2d/plugin_interface.h"
 
+class FieldInfo;
+class Boundary;
+
 class {{CLASS}}Interface : public QObject, public PluginInterface
-{
+{    
     Q_OBJECT
     Q_INTERFACES(PluginInterface)
 
 public:
-
     virtual ~{{CLASS}}Interface() {}
 
     inline virtual QString fieldId() { return "{{ID}}"; }
 
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j,
-                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ );
+    // weakforms
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ );
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ);
+    // TODO: remove Boundary from matrixFormSurf(...) and vectorFormSurf(...)
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) { assert(0); }
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) { assert(0); }
 
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j,
-                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ);
-
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                    Boundary *boundary, int offsetI, int offsetJ) { assert(0); }
-
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                                    Boundary *boundary, int offsetI, int offsetJ) { assert(0); }
-
-    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) { assert(0); }
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh) { assert(0); }
 
     // postprocessor
     // filter

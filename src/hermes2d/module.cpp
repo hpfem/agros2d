@@ -98,7 +98,7 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
-                                            Marker* marker, Material *markerSecond,
+                                            Marker* markerSource, Material *markerTarget,
                                             int offsetI, int offsetJ)
 {
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
@@ -112,20 +112,43 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 
     if (type == WeakForm_MatVol)
     {
-        weakForm = plugin->matrixFormVol(problemId, form->i, form->j, static_cast<Material *>(marker), markerSecond, offsetI, offsetJ);
-        static_cast<Hermes::Hermes2D::MatrixFormVol<double> *>(weakForm)->setSymFlag(form->sym);
+        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form->i, form->j, offsetI, offsetJ);
+        // symmetric flag
+        weakFormAgros->setSymFlag(form->sym);
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+        // target marker
+        weakFormAgros->setMarkerTarget(markerTarget);
+
+        weakForm = weakFormAgros;
     }
     else if (type == WeakForm_MatSurf)
     {
-        weakForm = plugin->matrixFormSurf(problemId, form->i, form->j, static_cast<Boundary *>(marker), offsetI, offsetJ);
+        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
+                                                                            static_cast<Boundary *>(markerSource));
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+
+        weakForm = weakFormAgros;
     }
     else if (type == WeakForm_VecVol)
     {
-        weakForm = plugin->vectorFormVol(problemId, form->i, form->j, static_cast<Material *>(marker), markerSecond, offsetI, offsetJ);
+        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form->i, form->j, offsetI, offsetJ);
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+        // target marker
+        weakFormAgros->setMarkerTarget(markerTarget);
+
+        weakForm = weakFormAgros;
     }
     else if (type == WeakForm_VecSurf)
     {
-        weakForm = plugin->vectorFormSurf(problemId, form->i, form->j, static_cast<Boundary *>(marker), offsetI, offsetJ);
+       VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
+                                                                           static_cast<Boundary *>(markerSource));
+       // source marker
+       weakFormAgros->setMarkerSource(markerSource);
+
+       weakForm = weakFormAgros;
     }
 
     if (!weakForm)

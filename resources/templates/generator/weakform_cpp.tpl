@@ -27,13 +27,9 @@
  		
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                 
-                                             Material *materialSource,
-                                             Material *materialTarget)
-    : MatrixFormVolAgros<Scalar>(i, j), m_materialSource(materialSource), m_materialTarget(materialTarget)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
+    : MatrixFormVolAgros<Scalar>(i, j)
 {
-	{{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 
 
@@ -71,13 +67,9 @@ template <typename Scalar>
 
 {{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                 
-                                             Material *materialSource,
-                                             Material *materialTarget)
-    : VectorFormVolAgros<Scalar>(i), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
+    : VectorFormVolAgros<Scalar>(i), j(j)
 {
-	{{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -116,12 +108,9 @@ template <typename Scalar>
 {{#SURFACE_MATRIX_SOURCE}}
 
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                    
-                                             Boundary *boundary)
-    : MatrixFormSurfAgros<Scalar>(i, j), m_boundarySource(boundary)
-{
-    {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
+    : MatrixFormSurfAgros<Scalar>(i, j)
+{    
 }
 
 template <typename Scalar>
@@ -158,13 +147,10 @@ template <typename Scalar>
 
 {{#SURFACE_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                                                   Boundary *boundary)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
 
-    : VectorFormSurfAgros<Scalar>(i), m_boundarySource(boundary), j(j)
+    : VectorFormSurfAgros<Scalar>(i), j(j)
 {
-	{{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -201,13 +187,10 @@ template <typename Scalar>
 
 {{#EXACT_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
-    : ExactSolutionScalarAgros<Scalar>(mesh), m_boundarySource(boundary)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh)
+    : ExactSolutionScalarAgros<Scalar>(mesh)
 {
-	{{#VARIABLE_SOURCE}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
-
 
 template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(double x, double y) const
