@@ -143,12 +143,12 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     }
     else if (type == WeakForm_VecSurf)
     {
-       VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
-                                                                           static_cast<Boundary *>(markerSource));
-       // source marker
-       weakFormAgros->setMarkerSource(markerSource);
+        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
+                                                                            static_cast<Boundary *>(markerSource));
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
 
-       weakForm = weakFormAgros;
+        weakForm = weakFormAgros;
     }
 
     if (!weakForm)
@@ -493,11 +493,27 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
             if (old.id().toStdString() == qty.id())
             {
                 bool isTimeDep = false;
-                if (qty.dependence().present())
-                    isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
+                bool isSpaceDep = false;
 
-                Module::BoundaryTypeVariable *var = new Module::BoundaryTypeVariable(
-                            old.id(), old.shortname(), old.defaultValue(), isTimeDep);
+                if (qty.dependence().present())
+                {
+                    if (QString::fromStdString(qty.dependence().get()) == "time")
+                    {
+                        isTimeDep = true;
+                    }
+                    else if (QString::fromStdString(qty.dependence().get()) == "space")
+                    {
+                        isSpaceDep = true;
+                    }
+                    else if (QString::fromStdString(qty.dependence().get()) == "time-space")
+                    {
+                        isTimeDep = true;
+                        isSpaceDep = true;
+                    }
+                }
+
+                Module::BoundaryTypeVariable *var
+                        = new Module::BoundaryTypeVariable(old.id(), old.shortname(), old.defaultValue(), isTimeDep, isSpaceDep);
 
                 m_variables.append(var);
             }
@@ -715,7 +731,8 @@ void Module::BasicModule::read(const QString &filename)
     // TODO: (Franta)
     foreach (Module::BoundaryTypeVariable variable, boundaryTypeVariables)
         m_boundaryTypeVariables.append(new Module::BoundaryTypeVariable(variable.id(), variable.shortname(),
-                                                                        variable.defaultValue(), variable.isTimeDep()));
+                                                                        variable.defaultValue(),
+                                                                        variable.isTimeDep(), variable.isSpaceDep()));
 
     boundaryTypeVariables.clear();
 

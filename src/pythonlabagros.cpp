@@ -190,7 +190,7 @@ QString createPythonFromModel()
                     if (variable->id() == it.key())
                         variables += QString("\"%1\" : %2, ").
                                 arg(it.key()).
-                                arg(it.value().toString());
+                                arg(it.value().text());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -1882,7 +1882,7 @@ void PyParticleTracing::setReflectOnBoundary(int reflect)
 void PyParticleTracing::setCoefficientOfRestitution(double coeff)
 {
     if (coeff < 0.0)
-       throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
+        throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
 
     Util::config()->particleCoefficientOfRestitution = coeff;
     Util::scene()->refresh();
@@ -1891,7 +1891,7 @@ void PyParticleTracing::setCoefficientOfRestitution(double coeff)
 void PyParticleTracing::setMaximumTolerance(double tolerance)
 {
     if (tolerance < 0.0)
-       throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
+        throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
 
     Util::config()->particleMaximumRelativeError = tolerance;
     Util::scene()->refresh();

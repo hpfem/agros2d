@@ -399,6 +399,10 @@ void Problem::solveAction()
 
     Util::scene()->blockSignals(true);
 
+    Util::scene()->setActiveAdaptivityStep(0);
+    Util::scene()->setActiveTimeStep(0);
+    Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
+
     solveInit();
 
     assert(isMeshed());
@@ -406,10 +410,6 @@ void Problem::solveAction()
     QMap<Block*, Solver<double>* > solvers;
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
-
-    Util::scene()->setActiveAdaptivityStep(0);
-    Util::scene()->setActiveTimeStep(0);
-    Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
 
     foreach (Block* block, m_blocks)
     {

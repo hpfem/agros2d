@@ -68,8 +68,8 @@
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="flow_velocity">
         <module:boundary id="flow_velocity" name="Velocity">
-          <module:quantity id="flow_velocity_x"/>
-          <module:quantity id="flow_velocity_y"/>
+          <module:quantity dependence="space" id="flow_velocity_x"/>
+          <module:quantity dependence="space" id="flow_velocity_y"/>
           <module:essential_form axi_linear="fl_vx" axi_newton="fl_vx" i="1" planar_linear="fl_vx" planar_newton="fl_vx"/>
           <module:essential_form axi_linear="fl_vy" axi_newton="fl_vy" i="2" planar_linear="fl_vy" planar_newton="fl_vy"/>
         </module:boundary>
@@ -78,14 +78,14 @@
           <module:vector_form axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
         <module:boundary id="fluid_pressure" name="Pressure">
-          <module:quantity id="flow_pressure"/>
+          <module:quantity dependence="space" id="flow_pressure"/>
           <module:essential_form axi_linear="fl_p" axi_newton="fl_p" i="3" planar_linear="fl_p" planar_newton="fl_p"/>
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="flow_velocity">
         <module:boundary id="flow_velocity" name="Velocity">
-          <module:quantity id="flow_velocity_x"/>
-          <module:quantity id="flow_velocity_y"/>
+          <module:quantity dependence="time-space" id="flow_velocity_x"/>
+          <module:quantity dependence="time-space" id="flow_velocity_y"/>
           <module:essential_form axi_linear="fl_vx" axi_newton="fl_vx" i="1" planar_linear="fl_vx" planar_newton="fl_vx"/>
           <module:essential_form axi_linear="fl_vy" axi_newton="fl_vy" i="2" planar_linear="fl_vy" planar_newton="fl_vy"/>
         </module:boundary>

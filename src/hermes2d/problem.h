@@ -164,9 +164,9 @@ public:
 
     inline QTime timeElapsed() const { return m_timeElapsed; }
 
-    double actualTime() const { return m_actualTime; }
-    void setActualTime(double time) { m_actualTime = time; }
-    void addToActualTime(double time) { m_actualTime += time; }
+    inline double actualTime() const { return m_actualTime; }
+    inline void setActualTime(double time) { m_actualTime = time; }
+    inline void addToActualTime(double time) { m_actualTime += time; }
 
 private:
     ProblemConfig *m_config;

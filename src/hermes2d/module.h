@@ -114,8 +114,8 @@ private:
     void registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker *marker);
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
-//    void registerFormOld(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
-//                         SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo);
+    //    void registerFormOld(WeakFormKind type, Field *field, QString area, ParserFormExpression *form, int offsetI, int offsetJ,
+    //                         SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
     Block* m_block;
@@ -249,10 +249,13 @@ private:
 // boundary condition type variable
 struct BoundaryTypeVariable
 {
-    BoundaryTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0), m_isTimeDep(false) {}
+    BoundaryTypeVariable()
+        : m_id(""), m_shortname(""), m_defaultValue(0),
+          m_isTimeDep(false), m_isSpaceDep(false) {}
     BoundaryTypeVariable(const QString &id, QString shortname,
-                         double defaultValue = 0, bool isTimedep = false)
-        : m_id(id), m_shortname(shortname), m_defaultValue(defaultValue), m_isTimeDep(isTimedep) {}
+                         double defaultValue = 0, bool isTimedep = false, bool isSpaceDep = false)
+        : m_id(id), m_shortname(shortname), m_defaultValue(defaultValue),
+          m_isTimeDep(isTimedep), m_isSpaceDep(isSpaceDep) {}
     BoundaryTypeVariable(XMLModule::quantity quant);
 
     // id
@@ -263,6 +266,8 @@ struct BoundaryTypeVariable
     inline double defaultValue() const { return m_defaultValue; }
     // timedep
     inline bool isTimeDep() const { return m_isTimeDep; }
+    // spacedep
+    inline bool isSpaceDep() const { return m_isSpaceDep; }
 
 private:
     // id
@@ -273,6 +278,8 @@ private:
     double m_defaultValue;
     // timedep
     bool m_isTimeDep;
+    // spacedep
+    bool m_isSpaceDep;
 };
 
 // boundary condition type
@@ -489,7 +496,7 @@ struct BasicModule
 
     // scalar filter
     Hermes::Hermes2D::Filter<double> *viewScalarFilter(Module::LocalVariable *physicFieldVariable,
-                                               PhysicFieldVariableComp physicFieldVariableComp);
+                                                       PhysicFieldVariableComp physicFieldVariableComp);
 
     // variable by name
     LocalVariable *localVariable(const QString &id);

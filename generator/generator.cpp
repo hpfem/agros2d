@@ -880,6 +880,7 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
 
 QString Agros2DGeneratorModule::nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType)
 {
+    // volume
     foreach (XMLModule::weakform_volume wf, m_module->volume().weakforms_volume().weakform_volume())
     {
         if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
@@ -897,6 +898,73 @@ QString Agros2DGeneratorModule::nonlinearExpression(const QString &variable, Ana
                     {
                         if (quantityAnalysis.nonlinearity_axi().present())
                             return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
+                    }
+                }
+            }
+        }
+    }
+
+    // surface
+    foreach (XMLModule::weakform_surface wf, m_module->surface().weakforms_surface().weakform_surface())
+    {
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            foreach (XMLModule::boundary boundary, wf.boundary())
+            {
+                foreach (XMLModule::quantity quantityAnalysis, boundary.quantity())
+                {
+                    if (quantityAnalysis.id() == variable.toStdString())
+                    {
+                        if (coordinateType == CoordinateType_Planar)
+                        {
+                            if (quantityAnalysis.nonlinearity_planar().present())
+                                return QString::fromStdString(quantityAnalysis.nonlinearity_planar().get());
+                        }
+                        else
+                        {
+                            if (quantityAnalysis.nonlinearity_axi().present())
+                                return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return "";
+}
+
+QString Agros2DGeneratorModule::dependence(const QString &variable, AnalysisType analysisType)
+{
+    // volume
+    foreach (XMLModule::weakform_volume wf, m_module->volume().weakforms_volume().weakform_volume())
+    {
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            foreach (XMLModule::quantity quantityAnalysis, wf.quantity())
+            {
+                if (quantityAnalysis.id() == variable.toStdString())
+                {
+                    if (quantityAnalysis.dependence().present())
+                        return QString::fromStdString(quantityAnalysis.dependence().get());
+                }
+            }
+        }
+    }
+
+    // surface
+    foreach (XMLModule::weakform_surface wf, m_module->surface().weakforms_surface().weakform_surface())
+    {
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            foreach (XMLModule::boundary boundary, wf.boundary())
+            {
+                foreach (XMLModule::quantity quantityAnalysis, boundary.quantity())
+                {
+                    if (quantityAnalysis.id() == variable.toStdString())
+                    {
+                        if (quantityAnalysis.dependence().present())
+                            return QString::fromStdString(quantityAnalysis.dependence().get());
                     }
                 }
             }
@@ -1284,30 +1352,36 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             }
 
             // variables
-            foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+            if (!isReplaced)
             {
-                if (quantity.shortname().present())
-                    if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
+                foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+                {
+                    if (quantity.shortname().present())
                     {
-                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
-                        if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
-                            // linear material
-                            exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
-                        else
+                        if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
                         {
-                            // nonlinear material
-                            if (repl == QString::fromStdString(quantity.shortname().get()))
-                                exprCpp += QString("%1.value(%2)").
-                                        arg(QString::fromStdString(quantity.shortname().get())).
-                                        arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
-                            if (repl == QString::fromStdString("d" + quantity.shortname().get()))
-                                exprCpp += QString("%1.derivative(%2)").
-                                        arg(QString::fromStdString(quantity.shortname().get())).
-                                        arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
-                        }
+                            QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
 
-                        isReplaced = true;
+                            if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+                                // linear material
+                                exprCpp += QString("%1.number()").arg(QString::fromStdString(quantity.shortname().get()));
+                            else
+                            {
+                                // nonlinear material
+                                if (repl == QString::fromStdString(quantity.shortname().get()))
+                                    exprCpp += QString("%1.value(%2)").
+                                            arg(QString::fromStdString(quantity.shortname().get())).
+                                            arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
+                                if (repl == QString::fromStdString("d" + quantity.shortname().get()))
+                                    exprCpp += QString("%1.derivative(%2)").
+                                            arg(QString::fromStdString(quantity.shortname().get())).
+                                            arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr));
+                            }
+
+                            isReplaced = true;
+                        }
                     }
+                }
             }
 
             if (!isReplaced)
@@ -1315,13 +1389,34 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                 foreach (XMLModule::quantity quantity, m_module->surface().quantity())
                 {
                     if (quantity.shortname().present())
+                    {
                         if (repl == QString::fromStdString(quantity.shortname().get()))
                         {
-                            // nonlinear material
-                            exprCpp += QString("%1.value()").
-                                    arg(QString::fromStdString(quantity.shortname().get()));
-                            isReplaced = true;
+                            QString dep = dependence(QString::fromStdString(quantity.id()), analysisType);
+
+                            if (dep.isEmpty() || dep == "time")
+                            {
+                                // linear boundary condition
+                                exprCpp += QString("%1.number()").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                                isReplaced = true;
+                            }
+                            else if (dep == "space")
+                            {
+                                // spacedep boundary condition
+                                exprCpp += QString("%1.value(Point(x, y))").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                                isReplaced = true;
+                            }
+                            else if (dep == "time-space")
+                            {
+                                // spacedep boundary condition
+                                exprCpp += QString("%1.value(Util::problem()->actualTime(), Point(x, y))").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                                isReplaced = true;
+                            }
                         }
+                    }
                 }
             }
 
