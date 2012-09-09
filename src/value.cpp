@@ -184,10 +184,13 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
     currentPythonEngine()->blockSignals(true);
 
     // eval time and space
-    if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
-        runPythonExpression(QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y), false);
-    else
-        runPythonExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
+    if (m_fieldInfo)
+    {
+        if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
+            runPythonExpression(QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y), false);
+        else
+            runPythonExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
+    }
 
     // eval expression
     ExpressionResult expressionResult = runPythonExpression(m_text);
@@ -343,7 +346,7 @@ bool ValueLineEdit::evaluate(bool quiet)
             {
                 m_number = val.number();
                 setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                         Util::config()->lineEditValueShowResult);
+                              Util::config()->lineEditValueShowResult);
                 isOk = true;
             }
         }

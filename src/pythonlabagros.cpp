@@ -186,11 +186,9 @@ QString createPythonFromModel()
             const QHash<QString, Value> values = boundary->values();
             for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
-                foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
-                    if (variable->id() == it.key())
-                        variables += QString("\"%1\" : %2, ").
-                                arg(it.key()).
-                                arg(it.value().text());
+                variables += QString("\"%1\" : %2, ").
+                        arg(it.key()).
+                        arg(it.value().text());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
