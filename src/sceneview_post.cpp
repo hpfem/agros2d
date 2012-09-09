@@ -39,6 +39,11 @@
 
 PostHermes::PostHermes()
 {
+    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+
+    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+
     clear();
 }
 
@@ -357,21 +362,6 @@ SceneViewPostInterface::SceneViewPostInterface(PostHermes *postHermes, QWidget *
     : SceneViewCommon(parent),
       m_postHermes(postHermes)
 {
-    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(timeStepChanged()));
-}
-
-void SceneViewPostInterface::timeStepChanged(bool showViewProgress)
-{
-    if (!Util::problem()->isSolving())
-    {
-        // QTime time;
-        // time.start();
-
-        //TODO PROCESS
-        //m_sceneSolution->processView(showViewProgress);
-    }
-
-    // doInvalidated();
 }
 
 const double* SceneViewPostInterface::paletteColor(double x) const

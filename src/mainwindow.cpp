@@ -114,16 +114,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewPreprocessor, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
 
     // post hermes
     connect(problemWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(meshed()), postHermes, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), postHermes, SLOT(refresh()));
-    connect(Util::scene(), SIGNAL(cleared()), postHermes, SLOT(clear()));
     currentPythonEngineAgros()->setPostHermes(postHermes);
 
     // mesh
@@ -135,20 +131,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(showPoint(const Point &)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost3D, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
     // info
     connect(problemWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::scene(), SIGNAL(cleared()), sceneInfoWidget, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(timeStepChanged()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(meshed()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), sceneInfoWidget, SLOT(refresh()));
 
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
@@ -1279,8 +1269,8 @@ void MainWindow::doOptions()
     ConfigDialog configDialog(this);
     if (configDialog.exec())
     {
-        sceneViewPost2D->timeStepChanged(false);
         postHermes->refresh();
+        setControls();
     }
 
     activateWindow();
@@ -1433,6 +1423,11 @@ void MainWindow::setControls()
     actSceneZoomOut->setVisible(showZoom);
     actSceneZoomBestFit->setVisible(showZoom);
     actSceneZoomRegion->setVisible(showZoom);
+
+    // disconnect signals
+    actSceneZoomIn->disconnect();
+    actSceneZoomOut->disconnect();
+    actSceneZoomOut->disconnect();
 
     if (problemWidget->actProperties->isChecked())
     {

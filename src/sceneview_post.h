@@ -149,9 +149,6 @@ protected:
     void paletteFilter(int texture);
     void paletteUpdateTexAdjust();
 
-public slots:
-    void timeStepChanged(bool showViewProgress = false);
-
 protected slots:
     virtual void clearGLLists() {}
 };
