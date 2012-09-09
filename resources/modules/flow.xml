@@ -164,6 +164,12 @@
         <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
         <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
       </module:surfaceintegral>
+      <module:surfaceintegral id="flow_force_x" name="Force X" shortname="Fx" shortname_html="&lt;i>F&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="F_\mathrm{x}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="0" planar="0"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="flow_force_y" name="Force Y" shortname="Fy" shortname_html="&lt;i>F&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="F_\mathrm{x}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="0" planar="0"/>
+      </module:surfaceintegral>
     </module:surfaceintegrals>
     <module:force/>
   </module:postprocessor>
