@@ -1923,13 +1923,19 @@ void PythonEngineAgros::addCustomExtensions()
 
 void PythonEngineAgros::runPythonHeader()
 {
+    QString script;
+
     // global script
     if (!Util::config()->globalScript.isEmpty())
-        PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+        script += Util::config()->globalScript + "\n";
 
     // startup script
     if (!Util::problem()->config()->startupscript().isEmpty())
-        PyRun_String(Util::problem()->config()->startupscript().toStdString().c_str(), Py_file_input, m_dict, m_dict);
+        script += Util::problem()->config()->startupscript() + "\n";
+
+    // run script
+    if (!script.isEmpty())
+         PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 void PythonEngineAgros::doExecutedScript()
