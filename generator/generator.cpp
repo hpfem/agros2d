@@ -1404,8 +1404,6 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 field->SetValue("COORDINATE_TYPE",  Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
                 field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
                 field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype()))).toStdString());
-
-                //field->SetValue("ANALYSIS_TYPE", weakform.analysistype());
                 field->SetValue("ROW_INDEX", QString::number(form.i()).toStdString());
                 field->SetValue("MODULE_ID", m_module->general().id());
 
