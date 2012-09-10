@@ -133,9 +133,6 @@ Util::Util()
 
     initLists();
 
-    // script remote
-    m_scriptEngineRemote = new ScriptEngineRemote();
-
     m_solutionStore = new SolutionStore();
 
     // config

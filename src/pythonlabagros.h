@@ -92,28 +92,6 @@ QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
 ExpressionResult runPythonExpression(const QString &expression, bool returnValue = true);
 
-class ScriptEngineRemote : QObject
-{
-    Q_OBJECT
-public:
-    ScriptEngineRemote();
-    ~ScriptEngineRemote();
-
-private slots:
-    void connected();
-    void readCommand();
-    void disconnected();
-
-    void displayError(QLocalSocket::LocalSocketError socketError);
-
-private:
-    QString command;
-
-    QLocalServer *m_server;
-    QLocalSocket *m_server_socket;
-    QLocalSocket *m_client_socket;
-};
-
 // ************************************************************************************
 
 // problem
