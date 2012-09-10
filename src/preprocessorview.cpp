@@ -52,8 +52,9 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
     // boundary conditions, materials and geometry information
     createControls();
 
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
+    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
 
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
 

@@ -30,13 +30,9 @@
  		
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                 
-                                             Material *materialSource,
-                                             Material *materialTarget)
-    : MatrixFormVolAgros<Scalar>(i, j), m_materialSource(materialSource), m_materialTarget(materialTarget)
-{
-	{{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
+    : MatrixFormVolAgros<Scalar>(i, j)
+{       
 }
 
 
@@ -69,18 +65,33 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
+{
+    FormAgrosInterface::setMarkerTarget(marker);
+
+    {{#VARIABLE_TARGET}}
+    {{VARIABLE_SHORT}} = this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
+}
 {{/VOLUME_MATRIX_SOURCE}}
 
+// ***********************************************************************************************************************************
 
 {{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                 
-                                             Material *materialSource,
-                                             Material *materialTarget)
-    : VectorFormVolAgros<Scalar>(i), m_materialSource(materialSource), m_materialTarget(materialTarget), j(j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
+    : VectorFormVolAgros<Scalar>(i), j(j)
 {
-	{{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_materialSource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -95,7 +106,6 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
     }
     return result;
 }
-
 
 template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
@@ -114,17 +124,34 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
+{
+    FormAgrosInterface::setMarkerTarget(marker);
+
+    {{#VARIABLE_TARGET}}
+    {{VARIABLE_SHORT}} = this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
+}
 {{/VOLUME_VECTOR_SOURCE}}
+
+// ***********************************************************************************************************************************
 
 {{#SURFACE_MATRIX_SOURCE}}
 
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,                                                    
-                                             Boundary *boundary)
-    : MatrixFormSurfAgros<Scalar>(i, j), m_boundarySource(boundary)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
+    : MatrixFormSurfAgros<Scalar>(i, j)
 {
-    {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -157,17 +184,25 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
 {{/SURFACE_MATRIX_SOURCE}}
+
+// ***********************************************************************************************************************************
 
 {{#SURFACE_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j,
-                                                   Boundary *boundary)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
 
-    : VectorFormSurfAgros<Scalar>(i), m_boundarySource(boundary), j(j)
+    : VectorFormSurfAgros<Scalar>(i), j(j)
 {
-	{{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -200,17 +235,25 @@ template <typename Scalar>
 {
     return new {{FUNCTION_NAME}}(*this);
 }
+
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
 {{/SURFACE_VECTOR_SOURCE}}
+
+// ***********************************************************************************************************************************
 
 {{#EXACT_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
-    : ExactSolutionScalarAgros<Scalar>(mesh), m_boundarySource(boundary)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh)
+    : ExactSolutionScalarAgros<Scalar>(mesh)
 {
-	{{#VARIABLE_SOURCE}}
-		{{VARIABLE_SHORT}} = m_boundarySource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
-
 
 template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(double x, double y) const
@@ -224,10 +267,16 @@ void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar& dx, Sca
 {
 
 }
-{{/EXACT_SOURCE}}
 
+template <typename Scalar>
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+{
+    FormAgrosInterface::setMarkerSource(marker);
+
+    {{#VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+}
+{{/EXACT_SOURCE}}
 
 {{#SOURCE}}template class {{FUNCTION_NAME}}<double>;
 {{/SOURCE}}
-
-

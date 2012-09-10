@@ -183,14 +183,12 @@ QString createPythonFromModel()
             Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->type());
 
             QString variables = "{";
-            const QMap<QString, Value> values = boundary->values();
-            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QHash<QString, Value> values = boundary->values();
+            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
-                foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
-                    if (variable->id() == it.key())
-                        variables += QString("\"%1\" : %2, ").
-                                arg(it.key()).
-                                arg(it.value().toString());
+                variables += QString("\"%1\" : %2, ").
+                        arg(it.key()).
+                        arg(it.value().text());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -207,8 +205,8 @@ QString createPythonFromModel()
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const QMap<QString, Value> values = material->values();
-            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QHash<QString, Value> values = material->values();
+            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
             {
                 if (it.value().hasTable())
                 {
@@ -641,7 +639,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
         throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
 
     // browse boundary parameters
-    QMap<QString, Value> values;
+    QHash<QString, Value> values;
     for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
@@ -717,7 +715,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
     }
 
     // browse material parameters
-    QMap<QString, Value> values;
+    QHash<QString, Value> values;
     for (std::map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
@@ -1882,7 +1880,7 @@ void PyParticleTracing::setReflectOnBoundary(int reflect)
 void PyParticleTracing::setCoefficientOfRestitution(double coeff)
 {
     if (coeff < 0.0)
-       throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
+        throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
 
     Util::config()->particleCoefficientOfRestitution = coeff;
     Util::scene()->refresh();
@@ -1891,7 +1889,7 @@ void PyParticleTracing::setCoefficientOfRestitution(double coeff)
 void PyParticleTracing::setMaximumTolerance(double tolerance)
 {
     if (tolerance < 0.0)
-       throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
+        throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
 
     Util::config()->particleMaximumRelativeError = tolerance;
     Util::scene()->refresh();

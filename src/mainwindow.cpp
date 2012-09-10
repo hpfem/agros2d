@@ -28,7 +28,6 @@
 #include "scenebasic.h"
 #include "sceneview_common.h"
 #include "sceneview_geometry.h"
-#include "sceneview_blank.h"
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
@@ -75,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewMesh = new SceneViewMesh(postHermes, this);
     sceneViewPost2D = new SceneViewPost2D(postHermes, this);
     sceneViewPost3D = new SceneViewPost3D(postHermes, this);
-    sceneViewBlank = new SceneViewBlank(this);
+    sceneViewBlank = new QLabel("TODO");
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
@@ -110,27 +109,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewPreprocessor, SLOT(refresh()));
 
-    // blank
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewBlank, SLOT(refresh()));
-    connect(problemWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), sceneViewBlank, SLOT(refresh()));
-
     // preprocessor
     connect(problemWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewPreprocessor, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
 
     // post hermes
     connect(problemWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(meshed()), postHermes, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), postHermes, SLOT(refresh()));
-    connect(Util::scene(), SIGNAL(cleared()), postHermes, SLOT(clear()));
     currentPythonEngineAgros()->setPostHermes(postHermes);
 
     // mesh
@@ -142,24 +131,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(showPoint(const Point &)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost2D, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewPost3D, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
     // info
     connect(problemWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::scene(), SIGNAL(cleared()), sceneInfoWidget, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(timeStepChanged()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(meshed()), sceneInfoWidget, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), sceneInfoWidget, SLOT(refresh()));
 
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
-    sceneViewBlank->clear();
     sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
@@ -910,7 +892,6 @@ void MainWindow::doDocumentNew()
         Util::problem()->addField(fieldInfo);
 
         problemWidget->actProperties->trigger();
-        sceneViewBlank->doZoomBestFit();
         sceneViewPreprocessor->doZoomBestFit();
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
@@ -948,7 +929,6 @@ void MainWindow::doDocumentOpen(const QString &fileName)
                 setRecentFiles();
 
                 problemWidget->actProperties->trigger();
-                sceneViewBlank->doZoomBestFit();
                 sceneViewPreprocessor->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();
                 sceneViewPost2D->doZoomBestFit();
@@ -1078,12 +1058,6 @@ void MainWindow::doDocumentClose()
     */
 
     Util::scene()->clear();
-    sceneViewBlank->clear();
-    sceneViewPreprocessor->clear();
-    sceneViewMesh->clear();
-    sceneViewPost2D->clear();
-    sceneViewPost3D->clear();
-    Util::scene()->refresh();
 
     sceneViewPreprocessor->actOperateOnNodes->trigger();
     sceneViewPreprocessor->doZoomBestFit();
@@ -1295,8 +1269,8 @@ void MainWindow::doOptions()
     ConfigDialog configDialog(this);
     if (configDialog.exec())
     {
-        sceneViewPost2D->timeStepChanged(false);
         postHermes->refresh();
+        setControls();
     }
 
     activateWindow();
@@ -1433,7 +1407,6 @@ void MainWindow::setControls()
     // set controls
     Util::scene()->actTransform->setEnabled(false);
 
-    sceneViewBlank->actSceneZoomRegion = NULL;
     sceneViewPreprocessor->actSceneZoomRegion = NULL;
     sceneViewMesh->actSceneZoomRegion = NULL;
     sceneViewPost2D->actSceneZoomRegion = NULL;
@@ -1451,15 +1424,15 @@ void MainWindow::setControls()
     actSceneZoomBestFit->setVisible(showZoom);
     actSceneZoomRegion->setVisible(showZoom);
 
+    // disconnect signals
+    actSceneZoomIn->disconnect();
+    actSceneZoomOut->disconnect();
+    actSceneZoomOut->disconnect();
+
     if (problemWidget->actProperties->isChecked())
     {
         tabViewLayout->setCurrentWidget(sceneViewInfoWidget);
         tabControlsLayout->setCurrentWidget(problemWidget);
-
-        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
-        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
-        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
-        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
     if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
     {
@@ -1512,11 +1485,6 @@ void MainWindow::setControls()
     {
         tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
         tabControlsLayout->setCurrentWidget(settingsWidget);
-
-        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomIn()));
-        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomOut()));
-        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewBlank, SLOT(doZoomBestFit()));
-        sceneViewBlank->actSceneZoomRegion = actSceneZoomRegion;
     }
 
     actDocumentExportMeshFile->setEnabled(Util::problem()->isMeshed());

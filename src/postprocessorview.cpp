@@ -59,9 +59,6 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
     loadBasic();
     loadAdvanced();
 
-    connect(this, SIGNAL(apply()), m_scenePost2D, SLOT(timeStepChanged()));
-    connect(this, SIGNAL(apply()), m_scenePost3D, SLOT(timeStepChanged()));
-
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
     connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 }

@@ -19,45 +19,31 @@
 
 #include <QtPlugin>
 
-#include "hermes2d/plugin_interface.h"
-
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
 
 #include "util.h"
-#include "hermes2d.h"
 
-#include "scene.h"
-#include "scenebasic.h"
-#include "scenemarker.h"
-#include "scenemarkerdialog.h"
-
-#include "hermes2d/marker.h"
-
-MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,
-                                                              Material *materialSource,
-                                                              Material *materialTarget, int offsetI, int offsetJ)
+MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
 {
 	{{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
-        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, materialSource, materialTarget);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/VOLUME_MATRIX_SOURCE}}
 
     return NULL;
 }
 
-VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
-                                                                           Material *materialSource,
-                                                                           Material *materialTarget, int offsetI, int offsetJ)
+VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
 {
 	{{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
-        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, materialSource, materialTarget);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/VOLUME_VECTOR_SOURCE}}
 
     return NULL;
 }
 
-Q_EXPORT_PLUGIN2({{ID}}, {{CLASS}}Interface)
+Q_EXPORT_PLUGIN2(agros2d_plugin_{{ID}}, {{CLASS}}Interface)

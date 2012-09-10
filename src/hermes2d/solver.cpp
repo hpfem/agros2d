@@ -200,14 +200,16 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
 
                 foreach (FormInfo *form, boundary_type->essential())
                 {
-                    // get weakform
+                    // plugion interface
                     PluginInterface *plugin = Util::plugins()[fieldInfo->fieldId()];
                     assert(plugin);
 
-                    ExactSolutionScalar<double> *function = plugin->exactSolution(problemId, form->i, meshes[fieldInfo], boundary);
+                    // exact solution - Dirichlet BC
+                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form->i, meshes[fieldInfo]);
+                    function->setMarkerSource(boundary);
+
                     EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
-                    assert(custom_form);
                     bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
                     //  cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                 }

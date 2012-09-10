@@ -19,8 +19,6 @@
 
 #include <QtPlugin>
 
-#include "hermes2d/plugin_interface.h"
-
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
 #include "{{ID}}_filter.h"
@@ -30,70 +28,56 @@
 #include "{{ID}}_volumeintegral.h"
 
 #include "util.h"
-#include "hermes2d.h"
 
-#include "scene.h"
-#include "scenebasic.h"
-#include "scenemarker.h"
-#include "scenemarkerdialog.h"
-
-#include "hermes2d/marker.h"
-
-MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j,
-                                                        Material *materialSource,
-                                                        Material *materialTarget, int offsetI, int offsetJ)
+MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
 {
 	{{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}))
-        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, materialSource, materialTarget);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/VOLUME_MATRIX_SOURCE}}
 
     return NULL;
 }
 
-VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j,
-                                                              Material *materialSource,
-                                                              Material *materialTarget, int offsetI, int offsetJ)
+VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
 {
 	{{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}})))
-        return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, materialSource, materialTarget);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/VOLUME_VECTOR_SOURCE}}
 
     return NULL;
 }
 
-MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                Boundary *boundary, int offsetI, int offsetJ)
+MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary)
 {
 	{{#SURFACE_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
-        return new {{FUNCTION_NAME}}<double>(i-1+ offsetI, j-1+ offsetJ, boundary);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/SURFACE_MATRIX_SOURCE}}
 
     return NULL;
 }
 
-VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                                Boundary *boundary, int offsetI, int offsetJ)
+VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary)
 {
 	{{#SURFACE_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
-        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ, boundary);
+        return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/SURFACE_VECTOR_SOURCE}}
 
     return NULL;
 }
 
-ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary)
+ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, int i, Hermes::Hermes2D::Mesh *mesh)
 {
 	{{#EXACT_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})))
-        return new {{FUNCTION_NAME}}<double>(mesh, boundary);
+        return new {{FUNCTION_NAME}}<double>(mesh);
 	{{/EXACT_SOURCE}}
 	
     return NULL;
@@ -127,5 +111,4 @@ Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, const Point3 &point, cons
     return force{{CLASS}}(fieldInfo, point, velocity);
 }
 
-
-Q_EXPORT_PLUGIN2({{ID}}, {{CLASS}}Interface)
+Q_EXPORT_PLUGIN2(agros2d_plugin_{{ID}}, {{CLASS}}Interface)

@@ -21,6 +21,7 @@
 #define TIMEFUNCTION_H
 
 #include "util.h"
+#include "util/point.h"
 
 class QwtPlotCurve;
 class Chart;
@@ -43,12 +44,16 @@ struct Value
     bool hasTable() const;
 
     double value(double key = 0.0);
+    double value(const Point &point);
+    double value(double time, const Point &point);
     Hermes::Ord value(Hermes::Ord ord);
     double derivative(double key = 0.0);
     Hermes::Ord derivative(Hermes::Ord ord);
 
     bool evaluate(bool quiet = false);
-    bool evaluate(double time, bool quiet = false);
+    bool evaluate(double time, bool quiet);
+    bool evaluate(const Point &point, bool quiet);
+    bool evaluate(double time, const Point &point, bool quiet = false);
 
     QString toString() const;
     void fromString(const QString &str);

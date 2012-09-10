@@ -65,6 +65,12 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     setLayout(layoutMain);
 
+    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
+
+    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
     connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(refresh()));
 

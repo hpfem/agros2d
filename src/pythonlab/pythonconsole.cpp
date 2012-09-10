@@ -674,6 +674,9 @@ void PythonScriptingConsole::consoleMessage(const QString &message, const QColor
 
     insertHtml(str);
 
+    // repaint widget
+    repaint();
+
     // Reset all font modifications done by the html string
     setCurrentCharFormat(m_defaultTextCharacterFormat);
 }

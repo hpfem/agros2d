@@ -109,6 +109,20 @@ Hermes::Ord Value::value(Hermes::Ord key)
     return Hermes::Ord(1);
 }
 
+double Value::value(const Point &point)
+{
+    evaluate(point, true);
+
+    return number();
+}
+
+double Value::value(double time, const Point &point)
+{
+    evaluate(time, point, true);
+
+    return number();
+}
+
 double Value::derivative(double key)
 {
     if ((m_fieldInfo->linearityType() == LinearityType_Newton) && hasTable())
@@ -151,16 +165,32 @@ void Value::fromString(const QString &str)
 
 bool Value::evaluate(bool quiet)
 {
-    return evaluate(0.0, quiet);
+    return evaluate(0.0, Point(), quiet);
 }
 
 bool Value::evaluate(double time, bool quiet)
 {
+    return evaluate(time, Point(), quiet);
+}
+
+bool Value::evaluate(const Point &point, bool quiet)
+{
+    return evaluate(0.0, point, quiet);
+}
+
+bool Value::evaluate(double time, const Point &point, bool quiet)
+{
     bool signalBlocked = currentPythonEngine()->signalsBlocked();
     currentPythonEngine()->blockSignals(true);
 
-    // eval time
-    runPythonExpression(QString("time = %1").arg(time), false);
+    // eval time and space
+    if (m_fieldInfo)
+    {
+        if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
+            runPythonExpression(QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y), false);
+        else
+            runPythonExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
+    }
 
     // eval expression
     ExpressionResult expressionResult = runPythonExpression(m_text);
@@ -316,7 +346,7 @@ bool ValueLineEdit::evaluate(bool quiet)
             {
                 m_number = val.number();
                 setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                         Util::config()->lineEditValueShowResult);
+                              Util::config()->lineEditValueShowResult);
                 isOk = true;
             }
         }

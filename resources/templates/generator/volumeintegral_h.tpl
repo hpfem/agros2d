@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef {{ID}}_VOLUMEINTEGRAL_H
-#define {{ID}}_VOLUMEINTEGRAL_H
+#ifndef {{CLASS}}_VOLUMEINTEGRAL_H
+#define {{CLASS}}_VOLUMEINTEGRAL_H
 
 #include <QObject>
 
@@ -37,4 +37,4 @@ public:
     void calculate();
 };
 
-#endif // {{ID}}_VOLUMEINTEGRAL_H
+#endif // {{CLASS}}_VOLUMEINTEGRAL_H

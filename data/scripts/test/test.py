@@ -40,7 +40,7 @@ execfile("test_flow_steady_planar_nonlin.py")
 execfile("test_coupling_1_planar.py")
 execfile("test_coupling_2_axisymmetric.py")
 execfile("test_coupling_3_axisymmetric_nonlin.py")
-execfile("test_coupling_4_transient_planar.py") 
+# execfile("test_coupling_4_transient_planar.py") 
 
 # scripting
 # execfile("test_scripting.py")

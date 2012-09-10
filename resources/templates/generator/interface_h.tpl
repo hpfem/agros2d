@@ -17,22 +17,16 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef {{ID}}_INTERFACE_H
-#define {{ID}}_INTERFACE_H
+#ifndef {{CLASS}}_INTERFACE_H
+#define {{CLASS}}_INTERFACE_H
 
 #include <QObject>
 
 #include "util.h"
-#include "hermes2d.h"
-
-#include "scene.h"
-#include "scenebasic.h"
-#include "scenemarker.h"
-#include "scenemarkerdialog.h"
-
-#include "hermes2d/marker.h"
-
 #include "hermes2d/plugin_interface.h"
+
+class FieldInfo;
+class Boundary;
 
 class {{CLASS}}Interface : public QObject, public PluginInterface
 {
@@ -40,28 +34,20 @@ class {{CLASS}}Interface : public QObject, public PluginInterface
     Q_INTERFACES(PluginInterface)
 
 public:
-
     virtual ~{{CLASS}}Interface() {}
 
     inline virtual QString fieldId() { return "{{ID}}"; }
 
     // weakforms
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j,
-                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ );
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ);
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ);
+    // TODO: remove Boundary from matrixFormSurf(...) and vectorFormSurf(...)
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary);
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary);
 
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j,
-                                                                   Material *materialSource, Material *materialTarget, int offsetI, int offsetJ);
-
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                                     Boundary *boundary, int offsetI, int offsetJ);
-
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                                     Boundary *boundary, int offsetI, int offsetJ);
-
-    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i,Hermes::Hermes2D::Mesh *mesh, Boundary *boundary);
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i, Hermes::Hermes2D::Mesh *mesh);
 
     // postprocessor
-
     // filter
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,

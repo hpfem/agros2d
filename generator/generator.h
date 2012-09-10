@@ -111,6 +111,7 @@ private:
     void generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary, int j);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
+    QString dependence(const QString &variable, AnalysisType analysisType);
     QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 
     void createFilterExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);

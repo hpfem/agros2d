@@ -39,6 +39,11 @@
 
 PostHermes::PostHermes()
 {
+    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+
+    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+
     clear();
 }
 
@@ -128,10 +133,10 @@ void PostHermes::processRangeContour()
         Hermes::Hermes2D::Filter<double> *slnContourView = NULL;
         if (variable->isScalar())
             slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
-                                                                                            PhysicFieldVariableComp_Scalar);
+                                                                                          PhysicFieldVariableComp_Scalar);
         else
             slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
-                                                                                            PhysicFieldVariableComp_Magnitude);
+                                                                                          PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -173,7 +178,7 @@ void PostHermes::processRangeScalar()
         Util::log()->printMessage(tr("PostView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
         Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
-                                                                                                                 Util::config()->scalarVariableComp);
+                                                                                                                       Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -182,7 +187,7 @@ void PostHermes::processRangeScalar()
         // deformed shape
         if (Util::config()->deformScalar)
             Util::scene()->activeViewField()->module()->deformShape(m_linScalarView.get_vertices(),
-                                                                     m_linScalarView.get_num_vertices());
+                                                                    m_linScalarView.get_num_vertices());
 
         if (Util::config()->scalarRangeAuto)
         {
@@ -221,10 +226,10 @@ void PostHermes::processRangeVector()
         Util::log()->printMessage(tr("PostView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
 
         Hermes::Hermes2D::Filter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
-                                                                                                                  PhysicFieldVariableComp_X);
+                                                                                                                        PhysicFieldVariableComp_X);
 
         Hermes::Hermes2D::Filter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
-                                                                                                                  PhysicFieldVariableComp_Y);
+                                                                                                                        PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -233,7 +238,7 @@ void PostHermes::processRangeVector()
         // deformed shape
         if (Util::config()->deformVector)
             Util::scene()->activeViewField()->module()->deformShape(m_vecVectorView.get_vertices(),
-                                                                     m_vecVectorView.get_num_vertices());
+                                                                    m_vecVectorView.get_num_vertices());
 
         delete slnVectorXView;
         delete slnVectorYView;
@@ -249,6 +254,51 @@ void PostHermes::processParticleTracing()
     if (Util::problem()->isSolved() && Util::config()->showParticleView)
     {
         Util::log()->printMessage(tr("PostView"), tr("particle view"));
+
+        // clear lists
+        foreach (QList<Point3> list, m_particleTracingPositionsList)
+            list.clear();
+        m_particleTracingPositionsList.clear();
+
+        foreach (QList<Point3> list, m_particleTracingVelocitiesList)
+            list.clear();
+        m_particleTracingVelocitiesList.clear();
+
+        m_particleTracingVelocityMin =  numeric_limits<double>::max();
+        m_particleTracingVelocityMax = -numeric_limits<double>::max();
+
+        m_particleTracingPositionMin =  numeric_limits<double>::max();
+        m_particleTracingPositionMax = -numeric_limits<double>::max();
+
+        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        {
+            // position and velocity cache
+            QList<Point3> positions;
+            QList<Point3> velocities;
+
+            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
+
+            m_particleTracingPositionsList.append(positions);
+            m_particleTracingVelocitiesList.append(velocities);
+
+            // velocity min and max value
+            for (int i = 0; i < velocities.length(); i++)
+            {
+                double velocity = velocities[i].magnitude();
+
+                if (velocity < m_particleTracingVelocityMin) m_particleTracingVelocityMin = velocity;
+                if (velocity > m_particleTracingVelocityMax) m_particleTracingVelocityMax = velocity;
+            }
+
+            // position min and max value
+            for (int i = 0; i < positions.length(); i++)
+            {
+                double position = positions[i].z;
+
+                if (position < m_particleTracingPositionMin) m_particleTracingPositionMin = position;
+                if (position > m_particleTracingPositionMax) m_particleTracingPositionMax = position;
+            }
+        }
 
         m_particleTracingIsPrepared = true;
     }
@@ -281,7 +331,7 @@ void PostHermes::processMeshed()
 {
     m_initialMeshIsPrepared = false;
 
-    processInitialMesh();    
+    processInitialMesh();
 }
 
 void PostHermes::processSolved()
@@ -312,21 +362,6 @@ SceneViewPostInterface::SceneViewPostInterface(PostHermes *postHermes, QWidget *
     : SceneViewCommon(parent),
       m_postHermes(postHermes)
 {
-    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(timeStepChanged()));
-}
-
-void SceneViewPostInterface::timeStepChanged(bool showViewProgress)
-{
-    if (!Util::problem()->isSolving())
-    {
-        // QTime time;
-        // time.start();
-
-        //TODO PROCESS
-        //m_sceneSolution->processView(showViewProgress);
-    }
-
-    // doInvalidated();
 }
 
 const double* SceneViewPostInterface::paletteColor(double x) const
@@ -558,7 +593,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 30.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -670,7 +705,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
     Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*fontMetrics().height() : 10.0);
     double scaleLeft = (width()
-                        - (((Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
+                        - (((Util::config()->showParticleView && Util::config()->showScalarView) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
 
     // blended rectangle

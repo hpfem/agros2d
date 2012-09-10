@@ -37,7 +37,5 @@ OTHER_FILES += \
     ../resources/templates/generator/weakform_pri.tpl \
     ../resources/templates/generator/module_pro.tpl \
     ../resources/templates/generator/plugins_pro.tpl \
-    ../resources/templates/generator/coupling_weakform_h.tpl \
-    ../resources/templates/generator/coupling_weakform_cpp.tpl \
     ../resources/templates/generator/coupling_interface_h.tpl \
     ../resources/templates/generator/coupling_interface_cpp.tpl

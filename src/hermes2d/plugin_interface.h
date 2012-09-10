@@ -95,9 +95,29 @@ protected:
     QMap<Module::Integral*, double> m_values;
 };
 
+class FormAgrosInterface
+{
+public:
+    FormAgrosInterface() : m_markerSource(NULL), m_markerTarget(NULL) {}
+
+    // source or single marker
+    virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; }
+    inline Marker *markerSource() { assert(m_markerSource); return m_markerSource; }
+
+    // target marker
+    virtual inline void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
+    inline Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
+
+protected:
+    // source or single marker
+    Marker *m_markerSource;
+    // target marker
+    Marker *m_markerTarget;
+};
+
 // weakforms
 template<typename Scalar>
-class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>
+class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j)
@@ -110,7 +130,7 @@ protected:
 };
 
 template<typename Scalar>
-class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>
+class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
 {
 public:
     VectorFormVolAgros(unsigned int i)
@@ -122,7 +142,7 @@ protected:
 };
 
 template<typename Scalar>
-class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>
+class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
     MatrixFormSurfAgros(unsigned int i, unsigned int j)
@@ -130,7 +150,7 @@ public:
 };
 
 template<typename Scalar>
-class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>
+class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
     VectorFormSurfAgros(unsigned int i)
@@ -138,7 +158,7 @@ public:
 };
 
 template<typename Scalar>
-class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>
+class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface
 {
 public:
     ExactSolutionScalarAgros(Hermes::Hermes2D::Mesh *mesh)
@@ -150,24 +170,17 @@ public:
 class PluginInterface
 {
 public:
-
     virtual ~PluginInterface() {}
 
     virtual QString fieldId() = 0;
 
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j,
-                                                      Material *materialSource, Material *materialTarget, int offsetI, int offsetJ ) = 0;
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ ) = 0;
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ) = 0;
+    // TODO: remove Boundary from matrixFormSurf(...) and vectorFormSurf(...)
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) = 0;
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) = 0;
 
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j,
-                                                      Material *materialSource, Material *materialTarget, int offsetI, int offsetJ) = 0;
-
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j,
-                                                        Boundary *boundary, int offsetI, int offsetJ) = 0;
-
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j,
-                                                        Boundary *boundary, int offsetI, int offsetJ) = 0;
-
-    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i, Hermes::Hermes2D::Mesh *mesh, Boundary *boundary) = 0;
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i, Hermes::Hermes2D::Mesh *mesh) = 0;
 
     // postprocessor
     // filter

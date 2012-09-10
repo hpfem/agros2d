@@ -99,7 +99,7 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
-                                            Marker* marker, Material *markerSecond,
+                                            Marker* markerSource, Material *markerTarget,
                                             int offsetI, int offsetJ)
 {
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
@@ -113,20 +113,43 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 
     if (type == WeakForm_MatVol)
     {
-        weakForm = plugin->matrixFormVol(problemId, form->i, form->j, static_cast<Material *>(marker), markerSecond, offsetI, offsetJ);
-        static_cast<Hermes::Hermes2D::MatrixFormVol<double> *>(weakForm)->setSymFlag(form->sym);
+        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form->i, form->j, offsetI, offsetJ);
+        // symmetric flag
+        weakFormAgros->setSymFlag(form->sym);
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+        // target marker
+        weakFormAgros->setMarkerTarget(markerTarget);
+
+        weakForm = weakFormAgros;
     }
     else if (type == WeakForm_MatSurf)
     {
-        weakForm = plugin->matrixFormSurf(problemId, form->i, form->j, static_cast<Boundary *>(marker), offsetI, offsetJ);
+        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
+                                                                            static_cast<Boundary *>(markerSource));
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+
+        weakForm = weakFormAgros;
     }
     else if (type == WeakForm_VecVol)
     {
-        weakForm = plugin->vectorFormVol(problemId, form->i, form->j, static_cast<Material *>(marker), markerSecond, offsetI, offsetJ);
+        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form->i, form->j, offsetI, offsetJ);
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+        // target marker
+        weakFormAgros->setMarkerTarget(markerTarget);
+
+        weakForm = weakFormAgros;
     }
     else if (type == WeakForm_VecSurf)
     {
-        weakForm = plugin->vectorFormSurf(problemId, form->i, form->j, static_cast<Boundary *>(marker), offsetI, offsetJ);
+        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
+                                                                            static_cast<Boundary *>(markerSource));
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+
+        weakForm = weakFormAgros;
     }
 
     if (!weakForm)
@@ -141,10 +164,9 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    // Util::log()->printDebug("WeakFormAgros", QString("addForm: type: %1, i: %2, area: %3").
-    //                         arg(weakFormString(type)).
-    //                         arg(form->i).
-    //                         arg(QString::fromStdString(form->areas.at(0))));
+    Util::log()->printDebug("WeakFormAgros", QString("addForm: type: %1, area: %2").
+                            arg(weakFormString(type)).
+                            arg(QString::fromStdString(form->getAreas().at(0))));
 
     if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
@@ -401,11 +423,27 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
             if (old.id().toStdString() == qty.id())
             {
                 bool isTimeDep = false;
-                if (qty.dependence().present())
-                    isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
+                bool isSpaceDep = false;
 
-                Module::BoundaryTypeVariable *var = new Module::BoundaryTypeVariable(
-                            old.id(), old.shortname(), old.defaultValue(), isTimeDep);
+                if (qty.dependence().present())
+                {
+                    if (QString::fromStdString(qty.dependence().get()) == "time")
+                    {
+                        isTimeDep = true;
+                    }
+                    else if (QString::fromStdString(qty.dependence().get()) == "space")
+                    {
+                        isSpaceDep = true;
+                    }
+                    else if (QString::fromStdString(qty.dependence().get()) == "time-space")
+                    {
+                        isTimeDep = true;
+                        isSpaceDep = true;
+                    }
+                }
+
+                Module::BoundaryTypeVariable *var
+                        = new Module::BoundaryTypeVariable(old.id(), old.shortname(), old.defaultValue(), isTimeDep, isSpaceDep);
 
                 m_variables.append(var);
             }
@@ -623,7 +661,8 @@ void Module::BasicModule::read(const QString &filename)
     // TODO: (Franta)
     foreach (Module::BoundaryTypeVariable variable, boundaryTypeVariables)
         m_boundaryTypeVariables.append(new Module::BoundaryTypeVariable(variable.id(), variable.shortname(),
-                                                                        variable.defaultValue(), variable.isTimeDep()));
+                                                                        variable.defaultValue(),
+                                                                        variable.isTimeDep(), variable.isSpaceDep()));
 
     boundaryTypeVariables.clear();
 
@@ -997,10 +1036,7 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
 
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < numberOfSolutions(); k++)
-    {
-        FieldSolutionID fsid(Util::scene()->activeViewField(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
-    }
+        sln.push_back(Util::scene()->activeMultiSolutionArray().component(k).sln.data());
 
     return Util::plugins()[Util::scene()->activeViewField()->fieldId()]->filter(Util::scene()->activeViewField(),
                                                                                 sln,
