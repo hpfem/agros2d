@@ -494,8 +494,8 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
             Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
 
     MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
-    if(timeStep > 0)
-        previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));;
+    if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
+        previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
 
     //cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
@@ -525,7 +525,7 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
     Scalar coefVec[ndof];
     //Scalar* coeffVec = new Scalar[ndof];
 
-    solveOneProblem(&wf, coefVec, multiSolutionArray, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
+    solveOneProblem(&wf, coefVec, multiSolutionArray, previousTSMultiSolutionArray.size() != 0 ? &previousTSMultiSolutionArray : NULL);
     //Solution<Scalar>::vector_to_solutions(coefVec, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
 
     multiSolutionArray.setTime(Util::problem()->actualTime());

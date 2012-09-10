@@ -370,6 +370,8 @@ int Problem::timeToTimeStep(double time) const
             return ts+1;
     }
 
+    // todo: revise
+    return 0;
     assert(0);
 }
 
@@ -479,13 +481,6 @@ void Problem::solveAction()
             solvers[block]->solveInitialTimeStep();
     }
 
-    //just for transient heat so far
-    assert(Util::problem()->isTransient());
-    assert(m_blocks.size() == 1);
-    assert(m_blocks.at(0)->fields().size() == 1);
-    assert(m_blocks.at(0)->fields().at(0)->fieldInfo()->fieldId() == "heat");
-
-
     int timeStep = 1;
     double nextTimeStep = 0;
     bool doNextTimeStep = defineActualTimeStepLength(config()->initialTimeStep().value());
@@ -507,7 +502,7 @@ void Problem::solveAction()
                 }
                 else
                 {
-                    assert(0); // probably wont work
+                    assert(!block->isTransient());
                     //                    if(block->isTransient())
                     //                    {
                     //                        // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
