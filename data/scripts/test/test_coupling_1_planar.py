@@ -47,6 +47,10 @@ heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_tem
 heat.add_material("Mild steel", {"heat_conductivity" : 400, "heat_volume_heat" : 0})
 heat.add_material("Aluminium", {"heat_conductivity" : 250, "heat_volume_heat" : 0})
 
+# coupling
+# problem.set_coupling_type("current", "heat", "hard")
+# problem.set_coupling_type("heat", "elasticity", "hard")
+
 # geometry
 geometry = agros2d.geometry
 

@@ -4,7 +4,7 @@ SUBDIRS += hermes2d
 SUBDIRS += src
 SUBDIRS += generator
 SUBDIRS += binary
-SUBDIRS += plugins
+# SUBDIRS += plugins
 
 CONFIG += ordered
 TEMPLATE = subdirs
