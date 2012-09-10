@@ -163,10 +163,9 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    // Util::log()->printDebug("WeakFormAgros", QString("addForm: type: %1, i: %2, area: %3").
-    //                         arg(weakFormString(type)).
-    //                         arg(form->i).
-    //                         arg(QString::fromStdString(form->areas.at(0))));
+    Util::log()->printDebug("WeakFormAgros", QString("addForm: type: %1, area: %2").
+                            arg(weakFormString(type)).
+                            arg(QString::fromStdString(form->getAreas().at(0))));
 
     if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
@@ -1106,10 +1105,7 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
 
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < numberOfSolutions(); k++)
-    {
-        FieldSolutionID fsid(Util::scene()->activeViewField(), Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
-        sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
-    }
+        sln.push_back(Util::scene()->activeMultiSolutionArray().component(k).sln.data());
 
     return Util::plugins()[Util::scene()->activeViewField()->fieldId()]->filter(Util::scene()->activeViewField(),
                                                                                 sln,

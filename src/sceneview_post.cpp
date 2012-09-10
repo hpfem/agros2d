@@ -133,10 +133,10 @@ void PostHermes::processRangeContour()
         Hermes::Hermes2D::Filter<double> *slnContourView = NULL;
         if (variable->isScalar())
             slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
-                                                                                            PhysicFieldVariableComp_Scalar);
+                                                                                          PhysicFieldVariableComp_Scalar);
         else
             slnContourView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->contourVariable),
-                                                                                            PhysicFieldVariableComp_Magnitude);
+                                                                                          PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -178,7 +178,7 @@ void PostHermes::processRangeScalar()
         Util::log()->printMessage(tr("PostView"), tr("scalar view (%1)").arg(Util::config()->scalarVariable));
 
         Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
-                                                                                                                 Util::config()->scalarVariableComp);
+                                                                                                                       Util::config()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -187,7 +187,7 @@ void PostHermes::processRangeScalar()
         // deformed shape
         if (Util::config()->deformScalar)
             Util::scene()->activeViewField()->module()->deformShape(m_linScalarView.get_vertices(),
-                                                                     m_linScalarView.get_num_vertices());
+                                                                    m_linScalarView.get_num_vertices());
 
         if (Util::config()->scalarRangeAuto)
         {
@@ -226,10 +226,10 @@ void PostHermes::processRangeVector()
         Util::log()->printMessage(tr("PostView"), tr("vector view (%1)").arg(Util::config()->vectorVariable));
 
         Hermes::Hermes2D::Filter<double> *slnVectorXView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
-                                                                                                                  PhysicFieldVariableComp_X);
+                                                                                                                        PhysicFieldVariableComp_X);
 
         Hermes::Hermes2D::Filter<double> *slnVectorYView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->vectorVariable),
-                                                                                                                  PhysicFieldVariableComp_Y);
+                                                                                                                        PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
@@ -238,7 +238,7 @@ void PostHermes::processRangeVector()
         // deformed shape
         if (Util::config()->deformVector)
             Util::scene()->activeViewField()->module()->deformShape(m_vecVectorView.get_vertices(),
-                                                                     m_vecVectorView.get_num_vertices());
+                                                                    m_vecVectorView.get_num_vertices());
 
         delete slnVectorXView;
         delete slnVectorYView;
@@ -331,7 +331,7 @@ void PostHermes::processMeshed()
 {
     m_initialMeshIsPrepared = false;
 
-    processInitialMesh();    
+    processInitialMesh();
 }
 
 void PostHermes::processSolved()
