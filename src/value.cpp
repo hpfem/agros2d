@@ -191,6 +191,10 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
         else
             runPythonExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
     }
+    else
+    {
+        runPythonExpression(QString("time = %1").arg(time), false);
+    }
 
     // eval expression
     ExpressionResult expressionResult = runPythonExpression(m_text);
