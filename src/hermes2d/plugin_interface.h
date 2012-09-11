@@ -98,7 +98,7 @@ protected:
 class FormAgrosInterface
 {
 public:
-    FormAgrosInterface() : m_markerSource(NULL), m_markerTarget(NULL) {}
+    FormAgrosInterface() : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL) {}
 
     // source or single marker
     virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; }
@@ -126,7 +126,7 @@ class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, publi
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j)
-        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j) {m_table = NULL;}
+        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j) {}
 };
 
 template<typename Scalar>
@@ -134,7 +134,7 @@ class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, publi
 {
 public:
     VectorFormVolAgros(unsigned int i)
-        : Hermes::Hermes2D::VectorFormVol<Scalar>(i) {m_table = NULL;}
+        : Hermes::Hermes2D::VectorFormVol<Scalar>(i) {}
 };
 
 template<typename Scalar>
