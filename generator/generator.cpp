@@ -1317,8 +1317,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             if (repl == QString("upval")) { exprCpp += QString("u_ext[this->j]->val[i]"); isReplaced = true; }
             if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->j]->val[i]"); isReplaced = true; }
             if (repl == QString("deltat")) { exprCpp += QString("Util::problem()->actualTimeStepLength()"); isReplaced = true; }
-            if (repl == QString("timedermat")) { exprCpp += QString("m_table->matrixFormCoefficient()"); isReplaced = true; }
-            if (repl == QString("timedervec")) { exprCpp += QString("m_table->vectorFormCoefficient(ext, this->j, m_materialSource->fieldInfo()->module()->numberOfSolutions(), i)"); isReplaced = true; }
+            if (repl == QString("timedermat")) { exprCpp += QString("this->m_table->matrixFormCoefficient()"); isReplaced = true; }
+            if (repl == QString("timedervec")) { exprCpp += QString("this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->module()->numberOfSolutions(), i)"); isReplaced = true; }
 
             if (coordinateType == CoordinateType_Planar)
             {
@@ -2024,7 +2024,8 @@ void Agros2DGeneratorCoupling::generateForm(Form form, XMLCoupling::weakform_vol
                 field->SetValue("FUNCTION_NAME", functionName.toStdString());
                 field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
                 field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
-                field->SetValue("ANALYSIS_TYPE", weakform.sourceanalysis() + weakform.targetanalysis());
+                field->SetValue("SOURCE_ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis()))).toStdString());
+                field->SetValue("TARGET_ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(weakform.targetanalysis()))).toStdString());
                 field->SetValue("ROW_INDEX", QString::number(form.i()).toStdString());
                 field->SetValue("COLUMN_INDEX", QString::number(form.j()).toStdString());
                 field->SetValue("MODULE_ID", id.toStdString());

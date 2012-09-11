@@ -27,7 +27,8 @@
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
 {
 	{{#VOLUME_MATRIX_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{SOURCE_ANALYSIS_TYPE}})
+        && (problemId.analysisTypeTarget == {{TARGET_ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
         return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/VOLUME_MATRIX_SOURCE}}
@@ -38,7 +39,8 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
 VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
 {
 	{{#VOLUME_VECTOR_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{SOURCE_ANALYSIS_TYPE}})
+            && (problemId.analysisTypeTarget == {{TARGET_ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (i == {{ROW_INDEX}})
         && (j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
         return new {{FUNCTION_NAME}}<double>(i-1 + offsetI, j-1 + offsetJ);
 	{{/VOLUME_VECTOR_SOURCE}}

@@ -98,7 +98,7 @@ protected:
 class FormAgrosInterface
 {
 public:
-    FormAgrosInterface() : m_markerSource(NULL), m_markerTarget(NULL) {}
+    FormAgrosInterface() : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL) {}
 
     // source or single marker
     virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; }
@@ -108,11 +108,16 @@ public:
     virtual inline void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
     inline Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
 
+    // time discretisation table
+    inline void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
+
 protected:
     // source or single marker
     Marker *m_markerSource;
     // target marker
     Marker *m_markerTarget;
+    // time discretisation table
+    BDF2Table *m_table;
 };
 
 // weakforms
@@ -121,14 +126,7 @@ class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, publi
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j)
-        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), m_table(NULL) {}
-
-    // time discretisation table
-    inline void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
-
-protected:
-    // time discretisation table
-    BDF2Table *m_table;
+        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface() {}
 };
 
 template<typename Scalar>
@@ -136,14 +134,7 @@ class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, publi
 {
 public:
     VectorFormVolAgros(unsigned int i)
-        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), m_table(NULL) {}
-
-    // time discretisation table
-    inline void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
-
-protected:
-    // time discretisation table
-    BDF2Table *m_table;
+        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface() {}
 };
 
 template<typename Scalar>
@@ -151,7 +142,7 @@ class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, pub
 {
 public:
     MatrixFormSurfAgros(unsigned int i, unsigned int j)
-        : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j) {}
+        : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j), FormAgrosInterface() {}
 };
 
 template<typename Scalar>
@@ -159,7 +150,7 @@ class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, pub
 {
 public:
     VectorFormSurfAgros(unsigned int i)
-        : Hermes::Hermes2D::VectorFormSurf<Scalar>(i) {}
+        : Hermes::Hermes2D::VectorFormSurf<Scalar>(i), FormAgrosInterface() {}
 };
 
 template<typename Scalar>
@@ -167,7 +158,7 @@ class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Sc
 {
 public:
     ExactSolutionScalarAgros(Hermes::Hermes2D::Mesh *mesh)
-        : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh) {}
+        : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), FormAgrosInterface() {}
 };
 
 
