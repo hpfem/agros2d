@@ -497,10 +497,16 @@ void PreprocessorWidget::showInfo()
         problem.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
         problem.ShowSection("FREQUENCY");
     }
-    if (Util::problem()->config()->initialTimeStep().number() > 0)
+    if (Util::problem()->config()->timeTotal().number() > 0)
     {
-        problem.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-        problem.SetValue("TIME_STEP", QString::number(Util::problem()->config()->initialTimeStep().number()).toStdString() + " s");
+        problem.SetValue("TIME_STEP_METHOD_LABEL", tr("Method:").toStdString());
+        problem.SetValue("TIME_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
+        problem.SetValue("TIME_STEP_ORDER_LABEL", tr("Order:").toStdString());
+        problem.SetValue("TIME_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
+        problem.SetValue("TIME_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
+        problem.SetValue("TIME_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStep()).toStdString() + " s");
+        problem.SetValue("TIME_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
+        problem.SetValue("TIME_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
         problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
         problem.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
         problem.ShowSection("TRANSIENT");

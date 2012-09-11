@@ -41,13 +41,20 @@ public:
     inline double frequency() const { return m_frequency; }
     void setFrequency(const double frequency) { m_frequency = frequency; emit changed(); }
 
-    inline Value initialTimeStep() const { return m_initialTimeStep; }
-    void setInitialTimeStep(const Value &initialTimeStep) { m_initialTimeStep = initialTimeStep; emit changed(); }
+    // transient
+    inline int numConstantTimeSteps() const { return m_numConstantTimeSteps; }
+    void setNumConstantTimeSteps(const int numConstantTimeSteps) { m_numConstantTimeSteps = numConstantTimeSteps; emit changed(); }
 
     inline Value timeTotal() const { return m_timeTotal; }
     void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
 
-    inline int numConstantTimeSteps() const { return floor(timeTotal().number() / initialTimeStep().number()); }
+    TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
+    void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
+
+    int timeOrder() const { return m_timeOrder; }
+    void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
+
+    inline int constantTimeStep() { return m_timeTotal.number() / m_numConstantTimeSteps; }
 
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
     void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
@@ -63,12 +70,6 @@ public:
 
     void refresh() { emit changed(); }
 
-    TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
-    void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
-    int timeOrder() const { return m_timeOrder; }
-    void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
-
-
 signals:
     void changed();
 
@@ -81,8 +82,8 @@ private:
     double m_frequency;
 
     // transient
-    Value m_initialTimeStep;
     Value m_timeTotal;
+    int m_numConstantTimeSteps;
     TimeStepMethod m_timeStepMethod;
     int m_timeOrder;
 

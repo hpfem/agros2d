@@ -43,14 +43,23 @@
 		<td><b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td>
 	</tr>
 	{{/HARMONIC}}
-	{{#TRANSIENT}}
-	<tr>
-		<td><b>{{TIME_STEP_LABEL}}</b></td><td>{{TIME_STEP}}</td>
-	</tr>
-	<tr>
-		<td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
-	</tr>
-	{{/TRANSIENT}}
+    {{#TRANSIENT}}
+    <tr>
+        <td><b>{{TIME_STEP_METHOD_LABEL}}</b></td><td>{{TIME_STEP_METHOD}}</td>
+    </tr>
+    <tr>
+        <td><b>{{TIME_STEP_ORDER_LABEL}}</b></td><td>{{TIME_STEP_ORDER}}</td>
+    </tr>
+    <tr>
+        <td><b>{{TIME_CONSTANT_STEP_LABEL}}</b></td><td>{{TIME_CONSTANT_STEP}}</td>
+    </tr>
+    <tr>
+        <td><b>{{TIME_CONSTANT_NUM_STEPS_LABEL}}</b></td><td>{{TIME_CONSTANT_NUM_STEPS}}</td>
+    </tr>
+    <tr>
+        <td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
+    </tr>
+    {{/TRANSIENT}}
 	<tr>
 	<td>
 		<h3>{{GEOMETRY_LABEL}}</h3>

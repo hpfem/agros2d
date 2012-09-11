@@ -39,8 +39,8 @@ cdef extern from "../../src/pythonlabagros.h":
         double getFrequency()
         void setFrequency(double frequency) except +
 
-        double getInitialTimeStep()
-        void setInitialTimeStep(double timeStep) except +
+        double getNumConstantTimeSteps()
+        void setNumConstantTimeSteps(int numConstantTimeSteps) except +
 
         double getTimeTotal()
         void setTimeTotal(double timeTotal) except +
@@ -397,11 +397,11 @@ cdef class __Problem__:
             self.thisptr.setFrequency(frequency)
 
     # time_step
-    property time_step:
+    property time_steps:
         def __get__(self):
-            return self.thisptr.getInitialTimeStep()
-        def __set__(self, time_step):
-            self.thisptr.setInitialTimeStep(time_step)
+            return self.thisptr.getNumConstantTimeSteps()
+        def __set__(self, steps):
+            self.thisptr.setNumConstantTimeSteps(steps)
 
     # time_total
     property time_total:

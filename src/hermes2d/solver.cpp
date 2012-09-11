@@ -488,7 +488,7 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solution
 template <typename Scalar>
 double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
-    double nextTimeStepLength = Util::problem()->config()->initialTimeStep().value();
+    double nextTimeStepLength = Util::problem()->config()->constantTimeStep();
     SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     Util::log()->printDebug(m_solverID, QObject::tr("solve"));
 

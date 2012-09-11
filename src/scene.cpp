@@ -1359,9 +1359,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Util::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
 
     // transient
-    Util::problem()->config()->setInitialTimeStep(Value(eleProblemInfo.toElement().attribute("time_step", "1.0")));
+    Util::problem()->config()->setNumConstantTimeSteps(eleProblemInfo.toElement().attribute("time_steps", "2").toInt());
     Util::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
-
     Util::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
     Util::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
                                         eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
@@ -1706,7 +1705,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("frequency", Util::problem()->config()->frequency());
 
     // transient
-    eleProblem.setAttribute("time_step", Util::problem()->config()->initialTimeStep().text());
+    eleProblem.setAttribute("time_steps", Util::problem()->config()->numConstantTimeSteps());
     eleProblem.setAttribute("time_total", Util::problem()->config()->timeTotal().text());
     eleProblem.setAttribute("time_order", QString::number(Util::problem()->config()->timeOrder()));
     eleProblem.setAttribute("time_method", timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod()));
