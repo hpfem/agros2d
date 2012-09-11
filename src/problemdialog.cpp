@@ -819,7 +819,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 2, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Number of constant steps:")), 3, 0);
     layoutTransientAnalysis->addWidget(txtTransientSteps, 3, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Constant time step (s):")), 4, 0);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Constant time step:")), 4, 0);
     layoutTransientAnalysis->addWidget(lblTransientTimeStep, 4, 1);
 
     grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
@@ -1037,7 +1037,7 @@ void ProblemWidget::doTransientChanged()
 {
     if (txtTransientTimeTotal->evaluate(true))
     {
-        lblTransientTimeStep->setText(QString("%1").arg(txtTransientTimeTotal->number() / txtTransientSteps->value()));
+        lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->number() / txtTransientSteps->value()));
     }
 }
 

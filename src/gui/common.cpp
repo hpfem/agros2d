@@ -157,7 +157,8 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
     timeStep = 0;
     foreach (double time, timeLevels)
     {
-        cmbTimeStep->addItem(QString::number(time, 'e', 2), i++);
+        cmbTimeStep->addItem(QString("Step: %1, time: %2 s").arg(i - 1).arg(QString::number(time, 'e', 2)),
+                             i++);
         if (time < timeValue)
             timeStep = i;
     }

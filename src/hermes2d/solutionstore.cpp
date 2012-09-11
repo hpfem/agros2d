@@ -136,10 +136,10 @@ MultiSolutionArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(Bloc
 int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
 {
     int ts = timeStep;
-    while(!this->contains(FieldSolutionID(fieldInfo, ts, 0, SolutionMode_Normal)))
+    while (!this->contains(FieldSolutionID(fieldInfo, ts, 0, SolutionMode_Normal)))
     {
         ts--;
-        if(ts <= 0)
+        if (ts <= 0)
             return 0;
     }
     return ts;
