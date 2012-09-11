@@ -525,7 +525,6 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
     Scalar coefVec[ndof];
-    //Scalar* coeffVec = new Scalar[ndof];
 
     solveOneProblem(&wf, coefVec, multiSolutionArray, previousTSMultiSolutionArray.size() != 0 ? &previousTSMultiSolutionArray : NULL);
     //Solution<Scalar>::vector_to_solutions(coefVec, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
@@ -554,7 +553,7 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
         double norm = Global<Scalar>::calc_norms(desmartize(multiSolutionArray.solutions()));
 
         // todo: move to gui?
-        double TOLERANCE = 0.3; //TODO
+        double TOLERANCE = 0.05; //TODO
 
         // todo: if error too big, refuse step and recalculate
 
