@@ -956,7 +956,7 @@ void PostprocessorWidget::doFieldInfo(int index)
         int currentStep = Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep());
         cmbTimeStep->setCurrentIndex(currentStep);
         cmbAdaptivityStep->setCurrentIndex(Util::scene()->activeAdaptivityStep());
-        qDebug() << "timestep set to " << currentStep << ", adapt " << Util::scene()->activeAdaptivityStep() << "\n";
+        // qDebug() << "timestep set to " << currentStep << ", adapt " << Util::scene()->activeAdaptivityStep() << "\n";
     }
 }
 

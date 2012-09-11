@@ -1364,6 +1364,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Util::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
     Util::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
                                         eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
+    Util::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05"));
+
     // matrix solver
     Util::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
                                                                                                                   matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
@@ -1709,6 +1711,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("time_total", Util::problem()->config()->timeTotal().text());
     eleProblem.setAttribute("time_order", QString::number(Util::problem()->config()->timeOrder()));
     eleProblem.setAttribute("time_method", timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod()));
+    eleProblem.setAttribute("time_method_tolerance", Util::problem()->config()->timeMethodTolerance().text());
 
     // matrix solver
     eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()));

@@ -552,15 +552,13 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
         double absError = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
         double norm = Global<Scalar>::calc_norms(desmartize(multiSolutionArray.solutions()));
 
-        // todo: move to gui?
-        double TOLERANCE = 0.05; //TODO
-
         // todo: if error too big, refuse step and recalculate
 
         // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
-        nextTimeStepLength = pow(TOLERANCE/error, 1./(Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
+        nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
+                                 1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
 
-        cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(TOLERANCE/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
+        cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
     }
 
     // output

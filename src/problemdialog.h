@@ -207,6 +207,7 @@ private:
     QGroupBox *grpTransientAnalysis;
     ValueLineEdit *txtTransientTimeTotal;
     QSpinBox *txtTransientSteps;
+    ValueLineEdit *txtTransientTolerance;
     QSpinBox *txtTransientOrder;
     QComboBox *cmbTransientMethod;
     QLabel *lblTransientTimeStep;
