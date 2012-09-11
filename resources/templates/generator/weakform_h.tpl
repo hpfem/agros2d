@@ -36,10 +36,8 @@ public:
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;   	    
-    void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
 
     {{FUNCTION_NAME}}<Scalar>* clone();
-    BDF2Table* m_table;
 
     virtual void setMarkerSource(Marker *marker);
     virtual void setMarkerTarget(Marker *marker);
@@ -63,12 +61,9 @@ public:
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
     virtual Hermes::Ord ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const;
-    void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
 
     {{FUNCTION_NAME}}<Scalar>* clone();
 private:		
-    BDF2Table* m_table;
-
     virtual void setMarkerSource(Marker *marker);
     virtual void setMarkerTarget(Marker *marker);
 

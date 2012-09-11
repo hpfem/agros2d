@@ -213,6 +213,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
                 slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
         }
 
+        ((FormAgrosInterface*)custom_form)->setTimeDiscretisationTable(bdf2Table);
         custom_form->setExt(slns);
     }
 

@@ -108,11 +108,16 @@ public:
     virtual inline void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
     inline Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
 
+    // time discretisation table
+    void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
+
 protected:
     // source or single marker
     Marker *m_markerSource;
     // target marker
     Marker *m_markerTarget;
+
+    BDF2Table *m_table;
 };
 
 // weakforms
@@ -121,12 +126,7 @@ class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, publi
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j)
-        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j)/*, m_table(NULL) */{}
-    // todo: unable to compile, when here. Had to move to form template
-    //void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
-
-protected:
-    //BDF2Table *m_table;
+        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j) {m_table = NULL;}
 };
 
 template<typename Scalar>
@@ -134,11 +134,7 @@ class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, publi
 {
 public:
     VectorFormVolAgros(unsigned int i)
-        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), m_table(NULL) {}
-    void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
-
-protected:
-    BDF2Table *m_table;
+        : Hermes::Hermes2D::VectorFormVol<Scalar>(i) {m_table = NULL;}
 };
 
 template<typename Scalar>
