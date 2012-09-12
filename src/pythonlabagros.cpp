@@ -104,9 +104,9 @@ QString createPythonFromModel()
                 arg(Util::problem()->config()->frequency());
 
     if (Util::problem()->isTransient())
-        str += QString("problem.time_step = %1\n"
+        str += QString("problem.time_steps = %1\n"
                        "problem.time_total = %2\n").
-                arg(Util::problem()->config()->initialTimeStep().text()).
+                arg(Util::problem()->config()->numConstantTimeSteps()).
                 arg(Util::problem()->config()->timeTotal().text());
 
     // fields
@@ -356,12 +356,12 @@ void PyProblem::setFrequency(const double frequency)
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 }
 
-void PyProblem::setInitialTimeStep(const double timeStep)
+void PyProblem::setNumConstantTimeSteps(const int timeSteps)
 {
-    if (timeStep >= 0.0)
-        Util::problem()->config()->setInitialTimeStep(Value(QString::number(timeStep)));
+    if (timeSteps >= 1)
+        Util::problem()->config()->setNumConstantTimeSteps(timeSteps);
     else
-        throw invalid_argument(QObject::tr("The initial time step must be positive.").toStdString());
+        throw invalid_argument(QObject::tr("Number of time steps must be greater then 1.").toStdString());
 }
 
 void PyProblem::setTimeTotal(const double timeTotal)

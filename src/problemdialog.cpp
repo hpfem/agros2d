@@ -767,15 +767,17 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtFrequency = new LineEditDouble();
 
     // transient
-    txtTransientTimeStep = new ValueLineEdit();
-    txtTransientTimeTotal = new ValueLineEdit();
+    cmbTransientMethod = new QComboBox();
     txtTransientOrder = new QSpinBox();
     txtTransientOrder->setMinimum(1);
     txtTransientOrder->setMaximum(3);
-    cmbTransientMethod = new QComboBox();
-    lblTransientSteps = new QLabel("0");
+    txtTransientTimeTotal = new ValueLineEdit();
+    txtTransientTolerance = new ValueLineEdit();
+    txtTransientSteps = new QSpinBox();
+    txtTransientSteps->setMinimum(2);
+    lblTransientTimeStep = new QLabel("0.0");
 
-    connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
+    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
     connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
     connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(doTransientChanged()));
@@ -810,16 +812,18 @@ QWidget *ProblemWidget::createControlsGeneral()
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
     layoutTransientAnalysis->setColumnMinimumWidth(0, minWidth);
     layoutTransientAnalysis->setColumnStretch(1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Time step (s):")), 0, 0);
-    layoutTransientAnalysis->addWidget(txtTransientTimeStep, 0, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 1, 0);
-    layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Order:")), 2, 0);
-    layoutTransientAnalysis->addWidget(txtTransientOrder, 2, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Method:")), 3, 0);
-    layoutTransientAnalysis->addWidget(cmbTransientMethod, 3, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 4, 0);
-    layoutTransientAnalysis->addWidget(lblTransientSteps, 4, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Method:")), 0, 0);
+    layoutTransientAnalysis->addWidget(cmbTransientMethod, 0, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Order:")), 1, 0);
+    layoutTransientAnalysis->addWidget(txtTransientOrder, 1, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Tolerance:")), 2, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTolerance, 2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 3, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 3, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Number of constant steps:")), 4, 0);
+    layoutTransientAnalysis->addWidget(txtTransientSteps, 4, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Constant time step:")), 5, 0);
+    layoutTransientAnalysis->addWidget(lblTransientTimeStep, 5, 1);
 
     grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
@@ -924,9 +928,10 @@ void ProblemWidget::updateControls()
 
     // transient
     grpTransientAnalysis->setVisible(Util::problem()->isTransient());
-    txtTransientTimeStep->setValue(Util::problem()->config()->initialTimeStep());
+    txtTransientSteps->setValue(Util::problem()->config()->numConstantTimeSteps());
     // txtTransientTimeStep->setEnabled(Util::problem()->isTransient());
     txtTransientTimeTotal->setValue(Util::problem()->config()->timeTotal());
+    txtTransientTolerance->setValue(Util::problem()->config()->timeMethodTolerance());
     // txtTransientTimeTotal->setEnabled(Util::problem()->isTransient());
     txtTransientOrder->setValue(Util::problem()->config()->timeOrder());
     cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Util::problem()->config()->timeStepMethod()));
@@ -965,10 +970,11 @@ bool ProblemWidget::save()
 
     Util::problem()->config()->setFrequency(txtFrequency->value());
 
-    Util::problem()->config()->setInitialTimeStep(txtTransientTimeStep->value());
-    Util::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
-    Util::problem()->config()->setTimeOrder(txtTransientOrder->value());
     Util::problem()->config()->setTimeStepMethod((TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
+    Util::problem()->config()->setTimeOrder(txtTransientOrder->value());
+    Util::problem()->config()->setTimeMethodTolerance(txtTransientTolerance->value());
+    Util::problem()->config()->setNumConstantTimeSteps(txtTransientSteps->value());
+    Util::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
 
     Util::problem()->config()->setDescription(txtDescription->toPlainText());
 
@@ -1034,10 +1040,9 @@ void ProblemWidget::doOpenXML()
 
 void ProblemWidget::doTransientChanged()
 {
-    if (txtTransientTimeStep->evaluate(true) &&
-            txtTransientTimeTotal->evaluate(true))
+    if (txtTransientTimeTotal->evaluate(true))
     {
-        lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->number()/txtTransientTimeStep->number())));
+        lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->number() / txtTransientSteps->value()));
     }
 }
 

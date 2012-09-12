@@ -205,11 +205,12 @@ private:
 
     // transient
     QGroupBox *grpTransientAnalysis;
-    ValueLineEdit *txtTransientTimeStep;
     ValueLineEdit *txtTransientTimeTotal;
+    QSpinBox *txtTransientSteps;
+    ValueLineEdit *txtTransientTolerance;
     QSpinBox *txtTransientOrder;
     QComboBox *cmbTransientMethod;
-    QLabel *lblTransientSteps;
+    QLabel *lblTransientTimeStep;
 
     // startup script
     ScriptEditor *txtStartupScript;

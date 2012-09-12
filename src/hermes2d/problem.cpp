@@ -59,11 +59,10 @@ void ProblemConfig::clear()
     m_frequency = 0.0;
 
     // transient
-    m_initialTimeStep = Value("1.0", false);
+    m_timeStepMethod = TimeStepMethod_BDF2;
+    m_timeOrder = 2;
+    m_numConstantTimeSteps = 10;
     m_timeTotal = Value("1.0", false);
-
-    m_timeStepMethod = TimeStepMethod_Fixed;
-    m_timeOrder = 1;
 }
 
 
@@ -402,7 +401,7 @@ double Problem::actualTime() const
 double Problem::actualTimeStepLength() const
 {
     if(m_timeStepLengths.isEmpty())
-        return config()->timeTotal().value() / config()->initialTimeStep().value();
+        return config()->constantTimeStep();
 
     return m_timeStepLengths.last();
 }
@@ -483,7 +482,7 @@ void Problem::solveAction()
 
     int timeStep = 1;
     double nextTimeStep = 0;
-    bool doNextTimeStep = defineActualTimeStepLength(config()->initialTimeStep().value());
+    bool doNextTimeStep = defineActualTimeStepLength(config()->constantTimeStep());
     while(doNextTimeStep)
     {
         foreach (Block* block, m_blocks)

@@ -121,8 +121,14 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
     if (Util::problem()->isTransient())
         problemInfo.ShowSection("TRANSIENT");
-    problemInfo.SetValue("TIME_STEP_LABEL", tr("Time step:").toStdString());
-    problemInfo.SetValue("TIME_STEP", QString::number(Util::problem()->config()->initialTimeStep().number()).toStdString() + " s");
+    problemInfo.SetValue("TIME_STEP_METHOD_LABEL", tr("Method:").toStdString());
+    problemInfo.SetValue("TIME_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
+    problemInfo.SetValue("TIME_STEP_ORDER_LABEL", tr("Order:").toStdString());
+    problemInfo.SetValue("TIME_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
+    problemInfo.SetValue("TIME_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
+    problemInfo.SetValue("TIME_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStep()).toStdString() + " s");
+    problemInfo.SetValue("TIME_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
+    problemInfo.SetValue("TIME_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
     problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
     problemInfo.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
 
@@ -238,19 +244,19 @@ void InfoWidget::showInfo()
             //            {
             //                if (fieldInfo->adaptivityType != AdaptivityType_None)
             //                {
-            //                    problem.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
-            //                    problem.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
-            //                    problem.SetValue("ADAPTIVITY_ERROR", QString::number(Util::problem()->adaptiveError(), 'f', 3).toStdString());
+            //                    problemInfo.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
+            //                    problemInfo.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
+            //                    problemInfo.SetValue("ADAPTIVITY_ERROR", QString::number(Util::problem()->adaptiveError(), 'f', 3).toStdString());
 
-            //                    problem.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
-            //                    problem.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-            //                    problem.SetValue("SOLUTION_MESH_NODES", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
-            //                    problem.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-            //                    problem.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
+            //                    problemInfo.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
+            //                    problemInfo.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
+            //                    problemInfo.SetValue("SOLUTION_MESH_NODES", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
+            //                    problemInfo.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
+            //                    problemInfo.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
 
-            //                    problem.ShowSection("ADAPTIVITY_SECTION");
+            //                    problemInfo.ShowSection("ADAPTIVITY_SECTION");
             //                }
-            //                problem.ShowSection("SOLUTION_PARAMETERS_SECTION");
+            //                problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
             //            }
             //        }
         }

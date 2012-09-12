@@ -926,19 +926,15 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
 void PostprocessorWidget::doCalculationFinished()
 {
     QString activeFieldName = Util::scene()->activeViewField()->fieldId();
-    for(int index = 0; index < cmbFieldInfo->count(); index++)
+    for (int index = 0; index < cmbFieldInfo->count(); index++)
     {
-        if(cmbFieldInfo->itemData(index).toString() == activeFieldName)
+        if (cmbFieldInfo->itemData(index).toString() == activeFieldName)
         {
             cmbFieldInfo->setCurrentIndex(index);
             doFieldInfo(index);
             break;
         }
     }
-
-    cmbTimeStep->setCurrentIndex(Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep()));
-    cmbAdaptivityStep->setCurrentIndex(Util::scene()->activeAdaptivityStep());
-    qDebug() << "timestep set to " << Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep()) << ", adapt " << Util::scene()->activeAdaptivityStep() << "\n";
 }
 
 void PostprocessorWidget::doFieldInfo(int index)
@@ -956,6 +952,11 @@ void PostprocessorWidget::doFieldInfo(int index)
         doTimeStep(0);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
+
+        int currentStep = Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep());
+        cmbTimeStep->setCurrentIndex(currentStep);
+        cmbAdaptivityStep->setCurrentIndex(Util::scene()->activeAdaptivityStep());
+        // qDebug() << "timestep set to " << currentStep << ", adapt " << Util::scene()->activeAdaptivityStep() << "\n";
     }
 }
 
@@ -1165,8 +1166,7 @@ void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
 
 int PostprocessorWidget::selectedTimeStep()
 {
-    double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
-    return Util::problem()->timeToTimeStep(actualTime);
+    return cmbTimeStep->itemData(cmbTimeStep->currentIndex()).toInt();
 }
 
 FieldInfo* PostprocessorWidget::selectedField()

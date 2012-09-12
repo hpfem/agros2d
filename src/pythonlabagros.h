@@ -129,8 +129,8 @@ class PyProblem
         void setFrequency(const double frequency);
 
         // time step
-        inline const double getInitialTimeStep() { return Util::problem()->config()->initialTimeStep().number(); }
-        void setInitialTimeStep(const double timeStep);
+        inline const int getNumConstantTimeSteps() { return Util::problem()->config()->numConstantTimeSteps(); }
+        void setNumConstantTimeSteps(const int timeSteps);
 
         // time total
         const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }

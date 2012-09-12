@@ -199,6 +199,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
     {
         int lastTimeStep = Util::solutionStore()->lastTimeStep(field->fieldInfo(), SolutionMode_Normal);
+
         Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
         for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
         {
@@ -213,9 +214,11 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
                 slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
         }
 
-        dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
-
+        // add external solutions
         custom_form->setExt(slns);
+
+        // set time discretisation table
+        dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
     }
 
     addForm(type, custom_form);

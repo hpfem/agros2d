@@ -354,9 +354,9 @@ QString timeStepMethodString(TimeStepMethod timeStepMethod)
     switch (timeStepMethod)
     {
     case TimeStepMethod_Fixed:
-        return QObject::tr("fixed");
+        return QObject::tr("Fixed step");
     case TimeStepMethod_BDF2:
-        return QObject::tr("adaptive");
+        return QObject::tr("BDF2 adaptive step");
     default:
         std::cerr << "Time step method '" + QString::number(timeStepMethod).toStdString() + "' is not implemented. timeStepMethodString(TimeStepMethod timeStepMethod)" << endl;
         throw;

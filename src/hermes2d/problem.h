@@ -35,39 +35,49 @@ public:
     inline QString fileName() const { return m_fileName; }
     void setFileName(const QString &fileName) { m_fileName = fileName; }
 
+    // coordinates
     inline CoordinateType coordinateType() const { return m_coordinateType; }
     void setCoordinateType(const CoordinateType coordinateType) { m_coordinateType = coordinateType; emit changed(); }
 
+    // harmonic problem
     inline double frequency() const { return m_frequency; }
     void setFrequency(const double frequency) { m_frequency = frequency; emit changed(); }
 
-    inline Value initialTimeStep() const { return m_initialTimeStep; }
-    void setInitialTimeStep(const Value &initialTimeStep) { m_initialTimeStep = initialTimeStep; emit changed(); }
+    // transient problem
+    inline int numConstantTimeSteps() const { return m_numConstantTimeSteps; }
+    void setNumConstantTimeSteps(const int numConstantTimeSteps) { m_numConstantTimeSteps = numConstantTimeSteps; emit changed(); }
 
     inline Value timeTotal() const { return m_timeTotal; }
     void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
 
-    inline int numConstantTimeSteps() const { return floor(timeTotal().number() / initialTimeStep().number()); }
+    inline int constantTimeStep() { return m_timeTotal.number() / m_numConstantTimeSteps; }
 
+    inline TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
+    void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
+
+    int timeOrder() const { return m_timeOrder; }
+    void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
+
+    inline Value timeMethodTolerance() const { return m_timeMethodTolerance; }
+    void setTimeMethodTolerance(Value timeMethodTolerance) {m_timeMethodTolerance = timeMethodTolerance; }
+
+    // matrix
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
     void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
 
+    // mesh
     inline MeshType meshType() const { return m_meshType; }
     void setMeshType(const MeshType meshType) { m_meshType = meshType; emit changed(); }
 
+    // startup script
     inline QString startupscript() const { return m_startupscript; }
     void setStartupScript(const QString &startupscript) { m_startupscript = startupscript; emit changed(); }
 
+    // description
     inline QString description() const { return m_description; }
     void setDescription(const QString &description) { m_description = description; }
 
     void refresh() { emit changed(); }
-
-    TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
-    void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
-    int timeOrder() const { return m_timeOrder; }
-    void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
-
 
 signals:
     void changed();
@@ -81,10 +91,11 @@ private:
     double m_frequency;
 
     // transient
-    Value m_initialTimeStep;
     Value m_timeTotal;
+    int m_numConstantTimeSteps;
     TimeStepMethod m_timeStepMethod;
     int m_timeOrder;
+    Value m_timeMethodTolerance;
 
     // matrix solver
     Hermes::MatrixSolverType m_matrixSolver;
