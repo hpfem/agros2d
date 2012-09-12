@@ -531,7 +531,7 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
-    if(Util::problem()->config()->timeStepMethod() == TimeStepMethod_BDF2)
+    if (Util::problem()->config()->timeStepMethod() == TimeStepMethod_BDF2)
     {
         BDF2BTable bdf2BTable;
         //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
@@ -557,6 +557,12 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
         // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
         nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
                                  1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
+
+        Util::log()->printDebug(QObject::tr("Solver"), QString("Time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
+                                arg(absError / norm).
+                                arg(Util::problem()->actualTimeStepLength()).
+                                arg(nextTimeStepLength).
+                                arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()));
 
         cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
     }
