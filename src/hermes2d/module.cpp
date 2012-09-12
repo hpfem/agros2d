@@ -219,7 +219,6 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
         // set time discretisation table
         dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
-
     }
 
     addForm(type, custom_form);
