@@ -473,7 +473,7 @@ AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
 // time step method
 QString timeStepMethodString(TimeStepMethod timeStepMethod);
-QStringList TimeStepMethodStringKeys();
+QStringList timeStepMethodStringKeys();
 QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod);
 TimeStepMethod timeStepMethodFromStringKey(const QString &timeStepMethod);
 

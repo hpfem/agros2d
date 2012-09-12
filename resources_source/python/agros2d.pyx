@@ -39,11 +39,20 @@ cdef extern from "../../src/pythonlabagros.h":
         double getFrequency()
         void setFrequency(double frequency) except +
 
-        double getNumConstantTimeSteps()
-        void setNumConstantTimeSteps(int numConstantTimeSteps) except +
+        char *getTimeStepMethod()
+        void setTimeStepMethod(char *timeStepMethod) except +
+
+        int getTimeMethodOrder()
+        void setTimeMethodOrder(int timeMethodOrder) except +
+
+        double getTimeMethodTolerance()
+        void setTimeMethodTolerance(double timeMethodTolerance) except +
 
         double getTimeTotal()
         void setTimeTotal(double timeTotal) except +
+
+        int getNumConstantTimeSteps()
+        void setNumConstantTimeSteps(int numConstantTimeSteps) except +
 
         char *getCouplingType(char *sourceField, char *targetField) except +
         void setCouplingType(char *sourceField, char *targetField, char *type) except +
@@ -174,7 +183,7 @@ cdef extern from "../../src/pythonlabagros.h":
     # PyViewMesh
     cdef cppclass PyViewMesh:
         void activate()
-        
+
         void setInitialMeshViewShow(bool show)
         bool getInitialMeshViewShow()
         void setSolutionMeshViewShow(bool show)
@@ -192,7 +201,7 @@ cdef extern from "../../src/pythonlabagros.h":
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
         void activate()
-       
+
         void setScalarViewShow(bool show)
         bool getScalarViewShow()
         void setScalarViewVariable(char *variable) except +
@@ -360,7 +369,7 @@ cdef class __Problem__:
     # refresh
     def refresh(self):
         self.thisptr.refresh()
-        
+
     # name
     property name:
         def __get__(self):
@@ -396,12 +405,26 @@ cdef class __Problem__:
         def __set__(self, frequency):
             self.thisptr.setFrequency(frequency)
 
-    # time_step
-    property time_steps:
+    # time_step_method
+    property time_step_method:
         def __get__(self):
-            return self.thisptr.getNumConstantTimeSteps()
-        def __set__(self, steps):
-            self.thisptr.setNumConstantTimeSteps(steps)
+            return self.thisptr.getTimeStepMethod()
+        def __set__(self, time_step_method):
+            self.thisptr.setTimeStepMethod(time_step_method)
+
+    # time_method_order
+    property time_method_order:
+        def __get__(self):
+            return self.thisptr.getTimeMethodOrder()
+        def __set__(self, time_method_order):
+            self.thisptr.setTimeMethodOrder(time_method_order)
+
+    # time_method_tolerance
+    property time_method_tolerance:
+        def __get__(self):
+            return self.thisptr.getTimeMethodTolerance()
+        def __set__(self, time_method_tolerance):
+            self.thisptr.setTimeMethodTolerance(time_method_tolerance)
 
     # time_total
     property time_total:
@@ -409,6 +432,13 @@ cdef class __Problem__:
             return self.thisptr.getTimeTotal()
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
+
+    # time_step
+    property time_steps:
+        def __get__(self):
+            return self.thisptr.getNumConstantTimeSteps()
+        def __set__(self, steps):
+            self.thisptr.setNumConstantTimeSteps(steps)
 
     # coupling type
     def get_coupling_type(self, source_field, target_field):
