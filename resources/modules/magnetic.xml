@@ -261,12 +261,12 @@
     <module:view>
       <module:scalar_view>
         <module:default analysistype="steadystate" id="magnetic_flux_density_real"/>
-        <module:default analysistype="transient" id="magnetic_flux_density"/>
+        <module:default analysistype="transient" id="magnetic_flux_density_real"/>
         <module:default analysistype="harmonic" id="magnetic_flux_density_real"/>
       </module:scalar_view>
       <module:vector_view>
         <module:default analysistype="steadystate" id="magnetic_flux_density_real"/>
-        <module:default analysistype="transient" id="magnetic_flux_density"/>
+        <module:default analysistype="transient" id="magnetic_flux_density_real"/>
         <module:default analysistype="harmonic" id="magnetic_flux_density_real"/>
       </module:vector_view>
     </module:view>
