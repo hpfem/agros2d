@@ -213,18 +213,8 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
                 slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
         }
 
+        dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
 
-        //((FormAgrosInterface*)custom_form)->setTimeDiscretisationTable(bdf2Table);
-        reinterpret_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
-
-        /*
-        if(type == WeakForm_MatVol)
-            ((MatrixFormVolAgros<double>*)custom_form)->setTimeDiscretisationTable(bdf2Table);
-        else if (type == WeakForm_VecVol)
-            ((VectorFormVolAgros<double>*)custom_form)->setTimeDiscretisationTable(bdf2Table);
-        else
-            assert(0);
-        */
         custom_form->setExt(slns);
     }
 

@@ -771,7 +771,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtTransientTimeTotal = new ValueLineEdit();
     txtTransientOrder = new QSpinBox();
     txtTransientOrder->setMinimum(1);
-    txtTransientOrder->setMaximum(2);
+    txtTransientOrder->setMaximum(3);
     cmbTransientMethod = new QComboBox();
     lblTransientSteps = new QLabel("0");
 
