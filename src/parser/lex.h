@@ -107,6 +107,8 @@ public:
     inline void clearVariables() { m_variables.clear(); }
     QString replaceOperatorByFunction(QString expr);
 
+    QString replaceVariables(QMap<QString, QString> dict, const QString &expr = QString());
+
 private:
     QList<Token> m_tokens;
     QStringList m_variables;

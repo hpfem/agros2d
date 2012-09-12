@@ -70,7 +70,6 @@ QString expression(QList<Token> const &symbol_que, int position = 0)
     return expression;
 }
 
-
 void LexicalAnalyser::setExpression(const QString &expr)
 {
     QString exprTrimmed = expr.trimmed().replace(" ", "");
@@ -134,6 +133,39 @@ void LexicalAnalyser::setExpression(const QString &expr)
             old_pos = pos;
         }
     }
+}
+
+QString LexicalAnalyser::replaceVariables(QMap<QString, QString> dict, const QString &expr)
+{
+    if (!expr.isEmpty())
+        setExpression(expr);
+
+    // replace tokens
+    QString output;
+    foreach (Token token, tokens())
+    {
+        bool isReplaced = false;
+
+        // iterate whole dictionary
+        QMapIterator<QString, QString> i(dict);
+        while (i.hasNext())
+        {
+            i.next();
+
+            if (token.toString() == i.key())
+            {
+                output += i.value();
+                isReplaced = true;
+                break;
+            }
+        }
+
+        // without replacing
+        if (!isReplaced)
+            output += token.toString();
+    }
+
+    return output;
 }
 
 //ToDo: Improve, it should be within Syntax analyzer

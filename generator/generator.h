@@ -25,6 +25,8 @@
 #include "../../resources_source/classes/module_xml.h"
 #include "../../resources_source/classes/coupling_xml.h"
 
+class LexicalAnalyser;
+
 class Agros2DGenerator : public QCoreApplication
 {
     Q_OBJECT
@@ -112,13 +114,15 @@ private:
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
     QString dependence(const QString &variable, AnalysisType analysisType);
-    QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
+    LexicalAnalyser *postprocessorLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
+    QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr, bool includeVariables = true);
 
     void createFilterExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
     void createLocalValueExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &exprScalar, const QString &exprVectorX, const QString &exprVectorY);
     void createIntegralExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 
-    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr);
+    LexicalAnalyser *weakFormLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
+    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true);
 };
 
 class Agros2DGeneratorCoupling : public Agros2DGeneratorBase
