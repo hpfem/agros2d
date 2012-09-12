@@ -356,6 +356,30 @@ void PyProblem::setFrequency(const double frequency)
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 }
 
+void PyProblem::setTimeStepMethod(const char *timeStepMethod)
+{
+    if (timeStepMethodStringKeys().contains(QString(timeStepMethod)))
+        Util::problem()->config()->setTimeStepMethod((TimeStepMethod) timeStepMethodFromStringKey(QString(timeStepMethod)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(timeStepMethodStringKeys())).toStdString());
+}
+
+void PyProblem::setTimeMethodOrder(const int timeMethodOrder)
+{
+    if (timeMethodOrder >= 1)
+        Util::problem()->config()->setTimeOrder(timeMethodOrder);
+    else
+        throw invalid_argument(QObject::tr("Number of time method order must be greater then 1.").toStdString());
+}
+
+void PyProblem::setTimeMethodTolerance(const double timeMethodTolerance)
+{
+    if (timeMethodTolerance > 0.0)
+        Util::problem()->config()->setTimeMethodTolerance(Value(QString::number(timeMethodTolerance)));
+    else
+        throw invalid_argument(QObject::tr("The time method tolerance must be positive.").toStdString());
+}
+
 void PyProblem::setNumConstantTimeSteps(const int timeSteps)
 {
     if (timeSteps >= 1)

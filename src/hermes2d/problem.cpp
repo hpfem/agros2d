@@ -61,8 +61,9 @@ void ProblemConfig::clear()
     // transient
     m_timeStepMethod = TimeStepMethod_BDF2;
     m_timeOrder = 2;
-    m_numConstantTimeSteps = 10;
+    m_timeMethodTolerance = Value("0.1", false);
     m_timeTotal = Value("1.0", false);
+    m_numConstantTimeSteps = 10;
 }
 
 
@@ -426,7 +427,7 @@ void Problem::solve()
         Util::loadPlugins(plugins);
     }
     catch (AgrosException e)
-    {        
+    {
         Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
         return;
     }

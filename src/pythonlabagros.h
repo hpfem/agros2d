@@ -128,13 +128,25 @@ class PyProblem
         inline const double getFrequency() { return Util::problem()->config()->frequency(); }
         void setFrequency(const double frequency);
 
-        // time step
-        inline const int getNumConstantTimeSteps() { return Util::problem()->config()->numConstantTimeSteps(); }
-        void setNumConstantTimeSteps(const int timeSteps);
+        // time step method
+        inline const char *getTimeStepMethod() { return timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod()).toStdString().c_str(); }
+        void setTimeStepMethod(const char *timeStepMethod);
+
+        // time method order
+        const int getTimeMethodOrder() { return Util::problem()->config()->timeOrder(); }
+        void setTimeMethodOrder(const int timeMethodOrder);
+
+        // time method tolerance
+        const double getTimeMethodTolerance() { return Util::problem()->config()->timeMethodTolerance().number(); }
+        void setTimeMethodTolerance(const double timeMethodTolerance);
 
         // time total
         const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
+
+        // time steps
+        inline const int getNumConstantTimeSteps() { return Util::problem()->config()->numConstantTimeSteps(); }
+        void setNumConstantTimeSteps(const int timeSteps);
 
         // coupling
         char *getCouplingType(const char *sourceField, const char *targetField);
