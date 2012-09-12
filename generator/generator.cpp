@@ -1219,6 +1219,8 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("vdy");
         lex->addVariable("updx");
         lex->addVariable("updy");
+        lex->addVariable("uptdx");
+        lex->addVariable("uptdy");
         lex->addVariable(QString("x"));
         lex->addVariable(QString("y"));
     }
@@ -1230,6 +1232,8 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("vdz");
         lex->addVariable("updr");
         lex->addVariable("updz");
+        lex->addVariable("uptdr");
+        lex->addVariable("uptdz");
         lex->addVariable(QString("r"));
         lex->addVariable(QString("z"));
     }
@@ -1239,6 +1243,7 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("deltat");
         lex->addVariable("timedermat");
         lex->addVariable("timedervec");
+        lex->addVariable("timederres");
     }
 
     // functions
@@ -1321,6 +1326,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["deltat"] = "Util::problem()->actualTimeStepLength()";
         dict["timedermat"] = "this->m_table->matrixFormCoefficient()";
         dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->module()->numberOfSolutions(), i)";
+        dict["timederres"] = "this->m_table->residualCoefficient()";
 
         if (coordinateType == CoordinateType_Planar)
         {
@@ -1330,6 +1336,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict["vdy"] = "v->dy[i]";
             dict["updx"] = "u_ext[this->j]->dx[i]";
             dict["updy"] = "u_ext[this->j]->dy[i]";
+            dict["uptdx"] = "ext->fn[this->j]->dx[i]";
+            dict["uptdy"] = "ext->fn[this->j]->dy[i]";
         }
         else
         {
@@ -1339,6 +1347,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict["vdz"] = "v->dy[i]";
             dict["updr"] = "u_ext[this->j]->dx[i]";
             dict["updz"] = "u_ext[this->j]->dy[i]";
+            dict["uptdr"] = "ext->fn[this->j]->dx[i]";
+            dict["uptdz"] = "ext->fn[this->j]->dy[i]";
         }
 
         for (int i = 1; i < numOfSol + 1; i++)
