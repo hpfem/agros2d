@@ -511,13 +511,13 @@ void Problem::solveAction()
                     //                        return;
                     //                    }
 
-                    solver->createInitialSpace(timeStep);
+                    solver->createInitialSpace(timeStep - 1);
                     int adaptStep = 1;
                     bool continueAdaptivity = true;
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
                     {
-                        solver->solveReferenceAndProject(timeStep, adaptStep - 1, false);
-                        continueAdaptivity = solver->createAdaptedSpace(timeStep, adaptStep);
+                        solver->solveReferenceAndProject(timeStep - 1, adaptStep - 1, false);
+                        continueAdaptivity = solver->createAdaptedSpace(timeStep - 1, adaptStep);
                         adaptStep++;
                     }
                 }

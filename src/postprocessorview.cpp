@@ -949,6 +949,7 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
         fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
+        fillComboBoxSolutionType(cmbAdaptivitySolutionType);
         doTimeStep(0);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
@@ -963,8 +964,10 @@ void PostprocessorWidget::doFieldInfo(int index)
 void PostprocessorWidget::doTimeStep(int index)
 {
     fillComboBoxAdaptivityStep(selectedField(), selectedTimeStep(), cmbAdaptivityStep);
-    if((cmbAdaptivityStep->currentIndex() >= cmbAdaptivityStep->count()) || (cmbAdaptivityStep->currentIndex() < 0))
-        cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);
+    if ((cmbAdaptivityStep->currentIndex() >= cmbAdaptivityStep->count()) || (cmbAdaptivityStep->currentIndex() < 0))
+    {
+        cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);        
+    }
 }
 
 void PostprocessorWidget::doScalarFieldVariable(int index)
@@ -1166,7 +1169,10 @@ void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
 
 int PostprocessorWidget::selectedTimeStep()
 {
-    return cmbTimeStep->itemData(cmbTimeStep->currentIndex()).toInt();
+    if (cmbTimeStep->currentIndex() == -1)
+        return 0;
+    else
+        return cmbTimeStep->itemData(cmbTimeStep->currentIndex()).toInt();
 }
 
 FieldInfo* PostprocessorWidget::selectedField()

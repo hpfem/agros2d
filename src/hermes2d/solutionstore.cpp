@@ -179,13 +179,13 @@ double SolutionStore::lastTime(Block *block)
 
 int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionMode solutionType, int timeStep)
 {
-    if(timeStep == -1)
+    if (timeStep == -1)
         timeStep = lastTimeStep(fieldInfo, solutionType);
 
     int adaptiveStep = notFoundSoFar;
-    foreach(FieldSolutionID sid, m_multiSolutions.keys())
+    foreach (FieldSolutionID sid, m_multiSolutions.keys())
     {
-        if((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
+        if ((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
     }
 

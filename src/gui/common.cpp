@@ -157,59 +157,59 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
     timeStep = 0;
     foreach (double time, timeLevels)
     {
-        cmbTimeStep->addItem(QString("Step: %1, time: %2 s").arg(i - 1).arg(QString::number(time, 'e', 2)),
+        cmbTimeStep->addItem(QObject::tr("Step: %1, time: %2 s").arg(i - 1).arg(QString::number(time, 'e', 2)),
                              i++);
         if (time < timeValue)
             timeStep = i;
     }
 
     cmbTimeStep->setCurrentIndex(timeStep);
-    if (cmbTimeStep->currentIndex() == -1)
+    if (cmbTimeStep->count() > 0 && cmbTimeStep->currentIndex() == -1)
         cmbTimeStep->setCurrentIndex(0);
 
     cmbTimeStep->blockSignals(false);
 }
 
-void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *cmbFieldVariable)
+void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *cmbAdaptivityStep)
 {
     if (!Util::problem()->isSolved())
         return;
 
-    cmbFieldVariable->blockSignals(true);
+    cmbAdaptivityStep->blockSignals(true);
 
     int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
 
     // store variable
-    int adaptivityStep = cmbFieldVariable->currentIndex();
+    int adaptivityStep = cmbAdaptivityStep->currentIndex();
     if (adaptivityStep == -1)
         adaptivityStep = lastAdaptiveStep;
 
     // clear combo
-    cmbFieldVariable->clear();
+    cmbAdaptivityStep->clear();
 
     for (int step = 0; step <= lastAdaptiveStep; step++)
     {
-        cmbFieldVariable->addItem(QString::number(step + 1), step);
+        cmbAdaptivityStep->addItem(QString::number(step + 1), step);
     }
 
-    cmbFieldVariable->setCurrentIndex(adaptivityStep);
-    cmbFieldVariable->blockSignals(false);
+    cmbAdaptivityStep->setCurrentIndex(adaptivityStep);
+    cmbAdaptivityStep->blockSignals(false);
 }
 
-void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
+void fillComboBoxSolutionType(QComboBox *cmbSolutionType)
 {
     if (!Util::problem()->isSolved())
         return;
 
-    cmbFieldVariable->blockSignals(true);
+    cmbSolutionType->blockSignals(true);
 
     // store variable
-    SolutionMode solutionType = (SolutionMode) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    SolutionMode solutionType = (SolutionMode) cmbSolutionType->itemData(cmbSolutionType->currentIndex()).toInt();
     //    if (adaptivityStep == -1)
     //        adaptivityStep = lastAdaptiveStep;
 
     // clear combo
-    cmbFieldVariable->clear();
+    cmbSolutionType->clear();
 
     int timeStep = Util::scene()->activeTimeStep();
     int adaptivityStep = Util::scene()->activeAdaptivityStep();
@@ -217,11 +217,11 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
     //TODO je potreba udelat dynamicky, jak se vybira casovy a adaptivni krok ve formulari
     if (Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionMode_Normal)))
     {
-        cmbFieldVariable->addItem(solutionTypeString(SolutionMode_Normal), SolutionMode_Normal);
+        cmbSolutionType->addItem(solutionTypeString(SolutionMode_Normal), SolutionMode_Normal);
     }
     if (Util::solutionStore()->contains(FieldSolutionID(Util::scene()->activeViewField(), timeStep, adaptivityStep, SolutionMode_Reference)))
     {
-        cmbFieldVariable->addItem(solutionTypeString(SolutionMode_Reference), SolutionMode_Reference);
+        cmbSolutionType->addItem(solutionTypeString(SolutionMode_Reference), SolutionMode_Reference);
     }
 
     //    for(int step = 0; step <= lastAdaptiveStep; step++)
@@ -229,6 +229,6 @@ void fillComboBoxSolutionType(QComboBox *cmbFieldVariable)
     //        cmbFieldVariable->addItem(QString::number(step), step);
     //    }
 
-    cmbFieldVariable->setCurrentIndex(solutionType);
-    cmbFieldVariable->blockSignals(false);
+    cmbSolutionType->setCurrentIndex(solutionType);
+    cmbSolutionType->blockSignals(false);
 }
