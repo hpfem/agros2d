@@ -11,10 +11,14 @@ LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3dparty
 LIBS += -lagros2d
 
-HEADERS += generator.h
+HEADERS += generator.h \
+    generator_module.h \
+    generator_coupling.h
 
 SOURCES += main.cpp \
-           generator.cpp
+           generator.cpp \
+    generator_module.cpp \
+    generator_coupling.cpp
 
 include(../agros2d.pri)
 
