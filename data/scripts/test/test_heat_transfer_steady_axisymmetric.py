@@ -21,8 +21,8 @@ heat.add_boundary("Inlet", "heat_heat_flux", {"heat_heat_flux" : 500000, "heat_c
 heat.add_boundary("Temperature", "heat_temperature", {"heat_temperature" : 0})
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 20, "heat_convection_external_temperature" : 20})
 
-heat.add_material("Material", {"heat_conductivity" : 52, "heat_volume_heat" : 6e6})   
-             
+heat.add_material("Material", {"heat_volume_heat" : 6e+06, "heat_conductivity" : 52, "heat_density" : 7800, "heat_velocity_x" : 0, "heat_velocity_y" : 0.001, "heat_specific_heat" : 300, "heat_velocity_angular" : 0})
+            
 # geometry
 geometry = agros2d.geometry
 
@@ -45,20 +45,20 @@ problem.solve()
 
 # point value
 point = heat.local_values(0.062926, 0.038129)
-testT = agros2d.test("Temperature", point["T"], 263.811616)
-testG = agros2d.test("Gradient", point["G"], 4615.703047)
-testGr = agros2d.test("Gradient - r", point["Gr"], 808.030874788)
-testGz = agros2d.test("Gradient - z", point["Gz"], -4544.425)
-testF = agros2d.test("Heat flux", point["F"], 2.400166e5)
-testFr = agros2d.test("Heat flux - r", point["Fr"], 42017.605489)
-testFz = agros2d.test("Heat flux - z", point["Fz"], -2.363101e5)
+testT = agros2d.test("Temperature", point["T"], 105.414118)
+testG = agros2d.test("Gradient", point["G"], 2890.873908)
+testGr = agros2d.test("Gradient - r", point["Gr"], 370.891549)
+testGz = agros2d.test("Gradient - z", point["Gz"], -2866.982692)
+testF = agros2d.test("Heat flux", point["F"], 1.503254e5)
+testFr = agros2d.test("Heat flux - r", point["Fr"], 19286.360576)
+testFz = agros2d.test("Heat flux - z", point["Fz"], -1.490831e5)
 
 # volume integral
 volume = heat.volume_integrals([0])
-testTavg = agros2d.test("Temperature", volume["T"], 0.949673)
+testTavg = agros2d.test("Temperature", volume["T"], 0.616202)
 
 # surface integral
 surface = heat.surface_integrals([1])
-testFlux = agros2d.test("Heat flux", surface["f"], 333.504915)
+testFlux = agros2d.test("Heat flux", surface["f"], 199.0004)
 
 print("Test: Heat transfer steady state - axisymmetric: " + str(testT and testG and testGr and testGz and testF and testFr and testFz and testTavg and testFlux))
