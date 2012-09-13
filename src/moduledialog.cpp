@@ -191,6 +191,8 @@ ModuleItemLocalValue::ModuleItemLocalValue(ModuleDialog *moduleDialog, const QSt
         txtAxiR->setText(QString::fromStdString(expr->axi_r().get()));
         txtAxiZ->setText(QString::fromStdString(expr->axi_z().get()));
     }
+
+    setLayout(layout);
 }
 
 void ModuleItemLocalValue::save()
@@ -835,13 +837,16 @@ ModulePreprocessorDialog::ModulePreprocessorDialog(ModuleDialog *moduleDialog, X
     if (quant->default_().present())
         txtDefault->setText(QString::number(quant->default_().get()));
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(new QLabel(tr("Condition:")), 0, 1);
-    layout->addWidget(txtCondition, 0, 2);
-    layout->addWidget(new QLabel(tr("Default:")), 0, 3);
-    layout->addWidget(txtDefault, 0, 4);
+    QGridLayout *layoutConstraints = new QGridLayout;
+    layoutConstraints->addWidget(new QLabel(tr("Condition:")), 0, 1);
+    layoutConstraints->addWidget(txtCondition, 0, 2);
+    layoutConstraints->addWidget(new QLabel(tr("Default:")), 0, 3);
+    layoutConstraints->addWidget(txtDefault, 0, 4);
 
-    layoutMain->addLayout(layout);
+    QGroupBox *grpConstraints = new QGroupBox(tr("Constraints and default value"));
+    grpConstraints->setLayout(layoutConstraints);
+
+    layoutMain->addWidget(grpConstraints);
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
 }

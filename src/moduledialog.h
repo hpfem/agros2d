@@ -184,10 +184,6 @@ protected:
     HtmlValueEdit *txtUnitHtml;
     QLineEdit *txtUnitLatex;
 
-    //ModuleDialogTextEdit *txtCondition;
-    QLineEdit *txtCondition;
-    QLineEdit *txtDefault;
-
     QList<ModuleItem *> items;
 
     QVBoxLayout *layoutMain;
@@ -332,6 +328,9 @@ protected slots:
 
 private:
     XMLModule::quantity *m_quant;
+
+    QLineEdit *txtCondition;
+    QLineEdit *txtDefault;
 };
 
 class ModuleItemLocalValueDialog : public ModuleItemDialog
