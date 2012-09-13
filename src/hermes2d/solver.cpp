@@ -531,7 +531,7 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
-    if (Util::problem()->config()->timeStepMethod() == TimeStepMethod_BDF2)
+    if (Util::problem()->isTransient() && Util::problem()->config()->timeStepMethod() == TimeStepMethod_BDF2)
     {
         BDF2BTable bdf2BTable;
         //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
