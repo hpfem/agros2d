@@ -612,6 +612,11 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
     MultiSolutionArray<Scalar> msaRef;
 
+    // to be used as starting vector for the Newton solver
+    MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
+    if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
+        previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
+
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
     {
@@ -625,9 +630,14 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msa.spaces()), Util::problem()->actualTime());
 
+    BDF2ATable bdf2ATable;
+    //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
+    bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
+    bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
+
     WeakFormAgros<double> wf(m_block);
     wf.set_current_time(Util::problem()->actualTime());
-    wf.registerForms(NULL);
+    wf.registerForms(&bdf2ATable);
 
     msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msaRef.spaces()), Util::problem()->actualTime());
@@ -639,7 +649,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     Scalar* coeffVec = new Scalar[ndof];
 
     // solve reference problem
-    solveOneProblem(&wf, coeffVec, msaRef);
+    solveOneProblem(&wf, coeffVec, msaRef, previousTSMultiSolutionArray.size() != 0 ? &previousTSMultiSolutionArray : NULL);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;

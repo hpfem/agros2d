@@ -516,12 +516,9 @@ void Problem::solveAction()
 
                     solver->createInitialSpace(timeStep);
                     solver->solveSimple(timeStep, 0, false);
-                    if (isTransient() && config()->timeStepMethod() == TimeStepMethod_BDF2)
-                        nextTimeStepLength = solver->estimateTimeStepLenght(timeStep);
                 }
                 else
                 {
-                    assert(!block->isTransient());
                     //                    if(block->isTransient())
                     //                    {
                     //                        // pak vyuzit toho, ze mam vsechny adaptivni kroky z predchozi casove vrstvy
@@ -530,16 +527,18 @@ void Problem::solveAction()
                     //                        return;
                     //                    }
 
-                    solver->createInitialSpace(timeStep - 1);
+                    solver->createInitialSpace(timeStep);
                     int adaptStep = 1;
                     bool continueAdaptivity = true;
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
                     {
-                        solver->solveReferenceAndProject(timeStep - 1, adaptStep - 1, false);
-                        continueAdaptivity = solver->createAdaptedSpace(timeStep - 1, adaptStep);
+                        solver->solveReferenceAndProject(timeStep, adaptStep - 1, false);
+                        continueAdaptivity = solver->createAdaptedSpace(timeStep, adaptStep);
                         adaptStep++;
                     }
                 }
+                if (isTransient() && config()->timeStepMethod() == TimeStepMethod_BDF2)
+                    nextTimeStepLength = solver->estimateTimeStepLenght(timeStep);
 
             }
         }
