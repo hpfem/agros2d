@@ -199,7 +199,7 @@ void SceneViewPost3D::paintScalarField3D()
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         glPushMatrix();
-        glScaled(1.0, 1.0, max / Util::config()->scalarView3DHeight * 1.0/(fabs(Util::config()->scalarRangeMin - Util::config()->scalarRangeMax)));
+        glScaled(1.0, 1.0, max / Util::config()->scalarView3DHeight * fabs(irange));
 
         initLighting();
         // init normal
@@ -262,6 +262,8 @@ void SceneViewPost3D::paintScalarField3D()
 
         // draw blended mesh
         glEnable(GL_BLEND);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
