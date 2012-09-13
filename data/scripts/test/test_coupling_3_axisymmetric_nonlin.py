@@ -3,11 +3,8 @@ import agros2d
 # model
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
-problem.name = "unnamed"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
-problem.time_step = 1
-problem.time_total = 1
 
 # palette quality
 agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
@@ -52,7 +49,7 @@ elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displace
 elasticity.add_boundary("Fixed free", "elasticity_fixed_free", {"elasticity_displacement_x" : 0, "elasticity_force_y" : 0})
 elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})
 
-elasticity.add_material("Material", {"elasticity_alpha" : 2.3e-05, "elasticity_force_x" : 0, "elasticity_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 300, "elasticity_young_modulus" : 7e+10})
+elasticity.add_material("Material", {"elasticity_alpha" : 2.3e-05, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 300, "elasticity_young_modulus" : 7e+10})
 
 # geometry
 geometry = agros2d.geometry
