@@ -483,38 +483,39 @@ void PreprocessorWidget::showInfo()
 
     // template
     std::string info;
-    ctemplate::TemplateDictionary problem("info");
+    ctemplate::TemplateDictionary problemInfo("info");
 
-    problem.SetValue("STYLESHEET", style);
-    problem.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
+    problemInfo.SetValue("STYLESHEET", style);
+    problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
-    problem.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problem.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::problem()->config()->coordinateType()).toStdString());
+    problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
+    problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::problem()->config()->coordinateType()).toStdString());
 
-    if (Util::problem()->config()->frequency() > 0)
-    {
-        problem.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-        problem.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
-        problem.ShowSection("FREQUENCY");
-    }
-    if (Util::problem()->config()->timeTotal().number() > 0)
-    {
-        problem.SetValue("TIME_STEP_METHOD_LABEL", tr("Method:").toStdString());
-        problem.SetValue("TIME_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
-        problem.SetValue("TIME_STEP_ORDER_LABEL", tr("Order:").toStdString());
-        problem.SetValue("TIME_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
-        problem.SetValue("TIME_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
-        problem.SetValue("TIME_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStep()).toStdString() + " s");
-        problem.SetValue("TIME_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
-        problem.SetValue("TIME_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
-        problem.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-        problem.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
-        problem.ShowSection("TRANSIENT");
-    }
+    if (Util::problem()->isHarmonic())
+        problemInfo.ShowSection("HARMONIC");
+        problemInfo.SetValue("HARMONIC_LABEL", tr("Harmonic analysis").toStdString());
+        problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
+        problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
+
+    if (Util::problem()->isTransient())
+        problemInfo.ShowSection("TRANSIENT");
+    problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_ORDER_LABEL", tr("Order:").toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
+    problemInfo.SetValue("TRANSIENT_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
+    problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Util::problem()->config()->timeMethodTolerance().number()).toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStep()).toStdString() + " s");
+    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
+    problemInfo.SetValue("TRANSIENT_TOTAL_LABEL", tr("Total time:").toStdString());
+    problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
 
     foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
     {
-        ctemplate::TemplateDictionary *field = problem.AddSectionDictionary("FIELD");
+        ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD");
 
         field->SetValue("PHYSICAL_FIELDID", fieldInfo->fieldId().toStdString());
         field->SetValue("PHYSICAL_FIELD", fieldInfo->name().toStdString());
@@ -544,7 +545,7 @@ void PreprocessorWidget::showInfo()
         */
     }
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/preprocessor.tpl", ctemplate::DO_NOT_STRIP, &problem, &info);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/preprocessor.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
     webView->setHtml(QString::fromStdString(info));
 
     setFocus();

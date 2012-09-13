@@ -117,20 +117,25 @@ void InfoWidget::showInfo()
 
     if (Util::problem()->isHarmonic())
         problemInfo.ShowSection("HARMONIC");
-    problemInfo.SetValue("FREQUENCY_LABEL", tr("Frequency:").toStdString());
-    problemInfo.SetValue("FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
+    problemInfo.SetValue("HARMONIC_LABEL", tr("Harmonic analysis").toStdString());
+    problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
+    problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
+
     if (Util::problem()->isTransient())
         problemInfo.ShowSection("TRANSIENT");
-    problemInfo.SetValue("TIME_STEP_METHOD_LABEL", tr("Method:").toStdString());
-    problemInfo.SetValue("TIME_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
-    problemInfo.SetValue("TIME_STEP_ORDER_LABEL", tr("Order:").toStdString());
-    problemInfo.SetValue("TIME_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
-    problemInfo.SetValue("TIME_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
-    problemInfo.SetValue("TIME_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStep()).toStdString() + " s");
-    problemInfo.SetValue("TIME_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
-    problemInfo.SetValue("TIME_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
-    problemInfo.SetValue("TIME_TOTAL_LABEL", tr("Total time:").toStdString());
-    problemInfo.SetValue("TIME_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
+    problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_ORDER_LABEL", tr("Order:").toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
+    problemInfo.SetValue("TRANSIENT_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
+    problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Util::problem()->config()->timeMethodTolerance().number()).toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStep()).toStdString() + " s");
+    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
+    problemInfo.SetValue("TRANSIENT_TOTAL_LABEL", tr("Total time:").toStdString());
+    problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
 
     problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
     problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());

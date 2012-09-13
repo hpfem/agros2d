@@ -43,28 +43,31 @@
 	<tr>
 		<td><b>{{COORDINATE_TYPE_LABEL}}</b></td><td>{{COORDINATE_TYPE}}</td>
 	</tr>
-	{{#FREQUENCY}}
-	<tr>
-		<td><b>{{FREQUENCY_LABEL}}</b></td><td>{{FREQUENCY}}</td>
-	</tr>
-	{{/FREQUENCY}}
-	{{#TRANSIENT}}
+    {{#HARMONIC}}
     <tr>
-        <td><b>{{TIME_STEP_METHOD_LABEL}}</b></td><td>{{TIME_STEP_METHOD}}</td>
+    <td colspan="2">
+        <h3>{{HARMONIC_LABEL}}</h3>
+        <table>
+            <tr><td><b>{{HARMONIC_FREQUENCY_LABEL}}</b></td><td>{{HARMONIC_FREQUENCY}}</td></tr>
+        </table>
+    </td>
     </tr>
+    {{/HARMONIC}}
+    {{#TRANSIENT}}
     <tr>
-        <td><b>{{TIME_STEP_ORDER_LABEL}}</b></td><td>{{TIME_STEP_ORDER}}</td>
+    <td colspan="2">
+        <h3>{{TRANSIENT_LABEL}}</h3>
+        <table>
+            <tr><td><b>{{TRANSIENT_STEP_METHOD_LABEL}}</b></td><td>{{TRANSIENT_STEP_METHOD}}</td></tr>
+            <tr><td><b>{{TRANSIENT_STEP_ORDER_LABEL}}</b></td><td>{{TRANSIENT_STEP_ORDER}}</td></tr>
+            <tr><td><b>{{TRANSIENT_TOLERANCE_LABELS}}</b></td><td>{{TRANSIENT_TOLERANCE}}</td></tr>
+            <tr><td><b>{{TRANSIENT_CONSTANT_NUM_STEPS_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_NUM_STEPS}}</td></tr>
+            <tr><td><b>{{TRANSIENT_CONSTANT_STEP_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_STEP}}</td></tr>
+            <tr><td><b>{{TRANSIENT_TOTAL_LABEL}}</b></td><td>{{TRANSIENT_TOTAL}}</td></tr>
+        </table>
+    </td>
     </tr>
-    <tr>
-        <td><b>{{TIME_CONSTANT_STEP_LABEL}}</b></td><td>{{TIME_CONSTANT_STEP}}</td>
-    </tr>
-    <tr>
-        <td><b>{{TIME_CONSTANT_NUM_STEPS_LABEL}}</b></td><td>{{TIME_CONSTANT_NUM_STEPS}}</td>
-    </tr>
-    <tr>
-        <td><b>{{TIME_TOTAL_LABEL}}</b></td><td>{{TIME_TOTAL}}</td>
-	</tr>
-	{{/TRANSIENT}}	
+    {{/TRANSIENT}}
 </table>
 </div>
 
