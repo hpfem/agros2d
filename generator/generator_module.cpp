@@ -1075,7 +1075,6 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             {
                 if (quantity.shortname().present())
                 {
-                    // if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
                     QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
 
                     if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
@@ -1122,6 +1121,148 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                         dict[QString::fromStdString(quantity.shortname().get())] = QString("%1.value(Util::problem()->actualTime(), Point(x, y))").
                                 arg(QString::fromStdString(quantity.shortname().get()));
                     }
+                }
+            }
+        }
+
+        LexicalAnalyser *lex = weakFormLexicalAnalyser(analysisType, coordinateType);
+        lex->setExpression(expr);
+        QString exprCpp = lex->replaceVariables(dict);
+
+        // TODO: move from lex
+        exprCpp = lex->replaceOperatorByFunction(exprCpp);
+
+        delete lex;
+
+        return exprCpp;
+    }
+    catch (ParserException e)
+    {
+        qDebug() << e.toString() << "in module: " << QString::fromStdString(m_module->general().id());
+
+        return "";
+    }
+}
+
+QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType,
+                                                             const QString &expr)
+{
+    try
+    {
+        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
+
+        QMap<QString, QString> dict;
+
+        // coordinates
+        if (coordinateType == CoordinateType_Planar)
+        {
+            dict["x"] = "1";
+            dict["y"] = "1";
+        }
+        else
+        {
+            dict["r"] = "1";
+            dict["z"] = "1";
+        }
+
+        // constants
+        dict["PI"] = "M_PI";
+        dict["f"] = "Util::problem()->config()->frequency()";
+        foreach (XMLModule::constant cnst, m_module->constants().constant())
+            dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
+
+        // functions
+        dict["uval"] = "1";
+        dict["vval"] = "1";
+        dict["upval"] = "1";
+        dict["uptval"] = "1";
+        dict["deltat"] = "Util::problem()->actualTimeStepLength()";
+        dict["timedermat"] = "1";
+        dict["timedervec"] = "1";
+        dict["timederres"] = "1";
+
+        if (coordinateType == CoordinateType_Planar)
+        {
+            dict["udx"] = "1";
+            dict["vdx"] = "1";
+            dict["udy"] = "1";
+            dict["vdy"] = "1";
+            dict["updx"] = "1";
+            dict["updy"] = "1";
+            dict["uptdx"] = "1";
+            dict["uptdy"] = "1";
+        }
+        else
+        {
+            dict["udr"] = "1";
+            dict["vdr"] = "1";
+            dict["udz"] = "1";
+            dict["vdz"] = "1";
+            dict["updr"] = "1";
+            dict["updz"] = "1";
+            dict["uptdr"] = "1";
+            dict["uptdz"] = "1";
+        }
+
+        for (int i = 1; i < numOfSol + 1; i++)
+        {
+            dict[QString("value%1").arg(i)] = QString("1");
+
+            if (coordinateType == CoordinateType_Planar)
+            {
+                dict[QString("dx%1").arg(i)] = QString("1");
+                dict[QString("dy%1").arg(i)] = QString("1");
+            }
+            else
+            {
+                dict[QString("dr%1").arg(i)] = QString("1");
+                dict[QString("dz%1").arg(i)] = QString("1");
+            }
+        }
+
+        // variables
+        foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+        {
+            if (quantity.shortname().present())
+            {
+                QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
+
+                if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+                {
+                    // linear material
+                    dict[QString::fromStdString(quantity.shortname().get())] = QString("material->value(\"%1\").number()").
+                            arg(QString::fromStdString(quantity.id()));
+                }
+                else
+                {
+                    // nonlinear material
+                    dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                    dict["d" + QString::fromStdString(quantity.shortname().get())] = "1";
+                }
+            }
+        }
+
+        foreach (XMLModule::quantity quantity, m_module->surface().quantity())
+        {
+            if (quantity.shortname().present())
+            {
+                QString dep = dependence(QString::fromStdString(quantity.id()), analysisType);
+
+                if (dep.isEmpty() || dep == "time")
+                {
+                    // linear boundary condition
+                    dict[QString::fromStdString(quantity.shortname().get())] = QString("boundary->value(\"%1\").number()").
+                            arg(QString::fromStdString(quantity.id()));
+                }
+                else if (dep == "space")
+                {
+                    // spacedep boundary condition
+                    dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                }
+                else if (dep == "time-space")
+                {
+                    // spacedep boundary condition
+                    dict[QString::fromStdString(quantity.shortname().get())] = "1";
                 }
             }
         }
@@ -1207,10 +1348,16 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 field->SetValue("ROW_INDEX", QString::number(form.i()).toStdString());
                 field->SetValue("MODULE_ID", m_module->general().id());
 
-                QString exprCpp;
-                exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                  coordinateType, linearityType, expression);
+                // expression
+                QString exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                          coordinateType, linearityType, expression);
                 field->SetValue("EXPRESSION", exprCpp.toStdString());
+                // expression check
+                QString exprCppCheck = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                               coordinateType, linearityType, expression);
+                field->SetValue("EXPRESSION_CHECK", exprCppCheck.toStdString());
+
+                // add weakform
                 field = output.AddSectionDictionary("SOURCE");
                 field->SetValue("FUNCTION_NAME", functionName.toStdString());
             }

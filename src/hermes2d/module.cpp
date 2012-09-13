@@ -113,7 +113,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 
     if (type == WeakForm_MatVol)
     {
-        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form->i, form->j, offsetI, offsetJ);
+        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form->i, form->j, offsetI, offsetJ,
+                                                                          static_cast<Material *>(markerSource));
+        if (!weakFormAgros) return NULL;
+
         // symmetric flag
         weakFormAgros->setSymFlag(form->sym);
         // source marker
@@ -127,6 +130,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     {
         MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
                                                                             static_cast<Boundary *>(markerSource));
+        if (!weakFormAgros) return NULL;
+
         // source marker
         weakFormAgros->setMarkerSource(markerSource);
 
@@ -134,7 +139,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     }
     else if (type == WeakForm_VecVol)
     {
-        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form->i, form->j, offsetI, offsetJ);
+        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form->i, form->j, offsetI, offsetJ,
+                                                                          static_cast<Material *>(markerSource));
+        if (!weakFormAgros) return NULL;
+
         // source marker
         weakFormAgros->setMarkerSource(markerSource);
         // target marker
@@ -146,6 +154,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     {
         VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
                                                                             static_cast<Boundary *>(markerSource));
+        if (!weakFormAgros) return NULL;
+
         // source marker
         weakFormAgros->setMarkerSource(markerSource);
 
@@ -194,7 +204,9 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, form, marker, NULL, offsetI, offsetJ);
-    assert(custom_form);
+
+    // weakform with zero coefficients
+    if (!custom_form) return;
 
     if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
     {

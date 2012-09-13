@@ -62,6 +62,7 @@ private:
 
     LexicalAnalyser *weakFormLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
     QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true);
+    QString parseWeakFormExpressionCheck(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr);
 };
 
 #endif // GENERATOR_MODULE_H

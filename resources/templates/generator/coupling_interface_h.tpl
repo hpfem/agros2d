@@ -39,9 +39,8 @@ public:
     inline virtual QString fieldId() { return "{{ID}}"; }
 
     // weakforms
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ );
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ);
-    // TODO: remove Boundary from matrixFormSurf(...) and vectorFormSurf(...)
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Material *material);
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Material *material);
     virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) { assert(0); }
     virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) { assert(0); }
 

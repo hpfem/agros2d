@@ -24,7 +24,7 @@
 
 #include "util.h"
 
-MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
+MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Material *material)
 {
 	{{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{SOURCE_ANALYSIS_TYPE}})
@@ -36,7 +36,7 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
     return NULL;
 }
 
-VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ)
+VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Material *material)
 {
 	{{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{SOURCE_ANALYSIS_TYPE}})
