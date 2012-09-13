@@ -32,8 +32,8 @@ elasticity.linearity_type = "linear"
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
 elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})
 
-elasticity.add_material("Mild steel", {"elasticity_alpha" : 15e-6, "elasticity_force_x" : 0, "elasticity_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 20, "elasticity_young_modulus" : 208e9})
-elasticity.add_material("Aluminium", {"elasticity_alpha" : 23e-6, "elasticity_force_x" : 0, "elasticity_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 20, "elasticity_young_modulus" : 70e9})
+elasticity.add_material("Mild steel", {"elasticity_alpha" : 15e-6, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 20, "elasticity_young_modulus" : 208e9})
+elasticity.add_material("Aluminium", {"elasticity_alpha" : 23e-6, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 0, "elasticity_poisson_ratio" : 0.33, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 20, "elasticity_young_modulus" : 70e9})
 
 heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"

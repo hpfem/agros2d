@@ -5,7 +5,7 @@ problem = agros2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
-problem.time_step = 10
+problem.time_steps = 6
 problem.time_total = 60
 
 # palette quality

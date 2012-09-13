@@ -6,8 +6,6 @@ problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 50
-problem.time_step = 1
-problem.time_total = 1
 
 # palette quality
 agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
