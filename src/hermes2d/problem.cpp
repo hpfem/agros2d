@@ -493,9 +493,26 @@ void Problem::solveAction()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("transient step %1/%2").
-                                              arg(timeStep).
-                                              arg(Util::problem()->config()->numConstantTimeSteps()));
+                    // log analysis
+                    QString fields;
+                    foreach(Field *field, block->fields())
+                        fields += field->fieldInfo()->fieldId() + ", ";
+                    fields = fields.left(fields.length() - 2);
+
+                    if (block->isTransient())
+                    {
+                        Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
+                                                  QObject::tr("transient step %1/%2").
+                                                  arg(timeStep).
+                                                  arg(Util::problem()->config()->numConstantTimeSteps()));
+                    }
+                    else
+                    {
+                        if (block->fields().count() == 1)
+                            Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("single analysis"));
+                        else
+                            Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
+                    }
 
                     solver->createInitialSpace(timeStep);
                     solver->solveSimple(timeStep, 0, false);
@@ -566,8 +583,8 @@ void Problem::solveAdaptiveStep()
     }
 
     assert(0); // todo: revise after time step treatment changed
-//    // since transients are not allowed, I can do this
-//    setActualTime(0.);
+    //    // since transients are not allowed, I can do this
+    //    setActualTime(0.);
 
     solveActionCatchExceptions(true);
 

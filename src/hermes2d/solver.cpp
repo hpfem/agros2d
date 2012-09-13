@@ -489,7 +489,6 @@ template <typename Scalar>
 void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
     SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
-    Util::log()->printDebug(m_solverID, QObject::tr("solve"));
 
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
@@ -574,7 +573,7 @@ double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
     double nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
                              1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
 
-    Util::log()->printDebug(m_solverID, QString("Time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
+    Util::log()->printDebug(m_solverID, QString("time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
                             arg(absError / norm).
                             arg(Util::problem()->actualTimeStepLength()).
                             arg(nextTimeStepLength).
@@ -587,8 +586,6 @@ double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
 template <typename Scalar>
 void Solver<Scalar>::createInitialSpace(int timeStep)
 {
-    Util::log()->printDebug(m_solverID, QObject::tr("initial adaptivity step"));
-
     // read mesh from file
     QMap<FieldInfo*, Mesh*> meshes = readMesh();
     if (meshes.isEmpty())
