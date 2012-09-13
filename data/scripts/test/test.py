@@ -23,6 +23,7 @@ execfile("test_magnetic_harmonic_axisymmetric.py")
 execfile("test_heat_transfer_steady_planar.py")
 execfile("test_heat_transfer_steady_planar_nonlin.py")
 execfile("test_heat_transfer_steady_axisymmetric.py")
+execfile("test_heat_transfer_transient_axisymmetric_benchmark.py") # benchmark
 # execfile("test_heat_transfer_transient_axisymmetric.py") # very slow
 
 # structural mechanics
