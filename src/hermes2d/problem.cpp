@@ -482,7 +482,7 @@ void Problem::solveAction()
     }
 
     int timeStep = 1;
-    double nextTimeStep = 0;
+    double nextTimeStepLength = config()->constantTimeStep();
     bool doNextTimeStep = defineActualTimeStepLength(config()->constantTimeStep());
     while(doNextTimeStep)
     {
@@ -498,7 +498,9 @@ void Problem::solveAction()
                                               arg(Util::problem()->config()->numConstantTimeSteps()));
 
                     solver->createInitialSpace(timeStep);
-                    nextTimeStep = solver->solveSimple(timeStep, 0, false);
+                    solver->solveSimple(timeStep, 0, false);
+                    if (isTransient() && config()->timeStepMethod() == TimeStepMethod_BDF2)
+                        nextTimeStepLength = solver->estimateTimeStepLenght(timeStep);
                 }
                 else
                 {
@@ -531,7 +533,7 @@ void Problem::solveAction()
         Util::scene()->setActiveSolutionType(SolutionMode_Normal);
         //cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
 
-        doNextTimeStep = isTransient() && defineActualTimeStepLength(nextTimeStep);
+        doNextTimeStep = isTransient() && defineActualTimeStepLength(nextTimeStepLength);
     }
 
 

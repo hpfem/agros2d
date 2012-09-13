@@ -48,8 +48,10 @@ public:
     void solveInitialTimeStep();
     void createInitialSpace(int timeStep);
 
-    // returns the value of the next time step lenght (for transient problems). Either calculated in the case of adaptive or initial
-    double solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
+    // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
+    double estimateTimeStepLenght(int timeStep);
+
+    void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
     bool createAdaptedSpace(int timeStep, int adaptivityStep);
 

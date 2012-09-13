@@ -486,15 +486,15 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solution
 }
 
 template <typename Scalar>
-double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
+void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solutionExists)
 {
-    double nextTimeStepLength = Util::problem()->config()->constantTimeStep();
     SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     Util::log()->printDebug(m_solverID, QObject::tr("solve"));
 
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
 
+    // to be used as starting vector for the Newton solver
     MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
     if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
         previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
@@ -531,42 +531,6 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
 
-    if (Util::problem()->isTransient() && Util::problem()->config()->timeStepMethod() == TimeStepMethod_BDF2)
-    {
-        BDF2BTable bdf2BTable;
-        //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
-        bdf2BTable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-        bdf2BTable.setPreviousSteps(Util::problem()->timeStepLengths());
-
-        WeakFormAgros<double> wf2(m_block);
-        wf2.set_current_time(Util::problem()->actualTime());
-        wf2.registerForms(&bdf2BTable);
-
-        Scalar coefVec2[ndof];
-        MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
-        multiSolutionArray2.createNewSolutions();
-        solveOneProblem(&wf2, coefVec2, multiSolutionArray2, timeStep > 0 ? &previousTSMultiSolutionArray : NULL);
-
-        double error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
-
-        double absError = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
-        double norm = Global<Scalar>::calc_norms(desmartize(multiSolutionArray.solutions()));
-
-        // todo: if error too big, refuse step and recalculate
-
-        // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
-        nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
-                                 1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
-
-        Util::log()->printDebug(QObject::tr("Solver"), QString("Time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
-                                arg(absError / norm).
-                                arg(Util::problem()->actualTimeStepLength()).
-                                arg(nextTimeStepLength).
-                                arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()));
-
-        cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
-    }
-
     // output
     BlockSolutionID solutionID;
     solutionID.group = m_block;
@@ -574,6 +538,49 @@ double Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool soluti
     solutionID.adaptivityStep = adaptivityStep;
 
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
+}
+
+template <typename Scalar>
+double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
+{
+    MultiSolutionArray<Scalar> multiSolutionArray =
+            Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));;
+
+    BDF2BTable bdf2BTable;
+    //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
+    bdf2BTable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
+    bdf2BTable.setPreviousSteps(Util::problem()->timeStepLengths());
+
+    WeakFormAgros<double> wf2(m_block);
+    wf2.set_current_time(Util::problem()->actualTime());
+    wf2.registerForms(&bdf2BTable);
+
+    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
+    Scalar coefVec2[ndof];
+    MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
+    multiSolutionArray2.createNewSolutions();
+
+    // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
+    solveOneProblem(&wf2, coefVec2, multiSolutionArray2, timeStep > 0 ? &multiSolutionArray : NULL);
+
+    double error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+
+    double absError = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+    double norm = Global<Scalar>::calc_norms(desmartize(multiSolutionArray.solutions()));
+
+    // todo: if error too big, refuse step and recalculate
+
+    // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
+    double nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
+                             1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
+
+    Util::log()->printDebug(m_solverID, QString("Time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
+                            arg(absError / norm).
+                            arg(Util::problem()->actualTimeStepLength()).
+                            arg(nextTimeStepLength).
+                            arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()*100.));
+
+   // cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
     return nextTimeStepLength;
 }
 
