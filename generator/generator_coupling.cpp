@@ -523,13 +523,14 @@ void Agros2DGeneratorCoupling::generateForm(Form form, XMLCoupling::weakform_vol
             if (!expression.isEmpty())
             {
                 QString id = (QString::fromStdString(m_coupling->general().id().c_str())).replace("-", "_");
-                QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9").
+                QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9_%10").
                         arg(weakFormType.toLower()).
                         arg(id).
                         arg(QString::fromStdString(weakform.sourceanalysis())).
                         arg(QString::fromStdString(weakform.targetanalysis())).
                         arg(coordinateTypeToStringKey(coordinateType)).
                         arg(linearityTypeToStringKey(linearityType)).
+                        arg(QString::fromStdString(form.id())).
                         arg(QString::number(form.i())).
                         arg(QString::number(form.j())).
                         arg(QString::fromStdString(weakform.couplingtype()));
@@ -544,6 +545,7 @@ void Agros2DGeneratorCoupling::generateForm(Form form, XMLCoupling::weakform_vol
                 field->SetValue("ROW_INDEX", QString::number(form.i()).toStdString());
                 field->SetValue("COLUMN_INDEX", QString::number(form.j()).toStdString());
                 field->SetValue("MODULE_ID", id.toStdString());
+                field->SetValue("WEAKFORM_ID", form.id());
                 field->SetValue("COUPLING_TYPE", Agros2DGenerator::couplingTypeToString(weakform.couplingtype().c_str()).toStdString());
                 QString exprCpp;
                 exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis())),

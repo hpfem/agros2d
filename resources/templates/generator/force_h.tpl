@@ -27,4 +27,4 @@
 
 Point3 force{{CLASS}}(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity = Point3());
 
-#endif {{ID}}_FORCE_H
+#endif // {{ID}}_FORCE_H

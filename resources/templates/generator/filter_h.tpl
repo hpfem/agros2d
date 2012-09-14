@@ -50,4 +50,4 @@ private:
     PhysicFieldVariableComp m_physicFieldVariableComp;   
 };
 
-#endif {{ID}}_FILTER_H
+#endif // {{ID}}_FILTER_H

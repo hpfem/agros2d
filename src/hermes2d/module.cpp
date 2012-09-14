@@ -256,7 +256,8 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
                                                                       area, form, materialSource, materialTarget, offsetI, offsetJ);
-    assert(custom_form);
+    // weakform with zero coefficients
+    if (!custom_form) return;
 
     // TODO at the present moment, it is impossible to have more sources !
     //assert(field->m_couplingSources.size() <= 1);
