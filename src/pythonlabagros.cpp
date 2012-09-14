@@ -136,9 +136,12 @@ QString createPythonFromModel()
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->initialCondition().number());
 
+            // TODO: change to time interval skip
+            /*
             str += QString("%1.time_steps_skip = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->timeStepsSkip().number());
+            */
         }
 
         if (fieldInfo->numberOfRefinements() > 0)
@@ -336,7 +339,7 @@ QString createPythonFromModel()
                 {
                     if (fieldInfo->labelPolynomialOrder(label) > 0)
                     {
-                        orders += QString("\"%1\" : \"%2\", ").
+                        orders += QString("\"%1\" : %2, ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->labelPolynomialOrder(label));
                     }
