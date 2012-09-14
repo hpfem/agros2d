@@ -378,15 +378,15 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 void FieldWidget::doTransientTimeStepsChanged()
 {
     QString timeSteps = "1";
-    for (int i = 2; i < Util::problem()->numTimeSteps(); i++)
+    for (int i = 2; i < Util::problem()->actualTimeStep(); i++)
     {
         if ((txtTransientTimeStepsSkip->value().number() > 0)
                 && ((i % (int) txtTransientTimeStepsSkip->value().number()) == 0))
             timeSteps += QString(", %1").arg(i);
     }
 
-    if (Util::problem()->numTimeSteps() > 1)
-        timeSteps += QString(", %1").arg(Util::problem()->numTimeSteps());
+    if (Util::problem()->actualTimeStep() > 1)
+        timeSteps += QString(", %1").arg(Util::problem()->actualTimeStep());
 
     lblTransientTimeStepsSkip->setText(timeSteps);
 }

@@ -212,7 +212,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
     if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
     {
-        int lastTimeStep = Util::solutionStore()->lastTimeStep(field->fieldInfo(), SolutionMode_Normal);
+        int lastTimeStep = Util::problem()->actualTimeStep() - 1; // todo: check
 
         Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
         for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)

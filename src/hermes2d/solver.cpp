@@ -514,10 +514,11 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
 
     BDF2ATable bdf2ATable;
-    //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
-    bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-    bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
-
+    if(m_block->isTransient())
+    {
+        bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
+        bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
+    }
     WeakFormAgros<double> wf(m_block);
     wf.set_current_time(Util::problem()->actualTime());
     wf.registerForms(&bdf2ATable);
@@ -631,10 +632,11 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msa.spaces()), Util::problem()->actualTime());
 
     BDF2ATable bdf2ATable;
-    //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
-    bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-    bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
-
+    if(m_block->isTransient())
+    {
+        bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
+        bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
+    }
     WeakFormAgros<double> wf(m_block);
     wf.set_current_time(Util::problem()->actualTime());
     wf.registerForms(&bdf2ATable);

@@ -456,6 +456,10 @@ void Problem::solve()
 
 }
 
+//adaptivity step: from 0, if no adaptivity, than 0
+//time step: from 0 (initial condition), if block is not transient, calculate allways (todo: timeskipping)
+//if no block transient, everything in timestep 0
+
 void Problem::solveAction()
 {
     clearSolution();
@@ -477,19 +481,20 @@ void Problem::solveAction()
     foreach (Block* block, m_blocks)
     {
         solvers[block] = block->prepareSolver();
-        if (block->isTransient())
-            solvers[block]->solveInitialTimeStep();
     }
 
-    int timeStep = 1;
     double nextTimeStepLength = config()->constantTimeStep();
-    bool doNextTimeStep = defineActualTimeStepLength(config()->constantTimeStep());
+    bool doNextTimeStep = true;
     while(doNextTimeStep)
     {
         foreach (Block* block, m_blocks)
         {
             Solver<double>* solver = solvers[block];
-            if (!(block->isTransient() && (timeStep == 0)) && (!block->skipThisTimeStep(timeStep)))
+            if (block->isTransient() && (actualTimeStep() == 0))
+            {
+                solvers[block]->solveInitialTimeStep();
+            }
+            else if(!block->skipThisTimeStep(actualTimeStep()))
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
@@ -503,7 +508,7 @@ void Problem::solveAction()
                     {
                         Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
                                                   QObject::tr("transient step %1/%2").
-                                                  arg(timeStep).
+                                                  arg(actualTimeStep()).
                                                   arg(Util::problem()->config()->numConstantTimeSteps()));
                     }
                     else
@@ -514,8 +519,8 @@ void Problem::solveAction()
                             Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
                     }
 
-                    solver->createInitialSpace(timeStep);
-                    solver->solveSimple(timeStep, 0, false);
+                    solver->createInitialSpace(actualTimeStep());
+                    solver->solveSimple(actualTimeStep(), 0, false);
                 }
                 else
                 {
@@ -527,23 +532,27 @@ void Problem::solveAction()
                     //                        return;
                     //                    }
 
-                    solver->createInitialSpace(timeStep);
+                    solver->createInitialSpace(actualTimeStep());
                     int adaptStep = 1;
                     bool continueAdaptivity = true;
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
                     {
-                        solver->solveReferenceAndProject(timeStep, adaptStep - 1, false);
-                        continueAdaptivity = solver->createAdaptedSpace(timeStep, adaptStep);
+                        solver->solveReferenceAndProject(actualTimeStep(), adaptStep - 1, false);
+                        continueAdaptivity = solver->createAdaptedSpace(actualTimeStep(), adaptStep);
                         adaptStep++;
                     }
                 }
-                if (isTransient() && config()->timeStepMethod() == TimeStepMethod_BDF2)
-                    nextTimeStepLength = solver->estimateTimeStepLenght(timeStep);
+
+                // todo: it should be estimated in the first step as well
+                // todo: what if more blocks are transient? (take minimum? )
+                if (isTransient() && (config()->timeStepMethod() == TimeStepMethod_BDF2) && (actualTimeStep() >=1))
+                    nextTimeStepLength = solver->estimateTimeStepLenght(actualTimeStep());
 
             }
         }
-        timeStep++;
 
+
+        // todo: remove
         Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
         Util::scene()->setActiveSolutionType(SolutionMode_Normal);

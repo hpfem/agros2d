@@ -188,8 +188,7 @@ public:
     double timeStepToTime(int timeStepIndex) const;
     int timeToTimeStep(double time) const;
 
-    // terminology: time step from one time level to next one
-    int numTimeSteps() {return m_timeStepLengths.size(); }
+    int actualTimeStep() {return m_timeStepLengths.size(); }
 
     // terminlolgy: time levels are actual times, whre calculations are performed
     int numTimeLevels() {return m_timeStepLengths.size() + 1; }
