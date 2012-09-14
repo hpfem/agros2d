@@ -205,7 +205,7 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
                     assert(plugin);
 
                     // exact solution - Dirichlet BC
-                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form->i, meshes[fieldInfo]);
+                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form, meshes[fieldInfo]);
                     function->setMarkerSource(boundary);
 
                     EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);

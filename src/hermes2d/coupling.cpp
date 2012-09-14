@@ -214,14 +214,14 @@ void Coupling::read(const QString &filename)
             for (int i = 0; i < wf.matrix_form().size(); i++)
             {
                 XMLCoupling::matrix_form form = wf.matrix_form().at(i);
-                m_wfMatrixVolumeExpression.push_back(new FormInfo(form.i(), form.j()));
+                m_wfMatrixVolumeExpression.push_back(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
             }
 
             // vector form
             for (int i = 0; i < wf.vector_form().size(); i++)
             {
                 XMLCoupling::vector_form form = wf.vector_form().at(i);
-                m_wfVectorVolumeExpression.push_back(new FormInfo(form.i(), form.j()));
+                m_wfVectorVolumeExpression.push_back(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
             }
         }
     }

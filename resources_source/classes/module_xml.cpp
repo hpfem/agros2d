@@ -2923,6 +2923,30 @@ namespace XMLModule
   // matrix_form
   // 
 
+  const matrix_form::id_type& matrix_form::
+  id () const
+  {
+    return this->id_.get ();
+  }
+
+  matrix_form::id_type& matrix_form::
+  id ()
+  {
+    return this->id_.get ();
+  }
+
+  void matrix_form::
+  id (const id_type& x)
+  {
+    this->id_.set (x);
+  }
+
+  void matrix_form::
+  id (::std::auto_ptr< id_type > x)
+  {
+    this->id_.set (x);
+  }
+
   const matrix_form::i_type& matrix_form::
   i () const
   {
@@ -3083,6 +3107,30 @@ namespace XMLModule
   // vector_form
   // 
 
+  const vector_form::id_type& vector_form::
+  id () const
+  {
+    return this->id_.get ();
+  }
+
+  vector_form::id_type& vector_form::
+  id ()
+  {
+    return this->id_.get ();
+  }
+
+  void vector_form::
+  id (const id_type& x)
+  {
+    this->id_.set (x);
+  }
+
+  void vector_form::
+  id (::std::auto_ptr< id_type > x)
+  {
+    this->id_.set (x);
+  }
+
   const vector_form::i_type& vector_form::
   i () const
   {
@@ -3218,6 +3266,30 @@ namespace XMLModule
 
   // essential_form
   // 
+
+  const essential_form::id_type& essential_form::
+  id () const
+  {
+    return this->id_.get ();
+  }
+
+  essential_form::id_type& essential_form::
+  id ()
+  {
+    return this->id_.get ();
+  }
+
+  void essential_form::
+  id (const id_type& x)
+  {
+    this->id_.set (x);
+  }
+
+  void essential_form::
+  id (::std::auto_ptr< id_type > x)
+  {
+    this->id_.set (x);
+  }
 
   const essential_form::i_type& essential_form::
   i () const
@@ -7167,13 +7239,15 @@ namespace XMLModule
   //
 
   matrix_form::
-  matrix_form (const i_type& i,
+  matrix_form (const id_type& id,
+               const i_type& i,
                const j_type& j,
                const planar_linear_type& planar_linear,
                const axi_linear_type& axi_linear,
                const planar_newton_type& planar_newton,
                const axi_newton_type& axi_newton)
   : ::xml_schema::type (),
+    id_ (id, ::xml_schema::flags (), this),
     i_ (i, ::xml_schema::flags (), this),
     j_ (j, ::xml_schema::flags (), this),
     planar_linear_ (planar_linear, ::xml_schema::flags (), this),
@@ -7189,6 +7263,7 @@ namespace XMLModule
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    id_ (x.id_, f, this),
     i_ (x.i_, f, this),
     j_ (x.j_, f, this),
     planar_linear_ (x.planar_linear_, f, this),
@@ -7204,6 +7279,7 @@ namespace XMLModule
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    id_ (f, this),
     i_ (f, this),
     j_ (f, this),
     planar_linear_ (f, this),
@@ -7228,6 +7304,15 @@ namespace XMLModule
       const ::xercesc::DOMAttr& i (p.next_attribute ());
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "id" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< id_type > r (
+          id_traits::create (i, f, this));
+
+        this->id_.set (r);
+        continue;
+      }
 
       if (n.name () == "i" && n.namespace_ ().empty ())
       {
@@ -7282,6 +7367,13 @@ namespace XMLModule
         this->symmetric_.set (symmetric_traits::create (i, f, this));
         continue;
       }
+    }
+
+    if (!id_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "id",
+        "");
     }
 
     if (!i_.present ())
@@ -7343,13 +7435,15 @@ namespace XMLModule
   //
 
   vector_form::
-  vector_form (const i_type& i,
+  vector_form (const id_type& id,
+               const i_type& i,
                const j_type& j,
                const planar_linear_type& planar_linear,
                const axi_linear_type& axi_linear,
                const planar_newton_type& planar_newton,
                const axi_newton_type& axi_newton)
   : ::xml_schema::type (),
+    id_ (id, ::xml_schema::flags (), this),
     i_ (i, ::xml_schema::flags (), this),
     j_ (j, ::xml_schema::flags (), this),
     planar_linear_ (planar_linear, ::xml_schema::flags (), this),
@@ -7364,6 +7458,7 @@ namespace XMLModule
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    id_ (x.id_, f, this),
     i_ (x.i_, f, this),
     j_ (x.j_, f, this),
     planar_linear_ (x.planar_linear_, f, this),
@@ -7378,6 +7473,7 @@ namespace XMLModule
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    id_ (f, this),
     i_ (f, this),
     j_ (f, this),
     planar_linear_ (f, this),
@@ -7401,6 +7497,15 @@ namespace XMLModule
       const ::xercesc::DOMAttr& i (p.next_attribute ());
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "id" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< id_type > r (
+          id_traits::create (i, f, this));
+
+        this->id_.set (r);
+        continue;
+      }
 
       if (n.name () == "i" && n.namespace_ ().empty ())
       {
@@ -7449,6 +7554,13 @@ namespace XMLModule
         this->axi_newton_.set (r);
         continue;
       }
+    }
+
+    if (!id_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "id",
+        "");
     }
 
     if (!i_.present ())
@@ -7510,12 +7622,14 @@ namespace XMLModule
   //
 
   essential_form::
-  essential_form (const i_type& i,
+  essential_form (const id_type& id,
+                  const i_type& i,
                   const axi_linear_type& axi_linear,
                   const planar_linear_type& planar_linear,
                   const axi_newton_type& axi_newton,
                   const planar_newton_type& planar_newton)
   : ::xml_schema::type (),
+    id_ (id, ::xml_schema::flags (), this),
     i_ (i, ::xml_schema::flags (), this),
     axi_linear_ (axi_linear, ::xml_schema::flags (), this),
     planar_linear_ (planar_linear, ::xml_schema::flags (), this),
@@ -7529,6 +7643,7 @@ namespace XMLModule
                   ::xml_schema::flags f,
                   ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    id_ (x.id_, f, this),
     i_ (x.i_, f, this),
     axi_linear_ (x.axi_linear_, f, this),
     planar_linear_ (x.planar_linear_, f, this),
@@ -7542,6 +7657,7 @@ namespace XMLModule
                   ::xml_schema::flags f,
                   ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    id_ (f, this),
     i_ (f, this),
     axi_linear_ (f, this),
     planar_linear_ (f, this),
@@ -7564,6 +7680,15 @@ namespace XMLModule
       const ::xercesc::DOMAttr& i (p.next_attribute ());
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "id" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< id_type > r (
+          id_traits::create (i, f, this));
+
+        this->id_.set (r);
+        continue;
+      }
 
       if (n.name () == "i" && n.namespace_ ().empty ())
       {
@@ -7606,6 +7731,13 @@ namespace XMLModule
         this->planar_newton_.set (r);
         continue;
       }
+    }
+
+    if (!id_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "id",
+        "");
     }
 
     if (!i_.present ())
@@ -8439,6 +8571,7 @@ namespace XMLModule
   ::std::ostream&
   operator<< (::std::ostream& o, const matrix_form& i)
   {
+    o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "i: " << i.i ();
     o << ::std::endl << "j: " << i.j ();
     o << ::std::endl << "planar_linear: " << i.planar_linear ();
@@ -8456,6 +8589,7 @@ namespace XMLModule
   ::std::ostream&
   operator<< (::std::ostream& o, const vector_form& i)
   {
+    o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "i: " << i.i ();
     o << ::std::endl << "j: " << i.j ();
     o << ::std::endl << "planar_linear: " << i.planar_linear ();
@@ -8468,6 +8602,7 @@ namespace XMLModule
   ::std::ostream&
   operator<< (::std::ostream& o, const essential_form& i)
   {
+    o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "i: " << i.i ();
     o << ::std::endl << "axi_linear: " << i.axi_linear ();
     o << ::std::endl << "planar_linear: " << i.planar_linear ();
@@ -10545,6 +10680,17 @@ namespace XMLModule
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
+    // id
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "id",
+          e));
+
+      a << i.id ();
+    }
+
     // i
     //
     {
@@ -10629,6 +10775,17 @@ namespace XMLModule
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
+    // id
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "id",
+          e));
+
+      a << i.id ();
+    }
+
     // i
     //
     {
@@ -10700,6 +10857,17 @@ namespace XMLModule
   operator<< (::xercesc::DOMElement& e, const essential_form& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
+
+    // id
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "id",
+          e));
+
+      a << i.id ();
+    }
 
     // i
     //

@@ -332,6 +332,7 @@
 
         <element name="matrix_form">
                 <complexType>
+		                <attribute name="id" use="required" type="string" />
                         <attribute name="i" use="required" type="integer" />
                         <attribute name="j" use="required" type="integer" />
                         <attribute name="planar_linear" use="required" type="string" />
@@ -344,6 +345,7 @@
 
         <element name="vector_form">
                 <complexType>
+		                <attribute name="id" use="required" type="string" />                
                         <attribute name="i" use="required" type="integer" />
                         <attribute name="j" use="required" type="integer" />
                         <attribute name="planar_linear" use="required" type="string" />
@@ -355,6 +357,7 @@
 
         <element name="essential_form">
                 <complexType>
+		                <attribute name="id" use="required" type="string" />                
                         <attribute name="i" use="required" type="integer" />
                         <attribute name="axi_linear" use="required" type="string" />
                         <attribute name="planar_linear" use="required" type="string" />
