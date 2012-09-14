@@ -433,7 +433,7 @@ cdef class __Problem__:
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
 
-    # time_step
+    # time_steps
     property time_steps:
         def __get__(self):
             return self.thisptr.getNumConstantTimeSteps()
