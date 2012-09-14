@@ -169,12 +169,12 @@ public:
     virtual ~PluginInterface() {}
 
     virtual QString fieldId() = 0;
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Material *material) = 0;
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Material *material) = 0;
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) = 0;
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, int i, int j, int offsetI, int offsetJ, Boundary *boundary) = 0;
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material) = 0;
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material) = 0;
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
 
-    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, int i, Hermes::Hermes2D::Mesh *mesh) = 0;
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::Mesh *mesh) = 0;
 
     // postprocessor
     // filter

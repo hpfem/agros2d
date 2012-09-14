@@ -1180,6 +1180,23 @@ namespace XMLCoupling
   class matrix_form: public ::xml_schema::type
   {
     public:
+    // id
+    // 
+    typedef ::xml_schema::string id_type;
+    typedef ::xsd::cxx::tree::traits< id_type, char > id_traits;
+
+    const id_type&
+    id () const;
+
+    id_type&
+    id ();
+
+    void
+    id (const id_type& x);
+
+    void
+    id (::std::auto_ptr< id_type > p);
+
     // i
     // 
     typedef ::xml_schema::integer i_type;
@@ -1278,7 +1295,8 @@ namespace XMLCoupling
 
     // Constructors.
     //
-    matrix_form (const i_type&,
+    matrix_form (const id_type&,
+                 const i_type&,
                  const j_type&,
                  const axi_linear_type&,
                  const planar_linear_type&,
@@ -1308,6 +1326,7 @@ namespace XMLCoupling
            ::xml_schema::flags);
 
     protected:
+    ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< i_type > i_;
     ::xsd::cxx::tree::one< j_type > j_;
     ::xsd::cxx::tree::one< axi_linear_type > axi_linear_;
@@ -1319,6 +1338,23 @@ namespace XMLCoupling
   class vector_form: public ::xml_schema::type
   {
     public:
+    // id
+    // 
+    typedef ::xml_schema::string id_type;
+    typedef ::xsd::cxx::tree::traits< id_type, char > id_traits;
+
+    const id_type&
+    id () const;
+
+    id_type&
+    id ();
+
+    void
+    id (const id_type& x);
+
+    void
+    id (::std::auto_ptr< id_type > p);
+
     // i
     // 
     typedef ::xml_schema::integer i_type;
@@ -1417,7 +1453,8 @@ namespace XMLCoupling
 
     // Constructors.
     //
-    vector_form (const i_type&,
+    vector_form (const id_type&,
+                 const i_type&,
                  const j_type&,
                  const axi_linear_type&,
                  const planar_linear_type&,
@@ -1447,6 +1484,7 @@ namespace XMLCoupling
            ::xml_schema::flags);
 
     protected:
+    ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< i_type > i_;
     ::xsd::cxx::tree::one< j_type > j_;
     ::xsd::cxx::tree::one< axi_linear_type > axi_linear_;

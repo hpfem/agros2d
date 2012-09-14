@@ -85,9 +85,11 @@ class BDF2Table;
 
 struct FormInfo
 {
-    FormInfo() : i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM) {}
-    FormInfo(int i, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
-        : i(i), j(j), sym(sym) {}
+    FormInfo() : id(""), i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM) {}
+    FormInfo(const QString &id, int i, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
+        : id(id), i(i), j(j), sym(sym) {}
+
+    QString id;
 
     // position
     int i;

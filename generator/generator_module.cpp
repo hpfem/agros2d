@@ -1299,12 +1299,13 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 ctemplate::TemplateDictionary *field;
                 field = output.AddSectionDictionary(weakFormType.toStdString() + "_SOURCE");
 
-                QString functionName = QString("%1_%2_%3_%4_%5_%6").
+                QString functionName = QString("%1_%2_%3_%4_%5_%6_%7").
                         arg(weakFormType.toLower()).
                         arg(QString::fromStdString(m_module->general().id())).
                         arg(QString::fromStdString(weakform.analysistype())).
                         arg(coordinateTypeToStringKey(coordinateType)).
                         arg(linearityTypeToStringKey(linearityType)).
+                        arg(QString::fromStdString(form.id())).
                         arg(QString::number(form.i()));
 
                 if (j != 0)

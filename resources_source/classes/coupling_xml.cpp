@@ -693,6 +693,30 @@ namespace XMLCoupling
   // matrix_form
   // 
 
+  const matrix_form::id_type& matrix_form::
+  id () const
+  {
+    return this->id_.get ();
+  }
+
+  matrix_form::id_type& matrix_form::
+  id ()
+  {
+    return this->id_.get ();
+  }
+
+  void matrix_form::
+  id (const id_type& x)
+  {
+    this->id_.set (x);
+  }
+
+  void matrix_form::
+  id (::std::auto_ptr< id_type > x)
+  {
+    this->id_.set (x);
+  }
+
   const matrix_form::i_type& matrix_form::
   i () const
   {
@@ -828,6 +852,30 @@ namespace XMLCoupling
 
   // vector_form
   // 
+
+  const vector_form::id_type& vector_form::
+  id () const
+  {
+    return this->id_.get ();
+  }
+
+  vector_form::id_type& vector_form::
+  id ()
+  {
+    return this->id_.get ();
+  }
+
+  void vector_form::
+  id (const id_type& x)
+  {
+    this->id_.set (x);
+  }
+
+  void vector_form::
+  id (::std::auto_ptr< id_type > x)
+  {
+    this->id_.set (x);
+  }
 
   const vector_form::i_type& vector_form::
   i () const
@@ -2232,13 +2280,15 @@ namespace XMLCoupling
   //
 
   matrix_form::
-  matrix_form (const i_type& i,
+  matrix_form (const id_type& id,
+               const i_type& i,
                const j_type& j,
                const axi_linear_type& axi_linear,
                const planar_linear_type& planar_linear,
                const axi_newton_type& axi_newton,
                const planar_newton_type& planar_newton)
   : ::xml_schema::type (),
+    id_ (id, ::xml_schema::flags (), this),
     i_ (i, ::xml_schema::flags (), this),
     j_ (j, ::xml_schema::flags (), this),
     axi_linear_ (axi_linear, ::xml_schema::flags (), this),
@@ -2253,6 +2303,7 @@ namespace XMLCoupling
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    id_ (x.id_, f, this),
     i_ (x.i_, f, this),
     j_ (x.j_, f, this),
     axi_linear_ (x.axi_linear_, f, this),
@@ -2267,6 +2318,7 @@ namespace XMLCoupling
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    id_ (f, this),
     i_ (f, this),
     j_ (f, this),
     axi_linear_ (f, this),
@@ -2290,6 +2342,15 @@ namespace XMLCoupling
       const ::xercesc::DOMAttr& i (p.next_attribute ());
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "id" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< id_type > r (
+          id_traits::create (i, f, this));
+
+        this->id_.set (r);
+        continue;
+      }
 
       if (n.name () == "i" && n.namespace_ ().empty ())
       {
@@ -2338,6 +2399,13 @@ namespace XMLCoupling
         this->planar_newton_.set (r);
         continue;
       }
+    }
+
+    if (!id_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "id",
+        "");
     }
 
     if (!i_.present ())
@@ -2399,13 +2467,15 @@ namespace XMLCoupling
   //
 
   vector_form::
-  vector_form (const i_type& i,
+  vector_form (const id_type& id,
+               const i_type& i,
                const j_type& j,
                const axi_linear_type& axi_linear,
                const planar_linear_type& planar_linear,
                const axi_newton_type& axi_newton,
                const planar_newton_type& planar_newton)
   : ::xml_schema::type (),
+    id_ (id, ::xml_schema::flags (), this),
     i_ (i, ::xml_schema::flags (), this),
     j_ (j, ::xml_schema::flags (), this),
     axi_linear_ (axi_linear, ::xml_schema::flags (), this),
@@ -2420,6 +2490,7 @@ namespace XMLCoupling
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    id_ (x.id_, f, this),
     i_ (x.i_, f, this),
     j_ (x.j_, f, this),
     axi_linear_ (x.axi_linear_, f, this),
@@ -2434,6 +2505,7 @@ namespace XMLCoupling
                ::xml_schema::flags f,
                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    id_ (f, this),
     i_ (f, this),
     j_ (f, this),
     axi_linear_ (f, this),
@@ -2457,6 +2529,15 @@ namespace XMLCoupling
       const ::xercesc::DOMAttr& i (p.next_attribute ());
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "id" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< id_type > r (
+          id_traits::create (i, f, this));
+
+        this->id_.set (r);
+        continue;
+      }
 
       if (n.name () == "i" && n.namespace_ ().empty ())
       {
@@ -2505,6 +2586,13 @@ namespace XMLCoupling
         this->planar_newton_.set (r);
         continue;
       }
+    }
+
+    if (!id_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "id",
+        "");
     }
 
     if (!i_.present ())
@@ -2720,6 +2808,7 @@ namespace XMLCoupling
   ::std::ostream&
   operator<< (::std::ostream& o, const matrix_form& i)
   {
+    o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "i: " << i.i ();
     o << ::std::endl << "j: " << i.j ();
     o << ::std::endl << "axi_linear: " << i.axi_linear ();
@@ -2732,6 +2821,7 @@ namespace XMLCoupling
   ::std::ostream&
   operator<< (::std::ostream& o, const vector_form& i)
   {
+    o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "i: " << i.i ();
     o << ::std::endl << "j: " << i.j ();
     o << ::std::endl << "axi_linear: " << i.axi_linear ();
@@ -3602,6 +3692,17 @@ namespace XMLCoupling
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
+    // id
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "id",
+          e));
+
+      a << i.id ();
+    }
+
     // i
     //
     {
@@ -3673,6 +3774,17 @@ namespace XMLCoupling
   operator<< (::xercesc::DOMElement& e, const vector_form& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
+
+    // id
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "id",
+          e));
+
+      a << i.id ();
+    }
 
     // i
     //

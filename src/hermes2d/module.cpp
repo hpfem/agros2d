@@ -113,7 +113,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 
     if (type == WeakForm_MatVol)
     {
-        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form->i, form->j, offsetI, offsetJ,
+        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form, offsetI, offsetJ,
                                                                           static_cast<Material *>(markerSource));
         if (!weakFormAgros) return NULL;
 
@@ -128,7 +128,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     }
     else if (type == WeakForm_MatSurf)
     {
-        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
+        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form, offsetI, offsetJ,
                                                                             static_cast<Boundary *>(markerSource));
         if (!weakFormAgros) return NULL;
 
@@ -139,7 +139,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     }
     else if (type == WeakForm_VecVol)
     {
-        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form->i, form->j, offsetI, offsetJ,
+        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form, offsetI, offsetJ,
                                                                           static_cast<Material *>(markerSource));
         if (!weakFormAgros) return NULL;
 
@@ -152,7 +152,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     }
     else if (type == WeakForm_VecSurf)
     {
-        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form->i, form->j, offsetI, offsetJ,
+        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form, offsetI, offsetJ,
                                                                             static_cast<Boundary *>(markerSource));
         if (!weakFormAgros) return NULL;
 
@@ -473,20 +473,20 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     for (int i = 0; i < bdy.matrix_form().size(); i++)
     {
         XMLModule::matrix_form form = bdy.matrix_form().at(i);
-        m_wfMatrixSurface.append(new FormInfo(form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+        m_wfMatrixSurface.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
     }
 
     for (int i = 0; i < bdy.vector_form().size(); i++)
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
-        m_wfVectorSurface.append(new FormInfo(form.i(), form.j()));
+        m_wfVectorSurface.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
     }
 
     // essential
     for (int i = 0; i < bdy.essential_form().size(); i++)
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
-        m_essential.append(new FormInfo(form.i()));
+        m_essential.append(new FormInfo(QString::fromStdString(form.id()), form.i()));
     }
 }
 
@@ -750,13 +750,13 @@ void Module::BasicModule::read(const QString &filename)
             for (int i = 0; i < wf.matrix_form().size(); i++)
             {
                 XMLModule::matrix_form form = wf.matrix_form().at(i);
-                m_wfMatrixVolumeExpression.append(new FormInfo(form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+                m_wfMatrixVolumeExpression.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
             }
 
             for (int i = 0; i < wf.vector_form().size(); i++)
             {
                 XMLModule::vector_form form = wf.vector_form().at(i);
-                m_wfVectorVolumeExpression.append(new FormInfo(form.i(), form.j()));
+                m_wfVectorVolumeExpression.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
             }
         }
     }
