@@ -174,11 +174,9 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    /*
     Util::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
                             arg(weakFormString(type)).
                             arg(QString::fromStdString(form->getAreas().at(0))));
-    */
 
     if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);

@@ -204,7 +204,7 @@ private:
 
 protected:
     QLineEdit *txtID;
-    QLineEdit *txtValue;
+    LineEditDouble *txtValue;
 };
 
 class ModuleItemAnalysisDialog : public ModuleItemEmptyDialog
@@ -268,8 +268,9 @@ public:
     ModuleItemWeakformDialog(ModuleDialog *moduleDialog, QWidget *parent);
 
 protected:
-    QLineEdit *txtSolutionIndex;
-    QLineEdit *txtTestFunctionIndex;
+    QLineEdit *txtID;
+    QSpinBox *txtSolutionIndex;
+    QSpinBox *txtTestFunctionIndex;
     ModuleDialogTextEdit *txtPlanarLinear;
     ModuleDialogTextEdit *txtPlanarNewton;
     ModuleDialogTextEdit *txtAxiLinear;

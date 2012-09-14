@@ -1343,11 +1343,12 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 }
 
                 field->SetValue("FUNCTION_NAME", functionName.toStdString());
-                field->SetValue("COORDINATE_TYPE",  Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+                field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
                 field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
                 field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype()))).toStdString());
                 field->SetValue("ROW_INDEX", QString::number(form.i()).toStdString());
                 field->SetValue("MODULE_ID", m_module->general().id());
+                field->SetValue("WEAKFORM_ID", form.id());
 
                 // expression
                 QString exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),

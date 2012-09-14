@@ -30,6 +30,7 @@
 #include "gui/common.h"
 #include "gui/htmledit.h"
 #include "gui/systemoutput.h"
+#include "gui/lineeditdouble.h"
 
 Q_DECLARE_METATYPE(XMLModule::constant *)
 Q_DECLARE_METATYPE(XMLModule::analysis *)
@@ -507,8 +508,8 @@ ModuleItemConstantDialog::ModuleItemConstantDialog(ModuleDialog *moduleDialog, X
     txtID = new QLineEdit();
     txtID->setText(QString::fromStdString(constant->id()));
 
-    txtValue = new QLineEdit();
-    txtValue->setText(QString::number(constant->value()));
+    txtValue = new LineEditDouble();
+    txtValue->setValue(constant->value());
 
     QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
@@ -524,7 +525,7 @@ ModuleItemConstantDialog::ModuleItemConstantDialog(ModuleDialog *moduleDialog, X
 void ModuleItemConstantDialog::doAccept()
 {
     m_constant->id(txtID->text().toStdString());
-    m_constant->value(txtValue->text().toDouble());
+    m_constant->value(txtValue->value());
 
     accept();
 }
@@ -651,8 +652,12 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(ModuleDialog *moduleDialog, Q
     setWindowTitle(tr("Matrix form"));
     setWindowIcon(icon("form-matrix"));
 
-    txtSolutionIndex = new QLineEdit();
-    txtTestFunctionIndex = new QLineEdit();
+    txtID = new QLineEdit();
+
+    txtSolutionIndex = new QSpinBox();
+    txtSolutionIndex->setMinimum(1);
+    txtTestFunctionIndex = new QSpinBox();
+    txtTestFunctionIndex->setMinimum(1);
 
     txtPlanarLinear = new ModuleDialogTextEdit(this, 3);
     txtPlanarNewton = new ModuleDialogTextEdit(this, 3);
@@ -660,10 +665,13 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(ModuleDialog *moduleDialog, Q
     txtAxiNewton = new ModuleDialogTextEdit(this, 3);
 
     QGridLayout *layoutGeneral = new QGridLayout();
-    layoutGeneral->addWidget(new QLabel(tr("Solution index:")), 0, 0);
-    layoutGeneral->addWidget(txtSolutionIndex, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Test function index:")), 0, 2);
-    layoutGeneral->addWidget(txtTestFunctionIndex, 0, 3);
+
+    layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
+    layoutGeneral->addWidget(txtID, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Solution index:")), 0, 2);
+    layoutGeneral->addWidget(txtSolutionIndex, 0, 3);
+    layoutGeneral->addWidget(new QLabel(tr("Test function index:")), 1, 2);
+    layoutGeneral->addWidget(txtTestFunctionIndex, 1, 3);
 
     QGridLayout *layoutLinear = new QGridLayout();
     layoutLinear->addWidget(new QLabel(tr("Planar:")), 0, 0);
@@ -694,8 +702,9 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
                                                        XMLModule::matrix_form *form, QWidget *parent)
     : ModuleItemWeakformDialog(moduleDialog, parent), m_form(form)
 {
-    txtSolutionIndex->setText(QString::number(m_form->i()));
-    txtTestFunctionIndex->setText(QString::number(m_form->j()));
+    txtID->setText(QString::fromStdString(m_form->id()));
+    txtSolutionIndex->setValue(m_form->i());
+    txtTestFunctionIndex->setValue(m_form->j());
 
     if (type == "volume")
     {
@@ -720,8 +729,9 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
 
 void ModuleItemMatrixFormDialog::doAccept()
 {
-    m_form->i(txtSolutionIndex->text().toInt());
-    m_form->j(txtTestFunctionIndex->text().toInt());
+    m_form->id(txtID->text().toStdString());
+    m_form->i(txtSolutionIndex->value());
+    m_form->j(txtTestFunctionIndex->value());
     m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
     m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
     m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
@@ -737,8 +747,9 @@ ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(ModuleDialog *moduleDialo
     setWindowTitle(tr("Vector form"));
     setWindowIcon(icon("form-vector"));
 
-    txtSolutionIndex->setText(QString::number(m_form->i()));
-    txtTestFunctionIndex->setText(QString::number(m_form->j()));
+    txtID->setText(QString::fromStdString(m_form->id()));
+    txtSolutionIndex->setValue(m_form->i());
+    txtTestFunctionIndex->setValue(m_form->j());
 
     if (type == "volume")
     {
@@ -780,8 +791,9 @@ ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *modul
     setWindowTitle(tr("Essential form"));
     setWindowIcon(icon("form-essential"));
 
-    txtSolutionIndex->setText(QString::number(m_form->i()));
-    txtTestFunctionIndex->setText("");
+    txtID->setText("function");
+    txtSolutionIndex->setValue(m_form->i());
+    txtTestFunctionIndex->setValue(0);
     txtTestFunctionIndex->setDisabled(true);
 
     txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
@@ -1179,6 +1191,7 @@ void ModuleDialog::load()
             item->setText(0, tr("Matrix form"));
             item->setText(1, QString::number(form->i()));
             item->setText(2, QString::number(form->j()));
+            item->setText(3, QString::fromStdString(form->id()));
             item->setIcon(0, icon("form-matrix"));
         }
 
@@ -1196,6 +1209,7 @@ void ModuleDialog::load()
             item->setText(0, tr("Vector form"));
             item->setText(1, QString::number(form->i()));
             item->setText(2, QString::number(form->j()));
+            item->setText(3, QString::fromStdString(form->id()));
             item->setIcon(0, icon("form-vector"));
         }
     }
@@ -1283,6 +1297,7 @@ void ModuleDialog::load()
                 item->setText(0, tr("Matrix form"));
                 item->setText(1, QString::number(form->i()));
                 item->setText(2, QString::number(form->j()));
+                item->setText(3, QString::fromStdString(form->id()));
                 item->setIcon(0, icon("form-matrix"));
             }
 
@@ -1300,6 +1315,7 @@ void ModuleDialog::load()
                 item->setText(0, tr("Vector form"));
                 item->setText(1, QString::number(form->i()));
                 item->setText(2, QString::number(form->j()));
+                item->setText(3, QString::fromStdString(form->id()));
                 item->setIcon(0, icon("form-vector"));
             }
 
@@ -1317,6 +1333,7 @@ void ModuleDialog::load()
                 item->setText(0, tr("Essential form"));
                 item->setText(1, QString::number(form->i()));
                 item->setText(2, "");
+                item->setText(3, QString::fromStdString(form->id()));
                 item->setIcon(0, icon("form-essential"));
             }
         }
@@ -1679,7 +1696,7 @@ QWidget *ModuleDialog::createWeakforms()
     treeVolumeWeakforms->setColumnWidth(2, 80);
     treeVolumeWeakforms->setIndentation(12);
     QStringList headVolumeWeakforms;
-    headVolumeWeakforms << tr("Type") << tr("Solution") << tr("Test function");
+    headVolumeWeakforms << tr("Type") << tr("Solution") << tr("Test function") << tr("Label");
     treeVolumeWeakforms->setHeaderLabels(headVolumeWeakforms);
 
     connect(treeVolumeWeakforms, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(weakformDoubleClicked(QTreeWidgetItem *, int)));
@@ -1738,7 +1755,7 @@ QWidget *ModuleDialog::createWeakforms()
     treeSurfaceWeakforms->setColumnWidth(2, 80);
     treeSurfaceWeakforms->setIndentation(12);
     QStringList headSurfaceWeakforms;
-    headSurfaceWeakforms << tr("Type") << tr("Solution") << tr("Test function");
+    headSurfaceWeakforms << tr("Type") << tr("Solution") << tr("Test function") << tr("Label");
     treeSurfaceWeakforms->setHeaderLabels(headSurfaceWeakforms);
 
     connect(treeSurfaceWeakforms, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(weakformDoubleClicked(QTreeWidgetItem *, int)));
