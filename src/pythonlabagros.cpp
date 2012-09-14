@@ -187,12 +187,11 @@ QString createPythonFromModel()
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
             QString variables = "{";
-            const QHash<QString, Value> values = boundary->values();
-            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            foreach (Module::BoundaryTypeVariable *variable, fieldInfo->module()->boundaryType(boundary->type())->variables())
             {
                 variables += QString("\"%1\" : %2, ").
-                        arg(it.key()).
-                        arg(it.value().text());
+                        arg(variable->id()).
+                        arg(boundary->value(variable->id()).number());
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
