@@ -104,10 +104,16 @@ QString createPythonFromModel()
                 arg(Util::problem()->config()->frequency());
 
     if (Util::problem()->isTransient())
-        str += QString("problem.time_steps = %1\n"
-                       "problem.time_total = %2\n").
-                arg(Util::problem()->config()->numConstantTimeSteps()).
-                arg(Util::problem()->config()->timeTotal().text());
+        str += QString("problem.time_step_method = \"%1\"\n"
+                       "problem.time_method_order = %2\n"
+                       "problem.time_method_tolerance = %3\n"
+                       "problem.time_total = %4\n"
+                       "problem.time_steps = %5\n").
+                arg(timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod())).
+                arg(Util::problem()->config()->timeOrder()).
+                arg(Util::problem()->config()->timeMethodTolerance().toString()).
+                arg(Util::problem()->config()->timeTotal().toString()).
+                arg(Util::problem()->config()->numConstantTimeSteps());
 
     // fields
     str += "\n# fields\n";
@@ -180,8 +186,6 @@ QString createPythonFromModel()
         //str += "\n# boundaries\n";
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
-            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->type());
-
             QString variables = "{";
             const QHash<QString, Value> values = boundary->values();
             for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
@@ -251,6 +255,27 @@ QString createPythonFromModel()
                     arg(edge->nodeEnd()->point().x).
                     arg(edge->nodeEnd()->point().y);
 
+            if (edge->angle() > 0.0)
+                str += ", angle = " + QString::number(edge->angle());
+
+            // refinement
+            if (Util::problem()->fieldInfos().count() > 0)
+            {
+                QString refinements = ", refinements = {";
+                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                {
+                    if (fieldInfo->edgeRefinement(edge) > 0)
+                    {
+                        refinements += QString("\"%1\" : \"%2\", ").
+                                arg(fieldInfo->fieldId()).
+                                arg(fieldInfo->edgeRefinement(edge));
+                    }
+                }
+                refinements = (refinements.endsWith(", ") ? refinements.left(refinements.length() - 2) : refinements) + "}";
+                str += refinements;
+            }
+
+            // boundaries
             if (Util::problem()->fieldInfos().count() > 0)
             {
                 QString boundaries = ", boundaries = {";
@@ -269,11 +294,6 @@ QString createPythonFromModel()
                 str += boundaries;
             }
 
-            if (edge->angle() > 0.0)
-                str += ", angle = " + QString::number(edge->angle());
-
-            // TODO: (Franta) if (edge->refineTowardsEdge > 0) str += ", refinement = " + QString::number(edge->refineTowardsEdge);
-
             str += ")\n";
         }
         str += "\n";
@@ -289,6 +309,44 @@ QString createPythonFromModel()
                     arg(label->point().x).
                     arg(label->point().y);
 
+            if (label->area() > 0.0)
+                str += ", area = " + QString::number(label->area());
+
+            // refinements
+            if (Util::problem()->fieldInfos().count() > 0)
+            {
+                QString refinements = ", refinements = {";
+                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                {
+                    if (fieldInfo->labelRefinement(label) > 0)
+                    {
+                        refinements += QString("\"%1\" : \"%2\", ").
+                                arg(fieldInfo->fieldId()).
+                                arg(fieldInfo->labelRefinement(label));
+                    }
+                }
+                refinements = (refinements.endsWith(", ") ? refinements.left(refinements.length() - 2) : refinements) + "}";
+                str += refinements;
+            }
+
+            // orders
+            if (Util::problem()->fieldInfos().count() > 0)
+            {
+                QString orders = ", orders = {";
+                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                {
+                    if (fieldInfo->labelPolynomialOrder(label) > 0)
+                    {
+                        orders += QString("\"%1\" : \"%2\", ").
+                                arg(fieldInfo->fieldId()).
+                                arg(fieldInfo->labelPolynomialOrder(label));
+                    }
+                }
+                orders = (orders.endsWith(", ") ? orders.left(orders.length() - 2) : orders) + "}";
+                str += orders;
+            }
+
+            // materials
             if (Util::problem()->fieldInfos().count() > 0)
             {
                 QString materials = ", materials = {";
@@ -303,11 +361,6 @@ QString createPythonFromModel()
                 materials = (materials.endsWith(", ") ? materials.left(materials.length() - 2) : materials) + "}";
                 str += materials;
             }
-
-            if (label->area() > 0.0)
-                str += ", area = " + QString::number(label->area());
-
-            // TODO: (Franta) if (label->polynomialOrder > 0) str += ", order = " + QString::number(label->polynomialOrder);
 
             str += ")\n";
         }
