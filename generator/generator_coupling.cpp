@@ -27,7 +27,6 @@
 #include "hermes2d/coupling.h"
 
 #include "parser/lex.h"
-#include "parser/tree.h"
 
 #include "util/constants.h"
 
