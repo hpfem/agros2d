@@ -211,7 +211,7 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             double t1;
             double t2;
 
-            if ((dx - dy) > tol)
+            if (std::abs(dx - dy) > tol)
             {
                 t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
                 t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent

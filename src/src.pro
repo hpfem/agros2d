@@ -102,8 +102,6 @@ SOURCES += util.cpp \
     ../resources_source/classes/coupling_xml.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
-    parser/nonrecursive_parser.cpp \
-    parser/tree.cpp \
     hermes2d/bdf2.cpp \
     gui/groupbox.cpp
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.cpp
@@ -188,8 +186,6 @@ HEADERS += util.h \
     hermes2d/solutionstore.h \
     moduledialog.h \
     parser/lex.h \
-    parser/nonrecursive_parser.h \
-    parser/tree.h \
     hermes2d/bdf2.h \
     hermes2d/plugin_interface.h \
     gui/groupbox.h

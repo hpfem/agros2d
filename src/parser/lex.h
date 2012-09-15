@@ -71,18 +71,19 @@ class Token
 {
 public:
     Token() {}
-    Token(TokenType type) { this->m_type = type; }
-    Token(TokenType m_type, QString m_text);
-    Token(TokenType m_type, QString m_text, int nestingLevel);
+    Token(TokenType m_type, QString m_text, int nestingLevel = 0, int position = 0);
 
     inline TokenType type() { return this->m_type; }
-    inline QString toString() { return this->m_text; }
-    int nestingLevel;
-
+    inline QString toString() { return this->m_text; }    
+    inline int position() { return m_position; }
+    inline int nestingLevel() { return m_nestingLevel; }
+    inline void setNestingLevel(int nestingLevel) { m_nestingLevel = nestingLevel; }
 
 private:
     TokenType m_type;
-    QString m_text;    
+    QString m_text;
+    int m_nestingLevel;
+    int m_position;
 };
 
 

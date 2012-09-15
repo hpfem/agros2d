@@ -3,17 +3,12 @@
 #include "lex.h"
 #include <QRegExp>
 
-Token::Token(TokenType type, QString text)
+Token::Token(TokenType type, QString text, int nestingLevel, int position)
 {
     this->m_text = text;
     this->m_type = type;
-}
-
-Token::Token(TokenType type, QString text, int nestingLevel)
-{
-    this->m_text = text;
-    this->m_type = type;
-    this->nestingLevel = nestingLevel;
+    this->m_nestingLevel = nestingLevel;
+    this->m_position = position;
 }
 
 
@@ -50,19 +45,19 @@ QList<Token> LexicalAnalyser::tokens()
     return this->m_tokens;
 }
 
-QString expression(QList<Token> const &symbol_que, int position = 0)
+QString expression(QList<Token> symbol_que, int position = 0)
 {
     int n = symbol_que.count();
-    int nesting_level = symbol_que[position].nestingLevel;
+    int nesting_level = symbol_que[position].nestingLevel();
     QString expression;
     for(int i = position; i < n; i++)
     {
-        if (nesting_level < symbol_que[i].nestingLevel)
+        if (nesting_level < symbol_que[i].nestingLevel())
         {
             nesting_level++;
         }
 
-        if (nesting_level > symbol_que[i].nestingLevel)
+        if (nesting_level > symbol_que[i].nestingLevel())
         {
             nesting_level--;
         }
@@ -72,9 +67,9 @@ QString expression(QList<Token> const &symbol_que, int position = 0)
 
 void LexicalAnalyser::setExpression(const QString &expr)
 {
+    // ToDo: Don't erase white characters
     QString exprTrimmed = expr.trimmed().replace(" ", "");
 
-    QTextStream qout(stdout);
     QStringList operators;
     QStringList functions;
     QList<Terminals>  terminals;
@@ -109,8 +104,7 @@ void LexicalAnalyser::setExpression(const QString &expr)
         if(index == pos)
         {
             QString text = r_exp.capturedTexts().takeFirst();
-            Token symbol(TokenType_NUMBER, text);
-            symbol.nestingLevel = nesting_level;
+            Token symbol(TokenType_NUMBER, text, nesting_level, pos);
             pos += text.count();
             m_tokens.append(symbol);
         }
@@ -243,18 +237,18 @@ void Terminals::find(const QString &s, QList<Token> &symbol_que, int &pos, int &
     {
         int loc_pos = s.indexOf(m_list[i].toString(), pos);
         if (loc_pos == pos) {
-            symbol = Token(m_list[i].type(), m_list[i].toString());
+            symbol = Token(m_list[i].type(), m_list[i].toString(), nesting_level, pos);
 
             if (symbol.toString() == "(")
             {
-                symbol.nestingLevel = nesting_level++;
+                symbol.setNestingLevel(nesting_level + 1);
             } else
                 if (symbol.toString() == ")")
                 {
-                    symbol.nestingLevel = --nesting_level;
+                    symbol.setNestingLevel(nesting_level - 1);
                 }
                 else
-                    symbol.nestingLevel = nesting_level;
+                    symbol.setNestingLevel(nesting_level);
 
             pos += m_list[i].toString().count();
             symbol_que.append(symbol);
