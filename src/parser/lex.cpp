@@ -12,6 +12,11 @@ Token::Token(TokenType type, QString text, int nestingLevel, int position)
 }
 
 
+LexicalAnalyser::LexicalAnalyser()
+{
+    this->setPatterns();
+}
+
 void LexicalAnalyser::sortByLength(QStringList & list)
 {
     int n = list.count();
@@ -65,67 +70,142 @@ QString expression(QList<Token> symbol_que, int position = 0)
     return expression;
 }
 
+void LexicalAnalyser::setPatterns()
+{
+    QStringList operators;
+    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":" << ",";
+    QString pattern = "";
+    for(int i = 0; i < operators.length() - 1; i++)
+    {
+        pattern += QRegExp::escape(operators[i]) + "|";
+    }
+    pattern += QRegExp::escape(operators[operators.length() - 1]);
+
+    m_patterns << Terminal(TokenType_OPERATOR, pattern);
+    m_patterns << Terminal(TokenType_NUMBER, "([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
+    m_patterns << Terminal(TokenType_FUNCTION, "([a-zA-Z][_a-zA-Z0-9]*)(?=\\()");
+    m_patterns << Terminal(TokenType_VARIABLE, "([a-zA-Z][_a-zA-Z0-9]*)");
+    m_patterns << Terminal(TokenType_KEYWORD, "dx");
+}
+
 void LexicalAnalyser::setExpression(const QString &expr)
 {
     // ToDo: Don't erase white characters
-    QString exprTrimmed = expr.trimmed().replace(" ", "");
+    // QString exprTrimmed = expr.trimmed().replace(" ", "");
+    QString exprTrimmed = expr.trimmed();
 
-    QStringList operators;
-    QStringList functions;
-    QList<Terminals>  terminals;
+    //    QStringList operators;
+    //    QStringList functions;
+    //    QList<Terminals>  terminals;
 
-    sortByLength(m_variables);
-    terminals.append(Terminals(TokenType_VARIABLE, m_variables));
+    //    sortByLength(m_variables);
+    //    terminals.append(Terminals(TokenType_VARIABLE, m_variables));
 
-    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":" << ",";
-    sortByLength(operators);
-    terminals.append(Terminals(TokenType_OPERATOR, operators));
-    functions << "sin" << "cos" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<
-                 "tanh" << "asinh" << "acosh" << "atanh" << "log2" << "log10" << "log" <<
-                 "exp" << "sqrt" << "sign" << "abs" << "min" << "max" << "sum" << "avg" << "pow";
-    // TODO: conflict "tan" with "tanx", "tany", "tanr", "tanz" in surface forms
-    sortByLength(functions);
-    terminals.append(Terminals(TokenType_FUNCTION, functions));
+    //    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":" << ",";
+    //    sortByLength(operators);
+    //    terminals.append(Terminals(TokenType_OPERATOR, operators));
+    //    functions << "sin" << "cos" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<
+    //                 "tanh" << "asinh" << "acosh" << "atanh" << "log2" << "log10" << "log" <<
+    //                 "exp" << "sqrt" << "sign" << "abs" << "min" << "max" << "sum" << "avg" << "pow";
+    //    // TODO: conflict "tan" with "tanx", "tany", "tanr", "tanz" in surface forms
 
-    int pos = 0;
+    //    sortByLength(functions);
+    //    terminals.append(Terminals(TokenType_FUNCTION, functions));
 
-    QRegExp r_exp = QRegExp("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
+    //    int pos = 0;
 
-    int loop_counter = 0;
-    int n = exprTrimmed.count();
-    int old_pos = 0;
-    int nesting_level = 0;
+    //    QRegExp r_exp = QRegExp("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
 
-    while ((pos < n) && (loop_counter < n))
+    //    int loop_counter = 0;
+    //    int n = exprTrimmed.count();
+    //    int old_pos = 0;
+    //    int nesting_level = 0;
+
+    //    while ((pos < n) && (loop_counter < n))
+    //    {
+    //        loop_counter++;
+    //        int index = r_exp.indexIn(exprTrimmed, pos);
+
+    //        if(index == pos)
+    //        {
+    //            QString text = r_exp.capturedTexts().takeFirst();
+    //            Token symbol(TokenType_NUMBER, text, nesting_level, pos);
+    //            pos += text.count();
+    //            m_tokens.append(symbol);
+    //        }
+
+    //        foreach(Terminals terminal_symbols, terminals)
+    //        {
+    //            terminal_symbols.find(exprTrimmed, m_tokens, pos, nesting_level);
+    //        }
+
+    //        if (old_pos == pos)
+    //        {
+    //            throw ParserException(QString("Unexpected symbol '%1' on position %2 in expression '%3'").arg(exprTrimmed[pos]).arg(pos).arg(expr),
+    //                                  expr,
+    //                                  pos,
+    //                                  exprTrimmed.at(pos));
+    //            break;
+    //        }
+    //        else
+    //        {
+    //            old_pos = pos;
+    //        }
+    //    }
+
+    int index = 0;
+    int position = 0;
+    while(position < exprTrimmed.length())
     {
-        loop_counter++;
-        int index = r_exp.indexIn(exprTrimmed, pos);
-
-        if(index == pos)
+        bool match = false;
+        foreach(Terminal terminal, m_patterns)
         {
-            QString text = r_exp.capturedTexts().takeFirst();
-            Token symbol(TokenType_NUMBER, text, nesting_level, pos);
-            pos += text.count();
-            m_tokens.append(symbol);
+            index = terminal.m_pattern.indexIn(exprTrimmed, position);
+            if(index == position)
+            {
+                position =  index + terminal.m_pattern.capturedTexts()[0].count();
+                Token token(terminal.m_terminalType,terminal.m_pattern.capturedTexts()[0], index);
+                m_tokens.append(token);
+                match = true;
+            }
         }
 
-        foreach(Terminals terminal_symbols, terminals)
+        if ((!match) && (position < exprTrimmed.length()))
         {
-            terminal_symbols.find(exprTrimmed, m_tokens, pos, nesting_level);
+            if (exprTrimmed[position] == ' ')
+            {
+                position++;
+            }
+            else
+            {
+                throw ParserException(QString("Unexpected symbol '%1' on position %2 in expression '%3'").arg(exprTrimmed[position]).arg(position).arg(expr),
+                                      expr,
+                                      position,
+                                      exprTrimmed.at(position));
+                return;
+            }
+        }
+    }
+
+    int i = 0;
+    while(i < m_tokens.count() - 1)
+    {
+        if ((m_tokens[i].type() == TokenType_NUMBER) && (m_tokens[i+1].type() != TokenType_OPERATOR))
+        {
+            QString lexem = "";
+            while(((m_tokens[i+1].type() != TokenType_OPERATOR) && (i < m_tokens.count()-1)))
+            {
+                lexem += m_tokens[i].toString();
+                i++;
+            }
+            qDebug() << "Invalid number format:" << lexem + m_tokens[i].toString();
         }
 
-        if (old_pos == pos)
+        if ((m_tokens[i].type() == TokenType_VARIABLE) && (m_tokens[i+1].type() != TokenType_OPERATOR))
         {
-            throw ParserException(QString("Unexpected symbol '%1' on position %2 in expression '%3'").arg(exprTrimmed[pos]).arg(pos).arg(expr),
-                                  expr,
-                                  pos,
-                                  exprTrimmed.at(pos));
-            break;
+            qDebug() << "Synatax error in expression " << m_tokens[i].toString() + " " + m_tokens[i+1].toString();
         }
-        else
-        {
-            old_pos = pos;
-        }
+        i++;
     }
 }
 
@@ -140,7 +220,7 @@ QString LexicalAnalyser::replaceVariables(QMap<QString, QString> dict, const QSt
     {
         bool isReplaced = false;
 
-        // iterate whole dictionary
+        // iterate whole m_patterns
         QMapIterator<QString, QString> i(dict);
         while (i.hasNext())
         {
@@ -165,7 +245,7 @@ QString LexicalAnalyser::replaceVariables(QMap<QString, QString> dict, const QSt
 //ToDo: Improve, it should be within Syntax analyzer
 QString LexicalAnalyser::replaceOperatorByFunction(QString expression)
 {
-    // Reguler expression for ^any_number
+    // Regular expression for ^any_number
     QRegExp re("(\\^)([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
     QString expr = expression;
     int position = 0;
@@ -206,7 +286,7 @@ QString LexicalAnalyser::replaceOperatorByFunction(QString expression)
                 {
                     replace += expr[k];
                 }
-            }            
+            }
             expr = replace;
         }
     }

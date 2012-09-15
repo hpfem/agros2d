@@ -32,21 +32,11 @@
 enum TokenType
 {
     TokenType_OPERATOR = 0,
-    TokenType_PLUS = 1,
-    TokenType_MINUS = 2,
-    TokenType_TIMES = 3,
-    TokenType_DIVIDE = 4,
-    TokenType_ = 5,
-    TokenType_RANGLE = 6,
     TokenType_VARIABLE = 10,
     TokenType_CONSTANT = 20,
     TokenType_FUNCTION = 30,
     TokenType_NUMBER = 40,
-    TokenType_EXPRESION = 100,
-    TokenType_EXPRESSION1 = 101,
-    TokenType_TERM = 102,
-    TokenType_TERM1 = 103,
-    TokenType_FACTOR = 104
+    TokenType_KEYWORD = 200
 };
 
 class ParserException : public AgrosException
@@ -65,6 +55,19 @@ private:
     QString m_expr;
     int m_pos;
     QString m_symbol;
+};
+
+class Terminal
+{
+public:
+    Terminal(TokenType terminalType, QString pattern)
+    {
+        m_pattern = QRegExp(pattern);
+        m_terminalType = terminalType;
+    }
+
+    QRegExp m_pattern;
+    TokenType m_terminalType;
 };
 
 class Token
@@ -90,7 +93,8 @@ private:
 class LexicalAnalyser
 {
 public:
-    LexicalAnalyser() {}
+
+    LexicalAnalyser();
 
     void setExpression(const QString &expr);
 
@@ -113,8 +117,9 @@ public:
 private:
     QList<Token> m_tokens;
     QStringList m_variables;
-
+    QList<Terminal> m_patterns;
     void sortByLength(QStringList &list);
+    void setPatterns();
 };
 
 class Terminals
