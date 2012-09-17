@@ -40,6 +40,8 @@
 
 #include "ctemplate/template.h"
 
+#include "hermes2d.h"
+
 InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)
 {
     this->m_sceneViewGeometry = sceneView;

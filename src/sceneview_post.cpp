@@ -37,14 +37,19 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
-PostHermes::PostHermes()
+PostHermes::PostHermes() :
+    m_initialMeshIsPrepared(false),
+    m_solutionMeshIsPrepared(false),
+    m_orderIsPrepared(false),
+    m_contourIsPrepared(false),
+    m_scalarIsPrepared(false),
+    m_vectorIsPrepared(false),
+    m_particleTracingIsPrepared(false)
 {
     connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
     connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
-
-    clear();
 }
 
 PostHermes::~PostHermes()
@@ -53,13 +58,24 @@ PostHermes::~PostHermes()
 
 void PostHermes::processInitialMesh()
 {
-    m_initialMeshIsPrepared = false;
-
     if (Util::problem()->isMeshed())
     {
         Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->activeMeshInitial()->get_num_active_elements()));
 
         // init linearizer for initial mesh
+
+
+        Hermes::Hermes2D::Mesh *mesh = Util::problem()->activeMeshInitial();
+
+        Hermes::Hermes2D::Element* e;
+        int curved = 0;
+        for_all_active_elements(e, mesh)
+        {
+            if (e->is_curved())
+                curved++;
+        }
+        qDebug() << mesh->get_num_active_elements() << mesh->get_num_nodes() << "curved: " << curved;
+
         Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
         m_linInitialMeshView.process_solution(&initial);
 
@@ -69,8 +85,6 @@ void PostHermes::processInitialMesh()
 
 void PostHermes::processSolutionMesh()
 {
-    m_solutionMeshIsPrepared = false;
-
     if (Util::problem()->isSolved())
     {
         // ERROR: FIX component(0)
@@ -87,8 +101,6 @@ void PostHermes::processSolutionMesh()
 
 void PostHermes::processOrder()
 {
-    m_orderIsPrepared = false;
-
     // init linearizer for order view
     if (Util::problem()->isSolved())
     {
@@ -103,8 +115,6 @@ void PostHermes::processOrder()
 
 void PostHermes::processRangeContour()
 {
-    m_contourIsPrepared = false;
-
     if (Util::problem()->isSolved() && Util::config()->showContourView)
     {
         bool contains = false;
@@ -154,8 +164,6 @@ void PostHermes::processRangeContour()
 
 void PostHermes::processRangeScalar()
 {
-    m_scalarIsPrepared = false;
-
     if (Util::problem()->isSolved() && Util::config()->showScalarView)
     {
         bool contains = false;
@@ -203,8 +211,6 @@ void PostHermes::processRangeScalar()
 
 void PostHermes::processRangeVector()
 {
-    m_vectorIsPrepared = false;
-
     if (Util::problem()->isSolved() && Util::config()->showVectorView)
     {
         bool contains = false;
@@ -249,8 +255,6 @@ void PostHermes::processRangeVector()
 
 void PostHermes::processParticleTracing()
 {
-    m_particleTracingIsPrepared = false;
-
     if (Util::problem()->isSolved() && Util::config()->showParticleView)
     {
         Util::log()->printMessage(tr("PostView"), tr("particle view"));
@@ -306,6 +310,8 @@ void PostHermes::processParticleTracing()
 
 void PostHermes::refresh()
 {
+    clear();
+
     if (Util::problem()->isMeshed())
         processMeshed();
 
@@ -324,25 +330,17 @@ void PostHermes::clear()
     m_contourIsPrepared = false;
     m_scalarIsPrepared = false;
     m_vectorIsPrepared = false;
+
     m_particleTracingIsPrepared = false;
 }
 
 void PostHermes::processMeshed()
 {
-    m_initialMeshIsPrepared = false;
-
     processInitialMesh();
 }
 
 void PostHermes::processSolved()
 {
-    m_solutionMeshIsPrepared = false;
-    m_orderIsPrepared = false;
-
-    m_contourIsPrepared = false;
-    m_scalarIsPrepared = false;
-    m_vectorIsPrepared = false;
-
     processSolutionMesh();
     processOrder();
 

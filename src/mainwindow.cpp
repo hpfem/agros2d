@@ -96,6 +96,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createToolBars();
     createMain();
 
+    // post hermes
+    connect(problemWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    currentPythonEngineAgros()->setPostHermes(postHermes);
+
     connect(Util::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
@@ -115,12 +121,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
-
-    // post hermes
-    connect(problemWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
-    currentPythonEngineAgros()->setPostHermes(postHermes);
 
     // mesh
     connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
