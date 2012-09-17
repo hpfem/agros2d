@@ -27,7 +27,7 @@ public:
 
     LinearityType linearityType() const;
     bool isTransient() const;
-    bool skipThisTimeStep(int timeStep) const;
+    bool skipThisTimeStep() const;
 
     AdaptivityType adaptivityType() const;
     int adaptivitySteps() const;

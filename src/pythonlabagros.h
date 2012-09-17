@@ -211,8 +211,8 @@ class PyField
         void setInitialCondition(const double initialCondition);
 
         // time steps skip
-        inline const int getTimeStepsSkip() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->timeStepsSkip().number(); }
-        void setTimeStepsSkip(const int timeStepsSkip);
+        inline const int getTimeSkip() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->timeSkip().number(); }
+        void setTimeSkip(const double timeSkip);
 
         // boundaries
         void addBoundary(char *name, char *type, map<char*, double> parameters);

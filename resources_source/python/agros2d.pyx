@@ -95,8 +95,8 @@ cdef extern from "../../src/pythonlabagros.h":
         double getInitialCondition()
         void setInitialCondition(double) except +
 
-        double getTimeStepsSkip()
-        void setTimeStepsSkip(int) except +
+        double getTimeSkip()
+        void setTimeSkip(double) except +
 
         void addBoundary(char*, char*, map[char*, double]) except +
         void setBoundary(char*, char*, map[char*, double]) except +
@@ -536,12 +536,12 @@ cdef class __Field__:
         def __set__(self, initial_condition):
             self.thisptr.setInitialCondition(initial_condition)
 
-    # time_steps_skip
-    property time_steps_skip:
+    # time_skip
+    property time_skip:
         def __get__(self):
-            return self.thisptr.getTimeStepsSkip()
+            return self.thisptr.getTimeSkip()
         def __set__(self, skip):
-            self.thisptr.setTimeStepsSkip(skip)
+            self.thisptr.setTimeSkip(skip)
 
     # boundaries
     def add_boundary(self, char *name, char *type, parameters = {}):

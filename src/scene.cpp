@@ -1464,7 +1464,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         field->setNonlinearTolerance(eleFieldLinearity.toElement().attribute("nonlinear_tolerance", "1e-3").toDouble());
 
         // time steps skip
-        field->setTimeStepsSkip(eleField.toElement().attribute("time_steps_skip", "1"));
+        field->setTimeSkip(eleField.toElement().attribute("time_skip", "0"));
 
         // boundary conditions
         QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);
@@ -1743,7 +1743,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         // polynomial order
         eleField.setAttribute("polynomial_order", fieldInfo->polynomialOrder());
         // time steps skip
-        eleField.setAttribute("time_steps_skip", fieldInfo->timeStepsSkip().text());
+        eleField.setAttribute("time_skip", fieldInfo->timeSkip().text());
 
         // number of refinements
         eleField.setAttribute("number_of_refinements", fieldInfo->numberOfRefinements());
