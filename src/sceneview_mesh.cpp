@@ -292,7 +292,6 @@ void SceneViewMesh::paintSolutionMesh()
     glLineWidth(1.3);
 
     // triangles
-    // qDebug() << Util::problem()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
     for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
     {

@@ -57,19 +57,6 @@ void PostHermes::processInitialMesh()
     {
         Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->activeMeshInitial()->get_num_active_elements()));
 
-        /*
-        Hermes::Hermes2D::Mesh *mesh = Util::problem()->activeMeshInitial();
-
-        Hermes::Hermes2D::Element* e;
-        int curved = 0;
-        for_all_active_elements(e, mesh)
-        {
-            if (e->is_curved())
-                curved++;
-        }
-        qDebug() << mesh->get_num_active_elements() << mesh->get_num_nodes() << "curved: " << curved;
-        */
-
         // init linearizer for initial mesh
         Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
         m_linInitialMeshView.process_solution(&initial);

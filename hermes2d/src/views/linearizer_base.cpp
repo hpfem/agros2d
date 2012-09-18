@@ -35,8 +35,7 @@ namespace Hermes
         np = lin_np;
       };
 
-      LinearizerBase::LinearizerBase(bool auto_max) : auto_max(auto_max), del_slot(-1), empty(true),
-          vertex_size(0), triangle_size(0), edges_size(0)
+      LinearizerBase::LinearizerBase(bool auto_max) : auto_max(auto_max), del_slot(-1), empty(true)
       {
         tris = NULL;
         edges = NULL;
@@ -44,7 +43,7 @@ namespace Hermes
         info = NULL;
         max = -1e100;
 
-        vertex_count = triangle_count = edges_count = 0;
+        vertex_count = triangle_count = edges_count = this->vertex_size = this->triangle_size = this->edges_size = 0;
 
         pthread_mutexattr_t attr;
         pthread_mutexattr_init(&attr);

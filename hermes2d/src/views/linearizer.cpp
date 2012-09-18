@@ -982,7 +982,7 @@ namespace Hermes
         if(this->vertex_count >= this->vertex_size)
         {
           this->vertex_size *= 2;
-          this->verts = (double3*) realloc(verts, sizeof(double3) * vertex_size);
+          verts = (double3*) realloc(verts, sizeof(double3) * vertex_size);
           this->info = (int4*) realloc(info, sizeof(int4) * vertex_size);
           this->hash_table = (int*) realloc(hash_table, sizeof(int) * vertex_size);
           memset(this->hash_table + this->vertex_size / 2, 0xff, sizeof(int) * this->vertex_size / 2);

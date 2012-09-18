@@ -60,11 +60,11 @@ namespace Hermes
       Orderizer::Orderizer() : LinearizerBase()
       {
         verts = NULL;
+        this->label_size = 0;
         ltext = NULL;
         lvert = NULL;
         lbox = NULL;
         tris_orders = NULL;
-        label_size = 0;
 
         label_count = cl1 = cl2 = cl3 = 0;
 
