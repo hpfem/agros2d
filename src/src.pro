@@ -231,7 +231,7 @@ OTHER_FILES += python/agros2d.pyx \
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
 LIBS += -lagros2d_hermes2d
-LIBS += -lagros2d_3dparty
+LIBS += -lagros2d_3rdparty
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
@@ -242,7 +242,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../3dparty/ctemplate/unix
+    INCLUDEPATH += ../3rdparty/ctemplate/unix
 }
 
 macx-g++ {
@@ -258,7 +258,7 @@ macx-g++ {
 
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
-    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/3dparty/python2.7/config
+    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/3rdparty/python2.7/config
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lpthread
     LIBS += -lpython2.7
@@ -281,7 +281,7 @@ win32-msvc2010 {
 	LIBS += -L../hermes2d/libs
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
-    INCLUDEPATH += ../3dparty/ctemplate/windows
+    INCLUDEPATH += ../3rdparty/ctemplate/windows
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 }
 

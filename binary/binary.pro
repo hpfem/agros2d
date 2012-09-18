@@ -8,7 +8,7 @@ INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
 
 LIBS += -lagros2d_hermes2d
-LIBS += -lagros2d_3dparty
+LIBS += -lagros2d_3rdparty
 LIBS += -lagros2d
 
 RC_FILE = ../src/src.rc

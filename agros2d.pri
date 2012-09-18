@@ -10,11 +10,11 @@ DEFINES += VERSION_DAY=27
 
 INCLUDEPATH += ./ \
     ../src \
-    ../3dparty \
-    ../3dparty/ctemplate \
-    ../3dparty/muparser \
-    ../3dparty/dxflib \
-    ../3dparty/rapidxml
+    ../3rdparty \
+    ../3rdparty/ctemplate \
+    ../3rdparty/muparser \
+    ../3rdparty/dxflib \
+    ../3rdparty/rapidxml
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
@@ -25,7 +25,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../3dparty/ctemplate/unix
+    INCLUDEPATH += ../3rdparty/ctemplate/unix
 
     LIBS += -L../libs
 
@@ -99,7 +99,7 @@ win32-msvc2010 {
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
     LIBS += -L../hermes2d/libs
-    LIBS += -L../3dparty/libs
+    LIBS += -L../3rdparty/libs
     LIBS += -L../weakform/libs
 	LIBS += -Ld:/hpfem/hermes/dependencies/lib
 

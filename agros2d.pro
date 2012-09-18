@@ -1,5 +1,5 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
-SUBDIRS += 3dparty
+SUBDIRS += 3rdparty
 SUBDIRS += hermes2d
 SUBDIRS += src
 SUBDIRS += generator
