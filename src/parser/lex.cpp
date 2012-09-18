@@ -3,7 +3,7 @@
 #include "lex.h"
 #include <QRegExp>
 
-Token::Token(TokenType type, QString text, int nestingLevel, int position)
+Token::Token(ParserTokenType type, QString text, int nestingLevel, int position)
 {
     this->m_text = text;
     this->m_type = type;
@@ -81,11 +81,11 @@ void LexicalAnalyser::setPatterns()
     }
     pattern += QRegExp::escape(operators[operators.length() - 1]);
 
-    m_patterns << Terminal(TokenType_OPERATOR, pattern);
-    m_patterns << Terminal(TokenType_NUMBER, "([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
-    m_patterns << Terminal(TokenType_FUNCTION, "([a-zA-Z][_a-zA-Z0-9]*)(?=\\()");
-    m_patterns << Terminal(TokenType_VARIABLE, "([a-zA-Z][_a-zA-Z0-9]*)");
-    m_patterns << Terminal(TokenType_KEYWORD, "dx");
+    m_patterns << Terminal(ParserTokenType_OPERATOR, pattern);
+    m_patterns << Terminal(ParserTokenType_NUMBER, "([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
+    m_patterns << Terminal(ParserTokenType_FUNCTION, "([a-zA-Z][_a-zA-Z0-9]*)(?=\\()");
+    m_patterns << Terminal(ParserTokenType_VARIABLE, "([a-zA-Z][_a-zA-Z0-9]*)");
+    m_patterns << Terminal(ParserTokenType_KEYWORD, "dx");
 }
 
 void LexicalAnalyser::setExpression(const QString &expr)
@@ -99,18 +99,18 @@ void LexicalAnalyser::setExpression(const QString &expr)
     //    QList<Terminals>  terminals;
 
     //    sortByLength(m_variables);
-    //    terminals.append(Terminals(TokenType_VARIABLE, m_variables));
+    //    terminals.append(Terminals(ParserTokenType_VARIABLE, m_variables));
 
     //    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":" << ",";
     //    sortByLength(operators);
-    //    terminals.append(Terminals(TokenType_OPERATOR, operators));
+    //    terminals.append(Terminals(ParserTokenType_OPERATOR, operators));
     //    functions << "sin" << "cos" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<
     //                 "tanh" << "asinh" << "acosh" << "atanh" << "log2" << "log10" << "log" <<
     //                 "exp" << "sqrt" << "sign" << "abs" << "min" << "max" << "sum" << "avg" << "pow";
     //    // TODO: conflict "tan" with "tanx", "tany", "tanr", "tanz" in surface forms
 
     //    sortByLength(functions);
-    //    terminals.append(Terminals(TokenType_FUNCTION, functions));
+    //    terminals.append(Terminals(ParserTokenType_FUNCTION, functions));
 
     //    int pos = 0;
 
@@ -129,7 +129,7 @@ void LexicalAnalyser::setExpression(const QString &expr)
     //        if(index == pos)
     //        {
     //            QString text = r_exp.capturedTexts().takeFirst();
-    //            Token symbol(TokenType_NUMBER, text, nesting_level, pos);
+    //            Token symbol(ParserTokenType_NUMBER, text, nesting_level, pos);
     //            pos += text.count();
     //            m_tokens.append(symbol);
     //        }
@@ -190,10 +190,10 @@ void LexicalAnalyser::setExpression(const QString &expr)
     int i = 0;
     while(i < m_tokens.count() - 1)
     {
-        if ((m_tokens[i].type() == TokenType_NUMBER) && (m_tokens[i+1].type() != TokenType_OPERATOR))
+        if ((m_tokens[i].type() == ParserTokenType_NUMBER) && (m_tokens[i+1].type() != ParserTokenType_OPERATOR))
         {
             QString lexem = "";
-            while(((m_tokens[i+1].type() != TokenType_OPERATOR) && (i < m_tokens.count()-1)))
+            while(((m_tokens[i+1].type() != ParserTokenType_OPERATOR) && (i < m_tokens.count()-1)))
             {
                 lexem += m_tokens[i].toString();
                 i++;
@@ -201,7 +201,7 @@ void LexicalAnalyser::setExpression(const QString &expr)
             qDebug() << "Invalid number format:" << lexem + m_tokens[i].toString();
         }
 
-        if ((m_tokens[i].type() == TokenType_VARIABLE) && (m_tokens[i+1].type() != TokenType_OPERATOR))
+        if ((m_tokens[i].type() == ParserTokenType_VARIABLE) && (m_tokens[i+1].type() != ParserTokenType_OPERATOR))
         {
             qDebug() << "Synatax error in expression " << m_tokens[i].toString() + " " + m_tokens[i+1].toString();
         }
@@ -298,7 +298,7 @@ QString LexicalAnalyser::replaceOperatorByFunction(QString expression)
 }
 
 
-Terminals::Terminals(TokenType terminal_type, QStringList terminal_list)
+Terminals::Terminals(ParserTokenType terminal_type, QStringList terminal_list)
 {
 
     int n = terminal_list.count();

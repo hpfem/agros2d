@@ -29,14 +29,14 @@
 
 #include "util.h"
 
-enum TokenType
+enum ParserTokenType
 {
-    TokenType_OPERATOR = 0,
-    TokenType_VARIABLE = 10,
-    TokenType_CONSTANT = 20,
-    TokenType_FUNCTION = 30,
-    TokenType_NUMBER = 40,
-    TokenType_KEYWORD = 200
+    ParserTokenType_OPERATOR = 0,
+    ParserTokenType_VARIABLE = 10,
+    ParserTokenType_CONSTANT = 20,
+    ParserTokenType_FUNCTION = 30,
+    ParserTokenType_NUMBER = 40,
+    ParserTokenType_KEYWORD = 200
 };
 
 class ParserException : public AgrosException
@@ -60,30 +60,30 @@ private:
 class Terminal
 {
 public:
-    Terminal(TokenType terminalType, QString pattern)
+    Terminal(ParserTokenType terminalType, QString pattern)
     {
         m_pattern = QRegExp(pattern);
         m_terminalType = terminalType;
     }
 
     QRegExp m_pattern;
-    TokenType m_terminalType;
+    ParserTokenType m_terminalType;
 };
 
 class Token
 {
 public:
     Token() {}
-    Token(TokenType m_type, QString m_text, int nestingLevel = 0, int position = 0);
+    Token(ParserTokenType m_type, QString m_text, int nestingLevel = 0, int position = 0);
 
-    inline TokenType type() { return this->m_type; }
+    inline ParserTokenType type() { return this->m_type; }
     inline QString toString() { return this->m_text; }    
     inline int position() { return m_position; }
     inline int nestingLevel() { return m_nestingLevel; }
     inline void setNestingLevel(int nestingLevel) { m_nestingLevel = nestingLevel; }
 
 private:
-    TokenType m_type;
+    ParserTokenType m_type;
     QString m_text;
     int m_nestingLevel;
     int m_position;
@@ -128,7 +128,7 @@ class Terminals
 
 public:
 
-    Terminals(TokenType terminal_type, QStringList terminal_list);
+    Terminals(ParserTokenType terminal_type, QStringList terminal_list);
     void find(const QString &s, QList<Token> &symbol_que, int &pos, int &nesting_level);
     void print();
 };

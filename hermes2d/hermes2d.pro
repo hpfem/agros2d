@@ -122,7 +122,12 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/views/orderizer.cpp \
                 src/views/vectorizer.cpp \
                 src/weakform/weakform.cpp  \
-                src/neighbor.cpp \
+				src/weakform_library/weakforms_elasticity.cpp  \
+				src/weakform_library/weakforms_h1.cpp  \
+				src/weakform_library/weakforms_hcurl.cpp  \
+				src/weakform_library/weakforms_maxwell.cpp  \
+                src/weakform_library/weakforms_neutronics.cpp  \
+				src/neighbor.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
                 src/discrete_problem_linear.cpp \
@@ -185,8 +190,10 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-    # QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /MP /openmp /Zc:wchar_t
+	CONFIG += staticlib
+    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+	QMAKE_CXXFLAGS_RELEASE += -MD
+    QMAKE_CXXFLAGS_DEBUG += -MDd
 
     DEFINES += XERCES_STATIC_LIBRARY
     DEFINES += XML_LIBRARY
@@ -200,12 +207,13 @@ win32-msvc2010 {
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
 	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
-    LIBS += -Lc:/Python27
+    LIBS += -Lc:/Python27/libs
     LIBS += -Lc:/Qt/4.8.2/lib
-    LIBS += -lumfpack
-    LIBS += -lamd
+	LIBS += -Ld:/hpfem/hermes/dependencies/lib
+    LIBS += -llibumfpack
+    LIBS += -llibamd
     LIBS += -lblas
-    LIBS += -lpthread
+    LIBS += -lpthreadVCE2
     LIBS += -lpython27
     LIBS += -lvcomp
     LIBS += -lxerces-c_static_3

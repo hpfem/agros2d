@@ -47,5 +47,6 @@ HtmlValueEdit::HtmlValueEdit(QWidget *parent, const QString &str)
 bool HtmlValueEdit::evaluate()
 {
     lblValue->setText(txtLineEdit->text());
+    return true;
 }
 
