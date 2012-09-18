@@ -32,9 +32,8 @@ linux-g++|linux-g++-64|linux-g++-32 {
 }
 
 win32-msvc2010 {
-    INCLUDEPATH += ctemplate \
-            ctemplate/windows \
-            .
+    INCLUDEPATH += ctemplate
+	INCLUDEPATH += ctemplate/windows
 
     SOURCES += ctemplate/windows/port.cc
 }
