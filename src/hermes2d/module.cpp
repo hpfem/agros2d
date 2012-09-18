@@ -166,7 +166,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         assert(0);
 
     // set area
-    weakForm->setArea(area.toStdString());
+    weakForm->set_area(area.toStdString());
 
     return weakForm;
 }
@@ -227,7 +227,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
         }
 
         // add external solutions
-        custom_form->setExt(slns);
+        custom_form->set_ext(slns);
 
         // set time discretisation table
         dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
@@ -272,7 +272,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
             slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
 
-        custom_form->setExt(slns);
+        custom_form->set_ext(slns);
     }
 
     addForm(type, custom_form);

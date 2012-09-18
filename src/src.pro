@@ -236,6 +236,8 @@ LIBS += -lagros2d_3dparty
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
 
+    QMAKE_CXXFLAGS = -Wno-unused-variable
+
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7

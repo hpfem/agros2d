@@ -34,25 +34,25 @@ public:
     ~PostHermes();
 
     // mesh
-    inline bool initialMeshIsPrepared() { return m_initialMeshIsPrepared; }
+    inline bool initialMeshIsPrepared() { return !m_linInitialMeshView.is_empty(); }
     inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
-    inline bool solutionMeshIsPrepared() { return m_solutionMeshIsPrepared; }
+    inline bool solutionMeshIsPrepared() { return !m_linSolutionMeshView.is_empty(); }
     inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
 
     // order view
-    inline bool orderIsPrepared() { return m_orderIsPrepared; }
+    inline bool orderIsPrepared() { return !m_orderView.is_empty(); }
     Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
 
     // contour
-    inline bool contourIsPrepared() { return m_contourIsPrepared; }
+    inline bool contourIsPrepared() { return !m_linContourView.is_empty(); }
     inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
 
     // scalar view
-    inline bool scalarIsPrepared() { return m_scalarIsPrepared; }
+    inline bool scalarIsPrepared() { return !m_linScalarView.is_empty(); }
     inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
 
     // vector view
-    inline bool vectorIsPrepared() { return m_vectorIsPrepared; }
+    inline bool vectorIsPrepared() { return !m_vecVectorView.is_empty(); }
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     // particle tracing
@@ -73,27 +73,21 @@ public slots:
 
 private:
     // initial mesh
-    bool m_initialMeshIsPrepared;
     Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
 
     // solution mesh
-    bool m_solutionMeshIsPrepared;
     Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
 
     // order view
-    bool m_orderIsPrepared;
     Hermes::Hermes2D::Views::Orderizer m_orderView;
 
     // contour
-    bool m_contourIsPrepared;
     Hermes::Hermes2D::Views::Linearizer m_linContourView;
 
     // scalar view
-    bool m_scalarIsPrepared;
     Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
 
     // vector view
-    bool m_vectorIsPrepared;
     Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
 
     // particle tracing

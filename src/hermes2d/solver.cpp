@@ -355,7 +355,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 template <typename Scalar>
 void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa)
 {
-    Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
+    Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));
 
     // Linear solver
