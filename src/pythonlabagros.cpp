@@ -136,12 +136,9 @@ QString createPythonFromModel()
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->initialCondition().number());
 
-            // TODO: change to time interval skip
-            /*
-            str += QString("%1.time_steps_skip = %2\n").
+            str += QString("%1.time_skip = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->timeStepsSkip().number());
-            */
+                    arg(fieldInfo->timeSkip().number());
         }
 
         if (fieldInfo->numberOfRefinements() > 0)
@@ -618,12 +615,12 @@ void PyField::setInitialCondition(const double initialCondition)
     Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(Value(QString::number(initialCondition)));
 }
 
-void PyField::setTimeStepsSkip(const int timeStepsSkip)
+void PyField::setTimeSkip(const double timeSkip)
 {
-    if (timeStepsSkip >= 1 && timeStepsSkip < Util::problem()->config()->timeTotal().number())
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeStepsSkip(Value(QString::number(timeStepsSkip)));
+    if (timeSkip >= 0 && timeSkip < Util::problem()->config()->timeTotal().number())
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(Value(QString::number(timeSkip)));
     else
-        throw invalid_argument(QObject::tr("Time steps skip is out of range (1 - %1).").arg(Util::problem()->config()->timeTotal().number()-1).toStdString());
+        throw invalid_argument(QObject::tr("Time skip is out of range (0 - %1).").arg(Util::problem()->config()->timeTotal().number()).toStdString());
 }
 
 void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
@@ -2014,7 +2011,7 @@ void PythonEngineAgros::runPythonHeader()
 
     // run script
     if (!script.isEmpty())
-         PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+        PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 void PythonEngineAgros::doExecutedScript()

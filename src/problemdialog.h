@@ -118,8 +118,7 @@ private:
 
     // transient
     ValueLineEdit *txtTransientInitialCondition;
-    ValueLineEdit *txtTransientTimeStepsSkip;
-    QLabel *lblTransientTimeStepsSkip;
+    ValueLineEdit *txtTransientTimeSkip;
 
     // equation
     QLabel *lblEquationPixmap;
@@ -130,7 +129,6 @@ private slots:
     void doAnalysisTypeChanged(int index);
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
-    void doTransientTimeStepsChanged();
     void doShowEquation();
 };
 

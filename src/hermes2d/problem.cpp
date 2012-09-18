@@ -494,7 +494,7 @@ void Problem::solveAction()
             {
                 solvers[block]->solveInitialTimeStep();
             }
-            else if(!block->skipThisTimeStep(actualTimeStep()))
+            else if(!block->skipThisTimeStep())
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {

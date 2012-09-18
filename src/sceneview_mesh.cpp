@@ -240,6 +240,7 @@ void SceneViewMesh::paintInitialMesh()
 
     double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
     int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
+    int3* litTris = m_postHermes->linInitialMeshView().get_triangles();
 
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -248,12 +249,22 @@ void SceneViewMesh::paintInitialMesh()
               Util::config()->colorInitialMesh.blueF());
     glLineWidth(1.3);
 
-    // triangles
+    // edges
     glBegin(GL_LINES);
     for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
     {
         glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
         glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
+    }
+    glEnd();
+
+    // triangles
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
+    {
+        glVertex2d(linVert[litTris[i][0]][0], linVert[litTris[i][0]][1]);
+        glVertex2d(linVert[litTris[i][1]][0], linVert[litTris[i][1]][1]);
+        glVertex2d(linVert[litTris[i][2]][0], linVert[litTris[i][2]][1]);
     }
     glEnd();
 

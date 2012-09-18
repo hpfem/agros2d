@@ -92,8 +92,8 @@ public:
     inline Value initialCondition() const { return m_initialCondition; }
     void setInitialCondition(const Value& value) { m_initialCondition = value; emit changed(); }
 
-    inline Value timeStepsSkip() const { return m_timeStepsSkip; }
-    void setTimeStepsSkip(const Value& value) { m_timeStepsSkip = value; emit changed(); }
+    inline Value timeSkip() const { return m_timeSkip; }
+    void setTimeSkip(const Value& value) { m_timeSkip = value; emit changed(); }
 
     // module
     QString name();
@@ -136,7 +136,7 @@ private:
 
     // transient
     Value m_initialCondition;
-    Value m_timeStepsSkip;
+    Value m_timeSkip;
 };
 
 ostream& operator<<(ostream& output, FieldInfo& id);

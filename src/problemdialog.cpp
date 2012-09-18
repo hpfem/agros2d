@@ -160,10 +160,8 @@ void FieldWidget::createContent()
     // transient
     cmbAnalysisType = new QComboBox();
     txtTransientInitialCondition = new ValueLineEdit();
-    txtTransientTimeStepsSkip = new ValueLineEdit();
-    txtTransientTimeStepsSkip->setMinimum(1);
-    connect(txtTransientTimeStepsSkip, SIGNAL(editingFinished()), this, SLOT(doTransientTimeStepsChanged()));
-    lblTransientTimeStepsSkip = new QLabel();
+    txtTransientTimeSkip = new ValueLineEdit();
+    txtTransientTimeSkip->setMinimum(0);
 
     // linearity
     cmbLinearityType = new QComboBox();
@@ -197,10 +195,8 @@ void FieldWidget::createContent()
     layoutTransientAnalysis->setColumnStretch(1, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 0, 0);
     layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Time steps skip:")), 1, 0);
-    layoutTransientAnalysis->addWidget(txtTransientTimeStepsSkip, 1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Used time steps:")), 2, 0);
-    layoutTransientAnalysis->addWidget(lblTransientTimeStepsSkip, 2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Time skip:")), 1, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeSkip, 1, 1);
 
     QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
@@ -317,8 +313,7 @@ void FieldWidget::load()
     txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder());
     // transient
     txtTransientInitialCondition->setValue(m_fieldInfo->initialCondition());
-    txtTransientTimeStepsSkip->setValue(m_fieldInfo->timeStepsSkip());
-    doTransientTimeStepsChanged();
+    txtTransientTimeSkip->setValue(m_fieldInfo->timeSkip());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
     txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps());
@@ -340,7 +335,7 @@ bool FieldWidget::save()
     m_fieldInfo->setPolynomialOrder(txtPolynomialOrder->value());
     // transient
     m_fieldInfo->setInitialCondition(txtTransientInitialCondition->value());
-    m_fieldInfo->setTimeStepsSkip(txtTransientTimeStepsSkip->value());
+    m_fieldInfo->setTimeSkip(txtTransientTimeSkip->value());
     // linearity
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setNonlinearSteps(txtNonlinearSteps->value());
@@ -361,7 +356,7 @@ FieldInfo *FieldWidget::fieldInfo()
 
 void FieldWidget::doAnalysisTypeChanged(int index)
 {
-    //initial condition
+    // initial condition
     txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
 
     // time steps skip
@@ -370,25 +365,9 @@ void FieldWidget::doAnalysisTypeChanged(int index)
         if (otherFieldInfo->analysisType() == AnalysisType_Transient && otherFieldInfo->fieldId() != m_fieldInfo->fieldId())
             otherFieldIsTransient = true;
 
-    txtTransientTimeStepsSkip->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() != AnalysisType_Transient && otherFieldIsTransient);
+    txtTransientTimeSkip->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() != AnalysisType_Transient && otherFieldIsTransient);
 
     doShowEquation();
-}
-
-void FieldWidget::doTransientTimeStepsChanged()
-{
-    QString timeSteps = "1";
-    for (int i = 2; i < Util::problem()->actualTimeStep(); i++)
-    {
-        if ((txtTransientTimeStepsSkip->value().number() > 0)
-                && ((i % (int) txtTransientTimeStepsSkip->value().number()) == 0))
-            timeSteps += QString(", %1").arg(i);
-    }
-
-    if (Util::problem()->actualTimeStep() > 1)
-        timeSteps += QString(", %1").arg(Util::problem()->actualTimeStep());
-
-    lblTransientTimeStepsSkip->setText(timeSteps);
 }
 
 void FieldWidget::doShowEquation()
