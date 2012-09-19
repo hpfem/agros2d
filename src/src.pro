@@ -231,16 +231,18 @@ OTHER_FILES += python/agros2d.pyx \
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
 LIBS += -lagros2d_hermes2d
-LIBS += -lagros2d_3dparty
+LIBS += -lagros2d_3rdparty
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
+
+    QMAKE_CXXFLAGS = -Wno-unused-variable
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../3dparty/ctemplate/unix
+    INCLUDEPATH += ../3rdparty/ctemplate/unix
 }
 
 macx-g++ {
@@ -256,7 +258,7 @@ macx-g++ {
 
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
-    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/3dparty/python2.7/config
+    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/3rdparty/python2.7/config
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lpthread
     LIBS += -lpython2.7
@@ -267,17 +269,19 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-    # QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /MP /openmp /Zc:wchar_t
+    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+	QMAKE_CXXFLAGS_RELEASE += -MD
+    QMAKE_CXXFLAGS_DEBUG += -MDd
 
     #DEFINES += XERCES_STATIC_LIBRARY
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 
+	LIBS += -L../hermes2d/libs
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
-    INCLUDEPATH += ../3dparty/ctemplate/windows
+    INCLUDEPATH += ../3rdparty/ctemplate/windows
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 }
 

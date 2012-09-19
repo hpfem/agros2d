@@ -39,6 +39,9 @@ bool isBetween(double angle_1, double angle_2, double angle)
 {
     // tolerance 1e-3 degree
     double tol = 1e-3 * M_PI / 180;
+#ifndef M_PI_2
+#define M_PI_2 M_PI / 2
+#endif
 
     // angle_1 has to be lower then angle_2
     if (angle_2 < angle_1)

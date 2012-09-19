@@ -529,7 +529,7 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
     }
 
     double winding = totalAngle / (2*M_PI);
-    int intWinding = round(winding);
+    int intWinding = int(winding);
     assert(winding - (double)intWinding < 0.00001);
     return intWinding;
 }

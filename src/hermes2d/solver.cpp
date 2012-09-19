@@ -355,7 +355,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 template <typename Scalar>
 void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa)
 {
-    Hermes::HermesCommonApi.setParamValue(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
+    Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));
 
     // Linear solver
@@ -524,7 +524,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     wf.registerForms(&bdf2ATable);
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
-    Scalar coefVec[ndof];
+    Scalar* coefVec = new Scalar[ndof];
 
     solveOneProblem(&wf, coefVec, multiSolutionArray, previousTSMultiSolutionArray.size() != 0 ? &previousTSMultiSolutionArray : NULL);
     //Solution<Scalar>::vector_to_solutions(coefVec, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
@@ -536,6 +536,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     solutionID.group = m_block;
     solutionID.timeStep = timeStep;
     solutionID.adaptivityStep = adaptivityStep;
+
+    // todo : Maybe delete coefVec.
 
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 }
@@ -556,7 +558,7 @@ double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
     wf2.registerForms(&bdf2BTable);
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
-    Scalar coefVec2[ndof];
+    Scalar* coefVec2 = new Scalar[ndof];
     MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
     multiSolutionArray2.createNewSolutions();
 
@@ -579,6 +581,8 @@ double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
                             arg(Util::problem()->actualTimeStepLength()).
                             arg(nextTimeStepLength).
                             arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()*100.));
+
+    // todo : Maybe delete coefVec2.
 
    // cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
     return nextTimeStepLength;

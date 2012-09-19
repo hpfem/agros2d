@@ -60,9 +60,11 @@ namespace Hermes
       Orderizer::Orderizer() : LinearizerBase()
       {
         verts = NULL;
+        this->label_size = 0;
         ltext = NULL;
         lvert = NULL;
         lbox = NULL;
+        tris_orders = NULL;
 
         label_count = cl1 = cl2 = cl3 = 0;
 
@@ -79,7 +81,6 @@ namespace Hermes
             p += strlen(buffer + p) + 1;
           }
         }
-        tris_orders = NULL;
       }
 
       int Orderizer::add_vertex()
@@ -105,7 +106,7 @@ namespace Hermes
       void Orderizer::process_space(const Space<Scalar>* space)
       {
         // sanity check
-        if(space == NULL) throw Hermes::Exceptions::Exception("Space is NULL in Orderizer:process_solution().");
+        if(space == NULL) throw Hermes::Exceptions::Exception("Space is NULL in Orderizer:process_space().");
 
         if(!space->is_up_to_date())
           throw Hermes::Exceptions::Exception("The space is not up to date.");
@@ -120,13 +121,13 @@ namespace Hermes
         Mesh* mesh = space->get_mesh();
         if(mesh == NULL)
         {
-          throw Hermes::Exceptions::Exception("Mesh is NULL in Orderizer:process_solution().");
+          throw Hermes::Exceptions::Exception("Mesh is NULL in Orderizer:process_space().");
         }
         int nn = mesh->get_num_active_elements();
-        vertex_size = 77 * nn;
-        triangle_size = 64 * nn;
-        edges_size = 16 * nn;
-        label_size = nn + 10;
+        this->vertex_size = std::max(this->vertex_size, 77 * nn);
+        this->triangle_size = std::max(this->triangle_size, 64 * nn);
+        this->edges_size = std::max(this->edges_size, 16 * nn);
+        this->label_size = std::max(this->label_size, nn + 10);
         cl1 = cl2 = cl3 = label_size;
 
         // reuse or allocate vertex, triangle and edge arrays
@@ -135,6 +136,7 @@ namespace Hermes
         tris_orders = (int*) realloc(tris_orders, sizeof(int) * triangle_size);
         edges = (int3*) realloc(edges, sizeof(int3) * edges_size);
         info = NULL;
+        this->empty = false;
         lvert = (int*) realloc(lvert, sizeof(int) * label_size);
         ltext = (char**) realloc(ltext, sizeof(char*) * label_size);
         lbox = (double2*) realloc(lbox, sizeof(double2) * label_size);
@@ -226,9 +228,14 @@ namespace Hermes
           }
         }
       }
-
-      Orderizer::~Orderizer()
+      
+      void Orderizer::free()
       {
+        if(verts != NULL)
+        {
+          ::free(verts);
+          verts = NULL;
+        }
         if(lvert != NULL)
         {
           ::free(lvert);
@@ -249,6 +256,13 @@ namespace Hermes
           ::free(tris_orders);
           tris_orders = NULL;
         }
+
+        LinearizerBase::free();
+      }
+
+      Orderizer::~Orderizer()
+      {
+        free();
       }
 
       template<typename Scalar>

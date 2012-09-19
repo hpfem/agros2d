@@ -396,7 +396,7 @@ void Problem::refuseLastTimeStepLength()
 
 double Problem::actualTime() const
 {
-    timeStepToTime(m_timeStepLengths.size());
+    return timeStepToTime(m_timeStepLengths.size());
 }
 
 double Problem::actualTimeStepLength() const

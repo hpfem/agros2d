@@ -257,7 +257,7 @@ void SceneViewMesh::paintInitialMesh()
         glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
     }
     glEnd();
-
+    /*
     // triangles
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
@@ -267,6 +267,7 @@ void SceneViewMesh::paintInitialMesh()
         glVertex2d(linVert[litTris[i][2]][0], linVert[litTris[i][2]][1]);
     }
     glEnd();
+    */
 
     m_postHermes->linInitialMeshView().unlock_data();
 }
@@ -291,7 +292,6 @@ void SceneViewMesh::paintSolutionMesh()
     glLineWidth(1.3);
 
     // triangles
-    // qDebug() << Util::problem()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
     for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
     {

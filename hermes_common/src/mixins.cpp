@@ -147,6 +147,103 @@ namespace Hermes
     #endif
     }
 
+    void Loggable::Static::error(const char* msg, ...)
+    {
+      char text[BUF_SZ];
+      char* text_contents = text + 1;
+
+      text[0] = HERMES_EC_ERROR;
+      text[1] = ' ';
+      text_contents++;
+
+      //print the message
+      va_list arglist;
+      va_start(arglist, msg);
+      vsprintf(text_contents, msg, arglist);
+      va_end(arglist);
+
+      //Windows platform
+    #ifdef WIN32
+      HANDLE h_console = GetStdHandle(STD_OUTPUT_HANDLE);
+
+      //generate console settings
+      WORD console_attr_red = FOREGROUND_RED, console_attr_green = FOREGROUND_GREEN, console_attr_blue = FOREGROUND_BLUE;
+
+      WORD console_attrs = 0;
+      console_attrs |= console_attr_red;
+
+      //set new console settings
+      SetConsoleTextAttribute(h_console, console_attrs);
+
+      //write text
+      DWORD num_written;
+      BOOL write_success = WriteConsoleA(h_console, text_contents, strlen(text_contents), &num_written, NULL);
+      std::cout << std::endl;
+    //Linux platform
+    #else
+    # define FOREGROUND_RED 1
+    # define FOREGROUND_GREEN 2
+    # define FOREGROUND_BLUE 4
+      //console color code
+      int console_attrs = 1;
+      console_attrs |= FOREGROUND_RED;
+      bool console_bold = false;
+
+      printf("\033[%dm", console_attrs + 30);
+
+      //emphasize and console bold
+      if(console_bold)
+        printf("\033[1m");
+
+      //print text and reset settings
+      printf("%s\033[0m\n", text_contents);
+
+    #endif
+    }
+
+    void Loggable::error(const char* msg, ...) const
+    {
+      if(!this->verbose_output)
+        return;
+
+      char text[BUF_SZ];
+      char* text_contents = text + 1;
+
+      text[0] = HERMES_EC_ERROR;
+      text[1] = ' ';
+      text_contents++;
+
+      //print the message
+      va_list arglist;
+      va_start(arglist, msg);
+      vsprintf(text_contents, msg, arglist);
+      va_end(arglist);
+      hermes_log_message(HERMES_EC_ERROR, text_contents);
+    }
+
+    void Loggable::error_if(bool cond, const char* msg, ...) const
+    {
+      if(!this->verbose_output)
+        return;
+
+      if(cond)
+      {
+        char text[BUF_SZ];
+        char* text_contents = text + 1;
+
+        text[0] = HERMES_EC_ERROR;
+        text[1] = ' ';
+        text_contents++;
+
+        //print the message
+        va_list arglist;
+        va_start(arglist, msg);
+        vsprintf(text_contents, msg, arglist);
+        va_end(arglist);
+        hermes_log_message(HERMES_EC_ERROR, text_contents);
+      }
+    }
+
     void Loggable::warn(const char* msg, ...) const
     {
       if(!this->verbose_output)
@@ -250,6 +347,7 @@ namespace Hermes
       WORD console_attrs = 0;
       switch(code)
       {
+        case HERMES_EC_ERROR: console_attrs |= console_attr_red; break;
         case HERMES_EC_WARNING: console_attrs |= console_attr_red | console_attr_green; break;
         case HERMES_EC_INFO:console_attrs |= console_attr_green;  break;
         default: throw Hermes::Exceptions::Exception("Unknown error code: '%c'", code);
@@ -526,49 +624,49 @@ namespace Hermes
       }
     }
 
-    IntegrableWithGlobalOrder::IntegrableWithGlobalOrder() : globalIntegrationOrderSet(false), globalIntegrationOrder(0)
+    IntegrableWithGlobalOrder::IntegrableWithGlobalOrder() : global_integration_order_set(false), global_integration_order(0)
     {}
 
-    void IntegrableWithGlobalOrder::setGlobalIntegrationOrder(unsigned int order)
+    void IntegrableWithGlobalOrder::set_global_integration_order(unsigned int order)
     {
-      this->globalIntegrationOrder = order;
-      this->globalIntegrationOrderSet = true;
+      this->global_integration_order = order;
+      this->global_integration_order_set = true;
     }
 
-    SettableComputationTime::SettableComputationTime() : time(0.0), timeStep(0.0)
+    SettableComputationTime::SettableComputationTime() : time(0.0), time_step(0.0)
     {
     }
 
-    void SettableComputationTime::setTime(double time)
+    void SettableComputationTime::set_time(double time)
     {
       this->time = time;
     }
 
-    void SettableComputationTime::setTimeStep(double timeStep)
+    void SettableComputationTime::set_time_step(double time_step)
     {
-      this->timeStep = timeStep;
+      this->time_step = time_step;
     }
 
     OutputAttachable::OutputAttachable()
     {
     }
 
-    void OutputAttachable::onInitialization()
+    void OutputAttachable::on_initialization()
     {
 
     }
 
-    void OutputAttachable::onStepBegin()
+    void OutputAttachable::on_step_begin()
     {
 
     }
 
-    void OutputAttachable::onStepEnd()
+    void OutputAttachable::on_step_end()
     {
 
     }
 
-    void OutputAttachable::onFinish()
+    void OutputAttachable::on_finish()
     {
 
     }

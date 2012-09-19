@@ -36,7 +36,7 @@ namespace Hermes
       {
         verts = NULL;
         dashes = NULL;
-        dashes_count = 0;
+        dashes_count = dashes_size = 0;
       }
 
       int Vectorizer::create_vertex(double x, double y, double xvalue, double yvalue)
@@ -383,9 +383,9 @@ namespace Hermes
         // about four-times finer than the original mesh).
         int nn = xsln->get_mesh()->get_num_elements() + ysln->get_mesh()->get_num_elements();
 
-        this->vertex_size = std::max(100 * nn, 50000);
-        this->triangle_size = std::max(150 * nn, 75000);
-        this->edges_size = std::max(100 * nn, 50000);
+        this->vertex_size = std::max(100 * nn, std::max(this->vertex_size, 50000));
+        this->triangle_size = std::max(150 * nn, std::max(this->triangle_size, 75000));
+        this->edges_size = std::max(100 * nn, std::max(this->edges_size, 50000));
         //dashes_size = edges_size;
 
         vertex_count = 0;
@@ -399,6 +399,7 @@ namespace Hermes
         edges = (int3*) malloc(sizeof(int3) * edges_size);
         dashes = (int2*) malloc(sizeof(int2) * dashes_size);
         info = (int4*) malloc(sizeof(int4) * vertex_size);
+        this->empty = false;
 
         // initialize the hash table
         hash_table = (int*) malloc(sizeof(int) * vertex_size);
@@ -414,8 +415,8 @@ namespace Hermes
         meshes.push_back(ysln->get_mesh());
 
         // Parallelization
-        MeshFunction<double>*** fns = new MeshFunction<double>**[Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads)];
-        for(unsigned int i = 0; i < Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads); i++)
+        MeshFunction<double>*** fns = new MeshFunction<double>**[Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads)];
+        for(unsigned int i = 0; i < Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads); i++)
         {
           fns[i] = new MeshFunction<double>*[2];
           fns[i][0] = xsln->clone();
@@ -426,8 +427,8 @@ namespace Hermes
           fns[i][1]->set_quad_2d(&g_quad_lin);
         }
 
-        Transformable*** trfs = new Transformable**[Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads)];
-        for(unsigned int i = 0; i < Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads); i++)
+        Transformable*** trfs = new Transformable**[Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads)];
+        for(unsigned int i = 0; i < Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads); i++)
         {
           trfs[i] = new Transformable*[2];
           trfs[i][0] = fns[i][0];
@@ -464,9 +465,9 @@ namespace Hermes
 
         trav_master.begin(meshes.size(), &(meshes.front()));
 
-        Traverse* trav = new Traverse[Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads)];
+        Traverse* trav = new Traverse[Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads)];
 
-        for(unsigned int i = 0; i < Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads); i++)
+        for(unsigned int i = 0; i < Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads); i++)
         {
           trav[i].begin(meshes.size(), &(meshes.front()), trfs[i]);
           trav[i].stack = trav_master.stack;
@@ -475,7 +476,7 @@ namespace Hermes
         int state_i;
 
 #define CHUNKSIZE 1
-int num_threads_used = Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads);
+int num_threads_used = Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads);
 #pragma omp parallel shared(trav_master) private(state_i) num_threads(num_threads_used)
         {
 #pragma omp for schedule(dynamic, CHUNKSIZE)
@@ -521,12 +522,12 @@ int num_threads_used = Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads);
         }
 
         trav_master.finish();
-        for(unsigned int i = 0; i < Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads); i++)
+        for(unsigned int i = 0; i < Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads); i++)
           trav[i].finish();
 
         trav_master.begin(meshes.size(), &(meshes.front()));
 
-        for(unsigned int i = 0; i < Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads); i++)
+        for(unsigned int i = 0; i < Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads); i++)
           trav[i].begin(meshes.size(), &(meshes.front()), trfs[i]);
 
 #pragma omp parallel shared(trav_master) private(state_i) num_threads(num_threads_used)
@@ -580,7 +581,7 @@ int num_threads_used = Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads);
         }
 
         trav_master.finish();
-        for(unsigned int i = 0; i < Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads); i++)
+        for(unsigned int i = 0; i < Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads); i++)
         {
           trav[i].finish();
           for(unsigned int j = 0; j < 2; j++)
@@ -621,7 +622,7 @@ int num_threads_used = Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads);
         ::free(this->info);
       }
 
-      Vectorizer::~Vectorizer()
+      void Vectorizer::free()
       {
         if(verts != NULL)
         {
@@ -633,6 +634,13 @@ int num_threads_used = Hermes2DApi.getParamValue(Hermes::Hermes2D::numThreads);
           ::free(dashes);
           dashes = NULL;
         }
+
+        LinearizerBase::free();
+      }
+
+      Vectorizer::~Vectorizer()
+      {
+        free();
       }
 
       void Vectorizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const

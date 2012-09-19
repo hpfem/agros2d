@@ -86,6 +86,24 @@ namespace Hermes
       {
         init();
       }
+#else
+      ScalarView::ScalarView(WinGeom* wg) :
+      View("ScalarView", wg), lin(NULL),
+        vertex_nodes(0),
+        pointed_vertex_node(NULL),
+        allow_node_selection(false),
+        pointed_node_widget(0),
+        selected_node_widget(0),
+        node_pixel_radius(10),
+        node_widget_vert_cnt(32),
+        element_id_widget(0),
+        show_element_info(false)
+#ifdef ENABLE_VIEWER_GUI
+        , tw_wnd_id(TW_WND_ID_NONE), tw_setup_bar(NULL)
+#endif
+      {
+        init();
+      }
 #endif
 
       ScalarView::ScalarView(char* title, WinGeom* wg) :
@@ -599,7 +617,7 @@ namespace Hermes
           float height = (float)(iter->height * scale);
 
           //draw if AABB of element is large enough
-          if(width > 3*node_pixel_radius && height > 3*node_pixel_radius)
+          if(width > 6*node_pixel_radius && height > 3*node_pixel_radius)
           {
             //prepare environment
             glPushMatrix();
@@ -641,20 +659,20 @@ namespace Hermes
             glBegin(GL_QUADS);
 
             //background
-            float radius = 1.3f * node_pixel_radius;
+            float radius = 2.0f * node_pixel_radius;
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            glVertex2f(-radius, radius);
-            glVertex2f( radius, radius);
-            glVertex2f( radius, -radius);
-            glVertex2f(-radius, -radius);
+            glVertex2f(-radius*1.1, radius*0.5);
+            glVertex2f( radius*1.1, radius*0.5);
+            glVertex2f( radius*1.1, -radius*0.5);
+            glVertex2f(-radius*1.1, -radius*0.5);
 
             //foreground
-            radius = (float)node_pixel_radius;
+            radius = 1.8f * node_pixel_radius;
             glColor4f(0.2f, 0.2f, 0.4f, 1.0f);
-            glVertex2f(-radius, radius);
-            glVertex2f( radius, radius);
-            glVertex2f( radius, -radius);
-            glVertex2f(-radius, -radius);
+            glVertex2f(-radius*1.1, radius*0.5);
+            glVertex2f( radius*1.1, radius*0.5);
+            glVertex2f( radius*1.1, -radius*0.5);
+            glVertex2f(-radius*1.1, -radius*0.5);
 
             glEnd();
           }

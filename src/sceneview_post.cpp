@@ -38,12 +38,6 @@
 #include "hermes2d/problem.h"
 
 PostHermes::PostHermes() :
-    m_initialMeshIsPrepared(false),
-    m_solutionMeshIsPrepared(false),
-    m_orderIsPrepared(false),
-    m_contourIsPrepared(false),
-    m_scalarIsPrepared(false),
-    m_vectorIsPrepared(false),
     m_particleTracingIsPrepared(false)
 {
     connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
@@ -54,6 +48,7 @@ PostHermes::PostHermes() :
 
 PostHermes::~PostHermes()
 {
+    clear();
 }
 
 void PostHermes::processInitialMesh()
@@ -63,23 +58,8 @@ void PostHermes::processInitialMesh()
         Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->activeMeshInitial()->get_num_active_elements()));
 
         // init linearizer for initial mesh
-
-
-        Hermes::Hermes2D::Mesh *mesh = Util::problem()->activeMeshInitial();
-
-        Hermes::Hermes2D::Element* e;
-        int curved = 0;
-        for_all_active_elements(e, mesh)
-        {
-            if (e->is_curved())
-                curved++;
-        }
-        qDebug() << mesh->get_num_active_elements() << mesh->get_num_nodes() << "curved: " << curved;
-
         Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
         m_linInitialMeshView.process_solution(&initial);
-
-        m_initialMeshIsPrepared = true;
     }
 }
 
@@ -94,8 +74,6 @@ void PostHermes::processSolutionMesh()
         // ERROR: FIX component(0)
         Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
-
-        m_solutionMeshIsPrepared = true;
     }
 }
 
@@ -108,8 +86,6 @@ void PostHermes::processOrder()
 
         // ERROR: FIX component(0)
         m_orderView.process_space(Util::scene()->activeMultiSolutionArray().component(0).space.data());
-
-        m_orderIsPrepared = true;
     }
 }
 
@@ -157,8 +133,6 @@ void PostHermes::processRangeContour()
             Util::scene()->activeViewField()->module()->deformShape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
 
         delete slnContourView;
-
-        m_contourIsPrepared = true;
     }
 }
 
@@ -204,8 +178,6 @@ void PostHermes::processRangeScalar()
         }
 
         delete slnScalarView;
-
-        m_scalarIsPrepared = true;
     }
 }
 
@@ -248,8 +220,6 @@ void PostHermes::processRangeVector()
 
         delete slnVectorXView;
         delete slnVectorYView;
-
-        m_vectorIsPrepared = true;
     }
 }
 
@@ -323,13 +293,13 @@ void PostHermes::refresh()
 
 void PostHermes::clear()
 {
-    m_initialMeshIsPrepared = false;
-    m_solutionMeshIsPrepared = false;
-    m_orderIsPrepared = false;
+    m_linInitialMeshView.free();
+    m_linSolutionMeshView.free();
+    m_orderView.free();
 
-    m_contourIsPrepared = false;
-    m_scalarIsPrepared = false;
-    m_vectorIsPrepared = false;
+    m_linContourView.free();
+    m_linScalarView.free();
+    m_vecVectorView.free();
 
     m_particleTracingIsPrepared = false;
 }

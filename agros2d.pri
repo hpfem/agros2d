@@ -10,11 +10,11 @@ DEFINES += VERSION_DAY=27
 
 INCLUDEPATH += ./ \
     ../src \
-    ../3dparty \
-    ../3dparty/ctemplate \
-    ../3dparty/muparser \
-    ../3dparty/dxflib \
-    ../3dparty/rapidxml
+    ../3rdparty \
+    ../3rdparty/ctemplate \
+    ../3rdparty/muparser \
+    ../3rdparty/dxflib \
+    ../3rdparty/rapidxml
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
@@ -25,7 +25,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../3dparty/ctemplate/unix
+    INCLUDEPATH += ../3rdparty/ctemplate/unix
 
     LIBS += -L../libs
 
@@ -84,8 +84,9 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-    # QMAKE_LFLAGS += /MD /openmp
-    QMAKE_CXXFLAGS += /MD /MP /openmp /Zc:wchar_t
+    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+	QMAKE_CXXFLAGS_RELEASE += -MD
+    QMAKE_CXXFLAGS_DEBUG += -MDd
 
     #DEFINES += XERCES_STATIC_LIBRARY
     #DEFINES += XML_LIBRARY
@@ -97,23 +98,20 @@ win32-msvc2010 {
     INCLUDEPATH += ../3dparty/ctemplate/windows
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
-    LIBS += -L../hermes2d/debug/build/lib
-    LIBS += -L../3dparty/debug/build/lib
-    LIBS += -L../weakform/debug/build/lib
-    LIBS += -L../hermes2d/release/build/lib
-    LIBS += -L../3dparty/release/build/lib
-    LIBS += -L../weakform/release/build/lib
+    LIBS += -L../hermes2d/libs
+    LIBS += -L../3rdparty/libs
+    LIBS += -L../weakform/libs
+	LIBS += -Ld:/hpfem/hermes/dependencies/lib
 
-    LIBS += -Lc:/Python27/libs
+	LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lvcomp
-    LIBS += -lqwt
+    LIBS += -lqwtd
     LIBS += -lpython27
     LIBS += -llibumfpack
     LIBS += -llibamd
-    LIBS += -llibpthreadVCE2
-    #LIBS += -lmsvcrt
-    LIBS += -lxerces-c_static_3
+    LIBS += -lpthreadVCE2
+    LIBS += -lxerces-c_static_3D
     LIBS += -ladvapi32
     LIBS += -lws2_32
 }
