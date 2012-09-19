@@ -95,7 +95,7 @@ win32-msvc2010 {
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
-    INCLUDEPATH += ../3dparty/ctemplate/windows
+    INCLUDEPATH += ../3rdparty/ctemplate/windows
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
     LIBS += -L../hermes2d/libs
