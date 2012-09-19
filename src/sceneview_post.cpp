@@ -72,6 +72,8 @@ void PostHermes::processSolutionMesh()
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
+        const Hermes::Hermes2D::Mesh *mesh = Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh();
+        qDebug()  << mesh->get_num_active_elements();
         Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
     }

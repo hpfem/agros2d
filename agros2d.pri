@@ -12,7 +12,6 @@ INCLUDEPATH += ./ \
     ../src \
     ../3rdparty \
     ../3rdparty/ctemplate \
-    ../3rdparty/muparser \
     ../3rdparty/dxflib \
     ../3rdparty/rapidxml
 

@@ -191,14 +191,6 @@ HEADERS += util.h \
     gui/groupbox.h
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
 
-INCLUDEPATH += . \
-    ../lib \
-    ../lib/ctemplate \
-    ../lib/dxflib \
-    ../lib/rapidxml \
-    ../hermes_common \
-    ../hermes2d
-
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml \
@@ -236,13 +228,7 @@ LIBS += -lagros2d_3rdparty
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
 
-    QMAKE_CXXFLAGS = -Wno-unused-variable
-
-    INCLUDEPATH += /usr/include
-    INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/python2.7
-    INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../3rdparty/ctemplate/unix
+    QMAKE_CXXFLAGS = -Wno-unused-variable   
 }
 
 macx-g++ {

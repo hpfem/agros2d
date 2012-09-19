@@ -10,8 +10,7 @@ INCLUDEPATH += ../../hermes2d/include \
     ../../hermes_common/include \
     ../../src \
     ../../src/hermes2d \
-    ../../3dparty/muparser \
-    ../../3dparty/dxflib
+    ../../3rdparty/dxflib
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
