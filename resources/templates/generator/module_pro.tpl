@@ -4,7 +4,7 @@ OBJECTS_DIR = ../build
 MOC_DIR = ../build
 
 TEMPLATE = lib
-CONFIG += plugin 
+CONFIG += plugin
 
 INCLUDEPATH += ../../hermes2d/include \
     ../../hermes_common/include \
@@ -16,7 +16,7 @@ INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
 
 LIBS += -lagros2d_hermes2d
-LIBS += -lagros2d_3dparty
+LIBS += -lagros2d_3rdparty
 LIBS += -lagros2d
 
 linux-g++|linux-g++-64|linux-g++-32 {
