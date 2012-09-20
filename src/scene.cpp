@@ -2402,5 +2402,9 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
 void Scene::setActiveViewField(FieldInfo* fieldInfo)
 {
     m_activeViewField = fieldInfo;
-    setActiveTimeStep(Util::solutionStore()->nearestTimeStep(fieldInfo, m_activeTimeStep));
+    int newTimeStep = Util::solutionStore()->nearestTimeStep(fieldInfo, m_activeTimeStep);
+    setActiveTimeStep(newTimeStep);
+    int lastAdapvieStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, newTimeStep);
+    setActiveAdaptivityStep(min(lastAdapvieStep, activeAdaptivityStep()));
+    setActiveSolutionType(SolutionMode_Normal);
 }

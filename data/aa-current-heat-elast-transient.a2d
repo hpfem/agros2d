@@ -35,11 +35,16 @@
             <label x="0.276729" y="-0.08041810000000001" id="3" area="0"/>
         </labels>
     </geometry>
-    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1000.0" name="unnamed" time_total="8000.0">
+    <problem time_order="2" frequency="0" time_method="bdf2" time_method_tolerance="0.1" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_steps="10" name="unnamed" time_total="200.0">
         <startup_script></startup_script>
         <description></description>
         <fields>
-            <field field_id="current" initial_condition="0.0" polynomial_order="2" time_steps_skip="10" number_of_refinements="0" weak_forms="compiled" analysis_type="steadystate">
+            <field field_id="current" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" time_skip="150" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
@@ -60,9 +65,14 @@
                     </material>
                 </materials>
             </field>
-            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" time_steps_skip="3" number_of_refinements="1" weak_forms="compiled" analysis_type="steadystate">
+            <field field_id="elasticity" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" time_skip="60" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed" elasticity_displacement_y="0">
                         <edge edge="10"/>
@@ -76,20 +86,25 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material elasticity_force_x="0" elasticity_force_y="0" elasticity_poisson_ratio="0.33" elasticity_temperature_difference="0" elasticity_young_modulus="70e9" elasticity_alpha="23e-6" elasticity_temperature_reference="300" id="1" name="new material">
+                    <material elasticity_poisson_ratio="0.33" elasticity_young_modulus="70e9" elasticity_temperature_difference="0" elasticity_alpha="23e-6" elasticity_temperature_reference="300" id="1" name="new material" elasticity_volume_force_x="0" elasticity_volume_force_y="0">
                         <label label="3"/>
                     </material>
                 </materials>
             </field>
-            <field field_id="heat" initial_condition="300.0" polynomial_order="2" time_steps_skip="1" number_of_refinements="0" weak_forms="compiled" analysis_type="transient">
-                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+            <field field_id="heat" initial_condition="300.0" polynomial_order="2" number_of_refinements="0" time_skip="0" analysis_type="transient">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="hp-adaptivity" adaptivity_tolerance="1e-07" adaptivity_steps="3"/>
+                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
-                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_temperature" heat_heat_flux="0" heat_temperature="300" id="1" name="T=300K" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_heat_transfer_coefficient="5" heat_convection_external_temperature="20" heat_radiation_emissivity="0" type="heat_temperature" heat_temperature="300" heat_heat_flux="0" id="1" name="T=300K" heat_radiation_ambient_temperature="20">
                         <edge edge="1"/>
                         <edge edge="11"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="0" heat_convection_heat_transfer_coefficient="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" heat_temperature="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_temperature="0" heat_heat_flux="0" id="2" name="zeroneum" heat_radiation_ambient_temperature="0">
                         <edge edge="2"/>
                         <edge edge="3"/>
                         <edge edge="4"/>
@@ -101,7 +116,7 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material heat_volume_heat="0" heat_conductivity="385" heat_density="8700" heat_specific_heat="385" id="1" name="new material">
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="237" heat_density="2700" heat_velocity_y="0" heat_specific_heat="896" heat_velocity_angular="0" id="1" name="new material">
                         <label label="0"/>
                         <label label="1"/>
                         <label label="2"/>
@@ -115,5 +130,5 @@
             <coupling source_fieldid="heat" target_fieldid="elasticity" type="weak" id="heat-elasticity"/>
         </couplings>
     </problem>
-    <config SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ShowContourView="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ActiveField="elasticity" SceneViewSettings_VectorNumber="50" SceneViewSettings_ShowParticleView="0" SceneViewSettings_VectorVariable="elasticity_displacement" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ScalarVariable="elasticity_displacement" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleReflectOnDifferentMaterial="1" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ScalarRangeMin="0" SceneViewSettings_VectorProportional="1" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ParticleMinimumStep="0" SceneViewSettings_ScalarRangeMax="0.001276762670399841" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ContourVariable="elasticity_displacement" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ParticleMaximumNumberOfSteps="1000" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_VectorColor="1" SceneViewSettings_ShowPost3D="2" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ScalarVariableComp="2"/>
+    <config SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ShowContourView="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ActiveField="elasticity" SceneViewSettings_VectorNumber="50" SceneViewSettings_ShowParticleView="0" SceneViewSettings_VectorVariable="elasticity_displacement" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ScalarVariable="elasticity_displacement" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleReflectOnDifferentMaterial="1" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ScalarRangeMin="0" SceneViewSettings_VectorProportional="1" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ParticleMinimumStep="0" SceneViewSettings_ScalarRangeMax="0.001812477620468088" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ContourVariable="elasticity_displacement" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ParticleMaximumNumberOfSteps="1000" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_VectorColor="1" SceneViewSettings_ShowPost3D="2" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ScalarVariableComp="2"/>
 </document>
