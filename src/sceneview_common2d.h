@@ -56,8 +56,7 @@ protected:
     virtual void wheelEvent(QWheelEvent *event);
 
     void renderTextPos(double x, double y,
-                       const QString &str, bool blend = true, QFont fnt = QFont(),
-                       bool horizontal = true);
+                       const QString &str, bool blend = true, QFont fnt = QFont());
 
     void setZoom(double power);
 
@@ -76,9 +75,7 @@ protected:
     Point position(const Point &point) const;
 
     // rulers
-    QFont fontLabel();
-    Point rulersAreaWidth();
-    double rulersNumbersWidth();
+    Point rulersAreaSize();
 
 private slots:
     void updatePosition(const Point &point);
