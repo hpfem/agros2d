@@ -119,8 +119,6 @@ SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::Sam
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
-    setSceneFont();
-
     setMinimumSize(400, 400);
 }
 
@@ -469,7 +467,3 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //    refresh();
 }
 
-void SceneViewCommon::setSceneFont()
-{
-    setFont(Util::config()->sceneFont);
-}

@@ -72,6 +72,8 @@ void PostHermes::processSolutionMesh()
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
+        const Hermes::Hermes2D::Mesh *mesh = Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh();
+        qDebug()  << mesh->get_num_active_elements();
         Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
     }
@@ -557,11 +559,14 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
+    // scene font metrics
+    QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
+
     // dimensions
-    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
-    int textHeight = fontMetrics().height();
+    int textWidth = metrics.width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
+    int textHeight = metrics.height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*fontMetrics().height() : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*metrics.height() : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -629,10 +634,11 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
+        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? metrics.width("-") : 0.0),
                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                    0.0,
-                   QString::number(value, '+e', Util::config()->scalarDecimalPlace));
+                   QString::number(value, '+e', Util::config()->scalarDecimalPlace),
+                   Util::config()->sceneFont);
     }
 
     // variable
@@ -643,10 +649,11 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
                 arg(Util::config()->scalarVariable != "" ? localVariable->shortname() : "").
                 arg(Util::config()->scalarVariable != "" ? localVariable->unit() : "");
 
-        renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
+        renderText(scaleLeft + scaleSize.x / 2.0 - metrics.width(str) / 2.0,
                    scaleBorder.y + scaleSize.y - 20.0,
                    0.0,
-                   str);
+                   str,
+                   Util::config()->sceneFont);
     }
 
     // line
@@ -663,15 +670,17 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
 
     loadProjectionViewPort();
 
-
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
+    // scene font metrics
+    QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
+
     // dimensions
-    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
-    int textHeight = fontMetrics().height();
+    int textWidth = metrics.width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
+    int textHeight = metrics.height();
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*fontMetrics().height() : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*metrics.height() : 10.0);
     double scaleLeft = (width()
                         - (((Util::config()->showParticleView && Util::config()->showScalarView) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
@@ -726,20 +735,22 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
+        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? metrics.width("-") : 0.0),
                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                    0.0,
-                   QString::number(value, '+e', Util::config()->scalarDecimalPlace));
+                   QString::number(value, '+e', Util::config()->scalarDecimalPlace),
+                   Util::config()->sceneFont);
     }
 
     // variable
     QString str = QString("%1 (m/s)").
             arg(tr("Vel."));
 
-    renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
+    renderText(scaleLeft + scaleSize.x / 2.0 - metrics.width(str) / 2.0,
                scaleBorder.y + scaleSize.y - 20.0,
                0.0,
-               str);
+               str,
+               Util::config()->sceneFont);
     // line
     glLineWidth(1.0);
     glBegin(GL_LINES);

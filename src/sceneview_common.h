@@ -103,8 +103,6 @@ public:
     void processRangeScalar();
     void processRangeVector();
 
-    void setSceneFont();
-
     virtual QIcon iconView() { return QIcon(); }
     virtual QString labelView() { return ""; }
 

@@ -4,7 +4,7 @@ OBJECTS_DIR = ../build
 MOC_DIR = ../build
 
 TEMPLATE = lib
-CONFIG += plugin 
+CONFIG += plugin
 
 INCLUDEPATH += ../../hermes2d/include \
     ../../hermes_common/include \

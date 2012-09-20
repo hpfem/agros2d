@@ -48,8 +48,13 @@ namespace Hermes
         void show(MeshFunction<double>* xsln, MeshFunction<double>* ysln, double eps, int xitem, int yitem);
 
         inline void set_grid_type(bool hexa) { this->hexa = hexa; refresh(); };
+        void set_mode(int mode);
+      
+        /// Returns the internal vectorizer for the purpose of parameter settings.
+        Vectorizer* get_vectorizer();
 
       protected:
+        /// Vectorizer class responsible for obtaining linearized data.
         Vectorizer* vec;
 
         double gx, gy, gs;
