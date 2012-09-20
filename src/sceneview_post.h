@@ -124,8 +124,6 @@ public:
     inline PostHermes *postHermes() { assert(m_postHermes); return m_postHermes; }
 
 protected:
-   // SceneSolution<double> *m_sceneSolution;
-
     double m_texScale;
     double m_texShift;
 

@@ -373,8 +373,11 @@ void SceneViewMesh::paintOrder()
         double2* lbox;
         int nl = m_postHermes->ordView().get_labels(lvert, ltext, lbox);
 
-        Point size((2.0/width()*fontMetrics().width(" "))/m_scale2d*aspect(),
-                   (2.0/height()*fontMetrics().height())/m_scale2d);
+        // scene font metrics
+        QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
+
+        Point size((2.0/width()*metrics.width(" "))/m_scale2d*aspect(),
+                   (2.0/height()*metrics.height())/m_scale2d);
 
         for (int i = 0; i < nl; i++)
         {
@@ -419,9 +422,12 @@ void SceneViewMesh::paintOrderColorBar()
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
+    // scene font metrics
+    QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
+
     // dimensions
-    int textWidth = fontMetrics().width("00");
-    int textHeight = fontMetrics().height();
+    int textWidth = metrics.width("00");
+    int textHeight = metrics.height();
     Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
     Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? - (rulersAreaWidth().y/4.0)*m_scale2d*height() + 20.0 : 10.0);
     double scaleLeft = (width() - (20 + 3 * textWidth));
@@ -458,10 +464,11 @@ void SceneViewMesh::paintOrderColorBar()
     glColor3d(1.0, 1.0, 1.0);
     for (int i = 1; i < max + 1; i++)
     {
-        int sizeNumber = fontMetrics().width(QString::number(i));
+        int sizeNumber = metrics.width(QString::number(i));
         renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
                    scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
                    0.0,
-                   QString::number(i));
+                   QString::number(i),
+                   Util::config()->sceneFont);
     }
 }
