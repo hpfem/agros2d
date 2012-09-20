@@ -69,7 +69,15 @@ void {{CLASS}}LocalValue::calculate()
             for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
                 // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-                FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::scene()->activeAdaptivityStep(), Util::scene()->activeSolutionType());
+                int adaptivityStep = Util::scene()->activeAdaptivityStep();
+                SolutionMode solutionMode = Util::scene()->activeSolutionType();
+                int timeStep = Util::solutionStore()->nearestTimeStep(m_fieldInfo, Util::scene()->activeTimeStep());
+                if(timeStep != Util::scene()->activeTimeStep())
+                {
+                    adaptivityStep = Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
+                    solutionMode = SolutionMode_Normal;
+                }
+                FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
 
                 double val;

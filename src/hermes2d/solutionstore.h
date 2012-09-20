@@ -23,8 +23,8 @@ public:
     void removeSolution(FieldSolutionID solutionID);
     void removeSolution(BlockSolutionID solutionID);
 
-    int lastTimeStep(FieldInfo* fieldInfo, SolutionMode solutionType);
-    int lastTimeStep(Block* block, SolutionMode solutionType);
+    int lastTimeStep(FieldInfo* fieldInfo, SolutionMode solutionType) const;
+    int lastTimeStep(Block* block, SolutionMode solutionType) const;
 
     // finds nearest smaller(or equal) time step, where this fieldInfo was calculated
     int nearestTimeStep(FieldInfo* fieldInfo, int timeStep) const;
@@ -37,6 +37,9 @@ public:
     int lastAdaptiveStep(Block* block, SolutionMode solutionType, int timeStep = -1);
 
     QList<double> timeLevels(FieldInfo* fieldInfo);
+
+    // number of time steps, where this fieldInfo was calculated up to this time
+    int timeLevelIndex(FieldInfo* fieldInfo, double time);
 
     FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionMode solutionType);
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionMode solutionType);

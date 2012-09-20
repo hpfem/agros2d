@@ -1,6 +1,7 @@
 #include "solutionstore.h"
 #include "field.h"
 #include "block.h"
+#include "scene.h"
 
 const int notFoundSoFar = -999;
 
@@ -94,7 +95,7 @@ void SolutionStore::removeSolution(BlockSolutionID solutionID)
     }
 }
 
-int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType)
+int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType) const
 {
     int timeStep = notFoundSoFar;
     foreach(FieldSolutionID sid, m_multiSolutions.keys())
@@ -106,7 +107,7 @@ int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType)
     return timeStep;
 }
 
-int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType)
+int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType) const
 {
     int timeStep = lastTimeStep(block->fields().at(0)->fieldInfo(), solutionType);
 
@@ -260,5 +261,21 @@ QList<double> SolutionStore::timeLevels(FieldInfo *fieldInfo)
     }
 
     return list;
+}
+
+int SolutionStore::timeLevelIndex(FieldInfo *fieldInfo, double time)
+{
+    int level = -1;
+    QList<double> levels = timeLevels(fieldInfo);
+    if(levels.isEmpty())
+        return 0;
+
+    foreach(double timeLevel, levels)
+    {
+        if(timeLevel <= time)
+            level++;
+    }
+    assert(level >= 0);
+    return level;
 }
 

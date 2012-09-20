@@ -197,32 +197,32 @@ void Problem::createStructure()
         delete block;
     m_blocks.clear();
 
-    Util::problem()->synchronizeCouplings();
+    synchronizeCouplings();
 
     //copy lists, items will be removed from them
-    QList<FieldInfo *> fieldInfos = Util::problem()->fieldInfos().values();
-    QList<CouplingInfo* > couplingInfos = Util::problem()->couplingInfos().values();
+    QList<FieldInfo *> fieldInfosCopy = fieldInfos().values();
+    QList<CouplingInfo* > couplingInfosCopy = couplingInfos().values();
 
-    while (!fieldInfos.empty()){
+    while (!fieldInfosCopy.empty()){
         QList<FieldInfo*> blockFieldInfos;
         QList<CouplingInfo*> blockCouplingInfos;
 
         //first find one field, that is not weakly coupled and dependent on other fields
         bool dependent;
-        foreach (FieldInfo* fieldInfo, fieldInfos)
+        foreach (FieldInfo* fieldInfo, fieldInfosCopy)
         {
             dependent = false;
 
-            foreach (CouplingInfo* couplingInfo, couplingInfos)
+            foreach (CouplingInfo* couplingInfo, couplingInfosCopy)
             {
-                if (couplingInfo->isWeak() && (couplingInfo->targetField() == fieldInfo) && fieldInfos.contains(couplingInfo->sourceField()))
+                if (couplingInfo->isWeak() && (couplingInfo->targetField() == fieldInfo) && fieldInfosCopy.contains(couplingInfo->sourceField()))
                     dependent = true;
             }
 
             // this field is not weakly dependent, we can put it into this block
             if (!dependent){
                 blockFieldInfos.push_back(fieldInfo);
-                fieldInfos.removeOne(fieldInfo);
+                fieldInfosCopy.removeOne(fieldInfo);
                 break;
             }
         }
@@ -235,7 +235,7 @@ void Problem::createStructure()
             added = false;
 
             // first check whether there is related coupling
-            foreach (CouplingInfo* checkedCouplingInfo, couplingInfos)
+            foreach (CouplingInfo* checkedCouplingInfo, couplingInfosCopy)
             {
                 foreach (FieldInfo* checkedFieldInfo, blockFieldInfos)
                 {
@@ -244,13 +244,13 @@ void Problem::createStructure()
                         //this coupling is related, add it to the block
                         added = true;
                         blockCouplingInfos.push_back(checkedCouplingInfo);
-                        couplingInfos.removeOne(checkedCouplingInfo);
+                        couplingInfosCopy.removeOne(checkedCouplingInfo);
                     }
                 }
             }
 
             // check for fields related to allready included couplings
-            foreach (FieldInfo* checkedFieldInfo, fieldInfos)
+            foreach (FieldInfo* checkedFieldInfo, fieldInfosCopy)
             {
                 foreach (CouplingInfo* checkedCouplingInfo, blockCouplingInfos)
                 {
@@ -259,7 +259,7 @@ void Problem::createStructure()
                         //this field is related (by this coupling)
                         added = true;
                         blockFieldInfos.push_back(checkedFieldInfo);
-                        fieldInfos.removeOne(checkedFieldInfo);
+                        fieldInfosCopy.removeOne(checkedFieldInfo);
                     }
                 }
             }
@@ -278,7 +278,7 @@ bool Problem::mesh()
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
     MeshGenerator *pim = NULL;
-    switch (Util::problem()->config()->meshType())
+    switch (config()->meshType())
     {
     case MeshType_Triangle:
     case MeshType_Triangle_QuadFineDivision:
@@ -292,7 +292,7 @@ bool Problem::mesh()
         pim = new MeshGeneratorGMSH();
         break;
     default:
-        QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(Util::problem()->config()->meshType())));
+        QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(config()->meshType())));
         break;
     }
 
@@ -341,7 +341,7 @@ void Problem::solveInit()
     if (!Util::scene()->checkGeometryAssignement())
         throw(AgrosSolverException("Geometry assignment failed"));
 
-    if (Util::problem()->fieldInfos().count() == 0)
+    if (fieldInfos().count() == 0)
     {
         Util::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
         throw AgrosSolverException("No field defined");
@@ -389,6 +389,16 @@ bool Problem::defineActualTimeStepLength(double ts)
     }
 }
 
+bool Problem::skipThisTimeStep(Block *block)
+{
+    if(actualTime() == 0)
+        return false;
+    double timeSkip = block->timeSkip();
+    double lastTime = Util::solutionStore()->lastTime(block);
+
+    return lastTime + timeSkip > actualTime();
+}
+
 void Problem::refuseLastTimeStepLength()
 {
     m_timeStepLengths.removeLast();
@@ -413,9 +423,9 @@ void Problem::solve()
         return;
 
     // load plugins
-    QStringList modules = Util::problem()->fieldInfos().keys();
+    QStringList modules = fieldInfos().keys();
     QStringList couplings;
-    foreach (CouplingInfo *info, Util::problem()->couplingInfos().values())
+    foreach (CouplingInfo *info, couplingInfos().values())
         couplings.append(info->couplingId());
 
     QStringList plugins;
@@ -441,10 +451,10 @@ void Problem::solve()
     solveActionCatchExceptions(false);
 
     // delete temp file
-    if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
+    if (config()->fileName() == tempProblemFileName() + ".a2d")
     {
-        QFile::remove(Util::problem()->config()->fileName());
-        Util::problem()->config()->setFileName("");
+        QFile::remove(config()->fileName());
+        config()->setFileName("");
     }
 
     m_isSolving = false;
@@ -468,7 +478,7 @@ void Problem::solveAction()
 
     Util::scene()->setActiveAdaptivityStep(0);
     Util::scene()->setActiveTimeStep(0);
-    Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
+    Util::scene()->setActiveViewField(fieldInfos().values().at(0));
 
     solveInit();
 
@@ -494,7 +504,7 @@ void Problem::solveAction()
             {
                 solvers[block]->solveInitialTimeStep();
             }
-            else if(!block->skipThisTimeStep())
+            else if(!skipThisTimeStep(block))
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
@@ -509,7 +519,7 @@ void Problem::solveAction()
                         Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
                                                   QObject::tr("transient step %1/%2").
                                                   arg(actualTimeStep()).
-                                                  arg(Util::problem()->config()->numConstantTimeSteps()));
+                                                  arg(config()->numConstantTimeSteps()));
                     }
                     else
                     {
@@ -597,10 +607,10 @@ void Problem::solveAdaptiveStep()
     solveActionCatchExceptions(true);
 
     // delete temp file
-    if (Util::problem()->config()->fileName() == tempProblemFileName() + ".a2d")
+    if (config()->fileName() == tempProblemFileName() + ".a2d")
     {
-        QFile::remove(Util::problem()->config()->fileName());
-        Util::problem()->config()->setFileName("");
+        QFile::remove(config()->fileName());
+        config()->setFileName("");
     }
 
     m_isSolving = false;
@@ -637,7 +647,7 @@ void Problem::solveAdaptiveStepAction()
     {
         Util::scene()->setActiveAdaptivityStep(0);
         Util::scene()->setActiveTimeStep(0);
-        Util::scene()->setActiveViewField(Util::problem()->fieldInfos().values().at(0));
+        Util::scene()->setActiveViewField(fieldInfos().values().at(0));
 
         solver->createInitialSpace(0);
         adaptStep = 0;

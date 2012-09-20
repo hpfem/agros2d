@@ -54,30 +54,18 @@ bool Block::isTransient() const
     return false;
 }
 
-bool Block::skipThisTimeStep() const
+double Block::timeSkip() const
 {
-    return false;
-
-    // Util::problem()->actualTime()
-    // field->fieldInfo()->timeSkip().number()
-    // foreach (Field *field, m_fields)
-    // {
-    // }
-
-    // todo: rewrite after introduction of adaptive time step
-    //    if (timeStep == Util::problem()->config()->numTimeSteps())
-    //        return false;
-    /*
-    double time = m_fields.at(0)->fieldInfo()->timeSkip().number();
+    double skip = 0.;
     foreach (Field *field, m_fields)
     {
-        int sActual = field->fieldInfo()->timeSkip().number();
-        if (sActual < S)
-            S = sActual;
+        double sActual = field->fieldInfo()->timeSkip().number();
+        if(skip == 0.)
+            skip = sActual;
+        if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && (sActual < skip))
+            skip = sActual;
     }
-
-    return (S > 0) ? timeSkip % S > 0 : false;
-    */
+    return skip;
 }
 
 AdaptivityType Block::adaptivityType() const

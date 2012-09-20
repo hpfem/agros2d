@@ -955,7 +955,9 @@ void PostprocessorWidget::doFieldInfo(int index)
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
 
         int currentStep = Util::solutionStore()->nearestTimeStep(Util::scene()->activeViewField(), Util::scene()->activeTimeStep());
-        cmbTimeStep->setCurrentIndex(currentStep);
+        double currentTime = Util::problem()->timeStepToTime(currentStep);
+        int stepIndex = Util::solutionStore()->timeLevelIndex(selectedField(), currentTime);
+        cmbTimeStep->setCurrentIndex(stepIndex);
         cmbAdaptivityStep->setCurrentIndex(Util::scene()->activeAdaptivityStep());
         // qDebug() << "timestep set to " << currentStep << ", adapt " << Util::scene()->activeAdaptivityStep() << "\n";
     }
@@ -1172,7 +1174,20 @@ int PostprocessorWidget::selectedTimeStep()
     if (cmbTimeStep->currentIndex() == -1)
         return 0;
     else
-        return cmbTimeStep->itemData(cmbTimeStep->currentIndex()).toInt();
+    {
+        int selectedTimeStep = cmbTimeStep->itemData(cmbTimeStep->currentIndex()).toInt();
+
+        // todo: this is here to avoid fail after loading new model
+        // todo: cmbTimeStep should probably be cleared somewhere
+        // todo: or the PostprocessorWidget should be destroyed and created a new one?
+        if(Util::solutionStore()->timeLevels(selectedField()).size() <= selectedTimeStep)
+            return 0;
+
+        // due to timeskipping
+        double realTime = Util::solutionStore()->timeLevels(selectedField()).at(selectedTimeStep);
+        int realTimeStep = Util::problem()->timeToTimeStep(realTime);
+        return realTimeStep;
+    }
 }
 
 FieldInfo* PostprocessorWidget::selectedField()

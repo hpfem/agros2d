@@ -27,7 +27,10 @@ public:
 
     LinearityType linearityType() const;
     bool isTransient() const;
-    bool skipThisTimeStep() const;
+
+    // returns minimal time skip of individual fields
+    double timeSkip() const;
+    //bool skipThisTimeStep() const;
 
     AdaptivityType adaptivityType() const;
     int adaptivitySteps() const;

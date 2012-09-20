@@ -212,6 +212,8 @@ private:
 
     QList<double> m_timeStepLengths;
 
+    bool skipThisTimeStep(Block* block);
+
     // todo: move to Field
     QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
 
