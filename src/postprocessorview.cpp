@@ -540,6 +540,7 @@ QWidget *PostprocessorWidget::controlsBasic()
 
     // adaptivity
     cmbAdaptivityStep = new QComboBox(this);
+    connect(cmbAdaptivityStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityStep(int)));
     cmbAdaptivitySolutionType = new QComboBox(this);
 
     QGridLayout *layoutAdaptivity = new QGridLayout();
@@ -949,7 +950,6 @@ void PostprocessorWidget::doFieldInfo(int index)
         fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
         fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
         fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
-        fillComboBoxSolutionType(cmbAdaptivitySolutionType);
         doTimeStep(0);
 
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
@@ -968,7 +968,20 @@ void PostprocessorWidget::doTimeStep(int index)
     fillComboBoxAdaptivityStep(selectedField(), selectedTimeStep(), cmbAdaptivityStep);
     if ((cmbAdaptivityStep->currentIndex() >= cmbAdaptivityStep->count()) || (cmbAdaptivityStep->currentIndex() < 0))
     {
-        cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);        
+        cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);
+    }
+    grpAdaptivity->setVisible(cmbAdaptivityStep->count() > 1);
+    cmbAdaptivityStep->setEnabled(cmbAdaptivityStep->count() > 1);
+    cmbAdaptivitySolutionType->setEnabled(cmbAdaptivityStep->count() > 1);
+    doAdaptivityStep(0);
+}
+
+void PostprocessorWidget::doAdaptivityStep(int index)
+{
+    fillComboBoxSolutionType(selectedField(), selectedTimeStep(), selectedAdaptivityStep(), cmbAdaptivitySolutionType);
+    if ((cmbAdaptivitySolutionType->currentIndex() >= cmbAdaptivitySolutionType->count()) || (cmbAdaptivitySolutionType->currentIndex() < 0))
+    {
+        cmbAdaptivitySolutionType->setCurrentIndex(0);
     }
 }
 
@@ -1188,6 +1201,14 @@ int PostprocessorWidget::selectedTimeStep()
         int realTimeStep = Util::problem()->timeToTimeStep(realTime);
         return realTimeStep;
     }
+}
+
+int PostprocessorWidget::selectedAdaptivityStep()
+{
+    if (cmbAdaptivityStep->currentIndex() == -1)
+        return 0;
+    else
+        return cmbAdaptivityStep->itemData(cmbAdaptivityStep->currentIndex()).toInt();
 }
 
 FieldInfo* PostprocessorWidget::selectedField()

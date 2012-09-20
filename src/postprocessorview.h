@@ -188,6 +188,7 @@ private:
     QWidget *postParticalTracingAdvancedWidget();
 
     int selectedTimeStep();
+    int selectedAdaptivityStep();
     FieldInfo* selectedField();
 
 signals:
@@ -200,6 +201,7 @@ public slots:
 private slots:
     void doFieldInfo(int index);
     void doTimeStep(int index);
+    void doAdaptivityStep(int index);
     void doCalculationFinished();
     void doScalarFieldVariable(int index);
     void doScalarFieldVariableComp(int index);
