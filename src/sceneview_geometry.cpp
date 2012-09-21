@@ -814,8 +814,11 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
     glColor3d(0.0, 0.53, 0.0);
 
     Point p = position(m_lastPos.x(), m_lastPos.y());
-    Point rulersArea = rulersAreaWidth();
-    double rulersNumbers = rulersNumbersWidth();
+    Point rulersAreaScreen = rulersAreaSize();
+    Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
+                     2.0/height()*rulersAreaScreen.y/m_scale2d);
+
+    double tickSize = rulersArea.y / 3.0;
 
     Point snapPoint = p;
     if (m_snapToGrid)
@@ -831,7 +834,7 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
         glBegin(GL_LINES);
         glVertex2d(snapPoint.x, cornerMax.y - rulersArea.y);
         glVertex2d(snapPoint.x, cornerMin.y);
-        glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x, snapPoint.y);
+        glVertex2d(cornerMin.x + rulersArea.x, snapPoint.y);
         glVertex2d(cornerMax.x, snapPoint.y);
         glEnd();
 
@@ -844,13 +847,15 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
     // ticks
     glLineWidth(3.0);
     glBegin(GL_TRIANGLES);
-    glVertex2d(snapPoint.x, cornerMax.y - rulersArea.y);
-    glVertex2d(snapPoint.x + rulersArea.x * 2.0/7.0, cornerMax.y - rulersArea.y * 2.0/3.0);
-    glVertex2d(snapPoint.x - rulersArea.x * 2.0/7.0, cornerMax.y - rulersArea.y * 2.0/3.0);
+    // horizontal
+    glVertex2d(p.x, cornerMax.y + rulersArea.y);
+    glVertex2d(p.x + tickSize / 2.0, cornerMax.y + rulersArea.y - tickSize);
+    glVertex2d(p.x - tickSize / 2.0, cornerMax.y + rulersArea.y - tickSize);
 
-    glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x, snapPoint.y);
-    glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x * 2.0/3.0, snapPoint.y + rulersArea.y * 2.0/7.0);
-    glVertex2d(cornerMin.x + rulersNumbers + rulersArea.x * 2.0/3.0, snapPoint.y - rulersArea.y * 2.0/7.0);
+    // vertical
+    glVertex2d(cornerMin.x + rulersArea.x, p.y);
+    glVertex2d(cornerMin.x + rulersArea.x - tickSize, p.y + tickSize / 2.0);
+    glVertex2d(cornerMin.x + rulersArea.x - tickSize, p.y - tickSize / 2.0);
     glEnd();
 }
 
@@ -1094,11 +1099,16 @@ void SceneViewPreprocessor::paintGeometry()
             if (str.length() > 0)
                 str = str.left(str.length() - 2);
 
-            Point point;
-            point.x = 2.0/width()*aspect()*fontMetrics().width(str)/m_scale2d/2.0;
-            point.y = 2.0/height()*fontMetrics().height()/m_scale2d;
+            QFont fnt = font();
+            fnt.setPointSize(fnt.pointSize() - 1.0);
 
-            renderTextPos(label->point().x-point.x, label->point().y-point.y, str, false);
+            QFontMetrics metrics = QFontMetrics(fnt);
+
+            Point point;
+            point.x = 2.0/width()*aspect()*metrics.width(str)/m_scale2d/2.0;
+            point.y = 2.0/height()*metrics.height()/m_scale2d;
+
+            renderTextPos(label->point().x-point.x, label->point().y-point.y, str, false, fnt);
         }
 
         // area size

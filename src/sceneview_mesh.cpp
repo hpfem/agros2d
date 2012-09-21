@@ -429,7 +429,7 @@ void SceneViewMesh::paintOrderColorBar()
     int textWidth = metrics.width("00");
     int textHeight = metrics.height();
     Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? - (rulersAreaWidth().y/4.0)*m_scale2d*height() + 20.0 : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*metrics.height() : 10.0);
     double scaleLeft = (width() - (20 + 3 * textWidth));
 
     // blended rectangle

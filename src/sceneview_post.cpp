@@ -58,8 +58,15 @@ void PostHermes::processInitialMesh()
         Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->activeMeshInitial()->get_num_active_elements()));
 
         // init linearizer for initial mesh
-        Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
-        m_linInitialMeshView.process_solution(&initial);
+        try
+        {
+            Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
+            m_linInitialMeshView.process_solution(&initial);
+        }
+        catch (Hermes::Exceptions::Exception& e)
+        {
+            Util::log()->printError("MeshView", QObject::tr("Linearizer processing failed: %1").arg(e.what()));
+        }
     }
 }
 
@@ -73,7 +80,6 @@ void PostHermes::processSolutionMesh()
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
         const Hermes::Hermes2D::Mesh *mesh = Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh();
-        qDebug()  << mesh->get_num_active_elements();
         Hermes::Hermes2D::ZeroSolution<double> solution(Util::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
         m_linSolutionMeshView.process_solution(&solution);
     }
