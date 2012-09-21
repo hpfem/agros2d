@@ -174,9 +174,9 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    Util::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
-                            arg(weakFormString(type)).
-                            arg(QString::fromStdString(form->getAreas().at(0))));
+//    Util::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
+//                            arg(weakFormString(type)).
+//                            arg(QString::fromStdString(form->getAreas().at(0))));
 
     if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
@@ -236,9 +236,6 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     addForm(type, custom_form);
 }
 
-
-// TODO: Source and target switched!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// TODO: Still? Check it, please.
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ,
                                                  SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
