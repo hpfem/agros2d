@@ -29,23 +29,23 @@
 			<coupling:weakform_volume couplingtype="hard" sourceanalysis="harmonic"
 				targetanalysis="steadystate">
                 <coupling:matrix_form id="coupling" i="3" j="1"
-					planar_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * vval"
-					axi_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * r * vval" 
-					planar_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * vval"
-					axi_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * r * vval" />
+                                        planar_linear="0"
+                                        axi_linear="0"
+                                        planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * vval"
+                                        axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * r * vval" />
                 <coupling:matrix_form id="coupling" i="3" j="2"
-					planar_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udx * udx + udy * udy) * vval"
-					axi_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udr * udr + udz * udz) * r * vval" 
-					planar_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udx * udx + udy * udy) * vval"
-					axi_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udr * udr + udz * udz) * r * vval" />
+                                        planar_linear="0"
+                                        axi_linear="0"
+                                        planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * vval"
+                                        axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * r * vval" />
                 <coupling:vector_form id="coupling" i="3" j="2"
-					planar_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
-					axi_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" 
+                                        planar_linear="0"
+                                        axi_linear="0"
 					planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
 					axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
                 <coupling:vector_form id="coupling" i="3" j="1"
-					planar_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
-					axi_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval"
+                                        planar_linear="0"
+                                        axi_linear="0"
 					planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
 					axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
 			</coupling:weakform_volume>
@@ -61,27 +61,27 @@
 
 			<coupling:weakform_volume couplingtype="hard" sourceanalysis="harmonic"
 				targetanalysis="transient">
-                <coupling:matrix_form id="coupling" i="3" j="1"
-					planar_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * vval"
-					axi_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * r * vval" 
-					planar_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * vval"
-					axi_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (uval * uval) * r * vval" />
-                <coupling:matrix_form id="coupling" i="3" j="2"
-					planar_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udx * udx + udy * udy) * vval"
-					axi_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udr * udr + udz * udz) * r * vval" 
-					planar_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udx * udx + udy * udy) * vval"
-					axi_newton="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (udr * udr + udz * udz) * r * vval" />
-                <coupling:vector_form id="coupling" i="3" j="2"
-					planar_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
-					axi_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" 
-					planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
-					axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
-                <coupling:vector_form id="coupling" i="3" j="1"
-					planar_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
-					axi_linear="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" 
-					planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
-					axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
-			</coupling:weakform_volume>
+                              <coupling:matrix_form id="coupling" i="3" j="1"
+                                                        planar_linear="0"
+                                                        axi_linear="0"
+                                                        planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * vval"
+                                                        axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * r * vval" />
+                                <coupling:matrix_form id="coupling" i="3" j="2"
+                                                        planar_linear="0"
+                                                        axi_linear="0"
+                                                        planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * vval"
+                                                        axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * r * vval" />
+                                <coupling:vector_form id="coupling" i="3" j="2"
+                                                        planar_linear="0"
+                                                        axi_linear="0"
+                                                        planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
+                                                        axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
+                                <coupling:vector_form id="coupling" i="3" j="1"
+                                                        planar_linear="0"
+                                                        axi_linear="0"
+                                                        planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * vval"
+                                                        axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (upval * upval) * r * vval" />
+                        </coupling:weakform_volume>
 
                         <coupling:weakform_volume couplingtype="weak" sourceanalysis="steadystate" targetanalysis="steadystate">
                                 <coupling:vector_form id="coupling" i="1" j="1"
