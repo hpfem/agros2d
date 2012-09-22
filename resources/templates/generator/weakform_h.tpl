@@ -30,7 +30,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -55,7 +55,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public VectorFormVolAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -82,7 +82,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormSurfAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;
@@ -103,7 +103,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public VectorFormSurfAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const;

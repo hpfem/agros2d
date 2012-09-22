@@ -30,7 +30,7 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{SOURCE_ANALYSIS_TYPE}}) &&
             (problemId.analysisTypeTarget == {{TARGET_ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
             (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
-        return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ);
+        return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
 	{{/VOLUME_MATRIX_SOURCE}}
 
     return NULL;
@@ -42,7 +42,7 @@ VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID pr
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{SOURCE_ANALYSIS_TYPE}}) &&
             (problemId.analysisTypeTarget == {{TARGET_ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
             (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (problemId.couplingType == {{COUPLING_TYPE}}))
-        return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ);
+        return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
 	{{/VOLUME_VECTOR_SOURCE}}
 
     return NULL;

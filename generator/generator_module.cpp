@@ -1052,17 +1052,17 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         for (int i = 1; i < numOfSol + 1; i++)
         {
-            dict[QString("value%1").arg(i)] = QString("u_ext[%1]->val[i]").arg(i-1);
+            dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->val[i]").arg(i-1);
 
             if (coordinateType == CoordinateType_Planar)
             {
-                dict[QString("dx%1").arg(i)] = QString("u_ext[%1]->dx[i]").arg(i-1);
-                dict[QString("dy%1").arg(i)] = QString("u_ext[%1]->dy[i]").arg(i-1);
+                dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dx[i]").arg(i-1);
+                dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dy[i]").arg(i-1);
             }
             else
             {
-                dict[QString("dr%1").arg(i)] = QString("u_ext[%1]->dx[i]").arg(i-1);
-                dict[QString("dz%1").arg(i)] = QString("u_ext[%1]->dy[i]").arg(i-1);
+                dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dx[i]").arg(i-1);
+                dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dy[i]").arg(i-1);
             }
         }
 
