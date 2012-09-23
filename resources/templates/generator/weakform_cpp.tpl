@@ -30,8 +30,8 @@
  		
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
-    : MatrixFormVolAgros<Scalar>(i, j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
+    : MatrixFormVolAgros<Scalar>(i, j, offsetI, offsetJ)
 {       
 }
 
@@ -89,8 +89,8 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
 
 {{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
-    : VectorFormVolAgros<Scalar>(i), j(j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
+    : VectorFormVolAgros<Scalar>(i, offsetI, offsetJ), j(j)
 {
 }
 
@@ -149,8 +149,8 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
 {{#SURFACE_MATRIX_SOURCE}}
 
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
-    : MatrixFormSurfAgros<Scalar>(i, j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
+    : MatrixFormSurfAgros<Scalar>(i, j, offsetI, offsetJ)
 {
 }
 
@@ -199,9 +199,9 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
 
 {{#SURFACE_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
 
-    : VectorFormSurfAgros<Scalar>(i), j(j)
+    : VectorFormSurfAgros<Scalar>(i, offsetI, offsetJ), j(j)
 {
 }
 

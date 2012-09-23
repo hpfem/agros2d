@@ -95,10 +95,12 @@ protected:
     QMap<Module::Integral*, double> m_values;
 };
 
+const int OFFSET_NON_DEF = -100;
+
 class FormAgrosInterface
 {
 public:
-    FormAgrosInterface() : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL) {}
+    FormAgrosInterface(int offsetI, int offsetJ) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_offsetI(offsetI), m_offsetJ(offsetJ) {}
 
     // source or single marker
     virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; }
@@ -111,6 +113,9 @@ public:
     // time discretisation table
     inline void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
 
+    inline int offsetI() const {assert(m_offsetI != OFFSET_NON_DEF); return m_offsetI;}
+    inline int offsetJ() const {assert(m_offsetI != OFFSET_NON_DEF); return m_offsetJ;}
+
 protected:
     // source or single marker
     Marker *m_markerSource;
@@ -118,6 +123,12 @@ protected:
     Marker *m_markerTarget;
     // time discretisation table
     BDF2Table *m_table;
+
+    // the offset of position in the stiffness matrix for the case of hard coupling; could be done some other way
+    // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,
+    // before the schift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
+    // and the original position
+    int m_offsetI, m_offsetJ;
 };
 
 // weakforms
@@ -125,32 +136,32 @@ template<typename Scalar>
 class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface
 {
 public:
-    MatrixFormVolAgros(unsigned int i, unsigned int j)
-        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface() {}
+    MatrixFormVolAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
+        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface(offsetI, offsetJ) {}
 };
 
 template<typename Scalar>
 class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
 {
 public:
-    VectorFormVolAgros(unsigned int i)
-        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface() {}
+    VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ)
+        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface(offsetI, offsetJ) {}
 };
 
 template<typename Scalar>
 class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
-    MatrixFormSurfAgros(unsigned int i, unsigned int j)
-        : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j), FormAgrosInterface() {}
+    MatrixFormSurfAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
+        : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j), FormAgrosInterface(offsetI, offsetJ) {}
 };
 
 template<typename Scalar>
 class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
-    VectorFormSurfAgros(unsigned int i)
-        : Hermes::Hermes2D::VectorFormSurf<Scalar>(i), FormAgrosInterface() {}
+    VectorFormSurfAgros(unsigned int i, int offsetI, int offsetJ)
+        : Hermes::Hermes2D::VectorFormSurf<Scalar>(i), FormAgrosInterface(offsetI, offsetJ) {}
 };
 
 template<typename Scalar>
@@ -158,7 +169,7 @@ class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Sc
 {
 public:
     ExactSolutionScalarAgros(Hermes::Hermes2D::Mesh *mesh)
-        : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), FormAgrosInterface() {}
+        : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), FormAgrosInterface(OFFSET_NON_DEF, OFFSET_NON_DEF) {}
 };
 
 
