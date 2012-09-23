@@ -31,7 +31,7 @@
                                 planar_linear="0"
                                                                 axi_linear="0"
                                 planar_newton="- cu_gamma * 2 * (updx * udx + updy * udy) * vval"
-                                                                axi_newton="- cu_gamma * (udr * udr + udz * udz) * r * vval" />
+                                                                axi_newton="- cu_gamma * 2 * (updr * udr + updz * udz) * r * vval" />
                         <coupling:vector_form id="coupling" i="2" j="1"
                                 planar_linear="0"
                                                                 axi_linear="0"
@@ -55,7 +55,7 @@
                                 planar_linear="0"
                                                         axi_linear="0"
                                 planar_newton="- cu_gamma * 2 * (updx * udx + updy * udy) * vval"
-                                                        axi_newton="- cu_gamma * (udr * udr + udz * udz) * r * vval" />
+                                                        axi_newton="- cu_gamma * 2 * (updr * udr + updz * udz) * r * vval" />
                         <coupling:vector_form id="coupling" i="2" j="1"
                                 planar_linear="0"
                                                         axi_linear="0"
