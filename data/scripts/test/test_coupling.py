@@ -29,11 +29,11 @@ execfile("test_coup2_mag_harm_nl_heat_trans_nl_weak_axisym.py")
 execfile("test_coup3_curr_steady_lin_heat_steady_nl_elast_lin_axisym_weak.py")
 execfile("test_coup3_curr_steady_lin_heat_trans_nl_elast_lin_axisym_weak.py")
 execfile("test_coup3_curr_steady_lin_weak_with_heat_steady_nl_hard_with_elast_nl_axisym.py")
-# both fail strangely.. problem current-heat-axisym hard?
 #execfile("test_coup3_curr_steady_nl_hard_with_heat_steady_nl_weak_with_elast_lin_axisym.py");
 #execfile("test_coup3_curr_steady_nl_heat_steady_nl_elast_nl_axisym_hard.py")
 execfile("test_coup3_curr_steady_nl_heat_steady_nl_elast_nl_axisym_weak.py")
-#execfile("test_coup3_curr_steady_nl_heat_trans_nl_elast_nl_axisym_hard.py")
+#the following test works, even though it is one-step transient version of the steady state that does not
+execfile("test_coup3_curr_steady_nl_heat_trans_nl_elast_nl_axisym_hard.py")
 execfile("test_coup3_curr_steady_nl_heat_trans_nl_elast_nl_axisym_weak.py")
 
 # based on test_coupling_4_transient_planar.py
