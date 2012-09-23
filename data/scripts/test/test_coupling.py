@@ -9,10 +9,8 @@
 # based on test_coupling_1_planar.py
 execfile("test_coup1_curr_steady_lin_heat_steady_lin_elast_lin_weak_planar.py") 
 execfile("test_coup1_curr_steady_lin_heat_trans_lin_elast_lin_weak_planar.py") 
-# wrong resutl (elasticity:displacement):
-#execfile("test_coup1_curr_steady_lin_weak_with_heat_steady_lin_hard_with_elast_lin_planar.py")
-# does not converge:
-#execfile("test_coup1_curr_steady_lin_weak_with_heat_steady_nl_hard_with_elast_nl_planar.py")
+execfile("test_coup1_curr_steady_lin_weak_with_heat_steady_lin_hard_with_elast_lin_planar.py")
+execfile("test_coup1_curr_steady_lin_weak_with_heat_steady_nl_hard_with_elast_nl_planar.py")
 execfile("test_coup1_curr_steady_nl_hard_with_heat_steady_nl_weak_with_elast_lin_planar.py")
 execfile("test_coup1_curr_steady_nl_heat_steady_nl_elast_nl_hard_planar.py") 
 execfile("test_coup1_curr_steady_nl_heat_steady_nl_elast_nl_weak_planar.py") 
@@ -31,7 +29,8 @@ execfile("test_coup2_mag_harm_nl_heat_trans_nl_weak_axisym.py")
 # based on test_coupling_3_axisymmetric_nonlin.py
 execfile("test_coup3_curr_steady_lin_heat_steady_nl_elast_lin_axisym_weak.py")
 execfile("test_coup3_curr_steady_lin_heat_trans_nl_elast_lin_axisym_weak.py")
-#execfile("test_coup3_curr_steady_lin_weak_with_heat_steady_nl_hard_with_elast_nl_axisym.py")
+execfile("test_coup3_curr_steady_lin_weak_with_heat_steady_nl_hard_with_elast_nl_axisym.py")
+# both fail strangely.. problem current-heat-axisym hard?
 #execfile("test_coup3_curr_steady_nl_hard_with_heat_steady_nl_weak_with_elast_lin_axisym.py");
 #execfile("test_coup3_curr_steady_nl_heat_steady_nl_elast_nl_axisym_hard.py")
 execfile("test_coup3_curr_steady_nl_heat_steady_nl_elast_nl_axisym_weak.py")
