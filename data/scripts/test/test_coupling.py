@@ -14,8 +14,7 @@ execfile("test_coup1_curr_steady_lin_weak_with_heat_steady_nl_hard_with_elast_nl
 execfile("test_coup1_curr_steady_nl_hard_with_heat_steady_nl_weak_with_elast_lin_planar.py")
 execfile("test_coup1_curr_steady_nl_heat_steady_nl_elast_nl_hard_planar.py") 
 execfile("test_coup1_curr_steady_nl_heat_steady_nl_elast_nl_weak_planar.py") 
-# pada na funkci std::max()
-#execfile("test_coup1_curr_steady_nl_heat_trans_nl_elast_nl_hard_planar.py") 
+execfile("test_coup1_curr_steady_nl_heat_trans_nl_elast_nl_hard_planar.py") 
 execfile("test_coup1_curr_steady_nl_heat_trans_nl_elast_nl_weak_planar.py") 
 
 # based on test_coupling_2_axisymmetric.py
@@ -39,7 +38,5 @@ execfile("test_coup3_curr_steady_nl_heat_trans_nl_elast_nl_axisym_weak.py")
 
 # based on test_coupling_4_transient_planar.py
 execfile("test_coup4_curr_steady_lin_heat_trans_lin_planar_weak.py")
-# pada na max
-#execfile("test_coup4_curr_steady_nl_heat_trans_nl_planar_hard.py")
-# wrong result:
-#execfile("test_coup4_curr_steady_nl_heat_trans_nl_planar_weak.py") 
+execfile("test_coup4_curr_steady_nl_heat_trans_nl_planar_hard.py")
+execfile("test_coup4_curr_steady_nl_heat_trans_nl_planar_weak.py") 
