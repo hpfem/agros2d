@@ -59,10 +59,11 @@ double Block::timeSkip() const
     double skip = 0.;
     foreach (Field *field, m_fields)
     {
+        if(field->m_fieldInfo->analysisType() == AnalysisType_Transient)
+            continue;
+
         double sActual = field->fieldInfo()->timeSkip().number();
-        if(skip == 0.)
-            skip = sActual;
-        if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && (sActual < skip))
+        if((skip == 0.) || (sActual < skip))
             skip = sActual;
     }
     return skip;
