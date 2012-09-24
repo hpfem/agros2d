@@ -135,7 +135,7 @@ void PythonScriptingConsole::welcomeMessage()
     QTextEdit::clear();
 
     connectStdOut();
-    pythonEngine->runPythonScript("import sys; v = sys.version + \" on \" + sys.platform; print(v); del v;", "");
+    pythonEngine->runScript("import sys; v = sys.version + \" on \" + sys.platform; print(v); del v;", "");
     disconnectStdOut();
     appendCommandPrompt();
 }
@@ -205,7 +205,7 @@ void PythonScriptingConsole::executeCode(const QString& code)
     int cursorPosition = this->textCursor().position();
 
     connectStdOut();
-    ExpressionResult result = pythonEngine->runPythonExpression(code, false);
+    ExpressionResult result = pythonEngine->runExpression(code, false);
     disconnectStdOut();
 
     if (!result.error.isEmpty())

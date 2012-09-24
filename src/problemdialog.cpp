@@ -969,7 +969,7 @@ bool ProblemWidget::save()
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
     {
-        ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
+        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
         if (scriptResult.isError)
         {
             QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);

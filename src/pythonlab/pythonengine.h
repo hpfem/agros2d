@@ -36,8 +36,8 @@ public:
     void pythonShowHtmlCommand(const QString &fileName);
     void pythonShowImageCommand(const QString &fileName);
 
-    ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
-    ExpressionResult runPythonExpression(const QString &expression, bool returnValue);
+    ScriptResult runScript(const QString &script, const QString &fileName = "");
+    ExpressionResult runExpression(const QString &expression, bool returnValue);
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 

@@ -677,11 +677,11 @@ void PythonEditorDialog::doRunPython()
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())
     {
-        result = pythonEngine->runPythonScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
+        result = pythonEngine->runScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
     }
     else if (scriptEditorWidget()->fileName.isEmpty())
     {
-        result = pythonEngine->runPythonScript(txtEditor->toPlainText());
+        result = pythonEngine->runScript(txtEditor->toPlainText());
     }
     else
     {
@@ -689,7 +689,7 @@ void PythonEditorDialog::doRunPython()
                 QFile::exists(scriptEditorWidget()->fileName))
             doFileSave();
 
-        result = pythonEngine->runPythonScript(txtEditor->toPlainText(),
+        result = pythonEngine->runScript(txtEditor->toPlainText(),
                                                QFileInfo(scriptEditorWidget()->fileName).absoluteFilePath());
     }
     // disconnect stdout

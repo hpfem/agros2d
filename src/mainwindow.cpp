@@ -190,7 +190,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             if (QFile::exists(scriptName))
             {
                 consoleView->console()->connectStdOut();
-                runPythonScript(readFileContent(scriptName));
+                currentPythonEngineAgros()->runScript(readFileContent(scriptName));
                 consoleView->console()->disconnectStdOut();
             }
             else
@@ -1326,11 +1326,12 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
     if (QFile::exists(fileNameScript))
     {
-        consoleView->console()->consoleMessage("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n",
+        consoleView->console()->consoleMessage(tr("Run script: %1\n").
+                                               arg(QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3)),
                                                Qt::gray);
 
         consoleView->console()->connectStdOut();
-        ScriptResult result = runPythonScript(readFileContent(fileNameScript), fileNameScript);
+        ScriptResult result = currentPythonEngineAgros()->runScript(readFileContent(fileNameScript), fileNameScript);
         consoleView->console()->disconnectStdOut();
 
         if (result.isError)

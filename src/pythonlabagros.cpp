@@ -49,24 +49,6 @@ PythonEngineAgros *currentPythonEngineAgros()
     return static_cast<PythonEngineAgros *>(currentPythonEngine());
 }
 
-ScriptResult runPythonScript(const QString &script, const QString &fileName)
-{
-    return currentPythonEngine()->runPythonScript(script, fileName);
-}
-
-ExpressionResult runPythonExpression(const QString &expression, bool returnValue)
-{
-    return currentPythonEngine()->runPythonExpression(expression, returnValue);
-}
-
-bool scriptIsRunning()
-{
-    if (currentPythonEngine())
-        return currentPythonEngine()->isRunning();
-    else
-        return false;
-}
-
 QString createPythonFromModel()
 {
     QString str;
@@ -501,8 +483,6 @@ void PyProblem::solve()
     if (Util::problem()->isSolved())
     {
         currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-        // currentPythonEngineAgros()->postHermes()->refresh();
-        // Util::scene()->refresh();
     }
 }
 
@@ -1272,24 +1252,25 @@ void PyGeometry::selectNone()
 void PyGeometry::moveSelection(double dx, double dy, bool copy)
 {
     Util::scene()->transformTranslate(Point(dx, dy), copy);
-    // sceneView()->doInvalidated();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
 {
     Util::scene()->transformRotate(Point(x, y), angle, copy);
-    // sceneView()->doInvalidated();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
 {
     Util::scene()->transformScale(Point(x, y), scale, copy);
-    // sceneView()->doInvalidated();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::removeSelection()
 {
     Util::scene()->deleteSelected();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::mesh()
@@ -1298,7 +1279,6 @@ void PyGeometry::mesh()
     if (Util::problem()->isMeshed())
     {
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        // currentPythonEngineAgros()->postHermes()->refresh();
     }
 }
 
@@ -1331,11 +1311,6 @@ void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 }
 
 // ****************************************************************************************************
-
-void PyViewConfig::refresh()
-{
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
-}
 
 void PyViewConfig::setField(char* fieldid)
 {
@@ -2017,14 +1992,6 @@ void PythonEngineAgros::runPythonHeader()
 void PythonEngineAgros::doExecutedScript()
 {
     Util::scene()->refresh();
-
-    if (m_sceneViewPreprocessor) m_sceneViewPreprocessor->updateGL();
-    if (Util::problem()->isSolved())
-    {
-        if (m_sceneViewMesh) m_sceneViewMesh->updateGL();
-        if (m_sceneViewPost2D) m_sceneViewPost2D->updateGL();
-        if (m_sceneViewPost3D) m_sceneViewPost3D->updateGL();
-    }
 }
 
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)

@@ -155,7 +155,7 @@ void PreprocessorWidget::keyPressEvent(QKeyEvent *event)
 void PreprocessorWidget::refresh()
 {
     // script speed improvement
-    if (scriptIsRunning()) return;
+    if (currentPythonEngine()->isRunning()) return;
 
     blockSignals(true);
     setUpdatesEnabled(false);

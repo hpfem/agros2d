@@ -180,24 +180,24 @@ bool Value::evaluate(const Point &point, bool quiet)
 
 bool Value::evaluate(double time, const Point &point, bool quiet)
 {
-    bool signalBlocked = currentPythonEngine()->signalsBlocked();
-    currentPythonEngine()->blockSignals(true);
+    bool signalBlocked = currentPythonEngineAgros()->signalsBlocked();
+    currentPythonEngineAgros()->blockSignals(true);
 
     // eval time and space
     if (m_fieldInfo)
     {
         if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
-            runPythonExpression(QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y), false);
+            currentPythonEngineAgros()->runExpression(QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y), false);
         else
-            runPythonExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
+            currentPythonEngineAgros()->runExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
     }
     else
     {
-        runPythonExpression(QString("time = %1").arg(time), false);
+        currentPythonEngineAgros()->runExpression(QString("time = %1").arg(time), false);
     }
 
     // eval expression
-    ExpressionResult expressionResult = runPythonExpression(m_text);
+    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(m_text, true);
     if (expressionResult.error.isEmpty())
     {
         m_number = expressionResult.value;
@@ -209,7 +209,7 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
     }
 
     if (!signalBlocked)
-        currentPythonEngine()->blockSignals(false);
+        currentPythonEngineAgros()->blockSignals(false);
 
     m_isEvaluated = true;
     return expressionResult.error.isEmpty();
@@ -388,7 +388,7 @@ bool ValueLineEdit::checkCondition(double value)
     QString condition = m_condition;
     condition.replace(QString("value"), QString::number(value));
 
-    ExpressionResult result = runPythonExpression(condition, true);
+    ExpressionResult result = currentPythonEngineAgros()->runExpression(condition, true);
 
     if (result.error.isEmpty())
     {
@@ -606,11 +606,11 @@ void ValueTimeDialog::presetsChanged(int index)
 void ValueTimeDialog::checkExpression()
 {
     // eval time
-    runPythonExpression(QString("time = %1").arg(0.0));
+    currentPythonEngineAgros()->runExpression(QString("time = %1").arg(0.0), false);
 
     // eval expression
     ExpressionResult expressionResult;
-    expressionResult = runPythonExpression(txtLineEdit->text());
+    expressionResult = currentPythonEngineAgros()->runExpression(txtLineEdit->text(), true);
     lblInfoError->setText(expressionResult.error.trimmed());
     if (expressionResult.error.isEmpty())
         plotFunction();
