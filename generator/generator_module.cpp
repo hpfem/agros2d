@@ -1021,7 +1021,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["uval"] = "u->val[i]";
         dict["vval"] = "v->val[i]";
         dict["upval"] = "u_ext[this->j]->val[i]";
-        dict["uptval"] = "ext->fn[this->j]->val[i]";
+        dict["uptval"] = "ext->fn[this->j - this->offsetJ()]->val[i]";
         dict["deltat"] = "Util::problem()->actualTimeStepLength()";
         dict["timedermat"] = "this->m_table->matrixFormCoefficient()";
         dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->module()->numberOfSolutions(), i)";

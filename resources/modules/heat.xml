@@ -30,8 +30,8 @@
         <module:quantity id="heat_velocity_angular"/>
         <module:quantity id="heat_density" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="heat_specific_heat" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
-        <module:matrix_form id="form" axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" i="1" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
-        <module:vector_form id="form" axi_linear="he_p * r * vval" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval  + r * he_rho * he_cp * (he_vy * updz) * vval" i="1" j="1" planar_linear="he_p * vval" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval  + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
+        <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" i="1" id="form" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
+        <module:vector_form axi_linear="he_p * r * vval" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval  + r * he_rho * he_cp * (he_vy * updz) * vval" i="1" id="form" j="1" planar_linear="he_p * vval" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval  + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
       </module:weakform_volume>
       <module:weakform_volume analysistype="transient">
         <module:quantity id="heat_velocity_x"/>
@@ -41,8 +41,8 @@
         <module:quantity dependence="time" id="heat_volume_heat"/>
         <module:quantity id="heat_density" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="heat_specific_heat" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
-        <module:matrix_form id="form" axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval + r * he_rho * he_cp * uval * vval * timedermat" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval + r * he_rho * he_cp * uval * vval / deltat" i="1" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval * timedermat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval / deltat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
-        <module:vector_form id="form" axi_linear="he_p * r * vval + r * he_rho * he_cp * timedervec * vval  + timederres * (he_lambda * r * (uptdr * vdr + uptdz * vdz) - he_p * r * vval)" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (he_vy * updz) * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat" i="1" j="1" planar_linear="he_p * vval + he_rho * he_cp * timedervec * vval +  timederres * (he_lambda * (uptdx * vdx + uptdy * vdy) - he_p * vval  + he_rho * he_cp * ((he_vx - y * he_va) * uptdx + (he_vy + x * he_va) * uptdy) * vval)" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
+        <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval + r * he_rho * he_cp * uval * vval * timedermat" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval + r * he_rho * he_cp * uval * vval / deltat" i="1" id="form" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval * timedermat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval / deltat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
+        <module:vector_form axi_linear="he_p * r * vval + r * he_rho * he_cp * timedervec * vval  + timederres * (he_lambda * r * (uptdr * vdr + uptdz * vdz) - he_p * r * vval)" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (he_vy * updz) * vval + r * he_rho * he_cp * (upval - uptval) * vval / deltat" i="1" id="form" j="1" planar_linear="he_p * vval + he_rho * he_cp * timedervec * vval +  timederres * (he_lambda * (uptdx * vdx + uptdy * vdy) - he_p * vval  + he_rho * he_cp * ((he_vx - y * he_va) * uptdx + (he_vy + x * he_va) * uptdy) * vval)" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (upval - uptval) * vval / deltat + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
@@ -58,7 +58,7 @@
       <module:weakform_surface analysistype="steadystate" default="heat_temperature">
         <module:boundary id="heat_temperature" name="Temperature">
           <module:quantity id="heat_temperature"/>
-          <module:essential_form id="form" axi_linear="he_T" axi_newton="he_T" i="1" planar_linear="he_T" planar_newton="he_T"/>
+          <module:essential_form axi_linear="he_T" axi_newton="he_T" i="1" id="form" planar_linear="he_T" planar_newton="he_T"/>
         </module:boundary>
         <module:boundary id="heat_heat_flux" name="Heat flux">
           <module:quantity id="heat_heat_flux"/>
@@ -66,14 +66,14 @@
           <module:quantity id="heat_convection_external_temperature"/>
           <module:quantity id="heat_radiation_emissivity"/>
           <module:quantity id="heat_radiation_ambient_temperature"/>
-          <module:matrix_form id="form" axi_linear="he_h * r * uval * vval" axi_newton="he_h * r * uval * vval + SIGMA0 * he_eps * r * uval*uval*uval*uval * vval" i="1" j="1" planar_linear="he_h * uval * vval" planar_newton="he_h * uval * vval + SIGMA0 * he_eps * uval*uval*uval*uval * vval" symmetric="1"/>
-          <module:vector_form id="form" axi_linear="r * (he_f + he_h * he_Te) * vval" axi_newton="r * ((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval" i="1" j="1" planar_linear="(he_f + he_h * he_Te) * vval" planar_newton="((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval"/>
+          <module:matrix_form axi_linear="he_h * r * uval * vval" axi_newton="he_h * r * uval * vval + SIGMA0 * he_eps * r * 4 * uval * upval*upval*upval * vval" i="1" id="form" j="1" planar_linear="he_h * uval * vval" planar_newton="he_h * uval * vval + SIGMA0 * he_eps * 4 * uval * upval*upval*upval * vval" symmetric="1"/>
+          <module:vector_form axi_linear="r * (he_f + he_h * he_Te) * vval" axi_newton="r * ((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval" i="1" id="form" j="1" planar_linear="(he_f + he_h * he_Te) * vval" planar_newton="((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval"/>
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="heat_temperature">
         <module:boundary id="heat_temperature" name="Temperature">
           <module:quantity id="heat_temperature"/>
-          <module:essential_form id="form" axi_linear="he_T" axi_newton="he_T" i="1" planar_linear="he_T" planar_newton="he_T"/>
+          <module:essential_form axi_linear="he_T" axi_newton="he_T" i="1" id="form" planar_linear="he_T" planar_newton="he_T"/>
         </module:boundary>
         <module:boundary id="heat_heat_flux" name="Heat flux">
           <module:quantity id="heat_heat_flux"/>
@@ -81,8 +81,8 @@
           <module:quantity id="heat_convection_external_temperature"/>
           <module:quantity id="heat_radiation_emissivity"/>
           <module:quantity id="heat_radiation_ambient_temperature"/>
-          <module:matrix_form id="form" axi_linear="he_h * r * uval * vval" axi_newton="he_h * r * uval * vval" i="1" j="1" planar_linear="he_h * uval * vval" planar_newton="he_h * uval * vval" symmetric="1"/>
-          <module:vector_form id="form" axi_linear="r * (he_f + he_h * he_Te) * vval" axi_newton="r * ((- he_f - he_h * he_Te) + he_h * upval) * vval" i="1" j="1" planar_linear="(he_f + he_h * he_Te) * vval" planar_newton="((- he_f - he_h * he_Te) + he_h * upval) * vval"/>
+          <module:matrix_form axi_linear="he_h * r * uval * vval" axi_newton="he_h * r * uval * vval + SIGMA0 * he_eps * r * 4 * uval * upval*upval*upval * vval" i="1" id="form" j="1" planar_linear="he_h * uval * vval" planar_newton="he_h * uval * vval + SIGMA0 * he_eps * 4 * uval * upval*upval*upval * vval" symmetric="1"/>
+          <module:vector_form axi_linear="r * (he_f + he_h * he_Te) * vval" axi_newton="r * ((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval" i="1" id="form" j="1" planar_linear="(he_f + he_h * he_Te) * vval" planar_newton="((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
