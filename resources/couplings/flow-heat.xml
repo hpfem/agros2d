@@ -27,7 +27,7 @@
                     <coupling:matrix_form id="coupling" i="4" j="2"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * uval * dx4 * vval"
+                        planar_newton="he_rho * he_cp * uval * dy4 * vval"
                         axi_newton="0"
                     />
 
@@ -40,7 +40,7 @@
                     <coupling:vector_form id="coupling" i="4" j="2"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * upval * dx4 * vval"
+                        planar_newton="he_rho * he_cp * upval * dy4 * vval"
                         axi_newton="0"
                     />
 
@@ -58,7 +58,7 @@
                     <coupling:matrix_form id="coupling" i="4" j="2"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * uval * dx4 * vval"
+                        planar_newton="he_rho * he_cp * uval * dy4 * vval"
                         axi_newton="0"
                     />
 
@@ -71,7 +71,7 @@
                     <coupling:vector_form id="coupling" i="4" j="2"
                         planar_linear="0"
                         axi_linear="0"
-                        planar_newton="he_rho * he_cp * upval * dx4 * vval"
+                        planar_newton="he_rho * he_cp * upval * dy4 * vval"
                         axi_newton="0"
                     />
 
