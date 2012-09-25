@@ -228,7 +228,7 @@ LIBS += -lagros2d_3rdparty
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
 
-    QMAKE_CXXFLAGS = -Wno-unused-variable   
+    QMAKE_CXXFLAGS += -Wno-unused-variable
 }
 
 macx-g++ {

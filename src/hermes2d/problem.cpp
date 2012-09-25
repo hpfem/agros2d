@@ -80,7 +80,7 @@ Problem::Problem()
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));       
 }
 
 Problem::~Problem()
@@ -463,7 +463,6 @@ void Problem::solve()
 
     // close indicator progress
     Indicator::closeProgress();
-
 }
 
 //adaptivity step: from 0, if no adaptivity, than 0

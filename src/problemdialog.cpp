@@ -464,6 +464,8 @@ FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
+
     refresh();
 }
 

@@ -181,7 +181,7 @@ public:
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
 
-    inline void refresh() { emit invalidated(); }
+    inline void invalidate() { emit invalidated(); }
 
     // clears all solutions and remove them
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }

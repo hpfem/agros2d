@@ -469,7 +469,7 @@ void PyProblem::clear()
 
 void PyProblem::refresh()
 {
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 
     // refresh post view
     currentPythonEngineAgros()->postHermes()->refresh();
@@ -477,11 +477,15 @@ void PyProblem::refresh()
 
 void PyProblem::solve()
 {
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
+
+    // trigger preprocessor
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
     Util::problem()->solve();
     if (Util::problem()->isSolved())
     {
+        // trigger postprocessor
         currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
     }
 }
@@ -1166,7 +1170,7 @@ void PyGeometry::selectNodes(vector<int> nodes)
         Util::scene()->selectAll(SceneGeometryMode_OperateOnNodes);
     }
 
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyGeometry::selectEdges(vector<int> edges)
@@ -1188,7 +1192,7 @@ void PyGeometry::selectEdges(vector<int> edges)
         Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
     }
 
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyGeometry::selectLabels(vector<int> labels)
@@ -1210,7 +1214,7 @@ void PyGeometry::selectLabels(vector<int> labels)
         Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
     }
 
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyGeometry::selectNodePoint(double x, double y)
@@ -1246,7 +1250,7 @@ void PyGeometry::selectLabelPoint(double x, double y)
 void PyGeometry::selectNone()
 {
     Util::scene()->selectNone();
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyGeometry::moveSelection(double dx, double dy, bool copy)
@@ -1275,9 +1279,13 @@ void PyGeometry::removeSelection()
 
 void PyGeometry::mesh()
 {
+    // trigger preprocessor
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+
     Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
+        // trigger mesh
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
     }
 }
@@ -1781,13 +1789,13 @@ void PyParticleTracing::setInitialPosition(double x, double y)
         throw out_of_range(QObject::tr("y coordinate is out of range.").toStdString());
 
     Util::config()->particleStart = Point(x, y);
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setInitialVelocity(double x, double y)
 {
     Util::config()->particleStartVelocity = Point(x, y);
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setParticleMass(double mass)
@@ -1796,13 +1804,13 @@ void PyParticleTracing::setParticleMass(double mass)
         throw out_of_range(QObject::tr("Mass must be positive.").toStdString());
 
     Util::config()->particleMass = mass;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setParticleCharge(double charge)
 {
     Util::config()->particleConstant = charge;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setDragForceDensity(double rho)
@@ -1811,7 +1819,7 @@ void PyParticleTracing::setDragForceDensity(double rho)
         throw out_of_range(QObject::tr("Density cannot be negative.").toStdString());
 
     Util::config()->particleDragDensity = rho;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setDragForceReferenceArea(double area)
@@ -1820,7 +1828,7 @@ void PyParticleTracing::setDragForceReferenceArea(double area)
         throw out_of_range(QObject::tr("Area cannot be negative.").toStdString());
 
     Util::config()->particleDragReferenceArea = area;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setDragForceCoefficient(double coeff)
@@ -1829,25 +1837,25 @@ void PyParticleTracing::setDragForceCoefficient(double coeff)
         throw out_of_range(QObject::tr("Coefficient cannot be negative.").toStdString());
 
     Util::config()->particleDragCoefficient = coeff;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setIncludeGravitation(int include)
 {
     Util::config()->particleIncludeGravitation = include;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setReflectOnDifferentMaterial(int reflect)
 {
     Util::config()->particleReflectOnDifferentMaterial = reflect;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setReflectOnBoundary(int reflect)
 {
     Util::config()->particleReflectOnBoundary = reflect;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setCoefficientOfRestitution(double coeff)
@@ -1856,7 +1864,7 @@ void PyParticleTracing::setCoefficientOfRestitution(double coeff)
         throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
 
     Util::config()->particleCoefficientOfRestitution = coeff;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setMaximumTolerance(double tolerance)
@@ -1865,7 +1873,7 @@ void PyParticleTracing::setMaximumTolerance(double tolerance)
         throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
 
     Util::config()->particleMaximumRelativeError = tolerance;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setMaximumNumberOfSteps(int steps)
@@ -1874,7 +1882,7 @@ void PyParticleTracing::setMaximumNumberOfSteps(int steps)
         throw out_of_range(QObject::tr("Maximum number of steps cannot be negative.").toStdString());
 
     Util::config()->particleMaximumNumberOfSteps = steps;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void PyParticleTracing::setMinimumStep(int step)
@@ -1883,7 +1891,7 @@ void PyParticleTracing::setMinimumStep(int step)
         throw out_of_range(QObject::tr("Minimum step cannot be negative.").toStdString());
 
     Util::config()->particleMinimumStep = step;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 // **************************************************************************************************
@@ -1930,7 +1938,7 @@ void pyCloseDocument()
 {
     Util::scene()->clear();
     // sceneView()->doDefaultValues();
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 
     currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
@@ -1967,9 +1975,7 @@ char *pythonSolutionFileName()
 void PythonEngineAgros::addCustomExtensions()
 {
     // init agros cython extensions
-    initagros2d();
-
-    connect(this, SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
+    initagros2d();    
 }
 
 void PythonEngineAgros::runPythonHeader()
@@ -1987,11 +1993,6 @@ void PythonEngineAgros::runPythonHeader()
     // run script
     if (!script.isEmpty())
         PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-}
-
-void PythonEngineAgros::doExecutedScript()
-{
-    Util::scene()->refresh();
 }
 
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)

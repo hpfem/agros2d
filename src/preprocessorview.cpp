@@ -57,6 +57,7 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
 
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
     connect(trvWidget, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));

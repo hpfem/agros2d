@@ -313,7 +313,7 @@ void SceneEdgeMarker::doBoundaryClicked()
     if (marker->showDialog(this) == QDialog::Accepted)
     {
         cmbBoundary->setItemText(cmbBoundary->currentIndex(), marker->name());
-        Util::scene()->refresh();
+        Util::scene()->invalidate();
     }
 }
 
@@ -413,7 +413,7 @@ bool SceneEdgeDialog::save()
 
     Util::scene()->checkEdge(sceneEdge);
 
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
     return true;
 }
 
@@ -518,7 +518,7 @@ bool SceneEdgeSelectDialog::save()
         }
     }
 
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
     return true;
 }
 
@@ -548,7 +548,7 @@ SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &p
 void SceneEdgeCommandAdd::undo()
 {
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void SceneEdgeCommandAdd::redo()
@@ -574,7 +574,7 @@ void SceneEdgeCommandAdd::redo()
 
     // add edge to the list
     Util::scene()->addEdge(edge);
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
@@ -609,13 +609,13 @@ void SceneEdgeCommandRemove::undo()
 
     // add edge to the list
     Util::scene()->addEdge(edge);
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void SceneEdgeCommandRemove::redo()
 {
     Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
@@ -637,7 +637,7 @@ void SceneEdgeCommandEdit::undo()
         edge->setNodeStart(Util::scene()->getNode(m_pointStart));
         edge->setNodeEnd(Util::scene()->getNode(m_pointEnd));
         edge->setAngle(m_angle);
-        Util::scene()->refresh();
+        Util::scene()->invalidate();
     }
 }
 
@@ -649,7 +649,7 @@ void SceneEdgeCommandEdit::redo()
         edge->setNodeStart(Util::scene()->getNode(m_pointStartNew));
         edge->setNodeEnd(Util::scene()->getNode(m_pointEndNew));
         edge->setAngle(m_angleNew);
-        Util::scene()->refresh();
+        Util::scene()->invalidate();
     }
 }
 

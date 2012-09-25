@@ -58,9 +58,6 @@ protected:
     virtual void addCustomExtensions();
     virtual void runPythonHeader();
 
-private slots:
-    void doExecutedScript();
-
 private:
     SceneViewPreprocessor *m_sceneViewPreprocessor;
     SceneViewMesh *m_sceneViewMesh;
