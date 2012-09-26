@@ -45,6 +45,7 @@ static QHash<CouplingType, QString> couplingTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
+static QHash<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
 static QHash<PaletteType, QString> paletteTypeList;
 static QHash<PaletteQuality, QString> paletteQualityList;
 static QHash<PaletteOrderType, QString> paletteOrderTypeList;
@@ -92,6 +93,10 @@ LinearityType linearityTypeFromStringKey(const QString &linearityType) { return 
 QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values(); }
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
+
+QStringList spaceTypeStringKeys() { return spaceTypeList.values(); }
+QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType) { return spaceTypeList[spaceType]; }
+Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType) { return spaceTypeList.key(spaceType); }
 
 QStringList sceneViewPost3DModeStringKeys() { return sceneViewPost3DModeList.values(); }
 QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode) { return sceneViewPost3DModeList[sceneViewPost3DMode]; }
@@ -178,6 +183,11 @@ void initLists()
     matrixSolverTypeList.insert(Hermes::SOLVER_SUPERLU, "superlu");
     matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
     matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
+
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_H1_SPACE, "h1");
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_HCURL_SPACE, "hcurl");
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_HDIV_SPACE, "hdiv");
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_L2_SPACE, "l2");
 
     // LinearityType
     linearityTypeList.insert(LinearityType_Undefined, "");

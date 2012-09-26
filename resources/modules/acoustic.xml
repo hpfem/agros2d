@@ -13,6 +13,17 @@
     <module:constant id="P0" value="2e-05"/>
   </module:constants>
 
+  <module:spaces>
+    <module:space analysistype="harmonic">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+      <module:space_config i="2" type="h1" orderadjust="0" />
+    </module:space>
+    <module:space analysistype="transient">
+        <module:space_config i="1" type="h1" orderadjust="0" />
+        <module:space_config i="2" type="h1" orderadjust="0" />
+    </module:space>
+  </module:spaces>
+
   <module:volume>
     <module:quantity id="acoustic_density" shortname="ac_rho"/>
     <module:quantity id="acoustic_speed" shortname="ac_vel"/>

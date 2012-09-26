@@ -489,6 +489,11 @@ QStringList matrixSolverTypeStringKeys();
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
+// space type
+QStringList spaceTypeStringKeys();
+QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType);
+Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType);
+
 // linearity type
 QString linearityTypeString(LinearityType linearityType);
 QStringList linearityTypeStringKeys();

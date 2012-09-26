@@ -93,6 +93,30 @@ namespace XMLModule
     this->constants_.set (x);
   }
 
+  const module::spaces_type& module::
+  spaces () const
+  {
+    return this->spaces_.get ();
+  }
+
+  module::spaces_type& module::
+  spaces ()
+  {
+    return this->spaces_.get ();
+  }
+
+  void module::
+  spaces (const spaces_type& x)
+  {
+    this->spaces_.set (x);
+  }
+
+  void module::
+  spaces (::std::auto_ptr< spaces_type > x)
+  {
+    this->spaces_.set (x);
+  }
+
   const module::volume_type& module::
   volume () const
   {
@@ -581,6 +605,138 @@ namespace XMLModule
   id (::std::auto_ptr< id_type > x)
   {
     this->id_.set (x);
+  }
+
+
+  // spaces
+  // 
+
+  const spaces::space_sequence& spaces::
+  space () const
+  {
+    return this->space_;
+  }
+
+  spaces::space_sequence& spaces::
+  space ()
+  {
+    return this->space_;
+  }
+
+  void spaces::
+  space (const space_sequence& s)
+  {
+    this->space_ = s;
+  }
+
+
+  // space
+  // 
+
+  const space::space_config_sequence& space::
+  space_config () const
+  {
+    return this->space_config_;
+  }
+
+  space::space_config_sequence& space::
+  space_config ()
+  {
+    return this->space_config_;
+  }
+
+  void space::
+  space_config (const space_config_sequence& s)
+  {
+    this->space_config_ = s;
+  }
+
+  const space::analysistype_type& space::
+  analysistype () const
+  {
+    return this->analysistype_.get ();
+  }
+
+  space::analysistype_type& space::
+  analysistype ()
+  {
+    return this->analysistype_.get ();
+  }
+
+  void space::
+  analysistype (const analysistype_type& x)
+  {
+    this->analysistype_.set (x);
+  }
+
+  void space::
+  analysistype (::std::auto_ptr< analysistype_type > x)
+  {
+    this->analysistype_.set (x);
+  }
+
+
+  // space_config
+  // 
+
+  const space_config::i_type& space_config::
+  i () const
+  {
+    return this->i_.get ();
+  }
+
+  space_config::i_type& space_config::
+  i ()
+  {
+    return this->i_.get ();
+  }
+
+  void space_config::
+  i (const i_type& x)
+  {
+    this->i_.set (x);
+  }
+
+  const space_config::type_type& space_config::
+  type () const
+  {
+    return this->type_.get ();
+  }
+
+  space_config::type_type& space_config::
+  type ()
+  {
+    return this->type_.get ();
+  }
+
+  void space_config::
+  type (const type_type& x)
+  {
+    this->type_.set (x);
+  }
+
+  void space_config::
+  type (::std::auto_ptr< type_type > x)
+  {
+    this->type_.set (x);
+  }
+
+  const space_config::orderadjust_type& space_config::
+  orderadjust () const
+  {
+    return this->orderadjust_.get ();
+  }
+
+  space_config::orderadjust_type& space_config::
+  orderadjust ()
+  {
+    return this->orderadjust_.get ();
+  }
+
+  void space_config::
+  orderadjust (const orderadjust_type& x)
+  {
+    this->orderadjust_.set (x);
   }
 
 
@@ -3549,6 +3705,7 @@ namespace XMLModule
   module::
   module (const general_type& general,
           const constants_type& constants,
+          const spaces_type& spaces,
           const volume_type& volume,
           const surface_type& surface,
           const preprocessor_type& preprocessor,
@@ -3556,6 +3713,7 @@ namespace XMLModule
   : ::xml_schema::type (),
     general_ (general, ::xml_schema::flags (), this),
     constants_ (constants, ::xml_schema::flags (), this),
+    spaces_ (spaces, ::xml_schema::flags (), this),
     volume_ (volume, ::xml_schema::flags (), this),
     surface_ (surface, ::xml_schema::flags (), this),
     preprocessor_ (preprocessor, ::xml_schema::flags (), this),
@@ -3566,6 +3724,7 @@ namespace XMLModule
   module::
   module (::std::auto_ptr< general_type >& general,
           ::std::auto_ptr< constants_type >& constants,
+          ::std::auto_ptr< spaces_type >& spaces,
           ::std::auto_ptr< volume_type >& volume,
           ::std::auto_ptr< surface_type >& surface,
           ::std::auto_ptr< preprocessor_type >& preprocessor,
@@ -3573,6 +3732,7 @@ namespace XMLModule
   : ::xml_schema::type (),
     general_ (general, ::xml_schema::flags (), this),
     constants_ (constants, ::xml_schema::flags (), this),
+    spaces_ (spaces, ::xml_schema::flags (), this),
     volume_ (volume, ::xml_schema::flags (), this),
     surface_ (surface, ::xml_schema::flags (), this),
     preprocessor_ (preprocessor, ::xml_schema::flags (), this),
@@ -3587,6 +3747,7 @@ namespace XMLModule
   : ::xml_schema::type (x, f, c),
     general_ (x.general_, f, this),
     constants_ (x.constants_, f, this),
+    spaces_ (x.spaces_, f, this),
     volume_ (x.volume_, f, this),
     surface_ (x.surface_, f, this),
     preprocessor_ (x.preprocessor_, f, this),
@@ -3601,6 +3762,7 @@ namespace XMLModule
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     general_ (f, this),
     constants_ (f, this),
+    spaces_ (f, this),
     volume_ (f, this),
     surface_ (f, this),
     preprocessor_ (f, this),
@@ -3647,6 +3809,20 @@ namespace XMLModule
         if (!constants_.present ())
         {
           this->constants_.set (r);
+          continue;
+        }
+      }
+
+      // spaces
+      //
+      if (n.name () == "spaces" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< spaces_type > r (
+          spaces_traits::create (i, f, this));
+
+        if (!spaces_.present ())
+        {
+          this->spaces_.set (r);
           continue;
         }
       }
@@ -3721,6 +3897,13 @@ namespace XMLModule
     {
       throw ::xsd::cxx::tree::expected_element< char > (
         "constants",
+        "XMLModule");
+    }
+
+    if (!spaces_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_element< char > (
+        "spaces",
         "XMLModule");
     }
 
@@ -4469,6 +4652,279 @@ namespace XMLModule
 
   macro::
   ~macro ()
+  {
+  }
+
+  // spaces
+  //
+
+  spaces::
+  spaces ()
+  : ::xml_schema::type (),
+    space_ (::xml_schema::flags (), this)
+  {
+  }
+
+  spaces::
+  spaces (const spaces& x,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    space_ (x.space_, f, this)
+  {
+  }
+
+  spaces::
+  spaces (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    space_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void spaces::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // space
+      //
+      if (n.name () == "space" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< space_type > r (
+          space_traits::create (i, f, this));
+
+        this->space_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  spaces* spaces::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class spaces (*this, f, c);
+  }
+
+  spaces::
+  ~spaces ()
+  {
+  }
+
+  // space
+  //
+
+  space::
+  space (const analysistype_type& analysistype)
+  : ::xml_schema::type (),
+    space_config_ (::xml_schema::flags (), this),
+    analysistype_ (analysistype, ::xml_schema::flags (), this)
+  {
+  }
+
+  space::
+  space (const space& x,
+         ::xml_schema::flags f,
+         ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    space_config_ (x.space_config_, f, this),
+    analysistype_ (x.analysistype_, f, this)
+  {
+  }
+
+  space::
+  space (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f,
+         ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    space_config_ (f, this),
+    analysistype_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
+      this->parse (p, f);
+    }
+  }
+
+  void space::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // space_config
+      //
+      if (n.name () == "space_config" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< space_config_type > r (
+          space_config_traits::create (i, f, this));
+
+        this->space_config_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "analysistype" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< analysistype_type > r (
+          analysistype_traits::create (i, f, this));
+
+        this->analysistype_.set (r);
+        continue;
+      }
+    }
+
+    if (!analysistype_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "analysistype",
+        "");
+    }
+  }
+
+  space* space::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class space (*this, f, c);
+  }
+
+  space::
+  ~space ()
+  {
+  }
+
+  // space_config
+  //
+
+  space_config::
+  space_config (const i_type& i,
+                const type_type& type,
+                const orderadjust_type& orderadjust)
+  : ::xml_schema::type (),
+    i_ (i, ::xml_schema::flags (), this),
+    type_ (type, ::xml_schema::flags (), this),
+    orderadjust_ (orderadjust, ::xml_schema::flags (), this)
+  {
+  }
+
+  space_config::
+  space_config (const space_config& x,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    i_ (x.i_, f, this),
+    type_ (x.type_, f, this),
+    orderadjust_ (x.orderadjust_, f, this)
+  {
+  }
+
+  space_config::
+  space_config (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    i_ (f, this),
+    type_ (f, this),
+    orderadjust_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void space_config::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "i" && n.namespace_ ().empty ())
+      {
+        this->i_.set (i_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "type" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< type_type > r (
+          type_traits::create (i, f, this));
+
+        this->type_.set (r);
+        continue;
+      }
+
+      if (n.name () == "orderadjust" && n.namespace_ ().empty ())
+      {
+        this->orderadjust_.set (orderadjust_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    if (!i_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "i",
+        "");
+    }
+
+    if (!type_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "type",
+        "");
+    }
+
+    if (!orderadjust_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "orderadjust",
+        "");
+    }
+  }
+
+  space_config* space_config::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class space_config (*this, f, c);
+  }
+
+  space_config::
+  ~space_config ()
   {
   }
 
@@ -7965,6 +8421,7 @@ namespace XMLModule
   {
     o << ::std::endl << "general: " << i.general ();
     o << ::std::endl << "constants: " << i.constants ();
+    o << ::std::endl << "spaces: " << i.spaces ();
     o << ::std::endl << "volume: " << i.volume ();
     o << ::std::endl << "surface: " << i.surface ();
     o << ::std::endl << "preprocessor: " << i.preprocessor ();
@@ -8047,6 +8504,42 @@ namespace XMLModule
     }
 
     o << ::std::endl << "id: " << i.id ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const spaces& i)
+  {
+    for (spaces::space_const_iterator
+         b (i.space ().begin ()), e (i.space ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "space: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const space& i)
+  {
+    for (space::space_config_const_iterator
+         b (i.space_config ().begin ()), e (i.space_config ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "space_config: " << *b;
+    }
+
+    o << ::std::endl << "analysistype: " << i.analysistype ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const space_config& i)
+  {
+    o << ::std::endl << "i: " << i.i ();
+    o << ::std::endl << "type: " << i.type ();
+    o << ::std::endl << "orderadjust: " << i.orderadjust ();
     return o;
   }
 
@@ -9127,6 +9620,18 @@ namespace XMLModule
       s << i.constants ();
     }
 
+    // spaces
+    //
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "spaces",
+          "XMLModule",
+          e));
+
+      s << i.spaces ();
+    }
+
     // volume
     //
     {
@@ -9404,6 +9909,98 @@ namespace XMLModule
           e));
 
       a << i.id ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const spaces& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // space
+    //
+    for (spaces::space_const_iterator
+         b (i.space ().begin ()), n (i.space ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "space",
+          "XMLModule",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const space& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // space_config
+    //
+    for (space::space_config_const_iterator
+         b (i.space_config ().begin ()), n (i.space_config ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "space_config",
+          "XMLModule",
+          e));
+
+      s << *b;
+    }
+
+    // analysistype
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "analysistype",
+          e));
+
+      a << i.analysistype ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const space_config& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // i
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "i",
+          e));
+
+      a << i.i ();
+    }
+
+    // type
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "type",
+          e));
+
+      a << i.type ();
+    }
+
+    // orderadjust
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "orderadjust",
+          e));
+
+      a << i.orderadjust ();
     }
   }
 

@@ -13,6 +13,13 @@
     <module:constant id="MU0" value="1.25664e-06"/>
   </module:constants>
 
+  <module:spaces>
+    <module:space analysistype="harmonic">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+      <module:space_config i="2" type="h1" orderadjust="0" />
+    </module:space>
+  </module:spaces>
+
   <module:volume>
     <module:quantity id="rf_te_permittivity" shortname="rf_eps"/>
     <module:quantity id="rf_te_permeability" shortname="rf_mur"/>

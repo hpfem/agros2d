@@ -261,6 +261,9 @@ namespace XMLModule
   class constant;
   class macros;
   class macro;
+  class spaces;
+  class space;
+  class space_config;
   class preprocessor;
   class gui;
   class postprocessor;
@@ -343,6 +346,23 @@ namespace XMLModule
     void
     constants (::std::auto_ptr< constants_type > p);
 
+    // spaces
+    // 
+    typedef ::XMLModule::spaces spaces_type;
+    typedef ::xsd::cxx::tree::traits< spaces_type, char > spaces_traits;
+
+    const spaces_type&
+    spaces () const;
+
+    spaces_type&
+    spaces ();
+
+    void
+    spaces (const spaces_type& x);
+
+    void
+    spaces (::std::auto_ptr< spaces_type > p);
+
     // volume
     // 
     typedef ::XMLModule::volume volume_type;
@@ -415,6 +435,7 @@ namespace XMLModule
     //
     module (const general_type&,
             const constants_type&,
+            const spaces_type&,
             const volume_type&,
             const surface_type&,
             const preprocessor_type&,
@@ -422,6 +443,7 @@ namespace XMLModule
 
     module (::std::auto_ptr< general_type >&,
             ::std::auto_ptr< constants_type >&,
+            ::std::auto_ptr< spaces_type >&,
             ::std::auto_ptr< volume_type >&,
             ::std::auto_ptr< surface_type >&,
             ::std::auto_ptr< preprocessor_type >&,
@@ -452,6 +474,7 @@ namespace XMLModule
     protected:
     ::xsd::cxx::tree::one< general_type > general_;
     ::xsd::cxx::tree::one< constants_type > constants_;
+    ::xsd::cxx::tree::one< spaces_type > spaces_;
     ::xsd::cxx::tree::one< volume_type > volume_;
     ::xsd::cxx::tree::one< surface_type > surface_;
     ::xsd::cxx::tree::one< preprocessor_type > preprocessor_;
@@ -981,6 +1004,206 @@ namespace XMLModule
     protected:
     expression_optional expression_;
     ::xsd::cxx::tree::one< id_type > id_;
+  };
+
+  class spaces: public ::xml_schema::type
+  {
+    public:
+    // space
+    // 
+    typedef ::XMLModule::space space_type;
+    typedef ::xsd::cxx::tree::sequence< space_type > space_sequence;
+    typedef space_sequence::iterator space_iterator;
+    typedef space_sequence::const_iterator space_const_iterator;
+    typedef ::xsd::cxx::tree::traits< space_type, char > space_traits;
+
+    const space_sequence&
+    space () const;
+
+    space_sequence&
+    space ();
+
+    void
+    space (const space_sequence& s);
+
+    // Constructors.
+    //
+    spaces ();
+
+    spaces (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+    spaces (const spaces& x,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+    virtual spaces*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~spaces ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    space_sequence space_;
+  };
+
+  class space: public ::xml_schema::type
+  {
+    public:
+    // space_config
+    // 
+    typedef ::XMLModule::space_config space_config_type;
+    typedef ::xsd::cxx::tree::sequence< space_config_type > space_config_sequence;
+    typedef space_config_sequence::iterator space_config_iterator;
+    typedef space_config_sequence::const_iterator space_config_const_iterator;
+    typedef ::xsd::cxx::tree::traits< space_config_type, char > space_config_traits;
+
+    const space_config_sequence&
+    space_config () const;
+
+    space_config_sequence&
+    space_config ();
+
+    void
+    space_config (const space_config_sequence& s);
+
+    // analysistype
+    // 
+    typedef ::xml_schema::string analysistype_type;
+    typedef ::xsd::cxx::tree::traits< analysistype_type, char > analysistype_traits;
+
+    const analysistype_type&
+    analysistype () const;
+
+    analysistype_type&
+    analysistype ();
+
+    void
+    analysistype (const analysistype_type& x);
+
+    void
+    analysistype (::std::auto_ptr< analysistype_type > p);
+
+    // Constructors.
+    //
+    space (const analysistype_type&);
+
+    space (const ::xercesc::DOMElement& e,
+           ::xml_schema::flags f = 0,
+           ::xml_schema::container* c = 0);
+
+    space (const space& x,
+           ::xml_schema::flags f = 0,
+           ::xml_schema::container* c = 0);
+
+    virtual space*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~space ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    space_config_sequence space_config_;
+    ::xsd::cxx::tree::one< analysistype_type > analysistype_;
+  };
+
+  class space_config: public ::xml_schema::type
+  {
+    public:
+    // i
+    // 
+    typedef ::xml_schema::int_ i_type;
+    typedef ::xsd::cxx::tree::traits< i_type, char > i_traits;
+
+    const i_type&
+    i () const;
+
+    i_type&
+    i ();
+
+    void
+    i (const i_type& x);
+
+    // type
+    // 
+    typedef ::xml_schema::string type_type;
+    typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
+
+    const type_type&
+    type () const;
+
+    type_type&
+    type ();
+
+    void
+    type (const type_type& x);
+
+    void
+    type (::std::auto_ptr< type_type > p);
+
+    // orderadjust
+    // 
+    typedef ::xml_schema::int_ orderadjust_type;
+    typedef ::xsd::cxx::tree::traits< orderadjust_type, char > orderadjust_traits;
+
+    const orderadjust_type&
+    orderadjust () const;
+
+    orderadjust_type&
+    orderadjust ();
+
+    void
+    orderadjust (const orderadjust_type& x);
+
+    // Constructors.
+    //
+    space_config (const i_type&,
+                  const type_type&,
+                  const orderadjust_type&);
+
+    space_config (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    space_config (const space_config& x,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    virtual space_config*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~space_config ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    ::xsd::cxx::tree::one< i_type > i_;
+    ::xsd::cxx::tree::one< type_type > type_;
+    ::xsd::cxx::tree::one< orderadjust_type > orderadjust_;
   };
 
   class preprocessor: public ::xml_schema::type
@@ -4165,6 +4388,15 @@ namespace XMLModule
   operator<< (::std::ostream&, const macro&);
 
   ::std::ostream&
+  operator<< (::std::ostream&, const spaces&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const space&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const space_config&);
+
+  ::std::ostream&
   operator<< (::std::ostream&, const preprocessor&);
 
   ::std::ostream&
@@ -4449,6 +4681,15 @@ namespace XMLModule
 
   void
   operator<< (::xercesc::DOMElement&, const macro&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const spaces&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const space&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const space_config&);
 
   void
   operator<< (::xercesc::DOMElement&, const preprocessor&);

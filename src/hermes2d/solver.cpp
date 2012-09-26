@@ -221,12 +221,19 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
             Space<Scalar>* actualSpace;
-            if(fieldInfo->module()->spaceType(i) == HERMES_L2_SPACE)
-                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i));
-            else if(fieldInfo->module()->spaceType(i) == HERMES_H1_SPACE)
-                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i));
-            else
+            switch (fieldInfo->module()->spaces()[i+1].type())
+            {
+            case HERMES_L2_SPACE:
+                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                break;
+            case HERMES_H1_SPACE:
+                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                break;
+            default:
                 assert(0);
+                break;
+            }
+
             //cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             space.push_back(QSharedPointer<Space<Scalar> >(actualSpace));
 

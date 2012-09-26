@@ -14,6 +14,16 @@
     <module:constant id="EPS0" value="8.854e-12"/>
   </module:constants>
 
+  <module:spaces>
+    <module:space analysistype="steadystate">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+    </module:space>
+    <module:space analysistype="harmonic">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+      <module:space_config i="2" type="h1" orderadjust="0" />
+    </module:space>
+  </module:spaces>
+
   <module:volume>
     <module:quantity id="current_conductivity" shortname="cu_gamma"/>
     <module:quantity id="current_permittivity" shortname="cu_epsr"/>

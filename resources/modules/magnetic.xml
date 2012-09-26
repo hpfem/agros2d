@@ -14,6 +14,19 @@
     <module:constant id="MU0" value="1.2566371e-06"/>
   </module:constants>
 
+  <module:spaces>
+    <module:space analysistype="steadystate">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+    </module:space>
+    <module:space analysistype="harmonic">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+      <module:space_config i="2" type="h1" orderadjust="0" />
+    </module:space>
+    <module:space analysistype="transient">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+    </module:space>
+  </module:spaces>
+
   <module:volume>
     <module:quantity id="magnetic_permeability" shortname="ma_mur"/>
     <module:quantity id="magnetic_conductivity" shortname="ma_gamma"/>
