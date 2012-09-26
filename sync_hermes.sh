@@ -21,6 +21,10 @@ cp -R ../hermes/hermes2d/include/* hermes2d/include/
 cp -R ../hermes/hermes_common/src/* hermes_common/src/
 cp -R ../hermes/hermes_common/include/* hermes_common/include/
 
+# remove weakform library
+rm -rf hermes2d/src/weakform_library
+# rm -rf hermes2d/include/weakform_library
+
 cp ../hermes/COPYING hermes2d
 cp ../hermes/AUTHORS hermes2d
 

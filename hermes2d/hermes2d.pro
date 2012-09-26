@@ -122,11 +122,6 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/views/orderizer.cpp \
                 src/views/vectorizer.cpp \
                 src/weakform/weakform.cpp  \
-				src/weakform_library/weakforms_elasticity.cpp  \
-				src/weakform_library/weakforms_h1.cpp  \
-				src/weakform_library/weakforms_hcurl.cpp  \
-				src/weakform_library/weakforms_maxwell.cpp  \
-                src/weakform_library/weakforms_neutronics.cpp  \
 				src/neighbor.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
