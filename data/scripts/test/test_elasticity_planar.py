@@ -6,8 +6,10 @@ problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
-# palette quality
-agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+# disable view
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
 
 # fields
 elasticity = agros2d.field("elasticity")

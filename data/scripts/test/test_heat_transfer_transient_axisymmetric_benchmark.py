@@ -18,6 +18,11 @@ problem.time_method_tolerance = 0.1
 problem.time_steps = 20
 problem.time_total = 190
 
+# disable view
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # fields
 # heat
 heat = agros2d.field("heat")

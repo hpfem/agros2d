@@ -7,8 +7,10 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 1.6e10
 
-# palette quality
-agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+# disable view
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
 
 # fields
 rf = agros2d.field("rf")
