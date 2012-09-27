@@ -264,6 +264,7 @@ namespace Hermes
         create();
         update_layout();
         wait_for_draw();
+
         // FIXME: find out why this has to be called after wait_for_draw in order for the view to be reset initially.
         reset_view(false); // setting true here makes the view always reset after calling 'show'; particularly in the adaptivity process,
         // it would disallow the observation of the process from a manually set viewpoint.
@@ -574,7 +575,7 @@ namespace Hermes
           double max_x, max_y, min_x, min_y;
           max_x = min_x = element->vn[0]->x;
           max_y = min_y = element->vn[0]->y;
-          for(unsigned int i = 0; i < element->get_num_surf(); i++)
+          for(unsigned int i = 0; i < element->get_nvert(); i++)
           {
             sum_x += element->vn[i]->x;
             sum_y += element->vn[i]->y;
@@ -589,7 +590,7 @@ namespace Hermes
               min_y = element->vn[i]->y;
           }
           element_infos.push_back(ElementInfo(element->id,
-            (float)(sum_x / element->get_num_surf()), (float)(sum_y / element->get_num_surf()),
+            (float)(sum_x / element->get_nvert()), (float)(sum_y / element->get_nvert()),
             (float)(max_x - min_x), (float)(max_y - min_y)));
         }
       }

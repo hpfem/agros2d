@@ -212,6 +212,7 @@ private:
 
     // startup script
     ScriptEditor *txtStartupScript;
+    QLabel *lblStartupScriptError;
 
     // description
     QTextEdit *txtDescription;
@@ -227,11 +228,11 @@ private:
     void fillComboBox();
 
 private slots:
-    void doTransientChanged();
-    void doApply();
-    void doOpenXML();
+    void transientChanged();
+    void startupScriptChanged();
 
-    bool save();
+    void changedWithClear();
+    void changedWithoutClear();
 };
 
 #endif // PROBLEMDIALOG_H
