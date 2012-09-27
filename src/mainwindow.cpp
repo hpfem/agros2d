@@ -97,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createMain();
 
     // post hermes
-    connect(problemWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     currentPythonEngineAgros()->setPostHermes(postHermes);
@@ -116,7 +116,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewPreprocessor, SLOT(refresh()));
 
     // preprocessor
-    connect(problemWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
+    connect(problemWidget, SIGNAL(changed()), sceneViewPreprocessor, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
@@ -137,7 +137,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     currentPythonEngineAgros()->setSceneViewPost3D(sceneViewPost3D);
 
     // info
-    connect(problemWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
+    connect(problemWidget, SIGNAL(changed()), sceneInfoWidget, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
 
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));

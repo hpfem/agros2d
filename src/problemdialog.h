@@ -181,7 +181,7 @@ public:
     QAction *actProperties;
 
 signals:
-    void apply();
+    void changed();
 
 public slots:
     void updateControls();

@@ -677,6 +677,10 @@ ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
     // global signals
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(updateControls()));
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(updateControls()));
+
+    // resend signal
+    connect(fieldsToolbar, SIGNAL(changed()), this, SIGNAL(changed()));
+
     connect(fieldsToolbar, SIGNAL(changed()), this, SLOT(updateControls()));
 
     setMinimumSize(sizeHint());
@@ -1019,7 +1023,7 @@ void ProblemWidget::changedWithClear()
     Util::problem()->config()->blockSignals(false);
     Util::problem()->config()->refresh();
 
-    emit apply();
+    emit changed();
 }
 
 void ProblemWidget::startupScriptChanged()

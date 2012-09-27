@@ -15,7 +15,7 @@
     <module:space analysistype="steadystate">
         <module:space_config i="1" type="h1" orderadjust="0" />
         <module:space_config i="2" type="h1" orderadjust="0" />
-        <module:space_config i="3" type="l2" orderadjust="-2" />
+        <module:space_config i="3" type="l2" orderadjust="-1" />
     </module:space>
     <module:space analysistype="transient">
         <module:space_config i="1" type="h1" orderadjust="0" />
