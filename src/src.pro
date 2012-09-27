@@ -255,11 +255,13 @@ macx-g++ {
 }
 
 win32-msvc2010 {
+    CONFIG += staticlib
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
 	QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     #DEFINES += XERCES_STATIC_LIBRARY
+	DEFINES += AGROS
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"

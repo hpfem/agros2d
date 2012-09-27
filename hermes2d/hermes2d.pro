@@ -185,12 +185,14 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-	CONFIG += staticlib
-    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+	QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+	QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
 	QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     DEFINES += XERCES_STATIC_LIBRARY
+	DEFINES += AGROS
+    DEFINES += HERMES_FOR_AGROS
     DEFINES += XML_LIBRARY
     DEFINES += WIN32
     DEFINES += IMPLEMENT_C99
@@ -203,15 +205,15 @@ win32-msvc2010 {
 	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
     LIBS += -Lc:/Python27/libs
-    LIBS += -Lc:/Qt/4.8.2/lib
+	LIBS += -Lc:/Qt/4.8.2/lib
 	LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -lblas
     LIBS += -lpthreadVCE2
+	LIBS += -lxerces-c_static_3
     LIBS += -lpython27
-    LIBS += -lvcomp
-    LIBS += -lxerces-c_static_3
+	LIBS += -lvcomp
     LIBS += -ladvapi32
     LIBS += -lws2_32
 }
