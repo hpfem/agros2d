@@ -352,7 +352,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
             Mesh* mesh = new Mesh();
             mesh->copy(oldSpace->get_mesh());
 
-            space.push_back(QSharedPointer<Space<Scalar> >(oldSpace->dup(mesh)));
+            space.push_back(QSharedPointer<Space<Scalar> >(oldSpace->duplicate(mesh)));
         }
     }
 
