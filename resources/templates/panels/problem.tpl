@@ -9,20 +9,6 @@
 	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />
 </head>
 <body>
-<!--
-<svg width="500px" height="500px" viewBox="-0.012 -2.012 1.524 3.024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<g stroke="black" stroke-width="0.012" fill="none">
-   <line x1="0" y1="-2" x2="0" y2="-1" />
-   <line x1="0" y1="-1" x2="0.2" y2="-1" />
-   <line x1="0.2" y1="-1" x2="0" y2="-0.5" />
-   <line x1="0" y1="-0.5" x2="0" y2="-0.25" />
-   <line x1="0" y1="0.25" x2="0" y2="1" />
-   <path d="M0 0.25 A0.25 0.25 0 0 0 0 -0.25" />
-   <path d="M0 1 A1.5 1.5 0 0 0 1.5 -0.5" />
-   <path d="M1.5 -0.5 A1.5 1.5 0 0 0 0 -2" />
-</g>
-</svg>
--->
 <table>
 <tr>
 <td>
@@ -188,10 +174,51 @@
     <tr>
         <td><b>{{ERROR_LABEL}}</b></td><td>{{ERROR}}</td>
     </tr>
+    <tr>
+        <td colspan="2"><div style="text-align: center;">Relative error</div><div id="chart_error_steps_{{PHYSICAL_FIELD_ID}}" style="width:100%; height:130px;"></div></td>
+    </tr>   
+    <tr>
+        <td colspan="2"><div style="text-align: center;">DOFs</div><div id="chart_dofs_steps_{{PHYSICAL_FIELD_ID}}" style="width:100%; height:130px;"></div></td>
+    </tr>   
+    <!--
+	<script type="text/javascript">
+	$(function () 
+	{    
+		var previousPoint = null;
+		$("#chart_dofs_steps_{{PHYSICAL_FIELD_ID}}").bind("plothover", 
+		function (event, pos, item) 
+		{
+	        if (item) 
+	        {
+			    $("#x").text(pos.x.toFixed(2));
+			    $("#y").text(pos.y.toFixed(2));
+		    
+  	            if (previousPoint != item.dataIndex) 
+  	            {
+	                previousPoint = item.dataIndex;
+	                
+	                $("#tooltip").remove();
+	                var x = item.datapoint[0].toFixed(2),
+	                    y = item.datapoint[1].toFixed(2);
+	                
+	                showTooltip(item.pageX, item.pageY,
+	                            item.series.label + " of " + x + " = " + y);
+	            }
+	        }
+	        else 
+	        {
+	            $("#tooltip").remove();
+	            previousPoint = null;            
+	        }
+		});
+	});
+	</script>    
+	-->
     {{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
     {{/MESH_SOLUTION_DOFS_PARAMETERS_SECTION}}
     {{/MESH_PARAMETERS_SECTION}}
 </table>
+
 </div>
 {{/FIELD_SECTION}}
 {{/FIELD}}
@@ -200,6 +227,24 @@
 </table>
 
 <div class="cleaner"></div>
+
+<!--
+<script type="text/javascript">
+function showTooltip(x, y, contents) 
+{
+    $('<div id="tooltip">' + contents + '</div>').css({
+        position: 'absolute',
+        display: 'none',
+        top: y + 5,
+        left: x + 5,
+        border: '1px solid #fdd',
+        padding: '2px', 
+        background-color: '#fee',
+        opacity: 0.80
+    }).appendTo("body").fadeIn(200);
+}
+</script>
+-->
 </body>
 </html>
 
