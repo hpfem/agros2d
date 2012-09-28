@@ -86,7 +86,6 @@ const int VECTORSCOUNTMAX = 500;
 const double VECTORSSCALEMIN = 0.1;
 const double VECTORSSCALEMAX = 20.0;
 
-
 // post3d
 const SceneViewPost3DMode SCALARSHOWPOST3D = SceneViewPost3DMode_ScalarView3D;
 
@@ -100,8 +99,10 @@ const int PALETTESTEPS = 30;
 const bool SHOWVECTORVIEW = false;
 const bool VECTORPROPORTIONAL = true;
 const bool VECTORCOLOR = true;
-const int VECTORSCOUNT = 50;
-const double VECTORSSCALE = 0.6;
+const int VECTORCOUNT = 50;
+const double VECTORSCALE = 0.6;
+const VectorType VECTORTYPE = VectorType_Arrow;
+const VectorCenter VECTORCENTER = VectorCenter_Tail;
 
 const bool SHOWORDERVIEW = true;
 const bool SHOWORDERCOLORBAR = true;

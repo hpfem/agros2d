@@ -123,6 +123,9 @@ signals:
     /// emited when an field is added or removed. Menus need to adjusted
     void fieldsChanged();
 
+    /// emited when an field is added or removed. Menus need to adjusted
+    void couplingsChanged();
+
 public slots:
     // clear problem
     void clearSolution();
@@ -178,7 +181,7 @@ public:
     inline CouplingInfo* couplingInfo(const QString &sourceFieldId, const QString &targetFieldId) { return couplingInfo(fieldInfo(sourceFieldId), fieldInfo(targetFieldId)); }
     inline bool hasCoupling(FieldInfo* sourceField, FieldInfo* targetField) { return (m_couplingInfos.contains(QPair<FieldInfo*, FieldInfo* >(sourceField, targetField))); }
     inline bool hasCoupling(const QString &sourceFieldId, const QString &targetFieldId) { return hasCoupling(fieldInfo(sourceFieldId), fieldInfo(targetFieldId)); }
-    inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; }
+    inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; emit couplingsChanged(); }
 
     inline QTime timeElapsed() const { return m_timeElapsed; }
 

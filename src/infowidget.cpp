@@ -70,8 +70,8 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     connect(Util::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
 
     connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));    
+    connect(Util::problem(), SIGNAL(couplingsChanged()), this, SLOT(refresh()));
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
     connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(refresh()));
@@ -185,7 +185,7 @@ void InfoWidget::showInfo()
                 field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
                 field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps()).toStdString());
                 field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString() + "%");
+                field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString() + " %");
                 field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
             }
 
@@ -197,7 +197,7 @@ void InfoWidget::showInfo()
                 field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
                 field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->nonlinearSteps()).toStdString());
                 field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString() + "%");
+                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString() + " %");
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }
 

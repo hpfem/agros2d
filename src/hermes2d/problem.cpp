@@ -713,6 +713,8 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 
 void Problem::synchronizeCouplings()
 {
+    bool changed = false;
+
     // add missing
     foreach (FieldInfo* sourceField, m_fieldInfos)
     {
@@ -725,6 +727,8 @@ void Problem::synchronizeCouplings()
                 if (!m_couplingInfos.contains(fieldInfosPair))
                 {
                     m_couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
+
+                    changed = true;
                 }
             }
         }
@@ -738,8 +742,13 @@ void Problem::synchronizeCouplings()
               isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
         {
             m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
+
+            changed = true;
         }
     }
+
+    if (changed)
+        emit couplingsChanged();
 }
 
 Block* Problem::blockOfField(FieldInfo *fieldInfo) const

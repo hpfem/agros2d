@@ -622,8 +622,12 @@ void CouplingsWidget::createContent()
     foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
     {
         layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
+
         m_comboBoxes[couplingInfo] = new QComboBox();
+        connect(m_comboBoxes[couplingInfo], SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
+
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
+
         line++;
     }
 
@@ -665,6 +669,11 @@ void CouplingsWidget::refresh()
     createContent();
 }
 
+void CouplingsWidget::itemChanged(int index)
+{
+    emit changed();
+}
+
 // ********************************************************************************************
 
 ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
@@ -677,11 +686,11 @@ ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
     // global signals
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(updateControls()));
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(updateControls()));
+    connect(fieldsToolbar, SIGNAL(changed()), this, SLOT(updateControls()));
 
     // resend signal
     connect(fieldsToolbar, SIGNAL(changed()), this, SIGNAL(changed()));
-
-    connect(fieldsToolbar, SIGNAL(changed()), this, SLOT(updateControls()));
+    connect(couplingsWidget, SIGNAL(changed()), this, SIGNAL(changed()));
 
     setMinimumSize(sizeHint());
 }

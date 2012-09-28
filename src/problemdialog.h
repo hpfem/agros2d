@@ -68,8 +68,12 @@ public:
     void load();
     void save();
 
+signals:
+    void changed();
+
 public slots:
     void refresh();
+    void itemChanged(int index);
 
 private:
     void createComboBoxes();

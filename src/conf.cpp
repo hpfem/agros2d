@@ -169,8 +169,10 @@ void Config::loadPostprocessor(QDomElement *config)
     vectorVariable = readConfig("SceneViewSettings/VectorVariable", QString());
     vectorProportional = readConfig("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL);
     vectorColor = readConfig("SceneViewSettings/VectorColor", VECTORCOLOR);
-    vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORSCOUNT);
-    vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSSCALE);
+    vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORCOUNT);
+    vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSCALE);
+    vectorType = (VectorType) readConfig("SceneViewSettings/VectorType", (int) VECTORTYPE);
+    vectorCenter = (VectorCenter) readConfig("SceneViewSettings/VectorCenter", (int) VECTORCENTER);
 
     // order view
     showOrderView = readConfig("SceneViewSettings/ShowOrderView", SHOWORDERVIEW);
@@ -364,6 +366,8 @@ void Config::savePostprocessor(QDomElement *config)
     writeConfig("SceneViewSettings/VectorColor", vectorColor);
     writeConfig("SceneViewSettings/VectorNumber", vectorCount);
     writeConfig("SceneViewSettings/VectorScale", vectorScale);
+    writeConfig("SceneViewSettings/VectorType", vectorType);
+    writeConfig("SceneViewSettings/VectorCenter", vectorCenter);
 
     // order view
     writeConfig("SceneViewSettings/ShowOrderView", showOrderView);
