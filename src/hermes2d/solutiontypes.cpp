@@ -63,9 +63,6 @@ SolutionArray<Scalar>::~SolutionArray()
 template <typename Scalar>
 MultiSolutionArray<Scalar>::MultiSolutionArray()
 {
-    m_assemblyTime = 0;
-    m_solveTime = 0;
-    m_adaptiveError = 100;
 }
 
 template <typename Scalar>

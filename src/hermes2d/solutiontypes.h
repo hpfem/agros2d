@@ -89,25 +89,11 @@ public:
     void createEmpty(int numComp);
     void setTime(double);
 
-    inline double adaptiveError() { return m_adaptiveError; }
-    void setAdaptiveError(const double ae) { m_adaptiveError = ae; }
-
-    inline double assemblyTime() { return m_assemblyTime; }
-    void setAssemblyTime(const double ae) { m_assemblyTime = ae; }
-
-    inline double solveTime() { return m_solveTime; }
-    void setSolveTime(const double ae) { m_solveTime = ae; }
-
     void saveToFile(const QString &solutionID);
     void loadFromFile(const QString &solutionID);
 
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;
-
-    double m_adaptiveError;
-    double m_assemblyTime;
-    double m_solveTime;
-
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;

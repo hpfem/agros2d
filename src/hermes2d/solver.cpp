@@ -699,7 +699,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
     // cout << "ERROR " << error << endl;
     // set adaptive error
-    msa.setAdaptiveError(error);
+    // msa.setAdaptiveError(error);
 
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
     // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
@@ -721,10 +721,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
     // store solution
-    msaNew.setTime(Util::problem()->actualTime());
+    // msaNew.setTime(Util::problem()->actualTime());
     Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_NonExisting), msaNew);
-    //    }
-
 
     Util::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
                               arg(error).

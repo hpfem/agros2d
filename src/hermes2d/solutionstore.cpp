@@ -15,17 +15,15 @@ void SolutionStore::clearOne(FieldSolutionID solutionID)
     m_multiSolutions.remove(solutionID);
 }
 
-SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component)
+SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component) const
 {
     return multiSolution(solutionID).component(component);
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
+MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID) const
 {
-    //cout << "chci solution " << solutionID << std::endl;
     assert(m_multiSolutions.contains(solutionID));
     return m_multiSolutions[solutionID];
-
 }
 
 bool SolutionStore::contains(FieldSolutionID solutionID) const
@@ -33,7 +31,7 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
     return m_multiSolutions.contains(solutionID);
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
+MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID) const
 {
     MultiSolutionArray<double> msa;
     foreach(Field *field, solutionID.group->fields())
@@ -44,7 +42,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solution
     return msa;
 }
 
-void SolutionStore::addSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
     assert(!m_multiSolutions.contains(solutionID));
     replaceSolution(solutionID, multiSolution);
@@ -56,7 +54,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     m_multiSolutions.remove(solutionID);
 }
 
-void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionArray<double> multiSolution)
+void SolutionStore::replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
     //cout << "saving solution " << solutionID << std::endl;
     assert(solutionID.timeStep >= 0);
@@ -68,7 +66,7 @@ void SolutionStore::replaceSolution(FieldSolutionID solutionID,  MultiSolutionAr
 
 void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
-    foreach(Field* field, solutionID.group->fields())
+    foreach (Field* field, solutionID.group->fields())
     {
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
