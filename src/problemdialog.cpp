@@ -763,11 +763,6 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtTransientSteps->setMinimum(2);
     lblTransientTimeStep = new QLabel("0.0");
 
-    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
-    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
-    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
-    connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
-
     // fill combobox
     fillComboBox();
 
@@ -988,6 +983,12 @@ void ProblemWidget::updateControls()
 
     connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(startupScriptChanged()));
     connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(changedWithClear()));
+
+    // transient
+    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
 }
 
 void ProblemWidget::changedWithoutClear()
