@@ -191,7 +191,9 @@ void SceneViewPost3D::paintScalarField3D()
         Point point[3];
         double value[3];
 
-        double max = qMax(Util::scene()->boundingBox().width(), Util::scene()->boundingBox().height());
+        RectPoint rect = Util::scene()->boundingBox();
+
+        double max = qMax(rect.width(), rect.height());
 
         if (Util::config()->scalarView3DLighting)
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -201,6 +203,7 @@ void SceneViewPost3D::paintScalarField3D()
         glPushMatrix();
         glScaled(1.0, 1.0, max / Util::config()->scalarView3DHeight * fabs(irange));
 
+        // scalar view
         initLighting();
         // init normal
         double *normal = new double[3];
@@ -286,6 +289,38 @@ void SceneViewPost3D::paintScalarField3D()
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
+
+        // bounding box
+        double borderXY = max * 0.05;
+        double borderZ = (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) * 0.05;
+        glBegin(GL_LINES);
+        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
+
+        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+
+        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
+        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
+        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+        glEnd();
 
         // geometry - edges
         foreach (SceneEdge *edge, Util::scene()->edges->items())
