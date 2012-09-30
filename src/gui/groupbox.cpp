@@ -23,7 +23,7 @@
 
 CollapsableGroupBoxButton::CollapsableGroupBoxButton(QWidget *parent)
     : QGroupBox(parent), m_collapsed(false)
-{
+{   
 }
 
 CollapsableGroupBoxButton::CollapsableGroupBoxButton(const QString &title, QWidget *parent)
@@ -37,8 +37,8 @@ void CollapsableGroupBoxButton::mousePressEvent(QMouseEvent *e)
     {
         QStyleOptionGroupBox option;
         initStyleOption(&option);
-        QRect buttonArea(0, 0, 16, 16);
-        buttonArea.moveTopRight(option.rect.adjusted(0, 0, -10, 0).topRight());
+        QRect buttonArea(0, 0, 32, 20);
+        buttonArea.moveTopRight(option.rect.adjusted(0, 0, -10, -2).topRight());
         if (buttonArea.contains(e->pos()))
         {
             m_clickPos = e->pos();
