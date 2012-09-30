@@ -60,7 +60,7 @@ void CollapsableGroupBoxButton::paintEvent(QPaintEvent *)
     QStyleOptionGroupBox option;
     initStyleOption(&option);
     paint.drawComplexControl(QStyle::CC_GroupBox, option);
-    paint.drawItemPixmap(option.rect.adjusted(0, 0, -10, 0),
+    paint.drawItemPixmap(option.rect.adjusted(0, 0, -10, 1),
                          Qt::AlignTop | Qt::AlignRight,
                          QPixmap(m_collapsed ?
                                      icon("edit-right").pixmap(16, 16) :
