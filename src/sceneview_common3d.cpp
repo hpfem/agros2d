@@ -113,6 +113,104 @@ void SceneViewCommon3D::paintBackground()
     glPopMatrix();
 }
 
+
+
+void SceneViewCommon3D::paintAxes()
+{
+    loadProjectionViewPort();
+
+    glScaled(2.0 / width(), 2.0 / height(), 2.0 / height());
+    glTranslated(- width() / 2.0 + 30, -height() / 2.0 + 30, 0.0);
+
+    glRotated(m_rotation3d.x, 1.0, 0.0, 0.0);
+    glRotated(m_rotation3d.z, 0.0, 1.0, 0.0);
+    glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
+
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glColor3d(Util::config()->colorCross.redF(),
+              Util::config()->colorCross.greenF(),
+              Util::config()->colorCross.blueF());
+
+    // x-axis
+    glBegin(GL_QUADS);
+    glVertex3d(0, -1, 0);
+    glVertex3d(16, -1, 0);
+    glVertex3d(16, 1, 0);
+    glVertex3d(0, 1, 0);
+
+    glVertex3d(0, 0, -1);
+    glVertex3d(16, 0, -1);
+    glVertex3d(16, 0, 1);
+    glVertex3d(0, 0, 1);
+    glEnd();
+
+    glBegin(GL_TRIANGLES);
+    glVertex3d(16, -5, 0);
+    glVertex3d(16, 5, 0);
+    glVertex3d(35, 0, 0);
+
+    glVertex3d(16, 0, -5);
+    glVertex3d(16, 0, 5);
+    glVertex3d(35, 0, 0);
+    glEnd();
+
+    // renderText(38, height() - fontMetrics().height() / 4.0, Util::problem()->config()->labelX());
+
+    // y-axis
+    glBegin(GL_QUADS);
+    glVertex3d(-1, 0, 0);
+    glVertex3d(-1, 16, 0);
+    glVertex3d(1, 16, 0);
+    glVertex3d(1, 0, 0);
+
+    glVertex3d(0, 0, -1);
+    glVertex3d(0, 16, -1);
+    glVertex3d(0, 16, 1);
+    glVertex3d(0, 0, 1);
+    glEnd();
+
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-5, 16, 0);
+    glVertex3d(5, 16, 0);
+    glVertex3d(0, 35, 0);
+
+    glVertex3d(0, 16, -5);
+    glVertex3d(0, 16, 5);
+    glVertex3d(0, 35, 0);
+    glEnd();
+
+    // renderText(1fontMetrics().width(Util::problem()->config()->labelY()) / 4.0, height() - 138, Util::problem()->config()->labelY());
+
+    // z-axis
+    glBegin(GL_QUADS);
+    glVertex3d(-1, 0, 0);
+    glVertex3d(-1, 0, -16);
+    glVertex3d(1, 0, -16);
+    glVertex3d(1, 0, 0);
+
+    glVertex3d(0, -1, 0);
+    glVertex3d(0, -1, -16);
+    glVertex3d(0, 1, -16);
+    glVertex3d(0, 1, 0);
+    glEnd();
+
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-5, 0, -16);
+    glVertex3d(5, 0, -16);
+    glVertex3d(0, 0, -35);
+
+    glVertex3d(0, -5, -16);
+    glVertex3d(0, 5, -16);
+    glVertex3d(0, 0, -35);
+    glEnd();
+
+    // renderText(1fontMetrics().width(Util::problem()->config()->labelY()) / 4.0, height() - 138, Util::problem()->config()->labelY());
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+}
+
 void SceneViewCommon3D::loadProjection3d(bool setScene)
 {
     glMatrixMode(GL_PROJECTION);

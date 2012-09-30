@@ -144,6 +144,8 @@ void SceneViewPost3D::paintGL()
     default:
         emit labelCenter(tr("Postprocessor 3D"));
     }
+
+    if (Util::config()->showAxes) paintAxes();
 }
 
 void SceneViewPost3D::resizeGL(int w, int h)

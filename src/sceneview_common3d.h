@@ -64,6 +64,7 @@ protected:
     void doZoomRegion(const Point &start, const Point &end) {}
 
     void paintBackground(); // gradient background
+    void paintAxes(); // axes
 
 private:
     void createActions();
