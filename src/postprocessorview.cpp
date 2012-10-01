@@ -679,9 +679,9 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, minWidth);
     gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1);
+    gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Quality:")), 1, 0);
-    gridLayoutScalarFieldPalette->addWidget(cmbLinearizerQuality, 1, 1);
+    gridLayoutScalarFieldPalette->addWidget(cmbLinearizerQuality, 1, 1, 1, 2);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Steps:")), 2, 0);
     gridLayoutScalarFieldPalette->addWidget(txtPaletteSteps, 2, 1);
     gridLayoutScalarFieldPalette->addWidget(chkPaletteFilter, 2, 2);
