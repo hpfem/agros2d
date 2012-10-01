@@ -302,8 +302,7 @@ void PostprocessorWidget::createControls()
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(basic);
-    layoutMain->addWidget(advanced);
-    layoutMain->addStretch(1);
+    layoutMain->addWidget(advanced, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
 
     refresh();
@@ -408,13 +407,16 @@ CollapsableGroupBoxButton *PostprocessorWidget::postScalarWidget()
     chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
 
+    groupPostScalarAdvanced = postScalarAdvancedWidget();
+
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->setColumnMinimumWidth(0, minWidth);
     layoutScalarField->setColumnStretch(1, 1);
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutScalarField->addWidget(cmbPostScalarFieldVariable, 0, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPostScalarFieldVariable, 0, 1);
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
-    layoutScalarField->addWidget(cmbPostScalarFieldVariableComp, 1, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPostScalarFieldVariableComp, 1, 1);
+    layoutScalarField->addWidget(groupPostScalarAdvanced, 2, 0, 1, 2);
 
     CollapsableGroupBoxButton *grpScalarField = new CollapsableGroupBoxButton(tr("Scalar field"));
     connect(grpScalarField, SIGNAL(collapseEvent(bool)), this, SLOT(doScalarFieldExpandCollapse(bool)));
@@ -429,11 +431,14 @@ CollapsableGroupBoxButton *PostprocessorWidget::postContourWidget()
     // contour field
     cmbPost2DContourVariable = new QComboBox();
 
+    groupPostContourAdvanced = postContourAdvancedWidget();
+
     QGridLayout *layoutContourField = new QGridLayout();
     layoutContourField->setColumnMinimumWidth(0, minWidth);
     layoutContourField->setColumnStretch(1, 1);
     layoutContourField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutContourField->addWidget(cmbPost2DContourVariable, 0, 1);
+    layoutContourField->addWidget(groupPostContourAdvanced, 1, 0, 1, 2);
 
     CollapsableGroupBoxButton *grpContourField = new CollapsableGroupBoxButton(tr("Contour field"));
     connect(grpContourField, SIGNAL(collapseEvent(bool)), this, SLOT(doContourFieldExpandCollapse(bool)));
@@ -448,11 +453,14 @@ CollapsableGroupBoxButton *PostprocessorWidget::postVectorWidget()
     // vector field
     cmbPost2DVectorFieldVariable = new QComboBox();
 
+    groupPostVectorAdvanced = postVectorAdvancedWidget();
+
     QGridLayout *layoutVectorField = new QGridLayout();
     layoutVectorField->setColumnMinimumWidth(0, minWidth);
     layoutVectorField->setColumnStretch(1, 1);
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutVectorField->addWidget(cmbPost2DVectorFieldVariable, 0, 1);
+    layoutVectorField->addWidget(groupPostVectorAdvanced, 1, 0, 1, 2);
 
     CollapsableGroupBoxButton *grpVectorField = new CollapsableGroupBoxButton(tr("Vector field"));
     connect(grpVectorField, SIGNAL(collapseEvent(bool)), this, SLOT(doVectorFieldExpandCollapse(bool)));
@@ -465,9 +473,15 @@ CollapsableGroupBoxButton *PostprocessorWidget::postVectorWidget()
 CollapsableGroupBoxButton *PostprocessorWidget::postParticalTracingWidget()
 {
     // particle tracing
+    groupPostParticalTracingAdvanced = postParticalTracingAdvancedWidget();
+
+    QVBoxLayout *layoutParticleTracing = new QVBoxLayout();
+    layoutParticleTracing->addWidget(groupPostParticalTracingAdvanced);
+
     CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Partical tracing"));
-    grpParticalTracing->setCollapsed(true);
     connect(grpParticalTracing , SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
+    grpParticalTracing->setCollapsed(true);
+    grpParticalTracing->setLayout(layoutParticleTracing );
 
     return grpParticalTracing;
 }
@@ -584,30 +598,27 @@ QWidget *PostprocessorWidget::controlsBasic()
 QWidget *PostprocessorWidget::controlsAdvanced()
 {
     groupPostScalar = postScalarWidget();
-    groupPostScalarAdvanced = postScalarAdvancedWidget();
     groupPostContour = postContourWidget();
-    groupPostContourAdvanced = postContourAdvancedWidget();
     groupPostVector = postVectorWidget();
-    groupPostVectorAdvanced = postVectorAdvancedWidget();
     groupPostParticalTracing = postParticalTracingWidget();
-    groupPostParticalTracingAdvanced = postParticalTracingAdvancedWidget();
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
     layoutArea->addWidget(groupMeshOrder);
     layoutArea->addWidget(groupPostScalar);
-    layoutArea->addWidget(groupPostScalarAdvanced);
     layoutArea->addWidget(groupPostContour);
-    layoutArea->addWidget(groupPostContourAdvanced);
     layoutArea->addWidget(groupPostVector);
-    layoutArea->addWidget(groupPostVectorAdvanced);
     layoutArea->addWidget(groupPostParticalTracing);
-    layoutArea->addWidget(groupPostParticalTracingAdvanced);
     layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layoutArea);
 
-    return widget;
+    QScrollArea *widgetArea = new QScrollArea();
+    widgetArea->setFrameShape(QFrame::NoFrame);
+    widgetArea->setWidgetResizable(true);
+    widgetArea->setWidget(widget);
+
+    return widgetArea;
 }
 
 QWidget *PostprocessorWidget::postScalarAdvancedWidget()
@@ -643,30 +654,34 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     connect(txtScalarFieldRangeMin, SIGNAL(textChanged(QString)), this, SLOT(doScalarFieldRangeMinChanged()));
     lblScalarFieldRangeMinError = new QLabel("");
     lblScalarFieldRangeMinError->setPalette(palette);
+    lblScalarFieldRangeMinError->setVisible(false);
     txtScalarFieldRangeMax = new LineEditDouble(0.1, true);
     connect(txtScalarFieldRangeMax, SIGNAL(textChanged(QString)), this, SLOT(doScalarFieldRangeMaxChanged()));
     lblScalarFieldRangeMaxError = new QLabel("");
     lblScalarFieldRangeMaxError->setPalette(palette);
+    lblScalarFieldRangeMaxError->setVisible(false);
 
     QGridLayout *layoutScalarFieldRange = new QGridLayout();
-    layoutScalarFieldRange->addWidget(chkScalarFieldRangeAuto, 3, 0);
     lblScalarFieldRangeMin = new QLabel(tr("Minimum:"));
-    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMin, 3, 1);
-    layoutScalarFieldRange->addWidget(txtScalarFieldRangeMin, 3, 2);
-    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMinError, 3, 3);
+    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMin, 0, 0);
+    layoutScalarFieldRange->addWidget(txtScalarFieldRangeMin, 0, 1);
+    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMinError, 0, 2);
+    layoutScalarFieldRange->addWidget(chkScalarFieldRangeAuto, 0, 3);
     lblScalarFieldRangeMax = new QLabel(tr("Maximum:"));
-    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMax, 4, 1);
-    layoutScalarFieldRange->addWidget(txtScalarFieldRangeMax, 4, 2);
-    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMaxError, 4, 3);
+    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMax, 1, 0);
+    layoutScalarFieldRange->addWidget(txtScalarFieldRangeMax, 1, 1);
+    layoutScalarFieldRange->addWidget(lblScalarFieldRangeMaxError, 1, 2);
 
     QGroupBox *grpScalarFieldRange = new QGroupBox(tr("Range"));
     grpScalarFieldRange->setLayout(layoutScalarFieldRange);
 
     QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
+    gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, minWidth);
+    gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
+    gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Quality:")), 1, 0);
-    gridLayoutScalarFieldPalette->addWidget(cmbLinearizerQuality, 1, 1, 1, 2);
+    gridLayoutScalarFieldPalette->addWidget(cmbLinearizerQuality, 1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Steps:")), 2, 0);
     gridLayoutScalarFieldPalette->addWidget(txtPaletteSteps, 2, 1);
     gridLayoutScalarFieldPalette->addWidget(chkPaletteFilter, 2, 2);
@@ -688,29 +703,21 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     QGridLayout *gridLayoutScalarFieldColorbar = new QGridLayout();
     gridLayoutScalarFieldColorbar->addWidget(new QLabel(tr("Decimal places:")), 0, 0);
     gridLayoutScalarFieldColorbar->addWidget(txtScalarDecimalPlace, 0, 1);
-    gridLayoutScalarFieldColorbar->addWidget(chkShowScalarColorBar, 1, 0, 1, 2);
+    gridLayoutScalarFieldColorbar->addWidget(chkShowScalarColorBar, 0, 2);
 
     QGroupBox *grpScalarFieldColorbar = new QGroupBox(tr("Colorbar"));
     grpScalarFieldColorbar->setLayout(gridLayoutScalarFieldColorbar);
 
-    // QPushButton *btnScalarFieldDefault = new QPushButton(tr("Default"));
-    // connect(btnScalarFieldDefault, SIGNAL(clicked()), this, SLOT(doScalarFieldDefault()));
-
     QVBoxLayout *layoutScalarFieldAdvanced = new QVBoxLayout();
+    layoutScalarFieldAdvanced->setMargin(0);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldPalette);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldColorbar);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldRange);
-    layoutScalarFieldAdvanced->addStretch(1);
-    // layoutScalarFieldAdvanced->addWidget(btnScalarFieldDefault, 0, Qt::AlignLeft);
 
     QWidget *scalarWidget = new QWidget();
     scalarWidget->setLayout(layoutScalarFieldAdvanced);
 
-    QScrollArea *scalarWidgetArea = new QScrollArea();
-    scalarWidgetArea->setFrameShape(QFrame::NoFrame);
-    scalarWidgetArea->setWidget(scalarWidget);
-
-    return scalarWidgetArea;
+    return scalarWidget;
 }
 
 QWidget *PostprocessorWidget::postContourAdvancedWidget()
@@ -721,27 +728,16 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     txtContoursCount->setMaximum(CONTOURSCOUNTMAX);
 
     QGridLayout *gridLayoutContours = new QGridLayout();
+    gridLayoutContours->setMargin(0);
     gridLayoutContours->setColumnMinimumWidth(0, minWidth);
     gridLayoutContours->setColumnStretch(1, 1);
     gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
     gridLayoutContours->addWidget(txtContoursCount, 0, 1);
 
-    // QPushButton *btnContourDefault = new QPushButton(tr("Default"));
-    // connect(btnContourDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
+    QWidget *contourWidget = new QWidget();
+    contourWidget->setLayout(gridLayoutContours);
 
-    QVBoxLayout *layoutContour = new QVBoxLayout();
-    layoutContour->addLayout(gridLayoutContours);
-    layoutContour->addStretch(1);
-    // layoutContour->addWidget(btnContourDefault, 0, Qt::AlignLeft);
-
-    QGroupBox *contourWidget = new QGroupBox("Contour properties");
-    contourWidget->setLayout(layoutContour);
-
-    QScrollArea *contourWidgetArea = new QScrollArea();
-    contourWidgetArea->setFrameShape(QFrame::NoFrame);
-    contourWidgetArea->setWidget(contourWidget);
-
-    return contourWidgetArea;
+    return contourWidget;
 }
 
 QWidget *PostprocessorWidget::postVectorAdvancedWidget()
@@ -764,10 +760,10 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     foreach (QString key, vectorCenterStringKeys())
         cmbVectorCenter->addItem(vectorCenterString(vectorCenterFromStringKey(key)), vectorCenterFromStringKey(key));
 
-    // QPushButton *btnVectorDefault = new QPushButton(tr("Default"));
-    // connect(btnVectorDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
-
     QGridLayout *gridLayoutVectors = new QGridLayout();
+    gridLayoutVectors->setMargin(0);
+    gridLayoutVectors->setColumnMinimumWidth(0, minWidth);
+    gridLayoutVectors->setColumnStretch(1, 1);
     gridLayoutVectors->addWidget(new QLabel(tr("Vectors:")), 0, 0);
     gridLayoutVectors->addWidget(txtVectorCount, 0, 1);
     gridLayoutVectors->addWidget(chkVectorProportional, 0, 2);
@@ -779,19 +775,10 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     gridLayoutVectors->addWidget(new QLabel(tr("Center:")), 3, 0);
     gridLayoutVectors->addWidget(cmbVectorCenter, 3, 1, 1, 2);
 
-    QVBoxLayout *layoutVector = new QVBoxLayout();
-    layoutVector->addLayout(gridLayoutVectors);
-    layoutVector->addStretch(1);
-    // layoutVector->addWidget(btnVectorDefault, 0, Qt::AlignLeft);
+    QWidget *vectorWidget = new QWidget();
+    vectorWidget->setLayout(gridLayoutVectors);
 
-    QGroupBox *vectorWidget = new QGroupBox("Vector properties");
-    vectorWidget->setLayout(layoutVector);
-
-    QScrollArea *vectorWidgetArea = new QScrollArea();
-    vectorWidgetArea->setFrameShape(QFrame::NoFrame);
-    vectorWidgetArea->setWidget(vectorWidget);
-
-    return vectorWidgetArea;
+    return vectorWidget;
 }
 
 QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
@@ -907,35 +894,27 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
     grpAdvanced->setLayout(gridLayoutAdvanced);
 
-    QGridLayout *gridLayoutParticle = new QGridLayout();
-    gridLayoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
-    gridLayoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
-    gridLayoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
-    gridLayoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
-    gridLayoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
-    gridLayoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
-    gridLayoutParticle->addWidget(txtParticleMass, 4, 1);
-    gridLayoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpReflection, 9, 0, 1, 2);
-    gridLayoutParticle->addWidget(grpAdvanced, 10, 0, 1, 2);
-
-    QVBoxLayout *layoutParticle = new QVBoxLayout();
-    layoutParticle->addLayout(gridLayoutParticle);
-    layoutParticle->addStretch(1);
-    // layoutParticle->addWidget(btnParticleDefault, 0, Qt::AlignLeft);
+    QGridLayout *layoutParticle = new QGridLayout();
+    layoutParticle->setMargin(0);
+    layoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
+    layoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
+    layoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
+    layoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
+    layoutParticle->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
+    layoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
+    layoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
+    layoutParticle->addWidget(txtParticleMass, 4, 1);
+    layoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
+    layoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
+    layoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
+    layoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
+    layoutParticle->addWidget(grpReflection, 9, 0, 1, 2);
+    layoutParticle->addWidget(grpAdvanced, 10, 0, 1, 2);
 
     QWidget *particleWidget = new QWidget();
     particleWidget->setLayout(layoutParticle);
 
-    QScrollArea *particleWidgetArea = new QScrollArea();
-    particleWidgetArea->setFrameShape(QFrame::NoFrame);
-    particleWidgetArea->setWidget(particleWidget);
-
-    return particleWidgetArea;
+    return particleWidget;
 }
 
 void PostprocessorWidget::doCalculationFinished()
@@ -1337,12 +1316,15 @@ void PostprocessorWidget::doParticleDefault()
 void PostprocessorWidget::doScalarFieldRangeMinChanged()
 {
     lblScalarFieldRangeMinError->clear();
+    lblScalarFieldRangeMinError->setVisible(false);
     lblScalarFieldRangeMaxError->clear();
+    lblScalarFieldRangeMaxError->setVisible(false);
     btnOK->setEnabled(true);
 
     if (txtScalarFieldRangeMin->value() > txtScalarFieldRangeMax->value())
     {
         lblScalarFieldRangeMinError->setText(QString("> %1").arg(txtScalarFieldRangeMax->value()));
+        lblScalarFieldRangeMinError->setVisible(true);
         //btnOK->setDisabled(true);
     }
     /*
