@@ -943,6 +943,7 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("timedermat");
         lex->addVariable("timedervec");
         lex->addVariable("timederres");
+        lex->addVariable(QString("t"));
     }
 
     // functions
@@ -1010,6 +1011,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict["r"] = "e->x[i]";
             dict["z"] = "e->y[i]";
         }
+
+        dict["t"] = "Util::problem()->actualTime()";
 
         // constants
         dict["PI"] = "M_PI";
@@ -1162,6 +1165,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
             dict["r"] = "1";
             dict["z"] = "1";
         }
+
+        dict["t"] = "1";
 
         // constants
         dict["PI"] = "M_PI";

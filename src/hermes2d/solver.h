@@ -37,6 +37,26 @@ public:
     }
 };
 
+
+// In BDF2 method, results of BDF2A and BDF2B can be combined to obtain solution of higher accuracy
+// This class stores solution vector from the last calculation (if it should be used in this combination)
+// and takes care of proper dealocation of the vector.
+template <typename Scalar>
+class VectorStore
+{
+public:
+    VectorStore() : m_vector(NULL), m_length(0) {}
+    ~VectorStore() { if(m_vector) delete[] m_vector;}
+
+    Scalar* createNew(int length);
+    int getLastLength() const { return m_length; }
+    Scalar* getLast() const { return m_vector; }
+
+private:
+    Scalar* m_vector;
+    int m_length;
+};
+
 // solve
 template <typename Scalar>
 class Solver
@@ -59,6 +79,8 @@ private:
     Block* m_block;
 
     QString m_solverID;
+
+    VectorStore<Scalar> m_lastVector;
 
     // elapsed time
     double m_elapsedTime;

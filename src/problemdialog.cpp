@@ -887,6 +887,10 @@ void ProblemWidget::fillComboBox()
 
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_Fixed), TimeStepMethod_Fixed);
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDF2), TimeStepMethod_BDF2);
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDF2Combine), TimeStepMethod_BDF2Combine);
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_FixedBDF2B), TimeStepMethod_FixedBDF2B);
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_FixedCombine), TimeStepMethod_FixedCombine);
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDF2AOrder), TimeStepMethod_BDF2AOrder);
 }
 
 void ProblemWidget::updateControls()
