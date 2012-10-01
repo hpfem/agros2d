@@ -12,6 +12,12 @@
     <module:constant id="EPS0" value="8.854e-12"/>
   </module:constants>
 
+  <module:spaces>
+    <module:space analysistype="steadystate">
+        <module:space_config i="1" type="h1" orderadjust="0" />
+    </module:space>
+  </module:spaces>
+
   <module:volume>
     <module:quantity id="electrostatic_permittivity" shortname="el_epsr"/>
     <module:quantity id="electrostatic_charge_density" shortname="el_rho"/>

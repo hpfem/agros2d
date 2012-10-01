@@ -230,12 +230,19 @@ void Solver<Scalar>::createSpace(QMap<FieldInfo*, Mesh*> meshes, MultiSolutionAr
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
             Space<Scalar>* actualSpace;
-            if(fieldInfo->module()->spaceType(i) == HERMES_L2_SPACE)
-                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i));
-            else if(fieldInfo->module()->spaceType(i) == HERMES_H1_SPACE)
-                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaceOrderAdjust(i));
-            else
+            switch (fieldInfo->module()->spaces()[i+1].type())
+            {
+            case HERMES_L2_SPACE:
+                actualSpace = new L2Space<Scalar>(meshes[fieldInfo], fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                break;
+            case HERMES_H1_SPACE:
+                actualSpace = new H1Space<Scalar>(meshes[fieldInfo], bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                break;
+            default:
                 assert(0);
+                break;
+            }
+
             //cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             space.push_back(QSharedPointer<Space<Scalar> >(actualSpace));
 
@@ -354,7 +361,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
             Mesh* mesh = new Mesh();
             mesh->copy(oldSpace->get_mesh());
 
-            space.push_back(QSharedPointer<Space<Scalar> >(oldSpace->dup(mesh)));
+            space.push_back(QSharedPointer<Space<Scalar> >(oldSpace->duplicate(mesh)));
         }
     }
 
@@ -726,7 +733,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
     // cout << "ERROR " << error << endl;
     // set adaptive error
-    msa.setAdaptiveError(error);
+    // msa.setAdaptiveError(error);
 
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
     // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
@@ -748,10 +755,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
 
     // store solution
-    msaNew.setTime(Util::problem()->actualTime());
+    // msaNew.setTime(Util::problem()->actualTime());
     Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_NonExisting), msaNew);
-    //    }
-
 
     Util::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
                               arg(error).

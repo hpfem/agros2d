@@ -76,7 +76,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
             {
                 for_all_active_elements(e, mesh)
                 {
-                    for (unsigned edge = 0; edge < e->get_num_surf(); edge++)
+                    for (unsigned edge = 0; edge < e->get_nvert(); edge++)
                     {
                         bool integrate = false;
                         bool boundary = false;

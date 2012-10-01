@@ -80,7 +80,7 @@ Problem::Problem()
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));       
 }
 
 Problem::~Problem()
@@ -463,7 +463,6 @@ void Problem::solve()
 
     // close indicator progress
     Indicator::closeProgress();
-
 }
 
 //adaptivity step: from 0, if no adaptivity, than 0
@@ -714,6 +713,8 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 
 void Problem::synchronizeCouplings()
 {
+    bool changed = false;
+
     // add missing
     foreach (FieldInfo* sourceField, m_fieldInfos)
     {
@@ -726,6 +727,8 @@ void Problem::synchronizeCouplings()
                 if (!m_couplingInfos.contains(fieldInfosPair))
                 {
                     m_couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
+
+                    changed = true;
                 }
             }
         }
@@ -739,8 +742,13 @@ void Problem::synchronizeCouplings()
               isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
         {
             m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
+
+            changed = true;
         }
     }
+
+    if (changed)
+        emit couplingsChanged();
 }
 
 Block* Problem::blockOfField(FieldInfo *fieldInfo) const

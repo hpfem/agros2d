@@ -239,7 +239,7 @@ void SceneLabelMarker::doMaterialClicked()
     if (marker->showDialog(this) == QDialog::Accepted)
     {
         cmbMaterial->setItemText(cmbMaterial->currentIndex(), marker->name());
-        Util::scene()->refresh();
+        Util::scene()->invalidate();
     }
 }
 
@@ -377,7 +377,7 @@ bool SceneLabelDialog::save()
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
         labelMarker->save();
 
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
     return true;
 }
 
@@ -471,7 +471,7 @@ bool SceneLabelSelectDialog::save()
         }
     }
 
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
     return true;
 }
 
@@ -498,7 +498,7 @@ SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QMap<QStrin
 void SceneLabelCommandAdd::undo()
 {
     Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void SceneLabelCommandAdd::redo()
@@ -522,7 +522,7 @@ void SceneLabelCommandAdd::redo()
 
     // add edge to the list
     Util::scene()->addLabel(label);;
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
@@ -553,13 +553,13 @@ void SceneLabelCommandRemove::undo()
 
     // add edge to the list
     Util::scene()->addLabel(label);
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 void SceneLabelCommandRemove::redo()
 {
     Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
-    Util::scene()->refresh();
+    Util::scene()->invalidate();
 }
 
 SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
@@ -574,7 +574,7 @@ void SceneLabelCommandEdit::undo()
     if (label)
     {
         label->setPoint(m_point);
-        Util::scene()->refresh();
+        Util::scene()->invalidate();
     }
 }
 
@@ -584,6 +584,6 @@ void SceneLabelCommandEdit::redo()
     if (label)
     {
         label->setPoint(m_pointNew);
-        Util::scene()->refresh();
+        Util::scene()->invalidate();
     }
 }

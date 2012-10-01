@@ -464,6 +464,8 @@ FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
+
     refresh();
 }
 
@@ -620,8 +622,12 @@ void CouplingsWidget::createContent()
     foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
     {
         layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
+
         m_comboBoxes[couplingInfo] = new QComboBox();
+        connect(m_comboBoxes[couplingInfo], SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
+
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
+
         line++;
     }
 
@@ -663,6 +669,11 @@ void CouplingsWidget::refresh()
     createContent();
 }
 
+void CouplingsWidget::itemChanged(int index)
+{
+    emit changed();
+}
+
 // ********************************************************************************************
 
 ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
@@ -672,9 +683,14 @@ ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
 
     updateControls();
 
+    // global signals
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(updateControls()));
     connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(updateControls()));
     connect(fieldsToolbar, SIGNAL(changed()), this, SLOT(updateControls()));
+
+    // resend signal
+    connect(fieldsToolbar, SIGNAL(changed()), this, SIGNAL(changed()));
+    connect(couplingsWidget, SIGNAL(changed()), this, SIGNAL(changed()));
 
     setMinimumSize(sizeHint());
 }
@@ -712,20 +728,11 @@ void ProblemWidget::createControls()
     grpCouplings = new QGroupBox(tr("Couplings"));
     grpCouplings->setLayout(layoutCouplings);
 
-    // dialog buttons
-    QPushButton *btnOK = new QPushButton(tr("Apply"));
-    connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
-
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
-    layoutButtons->addWidget(btnOK);
-
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabType);
     layout->addWidget(grpFieldsToolbar);
     layout->addWidget(grpCouplings);
     layout->addStretch();
-    layout->addLayout(layoutButtons);
 
     setLayout(layout);
 }
@@ -756,10 +763,10 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtTransientSteps->setMinimum(2);
     lblTransientTimeStep = new QLabel("0.0");
 
-    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
-    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
-    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
-    connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(doTransientChanged()));
+    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
 
     // fill combobox
     fillComboBox();
@@ -834,9 +841,15 @@ QWidget *ProblemWidget::createControlsScriptAndDescription()
 {
     // startup script
     txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
+    lblStartupScriptError = new QLabel();
+
+    QPalette palette = lblStartupScriptError->palette();
+    palette.setColor(QPalette::WindowText, QColor(Qt::red));
+    lblStartupScriptError->setPalette(palette);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
     layoutStartup->addWidget(txtStartupScript);
+    layoutStartup->addWidget(lblStartupScriptError);
 
     QGroupBox *grpStartup = new QGroupBox(tr("Startup script"));
     grpStartup->setLayout(layoutStartup);
@@ -894,7 +907,28 @@ void ProblemWidget::fillComboBox()
 }
 
 void ProblemWidget::updateControls()
-{
+{   
+    // disconnect signals
+    // without clearing solution
+    txtName->disconnect();
+    txtDescription->disconnect();
+
+    // with clearing solution
+    cmbCoordinateType->disconnect();
+    cmbMatrixSolver->disconnect();
+    cmbMeshType->disconnect();
+
+    cmbMeshType->disconnect();
+    connect(txtFrequency, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+
+    cmbTransientMethod->disconnect();
+    txtTransientOrder->disconnect();
+    txtTransientTimeTotal->disconnect();
+    txtTransientTolerance->disconnect();
+    txtTransientSteps->disconnect();
+
+    txtStartupScript->disconnect();
+
     // main
     txtName->setText(Util::problem()->config()->name());
     cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Util::problem()->config()->coordinateType()));
@@ -921,7 +955,6 @@ void ProblemWidget::updateControls()
     if (cmbTransientMethod->currentIndex() == -1)
         cmbTransientMethod->setCurrentIndex(0);
 
-
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Util::problem()->config()->matrixSolver()));
 
@@ -937,17 +970,49 @@ void ProblemWidget::updateControls()
 
     grpCouplings->setVisible(Util::problem()->couplingInfos().count() > 0);
 
-    doTransientChanged();
+    transientChanged();
 
-    emit apply();
+    // connect signals
+    // without clearing solution
+    connect(txtName, SIGNAL(editingFinished()), this, SLOT(changedWithoutClear()));
+    connect(txtDescription, SIGNAL(textChanged()), this, SLOT(changedWithoutClear()));
+
+    // with clearing solution
+    connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
+    connect(cmbMatrixSolver, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
+    connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
+
+    connect(txtFrequency, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+
+    connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
+    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    connect(txtTransientTolerance, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+
+    connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(startupScriptChanged()));
+    connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(changedWithClear()));
 }
 
-bool ProblemWidget::save()
+void ProblemWidget::changedWithoutClear()
 {
-    // save properties
-    // Util::problem()->config()->blockSignals(true);
-
     Util::problem()->config()->setName(txtName->text());
+    Util::problem()->config()->setDescription(txtDescription->toPlainText());
+}
+
+void ProblemWidget::changedWithClear()
+{
+    // run and check startup script
+    if (!txtStartupScript->toPlainText().isEmpty())
+    {
+        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        if (scriptResult.isError)
+            return;
+    }
+
+    // save properties
+    Util::problem()->config()->blockSignals(true);
+
     Util::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
     Util::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
 
@@ -959,69 +1024,35 @@ bool ProblemWidget::save()
     Util::problem()->config()->setNumConstantTimeSteps(txtTransientSteps->value());
     Util::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
 
-    Util::problem()->config()->setDescription(txtDescription->toPlainText());
-
     // matrix solver
     Util::problem()->config()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
 
-    // Util::problem()->config()->blockSignals(false);
-    Util::problem()->config()->refresh();
+    // script
+    Util::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
 
     // save couplings
     couplingsWidget->save();
 
+    Util::problem()->config()->blockSignals(false);
+    Util::problem()->config()->refresh();
+
+    emit changed();
+}
+
+void ProblemWidget::startupScriptChanged()
+{
+    lblStartupScriptError->clear();
+
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
     {
-        ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
+        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
         if (scriptResult.isError)
-        {
-            QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
-            return false;
-        }
-        else
-        {
-            Util::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
-        }
+            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(scriptResult.text));
     }
-
-    return true;
 }
 
-void ProblemWidget::doApply()
-{
-    save();
-
-    emit apply();
-}
-
-void ProblemWidget::doOpenXML()
-{
-    QString fileName;
-    //TODO custom
-    //    if (cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() == "custom")
-    //    {
-    //        fileName = Util::problem()->config()->fileName.left(Util::problem()->config()->fileName.size() - 4) + ".xml";
-
-    //        if (!QFile::exists(fileName))
-    //            if (QMessageBox::question(this, tr("Custom module file"), tr("Custom module doesn't exist. Could I create it?"),
-    //                                      QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-    //            {
-    //                // copy custom module
-    //                QFile::copy(datadir() + "/resources/custom.xml",
-    //                            fileName);
-    //            }
-    //    }
-    //    else
-    //    {
-    //        fileName = datadir() + "/modules/" + cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toString() + ".xml";
-    //    }
-
-    //    if (QFile::exists(fileName))
-    //        QDesktopServices::openUrl(QUrl(fileName));
-}
-
-void ProblemWidget::doTransientChanged()
+void ProblemWidget::transientChanged()
 {
     if (txtTransientTimeTotal->evaluate(true))
     {

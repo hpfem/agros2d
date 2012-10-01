@@ -83,12 +83,12 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Space<Scalar>* HdivSpace<Scalar>::dup(Mesh* mesh, int order_increase) const
+    Space<Scalar>* HdivSpace<Scalar>::duplicate(Mesh* mesh, int order_increase, reference_space_p_callback_function p_callback) const
     {
       // FIXME
       // HdivSpace<Scalar>* space = new HdivSpace(mesh, essential_bcs, 0, this->shapeset);
       // space->copy_callbacks(this);
-      // space->copy_orders(this, order_increase);
+      // space->copy_orders(this, order_increase, p_callback);
       // return space;
       return NULL;
     }
@@ -326,7 +326,7 @@ namespace Hermes
       // on non-refined elements all we have to do is update edge nodes lying on constrained edges
       if(e->active)
       {
-        for (unsigned int i = 0; i < e->get_num_surf(); i++)
+        for (unsigned int i = 0; i < e->get_nvert(); i++)
         {
           if(ei[i] != NULL)
           {
@@ -342,7 +342,7 @@ namespace Hermes
       {
         // create new edge infos where we don't have them yet
         EdgeInfo ei_data[4];
-        for (unsigned int i = 0; i < e->get_num_surf(); i++)
+        for (unsigned int i = 0; i < e->get_nvert(); i++)
         {
           if(ei[i] == NULL)
           {
@@ -367,7 +367,7 @@ namespace Hermes
         // create edge infos for half-edges
         EdgeInfo  half_ei_data[4][2];
         EdgeInfo* half_ei[4][2];
-        for (unsigned int i = 0; i < e->get_num_surf(); i++)
+        for (unsigned int i = 0; i < e->get_nvert(); i++)
         {
           if(ei[i] == NULL)
           {

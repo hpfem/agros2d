@@ -6,6 +6,11 @@ problem.coordinate_type = "planar"
 problem.mesh_type = "gmsh_quad_delaunay"
 problem.matrix_solver = "umfpack"
 
+# disable view
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # fields
 # flow
 flow = agros2d.field("flow")

@@ -141,6 +141,8 @@ void PostprocessorWidget::loadAdvanced()
     txtVectorCount->setValue(Util::config()->vectorCount);
     txtVectorCount->setToolTip(tr("Width and height of bounding box over vector count."));
     txtVectorScale->setValue(Util::config()->vectorScale);
+    cmbVectorType->setCurrentIndex(cmbVectorType->findData(Util::config()->vectorType));
+    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData(Util::config()->vectorCenter));
 
     // order view
     chkShowOrderColorbar->setChecked(Util::config()->showOrderColorBar);
@@ -243,6 +245,8 @@ void PostprocessorWidget::saveAdvanced()
     Util::config()->vectorColor = chkVectorColor->isChecked();
     Util::config()->vectorCount = txtVectorCount->value();
     Util::config()->vectorScale = txtVectorScale->value();
+    Util::config()->vectorType = (VectorType) cmbVectorType->itemData(cmbVectorType->currentIndex()).toInt();
+    Util::config()->vectorCenter = (VectorCenter) cmbVectorCenter->itemData(cmbVectorCenter->currentIndex()).toInt();
 
     // order view
     Util::config()->showOrderColorBar = chkShowOrderColorbar->isChecked();
@@ -753,6 +757,12 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     txtVectorScale->setSingleStep(0.1);
     txtVectorScale->setMinimum(VECTORSSCALEMIN);
     txtVectorScale->setMaximum(VECTORSSCALEMAX);
+    cmbVectorType = new QComboBox();
+    foreach (QString key, vectorTypeStringKeys())
+        cmbVectorType->addItem(vectorTypeString(vectorTypeFromStringKey(key)), vectorTypeFromStringKey(key));
+    cmbVectorCenter = new QComboBox();
+    foreach (QString key, vectorCenterStringKeys())
+        cmbVectorCenter->addItem(vectorCenterString(vectorCenterFromStringKey(key)), vectorCenterFromStringKey(key));
 
     // QPushButton *btnVectorDefault = new QPushButton(tr("Default"));
     // connect(btnVectorDefault, SIGNAL(clicked()), this, SLOT(doContoursVectorsDefault()));
@@ -764,6 +774,10 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     gridLayoutVectors->addWidget(new QLabel(tr("Scale:")), 1, 0);
     gridLayoutVectors->addWidget(txtVectorScale, 1, 1);
     gridLayoutVectors->addWidget(chkVectorColor, 1, 2);
+    gridLayoutVectors->addWidget(new QLabel(tr("Type:")), 2, 0);
+    gridLayoutVectors->addWidget(cmbVectorType, 2, 1, 1, 2);
+    gridLayoutVectors->addWidget(new QLabel(tr("Center:")), 3, 0);
+    gridLayoutVectors->addWidget(cmbVectorCenter, 3, 1, 1, 2);
 
     QVBoxLayout *layoutVector = new QVBoxLayout();
     layoutVector->addLayout(gridLayoutVectors);
@@ -1283,8 +1297,10 @@ void PostprocessorWidget::doContoursVectorsDefault()
     txtContoursCount->setValue(CONTOURSCOUNT);
     chkVectorProportional->setChecked(VECTORPROPORTIONAL);
     chkVectorColor->setChecked(VECTORCOLOR);
-    txtVectorCount->setValue(VECTORSCOUNT);
-    txtVectorScale->setValue(VECTORSSCALE);
+    txtVectorCount->setValue(VECTORCOUNT);
+    txtVectorScale->setValue(VECTORSCALE);
+    cmbVectorType->setCurrentIndex(cmbVectorType->findData(VECTORTYPE));
+    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData(VECTORCENTER));
 }
 
 void PostprocessorWidget::doOrderDefault()

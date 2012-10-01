@@ -6,10 +6,10 @@
 class SolutionStore
 {
 public:
-    SolutionArray<double> solution(FieldSolutionID solutionID, int component);
+    SolutionArray<double> solution(FieldSolutionID solutionID, int component) const;
     bool contains(FieldSolutionID solutionID) const;
-    MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
-    MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
+    MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID) const;
+    MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID) const;
 
     // returns MultiSolution with components related to last time step, in which was each respective field calculated
     // this time step can be different for respective fields due to time step skipping

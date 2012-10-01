@@ -58,6 +58,7 @@ class boundary;
 class force;
 class localvariable;
 class gui;
+class space;
 }
 
 class Marker;
@@ -194,6 +195,24 @@ private:
     // expressions
     Expression m_expression;
 };
+
+struct Space
+{
+    Space(int i = 1, Hermes::Hermes2D::SpaceType type = Hermes::Hermes2D::HERMES_H1_SPACE, int orderAdjust = 0)
+        : m_i(i), m_type(type), m_orderAdjust(orderAdjust) {}
+
+    // expressions
+    inline int i() const { return m_i; }
+    inline Hermes::Hermes2D::SpaceType type() const { return m_type; }
+    inline int orderAdjust() const { return m_orderAdjust; }
+
+private:
+    // expressions
+    int m_i;
+    Hermes::Hermes2D::SpaceType m_type;
+    int m_orderAdjust;
+};
+
 
 // force
 struct Force
@@ -442,6 +461,9 @@ struct BasicModule
     // macros
     inline QMap<QString, QString> macros() const { return m_macros; }
 
+    // spaces
+    inline QMap<int, Module::Space> spaces() const { return m_spaces; }
+
     // material type variable
     inline QList<MaterialTypeVariable *> materialTypeVariables() const { return m_materialTypeVariables; }
 
@@ -473,28 +495,6 @@ struct BasicModule
 
     // number of solutions
     inline int numberOfSolutions() const { return m_numberOfSolutions; }
-
-    // todo: following two functions are ugly. Information about space properties should be stored in xml
-    // todo: the problem is, that up to now the only use is for pressure in incompressible flow...
-
-    // is it H1 or L2 or other? Should be readed from the module, for now hardcoded: L2 for pressure, H1 otherwise
-    Hermes::Hermes2D::SpaceType spaceType(int comp) const
-    {
-        if(name() == "Incompressible flow" && comp == 2)
-            return Hermes::Hermes2D::HERMES_L2_SPACE;
-        else
-            return Hermes::Hermes2D::HERMES_H1_SPACE;
-    }
-
-    // should be polynomial order of this space decreased? Intended for pressure, hardcoded
-    int spaceOrderAdjust(int comp) const
-    {
-        if(name() == "Incompressible flow" && comp == 2)
-            return -1;
-        else
-            return 0;
-    }
-
 
     // scalar filter
     Hermes::Hermes2D::Filter<double> *viewScalarFilter(Module::LocalVariable *physicFieldVariable,
@@ -559,6 +559,9 @@ private:
 
     // macros
     QMap<QString, QString> m_macros;
+
+    // spaces
+    QMap<int, Module::Space> m_spaces;
 
     // number of solutions
     int m_numberOfSolutions;

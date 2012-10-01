@@ -58,9 +58,6 @@ protected:
     virtual void addCustomExtensions();
     virtual void runPythonHeader();
 
-private slots:
-    void doExecutedScript();
-
 private:
     SceneViewPreprocessor *m_sceneViewPreprocessor;
     SceneViewMesh *m_sceneViewMesh;
@@ -83,14 +80,10 @@ private slots:
     void doCreatePythonFromModel();
 };
 
-bool scriptIsRunning();
-
 // current python engine agros
 PythonEngineAgros *currentPythonEngineAgros();
 
 QString createPythonFromModel();
-ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
-ExpressionResult runPythonExpression(const QString &expression, bool returnValue = true);
 
 // ************************************************************************************
 
@@ -293,8 +286,6 @@ class PyGeometry
 // view
 struct PyViewConfig
 {
-    void refresh();
-
     // field
     void setField(char *fieldid);
     inline char* getField() const { return const_cast<char*>(Util::scene()->activeViewField()->fieldId().toStdString().c_str()); }
@@ -332,7 +323,6 @@ struct PyViewConfig
 struct PyViewMesh
 {
     void activate();
-    void refresh();
 
     // mesh
     void setInitialMeshViewShow(bool show);
@@ -355,7 +345,6 @@ struct PyViewMesh
 struct PyViewPost2D
 {
     void activate();
-    void refresh();
 
     // scalar view
     void setScalarViewShow(bool show);
@@ -418,7 +407,6 @@ struct PyViewPost2D
 struct PyViewPost3D
 {
     void activate();
-    void refresh();
 
     // scalar view
     void setPost3DMode(char* mode);

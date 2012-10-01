@@ -68,8 +68,12 @@ public:
     void load();
     void save();
 
+signals:
+    void changed();
+
 public slots:
     void refresh();
+    void itemChanged(int index);
 
 private:
     void createComboBoxes();
@@ -181,7 +185,7 @@ public:
     QAction *actProperties;
 
 signals:
-    void apply();
+    void changed();
 
 public slots:
     void updateControls();
@@ -212,6 +216,7 @@ private:
 
     // startup script
     ScriptEditor *txtStartupScript;
+    QLabel *lblStartupScriptError;
 
     // description
     QTextEdit *txtDescription;
@@ -227,11 +232,11 @@ private:
     void fillComboBox();
 
 private slots:
-    void doTransientChanged();
-    void doApply();
-    void doOpenXML();
+    void transientChanged();
+    void startupScriptChanged();
 
-    bool save();
+    void changedWithClear();
+    void changedWithoutClear();
 };
 
 #endif // PROBLEMDIALOG_H

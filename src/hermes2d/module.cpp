@@ -174,9 +174,9 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-//    Util::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
-//                            arg(weakFormString(type)).
-//                            arg(QString::fromStdString(form->getAreas().at(0))));
+    //    Util::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
+    //                            arg(weakFormString(type)).
+    //                            arg(QString::fromStdString(form->getAreas().at(0))));
 
     if(type == WeakForm_MatVol)
         add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
@@ -607,27 +607,33 @@ void Module::BasicModule::read(const QString &filename)
 
     // analyses
     m_numberOfSolutions = 0;
-    for (int i = 0; i < mod->general().analyses().analysis().size(); i++)
+    foreach (XMLModule::analysis an, mod->general().analyses().analysis())
     {
-        XMLModule::analysis an = mod->general().analyses().analysis().at(i);
-
         if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
             m_numberOfSolutions = an.solutions();
     }
 
     // constants
-    for (int i = 0; i < mod->constants().constant().size(); i++)
+    foreach (XMLModule::constant cnst, mod->constants().constant())
     {
-        XMLModule::constant cnst = mod->constants().constant().at(i);
         m_constants[QString::fromStdString(cnst.id())] = cnst.value();
     }
 
+    // spaces
+    foreach (XMLModule::space spc, mod->spaces().space())
+    {
+        if (spc.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        {
+            foreach (XMLModule::space_config config, spc.space_config())
+            {
+                m_spaces[config.i()] = Module::Space(config.i(),
+                                                     spaceTypeFromStringKey(QString::fromStdString(config.type())),
+                                                     config.orderadjust());
+            }
+        }
+    }
+
     // macros
-    /*
-        for (rapidxml::xml_node<> *macro = doc.first_node("module")->first_node("macros")->first_node("macro");
-             macro; macro = macro->next_sibling())
-            macros[macro->first_attribute("id")->value()] = macro->first_attribute("expression")->value();
-        */
 
     // surface weakforms
     QList<Module::BoundaryTypeVariable> boundaryTypeVariables;
@@ -785,26 +791,22 @@ void Module::BasicModule::read(const QString &filename)
     }
 
     // scalar variables default
-    for (int i = 0; i < mod->postprocessor().view().scalar_view().default_().size(); i++)
+    foreach (XMLModule::default_ def, mod->postprocessor().view().scalar_view().default_())
     {
-        XMLModule::default_ def = mod->postprocessor().view().scalar_view().default_().at(i);
         if (def.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
             m_defaultViewScalarVariable = localVariable(QString::fromStdString(def.id()));
     }
 
     // vector variables default
-    for (int i = 0; i < mod->postprocessor().view().vector_view().default_().size(); i++)
+    foreach (XMLModule::default_ def, mod->postprocessor().view().vector_view().default_())
     {
-        XMLModule::default_ def = mod->postprocessor().view().vector_view().default_().at(i);
         if (def.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
             m_defaultViewVectorVariable = localVariable(QString::fromStdString(def.id()));
     }
 
     // volume integral
-    for (int i = 0; i < mod->postprocessor().volumeintegrals().volumeintegral().size(); i++)
+    foreach (XMLModule::volumeintegral vol, mod->postprocessor().volumeintegrals().volumeintegral())
     {
-        XMLModule::volumeintegral vol = mod->postprocessor().volumeintegrals().volumeintegral().at(i);
-
         QString expr;
         for (int i = 0; i < vol.expression().size(); i++)
         {

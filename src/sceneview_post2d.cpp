@@ -37,12 +37,14 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/plugin_interface.h"
 
+#include "pythonlabagros.h"
+
 SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon2D(postHermes, parent),
-    m_listContours(-1),
-    m_listVectors(-1),
-    m_listScalarField(-1),
-    m_selectedPoint(Point())
+      m_listContours(-1),
+      m_listVectors(-1),
+      m_listScalarField(-1),
+      m_selectedPoint(Point())
 {
     createActionsPost2D();
 
@@ -488,7 +490,7 @@ void SceneViewPost2D::paintContours()
 
         m_postHermes->linContourView().lock_data();
 
-        double3* tvert = m_postHermes->linContourView().get_vertices();
+        double3* vecVert = m_postHermes->linContourView().get_vertices();
         int3* tris = m_postHermes->linContourView().get_contour_triangles();
 
         // transform variable
@@ -498,12 +500,12 @@ void SceneViewPost2D::paintContours()
         double3* vert = new double3[m_postHermes->linContourView().get_num_vertices()];
         for (int i = 0; i < m_postHermes->linContourView().get_num_vertices(); i++)
         {
-            vert[i][0] = tvert[i][0];
-            vert[i][1] = tvert[i][1];
-            vert[i][2] = tvert[i][2];
+            vert[i][0] = vecVert[i][0];
+            vert[i][1] = vecVert[i][1];
+            vert[i][2] = vecVert[i][2];
 
-            if (vert[i][2] > rangeMax) rangeMax = tvert[i][2];
-            if (vert[i][2] < rangeMin) rangeMin = tvert[i][2];
+            if (vert[i][2] > rangeMax) rangeMax = vecVert[i][2];
+            if (vert[i][2] < rangeMin) rangeMin = vecVert[i][2];
         }
 
         // value range
@@ -670,6 +672,238 @@ void SceneViewPost2D::paintContoursTri(double3* vert, int3* tri, double step)
     }
 }
 
+/*
+static int n_vert(int i) { return (i + 1) % 3; }
+static int p_vert(int i) { return (i + 2) % 3; }
+
+void SceneViewPost2D::paintVectors()
+{
+    if (!Util::problem()->isSolved()) return;
+    if (!m_postHermes->vectorIsPrepared()) return;
+
+    loadProjection2d(true);
+
+    if (m_listVectors == -1)
+    {
+        m_listVectors = glGenLists(1);
+        glNewList(m_listVectors, GL_COMPILE);
+
+        double vectorRangeMin = m_postHermes->vecVectorView().get_min_value();
+        double vectorRangeMax = m_postHermes->vecVectorView().get_max_value();
+
+        // add 20 % margin to the range
+        double vectorRange = vectorRangeMax - vectorRangeMin;
+        vectorRangeMin = vectorRangeMin - 0.2*vectorRange;
+        vectorRangeMax = vectorRangeMax + 0.2*vectorRange;
+
+        // qDebug() << "SceneViewCommon::paintVectors(), min = " << vectorRangeMin << ", max = " << vectorRangeMax;
+
+        double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
+        // if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
+
+        RectPoint rect = Util::scene()->boundingBox();
+        double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
+
+        // paint
+        m_postHermes->vecVectorView().lock_data();
+
+        double4* vecVert = m_postHermes->vecVectorView().get_vertices();
+        int3* vecTris = m_postHermes->vecVectorView().get_triangles();
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        double gx = 0.0;
+        double gy = 0.0;
+
+        bool hexa = false;
+        double gt = gs * sqrt(3.0)/2.0;
+
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_postHermes->vecVectorView().get_num_triangles(); i++)
+        {
+            double miny = 1e100;
+            int idx = -1;
+
+            Point v1(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
+            Point v2(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
+            Point v3(vecVert[vecTris[i][2]][0], vecVert[vecTris[i][2]][1]);
+
+            // double wh = output_height + gt, ww = output_width + gs;
+            // if ((vecVert[vecTris[i][0]][0] < -gs) && (vecVert[vecTris[i][1]][0] < -gs) && (vecVert[vecTris[i][2]][0] < -gs)) continue;
+            // if ((vecVert[vecTris[i][0]][0] >  ww) && (vecVert[vecTris[i][1]][0] >  ww) && (vecVert[vecTris[i][2]][0] >  ww)) continue;
+            // if ((vecVert[vecTris[i][0]][1] < -gt) && (vecVert[vecTris[i][1]][1] < -gt) && (vecVert[vecTris[i][2]][1] < -gt)) continue;
+            // if ((vecVert[vecTris[i][0]][1] >  wh) && (vecVert[vecTris[i][1]][1] >  wh) && (vecVert[vecTris[i][2]][1] >  wh)) continue;
+
+
+            // find vertex with min y-coordinate
+            for (int k = 0; k < 3; k++)
+                if (vecVert[vecTris[i][k]][1] < miny)
+                    miny = vecVert[vecTris[i][idx = k]][1];
+
+            int l1 = vecTris[i][idx];
+            int r1 = vecTris[i][idx];
+            int l2 = vecTris[i][n_vert(idx)];
+            int r2 = vecTris[i][p_vert(idx)];
+
+            // plane of x and y values on triangle
+
+            // double a[2], b[2], c[2], d[2];
+            // for (int n = 0; n < 2; n++)
+            {
+//                 a[n] = (vecVert[l1][1] - vecVert[l2][1])*(vecVert[r1][2 + n] - vecVert[r2][2 + n]) - (vecVert[l1][2 + n] - vecVert[l2][2 + n])*(vecVert[r1][1] - vecVert[r2][1]);
+//                 b[n] = (vecVert[l1][2 + n] - vecVert[l2][2 + n])*(vecVert[r1][0] - vecVert[r2][0]) - (vecVert[l1][0] - vecVert[l2][0])*(vecVert[r1][2 + n] - vecVert[r2][2 + n]);
+//                 c[n] = (vecVert[l1][0] - vecVert[l2][0])*(vecVert[r1][1] - vecVert[r2][1]) - (vecVert[l1][1] - vecVert[l2][1])*(vecVert[r1][0] - vecVert[r2][0]);
+//                 d[n] = -a[n] * vecVert[l1][0] - b[n] * vecVert[l1][1] - c[n] * vecVert[l1][2 + n];
+//                 a[n] /= c[n]; b[n] /= c[n]; d[n] /= c[n];
+            }
+
+            int s = (int) ceil((vecVert[l1][1] - gy)/gt);  // first step
+            double lry = gy + s*gt;
+            bool shift = hexa && (s & 1);
+
+            // if there are two points with min y-coordinate, switch to the next segment
+            if ((vecVert[l1][1] == vecVert[l2][1]) || (vecVert[r1][1] == vecVert[r2][1]))
+            {
+                if (vecVert[l1][1] == vecVert[l2][1])
+                {
+                    l1 = l2;
+                    l2 = r2;
+                }
+                else if (vecVert[r1][1] == vecVert[r2][1])
+                {
+                    r1 = r2;
+                    r2 = l2;
+                }
+            }
+
+            // slope of the left and right segment
+            double ml = (vecVert[l1][0] - vecVert[l2][0])/(vecVert[l1][1] - vecVert[l2][1]);
+            double mr = (vecVert[r1][0] - vecVert[r2][0])/(vecVert[r1][1] - vecVert[r2][1]);
+
+            // x-coordinates of the endpoints of the first line
+            double lx = vecVert[l1][0] + ml * (lry - (vecVert[l1][1]));
+            double rx = vecVert[r1][0] + mr * (lry - (vecVert[r1][1]));
+
+            if (lry < -gt)
+            {
+                int j = (int) floor(-lry/gt);
+                lry += gt * j;
+                lx += j * ml * gt;
+                rx += j * mr * gt;
+            }
+
+            // while we are in triangle
+            while (((lry < vecVert[l2][1]) || (lry < vecVert[r2][1]))) // && (lry < wh))
+            {
+                // while we are in the segment
+                while (((lry <= vecVert[l2][1]) && (lry <= vecVert[r2][1]))) // && (lry < wh))
+                {
+                    double gz = gx;
+                    if (shift) gz -= 0.5*gs;
+                    s = (int) ceil((lx - gz)/gs);
+                    double x = gz + s*gs;
+                    if (hexa) shift = !shift;
+
+                    if (x < -gs)
+                    {
+                        int j = (int) floor(-x/gs);
+                        x += gs * j;
+                    }
+
+                    // go along the line
+                    while ((x >= rx)) // && (x < ww))
+                    {
+                        // plot the arrow
+                        // xval = -a[0]*x - b[0]*lry - d[0];
+                        // yval = -a[1]*x - b[1]*lry - d[1];
+                        // xval = -1.0*x - 1.0*lry - 0;
+                        // yval = -1.0*x - 1.0*lry - 0;
+                        // plot_arrow(x, lry, xval, yval, max, min, gs);
+
+                        // qDebug() << x << lry;
+                        glBegin(GL_POINTS);
+                        glVertex2d(x, lry);
+                        glEnd();
+
+                        // color
+                        if ((Util::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
+                        {
+                            double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
+                            glColor3d(color, color, color);
+                        }
+                        else
+                        {
+                            glColor3d(Util::config()->colorVectors.redF(),
+                                      Util::config()->colorVectors.greenF(),
+                                      Util::config()->colorVectors.blueF());
+                        }
+
+                        // Head for an arrow
+                        double vh1x = point.x + dm/5.0 * cos(angle - M_PI/2.0) + dm * cos(angle);
+                        double vh1y = point.y + dm/5.0 * sin(angle - M_PI/2.0) + dm * sin(angle);
+                        double vh2x = point.x + dm/5.0 * cos(angle + M_PI/2.0) + dm * cos(angle);
+                        double vh2y = point.y + dm/5.0 * sin(angle + M_PI/2.0) + dm * sin(angle);
+                        double vh3x = point.x + dm * cos(angle) + dm * cos(angle);
+                        double vh3y = point.y + dm * sin(angle) + dm * sin(angle);
+                        glVertex2d(vh1x,vh1y); glVertex2d(vh2x,vh2y); glVertex2d(vh3x,vh3y);
+
+                        // Shaft for an arrow
+                        double vs1x = point.x + dm/15.0 * cos(angle + M_PI/2.0) + dm * cos(angle);
+                        double vs1y = point.y + dm/15.0 * sin(angle + M_PI/2.0) + dm * sin(angle);
+                        double vs2x = point.x + dm/15.0 * cos(angle - M_PI/2.0) + dm * cos(angle);
+                        double vs2y = point.y + dm/15.0 * sin(angle - M_PI/2.0) + dm * sin(angle);
+                        double vs3x = vs1x - dm * cos(angle);
+                        double vs3y = vs1y - dm * sin(angle);
+                        double vs4x = vs2x - dm * cos(angle);
+                        double vs4y = vs2y - dm * sin(angle);
+                        glVertex2d(vs1x, vs1y); glVertex2d(vs2x, vs2y); glVertex2d(vs3x, vs3y);
+                        glVertex2d(vs4x, vs4y); glVertex2d(vs3x, vs3y); glVertex2d(vs2x, vs2y);
+
+                        x -= gs;
+                    }
+
+                    // move to the next line
+                    lx += ml*gt;
+                    rx += mr*gt;
+                    lry += gt;
+                }
+                // change segment
+                if (lry >= vecVert[l2][1])
+                {
+                    l1 = l2;
+                    l2 = r2;
+
+                    ml = (vecVert[l1][0] - vecVert[l2][0])/(vecVert[l1][1] - vecVert[l2][1]);
+                    lx = vecVert[l1][0] + ml * (lry - (vecVert[l1][1]));
+                }
+                else
+                {
+                    r1 = r2;
+                    r2 = l2;
+
+                    mr = (vecVert[r1][0] - vecVert[r2][0])/(vecVert[r1][1] - vecVert[r2][1]);
+                    rx = vecVert[r1][0] + mr * (lry - (vecVert[r1][1]));
+                }
+            }
+        }
+        glEnd();
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
+
+        m_postHermes->vecVectorView().unlock_data();
+
+        glEndList();
+
+        glCallList(m_listVectors);
+    }
+    else
+    {
+        glCallList(m_listVectors);
+    }
+}
+*/
+
 void SceneViewPost2D::paintVectors()
 {
     if (!Util::problem()->isSolved()) return;
@@ -809,27 +1043,59 @@ void SceneViewPost2D::paintVectors()
                                       Util::config()->colorVectors.blueF());
                         }
 
-                        // Head for an arrow
-                        double vh1x = point.x + dm/5.0 * cos(angle - M_PI/2.0) + dm * cos(angle);
-                        double vh1y = point.y + dm/5.0 * sin(angle - M_PI/2.0) + dm * sin(angle);
-                        double vh2x = point.x + dm/5.0 * cos(angle + M_PI/2.0) + dm * cos(angle);
-                        double vh2y = point.y + dm/5.0 * sin(angle + M_PI/2.0) + dm * sin(angle);
-                        double vh3x = point.x + dm * cos(angle) + dm * cos(angle);
-                        double vh3y = point.y + dm * sin(angle) + dm * sin(angle);
-                        glVertex2d(vh1x,vh1y); glVertex2d(vh2x,vh2y); glVertex2d(vh3x,vh3y);
+                        // tail
+                        Point shiftCenter(0.0, 0.0);
+                        if (Util::config()->vectorCenter == VectorCenter_Head)
+                            shiftCenter = Point(- 2.0*dm * cos(angle), - 2.0*dm * sin(angle)); // head
+                        if (Util::config()->vectorCenter == VectorCenter_Center)
+                            shiftCenter = Point(- dm * cos(angle), - dm * sin(angle)); // center
 
-                        // Shaft for an arrow
-                        double vs1x = point.x + dm/15.0 * cos(angle + M_PI/2.0) + dm * cos(angle);
-                        double vs1y = point.y + dm/15.0 * sin(angle + M_PI/2.0) + dm * sin(angle);
-                        double vs2x = point.x + dm/15.0 * cos(angle - M_PI/2.0) + dm * cos(angle);
-                        double vs2y = point.y + dm/15.0 * sin(angle - M_PI/2.0) + dm * sin(angle);
-                        double vs3x = vs1x - dm * cos(angle);
-                        double vs3y = vs1y - dm * sin(angle);
-                        double vs4x = vs2x - dm * cos(angle);
-                        double vs4y = vs2y - dm * sin(angle);
-                        glVertex2d(vs1x,vs1y); glVertex2d(vs2x,vs2y); glVertex2d(vs3x,vs3y);
-                        glVertex2d(vs4x,vs4y); glVertex2d(vs3x,vs3y); glVertex2d(vs2x,vs2y);
+                        if (Util::config()->vectorType == VectorType_Arrow)
+                        {
+                            // arrow and shaft
+                            // head for an arrow
+                            double vh1x = point.x + dm/5.0 * cos(angle - M_PI/2.0) + dm * cos(angle) + shiftCenter.x;
+                            double vh1y = point.y + dm/5.0 * sin(angle - M_PI/2.0) + dm * sin(angle) + shiftCenter.y;
+                            double vh2x = point.x + dm/5.0 * cos(angle + M_PI/2.0) + dm * cos(angle) + shiftCenter.x;
+                            double vh2y = point.y + dm/5.0 * sin(angle + M_PI/2.0) + dm * sin(angle) + shiftCenter.y;
+                            double vh3x = point.x + 2.0 * dm * cos(angle) + shiftCenter.x;
+                            double vh3y = point.y + 2.0 * dm * sin(angle) + shiftCenter.y;
 
+                            glVertex2d(vh1x, vh1y);
+                            glVertex2d(vh2x, vh2y);
+                            glVertex2d(vh3x, vh3y);
+
+                            // shaft for an arrow
+                            double vs1x = point.x + dm/15.0 * cos(angle + M_PI/2.0) + dm * cos(angle) + shiftCenter.x;
+                            double vs1y = point.y + dm/15.0 * sin(angle + M_PI/2.0) + dm * sin(angle) + shiftCenter.y;
+                            double vs2x = point.x + dm/15.0 * cos(angle - M_PI/2.0) + dm * cos(angle) + shiftCenter.x;
+                            double vs2y = point.y + dm/15.0 * sin(angle - M_PI/2.0) + dm * sin(angle) + shiftCenter.y;
+                            double vs3x = vs1x - dm * cos(angle);
+                            double vs3y = vs1y - dm * sin(angle);
+                            double vs4x = vs2x - dm * cos(angle);
+                            double vs4y = vs2y - dm * sin(angle);
+
+                            glVertex2d(vs1x, vs1y);
+                            glVertex2d(vs2x, vs2y);
+                            glVertex2d(vs3x, vs3y);
+                            glVertex2d(vs4x, vs4y);
+                            glVertex2d(vs3x, vs3y);
+                            glVertex2d(vs2x, vs2y);
+                        }
+                        else if (Util::config()->vectorType == VectorType_Cone)
+                        {
+                            // cone
+                            double vh1x = point.x + dm/3.5 * cos(angle - M_PI/2.0) + shiftCenter.x;
+                            double vh1y = point.y + dm/3.5 * sin(angle - M_PI/2.0) + shiftCenter.y;
+                            double vh2x = point.x + dm/3.5 * cos(angle + M_PI/2.0) + shiftCenter.x;
+                            double vh2y = point.y + dm/3.5 * sin(angle + M_PI/2.0) + shiftCenter.y;
+                            double vh3x = point.x + 2.0 * dm * cos(angle) + shiftCenter.x;
+                            double vh3y = point.y + 2.0 * dm * sin(angle) + shiftCenter.y;
+
+                            glVertex2d(vh1x, vh1y);
+                            glVertex2d(vh2x, vh2y);
+                            glVertex2d(vh3x, vh3y);
+                        }
                     }
                 }
             }
@@ -1044,7 +1310,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
         Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
-                                                                                                                 Util::config()->scalarVariableComp);
+                                                                                                                       Util::config()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,
                                         fn.toStdString().c_str(),

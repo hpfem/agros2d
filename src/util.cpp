@@ -45,9 +45,12 @@ static QHash<CouplingType, QString> couplingTypeList;
 static QHash<LinearityType, QString> linearityTypeList;
 static QHash<MeshType, QString> meshTypeList;
 static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
+static QHash<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
 static QHash<PaletteType, QString> paletteTypeList;
 static QHash<PaletteQuality, QString> paletteQualityList;
 static QHash<PaletteOrderType, QString> paletteOrderTypeList;
+static QHash<VectorType, QString> vectorTypeList;
+static QHash<VectorCenter, QString> vectorCenterList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -93,6 +96,10 @@ QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values();
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
+QStringList spaceTypeStringKeys() { return spaceTypeList.values(); }
+QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType) { return spaceTypeList[spaceType]; }
+Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType) { return spaceTypeList.key(spaceType); }
+
 QStringList sceneViewPost3DModeStringKeys() { return sceneViewPost3DModeList.values(); }
 QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode) { return sceneViewPost3DModeList[sceneViewPost3DMode]; }
 SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPost3DMode) { return sceneViewPost3DModeList.key(sceneViewPost3DMode); }
@@ -108,6 +115,14 @@ PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { retu
 QStringList paletteOrderTypeStringKeys() { return paletteOrderTypeList.values(); }
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType) { return paletteOrderTypeList.key(paletteType); }
+
+QStringList vectorTypeStringKeys() { return vectorTypeList.values(); }
+QString vectorTypeToStringKey(VectorType vectorType) { return vectorTypeList[vectorType]; }
+VectorType vectorTypeFromStringKey(const QString &vectorType) { return vectorTypeList.key(vectorType); }
+
+QStringList vectorCenterStringKeys() { return vectorCenterList.values(); }
+QString vectorCenterToStringKey(VectorCenter vectorCenter) { return vectorCenterList[vectorCenter]; }
+VectorCenter vectorCenterFromStringKey(const QString &vectorCenter) { return vectorCenterList.key(vectorCenter); }
 
 void initLists()
 {
@@ -183,6 +198,11 @@ void initLists()
     matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
     matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
 
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_H1_SPACE, "h1");
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_HCURL_SPACE, "hcurl");
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_HDIV_SPACE, "hdiv");
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_L2_SPACE, "l2");
+
     // LinearityType
     linearityTypeList.insert(LinearityType_Undefined, "");
     linearityTypeList.insert(LinearityType_Linear, "linear");
@@ -228,6 +248,15 @@ void initLists()
     paletteOrderTypeList.insert(PaletteOrder_HSV, "hsv");
     paletteOrderTypeList.insert(PaletteOrder_BWAsc, "bw_ascending");
     paletteOrderTypeList.insert(PaletteOrder_BWDesc, "bw_descending");
+
+    // VectorType
+    vectorTypeList.insert(VectorType_Arrow, "arrow");
+    vectorTypeList.insert(VectorType_Cone, "cone");
+
+    // VectorCenter
+    vectorCenterList.insert(VectorCenter_Tail, "tail");
+    vectorCenterList.insert(VectorCenter_Head, "head");
+    vectorCenterList.insert(VectorCenter_Center, "center");
 }
 
 QString stringListToString(const QStringList &list)
@@ -503,6 +532,36 @@ QString paletteTypeString(PaletteType paletteType)
         return QObject::tr("B/W descending");
     default:
         std::cerr << "Palette type '" + QString::number(paletteType).toStdString() + "' is not implemented. paletteTypeString(PaletteType paletteType)" << endl;
+        throw;
+    }
+}
+
+QString vectorTypeString(VectorType vectorType)
+{
+    switch (vectorType)
+    {
+    case VectorType_Arrow:
+        return QObject::tr("Arrow");
+    case VectorType_Cone:
+        return QObject::tr("Cone");
+    default:
+        std::cerr << "Vector type '" + QString::number(vectorType).toStdString() + "' is not implemented. vectorTypeString(VectorType vectorType)" << endl;
+        throw;
+    }
+}
+
+QString vectorCenterString(VectorCenter vectorCenter)
+{
+    switch (vectorCenter)
+    {
+    case VectorCenter_Tail:
+        return QObject::tr("Tail");
+    case VectorCenter_Head:
+        return QObject::tr("Head");
+    case VectorCenter_Center:
+        return QObject::tr("Center");
+    default:
+        std::cerr << "Vector center '" + QString::number(vectorCenter).toStdString() + "' is not implemented. vectorCenterString(VectorCenter vectorCenter)" << endl;
         throw;
     }
 }

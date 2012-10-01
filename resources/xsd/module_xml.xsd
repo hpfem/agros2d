@@ -7,6 +7,7 @@
                         <sequence>
                                 <element ref="module:general" maxOccurs="1" />
                                 <element ref="module:constants" maxOccurs="1" />
+                                <element ref="module:spaces" maxOccurs="1" />
                                 <element ref="module:volume" maxOccurs="1" />
                                 <element ref="module:surface" maxOccurs="1" />
                                 <element ref="module:preprocessor" maxOccurs="1" />
@@ -72,6 +73,31 @@
                 <complexType>
                         <attribute name="expression" use="optional" type="string" />
                         <attribute name="id" use="required" type="string" />
+                </complexType>
+        </element>
+
+        <element name="spaces">
+                <complexType>
+                        <sequence>
+                                <element minOccurs="0" maxOccurs="unbounded" ref="module:space" />
+                        </sequence>
+                </complexType>
+        </element>
+
+        <element name="space">
+                <complexType>
+                        <sequence>
+                                <element minOccurs="0" maxOccurs="unbounded" ref="module:space_config" />
+                        </sequence>
+                        <attribute name="analysistype" use="required" type="string" />
+                </complexType>
+        </element>
+
+        <element name="space_config">
+                <complexType>
+                        <attribute name="i" use="required" type="int" />
+                        <attribute name="type" use="required" type="string" />
+                        <attribute name="orderadjust" use="required" type="int" />
                 </complexType>
         </element>
 

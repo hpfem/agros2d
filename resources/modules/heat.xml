@@ -13,6 +13,15 @@
     <module:constant id="SIGMA0" value="5.670373e-08"/>
   </module:constants>
 
+  <module:spaces>
+    <module:space analysistype="steadystate">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+    </module:space>
+    <module:space analysistype="transient">
+      <module:space_config i="1" type="h1" orderadjust="0" />
+    </module:space>
+  </module:spaces>
+
   <module:volume>
     <module:quantity id="heat_conductivity" shortname="he_lambda"/>
     <module:quantity id="heat_volume_heat" shortname="he_p"/>

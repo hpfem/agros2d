@@ -8,12 +8,14 @@
 #include "util.h"
 #include "mainwindow.h"
 
-class MyApplication : public QApplication {
+class ArgosApplication : public QApplication
+{
 public:
-    MyApplication(int& argc, char ** argv) : QApplication(argc, argv) {}
+    ArgosApplication(int& argc, char ** argv) : QApplication(argc, argv) {}
 
     // reimplemented from QApplication so we can throw exceptions in slots
-    virtual bool notify(QObject * receiver, QEvent * event) {
+    virtual bool notify(QObject *receiver, QEvent *event)
+    {
         try
         {
             return QApplication::notify(receiver, event);
@@ -33,7 +35,6 @@ public:
             qCritical() << "Exception thrown: " << e.what();
             throw;
         }
-
         catch (...)
         {
             qCritical() << "Unknown exception thrown";
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
     // register message handler
     // TODO: qInstallMsgHandler(logOutput);
 
-    MyApplication a(argc, argv);
+    ArgosApplication a(argc, argv);
     // QApplication a(argc, argv);
 
 #ifdef VERSION_BETA

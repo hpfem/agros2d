@@ -112,6 +112,8 @@ private:
     QCheckBox *chkVectorColor;
     QSpinBox *txtVectorCount;
     QDoubleSpinBox *txtVectorScale;
+    QComboBox *cmbVectorType;
+    QComboBox *cmbVectorCenter;
 
     // polynomial order
     QCheckBox *chkShowOrderColorbar;

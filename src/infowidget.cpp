@@ -48,22 +48,11 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     // problem information
     webView = new QWebView(this);
-
-    // dialog buttons
-    btnAdaptiveError = new QPushButton(tr("Adaptive error"));
-    connect(btnAdaptiveError, SIGNAL(clicked()), SLOT(doAdaptiveError()));
-    btnDOFs = new QPushButton(tr("Number of DOFs"));
-    connect(btnDOFs, SIGNAL(clicked()), SLOT(doAdaptiveDOFs()));
-
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
-    layoutButtons->addWidget(btnAdaptiveError);
-    layoutButtons->addWidget(btnDOFs);
+    connect(webView, SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
 
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
     // layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(webView);
-    layoutMain->addLayout(layoutButtons);
 
     setLayout(layoutMain);
 
@@ -71,7 +60,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
     connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+    connect(Util::problem(), SIGNAL(couplingsChanged()), this, SLOT(refresh()));
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
     connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(refresh()));
@@ -85,9 +74,6 @@ InfoWidget::~InfoWidget()
 
 void InfoWidget::refresh()
 {
-    btnAdaptiveError->setEnabled(Util::problem()->isSolved());
-    btnDOFs->setEnabled(Util::problem()->isSolved());
-
     QTimer::singleShot(0, this, SLOT(showInfo()));
 }
 
@@ -161,6 +147,7 @@ void InfoWidget::showInfo()
             ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD_SECTION");
 
             field->SetValue("PHYSICAL_FIELD_LABEL", fieldInfo->name().toStdString());
+            field->SetValue("PHYSICAL_FIELD_ID", fieldInfo->fieldId().toStdString());
 
             field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
             field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());
@@ -185,7 +172,7 @@ void InfoWidget::showInfo()
                 field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
                 field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps()).toStdString());
                 field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString() + "%");
+                field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString() + " %");
                 field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
             }
 
@@ -197,7 +184,7 @@ void InfoWidget::showInfo()
                 field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
                 field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->nonlinearSteps()).toStdString());
                 field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString() + "%");
+                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString() + " %");
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }
 
@@ -215,7 +202,6 @@ void InfoWidget::showInfo()
                 solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
                 solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
                 DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces())));
-                error = msa.adaptiveError();
             }
 
             if (Util::problem()->isMeshed())
@@ -302,9 +288,67 @@ void InfoWidget::showInfo()
     }
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
-    webView->setHtml(QString::fromStdString(info));
 
-    // setFocus();
+    // setHtml(...) doesn't work
+    // webView->setHtml(QString::fromStdString(info));
+
+    // load(...) works
+    writeStringContent(tempProblemDir() + "/info.html", QString::fromStdString(info));
+    webView->load(tempProblemDir() + "/info.html");
+}
+
+
+void InfoWidget::finishLoading(bool ok)
+{
+    webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.js"));
+    webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.flot.js"));
+    QString toolTip = "function showTooltip(x, y, contents) { $('<div id=\"tooltip\">' + contents + '</div>').css( { position: 'absolute', display: 'none', top: y + 5, left: x + 5, border: '1px solid #fdd', padding: '2px', 'background-color': '#fee', opacity: 0.80}).appendTo(\"body\").fadeIn(200); }";
+    webView->page()->mainFrame()->evaluateJavaScript(toolTip);
+
+    // adaptive error
+    if (Util::problem()->isSolved())
+    {
+        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+        {
+            if (fieldInfo->adaptivityType() != AdaptivityType_None)
+            {
+                int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
+                int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
+
+                QString dataDOFs = "[";
+                QString dataError = "[";
+                for (int i = 0; i < adaptiveSteps; i++)
+                {
+                    MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
+
+                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces()))));
+                    // dataError += QString("[%1, %2], ").arg(i+1).arg(msa.adaptiveError());
+                }
+                dataDOFs += "]";
+                dataError += "]";
+
+                // error
+                QString prescribedError = QString("[[1, %1], [%2, %3]]").
+                        arg(fieldInfo->adaptivityTolerance()).
+                        arg(adaptiveSteps).
+                        arg(fieldInfo->adaptivityTolerance());
+
+                // chart error vs. steps
+                QString commandError = QString("$(function () { $.plot($(\"#chart_error_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } }, { data: %3, color: \"rgb(240, 0, 0)\" } ], { grid: { hoverable : true } });})").
+                        arg(fieldInfo->fieldId()).
+                        arg(dataError).
+                        arg(prescribedError);
+
+                // chart DOFs vs. steps
+                QString commandDOFs = QString("$(function () { $.plot($(\"#chart_dofs_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });})").
+                        arg(fieldInfo->fieldId()).
+                        arg(dataDOFs);
+
+                webView->page()->mainFrame()->evaluateJavaScript(commandError);
+                webView->page()->mainFrame()->evaluateJavaScript(commandDOFs);
+            }
+        }
+    }
 }
 
 QString InfoWidget::generateGeometry()
@@ -369,128 +413,3 @@ QString InfoWidget::generateGeometry()
 
     return str;
 }
-
-void InfoWidget::doAdaptiveError()
-{
-    // FIXME: fieldInfo
-    FieldInfo *fieldInfo = Util::scene()->activeViewField();
-
-    int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
-    int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
-
-    double *xval = new double[adaptiveSteps];
-    double *yval = new double[adaptiveSteps];
-
-    for (int i = 0; i < adaptiveSteps; i++)
-    {
-        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
-
-        xval[i] = i+1;
-        yval[i] = msa.adaptiveError();
-    }
-
-    double xerrorval[2] = { 1, adaptiveSteps };
-    double yerrorval[2] = { fieldInfo->adaptivityTolerance(), fieldInfo->adaptivityTolerance() };
-
-    ChartInfoWidget *chartDialog = new ChartInfoWidget(this);
-    chartDialog->setXLabel(tr("Error (%)"));
-    chartDialog->setYLabel(tr("DOFs (-)"));
-    chartDialog->setDataCurve(xval, yval, adaptiveSteps);
-    chartDialog->setDataCurve(xerrorval, yerrorval, 2, Qt::red);
-
-    chartDialog->exec();
-
-    delete [] xval;
-    delete [] yval;
-}
-
-void InfoWidget::doAdaptiveDOFs()
-{
-    // FIXME: fieldInfo
-    FieldInfo *fieldInfo = Util::scene()->activeViewField();
-
-    int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
-    int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
-
-    double *xval = new double[adaptiveSteps];
-    double *yval = new double[adaptiveSteps];
-
-    for (int i = 0; i < adaptiveSteps; i++)
-    {
-        MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
-
-        xval[i] = i+1;
-        yval[i] = Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces())));
-    }
-
-    ChartInfoWidget *chartDialog = new ChartInfoWidget(this);
-    chartDialog->setXLabel(tr("Steps (-)"));
-    chartDialog->setYLabel(tr("DOFs (-)"));
-    chartDialog->setDataCurve(xval, yval, adaptiveSteps);
-
-    chartDialog->exec();
-
-    delete [] xval;
-    delete [] yval;
-}
-
-ChartInfoWidget::ChartInfoWidget(QWidget *parent)
-{
-    setAttribute(Qt::WA_DeleteOnClose);
-
-    createControls();
-}
-
-void ChartInfoWidget::createControls()
-{
-    chart = new Chart(this, true);
-
-    // dialog buttons
-    QPushButton *btnSaveImage = new QPushButton(tr("Save image"));
-    connect(btnSaveImage, SIGNAL(clicked()), this, SLOT(saveImage()));
-    // TODO: add export data
-    // QPushButton *btnSaveData = new QPushButton(tr("Save data"));
-    // connect(btnSaveData, SIGNAL(clicked()), this, SLOT(saveData()));
-    QPushButton *btnClose = new QPushButton(tr("Close"));
-    connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
-
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
-    layoutButtons->addWidget(btnSaveImage);
-    // layoutButtons->addWidget(btnSaveData);
-    layoutButtons->addWidget(btnClose);
-
-    QVBoxLayout *layoutChart = new QVBoxLayout();
-    layoutChart->addWidget(chart);
-    layoutChart->addLayout(layoutButtons);
-
-    setLayout(layoutChart);
-}
-
-void ChartInfoWidget::setDataCurve(double *x, double *y, int size, QColor color)
-{
-    // curves
-    QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setRenderHint(QwtPlotItem::RenderAntialiased);
-    curve->setPen(QPen(color));
-    curve->setCurveAttribute(QwtPlotCurve::Inverted);
-    curve->setYAxis(QwtPlot::yLeft);
-    curve->attach(chart);
-    curve->setSamples(x, y, size);
-}
-
-void ChartInfoWidget::setXLabel(const QString &xlabel)
-{
-    chart->setAxisTitle(QwtPlot::xBottom, xlabel);
-}
-
-void ChartInfoWidget::setYLabel(const QString &ylabel)
-{
-    chart->setAxisTitle(QwtPlot::yLeft, ylabel);
-}
-
-void ChartInfoWidget::saveImage()
-{
-    chart->saveImage();
-}
-

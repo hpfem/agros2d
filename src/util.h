@@ -425,6 +425,19 @@ enum SolutionMode
     SolutionMode_Finer  // used to choose reference if exists, normal otherwise
 };
 
+enum VectorType
+{
+    VectorType_Arrow,
+    VectorType_Cone
+};
+
+enum VectorCenter
+{
+    VectorCenter_Tail,
+    VectorCenter_Head,
+    VectorCenter_Center
+};
+
 QString stringListToString(const QStringList &list);
 
 // keys
@@ -493,6 +506,11 @@ QStringList matrixSolverTypeStringKeys();
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
+// space type
+QStringList spaceTypeStringKeys();
+QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType);
+Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType);
+
 // linearity type
 QString linearityTypeString(LinearityType linearityType);
 QStringList linearityTypeStringKeys();
@@ -521,5 +539,17 @@ QString paletteQualityString(PaletteQuality paletteQuality);
 QStringList paletteOrderTypeStringKeys();
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
 PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
+
+// vector type
+QString vectorTypeString(VectorType vectorType);
+QStringList vectorTypeStringKeys();
+QString vectorTypeToStringKey(VectorType vectorType);
+VectorType vectorTypeFromStringKey(const QString &vectorType);
+
+// vector center
+QString vectorCenterString(VectorCenter vectorCenter);
+QStringList vectorCenterStringKeys();
+QString vectorCenterToStringKey(VectorCenter vectorCenter);
+VectorCenter vectorCenterFromStringKey(const QString &vectorCenter);
 
 #endif // UTIL_H

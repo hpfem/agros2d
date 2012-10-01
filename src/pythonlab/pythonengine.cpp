@@ -199,7 +199,7 @@ void PythonEngine::deleteUserModules()
     PyErr_Clear();
 }
 
-ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
+ScriptResult PythonEngine::runScript(const QString &script, const QString &fileName)
 {
     m_isRunning = true;
     m_stdOut = "";
@@ -241,7 +241,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     return scriptResult;
 }
 
-ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bool returnValue)
+ExpressionResult PythonEngine::runExpression(const QString &expression, bool returnValue)
 {
     runPythonHeader();
 

@@ -310,7 +310,7 @@ SceneNode *Scene::addNode(SceneNode *node)
     }
 
     nodes->add(node);
-    if (!scriptIsRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 
     checkNodeConnect(node);
     checkNode(node);
@@ -384,7 +384,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     }
 
     edges->add(edge);
-    if (!scriptIsRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 
     return edge;
 }
@@ -427,7 +427,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     }
 
     labels->add(label);
-    if (!scriptIsRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 
     return label;
 }
@@ -451,7 +451,7 @@ SceneLabel *Scene::getLabel(const Point &point)
 void Scene::addBoundary(SceneBoundary *boundary)
 {
     boundaries->add(boundary);
-    if (!scriptIsRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 }
 
 void Scene::removeBoundary(SceneBoundary *boundary)
@@ -478,7 +478,7 @@ SceneBoundary *Scene::getBoundary(FieldInfo *field, const QString &name)
 void Scene::addMaterial(SceneMaterial *material)
 {
     this->materials->add(material);
-    if (!scriptIsRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 }
 
 
@@ -581,9 +581,9 @@ void Scene::clear()
     materials->clear();
 
     // none edge
-    addBoundary(new SceneBoundaryNone());
+    boundaries->add(new SceneBoundaryNone());
     // none label
-    addMaterial(new SceneMaterialNone());
+    materials->add(new SceneMaterialNone());
 
     blockSignals(false);
 
@@ -1600,7 +1600,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     */
 
     // run script
-    runPythonScript(Util::problem()->config()->startupscript());
+    currentPythonEngineAgros()->runScript(Util::problem()->config()->startupscript());
 
     return ErrorResult();
 }

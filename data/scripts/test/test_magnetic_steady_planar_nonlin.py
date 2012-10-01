@@ -9,8 +9,10 @@ problem.matrix_solver = "umfpack"
 problem.time_step = 1.0
 problem.time_total = 1.0
 
-# palette quality
-agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+# disable view
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
 
 # fields
 magnetic = agros2d.field("magnetic")

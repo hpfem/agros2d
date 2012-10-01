@@ -27,25 +27,6 @@
 
 class SceneViewPreprocessor;
 
-class ChartInfoWidget : public QDialog
-{
-    Q_OBJECT
-public:
-    ChartInfoWidget(QWidget *parent);
-
-    void createControls();
-    void setDataCurve(double *x, double *y, int size, QColor color = Qt::blue);
-
-    void setXLabel(const QString &xlabel);
-    void setYLabel(const QString &ylabel);
-
-private:
-    Chart *chart;
-
-private slots:
-    void saveImage();
-};
-
 class InfoWidget : public QWidget
 {
     Q_OBJECT
@@ -60,21 +41,13 @@ public slots:
 private:
     SceneViewPreprocessor *m_sceneViewGeometry;
 
-    QPushButton *btnAdaptiveError;
-    QPushButton *btnDOFs;
-
     QWebView *webView;
-
-    QDialog *createChart(const QString &xlabel, const QString &ylabel,
-                         double *x1, double *y1, int size1,
-                         double *x2, double *y2, int size2);
 
 private slots:
     void showInfo();
     QString generateGeometry();
 
-    void doAdaptiveError();
-    void doAdaptiveDOFs();
+    void finishLoading(bool ok);
 };
 
 #endif // SCENEINFOVIEW_H

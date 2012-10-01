@@ -103,6 +103,8 @@ public:
     bool vectorColor;
     int vectorCount;
     double vectorScale;
+    VectorType vectorType;
+    VectorCenter vectorCenter;
 
     // order view
     bool showOrderView;

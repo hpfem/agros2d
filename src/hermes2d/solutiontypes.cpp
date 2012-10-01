@@ -63,9 +63,6 @@ SolutionArray<Scalar>::~SolutionArray()
 template <typename Scalar>
 MultiSolutionArray<Scalar>::MultiSolutionArray()
 {
-    m_assemblyTime = 0;
-    m_solveTime = 0;
-    m_adaptiveError = 100;
 }
 
 template <typename Scalar>
@@ -147,7 +144,7 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
         Space<Scalar>* oldSpace = solutionArray.space.data();
         Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
         newMesh->copy(oldSpace->get_mesh());
-        Space<Scalar>* newSpace = oldSpace->dup(newMesh);
+        Space<Scalar>* newSpace = oldSpace->duplicate(newMesh);
         msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(newSpace), 0));
     }
 
