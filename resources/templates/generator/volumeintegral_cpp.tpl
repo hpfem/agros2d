@@ -46,18 +46,25 @@ void {{CLASS}}VolumeIntegral::calculate()
         // update time functions
         if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+            QList<double> timeLevels = Util::solutionStore()->timeLevels(m_fieldInfo);
             m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
         }
 
         // solutions
+        // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
+        int adaptivityStep = Util::scene()->activeAdaptivityStep();
+        SolutionMode solutionMode = Util::scene()->activeSolutionType();
+        int timeStep = Util::solutionStore()->nearestTimeStep(m_fieldInfo, Util::scene()->activeTimeStep());
+        if (timeStep != Util::scene()->activeTimeStep())
+        {
+            adaptivityStep = Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
+            solutionMode = SolutionMode_Normal;
+        }
+        FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
+
         Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
         for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
-        {
-            // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-            FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
             sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
-        }
 
         double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
         double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];

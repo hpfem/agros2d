@@ -300,14 +300,12 @@ void InfoWidget::showInfo()
 
 void InfoWidget::finishLoading(bool ok)
 {
-    webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.js"));
-    webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.flot.js"));
-    QString toolTip = "function showTooltip(x, y, contents) { $('<div id=\"tooltip\">' + contents + '</div>').css( { position: 'absolute', display: 'none', top: y + 5, left: x + 5, border: '1px solid #fdd', padding: '2px', 'background-color': '#fee', opacity: 0.80}).appendTo(\"body\").fadeIn(200); }";
-    webView->page()->mainFrame()->evaluateJavaScript(toolTip);
-
     // adaptive error
     if (Util::problem()->isSolved())
     {
+        webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.js"));
+        webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.flot.js"));
+
         foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {
             if (fieldInfo->adaptivityType() != AdaptivityType_None)
