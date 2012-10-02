@@ -80,7 +80,7 @@ QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId)
     std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId.toStdString() + ".xml").c_str());
     XMLModule::module *mod = module_xsd.get();
 
-    for (int i = 0; i < mod->general().analyses().analysis().size(); i++)
+    for (unsigned int i = 0; i < mod->general().analyses().analysis().size(); i++)
     {
         XMLModule::analysis an = mod->general().analyses().analysis().at(i);
 
@@ -388,7 +388,7 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
 
     m_isScalar = (lv.type() == "scalar");
 
-    for (int i = 0; i < lv.expression().size(); i++)
+    for (unsigned int i = 0; i < lv.expression().size(); i++)
     {
         XMLModule::expression exp = lv.expression().at(i);
         if (exp.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
@@ -429,7 +429,7 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     m_name = QString::fromStdString(bdy.name());
 
     // variables
-    for (int i = 0; i < bdy.quantity().size(); i++)
+    for (unsigned int i = 0; i < bdy.quantity().size(); i++)
     {
         XMLModule::quantity qty = bdy.quantity().at(i);
 
@@ -466,20 +466,20 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
     }
 
     // weakform
-    for (int i = 0; i < bdy.matrix_form().size(); i++)
+    for (unsigned int i = 0; i < bdy.matrix_form().size(); i++)
     {
         XMLModule::matrix_form form = bdy.matrix_form().at(i);
         m_wfMatrixSurface.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
     }
 
-    for (int i = 0; i < bdy.vector_form().size(); i++)
+    for (unsigned int i = 0; i < bdy.vector_form().size(); i++)
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
         m_wfVectorSurface.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
     }
 
     // essential
-    for (int i = 0; i < bdy.essential_form().size(); i++)
+    for (unsigned int i = 0; i < bdy.essential_form().size(); i++)
     {
         XMLModule::essential_form form = bdy.essential_form().at(i);
         m_essential.append(new FormInfo(QString::fromStdString(form.id()), form.i()));
@@ -545,7 +545,7 @@ Module::DialogRow::DialogRow(XMLModule::quantity qty)
 // dialog UI
 Module::DialogUI::DialogUI(XMLModule::gui ui)
 {
-    for (int i = 0; i < ui.group().size(); i++)
+    for (unsigned int i = 0; i < ui.group().size(); i++)
     {
         XMLModule::group grp = ui.group().at(i);
 
@@ -553,7 +553,7 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
         QString name = (grp.name().present()) ? QString::fromStdString(grp.name().get()) : "";
 
         QList<Module::DialogRow> materials;
-        for (int i = 0; i < grp.quantity().size(); i++)
+        for (unsigned int i = 0; i < grp.quantity().size(); i++)
         {
             XMLModule::quantity quant = grp.quantity().at(i);
 
@@ -637,20 +637,20 @@ void Module::BasicModule::read(const QString &filename)
 
     // surface weakforms
     QList<Module::BoundaryTypeVariable> boundaryTypeVariables;
-    for (int i = 0; i < mod->surface().quantity().size(); i++)
+    for (unsigned int i = 0; i < mod->surface().quantity().size(); i++)
     {
         XMLModule::quantity quant = mod->surface().quantity().at(i);
 
         // TODO: (Franta)
-        for (int i = 0; i < mod->preprocessor().gui().size(); i++)
+        for (unsigned int i = 0; i < mod->preprocessor().gui().size(); i++)
         {
             XMLModule::gui *ui = &mod->preprocessor().gui().at(i);
             if (ui->type() == "surface")
             {
-                for (int i = 0; i < ui->group().size(); i++)
+                for (unsigned int i = 0; i < ui->group().size(); i++)
                 {
                     XMLModule::group *grp = &ui->group().at(i);
-                    for (int i = 0; i < grp->quantity().size(); i++)
+                    for (unsigned int i = 0; i < grp->quantity().size(); i++)
                     {
                         XMLModule::quantity *quant_ui = &grp->quantity().at(i);
                         if ((quant_ui->id() == quant.id()) && quant_ui->default_().present())
@@ -662,13 +662,13 @@ void Module::BasicModule::read(const QString &filename)
         }
     }
 
-    for (int i = 0; i < mod->surface().weakforms_surface().weakform_surface().size(); i++)
+    for (unsigned int i = 0; i < mod->surface().weakforms_surface().weakform_surface().size(); i++)
     {
         XMLModule::weakform_surface wf = mod->surface().weakforms_surface().weakform_surface().at(i);
 
         if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
         {
-            for (int i = 0; i < wf.boundary().size(); i++)
+            for (unsigned int i = 0; i < wf.boundary().size(); i++)
             {
                 XMLModule::boundary bdy = wf.boundary().at(i);
                 m_boundaryTypes.append(new Module::BoundaryType(boundaryTypeVariables, bdy, m_coordinateType));
@@ -689,20 +689,20 @@ void Module::BasicModule::read(const QString &filename)
 
     // volumetric weakforms
     QList<Module::MaterialTypeVariable> materialTypeVariables;
-    for (int i = 0; i < mod->volume().quantity().size(); i++)
+    for (unsigned int i = 0; i < mod->volume().quantity().size(); i++)
     {
         XMLModule::quantity quant = mod->volume().quantity().at(i);
 
         // TODO: (Franta)
-        for (int i = 0; i < mod->preprocessor().gui().size(); i++)
+        for (unsigned int i = 0; i < mod->preprocessor().gui().size(); i++)
         {
             XMLModule::gui *ui = &mod->preprocessor().gui().at(i);
             if (ui->type() == "volume")
             {
-                for (int i = 0; i < ui->group().size(); i++)
+                for (unsigned int i = 0; i < ui->group().size(); i++)
                 {
                     XMLModule::group *grp = &ui->group().at(i);
-                    for (int i = 0; i < grp->quantity().size(); i++)
+                    for (unsigned int i = 0; i < grp->quantity().size(); i++)
                     {
                         XMLModule::quantity *quant_ui = &grp->quantity().at(i);
                         if ((quant_ui->id() == quant.id()) && quant_ui->default_().present())
@@ -715,13 +715,13 @@ void Module::BasicModule::read(const QString &filename)
         materialTypeVariables.append(Module::MaterialTypeVariable(quant, m_coordinateType));
     }
 
-    for (int i = 0; i < mod->volume().weakforms_volume().weakform_volume().size(); i++)
+    for (unsigned int i = 0; i < mod->volume().weakforms_volume().weakform_volume().size(); i++)
     {
         XMLModule::weakform_volume wf = mod->volume().weakforms_volume().weakform_volume().at(i);
 
         if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
         {
-            for (int i = 0; i < wf.quantity().size(); i++)
+            for (unsigned int i = 0; i < wf.quantity().size(); i++)
             {
                 XMLModule::quantity qty = wf.quantity().at(i);
 
@@ -749,13 +749,13 @@ void Module::BasicModule::read(const QString &filename)
             materialTypeVariables.clear();
 
             // weakform
-            for (int i = 0; i < wf.matrix_form().size(); i++)
+            for (unsigned int i = 0; i < wf.matrix_form().size(); i++)
             {
                 XMLModule::matrix_form form = wf.matrix_form().at(i);
                 m_wfMatrixVolumeExpression.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
             }
 
-            for (int i = 0; i < wf.vector_form().size(); i++)
+            for (unsigned int i = 0; i < wf.vector_form().size(); i++)
             {
                 XMLModule::vector_form form = wf.vector_form().at(i);
                 m_wfVectorVolumeExpression.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
@@ -764,12 +764,12 @@ void Module::BasicModule::read(const QString &filename)
     }
 
     // local variables
-    for (int i = 0; i < mod->postprocessor().localvariables().localvariable().size(); i++)
+    for (unsigned int i = 0; i < mod->postprocessor().localvariables().localvariable().size(); i++)
     {
         XMLModule::localvariable lv = mod->postprocessor().localvariables().localvariable().at(i);
 
         // HACK
-        for (int i = 0; i < lv.expression().size(); i++)
+        for (unsigned int i = 0; i < lv.expression().size(); i++)
         {
             XMLModule::expression expr = lv.expression().at(i);
             if (expr.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
@@ -808,7 +808,7 @@ void Module::BasicModule::read(const QString &filename)
     foreach (XMLModule::volumeintegral vol, mod->postprocessor().volumeintegrals().volumeintegral())
     {
         QString expr;
-        for (int i = 0; i < vol.expression().size(); i++)
+        for (unsigned int i = 0; i < vol.expression().size(); i++)
         {
             XMLModule::expression exp = vol.expression().at(i);
             if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
@@ -838,12 +838,12 @@ void Module::BasicModule::read(const QString &filename)
     }
 
     // surface integral
-    for (int i = 0; i < mod->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
+    for (unsigned int i = 0; i < mod->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
     {
         XMLModule::surfaceintegral sur = mod->postprocessor().surfaceintegrals().surfaceintegral().at(i);
 
         QString expr;
-        for (int i = 0; i < sur.expression().size(); i++)
+        for (unsigned int i = 0; i < sur.expression().size(); i++)
         {
             XMLModule::expression exp = sur.expression().at(i);
             if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
@@ -874,7 +874,7 @@ void Module::BasicModule::read(const QString &filename)
 
     // force
     XMLModule::force force = mod->postprocessor().force();
-    for (int i = 0; i < force.expression().size(); i++)
+    for (unsigned int i = 0; i < force.expression().size(); i++)
     {
         XMLModule::expression exp = force.expression().at(i);
         if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
@@ -884,7 +884,7 @@ void Module::BasicModule::read(const QString &filename)
     }
 
     // preprocessor
-    for (int i = 0; i < mod->preprocessor().gui().size(); i++)
+    for (unsigned int i = 0; i < mod->preprocessor().gui().size(); i++)
     {
         XMLModule::gui ui = mod->preprocessor().gui().at(i);
         if (ui.type() == "volume")
