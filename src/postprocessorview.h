@@ -106,6 +106,7 @@ private:
     // contours
     QComboBox *cmbPost2DContourVariable;
     QSpinBox *txtContoursCount;
+    QDoubleSpinBox *txtContourWidth;
 
     // vector field
     QCheckBox *chkVectorProportional;

@@ -82,6 +82,7 @@ public:
     bool showContourView;
     QString contourVariable;
     int contoursCount;
+    double contourWidth;
 
     // scalar view
     bool showScalarView;

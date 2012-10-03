@@ -134,6 +134,7 @@ void PostprocessorWidget::loadAdvanced()
 
     // contours
     txtContoursCount->setValue(Util::config()->contoursCount);
+    txtContourWidth->setValue(Util::config()->contourWidth);
 
     // vector field
     chkVectorProportional->setChecked(Util::config()->vectorProportional);
@@ -239,6 +240,7 @@ void PostprocessorWidget::saveAdvanced()
 
     // contours
     Util::config()->contoursCount = txtContoursCount->value();
+    Util::config()->contourWidth = txtContourWidth->value();
 
     // vector field
     Util::config()->vectorProportional = chkVectorProportional->isChecked();
@@ -726,13 +728,20 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     txtContoursCount = new QSpinBox(this);
     txtContoursCount->setMinimum(CONTOURSCOUNTMIN);
     txtContoursCount->setMaximum(CONTOURSCOUNTMAX);
+    txtContourWidth = new QDoubleSpinBox(this);
+    txtContourWidth->setMinimum(CONTOURSWIDTHMIN);
+    txtContourWidth->setMaximum(CONTOURSWIDTHMAX);
+    txtContourWidth->setSingleStep(0.1);
 
     QGridLayout *gridLayoutContours = new QGridLayout();
     gridLayoutContours->setMargin(0);
     gridLayoutContours->setColumnMinimumWidth(0, minWidth);
     gridLayoutContours->setColumnStretch(1, 1);
-    gridLayoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
+    gridLayoutContours->addWidget(new QLabel(tr("Number of contours:")), 0, 0);
     gridLayoutContours->addWidget(txtContoursCount, 0, 1);
+    gridLayoutContours->addWidget(new QLabel(tr("Contour width:")), 1, 0);
+    gridLayoutContours->addWidget(txtContourWidth, 1, 1);
+
 
     QWidget *contourWidget = new QWidget();
     contourWidget->setLayout(gridLayoutContours);
@@ -764,7 +773,7 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     gridLayoutVectors->setMargin(0);
     gridLayoutVectors->setColumnMinimumWidth(0, minWidth);
     gridLayoutVectors->setColumnStretch(1, 1);
-    gridLayoutVectors->addWidget(new QLabel(tr("Vectors:")), 0, 0);
+    gridLayoutVectors->addWidget(new QLabel(tr("Number of vectors:")), 0, 0);
     gridLayoutVectors->addWidget(txtVectorCount, 0, 1);
     gridLayoutVectors->addWidget(chkVectorProportional, 0, 2);
     gridLayoutVectors->addWidget(new QLabel(tr("Scale:")), 1, 0);
