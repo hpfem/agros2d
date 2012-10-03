@@ -102,43 +102,43 @@ class PyProblem
         void refresh();
 
         // name
-        inline const char *getName() { return Util::problem()->config()->name().toStdString().c_str(); }
+        inline const char *getName() const { return Util::problem()->config()->name().toStdString().c_str(); }
         void setName(const char *name) { Util::problem()->config()->setName(QString(name)); }
 
         // coordinate type
-        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Util::problem()->config()->coordinateType()).toStdString().c_str(); }
+        inline const char *getCoordinateType() const { return coordinateTypeToStringKey(Util::problem()->config()->coordinateType()).toStdString().c_str(); }
         void setCoordinateType(const char *coordinateType);
 
         // mesh type
-        inline const char *getMeshType() { return meshTypeToStringKey(Util::problem()->config()->meshType()).toStdString().c_str(); }
+        inline const char *getMeshType() const { return meshTypeToStringKey(Util::problem()->config()->meshType()).toStdString().c_str(); }
         void setMeshType(const char *meshType);
 
         // matrix solver
-        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()).toStdString().c_str(); }
+        inline const char *getMatrixSolver() const { return matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()).toStdString().c_str(); }
         void setMatrixSolver(const char *matrixSolver);
 
         // frequency
-        inline const double getFrequency() { return Util::problem()->config()->frequency(); }
+        inline double getFrequency() const { return Util::problem()->config()->frequency(); }
         void setFrequency(const double frequency);
 
         // time step method
-        inline const char *getTimeStepMethod() { return timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod()).toStdString().c_str(); }
+        inline const char *getTimeStepMethod() const { return timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod()).toStdString().c_str(); }
         void setTimeStepMethod(const char *timeStepMethod);
 
         // time method order
-        const int getTimeMethodOrder() { return Util::problem()->config()->timeOrder(); }
+        inline int getTimeMethodOrder() const { return Util::problem()->config()->timeOrder(); }
         void setTimeMethodOrder(const int timeMethodOrder);
 
         // time method tolerance
-        const double getTimeMethodTolerance() { return Util::problem()->config()->timeMethodTolerance().number(); }
+        inline double getTimeMethodTolerance() const { return Util::problem()->config()->timeMethodTolerance().number(); }
         void setTimeMethodTolerance(const double timeMethodTolerance);
 
         // time total
-        const double getTimeTotal() { return Util::problem()->config()->timeTotal().number(); }
+        inline double getTimeTotal() const { return Util::problem()->config()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
 
         // time steps
-        inline const int getNumConstantTimeSteps() { return Util::problem()->config()->numConstantTimeSteps(); }
+        inline int getNumConstantTimeSteps() const { return Util::problem()->config()->numConstantTimeSteps(); }
         void setNumConstantTimeSteps(const int timeSteps);
 
         // coupling
@@ -161,50 +161,50 @@ class PyField
         FieldInfo *fieldInfo();
 
         // field id
-        inline const char *getFieldId() { return m_fieldInfo->fieldId().toStdString().c_str(); }
+        inline const char *getFieldId() const { return m_fieldInfo->fieldId().toStdString().c_str(); }
 
         // analysis type
-        inline const char *getAnalysisType() { return analysisTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
+        inline const char *getAnalysisType() const { return analysisTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
         void setAnalysisType(const char *analysisType);
 
         // number of refinements
-        inline const int getNumberOfRefinements() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements(); }
+        inline int getNumberOfRefinements() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements(); }
         void setNumberOfRefinements(const int numberOfRefinements);
 
         // polynomial order
-        inline const int getPolynomialOrder() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder(); }
+        inline int getPolynomialOrder() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder(); }
         void setPolynomialOrder(const int polynomialOrder);
 
         // linearity type
-        inline const char *getLinearityType() { return linearityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType()).toStdString().c_str(); }
+        inline const char *getLinearityType() const { return linearityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType()).toStdString().c_str(); }
         void setLinearityType(const char *linearityType);
 
         // nonlinear tolerance
-        inline const double getNonlinearTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance(); }
+        inline double getNonlinearTolerance() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance(); }
         void setNonlinearTolerance(const double nonlinearTolerance);
 
         // nonlinear steps
-        inline const int getNonlinearSteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps(); }
+        inline int getNonlinearSteps() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps(); }
         void setNonlinearSteps(const int nonlinearSteps);
 
         // adaptivity type
-        inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
+        inline const char *getAdaptivityType() const { return adaptivityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
         void setAdaptivityType(const char *adaptivityType);
 
         // adaptivity tolerance
-        inline const double getAdaptivityTolerance() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance(); }
+        inline double getAdaptivityTolerance() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance(); }
         void setAdaptivityTolerance(const double adaptivityTolerance);
 
         // adaptivity steps
-        inline const int getAdaptivitySteps() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps(); }
+        inline int getAdaptivitySteps() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps(); }
         void setAdaptivitySteps(const int adaptivitySteps);
 
         // initial condition
-        inline const double getInitialCondition() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
+        inline double getInitialCondition() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
         void setInitialCondition(const double initialCondition);
 
         // time steps skip
-        inline const int getTimeSkip() { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->timeSkip().number(); }
+        inline int getTimeSkip() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->timeSkip().number(); }
         void setTimeSkip(const double timeSkip);
 
         // boundaries
