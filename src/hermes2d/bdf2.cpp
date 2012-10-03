@@ -69,13 +69,22 @@ Hermes::Ord BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::ExtData<Hermes::O
     return coef / m_actualTimeStep;
 }
 
+class Monomial
+{
+public:
+    Monomial(double t0, double t1) : m_t0(t0), m_t1(t1) {}
+    double operator()(int exp1, int exp2) { return pow(m_t0, exp1) * pow(m_t1, exp2); }
+private:
+    double m_t0, m_t1;
+};
+
 void BDF2ATable::recalculate()
 {
     if(m_n == 1)
     {
         m_alpha[0] = 1.;
         m_alpha[1] = -1.;
-        m_delta = -1./2.;
+        m_delta = -3./2.;
         m_gamma[0] = 1.;
         m_gamma[1] = 0.;
     }
@@ -84,7 +93,7 @@ void BDF2ATable::recalculate()
         m_alpha[0] = (2*th[0] + 1) / (th[0] + 1);
         m_alpha[1] = -th[0] - 1;
         m_alpha[2] = th[0] * th[0] / (th[0] + 1);
-        m_delta = -th[0] * (2*th[0] + 1) / (3*th[0] + 2);
+        m_delta = -2 * (th[0]*th[0] + 2*th[0] + 1) / (3*th[0] + 2);
         m_gamma[0] = 1.;
         m_gamma[1] = 0.;
     }
@@ -96,7 +105,12 @@ void BDF2ATable::recalculate()
         m_alpha[1] = -(t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1) / (1+t1);
         m_alpha[2] = (t1 + t0*t1 + 1) * t0*t0 / (1+t0);
         m_alpha[3] =  -(1+t0) * t0*t0 * t1*t1*t1 / (t0*t1*t1 + t0*t1 + 2*t1 + 1 + t1*t1);
-        m_delta = 0.; // todo:
+
+        Monomial m(t0, t1);
+
+        m_delta = -(3*m(4,2) + 10*m(3,2) + 13*m(2,2) + 8*m(1,2) + 2*m(0,2) + 5*m(3,1) + 13*m(2,1) + 12*m(1,1) + 4*m(0,1) + 2*m(2,0) + 4*m(1,0) + 2)/
+                (4*m(2,1) + 9*m(1,1) + 3*m(1,0) + 4*m(2,2) + 6*m(1,2) + 2 + 4*m(0,1) + 2*m(0,2));
+
         m_gamma[0] = 1.;
         m_gamma[1] = 0.;
     }
@@ -110,7 +124,7 @@ void BDF2BTable::recalculate()
     {
         m_alpha[0] = 1.;
         m_alpha[1] = -1.;
-        m_delta = 3./2.;
+        m_delta = -1./2.;
         m_gamma[0] = 2./3.;
         m_gamma[1] = 1./3.;
     }
@@ -119,7 +133,7 @@ void BDF2BTable::recalculate()
         m_alpha[0] = 1.;
         m_alpha[1] = -1.;
         m_alpha[2] = 0.;
-        m_delta = 2 * (th[0]*th[0] + 2*th[0] + 1) / (3*th[0] + 2);
+        m_delta = -th[0] * (2*th[0] + 1) / (3*th[0] + 2);
         m_gamma[0] = 1./2.;
         m_gamma[1] = 1./2.;
     }
@@ -131,7 +145,12 @@ void BDF2BTable::recalculate()
         m_alpha[1] = -0.5 * (2 + 2*t1 + t0*t0*t1) / (1 + t1);
         m_alpha[2] = 0.5 * t0*t0*t0 * t1 / (1+t0);
         m_alpha[3] = -0.5 * t0*t0*t0 * t1*t1*t1 / (t0*t1*t1 + t0*t1 + 2*t1 + 1 + t1*t1);
-        m_delta = 0.; // todo:
+
+        Monomial m(t0, t1);
+
+        m_delta = -t0 * (3*m(3,2) + 10*m(2,2) + 9*m(1,2) + 2*m(0,1) + 5*m(2,1) + 9*m(1,1) + 3*t1 + 2*t0 + 1)/
+                (4*m(2,1) + 9*m(1,1) + 3*m(1,0) + 4*m(2,2) + 6*m(1,2) + 2 + 4*m(0,1) + 2*m(0,2));
+
         m_gamma[0] = 1./2.;
         m_gamma[1] = 1./2.;
     }
@@ -175,7 +194,7 @@ void BDF2Table::test()
     for(int i = 0; i < 5; i++)
         constantSteps.append(1.);
 
-    int numStepsArray[] = {100, 1000, 10000};//, 100000};
+    int numStepsArray[] = {100, 1000, 10000, 100000};
 
     for(int order = 1; order <=3; order++)
     {
@@ -210,7 +229,7 @@ void BDF2Table::test()
                 actTime += step;
                 double valA = tableA.testCalcValue(step, vals, df(actTime), df(actTime - step));
                 double valB = tableB.testCalcValue(step, vals, df(actTime), df(actTime - step));
-                double val = tableA.delta() * valA + tableB.delta() * valB;
+                double val = tableB.delta() * valA - tableA.delta() * valB;
                 vals.push_back(val);
 
                 valA = tableA.testCalcValue(step, valsA, df(actTime), df(actTime - step));
@@ -228,186 +247,3 @@ void BDF2Table::test()
         }
     }
 }
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-// TIME DISCRETISATION - MATRIX
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-//template <typename Scalar>
-//CustomMatrixFormVol_time<Scalar>::CustomMatrixFormVol_time(unsigned int i, unsigned int j, std::string area,
-//                                                           Hermes::Hermes2D::SymFlag sym, Material* materialSource, BDF2Table* table)
-//    : MatrixFormVolAgros<Scalar>(i, j, area, sym), m_materialSource(materialSource), m_sym(sym), m_table(table)
-//{
-//    he_lambda = m_materialSource->value("heat_conductivity");
-//    he_p = m_materialSource->value("heat_volume_heat");
-//    he_vx = m_materialSource->value("heat_velocity_x");
-//    he_vy = m_materialSource->value("heat_velocity_y");
-//    he_va = m_materialSource->value("heat_velocity_angular");
-//    he_rho = m_materialSource->value("heat_density");
-//    he_cp = m_materialSource->value("heat_specific_heat");
-//}
-
-
-//template <typename Scalar>
-//Scalar CustomMatrixFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
-//                                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
-//{
-//    double result = 0;
-
-//    for (int i = 0; i < n; i++)
-//    {
-//        result += wt[i] * m_table->matrixFormCoefficient() * he_rho.value(0)*he_cp.value(0) * u->val[i] * v->val[i];
-//    }
-//    result /= Util::problem()->actualTimeStepLength();
-
-//    return result;
-//}
-
-
-
-//template <typename Scalar>
-//Hermes::Ord CustomMatrixFormVol_time<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
-//                                             Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
-//{
-//    Hermes::Ord result(20);
-////    for (int i = 0; i < n; i++)
-////    {
-////       result += wt[i] * (10);
-////    }
-//    return result;
-//}
-
-//template <typename Scalar>
-//CustomMatrixFormVol_time<Scalar>* CustomMatrixFormVol_time<Scalar>::clone()
-//{
-//    return new CustomMatrixFormVol_time(this->i, this->j, this->areas[0], this->m_sym, this->m_materialSource, this->m_table);
-//}
-
-///////////////////////////////////////////////////////////////////////////////////////
-//// TIME DISCRETISATION - VECTOR
-///////////////////////////////////////////////////////////////////////////////////////
-
-
-//template <typename Scalar>
-//CustomVectorFormVol_time<Scalar>::CustomVectorFormVol_time(unsigned int i, unsigned int j,
-//                                                 std::string area,
-//                                                 Material* materialSource, BDF2Table *table)
-//    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), j(j), m_table(table)
-//{
-// he_lambda = m_materialSource->value("heat_conductivity");
-// he_p = m_materialSource->value("heat_volume_heat");
-// he_vx = m_materialSource->value("heat_velocity_x");
-// he_vy = m_materialSource->value("heat_velocity_y");
-// he_va = m_materialSource->value("heat_velocity_angular");
-// he_rho = m_materialSource->value("heat_density");
-// he_cp = m_materialSource->value("heat_specific_heat");
-
-//}
-
-//template <typename Scalar>
-//Scalar CustomVectorFormVol_time<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-//                                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
-//{
-//    double result = 0;
-
-//    for (int i = 0; i < n; i++)
-//    {
-//        result += wt[i] * m_table->vectorFormCoefficient(ext, i) * he_rho.value(0)*he_cp.value(0) * v->val[i];
-//    }
-//    result /= Util::problem()->actualTimeStepLength();
-
-//    return result;
-//}
-
-
-//template <typename Scalar>
-//Hermes::Ord CustomVectorFormVol_time<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-//                                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
-//{
-//    //variable_definition
-//    Hermes::Ord result(20);
-////    for (int i = 0; i < n; i++)
-////    {
-////       result += wt[i] * (1*(u_ext[this->j]->dx[i]*v->dx[i]+u_ext[this->j]->dy[i]*v->dy[i])-1*v->val[i]+1*1*((1-e->y[i]*1)*u_ext[this->j]->dx[i]+(1+e->x[i]*1)*u_ext[this->j]->dy[i])*v->val[i]);
-////    }
-//    return result;
-//}
-
-//template <typename Scalar>
-//CustomVectorFormVol_time<Scalar>* CustomVectorFormVol_time<Scalar>::clone()
-//{
-//    return new CustomVectorFormVol_time(this->i, this->j, this->areas[0],
-//                                         this->m_materialSource, m_table);
-//}
-
-
-///////////////////////////////////////////////////////////////////////////////////////
-//// TIME RESIDUAL
-///////////////////////////////////////////////////////////////////////////////////////
-
-
-//template <typename Scalar>
-//CustomVectorFormVol_time_residual<Scalar>::CustomVectorFormVol_time_residual(unsigned int i, unsigned int j,
-//                                                 std::string area,
-//                                                 Material* materialSource, BDF2Table* table)
-//    : Hermes::Hermes2D::VectorFormVol<Scalar>(i, area), m_materialSource(materialSource), j(j), m_table(table)
-//{
-// he_lambda = m_materialSource->value("heat_conductivity");
-// he_p = m_materialSource->value("heat_volume_heat");
-// he_vx = m_materialSource->value("heat_velocity_x");
-// he_vy = m_materialSource->value("heat_velocity_y");
-// he_va = m_materialSource->value("heat_velocity_angular");
-// he_rho = m_materialSource->value("heat_density");
-// he_cp = m_materialSource->value("heat_specific_heat");
-
-//}
-
-
-
-
-
-//template <typename Scalar>
-//Scalar CustomVectorFormVol_time_residual<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
-//                                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::ExtData<Scalar> *ext) const
-//{
-//    double result = 0;
-
-//    for (int i = 0; i < n; i++)
-//    {
-//        result += wt[i] * m_table->residualCoefficient() * (he_lambda.value(ext->fn[0]->val[i])*(ext->fn[0]->dx[i]*v->dx[i]+ext->fn[0]->dy[i]*v->dy[i])-he_p.number()*v->val[i]+he_rho.value(ext->fn[0]->val[i])*he_cp.value(ext->fn[0]->val[i])*((he_vx.number()-e->y[i]*he_va.number())*ext->fn[0]->dx[i]+(he_vy.number()+e->x[i]*he_va.number())*ext->fn[0]->dy[i])*v->val[i]);
-//    }
-//    return result;
-//}
-
-
-
-
-
-//template <typename Scalar>
-//Hermes::Ord CustomVectorFormVol_time_residual<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
-//                                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::ExtData<Hermes::Ord> *ext) const
-//{
-//    //variable_definition
-//    Hermes::Ord result(20);
-////    for (int i = 0; i < n; i++)
-////    {
-////       result += wt[i] * (1*(u_ext[this->j]->dx[i]*v->dx[i]+u_ext[this->j]->dy[i]*v->dy[i])-1*v->val[i]+1*1*((1-e->y[i]*1)*u_ext[this->j]->dx[i]+(1+e->x[i]*1)*u_ext[this->j]->dy[i])*v->val[i]);
-////    }
-//    return result;
-//}
-
-
-
-//template <typename Scalar>
-//CustomVectorFormVol_time_residual<Scalar>* CustomVectorFormVol_time_residual<Scalar>::clone()
-//{
-//    return new CustomVectorFormVol_time_residual(this->i, this->j, this->areas[0],
-//                                         this->m_materialSource, this->m_table);
-//}
-
-
-//template class CustomMatrixFormVol_time<double>;
-//template class CustomVectorFormVol_time<double>;
-//template class CustomVectorFormVol_time_residual<double>;

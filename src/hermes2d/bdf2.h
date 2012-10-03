@@ -44,13 +44,10 @@ public:
 
     static void test();
 
-protected:
-    double* alpha() { assert(m_calculated); return m_alpha; }
-
-    // coefficient of linear combination that combines solutions of A and B method to produce final solution
-    // has different meaning than in diploma thesis - here we ADD solutions (instead of substract), multiplied by corresponding delta
     double delta() { assert(m_calculated); return m_delta; }
 
+protected:
+    double* alpha() { assert(m_calculated); return m_alpha; }
     double* gamma() { assert(m_calculated); return m_gamma; }
 
     double testCalcValue(double step, QList<double> values, double fVal, double fPrevVal);

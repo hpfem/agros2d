@@ -554,8 +554,10 @@ void Problem::solveAction()
 
                 // todo: it should be estimated in the first step as well
                 // todo: what if more blocks are transient? (take minimum? )
-                if (isTransient() && (config()->timeStepMethod() == TimeStepMethod_BDF2) && (actualTimeStep() >=1))
-                    nextTimeStepLength = solver->estimateTimeStepLenght(actualTimeStep());
+
+                // todo: space + time adaptivity
+                if (isTransient() && (actualTimeStep() >=1))
+                    nextTimeStepLength = solver->estimateTimeStepLenghtOrCombine(actualTimeStep(), 0);
 
             }
         }

@@ -45,8 +45,8 @@ template <typename Scalar>
 class VectorStore
 {
 public:
-    VectorStore() : m_vector(NULL), m_length(0) {}
-    ~VectorStore() { if(m_vector) delete[] m_vector;}
+    VectorStore();
+    ~VectorStore();
 
     Scalar* createNew(int length);
     int getLastLength() const { return m_length; }
@@ -69,7 +69,7 @@ public:
     void createInitialSpace(int timeStep);
 
     // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
-    double estimateTimeStepLenght(int timeStep);
+    double estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep);
 
     void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);

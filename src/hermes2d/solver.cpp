@@ -101,6 +101,20 @@ void processSolverOutput(const char* aha)
     Util::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
 }
 
+
+template <typename Scalar>
+VectorStore<Scalar>::~VectorStore()
+{
+    if(m_vector)
+        delete[] m_vector;
+}
+
+template <typename Scalar>
+VectorStore<Scalar>::VectorStore()  : m_vector(NULL), m_length(0)
+{
+
+}
+
 template <typename Scalar>
 Scalar* VectorStore<Scalar>::createNew(int length)
 {
@@ -108,6 +122,7 @@ Scalar* VectorStore<Scalar>::createNew(int length)
         delete[] m_vector;
     m_vector = new Scalar[length];
     m_length = length;
+    return m_vector;
 }
 
 template <typename Scalar>
@@ -507,7 +522,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
 
     MultiSolutionArray<Scalar> multiSolutionArray =
-            Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));;
+            Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
 
     // to be used as starting vector for the Newton solver
     MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
@@ -545,8 +560,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     wf.registerForms(bdf2Table);
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
-    Scalar* coefVec = new Scalar[ndof];
-    //Scalar* coefVec = m_lastVector.createNew(ndof);
+    //Scalar* coefVec = new Scalar[ndof];
+    Scalar* coefVec = m_lastVector.createNew(ndof);
 
     solveOneProblem(&wf, coefVec, multiSolutionArray, previousTSMultiSolutionArray.size() != 0 ? &previousTSMultiSolutionArray : NULL);
     //Solution<Scalar>::vector_to_solutions(coefVec, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
@@ -559,30 +574,31 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     solutionID.timeStep = timeStep;
     solutionID.adaptivityStep = adaptivityStep;
 
-    // todo : Maybe delete coefVec.
-
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
     delete bdf2Table;
 }
 
 template <typename Scalar>
-double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
-{
-    MultiSolutionArray<Scalar> multiSolutionArray =
-            Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));;
-
+double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep)
+{    
     TimeStepMethod method = Util::problem()->config()->timeStepMethod();
+    if((method == TimeStepMethod_Fixed) || (method == TimeStepMethod_FixedBDF2B))
+        return Util::problem()->config()->constantTimeStep();
+
+    MultiSolutionArray<Scalar> multiSolutionArray =
+            Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
+
     BDF2Table* bdf2Table = NULL;
     if(method == TimeStepMethod_BDF2AOrder)
     {
-        bdf2Table = new BDF2BTable();
+        bdf2Table = new BDF2ATable();
         // todo: vyresit prvni krok. Celkove!
         bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder() - 1));
     }
     else
     {
-        bdf2Table = new BDF2ATable();
+        bdf2Table = new BDF2BTable();
         bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
     }
     bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
@@ -602,12 +618,24 @@ double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
 
     double nextTimeStepLength = Util::problem()->config()->constantTimeStep();
 
+    // just to find delta for error estimation and solution combination
+    BDF2ATable bdf2ATable;
+    bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
+    bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
+
     if((method == TimeStepMethod_BDF2) || (method == TimeStepMethod_BDF2Combine) || (method == TimeStepMethod_BDF2AOrder))
     {
-        double error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
-
-        double absError = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
-        double norm = Global<Scalar>::calc_norms(desmartize(multiSolutionArray.solutions()));
+        double error;
+        if(method == TimeStepMethod_BDF2AOrder)
+        {
+            error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+        }
+        else
+        {
+            // todo: for BDF2 and BDF2Combine the error should be calculated using different formula
+            // todo: not simple difference, but delta*sol1 + delta bar * sol2
+            error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+        }
 
         // todo: if error too big, refuse step and recalculate
 
@@ -616,12 +644,31 @@ double Solver<Scalar>::estimateTimeStepLenght(int timeStep)
                                  1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
 
         Util::log()->printDebug(m_solverID, QString("time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
-                                arg(absError / norm).
+                                arg(error).
                                 arg(Util::problem()->actualTimeStepLength()).
                                 arg(nextTimeStepLength).
                                 arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()*100.));
 
     }
+
+    if((method == TimeStepMethod_FixedCombine) || (method == TimeStepMethod_BDF2Combine))
+    {
+        cout << QString("deltaA %1, deltaB %2\n").arg(bdf2ATable.delta()).arg(bdf2Table->delta()).toStdString() << endl;
+        for(int i = 0; i < ndof; i++)
+            coefVec2[i] = 10 * m_lastVector.getLast()[i];
+//            coefVec2[i] = bdf2Table->delta() * m_lastVector.getLast()[i] - bdf2ATable.delta() * coefVec2[i];
+
+        Solution<Scalar>::vector_to_solutions(coefVec2, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
+        Util::solutionStore()->removeSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
+
+        BlockSolutionID solutionID;
+        solutionID.group = m_block;
+        solutionID.timeStep = timeStep;
+        solutionID.adaptivityStep = adaptivityStep;
+
+        Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
+    }
+
    // todo : Maybe delete coefVec2.
 
    // cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
@@ -842,4 +889,5 @@ void Solver<Scalar>::solveInitialTimeStep()
 //}
 
 
+template class VectorStore<double>;
 template class Solver<double>;
