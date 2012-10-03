@@ -50,7 +50,7 @@ const QHash<QString, Value> Marker::values() const
 
 void Marker::evaluate(QString id, double time)
 {
-    m_values[id].evaluate(time);
+    m_values[id].evaluate(time, false);
 }
 
 bool Marker::evaluateAllVariables()
