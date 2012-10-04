@@ -35,55 +35,55 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
        {{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
             (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}))
-        if (fabs({{EXPRESSION_CHECK}}) > 0.0)
+        if (fabs((double) ({{EXPRESSION_CHECK}})) > 0.0)
             return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
-	{{/VOLUME_MATRIX_SOURCE}}
+    {{/VOLUME_MATRIX_SOURCE}}
 
     return NULL;
 }
 
 VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)
 {
-	{{#VOLUME_VECTOR_SOURCE}}
+    {{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}})))
-        if (fabs({{EXPRESSION_CHECK}}) > 0.0)
+        if (fabs((double) ({{EXPRESSION_CHECK}})) > 0.0)
             return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
-	{{/VOLUME_VECTOR_SOURCE}}
+    {{/VOLUME_VECTOR_SOURCE}}
 
     return NULL;
 }
 
 MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary)
 {
-	{{#SURFACE_MATRIX_SOURCE}}
+    {{#SURFACE_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
         return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
-	{{/SURFACE_MATRIX_SOURCE}}
+    {{/SURFACE_MATRIX_SOURCE}}
 
     return NULL;
 }
 
 VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary)
 {
-	{{#SURFACE_VECTOR_SOURCE}}
+    {{#SURFACE_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
         return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
-	{{/SURFACE_VECTOR_SOURCE}}
+    {{/SURFACE_VECTOR_SOURCE}}
 
     return NULL;
 }
 
 ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::Mesh *mesh)
 {
-	{{#EXACT_SOURCE}}
+    {{#EXACT_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}})))
         return new {{FUNCTION_NAME}}<double>(mesh);
-	{{/EXACT_SOURCE}}
-	
+    {{/EXACT_SOURCE}}
+
     return NULL;
 }
 

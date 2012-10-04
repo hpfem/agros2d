@@ -1,10 +1,10 @@
-QT += core gui network xml webkit xmlpatterns
-
-OBJECTS_DIR = ../build
-MOC_DIR = ../build
+QT += core opengl svg gui network xml webkit xmlpatterns
 
 TEMPLATE = lib
 CONFIG += plugin
+
+OBJECTS_DIR = ../build
+MOC_DIR = ../build
 
 INCLUDEPATH += ../../hermes2d/include \
     ../../hermes_common/include \
@@ -24,10 +24,32 @@ linux-g++|linux-g++-64|linux-g++-32 {
 }
 
 win32-msvc2010 {
-    LIBS += -L../../hermes2d/debug/build/lib
-    LIBS += -L../../hermes2d/release/build/lib
-    LIBS += -L../../lib/debug/build/lib
-    LIBS += -L../../lib/release/build/lib
+    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+    QMAKE_CXXFLAGS_RELEASE += -MD
+    QMAKE_CXXFLAGS_DEBUG += -MDd
+
+    INCLUDEPATH += c:/hpfem/hermes/dependencies/include
+    INCLUDEPATH += d:/hpfem/hermes/dependencies/include
+
+    LIBS += -L../../libs
+    LIBS += -L../..
+
+    LIBS += -Lc:/hpfem/hermes/dependencies/lib
+    LIBS += -Ld:/hpfem/hermes/dependencies/lib
+    LIBS += -Lc:/Python27/libs
+    LIBS += -L../../../qwt-6.0.1/lib
+
+    LIBS += -lvcomp
+    LIBS += -lqwt
+    LIBS += -lpython27
+    LIBS += -llibumfpack
+    LIBS += -llibamd
+    LIBS += -lpthreadVCE2
+    LIBS += -lxerces-c_static_3
+    LIBS += -ladvapi32
+    LIBS += -lws2_32
 }
 
 # interface
@@ -48,5 +70,5 @@ SOURCES      += {{ID}}_surfaceintegral.cpp
 HEADERS      += {{ID}}_volumeintegral.h
 SOURCES      += {{ID}}_volumeintegral.cpp
 
-TARGET        = $$qtLibraryTarget(agros2d_plugin_{{ID}})
-DESTDIR       = ../../libs
+TARGET = $$qtLibraryTarget(agros2d_plugin_{{ID}})
+DESTDIR = ../../libs
