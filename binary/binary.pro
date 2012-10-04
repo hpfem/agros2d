@@ -1,5 +1,4 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
-TARGET = ../agros2d
 OBJECTS_DIR = build
 MOC_DIR = build
 TEMPLATE = app
@@ -16,11 +15,20 @@ RESOURCES = ../src/src.qrc
 
 SOURCES += main.cpp
 
+linux-g++|linux-g++-64|linux-g++-32 {
+    TARGET = ../agros2d
+}
+
 macx-g++ {
     ICON += resources/images/agros2d.icns
     QMAKE_INFO_PLIST  += resources/Info.plist
     #target.path = /Applications
     #INSTALLS += target
 }
+
+win32-msvc2010 {
+    TARGET = ../../agros2d
+}
+
 
 include(../agros2d.pri)
