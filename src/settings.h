@@ -69,6 +69,7 @@ private:
     QCheckBox *chkDeformScalar;
     QCheckBox *chkDeformContour;
     QCheckBox *chkDeformVector;
+    QCheckBox *chkView3DBoundingBox;
 
     // colors
     ColorButton *colorBackground;

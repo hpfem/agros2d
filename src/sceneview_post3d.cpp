@@ -57,10 +57,10 @@ static void computeNormal(double p0x, double p0y, double p0z,
 
 SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon3D(postHermes, parent),
-    m_listScalarField3D(-1),
-    m_listScalarField3DSolid(-1),
-    m_listParticleTracing(-1),
-    m_listModel(-1)
+      m_listScalarField3D(-1),
+      m_listScalarField3DSolid(-1),
+      m_listParticleTracing(-1),
+      m_listModel(-1)
 {
     createActionsPost3D();
 
@@ -293,36 +293,40 @@ void SceneViewPost3D::paintScalarField3D()
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // bounding box
-        double borderXY = max * 0.05;
-        double borderZ = (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) * 0.05;
-        glBegin(GL_LINES);
-        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
+        if (Util::config()->scalarView3DBoundingBox)
+        {
+            double borderXY = max * 0.05;
+            double borderZ = (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) * 0.05;
 
-        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glBegin(GL_LINES);
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
 
-        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
-        glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
-        glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
-        glEnd();
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) - borderZ);
+            glEnd();
+        }
 
         // geometry - edges
         foreach (SceneEdge *edge, Util::scene()->edges->items())
@@ -1182,7 +1186,7 @@ void SceneViewPost3D::paintParticleTracing()
     else
     {
         glCallList(m_listParticleTracing);
-    }    
+    }
 }
 
 void SceneViewPost3D::refresh()
@@ -1190,13 +1194,11 @@ void SceneViewPost3D::refresh()
     if (m_listScalarField3D != -1) glDeleteLists(m_listScalarField3D, 1);
     if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
     if (m_listModel != -1) glDeleteLists(m_listModel, 1);
-    if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
     if (m_listParticleTracing != -1) glDeleteLists(m_listParticleTracing, 1);
 
     m_listScalarField3D = -1;
     m_listScalarField3DSolid = -1;
     m_listModel = -1;
-    m_listScalarField3DSolid = -1;
     m_listParticleTracing = -1;
 
     // actions

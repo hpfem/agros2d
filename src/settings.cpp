@@ -70,6 +70,7 @@ void SettingsWidget::load()
     txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
     chkView3DBackground->setChecked(Util::config()->scalarView3DBackground);
     txtView3DHeight->setValue(Util::config()->scalarView3DHeight);
+    chkView3DBoundingBox->setChecked(Util::config()->scalarView3DBoundingBox);
 
     // deform shape
     chkDeformScalar->setChecked(Util::config()->deformScalar);
@@ -114,6 +115,7 @@ void SettingsWidget::save()
     Util::config()->scalarView3DAngle = txtView3DAngle->value();
     Util::config()->scalarView3DBackground = chkView3DBackground->isChecked();
     Util::config()->scalarView3DHeight = txtView3DHeight->value();
+    Util::config()->scalarView3DBoundingBox = chkView3DBoundingBox->isChecked();
 
     // deform shape
     Util::config()->deformScalar = chkDeformScalar->isChecked();
@@ -273,6 +275,7 @@ QWidget *SettingsWidget::controlsAdvanced()
     txtView3DHeight->setSingleStep(0.1);
     txtView3DHeight->setMinimum(0.2);
     txtView3DHeight->setMaximum(10.0);
+    chkView3DBoundingBox = new QCheckBox(tr("Bounding box"), this);
 
     QGridLayout *layout3D = new QGridLayout();
     layout3D->addWidget(new QLabel(tr("Angle:")), 0, 1);
@@ -281,6 +284,7 @@ QWidget *SettingsWidget::controlsAdvanced()
     layout3D->addWidget(new QLabel(tr("Height:")), 1, 1);
     layout3D->addWidget(txtView3DHeight, 1, 2);
     layout3D->addWidget(chkView3DBackground, 1, 3);
+    layout3D->addWidget(chkView3DBoundingBox, 2, 1, 1, 2);
 
     QGroupBox *grp3D = new QGroupBox(tr("3D view"));
     grp3D->setLayout(layout3D);

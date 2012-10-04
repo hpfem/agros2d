@@ -121,6 +121,7 @@ void Config::loadWorkspace()
     scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
     scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
     scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
+    scalarView3DBoundingBox = settings.value("SceneViewSettings/ScalarView3DBoundingBox", true).toBool();
 
     // deformations
     deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
@@ -318,6 +319,7 @@ void Config::saveWorkspace()
     settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
     settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
     settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
+    settings.setValue("SceneViewSettings/ScalarView3DBoundingBox", scalarView3DBoundingBox);
 
     // deformations
     settings.setValue("SceneViewSettings/DeformScalar", deformScalar);

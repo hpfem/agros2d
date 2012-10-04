@@ -123,6 +123,7 @@ public:
     double scalarView3DAngle;
     bool scalarView3DBackground;
     double scalarView3DHeight;
+    bool scalarView3DBoundingBox;
 
     // palette
     bool showScalarColorBar;
