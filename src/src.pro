@@ -1,6 +1,5 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 
-TARGET = ../libs/agros2d
 OBJECTS_DIR = build
 MOC_DIR = build
 
@@ -228,7 +227,7 @@ LIBS += -lagros2d_3rdparty
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
 
-    QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter -Wno-reorder
+    QMAKE_CXXFLAGS += -Wno-unused-variable
 }
 
 macx-g++ {
@@ -256,17 +255,20 @@ macx-g++ {
 
 win32-msvc2010 {
     CONFIG += staticlib
+    TARGET = ../../libs/agros2d
+
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
-	QMAKE_CXXFLAGS_RELEASE += -MD
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+    QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
-    #DEFINES += XERCES_STATIC_LIBRARY
-	DEFINES += AGROS
+    DEFINES += XERCES_STATIC_LIBRARY
+    DEFINES += AGROS
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 
-	LIBS += -L../hermes2d/libs
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../3rdparty/ctemplate/windows

@@ -1,5 +1,4 @@
 QT -= GUI
-TARGET = ../libs/agros2d_3rdparty
 OBJECTS_DIR = build
 TEMPLATE = lib
 
@@ -26,20 +25,25 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     ctemplate/template_string.cc
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    TARGET = ../libs/agros2d_3rdparty
+
     INCLUDEPATH += ctemplate \
             ctemplate/unix \
             .
 }
 
 win32-msvc2010 {
-	QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
-	QMAKE_CXXFLAGS_RELEASE += -MD
+    CONFIG += staticlib
+    TARGET = ../../libs/agros2d_3rdparty
+
+    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+    QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
-	
-	LIBS += -Ld:/hpfem/hermes/dependencies/lib
-	LIBS += -lblas
+
     INCLUDEPATH += ctemplate
-	INCLUDEPATH += ctemplate/windows
+    INCLUDEPATH += ctemplate/windows
 
     SOURCES += ctemplate/windows/port.cc
 }

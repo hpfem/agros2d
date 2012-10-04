@@ -59,7 +59,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 
     Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<double>::quads[Hermes::Hermes2D::Function<double>::cur_quad];
     int np = quad->get_num_points(order, this->get_active_element()->get_mode());
-    node = Hermes::Hermes2D::Function<double>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
+    Hermes::Hermes2D::Function<double>::Node* node = Hermes::Hermes2D::Function<double>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
     double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
     double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
