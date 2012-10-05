@@ -57,9 +57,12 @@ protected:
 
 private:
     // gl lists
-    int m_listInitialMesh;
-    int m_listSolutionMesh;
     int m_listOrder;
+
+    QVector<QVector2D> m_arrayInitialMesh;
+    QVector<QVector2D> m_arraySolutionMesh;
+    QVector<QVector2D> m_arrayOrderMesh;
+    QVector<QVector3D> m_arrayOrderMeshColor;
 
     void createActionsMesh();
 

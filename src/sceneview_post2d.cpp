@@ -374,7 +374,7 @@ void SceneViewPost2D::paintScalarField()
 
     loadProjection2d(true);
 
-    if (m_arrayScalarField.isEmpty())
+    if (m_listScalarField == -1)
     {
         paletteFilter(textureScalar());
         paletteCreate(textureScalar());
@@ -1293,9 +1293,8 @@ void SceneViewPost2D::clearGLLists()
     m_listScalarField = -1;
     m_listParticleTracing = -1;
 
-
-    m_arrayScalarField.clear();
-    m_arrayScalarFieldColors.clear();
+    // m_arrayScalarField.clear();
+    // m_arrayScalarFieldColors.clear();
 }
 
 void SceneViewPost2D::refresh()

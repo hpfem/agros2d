@@ -101,8 +101,8 @@ private:
     int m_listScalarField;
     int m_listParticleTracing;
 
-    QVector<QVector2D> m_arrayScalarField;
-    QVector<QVector3D> m_arrayScalarFieldColors;
+    // QVector<QVector2D> m_arrayScalarField;
+    // QVector<QVector3D> m_arrayScalarFieldColors;
 
     void createActionsPost2D();
 

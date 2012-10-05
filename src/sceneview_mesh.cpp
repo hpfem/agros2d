@@ -33,9 +33,7 @@
 
 SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon2D(postHermes, parent),
-    m_listInitialMesh(-1),
-    m_listSolutionMesh(-1),
-    m_listOrder(-1)
+      m_listOrder(-1)
 {
     createActionsMesh();
 
@@ -65,13 +63,13 @@ void SceneViewMesh::createActionsMesh()
 
 void SceneViewMesh::refresh()
 {
-    if (m_listInitialMesh != -1) glDeleteLists(m_listInitialMesh, 1);
-    if (m_listSolutionMesh != -1) glDeleteLists(m_listSolutionMesh, 1);
     if (m_listOrder != -1) glDeleteLists(m_listOrder, 1);
-
-    m_listInitialMesh = -1;
-    m_listSolutionMesh = -1;
     m_listOrder = -1;
+
+    m_arrayInitialMesh.clear();
+    m_arraySolutionMesh.clear();
+    m_arrayOrderMesh.clear();
+    m_arrayOrderMeshColor.clear();
 
     setControls();
 
@@ -163,6 +161,8 @@ void SceneViewMesh::paintGL()
     // grid
     if (Util::config()->showGrid) paintGrid();
 
+    QTime time;
+
     // view
     if (Util::problem()->isSolved())
     {
@@ -234,73 +234,76 @@ void SceneViewMesh::paintInitialMesh()
     if (!Util::problem()->isMeshed()) return;
     if (!m_postHermes->initialMeshIsPrepared()) return;
 
-    loadProjection2d(true);
-
-    m_postHermes->linInitialMeshView().lock_data();
-
-    double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
-    int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
-    int3* litTris = m_postHermes->linInitialMeshView().get_triangles();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(Util::config()->colorInitialMesh.redF(),
-              Util::config()->colorInitialMesh.greenF(),
-              Util::config()->colorInitialMesh.blueF());
-    glLineWidth(1.3);
-
-    // edges
-    glBegin(GL_LINES);
-    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+    if (m_arrayInitialMesh.isEmpty())
     {
-        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
-        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
-    }
-    glEnd();
-    /*
-    // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
-    {
-        glVertex2d(linVert[litTris[i][0]][0], linVert[litTris[i][0]][1]);
-        glVertex2d(linVert[litTris[i][1]][0], linVert[litTris[i][1]][1]);
-        glVertex2d(linVert[litTris[i][2]][0], linVert[litTris[i][2]][1]);
-    }
-    glEnd();
-    */
+        m_postHermes->linInitialMeshView().lock_data();
 
-    m_postHermes->linInitialMeshView().unlock_data();
+        double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
+        int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
+
+        // edges
+        for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+        {
+            m_arrayInitialMesh.push_back(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
+            m_arrayInitialMesh.push_back(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+        }
+
+        m_postHermes->linInitialMeshView().unlock_data();
+    }
+    else
+    {
+        loadProjection2d(true);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glColor3d(Util::config()->colorInitialMesh.redF(),
+                  Util::config()->colorInitialMesh.greenF(),
+                  Util::config()->colorInitialMesh.blueF());
+        glLineWidth(1.3);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, m_arrayInitialMesh.constData());
+        glDrawArrays(GL_LINES, 0, m_arrayInitialMesh.size());
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
 }
+
 
 void SceneViewMesh::paintSolutionMesh()
 {
     if (!Util::problem()->isSolved()) return;
     if (!m_postHermes->solutionMeshIsPrepared()) return;
 
-    loadProjection2d(true);
-
-    m_postHermes->linSolutionMeshView().lock_data();
-
-    double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
-    int3* linEdges = m_postHermes->linSolutionMeshView().get_edges();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(Util::config()->colorSolutionMesh.redF(),
-              Util::config()->colorSolutionMesh.greenF(),
-              Util::config()->colorSolutionMesh.blueF());
-    glLineWidth(1.3);
-
-    // triangles
-    glBegin(GL_LINES);
-    for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
+    if (m_arraySolutionMesh.isEmpty())
     {
-        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
-        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
-    }
-    glEnd();
+        m_postHermes->linSolutionMeshView().lock_data();
 
-    m_postHermes->linSolutionMeshView().unlock_data();
+        double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
+        int3* linEdges = m_postHermes->linSolutionMeshView().get_edges();
+
+        // triangles
+        for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
+        {
+            m_arraySolutionMesh.push_back(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
+            m_arraySolutionMesh.push_back(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+        }
+
+        m_postHermes->linSolutionMeshView().unlock_data();
+    }
+    else
+    {
+        loadProjection2d(true);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glColor3d(Util::config()->colorSolutionMesh.redF(),
+                  Util::config()->colorSolutionMesh.greenF(),
+                  Util::config()->colorSolutionMesh.blueF());
+        glLineWidth(1.3);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, m_arraySolutionMesh.constData());
+        glDrawArrays(GL_LINES, 0, m_arraySolutionMesh.size());
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
 }
 
 void SceneViewMesh::paintOrder()
