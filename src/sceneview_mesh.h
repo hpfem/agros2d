@@ -56,9 +56,6 @@ protected:
     void paintOrderColorBar();
 
 private:
-    // gl lists
-    int m_listOrder;
-
     QVector<QVector2D> m_arrayInitialMesh;
     QVector<QVector2D> m_arraySolutionMesh;
     QVector<QVector2D> m_arrayOrderMesh;

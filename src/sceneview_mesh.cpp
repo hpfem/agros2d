@@ -32,8 +32,7 @@
 #include "hermes2d/module.h"
 
 SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent)
-    : SceneViewCommon2D(postHermes, parent),
-      m_listOrder(-1)
+    : SceneViewCommon2D(postHermes, parent)
 {
     createActionsMesh();
 
@@ -63,9 +62,6 @@ void SceneViewMesh::createActionsMesh()
 
 void SceneViewMesh::refresh()
 {
-    if (m_listOrder != -1) glDeleteLists(m_listOrder, 1);
-    m_listOrder = -1;
-
     m_arrayInitialMesh.clear();
     m_arraySolutionMesh.clear();
     m_arrayOrderMesh.clear();
@@ -261,8 +257,10 @@ void SceneViewMesh::paintInitialMesh()
         glLineWidth(1.3);
 
         glEnableClientState(GL_VERTEX_ARRAY);
+
         glVertexPointer(2, GL_FLOAT, 0, m_arrayInitialMesh.constData());
         glDrawArrays(GL_LINES, 0, m_arrayInitialMesh.size());
+
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 }
@@ -300,8 +298,10 @@ void SceneViewMesh::paintSolutionMesh()
         glLineWidth(1.3);
 
         glEnableClientState(GL_VERTEX_ARRAY);
+
         glVertexPointer(2, GL_FLOAT, 0, m_arraySolutionMesh.constData());
         glDrawArrays(GL_LINES, 0, m_arraySolutionMesh.size());
+
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 }
@@ -311,13 +311,8 @@ void SceneViewMesh::paintOrder()
     if (!Util::problem()->isSolved()) return;
     if (!m_postHermes->orderIsPrepared()) return;
 
-    loadProjection2d(true);
-
-    if (m_listOrder == -1)
+    if (m_arrayOrderMesh.isEmpty())
     {
-        m_listOrder = glGenLists(1);
-        glNewList(m_listOrder, GL_COMPILE);
-
         // order scalar view
         m_postHermes->ordView().lock_data();
 
@@ -333,33 +328,44 @@ void SceneViewMesh::paintOrder()
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
         }
 
-        glEnable(GL_POLYGON_OFFSET_FILL);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
         // triangles
-        glBegin(GL_TRIANGLES);
         for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
-            glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
+            QVector3D colorVector = QVector3D(paletteColorOrder(color)[0],
+                                    paletteColorOrder(color)[1],
+                                    paletteColorOrder(color)[2]);
 
-            glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
-            glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
-            glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
+            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][0]][0], vert[tris[i][0]][1]));
+            m_arrayOrderMeshColor.push_back(colorVector);
+
+            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][1]][0], vert[tris[i][1]][1]));
+            m_arrayOrderMeshColor.push_back(colorVector);
+
+            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][2]][0], vert[tris[i][2]][1]));
+            m_arrayOrderMeshColor.push_back(colorVector);
         }
-        glEnd();
-
-        glDisable(GL_POLYGON_OFFSET_FILL);
 
         m_postHermes->ordView().unlock_data();
-
-        glEndList();
-
-        glCallList(m_listOrder);
     }
     else
     {
-        glCallList(m_listOrder);
+        loadProjection2d(true);
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);
+
+        glVertexPointer(2, GL_FLOAT, 0, m_arrayOrderMesh.constData());
+        glColorPointer(3, GL_FLOAT, 0, m_arrayOrderMeshColor.constData());
+        glDrawArrays(GL_TRIANGLES, 0, m_arrayOrderMesh.size());
+
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_COLOR_ARRAY);
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
     // paint labels
