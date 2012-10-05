@@ -1189,7 +1189,7 @@ void SceneViewPost3D::paintParticleTracing()
     }
 }
 
-void SceneViewPost3D::refresh()
+void SceneViewPost3D::clearGLLists()
 {
     if (m_listScalarField3D != -1) glDeleteLists(m_listScalarField3D, 1);
     if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
@@ -1200,6 +1200,11 @@ void SceneViewPost3D::refresh()
     m_listScalarField3DSolid = -1;
     m_listModel = -1;
     m_listParticleTracing = -1;
+}
+
+void SceneViewPost3D::refresh()
+{   
+    clearGLLists();
 
     // actions
     actSceneModePost3D->setEnabled(Util::problem()->isSolved());

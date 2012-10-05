@@ -34,6 +34,8 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
+#include <QGLPixelBuffer>
+
 SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWidget(parent)
 {
     createControls(widget);
@@ -113,6 +115,11 @@ SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::Sam
 {
     m_mainWindow = (QMainWindow *) parent;
 
+    // create the pbuffer
+    QGLFormat pbufferFormat = format();
+    pbufferFormat.setSampleBuffers(false);
+    m_pbuffer = new QGLPixelBuffer(QSize(512, 512), pbufferFormat, this);
+
     createActions();
 
     setMouseTracking(true);
@@ -124,6 +131,13 @@ SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::Sam
 
 SceneViewCommon::~SceneViewCommon()
 {
+    m_pbuffer->releaseFromDynamicTexture();
+    glDeleteTextures(1, &dynamicTexture);
+    delete m_pbuffer;
+
+    // qDeleteAll(cubes);
+    // qDeleteAll(tiles);
+    // delete cube;
 }
 
 void SceneViewCommon::createActions()

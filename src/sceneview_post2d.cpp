@@ -23,6 +23,8 @@
 #include "hermes2d/problem.h"
 #include "logview.h"
 
+#include "util/constants.h"
+
 #include "scenebasic.h"
 #include "scenenode.h"
 #include "sceneedge.h"
@@ -372,7 +374,7 @@ void SceneViewPost2D::paintScalarField()
 
     loadProjection2d(true);
 
-    if (m_listScalarField == -1)
+    if (m_arrayScalarField.isEmpty())
     {
         paletteFilter(textureScalar());
         paletteCreate(textureScalar());
@@ -445,35 +447,68 @@ void SceneViewPost2D::paintScalarField()
         glEndList();
 
         glCallList(m_listScalarField);
+
+        /*
+        // range
+        double irange = PALETTEENTRIES / (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin);
+        // special case: constant solution
+        if (fabs(Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) < EPS_ZERO)
+            irange = PALETTEENTRIES / 2;
+
+        m_postHermes->linScalarView().lock_data();
+
+        double3* linVert = m_postHermes->linScalarView().get_vertices();
+        int3* linTris = m_postHermes->linScalarView().get_triangles();
+        Point point[3];
+        double value[3];
+
+        for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                point[j].x = linVert[linTris[i][j]][0];
+                point[j].y = linVert[linTris[i][j]][1];
+                value[j]   = linVert[linTris[i][j]][2];
+            }
+
+            if (!Util::config()->scalarRangeAuto)
+            {
+                double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
+                    continue;
+            }
+
+            for (int j = 0; j < 3; j++)
+            {
+                m_arrayScalarField.push_back(QVector2D(point[j].x, point[j].y));
+
+                const double* color = paletteColor2((value[j] - Util::config()->scalarRangeMin) * irange);
+
+                m_arrayScalarFieldColors.push_back(QVector3D(color[0], color[1], color[2]));
+                // qDebug() << ((value[j] - Util::config()->scalarRangeMin) * irange) << m_arrayScalarFieldColors.at(m_arrayScalarFieldColors.count() - 1);
+
+            }
+        }
+
+        m_postHermes->linScalarView().unlock_data();
+        */
     }
     else
     {
         glCallList(m_listScalarField);
+        /*
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);
+
+        glColorPointer(3, GL_FLOAT, 0, m_arrayScalarFieldColors.constData());
+        glVertexPointer(2, GL_FLOAT, 0, m_arrayScalarField.constData());
+
+        glDrawArrays(GL_TRIANGLES, 0, m_arrayScalarField.size());
+
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_COLOR_ARRAY);
+        */
     }
-
-    /*
-    m_post2DHermes->linScalarView().lock_data();
-    double3* linVertScalar = m_post2DHermes->linScalarView().get_vertices();
-    int3* linTrisScalar = m_post2DHermes->linScalarView().get_triangles();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(0.0, 0.2, 0.1);
-    glLineWidth(1.3);
-
-    // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_post2DHermes->linScalarView().get_num_triangles(); i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            glVertex2d(linVertScalar[linTrisScalar[i][j]][0], linVertScalar[linTrisScalar[i][j]][1]);
-        }
-    }
-    glEnd();
-
-    m_post2DHermes->linScalarView().unlock_data();
-    */
 }
 
 void SceneViewPost2D::paintContours()
@@ -1246,7 +1281,7 @@ void SceneViewPost2D::paintPostprocessorSelectedPoint()
     glEnd();
 }
 
-void SceneViewPost2D::refresh()
+void SceneViewPost2D::clearGLLists()
 {
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
@@ -1257,6 +1292,15 @@ void SceneViewPost2D::refresh()
     m_listVectors = -1;
     m_listScalarField = -1;
     m_listParticleTracing = -1;
+
+
+    m_arrayScalarField.clear();
+    m_arrayScalarFieldColors.clear();
+}
+
+void SceneViewPost2D::refresh()
+{
+    clearGLLists();
 
     setControls();
 

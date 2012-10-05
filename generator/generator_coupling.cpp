@@ -30,7 +30,6 @@
 
 #include "util/constants.h"
 
-
 Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
 {
     QString iD = couplingId;

@@ -226,6 +226,7 @@ LIBS += -lagros2d_3rdparty
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
+    TARGET = ../libs/agros2d
 
     QMAKE_CXXFLAGS += -Wno-unused-variable
 }

@@ -38,6 +38,8 @@ class VolumeIntegralValue;
 
 class SceneViewInterface;
 
+class QGLPixelBuffer;
+
 namespace Module
 {
     struct LocalVariable;
@@ -119,6 +121,9 @@ signals:
 protected:
     QMainWindow *m_mainWindow;
 
+    QGLPixelBuffer *m_pbuffer;
+    GLuint dynamicTexture;
+
     QPoint m_lastPos; // last position of cursor
 
     SceneNode *m_nodeLast;
@@ -138,7 +143,7 @@ protected:
 
     virtual void setZoom(double power) = 0;
 
-    void initializeGL();
+    virtual void initializeGL();
     virtual void resizeGL(int w, int h);
     virtual void paintGL() = 0;
     void setupViewport(int w, int h);

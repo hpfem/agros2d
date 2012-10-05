@@ -112,6 +112,8 @@ private slots:
     void processRangeScalar();
     void processRangeVector();
     void processParticleTracing();
+
+    virtual void clearGLLists() {}
 };
 
 class SceneViewPostInterface : public SceneViewCommon
@@ -129,12 +131,15 @@ protected:
 
     PostHermes *m_postHermes;
 
+    virtual void initializeGL();
+
     virtual int textureScalar() { return -1; }
 
     void paintScalarFieldColorBar(double min, double max);
     void paintParticleTracingColorBar(double min, double max);
 
     // palette
+    const double *paletteColor2(const int pos) const;
     const double *paletteColor(double x) const;
     const double *paletteColorOrder(int n) const;
     void paletteCreate(int texture);

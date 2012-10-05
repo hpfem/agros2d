@@ -340,6 +340,29 @@ SceneViewPostInterface::SceneViewPostInterface(PostHermes *postHermes, QWidget *
 {
 }
 
+void SceneViewPostInterface::initializeGL()
+{
+    clearGLLists();
+
+    SceneViewCommon::initializeGL();
+}
+
+const double* SceneViewPostInterface::paletteColor2(const int pos) const
+{
+    int n = (int) (pos / (PALETTEENTRIES / Util::config()->paletteSteps)) * (PALETTEENTRIES / Util::config()->paletteSteps);
+
+    if (n < 0)
+        n = 0;
+    else if (n > PALETTEENTRIES - 1)
+        n = PALETTEENTRIES - 1;
+
+    switch (Util::config()->paletteType)
+    {
+    case Palette_Agros2D:
+        return paletteDataAgros2D[n];
+    }
+}
+
 const double* SceneViewPostInterface::paletteColor(double x) const
 {
     switch (Util::config()->paletteType)
@@ -348,7 +371,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataAgros2D[n];
     }
@@ -357,7 +380,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataJet[n];
     }
@@ -366,7 +389,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataCopper[n];
     }
@@ -375,7 +398,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataHot[n];
     }
@@ -384,7 +407,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataCool[n];
     }
@@ -393,7 +416,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataBone[n];
     }
@@ -402,7 +425,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataPink[n];
     }
@@ -411,7 +434,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataSpring[n];
     }
@@ -420,7 +443,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataSummer[n];
     }
@@ -429,7 +452,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataAutumn[n];
     }
@@ -438,7 +461,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataWinter[n];
     }
@@ -447,7 +470,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     {
         if (x < 0.0) x = 0.0;
         else if (x > 1.0) x = 1.0;
-        x *= numPalEntries;
+        x *= PALETTEENTRIES;
         int n = (int) x;
         return paletteDataHSV[n];
     }

@@ -101,6 +101,9 @@ private:
     int m_listScalarField;
     int m_listParticleTracing;
 
+    QVector<QVector2D> m_arrayScalarField;
+    QVector<QVector3D> m_arrayScalarFieldColors;
+
     void createActionsPost2D();
 
 private slots:
@@ -108,6 +111,7 @@ private slots:
     void selectedPoint(const Point &p);
 
     virtual void refresh();
+    virtual void clearGLLists();
 };
 
 #endif // SCENEVIEWPOST2D_H
