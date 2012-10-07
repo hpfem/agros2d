@@ -54,6 +54,7 @@ public:
 
     inline TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
     void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
+    bool isTransientAdaptive() const;
 
     int timeOrder() const { return m_timeOrder; }
     void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
