@@ -1,5 +1,4 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
-TARGET = ../agros2d_generator
 OBJECTS_DIR = build
 MOC_DIR = build
 TEMPLATE = app
@@ -16,11 +15,26 @@ HEADERS += generator.h \
     generator_coupling.h
 
 SOURCES += main.cpp \
-           generator.cpp \
+    generator.cpp \
     generator_module.cpp \
     generator_coupling.cpp
 
 include(../agros2d.pri)
+
+linux-g++|linux-g++-64|linux-g++-32 {
+    TARGET = ../agros2d_generator
+}
+
+macx-g++ {
+    ICON += resources/images/agros2d.icns
+    QMAKE_INFO_PLIST  += resources/Info.plist
+    #target.path = /Applications
+    #INSTALLS += target
+}
+
+win32-msvc2010 {
+    TARGET = ../../agros2d_generator
+}
 
 OTHER_FILES += \
     ../resources/templates/generator/filter_cpp.tpl \
@@ -43,3 +57,4 @@ OTHER_FILES += \
     ../resources/templates/generator/coupling_interface_h.tpl \
     ../resources/templates/generator/coupling_interface_cpp.tpl \
     ../resources/templates/generator/coupling_pro.tpl
+

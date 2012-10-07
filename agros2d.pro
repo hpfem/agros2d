@@ -2,8 +2,8 @@
 SUBDIRS += 3rdparty
 SUBDIRS += hermes2d
 SUBDIRS += src
-SUBDIRS += generator
 SUBDIRS += binary
+SUBDIRS += generator
 # SUBDIRS += plugins
 
 CONFIG += ordered
@@ -49,7 +49,7 @@ linux-g++ {
     system(touch agros2d)
     target.path = $${PREFIX}/bin
     target.files = agros2d
-    
+
     # install libraries
     script.path = $${PREFIX}/lib/
     script.files = libs/*
