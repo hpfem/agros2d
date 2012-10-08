@@ -55,9 +55,6 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
 
-    void renderTextPos(double x, double y,
-                       const QString &str, bool blend = true, QFont fnt = QFont());
-
     void setZoom(double power);
 
     virtual void paintGL() = 0;
@@ -71,8 +68,10 @@ protected:
     void paintRulers(); // paint rulers
     void paintRulersHints();
 
-    inline Point position(double x, double y) const { return position(Point(x, y)); }
-    Point position(const Point &point) const;
+    inline Point transform(double x, double y) const { return transform(Point(x, y)); }
+    Point transform(const Point &point) const;
+    inline Point untransform(double x, double y) const { return untransform(Point(x, y)); }
+    Point untransform(const Point &point) const;
 
     // rulers
     Point rulersAreaSize();

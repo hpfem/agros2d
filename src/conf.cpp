@@ -94,8 +94,8 @@ void Config::loadWorkspace()
     labelSize = settings.value("SceneViewSettings/LabelSize", GEOMETRYLABELSIZE).toDouble();
 
     // font
-    sceneFont = settings.value("SceneViewSettings/SceneFont", FONT).value<QFont>();
-
+    rulersFont = settings.value("SceneViewSettings/RulersFont", RULERSFONT).toString();
+    postFont = settings.value("SceneViewSettings/PostFont", POSTFONT).toString();
     // mesh
     angleSegmentsCount = settings.value("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT).toInt();
     curvilinearElements = settings.value("SceneViewSettings/MeshCurvilinearElements", MESHCURVILINEARELEMENTS).toBool();
@@ -271,7 +271,8 @@ void Config::saveWorkspace()
     settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermesMeshFile);
 
     // font
-    settings.setValue("SceneViewSettings/SceneFont", sceneFont);
+    settings.setValue("SceneViewSettings/RulersFont", rulersFont);
+    settings.setValue("SceneViewSettings/PostFont", postFont);
 
     // zoom
     settings.setValue("General/ZoomToMouse", zoomToMouse);

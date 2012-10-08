@@ -34,8 +34,6 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-#include <QGLPixelBuffer>
-
 SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWidget(parent)
 {
     createControls(widget);
@@ -115,11 +113,6 @@ SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::Sam
 {
     m_mainWindow = (QMainWindow *) parent;
 
-    // create the pbuffer
-    QGLFormat pbufferFormat = format();
-    pbufferFormat.setSampleBuffers(false);
-    m_pbuffer = new QGLPixelBuffer(QSize(512, 512), pbufferFormat, this);
-
     createActions();
 
     setMouseTracking(true);
@@ -131,13 +124,6 @@ SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::Sam
 
 SceneViewCommon::~SceneViewCommon()
 {
-    m_pbuffer->releaseFromDynamicTexture();
-    glDeleteTextures(1, &dynamicTexture);
-    delete m_pbuffer;
-
-    // qDeleteAll(cubes);
-    // qDeleteAll(tiles);
-    // delete cube;
 }
 
 void SceneViewCommon::createActions()
@@ -174,6 +160,13 @@ void SceneViewCommon::initializeGL()
 {
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE);
+    glDisable(GL_MULTISAMPLE);
+
+    glGenTextures(1, &m_textureLabelRulers);
+    initFont(m_textureLabelRulers, labelRulersFont());
+
+    glGenTextures(1, &m_textureLabelPost);
+    initFont(m_textureLabelPost, labelPostFont());
 }
 
 void SceneViewCommon::resizeGL(int w, int h)
@@ -184,6 +177,24 @@ void SceneViewCommon::resizeGL(int w, int h)
 void SceneViewCommon::setupViewport(int w, int h)
 {
     glViewport(0, 0, w, h);
+}
+
+void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
+{
+    // rulers font
+    TextureFont fnt = labelRulersFont();
+
+    glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
+    printAt(penX, penY, text, fnt);
+}
+
+void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
+{
+    // post font
+    TextureFont fnt = labelPostFont();
+
+    glBindTexture(GL_TEXTURE_2D, m_textureLabelPost);
+    printAt(penX, penY, text, fnt);
 }
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
@@ -205,6 +216,73 @@ void SceneViewCommon::loadProjectionViewPort()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+}
+
+void SceneViewCommon::printAt(int penX, int penY, const QString &text, TextureFont fnt)
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+
+    for (int i = 0; i < text.length(); ++i)
+    {
+        TextureGlyph *glyph = 0;
+        for (int j = 0; j < fnt.glyphs_count; ++j)
+        {
+            if (fnt.glyphs[j].charcode == text.at(i) )
+            {
+                glyph = &fnt.glyphs[j];
+                break;
+            }
+        }
+        if (!glyph)
+        {
+            continue;
+        }
+
+        int x = penX + glyph->offset_x;
+        int y = penY + glyph->offset_y;
+        int w  = glyph->width;
+        int h  = glyph->height;
+
+        glBegin(GL_TRIANGLES);
+        {
+            glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y );
+            glTexCoord2f(glyph->s0, glyph->t1); glVertex2i(x,   y-h);
+            glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
+            glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y  );
+            glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
+            glTexCoord2f(glyph->s1, glyph->t0); glVertex2i(x+w, y  );
+        }
+        glEnd();
+
+        penX += glyph->advance_x;
+        penY += glyph->advance_y;
+
+    }
+    glDisable(GL_BLEND);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void SceneViewCommon::initFont(int textureID, TextureFont fnt)
+{    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, fnt.tex_width, fnt.tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, fnt.tex_data);
+    // glBindTexture(GL_TEXTURE_2D, texid);
+}
+
+TextureFont SceneViewCommon::labelRulersFont()
+{
+    return textureFontFromStringKey(Util::config()->rulersFont);
+}
+
+TextureFont SceneViewCommon::labelPostFont()
+{
+    return textureFontFromStringKey(Util::config()->postFont);
 }
 
 // events *****************************************************************************************************************************

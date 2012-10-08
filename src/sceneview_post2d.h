@@ -66,8 +66,6 @@ public:
     virtual QString labelView() { return tr("Postprocessor 2D"); }
 
 protected:
-    virtual int textureScalar() { return 2; }
-
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
 

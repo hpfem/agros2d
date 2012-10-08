@@ -54,8 +54,8 @@ private:
     QSpinBox *txtGeometryLabelSize;
 
     // scene font
-    QLabel *lblSceneFontExample;
-    QPushButton *btnSceneFont;
+    QComboBox *cmbRulersFont;
+    QComboBox *cmbPostFont;
 
     // workspace other
     QCheckBox *chkShowAxes;
@@ -108,7 +108,6 @@ private slots:
     void doWorkspaceDefault();
     void doAdvancedDefault();
     void doColorsDefault();
-    void doSceneFont();
     void doShowGridChanged();
 };
 

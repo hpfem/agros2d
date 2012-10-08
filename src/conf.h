@@ -47,7 +47,8 @@ public:
     double labelSize;
 
     // font
-    QFont sceneFont;
+    QString rulersFont;
+    QString postFont;
 
     // zoom
     bool zoomToMouse;

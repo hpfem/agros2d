@@ -60,6 +60,9 @@ const bool SNAPTOGRID = true;
     const QFont FONT = QFont("Monaco", 12);
 #endif
 
+const QString RULERSFONT = "fontGoogleDroidMono10";
+const QString POSTFONT = "fontGoogleDroidMono16";
+
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
 const bool ZOOMTOMOUSE = true;

@@ -43,8 +43,6 @@ public:
     virtual QString labelView() { return tr("Postprocessor 3D"); }
 
 protected:
-    virtual int textureScalar() { return 3; }
-
     virtual void mousePressEvent(QMouseEvent *event);
 
     virtual void paintGL();

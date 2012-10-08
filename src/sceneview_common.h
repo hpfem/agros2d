@@ -25,6 +25,8 @@
 #include "util.h"
 #include "chartdialog.h"
 
+#include "util/glfont.h"
+
 class Scene;
 class SceneViewCommon;
 
@@ -32,13 +34,7 @@ class SceneNode;
 class SceneEdge;
 class SceneLabel;
 
-class LocalPointValue;
-class SurfaceIntegralValue;
-class VolumeIntegralValue;
-
 class SceneViewInterface;
-
-class QGLPixelBuffer;
 
 namespace Module
 {
@@ -121,9 +117,6 @@ signals:
 protected:
     QMainWindow *m_mainWindow;
 
-    QGLPixelBuffer *m_pbuffer;
-    GLuint dynamicTexture;
-
     QPoint m_lastPos; // last position of cursor
 
     SceneNode *m_nodeLast;
@@ -140,6 +133,19 @@ protected:
 
     void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const;
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
+
+    void printAt(int penX, int penY, const QString &text, TextureFont fnt);
+    void initFont(int textureID, TextureFont fnt);
+
+    // default OpenGL font
+    TextureFont labelRulersFont();
+    TextureFont labelPostFont();
+
+    GLuint m_textureLabelRulers;
+    GLuint m_textureLabelPost;
+
+    void printRulersAt(int penX, int penY, const QString &text);
+    void printPostAt(int penX, int penY, const QString &text);
 
     virtual void setZoom(double power) = 0;
 

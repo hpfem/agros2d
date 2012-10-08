@@ -129,11 +129,11 @@ protected:
     double m_texScale;
     double m_texShift;
 
+    GLuint m_textureScalar;
+
     PostHermes *m_postHermes;
 
     virtual void initializeGL();
-
-    virtual int textureScalar() { return -1; }
 
     void paintScalarFieldColorBar(double min, double max);
     void paintParticleTracingColorBar(double min, double max);

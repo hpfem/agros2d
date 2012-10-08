@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "sceneview_post.h"
+#include "sceneview_common2d.h"
 #include "sceneview_data.h"
 #include "scene.h"
 #include "scenemarker.h"
@@ -344,6 +345,8 @@ void SceneViewPostInterface::initializeGL()
 {
     clearGLLists();
 
+    glGenTextures(1, &m_textureScalar);
+
     SceneViewCommon::initializeGL();
 }
 
@@ -589,7 +592,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     // scene font metrics
-    QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
+    QFontMetrics metrics = QFontMetrics(Util::config()->postFont);
 
     // dimensions
     int textWidth = metrics.width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
@@ -620,7 +623,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
 
     // palette
     glEnable(GL_TEXTURE_1D);
-    glBindTexture(GL_TEXTURE_1D, textureScalar());
+    glBindTexture(GL_TEXTURE_1D, m_textureScalar);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
     glBegin(GL_QUADS);
@@ -667,7 +670,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                    0.0,
                    QString::number(value, '+e', Util::config()->scalarDecimalPlace),
-                   Util::config()->sceneFont);
+                   Util::config()->postFont);
     }
 
     // variable
@@ -682,7 +685,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
                    scaleBorder.y + scaleSize.y - 20.0,
                    0.0,
                    str,
-                   Util::config()->sceneFont);
+                   Util::config()->postFont);
     }
 
     // line
@@ -703,7 +706,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     // scene font metrics
-    QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
+    QFontMetrics metrics = QFontMetrics(Util::config()->postFont);
 
     // dimensions
     int textWidth = metrics.width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
@@ -768,7 +771,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                    0.0,
                    QString::number(value, '+e', Util::config()->scalarDecimalPlace),
-                   Util::config()->sceneFont);
+                   Util::config()->postFont);
     }
 
     // variable
@@ -779,7 +782,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
                scaleBorder.y + scaleSize.y - 20.0,
                0.0,
                str,
-               Util::config()->sceneFont);
+               Util::config()->postFont);
     // line
     glLineWidth(1.0);
     glBegin(GL_LINES);

@@ -275,7 +275,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
 
     setToolTip("");
 
-    Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+    Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
     // highlight scene objects + hints
     if ((event->modifiers() == 0)
@@ -511,7 +511,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
     }
 
     m_lastPos = event->pos();
-    Point p = position(Point(event->pos().x(), event->pos().y()));
+    Point p = transform(Point(event->pos().x(), event->pos().y()));
 
     // add node, edge or label by mouse click
     // control + left mouse
@@ -525,7 +525,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             // snap to grid
             if (m_snapToGrid)
             {
-                Point snapPoint = position(Point(m_lastPos.x(), m_lastPos.y()));
+                Point snapPoint = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
                 pointNode.x = floor(snapPoint.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
                 pointNode.y = floor(snapPoint.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
@@ -652,8 +652,8 @@ void SceneViewPreprocessor::mouseReleaseEvent(QMouseEvent *event)
 
     if (m_selectRegion)
     {
-        Point posStart = position(Point(m_selectRegionPos.x(), m_selectRegionPos.y()));
-        Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
+        Point posStart = transform(Point(m_selectRegionPos.x(), m_selectRegionPos.y()));
+        Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         if (actSceneViewSelectRegion->data().value<bool>())
             selectRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
@@ -677,7 +677,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (!(event->modifiers() & Qt::ControlModifier))
     {
-        Point p = position(Point(event->pos().x(), event->pos().y()));
+        Point p = transform(Point(event->pos().x(), event->pos().y()));
 
         if (event->button() & Qt::LeftButton)
         {
@@ -808,12 +808,12 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
 {
     loadProjection2d(true);
 
-    Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(width(), height()));
+    Point cornerMin = transform(Point(0, 0));
+    Point cornerMax = transform(Point(width(), height()));
 
     glColor3d(0.0, 0.53, 0.0);
 
-    Point p = position(m_lastPos.x(), m_lastPos.y());
+    Point p = transform(m_lastPos.x(), m_lastPos.y());
     Point rulersAreaScreen = rulersAreaSize();
     Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
                      2.0/height()*rulersAreaScreen.y/m_scale2d);
@@ -839,9 +839,6 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
         glEnd();
 
         glDisable(GL_LINE_STIPPLE);
-
-        renderTextPos(snapPoint.x + rulersArea.x, snapPoint.y - rulersArea.y,
-                      QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
     }
 
     // ticks
@@ -857,6 +854,24 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
     glVertex2d(cornerMin.x + rulersArea.x - tickSize, p.y + tickSize / 2.0);
     glVertex2d(cornerMin.x + rulersArea.x - tickSize, p.y - tickSize / 2.0);
     glEnd();
+
+    // snap to grid text
+    if (m_snapToGrid)
+    {
+        loadProjectionViewPort();
+
+        glScaled(2.0 / width(), 2.0 / height(), 1.0);
+        glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
+
+        // rulers font
+        TextureFont fnt = labelRulersFont();
+
+        Point scr = untransform(snapPoint.x, snapPoint.y);
+        printAt(scr.x + fnt.glyphs[GLYPH_M].width,
+                scr.y + fnt.height * 0.7,
+                QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y),
+                fnt);
+    }
 }
 
 void SceneViewPreprocessor::paintBackgroundPixmap()
@@ -1048,8 +1063,6 @@ void SceneViewPreprocessor::paintGeometry()
         }
     }
 
-    glLineWidth(1.0);
-
     // labels
     foreach (SceneLabel *label, Util::scene()->labels->items())
     {
@@ -1085,8 +1098,34 @@ void SceneViewPreprocessor::paintGeometry()
             glVertex2d(label->point().x, label->point().y);
             glEnd();
         }
-        glLineWidth(1.0);
 
+        // area size
+        if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (Util::config()->showInitialMeshView))
+        {
+            double radius = sqrt(label->area()/M_PI);
+            glColor3d(0, 0.95, 0.9);
+
+            glLineWidth(1.0);
+            glBegin(GL_LINE_LOOP);
+            for (int i = 0; i<360; i = i + 10)
+            {
+                glVertex2d(label->point().x + radius*cos(i/180.0*M_PI), label->point().y + radius*sin(i/180.0*M_PI));
+            }
+            glEnd();
+        }
+    }
+
+    // labels hints
+    loadProjectionViewPort();
+
+    glScaled(2.0 / width(), 2.0 / height(), 1.0);
+    glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
+
+    // rulers font
+    TextureFont fnt = labelRulersFont();
+
+    foreach (SceneLabel *label, Util::scene()->labels->items())
+    {
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             glColor3d(0.1, 0.1, 0.1);
@@ -1099,29 +1138,9 @@ void SceneViewPreprocessor::paintGeometry()
             if (str.length() > 0)
                 str = str.left(str.length() - 2);
 
-            QFont fnt = font();
-            fnt.setPointSize(fnt.pointSize() - 1.0);
+            Point scr = untransform(label->point().x, label->point().y);
 
-            QFontMetrics metrics = QFontMetrics(fnt);
-
-            Point point;
-            point.x = 2.0/width()*aspect()*metrics.width(str)/m_scale2d/2.0;
-            point.y = 2.0/height()*metrics.height()/m_scale2d;
-
-            renderTextPos(label->point().x-point.x, label->point().y-point.y, str, false, fnt);
-        }
-
-        // area size
-        if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (Util::config()->showInitialMeshView))
-        {
-            double radius = sqrt(label->area()/M_PI);
-            glColor3d(0, 0.95, 0.9);
-            glBegin(GL_LINE_LOOP);
-            for (int i = 0; i<360; i = i + 10)
-            {
-                glVertex2d(label->point().x + radius*cos(i/180.0*M_PI), label->point().y + radius*sin(i/180.0*M_PI));
-            }
-            glEnd();
+            printAt(scr.x - fnt.glyphs[GLYPH_M].width * str.length() / 2.0, scr.y - fnt.height * 1.2, str, fnt);
         }
     }
 }
@@ -1132,7 +1151,7 @@ void SceneViewPreprocessor::paintSnapToGrid()
     {
         loadProjection2d(true);
 
-        Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+        Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         Point snapPoint;
         snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
@@ -1156,7 +1175,7 @@ void SceneViewPreprocessor::paintEdgeLine()
         {
             loadProjection2d(true);
 
-            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+            Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
             glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),

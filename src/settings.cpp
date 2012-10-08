@@ -22,6 +22,7 @@
 #include "pythonlabagros.h"
 
 #include "util/constants.h"
+#include "util/glfont.h"
 #include "gui/common.h"
 
 const double minWidth = 110;
@@ -54,8 +55,12 @@ void SettingsWidget::load()
     chkShowGrid->setChecked(Util::config()->showGrid);
     chkSnapToGrid->setChecked(Util::config()->snapToGrid);
 
-    lblSceneFontExample->setFont(Util::config()->sceneFont);
-    lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
+    cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(Util::config()->rulersFont));
+    if (cmbRulersFont->currentIndex() == -1)
+        cmbRulersFont->setCurrentIndex(0);
+    cmbPostFont->setCurrentIndex(cmbPostFont->findData(Util::config()->postFont));
+    if (cmbPostFont->currentIndex() == -1)
+        cmbPostFont->setCurrentIndex(0);
 
     chkShowAxes->setChecked(Util::config()->showAxes);
     chkShowRulers->setChecked(Util::config()->showRulers);
@@ -101,7 +106,8 @@ void SettingsWidget::save()
     Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
     Util::config()->snapToGrid = chkSnapToGrid->isChecked();
 
-    Util::config()->sceneFont = lblSceneFontExample->font();
+    Util::config()->rulersFont = cmbRulersFont->findData(cmbRulersFont->currentIndex());
+    Util::config()->postFont = cmbPostFont->findData(cmbPostFont->currentIndex());
 
     Util::config()->showAxes = chkShowAxes->isChecked();
     Util::config()->showRulers = chkShowRulers->isChecked();
@@ -198,16 +204,18 @@ QWidget *SettingsWidget::controlsWorkspace()
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
 
-    lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
-
-    btnSceneFont = new QPushButton(tr("Set font"));
-    connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
+    cmbRulersFont = new QComboBox();
+    fillFontsComboBox(cmbRulersFont);
+    cmbPostFont = new QComboBox();
+    fillFontsComboBox(cmbPostFont);
 
     QGridLayout *layoutFont = new QGridLayout();
-    layoutFont->addWidget(lblSceneFontExample, 0, 1);
-    layoutFont->addWidget(btnSceneFont, 0, 2);
+    layoutFont->addWidget(new QLabel(tr("Rulers:")), 0, 0);
+    layoutFont->addWidget(cmbRulersFont, 0, 1);
+    layoutFont->addWidget(new QLabel(tr("Postprocessor:")), 1, 0);
+    layoutFont->addWidget(cmbPostFont, 1, 1);
 
-    QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
+    QGroupBox *grpFont = new QGroupBox(tr("Fonts"));
     grpFont->setLayout(layoutFont);
 
     // geometry
@@ -410,8 +418,8 @@ void SettingsWidget::doWorkspaceDefault()
     chkShowGrid->setChecked(SHOWGRID);
     chkSnapToGrid->setChecked(SNAPTOGRID);
 
-    lblSceneFontExample->setFont(FONT);
-    lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
+    cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(RULERSFONT));
+    cmbPostFont->setCurrentIndex(cmbPostFont->findData(POSTFONT));
 
     chkShowAxes->setChecked(SHOWAXES);
     chkShowRulers->setChecked(SHOWRULERS);
@@ -448,17 +456,6 @@ void SettingsWidget::doColorsDefault()
     colorSolutionMesh->setColor(COLORSOLUTIONMESH);
     colorHighlighted->setColor(COLORHIGHLIGHTED);
     colorSelected->setColor(COLORSELECTED);
-}
-
-void SettingsWidget::doSceneFont()
-{
-    bool ok;
-    QFont sceneFont = QFontDialog::getFont(&ok, lblSceneFontExample->font(), this);
-    if (ok)
-    {
-        lblSceneFontExample->setFont(sceneFont);
-        lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
-    }
 }
 
 void SettingsWidget::doShowGridChanged()

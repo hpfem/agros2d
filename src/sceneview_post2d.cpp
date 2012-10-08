@@ -157,7 +157,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
     SceneViewCommon2D::mousePressEvent(event);
 
     m_lastPos = event->pos();
-    Point p = position(Point(event->pos().x(), event->pos().y()));
+    Point p = transform(Point(event->pos().x(), event->pos().y()));
 
     if (event->buttons() & Qt::LeftButton)
     {
@@ -276,8 +276,8 @@ void SceneViewPost2D::resizeGL(int w, int h)
 {
     if (Util::problem()->isSolved())
     {
-        paletteFilter(textureScalar());
-        paletteCreate(textureScalar());
+        paletteFilter(m_textureScalar);
+        paletteCreate(m_textureScalar);
     }
 
     SceneViewCommon::resizeGL(w, h);
@@ -376,8 +376,8 @@ void SceneViewPost2D::paintScalarField()
 
     if (m_listScalarField == -1)
     {
-        paletteFilter(textureScalar());
-        paletteCreate(textureScalar());
+        paletteFilter(m_textureScalar);
+        paletteCreate(m_textureScalar);
 
         m_listScalarField = glGenLists(1);
         glNewList(m_listScalarField, GL_COMPILE);
@@ -397,7 +397,7 @@ void SceneViewPost2D::paintScalarField()
 
         // set texture for coloring
         glEnable(GL_TEXTURE_1D);
-        glBindTexture(GL_TEXTURE_1D, textureScalar());
+        glBindTexture(GL_TEXTURE_1D, m_textureScalar);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         // set texture transformation matrix

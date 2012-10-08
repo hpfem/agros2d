@@ -103,7 +103,6 @@ SOURCES += util.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
     gui/groupbox.cpp
-    # ../weakform_new/plugins/electrostatic/electrostatic_filter.cpp
 
 HEADERS += util.h \
     value.h \
@@ -112,6 +111,7 @@ HEADERS += util.h \
     util/checkversion.h \
     util/point.h \
     util/xml.h \
+    util/glfont.h \
     gui/common.h \
     gui/chart.h \
     gui/filebrowser.h \
