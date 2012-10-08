@@ -54,21 +54,22 @@ private:
     // file
     QPushButton *btnClose;
     QPushButton *btnAnimate;
-    QProgressBar *progressBar;
 
     LineEditDouble *txtDelay;
     QLabel *lblStep;
     QLabel *lblStepLabel;
 
+    QCheckBox *chkSaveImages;
+
     // adaptivity
     QSpinBox *txtAdaptiveAnimateFrom;
     QSpinBox *txtAdaptiveAnimateTo;
-    QSlider *sldAdaptiveAnimate;
+    QSlider *sliderAdaptiveAnimate;
 
     // transient
     QSpinBox *txtTransientAnimateFrom;
     QSpinBox *txtTransientAnimateTo;
-    QSlider *sldTransientAnimate;
+    QSlider *sliderTransientAnimate;
 
     void createControls();
     QWidget *createControlsViewportAdaptiveSteps();
@@ -87,10 +88,38 @@ private slots:
     void doTransientValueFromChanged(int index);
     void doTransientValueToChanged(int index);
 
-    void doCreateImages();
-
     void tabChanged(int index);
 
+    void doClose();
+    void doVideo();
+};
+
+// *********************************************************************************
+
+class ImageSequenceDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    ImageSequenceDialog(QWidget *parent = 0);
+
+    bool showDialog();
+
+private:
+    QStringList images;
+
+    QTimer *timer;
+
+    QLabel *lblImage;
+
+    QPushButton *btnClose;
+    QPushButton *btnAnimate;
+    QSlider *sliderAnimateSequence;
+
+private slots:
+    void doAnimate();
+    void doAnimateNextStep();
+    void doAnimateSequence(int index);
     void doClose();
 };
 

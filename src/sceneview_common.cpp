@@ -421,9 +421,7 @@ void SceneViewCommon::drawBlend(Point start, Point end, double red, double green
 ErrorResult SceneViewCommon::saveImageToFile(const QString &fileName, int w, int h)
 {
     QPixmap pixmap = renderScenePixmap(w, h);
-    if (pixmap.save(fileName, "PNG"))
-        resizeGL(width(), height());
-    else
+    if (!pixmap.save(fileName, "PNG"))
         return ErrorResult(ErrorResultType_Critical, tr("Image cannot be saved to the file '%1'.").arg(fileName));
 
     return ErrorResult();
