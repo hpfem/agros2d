@@ -156,8 +156,6 @@ void SceneViewCommon3D::paintAxes()
     glVertex3d(35, 0, 0);
     glEnd();
 
-    // renderText(38, height() - fontMetrics().height() / 4.0, Util::problem()->config()->labelX());
-
     // y-axis
     glBegin(GL_QUADS);
     glVertex3d(-1, 0, 0);
@@ -181,8 +179,6 @@ void SceneViewCommon3D::paintAxes()
     glVertex3d(0, 35, 0);
     glEnd();
 
-    // renderText(1fontMetrics().width(Util::problem()->config()->labelY()) / 4.0, height() - 138, Util::problem()->config()->labelY());
-
     // z-axis
     glBegin(GL_QUADS);
     glVertex3d(-1, 0, 0);
@@ -205,8 +201,6 @@ void SceneViewCommon3D::paintAxes()
     glVertex3d(0, 5, -16);
     glVertex3d(0, 0, -35);
     glEnd();
-
-    // renderText(1fontMetrics().width(Util::problem()->config()->labelY()) / 4.0, height() - 138, Util::problem()->config()->labelY());
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }

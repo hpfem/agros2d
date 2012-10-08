@@ -142,9 +142,7 @@ protected:
     const double *paletteColor2(const int pos) const;
     const double *paletteColor(double x) const;
     const double *paletteColorOrder(int n) const;
-    void paletteCreate(int texture);
-    void paletteFilter(int texture);
-    void paletteUpdateTexAdjust();
+    void paletteCreate();
 
 protected slots:
     virtual void clearGLLists() {}

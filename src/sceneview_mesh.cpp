@@ -371,8 +371,13 @@ void SceneViewMesh::paintOrder()
     // paint labels
     if (Util::config()->orderLabel)
     {
-        QFont fontLabel = font();
-        fontLabel.setPointSize(fontLabel.pointSize() - 3);
+        loadProjectionViewPort();
+
+        glScaled(2.0 / width(), 2.0 / height(), 1.0);
+        glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
+
+        // post font
+        TextureFont fnt = labelPostFont();
 
         m_postHermes->ordView().lock_data();
 
@@ -382,22 +387,17 @@ void SceneViewMesh::paintOrder()
         double2* lbox;
         int nl = m_postHermes->ordView().get_labels(lvert, ltext, lbox);
 
-        // scene font metrics
-        QFontMetrics metrics = QFontMetrics(Util::config()->postFont);
-
-        Point size((2.0/width()*metrics.width(" "))/m_scale2d*aspect(),
-                   (2.0/height()*metrics.height())/m_scale2d);
-
         for (int i = 0; i < nl; i++)
         {
             glColor3d(1, 1, 1);
             // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
             {
-                renderText(vert[lvert[i]][0] - size.x / 2.0,
-                           vert[lvert[i]][1] - size.y / 2.0,
-                           0.0,
-                           ltext[i],
-                           fontLabel);
+                Point scr = untransform(vert[lvert[i]][0],
+                                        vert[lvert[i]][1]);
+
+                printRulersAt(scr.x - fnt.glyphs[GLYPH_M].width / 2.0,
+                              scr.y - fnt.height / 2.0,
+                              ltext[i]);
             }
         }
 
@@ -435,11 +435,11 @@ void SceneViewMesh::paintOrderColorBar()
     TextureFont fnt = labelPostFont();
 
     // dimensions
-    int textWidth = fnt.glyphs[GLYPH_M].width;
+    int textWidth = 6 * fnt.glyphs[GLYPH_M].width;
     int textHeight = fnt.height;
-    Point scaleSize = Point(20 + 6 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*textHeight : 10.0);
-    double scaleLeft = (width() - (20 + 6 * textWidth));
+    Point scaleSize = Point(20 + textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
+    double scaleLeft = (width() - (20 + textWidth));
 
     // blended rectangle
     drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
@@ -455,14 +455,14 @@ void SceneViewMesh::paintOrderColorBar()
     {
         glColor3d(0.0, 0.0, 0.0);
         glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 6 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 6 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 10 + textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
         glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
 
         glColor3d(paletteColorOrder(i)[0], paletteColorOrder(i)[1], paletteColorOrder(i)[2]);
         glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 6 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 6 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 10 + textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
         glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
     }
     glEnd();
@@ -473,7 +473,7 @@ void SceneViewMesh::paintOrderColorBar()
     glColor3d(1.0, 1.0, 1.0);
     for (int i = 1; i < max + 1; i++)
     {
-        printPostAt(scaleLeft + 10 + 3.5 * textWidth - 2 - scaleBorder.x,
+        printPostAt(scaleLeft + 10 + 3.5 * fnt.glyphs[GLYPH_M].width - 2 - scaleBorder.x,
                     scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
                     QString::number(i));
     }

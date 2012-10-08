@@ -337,15 +337,14 @@ void PostHermes::processSolved()
 
 SceneViewPostInterface::SceneViewPostInterface(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon(parent),
-      m_postHermes(postHermes)
+      m_postHermes(postHermes),
+      m_textureScalar(-1)
 {
 }
 
 void SceneViewPostInterface::initializeGL()
 {
     clearGLLists();
-
-    glGenTextures(1, &m_textureScalar);
 
     SceneViewCommon::initializeGL();
 }
@@ -536,7 +535,7 @@ const double* SceneViewPostInterface::paletteColorOrder(int n) const
     }
 }
 
-void SceneViewPostInterface::paletteCreate(int texture)
+void SceneViewPostInterface::paletteCreate()
 {
     int paletteSteps = Util::config()->paletteFilter ? 100 : Util::config()->paletteSteps;
 
@@ -551,25 +550,18 @@ void SceneViewPostInterface::paletteCreate(int texture)
     for (int i = paletteSteps; i < 256; i++)
         memcpy(palette[i], palette[paletteSteps-1], 3);
 
-    glBindTexture(GL_TEXTURE_1D, texture);
-    glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-}
+    if (m_textureScalar == -1)
+        glDeleteTextures(1, &m_textureScalar);
+    glGenTextures(1, &m_textureScalar);
 
-void SceneViewPostInterface::paletteFilter(int texture)
-{
     int palFilter = Util::config()->paletteFilter ? GL_LINEAR : GL_NEAREST;
-    glBindTexture(GL_TEXTURE_1D, texture);
+    glBindTexture(GL_TEXTURE_1D, m_textureScalar);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, palFilter);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, palFilter);
-    paletteUpdateTexAdjust();
-}
+    glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 
-void SceneViewPostInterface::paletteUpdateTexAdjust()
-{
-    int paletteSteps = Util::config()->paletteFilter ? 100 : Util::config()->paletteSteps;
-
+    // adjust palette
     if (Util::config()->paletteFilter)
     {
         m_texScale = (double) (paletteSteps-1) / 256.0;
@@ -591,14 +583,14 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
-    // scene font metrics
-    QFontMetrics metrics = QFontMetrics(Util::config()->postFont);
+    // post font
+    TextureFont fnt = labelPostFont();
 
     // dimensions
-    int textWidth = metrics.width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
-    int textHeight = metrics.height();
+    int textWidth = fnt.glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace).length() + 1);
+    int textHeight = fnt.height;
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*metrics.height() : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -638,6 +630,8 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
     glEnd();
 
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
     glDisable(GL_TEXTURE_1D);
 
     // ticks
@@ -654,6 +648,13 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     }
     glEnd();
 
+    // line
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
+    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
+    glEnd();
+
     // labels
     for (int i = 1; i < numTicks+1; i++)
     {
@@ -666,11 +667,9 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? metrics.width("-") : 0.0),
-                   scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
-                   0.0,
-                   QString::number(value, '+e', Util::config()->scalarDecimalPlace),
-                   Util::config()->postFont);
+        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? fnt.glyphs[GLYPH_M].width : 0.0),
+                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
+                    QString::number(value, '+e', Util::config()->scalarDecimalPlace));
     }
 
     // variable
@@ -681,19 +680,10 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
                 arg(Util::config()->scalarVariable != "" ? localVariable->shortname() : "").
                 arg(Util::config()->scalarVariable != "" ? localVariable->unit() : "");
 
-        renderText(scaleLeft + scaleSize.x / 2.0 - metrics.width(str) / 2.0,
-                   scaleBorder.y + scaleSize.y - 20.0,
-                   0.0,
-                   str,
-                   Util::config()->postFont);
-    }
-
-    // line
-    glLineWidth(1.0);
-    glBegin(GL_LINES);
-    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
-    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
-    glEnd();
+        printPostAt(scaleLeft + scaleSize.x / 2.0 - fnt.glyphs[GLYPH_M].width * str.count() / 2.0,
+                    scaleBorder.y + scaleSize.y - 20.0,
+                    str);
+    }  
 }
 
 void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max)
@@ -705,14 +695,14 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
-    // scene font metrics
-    QFontMetrics metrics = QFontMetrics(Util::config()->postFont);
+    // post font
+    TextureFont fnt = labelPostFont();
 
     // dimensions
-    int textWidth = metrics.width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
-    int textHeight = metrics.height();
+    int textWidth = fnt.glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace).length() + 1);
+    int textHeight = fnt.height;
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*metrics.height() : 10.0);
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width()
                         - (((Util::config()->showParticleView && Util::config()->showScalarView) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
@@ -759,6 +749,13 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     }
     glEnd();
 
+    // line
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
+    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
+    glEnd();
+
     // labels
     for (int i = 1; i < numTicks+1; i++)
     {
@@ -767,26 +764,15 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        renderText(scaleLeft + 33.0 + ((value >= 0.0) ? metrics.width("-") : 0.0),
-                   scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
-                   0.0,
-                   QString::number(value, '+e', Util::config()->scalarDecimalPlace),
-                   Util::config()->postFont);
+        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? fnt.glyphs[GLYPH_M].width : 0.0),
+                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
+                    QString::number(value, '+e', Util::config()->scalarDecimalPlace));
     }
 
     // variable
-    QString str = QString("%1 (m/s)").
-            arg(tr("Vel."));
+    QString str = QString("%1 (m/s)").arg(tr("Vel."));
 
-    renderText(scaleLeft + scaleSize.x / 2.0 - metrics.width(str) / 2.0,
-               scaleBorder.y + scaleSize.y - 20.0,
-               0.0,
-               str,
-               Util::config()->postFont);
-    // line
-    glLineWidth(1.0);
-    glBegin(GL_LINES);
-    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
-    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
-    glEnd();
+    printPostAt(scaleLeft + scaleSize.x / 2.0 - fnt.glyphs[GLYPH_M].width  * str.count() / 2.0,
+                scaleBorder.y + scaleSize.y - 20.0,
+                str);
 }

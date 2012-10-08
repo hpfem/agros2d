@@ -152,8 +152,7 @@ void SceneViewPost3D::resizeGL(int w, int h)
 {
     if (Util::problem()->isSolved())
     {
-        paletteFilter(m_textureScalar);
-        paletteCreate(m_textureScalar);
+        paletteCreate();
     }
 
     SceneViewCommon::resizeGL(w, h);
@@ -168,8 +167,7 @@ void SceneViewPost3D::paintScalarField3D()
 
     if (m_listScalarField3D == -1)
     {
-        paletteFilter(m_textureScalar);
-        paletteCreate(m_textureScalar);
+        paletteCreate();
 
         m_listScalarField3D = glGenLists(1);
         glNewList(m_listScalarField3D, GL_COMPILE);
@@ -213,6 +211,7 @@ void SceneViewPost3D::paintScalarField3D()
         // set texture for coloring
         glEnable(GL_TEXTURE_1D);
         glBindTexture(GL_TEXTURE_1D, m_textureScalar);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         // set texture transformation matrix
         glMatrixMode(GL_TEXTURE);
@@ -261,6 +260,8 @@ void SceneViewPost3D::paintScalarField3D()
 
         // remove normal
         delete [] normal;
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         glDisable(GL_TEXTURE_1D);
         glDisable(GL_LIGHTING);

@@ -45,7 +45,7 @@ SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon2D(postHermes, parent),
       m_listContours(-1),
       m_listVectors(-1),
-      m_listScalarField(-1),
+      m_listScalarField(-1),      
       m_selectedPoint(Point())
 {
     createActionsPost2D();
@@ -276,8 +276,7 @@ void SceneViewPost2D::resizeGL(int w, int h)
 {
     if (Util::problem()->isSolved())
     {
-        paletteFilter(m_textureScalar);
-        paletteCreate(m_textureScalar);
+        paletteCreate();
     }
 
     SceneViewCommon::resizeGL(w, h);
@@ -376,8 +375,7 @@ void SceneViewPost2D::paintScalarField()
 
     if (m_listScalarField == -1)
     {
-        paletteFilter(m_textureScalar);
-        paletteCreate(m_textureScalar);
+        paletteCreate();
 
         m_listScalarField = glGenLists(1);
         glNewList(m_listScalarField, GL_COMPILE);
@@ -441,6 +439,8 @@ void SceneViewPost2D::paintScalarField()
         glMatrixMode(GL_TEXTURE);
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         m_postHermes->linScalarView().unlock_data();
 
