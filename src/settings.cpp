@@ -106,8 +106,8 @@ void SettingsWidget::save()
     Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
     Util::config()->snapToGrid = chkSnapToGrid->isChecked();
 
-    Util::config()->rulersFont = cmbRulersFont->findData(cmbRulersFont->currentIndex());
-    Util::config()->postFont = cmbPostFont->findData(cmbPostFont->currentIndex());
+    Util::config()->rulersFont = cmbRulersFont->itemData(cmbRulersFont->currentIndex()).toString();
+    Util::config()->postFont = cmbPostFont->itemData(cmbPostFont->currentIndex()).toString();
 
     Util::config()->showAxes = chkShowAxes->isChecked();
     Util::config()->showRulers = chkShowRulers->isChecked();

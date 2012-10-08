@@ -109,7 +109,10 @@ void SceneViewWidget::iconLeft(const QIcon &left)
 
 // **********************************************************************************************
 
-SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+SceneViewCommon::SceneViewCommon(QWidget *parent)
+    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
+      m_textureLabelRulers(-1),
+      m_textureLabelPost(-1)
 {
     m_mainWindow = (QMainWindow *) parent;
 
@@ -161,16 +164,20 @@ void SceneViewCommon::initializeGL()
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE);
     glDisable(GL_MULTISAMPLE);
-
-    glGenTextures(1, &m_textureLabelRulers);
-    initFont(m_textureLabelRulers, labelRulersFont());
-
-    glGenTextures(1, &m_textureLabelPost);
-    initFont(m_textureLabelPost, labelPostFont());
 }
 
 void SceneViewCommon::resizeGL(int w, int h)
 {
+    if (m_textureLabelRulers == -1)
+        glDeleteTextures(1, &m_textureLabelRulers);
+    glGenTextures(1, &m_textureLabelRulers);
+    initFont(m_textureLabelRulers, labelRulersFont());
+
+    if (m_textureLabelPost == -1)
+        glDeleteTextures(1, &m_textureLabelPost);
+    glGenTextures(1, &m_textureLabelPost);
+    initFont(m_textureLabelPost, labelPostFont());
+
     setupViewport(w, h);
 }
 

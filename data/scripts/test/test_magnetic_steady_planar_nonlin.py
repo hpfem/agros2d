@@ -6,8 +6,6 @@ problem.coordinate_type = "planar"
 problem.name = "Magnetic Steadystate Planar Magnet"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
-problem.time_step = 1.0
-problem.time_total = 1.0
 
 # disable view
 agros2d.view.post2d.scalar = False
