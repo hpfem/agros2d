@@ -48,6 +48,11 @@
         </table>
     </td>
     </tr>
+    {{#TRANSIENT_ADAPTIVE}}
+        <tr>
+            <td colspan="2"><div style="text-align: center;">Time step length</div><div id="chart_time_step_length" style="width:100%; height:130px;"></div></td>
+        </tr>
+    {{/TRANSIENT_ADAPTIVE}}
     {{/TRANSIENT}}
 	<tr>
 	<td>

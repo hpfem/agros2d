@@ -109,8 +109,11 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
     problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
 
-    if (Util::problem()->isTransient())
+    if (Util::problem()->isTransient()){
         problemInfo.ShowSection("TRANSIENT");
+        if(Util::problem()->config()->isTransientAdaptive())
+            problemInfo.ShowSection("TRANSIENT_ADAPTIVE");
+    }
     problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
@@ -305,6 +308,26 @@ void InfoWidget::finishLoading(bool ok)
     {
         webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.js"));
         webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.flot.js"));
+
+        if(Util::problem()->isTransient() && Util::problem()->config()->isTransientAdaptive())
+        {
+
+            QString dataTimeSteps = "[";
+            QList<double> lengths = Util::problem()->timeStepLengths();
+            for (int i = 0; i < lengths.size(); i++)
+            {
+                dataTimeSteps += QString("[%1, %2], ").arg(i+1).arg(lengths.at(i));
+            }
+            dataTimeSteps += "]";
+
+
+            // chart DOFs vs. steps
+            QString commandTimeSteps = QString("$(function () { $.plot($(\"#chart_time_step_length\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });})").
+                    arg(dataTimeSteps);
+
+            webView->page()->mainFrame()->evaluateJavaScript(commandTimeSteps);
+
+        }
 
         foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
         {

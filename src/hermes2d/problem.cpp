@@ -66,6 +66,14 @@ void ProblemConfig::clear()
     m_numConstantTimeSteps = 10;
 }
 
+bool ProblemConfig::isTransientAdaptive() const
+{
+    if((m_timeStepMethod == TimeStepMethod_BDF2) ||
+       (m_timeStepMethod == TimeStepMethod_BDF2Combine) ||
+       (m_timeStepMethod == TimeStepMethod_BDF2AOrder))
+        return true;
+    return false;
+}
 
 Problem::Problem()
 {
