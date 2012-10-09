@@ -40,10 +40,12 @@ private:
     SceneViewPostInterface *m_sceneViewInterface;
     PostHermes *m_postHermes;
 
+    int m_timeSteps;
     int m_timeStep;
     QList<double> m_timeLevels;
 
     int m_adaptiveStep;
+    int m_adaptiveSteps;
 
     QTabWidget *tabType;
     QWidget *tabTransient;
@@ -55,20 +57,15 @@ private:
     QPushButton *btnClose;
     QPushButton *btnAnimate;
 
-    LineEditDouble *txtDelay;
-    QLabel *lblStep;
-    QLabel *lblStepLabel;
-
     QCheckBox *chkSaveImages;
 
     // adaptivity
-    QSpinBox *txtAdaptiveAnimateFrom;
-    QSpinBox *txtAdaptiveAnimateTo;
+    QLabel *lblAdaptiveStep;
     QSlider *sliderAdaptiveAnimate;
 
     // transient
-    QSpinBox *txtTransientAnimateFrom;
-    QSpinBox *txtTransientAnimateTo;
+    QLabel *lblTransientStep;
+    QLabel *lblTransientTime;
     QSlider *sliderTransientAnimate;
 
     void createControls();
@@ -79,14 +76,10 @@ private slots:
     void doAdaptiveAnimate();
     void doAdaptiveAnimateNextStep();
     void doAdaptiveSetStep(int index);
-    void doAdaptiveValueFromChanged(int index);
-    void doAdaptiveValueToChanged(int index);
 
     void doTransientAnimate();
     void doTransientAnimateNextStep();
     void doTransientSetStep(int index);
-    void doTransientValueFromChanged(int index);
-    void doTransientValueToChanged(int index);
 
     void tabChanged(int index);
 
@@ -105,21 +98,27 @@ public:
 
     bool showDialog();
 
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+
 private:
-    QStringList images;
+    QStringList m_images;
+    QPixmap m_currentImage;
 
     QTimer *timer;
-
     QLabel *lblImage;
+    QLabel *lblStep;
 
     QPushButton *btnClose;
     QPushButton *btnAnimate;
     QSlider *sliderAnimateSequence;
 
 private slots:
-    void doAnimate();
-    void doAnimateNextStep();
-    void doAnimateSequence(int index);
+    void updateImage();
+    void animate();
+    void animateNextStep();
+    void animateSequence(int index);
+
     void doClose();
 };
 

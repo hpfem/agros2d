@@ -76,9 +76,6 @@ private:
     // check version
     QCheckBox *chkCheckVersion;
 
-    // experimental features
-    QCheckBox *chkExperimentalFeatures;
-
     // log std out
     QCheckBox *chkLogStdOut;
 

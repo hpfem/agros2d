@@ -44,8 +44,7 @@ void Config::loadWorkspace()
 {
     QSettings settings;
 
-    // experimental features
-    showExperimentalFeatures = settings.value("SceneViewSettings/ExperimentalFeatures", false).toBool();
+    // std log
     showLogStdOut = settings.value("SceneViewSettings/LogStdOut", false).toBool();
 
     // general
@@ -248,8 +247,7 @@ void Config::saveWorkspace()
 {
     QSettings settings;
 
-    // experimental features
-    settings.setValue("SceneViewSettings/ExperimentalFeatures", showExperimentalFeatures);
+    // std log
     settings.setValue("SceneViewSettings/LogStdOut", showLogStdOut);
 
     // general

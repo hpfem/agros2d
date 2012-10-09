@@ -95,9 +95,6 @@ void ConfigDialog::load()
     txtArgumentTriangle->setText(Util::config()->commandTriangle);
     txtArgumentGmsh->setText(Util::config()->commandGmsh);
 
-    // experimental features
-    chkExperimentalFeatures->setChecked(Util::config()->showExperimentalFeatures);
-
     // std log
     chkLogStdOut->setChecked(Util::config()->showLogStdOut);
 
@@ -164,9 +161,6 @@ void ConfigDialog::save()
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();
     Util::config()->commandGmsh = txtArgumentGmsh->text();
-
-    // experimental features
-    Util::config()->showExperimentalFeatures = chkExperimentalFeatures->isChecked();
 
     // std log
     Util::config()->showLogStdOut = chkLogStdOut->isChecked();
@@ -285,15 +279,12 @@ QWidget *ConfigDialog::createMainWidget()
     // other
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
     chkCheckVersion = new QCheckBox(tr("Check new version during startup"));
-    chkExperimentalFeatures = new QCheckBox(tr("Enable experimental features"));
-    chkExperimentalFeatures->setToolTip(tr("Warning: Agros2D should be unstable!"));
 
     chkLogStdOut = new QCheckBox(tr("Print application log to stdout."));
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);
     layoutOther->addWidget(chkCheckVersion);
-    layoutOther->addWidget(chkExperimentalFeatures);
     layoutOther->addWidget(chkLogStdOut);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));
