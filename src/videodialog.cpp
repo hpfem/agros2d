@@ -37,9 +37,13 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes 
     QDir(tempProblemDir()).mkdir("video");
 
     // store timestep
-    m_timeStep = Util::scene()->activeTimeStep();
+    m_timeStepStore = Util::scene()->activeTimeStep();
     // store adaptive step
-    m_adaptiveStep = Util::scene()->activeAdaptivityStep();
+    m_adaptiveStepStore = Util::scene()->activeAdaptivityStep();
+
+    m_showRulersStore = Util::config()->showRulers;
+    m_showGridStore = Util::config()->showGrid;
+    m_showAxesStore = Util::config()->showAxes;
 
     // timer create images
     timer = new QTimer(this);
@@ -50,8 +54,20 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes 
 
 VideoDialog::~VideoDialog()
 {
+    QSettings settings;
+    settings.setValue("VideoDialog/ShowGrid", chkFigureShowGrid->isChecked());
+    settings.setValue("VideoDialog/ShowRulers", chkFigureShowRulers->isChecked());
+    settings.setValue("VideoDialog/ShowAxes", chkFigureShowAxes->isChecked());
+    settings.setValue("VideoDialog/SaveImages", chkSaveImages->isChecked());
+
     // restore previous timestep
-    Util::scene()->setActiveTimeStep(m_timeStep);
+    Util::scene()->setActiveTimeStep(m_timeStepStore);
+    Util::scene()->setActiveAdaptivityStep(m_adaptiveStepStore);
+
+    Util::config()->showRulers = m_showRulersStore;
+    Util::config()->showGrid = m_showGridStore;
+    Util::config()->showAxes = m_showAxesStore;
+
     m_postHermes->refresh();
 
     delete timer;
@@ -61,11 +77,11 @@ void VideoDialog::showDialog()
 {
     // time steps
     m_timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-    m_timeSteps = m_timeLevels.count();
-    lblTransientStep->setText(tr("%1 / %2").arg(0).arg(m_timeLevels.last()));
+    m_timeSteps = m_timeLevels.count() - 1;
+    lblTransientStep->setText(tr("%1 / %2").arg(0).arg(m_timeSteps));
     lblTransientTime->setText(tr("%1 / %2 s").arg(0.0).arg(m_timeLevels.last()));
     sliderTransientAnimate->blockSignals(true);
-    sliderTransientAnimate->setMinimum(1);
+    sliderTransientAnimate->setMinimum(0);
     sliderTransientAnimate->setMaximum(m_timeSteps);
     sliderTransientAnimate->blockSignals(false);
 
@@ -112,17 +128,29 @@ void VideoDialog::createControls()
     layoutButton->addWidget(btnVideo);
     layoutButton->addWidget(btnClose);
 
+    QSettings settings;
+
     chkSaveImages = new QCheckBox(tr("Save images to disk"));
-    chkSaveImages->setChecked(true);
+    chkSaveImages->setChecked(settings.value("VideoDialog/SaveImages", true).toBool());
+
+    chkFigureShowGrid = new QCheckBox(tr("Show grid"));
+    chkFigureShowGrid->setChecked(settings.value("VideoDialog/ShowGrid", Util::config()->showGrid).toBool());
+    chkFigureShowRulers = new QCheckBox(tr("Show rulers"));
+    chkFigureShowRulers->setChecked(settings.value("VideoDialog/ShowRulers", Util::config()->showRulers).toBool());
+    chkFigureShowAxes = new QCheckBox(tr("Show axes"));
+    chkFigureShowAxes->setChecked(settings.value("VideoDialog/ShowAxes", Util::config()->showAxes).toBool());
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
     layoutButtonViewport->addWidget(btnAnimate);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tabType);
-    layout->addWidget(chkSaveImages);
-    layout->addLayout(layoutButton);
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(tabType, 0, 0, 1, 2);
+    layout->addWidget(chkSaveImages, 1, 0);
+    layout->addWidget(chkFigureShowGrid, 1, 1);
+    layout->addWidget(chkFigureShowRulers, 2, 1);
+    layout->addWidget(chkFigureShowAxes, 3, 1);
+    layout->addLayout(layoutButton, 10, 0, 1, 2);
 
     setLayout(layout);
 
@@ -133,7 +161,7 @@ QWidget *VideoDialog::createControlsViewportTimeSteps()
 {
     sliderTransientAnimate = new QSlider(Qt::Horizontal);
     sliderTransientAnimate->setTickPosition(QSlider::TicksBelow);
-    connect(sliderTransientAnimate, SIGNAL(valueChanged(int)), this, SLOT(doTransientSetStep(int)));
+    connect(sliderTransientAnimate, SIGNAL(valueChanged(int)), this, SLOT(setTransientStep(int)));
 
     lblTransientStep = new QLabel();
     lblTransientTime = new QLabel();
@@ -158,7 +186,7 @@ QWidget *VideoDialog::createControlsViewportAdaptiveSteps()
 {
     sliderAdaptiveAnimate = new QSlider(Qt::Horizontal);
     sliderAdaptiveAnimate->setTickPosition(QSlider::TicksBelow);
-    connect(sliderAdaptiveAnimate, SIGNAL(valueChanged(int)), this, SLOT(doAdaptiveSetStep(int)));
+    connect(sliderAdaptiveAnimate, SIGNAL(valueChanged(int)), this, SLOT(adaptiveSetStep(int)));
 
     lblAdaptiveStep = new QLabel();
 
@@ -177,7 +205,7 @@ QWidget *VideoDialog::createControlsViewportAdaptiveSteps()
     return widViewport;
 }
 
-void VideoDialog::doTransientAnimate()
+void VideoDialog::transientAnimate()
 {
     if (timer->isActive())
     {
@@ -188,7 +216,7 @@ void VideoDialog::doTransientAnimate()
     }
     else
     {
-        doTransientSetStep(1);
+        setTransientStep(1);
 
         btnClose->setEnabled(false);
 
@@ -197,36 +225,40 @@ void VideoDialog::doTransientAnimate()
     }
 }
 
-void VideoDialog::doTransientAnimateNextStep()
+void VideoDialog::transientAnimateNextStep()
 {
-    if (Util::scene()->activeTimeStep() < m_timeSteps - 1)
+    if (Util::scene()->activeTimeStep() < m_timeSteps)
     {
-        doTransientSetStep(Util::scene()->activeTimeStep() + 2);
+        setTransientStep(Util::scene()->activeTimeStep() + 1);
     }
     else
     {
-        doTransientAnimate();
+        transientAnimate();
     }
 }
 
-void VideoDialog::doTransientSetStep(int index)
+void VideoDialog::setTransientStep(int transientStep)
 {
-    Util::scene()->setActiveTimeStep(index - 1);
+    Util::config()->showRulers = chkFigureShowRulers->isChecked();
+    Util::config()->showGrid = chkFigureShowGrid->isChecked();
+    Util::config()->showAxes = chkFigureShowAxes->isChecked();
+
+    Util::scene()->setActiveTimeStep(transientStep);
     m_postHermes->refresh();
 
-    sliderTransientAnimate->setValue(index);
+    sliderTransientAnimate->setValue(transientStep);
 
     if (chkSaveImages->isChecked())
-        m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(index)).right(8)));
+        m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(transientStep)).right(8)));
 
-    QString time = QString::number(m_timeLevels[index - 1], 'g');
-    lblTransientStep->setText(tr("%1 / %2 s").arg(time).arg(m_timeLevels.last()));
-    lblTransientTime->setText(tr("%1 / %2").arg(index).arg(m_timeSteps));
+    QString time = QString::number(m_timeLevels[transientStep], 'g');
+    lblTransientStep->setText(tr("%1 / %2").arg(transientStep).arg(m_timeSteps));
+    lblTransientTime->setText(tr("%1 / %2 s").arg(time).arg(m_timeLevels.last()));
 
     QApplication::processEvents();
 }
 
-void VideoDialog::doAdaptiveAnimate()
+void VideoDialog::adaptiveAnimate()
 {
     if (timer->isActive())
     {
@@ -237,7 +269,7 @@ void VideoDialog::doAdaptiveAnimate()
     }
     else
     {
-        doAdaptiveSetStep(1);
+        adaptiveSetStep(1);
 
         btnClose->setEnabled(false);
 
@@ -246,24 +278,28 @@ void VideoDialog::doAdaptiveAnimate()
     }
 }
 
-void VideoDialog::doAdaptiveAnimateNextStep()
+void VideoDialog::adaptiveAnimateNextStep()
 {
     if (Util::scene()->activeAdaptivityStep() < m_adaptiveSteps - 1)
-        doAdaptiveSetStep(Util::scene()->activeAdaptivityStep() + 2);
+        adaptiveSetStep(Util::scene()->activeAdaptivityStep() + 2);
     else
-        doAdaptiveAnimate();
+        adaptiveAnimate();
 }
 
-void VideoDialog::doAdaptiveSetStep(int index)
+void VideoDialog::adaptiveSetStep(int adaptiveStep)
 {
-    Util::scene()->setActiveAdaptivityStep(index - 1);
+    Util::config()->showRulers = chkFigureShowRulers->isChecked();
+    Util::config()->showGrid = chkFigureShowGrid->isChecked();
+    Util::config()->showAxes = chkFigureShowAxes->isChecked();
+
+    Util::scene()->setActiveAdaptivityStep(adaptiveStep - 1);
     m_postHermes->refresh();
 
-    sliderAdaptiveAnimate->setValue(index);
-    lblAdaptiveStep->setText(tr("%1 / %2").arg(index).arg(m_adaptiveSteps));
+    sliderAdaptiveAnimate->setValue(adaptiveStep);
+    lblAdaptiveStep->setText(tr("%1 / %2").arg(adaptiveStep).arg(m_adaptiveSteps));
 
     if (chkSaveImages->isChecked())
-        m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(index)).right(8)));
+        m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(adaptiveStep)).right(8)));
 
     QApplication::processEvents();
 }
@@ -275,13 +311,13 @@ void VideoDialog::tabChanged(int index)
 
     if (tabType->currentWidget() == tabTransient)
     {
-        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(doTransientAnimate()));
-        connect(timer, SIGNAL(timeout()), this, SLOT(doTransientAnimateNextStep()));
+        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(transientAnimate()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(transientAnimateNextStep()));
     }
     else if (tabType->currentWidget() == tabAdaptivity)
     {
-        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(doAdaptiveAnimate()));
-        connect(timer, SIGNAL(timeout()), this, SLOT(doAdaptiveAnimateNextStep()));
+        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(adaptiveAnimate()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(adaptiveAnimateNextStep()));
     }
 }
 
@@ -301,6 +337,10 @@ void VideoDialog::doClose()
 ImageSequenceDialog::ImageSequenceDialog(QWidget *parent)
     : QDialog(parent)
 {
+    setModal(true);
+    setWindowIcon(icon("video"));
+    setWindowTitle(tr("Video"));
+
     // read images
     QStringList filters;
     filters << "*.png";
@@ -314,6 +354,24 @@ ImageSequenceDialog::ImageSequenceDialog(QWidget *parent)
     sliderAnimateSequence->setMaximum(m_images.count() - 1);
     connect(sliderAnimateSequence, SIGNAL(valueChanged(int)), this, SLOT(animateSequence(int)));
 
+    int speed = 300;
+    cmbSpeed = new QComboBox();
+    cmbSpeed->addItem(" 10 %", speed / 0.10);
+    cmbSpeed->addItem(" 25 %", speed / 0.25);
+    cmbSpeed->addItem(" 50 %", speed / 0.50);
+    cmbSpeed->addItem(" 75 %", speed / 0.75);
+    cmbSpeed->addItem("100 %", speed);
+    cmbSpeed->addItem("150 %", speed / 1.50);
+    cmbSpeed->addItem("200 %", speed / 2.00);
+    cmbSpeed->addItem("300 %", speed / 3.00);
+    cmbSpeed->addItem("400 %", speed / 4.00);
+    cmbSpeed->addItem("500 %", speed / 5.00);
+
+    QSettings settings;
+    cmbSpeed->setCurrentIndex(cmbSpeed->findData(settings.value("ImageSequenceDialog/Speed").toDouble()));
+    if (cmbSpeed->currentIndex() == -1)
+        cmbSpeed->setCurrentIndex(cmbSpeed->findData(speed));
+
     btnAnimate = new QPushButton(tr("Run"));
 
     btnClose = new QPushButton(tr("Close"));
@@ -325,6 +383,8 @@ ImageSequenceDialog::ImageSequenceDialog(QWidget *parent)
     QHBoxLayout *layoutControls = new QHBoxLayout();
     layoutControls->addWidget(sliderAnimateSequence);
     layoutControls->addWidget(lblStep);
+    layoutControls->addWidget(new QLabel(tr("Speed:")));
+    layoutControls->addWidget(cmbSpeed);
     layoutControls->addWidget(btnAnimate);
     layoutControls->addWidget(btnClose);
 
@@ -344,6 +404,12 @@ ImageSequenceDialog::ImageSequenceDialog(QWidget *parent)
 
     if (m_images.count() > 0)
         animateSequence(0);
+}
+
+ImageSequenceDialog::~ImageSequenceDialog()
+{
+    QSettings settings;
+    settings.setValue("ImageSequenceDialog/Speed", cmbSpeed->itemData(cmbSpeed->currentIndex()));
 }
 
 bool ImageSequenceDialog::showDialog()
@@ -372,7 +438,7 @@ void ImageSequenceDialog::animate()
         btnClose->setEnabled(false);
 
         btnAnimate->setText(tr("Stop"));
-        timer->start(1e2);
+        timer->start(cmbSpeed->itemData(cmbSpeed->currentIndex()).toDouble());
     }
 }
 

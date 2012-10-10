@@ -41,11 +41,14 @@ private:
     PostHermes *m_postHermes;
 
     int m_timeSteps;
-    int m_timeStep;
+    int m_timeStepStore;
     QList<double> m_timeLevels;
 
-    int m_adaptiveStep;
+    int m_adaptiveStepStore;
     int m_adaptiveSteps;
+    bool m_showRulersStore;
+    bool m_showGridStore;
+    bool m_showAxesStore;
 
     QTabWidget *tabType;
     QWidget *tabTransient;
@@ -58,6 +61,9 @@ private:
     QPushButton *btnAnimate;
 
     QCheckBox *chkSaveImages;
+    QCheckBox *chkFigureShowGrid;
+    QCheckBox *chkFigureShowRulers;
+    QCheckBox *chkFigureShowAxes;
 
     // adaptivity
     QLabel *lblAdaptiveStep;
@@ -73,13 +79,13 @@ private:
     QWidget *createControlsViewportTimeSteps();
 
 private slots:
-    void doAdaptiveAnimate();
-    void doAdaptiveAnimateNextStep();
-    void doAdaptiveSetStep(int index);
+    void adaptiveAnimate();
+    void adaptiveAnimateNextStep();
+    void adaptiveSetStep(int index);
 
-    void doTransientAnimate();
-    void doTransientAnimateNextStep();
-    void doTransientSetStep(int index);
+    void transientAnimate();
+    void transientAnimateNextStep();
+    void setTransientStep(int transientStep);
 
     void tabChanged(int index);
 
@@ -95,6 +101,7 @@ class ImageSequenceDialog : public QDialog
 
 public:
     ImageSequenceDialog(QWidget *parent = 0);
+    ~ImageSequenceDialog();
 
     bool showDialog();
 
@@ -112,6 +119,7 @@ private:
     QPushButton *btnClose;
     QPushButton *btnAnimate;
     QSlider *sliderAnimateSequence;
+    QComboBox *cmbSpeed;
 
 private slots:
     void updateImage();

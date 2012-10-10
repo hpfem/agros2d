@@ -90,6 +90,13 @@
           <module:vector_form axi_linear="ac_anr * r * vval" axi_newton="- ac_anr * r * vval" i="1" id="form" j="1" planar_linear="ac_anr * vval" planar_newton="- ac_anr * vval"/>
           <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
+        <module:boundary id="acoustic_impedance" name="Impedance boundary condition">
+          <module:quantity id="acoustic_impedance"/>
+          <module:matrix_form axi_linear="- r * 2 * PI * f / ac_Z0 * uval * vval" axi_newton="- r * 2 * PI * f / ac_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="- 2 * PI * f / ac_Z0 * uval * vval" planar_newton="- 2 * PI * f / ac_Z0 * uval * vval" symmetric="1"/>
+          <module:matrix_form axi_linear="r * 2 * PI * f / ac_Z0 * uval * vval" axi_newton="r * 2 * PI * f / ac_Z0 * uval * vval" i="2" id="form" j="1" planar_linear="2 * PI * f / ac_Z0 * uval * vval" planar_newton="2 * PI * f / ac_Z0 * uval * vval" symmetric="1"/>
+          <module:vector_form axi_linear="0" axi_newton="- r * 2 * PI * f / ac_Z0 * upval * vval" i="1" id="form" j="2" planar_linear="0" planar_newton="- 2 * PI * f / ac_Z0 * upval * vval"/>
+          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / ac_Z0 * upval * vval" i="2" id="form" j="1" planar_linear="0" planar_newton="2 * PI * f / ac_Z0 * upval * vval"/>
+        </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
   </module:surface>
