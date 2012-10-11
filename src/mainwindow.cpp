@@ -629,10 +629,6 @@ void MainWindow::createToolBars()
     tlbGeometry->setOrientation(Qt::Horizontal);
     tlbGeometry->setAllowedAreas(Qt::TopToolBarArea);
     // tlbGeometry->setMovable(false);
-#ifdef Q_WS_MAC
-    tlbProblem->setFixedHeight(iconHeight);
-    tlbProblem->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
-#endif
     tlbGeometry->addSeparator();
     tlbGeometry->addAction(actUndo);
     tlbGeometry->addAction(actRedo);
