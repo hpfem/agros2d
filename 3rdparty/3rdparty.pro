@@ -28,7 +28,13 @@ linux-g++|linux-g++-64|linux-g++-32 {
     TARGET = ../libs/agros2d_3rdparty
 
     INCLUDEPATH += ctemplate \
-            ctemplate/unix \
+            ctemplate/linux \
+            .
+}
+
+macx-g++ {
+    INCLUDEPATH += ctemplate \
+            ctemplate/osx \
             .
 }
 
