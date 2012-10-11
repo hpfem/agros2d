@@ -149,7 +149,7 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
 
     insertHtml(str);
 
-    repaint();
+    repaint();    
 }
 
 void LogWidget::welcomeMessage()

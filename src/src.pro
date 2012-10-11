@@ -36,6 +36,7 @@ SOURCES += util.cpp \
     gui/htmledit.cpp \
     gui/textedit.cpp \
     gui/systemoutput.cpp \
+    gui/scenewidget.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
@@ -52,8 +53,7 @@ SOURCES += util.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
-    scenebasic.cpp \
-    # sceneview.cpp \
+    scenebasic.cpp \    
     sceneview_common.cpp \
     sceneview_common2d.cpp \
     sceneview_common3d.cpp \
@@ -121,6 +121,7 @@ HEADERS += util.h \
     gui/htmledit.h \
     gui/textedit.h \
     gui/systemoutput.h \
+    gui/scenewidget.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \

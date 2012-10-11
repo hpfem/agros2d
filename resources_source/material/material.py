@@ -98,11 +98,58 @@ def Copper_density_0(t) :
 	else :
 		return 1.000000e+100
 
+def Aluminum_tc_0_0(t) :
+	# C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, 
+	# v1, p279 (1972)
+	# 99.9999%
+	# well-annealed with residual resistivity of 0.000594 uohm-cm; 
+	# error is 2-3% near RT, 3-5% at others
+	# data is in units of W/(m-K)
+	# t must be in degrees Kelvin for these equations
+	if t >= 0.0 and t < 14.0 :
+		return 2.066400e+00*t*t*t*t -5.643400e+01*t*t*t +2.034200e+02*t*t +3.895700e+03*t
+	elif t >= 14.0 and t < 50.0 :
+		return -4.660500e-01*t*t*t +6.317500e+01*t*t -2.950900e+03*t +4.914800e+04
+	elif t >= 50.0 and t < 82.0 :
+		return 2.291700e-04*t*t*t*t -7.867600e-02*t*t*t +1.034800e+01*t*t -6.260000e+02*t +1.511700e+04
+	elif t >= 82.0 and t < 297.0 :
+		return 2.648700e-07*t*t*t*t -2.398800e-04*t*t*t +8.087500e-02*t*t -1.207600e+01*t +9.130900e+02
+	elif t >= 297.0 and t <= 933.0 :
+		return 2.002000e-12*t*t*t*t*t -6.537000e-09*t*t*t*t +8.431300e-06*t*t*t -5.413400e-03*t*t +1.684000e+00*t +3.964600e+01
+	else :
+		return 1.000000e+100
 
-Tmin = 4.0
-Tmax = 1250.0
+def Aluminum_spec_heat_0(t) :
+	# B.J. McBride, S. Gordon and M.A. Reno, NASA Technical Paper 3287 
+	# (1993)
+	# data is in units of J/(kg-K)
+	# t must be in degrees Kelvin for these equations
+	if t >= 100.0 and t < 320.0 :
+		return -4.608220e-08*t*t*t*t +7.112754e-05*t*t*t -4.125401e-02*t*t +1.118100e+01*t -2.904161e+02
+	elif t >= 320.0 and t <= 933.0 :
+		return 1.303608e-06*t*t*t -2.070065e-03*t*t +1.513029e+00*t +5.956585e+02
+	else :
+		return 1.000000e+100
 
-fce = Copper_density_0
+def Aluminum_density_0(t) :
+	# F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941) and 
+	# R. Feder, A.S. Norwick, Physical Review, v109, p1959 (1958) and 
+	# D.F. Gibbons, Physical Review, v112, p136 (1958)
+	# data is in units of kg/m^3
+	# t must be in degrees Kelvin for these equations
+	if t >= 20.0 and t < 130.0 :
+		return 5.734155e-08*t*t*t*t -1.700864e-05*t*t*t +1.016054e-03*t*t -2.751647e-02*t +2.734317e+03
+	elif t >= 130.0 and t <= 933.0 :
+		return 5.177991e-13*t*t*t*t*t -1.367828e-09*t*t*t*t +1.358200e-06*t*t*t -7.012444e-04*t*t -6.011681e-03*t +2.736893e+03
+	else :
+		return 1.000000e+100
+
+
+
+Tmin = 100.0
+Tmax = 933.0
+
+fce = Aluminum_density_0
 
 N = 50
 xK = ""
