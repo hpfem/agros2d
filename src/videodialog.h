@@ -40,10 +40,15 @@ private:
     SceneViewPostInterface *m_sceneViewInterface;
     PostHermes *m_postHermes;
 
-    int m_timeStep;
+    int m_timeSteps;
+    int m_timeStepStore;
     QList<double> m_timeLevels;
 
-    int m_adaptiveStep;
+    int m_adaptiveStepStore;
+    int m_adaptiveSteps;
+    bool m_showRulersStore;
+    bool m_showGridStore;
+    bool m_showAxesStore;
 
     QTabWidget *tabType;
     QWidget *tabTransient;
@@ -54,42 +59,73 @@ private:
     // file
     QPushButton *btnClose;
     QPushButton *btnAnimate;
-    QProgressBar *progressBar;
 
-    LineEditDouble *txtDelay;
-    QLabel *lblStep;
-    QLabel *lblStepLabel;
+    QCheckBox *chkSaveImages;
+    QCheckBox *chkFigureShowGrid;
+    QCheckBox *chkFigureShowRulers;
+    QCheckBox *chkFigureShowAxes;
 
     // adaptivity
-    QSpinBox *txtAdaptiveAnimateFrom;
-    QSpinBox *txtAdaptiveAnimateTo;
-    QSlider *sldAdaptiveAnimate;
+    QLabel *lblAdaptiveStep;
+    QSlider *sliderAdaptiveAnimate;
 
     // transient
-    QSpinBox *txtTransientAnimateFrom;
-    QSpinBox *txtTransientAnimateTo;
-    QSlider *sldTransientAnimate;
+    QLabel *lblTransientStep;
+    QLabel *lblTransientTime;
+    QSlider *sliderTransientAnimate;
 
     void createControls();
     QWidget *createControlsViewportAdaptiveSteps();
     QWidget *createControlsViewportTimeSteps();
 
 private slots:
-    void doAdaptiveAnimate();
-    void doAdaptiveAnimateNextStep();
-    void doAdaptiveSetStep(int index);
-    void doAdaptiveValueFromChanged(int index);
-    void doAdaptiveValueToChanged(int index);
+    void adaptiveAnimate();
+    void adaptiveAnimateNextStep();
+    void adaptiveSetStep(int index);
 
-    void doTransientAnimate();
-    void doTransientAnimateNextStep();
-    void doTransientSetStep(int index);
-    void doTransientValueFromChanged(int index);
-    void doTransientValueToChanged(int index);
-
-    void doCreateImages();
+    void transientAnimate();
+    void transientAnimateNextStep();
+    void setTransientStep(int transientStep);
 
     void tabChanged(int index);
+
+    void doClose();
+    void doVideo();
+};
+
+// *********************************************************************************
+
+class ImageSequenceDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    ImageSequenceDialog(QWidget *parent = 0);
+    ~ImageSequenceDialog();
+
+    bool showDialog();
+
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+
+private:
+    QStringList m_images;
+    QPixmap m_currentImage;
+
+    QTimer *timer;
+    QLabel *lblImage;
+    QLabel *lblStep;
+
+    QPushButton *btnClose;
+    QPushButton *btnAnimate;
+    QSlider *sliderAnimateSequence;
+    QComboBox *cmbSpeed;
+
+private slots:
+    void updateImage();
+    void animate();
+    void animateNextStep();
+    void animateSequence(int index);
 
     void doClose();
 };

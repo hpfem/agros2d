@@ -21,12 +21,45 @@ CODECFORTR = UTF-8
 RC_FILE = src.rc
 RESOURCES = src.qrc
 
-SOURCES += util.cpp \
+SOURCES += util/fonts/ubuntu-10.cpp \
+    util/fonts/ubuntu-12.cpp \
+    util/fonts/ubuntu-14.cpp \
+    util/fonts/ubuntu-16.cpp \
+    util/fonts/ubuntu-18.cpp \
+    util/fonts/ubuntu-20.cpp \
+    util/fonts/ubuntu-22.cpp \
+    util/fonts/ubuntu-24.cpp \
+    util/fonts/liberation-10.cpp \
+    util/fonts/liberation-12.cpp \
+    util/fonts/liberation-14.cpp \
+    util/fonts/liberation-16.cpp \
+    util/fonts/liberation-18.cpp \
+    util/fonts/liberation-20.cpp \
+    util/fonts/liberation-22.cpp \
+    util/fonts/liberation-24.cpp \
+    util/fonts/google-droid-10.cpp \
+    util/fonts/google-droid-12.cpp \
+    util/fonts/google-droid-14.cpp \
+    util/fonts/google-droid-16.cpp \
+    util/fonts/google-droid-18.cpp \
+    util/fonts/google-droid-20.cpp \
+    util/fonts/google-droid-22.cpp \
+    util/fonts/google-droid-24.cpp \
+    util/fonts/computer-modern-10.cpp \
+    util/fonts/computer-modern-12.cpp \
+    util/fonts/computer-modern-14.cpp \
+    util/fonts/computer-modern-16.cpp \
+    util/fonts/computer-modern-18.cpp \
+    util/fonts/computer-modern-20.cpp \
+    util/fonts/computer-modern-22.cpp \
+    util/fonts/computer-modern-24.cpp \
+    util.cpp \
     value.cpp \
     scene.cpp \
     util/checkversion.cpp \
     util/point.cpp \
     util/xml.cpp \
+    util/glfont.cpp \
     gui/common.cpp \
     gui/chart.cpp \
     gui/filebrowser.cpp \
@@ -36,6 +69,7 @@ SOURCES += util.cpp \
     gui/htmledit.cpp \
     gui/textedit.cpp \
     gui/systemoutput.cpp \
+    gui/scenewidget.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
@@ -53,7 +87,6 @@ SOURCES += util.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
     scenebasic.cpp \
-    # sceneview.cpp \
     sceneview_common.cpp \
     sceneview_common2d.cpp \
     sceneview_common3d.cpp \
@@ -103,7 +136,6 @@ SOURCES += util.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
     gui/groupbox.cpp
-    # ../weakform_new/plugins/electrostatic/electrostatic_filter.cpp
 
 HEADERS += util.h \
     value.h \
@@ -112,6 +144,7 @@ HEADERS += util.h \
     util/checkversion.h \
     util/point.h \
     util/xml.h \
+    util/glfont.h \
     gui/common.h \
     gui/chart.h \
     gui/filebrowser.h \
@@ -121,6 +154,7 @@ HEADERS += util.h \
     gui/htmledit.h \
     gui/textedit.h \
     gui/systemoutput.h \
+    gui/scenewidget.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \
@@ -226,6 +260,7 @@ LIBS += -lagros2d_3rdparty
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
+    TARGET = ../libs/agros2d
 
     QMAKE_CXXFLAGS += -Wno-unused-variable
 }
@@ -258,8 +293,7 @@ win32-msvc2010 {
     TARGET = ../../libs/agros2d
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
-    QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
-    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
@@ -272,6 +306,7 @@ win32-msvc2010 {
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../3rdparty/ctemplate/windows
+    INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 }
 

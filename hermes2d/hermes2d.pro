@@ -186,7 +186,7 @@ macx-g++ {
 
 win32-msvc2010 {
 	QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
-	QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
 	QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
@@ -202,11 +202,13 @@ win32-msvc2010 {
 	
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
-	INCLUDEPATH += d:/hpfem/hermes/dependencies/include
+    INCLUDEPATH += c:/hpfem/hermes/dependencies/include
+    INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
     LIBS += -Lc:/Python27/libs
 	LIBS += -Lc:/Qt/4.8.2/lib
-	LIBS += -Ld:/hpfem/hermes/dependencies/lib
+    LIBS += -Lc:/hpfem/hermes/dependencies/lib
+    LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -lblas

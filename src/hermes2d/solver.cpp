@@ -538,6 +538,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         throw(AgrosSolverException("DOF is zero"));
     }
 
+    cout << QString("updating with time %1\n").arg(Util::problem()->actualTime()).toStdString() << endl;
+
     // update timedep values
     foreach (Field* field, m_block->fields())
         field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
@@ -655,8 +657,7 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
     {
         cout << QString("deltaA %1, deltaB %2\n").arg(bdf2ATable.delta()).arg(bdf2Table->delta()).toStdString() << endl;
         for(int i = 0; i < ndof; i++)
-            coefVec2[i] = 10 * m_lastVector.getLast()[i];
-//            coefVec2[i] = bdf2Table->delta() * m_lastVector.getLast()[i] - bdf2ATable.delta() * coefVec2[i];
+            coefVec2[i] = bdf2Table->delta() * m_lastVector.getLast()[i] - bdf2ATable.delta() * coefVec2[i];
 
         Solution<Scalar>::vector_to_solutions(coefVec2, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
         Util::solutionStore()->removeSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));

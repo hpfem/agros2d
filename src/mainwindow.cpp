@@ -1428,7 +1428,7 @@ void MainWindow::setControls()
     // disconnect signals
     actSceneZoomIn->disconnect();
     actSceneZoomOut->disconnect();
-    actSceneZoomOut->disconnect();
+    actSceneZoomBestFit->disconnect();
 
     if (problemWidget->actProperties->isChecked())
     {

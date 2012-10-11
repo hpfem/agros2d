@@ -25,91 +25,14 @@
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 
-#include "scenebasic.h"
-#include "scenenode.h"
-#include "sceneedge.h"
-#include "scenelabel.h"
-
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 
-SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWidget(parent)
-{
-    createControls(widget);
-
-    iconLeft(widget->iconView());
-    labelLeft(widget->labelView());
-
-    connect(widget, SIGNAL(labelCenter(QString)), this, SLOT(labelCenter(QString)));
-    connect(widget, SIGNAL(labelRight(QString)), this, SLOT(labelRight(QString)));
-}
-
-SceneViewWidget::SceneViewWidget(QWidget *widget, QWidget *parent) : QWidget(parent)
-{
-    createControls(widget);
-
-    iconLeft(icon("scene-info"));
-    labelLeft(tr("Info"));
-}
-
-SceneViewWidget::~SceneViewWidget()
-{
-}
-
-void SceneViewWidget::createControls(QWidget *widget)
-{
-    // label
-    sceneViewLabelPixmap = new QLabel();
-    sceneViewLabelLeft = new QLabel();
-    sceneViewLabelLeft->setMinimumWidth(150);
-    sceneViewLabelCenter = new QLabel();
-    sceneViewLabelCenter->setMinimumWidth(150);
-    sceneViewLabelRight = new QLabel();
-    sceneViewLabelRight->setMinimumWidth(200);
-
-    QHBoxLayout *sceneViewLabelLayout = new QHBoxLayout();
-    sceneViewLabelLayout->addWidget(sceneViewLabelPixmap);
-    sceneViewLabelLayout->addWidget(sceneViewLabelLeft);
-    sceneViewLabelLayout->addStretch(0.5);
-    sceneViewLabelLayout->addWidget(sceneViewLabelCenter);
-    sceneViewLabelLayout->addStretch(0.5);
-    sceneViewLabelLayout->addWidget(sceneViewLabelRight);
-
-    // view
-    QVBoxLayout *sceneViewLayout = new QVBoxLayout();
-    sceneViewLayout->addLayout(sceneViewLabelLayout);
-    sceneViewLayout->addWidget(widget);
-    sceneViewLayout->setStretch(1, 1);
-
-    setLayout(sceneViewLayout);
-}
-
-void SceneViewWidget::labelLeft(const QString &left)
-{
-    sceneViewLabelLeft->setText(left);
-}
-
-void SceneViewWidget::labelCenter(const QString &center)
-{
-    sceneViewLabelCenter->setText(center);
-}
-
-void SceneViewWidget::labelRight(const QString &right)
-{
-    sceneViewLabelRight->setText(right);
-}
-
-void SceneViewWidget::iconLeft(const QIcon &left)
-{
-    QPixmap pixmap = left.pixmap(QSize(16, 16));
-    sceneViewLabelPixmap->setPixmap(pixmap);
-}
-
-
-// **********************************************************************************************
-
-SceneViewCommon::SceneViewCommon(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+SceneViewCommon::SceneViewCommon(QWidget *parent)
+    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
+      m_textureLabelRulers(-1),
+      m_textureLabelPost(-1)
 {
     m_mainWindow = (QMainWindow *) parent;
 
@@ -160,16 +83,53 @@ void SceneViewCommon::initializeGL()
 {
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE);
+
+#ifdef Q_WS_X11
+    glDisable(GL_MULTISAMPLE);
+#endif
+#ifdef Q_WS_WIN
+#endif
+#ifdef Q_WS_MAC
+    glDisable(GL_MULTISAMPLE);
+#endif
 }
 
 void SceneViewCommon::resizeGL(int w, int h)
 {
+    if (m_textureLabelRulers == -1)
+        glDeleteTextures(1, &m_textureLabelRulers);
+    glGenTextures(1, &m_textureLabelRulers);
+    initFont(m_textureLabelRulers, textureFontFromStringKey(Util::config()->rulersFont));
+
+    if (m_textureLabelPost == -1)
+        glDeleteTextures(1, &m_textureLabelPost);
+    glGenTextures(1, &m_textureLabelPost);
+    initFont(m_textureLabelPost, textureFontFromStringKey(Util::config()->postFont));
+
     setupViewport(w, h);
 }
 
 void SceneViewCommon::setupViewport(int w, int h)
 {
     glViewport(0, 0, w, h);
+}
+
+void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
+{
+    // rulers font
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
+
+    glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
+    printAt(penX, penY, text, fnt);
+}
+
+void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
+{
+    // post font
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
+
+    glBindTexture(GL_TEXTURE_2D, m_textureLabelPost);
+    printAt(penX, penY, text, fnt);
 }
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
@@ -193,6 +153,68 @@ void SceneViewCommon::loadProjectionViewPort()
     glLoadIdentity();
 }
 
+void SceneViewCommon::printAt(int penX, int penY, const QString &text, const TextureFont *fnt)
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    for (int i = 0; i < text.length(); ++i)
+    {
+        const TextureGlyph *glyph = NULL;
+        for (int j = 0; j < fnt->glyphs_count; ++j)
+        {
+            if (fnt->glyphs[j].charcode == text.at(i) )
+            {
+                glyph = &fnt->glyphs[j];
+                break;
+            }
+        }
+        if (!glyph)
+        {
+            continue;
+        }
+
+        int x = penX + glyph->offset_x;
+        int y = penY + glyph->offset_y;
+        int w  = glyph->width;
+        int h  = glyph->height;
+
+        glBegin(GL_TRIANGLES);
+        {
+            glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y );
+            glTexCoord2f(glyph->s0, glyph->t1); glVertex2i(x,   y-h);
+            glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
+            glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y  );
+            glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
+            glTexCoord2f(glyph->s1, glyph->t0); glVertex2i(x+w, y  );
+        }
+        glEnd();
+
+        penX += glyph->advance_x;
+        penY += glyph->advance_y;
+
+    }
+    glDisable(GL_BLEND);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void SceneViewCommon::initFont(int textureID, const TextureFont *fnt)
+{    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, fnt->tex_width, fnt->tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, fnt->tex_data);
+    // glBindTexture(GL_TEXTURE_2D, texid);
+}
+
 // events *****************************************************************************************************************************
 
 void SceneViewCommon::closeEvent(QCloseEvent *event)
@@ -207,7 +229,6 @@ void SceneViewCommon::doZoomBestFit()
     RectPoint rect = Util::scene()->boundingBox();
 
     doZoomRegion(rect.start, rect.end);
-    doZoomRegion(rect.start, rect.end); //TODO - FIX twice run is needed
 }
 
 void SceneViewCommon::doZoomIn()
@@ -248,8 +269,6 @@ void SceneViewCommon::clear()
 
 void SceneViewCommon::refresh()
 {
-    // resize(((QWidget *) parent())->size());
-
     emit mousePressed();
 
     paintGL();
@@ -317,9 +336,7 @@ void SceneViewCommon::drawBlend(Point start, Point end, double red, double green
 ErrorResult SceneViewCommon::saveImageToFile(const QString &fileName, int w, int h)
 {
     QPixmap pixmap = renderScenePixmap(w, h);
-    if (pixmap.save(fileName, "PNG"))
-        resizeGL(width(), height());
-    else
+    if (!pixmap.save(fileName, "PNG"))
         return ErrorResult(ErrorResultType_Critical, tr("Image cannot be saved to the file '%1'.").arg(fileName));
 
     return ErrorResult();

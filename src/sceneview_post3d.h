@@ -43,8 +43,6 @@ public:
     virtual QString labelView() { return tr("Postprocessor 3D"); }
 
 protected:
-    virtual int textureScalar() { return 3; }
-
     virtual void mousePressEvent(QMouseEvent *event);
 
     virtual void paintGL();
@@ -65,6 +63,7 @@ private:
 
 private slots:
     virtual void refresh();
+    virtual void clearGLLists();
 };
 
 #endif // SCENEVIEWPOST3D_H

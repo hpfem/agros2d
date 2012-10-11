@@ -84,7 +84,7 @@ macx-g++ {
 
 win32-msvc2010 {
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
-	QMAKE_CXXFLAGS_RELEASE += -MD
+    QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     #DEFINES += XERCES_STATIC_LIBRARY
@@ -95,22 +95,25 @@ win32-msvc2010 {
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../3rdparty/ctemplate/windows
+    INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
+    LIBS += -L../libs
     LIBS += -L../hermes2d/libs
     LIBS += -L../3rdparty/libs
     LIBS += -L../weakform/libs
-	LIBS += -Ld:/hpfem/hermes/dependencies/lib
+    LIBS += -Lc:/hpfem/hermes/dependencies/lib
+    LIBS += -Ld:/hpfem/hermes/dependencies/lib
 
-	LIBS += -Lc:/Python27/libs
+    LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lvcomp
-    LIBS += -lqwtd
+    LIBS += -lqwt
     LIBS += -lpython27
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -lpthreadVCE2
-    LIBS += -lxerces-c_static_3D
+    LIBS += -lxerces-c_static_3
     LIBS += -ladvapi32
     LIBS += -lws2_32
 }

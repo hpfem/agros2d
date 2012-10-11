@@ -64,10 +64,16 @@ void SceneViewCommon2D::updatePosition(const Point &point)
     emit labelRight(tr("Position: [%1; %2]").arg(point.x, 8, 'f', 5).arg(point.y, 8, 'f', 5));
 }
 
-Point SceneViewCommon2D::position(const Point &point) const
+Point SceneViewCommon2D::transform(const Point &point) const
 {
-    return Point((2.0/width()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
-                 -(2.0/height()*point.y-1)/m_scale2d+m_offset2d.y);
+    return Point((2.0 / width() * point.x - 1) / m_scale2d*aspect() + m_offset2d.x,
+                 - (2.0 / height() * point.y - 1) / m_scale2d + m_offset2d.y);
+}
+
+Point SceneViewCommon2D::untransform(const Point &point) const
+{
+    return Point((1.0 + (point.x - m_offset2d.x) * m_scale2d/aspect()) * width() / 2.0,
+                 (1.0 + (point.y - m_offset2d.y) * m_scale2d) * height() / 2.0);
 }
 
 void SceneViewCommon2D::loadProjection2d(bool setScene)
@@ -150,8 +156,8 @@ void SceneViewCommon2D::paintGrid()
 {
     loadProjection2d(true);
 
-    Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(width(), height()));
+    Point cornerMin = transform(Point(0, 0));
+    Point cornerMax = transform(Point(width(), height()));
 
     glDisable(GL_DEPTH_TEST);
 
@@ -238,9 +244,11 @@ void SceneViewCommon2D::paintAxes()
               Util::config()->colorCross.blueF());
 
     Point rulersArea = rulersAreaSize();
-
     Point border = (Util::config()->showRulers) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
                                                 : Point(10.0, 10.0);
+
+    // rulers font
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
 
     // x-axis
     glBegin(GL_QUADS);
@@ -256,7 +264,7 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 35, border.y + 1);
     glEnd();
 
-    renderText(border.x + 38, height() - border.y + fontMetrics().height() / 4.0, Util::problem()->config()->labelX());
+    printRulersAt(border.x + 38, border.y + 1 - fnt->size / 2.0, Util::problem()->config()->labelX());
 
     // y-axis
     glBegin(GL_QUADS);
@@ -272,8 +280,7 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 1, border.y + 35);
     glEnd();
 
-    renderText(border.x - fontMetrics().width(Util::problem()->config()->labelY()) / 4.0, height() - border.y - 38,
-               Util::problem()->config()->labelY());
+    printRulersAt(border.x + 1 - fnt->glyphs[GLYPH_M].width / 2.0, border.y + 38, Util::problem()->config()->labelY());
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
@@ -282,8 +289,8 @@ void SceneViewCommon2D::paintRulers()
 {
     loadProjection2d(true);
 
-    Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(width(), height()));
+    Point cornerMin = transform(Point(0, 0));
+    Point cornerMax = transform(Point(width(), height()));
 
     double gridStep = Util::config()->gridStep;
     if (gridStep < EPS_ZERO)
@@ -378,13 +385,16 @@ void SceneViewCommon2D::paintRulers()
 
         glEnd();
 
-        QFont font = FONT;
-        font.setPointSize(font.pointSize() - 1.0);
+        // labels
+        loadProjectionViewPort();
+
+        glScaled(2.0 / width(), 2.0 / height(), 1.0);
+        glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
+
+        // rulers font
+        const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
 
         // horizontal labels
-        QString textsizehor = QString::number(gridStep);
-        double sizehor = 2.0/width()*(QFontMetrics(font).width(textsizehor) / 6.0)/m_scale2d*aspect();
-
         for (int i = cornerMin.x/gridStep - 1; i < cornerMax.x/gridStep + 1; i++)
         {
             if ((i*gridStep < cornerMin.x + rulersArea.x) || (i*gridStep > cornerMax.x))
@@ -397,13 +407,13 @@ void SceneViewCommon2D::paintRulers()
                     text = QString::number(i*gridStep, 'e', 2);
                 else
                     text = QString::number(i*gridStep, 'f', 6);
-                renderTextPos(i*gridStep + sizehor, cornerMax.y, QString(text + "        ").left(9), false, font);
+
+                Point scr = untransform(i*gridStep, cornerMax.y);
+                printRulersAt(scr.x + fnt->glyphs[GLYPH_M].width / 2.0, scr.y + 2, QString(text + "        ").left(9));
             }
         }
 
         // vertical labels
-        double sizever = 2.0/width()*(QFontMetrics(font).height() * 7.0 / 6.0)/m_scale2d;
-
         for (int i = cornerMax.y/gridStep - 1; i < cornerMin.y/gridStep + 1; i++)
         {
             if ((i*gridStep < cornerMax.y + rulersArea.y) || (i*gridStep > cornerMin.y))
@@ -416,9 +426,10 @@ void SceneViewCommon2D::paintRulers()
                     text = QString::number(i*gridStep, 'e', 2);
                 else
                     text = QString::number(i*gridStep, 'f', 7);
-                renderTextPos(cornerMin.x + rulersArea.x / 20.0, i*gridStep - sizever, QString(((i >= 0) ? " " : "") + text + "        ").left(9), false, font);
-            }
 
+                Point scr = untransform(cornerMin.x + rulersArea.x / 20.0, i*gridStep);
+                printRulersAt(scr.x, scr.y - fnt->height * 1.1, QString(((i >= 0) ? " " : "") + text + "        ").left(9));
+            }
         }
     }
 }
@@ -427,12 +438,12 @@ void SceneViewCommon2D::paintRulersHints()
 {
     loadProjection2d(true);
 
-    Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(width(), height()));
+    Point cornerMin = transform(Point(0, 0));
+    Point cornerMax = transform(Point(width(), height()));
 
     glColor3d(0.0, 0.53, 0.0);
 
-    Point p = position(m_lastPos.x(), m_lastPos.y());
+    Point p = transform(m_lastPos.x(), m_lastPos.y());
     Point rulersAreaScreen = rulersAreaSize();
     Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
                      2.0/height()*rulersAreaScreen.y/m_scale2d);
@@ -461,8 +472,8 @@ void SceneViewCommon2D::paintZoomRegion()
     // zoom region
     if (m_zoomRegion)
     {
-        Point posStart = position(Point(m_zoomRegionPos.x(), m_zoomRegionPos.y()));
-        Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
+        Point posStart = transform(Point(m_zoomRegionPos.x(), m_zoomRegionPos.y()));
+        Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         drawBlend(posStart, posEnd,
                   Util::config()->colorHighlighted.redF(),
@@ -482,7 +493,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
     if ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier))
         emit mouseSceneModeChanged(MouseSceneMode_Move);
 
-    Point stepTemp = position(Point(width(), height()));
+    Point stepTemp = transform(Point(width(), height()));
     stepTemp.x = stepTemp.x - m_offset2d.x;
     stepTemp.y = stepTemp.y - m_offset2d.y;
     double step = qMin(stepTemp.x, stepTemp.y) / 10.0;
@@ -536,7 +547,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
         // add node with coordinates under mouse pointer
         if ((event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier))
         {
-            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+            Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
             Util::scene()->doNewNode(p);
         }
     }
@@ -546,7 +557,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
         // add label with coordinates under mouse pointer
         if ((event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier))
         {
-            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+            Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
             Util::scene()->doNewLabel(p);
         }
     }
@@ -569,37 +580,13 @@ void SceneViewCommon2D::keyReleaseEvent(QKeyEvent *event)
     emit mouseSceneModeChanged(MouseSceneMode_Nothing);
 }
 
-void SceneViewCommon2D::renderTextPos(double x, double y,
-                                      const QString &str, bool blend, QFont fnt)
-{
-    QFont fontLocal = font();
-    if (fnt != QFont())
-        fontLocal = fnt;
-
-    if (blend)
-    {
-        Point size(2.0/width()*QFontMetrics(fontLocal).width(" ")/m_scale2d*aspect(),
-                   2.0/height()*QFontMetrics(fontLocal).height()/m_scale2d);
-
-        double xs = x - size.x / 2.0;
-        double ys = y - size.y * 1.15 / 3.2;
-        double xe = xs + size.x * (str.size() + 1);
-        double ye = ys + size.y * 1.15;
-
-        drawBlend(Point(xs, ys), Point(xe, ye));
-    }
-
-    renderText(x, y, 0.0, str, fontLocal);
-}
-
 // rulers
 Point SceneViewCommon2D::rulersAreaSize()
 {
-    QFontMetrics metrics(FONT);
-    int hints = metrics.height();
+    // rulers font
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
 
-    return Point(metrics.width("MMMMMMMMMM") + hints,
-                 metrics.height() + hints);
+    return Point(fnt->glyphs[GLYPH_M].width * 11, fnt->height * 2);
 }
 
 void SceneViewCommon2D::setZoom(double power)
@@ -615,20 +602,22 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
         return;
 
     Point rulersAreaScreen = rulersAreaSize();
-    Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
-                     2.0/height()*rulersAreaScreen.y/m_scale2d);
 
-    m_offset2d.x = ((Util::config()->showRulers) ? start.x+end.x - rulersArea.x : start.x + end.x) / 2.0;
-    m_offset2d.y = (start.y + end.y)/2.0;
+    double sceneWidth = end.x - start.x;
+    double sceneHeight = end.y - start.y;
 
-    double sceneWidth = end.x-start.x;
-    double sceneHeight = end.y-start.y;
-
-    double maxScene = (((double) ((Util::config()->showRulers) ? width() - rulersArea.x :
-                                                                 width()) / (double) height()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
+    double w = (Util::config()->showRulers) ? width() - rulersAreaScreen.x : width();
+    double h = (Util::config()->showRulers) ? height() - rulersAreaScreen.y : height();
+    double maxScene = ((w / h) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
         m_scale2d = 1.8/maxScene;
+
+    Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
+                     2.0/height()*rulersAreaScreen.y/m_scale2d);
+
+    m_offset2d.x = ((Util::config()->showRulers) ? start.x + end.x - rulersArea.x : start.x + end.x) / 2.0;
+    m_offset2d.y = ((Util::config()->showRulers) ? start.y + end.y - rulersArea.y : start.y + end.y) / 2.0;
 
     setZoom(0);
 }
@@ -682,8 +671,8 @@ void SceneViewCommon2D::mouseReleaseEvent(QMouseEvent *event)
 
         if (m_zoomRegion)
         {
-            Point posStart = position(Point(m_zoomRegionPos.x(), m_zoomRegionPos.y()));
-            Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
+            Point posStart = transform(Point(m_zoomRegionPos.x(), m_zoomRegionPos.y()));
+            Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
             if (actSceneZoomRegion->data().value<bool>())
                 doZoomRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
@@ -707,7 +696,7 @@ void SceneViewCommon2D::mouseMoveEvent(QMouseEvent *event)
 
     setToolTip("");
 
-    Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+    Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
     // zoom or select region
     if (m_zoomRegion)

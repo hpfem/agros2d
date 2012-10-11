@@ -39,13 +39,14 @@ public:
     {{CLASS}}ViewScalarFilter* clone();
 
 protected:
+
     void precalculate(int order, int mask);
-    
+
 private:
-	FieldInfo *m_fieldInfo; 
-	
+    FieldInfo *m_fieldInfo;
+
     QString m_variable;
-    PhysicFieldVariableComp m_physicFieldVariableComp;   
+    PhysicFieldVariableComp m_physicFieldVariableComp;
 };
 
 #endif // {{ID}}_FILTER_H

@@ -112,6 +112,8 @@ private slots:
     void processRangeScalar();
     void processRangeVector();
     void processParticleTracing();
+
+    virtual void clearGLLists() {}
 };
 
 class SceneViewPostInterface : public SceneViewCommon
@@ -127,19 +129,20 @@ protected:
     double m_texScale;
     double m_texShift;
 
+    GLuint m_textureScalar;
+
     PostHermes *m_postHermes;
 
-    virtual int textureScalar() { return -1; }
+    virtual void initializeGL();
 
     void paintScalarFieldColorBar(double min, double max);
     void paintParticleTracingColorBar(double min, double max);
 
     // palette
+    const double *paletteColor2(const int pos) const;
     const double *paletteColor(double x) const;
     const double *paletteColorOrder(int n) const;
-    void paletteCreate(int texture);
-    void paletteFilter(int texture);
-    void paletteUpdateTexAdjust();
+    void paletteCreate();
 
 protected slots:
     virtual void clearGLLists() {}

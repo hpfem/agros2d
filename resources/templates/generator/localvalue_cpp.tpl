@@ -72,7 +72,7 @@ void {{CLASS}}LocalValue::calculate()
                 int adaptivityStep = Util::scene()->activeAdaptivityStep();
                 SolutionMode solutionMode = Util::scene()->activeSolutionType();
                 int timeStep = Util::solutionStore()->nearestTimeStep(m_fieldInfo, Util::scene()->activeTimeStep());
-                if (timeStep != Util::scene()->activeTimeStep())
+                if(timeStep != Util::scene()->activeTimeStep())
                 {
                     adaptivityStep = Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
                     solutionMode = SolutionMode_Normal;

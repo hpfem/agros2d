@@ -40,12 +40,12 @@
                                            PhysicFieldVariableComp physicFieldVariableComp)
     : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
 {
-   
+
 }
 
 {{CLASS}}ViewScalarFilter::~{{CLASS}}ViewScalarFilter()
 {
-    
+
 }
 
 double {{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, int item)
@@ -82,26 +82,14 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
                                                              get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
-    for (int i = 0; i < np; i++)
-    {
-        // k = solution
-        // px = x[i];
-        // py = y[i];
-        // pvalue[k] = value[k][i];
-        // pdx[k] = dudx[k][i];
-        // pdy[k] = dudy[k][i];
-        // linear: material->value(variable->id()).number()
-        // nonlinear: material->value(variable->id()).value(exp)
-
-		{{#VARIABLE_SOURCE}}
-        if ((m_variable == "{{VARIABLE}}")
-                && (m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
-                && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}})
-                && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
+    {{#VARIABLE_SOURCE}}
+    if ((m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}})
+            && (m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
+            && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}})
+            && (m_variable == "{{VARIABLE}}"))
+        for (int i = 0; i < np; i++)
             node->values[0][0][i] = {{EXPRESSION}};
-		{{/VARIABLE_SOURCE}}        	
-
-    }
+    {{/VARIABLE_SOURCE}}
 
     delete [] value;
     delete [] dudx;

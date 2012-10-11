@@ -32,10 +32,7 @@
 #include "hermes2d/module.h"
 
 SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent)
-    : SceneViewCommon2D(postHermes, parent),
-    m_listInitialMesh(-1),
-    m_listSolutionMesh(-1),
-    m_listOrder(-1)
+    : SceneViewCommon2D(postHermes, parent)
 {
     createActionsMesh();
 
@@ -65,13 +62,10 @@ void SceneViewMesh::createActionsMesh()
 
 void SceneViewMesh::refresh()
 {
-    if (m_listInitialMesh != -1) glDeleteLists(m_listInitialMesh, 1);
-    if (m_listSolutionMesh != -1) glDeleteLists(m_listSolutionMesh, 1);
-    if (m_listOrder != -1) glDeleteLists(m_listOrder, 1);
-
-    m_listInitialMesh = -1;
-    m_listSolutionMesh = -1;
-    m_listOrder = -1;
+    m_arrayInitialMesh.clear();
+    m_arraySolutionMesh.clear();
+    m_arrayOrderMesh.clear();
+    m_arrayOrderMeshColor.clear();
 
     setControls();
 
@@ -163,6 +157,8 @@ void SceneViewMesh::paintGL()
     // grid
     if (Util::config()->showGrid) paintGrid();
 
+    QTime time;
+
     // view
     if (Util::problem()->isSolved())
     {
@@ -234,73 +230,80 @@ void SceneViewMesh::paintInitialMesh()
     if (!Util::problem()->isMeshed()) return;
     if (!m_postHermes->initialMeshIsPrepared()) return;
 
-    loadProjection2d(true);
-
-    m_postHermes->linInitialMeshView().lock_data();
-
-    double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
-    int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
-    int3* litTris = m_postHermes->linInitialMeshView().get_triangles();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(Util::config()->colorInitialMesh.redF(),
-              Util::config()->colorInitialMesh.greenF(),
-              Util::config()->colorInitialMesh.blueF());
-    glLineWidth(1.3);
-
-    // edges
-    glBegin(GL_LINES);
-    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+    if (m_arrayInitialMesh.isEmpty())
     {
-        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
-        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
-    }
-    glEnd();
-    /*
-    // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
-    {
-        glVertex2d(linVert[litTris[i][0]][0], linVert[litTris[i][0]][1]);
-        glVertex2d(linVert[litTris[i][1]][0], linVert[litTris[i][1]][1]);
-        glVertex2d(linVert[litTris[i][2]][0], linVert[litTris[i][2]][1]);
-    }
-    glEnd();
-    */
+        m_postHermes->linInitialMeshView().lock_data();
 
-    m_postHermes->linInitialMeshView().unlock_data();
+        double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
+        int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
+
+        // edges
+        for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+        {
+            m_arrayInitialMesh.push_back(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
+            m_arrayInitialMesh.push_back(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+        }
+
+        m_postHermes->linInitialMeshView().unlock_data();
+    }
+    else
+    {
+        loadProjection2d(true);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glColor3d(Util::config()->colorInitialMesh.redF(),
+                  Util::config()->colorInitialMesh.greenF(),
+                  Util::config()->colorInitialMesh.blueF());
+        glLineWidth(1.3);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+
+        glVertexPointer(2, GL_FLOAT, 0, m_arrayInitialMesh.constData());
+        glDrawArrays(GL_LINES, 0, m_arrayInitialMesh.size());
+
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
 }
+
 
 void SceneViewMesh::paintSolutionMesh()
 {
     if (!Util::problem()->isSolved()) return;
     if (!m_postHermes->solutionMeshIsPrepared()) return;
 
-    loadProjection2d(true);
-
-    m_postHermes->linSolutionMeshView().lock_data();
-
-    double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
-    int3* linEdges = m_postHermes->linSolutionMeshView().get_edges();
-
-    // draw initial mesh
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3d(Util::config()->colorSolutionMesh.redF(),
-              Util::config()->colorSolutionMesh.greenF(),
-              Util::config()->colorSolutionMesh.blueF());
-    glLineWidth(1.3);
-
-    // triangles
-    glBegin(GL_LINES);
-    for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
+    if (m_arraySolutionMesh.isEmpty())
     {
-        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
-        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
-    }
-    glEnd();
+        m_postHermes->linSolutionMeshView().lock_data();
 
-    m_postHermes->linSolutionMeshView().unlock_data();
+        double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
+        int3* linEdges = m_postHermes->linSolutionMeshView().get_edges();
+
+        // triangles
+        for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
+        {
+            m_arraySolutionMesh.push_back(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
+            m_arraySolutionMesh.push_back(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+        }
+
+        m_postHermes->linSolutionMeshView().unlock_data();
+    }
+    else
+    {
+        loadProjection2d(true);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glColor3d(Util::config()->colorSolutionMesh.redF(),
+                  Util::config()->colorSolutionMesh.greenF(),
+                  Util::config()->colorSolutionMesh.blueF());
+        glLineWidth(1.3);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+
+        glVertexPointer(2, GL_FLOAT, 0, m_arraySolutionMesh.constData());
+        glDrawArrays(GL_LINES, 0, m_arraySolutionMesh.size());
+
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
 }
 
 void SceneViewMesh::paintOrder()
@@ -308,13 +311,8 @@ void SceneViewMesh::paintOrder()
     if (!Util::problem()->isSolved()) return;
     if (!m_postHermes->orderIsPrepared()) return;
 
-    loadProjection2d(true);
-
-    if (m_listOrder == -1)
+    if (m_arrayOrderMesh.isEmpty())
     {
-        m_listOrder = glGenLists(1);
-        glNewList(m_listOrder, GL_COMPILE);
-
         // order scalar view
         m_postHermes->ordView().lock_data();
 
@@ -330,40 +328,56 @@ void SceneViewMesh::paintOrder()
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
         }
 
-        glEnable(GL_POLYGON_OFFSET_FILL);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
         // triangles
-        glBegin(GL_TRIANGLES);
         for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
-            glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
+            QVector3D colorVector = QVector3D(paletteColorOrder(color)[0],
+                                              paletteColorOrder(color)[1],
+                                              paletteColorOrder(color)[2]);
 
-            glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
-            glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
-            glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
+            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][0]][0], vert[tris[i][0]][1]));
+            m_arrayOrderMeshColor.push_back(colorVector);
+
+            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][1]][0], vert[tris[i][1]][1]));
+            m_arrayOrderMeshColor.push_back(colorVector);
+
+            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][2]][0], vert[tris[i][2]][1]));
+            m_arrayOrderMeshColor.push_back(colorVector);
         }
-        glEnd();
-
-        glDisable(GL_POLYGON_OFFSET_FILL);
 
         m_postHermes->ordView().unlock_data();
-
-        glEndList();
-
-        glCallList(m_listOrder);
     }
     else
     {
-        glCallList(m_listOrder);
+        loadProjection2d(true);
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);
+
+        glVertexPointer(2, GL_FLOAT, 0, m_arrayOrderMesh.constData());
+        glColorPointer(3, GL_FLOAT, 0, m_arrayOrderMeshColor.constData());
+        glDrawArrays(GL_TRIANGLES, 0, m_arrayOrderMesh.size());
+
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_COLOR_ARRAY);
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
     // paint labels
     if (Util::config()->orderLabel)
     {
-        QFont fontLabel = font();
-        fontLabel.setPointSize(fontLabel.pointSize() - 3);
+        loadProjectionViewPort();
+
+        glScaled(2.0 / width(), 2.0 / height(), 1.0);
+        glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
+
+        // post font
+        const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
 
         m_postHermes->ordView().lock_data();
 
@@ -373,22 +387,17 @@ void SceneViewMesh::paintOrder()
         double2* lbox;
         int nl = m_postHermes->ordView().get_labels(lvert, ltext, lbox);
 
-        // scene font metrics
-        QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
-
-        Point size((2.0/width()*metrics.width(" "))/m_scale2d*aspect(),
-                   (2.0/height()*metrics.height())/m_scale2d);
-
         for (int i = 0; i < nl; i++)
         {
             glColor3d(1, 1, 1);
             // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
             {
-                renderText(vert[lvert[i]][0] - size.x / 2.0,
-                           vert[lvert[i]][1] - size.y / 2.0,
-                           0.0,
-                           ltext[i],
-                           fontLabel);
+                Point scr = untransform(vert[lvert[i]][0],
+                                        vert[lvert[i]][1]);
+
+                printRulersAt(scr.x - fnt->glyphs[GLYPH_M].width / 2.0,
+                              scr.y - fnt->height / 2.0,
+                              ltext[i]);
             }
         }
 
@@ -422,15 +431,15 @@ void SceneViewMesh::paintOrderColorBar()
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
-    // scene font metrics
-    QFontMetrics metrics = QFontMetrics(Util::config()->sceneFont);
+    // post font
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
 
     // dimensions
-    int textWidth = metrics.width("00");
-    int textHeight = metrics.height();
-    Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8*metrics.height() : 10.0);
-    double scaleLeft = (width() - (20 + 3 * textWidth));
+    int textWidth = 6 * fnt->glyphs[GLYPH_M].width;
+    int textHeight = fnt->height;
+    Point scaleSize = Point(20 + textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
+    Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
+    double scaleLeft = (width() - (20 + textWidth));
 
     // blended rectangle
     drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
@@ -445,16 +454,16 @@ void SceneViewMesh::paintOrderColorBar()
     for (int i = 1; i < max+1; i++)
     {
         glColor3d(0.0, 0.0, 0.0);
-        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
-        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 10,                             scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 10,                             scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
 
         glColor3d(paletteColorOrder(i)[0], paletteColorOrder(i)[1], paletteColorOrder(i)[2]);
-        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
-        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 12,                                 scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 12,                                 scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
     }
     glEnd();
 
@@ -464,11 +473,8 @@ void SceneViewMesh::paintOrderColorBar()
     glColor3d(1.0, 1.0, 1.0);
     for (int i = 1; i < max + 1; i++)
     {
-        int sizeNumber = metrics.width(QString::number(i));
-        renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
-                   scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
-                   0.0,
-                   QString::number(i),
-                   Util::config()->sceneFont);
+        printPostAt(scaleLeft + 10 + 3.5 * fnt->glyphs[GLYPH_M].width - 2 - scaleBorder.x,
+                    scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
+                    QString::number(i));
     }
 }

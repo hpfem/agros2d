@@ -66,8 +66,6 @@ public:
     virtual QString labelView() { return tr("Postprocessor 2D"); }
 
 protected:
-    virtual int textureScalar() { return 2; }
-
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
 
@@ -101,6 +99,9 @@ private:
     int m_listScalarField;
     int m_listParticleTracing;
 
+    // QVector<QVector2D> m_arrayScalarField;
+    // QVector<QVector3D> m_arrayScalarFieldColors;
+
     void createActionsPost2D();
 
 private slots:
@@ -108,6 +109,7 @@ private slots:
     void selectedPoint(const Point &p);
 
     virtual void refresh();
+    virtual void clearGLLists();
 };
 
 #endif // SCENEVIEWPOST2D_H

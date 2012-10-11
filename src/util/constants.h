@@ -60,6 +60,9 @@ const bool SNAPTOGRID = true;
     const QFont FONT = QFont("Monaco", 12);
 #endif
 
+const QString RULERSFONT = "fontGoogleDroidMono10";
+const QString POSTFONT = "fontGoogleDroidMono16";
+
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
 const bool ZOOMTOMOUSE = true;
@@ -75,8 +78,9 @@ const int MESHANGLESEGMENTSCOUNT = 3;
 const bool MESHCURVILINEARELEMENTS = true;
 
 // post2d
-const int PALETTESTEPSMIN = 5;
-const int PALETTESTEPSMAX = 100;
+const int PALETTEENTRIES = 256;
+const int PALETTESTEPSMIN = 3;
+const int PALETTESTEPSMAX = PALETTEENTRIES;
 const int SCALARDECIMALPLACEMIN = 0;
 const int SCALARDECIMALPLACEMAX = 10;
 const int CONTOURSCOUNTMIN = 1;

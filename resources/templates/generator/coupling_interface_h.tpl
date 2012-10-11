@@ -29,7 +29,7 @@ class FieldInfo;
 class Boundary;
 
 class {{CLASS}}Interface : public QObject, public PluginInterface
-{    
+{
     Q_OBJECT
     Q_INTERFACES(PluginInterface)
 
@@ -41,27 +41,27 @@ public:
     // weakforms
     virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material);
     virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material);
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) { assert(0); }
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) { assert(0); }
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) { assert(0); return NULL; }
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) { assert(0); return NULL; }
 
-    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::Mesh *mesh) { assert(0); }
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::Mesh *mesh) { assert(0); return NULL; }
 
     // postprocessor
     // filter
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
-                                                     PhysicFieldVariableComp physicFieldVariableComp) { assert(0); }
+                                                     PhysicFieldVariableComp physicFieldVariableComp) { assert(0); return NULL; }
 
     // local values
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) { assert(0); }
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) { assert(0); return NULL; }
     // surface integrals
-    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo) { assert(0); }
+    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo) { assert(0); return NULL; }
     // volume integrals
-    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) { assert(0); }
+    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) { assert(0); return NULL; }
 
     // force calculation
-    Point3 force(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity) { assert(0); }
+    Point3 force(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity) { assert(0); return Point3(); }
 };
 
 #endif // {{CLASS}}_INTERFACE_H

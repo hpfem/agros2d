@@ -25,6 +25,9 @@
 #include "util.h"
 #include "chartdialog.h"
 
+#include "gui/scenewidget.h"
+#include "util/glfont.h"
+
 class Scene;
 class SceneViewCommon;
 
@@ -32,41 +35,12 @@ class SceneNode;
 class SceneEdge;
 class SceneLabel;
 
-class LocalPointValue;
-class SurfaceIntegralValue;
-class VolumeIntegralValue;
-
 class SceneViewInterface;
 
 namespace Module
 {
     struct LocalVariable;
 }
-
-class SceneViewCommon;
-
-class SceneViewWidget : public QWidget
-{
-    Q_OBJECT
-public:
-   SceneViewWidget(SceneViewCommon *widget, QWidget *parent = 0);
-   SceneViewWidget(QWidget *widget, QWidget *parent = 0);
-   ~SceneViewWidget();
-
-public slots:
-   void labelLeft(const QString &left);
-   void labelCenter(const QString &center);
-   void labelRight(const QString &right);
-   void iconLeft(const QIcon &left);
-
-private:
-   void createControls(QWidget *widget);
-
-   QLabel *sceneViewLabelPixmap;
-   QLabel *sceneViewLabelLeft;
-   QLabel *sceneViewLabelCenter;
-   QLabel *sceneViewLabelRight;
-};
 
 class SceneViewCommon : public QGLWidget
 {
@@ -97,12 +71,6 @@ public:
     void saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w = 0, int h = 0);
     QPixmap renderScenePixmap(int w = 0, int h = 0, bool useContext = false);
 
-    void loadBackgroundImage(const QString &fileName, double x = 0, double y = 0, double w = 1.0, double h = 1.0);
-
-    void processRangeContour();
-    void processRangeScalar();
-    void processRangeVector();
-
     virtual QIcon iconView() { return QIcon(); }
     virtual QString labelView() { return ""; }
 
@@ -131,14 +99,22 @@ protected:
     QActionGroup *actBoundaryGroup;
 
     void createActions();
-    void createMenu();
 
     void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const;
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
+    void printAt(int penX, int penY, const QString &text, const TextureFont *fnt);
+    void initFont(int textureID, const TextureFont *fnt);
+
+    GLuint m_textureLabelRulers;
+    GLuint m_textureLabelPost;
+
+    void printRulersAt(int penX, int penY, const QString &text);
+    void printPostAt(int penX, int penY, const QString &text);
+
     virtual void setZoom(double power) = 0;
 
-    void initializeGL();
+    virtual void initializeGL();
     virtual void resizeGL(int w, int h);
     virtual void paintGL() = 0;
     void setupViewport(int w, int h);

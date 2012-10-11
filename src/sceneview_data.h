@@ -20,7 +20,7 @@
 #ifndef SCENEVIEW_DATA_H
 #define SCENEVIEW_DATA_H
 
-const int numPalEntries = 256;
+#include "util/constants.h"
 
 /*
 const double paletteOrder[11][3] =
@@ -248,7 +248,7 @@ const double paletteOrderBWDesc[11][3] =
     { 0.000000, 0.000000, 0.000000 }
 };
 
-const double paletteDataHot[numPalEntries+1][3] =
+const double paletteDataHot[PALETTEENTRIES+1][3] =
 {
     { 0.010417, 0.000000, 0.000000 },
     { 0.020833, 0.000000, 0.000000 },
@@ -508,7 +508,7 @@ const double paletteDataHot[numPalEntries+1][3] =
     { 1.000000, 1.000000, 1.000000 }
 };
 
-const double paletteDataPink[numPalEntries+1][3] =
+const double paletteDataPink[PALETTEENTRIES+1][3] =
 {
     { 0.058926, 0.000000, 0.000000 },
     { 0.097769, 0.051131, 0.051131 },
@@ -768,7 +768,7 @@ const double paletteDataPink[numPalEntries+1][3] =
     { 1.000000, 1.000000, 1.000000 }
 };
 
-const double paletteDataSpring[numPalEntries+1][3] =
+const double paletteDataSpring[PALETTEENTRIES+1][3] =
 {
     { 1.000000, 0.000000, 1.000000 },
     { 1.000000, 0.003922, 0.996078 },
@@ -1028,7 +1028,7 @@ const double paletteDataSpring[numPalEntries+1][3] =
     { 1.000000, 1.000000, 0.000000 }
 };
 
-const double paletteDataSummer[numPalEntries+1][3] =
+const double paletteDataSummer[PALETTEENTRIES+1][3] =
 {
     { 0.000000, 0.500000, 0.400000 },
     { 0.003922, 0.501961, 0.400000 },
@@ -1288,7 +1288,7 @@ const double paletteDataSummer[numPalEntries+1][3] =
     { 1.000000, 1.000000, 0.400000 }
 };
 
-const double paletteDataAutumn[numPalEntries+1][3] =
+const double paletteDataAutumn[PALETTEENTRIES+1][3] =
 {
     { 1.000000, 0.000000, 0.000000 },
     { 1.000000, 0.003922, 0.000000 },
@@ -1548,7 +1548,7 @@ const double paletteDataAutumn[numPalEntries+1][3] =
     { 1.000000, 1.000000, 0.000000 }
 };
 
-const double paletteDataWinter[numPalEntries+1][3] =
+const double paletteDataWinter[PALETTEENTRIES+1][3] =
 {
     { 0.000000, 0.000000, 1.000000 },
     { 0.000000, 0.003922, 0.998039 },
@@ -1808,7 +1808,7 @@ const double paletteDataWinter[numPalEntries+1][3] =
     { 0.000000, 1.000000, 0.500000 }
 };
 
-const double paletteDataJet[numPalEntries+1][3] =
+const double paletteDataJet[PALETTEENTRIES+1][3] =
 {
     { 0.000000, 0.000000, 0.515625 },
     { 0.000000, 0.000000, 0.531250 },
@@ -2068,7 +2068,7 @@ const double paletteDataJet[numPalEntries+1][3] =
     { 0.500000, 0.000000, 0.000000 }
 };
 
-const double paletteDataCopper[numPalEntries+1][3] =
+const double paletteDataCopper[PALETTEENTRIES+1][3] =
 {
     { 0.000000, 0.000000, 0.000000 },
     { 0.004902, 0.003064, 0.001951 },
@@ -2328,7 +2328,7 @@ const double paletteDataCopper[numPalEntries+1][3] =
     { 1.000000, 0.781200, 0.497500 }
 };
 
-const double paletteDataCool[numPalEntries+1][3] =
+const double paletteDataCool[PALETTEENTRIES+1][3] =
 {
     { 0.000000, 1.000000, 1.000000 },
     { 0.003922, 0.996078, 1.000000 },
@@ -2588,7 +2588,7 @@ const double paletteDataCool[numPalEntries+1][3] =
     { 1.000000, 0.000000, 1.000000 }
 };
 
-const double paletteDataBone[numPalEntries+1][3] =
+const double paletteDataBone[PALETTEENTRIES+1][3] =
 {
     { 0.000000, 0.000000, 0.001302 },
     { 0.003431, 0.003431, 0.006036 },
@@ -2848,7 +2848,7 @@ const double paletteDataBone[numPalEntries+1][3] =
     { 1.000000, 1.000000, 1.000000 }
 };
 
-const double paletteDataHSV[numPalEntries+1][3] =
+const double paletteDataHSV[PALETTEENTRIES+1][3] =
 {
     { 1.000000, 0.000000, 0.000000 },
     { 1.000000, 0.023438, 0.000000 },
@@ -3108,7 +3108,7 @@ const double paletteDataHSV[numPalEntries+1][3] =
     { 1.000000, 0.000000, 0.023438 }
 };
 
-const double paletteDataAgros2D[numPalEntries+1][3] =
+const double paletteDataAgros2D[PALETTEENTRIES+1][3] =
 {
     { 0.125500, 0.162200, 0.960000 },
     { 0.132175, 0.167787, 0.954839 },
