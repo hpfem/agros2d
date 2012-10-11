@@ -33,6 +33,8 @@ macx-g++ {
 }
 
 win32-msvc2010 {
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
+
     TARGET = ../../agros2d_generator
 }
 

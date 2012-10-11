@@ -83,7 +83,15 @@ void SceneViewCommon::initializeGL()
 {
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE);
+
+#ifdef Q_WS_X11
     glDisable(GL_MULTISAMPLE);
+#endif
+#ifdef Q_WS_WIN
+#endif
+#ifdef Q_WS_MAC
+    glDisable(GL_MULTISAMPLE);
+#endif
 }
 
 void SceneViewCommon::resizeGL(int w, int h)

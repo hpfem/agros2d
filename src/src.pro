@@ -86,7 +86,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
-    scenebasic.cpp \    
+    scenebasic.cpp \
     sceneview_common.cpp \
     sceneview_common2d.cpp \
     sceneview_common3d.cpp \
@@ -293,8 +293,7 @@ win32-msvc2010 {
     TARGET = ../../libs/agros2d
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
-    QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
-    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
