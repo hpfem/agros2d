@@ -864,11 +864,11 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
         glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
         // rulers font
-        TextureFont fnt = labelRulersFont();
+        const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
 
         Point scr = untransform(snapPoint.x, snapPoint.y);
-        printAt(scr.x + fnt.glyphs[GLYPH_M].width,
-                scr.y + fnt.height * 0.7,
+        printAt(scr.x + fnt->glyphs[GLYPH_M].width,
+                scr.y + fnt->height * 0.7,
                 QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y),
                 fnt);
     }
@@ -1122,7 +1122,7 @@ void SceneViewPreprocessor::paintGeometry()
     glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
     // rulers font
-    TextureFont fnt = labelRulersFont();
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
 
     foreach (SceneLabel *label, Util::scene()->labels->items())
     {
@@ -1140,7 +1140,7 @@ void SceneViewPreprocessor::paintGeometry()
 
             Point scr = untransform(label->point().x, label->point().y);
 
-            printAt(scr.x - fnt.glyphs[GLYPH_M].width * str.length() / 2.0, scr.y - fnt.height * 1.2, str, fnt);
+            printAt(scr.x - fnt->glyphs[GLYPH_M].width * str.length() / 2.0, scr.y - fnt->height * 1.2, str, fnt);
         }
     }
 }

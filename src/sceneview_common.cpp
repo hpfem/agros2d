@@ -91,12 +91,12 @@ void SceneViewCommon::resizeGL(int w, int h)
     if (m_textureLabelRulers == -1)
         glDeleteTextures(1, &m_textureLabelRulers);
     glGenTextures(1, &m_textureLabelRulers);
-    initFont(m_textureLabelRulers, labelRulersFont());
+    initFont(m_textureLabelRulers, textureFontFromStringKey(Util::config()->rulersFont));
 
     if (m_textureLabelPost == -1)
         glDeleteTextures(1, &m_textureLabelPost);
     glGenTextures(1, &m_textureLabelPost);
-    initFont(m_textureLabelPost, labelPostFont());
+    initFont(m_textureLabelPost, textureFontFromStringKey(Util::config()->postFont));
 
     setupViewport(w, h);
 }
@@ -109,7 +109,7 @@ void SceneViewCommon::setupViewport(int w, int h)
 void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 {
     // rulers font
-    TextureFont fnt = labelRulersFont();
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
 
     glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
     printAt(penX, penY, text, fnt);
@@ -118,7 +118,7 @@ void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
 {
     // post font
-    TextureFont fnt = labelPostFont();
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
 
     glBindTexture(GL_TEXTURE_2D, m_textureLabelPost);
     printAt(penX, penY, text, fnt);
@@ -145,7 +145,7 @@ void SceneViewCommon::loadProjectionViewPort()
     glLoadIdentity();
 }
 
-void SceneViewCommon::printAt(int penX, int penY, const QString &text, TextureFont fnt)
+void SceneViewCommon::printAt(int penX, int penY, const QString &text, const TextureFont *fnt)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -158,12 +158,12 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, TextureFo
 
     for (int i = 0; i < text.length(); ++i)
     {
-        TextureGlyph *glyph = 0;
-        for (int j = 0; j < fnt.glyphs_count; ++j)
+        const TextureGlyph *glyph = NULL;
+        for (int j = 0; j < fnt->glyphs_count; ++j)
         {
-            if (fnt.glyphs[j].charcode == text.at(i) )
+            if (fnt->glyphs[j].charcode == text.at(i) )
             {
-                glyph = &fnt.glyphs[j];
+                glyph = &fnt->glyphs[j];
                 break;
             }
         }
@@ -196,25 +196,15 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, TextureFo
     glDisable(GL_TEXTURE_2D);
 }
 
-void SceneViewCommon::initFont(int textureID, TextureFont fnt)
+void SceneViewCommon::initFont(int textureID, const TextureFont *fnt)
 {    
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, fnt.tex_width, fnt.tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, fnt.tex_data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, fnt->tex_width, fnt->tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, fnt->tex_data);
     // glBindTexture(GL_TEXTURE_2D, texid);
-}
-
-TextureFont SceneViewCommon::labelRulersFont()
-{
-    return textureFontFromStringKey(Util::config()->rulersFont);
-}
-
-TextureFont SceneViewCommon::labelPostFont()
-{
-    return textureFontFromStringKey(Util::config()->postFont);
 }
 
 // events *****************************************************************************************************************************

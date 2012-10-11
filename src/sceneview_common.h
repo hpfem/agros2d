@@ -103,12 +103,8 @@ protected:
     void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const;
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
-    void printAt(int penX, int penY, const QString &text, TextureFont fnt);
-    void initFont(int textureID, TextureFont fnt);
-
-    // default OpenGL font
-    TextureFont labelRulersFont();
-    TextureFont labelPostFont();
+    void printAt(int penX, int penY, const QString &text, const TextureFont *fnt);
+    void initFont(int textureID, const TextureFont *fnt);
 
     GLuint m_textureLabelRulers;
     GLuint m_textureLabelPost;

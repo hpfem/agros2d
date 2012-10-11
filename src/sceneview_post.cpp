@@ -584,11 +584,11 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     // post font
-    TextureFont fnt = labelPostFont();
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
 
     // dimensions
-    int textWidth = fnt.glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace).length() + 1);
-    int textHeight = fnt.height;
+    int textWidth = fnt->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace).length() + 1);
+    int textHeight = fnt->height;
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
     Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
@@ -667,7 +667,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? fnt.glyphs[GLYPH_M].width : 0.0),
+        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? fnt->glyphs[GLYPH_M].width : 0.0),
                     scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                     QString::number(value, '+e', Util::config()->scalarDecimalPlace));
     }
@@ -680,7 +680,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
                 arg(Util::config()->scalarVariable != "" ? localVariable->shortname() : "").
                 arg(Util::config()->scalarVariable != "" ? localVariable->unit() : "");
 
-        printPostAt(scaleLeft + scaleSize.x / 2.0 - fnt.glyphs[GLYPH_M].width * str.count() / 2.0,
+        printPostAt(scaleLeft + scaleSize.x / 2.0 - fnt->glyphs[GLYPH_M].width * str.count() / 2.0,
                     scaleBorder.y + scaleSize.y - 20.0,
                     str);
     }  
@@ -696,11 +696,11 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     // post font
-    TextureFont fnt = labelPostFont();
+    const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
 
     // dimensions
-    int textWidth = fnt.glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace).length() + 1);
-    int textHeight = fnt.height;
+    int textWidth = fnt->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace).length() + 1);
+    int textHeight = fnt->height;
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
     Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width()
@@ -764,7 +764,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? fnt.glyphs[GLYPH_M].width : 0.0),
+        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? fnt->glyphs[GLYPH_M].width : 0.0),
                     scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                     QString::number(value, '+e', Util::config()->scalarDecimalPlace));
     }
@@ -772,7 +772,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     // variable
     QString str = QString("%1 (m/s)").arg(tr("Vel."));
 
-    printPostAt(scaleLeft + scaleSize.x / 2.0 - fnt.glyphs[GLYPH_M].width  * str.count() / 2.0,
+    printPostAt(scaleLeft + scaleSize.x / 2.0 - fnt->glyphs[GLYPH_M].width  * str.count() / 2.0,
                 scaleBorder.y + scaleSize.y - 20.0,
                 str);
 }
