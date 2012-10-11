@@ -602,20 +602,22 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
         return;
 
     Point rulersAreaScreen = rulersAreaSize();
-    Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
-                     2.0/height()*rulersAreaScreen.y/m_scale2d);
 
-    m_offset2d.x = ((Util::config()->showRulers) ? start.x+end.x - rulersArea.x : start.x + end.x) / 2.0;
-    m_offset2d.y = (start.y + end.y)/2.0;
+    double sceneWidth = end.x - start.x;
+    double sceneHeight = end.y - start.y;
 
-    double sceneWidth = end.x-start.x;
-    double sceneHeight = end.y-start.y;
-
-    double maxScene = (((double) ((Util::config()->showRulers) ? width() - rulersArea.x :
-                                                                 width()) / (double) height()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
+    double w = (Util::config()->showRulers) ? width() - rulersAreaScreen.x : width();
+    double h = (Util::config()->showRulers) ? height() - rulersAreaScreen.y : height();
+    double maxScene = ((w / h) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
         m_scale2d = 1.8/maxScene;
+
+    Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
+                     2.0/height()*rulersAreaScreen.y/m_scale2d);
+
+    m_offset2d.x = ((Util::config()->showRulers) ? start.x + end.x - rulersArea.x : start.x + end.x) / 2.0;
+    m_offset2d.y = ((Util::config()->showRulers) ? start.y + end.y - rulersArea.y : start.y + end.y) / 2.0;
 
     setZoom(0);
 }
