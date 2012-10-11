@@ -67,6 +67,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
 macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
+    INCLUDEPATH += ../3rdparty/ctemplate/osx
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
     INCLUDEPATH += ../../qwt-6.0.1/src
 

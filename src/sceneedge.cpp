@@ -19,6 +19,7 @@
 
 #include "util.h"
 #include "scene.h"
+#include "scenebasic.h"
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenemarker.h"
