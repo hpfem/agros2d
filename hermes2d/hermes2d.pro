@@ -211,7 +211,7 @@ win32-msvc2010 {
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -llibumfpack
     LIBS += -llibamd
-    LIBS += -lblas
+    # LIBS += -lblas
     LIBS += -lpthreadVCE2
 	LIBS += -lxerces-c_static_3
     LIBS += -lpython27
