@@ -307,6 +307,7 @@ win32-msvc2010 {
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../3rdparty/ctemplate/windows
+    INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 }
 
