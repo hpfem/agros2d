@@ -180,10 +180,10 @@ void Util::loadPlugins(QStringList plugins)
     {
         QPluginLoader *loader = NULL;
 
+#ifdef Q_WS_X11
         if (QFile::exists(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file)))
             loader = new QPluginLoader(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file));
 
-#ifdef Q_WS_X11
         if (!loader)
         {
             if (QFile::exists(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file)))
@@ -192,9 +192,15 @@ void Util::loadPlugins(QStringList plugins)
                 loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file));
         }
 #endif
+
+#ifdef Q_WS_WIN
+        if (QFile::exists(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(file)))
+            loader = new QPluginLoader(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(file));
+#endif
+
         if (!loader || !loader->load())
         {
-            throw AgrosException(QObject::tr("Could not load 'libagros2d_plugin_%1.so'").arg(file));
+            throw AgrosException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(file));
             return;
         }
 
