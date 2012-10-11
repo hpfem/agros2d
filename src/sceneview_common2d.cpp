@@ -601,8 +601,6 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
     if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO)
         return;
 
-    qDebug() << "doZoomRegion()";
-
     Point rulersAreaScreen = rulersAreaSize();
 
     double sceneWidth = end.x - start.x;

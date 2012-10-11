@@ -218,8 +218,6 @@ void SceneViewCommon::closeEvent(QCloseEvent *event)
 
 void SceneViewCommon::doZoomBestFit()
 {
-    qDebug() << "doZoomBestFit";
-
     RectPoint rect = Util::scene()->boundingBox();
 
     doZoomRegion(rect.start, rect.end);
