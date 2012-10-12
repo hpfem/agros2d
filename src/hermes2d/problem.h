@@ -50,7 +50,8 @@ public:
     inline Value timeTotal() const { return m_timeTotal; }
     void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
 
-    inline double constantTimeStep() { return m_timeTotal.number() / m_numConstantTimeSteps; }
+    inline double constantTimeStepLength() { return m_timeTotal.number() / m_numConstantTimeSteps; }
+    double initialTimeStepLength();
 
     inline TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
     void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }

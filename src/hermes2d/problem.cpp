@@ -75,6 +75,15 @@ bool ProblemConfig::isTransientAdaptive() const
     return false;
 }
 
+const double initialTimeStepRatio = 300;
+double ProblemConfig::initialTimeStepLength()
+{
+    if(isTransientAdaptive())
+        return timeTotal().value() / initialTimeStepRatio;
+    else
+        return constantTimeStepLength();
+}
+
 Problem::Problem()
 {
     m_timeStep = 0;
@@ -420,7 +429,7 @@ double Problem::actualTime() const
 double Problem::actualTimeStepLength() const
 {
     if(m_timeStepLengths.isEmpty())
-        return config()->constantTimeStep();
+        return config()->constantTimeStepLength();
 
     return m_timeStepLengths.last();
 }
@@ -500,7 +509,8 @@ void Problem::solveAction()
         solvers[block] = block->prepareSolver();
     }
 
-    double nextTimeStepLength = config()->constantTimeStep();
+
+    double nextTimeStepLength = config()->initialTimeStepLength();
     bool doNextTimeStep = true;
     while(doNextTimeStep)
     {

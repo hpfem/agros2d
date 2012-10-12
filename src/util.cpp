@@ -158,11 +158,11 @@ void initLists()
     meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
 
     timeStepMethodList.insert(TimeStepMethod_Fixed, "fixed");
-    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2");
+    timeStepMethodList.insert(TimeStepMethod_BDF2AOrder, "adaptive");
+    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2_adaptive");
     timeStepMethodList.insert(TimeStepMethod_BDF2Combine, "bdf2_combine");
     timeStepMethodList.insert(TimeStepMethod_FixedBDF2B, "fixed_bdf2b");
     timeStepMethodList.insert(TimeStepMethod_FixedCombine, "fixed_combine");
-    timeStepMethodList.insert(TimeStepMethod_BDF2AOrder, "bdf2a_order");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -388,16 +388,16 @@ QString timeStepMethodString(TimeStepMethod timeStepMethod)
     {
     case TimeStepMethod_Fixed:
         return QObject::tr("Fixed step");
-    case TimeStepMethod_BDF2:
-        return QObject::tr("BDF2 adaptive step");
-    case TimeStepMethod_BDF2Combine:
-        return QObject::tr("adaptive combination");
-    case TimeStepMethod_FixedBDF2B:
-        return QObject::tr("Fixed with BDF2B");
-    case TimeStepMethod_FixedCombine:
-        return QObject::tr("Fixed combination");
     case TimeStepMethod_BDF2AOrder:
-        return QObject::tr("BDF2A adaptive orders");
+        return QObject::tr("Adaptive");
+    case TimeStepMethod_BDF2:
+        return QObject::tr("BDF2 adaptive");
+    case TimeStepMethod_BDF2Combine:
+        return QObject::tr("adaptive comb");
+    case TimeStepMethod_FixedBDF2B:
+        return QObject::tr("Fixed BDF2B");
+    case TimeStepMethod_FixedCombine:
+        return QObject::tr("Fixed comb");
     default:
         std::cerr << "Time step method '" + QString::number(timeStepMethod).toStdString() + "' is not implemented. timeStepMethodString(TimeStepMethod timeStepMethod)" << endl;
         throw;

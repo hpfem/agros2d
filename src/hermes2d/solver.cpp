@@ -586,7 +586,7 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
 {    
     TimeStepMethod method = Util::problem()->config()->timeStepMethod();
     if((method == TimeStepMethod_Fixed) || (method == TimeStepMethod_FixedBDF2B))
-        return Util::problem()->config()->constantTimeStep();
+        return Util::problem()->config()->constantTimeStepLength();
 
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
@@ -594,9 +594,17 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
     BDF2Table* bdf2Table = NULL;
     if(method == TimeStepMethod_BDF2AOrder)
     {
+        // todo: ensure this in gui
+        assert(Util::problem()->config()->timeOrder() >= 2);
+
+        // todo: in the first step, I am acualy using order 1 and thus I am unable to decrease it!
+        // this is not good, since the second step is not calculated (and the error of the first is not being checked)
+        if(timeStep == 1)
+            return Util::problem()->actualTimeStepLength();
+
         bdf2Table = new BDF2ATable();
-        // todo: vyresit prvni krok. Celkove!
-        bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder() - 1));
+        int previouslyUsedOrder = min(timeStep, Util::problem()->config()->timeOrder());
+        bdf2Table->setOrder(previouslyUsedOrder - 1);
     }
     else
     {
@@ -618,7 +626,7 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
     solveOneProblem(&wf2, coefVec2, multiSolutionArray2, timeStep > 0 ? &multiSolutionArray : NULL);
 
-    double nextTimeStepLength = Util::problem()->config()->constantTimeStep();
+    double nextTimeStepLength = Util::problem()->config()->constantTimeStepLength();
 
     // just to find delta for error estimation and solution combination
     BDF2ATable bdf2ATable;
@@ -630,13 +638,13 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
         double error;
         if(method == TimeStepMethod_BDF2AOrder)
         {
-            error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+            error = Global<Scalar>::calc_abs_errors (desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
         }
         else
         {
             // todo: for BDF2 and BDF2Combine the error should be calculated using different formula
             // todo: not simple difference, but delta*sol1 + delta bar * sol2
-            error = Global<Scalar>::calc_rel_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+            error = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
         }
 
         // todo: if error too big, refuse step and recalculate
@@ -644,6 +652,14 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
         // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
         nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
                                  1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
+
+        // todo: move to some config?
+        const double MAX_TIME_STEPS_RATIO = 3.0;
+        const double MAX_TIME_STEP_LENGTH = Util::problem()->config()->timeTotal().value() / 10;
+
+        nextTimeStepLength = min(nextTimeStepLength, MAX_TIME_STEP_LENGTH);
+        nextTimeStepLength = min(nextTimeStepLength, Util::problem()->actualTimeStepLength() * MAX_TIME_STEPS_RATIO);
+        nextTimeStepLength = max(nextTimeStepLength, Util::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
 
         Util::log()->printDebug(m_solverID, QString("time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
                                 arg(error).
