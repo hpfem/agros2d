@@ -179,13 +179,13 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
     //                            arg(QString::fromStdString(form->getAreas().at(0))));
 
     if(type == WeakForm_MatVol)
-        add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
+        this->add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
     else if(type == WeakForm_MatSurf)
-        add_matrix_form_surf((Hermes::Hermes2D::MatrixFormSurf<Scalar>*) form);
+        this->add_matrix_form_surf((Hermes::Hermes2D::MatrixFormSurf<Scalar>*) form);
     else if(type == WeakForm_VecVol)
-        add_vector_form((Hermes::Hermes2D::VectorFormVol<Scalar>*) form);
+        this->add_vector_form((Hermes::Hermes2D::VectorFormVol<Scalar>*) form);
     else if(type == WeakForm_VecSurf)
-        add_vector_form_surf((Hermes::Hermes2D::VectorFormSurf<Scalar>*) form);
+        this->add_vector_form_surf((Hermes::Hermes2D::VectorFormSurf<Scalar>*) form);
     else
         assert(0);
 }
