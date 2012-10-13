@@ -247,9 +247,6 @@ void SceneViewCommon2D::paintAxes()
     Point border = (Util::config()->showRulers) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
                                                 : Point(10.0, 10.0);
 
-    // rulers font
-    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
-
     // x-axis
     glBegin(GL_QUADS);
     glVertex2d(border.x, border.y);
@@ -264,7 +261,7 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 35, border.y + 1);
     glEnd();
 
-    printRulersAt(border.x + 38, border.y + 1 - fnt->size / 2.0, Util::problem()->config()->labelX());
+    printRulersAt(border.x + 38, border.y + 1 - m_fontRulers->size / 2.0, Util::problem()->config()->labelX());
 
     // y-axis
     glBegin(GL_QUADS);
@@ -280,7 +277,7 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 1, border.y + 35);
     glEnd();
 
-    printRulersAt(border.x + 1 - fnt->glyphs[GLYPH_M].width / 2.0, border.y + 38, Util::problem()->config()->labelY());
+    printRulersAt(border.x + 1 - m_fontRulers->glyphs[GLYPH_M].width / 2.0, border.y + 38, Util::problem()->config()->labelY());
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
@@ -391,9 +388,6 @@ void SceneViewCommon2D::paintRulers()
         glScaled(2.0 / width(), 2.0 / height(), 1.0);
         glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
-        // rulers font
-        const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
-
         // horizontal labels
         for (int i = cornerMin.x/gridStep - 1; i < cornerMax.x/gridStep + 1; i++)
         {
@@ -409,7 +403,7 @@ void SceneViewCommon2D::paintRulers()
                     text = QString::number(i*gridStep, 'f', 6);
 
                 Point scr = untransform(i*gridStep, cornerMax.y);
-                printRulersAt(scr.x + fnt->glyphs[GLYPH_M].width / 2.0, scr.y + 2, QString(text + "        ").left(9));
+                printRulersAt(scr.x + m_fontRulers->glyphs[GLYPH_M].width / 2.0, scr.y + 2, QString(text + "        ").left(9));
             }
         }
 
@@ -428,7 +422,7 @@ void SceneViewCommon2D::paintRulers()
                     text = QString::number(i*gridStep, 'f', 7);
 
                 Point scr = untransform(cornerMin.x + rulersArea.x / 20.0, i*gridStep);
-                printRulersAt(scr.x, scr.y - fnt->height * 1.1, QString(((i >= 0) ? " " : "") + text + "        ").left(9));
+                printRulersAt(scr.x, scr.y - m_fontRulers->height * 1.1, QString(((i >= 0) ? " " : "") + text + "        ").left(9));
             }
         }
     }
@@ -583,10 +577,7 @@ void SceneViewCommon2D::keyReleaseEvent(QKeyEvent *event)
 // rulers
 Point SceneViewCommon2D::rulersAreaSize()
 {
-    // rulers font
-    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
-
-    return Point(fnt->glyphs[GLYPH_M].width * 11, fnt->height * 2);
+    return Point(m_fontRulers->glyphs[GLYPH_M].width * 11, m_fontRulers->height * 2);
 }
 
 void SceneViewCommon2D::setZoom(double power)

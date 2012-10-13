@@ -41,5 +41,5 @@
 
 const QString fontLiberationMono10Label = "Liberation 10";
 
-const TextureFont *fontLiberationMono10();
+TextureFont *fontLiberationMono10();
  #endif

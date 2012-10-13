@@ -1,7 +1,7 @@
 
 #include "../glfont.h"
 #include "ubuntu-10.h"
-const TextureFont m_fontUbuntuMono10 = {
+TextureFont m_fontUbuntuMono10 = {
  160, 160, 1, 
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -904,4 +904,4 @@ const TextureFont m_fontUbuntuMono10 = {
  }
 };
  
-const TextureFont *fontUbuntuMono10() { return &m_fontUbuntuMono10; } 
+TextureFont *fontUbuntuMono10() { return &m_fontUbuntuMono10; } 

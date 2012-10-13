@@ -34,12 +34,7 @@ namespace Hermes
       CubicSpline(double const_value);
 
       /// Destructor.
-      ~CubicSpline() {
-        if(coeffs != NULL)
-          delete [] coeffs;
-        points.clear();
-        values.clear();
-      };
+      virtual ~CubicSpline();
 
       /// Calculates coefficients.
       bool calculate_coeffs();

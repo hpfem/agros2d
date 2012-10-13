@@ -1,7 +1,7 @@
 
 #include "../glfont.h"
 #include "liberation-22.h"
-const TextureFont m_fontLiberationMono22 = {
+TextureFont m_fontLiberationMono22 = {
  160, 160, 1, 
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -904,4 +904,4 @@ const TextureFont m_fontLiberationMono22 = {
  }
 };
  
-const TextureFont *fontLiberationMono22() { return &m_fontLiberationMono22; } 
+TextureFont *fontLiberationMono22() { return &m_fontLiberationMono22; } 

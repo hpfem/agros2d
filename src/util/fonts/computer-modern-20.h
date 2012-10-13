@@ -41,5 +41,5 @@
 
 const QString fontComputerModernMono20Label = "Computer Modern 20";
 
-const TextureFont *fontComputerModernMono20();
+TextureFont *fontComputerModernMono20();
  #endif

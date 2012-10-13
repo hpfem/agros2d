@@ -376,9 +376,6 @@ void SceneViewMesh::paintOrder()
         glScaled(2.0 / width(), 2.0 / height(), 1.0);
         glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
-        // post font
-        const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
-
         m_postHermes->ordView().lock_data();
 
         double3* vert = m_postHermes->ordView().get_vertices();
@@ -395,8 +392,8 @@ void SceneViewMesh::paintOrder()
                 Point scr = untransform(vert[lvert[i]][0],
                                         vert[lvert[i]][1]);
 
-                printRulersAt(scr.x - fnt->glyphs[GLYPH_M].width / 2.0,
-                              scr.y - fnt->height / 2.0,
+                printRulersAt(scr.x - m_fontPost->glyphs[GLYPH_M].width / 2.0,
+                              scr.y - m_fontPost->height / 2.0,
                               ltext[i]);
             }
         }
@@ -431,12 +428,9 @@ void SceneViewMesh::paintOrderColorBar()
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
-    // post font
-    const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
-
     // dimensions
-    int textWidth = 6 * fnt->glyphs[GLYPH_M].width;
-    int textHeight = fnt->height;
+    int textWidth = 6 * m_fontPost->glyphs[GLYPH_M].width;
+    int textHeight = m_fontPost->height;
     Point scaleSize = Point(20 + textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
     Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (20 + textWidth));
@@ -473,7 +467,7 @@ void SceneViewMesh::paintOrderColorBar()
     glColor3d(1.0, 1.0, 1.0);
     for (int i = 1; i < max + 1; i++)
     {
-        printPostAt(scaleLeft + 10 + 3.5 * fnt->glyphs[GLYPH_M].width - 2 - scaleBorder.x,
+        printPostAt(scaleLeft + 10 + 3.5 * m_fontPost->glyphs[GLYPH_M].width - 2 - scaleBorder.x,
                     scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
                     QString::number(i));
     }

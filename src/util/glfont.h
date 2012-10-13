@@ -91,7 +91,8 @@ typedef struct
 } TextureFont;
 
 void fillFontsComboBox(QComboBox *cmbFonts);
-const TextureFont *textureFontFromStringKey(const QString &fnt);
+
+TextureFont *textureFontFromStringKey(const QString &fnt);
 
 #endif // UTIL_GLFONT_H
 

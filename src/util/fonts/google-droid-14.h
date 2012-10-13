@@ -41,5 +41,5 @@
 
 const QString fontGoogleDroidMono14Label = "Google Droid 14";
 
-const TextureFont *fontGoogleDroidMono14();
+TextureFont *fontGoogleDroidMono14();
  #endif

@@ -1,7 +1,7 @@
 
 #include "../glfont.h"
 #include "computer-modern-12.h"
-const TextureFont m_fontComputerModernMono12 = {
+TextureFont m_fontComputerModernMono12 = {
  160, 160, 1, 
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -904,4 +904,4 @@ const TextureFont m_fontComputerModernMono12 = {
  }
 };
  
-const TextureFont *fontComputerModernMono12() { return &m_fontComputerModernMono12; } 
+TextureFont *fontComputerModernMono12() { return &m_fontComputerModernMono12; } 

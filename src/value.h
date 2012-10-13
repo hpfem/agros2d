@@ -79,6 +79,7 @@ class ValueLineEdit : public QWidget
 
 public:
     ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false);
+    ~ValueLineEdit();
 
     double number();
     void setNumber(double number);

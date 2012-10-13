@@ -1307,6 +1307,8 @@ void SceneViewPost2D::refresh()
     setControls();
 
     SceneViewCommon2D::refresh();
+
+    // emit mousePressed();
 }
 
 void SceneViewPost2D::setControls()

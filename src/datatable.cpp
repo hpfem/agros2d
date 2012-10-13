@@ -45,22 +45,27 @@ DataTable::~DataTable()
 
 void DataTable::clear()
 {
-    DataTableRow *data = m_data;
-    while (data)
+    if (m_data)
     {
-        DataTableRow *tmp = data;
+        DataTableRow *data = m_data;
+        while (data)
+        {
+            DataTableRow *tmp = data;
 
-        // next row
-        data = data->next;
+            // next row
+            data = data->next;
 
-        delete tmp;
+            delete tmp;
+        }
+
+        m_data = NULL;
     }
 
-    m_data = NULL;
-
     if (m_spline)
+    {
         delete m_spline;
-    m_spline = NULL;
+        m_spline = NULL;
+    }
 }
 
 void DataTable::remove(double key)

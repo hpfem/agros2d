@@ -31,10 +31,15 @@
 
 SceneViewCommon::SceneViewCommon(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
+      m_fontPost(NULL),
+      m_fontRulers(NULL),
       m_textureLabelRulers(-1),
       m_textureLabelPost(-1)
 {
     m_mainWindow = (QMainWindow *) parent;
+
+    m_fontRulers = textureFontFromStringKey(Util::config()->rulersFont);
+    m_fontPost = textureFontFromStringKey(Util::config()->postFont);
 
     createActions();
 
@@ -51,25 +56,6 @@ SceneViewCommon::~SceneViewCommon()
 
 void SceneViewCommon::createActions()
 {
-    // scene - grid
-    actSceneShowGrid = new QAction(icon("grid"), tr("Show grid"), this);
-    actSceneShowGrid->setStatusTip(tr("Show grid"));
-    actSceneShowGrid->setCheckable(true);
-    actSceneShowGrid->setChecked(Util::config()->showGrid);
-    connect(actSceneShowGrid, SIGNAL(triggered()), this, SLOT(doShowGrid()));
-
-    actSceneSnapToGrid = new QAction(icon("snap-to-grid"), tr("Snap to grid"), this);
-    actSceneSnapToGrid->setStatusTip(tr("Snap to grid"));
-    actSceneSnapToGrid->setCheckable(true);
-    actSceneSnapToGrid->setChecked(Util::config()->snapToGrid);
-    connect(actSceneSnapToGrid, SIGNAL(triggered()), this, SLOT(doSnapToGrid()));
-
-    actSceneShowRulers = new QAction(icon("rulers"), tr("Show rulers"), this);
-    actSceneShowRulers->setStatusTip(tr("Show rulers"));
-    actSceneShowRulers->setCheckable(true);
-    actSceneShowRulers->setChecked(Util::config()->showRulers);
-    connect(actSceneShowRulers, SIGNAL(triggered()), this, SLOT(doShowRulers()));
-
     // material
     actMaterialGroup = new QActionGroup(this);
     connect(actMaterialGroup, SIGNAL(triggered(QAction *)), this, SLOT(doMaterialGroup(QAction *)));
@@ -92,21 +78,25 @@ void SceneViewCommon::initializeGL()
 #ifdef Q_WS_MAC
     glDisable(GL_MULTISAMPLE);
 #endif
+
+    // rulers font
+    if (m_fontRulers)
+        glDeleteTextures(1, &m_textureLabelRulers);
+    m_fontRulers = textureFontFromStringKey(Util::config()->rulersFont);
+    glGenTextures(1, &m_textureLabelRulers);
+    initFont(m_textureLabelRulers, m_fontRulers);
+
+    // rulers font
+    if (m_fontPost)
+        glDeleteTextures(1, &m_textureLabelPost);
+    m_fontPost = textureFontFromStringKey(Util::config()->postFont);
+    glGenTextures(1, &m_textureLabelPost);
+    initFont(m_textureLabelPost, m_fontPost);
 }
 
 void SceneViewCommon::resizeGL(int w, int h)
 {
-    if (m_textureLabelRulers == -1)
-        glDeleteTextures(1, &m_textureLabelRulers);
-    glGenTextures(1, &m_textureLabelRulers);
-    initFont(m_textureLabelRulers, textureFontFromStringKey(Util::config()->rulersFont));
-
-    if (m_textureLabelPost == -1)
-        glDeleteTextures(1, &m_textureLabelPost);
-    glGenTextures(1, &m_textureLabelPost);
-    initFont(m_textureLabelPost, textureFontFromStringKey(Util::config()->postFont));
-
-    setupViewport(w, h);
+    setupViewport(w, h);   
 }
 
 void SceneViewCommon::setupViewport(int w, int h)
@@ -116,20 +106,14 @@ void SceneViewCommon::setupViewport(int w, int h)
 
 void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 {
-    // rulers font
-    const TextureFont *fnt = textureFontFromStringKey(Util::config()->rulersFont);
-
     glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
-    printAt(penX, penY, text, fnt);
+    printAt(penX, penY, text, m_fontRulers);
 }
 
 void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
 {
-    // post font
-    const TextureFont *fnt = textureFontFromStringKey(Util::config()->postFont);
-
     glBindTexture(GL_TEXTURE_2D, m_textureLabelPost);
-    printAt(penX, penY, text, fnt);
+    printAt(penX, penY, text, m_fontPost);
 }
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
@@ -211,7 +195,6 @@ void SceneViewCommon::initFont(int textureID, const TextureFont *fnt)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, fnt->tex_width, fnt->tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, fnt->tex_data);
-    // glBindTexture(GL_TEXTURE_2D, texid);
 }
 
 // events *****************************************************************************************************************************
@@ -240,38 +223,14 @@ void SceneViewCommon::doZoomOut()
     setZoom(-1/1.2);
 }
 
-void SceneViewCommon::doShowGrid()
-{
-    Util::config()->showGrid = !Util::config()->showGrid;
-    Util::config()->save();
-    refresh();
-}
-
-void SceneViewCommon::doSnapToGrid()
-{
-    Util::config()->snapToGrid = !Util::config()->snapToGrid;
-    Util::config()->save();
-}
-
-void SceneViewCommon::doShowRulers()
-{
-    Util::config()->showRulers = !Util::config()->showRulers;
-    Util::config()->save();
-    refresh();
-}
-
 void SceneViewCommon::clear()
 {
-    refresh();
     doZoomBestFit();
 }
 
 void SceneViewCommon::refresh()
 {
-    emit mousePressed();
-
     paintGL();
-    updateGL();
 }
 
 void SceneViewCommon::doMaterialGroup(QAction *action)

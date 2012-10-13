@@ -51,19 +51,13 @@ public slots:
     void doZoomIn();
     void doZoomOut();
     virtual void doZoomRegion(const Point &start, const Point &end) = 0;
-    void doShowGrid();
-    void doSnapToGrid();
-    void doShowRulers();
+
     virtual void refresh();
     virtual void clear();
 
 public:
     SceneViewCommon(QWidget *parent = 0);
     ~SceneViewCommon();
-
-    QAction *actSceneShowGrid;
-    QAction *actSceneSnapToGrid;
-    QAction *actSceneShowRulers;
 
     QAction *actSceneZoomRegion;
 
@@ -88,8 +82,10 @@ protected:
     QMainWindow *m_mainWindow;
 
     QPoint m_lastPos; // last position of cursor
-
     SceneNode *m_nodeLast;
+
+    TextureFont *m_fontRulers;
+    TextureFont *m_fontPost;
 
     // helper for zoom region
     bool m_zoomRegion;

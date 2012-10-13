@@ -1,7 +1,7 @@
 
 #include "../glfont.h"
 #include "google-droid-20.h"
-const TextureFont m_fontGoogleDroidMono20 = {
+TextureFont m_fontGoogleDroidMono20 = {
  160, 160, 1, 
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -904,4 +904,4 @@ const TextureFont m_fontGoogleDroidMono20 = {
  }
 };
  
-const TextureFont *fontGoogleDroidMono20() { return &m_fontGoogleDroidMono20; } 
+TextureFont *fontGoogleDroidMono20() { return &m_fontGoogleDroidMono20; } 

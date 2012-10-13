@@ -73,7 +73,7 @@ Value::Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vec
 
 Value::~Value()
 {
-
+    // delete m_table;
 }
 
 bool Value::hasTable() const
@@ -146,6 +146,9 @@ QString Value::toString() const
 
 void Value::fromString(const QString &str)
 {
+    if (m_table)
+        delete m_table;
+
     m_table = new DataTable();
 
     if (str.contains(";"))
@@ -282,6 +285,11 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
     evaluate();
 }
 
+ValueLineEdit::~ValueLineEdit()
+{
+    delete m_table;
+}
+
 void ValueLineEdit::setNumber(double value)
 {
     txtLineEdit->setText(QString::number(value));
@@ -302,7 +310,8 @@ void ValueLineEdit::setValue(Value value)
 
     txtLineEdit->setText(value.text());
 
-    delete m_table;
+    if (m_table)
+        delete m_table;
     m_table = value.table()->copy();
 
     setLayoutValue();

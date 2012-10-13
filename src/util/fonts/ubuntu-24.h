@@ -41,5 +41,5 @@
 
 const QString fontUbuntuMono24Label = "Ubuntu 24";
 
-const TextureFont *fontUbuntuMono24();
+TextureFont *fontUbuntuMono24();
  #endif

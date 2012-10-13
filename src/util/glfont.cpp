@@ -143,7 +143,7 @@ void fillFontsComboBox(QComboBox *cmbFonts)
     cmbFonts->blockSignals(false);
 }
 
-const TextureFont *textureFontFromStringKey(const QString &fnt)
+TextureFont *textureFontFromStringKey(const QString &fnt)
 {
     if (fnt == "fontUbuntuMono10")
         return fontUbuntuMono10();

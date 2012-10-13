@@ -1,7 +1,7 @@
 
 #include "../glfont.h"
 #include "ubuntu-20.h"
-const TextureFont m_fontUbuntuMono20 = {
+TextureFont m_fontUbuntuMono20 = {
  160, 160, 1, 
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -904,4 +904,4 @@ const TextureFont m_fontUbuntuMono20 = {
  }
 };
  
-const TextureFont *fontUbuntuMono20() { return &m_fontUbuntuMono20; } 
+TextureFont *fontUbuntuMono20() { return &m_fontUbuntuMono20; } 
