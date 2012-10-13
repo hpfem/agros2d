@@ -388,6 +388,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
     if (m_listScalarField3DSolid == -1)
     {
+        paletteCreate();
+
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
 

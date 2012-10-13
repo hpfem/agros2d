@@ -231,6 +231,7 @@ void SceneViewCommon::clear()
 void SceneViewCommon::refresh()
 {
     paintGL();
+    updateGL();
 }
 
 void SceneViewCommon::doMaterialGroup(QAction *action)
