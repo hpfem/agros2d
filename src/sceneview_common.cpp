@@ -164,6 +164,7 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, const Tex
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
+    glBegin(GL_TRIANGLES);
     for (int i = 0; i < text.length(); ++i)
     {
         const TextureGlyph *glyph = NULL;
@@ -185,21 +186,19 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, const Tex
         int w  = glyph->width;
         int h  = glyph->height;
 
-        glBegin(GL_TRIANGLES);
-        {
-            glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y );
-            glTexCoord2f(glyph->s0, glyph->t1); glVertex2i(x,   y-h);
-            glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
-            glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y  );
-            glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
-            glTexCoord2f(glyph->s1, glyph->t0); glVertex2i(x+w, y  );
-        }
-        glEnd();
+        glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y );
+        glTexCoord2f(glyph->s0, glyph->t1); glVertex2i(x,   y-h);
+        glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
+        glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y  );
+        glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
+        glTexCoord2f(glyph->s1, glyph->t0); glVertex2i(x+w, y  );
 
         penX += glyph->advance_x;
         penY += glyph->advance_y;
 
     }
+    glEnd();
+
     glDisable(GL_BLEND);
     glDisable(GL_TEXTURE_2D);
 }

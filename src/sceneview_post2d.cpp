@@ -1166,7 +1166,8 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
               Util::config()->colorSelected.blueF(),
               0.5);
 
-    // triangles
+    // elements
+    glBegin(GL_TRIANGLES);
     for (int i = 0, max = Util::problem()->activeMeshInitial()->get_max_element_id(); i < max; i++)
     {
         Hermes::Hermes2D::Element *element;
@@ -1178,25 +1179,27 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
                 {
                     if (element->is_triangle())
                     {
-                        glBegin(GL_TRIANGLES);
+                        // triangles
                         glVertex2d(element->vn[0]->x, element->vn[0]->y);
                         glVertex2d(element->vn[1]->x, element->vn[1]->y);
                         glVertex2d(element->vn[2]->x, element->vn[2]->y);
-                        glEnd();
                     }
                     else
                     {
-                        glBegin(GL_QUADS);
+                        // quads
                         glVertex2d(element->vn[0]->x, element->vn[0]->y);
                         glVertex2d(element->vn[1]->x, element->vn[1]->y);
                         glVertex2d(element->vn[2]->x, element->vn[2]->y);
+
+                        glVertex2d(element->vn[2]->x, element->vn[2]->y);
                         glVertex2d(element->vn[3]->x, element->vn[3]->y);
-                        glEnd();
+                        glVertex2d(element->vn[0]->x, element->vn[0]->y);
                     }
                 }
             }
         }
     }
+    glEnd();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
