@@ -93,6 +93,16 @@ void SolutionStore::removeSolution(BlockSolutionID solutionID)
     }
 }
 
+void SolutionStore::removeTimeStep(int timeStep)
+{
+    foreach (FieldSolutionID sid, m_multiSolutions.keys())
+    {
+        if (sid.timeStep == timeStep)
+            removeSolution(sid);
+    }
+
+}
+
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType) const
 {
     int timeStep = notFoundSoFar;

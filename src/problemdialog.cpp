@@ -761,7 +761,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtTransientTolerance = new ValueLineEdit();
     txtTransientSteps = new QSpinBox();
     txtTransientSteps->setMinimum(1);
-    txtTransientSteps->setMaximum(1000);
+    txtTransientSteps->setMaximum(10000);
     lblTransientTimeStep = new QLabel("0.0");
 
     // fill combobox

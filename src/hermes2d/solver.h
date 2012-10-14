@@ -57,6 +57,13 @@ private:
     int m_length;
 };
 
+struct NextTimeStep
+{
+    NextTimeStep(double len, bool ref = false) : length(len), refuse(ref) {}
+    double length;
+    bool refuse;
+};
+
 // solve
 template <typename Scalar>
 class Solver
@@ -69,7 +76,7 @@ public:
     void createInitialSpace(int timeStep);
 
     // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
-    double estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep);
+    NextTimeStep estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep);
 
     void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);

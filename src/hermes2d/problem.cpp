@@ -510,7 +510,7 @@ void Problem::solveAction()
     }
 
 
-    double nextTimeStepLength = config()->initialTimeStepLength();
+    NextTimeStep nextTimeStep(config()->initialTimeStepLength());
     bool doNextTimeStep = true;
     while(doNextTimeStep)
     {
@@ -575,21 +575,32 @@ void Problem::solveAction()
 
                 // todo: space + time adaptivity
                 if (isTransient() && (actualTimeStep() >=1))
-                    nextTimeStepLength = solver->estimateTimeStepLenghtOrCombine(actualTimeStep(), 0);
+                    nextTimeStep = solver->estimateTimeStepLenghtOrCombine(actualTimeStep(), 0);
 
             }
         }
 
+        doNextTimeStep = false;
+        if(isTransient())
+        {
 
-        // todo: remove
-        Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
-        Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
-        Util::scene()->setActiveSolutionType(SolutionMode_Normal);
-        //cout << "setting active adapt step to " << Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal) << endl;
+//            nextTimeStep.refuse = (Util::problem()->actualTimeStep() > 2) && random() < RAND_MAX / 2;
+//            nextTimeStep.length = Util::problem()->config()->constantTimeStepLength() / (1 + 10 * random() / double(RAND_MAX));
 
-        doNextTimeStep = isTransient() && defineActualTimeStepLength(nextTimeStepLength);
+            if(nextTimeStep.refuse)
+            {
+                cout << "removing solutions on time step " << actualTimeStep() << endl;
+                Util::solutionStore()->removeTimeStep(actualTimeStep());
+                refuseLastTimeStepLength();
+            }
+
+            doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
+        }
     }
 
+    Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+    Util::scene()->setActiveAdaptivityStep(Util::solutionStore()->lastAdaptiveStep(Util::scene()->activeViewField(), SolutionMode_Normal));
+    Util::scene()->setActiveSolutionType(SolutionMode_Normal);
 
     Util::scene()->blockSignals(false);
 

@@ -576,17 +576,24 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     solutionID.timeStep = timeStep;
     solutionID.adaptivityStep = adaptivityStep;
 
+    cout << "saving solution, time step " << timeStep << endl;
+
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
     delete bdf2Table;
 }
 
 template <typename Scalar>
-double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep)
+NextTimeStep Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep)
 {    
+    // todo: move to some config?
+    const double MAX_TIME_STEPS_RATIO = 2.0; // todo: 3.0;
+    const double MAX_TIME_STEP_LENGTH = Util::problem()->config()->timeTotal().value() / 10;
+    const double MAX_TOLERANCE_MULTIPLY_TO_ACCEPT = 2.5;  // todo: 3.0
+
     TimeStepMethod method = Util::problem()->config()->timeStepMethod();
     if((method == TimeStepMethod_Fixed) || (method == TimeStepMethod_FixedBDF2B))
-        return Util::problem()->config()->constantTimeStepLength();
+        return NextTimeStep(Util::problem()->config()->constantTimeStepLength());
 
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
@@ -600,7 +607,7 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
         // todo: in the first step, I am acualy using order 1 and thus I am unable to decrease it!
         // this is not good, since the second step is not calculated (and the error of the first is not being checked)
         if(timeStep == 1)
-            return Util::problem()->actualTimeStepLength();
+            return NextTimeStep(Util::problem()->actualTimeStepLength());
 
         bdf2Table = new BDF2ATable();
         int previouslyUsedOrder = min(timeStep, Util::problem()->config()->timeOrder());
@@ -627,6 +634,7 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
     solveOneProblem(&wf2, coefVec2, multiSolutionArray2, timeStep > 0 ? &multiSolutionArray : NULL);
 
     double nextTimeStepLength = Util::problem()->config()->constantTimeStepLength();
+    bool refuseThisStep = false;
 
     // just to find delta for error estimation and solution combination
     BDF2ATable bdf2ATable;
@@ -647,25 +655,26 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
             error = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
         }
 
-        // todo: if error too big, refuse step and recalculate
+        if(error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * Util::problem()->config()->timeMethodTolerance().number())
+            refuseThisStep = true;
 
         // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
         nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
                                  1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
 
-        // todo: move to some config?
-        const double MAX_TIME_STEPS_RATIO = 3.0;
-        const double MAX_TIME_STEP_LENGTH = Util::problem()->config()->timeTotal().value() / 10;
 
         nextTimeStepLength = min(nextTimeStepLength, MAX_TIME_STEP_LENGTH);
         nextTimeStepLength = min(nextTimeStepLength, Util::problem()->actualTimeStepLength() * MAX_TIME_STEPS_RATIO);
         nextTimeStepLength = max(nextTimeStepLength, Util::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
 
-        Util::log()->printDebug(m_solverID, QString("time adaptivity, rel. error %1, step size %2 -> %3 (%4 %)").
+        Util::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, step size %3 -> %4 (%5 %)").
+                                arg(Util::problem()->actualTime()).
                                 arg(error).
                                 arg(Util::problem()->actualTimeStepLength()).
                                 arg(nextTimeStepLength).
                                 arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()*100.));
+        if(refuseThisStep)
+            Util::log()->printDebug(m_solverID, "time step refused");
 
     }
 
@@ -690,7 +699,7 @@ double Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptiv
 
    // cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
     delete bdf2Table;
-    return nextTimeStepLength;
+    return NextTimeStep(nextTimeStepLength, refuseThisStep);
 }
 
 template <typename Scalar>

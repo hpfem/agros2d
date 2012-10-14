@@ -23,6 +23,9 @@ public:
     void removeSolution(FieldSolutionID solutionID);
     void removeSolution(BlockSolutionID solutionID);
 
+    // removes all solutions with the given time step
+    void removeTimeStep(int timeStep);
+
     int lastTimeStep(FieldInfo* fieldInfo, SolutionMode solutionType) const;
     int lastTimeStep(Block* block, SolutionMode solutionType) const;
 
