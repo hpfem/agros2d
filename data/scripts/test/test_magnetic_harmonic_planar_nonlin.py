@@ -54,4 +54,4 @@ testJ_imag = agros2d.test("Current density - total - imag", point["Ji"], -3.1123
 volume = magnetic.volume_integrals([2])
 testWm = agros2d.test("Energy", volume["Wm"], 6.219017e-4)
 
-print("Test: Magnetic steady state nonlin - planar: " + str(point and testmur and testB and testJ_real and testJ_imag and testWm))
+print("Test: Magnetic harmonic - nonlin - planar: " + str(point and testmur and testB and testJ_real and testJ_imag and testWm))

@@ -53,4 +53,4 @@ problem.solve()
 point = acoustic.local_values(-0.237716, -0.079254)
 testp = agros2d.test("Acoustic pressure", point["pr"], 0.473456)
 
-print("Test: Acoustic - planar: " + str(testp))
+print("Test: Acoustic - transient - planar: " + str(testp))
