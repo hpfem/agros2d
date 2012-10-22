@@ -21,9 +21,8 @@ acoustic.polynomial_order = 2
 acoustic.linearity_type = "linear"
 acoustic.adaptivity_type = "disabled"
 
-acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 0, "acoustic_normal_acceleration_real" : 0})
-acoustic.add_boundary("Source", "acoustic_pressure", {"acoustic_pressure_real" : 0, "acoustic_pressure_real" : 0, "acoustic_pressure_time_derivative" : 0, "acoustic_pressure_time_derivative" : 0})
-# TODO: add source "sin(2*pi*(time/(1/1e1)))"
+acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 0})
+acoustic.add_boundary("Source", "acoustic_pressure", {"acoustic_pressure_real" : { "expression" : "sin(2*pi*(time/(1/1e1)))" }})
 
 acoustic.add_material("Air", {"acoustic_speed" : 1, "acoustic_density" : 1})
 
