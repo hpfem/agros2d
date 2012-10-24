@@ -84,8 +84,7 @@ public:
 signals:
     void changed();
 
-private:
-    QString m_name;
+private:    QString m_name;
     QString m_fileName;
     CoordinateType m_coordinateType;
 
@@ -185,7 +184,7 @@ public:
     inline bool hasCoupling(const QString &sourceFieldId, const QString &targetFieldId) { return hasCoupling(fieldInfo(sourceFieldId), fieldInfo(targetFieldId)); }
     inline void setCouplingInfos(QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos) { m_couplingInfos = couplingInfos; emit couplingsChanged(); }
 
-    inline QTime timeElapsed() const { return m_timeElapsed; }
+    inline QTime timeElapsed() const { return m_lastTimeElapsed; }
 
     double actualTime() const;
     double actualTimeStepLength() const;
@@ -210,7 +209,8 @@ private:
     QMap<QString, FieldInfo *> m_fieldInfos;
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;
 
-    QTime m_timeElapsed;
+    QTime m_lastTimeElapsed;
+
     bool m_isSolving;
     int m_timeStep;
     bool m_isSolved;
@@ -225,6 +225,7 @@ private:
     void solveInit();
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
     void solveAction(); //called by solve, can throw SolverException
+    void solveFinished();
 
     void solveAdaptiveStepAction();
 

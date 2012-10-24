@@ -75,7 +75,7 @@ bool ProblemConfig::isTransientAdaptive() const
     return false;
 }
 
-const double initialTimeStepRatio = 300;
+const double initialTimeStepRatio = 1000;
 double ProblemConfig::initialTimeStepLength()
 {
     if(isTransientAdaptive())
@@ -87,7 +87,7 @@ double ProblemConfig::initialTimeStepLength()
 Problem::Problem()
 {
     m_timeStep = 0;
-    m_timeElapsed = QTime(0, 0);
+    m_lastTimeElapsed = QTime(0, 0);
     m_isSolved = false;
     m_isSolving = false;
 
@@ -145,7 +145,7 @@ void Problem::clearSolution()
     m_isSolved = false;
     m_isSolving = false;
     m_timeStep = 0;
-    m_timeElapsed = QTime(0, 0);
+    m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
 
     foreach (Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
@@ -434,39 +434,8 @@ double Problem::actualTimeStepLength() const
     return m_timeStepLengths.last();
 }
 
-void Problem::solve()
+void Problem::solveFinished()
 {
-    if (isSolving())
-        return;
-
-    // load plugins
-    QStringList modules = fieldInfos().keys();
-    QStringList couplings;
-    foreach (CouplingInfo *info, couplingInfos().values())
-        couplings.append(info->couplingId());
-
-    QStringList plugins;
-    plugins.append(modules);
-    plugins.append(couplings);
-
-    try
-    {
-        Util::loadPlugins(plugins);
-    }
-    catch (AgrosException e)
-    {
-        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
-        return;
-    }
-
-    // start
-    QTime elapsedTime;
-    elapsedTime.start();
-
-    //setActualTime(0.);
-
-    solveActionCatchExceptions(false);
-
     // delete temp file
     if (config()->fileName() == tempProblemFileName() + ".a2d")
     {
@@ -476,10 +445,18 @@ void Problem::solve()
 
     m_isSolving = false;
 
-    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
-
     // close indicator progress
     Indicator::closeProgress();
+}
+
+void Problem::solve()
+{
+    if (isSolving())
+        return;
+
+    solveActionCatchExceptions(false);
+
+    solveFinished();
 }
 
 //adaptivity step: from 0, if no adaptivity, than 0
@@ -613,9 +590,6 @@ void Problem::solveAdaptiveStep()
     if (isSolving())
         return;
 
-    QTime elapsedTime;
-    elapsedTime.start();
-
     // todo: should be number of blocks, but they are not created at this moment. Anyway, hard coupling does not work at this moment, rewrite....
     //if(m_blocks.count() > 1)
     if(m_fieldInfos.count() > 1)
@@ -630,25 +604,9 @@ void Problem::solveAdaptiveStep()
         return;
     }
 
-    assert(0); // todo: revise after time step treatment changed
-    //    // since transients are not allowed, I can do this
-    //    setActualTime(0.);
-
     solveActionCatchExceptions(true);
 
-    // delete temp file
-    if (config()->fileName() == tempProblemFileName() + ".a2d")
-    {
-        QFile::remove(config()->fileName());
-        config()->setFileName("");
-    }
-
-    m_isSolving = false;
-
-    m_timeElapsed = milisecondsToTime(elapsedTime.elapsed());
-
-    // close indicator progress
-    Indicator::closeProgress();
+    solveFinished();
 }
 
 void Problem::solveAdaptiveStepAction()
@@ -711,6 +669,30 @@ void Problem::solveAdaptiveStepAction()
 
 void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 {
+    // load plugins
+    QStringList modules = fieldInfos().keys();
+    QStringList couplings;
+    foreach (CouplingInfo *info, couplingInfos().values())
+        couplings.append(info->couplingId());
+
+    QStringList plugins;
+    plugins.append(modules);
+    plugins.append(couplings);
+
+    try
+    {
+        Util::loadPlugins(plugins);
+    }
+    catch (AgrosException e)
+    {
+        Util::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
+        return;
+    }
+
+    m_lastTimeElapsed = QTime(0, 0);
+    QTime timeCounter = QTime(0, 0);
+    timeCounter.start();
+
     try
     {
         if(adaptiveStepOnly)
@@ -740,6 +722,10 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     //                            return;
     //                        }
 
+    m_lastTimeElapsed = milisecondsToTime(timeCounter.elapsed());
+
+    // warning: in the case of exception, the program will not reach this place
+    // therefore the cleanup and stop of timeElapsed is done in solve / solveAdaptiveStep by calling solveFinished
 }
 
 void Problem::synchronizeCouplings()
