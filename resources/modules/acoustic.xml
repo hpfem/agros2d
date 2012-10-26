@@ -92,10 +92,8 @@
         </module:boundary>
         <module:boundary id="acoustic_impedance" name="Impedance boundary condition">
           <module:quantity id="acoustic_impedance"/>
-          <module:matrix_form axi_linear="- r * 2 * PI * f / ac_Z0 * uval * vval" axi_newton="- r * 2 * PI * f / ac_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="- 2 * PI * f / ac_Z0 * uval * vval" planar_newton="- 2 * PI * f / ac_Z0 * uval * vval" symmetric="1"/>
-          <module:matrix_form axi_linear="r * 2 * PI * f / ac_Z0 * uval * vval" axi_newton="r * 2 * PI * f / ac_Z0 * uval * vval" i="2" id="form" j="1" planar_linear="2 * PI * f / ac_Z0 * uval * vval" planar_newton="2 * PI * f / ac_Z0 * uval * vval" symmetric="1"/>
-          <module:vector_form axi_linear="0" axi_newton="- r * 2 * PI * f / ac_Z0 * upval * vval" i="1" id="form" j="2" planar_linear="0" planar_newton="- 2 * PI * f / ac_Z0 * upval * vval"/>
-          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / ac_Z0 * upval * vval" i="2" id="form" j="1" planar_linear="0" planar_newton="2 * PI * f / ac_Z0 * upval * vval"/>
+          <module:matrix_form axi_linear="- r * 1.0 / ac_Z0 * uval * vval" axi_newton="- r * 1.0 / ac_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="1.0 / ac_Z0 * uval * vval" planar_newton="- 1.0 / ac_Z0 * uval * vval" symmetric="0"/>
+          <module:vector_form axi_linear="0" id="form" axi_newton="- r * 1.0 / ac_Z0 * upval * vval" i="1" j="2" planar_linear="0" planar_newton="- 1.0 / ac_Z0 * upval * vval"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
@@ -114,7 +112,7 @@
         <module:quantity id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" shortname_html="&lt;i>p&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="p_{i}" unit="Pa" unit_html="Pa" unit_latex="Pa"/>
         <module:quantity id="acoustic_normal_acceleration_real" name="Normal acceleration - real" shortname="anr" shortname_html="&lt;i>an&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="an_{r}" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}"/>
         <module:quantity id="acoustic_normal_acceleration_imag" name="Normal acceleration - imag" shortname="ani" shortname_html="&lt;i>an&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="an_{i}" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}"/>
-        <module:quantity condition="value > 0" default="428.75" id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" shortname_html="&lt;i>Z&lt;/i>&lt;sub>0&lt;/sub>" shortname_latex="Z_{0}" unit="Pa.s/m" unit_html="Pa.s.m&lt;sup>-1&lt;/sup>" unit_latex="Pa \cdot s \cdot m^{-1}"/>
+        <module:quantity condition="value >= 0" default="428.75" id="acoustic_impedance" name="Impedance boundary condition" shortname="Z0" shortname_html="&lt;i>Z&lt;/i>&lt;sub>0&lt;/sub>" shortname_latex="Z_{0}" unit="Pa.s/m" unit_html="Pa.s.m&lt;sup>-1&lt;/sup>" unit_latex="Pa \cdot s \cdot m^{-1}"/>
         <module:quantity id="acoustic_pressure_time_derivative" name="Pressure - time der." shortname="dpr" shortname_html="&lt;i>dp&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="dp_{r}" unit="Pa/s" unit_html="Pa/s" unit_latex="Pa/s"/>
       </module:group>
     </module:gui>
@@ -134,7 +132,7 @@
       </module:localvariable>
       <module:localvariable id="acoustic_sound_pressure_level" name="Sound pressure level" shortname="SPL" shortname_html="&lt;i>SPL&lt;/i>" shortname_latex="SPL" type="scalar" unit="dB" unit_html="dB" unit_latex="dB">
         <module:expression analysistype="harmonic" axi="20 * log10(sqrt(value1*value1 + value2*value2) / P0)" planar="20 * log10(sqrt(value1*value1 + value2*value2) / P0)"/>
-        <module:expression analysistype="transient" axi="20 * log10(value1*value1 / P0)" planar="20 * log10(value1*value1 / P0)"/>
+        <module:expression analysistype="transient" axi="20 * log10(value1 / P0)" planar="20 * log10(value1 / P0)"/>
       </module:localvariable>
       <module:localvariable id="acoustic_local_acceleration_real" name="Local acceleration - real" shortname="ar" shortname_html="&lt;i>a&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="a_{r}" type="vector" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}">
         <module:expression analysistype="harmonic" axi_r="- dr1 / ac_rho" axi_z="- dz1 / ac_rho" planar_x="- dx1 / ac_rho" planar_y="- dy1 / ac_rho"/>
