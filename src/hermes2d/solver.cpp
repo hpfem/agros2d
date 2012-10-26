@@ -128,7 +128,7 @@ Scalar* VectorStore<Scalar>::createNew(int length)
 template <typename Scalar>
 Solver<Scalar>::~Solver()
 {
-    if(!m_discreteProblem)
+    if(m_discreteProblem)
         delete m_discreteProblem;
 }
 
@@ -137,7 +137,7 @@ void Solver<Scalar>::init(Block* block)
 {
     m_block = block;
 
-    if(!m_discreteProblem)
+    if(m_discreteProblem)
         delete m_discreteProblem;
     m_discreteProblem = NULL;
 
