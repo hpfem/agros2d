@@ -69,8 +69,9 @@ template <typename Scalar>
 class Solver
 {
 public:
+    Solver() { m_discreteProblem = NULL;}
+    ~Solver();
     void init(Block* block);
-    void clear();
 
     void solveInitialTimeStep();
     void createInitialSpace(int timeStep);
@@ -84,6 +85,8 @@ public:
 
 private:
     Block* m_block;
+
+    Hermes::Hermes2D::DiscreteProblem<Scalar>* m_discreteProblem;
 
     QString m_solverID;
 
