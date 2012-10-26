@@ -167,36 +167,31 @@ QString createPythonFromModel()
 
         str += "\n";
 
-        //str += "\n# boundaries\n";
+        str += "\n# boundaries\n";
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
+            const QHash<QString, Value> values = boundary->values();
+
             QString variables = "{";
 
-            const QHash<QString, Value> values = boundary->values();
-            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->type());
+            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
             {
-                Value value = it.value();
+                Value value = values[variable->id()];
+
                 if (value.hasExpression())
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
-                            arg(it.key()).
+                            arg(variable->id()).
                             arg(value.text());
                 }
                 else
                 {
                     variables += QString("\"%1\" : %2, ").
-                            arg(it.key()).
-                            arg(it.value().toString());
+                            arg(variable->id()).
+                            arg(value.toString());
                 }
             }
-            /*
-            foreach (Module::BoundaryTypeVariable *variable, fieldInfo->module()->boundaryType(boundary->type())->variables())
-            {
-                variables += QString("\"%1\" : %2, ").
-                        arg(variable->id()).
-                        arg(boundary->value(variable->id()).number());
-            }
-            */
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
             str += QString("%1.add_boundary(\"%2\", \"%3\", %4)\n").
@@ -208,33 +203,42 @@ QString createPythonFromModel()
 
         str += "\n";
 
-        //str += "\n# materials\n";
+        str += "\n# materials\n";
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
-            QString variables = "{";
             const QHash<QString, Value> values = material->values();
-            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+
+            QString variables = "{";
+            foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
             {
-                Value value = it.value();
+                Value value = values[variable->id()];
+
                 if (value.hasTable())
                 {
-                    variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
-                            arg(it.key()).
-                            arg(it.value().text()).
-                            arg(QString::fromStdString(value.table()->toStringX())).
-                            arg(QString::fromStdString(value.table()->toStringY()));
+                    if (value.hasExpression())
+                        variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
+                                arg(variable->id()).
+                                arg(value.text()).
+                                arg(QString::fromStdString(value.table()->toStringX())).
+                                arg(QString::fromStdString(value.table()->toStringY()));
+                    else
+                        variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
+                                arg(variable->id()).
+                                arg(value.number()).
+                                arg(QString::fromStdString(value.table()->toStringX())).
+                                arg(QString::fromStdString(value.table()->toStringY()));
                 }
                 else if (value.hasExpression())
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
-                            arg(it.key()).
+                            arg(variable->id()).
                             arg(value.text());
                 }
                 else
                 {
                     variables += QString("\"%1\" : %2, ").
-                            arg(it.key()).
-                            arg(it.value().toString());
+                            arg(variable->id()).
+                            arg(value.toString());
                 }
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";

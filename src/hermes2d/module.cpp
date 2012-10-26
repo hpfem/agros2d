@@ -407,7 +407,7 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
 
 // ***********************************************************************************************
 
-Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant, CoordinateType coordinateType)
+Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
     : m_defaultValue(0), m_expressionNonlinear(""), m_isTimeDep(false)
 {
     m_id = QString::fromStdString(quant.id());
@@ -458,7 +458,7 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
                 }
 
                 Module::BoundaryTypeVariable *var
-                        = new Module::BoundaryTypeVariable(old.id(), old.shortname(), old.defaultValue(), isTimeDep, isSpaceDep);
+                        = new Module::BoundaryTypeVariable(old.id(), old.shortname(), isTimeDep, isSpaceDep);
 
                 m_variables.append(var);
             }
@@ -565,6 +565,14 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
     }
 }
 
+Module::DialogRow *Module::DialogUI::dialogRow(const QString &id)
+{
+    foreach (QList<Module::DialogRow> rows, m_groups)
+        foreach (Module::DialogRow row, rows)
+            if (row.id() == id)
+                return &row;
+}
+
 void Module::DialogUI::clear()
 {
     m_groups.clear();
@@ -637,84 +645,59 @@ void Module::BasicModule::read(const QString &filename)
 
     // surface weakforms
     QList<Module::BoundaryTypeVariable> boundaryTypeVariables;
-    for (unsigned int i = 0; i < mod->surface().quantity().size(); i++)
+    for (int i = 0; i < mod->surface().quantity().size(); i++)
     {
         XMLModule::quantity quant = mod->surface().quantity().at(i);
 
-        // TODO: (Franta)
-        for (unsigned int i = 0; i < mod->preprocessor().gui().size(); i++)
-        {
-            XMLModule::gui *ui = &mod->preprocessor().gui().at(i);
-            if (ui->type() == "surface")
-            {
-                for (unsigned int i = 0; i < ui->group().size(); i++)
-                {
-                    XMLModule::group *grp = &ui->group().at(i);
-                    for (unsigned int i = 0; i < grp->quantity().size(); i++)
-                    {
-                        XMLModule::quantity *quant_ui = &grp->quantity().at(i);
-                        if ((quant_ui->id() == quant.id()) && quant_ui->default_().present())
-                            quant.default_().set(quant_ui->default_().get());
-                    }
-                }
-            }
-            boundaryTypeVariables.append(Module::BoundaryTypeVariable(quant));
-        }
+        // add to list
+        boundaryTypeVariables.append(Module::BoundaryTypeVariable(quant));
     }
 
-    for (unsigned int i = 0; i < mod->surface().weakforms_surface().weakform_surface().size(); i++)
+    for (int i = 0; i < mod->surface().weakforms_surface().weakform_surface().size(); i++)
     {
         XMLModule::weakform_surface wf = mod->surface().weakforms_surface().weakform_surface().at(i);
 
         if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
-        {
-            for (unsigned int i = 0; i < wf.boundary().size(); i++)
+            for (int i = 0; i < wf.boundary().size(); i++)
             {
                 XMLModule::boundary bdy = wf.boundary().at(i);
                 m_boundaryTypes.append(new Module::BoundaryType(boundaryTypeVariables, bdy, m_coordinateType));
             }
-        }
 
         // default
         m_boundaryTypeDefault = boundaryType(QString::fromStdString(wf.default_().get()));
     }
 
-    // TODO: (Franta)
-    foreach (Module::BoundaryTypeVariable variable, boundaryTypeVariables)
-        m_boundaryTypeVariables.append(new Module::BoundaryTypeVariable(variable.id(), variable.shortname(),
-                                                                        variable.defaultValue(),
-                                                                        variable.isTimeDep(), variable.isSpaceDep()));
-
-    boundaryTypeVariables.clear();
-
-    // volumetric weakforms
+    // materials variables
     QList<Module::MaterialTypeVariable> materialTypeVariables;
-    for (unsigned int i = 0; i < mod->volume().quantity().size(); i++)
+    for (int i = 0; i < mod->volume().quantity().size(); i++)
     {
         XMLModule::quantity quant = mod->volume().quantity().at(i);
 
-        // TODO: (Franta)
+        // gui default
         for (unsigned int i = 0; i < mod->preprocessor().gui().size(); i++)
         {
-            XMLModule::gui *ui = &mod->preprocessor().gui().at(i);
-            if (ui->type() == "volume")
+            XMLModule::gui ui = mod->preprocessor().gui().at(i);
+            if (ui.type() == "volume")
             {
-                for (unsigned int i = 0; i < ui->group().size(); i++)
+                for (unsigned int i = 0; i < ui.group().size(); i++)
                 {
-                    XMLModule::group *grp = &ui->group().at(i);
-                    for (unsigned int i = 0; i < grp->quantity().size(); i++)
+                    XMLModule::group grp = ui.group().at(i);
+                    for (unsigned int i = 0; i < grp.quantity().size(); i++)
                     {
-                        XMLModule::quantity *quant_ui = &grp->quantity().at(i);
-                        if ((quant_ui->id() == quant.id()) && quant_ui->default_().present())
-                            quant.default_().set(quant_ui->default_().get());
+                        XMLModule::quantity quant_ui = grp.quantity().at(i);
+                        if ((quant_ui.id() == quant.id()) && quant_ui.default_().present())
+                            quant.default_().set(quant_ui.default_().get());
                     }
                 }
             }
         }
 
-        materialTypeVariables.append(Module::MaterialTypeVariable(quant, m_coordinateType));
+        // add to the list
+        materialTypeVariables.append(Module::MaterialTypeVariable(quant));
     }
 
+    // volumetric weakforms
     for (unsigned int i = 0; i < mod->volume().weakforms_volume().weakform_volume().size(); i++)
     {
         XMLModule::weakform_volume wf = mod->volume().weakforms_volume().weakform_volume().at(i);
@@ -741,7 +724,7 @@ void Module::BasicModule::read(const QString &filename)
                             isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
 
                         m_materialTypeVariables.append(new Module::MaterialTypeVariable(variable.id(), variable.shortname(),
-                                                                                        variable.defaultValue(), nonlinearExpression, isTimeDep));
+                                                                                        nonlinearExpression, isTimeDep));
                     }
                 }
             }
