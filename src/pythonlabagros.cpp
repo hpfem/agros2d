@@ -117,7 +117,9 @@ QString createPythonFromModel()
                 str += QString("%1.initial_condition = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->initialCondition().number());
-
+        }
+        else
+        {
             str += QString("%1.time_skip = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->timeSkip().number());
@@ -165,15 +167,30 @@ QString createPythonFromModel()
 
         str += "\n";
 
-        //str += "\n# boundaries\n";
+        str += "\n# boundaries\n";
         foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
         {
+            const QHash<QString, Value> values = boundary->values();
+
             QString variables = "{";
-            foreach (Module::BoundaryTypeVariable *variable, fieldInfo->module()->boundaryType(boundary->type())->variables())
+
+            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->type());
+            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
             {
-                variables += QString("\"%1\" : %2, ").
-                        arg(variable->id()).
-                        arg(boundary->value(variable->id()).number());
+                Value value = values[variable->id()];
+
+                if (value.hasExpression())
+                {
+                    variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
+                            arg(variable->id()).
+                            arg(value.text());
+                }
+                else
+                {
+                    variables += QString("\"%1\" : %2, ").
+                            arg(variable->id()).
+                            arg(value.toString());
+                }
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
@@ -186,27 +203,42 @@ QString createPythonFromModel()
 
         str += "\n";
 
-        //str += "\n# materials\n";
+        str += "\n# materials\n";
         foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
         {
-            QString variables = "{";
             const QHash<QString, Value> values = material->values();
-            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+
+            QString variables = "{";
+            foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
             {
-                if (it.value().hasTable())
+                Value value = values[variable->id()];
+
+                if (value.hasTable())
                 {
-                    Value value = it.value();
-                    variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
-                            arg(it.key()).
-                            arg(it.value().text()).
-                            arg(QString::fromStdString(value.table()->toStringX())).
-                            arg(QString::fromStdString(value.table()->toStringY()));
+                    if (value.hasExpression())
+                        variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
+                                arg(variable->id()).
+                                arg(value.text()).
+                                arg(QString::fromStdString(value.table()->toStringX())).
+                                arg(QString::fromStdString(value.table()->toStringY()));
+                    else
+                        variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
+                                arg(variable->id()).
+                                arg(value.number()).
+                                arg(QString::fromStdString(value.table()->toStringX())).
+                                arg(QString::fromStdString(value.table()->toStringY()));
+                }
+                else if (value.hasExpression())
+                {
+                    variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
+                            arg(variable->id()).
+                            arg(value.text());
                 }
                 else
                 {
                     variables += QString("\"%1\" : %2, ").
-                            arg(it.key()).
-                            arg(it.value().toString());
+                            arg(variable->id()).
+                            arg(value.toString());
                 }
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
@@ -247,7 +279,7 @@ QString createPythonFromModel()
                 {
                     if (fieldInfo->edgeRefinement(edge) > 0)
                     {
-                        refinements += QString("\"%1\" : \"%2\", ").
+                        refinements += QString("\"%1\" : %2, ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->edgeRefinement(edge));
                     }
@@ -296,6 +328,7 @@ QString createPythonFromModel()
             // refinements
             if (Util::problem()->fieldInfos().count() > 0)
             {
+                int refinementsCount = 0;
                 QString refinements = ", refinements = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
@@ -304,27 +337,34 @@ QString createPythonFromModel()
                         refinements += QString("\"%1\" : \"%2\", ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->labelRefinement(label));
+
+                        refinementsCount++;
                     }
                 }
                 refinements = (refinements.endsWith(", ") ? refinements.left(refinements.length() - 2) : refinements) + "}";
-                str += refinements;
+                if (refinementsCount > 0)
+                    str += refinements;
             }
 
             // orders
             if (Util::problem()->fieldInfos().count() > 0)
             {
+                int ordersCount = 0;
                 QString orders = ", orders = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
-                    if (fieldInfo->labelPolynomialOrder(label) > 0)
+                    if (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder())
                     {
                         orders += QString("\"%1\" : %2, ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->labelPolynomialOrder(label));
+
+                        ordersCount++;
                     }
                 }
                 orders = (orders.endsWith(", ") ? orders.left(orders.length() - 2) : orders) + "}";
-                str += orders;
+                if (ordersCount > 0)
+                    str += orders;
             }
 
             // materials
@@ -607,7 +647,7 @@ void PyField::setTimeSkip(const double timeSkip)
         throw invalid_argument(QObject::tr("Time skip is out of range (0 - %1).").arg(Util::problem()->config()->timeTotal().number()).toStdString());
 }
 
-void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
+void PyField::addBoundary(char *name, char *type, map<char*, double> parameters, map<char *, char *> expressions)
 {
     // check boundaries with same name
     foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
@@ -630,7 +670,16 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
             if (variable->id() == QString(QString((*i).first)))
             {
                 assigned = true;
-                values[variable->id()] = Value(m_fieldInfo, (*i).second);
+                if (expressions.count((*i).first) == 0)
+                    values[variable->id()] = Value(m_fieldInfo,
+                                                   (*i).second,
+                                                   vector<double>(),
+                                                   vector<double>());
+                else
+                    values[variable->id()] = Value(m_fieldInfo,
+                                                   expressions[(*i).first],
+                                                   vector<double>(),
+                                                   vector<double>());
                 break;
             }
         }
@@ -642,7 +691,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters)
     Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), name, type, values));
 }
 
-void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
+void PyField::setBoundary(char *name, char *type, map<char*, double> parameters, map<char *, char *> expressions)
 {
     SceneBoundary *sceneBoundary = Util::scene()->getBoundary(fieldInfo(), QString(name));
     if (sceneBoundary == NULL)
@@ -670,7 +719,16 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters)
             if (variable->id() == QString(QString((*i).first)))
             {
                 assigned = true;
-                sceneBoundary->setValue(QString((*i).first), Value(QString::number((*i).second)));
+                if (expressions.count((*i).first) == 0)
+                    sceneBoundary->setValue(QString((*i).first), Value(m_fieldInfo,
+                                                                       (*i).second,
+                                                                       vector<double>(),
+                                                                       vector<double>()));
+                else
+                    sceneBoundary->setValue(QString((*i).first), Value(m_fieldInfo,
+                                                                       expressions[(*i).first],
+                                                                       vector<double>(),
+                                                                       vector<double>()));
                 break;
             }
         }
@@ -686,6 +744,7 @@ void PyField::removeBoundary(char *name)
 }
 
 void PyField::addMaterial(char *name, map<char*, double> parameters,
+                          map<char*, char* > expressions,
                           map<char*, vector<double> > nonlin_x,
                           map<char*, vector<double> > nonlin_y)
 {
@@ -716,9 +775,16 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
                         throw out_of_range(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
 
                 assigned = true;
-                values[variable->id()] = Value(m_fieldInfo, (*i).second,
-                                               (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                               (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
+                if (expressions.count((*i).first) == 0)
+                    values[variable->id()] = Value(m_fieldInfo,
+                                                   (*i).second,
+                                                   (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
+                else
+                    values[variable->id()] = Value(m_fieldInfo,
+                                                   expressions[(*i).first],
+                                                   (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 break;
             }
         }
@@ -731,6 +797,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
 }
 
 void PyField::setMaterial(char *name, map<char*, double> parameters,
+                          map<char*, char* > expressions,
                           map<char*, vector<double> > nonlin_x,
                           map<char*, vector<double> > nonlin_y)
 {
@@ -757,9 +824,16 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
                         throw out_of_range(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
 
                 assigned = true;
-                sceneMaterial->setValue(QString((*i).first), Value(m_fieldInfo, (*i).second,
-                                                                   (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
+                if (expressions.count((*i).first) == 0)
+                    sceneMaterial->setValue(QString((*i).first), Value(m_fieldInfo,
+                                                                       (*i).second,
+                                                                       (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                                       (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
+                else
+                    sceneMaterial->setValue(QString((*i).first), Value(m_fieldInfo,
+                                                                       expressions[(*i).first],
+                                                                       (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                                       (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 break;
             }
         }
@@ -1975,7 +2049,7 @@ char *pythonSolutionFileName()
 void PythonEngineAgros::addCustomExtensions()
 {
     // init agros cython extensions
-    initagros2d();    
+    initagros2d();
 }
 
 void PythonEngineAgros::runPythonHeader()

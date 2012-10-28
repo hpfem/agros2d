@@ -63,6 +63,14 @@ Value::Value(double value, std::vector<double> x, std::vector<double> y)
     m_table->add(x, y);
 }
 
+Value::Value(const QString &value, std::vector<double> x, std::vector<double> y)
+    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(new DataTable())
+{
+    m_text = value;
+    m_number = 0.0;
+    m_table->add(x, y);
+}
+
 Value::Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y)
     : m_fieldInfo(fieldInfo), m_isEvaluated(true), m_table(new DataTable())
 {
@@ -71,9 +79,22 @@ Value::Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vec
     m_table->add(x, y);
 }
 
+Value::Value(FieldInfo *fieldInfo, const QString &value, std::vector<double> x, std::vector<double> y)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(new DataTable())
+{
+    m_text = value;
+    m_number = 0.0;
+    m_table->add(x, y);
+}
+
 Value::~Value()
 {
     // delete m_table;
+}
+
+bool Value::hasExpression()
+{
+    return (QString::number(number()) != text());
 }
 
 bool Value::hasTable() const

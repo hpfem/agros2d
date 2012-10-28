@@ -98,12 +98,12 @@ cdef extern from "../../src/pythonlabagros.h":
         double getTimeSkip()
         void setTimeSkip(double) except +
 
-        void addBoundary(char*, char*, map[char*, double]) except +
-        void setBoundary(char*, char*, map[char*, double]) except +
+        void addBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
+        void setBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
         void removeBoundary(char*)
 
-        void addMaterial(char *id, map[char*, double] parameters, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
-        void setMaterial(char* name, map[char*, double] parameters, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
+        void addMaterial(char *id, map[char*, double] parameters, map[char*, char*] expressions, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
+        void setMaterial(char* name, map[char*, double] parameters, map[char*, char*] expressions, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
         void removeMaterial(char* name)
 
         void solve()
@@ -547,22 +547,56 @@ cdef class __Field__:
     def add_boundary(self, char *name, char *type, parameters = {}):
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
+
+        cdef map[char*, char*] expression_map
+        cdef pair[char*, char*] expression
+
         for key in parameters:
+            if isinstance(parameters[key], dict):
+                if ("value" in parameters[key]):
+                    val = parameters[key]["value"]
+                else:
+                    val = 0.0
+
+                if ("expression" in parameters[key]):
+                    expression.first = key
+                    expression.second = parameters[key]["expression"]
+                    expression_map.insert(expression)
+            else:
+                val = parameters[key]
+
             parameter.first = key
-            parameter.second = parameters[key]
+            parameter.second = val
             parameters_map.insert(parameter)
 
-        self.thisptr.addBoundary(name, type, parameters_map)
+        self.thisptr.addBoundary(name, type, parameters_map, expression_map)
 
     def set_boundary(self, char *name, char *type = "", parameters = {}):
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
+
+        cdef map[char*, char*] expression_map
+        cdef pair[char*, char*] expression
+
         for key in parameters:
+            if isinstance(parameters[key], dict):
+                if ("value" in parameters[key]):
+                    val = parameters[key]["value"]
+                else:
+                    val = 0.0
+
+                if ("expression" in parameters[key]):
+                    expression.first = key
+                    expression.second = parameters[key]["expression"]
+                    expression_map.insert(expression)
+            else:
+                val = parameters[key]
+
             parameter.first = key
-            parameter.second = parameters[key]
+            parameter.second = val
             parameters_map.insert(parameter)
 
-        self.thisptr.setBoundary(name, type, parameters_map)
+        self.thisptr.setBoundary(name, type, parameters_map, expression_map)
 
     def remove_boundary(self, char *name):
         self.thisptr.removeBoundary(name)
@@ -572,6 +606,9 @@ cdef class __Field__:
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
 
+        cdef map[char*, char*] expression_map
+        cdef pair[char*, char*] expression
+
         cdef map[char*, vector[double]] nonlin_x_map
         cdef pair[char*, vector[double]] nonlin_x
         cdef vector[double] x
@@ -585,6 +622,11 @@ cdef class __Field__:
                     val = parameters[key]["value"]
                 else:
                     val = 0.0
+
+                if ("expression" in parameters[key]):
+                    expression.first = key
+                    expression.second = parameters[key]["expression"]
+                    expression_map.insert(expression)
 
                 if ("x" in parameters[key]):
                     for v in parameters[key]["x"]:
@@ -606,12 +648,15 @@ cdef class __Field__:
             parameter.second = val
             parameters_map.insert(parameter)
 
-        self.thisptr.addMaterial(name, parameters_map, nonlin_x_map, nonlin_y_map)
+        self.thisptr.addMaterial(name, parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
 
     def set_material(self, char *name, parameters = {}):
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
 
+        cdef map[char*, char*] expression_map
+        cdef pair[char*, char*] expression
+
         cdef map[char*, vector[double]] nonlin_x_map
         cdef pair[char*, vector[double]] nonlin_x
         cdef vector[double] x
@@ -625,6 +670,11 @@ cdef class __Field__:
                     val = parameters[key]["value"]
                 else:
                     val = 0.0
+
+                if ("expression" in parameters[key]):
+                    expression.first = key
+                    expression.second = parameters[key]["expression"]
+                    expression_map.insert(expression)
 
                 if ("x" in parameters[key]):
                     for v in parameters[key]["x"]:
@@ -646,7 +696,7 @@ cdef class __Field__:
             parameter.second = val
             parameters_map.insert(parameter)
 
-        self.thisptr.setMaterial(name, parameters_map, nonlin_x_map, nonlin_y_map)
+        self.thisptr.setMaterial(name, parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
 
     def remove_material(self, char *name):
         self.thisptr.removeMaterial(name)

@@ -208,15 +208,21 @@ class PyField
         void setTimeSkip(const double timeSkip);
 
         // boundaries
-        void addBoundary(char *name, char *type, map<char*, double> parameters);
-        void setBoundary(char *name, char *type, map<char*, double> parameters);
+        void addBoundary(char *name, char *type,
+                         map<char*, double> parameters,
+                         map<char*, char* > expressions);
+        void setBoundary(char *name, char *type,
+                         map<char*, double> parameters,
+                         map<char *, char *> expressions);
         void removeBoundary(char *name);
 
         // materials
         void addMaterial(char *name, map<char*, double> parameters,
+                         map<char *, char *> expressions,
                          map<char*, vector<double> > nonlin_x,
                          map<char*, vector<double> > nonlin_y);
         void setMaterial(char *name, map<char*, double> parameters,
+                         map<char*, char* > expressions,
                          map<char *, vector<double> > nonlin_x,
                          map<char *, vector<double> > nonlin_y);
         void removeMaterial(char *name);

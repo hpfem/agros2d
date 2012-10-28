@@ -47,11 +47,6 @@ public:
 
     QAction *actSceneModePost2D;
 
-    QActionGroup *actShowGroup;
-    QAction *actShowContours;
-    QAction *actShowVectors;
-    QAction *actShowSolutionMesh;
-
     QAction *actSelectPoint;
     QAction *actSelectByMarker;
 

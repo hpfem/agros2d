@@ -12,9 +12,9 @@ problem.name = "NAFEMS"
 problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
-problem.time_step_method = "bdf2"
+problem.time_step_method = "bdf2_adaptive"
 problem.time_method_order = 3
-problem.time_method_tolerance = 0.1
+problem.time_method_tolerance = 1.0
 problem.time_steps = 20
 problem.time_total = 190
 
@@ -55,4 +55,4 @@ problem.solve()
 point = heat.local_values(0.1, 0.3)
 testT = agros2d.test("Temperature", point["T"], 186.5, 0.0002) # permissible error 0.02 %
 
-print("Test: Heat transfer steady state - axisymmetric: " + str(testT))
+print("Test: Heat transfer steady state - transient - axisymmetric: " + str(testT))

@@ -92,4 +92,4 @@ surface = heat.surface_integrals([26])
 testFlux = agros2d.test("Heat flux", surface["f"], 0.032866, error = 0.05)
 
 # print("Test: Heat transfer transient - axisymmetric: " + str(testT and testF and testFr and testFz and testTavg and testFlux))
-print("Test: Heat transfer transient - axisymmetric: " + str(testT and testF and testFr and testFz))
+print("Test: Heat transfer - transient - axisymmetric: " + str(testT and testF and testFr and testFz))

@@ -22,7 +22,7 @@ flow.nonlinear_tolerance = 0.001
 flow.nonlinear_steps = 10
 flow.adaptivity_type = "disabled"
 
-flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : 1, "flow_velocity_y" : 0})
+flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : { "expression" : "cos((y-0.135)/0.035*pi/2)" }, "flow_velocity_y" : 0})
 flow.add_boundary("Wall", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : 0})
 flow.add_boundary("Outlet", "fluid_outlet", {})
 
@@ -60,10 +60,10 @@ problem.solve()
 
 # point value
 point = flow.local_values(-0.023486, 0.117842)
-testp = agros2d.test("Pressure", point["p"], 1.257356)
-testv = agros2d.test("Velocity", point["v"], 0.580049)
-testvx = agros2d.test("Velocity - x", point["vx"], 0.448922)
-testvy = agros2d.test("Velocity - y", point["vy"], -0.367323)
+testp = agros2d.test("Pressure", point["p"], 0.65205)
+testv = agros2d.test("Velocity", point["v"], 0.406233)
+testvx = agros2d.test("Velocity - x", point["vx"], 0.337962)
+testvy = agros2d.test("Velocity - y", point["vy"], -0.225404)
 
 # volume integral
 volume = flow.volume_integrals([0])

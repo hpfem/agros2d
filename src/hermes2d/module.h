@@ -236,18 +236,16 @@ private:
 struct MaterialTypeVariable
 {
     MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false) {}
-    MaterialTypeVariable(const QString &id, const QString &shortname, double defaultValue = 0,
+    MaterialTypeVariable(const QString &id, const QString &shortname,
                          const QString &expressionNonlinear = "", bool isTimedep = false)
-        : m_id(id), m_shortname(shortname), m_defaultValue(defaultValue),
+        : m_id(id), m_shortname(shortname),
           m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep) {}
-    MaterialTypeVariable(XMLModule::quantity quant, CoordinateType coordinateType);
+    MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
     inline QString id() const { return m_id; }
     // short name
     inline QString shortname() const { return m_shortname; }
-    // default value
-    inline double defaultValue() const { return m_defaultValue; }
     // nonlinear expression
     inline QString expressionNonlinear() const { return m_expressionNonlinear; }
     inline bool isNonlinear() const { return !m_expressionNonlinear.isEmpty(); }
@@ -274,8 +272,8 @@ struct BoundaryTypeVariable
         : m_id(""), m_shortname(""), m_defaultValue(0),
           m_isTimeDep(false), m_isSpaceDep(false) {}
     BoundaryTypeVariable(const QString &id, QString shortname,
-                         double defaultValue = 0, bool isTimedep = false, bool isSpaceDep = false)
-        : m_id(id), m_shortname(shortname), m_defaultValue(defaultValue),
+                         bool isTimedep = false, bool isSpaceDep = false)
+        : m_id(id), m_shortname(shortname),
           m_isTimeDep(isTimedep), m_isSpaceDep(isSpaceDep) {}
     BoundaryTypeVariable(XMLModule::quantity quant);
 
@@ -283,8 +281,6 @@ struct BoundaryTypeVariable
     inline QString id() const { return m_id; }
     // short name
     inline QString shortname() const { return m_shortname; }
-    // default value
-    inline double defaultValue() const { return m_defaultValue; }
     // timedep
     inline bool isTimeDep() const { return m_isTimeDep; }
     // spacedep
@@ -435,6 +431,7 @@ struct DialogUI
     DialogUI(XMLModule::gui ui);
 
     inline QMap<QString, QList<Module::DialogRow> > groups() const { return m_groups; }
+    Module::DialogRow *dialogRow(const QString &id);
     void clear();
 
 private:

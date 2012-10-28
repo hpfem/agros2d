@@ -67,4 +67,4 @@ testTavg = agros2d.test("Temperature", volume["T"], 12.221687)
 surface = heat.surface_integrals([8])
 testFlux = agros2d.test("Heat flux", surface["f"], 96464.56418)
 
-print("Test: Heat transfer steady state nonlin - planar: " + str(testT and testG and testF and testTavg and testFlux))
+print("Test: Heat transfer steady state - nonlin - planar: " + str(testT and testG and testF and testTavg and testFlux))

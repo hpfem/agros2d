@@ -58,7 +58,7 @@
     <module:gui type="surface">
       <module:group>
         <module:quantity condition="" default="1000" id="electrostatic_potential" name="Fixed voltage" shortname="V" shortname_html="&lt;i>&amp;phi;&lt;/i>" shortname_latex="\phi" unit="V" unit_html="V" unit_latex="V"/>
-        <module:quantity condition="" default="5" id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" shortname_html="&lt;i>&amp;sigma;&lt;/i>" shortname_latex="\sigma" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}"/>
+        <module:quantity condition="" default="0" id="electrostatic_surface_charge_density" name="Surface charge density" shortname="sigma" shortname_html="&lt;i>&amp;sigma;&lt;/i>" shortname_latex="\sigma" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}"/>
       </module:group>
     </module:gui>
   </module:preprocessor>

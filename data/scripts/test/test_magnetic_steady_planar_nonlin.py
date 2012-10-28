@@ -82,4 +82,4 @@ testmur = agros2d.test("Magnetic potential", point["mur"], 139.364773)
 volume = magnetic.volume_integrals([2])
 testWm = agros2d.test("Energy", volume["Wm"], 3.264012)
 
-print("Test: Magnetic steady state nonlin - planar: " + str(point and testmur and testB and testWm))
+print("Test: Magnetic steady state - nonlin - planar: " + str(point and testmur and testB and testWm))

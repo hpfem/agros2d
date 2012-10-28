@@ -34,11 +34,15 @@ struct Value
     Value(FieldInfo *fieldInfo, const QString &value, DataTable *m_table);
     Value(FieldInfo *fieldInfo, const QString &value, bool evaluateExpression = true);
     Value(const QString &value, bool evaluateExpression = true);
-    Value(double value, std::vector<double> x = std::vector<double>(), std::vector<double> y = std::vector<double>());
-    Value(FieldInfo *fieldInfo, double value, std::vector<double> x = std::vector<double>(), std::vector<double> y = std::vector<double>());
+    Value(double value, std::vector<double> x, std::vector<double> y);
+    Value(const QString &value, std::vector<double> x, std::vector<double> y);
+    Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y);
+    Value(FieldInfo *fieldInfo, const QString &value, std::vector<double> x, std::vector<double> y);
     ~Value();
 
     double number();
+
+    bool hasExpression();
 
     DataTable *table() const { return m_table; }
     bool hasTable() const;

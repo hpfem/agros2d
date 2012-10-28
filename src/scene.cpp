@@ -1520,14 +1520,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QString name = element.toElement().attribute("name");
 
             // read marker
-            SceneMaterial *material = new SceneMaterial(field,
-                                                        name);
+            SceneMaterial *material = new SceneMaterial(field, name);
 
             foreach (Module::MaterialTypeVariable *variable, field->module()->materialTypeVariables())
             {
-                material->setValue(variable->id(),
-                                   Value(field, element.toElement().attribute(variable->id(),
-                                                                              QString::number(variable->defaultValue()))));
+                material->setValue(variable->id(), element.toElement().attribute(variable->id(), "0"));
             }
 
             // add material

@@ -98,23 +98,6 @@ void SceneViewPost2D::createActionsPost2D()
     actExportVTKScalar = new QAction(tr("Export VTK scalar..."), this);
     actExportVTKScalar->setStatusTip(tr("Export scalar view as VTK file"));
     connect(actExportVTKScalar, SIGNAL(triggered()), this, SLOT(exportVTKScalarView()));
-
-    // show
-    actShowSolutionMesh = new QAction(tr("Solution mesh"), this);
-    actShowSolutionMesh->setCheckable(true);
-
-    actShowContours = new QAction(tr("Contours"), this);
-    actShowContours->setCheckable(true);
-
-    actShowVectors = new QAction(tr("Vectors"), this);
-    actShowVectors->setCheckable(true);
-
-    actShowGroup = new QActionGroup(this);
-    actShowGroup->setExclusive(false);
-    connect(actShowGroup, SIGNAL(triggered(QAction *)), this, SLOT(showGroup(QAction *)));
-    actShowGroup->addAction(actShowSolutionMesh);
-    actShowGroup->addAction(actShowContours);
-    actShowGroup->addAction(actShowVectors);
 }
 
 void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
@@ -1414,10 +1397,6 @@ void SceneViewPost2D::doPostprocessorModeGroup(QAction *action)
 
 void SceneViewPost2D::showGroup(QAction *action)
 {
-    Util::config()->showSolutionMeshView = actShowSolutionMesh->isChecked();
-    Util::config()->showContourView = actShowContours->isChecked();
-    Util::config()->showVectorView = actShowVectors->isChecked();
-
     refresh();
 }
 
