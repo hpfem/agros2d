@@ -202,7 +202,7 @@ NodeEdgeData Node::startLoop()
         NodeEdgeData ned = data.at(i);
         if(!ned.visited){
             data[i].visited = true;
-            cout << "start loop " << i << endl;
+            //cout << "start loop " << i << endl;
             return ned;
         }
     }
@@ -226,7 +226,7 @@ NodeEdgeData Node::continueLoop(int previousNode)
     assert(previousNED.node != NON_EXISTING);
 
     int nextIdx = (index + 1) % data.size();
-    cout << "continue loop " << previousNode << ", " << data[nextIdx].node << endl;
+    //cout << "continue loop " << previousNode << ", " << data[nextIdx].node << endl;
     assert(!data.at(nextIdx).visited);
     data[nextIdx].visited = true;
     return data[nextIdx];
@@ -271,13 +271,13 @@ void Graph::print()
 {
     for(int i = 0; i < data.size(); i++)
     {
-        cout << "node " << i << "\n";
+        //cout << "node " << i << "\n";
         foreach(NodeEdgeData ned, data[i].data)
         {
-            cout << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited << "\n";
+            //cout << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited << "\n";
         }
     }
-    cout << "\n";
+    //cout << "\n";
 }
 
 enum Intersection
@@ -348,10 +348,10 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& int
             int leftInter = 0;
             int rightInter = 0;
 
-            cout << "circle center " << xC << ", " << yC << ", radius " << edge->radius() << endl;
-            cout << "xI1 "<< xI1 << ", yI1 "<< yI1 << ", xI2 "<< xI2 << ", yI2 "<< yI2 << endl;
-            cout << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle1) << endl;
-            cout << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle2) << endl;
+            //cout << "circle center " << xC << ", " << yC << ", radius " << edge->radius() << endl;
+            //cout << "xI1 "<< xI1 << ", yI1 "<< yI1 << ", xI2 "<< xI2 << ", yI2 "<< yI2 << endl;
+            //cout << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle1) << endl;
+            //cout << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle2) << endl;
 
             if(isInsideSeg(angleSegStart, angleSegEnd, angle1))
             {
@@ -372,7 +372,7 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& int
                 intersection.y = yI2;
             }
 
-            cout << "left " << leftInter << ", right " << rightInter << endl;
+            //cout << "left " << leftInter << ", right " << rightInter << endl;
 
             if(leftInter == 2)
                 return Intersection_No;
@@ -447,7 +447,7 @@ int intersectionsParity(Point point, QList<NodeEdgeData> loop)
     int left, right;
     do{
         tangent += 0.1;
-        cout << "IntersectionParity, tangent " << tangent << endl;
+        //cout << "IntersectionParity, tangent " << tangent << endl;
         assert(tangent < 10);
         rejectTangent = false;
         left = right = 0;
@@ -458,7 +458,7 @@ int intersectionsParity(Point point, QList<NodeEdgeData> loop)
             if(result == Intersection_Uncertain)
             {
                 rejectTangent = true;
-                cout << "rejected tangent\n";
+                //cout << "rejected tangent\n";
                 break;
             }
             else if(result == Intersection_Left)
@@ -475,7 +475,7 @@ int intersectionsParity(Point point, QList<NodeEdgeData> loop)
 
     }while(rejectTangent);
 
-    cout << "intersections left " << left << ", right " << right << endl;
+    //cout << "intersections left " << left << ", right " << right << endl;
     assert(left%2 == right%2);
     return left%2;
 }
@@ -519,7 +519,7 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
     for(int i = 0; i < angles.size(); i++)
     {
         double angle = angles[(i+1) % angles.size()] - angles[i];
-        //cout << ""
+        //cout << "angle: " << angle;
         if(angle < - M_PI)
             angle = 2*M_PI + angle;
         if(angle > M_PI)
@@ -529,8 +529,10 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
     }
 
     double winding = totalAngle / (2*M_PI);
-    int intWinding = int(winding);
-    assert(winding - (double)intWinding < 0.00001);
+    int intWinding = round(winding);
+
+    // check that total angle was multiple of 2*M_PI
+    assert(fabs(winding - (double)intWinding) < 0.00001);
     return intWinding;
 }
 
@@ -618,7 +620,7 @@ LoopsInfo findLoops()
     QList<QList<NodeEdgeData> > loops;
     for(int i = 0; i < graph.data.size(); i++)
     {
-        cout << "** starting with node " << i << endl;
+        //cout << "** starting with node " << i << endl;
         Node& node = graph.data[i];
         int previousNodeIdx, currentNodeIdx;
         while(node.hasUnvisited()){
@@ -632,7 +634,7 @@ LoopsInfo findLoops()
             do{
                 currentNodeIdx = ned.node;
                 Node& actualNode = graph.data[currentNodeIdx];
-                cout << "call continue loop with node " << currentNodeIdx << "and previous node " << previousNodeIdx << endl;
+                //cout << "call continue loop with node " << currentNodeIdx << "and previous node " << previousNodeIdx << endl;
                 ned = actualNode.continueLoop(previousNodeIdx);
                 previousNodeIdx = currentNodeIdx;
                 loop.push_back(ned);
@@ -658,7 +660,7 @@ LoopsInfo findLoops()
         {
             SceneLabel* label = Util::scene()->labels->at(labelIdx);
             int wn = windingNumber(label->point(), loops[loopIdx]);
-            cout << "winding number " << wn << endl;
+            //cout << "winding number " << wn << endl;
             assert(wn < 2);
             windingNumbers[QPair<SceneLabel*, int>(label, loopIdx)] = wn;
             int ip = intersectionsParity(label->point(), loops[loopIdx]);
