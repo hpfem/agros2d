@@ -328,6 +328,7 @@ QString createPythonFromModel()
             // refinements
             if (Util::problem()->fieldInfos().count() > 0)
             {
+                int refinementsCount = 0;
                 QString refinements = ", refinements = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
@@ -336,27 +337,34 @@ QString createPythonFromModel()
                         refinements += QString("\"%1\" : \"%2\", ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->labelRefinement(label));
+
+                        refinementsCount++;
                     }
                 }
                 refinements = (refinements.endsWith(", ") ? refinements.left(refinements.length() - 2) : refinements) + "}";
-                str += refinements;
+                if (refinementsCount > 0)
+                    str += refinements;
             }
 
             // orders
             if (Util::problem()->fieldInfos().count() > 0)
             {
+                int ordersCount = 0;
                 QString orders = ", orders = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
-                    if (fieldInfo->labelPolynomialOrder(label) > 0)
+                    if (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder())
                     {
                         orders += QString("\"%1\" : %2, ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->labelPolynomialOrder(label));
+
+                        ordersCount++;
                     }
                 }
                 orders = (orders.endsWith(", ") ? orders.left(orders.length() - 2) : orders) + "}";
-                str += orders;
+                if (ordersCount > 0)
+                    str += orders;
             }
 
             // materials

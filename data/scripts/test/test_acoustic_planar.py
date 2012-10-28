@@ -23,7 +23,7 @@ acoustic.add_boundary("Source", "acoustic_pressure", {"acoustic_pressure_real" :
 acoustic.add_boundary("Wall", "acoustic_normal_acceleration", {"acoustic_normal_acceleration_real" : 0, "acoustic_normal_acceleration_imag" : 0})
 acoustic.add_boundary("Matched boundary", "acoustic_impedance", {"acoustic_impedance" : 1.25*343})
 
-acoustic.add_material("Vzduch", {"acoustic_speed" : 343, "acoustic_density" : 1.25})
+acoustic.add_material("Air", {"acoustic_speed" : 343, "acoustic_density" : 1.25})
 
 # geometry
 geometry = agros2d.geometry
