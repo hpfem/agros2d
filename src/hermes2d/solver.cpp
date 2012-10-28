@@ -126,9 +126,20 @@ Scalar* VectorStore<Scalar>::createNew(int length)
 }
 
 template <typename Scalar>
+Solver<Scalar>::~Solver()
+{
+    if(m_discreteProblem)
+        delete m_discreteProblem;
+}
+
+template <typename Scalar>
 void Solver<Scalar>::init(Block* block)
 {
     m_block = block;
+
+    if(m_discreteProblem)
+        delete m_discreteProblem;
+    m_discreteProblem = NULL;
 
     m_solverID = QObject::tr("Solver") + " (";
     QListIterator<Field*> iter(m_block->fields());
@@ -392,10 +403,18 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solution
     // Linear solver
     if (m_block->linearityType() == LinearityType_Linear)
     {
-        // Initialize the FE problem.
-        DiscreteProblemLinear<Scalar> dp(wf, castConst(desmartize(msa.spaces())));
+        // postaru: Initialize the FE problem.
+//        if(m_discreteProblem)
+//            delete m_discreteProblem;
+//        m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf, castConst(desmartize(msa.spaces())));
 
-        LinearSolver<Scalar> linear(&dp);
+        // Initialize the FE problem.
+        if(! m_discreteProblem)
+            m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf, castConst(desmartize(msa.spaces())));
+        else
+            m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
+
+        LinearSolver<Scalar> linear((DiscreteProblemLinear<Scalar>*)m_discreteProblem);
         try
         {
             linear.solve();
@@ -426,10 +445,13 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solution
     if (m_block->linearityType() == LinearityType_Newton)
     {
         // Initialize the FE problem.
-        DiscreteProblem<Scalar> dp(wf, castConst(desmartize(msa.spaces())));
+        if(! m_discreteProblem)
+            m_discreteProblem = new DiscreteProblem<Scalar>(wf, castConst(desmartize(msa.spaces())));
+        else
+            m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
 
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-        NewtonSolverAgros<Scalar> newton(&dp);
+        NewtonSolverAgros<Scalar> newton(m_discreteProblem);
         newton.set_verbose_output(true);
         newton.set_verbose_callback(processSolverOutput);
         newton.set_newton_tol(m_block->nonlinearTolerance());
@@ -477,7 +499,10 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solution
     {
         assert(0); // redo after refact with solutionVector
         // Initialize the FE problem.
-        DiscreteProblemLinear<Scalar> dp(wf, castConst(desmartize(msa.spaces())));
+        if(! m_discreteProblem)
+            m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf, castConst(desmartize(msa.spaces())));
+        else
+            m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
 
         Hermes::vector<Solution<Scalar>* > slns;
         for (int i = 0; i < msa.spaces().size(); i++)
@@ -486,7 +511,7 @@ void Solver<Scalar>::solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solution
             Hermes::Hermes2D::Space<Scalar> *spc = space.data();
             slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
         }
-        PicardSolverAgros<Scalar> picard(&dp);
+        PicardSolverAgros<Scalar> picard((DiscreteProblemLinear<Scalar>*)m_discreteProblem);
         picard.setPreviousSolutions(slns);
         picard.set_picard_tol(m_block->nonlinearTolerance());
         picard.set_picard_max_iter(m_block->nonlinearSteps());
