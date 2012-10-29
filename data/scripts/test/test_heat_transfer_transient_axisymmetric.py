@@ -6,8 +6,11 @@ problem.coordinate_type = "axisymmetric"
 problem.name = "Actuator"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
-problem.time_step = 500
+problem.time_step_method = "fixed"
+problem.time_method_order = 2
+problem.time_method_tolerance = 1
 problem.time_total = 10000
+problem.time_steps = 20
 
 # disable view
 agros2d.view.post2d.scalar = False
