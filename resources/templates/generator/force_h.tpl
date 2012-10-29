@@ -23,6 +23,7 @@
 #include <QObject>
 
 #include "util.h"
+#include "hermes2d/field.h"
 #include "hermes2d.h"
 
 Point3 force{{CLASS}}(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity = Point3());

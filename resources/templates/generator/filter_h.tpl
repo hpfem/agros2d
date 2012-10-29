@@ -23,6 +23,8 @@
 #include <QObject>
 
 #include "util.h"
+#include "util/enums.h"
+#include "hermes2d/field.h"
 #include "hermes2d.h"
 
 class {{CLASS}}ViewScalarFilter : public Hermes::Hermes2D::Filter<double>

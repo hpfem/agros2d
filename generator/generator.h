@@ -21,6 +21,8 @@
 #define GENERATOR_H
 
 #include "util.h"
+#include "util/enums.h"
+
 #include "ctemplate/template.h"
 #include "../../resources_source/classes/module_xml.h"
 #include "../../resources_source/classes/coupling_xml.h"
