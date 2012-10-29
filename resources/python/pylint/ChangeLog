@@ -1,6 +1,74 @@
 ChangeLog for PyLint
 ====================
 
+--
+    * #106534: add --ignore-imports option to code similarity checking
+      and 'symilar' command line tool (patch by Ry4an Brase)
+
+    * #104571: check for anomalous backslash escape, introducing new
+      W1401 and W1402 messages (patch by Martin Pool)
+
+    * #100707: check for boolop being used as exception class, introducing
+      new W0711 message (patch by Tim Hatch)
+
+    * #4014: improve checking of metaclass methods first args, introducing
+      new C0204 message (patch by lothiraldan@gmail.com finalized by sthenault)
+
+    * #4685: check for consistency of a module's __all__ variable,
+      introducing new E0603 message
+
+    * #105337: allow custom reporter in output-format (patch by Kevin Jing Qiu)
+
+    * #104420: check for protocol completness and avoid false R0903
+      (patch by Peter Hammond)
+
+    * #100654: fix grammatical error for W0332 message (using 'l' as
+      long int identifier)
+
+    * #103656: fix W0231 false positive for missing call to object.__init__
+      (patch by lothiraldan@gmail.com)
+
+    * #63424: fix similarity report disabling by properly renaming it to RP0801
+
+    * #103949: create a console_scripts entry point to be used by
+      easy_install, buildout and pip
+
+    * fix cross-interpreter issue (non compatible access to __builtins__)
+
+    * stop including tests files in distribution, they causes crash when
+      installed with python3 (#72022, #82417, #76910)
+
+
+2012-07-17  --  0.25.2
+    * #93591: Correctly emit warnings about clobbered variable names when an
+      except handler contains a tuple of names instead of a single name.
+      (patch by tmarek@google.com)
+
+    * #7394: W0212 (access to protected member) not emited on assigments
+    (patch by lothiraldan@gmail.com)
+
+    * #18772; no prototype consistency check for mangled methods (patch by
+    lothiraldan@gmail.com)
+
+    * #92911: emit W0102 when sets are used as default arguments in functions
+      (patch by tmarek@google.com)
+
+    * #77982: do not emit E0602 for loop variables of comprehensions
+      used as argument values inside a decorator (patch by tmarek@google.com)
+
+    * #89092: don't emit E0202 (attribute hiding a method) on @property methods
+
+    * #92584: fix pylint-gui crash due to internal API change
+
+    * #87192: fix crash when decorators are accessed through more than one dot
+      (for instance @a.b is fine, @a.b.c crash)
+
+    * #88914: fix parsing of --generated-members options, leading to crash
+      when using a regexp value set
+
+    * fix potential crashes with utils.safe_infer raising InferenceError
+
+
 2011-12-08  --  0.25.1
     * #81078: Warn if names in  exception handlers clobber overwrite
       existing names (patch by tmarek@google.com)
@@ -29,7 +97,7 @@ ChangeLog for PyLint
     * #74747: crash occurs when lookup up a special attribute in class scope
       (patch by google)
 
-    * #76920: crash if on eg "pylint --rcfile"(patch by Torsten Marek)
+    * #76920: crash if on eg "pylint --rcfile" (patch by Torsten Marek)
 
     * #77237: warning for E0202 may be very misleading
 
@@ -366,7 +434,7 @@ ChangeLog for PyLint
       unused `from X import *` (#3209, patch submitted by Daniel Drake)
 
     * included Daniel Drake's patch to have a different message E1003 instead of
-      E1001 when a missing member is found but an inference failure has been 
+      E1001 when a missing member is found but an inference failure has been
       detected
 
     * msvs reporter for Visual Studio line number reporting (#3285)
@@ -429,7 +497,7 @@ ChangeLog for PyLint
         - parseable, html and color options are now handled by a single
 	output-format option
         - enable-<checkerid> and disable-all options are now handled by
-	two (exclusive) enable-checker and disable-checker options 
+	two (exclusive) enable-checker and disable-checker options
 	taking a comma separated list of checker names as value
         - renamed debug-mode option to errors-only
 
@@ -461,7 +529,7 @@ ChangeLog for PyLint
       __getattr__
 
     * dirty fix to avoid "_socketobject" has not "connect" member. The actual
-      problem is that astng isn't able to understand the code used to create 
+      problem is that astng isn't able to understand the code used to create
       socket.socket object with exec
 
     * added an option in the similarity checker to ignore docstrings, enabled
@@ -489,7 +557,7 @@ ChangeLog for PyLint
       well established as "self" for instance method (E0213)
 
     * W0224 has been reclassified into F0220 (failed to resolve interfaces
-      implemented by a class)   
+      implemented by a class)
 
     * a new typecheck checker, introducing the following checks:
 
@@ -498,13 +566,13 @@ ChangeLog for PyLint
           classes checker to this one
         - E1102, calling a non callable object
         - E1111 and W1111 when an assignment is done on a function call but the
-          inferred function returns None (implements #10431) 
+          inferred function returns None (implements #10431)
 
     * change in the base checker:
 
         - checks module level and instance attribute names (new const-rgx
           and attr-rgx configuration option) (implements #10209  and
-          #10440) 
+          #10440)
         - list comprehension and generator expression variables have their
           own regular expression  (the inlinevar-rgx option) (implements
           #9146)
@@ -513,7 +581,7 @@ ChangeLog for PyLint
         - W0103 and W0121 are now handled by the variables checker
           (W0103 is now W0603 and W0604 has been splitted into different messages)
         - W0131 and W0132 messages  have been reclassified to C0111 and
-          C0112 respectively 
+          C0112 respectively
         - new W0104 message on statement without effect
 
     * regexp support for dummy-variables (dummy-variables-rgx option
@@ -555,7 +623,7 @@ ChangeLog for PyLint
       positive
 
     * fixed E0214 ("metaclass method first argument should be mcs) false
-      positive with staticmethod used on a metaclass 
+      positive with staticmethod used on a metaclass
 
     * fixed packaging which was missing the test/regrtest_data directory
 
@@ -614,7 +682,7 @@ ChangeLog for PyLint
     * fix Windows .bat file,  patch contributed by Amaury Forgeot d'Arc
 
     * fix one more false positive for E0601 (access before definition)
-      with for loop such as "for i in range(10): print i" (test 
+      with for loop such as "for i in range(10): print i" (test
       func_noerror_defined_and_used_on_same_line)
 
     * fix false positive for E0201 (undefined member) when accessing to
@@ -636,7 +704,7 @@ ChangeLog for PyLint
       manually remove the old logilab/pylint directory.
 
     * introduce a new --additional-builtins option to handle user defined
-      builtins 
+      builtins
 
     * --reports option has now -r as short alias, and -i for --include-ids
 
@@ -668,7 +736,7 @@ ChangeLog for PyLint
       func_nameerror_on_string_substitution)
 
     * fix bug in the classes checker which was making pylint crash if
-      "object" is assigned in a class inheriting from it (test 
+      "object" is assigned in a class inheriting from it (test
       func_noerror_object_as_class_attribute)
 
     * fix problem with the similar checker when related options are
@@ -692,7 +760,7 @@ ChangeLog for PyLint
 
 2005-02-16  --  0.6.2
     * fix false positive on E0201 ("access to undefined member") with
-      metaclasses 
+      metaclasses
 
     * fix false positive on E0203 ("access to member before its
       definition") when attributes are defined in a parent class
@@ -731,12 +799,12 @@ ChangeLog for PyLint
 
     * fix problems with the format checker: don't chock on files
       containing multiple CR, avoid C0322, C0323, C0324 false positives
-      with triple quoted string with quote inside 
+      with triple quoted string with quote inside
 
     * correctly detect access to member defined latter in __init__ method
 
     * now depends on common 0.8.1 to fix problem with interface resolution
-      (close #8606)	
+      (close #8606)
 
     * new --list-msgs option describing available checkers and their
       messages

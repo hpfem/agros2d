@@ -29,6 +29,7 @@ Base id of standard checkers (used in msg and report ids):
 11: typecheck
 12: logging
 13: string_format
+14: string_constant
 14-50: not yet used: reserved for future internal checkers.
 51-99: perhaps used: reserved for external checkers
 
@@ -160,4 +161,4 @@ def package_load(linter, directory):
                     module.register(linter)
                     imported[basename] = 1
 
-__all__ = ('CheckerHandler', 'BaseChecker', 'initialize', 'package_load')
+__all__ = ('BaseChecker', 'initialize', 'package_load')

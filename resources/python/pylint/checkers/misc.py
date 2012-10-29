@@ -17,7 +17,7 @@
 Check source code is ascii only or has an encoding declaration (PEP 263)
 """
 
-import re, sys
+import re
 
 from pylint.interfaces import IRawChecker
 from pylint.checkers import BaseChecker
@@ -25,6 +25,7 @@ from pylint.checkers import BaseChecker
 
 MSGS = {
     'W0511': ('%s',
+              'fixme',
               'Used when a warning note as FIXME or XXX is detected.'),
     }
 

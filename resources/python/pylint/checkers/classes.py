@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2011 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -18,11 +18,12 @@
 from __future__ import generators
 
 from logilab import astng
-from logilab.astng import YES, Instance, are_exclusive
+from logilab.astng import YES, Instance, are_exclusive, AssAttr
 
 from pylint.interfaces import IASTNGChecker
 from pylint.checkers import BaseChecker
-from pylint.checkers.utils import PYMETHODS, overrides_a_method, check_messages
+from pylint.checkers.utils import (PYMETHODS, overrides_a_method,
+    check_messages, is_attr_private, is_attr_protected, node_frame_class)
 
 def class_is_abstract(node):
     """return true if the given class node should be considered as an abstract
@@ -37,77 +38,108 @@ def class_is_abstract(node):
 
 MSGS = {
     'F0202': ('Unable to check methods signature (%s / %s)',
+              'method-check-failed',
               'Used when PyLint has been unable to check methods signature \
               compatibility for an unexpected reason. Please report this kind \
               if you don\'t make sense of it.'),
 
     'E0202': ('An attribute affected in %s line %s hide this method',
+              'method-hidden',
               'Used when a class defines a method which is hidden by an '
               'instance attribute from an ancestor class or set by some '
               'client code.'),
     'E0203': ('Access to member %r before its definition line %s',
+              'access-member-before-definition',
               'Used when an instance member is accessed before it\'s actually\
               assigned.'),
     'W0201': ('Attribute %r defined outside __init__',
+              'attribute-defined-outside-init',
               'Used when an instance attribute is defined outside the __init__\
               method.'),
 
     'W0212': ('Access to a protected member %s of a client class', # E0214
+              'protected-access',
               'Used when a protected member (i.e. class member with a name \
               beginning with an underscore) is access outside the class or a \
               descendant of the class where it\'s defined.'),
 
     'E0211': ('Method has no argument',
+              'no-method-argument',
               'Used when a method which should have the bound instance as \
               first argument has no argument defined.'),
     'E0213': ('Method should have "self" as first argument',
+              'no-self-argument',
               'Used when a method has an attribute different the "self" as\
               first argument. This is considered as an error since this is\
               a so common convention that you shouldn\'t break it!'),
-    'C0202': ('Class method should have %s as first argument', # E0212
-              'Used when a class method has an attribute different than "cls"\
-              as first argument, to easily differentiate them from regular \
-              instance methods.'),
-    'C0203': ('Metaclass method should have "mcs" as first argument', # E0214
-              'Used when a metaclass method has an attribute different the \
-              "mcs" as first argument.'),
+    'C0202': ('Class method %s should have %s as first argument', # E0212
+              'bad-classmethod-argument',
+              'Used when a class method has a first argument named differently '
+              'than the value specified in valid-classmethod-first-arg option '
+              '(default to "cls"), recommended to easily differentiate them '
+              'from regular instance methods.'),
+    'C0203': ('Metaclass method %s should have %s as first argument', # E0214
+              'bad-mcs-method-argument',
+              'Used when a metaclass method has a first agument named '
+              'differently than the value specified in valid-classmethod-first'
+              '-arg option (default to "cls"), recommended to easily '
+              'differentiate them from regular instance methods.'),
+    'C0204': ('Metaclass class method %s should have %s as first argument',
+              'bad-mcs-classmethod-argument',
+              'Used when a metaclass class method has a first argument named '
+              'differently than the value specified in valid-metaclass-'
+              'classmethod-first-arg option (default to "mcs"), recommended to '
+              'easily differentiate them from regular instance methods.'),
 
     'W0211': ('Static method with %r as first argument',
-              'Used when a static method has "self" or "cls" as first argument.'
+              'bad-staticmethod-argument',
+              'Used when a static method has "self" or a value specified in '
+              'valid-classmethod-first-arg option or '
+              'valid-metaclass-classmethod-first-arg option as first argument.'
               ),
     'R0201': ('Method could be a function',
+              'no-self-use',
               'Used when a method doesn\'t use its bound instance, and so could\
               be written as a function.'
               ),
 
     'E0221': ('Interface resolved to %s is not a class',
+              'interface-is-not-class',
               'Used when a class claims to implement an interface which is not \
               a class.'),
     'E0222': ('Missing method %r from %s interface',
+              'missing-interface-method',
               'Used when a method declared in an interface is missing from a \
               class implementing this interface'),
     'W0221': ('Arguments number differs from %s method',
+              'arguments-differ',
               'Used when a method has a different number of arguments than in \
               the implemented interface or in an overridden method.'),
     'W0222': ('Signature differs from %s method',
+              'signature-differs',
               'Used when a method signature is different than in the \
               implemented interface or in an overridden method.'),
     'W0223': ('Method %r is abstract in class %r but is not overridden',
+              'abstract-method',
               'Used when an abstract method (i.e. raise NotImplementedError) is \
               not overridden in concrete class.'
               ),
     'F0220': ('failed to resolve interfaces implemented by %s (%s)', # W0224
+              'unresolved-interface',
               'Used when a PyLint as failed to find interfaces implemented by \
                a class'),
 
 
     'W0231': ('__init__ method from base class %r is not called',
+              'super-init-not-called',
               'Used when an ancestor class method has an __init__ method \
               which is not called by a derived class.'),
     'W0232': ('Class has no __init__ method',
+              'no-init',
               'Used when a class has no __init__ method, neither its parent \
               classes.'),
     'W0233': ('__init__ method from a non direct base class %r is called',
+              'non-parent-init-called',
               'Used when an __init__ method is called on a class which is not \
               in the direct ancestors for the analysed class.'),
 
@@ -164,6 +196,13 @@ instance attributes.'}
                  'help' : 'List of valid names for the first argument in \
 a class method.'}
                 ),
+               ('valid-metaclass-classmethod-first-arg',
+                {'default' : ('mcs',),
+                 'type' : 'csv',
+                 'metavar' : '<argument names>',
+                 'help' : 'List of valid names for the first argument in \
+a metaclass class method.'}
+                ),
 
                )
 
@@ -200,7 +239,7 @@ a class method.'}
         if 'W0201' not in self.active_msgs:
             return
         defining_methods = self.config.defining_attr_methods
-        for attr, nodes in cnode.instance_attrs.items():
+        for attr, nodes in cnode.instance_attrs.iteritems():
             nodes = [n for n in nodes if not
                     isinstance(n.statement(), (astng.Delete, astng.AugAssign))]
             if not nodes:
@@ -254,7 +293,17 @@ a class method.'}
                 continue
             self._check_signature(node, meth_node, 'overridden')
             break
-        # check if the method overload an attribute
+        if node.decorators:
+            for decorator in node.decorators.nodes:
+                if isinstance(decorator, astng.Getattr) and \
+                        decorator.attrname in ('getter', 'setter', 'deleter'):
+                    # attribute affectation will call this method, not hiding it
+                    return
+                if isinstance(decorator, astng.Name) and decorator.name == 'property':
+                    # attribute affectation will either call a setter or raise
+                    # an attribute error, anyway not hiding the function
+                    return
+        # check if the method is hidden by an attribute
         try:
             overridden = klass.instance_attr(node.name)[0] # XXX
             args = (overridden.root().name, overridden.fromlineno)
@@ -289,32 +338,59 @@ a class method.'}
         methods)
         """
         attrname = node.attrname
-        if self._first_attrs and isinstance(node.expr, astng.Name) and \
-               node.expr.name == self._first_attrs[-1]:
+        # Check self
+        if self.is_first_attr(node):
             self._accessed[-1].setdefault(attrname, []).append(node)
             return
         if 'W0212' not in self.active_msgs:
             return
-        if attrname[0] == '_' and not attrname == '_' and not (
-             attrname.startswith('__') and attrname.endswith('__')):
-            # XXX move this in a reusable function
-            klass = node.frame()
-            while klass is not None and not isinstance(klass, astng.Class):
-                if klass.parent is None:
-                    klass = None
-                else:
-                    klass = klass.parent.frame()
+
+        self._check_protected_attribute_access(node)
+
+    def visit_assign(self, assign_node):
+        if 'W0212' not in self.active_msgs:
+            return
+
+        node = assign_node.targets[0]
+        if not isinstance(node, AssAttr):
+            return
+
+        if self.is_first_attr(node):
+            return
+
+        self._check_protected_attribute_access(node)
+
+    def _check_protected_attribute_access(self, node):
+        '''Given an attribute access node (set or get), check if attribute
+        access is legitimate. Call _check_first_attr with node before calling
+        this method. Valid cases are:
+        * self._attr in a method or cls._attr in a classmethod. Checked by
+        _check_first_attr.
+        * Klass._attr inside "Klass" class.
+        * Klass2._attr inside "Klass" class when Klass2 is a base class of
+            Klass.
+        '''
+        attrname = node.attrname
+
+        if is_attr_protected(attrname):
+
+            klass = node_frame_class(node)
+
             # XXX infer to be more safe and less dirty ??
             # in classes, check we are not getting a parent method
             # through the class object or through super
             callee = node.expr.as_string()
-            if klass is None or not (callee == klass.name or
-                callee in klass.basenames
-                or (isinstance(node.expr, astng.CallFunc)
-                    and isinstance(node.expr.func, astng.Name)
-                    and node.expr.func.name == 'super')):
-                self.add_message('W0212', node=node, args=attrname)
 
+            # We are not in a class, no remaining valid case
+            if klass is None:
+                self.add_message('W0212', node=node, args=attrname)
+                return
+
+            # We are in a class, one remaining valid cases, Klass._attr inside
+            # Klass
+            if not (callee == klass.name or callee in klass.basenames):
+
+                self.add_message('W0212', node=node, args=attrname)
 
     def visit_name(self, node):
         """check if the name handle an access to a class member
@@ -327,7 +403,7 @@ a class method.'}
     def _check_accessed_members(self, node, accessed):
         """check that accessed members are defined"""
         # XXX refactor, probably much simpler now that E0201 is in type checker
-        for attr, nodes in accessed.items():
+        for attr, nodes in accessed.iteritems():
             # deactivate "except doesn't do anything", that's expected
             # pylint: disable=W0704
             # is it a class attribute ?
@@ -366,8 +442,10 @@ a class method.'}
         """check the name of first argument, expect:
 
         * 'self' for a regular method
-        * 'cls' for a class method
-        * 'mcs' for a metaclass
+        * 'cls' for a class method or a metaclass regular method (actually
+          valid-classmethod-first-arg value)
+        * 'mcs' for a metaclass class method (actually
+          valid-metaclass-classmethod-first-arg)
         * not one of the above for a static method
         """
         # don't care about functions with unknown argument (builtins)
@@ -378,31 +456,50 @@ a class method.'}
         first = self._first_attrs[-1]
         # static method
         if node.type == 'staticmethod':
-            if first_arg in ('self', 'cls', 'mcs'):
+            if (first_arg == 'self' or
+                first_arg in self.config.valid_classmethod_first_arg or
+                first_arg in self.config.valid_metaclass_classmethod_first_arg):
                 self.add_message('W0211', args=first, node=node)
+                return
             self._first_attrs[-1] = None
         # class / regular method with no args
         elif not node.args.args:
             self.add_message('E0211', node=node)
-        # metaclass method
+        # metaclass
         elif metaclass:
-            if first != 'mcs':
-                self.add_message('C0203', node=node)
-        # class method
-        elif node.type == 'classmethod':
-            if first not in self.config.valid_classmethod_first_arg:
-                if len(self.config.valid_classmethod_first_arg) == 1:
-                    valid = repr(self.config.valid_classmethod_first_arg[0])
-                else:
-                    valid = ', '.join(
-                      repr(v)
-                      for v in self.config.valid_classmethod_first_arg[:-1])
-                    valid = '%s or %r' % (
-                        valid, self.config.valid_classmethod_first_arg[-1])
-                self.add_message('C0202', args=valid, node=node)
-        # regular method without self as argument
-        elif first != 'self':
-            self.add_message('E0213', node=node)
+            # metaclass __new__ or classmethod
+            if node.type == 'classmethod':
+                self._check_first_arg_config(first,
+                    self.config.valid_metaclass_classmethod_first_arg, node,
+                    'C0204', node.name)
+            # metaclass regular method
+            else:
+                self._check_first_arg_config(first,
+                    self.config.valid_classmethod_first_arg, node, 'C0203',
+                    node.name)
+        # regular class
+        else:
+            # class method
+            if node.type == 'classmethod':
+                self._check_first_arg_config(first,
+                    self.config.valid_classmethod_first_arg, node, 'C0202',
+                    node.name)
+            # regular method without self as argument
+            elif first != 'self':
+                self.add_message('E0213', node=node)
+
+    def _check_first_arg_config(self, first, config, node, message,
+                                method_name):
+        if first not in config:
+            if len(config) == 1:
+                valid = repr(config[0])
+            else:
+                valid = ', '.join(
+                  repr(v)
+                  for v in config[:-1])
+                valid = '%s or %r' % (
+                    valid, config[-1])
+            self.add_message(message, args=(method_name, valid), node=node)
 
     def _check_bases_classes(self, node):
         """check that the given class node implements abstract methods from
@@ -499,8 +596,8 @@ a class method.'}
                         self.add_message('W0233', node=expr, args=klass.name)
             except astng.InferenceError:
                 continue
-        for klass in not_called_yet.keys():
-            if klass.name == 'object':
+        for klass, method in not_called_yet.iteritems():
+            if klass.name == 'object' or method.parent.name == 'object':
                 continue
             self.add_message('W0231', args=klass.name, node=node)
 
@@ -519,11 +616,19 @@ a class method.'}
         # if we use *args, **kwargs, skip the below checks
         if method1.args.vararg or method1.args.kwarg:
             return
+        if is_attr_private(method1.name):
+            return
         if len(method1.args.args) != len(refmethod.args.args):
             self.add_message('W0221', args=class_type, node=method1)
         elif len(method1.args.defaults) < len(refmethod.args.defaults):
             self.add_message('W0222', args=class_type, node=method1)
 
+    def is_first_attr(self, node):
+        """Check that attribute lookup name use first attribute variable name
+        (self for method, cls for classmethod and mcs for metaclass).
+        """
+        return self._first_attrs and isinstance(node.expr, astng.Name) and \
+                   node.expr.name == self._first_attrs[-1]
 
 def _ancestors_to_call(klass_node, method='__init__'):
     """return a dictionary where keys are the list of base classes providing
@@ -532,8 +637,7 @@ def _ancestors_to_call(klass_node, method='__init__'):
     to_call = {}
     for base_node in klass_node.ancestors(recurs=False):
         try:
-            base_node.local_attr(method)
-            to_call[base_node] = 1
+            to_call[base_node] = base_node.local_attr(method)[-1]
         except astng.NotFoundError:
             continue
     return to_call

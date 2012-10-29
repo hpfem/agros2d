@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2011 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -26,13 +26,14 @@ from pylint.interfaces import IASTNGChecker
 from pylint.checkers import BaseChecker
 from pylint.checkers.utils import (PYMETHODS, is_ancestor_name, is_builtin,
      is_defined_before, is_error, is_func_default, is_func_decorator,
-     assign_parent, check_messages, is_inside_except, clobber_in_except)
+     assign_parent, check_messages, is_inside_except, clobber_in_except,
+     get_all_elements)
 
 
 def in_for_else_branch(parent, stmt):
-  """Returns True if stmt in inside the else branch for a parent For stmt."""
-  return (isinstance(parent, astng.For) and
-          any(else_stmt.parent_of(stmt) for else_stmt in parent.orelse))
+    """Returns True if stmt in inside the else branch for a parent For stmt."""
+    return (isinstance(parent, astng.For) and
+            any(else_stmt.parent_of(stmt) for else_stmt in parent.orelse))
 
 def overridden_method(klass, name):
     """get overridden method if any"""
@@ -53,46 +54,64 @@ def overridden_method(klass, name):
 
 MSGS = {
     'E0601': ('Using variable %r before assignment',
+              'used-before-assignment',
               'Used when a local variable is accessed before it\'s \
               assignment.'),
     'E0602': ('Undefined variable %r',
+              'undefined-variable',
               'Used when an undefined variable is accessed.'),
+    'E0603': ('Undefined variable name %r in __all__',
+              'undefined-all-variable',
+              'Used when an undefined variable name is referenced in __all__.'),
     'E0611': ('No name %r in module %r',
+              'no-name-in-module',
               'Used when a name cannot be found in a module.'),
 
     'W0601': ('Global variable %r undefined at the module level',
+              'global-variable-undefined',
               'Used when a variable is defined through the "global" statement \
               but the variable is not defined in the module scope.'),
     'W0602': ('Using global for %r but no assignment is done',
+              'global-variable-not-assigned',
               'Used when a variable is defined through the "global" statement \
               but no assignment to this variable is done.'),
     'W0603': ('Using the global statement', # W0121
+              'global-statement',
               'Used when you use the "global" statement to update a global \
               variable. PyLint just try to discourage this \
               usage. That doesn\'t mean you can not use it !'),
     'W0604': ('Using the global statement at the module level', # W0103
+              'global-at-module-level',
               'Used when you use the "global" statement at the module level \
               since it has no effect'),
     'W0611': ('Unused import %s',
+              'unused-import',
               'Used when an imported module or variable is not used.'),
     'W0612': ('Unused variable %r',
+              'unused-variable',
               'Used when a variable is defined but not used.'),
     'W0613': ('Unused argument %r',
+              'unused-argument',
               'Used when a function or method argument is not used.'),
     'W0614': ('Unused import %s from wildcard import',
+              'unused-wildcard-import',
               'Used when an imported module or variable is not used from a \
               \'from X import *\' style import.'),
 
     'W0621': ('Redefining name %r from outer scope (line %s)',
+              'redefined-outer-name',
               'Used when a variable\'s name hide a name defined in the outer \
               scope.'),
     'W0622': ('Redefining built-in %r',
+              'redefined-builtin',
               'Used when a variable or function override a built-in.'),
     'W0623': ('Redefining name %r from %s in exception handler',
+              'redefine-in-handler',
               'Used when an exception handler assigns the exception \
                to an existing name'),
 
     'W0631': ('Using possibly undefined loop variable %r',
+              'undefined-loop-variable',
               'Used when an loop variable (i.e. defined by a for loop or \
               a list comprehension or a generator expression) is used outside \
               the loop.'),
@@ -104,6 +123,7 @@ class VariablesChecker(BaseChecker):
     * undefined variables
     * redefinition of variable from builtins or from an outer scope
     * use of variable before assignment
+    * __all__ consistency
     """
 
     __implements__ = IASTNGChecker
@@ -132,15 +152,13 @@ builtins. Remember that you should avoid to define new builtins when possible.'
         BaseChecker.__init__(self, linter)
         self._to_consume = None
         self._checking_mod_attr = None
-        self._vars = None
 
     def visit_module(self, node):
         """visit module : update consumption analysis variable
         checks globals doesn't overrides builtins
         """
         self._to_consume = [(copy(node.locals), {}, 'module')]
-        self._vars = []
-        for name, stmts in node.locals.items():
+        for name, stmts in node.locals.iteritems():
             if is_builtin(name) and not is_inside_except(stmts[0]):
                 # do not print Redefining builtin for additional builtins
                 self.add_message('W0622', args=name, node=stmts[0])
@@ -151,10 +169,21 @@ builtins. Remember that you should avoid to define new builtins when possible.'
         """
         assert len(self._to_consume) == 1
         not_consumed = self._to_consume.pop()[0]
+        # attempt to check for __all__ if defined
+        if '__all__' in node.locals:
+            assigned = node.igetattr('__all__').next()
+            for elt in getattr(assigned, 'elts', ()):
+                elt_name = elt.value
+                # If elt is in not_consumed, remove it from not_consumed
+                if elt_name in not_consumed:
+                    del not_consumed[elt_name]
+                    continue
+                if elt_name not in node.locals:
+                    self.add_message('E0603', args=elt_name, node=elt)
         # don't check unused imports in __init__ files
         if not self.config.init_import and node.package:
             return
-        for name, stmts in not_consumed.items():
+        for name, stmts in not_consumed.iteritems():
             stmt = stmts[0]
             if isinstance(stmt, astng.Import):
                 self.add_message('W0611', args=name, node=stmt)
@@ -164,7 +193,6 @@ builtins. Remember that you should avoid to define new builtins when possible.'
                 else:
                     self.add_message('W0611', args=name, node=stmt)
         del self._to_consume
-        del self._vars
 
     def visit_class(self, node):
         """visit class: update consumption analysis variable
@@ -225,7 +253,6 @@ builtins. Remember that you should avoid to define new builtins when possible.'
         """visit function: update consumption analysis variable and check locals
         """
         self._to_consume.append((copy(node.locals), {}, 'function'))
-        self._vars.append({})
         if not set(('W0621', 'W0622')) & self.active_msgs:
             return
         globs = node.root().globals
@@ -242,7 +269,6 @@ builtins. Remember that you should avoid to define new builtins when possible.'
     def leave_function(self, node):
         """leave function: check function's locals are consumed"""
         not_consumed = self._to_consume.pop()[0]
-        self._vars.pop(0)
         if not set(('W0612', 'W0613')) & self.active_msgs:
             return
         # don't check arguments of function which are only raising an exception
@@ -366,9 +392,10 @@ builtins. Remember that you should avoid to define new builtins when possible.'
                 self.add_message('W0631', args=name, node=node)
 
     def visit_excepthandler(self, node):
-        clobbering, args = clobber_in_except(node.name)
-        if clobbering:
-            self.add_message('W0623', args=args, node=node)
+        for name in get_all_elements(node.name):
+            clobbering, args = clobber_in_except(name)
+            if clobbering:
+                self.add_message('W0623', args=args, node=name)
 
     def visit_assname(self, node):
         if isinstance(node.ass_type(), astng.AugAssign):

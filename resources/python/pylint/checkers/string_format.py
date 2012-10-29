@@ -13,12 +13,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-
 """Checker for string formatting operations.
 """
 
-import string
 from logilab import astng
 from pylint.interfaces import IASTNGChecker
 from pylint.checkers import BaseChecker
@@ -27,34 +24,43 @@ from pylint.checkers import utils
 
 MSGS = {
     'E1300': ("Unsupported format character %r (%#02x) at index %d",
+              "bad-format-character",
               "Used when a unsupported format character is used in a format\
               string."),
     'E1301': ("Format string ends in middle of conversion specifier",
+              "truncated-format-string",
               "Used when a format string terminates before the end of a \
               conversion specifier."),
     'E1302': ("Mixing named and unnamed conversion specifiers in format string",
+              "mixed-format-string",
               "Used when a format string contains both named (e.g. '%(foo)d') \
               and unnamed (e.g. '%d') conversion specifiers.  This is also \
               used when a named conversion specifier contains * for the \
               minimum field width and/or precision."),
     'E1303': ("Expected mapping for format string, not %s",
+              "format-needs-mapping",
               "Used when a format string that uses named conversion specifiers \
               is used with an argument that is not a mapping."),
     'W1300': ("Format string dictionary key should be a string, not %s",
+              "bad-format-string-key",
               "Used when a format string that uses named conversion specifiers \
               is used with a dictionary whose keys are not all strings."),
     'W1301': ("Unused key %r in format string dictionary",
+              "unused-format-string-key",
               "Used when a format string that uses named conversion specifiers \
               is used with a dictionary that conWtains keys not required by the \
               format string."),
     'E1304': ("Missing key %r in format string dictionary",
+              "missing-format-string-key",
               "Used when a format string that uses named conversion specifiers \
               is used with a dictionary that doesn't contain all the keys \
               required by the format string."),
     'E1305': ("Too many arguments for format string",
+              "too-many-format-args",
               "Used when a format string that uses unnamed conversion \
               specifiers is given too few arguments."),
     'E1306': ("Not enough arguments for format string",
+              "too-few-format-args",
               "Used when a format string that uses unnamed conversion \
               specifiers is given too many arguments"),
     }
@@ -104,7 +110,7 @@ class StringFormatChecker(BaseChecker):
             if isinstance(args, astng.Dict):
                 keys = set()
                 unknown_keys = False
-                for k, v in args.items:
+                for k, _ in args.items:
                     if isinstance(k, astng.Const):
                         key = k.value
                         if isinstance(key, basestring):

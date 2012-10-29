@@ -1,5 +1,5 @@
 # pylint: disable=W0622
-# Copyright (c) 2004-2006 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2004-2012 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -16,8 +16,6 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 """a similarities / code duplication command line tool and pylint checker
 """
-from __future__ import generators
-
 import sys
 from itertools import izip
 
@@ -31,10 +29,11 @@ class Similar:
     """finds copy-pasted lines of code in a project"""
 
     def __init__(self, min_lines=4, ignore_comments=False,
-                 ignore_docstrings=False):
+                 ignore_docstrings=False, ignore_imports=False):
         self.min_lines = min_lines
         self.ignore_comments = ignore_comments
         self.ignore_docstrings = ignore_docstrings
+        self.ignore_imports = ignore_imports
         self.linesets = []
 
     def append_stream(self, streamid, stream):
@@ -43,7 +42,8 @@ class Similar:
         self.linesets.append(LineSet(streamid,
                                      stream.readlines(),
                                      self.ignore_comments,
-                                     self.ignore_docstrings))
+                                     self.ignore_docstrings,
+                                     self.ignore_imports))
 
     def run(self):
         """start looking for similarities and display results on stdout"""
@@ -125,7 +125,11 @@ class Similar:
                 for sim in self._find_common(lineset, lineset2):
                     yield sim
 
-def stripped_lines(lines, ignore_comments, ignore_docstrings):
+def stripped_lines(lines, ignore_comments, ignore_docstrings, ignore_imports):
+    """return lines with leading/trailing whitespace and any ignored code
+    features removed
+    """
+
     strippedlines = []
     docstring = None
     for line in lines:
@@ -139,6 +143,9 @@ def stripped_lines(lines, ignore_comments, ignore_docstrings):
                 if line.endswith(docstring):
                     docstring = None
                 line = ''
+        if ignore_imports:
+            if line.startswith("import ") or line.startswith("from "):
+                line = ''
         if ignore_comments:
             # XXX should use regex in checkers/format to avoid cutting
             # at a "#" in a string
@@ -149,11 +156,12 @@ def stripped_lines(lines, ignore_comments, ignore_docstrings):
 class LineSet:
     """Holds and indexes all the lines of a single source file"""
     def __init__(self, name, lines, ignore_comments=False,
-                 ignore_docstrings=False):
+                 ignore_docstrings=False, ignore_imports=False):
         self.name = name
         self._real_lines = lines
         self._stripped_lines = stripped_lines(lines, ignore_comments,
-                                              ignore_docstrings)
+                                              ignore_docstrings,
+                                              ignore_imports)
         self._index = self._mk_index()
 
     def __str__(self):
@@ -199,6 +207,7 @@ class LineSet:
 
 
 MSGS = {'R0801': ('Similar lines in %s files\n%s',
+                  'duplicate-code',
                   'Indicates that a set of similar lines has been detected \
                   among multiple file. This usually means that the code should \
                   be refactored to avoid this duplication.')}
@@ -237,9 +246,13 @@ class SimilarChecker(BaseChecker, Similar):
                 {'default' : True, 'type' : 'yn', 'metavar' : '<y or n>',
                  'help': 'Ignore docstrings when computing similarities.'}
                 ),
+               ('ignore-imports',
+                {'default' : False, 'type' : 'yn', 'metavar' : '<y or n>',
+                 'help': 'Ignore imports when computing similarities.'}
+                ),
                )
     # reports
-    reports = ( ('R0801', 'Duplication', report_similarities), ) # XXX actually a Refactoring message
+    reports = ( ('RP0801', 'Duplication', report_similarities), )
 
     def __init__(self, linter=None):
         BaseChecker.__init__(self, linter)
@@ -259,6 +272,8 @@ class SimilarChecker(BaseChecker, Similar):
             self.ignore_comments = self.config.ignore_comments
         elif optname == 'ignore-docstrings':
             self.ignore_docstrings = self.config.ignore_docstrings
+        elif optname == 'ignore-imports':
+            self.ignore_imports = self.config.ignore_imports
 
     def open(self):
         """init the checkers: reset linesets and statistics information"""
@@ -303,18 +318,21 @@ def usage(status=0):
     print "finds copy pasted blocks in a set of files"
     print
     print 'Usage: symilar [-d|--duplicates min_duplicated_lines] \
-[-i|--ignore-comments] file1...'
+[-i|--ignore-comments] [--ignore-docstrings] [--ignore-imports] file1...'
     sys.exit(status)
 
-def run(argv=None):
+def Run(argv=None):
     """standalone command line access point"""
     if argv is None:
         argv = sys.argv[1:]
     from getopt import getopt
     s_opts = 'hdi'
-    l_opts = ('help', 'duplicates=', 'ignore-comments')
+    l_opts = ('help', 'duplicates=', 'ignore-comments', 'ignore-imports',
+              'ignore-docstrings')
     min_lines = 4
     ignore_comments = False
+    ignore_docstrings = False
+    ignore_imports = False
     opts, args = getopt(argv, s_opts, l_opts)
     for opt, val in opts:
         if opt in ('-d', '--duplicates'):
@@ -323,12 +341,17 @@ def run(argv=None):
             usage()
         elif opt in ('-i', '--ignore-comments'):
             ignore_comments = True
+        elif opt in ('--ignore-docstrings'):
+            ignore_docstrings = True
+        elif opt in ('--ignore-imports'):
+            ignore_imports = True
     if not args:
         usage(1)
-    sim = Similar(min_lines, ignore_comments)
+    sim = Similar(min_lines, ignore_comments, ignore_docstrings, ignore_imports)
     for filename in args:
         sim.append_stream(filename, open(filename))
     sim.run()
+    sys.exit(0)
 
 if __name__ == '__main__':
-    run()
+    Run()

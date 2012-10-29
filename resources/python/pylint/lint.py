@@ -1,5 +1,5 @@
 # Copyright (c) 2003-2010 Sylvain Thenault (thenault@gmail.com).
-# Copyright (c) 2003-2010 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -38,7 +38,7 @@ from warnings import warn
 
 from logilab.common.configuration import UnsupportedAction, OptionsManagerMixIn
 from logilab.common.optik_ext import check_csv
-from logilab.common.modutils import load_module_from_name
+from logilab.common.modutils import load_module_from_name, get_module_part
 from logilab.common.interface import implements
 from logilab.common.textutils import splitstrip
 from logilab.common.ureports import Table, Text, Section
@@ -47,20 +47,20 @@ from logilab.common.__pkginfo__ import version as common_version
 from logilab.astng import MANAGER, nodes, ASTNGBuildingException
 from logilab.astng.__pkginfo__ import version as astng_version
 
-from pylint.utils import PyLintASTWalker, UnknownMessage, MessagesHandlerMixIn,\
-     ReportsHandlerMixIn, MSG_TYPES, expand_modules
+from pylint.utils import (PyLintASTWalker, UnknownMessage, MessagesHandlerMixIn,
+                          ReportsHandlerMixIn, MSG_TYPES, expand_modules)
 from pylint.interfaces import ILinter, IRawChecker, IASTNGChecker
-from pylint.checkers import BaseRawChecker, EmptyReport, \
-     table_lines_from_stats
-from pylint.reporters.text import TextReporter, ParseableTextReporter, \
-     VSTextReporter, ColorizedTextReporter
+from pylint.checkers import (BaseRawChecker, EmptyReport,
+                             table_lines_from_stats)
+from pylint.reporters.text import (TextReporter, ParseableTextReporter,
+                                   VSTextReporter, ColorizedTextReporter)
 from pylint.reporters.html import HTMLReporter
 from pylint import config
 
 from pylint.__pkginfo__ import version
 
 
-OPTION_RGX = re.compile('\s*#*\s*pylint:(.*)')
+OPTION_RGX = re.compile(r'\s*#*\s*pylint:(.*)')
 REPORTER_OPT_MAP = {'text': TextReporter,
                     'parseable': ParseableTextReporter,
                     'msvs': VSTextReporter,
@@ -68,51 +68,75 @@ REPORTER_OPT_MAP = {'text': TextReporter,
                     'html': HTMLReporter,}
 
 
+def _get_python_path(filepath):
+    dirname = os.path.dirname(os.path.realpath(
+            os.path.expanduser(filepath)))
+    while True:
+        if not os.path.exists(os.path.join(dirname, "__init__.py")):
+            return dirname
+        old_dirname = dirname
+        dirname = os.path.dirname(dirname)
+        if old_dirname == dirname:
+            return os.getcwd()
+
+
 # Python Linter class #########################################################
 
 MSGS = {
     'F0001': ('%s',
+              'fatal',
               'Used when an error occurred preventing the analysis of a \
               module (unable to find it for instance).'),
     'F0002': ('%s: %s',
+              'astng-error',
               'Used when an unexpected error occurred while building the ASTNG \
               representation. This is usually accompanied by a traceback. \
               Please report such errors !'),
     'F0003': ('ignored builtin module %s',
+              'ignored-builtin-module',
               'Used to indicate that the user asked to analyze a builtin module\
               which has been skipped.'),
     'F0004': ('unexpected inferred value %s',
+              'unexpected-inferred-value',
               'Used to indicate that some value of an unexpected type has been \
               inferred.'),
     'F0010': ('error while code parsing: %s',
+              'parse-error',
               'Used when an exception occured while building the ASTNG \
                representation which could be handled by astng.'),
 
-
     'I0001': ('Unable to run raw checkers on built-in module %s',
+              'raw-checker-failed',
               'Used to inform that a built-in module has not been checked \
               using the raw checkers.'),
 
     'I0010': ('Unable to consider inline option %r',
+              'bad-inline-option',
               'Used when an inline option is either badly formatted or can\'t \
               be used inside modules.'),
 
     'I0011': ('Locally disabling %s',
+              'locally-disabled',
               'Used when an inline option disables a message or a messages \
               category.'),
     'I0012': ('Locally enabling %s',
+              'locally-enabled',
               'Used when an inline option enables a message or a messages \
               category.'),
     'I0013': ('Ignoring entire file',
+              'file-ignored',
               'Used to inform that the file will not be checked'),
 
 
     'E0001': ('%s',
+              'syntax-error',
               'Used when a syntax error is raised for a module.'),
 
     'E0011': ('Unrecognized file option %r',
+              'unrecognized-inline-option',
               'Used when an unknown inline option is encountered.'),
     'E0012': ('Bad option value %r',
+              'bad-option-value',
               'Used when a bad value for an inline option is encountered.'),
     }
 
@@ -159,18 +183,25 @@ They should be base names, not paths.'}),
 python modules names) to load, usually to register additional checkers.'}),
 
                 ('output-format',
-                 {'default': 'text', 'type': 'choice', 'metavar' : '<format>',
-                  'choices': REPORTER_OPT_MAP.keys(),
+                 {'default': 'text', 'type': 'string', 'metavar' : '<format>',
                   'short': 'f',
                   'group': 'Reports',
-                  'help' : 'Set the output format. Available formats are text,\
-                 parseable, colorized, msvs (visual studio) and html'}),
+                  'help' : 'Set the output format. Available formats are text,'
+                  ' parseable, colorized, msvs (visual studio) and html. You '
+                  'can also give a reporter class, eg mypackage.mymodule.'
+                  'MyReporterClass.'}),
 
                 ('include-ids',
                  {'type' : 'yn', 'metavar' : '<y_or_n>', 'default' : 0,
                   'short': 'i',
                   'group': 'Reports',
                   'help' : 'Include message\'s id in output'}),
+
+                ('symbols',
+                 {'type' : 'yn', 'metavar' : '<y_or_n>', 'default' : 0,
+                  'short': 's',
+                  'group': 'Reports',
+                  'help' : 'Include symbolic ids of messages in output'}),
 
                 ('files-output',
                  {'default': 0, 'type' : 'yn', 'metavar' : '<y_or_n>',
@@ -311,7 +342,14 @@ This is used by the global evaluation report (RP0004).'}),
                 else :
                     meth(value)
         elif optname == 'output-format':
-            self.set_reporter(REPORTER_OPT_MAP[value.lower()]())
+            if value.lower() in REPORTER_OPT_MAP:
+                self.set_reporter(REPORTER_OPT_MAP[value.lower()]())
+            else:
+                module = load_module_from_name(get_module_part(value))
+                class_name = value.split('.')[-1]
+                reporter_class = getattr(module, class_name)
+                self.set_reporter(reporter_class())
+
         try:
             BaseRawChecker.set_option(self, optname, value, action, optdict)
         except UnsupportedAction:
@@ -344,10 +382,10 @@ This is used by the global evaluation report (RP0004).'}),
                     self.disable(msgid)
 
     def disable_reporters(self):
-       """disable all reporters"""
-       for reporters in self._reports.values():
-           for report_id, _title, _cb in reporters:
-               self.disable_report(report_id)
+        """disable all reporters"""
+        for reporters in self._reports.itervalues():
+            for report_id, _title, _cb in reporters:
+                self.disable_report(report_id)
 
     def error_mode(self):
         """error mode: enable only errors; no reports, no persistent"""
@@ -448,7 +486,7 @@ This is used by the global evaluation report (RP0004).'}),
 
     def get_checkers(self):
         """return all available checkers as a list"""
-        return [self] + [c for checkers in self._checkers.values()
+        return [self] + [c for checkers in self._checkers.itervalues()
                          for c in checkers if c is not self]
 
     def prepare_checkers(self):
@@ -458,8 +496,9 @@ This is used by the global evaluation report (RP0004).'}),
         # get needed checkers
         neededcheckers = [self]
         for checker in self.get_checkers()[1:]:
+            # fatal errors should not trigger enable / disabling a checker
             messages = set(msg for msg in checker.msgs
-                           if self.is_message_enabled(msg))
+                           if msg[0] != 'F' and self.is_message_enabled(msg))
             if (messages or
                 any(self.report_is_enabled(r[0]) for r in checker.reports)):
                 neededcheckers.append(checker)
@@ -471,6 +510,7 @@ This is used by the global evaluation report (RP0004).'}),
         name.
         """
         self.reporter.include_ids = self.config.include_ids
+        self.reporter.symbols = self.config.symbols
         if not isinstance(files_or_modules, (list, tuple)):
             files_or_modules = (files_or_modules,)
         walker = PyLintASTWalker(self)
@@ -485,6 +525,9 @@ This is used by the global evaluation report (RP0004).'}),
         # build ast and check modules or packages
         for descr in self.expand_files(files_or_modules):
             modname, filepath = descr['name'], descr['path']
+            if self.config.files_output:
+                reportfile = 'pylint_%s.%s' % (modname, self.reporter.extension)
+                self.reporter.set_output(open(reportfile, 'w'))
             self.set_current_module(modname, filepath)
             # get the module representation
             astng = self.get_astng(filepath, modname)
@@ -492,9 +535,6 @@ This is used by the global evaluation report (RP0004).'}),
                 continue
             self.base_name = descr['basename']
             self.base_file = descr['basepath']
-            if self.config.files_output:
-                reportfile = 'pylint_%s.%s' % (modname, self.reporter.extension)
-                self.reporter.set_output(open(reportfile, 'w'))
             self._ignore_file = False
             # fix the current file (if the source file was not available or
             # if it's actually a c extension)
@@ -526,11 +566,12 @@ This is used by the global evaluation report (RP0004).'}),
         """
         if not modname and filepath is None:
             return
+        self.reporter.on_set_current_module(modname, filepath)
         self.current_name = modname
         self.current_file = filepath or modname
         self.stats['by_module'][modname] = {}
         self.stats['by_module'][modname]['statement'] = 0
-        for msg_cat in MSG_TYPES.values():
+        for msg_cat in MSG_TYPES.itervalues():
             self.stats['by_module'][modname][msg_cat] = 0
         # XXX hack, to be correct we need to keep module_msgs_state
         # for every analyzed module (the problem stands with localized
@@ -581,7 +622,7 @@ This is used by the global evaluation report (RP0004).'}),
         self.stats = { 'by_module' : {},
                        'by_msg' : {},
                        }
-        for msg_cat in MSG_TYPES.values():
+        for msg_cat in MSG_TYPES.itervalues():
             self.stats[msg_cat] = 0
 
     def close(self):
@@ -590,19 +631,26 @@ This is used by the global evaluation report (RP0004).'}),
         if persistent run, pickle results for later comparison
         """
         if self.base_name is not None:
-            # load old results if any
-            old_stats = config.load_results(self.base_name)
+            # load previous results if any
+            previous_stats = config.load_results(self.base_name)
+            # XXX code below needs refactoring to be more reporter agnostic
+            self.reporter.on_close(self.stats, previous_stats)
             if self.config.reports:
-                self.make_reports(self.stats, old_stats)
-            elif self.config.output_format == 'html':
-                self.reporter.display_results(Section())
+                sect = self.make_reports(self.stats, previous_stats)
+                if self.config.files_output:
+                    filename = 'pylint_global.' + self.reporter.extension
+                    self.reporter.set_output(open(filename, 'w'))
+            else:
+                sect = Section()
+            if self.config.reports or self.config.output_format == 'html':
+                self.reporter.display_results(sect)
             # save results if persistent run
             if self.config.persistent:
                 config.save_results(self.stats, self.base_name)
 
     # specific reports ########################################################
 
-    def report_evaluation(self, sect, stats, old_stats):
+    def report_evaluation(self, sect, stats, previous_stats):
         """make the global evaluation report"""
         # check with at least check 1 statements (usually 0 when there is a
         # syntax error preventing pylint from further processing)
@@ -617,18 +665,18 @@ This is used by the global evaluation report (RP0004).'}),
         else:
             stats['global_note'] = note
             msg = 'Your code has been rated at %.2f/10' % note
-            if 'global_note' in old_stats:
-                msg += ' (previous run: %.2f/10)' % old_stats['global_note']
+            if 'global_note' in previous_stats:
+                msg += ' (previous run: %.2f/10)' % previous_stats['global_note']
             if self.config.comment:
                 msg = '%s\n%s' % (msg, config.get_note_message(note))
         sect.append(Text(msg))
 
 # some reporting functions ####################################################
 
-def report_total_messages_stats(sect, stats, old_stats):
+def report_total_messages_stats(sect, stats, previous_stats):
     """make total errors / warnings report"""
     lines = ['type', 'number', 'previous', 'difference']
-    lines += table_lines_from_stats(stats, old_stats,
+    lines += table_lines_from_stats(stats, previous_stats,
                                     ('convention', 'refactor',
                                      'warning', 'error'))
     sect.append(Table(children=lines, cols=4, rheaders=1))
@@ -638,8 +686,8 @@ def report_messages_stats(sect, stats, _):
     if not stats['by_msg']:
         # don't print this report when we didn't detected any errors
         raise EmptyReport()
-    in_order = sorted([(value, msg_id) 
-                       for msg_id, value in stats['by_msg'].items()
+    in_order = sorted([(value, msg_id)
+                       for msg_id, value in stats['by_msg'].iteritems()
                        if not msg_id.startswith('I')])
     in_order.reverse()
     lines = ('message id', 'occurrences')
@@ -655,7 +703,7 @@ def report_messages_by_module_stats(sect, stats, _):
     by_mod = {}
     for m_type in ('fatal', 'error', 'warning', 'refactor', 'convention'):
         total = stats[m_type]
-        for module in stats['by_module'].keys():
+        for module in stats['by_module'].iterkeys():
             mod_total = stats['by_module'][module][m_type]
             if total == 0:
                 percent = 0
@@ -663,7 +711,7 @@ def report_messages_by_module_stats(sect, stats, _):
                 percent = float((mod_total)*100) / total
             by_mod.setdefault(module, {})[m_type] = percent
     sorted_result = []
-    for module, mod_info in by_mod.items():
+    for module, mod_info in by_mod.iteritems():
         sorted_result.append((mod_info['error'],
                               mod_info['warning'],
                               mod_info['refactor'],
@@ -686,11 +734,10 @@ def report_messages_by_module_stats(sect, stats, _):
 # utilities ###################################################################
 
 # this may help to import modules using gettext
+# XXX syt, actually needed since we don't import code?
 
-try:
-    __builtins__._ = str
-except AttributeError:
-    __builtins__['_'] = str
+from logilab.common.compat import builtins
+builtins._ = str
 
 
 class ArgumentPreprocessingError(Exception):
@@ -813,32 +860,32 @@ are done by default'''}),
         linter.load_plugin_modules(self._plugins)
         # add some help section
         linter.add_help_section('Environment variables', config.ENV_HELP, level=1)
-        linter.add_help_section('Output', '''
-Using the default text output, the message format is :                          
-                                                                                
-        MESSAGE_TYPE: LINE_NUM:[OBJECT:] MESSAGE                                
-                                                                                
-There are 5 kind of message types :                                             
-    * (C) convention, for programming standard violation                        
-    * (R) refactor, for bad code smell                                          
-    * (W) warning, for python specific problems                                 
-    * (E) error, for probable bugs in the code                                  
-    * (F) fatal, if an error occurred which prevented pylint from doing further
-processing.
-        ''', level=1)
-        linter.add_help_section('Output status code', '''
-Pylint should leave with following status code:                                 
-    * 0 if everything went fine                                                 
-    * 1 if a fatal message was issued                                           
-    * 2 if an error message was issued                                          
-    * 4 if a warning message was issued                                         
-    * 8 if a refactor message was issued                                        
-    * 16 if a convention message was issued                                     
-    * 32 on usage error                                                         
-                                                                                
-status 1 to 16 will be bit-ORed so you can know which different categories has
-been issued by analysing pylint output status code
-        ''', level=1)
+        linter.add_help_section('Output',
+'Using the default text output, the message format is :                          \n'
+'                                                                                \n'
+'        MESSAGE_TYPE: LINE_NUM:[OBJECT:] MESSAGE                                \n'
+'                                                                                \n'
+'There are 5 kind of message types :                                             \n'
+'    * (C) convention, for programming standard violation                        \n'
+'    * (R) refactor, for bad code smell                                          \n'
+'    * (W) warning, for python specific problems                                 \n'
+'    * (E) error, for probable bugs in the code                                  \n'
+'    * (F) fatal, if an error occurred which prevented pylint from doing further\n'
+'processing.\n'
+        , level=1)
+        linter.add_help_section('Output status code',
+'Pylint should leave with following status code:                                 \n'
+'    * 0 if everything went fine                                                 \n'
+'    * 1 if a fatal message was issued                                           \n'
+'    * 2 if an error message was issued                                          \n'
+'    * 4 if a warning message was issued                                         \n'
+'    * 8 if a refactor message was issued                                        \n'
+'    * 16 if a convention message was issued                                     \n'
+'    * 32 on usage error                                                         \n'
+'                                                                                \n'
+'status 1 to 16 will be bit-ORed so you can know which different categories has\n'
+'been issued by analysing pylint output status code\n',
+        level=1)
         # read configuration
         linter.disable('W0704')
         linter.read_config_file()
@@ -866,7 +913,10 @@ been issued by analysing pylint output status code
             sys.exit(32)
         # insert current working directory to the python path to have a correct
         # behaviour
-        sys.path.insert(0, os.getcwd())
+        if len(args) == 1:
+            sys.path.insert(0, _get_python_path(args[0]))
+        else:
+            sys.path.insert(0, os.getcwd())
         if self.linter.config.profile:
             print >> sys.stderr, '** profiled run'
             import cProfile, pstats

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2006 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -30,6 +30,44 @@ import re
 # regexp for ignored argument name
 IGNORED_ARGUMENT_NAMES = re.compile('_.*')
 
+SPECIAL_METHODS = [('Context manager', set(('__enter__',
+                                            '__exit__',))),
+                   ('Container', set(('__len__',
+                                      '__getitem__',
+                                      '__setitem__',
+                                      '__delitem__',))),
+                   ('Callable', set(('__call__',))),
+                   ]
+
+class SpecialMethodChecker(object):
+    """A functor that checks for consistency of a set of special methods"""
+    def __init__(self, methods_found, on_error):
+        """Stores the set of __x__ method names that were found in the
+        class and a callable that will be called with args to R0024 if
+        the check fails
+        """
+        self.methods_found = methods_found
+        self.on_error = on_error
+
+    def __call__(self, methods_required, protocol):
+        """Checks the set of method names given to __init__ against the set
+        required.
+
+        If they are all present, returns true.
+        If they are all absent, returns false.
+        If some are present, reports the error and returns false.
+        """
+        required_methods_found = methods_required & self.methods_found
+        if required_methods_found == methods_required:
+            return True
+        if required_methods_found != set():
+            required_methods_missing  = methods_required - self.methods_found
+            self.on_error((protocol,
+                           ', '.join(sorted(required_methods_found)),
+                           ', '.join(sorted(required_methods_missing))))
+        return False
+
+
 def class_is_abstract(klass):
     """return true if the given class node should be considered as an abstract
     class
@@ -43,48 +81,64 @@ def class_is_abstract(klass):
 
 MSGS = {
     'R0901': ('Too many ancestors (%s/%s)',
+              'too-many-ancestors',
               'Used when class has too many parent classes, try to reduce \
               this to get a more simple (and so easier to use) class.'),
     'R0902': ('Too many instance attributes (%s/%s)',
+              'too-many-instance-attributes',
               'Used when class has too many instance attributes, try to reduce \
               this to get a more simple (and so easier to use) class.'),
     'R0903': ('Too few public methods (%s/%s)',
+              'too-few-public-methods',
               'Used when class has too few public methods, so be sure it\'s \
               really worth it.'),
     'R0904': ('Too many public methods (%s/%s)',
+              'too-many-public-methods',
               'Used when class has too many public methods, try to reduce \
               this to get a more simple (and so easier to use) class.'),
-    
+
     'R0911': ('Too many return statements (%s/%s)',
+              'too-many-return-statements',
               'Used when a function or method has too many return statement, \
               making it hard to follow.'),
     'R0912': ('Too many branches (%s/%s)',
+              'too-many-branches',
               'Used when a function or method has too many branches, \
               making it hard to follow.'),
     'R0913': ('Too many arguments (%s/%s)',
+              'too-many-arguments',
               'Used when a function or method takes too many arguments.'),
     'R0914': ('Too many local variables (%s/%s)',
+              'too-many-locals',
               'Used when a function or method has too many local variables.'),
     'R0915': ('Too many statements (%s/%s)',
+              'too-many-statements',
               'Used when a function or method has too many statements. You \
               should then split it in smaller functions / methods.'),
-    
+
     'R0921': ('Abstract class not referenced',
+              'abstract-class-not-used',
               'Used when an abstract class is not used as ancestor anywhere.'),
     'R0922': ('Abstract class is only referenced %s times',
+              'abstract-class-little-used',
               'Used when an abstract class is used less than X times as \
               ancestor.'),
     'R0923': ('Interface not implemented',
+              'interface-not-implemented',
               'Used when an interface class is not implemented anywhere.'),
+    'R0924': ('Badly implemented %s, implements %s but not %s',
+              'incomplete-protocol',
+              'A class implements some of the special methods for a particular \
+               protocol, but not all of them')
     }
 
 
 class MisdesignChecker(BaseChecker):
-    """checks for sign of poor/misdesign:                                      
-    * number of methods, attributes, local variables...                        
-    * size, complexity of functions, methods                                   
+    """checks for sign of poor/misdesign:
+    * number of methods, attributes, local variables...
+    * size, complexity of functions, methods
     """
-    
+
     __implements__ = (IASTNGChecker,)
 
     # configuration section name
@@ -160,7 +214,7 @@ class MisdesignChecker(BaseChecker):
         self._abstracts = None
         self._ifaces = None
         self._stmts = 0
-        
+
     def open(self):
         """initialize visit variables"""
         self.stats = self.linter.add_stats()
@@ -182,7 +236,7 @@ class MisdesignChecker(BaseChecker):
         for iface in self._ifaces:
             if not iface in self._used_ifaces:
                 self.add_message('R0923', node=iface)
-                
+
     def visit_class(self, node):
         """check size of inheritance hierarchy and number of instance attributes
         """
@@ -212,20 +266,23 @@ class MisdesignChecker(BaseChecker):
             for iface in node.interfaces():
                 self._used_ifaces[iface] = 1
         except InferenceError:
-            # XXX log ? 
+            # XXX log ?
             pass
         for parent in node.ancestors():
             try:
                 self._used_abstracts[parent] += 1
             except KeyError:
                 self._used_abstracts[parent] = 1
-            
+
     def leave_class(self, node):
         """check number of public methods"""
         nb_public_methods = 0
+        special_methods = set()
         for method in node.methods():
             if not method.name.startswith('_'):
                 nb_public_methods += 1
+            if method.name.startswith("__"):
+                special_methods.add(method.name)
         # Does the class contain less than 20 public methods ?
         if nb_public_methods > self.config.max_public_methods:
             self.add_message('R0904', node=node,
@@ -234,13 +291,19 @@ class MisdesignChecker(BaseChecker):
         # stop here for exception, metaclass and interface classes
         if node.type != 'class':
             return
+        # Does the class implement special methods consitently?
+        # If so, don't enforce minimum public methods.
+        check_special = SpecialMethodChecker(
+            special_methods, lambda args: self.add_message('R0924', node=node, args=args))
+        protocols = [check_special(pmethods, pname) for pname, pmethods in SPECIAL_METHODS]
+        if True in protocols:
+            return
         # Does the class contain more than 5 public methods ?
         if nb_public_methods < self.config.min_public_methods:
             self.add_message('R0903', node=node,
                              args=(nb_public_methods,
                                    self.config.min_public_methods))
 
-        
     def visit_function(self, node):
         """check function name, docstring, arguments, redefinition,
         variable names, max locals
@@ -291,7 +354,7 @@ class MisdesignChecker(BaseChecker):
         if not self._returns:
             return # return outside function, reported by the base checker
         self._returns[-1] += 1
-        
+
     def visit_default(self, node):
         """default visit method -> increments the statements counter if
         necessary
@@ -306,12 +369,12 @@ class MisdesignChecker(BaseChecker):
             branchs += 1
         self._inc_branch(branchs)
         self._stmts += branchs
-        
+
     def visit_tryfinally(self, _):
         """increments the branchs counter"""
         self._inc_branch(2)
         self._stmts += 2
-        
+
     def visit_if(self, node):
         """increments the branchs counter"""
         branchs = 1
@@ -321,14 +384,14 @@ class MisdesignChecker(BaseChecker):
             branchs += 1
         self._inc_branch(branchs)
         self._stmts += branchs
-        
+
     def visit_while(self, node):
         """increments the branchs counter"""
         branchs = 1
         if node.orelse:
             branchs += 1
         self._inc_branch(branchs)
-        
+
     visit_for = visit_while
 
     def _inc_branch(self, branchsnum=1):

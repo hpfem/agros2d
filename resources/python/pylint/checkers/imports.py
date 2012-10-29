@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2010 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -56,7 +56,7 @@ def filter_dependencies_info(dep_info, package_dir, mode='external'):
         assert mode == 'internal'
         filter_func = lambda x: is_standard_module(x, (package_dir,))
     result = {}
-    for importee, importers in dep_info.items():
+    for importee, importers in dep_info.iteritems():
         if filter_func(importee):
             result[importee] = importers
     return result
@@ -86,7 +86,7 @@ def repr_tree_defs(data, indent_str=None):
             lines.append('%s %s' % (mod, files))
             sub_indent_str = '  '
         else:
-            lines.append('%s\-%s %s' % (indent_str, mod, files))
+            lines.append(r'%s\-%s %s' % (indent_str, mod, files))
             if i == len(nodes)-1:
                 sub_indent_str = '%s  ' % indent_str
             else:
@@ -102,14 +102,14 @@ def dependencies_graph(filename, dep_info):
     done = {}
     printer = DotBackend(filename[:-4], rankdir = "LR")
     printer.emit('URL="." node[shape="box"]')
-    for modname, dependencies in dep_info.items():
+    for modname, dependencies in dep_info.iteritems():
         done[modname] = 1
         printer.emit_node(modname)
         for modname in dependencies:
             if modname not in done:
                 done[modname] = 1
                 printer.emit_node(modname)
-    for depmodname, dependencies in dep_info.items():
+    for depmodname, dependencies in dep_info.iteritems():
         for modname in dependencies:
             printer.emit_edge(modname, depmodname)
     printer.generate(filename)
@@ -128,24 +128,32 @@ def make_graph(filename, dep_info, sect, gtype):
 
 MSGS = {
     'F0401': ('Unable to import %s',
+              'import-error',
               'Used when pylint has been unable to import a module.'),
     'R0401': ('Cyclic import (%s)',
+              'cyclic-import',
               'Used when a cyclic import between two or more modules is \
               detected.'),
 
     'W0401': ('Wildcard import %s',
+              'wildcard-import',
               'Used when `from module import *` is detected.'),
     'W0402': ('Uses of a deprecated module %r',
+              'deprecated-module',
               'Used a module marked as deprecated is imported.'),
     'W0403': ('Relative import %r, should be %r',
+              'relative-import',
               'Used when an import relative to the package directory is \
               detected.'),
     'W0404': ('Reimport %r (imported line %s)',
+              'reimported',
               'Used when a module is reimported multiple times.'),
     'W0406': ('Module import itself',
+              'import-self',
               'Used when a module is importing itself.'),
 
     'W0410': ('__future__ import is not the first non docstring statement',
+              'misplaced-future',
               'Python 2.5 and greater require __future__ import to be the \
               first non docstring statement in the module.'),
     }
@@ -329,7 +337,7 @@ given file (report RP0402 must not be disabled)'}
 
     def report_external_dependencies(self, sect, _, dummy):
         """return a verbatim layout for displaying dependencies"""
-        dep_info = make_tree_defs(self._external_dependencies_info().items())
+        dep_info = make_tree_defs(self._external_dependencies_info().iteritems())
         if not dep_info:
             raise EmptyReport()
         tree_str = repr_tree_defs(dep_info)

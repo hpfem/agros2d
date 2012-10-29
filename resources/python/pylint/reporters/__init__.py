@@ -1,3 +1,5 @@
+# Copyright (c) 2003-2010 Sylvain Thenault (thenault@gmail.com).
+# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or (at your option) any later
@@ -10,11 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-"""utilities methods and classes for reporters
-
-Copyright (c) 2000-2003 LOGILAB S.A. (Paris, FRANCE).
-http://www.logilab.fr/ -- mailto:contact@logilab.fr
-"""
+"""utilities methods and classes for reporters"""
 
 import sys, locale
 
@@ -33,17 +31,37 @@ class EmptyReport(Exception):
     """raised when a report is empty and so should not be displayed"""
 
 class BaseReporter:
-    """base class for reporters"""
+    """base class for reporters
+
+    symbols: show short symbolic names for messages.
+    """
 
     extension = ''
 
     def __init__(self, output=None):
         self.linter = None
         self.include_ids = None
+        self.symbols = None
         self.section = 0
         self.out = None
         self.out_encoding = None
         self.set_output(output)
+
+    def make_sigle(self, msg_id):
+        """generate a short prefix for a message.
+
+        The sigle can include the id, the symbol, or both, or it can just be
+        the message class.
+        """
+        if self.include_ids:
+            sigle = msg_id
+        else:
+            sigle = msg_id[0]
+        if self.symbols:
+            symbol = self.linter.check_message_id(msg_id).symbol
+            if symbol:
+                sigle += '(%s)' % symbol
+        return sigle
 
     def set_output(self, output=None):
         """set output stream"""
@@ -76,4 +94,15 @@ class BaseReporter:
     def _display(self, layout):
         """display the layout"""
         raise NotImplementedError()
+
+    # Event callbacks
+
+    def on_set_current_module(self, module, filepath):
+        """starting analyzis of a module"""
+        pass
+
+    def on_close(self, stats, previous_stats):
+        """global end of analyzis"""
+        pass
+
 
