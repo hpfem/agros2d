@@ -1371,7 +1371,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Util::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
     Util::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
     Util::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
-                                        eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
+                                                     eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
     Util::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05"));
 
     // matrix solver
@@ -1526,7 +1526,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
             foreach (Module::MaterialTypeVariable *variable, field->module()->materialTypeVariables())
             {
-                material->setValue(variable->id(), element.toElement().attribute(variable->id(), "0"));
+                material->setValue(variable->id(),
+                                   Value(field, element.toElement().attribute(variable->id(), "0")));
             }
 
             // add material
