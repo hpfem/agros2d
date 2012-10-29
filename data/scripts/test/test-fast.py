@@ -1,8 +1,3 @@
-# acoustic
-execfile("test_acoustic_planar.py") 
-execfile("test_acoustic_axisymmetric.py")
-execfile("test_acoustic_transient_planar.py") 
-
 # electrostatic
 execfile("test_electrostatic_planar.py") 
 execfile("test_electrostatic_axisymmetric.py")
@@ -25,11 +20,14 @@ execfile("test_heat_transfer_steady_planar.py")
 execfile("test_heat_transfer_steady_planar_nonlin.py")
 execfile("test_heat_transfer_steady_axisymmetric.py")
 execfile("test_heat_transfer_transient_axisymmetric_benchmark.py") # benchmark
-# execfile("test_heat_transfer_transient_axisymmetric.py") # very slow
 
 # structural mechanics
 execfile("test_elasticity_planar.py")
 execfile("test_elasticity_axisymmetric.py")
+
+# acoustic
+execfile("test_acoustic_planar.py") 
+execfile("test_acoustic_axisymmetric.py")
 
 # electromagnetic wave - TE
 # execfile("test_rf_planar.py")
