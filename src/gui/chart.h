@@ -34,11 +34,11 @@ public:
     ~Chart();
 
     inline QwtPlotCurve *curve() { return m_curve; }
-    void saveImage(const QString &fileName = "");
 
 public slots:
    void setData(double *xval, double *yval, int count);
    void setData(QList<double> xval, QList<double> yval);
+   void saveImage(const QString &fileName = "");
 
 private:
     QwtPlotCurve *m_curve;

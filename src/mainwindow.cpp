@@ -50,6 +50,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "scenetransformdialog.h"
+#include "chartdialog.h"
 
 #include "gl2ps/gl2ps.h"
 
@@ -76,6 +77,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewPost3D = new SceneViewPost3D(postHermes, this);
     sceneViewBlank = new QLabel("TODO");
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
+    sceneChart = new ChartWidget(this);
+
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
     connect(Util::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
@@ -85,6 +88,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     settingsWidget = new SettingsWidget(this);
     // problem
     problemWidget = new ProblemWidget(this);
+    // chart
+    chartWidget = new ChartControlsWidget(sceneViewPost2D, sceneChart->chart(), this);
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
@@ -368,10 +373,6 @@ void MainWindow::createActions()
     actSolveAdaptiveStep->setStatusTip(tr("Adaptivity step"));
     connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStep()));
 
-    actChart = new QAction(icon("chart"), tr("&Chart"), this);
-    actChart->setStatusTip(tr("Chart"));
-    connect(actChart, SIGNAL(triggered()), this, SLOT(doChart()));
-
     actFullScreen = new QAction(icon("view-fullscreen"), tr("Fullscreen mode"), this);
     actFullScreen->setShortcut(QKeySequence(tr("F11")));
     connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
@@ -425,6 +426,7 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
+    actSceneModeGroup->addAction(chartWidget->actChart);
     actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
@@ -514,6 +516,7 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
     mnuView->addAction(settingsWidget->actSettings);
+    mnuView->addAction(chartWidget->actChart);
     mnuView->addSeparator();
     mnuView->addAction(actHideControlPanel);
     mnuView->addSeparator();
@@ -552,8 +555,6 @@ void MainWindow::createMenus()
     mnuProblem->addAction(Util::problem()->actClearSolutions);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
-    mnuTools->addAction(actChart);
-    mnuTools->addSeparator();
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
     mnuTools->addAction(actScriptEditorRunCommand);
@@ -658,7 +659,6 @@ void MainWindow::createToolBars()
     tlbPost2D->addSeparator();
     tlbPost2D->addAction(sceneViewPost2D->actSelectPoint);
     tlbPost2D->addAction(sceneViewPost2D->actSelectByMarker);
-    tlbPost2D->addAction(actChart);
 }
 
 void MainWindow::createMain()
@@ -669,6 +669,7 @@ void MainWindow::createMain()
     sceneViewMeshWidget = new SceneViewWidget(sceneViewMesh, this);
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
     sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
+    sceneViewChartWidget = new SceneViewWidget(sceneChart, this);
 
     tabViewLayout = new QStackedLayout();
     tabViewLayout->setContentsMargins(0, 0, 0, 0);
@@ -678,6 +679,7 @@ void MainWindow::createMain()
     tabViewLayout->addWidget(sceneViewMeshWidget);
     tabViewLayout->addWidget(sceneViewPost2DWidget);
     tabViewLayout->addWidget(sceneViewPost3DWidget);
+    tabViewLayout->addWidget(sceneViewChartWidget);
 
     QWidget *viewWidget = new QWidget();
     viewWidget->setLayout(tabViewLayout);
@@ -688,6 +690,7 @@ void MainWindow::createMain()
     tabControlsLayout->addWidget(preprocessorWidget);
     tabControlsLayout->addWidget(postprocessorWidget);
     tabControlsLayout->addWidget(settingsWidget);
+    tabControlsLayout->addWidget(chartWidget);
 
     viewControls = new QWidget();
     viewControls->setLayout(tabControlsLayout);
@@ -717,6 +720,7 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
+    tlbLeftBar->addAction(chartWidget->actChart);
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(settingsWidget->actSettings);
     tlbLeftBar->addWidget(spacing);
@@ -1289,15 +1293,6 @@ void MainWindow::doMaterialBrowser()
     materialBrowserDialog.showDialog(false);
 }
 
-void MainWindow::doChart()
-{
-    sceneViewPost2D->actSceneModePost2D->trigger();
-
-    ChartDialog chartDialog(sceneViewPost2D, Util::scene()->activeViewField(), this);
-
-    chartDialog.showDialog();
-}
-
 void MainWindow::doScriptEditor()
 {
     scriptEditorDialog->showDialog();
@@ -1484,11 +1479,15 @@ void MainWindow::setControls()
         tabControlsLayout->setCurrentWidget(settingsWidget);
     }
 
+    if (chartWidget->actChart->isChecked())
+    {
+        tabViewLayout->setCurrentWidget(sceneViewChartWidget);
+        tabControlsLayout->setCurrentWidget(chartWidget);
+    }
+
     actDocumentExportMeshFile->setEnabled(Util::problem()->isMeshed());
 
     actSolveAdaptiveStep->setEnabled((!Util::problem()->isTransient())); // FIXME: timedep
-    actChart->setEnabled(Util::problem()->isSolved());
-
     actSolve->setEnabled(Util::problem()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(Util::problem()->fieldInfos().count() > 0);
 

@@ -40,13 +40,14 @@ class PythonScriptingConsoleView;
 class TooltipView;
 class LogView;
 
-class ChartDialog;
+class ChartControlsWidget;
 class PythonLabAgros;
 class ReportDialog;
 class ServerDownloadDialog;
 class SceneTransformDialog;
 class SceneViewWidget;
 class LogStdOut;
+class ChartWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -83,7 +84,6 @@ private slots:
     void doSolve();
     void doSolveAdaptiveStep();
 
-    void doChart();
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
     void doScriptEditorRunCommand();
@@ -167,7 +167,6 @@ private:
     QAction *actCreateMesh;
     QAction *actSolve;
     QAction *actSolveAdaptiveStep;
-    QAction *actChart;
     QAction *actFullScreen;
     QAction *actPostprocessorView;
 
@@ -203,6 +202,7 @@ private:
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
     SceneViewWidget *sceneViewBlankWidget;
+    SceneViewWidget *sceneViewChartWidget;
 
     PostHermes *postHermes;
 
@@ -213,6 +213,7 @@ private:
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
     QWidget *sceneViewBlank;
+    ChartWidget *sceneChart;
 
     QWidget *viewControls;
     QStackedLayout *tabControlsLayout;
@@ -220,6 +221,7 @@ private:
     PostprocessorWidget *postprocessorWidget;
     SettingsWidget *settingsWidget;
     ProblemWidget *problemWidget;
+    ChartControlsWidget *chartWidget;
 
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;

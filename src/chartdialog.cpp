@@ -75,25 +75,30 @@ QList<Point> ChartLine::getPoints()
 
 // **************************************************************************************************
 
-ChartDialog::ChartDialog(SceneViewPost2D *sceneView,
-                         FieldInfo *fieldInfo,
-                         QWidget *parent) : QDialog(parent)
+
+ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
 {
-    setWindowIcon(icon("chart"));
-    setWindowFlags(Qt::Window);
-    setWindowTitle(tr("Chart"));
+    m_chart = new Chart(this, true);
 
-    m_fieldInfo = fieldInfo;
-    m_sceneViewPost2D = sceneView;
+    QHBoxLayout *layoutMain = new QHBoxLayout();
+    layoutMain->addWidget(m_chart);
 
+    setLayout(layoutMain);
+}
+
+// **************************************************************************************************
+
+ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
+                         Chart *chart,
+                         QWidget *parent) : QWidget(parent), m_sceneViewPost2D(sceneView), m_chart(chart)
+{
     connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
+    createActions();
     createControls();
 
-    resize(sizeHint());
-
     QSettings settings;
-    restoreGeometry(settings.value("ChartDialog/Geometry", saveGeometry()).toByteArray());
     txtStartX->setValue(settings.value("ChartDialog/StartX", "0").toString());
     txtEndX->setValue(settings.value("ChartDialog/EndX", "0").toString());
     txtStartY->setValue(settings.value("ChartDialog/StartY", "0").toString());
@@ -104,12 +109,13 @@ ChartDialog::ChartDialog(SceneViewPost2D *sceneView,
     radAxisY->setChecked(settings.value("ChartDialog/AxisY", false).toBool());
     txtAxisPoints->setValue(settings.value("ChartDialog/AxisPoints", 200).toInt());
     chkAxisPointsReverse->setChecked(settings.value("ChartDialog/AxisPointsReverse", false).toBool());
+
+    setControls();
 }
 
-ChartDialog::~ChartDialog()
+ChartControlsWidget::~ChartControlsWidget()
 {
     QSettings settings;
-    settings.setValue("ChartDialog/Geometry", saveGeometry());
     settings.setValue("ChartDialog/StartX", txtStartX->value().text());
     settings.setValue("ChartDialog/EndX", txtEndX->value().text());
     settings.setValue("ChartDialog/StartY", txtStartY->value().text());
@@ -122,11 +128,16 @@ ChartDialog::~ChartDialog()
     settings.setValue("ChartDialog/AxisPointsReverse", chkAxisPointsReverse->isChecked());
 }
 
-void ChartDialog::showDialog()
+void ChartControlsWidget::setControls()
 {
-    fillComboBoxScalarVariable(m_fieldInfo, cmbFieldVariable);
+    actChart->setEnabled(Util::problem()->isSolved());
+
+    if (!Util::problem()->isSolved())
+        return;
+
+    fillComboBoxScalarVariable(Util::scene()->activeViewField(), cmbFieldVariable);
     doFieldVariable(cmbFieldVariable->currentIndex());
-    fillComboBoxTimeStep(m_fieldInfo, cmbTimeStep);
+    fillComboBoxTimeStep(Util::scene()->activeViewField(), cmbTimeStep);
 
     // correct labels
     lblStartX->setText(Util::problem()->config()->labelX() + ":");
@@ -149,18 +160,10 @@ void ChartDialog::showDialog()
     }
 
     doChartLine();
-    exec();
 }
 
-void ChartDialog::hideEvent(QHideEvent *event)
+void ChartControlsWidget::createControls()
 {
-    doChartLine();
-}
-
-void ChartDialog::createControls()
-{
-    chart = new Chart(this, true);
-
     // controls
     QWidget *controls = new QWidget(this);
 
@@ -170,7 +173,7 @@ void ChartDialog::createControls()
 
     QPushButton *btnSaveImage = new QPushButton(controls);
     btnSaveImage->setText(tr("Save image"));
-    connect(btnSaveImage, SIGNAL(clicked()), SLOT(doSaveImage()));
+    connect(btnSaveImage, SIGNAL(clicked()), m_chart, SLOT(saveImage()));
 
     QPushButton *btnExportData = new QPushButton(controls);
     btnExportData->setText(tr("Export"));
@@ -290,7 +293,6 @@ void ChartDialog::createControls()
     // component
     cmbFieldVariableComp = new QComboBox(this);
     connect(cmbFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariableComp(int)));
-    doFieldVariable(cmbFieldVariable->currentIndex());
 
     QFormLayout *layoutVariable = new QFormLayout(this);
     layoutVariable->addRow(tr("Variable:"), cmbFieldVariable);
@@ -301,6 +303,7 @@ void ChartDialog::createControls()
 
     // table
     trvTable = new QTableWidget(this);
+    trvTable->setVisible(false);
 
     // button bar
     QHBoxLayout *layoutButton = new QHBoxLayout();
@@ -337,27 +340,26 @@ void ChartDialog::createControls()
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
     controls->setLayout(controlsLayout);
-    controls->setMinimumWidth(280);
 
-    controlsLayout->addWidget(tabAnalysisType);
     controlsLayout->addWidget(grpVariable);
+    controlsLayout->addWidget(tabAnalysisType);
     controlsLayout->addStretch();
     controlsLayout->addWidget(widButton);
-
-    // tab data widget
-    tabOutput = new QTabWidget(this);
-    tabOutput->addTab(chart, icon(""), tr("Chart"));
-    tabOutput->addTab(trvTable, icon(""), tr("Table"));
 
     // main layout
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(controls);
-    layout->addWidget(tabOutput, 1);
 
     setLayout(layout);
 }
 
-QList<double> ChartDialog::getHorizontalAxisValues(ChartLine *chartLine)
+void ChartControlsWidget::createActions()
+{
+    actChart = new QAction(icon("chart"), tr("Chart"), this);
+    actChart->setCheckable(true);
+}
+
+QList<double> ChartControlsWidget::getHorizontalAxisValues(ChartLine *chartLine)
 {
     QList<Point> points = chartLine->getPoints();
     QList<double> xval;
@@ -397,10 +399,10 @@ QList<double> ChartDialog::getHorizontalAxisValues(ChartLine *chartLine)
     return xval;
 }
 
-void ChartDialog::plotGeometry()
+void ChartControlsWidget::plotGeometry()
 {
     // variable
-    Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable) return;
 
     // variable component
@@ -411,7 +413,7 @@ void ChartDialog::plotGeometry()
     int count = txtAxisPoints->value();
 
     // chart
-    chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
+    m_chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
                         arg(physicFieldVariable->name()).
                         arg(physicFieldVariable->unit()));
 
@@ -419,7 +421,7 @@ void ChartDialog::plotGeometry()
     if (radAxisLength->isChecked()) text = tr("Length (m)");
     if (radAxisX->isChecked()) text = Util::problem()->config()->labelX() + " (m)";
     if (radAxisY->isChecked()) text = Util::problem()->config()->labelY() + " (m)";
-    chart->setAxisTitle(QwtPlot::xBottom, text);
+    m_chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // table
     QStringList head = headers();
@@ -480,13 +482,13 @@ void ChartDialog::plotGeometry()
         }
     }
 
-    chart->setData(xval, yval);
+    m_chart->setData(xval, yval);
 }
 
-void ChartDialog::plotTime()
+void ChartControlsWidget::plotTime()
 {
     // variable
-    Module::LocalVariable *physicFieldVariable = m_fieldInfo->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 
@@ -498,11 +500,11 @@ void ChartDialog::plotTime()
     QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
 
     // chart
-    chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
+    m_chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
                         arg(physicFieldVariable->name()).
                         arg(physicFieldVariable->unit()));
 
-    chart->setAxisTitle(QwtPlot::xBottom, tr("time (s)"));
+    m_chart->setAxisTitle(QwtPlot::xBottom, tr("time (s)"));
 
     // table
     QStringList head = headers();
@@ -555,14 +557,14 @@ void ChartDialog::plotTime()
         }
     }
 
-    chart->setData(xval, yval);
+    m_chart->setData(xval, yval);
 
     // restore previous timestep
     Util::scene()->setActiveTimeStep(timeStep);
     m_sceneViewPost2D->postHermes()->refresh();
 }
 
-void ChartDialog::fillTableRow(LocalValue *localValue, double time, int row)
+void ChartControlsWidget::fillTableRow(LocalValue *localValue, double time, int row)
 {
     int count = trvTable->rowCount();
 
@@ -604,12 +606,12 @@ void ChartDialog::fillTableRow(LocalValue *localValue, double time, int row)
     }
 }
 
-QStringList ChartDialog::headers()
+QStringList ChartControlsWidget::headers()
 {
     QStringList head;
     head << "x" << "y" << "t";
 
-    foreach (Module::LocalVariable *variable, m_fieldInfo->module()->localPointVariables())
+    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->localPointVariables())
     {
         if (variable->isScalar())
         {
@@ -628,7 +630,7 @@ QStringList ChartDialog::headers()
     return head;
 }
 
-void ChartDialog::doPlot()
+void ChartControlsWidget::doPlot()
 {
     if (!Util::problem()->isSolved()) return;
 
@@ -652,8 +654,11 @@ void ChartDialog::doPlot()
     }
 }
 
-void ChartDialog::doFieldVariable(int index)
+void ChartControlsWidget::doFieldVariable(int index)
 {
+    if (!Util::scene()->activeViewField())
+        return;
+
     Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(index).toString());
     if (!physicFieldVariable)
         return;
@@ -676,17 +681,12 @@ void ChartDialog::doFieldVariable(int index)
     doPlot();
 }
 
-void ChartDialog::doFieldVariableComp(int index)
+void ChartControlsWidget::doFieldVariableComp(int index)
 {
     doPlot();
 }
 
-void ChartDialog::doSaveImage()
-{
-    chart->saveImage();
-}
-
-void ChartDialog::doExportData()
+void ChartControlsWidget::doExportData()
 {
     QSettings settings;
     QString dir = settings.value("General/LastDataDir").toString();
@@ -756,7 +756,7 @@ void ChartDialog::doExportData()
     }
 }
 
-void ChartDialog::doChartLine()
+void ChartControlsWidget::doChartLine()
 {
     if (isVisible())
     {
@@ -791,7 +791,7 @@ void ChartDialog::doChartLine()
     }
 }
 
-void ChartDialog::doTimeStepChanged(int index)
+void ChartControlsWidget::doTimeStepChanged(int index)
 {
     if (cmbTimeStep->currentIndex() != -1)
     {

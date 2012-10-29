@@ -21,6 +21,7 @@
 #define CHARTDIALOG_H
 
 #include "util.h"
+#include "gui/chart.h"
 #include "hermes2d/plugin_interface.h"
 
 class Chart;
@@ -58,7 +59,19 @@ struct ChartLine
     QList<Point> getPoints();
 };
 
-class ChartDialog : public QDialog
+class ChartWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    ChartWidget(QWidget *parent = 0);
+
+    inline Chart *chart() { return m_chart; }
+
+private:
+    Chart *m_chart;
+};
+
+class ChartControlsWidget : public QWidget
 {
     Q_OBJECT
 
@@ -67,23 +80,22 @@ signals:
 
 public slots:
     void doPlot();
+    void setControls();
 
 public:
-    ChartDialog(SceneViewPost2D *sceneView,
-                FieldInfo *fieldInfo,
+    ChartControlsWidget(SceneViewPost2D *sceneView,
+                Chart *chart,
                 QWidget *parent = 0);
-    ~ChartDialog();
+    ~ChartControlsWidget();
 
-    void showDialog();
+    virtual QIcon iconView() { return icon("chart"); }
+    virtual QString labelView() { return tr("Chart"); }
 
-protected:
-    void hideEvent(QHideEvent *event);
+    QAction *actChart;
 
 private:
-    FieldInfo *m_fieldInfo;
     SceneViewPost2D *m_sceneViewPost2D;
 
-    QTabWidget* tabOutput;
     QTabWidget* tabAnalysisType;
 
     // geometry
@@ -119,10 +131,11 @@ private:
     QWidget *widGeometry;
     QWidget *widTime;
 
-    Chart *chart;
+    Chart *m_chart;
     QTableWidget *trvTable;
 
     void createControls();
+    void createActions();
 
     QList<double> getHorizontalAxisValues(ChartLine *chartLine);
 
@@ -139,7 +152,6 @@ private:
 private slots:
     void doFieldVariable(int index);
     void doFieldVariableComp(int index);
-    void doSaveImage();
     void doExportData();
 
     void doChartLine();
