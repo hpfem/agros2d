@@ -32,6 +32,7 @@
 
 #include "pythonconsole.h"
 #include "pythonengine.h"
+#include "pythoneditor.h"
 #include "pythoncompleter.h"
 #include "pythonbrowser.h"
 
@@ -39,8 +40,6 @@
 
 #include <iostream>
 #include <Python.h>
-
-#include "util/constants.h"
 
 // static history for all consoles
 QStringList PythonScriptingConsole::history;

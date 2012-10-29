@@ -43,7 +43,7 @@ geometry.add_edge(-0.04, -0.05, 0.08, -0.04, boundaries = {"acoustic" : "Wall"})
 geometry.add_edge(0.08, -0.04, 0.03, 0.1, boundaries = {"acoustic" : "Wall"})
 
 # labels
-geometry.add_label(-0.0814934, 0.0707097, materials = {"acoustic" : "Vzduch"})
+geometry.add_label(-0.0814934, 0.0707097, materials = {"acoustic" : "Air"})
 geometry.add_label(-0.181474, -0.0504768)
 geometry.add_label(0.0314514, 0.0411749)
 

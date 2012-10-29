@@ -21,6 +21,7 @@
 #define CONFIG_H
 
 #include "util.h"
+#include "util/enums.h"
 
 class Config : public QObject
 {

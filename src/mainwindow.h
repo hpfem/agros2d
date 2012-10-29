@@ -21,6 +21,7 @@
 #define MAINWINDOW_H
 
 #include "util.h"
+#include "util/enums.h"
 
 class PostHermes;
 class SceneViewPost2D;

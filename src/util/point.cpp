@@ -17,9 +17,9 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-
 #include "point.h"
-#include "scene.h"
+
+#include "util.h"
 
 Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
 {
@@ -27,7 +27,7 @@ Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
     Point t = (pointEnd - pointStart) / distance;
     double R = distance / (2.0*sin(angle/180.0*M_PI / 2.0));
 
-    Point p = Point(distance/2.0, sqrt(Hermes::sqr(R) - Hermes::sqr(distance)/4.0 > 0.0 ? Hermes::sqr(R) - Hermes::sqr(distance)/4.0 : 0.0));
+    Point p = Point(distance/2.0, sqrt(R*R - distance*distance/4.0 > 0.0 ? R*R - distance*distance/4.0 : 0.0));
     Point center = pointStart + Point(p.x*t.x - p.y*t.y, p.x*t.y + p.y*t.x);
 
     return center;

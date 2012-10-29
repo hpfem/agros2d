@@ -22,6 +22,7 @@
 #include "util/xml.h"
 
 #include "util.h"
+#include "value.h"
 #include "logview.h"
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -29,6 +30,7 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenefunction.h"
+#include "hermes2d/problem.h"
 #include "hermes2d/plugin_interface.h"
 
 #include "problemdialog.h"
@@ -37,7 +39,7 @@
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"

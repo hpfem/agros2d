@@ -39,7 +39,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/plugin_interface.h"
 
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 
 SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon2D(postHermes, parent),

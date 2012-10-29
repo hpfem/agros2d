@@ -2,6 +2,8 @@
 #define SOLUTIONTYPES_H
 
 #include "util.h"
+#include "util/enums.h"
+
 #include "hermes2d.h"
 
 /// this header file shoul be kept small, since it is included in other header files

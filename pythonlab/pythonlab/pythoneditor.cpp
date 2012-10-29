@@ -25,7 +25,7 @@
 #include "pythoncompleter.h"
 
 #include "util.h"
-#include "util/constants.h"
+// #include "util/constants.h"
 #include "gui/filebrowser.h"
 #include "gui/about.h"
 

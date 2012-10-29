@@ -19,7 +19,6 @@
 
 #include "textedit.h"
 
-#include "scene.h"
 #include "util.h"
 
 TextBlockData::TextBlockData()

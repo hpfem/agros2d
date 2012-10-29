@@ -10,6 +10,7 @@ TEMPLATE = lib
 # run cython for python extensions
 linux-g++|linux-g++-64|linux-g++-32 : CONFIG(release) {
     system(cython --cplus ../resources_source/python/agros2d.pyx)
+    system(cython --cplus ../resources_source/python/pythonlab.pyx)
     system(cd ../ && ./agros2d.sh lang release)
     #system(cd ../ && ./agros2d.sh help)
 }
@@ -59,6 +60,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     util/checkversion.cpp \
     util/point.cpp \
     util/xml.cpp \
+    util/enums.cpp \
     util/glfont.cpp \
     gui/common.cpp \
     gui/chart.cpp \
@@ -76,13 +78,12 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     hermes2d/field.cpp \
     hermes2d/block.cpp \
     hermes2d/problem.cpp \
-    pythonlab/pythonconsole.cpp \
-    pythonlab/pythoncompleter.cpp \
-    pythonlab/pythonhighlighter.cpp \
-    pythonlab/pythonengine.cpp \
-    pythonlab/pythonbrowser.cpp \
-    pythonlab/pythoneditor.cpp \
-    pythonlabagros.cpp \
+    ../pythonlab/pythonlab/pythonconsole.cpp \
+    ../pythonlab/pythonlab/pythoncompleter.cpp \
+    ../pythonlab/pythonlab/pythonhighlighter.cpp \
+    ../pythonlab/pythonlab/pythonengine.cpp \
+    ../pythonlab/pythonlab/pythonbrowser.cpp \
+    ../pythonlab/pythonlab/pythoneditor.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
@@ -108,9 +109,6 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     logview.cpp \
     scenebasicselectdialog.cpp \
     postprocessorview.cpp \
-    style/stylehelper.cpp \
-    style/styleanimator.cpp \
-    style/manhattanstyle.cpp \
     indicators/indicators.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
@@ -135,7 +133,9 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
-    gui/groupbox.cpp
+    gui/groupbox.cpp \
+    pythonlab_agros.cpp \
+    ../pythonlab/pythonlab_functions.cpp
 
 HEADERS += util.h \
     value.h \
@@ -144,6 +144,7 @@ HEADERS += util.h \
     util/checkversion.h \
     util/point.h \
     util/xml.h \
+    util/enums.h \
     util/glfont.h \
     gui/common.h \
     gui/chart.h \
@@ -158,13 +159,12 @@ HEADERS += util.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \
-    pythonlab/pythonconsole.h \
-    pythonlab/pythoncompleter.h \
-    pythonlab/pythonhighlighter.h \
-    pythonlab/pythonengine.h \
-    pythonlab/pythonbrowser.h \
-    pythonlab/pythoneditor.h \
-    pythonlabagros.h \
+    ../pythonlab/pythonlab/pythonconsole.h \
+    ../pythonlab/pythonlab/pythoncompleter.h \
+    ../pythonlab/pythonlab/pythonhighlighter.h \
+    ../pythonlab/pythonlab/pythonengine.h \
+    ../pythonlab/pythonlab/pythonbrowser.h \
+    ../pythonlab/pythonlab/pythoneditor.h \
     mainwindow.h \
     scenebasic.h \
     scenemarker.h \
@@ -192,9 +192,6 @@ HEADERS += util.h \
     logview.h \
     scenebasicselectdialog.h \
     postprocessorview.h \
-    style/stylehelper.h \
-    style/styleanimator.h \
-    style/manhattanstyle.h \
     indicators/indicators.h \
     indicators/indicator_unity.h \
     collaboration.h \
@@ -221,7 +218,8 @@ HEADERS += util.h \
     parser/lex.h \
     hermes2d/bdf2.h \
     hermes2d/plugin_interface.h \
-    gui/groupbox.h
+    gui/groupbox.h \
+    pythonlab_agros.h
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
 
 OTHER_FILES += python/agros2d.pyx \

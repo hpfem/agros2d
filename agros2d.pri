@@ -13,7 +13,8 @@ INCLUDEPATH += ./ \
     ../3rdparty \
     ../3rdparty/ctemplate \
     ../3rdparty/dxflib \
-    ../3rdparty/rapidxml
+    ../3rdparty/rapidxml \
+    ../pythonlab
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp

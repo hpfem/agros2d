@@ -21,6 +21,7 @@
 #define SCENEMARKERSELECTDIALOG_H
 
 #include "util.h"
+#include "util/enums.h"
 
 class Scene;
 class SceneViewPost2D;

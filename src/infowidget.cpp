@@ -28,7 +28,7 @@
 #include "sceneview_geometry.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/module_agros.h"

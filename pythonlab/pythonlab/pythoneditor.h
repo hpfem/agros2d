@@ -43,6 +43,16 @@ class SearchWidget;
 struct ScriptResult;
 struct ExpressionResult;
 
+#ifdef Q_WS_X11
+    const QFont FONT = QFont("Monospace", 9);
+#endif
+#ifdef Q_WS_WIN
+    const QFont FONT = QFont("Courier New", 9);
+#endif
+#ifdef Q_WS_MAC
+    const QFont FONT = QFont("Monaco", 12);
+#endif
+
 class PythonEditorWidget : public QWidget
 {
     Q_OBJECT

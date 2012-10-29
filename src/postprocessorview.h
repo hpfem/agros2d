@@ -28,6 +28,7 @@ class SceneViewPost2D;
 class SceneViewPost3D;
 class LineEditDouble;
 class CollapsableGroupBoxButton;
+class FieldInfo;
 
 class PostprocessorWidget : public QWidget
 {

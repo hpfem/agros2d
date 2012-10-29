@@ -2,10 +2,8 @@
 #define PROBLEM_H
 
 #include "util.h"
+#include "value.h"
 #include "solutiontypes.h"
-
-//template <typename Scalar>
-//class WeakFormAgros;
 
 class FieldInfo;
 class CouplingInfo;

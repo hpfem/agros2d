@@ -21,8 +21,6 @@
 
 #include "../util/checkversion.h"
 
-#include "scene.h"
-
 AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowModality(Qt::ApplicationModal);

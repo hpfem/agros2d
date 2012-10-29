@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "util/point.h"
+#include "hermes2d/module.h"
 
 class QwtPlotCurve;
 class Chart;

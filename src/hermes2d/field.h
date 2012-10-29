@@ -21,6 +21,7 @@
 #define FIELD_H
 
 #include "util.h"
+#include "value.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
 
@@ -33,6 +34,7 @@ class ProblemConfig;
 class CouplingInfo;
 class LocalForceValue;
 class PluginInterface;
+class Value;
 
 class FieldInfo : public QObject
 {

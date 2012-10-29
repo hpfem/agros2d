@@ -21,6 +21,7 @@
 #define WEAKFORMDIALOG_H
 
 #include "util.h"
+#include "util/enums.h"
 
 #include "gui/textedit.h"
 

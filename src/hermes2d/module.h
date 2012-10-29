@@ -21,8 +21,10 @@
 #define HERMES_FIELD_H
 
 #include "util.h"
+#include "util/enums.h"
 #include "hermes2d.h"
 
+inline Hermes::Ord sign(Hermes::Ord arg) { return Hermes::Ord(); }
 
 struct ProblemID
 {

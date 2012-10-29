@@ -56,6 +56,7 @@ public:
 
 protected:
     virtual void addCustomExtensions();
+    virtual void addCustomFunctions();
     virtual void runPythonHeader();
 
 private:
@@ -507,12 +508,6 @@ private:
 };
 
 // functions
-char *pyVersion();
-void pyQuit();
-
-char *pyInput(char *str);
-void pyMessage(char *str);
-
 void pyOpenDocument(char *str);
 void pySaveDocument(char *str);
 void pyCloseDocument();

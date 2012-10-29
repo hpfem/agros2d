@@ -39,7 +39,7 @@
 #include "postprocessorview.h"
 #include "chartdialog.h"
 #include "confdialog.h"
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 #include "reportdialog.h"
 #include "videodialog.h"
 #include "problemdialog.h"

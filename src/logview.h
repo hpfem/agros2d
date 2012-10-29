@@ -22,6 +22,9 @@
 
 #include "util.h"
 
+class QwtPlotCurve;
+class Chart;
+
 class Log: public QObject
 {
     Q_OBJECT

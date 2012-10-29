@@ -28,7 +28,7 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"

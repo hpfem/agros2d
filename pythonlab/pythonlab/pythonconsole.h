@@ -1,8 +1,4 @@
-#ifndef _PYTHONCONSOLE_H
-#define _PYTHONCONSOLE_H
-
 /*
- *
  *  Copyright (C) 2010 MeVis Medical Solutions AG All Rights Reserved.
  *
  *  This library is free software; you can redistribute it and/or
@@ -32,6 +28,9 @@
  *  http://www.mevis.de
  *
  */
+
+#ifndef _PYTHONCONSOLE_H
+#define _PYTHONCONSOLE_H
 
 #include <QtGui>
 

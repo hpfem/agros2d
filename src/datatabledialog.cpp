@@ -19,7 +19,7 @@
 
 #include "datatabledialog.h"
 
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 #include "materialbrowserdialog.h"
 
 #include "gui/chart.h"

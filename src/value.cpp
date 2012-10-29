@@ -20,7 +20,7 @@
 #include "value.h"
 
 #include "gui/chart.h"
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 #include "scene.h"
 #include "datatable.h"
 #include "datatabledialog.h"

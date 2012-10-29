@@ -19,15 +19,15 @@
 
 #ifndef COUPLING_H
 #define COUPLING_H
+
 #include "util.h"
+#include "util/enums.h"
+
 #include "hermes2d.h"
 
 class FieldInfo;
 class ProblemConfig;
 class FormInfo;
-
-// namespace Module
-// {
 
 // available couplings
 QMap<QString, QString> availableCouplings();

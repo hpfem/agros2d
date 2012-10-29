@@ -16,7 +16,7 @@ cdef extern from "limits.h":
     int c_DOUBLE_MIN "DOUBLE_MIN"
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
-cdef extern from "../../src/pythonlabagros.h":
+cdef extern from "../../src/pythonlab_agros.h":
     # PyProblem
     cdef cppclass PyProblem:
         PyProblem(int clear)
@@ -292,13 +292,7 @@ cdef extern from "../../src/pythonlabagros.h":
         double getScalarViewRangeMin()
         void setScalarViewRangeMax(double max)
         double getScalarViewRangeMax()
-
-    char *pyVersion()
-    void pyQuit()
-
-    char *pyInput(char *str)
-    void pyMessage(char *str)
-
+    
     void pyOpenDocument(char *str) except +
     void pySaveDocument(char *str) except +
     void pyCloseDocument()
@@ -1464,22 +1458,6 @@ class __View__:
     post3d = __ViewPost3D__()
 
 view = __View__()
-
-# version()
-def version():
-    return pyVersion()
-
-# quit()
-def quit():
-    pyQuit()
-
-# input()
-def input(char *str):
-    return pyInput(str)
-
-# message()
-def message(char *str):
-    pyMessage(str)
 
 def open_document(char *str):
     pyOpenDocument(str)

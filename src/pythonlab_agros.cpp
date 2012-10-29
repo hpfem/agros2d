@@ -17,7 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "pythonlabagros.h"
+#include "pythonlab_agros.h"
 
 #include <Python.h>
 #include "../resources_source/python/agros2d.cpp"
@@ -1970,30 +1970,6 @@ void PyParticleTracing::setMinimumStep(int step)
 
 // **************************************************************************************************
 
-char *pyVersion()
-{
-    return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
-}
-
-void pyQuit()
-{
-    // doesn't work without main event loop (run from script)
-    // QApplication::exit(0);
-
-    exit(0);
-}
-
-char *pyInput(char *str)
-{
-    QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
-    return const_cast<char*>(text.toStdString().c_str());
-}
-
-void pyMessage(char *str)
-{
-    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
-}
-
 void pyOpenDocument(char *str)
 {
     ErrorResult result = Util::scene()->readFromFile(QString(str));
@@ -2048,8 +2024,15 @@ char *pythonSolutionFileName()
 
 void PythonEngineAgros::addCustomExtensions()
 {
+    PythonEngine::addCustomExtensions();
+
     // init agros cython extensions
     initagros2d();
+}
+
+void PythonEngineAgros::addCustomFunctions()
+{
+    addFunctions(readFileContent(datadir() + "/functions_agros2d.py"));
 }
 
 void PythonEngineAgros::runPythonHeader()

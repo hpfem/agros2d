@@ -21,6 +21,7 @@
 #define SCENE_H
 
 #include "util.h"
+#include "util/enums.h"
 #include "conf.h"
 
 #include "hermes2d/solutiontypes.h"

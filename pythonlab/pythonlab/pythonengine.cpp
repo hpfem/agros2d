@@ -3,6 +3,8 @@
 #include "compile.h"
 #include "frameobject.h"
 
+#include "../resources_source/python/pythonlab.cpp"
+
 static PythonEngine *pythonEngine = NULL;
 
 // create custom python engine
@@ -119,8 +121,9 @@ void PythonEngine::init()
     // init python
     Py_Initialize();
 
-    // read functions
-    m_functions = readFileContent(datadir() + "/functions.py");
+    // read pythonlab functions
+    addFunctions(readFileContent(datadir() + "/functions_pythonlab.py"));
+    addCustomFunctions();
 
     m_dict = PyDict_New();
     PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
@@ -490,6 +493,12 @@ ScriptResult PythonEngine::parseError()
     PyErr_Clear();
 
     return error;
+}
+
+void PythonEngine::addCustomExtensions()
+{
+    // init pythonlab cython extensions
+    initpythonlab();
 }
 
 QList<PythonVariable> PythonEngine::variableList()

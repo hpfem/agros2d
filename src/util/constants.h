@@ -22,9 +22,10 @@
 
 #include <QtCore>
 
+#include "enums.h"
+
 // constants
 const QString IMAGEROOT = QString("..%1resources_source%1images").arg(QDir::separator());
-const QString LANGUAGEROOT = QString("%1/resources%1lang").arg(QDir::separator());
 const QString XSDROOT = QString("%1resources%1xsd").arg(QDir::separator());
 const QString MODULEROOT = QString("%1resources%1modules").arg(QDir::separator());
 const QString COUPLINGROOT = QString("%1resources%1couplings").arg(QDir::separator());
@@ -49,16 +50,6 @@ const QColor COLORNOTCONNECTED = QColor::fromRgb(255, 0, 0);
 const double GRIDSTEP = 0.05;
 const bool SHOWGRID = true;
 const bool SNAPTOGRID = true;
-
-#ifdef Q_WS_X11
-    const QFont FONT = QFont("Monospace", 9);
-#endif
-#ifdef Q_WS_WIN
-    const QFont FONT = QFont("Courier New", 9);
-#endif
-#ifdef Q_WS_MAC
-    const QFont FONT = QFont("Monaco", 12);
-#endif
 
 const QString RULERSFONT = "fontGoogleDroidMono10";
 const QString POSTFONT = "fontGoogleDroidMono16";

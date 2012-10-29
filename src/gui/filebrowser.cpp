@@ -19,7 +19,6 @@
 
 #include "filebrowser.h"
 
-#include "scene.h"
 #include "util.h"
 
 FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)

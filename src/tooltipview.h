@@ -21,6 +21,7 @@
 #define LOGVIEW_H
 
 #include "util.h"
+#include "util/enums.h"
 
 class TooltipView : public QDockWidget
 {

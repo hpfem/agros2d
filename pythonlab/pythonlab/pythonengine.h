@@ -50,7 +50,9 @@ protected:
     PyObject *m_dict;
     bool m_isRunning;
 
-    virtual void addCustomExtensions() {}
+    inline void addFunctions(const QString& code) { m_functions += "\n\n" + code; }
+    virtual void addCustomExtensions();
+    virtual void addCustomFunctions() {}
     virtual void runPythonHeader() {}
 
 private slots:

@@ -22,6 +22,8 @@
 
 #include "util.h"
 
+class Chart;
+
 class MaterialBrowserDialog : public QDialog
 {
     Q_OBJECT

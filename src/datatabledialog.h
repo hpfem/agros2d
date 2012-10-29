@@ -23,6 +23,7 @@
 #include "util.h"
 #include "datatable.h"
 
+class QwtPlotCurve;
 class Chart;
 
 class DataTableDialog: public QDialog

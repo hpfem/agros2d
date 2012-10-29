@@ -21,6 +21,7 @@
 #define MARKER_H
 
 #include "util.h"
+#include "value.h"
 
 class FieldInfo;
 
