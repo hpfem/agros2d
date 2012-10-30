@@ -120,7 +120,7 @@ void VideoDialog::createControls()
     btnVideo->setDefault(true);
     connect(btnVideo, SIGNAL(clicked()), this, SLOT(doVideo()));
 
-    btnAnimate = new QPushButton(tr("Run"));
+    btnAnimate = new QPushButton(tr("Generate"));
 
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addStretch();

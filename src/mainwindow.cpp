@@ -597,7 +597,7 @@ void MainWindow::createToolBars()
     tlbFile->setObjectName("File");
     tlbFile->setOrientation(Qt::Horizontal);
     tlbFile->setAllowedAreas(Qt::TopToolBarArea);
-    // tlbFile->setMovable(false);
+    tlbFile->setMovable(false);
 #ifdef Q_WS_MAC
     tlbFile->setFixedHeight(iconHeight);
     tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
@@ -612,7 +612,7 @@ void MainWindow::createToolBars()
     tlbView->setObjectName("View");
     tlbView->setOrientation(Qt::Horizontal);
     tlbView->setAllowedAreas(Qt::TopToolBarArea);
-    // tlbView->setMovable(false);
+    tlbView->setMovable(false);
 #ifdef Q_WS_MAC
     tlbView->setFixedHeight(iconHeight);
     tlbView->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
@@ -624,6 +624,7 @@ void MainWindow::createToolBars()
     tlbZoom->addAction(actSceneZoomRegion);
     tlbZoom->addAction(actSceneZoomIn);
     tlbZoom->addAction(actSceneZoomOut);
+    tlbZoom->setMovable(false);
 
     tlbGeometry = addToolBar(tr("Geometry"));
     tlbGeometry->setObjectName("Geometry");
@@ -642,6 +643,7 @@ void MainWindow::createToolBars()
     tlbGeometry->addAction(Util::scene()->actTransform);
     tlbGeometry->addSeparator();
     tlbGeometry->addAction(Util::scene()->actDeleteSelected);
+    tlbGeometry->setMovable(false);
 
     tlbPost2D = addToolBar(tr("Postprocessor 2D"));
     tlbPost2D->setObjectName("Postprocessor 2D");
@@ -659,6 +661,7 @@ void MainWindow::createToolBars()
     tlbPost2D->addSeparator();
     tlbPost2D->addAction(sceneViewPost2D->actSelectPoint);
     tlbPost2D->addAction(sceneViewPost2D->actSelectByMarker);
+    tlbPost2D->setMovable(false);
 }
 
 void MainWindow::createMain()
