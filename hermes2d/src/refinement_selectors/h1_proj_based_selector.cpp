@@ -15,7 +15,7 @@ namespace Hermes
 
       template<typename Scalar>
       H1ProjBasedSelector<Scalar>::H1ProjBasedSelector(CandList cand_list, double conv_exp, int max_order, H1Shapeset* user_shapeset)
-        : ProjBasedSelector<Scalar>(cand_list, conv_exp, max_order, user_shapeset == NULL ? new H1Shapeset() : user_shapeset, typename OptimumSelector<Scalar>::Range(1, 1), typename OptimumSelector<Scalar>::Range(2, H2DRS_MAX_H1_ORDER))
+        : ProjBasedSelector<Scalar>(cand_list, conv_exp, max_order, user_shapeset == NULL ? new H1Shapeset() : user_shapeset, typename OptimumSelector<Scalar>::Range(1, 1), typename OptimumSelector<Scalar>::Range(2, H2DRS_MAX_H1_ORDER)), user_shapeset(user_shapeset == NULL ? false : true)
       {
         if(user_shapeset != NULL)
         {
@@ -25,9 +25,19 @@ namespace Hermes
       }
 
       template<typename Scalar>
+      H1ProjBasedSelector<Scalar>::~H1ProjBasedSelector()
+      {
+        if(!this->user_shapeset)
+          delete this->shapeset;
+      }
+      
+      template<typename Scalar>
       Selector<Scalar>* H1ProjBasedSelector<Scalar>::clone()
       {
-        return new H1ProjBasedSelector(this->cand_list, this->conv_exp, this->max_order);
+        H1ProjBasedSelector<Scalar>* newSelector = new H1ProjBasedSelector(this->cand_list, this->conv_exp, this->max_order, (H1Shapeset*)this->shapeset);
+        newSelector->set_error_weights(this->error_weight_h, this->error_weight_p, this->error_weight_aniso);
+        newSelector->isAClone = true;
+        return newSelector;
       }
 
       template<typename Scalar>

@@ -208,30 +208,9 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     // weakform with zero coefficients
     if (!custom_form) return;
 
+    // set time discretisation table
     if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
-    {
-        int lastTimeStep = Util::problem()->actualTimeStep() - 1; // todo: check
-
-        Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
-        for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
-        {
-            int timeStep = lastTimeStep - backLevel;
-            int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
-            FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
-            if(! Util::solutionStore()->contains(solutionID))
-                solutionID.solutionMode = SolutionMode_Normal;
-            assert(Util::solutionStore()->contains(solutionID));
-
-            for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-                slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
-        }
-
-        // add external solutions
-        custom_form->set_ext(slns);
-
-        // set time discretisation table
         dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
-    }
 
     addForm(type, custom_form);
 }
@@ -259,19 +238,6 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // TODO at the present moment, it is impossible to have more sources !
     //assert(field->m_couplingSources.size() <= 1);
 
-    // push external solution for weak coupling
-    if (couplingInfo->isWeak())
-    {
-        FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
-        assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
-
-        Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > slns;
-        for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-            slns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
-
-        custom_form->set_ext(slns);
-    }
-
     addForm(type, custom_form);
 }
 
@@ -279,6 +245,8 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 {
+    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > previousSlns;
+
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
@@ -337,38 +305,76 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                 }
             }
         }
+
+        // set previous time solutions
+        if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
+        {
+            int lastTimeStep = Util::problem()->actualTimeStep() - 1; // todo: check
+
+            for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
+            {
+                int timeStep = lastTimeStep - backLevel;
+                int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
+                FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
+                if(! Util::solutionStore()->contains(solutionID))
+                    solutionID.solutionMode = SolutionMode_Normal;
+                assert(Util::solutionStore()->contains(solutionID));
+
+                for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
+                    previousSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+            }
+        }
+
+        // weak coupling
+        foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
+        {
+            // push external solution for weak coupling
+            if (couplingInfo->isWeak())
+            {
+                FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
+                assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
+
+                for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
+                    previousSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+            }
+        }
     }
+
+    // add external solutions
+    if (previousSlns.size() > 0)
+        this->set_ext(previousSlns);
 
     // hard coupling
     foreach (CouplingInfo* couplingInfo, m_block->couplings())
     {
-        assert(couplingInfo->isHard());
-        Coupling* coupling = couplingInfo->coupling();
-        Field* sourceField = m_block->field(couplingInfo->sourceField());
-        Field* targetField = m_block->field(couplingInfo->targetField());
-
-
-        for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
+        if (couplingInfo->isHard())
         {
-            SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->marker(sourceField->fieldInfo());
-            SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->marker(targetField->fieldInfo());
+            Coupling* coupling = couplingInfo->coupling();
+            Field* sourceField = m_block->field(couplingInfo->sourceField());
+            Field* targetField = m_block->field(couplingInfo->targetField());
 
-            if (sourceMaterial && (sourceMaterial != Util::scene()->materials->getNone(sourceField->fieldInfo()))
-                    && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
+            for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
             {
+                SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->marker(sourceField->fieldInfo());
+                SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->marker(targetField->fieldInfo());
 
-                qDebug() << "hard coupling form on marker " << labelNum;
+                if (sourceMaterial && (sourceMaterial != Util::scene()->materials->getNone(sourceField->fieldInfo()))
+                        && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
+                {
 
-                foreach (FormInfo *pars, coupling->wfMatrixVolumeExpression())
-                    registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
-                                         m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
-                                         sourceMaterial, targetMaterial, couplingInfo);
+                    qDebug() << "hard coupling form on marker " << labelNum;
 
-                foreach (FormInfo *pars, coupling->wfVectorVolumeExpression())
-                    registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
-                                         m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
-                                         sourceMaterial, targetMaterial, couplingInfo);
+                    foreach (FormInfo *pars, coupling->wfMatrixVolumeExpression())
+                        registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
+                                             m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
+                                             sourceMaterial, targetMaterial, couplingInfo);
 
+                    foreach (FormInfo *pars, coupling->wfVectorVolumeExpression())
+                        registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
+                                             m_block->offset(targetField) - sourceField->fieldInfo()->module()->numberOfSolutions(), m_block->offset(sourceField),
+                                             sourceMaterial, targetMaterial, couplingInfo);
+
+                }
             }
         }
     }

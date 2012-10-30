@@ -63,17 +63,12 @@
     static const int H2D_TRF_NUM = (H2D_TRF_QUAD_NUM + 1);
     /// An index of identity transformation.
     static const int H2D_TRF_IDENTITY = H2D_TRF_QUAD_NUM;
-    
-    /// Enabling second derivatives in weak forms. Turned on by default. Second
-    /// derivatives are employed, among others, by stabilization methods for
-    /// transport equations. For usage see the example linear-convection-diffusion.
-#define H2D_SECOND_DERIVATIVES_ENABLED
 
 #define H2DRS_ASSUMED_MAX_CANDS 512 ///< An estimated maximum number of candidates. Used for purpose of reserving space. \internal \ingroup g_selectors
 
 //TODO: find out why 20 used used, should'n be there 2*(H2DRS_MAX_ORDER+1)
 #define H2DRS_INTR_GIP_ORDER 20 ///< An integration order used to integrate while evaluating a candidate. \internal \ingroup g_selectors
-#define H2DRS_MAX_ORDER_INC 2 ///< Maximum increase of an order in candidates. \ingroup g_selectors
+#define H2DRS_MAX_ORDER_INC 1 ///< Maximum increase of an order in candidates. \ingroup g_selectors
 
 #define H2DRS_SCORE_DIFF_ZERO 1E-13 ///< A threshold of difference between scores. Anything below this values is considered zero. \internal \ingroup g_selectors
 

@@ -583,15 +583,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns matrix_form(int n, double *wt, Func<ScalarTestFns> *u_ext[], Func<Real> *u,
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext) const;
 
                 virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u,
-                  Func<double> *v, Geom<double> *e, ExtData<Scalar> *ext) const {
+                  Func<double> *v, Geom<double> *e, Func<Scalar> **ext) const {
                     return matrix_form<double, Scalar>(n, wt, u_ext, u, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u,
-                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const {
+                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, Func<Ord> **ext) const {
                     return matrix_form<Hermes::Ord, Hermes::Ord>(n, wt, u_ext, u, v, e, ext);
                 }
 
@@ -623,15 +623,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns vector_form(int n, double *wt, Func<ScalarTestFns> *u_ext[],
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext) const;
 
                 virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[],
-                  Func<double> *v, Geom<double> *e, ExtData<Scalar> *ext) const {
+                  Func<double> *v, Geom<double> *e, Func<Scalar> **ext) const {
                     return vector_form<double, Scalar>(n, wt, u_ext, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[],
-                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const {
+                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, Func<Ord> **ext) const {
                     return vector_form<Hermes::Ord, Hermes::Ord>(n, wt, u_ext, v, e, ext);
                 }
 
@@ -686,15 +686,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns matrix_form( int n, double *wt, Func<ScalarTestFns> *u_ext[], Func<Real> *u,
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext  ) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext  ) const;
 
                 virtual Scalar value( int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u,
-                  Func<double> *v, Geom<double> *e, ExtData<Scalar> *ext  ) const {
+                  Func<double> *v, Geom<double> *e, Func<Scalar> **ext  ) const {
                     return  matrix_form<double, Scalar> (n, wt, u_ext, u, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord( int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u,
-                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext  ) const {
+                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, Func<Hermes::Ord> **ext  ) const {
                     return  matrix_form<Hermes::Ord, Hermes::Ord> (n, wt, u_ext, u, v, e, ext);
                 }
 
@@ -747,15 +747,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns vector_form(int n, double *wt, Func<ScalarTestFns> *u_ext[],
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext) const;
 
                 virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-                  Geom<double> *e, ExtData<Scalar> *ext) const  {
+                  Geom<double> *e, Func<Scalar> **ext) const  {
                     return vector_form<double, Scalar>(n, wt, u_ext, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-                  Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const  {
+                  Geom<Hermes::Ord> *e, Func<Ord> **ext) const  {
                     return vector_form<Hermes::Ord, Hermes::Ord>(n, wt, u_ext, v, e, ext);
                 }
 
@@ -811,15 +811,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns matrix_form( int n, double *wt, Func<ScalarTestFns> *u_ext[], Func<Real> *u,
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext  ) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext  ) const;
 
                 virtual Scalar value( int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u,
-                  Func<double> *v, Geom<double> *e, ExtData<Scalar> *ext  ) const {
+                  Func<double> *v, Geom<double> *e, Func<Scalar> **ext  ) const {
                     return  -1.0 * matrix_form<double, Scalar> (n, wt, u_ext, u, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord( int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u,
-                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext  ) const {
+                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, Func<Hermes::Ord> **ext  ) const {
                     return  matrix_form<Hermes::Ord, Hermes::Ord> (n, wt, u_ext, u, v, e, ext);
                 }
 
@@ -847,7 +847,7 @@ namespace Hermes
                   GenericForm(matprop, geom_type),
                   g(g), keff(keff)
                 {
-                  this->set_ext(iterates);
+                  this->wf->set_ext(iterates);
                   if(g >= iterates.size())
                     throw Hermes::Exceptions::Exception(E_INVALID_GROUP_INDEX);
                 }
@@ -862,7 +862,7 @@ namespace Hermes
                   g(g), keff(keff)
                 {
                   this->set_area(area);
-                  this->set_ext(iterates);
+                  this->wf->set_ext(iterates);
                   if(g >= iterates.size())
                     throw Hermes::Exceptions::Exception(E_INVALID_GROUP_INDEX);
                 }
@@ -876,7 +876,7 @@ namespace Hermes
                   GenericForm(matprop, mesh, geom_type),
                   g(g), keff(keff)
                 {
-                  this->set_ext(iterates);
+                  this->wf->set_ext(iterates);
                   if(g >= iterates.size())
                     throw Hermes::Exceptions::Exception(E_INVALID_GROUP_INDEX);
                 }
@@ -891,22 +891,22 @@ namespace Hermes
                   g(g), keff(keff)
                 {
                   this->set_area(area);
-                  this->set_ext(iterates);
+                  this->wf->set_ext(iterates);
                   if(g >= iterates.size())
                     throw Hermes::Exceptions::Exception(E_INVALID_GROUP_INDEX);
                 }
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns vector_form(int n, double *wt, Func<ScalarTestFns> *u_ext[],
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext) const;
 
                 virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-                  Geom<double> *e, ExtData<Scalar> *ext) const {
+                  Geom<double> *e, Func<Scalar> **ext) const {
                     return -1.0 * vector_form<double, Scalar>(n, wt, u_ext, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-                  Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const  {
+                  Geom<Hermes::Ord> *e, Func<Ord> **ext) const  {
                     return vector_form<Hermes::Ord, Hermes::Ord>(n, wt, u_ext, v, e, ext);
                 }
 
@@ -961,15 +961,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns vector_form(int n, double *wt, Func<ScalarTestFns> *u_ext[],
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext) const;
 
                 virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-                  Geom<double> *e, ExtData<Scalar> *ext) const {
+                  Geom<double> *e, Func<Scalar> **ext) const {
                     return -1.0 * vector_form<double, Scalar>(n, wt, u_ext, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-                  Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const {
+                  Geom<Hermes::Ord> *e, Func<Ord> **ext) const {
                     return vector_form<Hermes::Ord, Hermes::Ord>(n, wt, u_ext, v, e, ext);
                 }
 
@@ -1021,15 +1021,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns matrix_form( int n, double *wt, Func<ScalarTestFns> *u_ext[], Func<Real> *u,
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext  ) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext  ) const;
 
                 virtual Scalar value( int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u,
-                  Func<double> *v, Geom<double> *e, ExtData<Scalar> *ext  ) const {
+                  Func<double> *v, Geom<double> *e, Func<Scalar> **ext  ) const {
                     return  -1.0 * matrix_form<double, Scalar> (n, wt, u_ext, u, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord( int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u,
-                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext  ) const {
+                  Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e, Func<Hermes::Ord> **ext  ) const {
                     return  matrix_form<Hermes::Ord, Hermes::Ord> (n, wt, u_ext, u, v, e, ext);
                 }
 
@@ -1081,15 +1081,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns vector_form(int n, double *wt, Func<ScalarTestFns> *u_ext[],
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext) const;
 
                 virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-                  Geom<double> *e, ExtData<Scalar> *ext) const {
+                  Geom<double> *e, Func<Scalar> **ext) const {
                     return -1.0 * vector_form<double, Scalar>(n, wt, u_ext, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-                  Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const {
+                  Geom<Hermes::Ord> *e, Func<Ord> **ext) const {
                     return vector_form<Hermes::Ord, Hermes::Ord>(n, wt, u_ext, v, e, ext);
                 }
 
@@ -1141,15 +1141,15 @@ namespace Hermes
 
                 template<typename Real, typename ScalarTestFns>
                 ScalarTestFns vector_form(int n, double *wt, Func<ScalarTestFns> *u_ext[],
-                  Func<Real> *v, Geom<Real> *e, ExtData<ScalarTestFns> *ext) const;
+                  Func<Real> *v, Geom<Real> *e, Func<ScalarTestFns> **ext) const;
 
                 virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *v,
-                  Geom<double> *e, ExtData<Scalar> *ext) const {
+                  Geom<double> *e, Func<Scalar> **ext) const {
                     return -1.0 * vector_form<double, Scalar>(n, wt, u_ext, v, e, ext);
                 }
 
                 virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *v,
-                  Geom<Hermes::Ord> *e, ExtData<Hermes::Ord> *ext) const {
+                  Geom<Hermes::Ord> *e, Func<Ord> **ext) const {
                     return vector_form<Hermes::Ord, Hermes::Ord>(n, wt, u_ext, v, e, ext);
                 }
 

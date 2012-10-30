@@ -48,9 +48,9 @@
 
 }
 
-double {{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, int item)
+Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y)
 {
-    return 0.0;
+    return NULL;
 }
 
 void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
@@ -104,7 +104,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     Hermes::Hermes2D::Function<double>::cur_node = node;
 }
 
-{{CLASS}}ViewScalarFilter* {{CLASS}}ViewScalarFilter::clone()
+{{CLASS}}ViewScalarFilter* {{CLASS}}ViewScalarFilter::clone() const
 {
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> slns;
 

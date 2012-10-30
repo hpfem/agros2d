@@ -117,7 +117,7 @@ namespace Hermes
       /// NOTE: This function should be used for postprocessing only, it is not effective
       /// enough for calculations. Since it searches for an element sequentinally, it is extremelly
       /// slow. Prefer Solution::get_ref_value if possible.
-      virtual Scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0);
+      virtual Func<Scalar>* get_pt_value(double x, double y);
 
       /// Multiplies the function represented by this class by the given coefficient.
       void multiply(Scalar coef);
@@ -163,7 +163,7 @@ namespace Hermes
       /// Internal.
       virtual void set_active_element(Element* e);
 
-      virtual MeshFunction<Scalar>* clone();
+      virtual MeshFunction<Scalar>* clone() const;
 
       static void set_static_verbose_output(bool verbose);
     protected:

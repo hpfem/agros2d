@@ -80,21 +80,19 @@ void {{CLASS}}LocalValue::calculate()
                 FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
 
+                // point values
+                Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(x, y);
                 double val;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
                     // const solution at first time step
                     val = m_fieldInfo->initialCondition().number();
                 else
-                    val = sln[k]->get_pt_value(m_point.x, m_point.y, Hermes::Hermes2D::H2D_FN_VAL_0);
-
-                Point derivative;
-                derivative.x = sln[k]->get_pt_value(m_point.x, m_point.y, Hermes::Hermes2D::H2D_FN_DX_0);
-                derivative.y = sln[k]->get_pt_value(m_point.x, m_point.y, Hermes::Hermes2D::H2D_FN_DY_0);
+                    val = values->val[0];
 
                 // set variables
                 value[k] = val;
-                dudx[k] = derivative.x;
-                dudy[k] = derivative.y;
+                dudx[k] = values->dx[0];
+                dudy[k] = values->dy[0];
             }
 
             // expressions

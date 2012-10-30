@@ -1021,7 +1021,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["uval"] = "u->val[i]";
         dict["vval"] = "v->val[i]";
         dict["upval"] = "u_ext[this->j]->val[i]";
-        dict["uptval"] = "ext->fn[this->j - this->offsetJ()]->val[i]";
+        dict["uptval"] = "ext[this->j - this->offsetJ()]->val[i]";
         dict["deltat"] = "Util::problem()->actualTimeStepLength()";
         dict["timedermat"] = "this->m_table->matrixFormCoefficient()";
         dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->module()->numberOfSolutions(), i)";
@@ -1035,8 +1035,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict["vdy"] = "v->dy[i]";
             dict["updx"] = "u_ext[this->j]->dx[i]";
             dict["updy"] = "u_ext[this->j]->dy[i]";
-            dict["uptdx"] = "ext->fn[this->j]->dx[i]";
-            dict["uptdy"] = "ext->fn[this->j]->dy[i]";
+            dict["uptdx"] = "ext[this->j]->dx[i]";
+            dict["uptdy"] = "ext[this->j]->dy[i]";
         }
         else
         {
@@ -1046,8 +1046,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict["vdz"] = "v->dy[i]";
             dict["updr"] = "u_ext[this->j]->dx[i]";
             dict["updz"] = "u_ext[this->j]->dy[i]";
-            dict["uptdr"] = "ext->fn[this->j]->dx[i]";
-            dict["uptdz"] = "ext->fn[this->j]->dy[i]";
+            dict["uptdr"] = "ext[this->j]->dx[i]";
+            dict["uptdz"] = "ext[this->j]->dy[i]";
         }
 
         for (int i = 1; i < numOfSol + 1; i++)

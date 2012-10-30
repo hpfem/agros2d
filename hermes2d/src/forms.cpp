@@ -16,6 +16,7 @@
 /// \file This file contains definition of methods of classes for form evaluation (hence the name) Geom, and Func.
 
 #include "forms.h"
+#include "api2d.h"
 #include <complex>
 
 namespace Hermes
@@ -25,38 +26,45 @@ namespace Hermes
     template<typename T>
     Func<T>::Func(int num_gip, int num_comps) : num_gip(num_gip), nc(num_comps)
     {
-      val = val0 = val1 = NULL;
-      dx = dx0 = dx1 = NULL;
-      dy = dy0 = dy1 = NULL;
-      curl = NULL;
-      div = NULL;
+      val = NULL;
+      dx = NULL;
+      dy = NULL;
       laplace = NULL;
-      sub_idx = 99999;
+
+      if(this->nc > 1)
+      {
+        val0 = val1 = NULL;
+        dx0 = dx1 = NULL;
+        dy0 = dy1 = NULL;
+        curl = NULL;
+        div = NULL;
+      }
     }
 
     template<typename T>
-    void Func<T>::subtract(const Func<T>& func)
+    void Func<T>::subtract(Func<T>* func)
     {
-      if(num_gip != func.num_gip)
-        throw Hermes::Exceptions::Exception("Unable to subtract a function due to a different number of integration points (this: %d, other: %d)", num_gip, func.num_gip);
-      if(nc != func.nc)
-        throw Hermes::Exceptions::Exception("Unable to subtract a function due to a different number of components (this: %d, other: %d)", nc, func.nc);
+      if(num_gip != func->num_gip)
+        throw Hermes::Exceptions::Exception("Unable to subtract a function due to a different number of integration points (this: %d, other: %d)", num_gip, func->num_gip);
+      if(nc != func->nc)
+        throw Hermes::Exceptions::Exception("Unable to subtract a function due to a different number of components (this: %d, other: %d)", nc, func->nc);
 
-      subtract(this->val, func.val);
-      subtract(this->dx, func.dx);
-      subtract(this->dy, func.dy);
-      // The following function checks that laplace != NULL.
-      subtract(this->laplace, func.laplace);
+      subtract(this->val, func->val);
+      subtract(this->dx, func->dx);
+      subtract(this->dy, func->dy);
+      if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1)
+        subtract(this->laplace, func->laplace);
+      
       if(nc > 1)
       {
-        subtract(this->val0, func.val0);
-        subtract(this->val1, func.val1);
-        subtract(this->dx0, func.dx0);
-        subtract(this->dx1, func.dx1);
-        subtract(this->dy0, func.dy0);
-        subtract(this->dy1, func.dy1);
-        subtract(this->curl, func.curl);
-        subtract(this->div, func.div);
+        subtract(this->val0, func->val0);
+        subtract(this->val1, func->val1);
+        subtract(this->dx0, func->dx0);
+        subtract(this->dx1, func->dx1);
+        subtract(this->dy0, func->dy0);
+        subtract(this->dy1, func->dy1);
+        subtract(this->curl, func->curl);
+        subtract(this->div, func->div);
       }
     };
 
@@ -77,28 +85,30 @@ namespace Hermes
     }
 
     template<typename T>
-    void Func<T>::add(const Func<T>& func)
+    void Func<T>::add(Func<T>* func)
     {
-      if(num_gip != func.num_gip)
-        throw Hermes::Exceptions::Exception("Unable to add a function due to a different number of integration points (this: %d, other: %d)", num_gip, func.num_gip);
-      if(nc != func.nc)
-        throw Hermes::Exceptions::Exception("Unable to add a function due to a different number of components (this: %d, other: %d)", nc, func.nc);
+      if(num_gip != func->num_gip)
+        throw Hermes::Exceptions::Exception("Unable to add a function due to a different number of integration points (this: %d, other: %d)", num_gip, func->num_gip);
+      if(nc != func->nc)
+        throw Hermes::Exceptions::Exception("Unable to add a function due to a different number of components (this: %d, other: %d)", nc, func->nc);
 
-      add(this->val, func.val);
-      add(this->dx, func.dx);
-      add(this->dy, func.dy);
-      // The following function checks that laplace != NULL.
-      add(this->laplace, func.laplace);
+      add(this->val, func->val);
+      add(this->dx, func->dx);
+      add(this->dy, func->dy);
+
+      if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1)
+        add(this->laplace, func->laplace);
+      
       if(nc > 1)
       {
-        add(this->val0, func.val0);
-        add(this->val1, func.val1);
-        add(this->dx0, func.dx0);
-        add(this->dx1, func.dx1);
-        add(this->dy0, func.dy0);
-        add(this->dy1, func.dy1);
-        add(this->curl, func.curl);
-        add(this->div, func.div);
+        add(this->val0, func->val0);
+        add(this->val1, func->val1);
+        add(this->dx0, func->dx0);
+        add(this->dx1, func->dx1);
+        add(this->dy0, func->dy0);
+        add(this->dy1, func->dy1);
+        add(this->curl, func->curl);
+        add(this->div, func->div);
       }
     };
 
@@ -118,14 +128,20 @@ namespace Hermes
     void Func<T>::free_ord()
     {
       delete val;
-      val = val0 = val1 = NULL;
-      dx = dx0 = dx1 = NULL;
-      dy = dy0 = dy1 = NULL;
-      curl = NULL;
-      div = NULL;
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+      val = NULL;
+      dx = NULL;
+      dy = NULL;
+      
+      if(this->nc > 1)
+      {
+        val0 = val1 = NULL;
+        dx0 = dx1 = NULL;
+        dy0 = dy1 = NULL;
+        curl = NULL;
+        div = NULL;
+      }
+
       laplace = NULL;
-#endif
     }
 
     template<typename T>
@@ -134,15 +150,21 @@ namespace Hermes
       delete [] val; val = NULL;
       delete [] dx; dx = NULL;
       delete [] dy; dy = NULL;
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-      delete [] laplace; laplace = NULL;
-#endif
 
-      delete [] val0; delete [] val1; val0 = val1 = NULL;
-      delete [] dx0;  delete [] dx1; dx0 = dx1 = NULL;
-      delete [] dy0;  delete [] dy1; dy0 = dy1 = NULL;
-      delete [] curl; curl = NULL;
-      delete [] div; div = NULL;
+      if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1)
+      {
+        delete [] laplace; 
+        laplace = NULL;
+      }
+
+      if(this->nc > 1)
+      {
+        delete [] val0; delete [] val1; val0 = val1 = NULL;
+        delete [] dx0;  delete [] dx1; dx0 = dx1 = NULL;
+        delete [] dy0;  delete [] dy1; dy0 = dy1 = NULL;
+        delete [] curl; curl = NULL;
+        delete [] div; div = NULL;
+      }
     }
 
     template<typename T>
@@ -152,7 +174,6 @@ namespace Hermes
       fn_neighbor(NULL),
       reverse_neighbor_side(reverse)
     {
-      this->sub_idx = fn->sub_idx;
       if(fn == NULL)
         throw Hermes::Exceptions::Exception("Invalid arguments to DiscontinuousFunc constructor.");
       if(support_on_neighbor)
@@ -209,9 +230,9 @@ namespace Hermes
     void DiscontinuousFunc<T>::subtract(const DiscontinuousFunc<T>& func)
     {
       if(fn_central != NULL && func.fn_central != NULL)
-        fn_central->subtract(*func.fn_central);
+        fn_central->subtract(func.fn_central);
       if(fn_neighbor != NULL && func.fn_neighbor != NULL)
-        fn_neighbor->subtract(*func.fn_neighbor);
+        fn_neighbor->subtract(func.fn_neighbor);
     }
 
     template<typename T>
@@ -266,30 +287,6 @@ namespace Hermes
       delete [] x;    delete [] y;
       delete [] tx;    delete [] ty;
       delete [] nx;    delete [] ny;
-    }
-
-    template<typename T>
-    ExtData<T>::ExtData()
-    {
-      nf = 0;
-      fn = NULL;
-    }
-
-    template<typename T>
-    void ExtData<T>::free()
-    {
-      for (int i = 0; i < nf; i++)
-      {
-        fn[i]->free_fn();
-        delete fn[i];
-      }
-      delete [] fn;
-    }
-
-    template<typename T>
-    void ExtData<T>::free_ord()
-    {
-      delete [] fn;
     }
 
     template<typename T>
@@ -443,33 +440,38 @@ namespace Hermes
       int nc = fu->get_num_components();
       SpaceType space_type = fu->get_space_type();
       Quad2D* quad = fu->get_quad_2d();
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-      if(space_type == HERMES_H1_SPACE)
-        fu->set_quad_order(order, H2D_FN_ALL);
+      if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1 && (space_type == HERMES_H1_SPACE || space_type == HERMES_L2_SPACE))
+          fu->set_quad_order(order, H2D_FN_ALL);
       else
-#endif
         fu->set_quad_order(order);
+
       double3* pt = quad->get_points(order, rm->get_active_element()->get_mode());
       int np = quad->get_num_points(order, rm->get_active_element()->get_mode());
       Func<double>* u = new Func<double>(np, nc);
 
-      // H1 space.
-      if(space_type == HERMES_H1_SPACE)
+      // H1 & L2 space.
+      if(space_type == HERMES_H1_SPACE || space_type == HERMES_L2_SPACE)
       {
         u->val = new double[np];
         u->dx  = new double[np];
         u->dy  = new double[np];
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-        u->laplace = new double[np];
-#endif
+        if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1)
+          u->laplace = new double[np];
+    
         double *fn = fu->get_fn_values();
         double *dx = fu->get_dx_values();
         double *dy = fu->get_dy_values();
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-        double *dxx = fu->get_dxx_values();
-        double *dxy = fu->get_dxy_values();
-        double *dyy = fu->get_dyy_values();
-#endif
+
+        double *dxx;
+        double *dxy;
+        double *dyy;
+
+        if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1)
+        {
+          dxx = fu->get_dxx_values();
+          dxy = fu->get_dxy_values();
+          dyy = fu->get_dyy_values();
+        }
 
         double2x2 *m;
         if(rm->is_jacobian_const())
@@ -493,30 +495,35 @@ namespace Hermes
         else
           m = rm->get_inv_ref_map(order);
 
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-        double3x2 *mm = rm->get_second_ref_map(order);
-#endif
+        double3x2 *mm;
+        if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1)
+          mm = rm->get_second_ref_map(order);
 
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-        for (int i = 0; i < np; i++, m++, mm++)
-#else
-        for (int i = 0; i < np; i++, m++)
-#endif
+        if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1)
         {
-          u->val[i] = fn[i];
-          u->dx[i] = (dx[i] * (*m)[0][0] + dy[i] * (*m)[0][1]);
-          u->dy[i] = (dx[i] * (*m)[1][0] + dy[i] * (*m)[1][1]);
-
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-          double axx = (Hermes::sqr((*m)[0][0]) + Hermes::sqr((*m)[1][0]));
-          double ayy = (Hermes::sqr((*m)[0][1]) + Hermes::sqr((*m)[1][1]));
-          double axy = 2.0 * ((*m)[0][0]*(*m)[0][1] + (*m)[1][0]*(*m)[1][1]);
-          double ax = (*mm)[0][0] + (*mm)[2][0];
-          double ay = (*mm)[0][1] + (*mm)[2][1];
-          u->laplace[i] = ( dx[i] * ax + dy[i] * ay + dxx[i] * axx + dxy[i] * axy + dyy[i] * ayy );
-#endif
+          for (int i = 0; i < np; i++, m++, mm++)
+          {
+            u->val[i] = fn[i];
+            u->dx[i] = (dx[i] * (*m)[0][0] + dy[i] * (*m)[0][1]);
+            u->dy[i] = (dx[i] * (*m)[1][0] + dy[i] * (*m)[1][1]);
+      
+            double axx = (Hermes::sqr((*m)[0][0]) + Hermes::sqr((*m)[1][0]));
+            double ayy = (Hermes::sqr((*m)[0][1]) + Hermes::sqr((*m)[1][1]));
+            double axy = 2.0 * ((*m)[0][0]*(*m)[0][1] + (*m)[1][0]*(*m)[1][1]);
+            double ax = (*mm)[0][0] + (*mm)[2][0];
+            double ay = (*mm)[0][1] + (*mm)[2][1];
+            u->laplace[i] = ( dx[i] * ax + dy[i] * ay + dxx[i] * axx + dxy[i] * axy + dyy[i] * ayy );
+          }
         }
-
+        else
+        {
+          for (int i = 0; i < np; i++, m++)
+          {
+            u->val[i] = fn[i];
+            u->dx[i] = (dx[i] * (*m)[0][0] + dy[i] * (*m)[0][1]);
+            u->dy[i] = (dx[i] * (*m)[1][0] + dy[i] * (*m)[1][1]);
+          }
+        }
         m -= np;
         if(rm->is_jacobian_const())
           delete [] m;
@@ -605,56 +612,9 @@ namespace Hermes
         if(rm->is_jacobian_const())
           delete [] m;
       }
-      // L2 Space.
-      else if(space_type == HERMES_L2_SPACE)
-      {
-        // Same as for H1, except that we currently do not have
-        // second derivatives of L2 shape functions for triangles.
-        u->val = new double[np];
-        u->dx  = new double[np];
-        u->dy  = new double[np];
-
-        double *fn = fu->get_fn_values();
-        double *dx = fu->get_dx_values();
-        double *dy = fu->get_dy_values();
-
-        double2x2 *m;
-        if(rm->is_jacobian_const())
-        {
-          m = new double2x2[np];
-          double2x2 const_inv_ref_map;
-
-          const_inv_ref_map[0][0] = rm->get_const_inv_ref_map()[0][0][0];
-          const_inv_ref_map[0][1] = rm->get_const_inv_ref_map()[0][0][1];
-          const_inv_ref_map[1][0] = rm->get_const_inv_ref_map()[0][1][0];
-          const_inv_ref_map[1][1] = rm->get_const_inv_ref_map()[0][1][1];
-
-          for(int i = 0; i < np; i++)
-          {
-            m[i][0][0] = const_inv_ref_map[0][0];
-            m[i][0][1] = const_inv_ref_map[0][1];
-            m[i][1][0] = const_inv_ref_map[1][0];
-            m[i][1][1] = const_inv_ref_map[1][1];
-          }
-        }
-        else
-          m = rm->get_inv_ref_map(order);
-
-        for (int i = 0; i < np; i++, m++)
-        {
-          u->val[i] = fn[i];
-          u->dx[i] = (dx[i] * (*m)[0][0] + dy[i] * (*m)[0][1]);
-          u->dy[i] = (dx[i] * (*m)[1][0] + dy[i] * (*m)[1][1]);
-        }
-
-        m -= np;
-        if(rm->is_jacobian_const())
-          delete [] m;
-      }
       else
         throw Hermes::Exceptions::Exception("Wrong space type - space has to be either H1, Hcurl, Hdiv or L2");
 
-      u->sub_idx = rm->get_transform();
       return u;
     }
 
@@ -699,7 +659,6 @@ namespace Hermes
         Scalar *dy1 = fu->get_dy_values(1);
         for (int i = 0; i < np; i++) u->div[i] = dx0[i] + dy1[i];
       }
-      u->sub_idx = fu->get_transform();
       return u;
     }
 
@@ -715,11 +674,9 @@ namespace Hermes
 
       int nc = fu->get_num_components();
       Quad2D* quad = fu->get_quad_2d();
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-      if(space_type == HERMES_H1_SPACE && sln_type != HERMES_EXACT)
+      if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1 && space_type == HERMES_H1_SPACE && sln_type != HERMES_EXACT)
         fu->set_quad_order(order, H2D_FN_ALL);
       else
-#endif
         fu->set_quad_order(order);
 
       double3* pt = quad->get_points(order, fu->get_active_element()->get_mode());
@@ -731,25 +688,21 @@ namespace Hermes
         u->val = new Scalar[np];
         u->dx  = new Scalar[np];
         u->dy  = new Scalar[np];
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-        if(space_type == HERMES_H1_SPACE && sln_type != HERMES_EXACT)
+        
+        if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1 && space_type == HERMES_H1_SPACE && sln_type != HERMES_EXACT)
           u->laplace = new Scalar[np];
-#endif
+
         memcpy(u->val, fu->get_fn_values(), np * sizeof(Scalar));
         memcpy(u->dx, fu->get_dx_values(), np * sizeof(Scalar));
         memcpy(u->dy, fu->get_dy_values(), np * sizeof(Scalar));
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
-        if(space_type == HERMES_H1_SPACE)
+
+        if(Hermes2DApi.get_param_value(Hermes::Hermes2D::secondDerivatives) == 1 && space_type == HERMES_H1_SPACE && sln_type != HERMES_EXACT)
         {
-          if(sln_type == HERMES_SLN)
-          {
-            Scalar *dxx = fu->get_dxx_values();
-            Scalar *dyy = fu->get_dyy_values();
-            for (int i = 0; i < np; i++)
-              u->laplace[i] = dxx[i] + dyy[i];
-          }
+          Scalar *dxx = fu->get_dxx_values();
+          Scalar *dyy = fu->get_dyy_values();
+          for (int i = 0; i < np; i++)
+            u->laplace[i] = dxx[i] + dyy[i];
         }
-#endif
       }
       else if(u->nc == 2)
       {
@@ -763,13 +716,14 @@ namespace Hermes
 
         Scalar *dx1 = fu->get_dx_values(1);
         Scalar *dy0 = fu->get_dy_values(0);
-        for (int i = 0; i < np; i++) u->curl[i] = dx1[i] - dy0[i];
+        for (int i = 0; i < np; i++) 
+          u->curl[i] = dx1[i] - dy0[i];
 
         Scalar *dx0 = fu->get_dx_values(0);
         Scalar *dy1 = fu->get_dy_values(1);
-        for (int i = 0; i < np; i++) u->div[i] = dx0[i] + dy1[i];
+        for (int i = 0; i < np; i++) 
+          u->div[i] = dx0[i] + dy1[i];
       }
-      u->sub_idx = fu->get_transform();
       return u;
     }
 
@@ -789,8 +743,5 @@ namespace Hermes
     template class HERMES_API Geom<double>;
     template class HERMES_API InterfaceGeom<Hermes::Ord>;
     template class HERMES_API InterfaceGeom<double>;
-    template class HERMES_API ExtData<Hermes::Ord>;
-    template class HERMES_API ExtData<double>;
-    template class HERMES_API ExtData<std::complex<double> >;
   }
 }
