@@ -72,13 +72,6 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
     rule.format = classFormat;
     highlightingRules.append(rule);
 
-    quotationFormat.setForeground(Qt::darkGreen);
-    rule.format = quotationFormat;
-    rule.pattern = QRegExp("\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"");
-    highlightingRules.append(rule);
-    rule.pattern = QRegExp("'[^'\\\\]*(\\\\.[^'\\\\]*)*'");
-    highlightingRules.append(rule);
-
     functionFormat.setForeground(Qt::darkMagenta);
     rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
@@ -97,6 +90,13 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
     rule.pattern = QRegExp("\\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\\b");
     highlightingRules.append(rule);
     rule.pattern = QRegExp("\\b[+-]?[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b");
+    highlightingRules.append(rule);
+
+    quotationFormat.setForeground(Qt::darkGreen);
+    rule.format = quotationFormat;
+    rule.pattern = QRegExp("\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\"");
+    highlightingRules.append(rule);
+    rule.pattern = QRegExp("'[^'\\\\]*(\\\\.[^'\\\\]*)*'");
     highlightingRules.append(rule);
 
     singleLineCommentFormat.setForeground(Qt::red);
