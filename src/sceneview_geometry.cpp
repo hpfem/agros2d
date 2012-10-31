@@ -306,22 +306,28 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             if (edge)
             {
                 // assigned boundary conditions
-                QString str;
+                QString str, refinement;
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                {
                     str = str + QString("%1 (%2), ").
                             arg(edge->marker(fieldInfo)->name()).
                             arg(fieldInfo->name());
+                    refinement = refinement + QString("%1 (%2), ").
+                            arg(fieldInfo->edgeRefinement(edge)).
+                            arg(fieldInfo->name());
+                }
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
                 Util::scene()->highlightNone();
                 edge->setHighlighted(true);
-                setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Angle:</b> %6 deg.<br/><b>Index:</b> %7").
+                setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Refinement:</b> %6<br/><b>Angle:</b> %7 deg.<br/><b>Index:</b> %8").
                            arg(edge->nodeStart()->point().x, 0, 'g', 3).
                            arg(edge->nodeStart()->point().y, 0, 'g', 3).
                            arg(edge->nodeEnd()->point().x, 0, 'g', 3).
                            arg(edge->nodeEnd()->point().y, 0, 'g', 3).
                            arg(str).
+                           arg(refinement).
                            arg(edge->angle(), 0, 'f', 0).
                            arg(Util::scene()->edges->items().indexOf(edge)));
                 updateGL();
@@ -334,20 +340,30 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             if (label)
             {
                 // assigned materials
-                QString str;
+                QString str, polynomial_order, area_refinement;
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                {
                     str = str + QString("%1 (%2), ").
                             arg(label->marker(fieldInfo)->name()).
                             arg(fieldInfo->name());
+                    area_refinement = area_refinement + QString("%1 (%2), ").
+                            arg(fieldInfo->labelRefinement(label)).
+                            arg(fieldInfo->name());
+                    polynomial_order = polynomial_order + QString("%1 (%2), ").
+                            arg(fieldInfo->labelPolynomialOrder(label)).
+                            arg(fieldInfo->name());
+                }
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
                 Util::scene()->highlightNone();
                 label->setHighlighted(true);
-                setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Triangle area:</b> %4 m<sup>2</sup><br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
+                setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Area refinement:</b> %4<br/><b>Polynomial order:</b> %5<br/><b>Triangle area:</b> %6 m<sup>2</sup><br /><b>Index:</b> %7").
                            arg(label->point().x, 0, 'g', 3).
                            arg(label->point().y, 0, 'g', 3).
                            arg(str).
+                           arg(area_refinement).
+                           arg(polynomial_order).
                            arg(label->area(), 0, 'g', 3).
                            arg(Util::scene()->labels->items().indexOf(label)));
                 updateGL();
