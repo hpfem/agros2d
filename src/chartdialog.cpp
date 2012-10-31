@@ -723,7 +723,12 @@ void ChartControlsWidget::doExportData()
             for (int i = 0; i < trvTable->rowCount(); i++)
             {
                 for (int j = 0; j < trvTable->columnCount(); j++)
-                    out << trvTable->item(i, j)->text()  << ";";
+                {
+                    if (trvTable->item(i, j))
+                        out << trvTable->item(i, j)->text().isEmpty()  << ";";
+                    else
+                        out << ""  << ";";
+                }
                 out << endl;
             }
         }
