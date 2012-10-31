@@ -260,7 +260,8 @@ linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
     TARGET = ../libs/agros2d
 
-    QMAKE_CXXFLAGS += -Wno-unused-variable
+    CONFIG += warn_off
+    # QMAKE_CXXFLAGS += -Wun
 }
 
 macx-g++ {

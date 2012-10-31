@@ -134,6 +134,8 @@ HEADERS += \
     ../hermes_common/include/config.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    CONFIG += warn_off
+
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
 

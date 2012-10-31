@@ -20,6 +20,8 @@ LIBS += -lagros2d_3rdparty
 LIBS += -lagros2d
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    CONFIG += warn_off
+
     LIBS += -L../../libs
 }
 
