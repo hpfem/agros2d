@@ -624,7 +624,6 @@ void CouplingsWidget::createContent()
         layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
 
         m_comboBoxes[couplingInfo] = new QComboBox();
-        connect(m_comboBoxes[couplingInfo], SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
 
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
 
@@ -633,6 +632,11 @@ void CouplingsWidget::createContent()
 
     fillComboBox();
     load();
+
+    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+    {
+        connect(m_comboBoxes[couplingInfo], SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
+    }
 
     setLayout(layoutTable);
 }
@@ -659,7 +663,7 @@ void CouplingsWidget::save()
         if (m_comboBoxes.contains(couplingInfo))
             couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
 
-    Util::problem()->setCouplingInfos(Util::problem()->couplingInfos());
+    //Util::problem()->setCouplingInfos(Util::problem()->couplingInfos());
 }
 
 void CouplingsWidget::refresh()
@@ -721,6 +725,7 @@ void ProblemWidget::createControls()
 
     // couplings
     couplingsWidget = new CouplingsWidget(this);
+    connect(couplingsWidget, SIGNAL(changed()), couplingsWidget, SLOT(save()));
 
     QVBoxLayout *layoutCouplings = new QVBoxLayout();
     layoutCouplings->addWidget(couplingsWidget);

@@ -66,12 +66,12 @@ public:
     void createContent();
 
     void load();
-    void save();
 
 signals:
     void changed();
 
 public slots:
+    void save();
     void refresh();
     void itemChanged(int index);
 
