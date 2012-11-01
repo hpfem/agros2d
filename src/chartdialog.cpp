@@ -464,9 +464,6 @@ void ChartControlsWidget::plotGeometry()
                     else
                         yval.append(values[variable].vector.magnitude());
                 }
-
-                // fill table row
-                fillTableRow(localValue, 0.0, points.indexOf(point));
             }
         }
     }
@@ -693,72 +690,117 @@ void ChartControlsWidget::doExportData()
 
     QString selectedFilter;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
-    if (!fileName.isEmpty())
+    if (fileName.isEmpty())
     {
-        QString ext = (selectedFilter.contains("CSV")) ? ".csv" : ".m";
-        QFileInfo fileInfo(fileName);
-
-        // open file for write
-        if (fileInfo.suffix().isEmpty())
-            fileName = fileName + ext;
-
-        QFile file(fileName);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            cerr << "Could not create " + fileName.toStdString() + " file." << endl;
-            return;
-        }
-        QTextStream out(&file);
-
-        // export
-        // csv
-        if (fileInfo.suffix().toLower() == "csv")
-        {
-            // header
-            for (int j = 0; j < trvTable->columnCount(); j++)
-                out << trvTable->horizontalHeaderItem(j)->text() << ";";
-            out << endl;
-
-            // items
-            for (int i = 0; i < trvTable->rowCount(); i++)
-            {
-                for (int j = 0; j < trvTable->columnCount(); j++)
-                {
-                    if (trvTable->item(i, j))
-                        out << trvTable->item(i, j)->text().isEmpty()  << ";";
-                    else
-                        out << ""  << ";";
-                }
-                out << endl;
-            }
-        }
-
-        // m-file
-        if (fileInfo.suffix().toLower() == "m")
-        {
-            // items
-            for (int j = 0; j < trvTable->columnCount(); j++)
-            {
-                out << trvTable->horizontalHeaderItem(j)->text().replace(" ", "_") << " = [";
-                for (int i = 0; i < trvTable->rowCount(); i++)
-                    out << trvTable->item(i, j)->text().replace(",", ".") << ((i <= trvTable->rowCount()-2) ? ", " : "");
-                out << "];" << endl;
-            }
-
-            // example
-            out << endl << endl;
-            out << "% example" << endl;
-            out << "% plot(sqrt(X.^2 + Y.^2), " << trvTable->horizontalHeaderItem(2)->text().replace(" ", "_") << ");" << endl;
-            out << "% grid on;" << endl;
-            out << "% xlabel('length (m)');" << endl;
-            out << "% ylabel('" << trvTable->horizontalHeaderItem(2)->text() << "');" << endl;
-        }
-
-        if (fileInfo.absoluteDir() != tempProblemDir())
-            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
-
-        file.close();
+        cerr << "File name is empty." << endl;
+        return;
     }
+
+    QString ext = (selectedFilter.contains("CSV")) ? ".csv" : ".m";
+    QFileInfo fileInfo(fileName);
+
+    // open file for write
+    if (fileInfo.suffix().isEmpty())
+        fileName = fileName + ext;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        cerr << "Could not create " + fileName.toStdString() + " file." << endl;
+        return;
+    }
+    QTextStream out(&file);
+
+    // values
+    ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                                         Point(txtEndX->value().number(), txtEndY->value().number()),
+                                         txtAngle->value().number(),
+                                         txtAxisPoints->value());
+
+    QList<Point> points = chartLine->getPoints();
+    QMap<QString, QList<double> > table;
+
+    FieldInfo *fieldInfo = Util::scene()->activeViewField();
+    foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
+    {
+        if (variable->isScalar())
+        {
+            QList<double> val;
+            foreach (Point point, points)
+            {
+                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                QMap<Module::LocalVariable *, PointValue> values = localValue->values();
+
+                val.append(values[variable].scalar);
+            }
+
+            table.insert(variable->shortname(), val);
+        }
+        else
+        {
+            QList<double> valx, valy, valm;
+            foreach (Point point, points)
+            {
+                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                QMap<Module::LocalVariable *, PointValue> values = localValue->values();
+
+                valx.append(values[variable].vector.x);
+                valy.append(values[variable].vector.y);
+                valm.append(values[variable].vector.magnitude());
+            }
+
+            table.insert(QString(variable->shortname() + "x"), valx);
+            table.insert(QString(variable->shortname() + "y"), valy);
+            table.insert(QString(variable->shortname() + "m"), valm);
+        }
+    }
+
+    // csv
+    if (fileInfo.suffix().toLower() == "csv")
+    {
+        // headers
+        foreach(QString key, table.keys())
+            out << key << ";";
+        out << "\n";
+
+        // values
+        for (int i = 0; i < table.values().first().size(); i++)
+        {
+            foreach(QString key, table.keys())
+                out << QString::number(table.value(key).at(i)) << ";";
+            out << "\n";
+        }
+
+        out << endl;
+    }
+
+    /*
+    // m-file
+    if (fileInfo.suffix().toLower() == "m")
+    {
+        // items
+        for (int j = 0; j < trvTable->columnCount(); j++)
+        {
+            out << trvTable->horizontalHeaderItem(j)->text().replace(" ", "_") << " = [";
+            for (int i = 0; i < trvTable->rowCount(); i++)
+                out << trvTable->item(i, j)->text().replace(",", ".") << ((i <= trvTable->rowCount()-2) ? ", " : "");
+            out << "];" << endl;
+        }
+
+        // example
+        out << endl << endl;
+        out << "% example" << endl;
+        out << "% plot(sqrt(X.^2 + Y.^2), " << trvTable->horizontalHeaderItem(2)->text().replace(" ", "_") << ");" << endl;
+        out << "% grid on;" << endl;
+        out << "% xlabel('length (m)');" << endl;
+        out << "% ylabel('" << trvTable->horizontalHeaderItem(2)->text() << "');" << endl;
+    }
+    */
+
+    if (fileInfo.absoluteDir() != tempProblemDir())
+        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+
+    file.close();
 }
 
 void ChartControlsWidget::doChartLine()
