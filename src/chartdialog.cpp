@@ -547,9 +547,6 @@ void ChartControlsWidget::plotTime()
                     else
                         yval.append(values[variable].vector.magnitude());
                 }
-
-                // fill table row
-                fillTableRow(localValue, timeLevels.at(i), i);
             }
         }
     }
@@ -711,65 +708,36 @@ void ChartControlsWidget::doExportData()
     }
     QTextStream out(&file);
 
-    // values
-    ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
-                                         Point(txtEndX->value().number(), txtEndY->value().number()),
-                                         txtAngle->value().number(),
-                                         txtAxisPoints->value());
-
-    QList<Point> points = chartLine->getPoints();
     QMap<QString, QList<double> > table;
-
-    QList<double> length;
-    foreach (Point point, points)
+    if (tabAnalysisType->currentWidget() == widGeometry)
     {
-        if (radAxisLength->isChecked())
-            length.append(point.magnitude());
-        if (radAxisX->isChecked())
-            length.append(point.x);
-        if (radAxisY->isChecked())
-            length.append(point.y);
-    }
+        ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                                             Point(txtEndX->value().number(), txtEndY->value().number()),
+                                             txtAngle->value().number(),
+                                             txtAxisPoints->value());
 
-    if (radAxisLength->isChecked())
-        table.insert("l", length);
-    if (radAxisX->isChecked())
-        table.insert(Util::problem()->config()->labelX(), length);
-    if (radAxisY->isChecked())
-        table.insert(Util::problem()->config()->labelY(), length);
-
-    FieldInfo *fieldInfo = Util::scene()->activeViewField();
-    foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
-    {
-        if (variable->isScalar())
+        foreach (Point point, chartLine->getPoints())
         {
-            QList<double> val;
-            foreach (Point point, points)
+            QMap<QString, double> data = getData(point, Util::scene()->activeTimeStep());
+            foreach (QString key, data.keys())
             {
-                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
-                QMap<Module::LocalVariable *, PointValue> values = localValue->values();
-
-                val.append(values[variable].scalar);
+                QList<double> *values = &table.operator [](key);
+                values->append(data.value(key));
             }
-
-            table.insert(variable->shortname(), val);
         }
-        else
+    }
+    else if (tabAnalysisType->currentWidget() == widTime)
+    {
+        Point point(txtPointX->value().number(), txtPointY->value().number());
+        foreach (double timeLevel, Util::solutionStore()->timeLevels(Util::scene()->activeViewField()))
         {
-            QList<double> valx, valy, val;
-            foreach (Point point, points)
+            int timeStep = Util::solutionStore()->timeLevelIndex(Util::scene()->activeViewField(), timeLevel);
+            QMap<QString, double> data = getData(point, timeStep);
+            foreach (QString key, data.keys())
             {
-                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
-                QMap<Module::LocalVariable *, PointValue> values = localValue->values();
-
-                valx.append(values[variable].vector.x);
-                valy.append(values[variable].vector.y);
-                val.append(values[variable].vector.magnitude());
+                QList<double> *values = &table.operator [](key);
+                values->append(data.value(key));
             }
-
-            table.insert(QString(variable->shortname() + "x"), valx);
-            table.insert(QString(variable->shortname() + "y"), valy);
-            table.insert(QString(variable->shortname()), val);
         }
     }
 
@@ -802,7 +770,6 @@ void ChartControlsWidget::doExportData()
             out << "]" << endl;
         }
 
-        // TODO: (Franta)
         /*
         // example
         QString x = table.keys().at(0).at(0);
@@ -820,6 +787,36 @@ void ChartControlsWidget::doExportData()
         settings.setValue("General/LastDataDir", fileInfo.absolutePath());
 
     file.close();
+}
+
+QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
+{
+    FieldInfo *fieldInfo = Util::scene()->activeViewField();
+    QMap<QString, double> table;
+
+    if (Util::scene()->activeTimeStep() != timeStep)
+        Util::scene()->setActiveTimeStep(timeStep);
+
+    foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
+    {
+        LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        QMap<Module::LocalVariable *, PointValue> values = localValue->values();
+
+        if (variable->isScalar())
+            table.insert(variable->shortname(), values[variable].scalar);
+        else
+        {
+            table.insert(QString(variable->shortname()), values[variable].vector.magnitude());
+            table.insert(QString(variable->shortname() + "x"), values[variable].vector.x);
+            table.insert(QString(variable->shortname() + "y"), values[variable].vector.y);
+        }
+    }
+
+    table.insert(Util::problem()->config()->labelX(), point.x);
+    table.insert(Util::problem()->config()->labelY(), point.y);
+    table.insert("t", timeStep);
+
+    return table;
 }
 
 void ChartControlsWidget::doChartLine()

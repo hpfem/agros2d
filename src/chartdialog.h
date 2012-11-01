@@ -153,6 +153,7 @@ private slots:
     void doFieldVariable(int index);
     void doFieldVariableComp(int index);
     void doExportData();
+    QMap<QString, double> getData(Point point, int timeStep);
 
     void doChartLine();
     void doTimeStepChanged(int index);
