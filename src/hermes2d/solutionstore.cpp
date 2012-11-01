@@ -287,3 +287,9 @@ int SolutionStore::timeLevelIndex(FieldInfo *fieldInfo, double time)
     return level;
 }
 
+double SolutionStore::timeLevel(FieldInfo *fieldInfo, int timeLevelIndex)
+{
+    QList<double> levels = timeLevels(fieldInfo);
+    if (timeLevelIndex >= 0 and timeLevelIndex < levels.count())
+        return levels.at(timeLevelIndex);
+}

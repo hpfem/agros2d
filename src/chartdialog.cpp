@@ -814,7 +814,7 @@ QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
 
     table.insert(Util::problem()->config()->labelX(), point.x);
     table.insert(Util::problem()->config()->labelY(), point.y);
-    table.insert("t", timeStep);
+    table.insert("t", Util::solutionStore()->timeLevel(fieldInfo, timeStep));
 
     return table;
 }
