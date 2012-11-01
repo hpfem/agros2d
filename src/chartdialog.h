@@ -132,10 +132,9 @@ private:
     QWidget *widTime;
 
     Chart *m_chart;
-    QTableWidget *trvTable;
 
-    void createControls();
     void createActions();
+    void createControls();
 
     QList<double> getHorizontalAxisValues(ChartLine *chartLine);
 
