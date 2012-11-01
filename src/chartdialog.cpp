@@ -692,7 +692,7 @@ void ChartControlsWidget::doExportData()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
     if (fileName.isEmpty())
     {
-        cerr << "File name is empty." << endl;
+        cerr << "Incorrect file name." << endl;
         return;
     }
 
@@ -720,6 +720,24 @@ void ChartControlsWidget::doExportData()
     QList<Point> points = chartLine->getPoints();
     QMap<QString, QList<double> > table;
 
+    QList<double> length;
+    foreach (Point point, points)
+    {
+        if (radAxisLength->isChecked())
+            length.append(point.magnitude());
+        if (radAxisX->isChecked())
+            length.append(point.x);
+        if (radAxisY->isChecked())
+            length.append(point.y);
+    }
+
+    if (radAxisLength->isChecked())
+        table.insert("l", length);
+    if (radAxisX->isChecked())
+        table.insert(Util::problem()->config()->labelX(), length);
+    if (radAxisY->isChecked())
+        table.insert(Util::problem()->config()->labelY(), length);
+
     FieldInfo *fieldInfo = Util::scene()->activeViewField();
     foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
     {
@@ -738,7 +756,7 @@ void ChartControlsWidget::doExportData()
         }
         else
         {
-            QList<double> valx, valy, valm;
+            QList<double> valx, valy, val;
             foreach (Point point, points)
             {
                 LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
@@ -746,12 +764,12 @@ void ChartControlsWidget::doExportData()
 
                 valx.append(values[variable].vector.x);
                 valy.append(values[variable].vector.y);
-                valm.append(values[variable].vector.magnitude());
+                val.append(values[variable].vector.magnitude());
             }
 
             table.insert(QString(variable->shortname() + "x"), valx);
             table.insert(QString(variable->shortname() + "y"), valy);
-            table.insert(QString(variable->shortname() + "m"), valm);
+            table.insert(QString(variable->shortname()), val);
         }
     }
 
@@ -768,34 +786,35 @@ void ChartControlsWidget::doExportData()
         {
             foreach(QString key, table.keys())
                 out << QString::number(table.value(key).at(i)) << ";";
-            out << "\n";
+            out << endl;
         }
-
-        out << endl;
     }
 
-    /*
     // m-file
     if (fileInfo.suffix().toLower() == "m")
     {
-        // items
-        for (int j = 0; j < trvTable->columnCount(); j++)
+        // matrix
+        foreach(QString key, table.keys())
         {
-            out << trvTable->horizontalHeaderItem(j)->text().replace(" ", "_") << " = [";
-            for (int i = 0; i < trvTable->rowCount(); i++)
-                out << trvTable->item(i, j)->text().replace(",", ".") << ((i <= trvTable->rowCount()-2) ? ", " : "");
-            out << "];" << endl;
+            out << key << " = [ ";
+            foreach(double value, table.value(key))
+                out << QString::number(value).replace(",", ".") << " ";
+            out << "]" << endl;
         }
 
+        // TODO: (Franta)
+        /*
         // example
-        out << endl << endl;
-        out << "% example" << endl;
-        out << "% plot(sqrt(X.^2 + Y.^2), " << trvTable->horizontalHeaderItem(2)->text().replace(" ", "_") << ");" << endl;
+        QString x = table.keys().at(0).at(0);
+        QString y = table.keys().at(1).at(0);
+
+        out << endl << "% example" << endl;
+        out << QString("% plot(%1, %2)").arg(x).arg(y) << endl;
         out << "% grid on;" << endl;
-        out << "% xlabel('length (m)');" << endl;
-        out << "% ylabel('" << trvTable->horizontalHeaderItem(2)->text() << "');" << endl;
+        out << QString("% xlabel('%1');").arg(x) << endl;
+        out << QString("% ylabel('%1');").arg(y) << endl;
+        */
     }
-    */
 
     if (fileInfo.absoluteDir() != tempProblemDir())
         settings.setValue("General/LastDataDir", fileInfo.absolutePath());
