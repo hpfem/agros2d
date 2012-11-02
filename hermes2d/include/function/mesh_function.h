@@ -59,7 +59,8 @@ namespace Hermes
 
       virtual int get_edge_fn_order(int edge);
 
-      virtual Scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0) = 0;
+      /// Returns the value at the coordinates x,y.
+      virtual Func<Scalar>* get_pt_value(double x, double y) = 0;
 
       /// Virtual function handling overflows. Has to be virtual, because
       /// the necessary iterators in the templated class do not work with GCC.
@@ -70,21 +71,17 @@ namespace Hermes
 
       virtual void pop_transform();
 
-      virtual MeshFunction<Scalar>* clone()
+      virtual MeshFunction<Scalar>* clone() const
       {
         throw Hermes::Exceptions::Exception("You need to implement MeshFunction::clone() to be able to use paralellization");
         return NULL;
       }
 
     protected:
-
       ElementMode2D mode;
       const Mesh* mesh;
       RefMap* refmap;
-
-    public:
-
-      /// For internal use only.
+    
       void force_transform(MeshFunction<Scalar>* mf);
 
       void update_refmap();

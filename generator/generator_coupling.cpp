@@ -396,7 +396,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
             if (repl == QString("uval")) { exprCpp += QString("u->val[i]"); isReplaced = true; }
             if (repl == QString("vval")) { exprCpp += QString("v->val[i]"); isReplaced = true; }
             if (repl == QString("upval")) { exprCpp += QString("u_ext[this->j]->val[i]"); isReplaced = true; }
-            if (repl == QString("uptval")) { exprCpp += QString("ext->fn[this->i]->val[i]"); isReplaced = true; }
+            if (repl == QString("uptval")) { exprCpp += QString("ext[this->i]->val[i]"); isReplaced = true; }
 
             if (coordinateType == CoordinateType_Planar)
             {
@@ -431,11 +431,11 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                     if (repl == QString("dr%1").arg(i)) { exprCpp += QString("u_ext[%1 + this->offsetI() /*todo: jinak, I i J*/]->dx[i]").arg(i-1); isReplaced = true; }
                     if (repl == QString("dz%1").arg(i)) { exprCpp += QString("u_ext[%1 + this->offsetI() /*todo: jinak, I i J*/]->dy[i]").arg(i-1); isReplaced = true; }
                 }
-                if (repl == QString("source%1").arg(i)) { exprCpp += QString("ext->fn[%1]->val[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dx").arg(i)) { exprCpp += QString("ext->fn[%1]->dx[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dy").arg(i)) { exprCpp += QString("ext->fn[%1]->dy[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dr").arg(i)) { exprCpp += QString("ext->fn[%1]->dx[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dz").arg(i)) { exprCpp += QString("ext->fn[%1]->dy[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1").arg(i)) { exprCpp += QString("ext[%1]->val[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dx").arg(i)) { exprCpp += QString("ext[%1]->dx[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dy").arg(i)) { exprCpp += QString("ext[%1]->dy[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dr").arg(i)) { exprCpp += QString("ext[%1]->dx[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dz").arg(i)) { exprCpp += QString("ext[%1]->dy[i]").arg(i-1); isReplaced = true; }
             }
 
             // variables

@@ -142,10 +142,16 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
     foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
         Space<Scalar>* oldSpace = solutionArray.space.data();
-        Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
+//        Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
+//        newMesh->copy(oldSpace->get_mesh());
+//        Space<Scalar>* newSpace = oldSpace->duplicate(newMesh);
+//        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(newSpace), 0));
+
+        Mesh *newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
         newMesh->copy(oldSpace->get_mesh());
-        Space<Scalar>* newSpace = oldSpace->duplicate(newMesh);
-        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(newSpace), 0));
+
+        Space<double>::ReferenceSpaceCreator spaceCreator(oldSpace, newMesh, 0);
+        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), 0));
     }
 
     return msa;

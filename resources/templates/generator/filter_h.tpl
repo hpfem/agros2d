@@ -36,9 +36,9 @@ public:
                      PhysicFieldVariableComp physicFieldVariableComp);
     ~{{CLASS}}ViewScalarFilter();
 
-    double get_pt_value(double x, double y, int item = Hermes::Hermes2D::H2D_FN_VAL);
+    virtual Hermes::Hermes2D::Func<double> *get_pt_value(double x, double y);
 
-    {{CLASS}}ViewScalarFilter* clone();
+    {{CLASS}}ViewScalarFilter* clone() const;
 
 protected:
 

@@ -60,7 +60,10 @@ namespace Hermes
 
     const char * Exception::what() const throw()
     {
-      return message;
+      char* messageWithReturn = new char[strlen(message)+2];
+      strcpy(messageWithReturn, message);
+      sprintf(messageWithReturn + strlen(message), "\n");
+      return messageWithReturn;
     }
 
     NullException::NullException(int param_idx) : Exception()
@@ -245,29 +248,29 @@ namespace Hermes
       return new ValueException(*this);
     }
 
-    FunctionNotOverridenException::FunctionNotOverridenException(const char * name, ...) : Exception()
+    MethodNotOverridenException::MethodNotOverridenException(const char * name, ...) : Exception()
     {
-      char text[1024];
+      char* text = new char[1024];
+      sprintf(text, "Method not overriden: ");
 
       // print the message
       va_list arglist;
       va_start(arglist, name);
-      vsprintf(text, name, arglist);
+      vsprintf(text = text + strlen("Method not overriden: "), name, arglist);
       va_end(arglist);
-
-      message = text;
+      message = text - strlen("Method not overriden: ");
     }
 
-    FunctionNotOverridenException::FunctionNotOverridenException(const FunctionNotOverridenException&e)
+    MethodNotOverridenException::MethodNotOverridenException(const MethodNotOverridenException&e)
     {
       char * msg = new char[strlen(e.what())+1];
       strcpy(msg, e.what());
       message = msg;
     }
 
-    Exception* FunctionNotOverridenException::clone()
+    Exception* MethodNotOverridenException::clone()
     {
-      return new FunctionNotOverridenException(*this);
+      return new MethodNotOverridenException(*this);
     }
 
     MeshLoadFailureException::MeshLoadFailureException(const char * reason, ...) : Exception()

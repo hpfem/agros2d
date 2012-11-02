@@ -69,8 +69,9 @@ template <typename Scalar>
 class Solver
 {
 public:
-    Solver() { m_discreteProblem = NULL;}
+    Solver() : m_discreteProblem(NULL) {}
     ~Solver();
+
     void init(Block* block);
 
     void solveInitialTimeStep();
@@ -110,7 +111,7 @@ private:
 
 //    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
 //                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    void solveOneProblem(WeakFormAgros<Scalar> *wf, Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa = NULL);
+    void solveOneProblem(QSharedPointer<WeakFormAgros<double> > wf, Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa = NULL);
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);

@@ -53,10 +53,9 @@ namespace Hermes
       template<typename Scalar>
       void BaseView<Scalar>::show(const Space<Scalar>* space, double eps, int item)
       {
+        this->space = space;
         free();
-        int order_increase = 0;
-        this->space = space->duplicate(space->get_mesh(), order_increase);
-        pss = new PrecalcShapeset(this->space->shapeset);
+        pss = new PrecalcShapeset(space->shapeset);
         sln = new Solution<Scalar>();
         ndof = this->space->get_num_dofs();
         base_index = 0;
@@ -70,7 +69,6 @@ namespace Hermes
       {
         if(pss != NULL) { delete pss; pss = NULL; }
         if(sln != NULL) { delete sln; sln = NULL; }
-        if(space != NULL) { delete space; space = NULL; }
       }
 
       template<>

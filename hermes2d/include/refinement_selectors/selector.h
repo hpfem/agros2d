@@ -72,16 +72,22 @@ namespace Hermes
       *  - selecting a refinement based on a reference soution,
       *  - updating orders of a mesh shared among components. */
       template<typename Scalar>
-      class HERMES_API Selector : public Hermes::Mixins::Loggable
+      class HERMES_API Selector : public Hermes::Mixins::Loggable, public Hermes::Mixins::TimeMeasurable
       {
-      protected:
-        const int max_order; ///< A maximum allowed order.
+      public:
         /// Constructor
         /** \param[in] max_order A maximum order used by this selector. If it is ::H2DRS_DEFAULT_ORDER, a maximum supported order is used. */
-        Selector(int max_order = H2DRS_DEFAULT_ORDER) : max_order(max_order) {};
+        Selector(int max_order = H2DRS_DEFAULT_ORDER) : max_order(max_order), isAClone(false) {};
+
+        virtual ~Selector() {};
 
         /// Cloning for paralelism.
         virtual Selector<Scalar>* clone() = 0;
+
+        /// Internal.
+      protected:
+        const int max_order; ///< A maximum allowed order.
+        bool isAClone;
 
         /// Selects a refinement.
         /** This methods has to be implemented.

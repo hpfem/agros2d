@@ -26,23 +26,15 @@ namespace Hermes
       bool extrapolate_der_left, bool extrapolate_der_right) : Hermes::Hermes1DFunction<double>(), points(points), values(values),
       bc_left(bc_left), bc_right(bc_right), first_der_left(first_der_left),
       first_der_right(first_der_right), extrapolate_der_left(extrapolate_der_left),
-      extrapolate_der_right(extrapolate_der_right), coeffs(NULL)
+      extrapolate_der_right(extrapolate_der_right)
     {
       this->is_const = false;
       bool success = this->calculate_coeffs();
       if(!success) throw Hermes::Exceptions::Exception("There was a problem constructing a cubic spline.");
     }
 
-    CubicSpline::CubicSpline(double const_value) : Hermes::Hermes1DFunction<double>(const_value), coeffs(NULL)
+    CubicSpline::CubicSpline(double const_value) : Hermes::Hermes1DFunction<double>(const_value)
     {
-    }
-
-    CubicSpline::~CubicSpline()
-    {
-        if (coeffs != NULL)
-          delete [] coeffs;
-        points.clear();
-        values.clear();
     }
 
     double CubicSpline::value(double x) const

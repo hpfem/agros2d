@@ -42,6 +42,11 @@ namespace Hermes
     class HERMES_API Func
     {
     public:
+      /// Constructor.
+      /** \param[in] num_gip A number of integration points.
+      *  \param[in] num_comps A number of components. */
+      Func(int num_gip, int num_comps);
+
       T *val;            ///< Function values. If T == Hermes::Ord and orders vary with direction, this returns max(h_order, v_order).
       T *dx, *dy;        ///< First-order partial derivatives.
       T *laplace;        ///< Sum of second-order partial derivatives. Enabled by defining H2D_SECOND_DERIVATIVES_ENABLED in h2d_common.h.
@@ -50,7 +55,6 @@ namespace Hermes
       T *dy0, *dy1;      ///< Components of the gradient of a vector field.
       T *curl;           ///< Components of the curl of a vector field.
       T *div;            ///< Components of the div of a vector field.
-      uint64_t sub_idx;  ///< Sub-element transformation.
 
       /// Methods designed for discontinuous functions, return errors here.
       virtual T& get_val_central(int k) const { throw Hermes::Exceptions::Exception(ERR_UNDEFINED_NEIGHBORING_ELEMENTS); return * new T; }
@@ -82,7 +86,7 @@ namespace Hermes
       /// expected from a continuous function.
       virtual ~Func() { };
 
-      void subtract(const Func<T>& func);
+      void subtract(Func<T>* func);
       void add(T* attribute, T* other_attribute);
 
       int get_num_gip() const;
@@ -91,18 +95,13 @@ namespace Hermes
       const int num_gip; ///< Number of integration points used by this intance.
       const int nc;      ///< Number of components. Currently accepted values are 1 (H1, L2 space) and 2 (Hcurl, Hdiv space).
 
-      /// Constructor.
-      /** \param[in] num_gip A number of integration points.
-      *  \param[in] num_comps A number of components. */
-      Func(int num_gip, int num_comps);
-
       /// Calculate this -= func for each function expations and each integration point.
       /** \param[in] func A function which is subtracted from *this. A number of integratioN points and a number of component has to match. */
       void subtract(T* attribute, T* other_attribute);
 
       /// Calculate this += func for each function expations and each integration point.
       /** \param[in] func A function which is added to *this. A number of integratioN points and a number of component has to match. */
-      void add(const Func<T>& func);
+      void add(Func<T>* func);
 
       friend Func<Hermes::Ord>* init_fn_ord(const int order);
       friend Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order);
@@ -110,7 +109,6 @@ namespace Hermes
       template<typename Scalar> friend Func<Scalar>* init_fn(Solution<Scalar>*fu, const int order);
 
       template<typename Scalar> friend class DiscontinuousFunc;
-      template<typename Scalar> friend class ExtData;
       template<typename Scalar> friend class Adapt;
       template<typename Scalar> friend class KellyTypeAdapt;
       template<typename Scalar> friend class DiscreteProblem;
@@ -296,37 +294,6 @@ namespace Hermes
     /// Init the solution for the evaluation of the volumetric/surface integral.
     template<typename Scalar>
     HERMES_API Func<Scalar>* init_fn(Solution<Scalar>*fu, const int order);
-
-    /// User defined data that can go to the bilinear and linear forms.
-    /// It also holds arbitraty number of functions, that user can use.
-    /// Typically, these functions are solutions from the previous time/iteration levels.
-    /// @ingroup inner
-    template<typename T>
-    class HERMES_API ExtData
-    {
-    public:
-      Func<T>** fn;     ///< Array of pointers to functions.
-      int get_nf() { return nf; };
-    private:
-      int nf;           ///< Number of functions in 'fn' array.
-
-      /// Constructor.
-      ExtData();
-
-      /// Deallocation for numerical types.
-      void free();
-
-      /// Deallocation for integration order.
-      void free_ord();
-      template<typename Scalar> friend class DiscreteProblem;
-      template<typename Scalar> friend class DiscreteProblemLinear;
-      template<typename Scalar> friend class InterfaceGeom;
-      template<typename Scalar> friend class KellyTypeAdapt;
-      template<typename Scalar> friend class BasicKellyAdapt;
-      friend class ErrorEstimatorFormKelly;
-      template<typename Scalar> friend class Adapt;
-      template<typename Scalar> friend class OGProjection;
-    };
   }
 }
 #endif
