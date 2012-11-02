@@ -64,6 +64,10 @@ public:
     int angleSegmentsCount;
     bool curvilinearElements;
 
+    // discrete
+    bool saveMatrixRHS;
+    QString discreteDirectory;
+
     // grid
     bool showGrid;
     double gridStep;

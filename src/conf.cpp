@@ -95,9 +95,14 @@ void Config::loadWorkspace()
     // font
     rulersFont = settings.value("SceneViewSettings/RulersFont", RULERSFONT).toString();
     postFont = settings.value("SceneViewSettings/PostFont", POSTFONT).toString();
+
     // mesh
     angleSegmentsCount = settings.value("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT).toInt();
     curvilinearElements = settings.value("SceneViewSettings/MeshCurvilinearElements", MESHCURVILINEARELEMENTS).toBool();
+
+    // discrete
+    saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
+    discreteDirectory = settings.value("SceneViewSettings/DiscreteDirectory", DISCRETEDIRECTORY).toString();
 
     // grid
     showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();

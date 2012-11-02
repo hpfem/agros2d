@@ -34,15 +34,15 @@
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
-                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_temperature="0" heat_heat_flux="0" id="1" name="Insulation" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Insulation" heat_radiation_ambient_temperature="0">
                         <edge edge="0"/>
                         <edge edge="4"/>
                     </boundary>
-                    <boundary heat_convection_heat_transfer_coefficient="10" heat_convection_external_temperature="20" heat_radiation_emissivity="0" type="heat_heat_flux" heat_temperature="0" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_heat_transfer_coefficient="10" heat_convection_external_temperature="20" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0">
                         <edge edge="1"/>
                         <edge edge="5"/>
                     </boundary>
-                    <boundary heat_convection_heat_transfer_coefficient="5" heat_convection_external_temperature="20" heat_radiation_emissivity="0" type="heat_temperature" heat_temperature="0" heat_heat_flux="0" id="3" name="Temperature" heat_radiation_ambient_temperature="20">
+                    <boundary type="heat_temperature" heat_temperature="0" id="3" name="Temperature">
                         <edge edge="2"/>
                         <edge edge="3"/>
                     </boundary>

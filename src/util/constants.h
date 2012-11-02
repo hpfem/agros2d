@@ -68,6 +68,10 @@ const bool SHOWSOLUTIONMESHVIEW = false;
 const int MESHANGLESEGMENTSCOUNT = 3;
 const bool MESHCURVILINEARELEMENTS = true;
 
+// discrete saving
+const bool SAVEMATRIXANDRHS = false;
+const QString DISCRETEDIRECTORY = "discrete";
+
 // post2d
 const int PALETTEENTRIES = 256;
 const int PALETTESTEPSMIN = 3;

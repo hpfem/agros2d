@@ -83,6 +83,10 @@ private:
     QSpinBox *txtMeshAngleSegmentsCount;
     QCheckBox *chkMeshCurvilinearElements;
 
+    // discrete
+    QLineEdit *txtDiscreteDirectory;
+    QCheckBox *chkDiscreteSaveMatrixRHS;
+
     // scene font
     QLabel *lblSceneFontExample;
     QPushButton *btnSceneFont;

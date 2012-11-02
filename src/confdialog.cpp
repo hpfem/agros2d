@@ -71,6 +71,10 @@ void ConfigDialog::load()
     txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
     chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
 
+    // discrete
+    txtDiscreteDirectory->setText(Util::config()->discreteDirectory);
+    chkDiscreteSaveMatrixRHS->setChecked(Util::config()->saveMatrixRHS);
+
     // number of threads
     txtNumOfThreads->setValue(Util::config()->numberOfThreads);
 
@@ -137,6 +141,11 @@ void ConfigDialog::save()
     // mesh
     Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
     Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
+
+    // discrete
+    Util::config()->discreteDirectory = txtDiscreteDirectory->text();
+    Util::config()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
+
 
     // number of threads
     Util::config()->numberOfThreads = txtNumOfThreads->value();
@@ -330,6 +339,9 @@ QWidget *ConfigDialog::createSolverWidget()
     txtMeshAngleSegmentsCount->setMaximum(20);
     chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
 
+    txtDiscreteDirectory = new QLineEdit(this);
+    chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix"));
+
     QGridLayout *layoutMesh = new QGridLayout();
     layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
     layoutMesh->addWidget(txtMeshAngleSegmentsCount, 0, 1);
@@ -338,9 +350,18 @@ QWidget *ConfigDialog::createSolverWidget()
     QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
     grpMesh->setLayout(layoutMesh);
 
+    QGridLayout *layoutDiscrete = new QGridLayout();
+    layoutDiscrete->addWidget(new QLabel(tr("Save matrix and RHS:")), 0, 0);
+    layoutDiscrete->addWidget(txtDiscreteDirectory, 0, 1);
+    layoutDiscrete->addWidget(chkDiscreteSaveMatrixRHS, 1, 0, 1, 2);
+
+    QGroupBox *grpDiscrete = new QGroupBox(tr("Discrete"));
+    grpDiscrete->setLayout(layoutDiscrete);
+
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpSolver);
     layoutGeneral->addWidget(grpMesh);
+    layoutGeneral->addWidget(grpDiscrete);
     layoutGeneral->addStretch();
 
     QWidget *solverGeneralWidget = new QWidget(this);
