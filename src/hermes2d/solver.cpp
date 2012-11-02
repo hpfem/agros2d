@@ -385,11 +385,9 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
         for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             Space<Scalar>* oldSpace = multiSolution.component(comp).space.data();
-            // mesh->copy(oldSpace->get_mesh());
-            // space.push_back(QSharedPointer<Space<Scalar> >(oldSpace->duplicate(mesh)));
 
-            Mesh::ReferenceMeshCreator meshCreator(oldSpace->get_mesh());
-            Mesh *mesh = meshCreator.create_ref_mesh();
+            Mesh *mesh = new Mesh(); //TODO probably leak ... where is the mesh released
+            mesh->copy(oldSpace->get_mesh());
 
             // TODO: double -> Scalar
             Space<double>::ReferenceSpaceCreator spaceCreator(oldSpace, mesh, 0);
@@ -409,16 +407,14 @@ void Solver<Scalar>::solveOneProblem(QSharedPointer<WeakFormAgros<double> > wf, 
     // Linear solver
     if (m_block->linearityType() == LinearityType_Linear)
     {
-        // postaru: Initialize the FE problem.
-        if (m_discreteProblem)
-            delete m_discreteProblem;
+        // old way - Initialize the FE problem.
         m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
 
         // Initialize the FE problem.
-        //        if(! m_discreteProblem)
-        //            m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf, castConst(desmartize(msa.spaces())));
-        //        else
-        //            m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
+        // if (!m_discreteProblem)
+        //    m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
+        // else
+        //     m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
 
         LinearSolver<Scalar> linear((DiscreteProblemLinear<Scalar> *) m_discreteProblem);
         try
@@ -429,6 +425,9 @@ void Solver<Scalar>::solveOneProblem(QSharedPointer<WeakFormAgros<double> > wf, 
 
             // todo: this probably should not be done here, since we return solution vector
             Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+
+            // old way - delete the FE problem.
+            delete m_discreteProblem;
 
             /*
             Util::log()->printDebug(m_sovlerID, QObject::tr("Linear solver - assemble/solve/total: %1/%2/%3 s").
@@ -451,10 +450,12 @@ void Solver<Scalar>::solveOneProblem(QSharedPointer<WeakFormAgros<double> > wf, 
     if (m_block->linearityType() == LinearityType_Newton)
     {
         // Initialize the FE problem.
-        if (!m_discreteProblem)
-            m_discreteProblem = new DiscreteProblem<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
-        else
-            m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
+        // if (!m_discreteProblem)
+        //     m_discreteProblem = new DiscreteProblem<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
+        // else
+        //     m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
+
+        m_discreteProblem = new DiscreteProblem<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
 
         // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
         NewtonSolverAgros<Scalar> newton(m_discreteProblem);
@@ -481,6 +482,9 @@ void Solver<Scalar>::solveOneProblem(QSharedPointer<WeakFormAgros<double> > wf, 
 
             // todo: this probably should not be done here, since we return solution vector
             Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+
+            // old way - delete the FE problem.
+            delete m_discreteProblem;
 
             // TODO: temporarily disabled
             /*
@@ -611,6 +615,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
 
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
+    wf.clear();
+
     delete bdf2Table;
 }
 
@@ -729,6 +735,9 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int a
     // todo : Maybe delete coefVec2.
 
     // cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
+
+    wf2.clear();
+
     delete bdf2Table;
     return NextTimeStep(nextTimeStepLength, refuseThisStep);
 }
