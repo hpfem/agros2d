@@ -303,6 +303,10 @@ void Config::saveWorkspace()
     settings.setValue("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);
     settings.setValue("SceneViewSettings/MeshCurvilinearElements", curvilinearElements);
 
+    // discrete
+    settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
+    settings.setValue("SceneViewSettings/DiscreteDirectory", discreteDirectory);
+
     // grid
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);
     settings.setValue("SceneViewSettings/GridStep", gridStep);
