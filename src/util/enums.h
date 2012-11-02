@@ -52,10 +52,10 @@ enum AdaptivityType
 enum TimeStepMethod
 {
     TimeStepMethod_Fixed,
-    TimeStepMethod_BDF2,
-    TimeStepMethod_BDF2Combine,
-    TimeStepMethod_FixedBDF2B,
-    TimeStepMethod_FixedCombine,
+//    TimeStepMethod_BDF2,
+//    TimeStepMethod_BDF2Combine,
+//    TimeStepMethod_FixedBDF2B,
+//    TimeStepMethod_FixedCombine,
     TimeStepMethod_BDF2AOrder
 };
 

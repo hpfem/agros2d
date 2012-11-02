@@ -600,11 +600,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
     {
-        if(Util::problem()->config()->timeStepMethod() == TimeStepMethod_FixedBDF2B)
-            bdf2Table = new BDF2BTable();
-        else
-            bdf2Table = new BDF2ATable();
-
+        bdf2Table = new BDF2ATable();
         bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
         bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
     }
@@ -637,7 +633,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
 }
 
 template <typename Scalar>
-NextTimeStep Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep)
+NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivityStep)
 {    
     // todo: move to some config?
     const double MAX_TIME_STEPS_RATIO = 2.0; // todo: 3.0;
@@ -645,38 +641,33 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int a
     const double MAX_TOLERANCE_MULTIPLY_TO_ACCEPT = 2.5;  // todo: 3.0
 
     TimeStepMethod method = Util::problem()->config()->timeStepMethod();
-    if((method == TimeStepMethod_Fixed) || (method == TimeStepMethod_FixedBDF2B))
+    if(method == TimeStepMethod_Fixed)
         return NextTimeStep(Util::problem()->config()->constantTimeStepLength());
+
+    // At the present moment we use only estimation using BDF2A with different orders
+    assert(method == TimeStepMethod_BDF2AOrder);
 
     MultiSolutionArray<Scalar> multiSolutionArray =
             Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
 
-    BDF2Table* bdf2Table = NULL;
-    if(method == TimeStepMethod_BDF2AOrder)
-    {
-        // todo: ensure this in gui
-        assert(Util::problem()->config()->timeOrder() >= 2);
+    // todo: ensure this in gui
+    assert(Util::problem()->config()->timeOrder() >= 2);
 
-        // todo: in the first step, I am acualy using order 1 and thus I am unable to decrease it!
-        // this is not good, since the second step is not calculated (and the error of the first is not being checked)
-        if(timeStep == 1)
-            return NextTimeStep(Util::problem()->actualTimeStepLength());
+    // todo: in the first step, I am acualy using order 1 and thus I am unable to decrease it!
+    // this is not good, since the second step is not calculated (and the error of the first is not being checked)
+    if(timeStep == 1)
+        return NextTimeStep(Util::problem()->actualTimeStepLength());
 
-        bdf2Table = new BDF2ATable();
-        int previouslyUsedOrder = min(timeStep, Util::problem()->config()->timeOrder());
-        bdf2Table->setOrder(previouslyUsedOrder - 1);
-    }
-    else
-    {
-        bdf2Table = new BDF2BTable();
-        bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-    }
+    BDF2Table* bdf2Table = new BDF2ATable();
+    int previouslyUsedOrder = min(timeStep, Util::problem()->config()->timeOrder());
+    bdf2Table->setOrder(previouslyUsedOrder - 1);
+
     bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
     //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
 
-    QSharedPointer<WeakFormAgros<double> > wf2(new WeakFormAgros<double>(m_block));
-    wf2.data()->set_current_time(Util::problem()->actualTime());
-    wf2.data()->registerForms(bdf2Table);
+    m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
+    m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
+    m_block->weakForm().data()->registerForms(bdf2Table);
 
     int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
     Scalar* coefVec2 = new Scalar[ndof];
@@ -684,75 +675,40 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenghtOrCombine(int timeStep, int a
     multiSolutionArray2.createNewSolutions();
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
-    solveOneProblem(wf2, coefVec2, multiSolutionArray2, timeStep > 0 ? &multiSolutionArray : NULL, adaptivityStep);
+    solveOneProblem(m_block->weakForm(), coefVec2, multiSolutionArray2, timeStep > 0 ? &multiSolutionArray : NULL, adaptivityStep);
 
     double nextTimeStepLength = Util::problem()->config()->constantTimeStepLength();
     bool refuseThisStep = false;
 
-    // just to find delta for error estimation and solution combination
-    BDF2ATable bdf2ATable;
-    bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-    bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
 
-    if((method == TimeStepMethod_BDF2) || (method == TimeStepMethod_BDF2Combine) || (method == TimeStepMethod_BDF2AOrder))
-    {
-        double error;
-        if(method == TimeStepMethod_BDF2AOrder)
-        {
-            error = Global<Scalar>::calc_abs_errors (desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
-        }
-        else
-        {
-            // todo: for BDF2 and BDF2Combine the error should be calculated using different formula
-            // todo: not simple difference, but delta*sol1 + delta bar * sol2
-            error = Global<Scalar>::calc_abs_errors(desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
-        }
+    double error = Global<Scalar>::calc_abs_errors (desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
 
-        if(error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * Util::problem()->config()->timeMethodTolerance().number())
-            refuseThisStep = true;
+    if(error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * Util::problem()->config()->timeMethodTolerance().number())
+        refuseThisStep = true;
 
-        // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
-        nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
-                                 1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
+    // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
+    nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
+                             1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
 
 
-        nextTimeStepLength = min(nextTimeStepLength, MAX_TIME_STEP_LENGTH);
-        nextTimeStepLength = min(nextTimeStepLength, Util::problem()->actualTimeStepLength() * MAX_TIME_STEPS_RATIO);
-        nextTimeStepLength = max(nextTimeStepLength, Util::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
+    nextTimeStepLength = min(nextTimeStepLength, MAX_TIME_STEP_LENGTH);
+    nextTimeStepLength = min(nextTimeStepLength, Util::problem()->actualTimeStepLength() * MAX_TIME_STEPS_RATIO);
+    nextTimeStepLength = max(nextTimeStepLength, Util::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
 
-        Util::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, step size %3 -> %4 (%5 %)").
-                                arg(Util::problem()->actualTime()).
-                                arg(error).
-                                arg(Util::problem()->actualTimeStepLength()).
-                                arg(nextTimeStepLength).
-                                arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()*100.));
-        if(refuseThisStep)
-            Util::log()->printDebug(m_solverID, "time step refused");
-
-    }
-
-    if((method == TimeStepMethod_FixedCombine) || (method == TimeStepMethod_BDF2Combine))
-    {
-        cout << QString("deltaA %1, deltaB %2\n").arg(bdf2ATable.delta()).arg(bdf2Table->delta()).toStdString() << endl;
-        for(int i = 0; i < ndof; i++)
-            coefVec2[i] = bdf2Table->delta() * m_lastVector.getLast()[i] - bdf2ATable.delta() * coefVec2[i];
-
-        Solution<Scalar>::vector_to_solutions(coefVec2, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
-        Util::solutionStore()->removeSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
-
-        BlockSolutionID solutionID;
-        solutionID.group = m_block;
-        solutionID.timeStep = timeStep;
-        solutionID.adaptivityStep = adaptivityStep;
-
-        Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
-    }
+    Util::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, step size %3 -> %4 (%5 %)").
+                            arg(Util::problem()->actualTime()).
+                            arg(error).
+                            arg(Util::problem()->actualTimeStepLength()).
+                            arg(nextTimeStepLength).
+                            arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()*100.));
+    if(refuseThisStep)
+        Util::log()->printDebug(m_solverID, "time step refused");
 
     // todo : Maybe delete coefVec2.
 
     // cout << "error: " << error << "(" << absError << ", " << absError / norm << ") -> step size " << Util::problem()->actualTimeStepLength() << " -> " << nextTimeStepLength << ", change " << pow(Util::problem()->config()->timeMethodTolerance().number()/error, 1./(Util::problem()->config()->timeOrder() + 1)) << endl;
 
-    wf2.clear();
+    m_block->weakForm().clear();
 
     delete bdf2Table;
     return NextTimeStep(nextTimeStepLength, refuseThisStep);

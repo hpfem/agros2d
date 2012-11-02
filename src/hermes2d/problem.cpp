@@ -59,7 +59,7 @@ void ProblemConfig::clear()
     m_frequency = 0.0;
 
     // transient
-    m_timeStepMethod = TimeStepMethod_BDF2;
+    m_timeStepMethod = TimeStepMethod_BDF2AOrder;
     m_timeOrder = 2;
     m_timeMethodTolerance = Value("0.1", false);
     m_timeTotal = Value("1.0", false);
@@ -68,9 +68,7 @@ void ProblemConfig::clear()
 
 bool ProblemConfig::isTransientAdaptive() const
 {
-    if((m_timeStepMethod == TimeStepMethod_BDF2) ||
-       (m_timeStepMethod == TimeStepMethod_BDF2Combine) ||
-       (m_timeStepMethod == TimeStepMethod_BDF2AOrder))
+    if(m_timeStepMethod == TimeStepMethod_BDF2AOrder)
         return true;
     return false;
 }
@@ -552,7 +550,7 @@ void Problem::solveAction()
 
                 // todo: space + time adaptivity
                 if (isTransient() && (actualTimeStep() >=1))
-                    nextTimeStep = solver->estimateTimeStepLenghtOrCombine(actualTimeStep(), 0);
+                    nextTimeStep = solver->estimateTimeStepLenght(actualTimeStep(), 0);
 
             }
         }

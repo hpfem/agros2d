@@ -149,10 +149,10 @@ void initLists()
 
     timeStepMethodList.insert(TimeStepMethod_Fixed, "fixed");
     timeStepMethodList.insert(TimeStepMethod_BDF2AOrder, "adaptive");
-    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2_adaptive");
-    timeStepMethodList.insert(TimeStepMethod_BDF2Combine, "bdf2_combine");
-    timeStepMethodList.insert(TimeStepMethod_FixedBDF2B, "fixed_bdf2b");
-    timeStepMethodList.insert(TimeStepMethod_FixedCombine, "fixed_combine");
+//    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2_adaptive");
+//    timeStepMethodList.insert(TimeStepMethod_BDF2Combine, "bdf2_combine");
+//    timeStepMethodList.insert(TimeStepMethod_FixedBDF2B, "fixed_bdf2b");
+//    timeStepMethodList.insert(TimeStepMethod_FixedCombine, "fixed_combine");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -367,14 +367,14 @@ QString timeStepMethodString(TimeStepMethod timeStepMethod)
         return QObject::tr("Fixed step");
     case TimeStepMethod_BDF2AOrder:
         return QObject::tr("Adaptive");
-    case TimeStepMethod_BDF2:
-        return QObject::tr("BDF2 adaptive");
-    case TimeStepMethod_BDF2Combine:
-        return QObject::tr("adaptive comb");
-    case TimeStepMethod_FixedBDF2B:
-        return QObject::tr("Fixed BDF2B");
-    case TimeStepMethod_FixedCombine:
-        return QObject::tr("Fixed comb");
+//    case TimeStepMethod_BDF2:
+//        return QObject::tr("BDF2 adaptive");
+//    case TimeStepMethod_BDF2Combine:
+//        return QObject::tr("adaptive comb");
+//    case TimeStepMethod_FixedBDF2B:
+//        return QObject::tr("Fixed BDF2B");
+//    case TimeStepMethod_FixedCombine:
+//        return QObject::tr("Fixed comb");
     default:
         std::cerr << "Time step method '" + QString::number(timeStepMethod).toStdString() + "' is not implemented. timeStepMethodString(TimeStepMethod timeStepMethod)" << endl;
         throw;

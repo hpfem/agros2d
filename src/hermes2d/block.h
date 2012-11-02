@@ -22,6 +22,9 @@ public:
 
     Solver<double>* prepareSolver();
 
+    QSharedPointer<WeakFormAgros<double> > weakForm() { return m_wf;}
+    void setWeakForm(QSharedPointer<WeakFormAgros<double> > wf) {m_wf = wf;}
+
     int numSolutions() const;
     int offset(Field* field) const;
 
@@ -54,7 +57,7 @@ public:
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormTypeVector() const;
 
 private:
-    WeakFormAgros<double> *m_wf;
+    QSharedPointer<WeakFormAgros<double> > m_wf;
 
     QList<Field*> m_fields;
     QList<CouplingInfo*> m_couplings;

@@ -78,7 +78,7 @@ public:
     void createInitialSpace(int timeStep);
 
     // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
-    NextTimeStep estimateTimeStepLenghtOrCombine(int timeStep, int adaptivityStep);
+    NextTimeStep estimateTimeStepLenght(int timeStep, int adaptivityStep);
 
     void solveSimple(int timeStep, int adaptivityStep, bool solutionExists);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
