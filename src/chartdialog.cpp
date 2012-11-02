@@ -301,10 +301,6 @@ void ChartControlsWidget::createControls()
     QWidget *grpVariable = new QWidget(this);
     grpVariable->setLayout(layoutVariable);
 
-    // table
-    trvTable = new QTableWidget(this);
-    trvTable->setVisible(false);
-
     // button bar
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addStretch();
@@ -426,11 +422,6 @@ void ChartControlsWidget::plotGeometry()
     // table
     QStringList head = headers();
 
-    trvTable->clear();
-    trvTable->setRowCount(count);
-    trvTable->setColumnCount(head.count());
-    trvTable->setHorizontalHeaderLabels(head);
-
     // values
     ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
                                          Point(txtEndX->value().number(), txtEndY->value().number()),
@@ -464,9 +455,6 @@ void ChartControlsWidget::plotGeometry()
                     else
                         yval.append(values[variable].vector.magnitude());
                 }
-
-                // fill table row
-                fillTableRow(localValue, 0.0, points.indexOf(point));
             }
         }
     }
@@ -509,11 +497,6 @@ void ChartControlsWidget::plotTime()
     // table
     QStringList head = headers();
 
-    trvTable->clear();
-    trvTable->setRowCount(timeLevels.count());
-    trvTable->setColumnCount(head.count());
-    trvTable->setHorizontalHeaderLabels(head);
-
     // values
     int timeStep = Util::scene()->activeTimeStep();
 
@@ -550,9 +533,6 @@ void ChartControlsWidget::plotTime()
                     else
                         yval.append(values[variable].vector.magnitude());
                 }
-
-                // fill table row
-                fillTableRow(localValue, timeLevels.at(i), i);
             }
         }
     }
@@ -562,48 +542,6 @@ void ChartControlsWidget::plotTime()
     // restore previous timestep
     Util::scene()->setActiveTimeStep(timeStep);
     m_sceneViewPost2D->postHermes()->refresh();
-}
-
-void ChartControlsWidget::fillTableRow(LocalValue *localValue, double time, int row)
-{
-    int count = trvTable->rowCount();
-
-    // coordinates
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, 0,
-                      new QTableWidgetItem(QString("%1").arg(localValue->point().x, 0, 'e', 3)));
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, 1,
-                      new QTableWidgetItem(QString("%1").arg(localValue->point().y, 0, 'e', 3)));
-    // time
-    trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, 2,
-                      new QTableWidgetItem(QString("%1").arg(time, 0, 'e', 3)));
-
-    // values
-    int n = 3;
-
-    QMap<Module::LocalVariable *, PointValue> values = localValue->values();
-    foreach (Module::LocalVariable *variable, values.keys())
-    {
-        if (variable->isScalar())
-        {
-            // scalar variable
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
-                              new QTableWidgetItem(QString("%1").arg(values[variable].scalar, 0, 'e', 3)));
-            n++;
-        }
-        else
-        {
-            // vector variable
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
-                              new QTableWidgetItem(QString("%1").arg(values[variable].vector.x, 0, 'e', 3)));
-            n++;
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
-                              new QTableWidgetItem(QString("%1").arg(values[variable].vector.y, 0, 'e', 3)));
-            n++;
-            trvTable->setItem(chkAxisPointsReverse->isChecked() ? count - 1 - row : row, n,
-                              new QTableWidgetItem(QString("%1").arg(values[variable].vector.magnitude(), 0, 'e', 3)));
-            n++;
-        }
-    }
 }
 
 QStringList ChartControlsWidget::headers()
@@ -693,67 +631,136 @@ void ChartControlsWidget::doExportData()
 
     QString selectedFilter;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
-    if (!fileName.isEmpty())
+    if (fileName.isEmpty())
     {
-        QString ext = (selectedFilter.contains("CSV")) ? ".csv" : ".m";
-        QFileInfo fileInfo(fileName);
-
-        // open file for write
-        if (fileInfo.suffix().isEmpty())
-            fileName = fileName + ext;
-
-        QFile file(fileName);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            cerr << "Could not create " + fileName.toStdString() + " file." << endl;
-            return;
-        }
-        QTextStream out(&file);
-
-        // export
-        // csv
-        if (fileInfo.suffix().toLower() == "csv")
-        {
-            // header
-            for (int j = 0; j < trvTable->columnCount(); j++)
-                out << trvTable->horizontalHeaderItem(j)->text() << ";";
-            out << endl;
-
-            // items
-            for (int i = 0; i < trvTable->rowCount(); i++)
-            {
-                for (int j = 0; j < trvTable->columnCount(); j++)
-                    out << trvTable->item(i, j)->text()  << ";";
-                out << endl;
-            }
-        }
-
-        // m-file
-        if (fileInfo.suffix().toLower() == "m")
-        {
-            // items
-            for (int j = 0; j < trvTable->columnCount(); j++)
-            {
-                out << trvTable->horizontalHeaderItem(j)->text().replace(" ", "_") << " = [";
-                for (int i = 0; i < trvTable->rowCount(); i++)
-                    out << trvTable->item(i, j)->text().replace(",", ".") << ((i <= trvTable->rowCount()-2) ? ", " : "");
-                out << "];" << endl;
-            }
-
-            // example
-            out << endl << endl;
-            out << "% example" << endl;
-            out << "% plot(sqrt(X.^2 + Y.^2), " << trvTable->horizontalHeaderItem(2)->text().replace(" ", "_") << ");" << endl;
-            out << "% grid on;" << endl;
-            out << "% xlabel('length (m)');" << endl;
-            out << "% ylabel('" << trvTable->horizontalHeaderItem(2)->text() << "');" << endl;
-        }
-
-        if (fileInfo.absoluteDir() != tempProblemDir())
-            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
-
-        file.close();
+        cerr << "Incorrect file name." << endl;
+        return;
     }
+
+    QString ext = (selectedFilter.contains("CSV")) ? ".csv" : ".m";
+    QFileInfo fileInfo(fileName);
+
+    // open file for write
+    if (fileInfo.suffix().isEmpty())
+        fileName = fileName + ext;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        cerr << "Could not create " + fileName.toStdString() + " file." << endl;
+        return;
+    }
+    QTextStream out(&file);
+
+    QMap<QString, QList<double> > table;
+    if (tabAnalysisType->currentWidget() == widGeometry)
+    {
+        ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                                             Point(txtEndX->value().number(), txtEndY->value().number()),
+                                             txtAngle->value().number(),
+                                             txtAxisPoints->value());
+
+        foreach (Point point, chartLine->getPoints())
+        {
+            QMap<QString, double> data = getData(point, Util::scene()->activeTimeStep());
+            foreach (QString key, data.keys())
+            {
+                QList<double> *values = &table.operator [](key);
+                values->append(data.value(key));
+            }
+        }
+    }
+    else if (tabAnalysisType->currentWidget() == widTime)
+    {
+        Point point(txtPointX->value().number(), txtPointY->value().number());
+        foreach (double timeLevel, Util::solutionStore()->timeLevels(Util::scene()->activeViewField()))
+        {
+            int timeStep = Util::solutionStore()->timeLevelIndex(Util::scene()->activeViewField(), timeLevel);
+            QMap<QString, double> data = getData(point, timeStep);
+            foreach (QString key, data.keys())
+            {
+                QList<double> *values = &table.operator [](key);
+                values->append(data.value(key));
+            }
+        }
+    }
+
+    // csv
+    if (fileInfo.suffix().toLower() == "csv")
+    {
+        // headers
+        foreach(QString key, table.keys())
+            out << key << ";";
+        out << "\n";
+
+        // values
+        for (int i = 0; i < table.values().first().size(); i++)
+        {
+            foreach(QString key, table.keys())
+                out << QString::number(table.value(key).at(i)) << ";";
+            out << endl;
+        }
+    }
+
+    // m-file
+    if (fileInfo.suffix().toLower() == "m")
+    {
+        // matrix
+        foreach(QString key, table.keys())
+        {
+            out << key << " = [ ";
+            foreach(double value, table.value(key))
+                out << QString::number(value).replace(",", ".") << " ";
+            out << "]" << endl;
+        }
+
+        /*
+        // example
+        QString x = table.keys().at(0).at(0);
+        QString y = table.keys().at(1).at(0);
+
+        out << endl << "% example" << endl;
+        out << QString("% plot(%1, %2)").arg(x).arg(y) << endl;
+        out << "% grid on;" << endl;
+        out << QString("% xlabel('%1');").arg(x) << endl;
+        out << QString("% ylabel('%1');").arg(y) << endl;
+        */
+    }
+
+    if (fileInfo.absoluteDir() != tempProblemDir())
+        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+
+    file.close();
+}
+
+QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
+{
+    FieldInfo *fieldInfo = Util::scene()->activeViewField();
+    QMap<QString, double> table;
+
+    if (Util::scene()->activeTimeStep() != timeStep)
+        Util::scene()->setActiveTimeStep(timeStep);
+
+    foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
+    {
+        LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        QMap<Module::LocalVariable *, PointValue> values = localValue->values();
+
+        if (variable->isScalar())
+            table.insert(variable->shortname(), values[variable].scalar);
+        else
+        {
+            table.insert(QString(variable->shortname()), values[variable].vector.magnitude());
+            table.insert(QString(variable->shortname() + "x"), values[variable].vector.x);
+            table.insert(QString(variable->shortname() + "y"), values[variable].vector.y);
+        }
+    }
+
+    table.insert(Util::problem()->config()->labelX(), point.x);
+    table.insert(Util::problem()->config()->labelY(), point.y);
+    table.insert("t", Util::solutionStore()->timeLevel(fieldInfo, timeStep));
+
+    return table;
 }
 
 void ChartControlsWidget::doChartLine()

@@ -43,6 +43,7 @@ public:
 
     // number of time steps, where this fieldInfo was calculated up to this time
     int timeLevelIndex(FieldInfo* fieldInfo, double time);
+    double timeLevel(FieldInfo* fieldInfo, int timeLevelIndex);
 
     FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionMode solutionType);
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionMode solutionType);
