@@ -78,6 +78,8 @@ public:
 
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
+    static HermesSolverContainer* factory(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+
 protected:
     Block* m_block;
 };
@@ -110,6 +112,22 @@ public:
 
 private:
     QSharedPointer<Hermes::Hermes2D::NewtonSolver<Scalar> > m_newtonSolver;
+};
+
+template <typename Scalar>
+class PicardSolverContainer : public HermesSolverContainer<Scalar>
+{
+public:
+    PicardSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    ~PicardSolverContainer();
+    virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
+                                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions);
+    virtual void solve(Scalar* solutionVector);
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { setMatrixRhsOutputGen(m_picardSolver.data(), solverName, adaptivityStep); }
+    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_picardSolver.data(); }
+
+private:
+    QSharedPointer<Hermes::Hermes2D::PicardSolver<Scalar> > m_picardSolver;
 };
 
 // solve

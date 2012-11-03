@@ -84,9 +84,27 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
 }
 
 template <typename Scalar>
+HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces)
+{
+    if (block->linearityType() == LinearityType_Linear)
+    {
+        return new LinearSolverContainer<Scalar>(block, spaces);
+    }
+    else if (block->linearityType() == LinearityType_Newton)
+    {
+        return new NewtonSolverContainer<Scalar>(block, spaces);
+    }
+    else if (block->linearityType() == LinearityType_Picard)
+    {
+        return new PicardSolverContainer<Scalar>(block, spaces);
+    }
+}
+
+
+template <typename Scalar>
 LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
 {
-    m_linearSolver = QSharedPointer<Hermes::Hermes2D::LinearSolver<Scalar> >(new LinearSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+    m_linearSolver = QSharedPointer<LinearSolver<Scalar> >(new LinearSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
 }
 
 
@@ -101,19 +119,12 @@ void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 template <typename Scalar>
 NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
 {
-    m_newtonSolver = QSharedPointer<Hermes::Hermes2D::NewtonSolver<Scalar> >(new NewtonSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+    m_newtonSolver = QSharedPointer<NewtonSolver<Scalar> >(new NewtonSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
     m_newtonSolver.data()->set_verbose_output(true);
     m_newtonSolver.data()->set_verbose_callback(processSolverOutput);
     m_newtonSolver.data()->set_newton_tol(block->nonlinearTolerance());
     m_newtonSolver.data()->set_newton_max_iter(block->nonlinearSteps());
     m_newtonSolver.data()->set_max_allowed_residual_norm(1e15);
-    if(block->automaticDamping())
-    {
-        m_newtonSolver.data()->set_initial_auto_damping_coeff(block->dampingCoeff());
-        m_newtonSolver.data()->set_necessary_successful_steps_to_increase(block->dampingNumberToIncrease());
-    }
-    else
-        m_newtonSolver.data()->set_manual_damping_coeff(true, block->dampingCoeff());
 }
 
 template <typename Scalar>
@@ -140,6 +151,43 @@ void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
     int ndof = Space<Scalar>::get_num_dofs(m_newtonSolver.data()->get_spaces());
     m_newtonSolver.data()->solve();
     memcpy(solutionVector, m_newtonSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
+}
+
+template <typename Scalar>
+PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
+{
+    m_picardSolver = QSharedPointer<PicardSolver<Scalar> >(new PicardSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+    m_picardSolver.data()->set_verbose_output(true);
+    m_picardSolver.data()->set_verbose_callback(processSolverOutput);
+    m_picardSolver.data()->set_picard_tol(block->nonlinearTolerance());
+    m_picardSolver.data()->set_picard_max_iter(block->nonlinearSteps());
+    //m_picardSolver.data()->set_max_allowed_residual_norm(1e15);
+}
+
+template <typename Scalar>
+void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
+                                                            Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions)
+{
+    if(solutions.empty())
+    {
+        int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(spaces)));
+        memset(solutionVector, 0, ndof*sizeof(Scalar));
+    }
+    else
+    {
+        OGProjection<double> ogProjection;
+        ogProjection.project_global(castConst(desmartize(spaces)),
+                                    desmartize(solutions),
+                                    solutionVector, this->m_block->projNormTypeVector());
+    }
+}
+
+template <typename Scalar>
+void PicardSolverContainer<Scalar>::solve(Scalar* solutionVector)
+{
+    int ndof = Space<Scalar>::get_num_dofs(m_picardSolver.data()->get_spaces());
+    m_picardSolver.data()->solve();
+    memcpy(solutionVector, m_picardSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
 }
 
 template <typename Scalar>
@@ -419,17 +467,8 @@ template <typename Scalar>
 void Solver<Scalar>::solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa, int adaptivityStep)
 {
     Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
-    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces())));
 
-    // Linear solver
-    if (m_block->linearityType() == LinearityType_Linear)
-    {
-        m_hermesSolverContainer = new LinearSolverContainer<Scalar>(m_block, msa.spaces());
-    }
-    else if (m_block->linearityType() == LinearityType_Newton)
-    {
-        m_hermesSolverContainer = new NewtonSolverContainer<Scalar>(m_block, msa.spaces());
-    }
+    m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block, msa.spaces());
 
     try
     {
@@ -954,4 +993,6 @@ void Solver<Scalar>::solveInitialTimeStep()
 
 template class VectorStore<double>;
 template class LinearSolverContainer<double>;
+template class NewtonSolverContainer<double>;
+template class PicardSolverContainer<double>;
 template class Solver<double>;
