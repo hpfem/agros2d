@@ -185,6 +185,47 @@ int Block::nonlinearSteps() const
     return steps;
 }
 
+bool Block::automaticDamping() const
+{
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(!fieldInfo->automaticDamping())
+            return false;
+    }
+
+    return true;
+}
+
+double Block::dampingCoeff() const
+{
+    double coeff = 1.0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->dampingCoeff() < coeff)
+            coeff = fieldInfo->dampingCoeff();
+    }
+
+    return coeff;
+}
+
+int Block::dampingNumberToIncrease() const
+{
+    int number = 0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->dampingNumberToIncrease() > number)
+            number = fieldInfo->dampingNumberToIncrease();
+    }
+
+    return number;
+}
+
+
 bool Block::contains(FieldInfo *fieldInfo) const
 {
     foreach(Field* field, m_fields)

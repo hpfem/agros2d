@@ -61,6 +61,16 @@ public:
     inline int nonlinearSteps() const { return m_nonlinearSteps; }
     void setNonlinearSteps(const int ns) { m_nonlinearSteps = ns; emit changed(); }
 
+    inline double dampingCoeff() const {return m_dampingCoeff; }
+    void setDampingCoeff(const double df) { m_dampingCoeff = df; emit changed(); }
+
+    inline bool automaticDamping() const {return m_automaticDamping; }
+    void setAutomaticDamping(const bool ad) { m_automaticDamping = ad; emit changed(); }
+
+    inline int dampingNumberToIncrease() const {return m_dampingNumberToIncrease; }
+    void setDampingNumberToIncrease(const int df) { m_dampingNumberToIncrease = df; emit changed(); }
+
+
     inline int numberOfRefinements() const { return m_numberOfRefinements; }
     void setNumberOfRefinements(const int nr) {m_numberOfRefinements = nr; emit changed(); }
 
@@ -122,6 +132,10 @@ private:
     LinearityType m_linearityType;
     double m_nonlinearTolerance; // percent
     int m_nonlinearSteps;
+
+    double m_dampingCoeff;
+    bool m_automaticDamping;
+    int m_dampingNumberToIncrease;
 
     int m_numberOfRefinements;
     int m_polynomialOrder;

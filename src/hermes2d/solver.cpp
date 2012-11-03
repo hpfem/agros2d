@@ -107,6 +107,13 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, Hermes::vecto
     m_newtonSolver.data()->set_newton_tol(block->nonlinearTolerance());
     m_newtonSolver.data()->set_newton_max_iter(block->nonlinearSteps());
     m_newtonSolver.data()->set_max_allowed_residual_norm(1e15);
+    if(block->automaticDamping())
+    {
+        m_newtonSolver.data()->set_initial_auto_damping_coeff(block->dampingCoeff());
+        m_newtonSolver.data()->set_necessary_successful_steps_to_increase(block->dampingNumberToIncrease());
+    }
+    else
+        m_newtonSolver.data()->set_manual_damping_coeff(true, block->dampingCoeff());
 }
 
 template <typename Scalar>

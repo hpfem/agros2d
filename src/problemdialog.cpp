@@ -169,6 +169,12 @@ void FieldWidget::createContent()
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearTolerance = new LineEditDouble(1);
+    txtDampingCoeff = new LineEditDouble(1);
+    chkAutomaticDamping = new QCheckBox(tr("Automatic damping"));
+    txtDampingNumberToIncrease = new QSpinBox(this);
+    txtDampingNumberToIncrease->setMinimum(1);
+    txtDampingNumberToIncrease->setMaximum(5);
+
 
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
@@ -237,6 +243,12 @@ void FieldWidget::createContent()
     layoutLinearity->addWidget(txtNonlinearTolerance, 1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Automatic damping:")), 3, 0);
+    layoutLinearity->addWidget(chkAutomaticDamping, 3, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Damping factor:")), 4, 0);
+    layoutLinearity->addWidget(txtDampingCoeff, 4, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Steps to increase DF:")), 5, 0);
+    layoutLinearity->addWidget(txtDampingNumberToIncrease, 5, 1);
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Solver"));
     grpLinearity->setLayout(layoutLinearity);
@@ -318,6 +330,9 @@ void FieldWidget::load()
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
     txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps());
     txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance());
+    txtDampingCoeff->setValue(m_fieldInfo->dampingCoeff());
+    chkAutomaticDamping->setChecked(m_fieldInfo->automaticDamping());
+    txtDampingNumberToIncrease->setValue(m_fieldInfo->dampingNumberToIncrease());
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
@@ -340,6 +355,9 @@ bool FieldWidget::save()
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setNonlinearSteps(txtNonlinearSteps->value());
     m_fieldInfo->setNonlinearTolerance(txtNonlinearTolerance->value());
+    m_fieldInfo->setDampingCoeff(txtDampingCoeff->value());
+    m_fieldInfo->setAutomaticDamping(chkAutomaticDamping->isChecked());
+    m_fieldInfo->setDampingNumberToIncrease(txtDampingNumberToIncrease->value());
 
     return true;
 }
@@ -388,6 +406,9 @@ void FieldWidget::doLinearityTypeChanged(int index)
 {
     txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    txtDampingCoeff->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    chkAutomaticDamping->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    txtDampingNumberToIncrease->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 }
 
 // ********************************************************************************************

@@ -1471,6 +1471,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         field->setNonlinearSteps(eleFieldLinearity.toElement().attribute("nonlinear_steps", "10").toInt());
         field->setNonlinearTolerance(eleFieldLinearity.toElement().attribute("nonlinear_tolerance", "1e-3").toDouble());
 
+        field->setDampingCoeff(eleFieldLinearity.toElement().attribute("damping_coeff", "1").toDouble());
+        field->setAutomaticDamping(eleFieldLinearity.toElement().attribute("automatic_damping", "1").toInt());
+        field->setDampingNumberToIncrease(eleFieldLinearity.toElement().attribute("damping_number_to_increase", "1").toInt());
+
         // time steps skip
         field->setTimeSkip(eleField.toElement().attribute("time_skip", "0"));
 
@@ -1819,6 +1823,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleLinearity.setAttribute("linearity_type", linearityTypeToStringKey(fieldInfo->linearityType()));
         eleLinearity.setAttribute("nonlinear_steps", fieldInfo->nonlinearSteps());
         eleLinearity.setAttribute("nonlinear_tolerance", fieldInfo->nonlinearTolerance());
+        eleLinearity.setAttribute("damping_coeff", fieldInfo->dampingCoeff());
+        eleLinearity.setAttribute("automatic_damping", fieldInfo->automaticDamping());
+        eleLinearity.setAttribute("damping_number_to_increase",fieldInfo->dampingNumberToIncrease());
 
         // boundaries
         QDomNode eleBoundaries = doc.createElement("boundaries");

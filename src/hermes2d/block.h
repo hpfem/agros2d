@@ -45,6 +45,15 @@ public:
     //maximal nonlinear steps of individual fields
     int nonlinearSteps() const;
 
+    // use only if true for all fields
+    bool automaticDamping() const;
+
+    // minimal damping coefficient
+    double dampingCoeff() const;
+
+    // maximal
+    int dampingNumberToIncrease() const;
+
 //    Field* couplingSourceField(Coupling* coupling) const;
 //    Field* couplingTargetField(Coupling* coupling) const;
 

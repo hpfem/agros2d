@@ -119,6 +119,9 @@ private:
     // linearity
     QSpinBox *txtNonlinearSteps;
     LineEditDouble *txtNonlinearTolerance;
+    LineEditDouble *txtDampingCoeff;
+    QCheckBox *chkAutomaticDamping;
+    QSpinBox *txtDampingNumberToIncrease;
 
     // transient
     ValueLineEdit *txtTransientInitialCondition;
