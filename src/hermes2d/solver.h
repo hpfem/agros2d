@@ -64,12 +64,60 @@ struct NextTimeStep
     bool refuse;
 };
 
+
+template <typename Scalar>
+class HermesSolverContainer
+{
+public:
+    HermesSolverContainer(Block* block) : m_block(block) {}
+    virtual void solve(Scalar* solutionVector) = 0;
+    virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
+                                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions) {}
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
+    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() = 0;
+
+    void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
+
+protected:
+    Block* m_block;
+};
+
+template <typename Scalar>
+class LinearSolverContainer : public HermesSolverContainer<Scalar>
+{
+public:
+    LinearSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    ~LinearSolverContainer();
+    virtual void solve(Scalar* solutionVector);
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { setMatrixRhsOutputGen(m_linearSolver.data(), solverName, adaptivityStep); }
+    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_linearSolver.data(); }
+
+private:
+    QSharedPointer<Hermes::Hermes2D::LinearSolver<Scalar> > m_linearSolver;
+};
+
+template <typename Scalar>
+class NewtonSolverContainer : public HermesSolverContainer<Scalar>
+{
+public:
+    NewtonSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    ~NewtonSolverContainer();
+    virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
+                                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions);
+    virtual void solve(Scalar* solutionVector);
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { setMatrixRhsOutputGen(m_newtonSolver.data(), solverName, adaptivityStep); }
+    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_newtonSolver.data(); }
+
+private:
+    QSharedPointer<Hermes::Hermes2D::NewtonSolver<Scalar> > m_newtonSolver;
+};
+
 // solve
 template <typename Scalar>
 class Solver
 {
 public:
-    Solver() : m_discreteProblem(NULL) {}
+    Solver() : m_hermesSolverContainer(NULL) {}
     ~Solver();
 
     void init(Block* block);
@@ -87,7 +135,7 @@ public:
 private:
     Block* m_block;
 
-    Hermes::Hermes2D::DiscreteProblem<Scalar>* m_discreteProblem;
+    HermesSolverContainer<Scalar>* m_hermesSolverContainer;
 
     QString m_solverID;
     QString m_solverName;

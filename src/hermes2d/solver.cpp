@@ -36,62 +36,6 @@
 
 using namespace Hermes::Hermes2D;
 
-template<typename Scalar>
-class NewtonSolverAgros : public NewtonSolver<Scalar>
-{
-public:
-    NewtonSolverAgros(Hermes::Hermes2D::DiscreteProblem<Scalar> *dp)
-        : NewtonSolver<Scalar>(dp) {}
-
-    virtual void onInitialization()
-    {
-
-    }
-
-    virtual void onStepBegin()
-    {
-
-    }
-
-    virtual void onStepEnd()
-    {
-        // implement to the chart
-        // qDebug() << "residual_norm = " << Global<Scalar>::get_l2_norm(this->residual);
-    }
-
-    virtual void onFinish()
-    {
-
-    }
-};
-
-template<typename Scalar>
-class PicardSolverAgros : public PicardSolver<Scalar>
-{
-public:
-    PicardSolverAgros(DiscreteProblemLinear<Scalar>* dp) : PicardSolver<Scalar>(dp) {}
-
-    virtual void onInitialization()
-    {
-
-    }
-
-    virtual void onStepBegin()
-    {
-
-    }
-
-    virtual void onStepEnd()
-    {
-        // implement to the chart
-        // qDebug() << "residual_norm = " << Global<Scalar>::get_l2_norm(this->residual);
-    }
-
-    virtual void onFinish()
-    {
-
-    }
-};
 
 int DEBUG_COUNTER = 0;
 
@@ -125,23 +69,84 @@ Scalar* VectorStore<Scalar>::createNew(int length)
     return m_vector;
 }
 
+
+template <typename Scalar>
+void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
+{
+    if(Util::config()->saveMatrixRHS)
+    {
+        solver->output_matrix();
+        solver->output_rhs();
+        QString name = QString("%1/%2-%3-%4").arg(tempProblemDir()).arg(solverName).arg(Util::problem()->actualTimeStep()).arg(adaptivityStep);
+        solver->set_matrix_filename(QString("%1-Matrix").arg(name).toStdString());
+        solver->set_rhs_filename(QString("%1-RHS").arg(name).toStdString());
+    }
+}
+
+template <typename Scalar>
+LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
+{
+    m_linearSolver = QSharedPointer<Hermes::Hermes2D::LinearSolver<Scalar> >(new LinearSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+}
+
+
+template <typename Scalar>
+void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
+{
+    int ndof = Space<Scalar>::get_num_dofs(m_linearSolver.data()->get_spaces());
+    m_linearSolver.data()->solve();
+    memcpy(solutionVector, m_linearSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
+}
+
+template <typename Scalar>
+NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
+{
+    m_newtonSolver = QSharedPointer<Hermes::Hermes2D::NewtonSolver<Scalar> >(new NewtonSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+    m_newtonSolver.data()->set_verbose_output(true);
+    m_newtonSolver.data()->set_verbose_callback(processSolverOutput);
+    m_newtonSolver.data()->set_newton_tol(block->nonlinearTolerance());
+    m_newtonSolver.data()->set_newton_max_iter(block->nonlinearSteps());
+    m_newtonSolver.data()->set_max_allowed_residual_norm(1e15);
+}
+
+template <typename Scalar>
+void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
+                                                            Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions)
+{
+    if(solutions.empty())
+    {
+        int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(spaces)));
+        memset(solutionVector, 0, ndof*sizeof(Scalar));
+    }
+    else
+    {
+        OGProjection<double> ogProjection;
+        ogProjection.project_global(castConst(desmartize(spaces)),
+                                    desmartize(solutions),
+                                    solutionVector, this->m_block->projNormTypeVector());
+    }
+}
+
+template <typename Scalar>
+void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
+{
+    int ndof = Space<Scalar>::get_num_dofs(m_newtonSolver.data()->get_spaces());
+    m_newtonSolver.data()->solve();
+    memcpy(solutionVector, m_newtonSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
+}
+
 template <typename Scalar>
 Solver<Scalar>::~Solver()
 {
-    if (m_discreteProblem)
-        delete m_discreteProblem;
-    m_discreteProblem = NULL;
+    if(m_hermesSolverContainer)
+        delete m_hermesSolverContainer;
+    m_hermesSolverContainer = NULL;
 }
 
 template <typename Scalar>
 void Solver<Scalar>::init(Block* block)
 {
     m_block = block;
-
-    if (m_discreteProblem)
-        delete m_discreteProblem;
-    m_discreteProblem = NULL;
-
 
     QListIterator<Field*> iter(m_block->fields());
     while (iter.hasNext())
@@ -151,6 +156,11 @@ void Solver<Scalar>::init(Block* block)
             m_solverName += ", ";
     }
     m_solverID = QObject::tr("Solver (%1)").arg(m_solverName);
+
+    // TODO: it should be here, but for now moved to solve one problem
+//    assert(! m_hermesSolverContainer);
+//    if(m_block->linearityType() == LinearityType_Linear)
+//        m_hermesSolverContainer = new LinearSolverContainer<Scalar>(m_block->weakForm(), NULL, m_solverName);
 }
 
 template <typename Scalar>
@@ -407,164 +417,144 @@ void Solver<Scalar>::solveOneProblem(Scalar *solutionVector, MultiSolutionArray<
     // Linear solver
     if (m_block->linearityType() == LinearityType_Linear)
     {
-        // old way - Initialize the FE problem.
-        m_discreteProblem = new DiscreteProblemLinear<Scalar>(m_block->weakForm().data(), castConst(desmartize(msa.spaces())));
-
-        // Initialize the FE problem.
-        // if (!m_discreteProblem)
-        //    m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
-        // else
-        //     m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
-
-        LinearSolver<Scalar> linear((DiscreteProblemLinear<Scalar> *) m_discreteProblem);
-        if(Util::config()->saveMatrixRHS)
-        {
-            linear.output_matrix();
-            linear.output_rhs();
-            QString name = QString("%1/%2-%3-%4").arg(tempProblemDir()).arg(m_solverName).arg(Util::problem()->actualTimeStep()).arg(adaptivityStep);
-            linear.set_matrix_filename(QString("%1-Matrix").arg(name).toStdString());
-            linear.set_rhs_filename(QString("%1-RHS").arg(name).toStdString());
-        }
-        try
-        {
-            linear.solve();
-
-            memcpy(solutionVector, linear.get_sln_vector(), ndof * sizeof(Scalar));
-
-            // todo: this probably should not be done here, since we return solution vector
-            Solution<Scalar>::vector_to_solutions(linear.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
-
-            // old way - delete the FE problem.
-            delete m_discreteProblem;
-
-            /*
-            Util::log()->printDebug(m_sovlerID, QObject::tr("Linear solver - assemble/solve/total: %1/%2/%3 s").
-                                    arg(milisecondsToTime(linear.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime(linear.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime((linear.get_assemble_time() + linear.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
-            msa.setAssemblyTime(linear.get_assemble_time() * 1000.0);
-            msa.setSolveTime(linear.get_solve_time() * 1000.0);
-            */
-        }
-        catch (Hermes::Exceptions::Exception e)
-        {
-            QString error = QString("%1").arg(e.what());
-            Util::log()->printDebug(m_solverID, QObject::tr("Linear solver failed: %1").arg(error));
-            throw;
-        }
+        m_hermesSolverContainer = new LinearSolverContainer<Scalar>(m_block, msa.spaces());
+    }
+    else if (m_block->linearityType() == LinearityType_Newton)
+    {
+        m_hermesSolverContainer = new NewtonSolverContainer<Scalar>(m_block, msa.spaces());
     }
 
-    // Nonlinear solver
-    if (m_block->linearityType() == LinearityType_Newton)
+    try
     {
-        // Initialize the FE problem.
-        // if (!m_discreteProblem)
-        //     m_discreteProblem = new DiscreteProblem<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
-        // else
-        //     m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
-
-        m_discreteProblem = new DiscreteProblem<Scalar>(m_block->weakForm().data(), castConst(desmartize(msa.spaces())));
-
-        // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
-        NewtonSolverAgros<Scalar> newton(m_discreteProblem);
-        newton.set_verbose_output(true);
-        newton.set_verbose_callback(processSolverOutput);
-        newton.set_newton_tol(m_block->nonlinearTolerance());
-        newton.set_newton_max_iter(m_block->nonlinearSteps());
-
-        if(Util::config()->saveMatrixRHS)
-        {
-            newton.output_matrix();
-            newton.output_rhs();
-            QString name = QString("%1/%2-%3-%4").arg(tempProblemDir()).arg(m_solverName).arg(Util::problem()->actualTimeStep()).arg(adaptivityStep);
-            newton.set_matrix_filename(QString("%1-Matrix").arg(name).toStdString());
-            newton.set_rhs_filename(QString("%1-RHS").arg(name).toStdString());
-        }
-        newton.set_max_allowed_residual_norm(1e15);
-        try
-        {
-            if(previousMsa)
-            {
-                OGProjection<double> ogProjection;
-                ogProjection.project_global(castConst(desmartize(msa.spaces())),
-                                            desmartize(previousMsa->solutions()),
-                                            solutionVector, m_block->projNormTypeVector());
-
-            }
-            else
-                memset(solutionVector, 0, ndof*sizeof(Scalar));
-
-            newton.solve(solutionVector);
-
-            // todo: this probably should not be done here, since we return solution vector
-            Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
-
-            // old way - delete the FE problem.
-            delete m_discreteProblem;
-
-            // TODO: temporarily disabled
-            /*
-            Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
-                                    arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
-            msa.setAssemblyTime(newton.get_assemble_time() * 1000.0);
-            msa.setSolveTime(newton.get_solve_time() * 1000.0);
-            */
-        }
-        catch (Hermes::Exceptions::Exception e)
-        {
-            QString error = QString(e.what());
-            Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
-            throw;
-        }
-    }
-
-    // Picard solver
-    if (m_block->linearityType() == LinearityType_Picard)
-    {
-        assert(0); // redo after refact with solutionVector
-        // Initialize the FE problem.
-        if(! m_discreteProblem)
-            m_discreteProblem = new DiscreteProblemLinear<Scalar>(m_block->weakForm().data(), castConst(desmartize(msa.spaces())));
+        if(previousMsa)
+            m_hermesSolverContainer->projectPreviousSolution(solutionVector, msa.spaces(), previousMsa->solutions());
         else
-            m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
+            m_hermesSolverContainer->projectPreviousSolution(solutionVector, msa.spaces(), Hermes::vector<QSharedPointer<Solution<Scalar> > >());
 
-        Hermes::vector<Solution<Scalar>* > slns;
-        for (int i = 0; i < msa.spaces().size(); i++)
-        {
-            QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space = msa.spaces().at(i);
-            Hermes::Hermes2D::Space<Scalar> *spc = space.data();
-            slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
-        }
-        PicardSolverAgros<Scalar> picard((DiscreteProblemLinear<Scalar>*)m_discreteProblem);
-        picard.setPreviousSolutions(slns);
-        picard.set_picard_tol(m_block->nonlinearTolerance());
-        picard.set_picard_max_iter(m_block->nonlinearSteps());
-        picard.set_verbose_output(true);
-        picard.set_verbose_callback(processSolverOutput);
+        m_hermesSolverContainer->settableSpaces()->set_spaces(castConst(desmartize(msa.spaces())));
+        m_hermesSolverContainer->setMatrixRhsOutput(m_solverName, adaptivityStep);
+        m_hermesSolverContainer->solve(solutionVector);
 
-        try
-        {
-            picard.solve();
-            Solution<Scalar>::vector_to_solutions(picard.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+        // todo: this probably should not be done here, since we return solution vector
+        Solution<Scalar>::vector_to_solutions(solutionVector, castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
 
-            /*
-            Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
-                                    arg(milisecondsToTime(picard.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime(picard.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
-                                    arg(milisecondsToTime((picard.get_assemble_time() + picard.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
-            msa.setAssemblyTime(picard.get_assemble_time() * 1000.0);
-            msa.setSolveTime(picard.get_solve_time() * 1000.0);
-            */
-        }
-        catch (Hermes::Exceptions::Exception e)
-        {
-            QString error = QString("%1").arg(e.what());
-            Util::log()->printDebug(m_solverID, QObject::tr("Picard's solver failed: %1").arg(error));
-            throw;
-        }
+        // TODO: temporarily disabled
+        /*
+        Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+                                arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
+                                arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
+                                arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
+        msa.setAssemblyTime(newton.get_assemble_time() * 1000.0);
+        msa.setSolveTime(newton.get_solve_time() * 1000.0);
+        */
     }
+    catch (Hermes::Exceptions::Exception e)
+    {
+        QString error = QString("%1").arg(e.what());
+        Util::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
+        throw;
+    }
+
+
+
+//    // Nonlinear solver
+//    if (m_block->linearityType() == LinearityType_Newton)
+//    {
+//        assert(0);
+////        m_discreteProblem = new DiscreteProblem<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
+
+//        // Perform Newton's iteration and translate the resulting coefficient vector into a Solution.
+//        NewtonSolver<Scalar> newton(m_discreteProblem);
+//        newton.set_verbose_output(true);
+//        newton.set_verbose_callback(processSolverOutput);
+//        newton.set_newton_tol(m_block->nonlinearTolerance());
+//        newton.set_newton_max_iter(m_block->nonlinearSteps());
+
+//        newton.set_max_allowed_residual_norm(1e15);
+//        try
+//        {
+//            if(previousMsa)
+//            {
+//                OGProjection<double> ogProjection;
+//                ogProjection.project_global(castConst(desmartize(msa.spaces())),
+//                                            desmartize(previousMsa->solutions()),
+//                                            solutionVector, m_block->projNormTypeVector());
+
+//            }
+//            else
+//                memset(solutionVector, 0, ndof*sizeof(Scalar));
+
+//            newton.solve(solutionVector);
+
+//            // todo: this probably should not be done here, since we return solution vector
+//            Solution<Scalar>::vector_to_solutions(newton.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+
+//            // old way - delete the FE problem.
+//            delete m_discreteProblem;
+
+//            // TODO: temporarily disabled
+//            /*
+//            Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+//                                    arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
+//                                    arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
+//                                    arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
+//            msa.setAssemblyTime(newton.get_assemble_time() * 1000.0);
+//            msa.setSolveTime(newton.get_solve_time() * 1000.0);
+//            */
+//        }
+//        catch (Hermes::Exceptions::Exception e)
+//        {
+//            QString error = QString(e.what());
+//            Util::log()->printDebug(m_solverID, QObject::tr("Newton's iteration failed: %1").arg(error));
+//            throw;
+//        }
+//    }
+
+//    // Picard solver
+//    if (m_block->linearityType() == LinearityType_Picard)
+//    {
+//        assert(0); // redo after refact with solutionVector
+////        // Initialize the FE problem.
+////        if(! m_discreteProblem)
+////            m_discreteProblem = new DiscreteProblemLinear<Scalar>(wf.data(), castConst(desmartize(msa.spaces())));
+////        else
+////            m_discreteProblem->set_spaces(castConst(desmartize(msa.spaces())));
+
+////        Hermes::vector<Solution<Scalar>* > slns;
+////        for (int i = 0; i < msa.spaces().size(); i++)
+////        {
+////            QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space = msa.spaces().at(i);
+////            Hermes::Hermes2D::Space<Scalar> *spc = space.data();
+////            slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 0));
+////        }
+////        PicardSolver<Scalar> picard((DiscreteProblemLinear<Scalar>*)m_discreteProblem);
+////        picard.setPreviousSolutions(slns);
+////        picard.set_picard_tol(m_block->nonlinearTolerance());
+////        picard.set_picard_max_iter(m_block->nonlinearSteps());
+////        picard.set_verbose_output(true);
+////        picard.set_verbose_callback(processSolverOutput);
+
+////        try
+////        {
+////            picard.solve();
+////            Solution<Scalar>::vector_to_solutions(picard.get_sln_vector(), castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+
+////            /*
+////            Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+////                                    arg(milisecondsToTime(picard.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
+////                                    arg(milisecondsToTime(picard.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
+////                                    arg(milisecondsToTime((picard.get_assemble_time() + picard.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
+////            msa.setAssemblyTime(picard.get_assemble_time() * 1000.0);
+////            msa.setSolveTime(picard.get_solve_time() * 1000.0);
+////            */
+////        }
+////        catch (Hermes::Exceptions::Exception e)
+////        {
+////            QString error = QString("%1").arg(e.what());
+////            Util::log()->printDebug(m_solverID, QObject::tr("Picard's solver failed: %1").arg(error));
+////            throw;
+////        }
+//    }
 }
 
 template <typename Scalar>
@@ -604,6 +594,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
         bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
         bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
     }
+
+    // TODO: wf should be created only at the beginning
     m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
     m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
@@ -627,6 +619,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
 
     Util::solutionStore()->addSolution(solutionID, multiSolutionArray);
 
+    // TODO: remove
     m_block->weakForm().clear();
 
     delete bdf2Table;
@@ -953,4 +946,5 @@ void Solver<Scalar>::solveInitialTimeStep()
 
 
 template class VectorStore<double>;
+template class LinearSolverContainer<double>;
 template class Solver<double>;
