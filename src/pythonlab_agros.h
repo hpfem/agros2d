@@ -188,6 +188,18 @@ class PyField
         inline int getNonlinearSteps() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps(); }
         void setNonlinearSteps(const int nonlinearSteps);
 
+        // damping coefficient
+        inline int getDampingCoeff() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->dampingCoeff(); }
+        void setDampingCoeff(const double dampingCoeff);
+
+        // automatic damping
+        inline bool getAutomaticDamping() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->automaticDamping(); }
+        void setAutomaticDamping(const bool automaticDamping);
+
+        // steps to increase damping coeff
+        inline int getDampingNumberToIncrease() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->dampingNumberToIncrease(); }
+        void setDampingNumberToIncrease(const int dampingNumberToIncrease);
+
         // adaptivity type
         inline const char *getAdaptivityType() const { return adaptivityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
         void setAdaptivityType(const char *adaptivityType);

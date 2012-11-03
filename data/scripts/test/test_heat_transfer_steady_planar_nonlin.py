@@ -20,6 +20,9 @@ heat.linearity_type = "newton"
 #heat.linearity_type = "picard"
 heat.nonlinear_tolerance = 0.001
 heat.nonlinear_steps = 10
+heat.damping_coeff = 1.0
+heat.automatic_damping = True
+heat.damping_number_to_increase = 1
 
 heat.add_boundary("Left", "heat_temperature", {"heat_temperature" : 10})
 heat.add_boundary("Radiace", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 20, "heat_radiation_emissivity" : 0.9})

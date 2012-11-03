@@ -83,6 +83,15 @@ cdef extern from "../../src/pythonlab_agros.h":
         int getNonlinearSteps()
         void setNonlinearSteps(int) except +
 
+        double getDampingCoeff()
+        void setDampingCoeff(double) except +
+
+        bool getAutomaticDamping()
+        void setAutomaticDamping(bool) except +
+
+        int getDampingNumberToIncrease()
+        void setDampingNumberToIncrease(int) except +
+
         char *getAdaptivityType()
         void setAdaptivityType(char*) except +
 
@@ -501,6 +510,27 @@ cdef class __Field__:
             return self.thisptr.getNonlinearSteps()
         def __set__(self, nonlinear_steps):
             self.thisptr.setNonlinearSteps(nonlinear_steps)
+
+    # damping coeff
+    property damping_coeff:
+        def __get__(self):
+            return self.thisptr.getDampingCoeff()
+        def __set__(self, damping_coeff):
+            self.thisptr.setDampingCoeff(damping_coeff)
+
+    # automatic damping
+    property automatic_damping:
+        def __get__(self):
+            return self.thisptr.getAutomaticDamping()
+        def __set__(self, automatic_damping):
+            self.thisptr.setAutomaticDamping(automatic_damping)
+
+    # damping number to increase
+    property damping_number_to_increase:
+        def __get__(self):
+            return self.thisptr.getDampingNumberToIncrease()
+        def __set__(self, damping_number_to_increase):
+            self.thisptr.setDampingNumberToIncrease(damping_number_to_increase)
 
     # adaptivity_type
     property adaptivity_type:

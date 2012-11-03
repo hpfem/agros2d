@@ -610,6 +610,27 @@ void PyField::setNonlinearSteps(const int nonlinearSteps)
         throw invalid_argument(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
 }
 
+void PyField::setDampingCoeff(const double dampingCoeff)
+{
+    if ((dampingCoeff <= 1) && (dampingCoeff > 0))
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setDampingCoeff(dampingCoeff);
+    else
+        throw invalid_argument(QObject::tr("Damping coefficient must be between 0 and 1 .").toStdString());
+}
+
+void PyField::setAutomaticDamping(const bool automaticDamping)
+{
+    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAutomaticDamping(automaticDamping);
+}
+
+void PyField::setDampingNumberToIncrease(const int dampingNumberToIncrease)
+{
+    if ((dampingNumberToIncrease <= 5) && (dampingNumberToIncrease >= 1))
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setDampingNumberToIncrease(dampingNumberToIncrease);
+    else
+        throw invalid_argument(QObject::tr("Number of steps needed to increase the damping coefficient must be between 1 and 5 .").toStdString());
+}
+
 void PyField::setAdaptivityType(const char *adaptivityType)
 {
     if (adaptivityTypeStringKeys().contains(QString(adaptivityType)))
