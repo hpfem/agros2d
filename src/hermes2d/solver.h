@@ -112,7 +112,7 @@ private:
 
 //    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
 //                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    void solveOneProblem(QSharedPointer<WeakFormAgros<double> > wf, Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa, int adaptivityStep);
+    void solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa, int adaptivityStep);
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);
