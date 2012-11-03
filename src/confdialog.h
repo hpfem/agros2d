@@ -79,10 +79,6 @@ private:
     // log std out
     QCheckBox *chkLogStdOut;
 
-    // geometry
-    QSpinBox *txtMeshAngleSegmentsCount;
-    QCheckBox *chkMeshCurvilinearElements;
-
     // discrete
     QLineEdit *txtDiscreteDirectory;
     QCheckBox *chkDiscreteSaveMatrixRHS;

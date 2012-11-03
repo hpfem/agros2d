@@ -85,6 +85,10 @@ private:
     ColorButton *colorHighlighted;
     ColorButton *colorSelected;
 
+    // mesh and solver
+    QSpinBox *txtMeshAngleSegmentsCount;
+    QCheckBox *chkMeshCurvilinearElements;
+
     QPushButton *btnOK;
 
     void createActions();
@@ -92,6 +96,7 @@ private:
     void createControls();
     QWidget *controlsWorkspace();
     QWidget *controlsAdvanced();
+    QWidget *controlsMeshAndSolver();
     QWidget *controlsColors();
 
     void load();
@@ -106,6 +111,7 @@ public slots:
 
 private slots:
     void doWorkspaceDefault();
+    void doMeshAndSolverDefault();
     void doAdvancedDefault();
     void doColorsDefault();
     void doShowGridChanged();

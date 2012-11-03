@@ -95,6 +95,10 @@ void SettingsWidget::load()
     colorSolutionMesh->setColor(Util::config()->colorSolutionMesh);
     colorHighlighted->setColor(Util::config()->colorHighlighted);
     colorSelected->setColor(Util::config()->colorSelected);
+
+    // mesh and solver
+    txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
+    chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
 }
 
 void SettingsWidget::save()
@@ -142,6 +146,10 @@ void SettingsWidget::save()
     Util::config()->colorHighlighted = colorHighlighted->color();
     Util::config()->colorSelected = colorSelected->color();
 
+    // mesh and solver
+    Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
+    Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
+
     // save
     Util::config()->save();
 }
@@ -150,12 +158,14 @@ void SettingsWidget::createControls()
 {
     QWidget *workspace = controlsWorkspace();
     QWidget *colors = controlsColors();
+    QWidget *meshAndSolver = controlsMeshAndSolver();
     QWidget *advanced = controlsAdvanced();
 
     // tab widget
     QToolBox *tbxWorkspace = new QToolBox();
     tbxWorkspace->addItem(workspace, icon(""), tr("Workspace"));
     tbxWorkspace->addItem(colors, icon(""), tr("Colors"));
+    tbxWorkspace->addItem(meshAndSolver, icon(""), tr("Mesh and Solver"));
     tbxWorkspace->addItem(advanced, icon(""), tr("Advanced"));
 
     // layout workspace
@@ -326,6 +336,39 @@ QWidget *SettingsWidget::controlsAdvanced()
     return advancedWidget;
 }
 
+QWidget *SettingsWidget::controlsMeshAndSolver()
+{
+    // QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
+    // grpSolver->setLayout(layoutSolver);
+
+    txtMeshAngleSegmentsCount = new QSpinBox(this);
+    txtMeshAngleSegmentsCount->setMinimum(2);
+    txtMeshAngleSegmentsCount->setMaximum(20);
+    chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
+
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
+    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 0, 1);
+    layoutMesh->addWidget(chkMeshCurvilinearElements, 1, 0, 1, 2);
+
+    QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
+    grpMesh->setLayout(layoutMesh);
+
+    QPushButton *btnMeshAndSolverDefault = new QPushButton(tr("Default"));
+    connect(btnMeshAndSolverDefault, SIGNAL(clicked()), this, SLOT(doMeshAndSolverDefault()));
+
+    // layout mesh and solver
+    QVBoxLayout *layoutMeshAndSolver = new QVBoxLayout();
+    layoutMeshAndSolver->addWidget(grpMesh);
+    layoutMeshAndSolver->addStretch();
+    layoutMeshAndSolver->addWidget(btnMeshAndSolverDefault, 0, Qt::AlignLeft);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layoutMeshAndSolver);
+
+    return widget;
+}
+
 QWidget *SettingsWidget::controlsColors()
 {
     QWidget *colorsWidget = new QWidget(this);
@@ -428,6 +471,12 @@ void SettingsWidget::doWorkspaceDefault()
     txtGeometryNodeSize->setValue(GEOMETRYNODESIZE);
     txtGeometryEdgeWidth->setValue(GEOMETRYEDGEWIDTH);
     txtGeometryLabelSize->setValue(GEOMETRYLABELSIZE);
+}
+
+void SettingsWidget::doMeshAndSolverDefault()
+{
+    txtMeshAngleSegmentsCount->setValue(MESHANGLESEGMENTSCOUNT);
+    chkMeshCurvilinearElements->setChecked(MESHCURVILINEARELEMENTS);
 }
 
 void SettingsWidget::doAdvancedDefault()

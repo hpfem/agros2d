@@ -96,10 +96,6 @@ void Config::loadWorkspace()
     rulersFont = settings.value("SceneViewSettings/RulersFont", RULERSFONT).toString();
     postFont = settings.value("SceneViewSettings/PostFont", POSTFONT).toString();
 
-    // mesh
-    angleSegmentsCount = settings.value("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT).toInt();
-    curvilinearElements = settings.value("SceneViewSettings/MeshCurvilinearElements", MESHCURVILINEARELEMENTS).toBool();
-
     // discrete
     saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
     discreteDirectory = settings.value("SceneViewSettings/DiscreteDirectory", DISCRETEDIRECTORY).toString();
@@ -209,6 +205,10 @@ void Config::loadPostprocessor(QDomElement *config)
     particleDragCoefficient = readConfig("SceneViewSettings/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT);
     particleDragReferenceArea = readConfig("SceneViewSettings/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
 
+    // mesh
+    angleSegmentsCount = readConfig("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT);
+    curvilinearElements = readConfig("SceneViewSettings/MeshCurvilinearElements", MESHCURVILINEARELEMENTS);
+
     eleConfig = NULL;
 }
 
@@ -298,10 +298,6 @@ void Config::saveWorkspace()
     settings.setValue("SceneViewSettings/NodeSize", nodeSize);
     settings.setValue("SceneViewSettings/EdgeWidth", edgeWidth);
     settings.setValue("SceneViewSettings/LabelSize", labelSize);
-
-    // mesh
-    settings.setValue("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);
-    settings.setValue("SceneViewSettings/MeshCurvilinearElements", curvilinearElements);
 
     // discrete
     settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
@@ -409,6 +405,10 @@ void Config::savePostprocessor(QDomElement *config)
     writeConfig("SceneViewSettings/ParticleDragDensity", particleDragDensity);
     writeConfig("SceneViewSettings/ParticleDragCoefficient", particleDragCoefficient);
     writeConfig("SceneViewSettings/ParticleDragReferenceArea", particleDragReferenceArea);
+
+    // mesh
+    writeConfig("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);
+    writeConfig("SceneViewSettings/MeshCurvilinearElements", curvilinearElements);
 
     eleConfig = NULL;
 }

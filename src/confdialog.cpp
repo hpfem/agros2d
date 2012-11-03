@@ -67,10 +67,6 @@ void ConfigDialog::load()
     // show result in line edit value widget
     chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
 
-    // geometry
-    txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
-    chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
-
     // discrete
     txtDiscreteDirectory->setText(Util::config()->discreteDirectory);
     chkDiscreteSaveMatrixRHS->setChecked(Util::config()->saveMatrixRHS);
@@ -138,14 +134,9 @@ void ConfigDialog::save()
     // show result in line edit value widget
     Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
-    // mesh
-    Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
-    Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
-
     // discrete
     Util::config()->discreteDirectory = txtDiscreteDirectory->text();
     Util::config()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
-
 
     // number of threads
     Util::config()->numberOfThreads = txtNumOfThreads->value();
@@ -334,21 +325,8 @@ QWidget *ConfigDialog::createSolverWidget()
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
 
-    txtMeshAngleSegmentsCount = new QSpinBox(this);
-    txtMeshAngleSegmentsCount->setMinimum(2);
-    txtMeshAngleSegmentsCount->setMaximum(20);
-    chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
-
     txtDiscreteDirectory = new QLineEdit(this);
     chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix"));
-
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
-    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 0, 1);
-    layoutMesh->addWidget(chkMeshCurvilinearElements, 1, 0, 1, 2);
-
-    QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
-    grpMesh->setLayout(layoutMesh);
 
     QGridLayout *layoutDiscrete = new QGridLayout();
     layoutDiscrete->addWidget(new QLabel(tr("Save matrix and RHS:")), 0, 0);
@@ -360,7 +338,6 @@ QWidget *ConfigDialog::createSolverWidget()
 
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpSolver);
-    layoutGeneral->addWidget(grpMesh);
     layoutGeneral->addWidget(grpDiscrete);
     layoutGeneral->addStretch();
 
