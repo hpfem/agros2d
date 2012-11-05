@@ -53,6 +53,32 @@ struct SolutionArray
 };
 
 template <typename Scalar>
+struct MultiSpace
+{
+    MultiSpace(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > sp ) : spaces(sp) {}
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > naked() { return desmartize(spaces); }
+    Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > nakedConst() { return castConst(desmartize(spaces)); }
+    bool empty() const {return spaces.empty(); }
+    int size() const {return spaces.size(); }
+    QSharedPointer<Hermes::Hermes2D::Space<Scalar> > at(int index) {return spaces.at(index); }
+
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces;
+};
+
+template <typename Scalar>
+struct MultiSolution
+{
+    MultiSolution() {}
+    MultiSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > sols ) : solutions(sols) {}
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > naked() { return desmartize(solutions); }
+    bool empty() const {return solutions.empty(); }
+    int size() const {return solutions.size(); }
+    QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > at(int index) {return solutions.at(index); }
+
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions;
+};
+
+template <typename Scalar>
 class MultiSolutionArray
 {
 public:
@@ -62,8 +88,8 @@ public:
     //add next component
     void addComponent(SolutionArray<Scalar> solutionArray);
 
-    void setSpaces(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
-    void setSolutions(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions);
+    void setSpaces(MultiSpace<Scalar> spaces);
+    void setSolutions(MultiSolution<Scalar> solutions);
 
     void setSpace(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, int component);
     void setSolution(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, int component);
@@ -71,11 +97,13 @@ public:
     void append(MultiSolutionArray<Scalar> msa);
 
     //creates copy of spaces, used in solver
-    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces();
-    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions();
+    MultiSpace<Scalar> spaces();
+    MultiSolution<Scalar> solutions();
 
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > spacesNaked() { return desmartize(spaces()); }
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > solutionsNaked() {return desmartize(solutions()); }
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > spacesNaked() { return spaces().naked(); }
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > solutionsNaked() { return solutions().naked(); }
+
+    Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > spacesNakedConst() { return spaces().nakedConst(); }
 
     // returns the same multi solution array with spaces only (solutions are empty)
     MultiSolutionArray<Scalar> copySpaces();

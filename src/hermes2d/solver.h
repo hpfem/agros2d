@@ -71,14 +71,13 @@ class HermesSolverContainer
 public:
     HermesSolverContainer(Block* block) : m_block(block) {}
     virtual void solve(Scalar* solutionVector) = 0;
-    virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
-                                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions) {}
+    virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions) {}
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() = 0;
 
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
-    static HermesSolverContainer* factory(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    static HermesSolverContainer* factory(Block* block, MultiSpace<Scalar> spaces);
 
 protected:
     Block* m_block;
@@ -88,7 +87,7 @@ template <typename Scalar>
 class LinearSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
-    LinearSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    LinearSolverContainer(Block* block, MultiSpace<Scalar> spaces);
     ~LinearSolverContainer();
     virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver.data(), solverName, adaptivityStep); }
@@ -102,10 +101,9 @@ template <typename Scalar>
 class NewtonSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
-    NewtonSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    NewtonSolverContainer(Block* block, MultiSpace<Scalar> spaces);
     ~NewtonSolverContainer();
-    virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
-                                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions);
+    virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
     virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_newtonSolver.data(); }
@@ -118,12 +116,11 @@ template <typename Scalar>
 class PicardSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
-    PicardSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
+    PicardSolverContainer(Block* block, MultiSpace<Scalar> spaces);
     ~PicardSolverContainer();
-    virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
-                                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions);
+    virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
     virtual void solve(Scalar* solutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver.data(), solverName, adaptivityStep); }
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { setMatrixRhsOutputGen(m_picardSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_picardSolver.data(); }
 
 private:
@@ -176,9 +173,7 @@ private:
 
     void cleanup();
 
-//    bool solveOneProblem(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
-//                         Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam);
-    void solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar> *previousMsa, int adaptivityStep);
+    void solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);

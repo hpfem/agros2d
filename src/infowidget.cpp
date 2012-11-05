@@ -204,7 +204,7 @@ void InfoWidget::showInfo()
 
                 solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
                 solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
-                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces())));
+                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
             }
 
             if (Util::problem()->isMeshed())
@@ -344,7 +344,7 @@ void InfoWidget::finishLoading(bool ok)
                 {
                     MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
-                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(desmartize(msa.spaces()))));
+                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst()));
                     // dataError += QString("[%1, %2], ").arg(i+1).arg(msa.adaptiveError());
                 }
                 dataDOFs += "]";

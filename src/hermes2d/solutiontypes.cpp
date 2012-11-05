@@ -96,7 +96,7 @@ void MultiSolutionArray<Scalar>::append(MultiSolutionArray<Scalar> msa)
 }
 
 template <typename Scalar>
-Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionArray<Scalar>::spaces()
+MultiSpace<Scalar> MultiSolutionArray<Scalar>::spaces()
 {
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces;
 
@@ -105,11 +105,11 @@ Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > MultiSolutionA
         spaces.push_back(solutionArray.space);
     }
 
-    return spaces;
+    return MultiSpace<Scalar>(spaces);
 }
 
 template <typename Scalar>
-Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > MultiSolutionArray<Scalar>::solutions()
+MultiSolution<Scalar> MultiSolutionArray<Scalar>::solutions()
 {
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions;
 
@@ -118,7 +118,7 @@ Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > MultiSoluti
         solutions.push_back(solutionArray.sln);
     }
 
-    return solutions;
+    return MultiSolution<Scalar>(solutions);
 }
 
 //template <typename Scalar>
@@ -167,19 +167,19 @@ void MultiSolutionArray<Scalar>::setSpace(QSharedPointer<Hermes::Hermes2D::Space
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::setSpaces(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces)
+void MultiSolutionArray<Scalar>::setSpaces(MultiSpace<Scalar> spacesVec)
 {
     if(m_solutionArrays.size() == 0)
     {
-        for(int comp = 0; comp < spaces.size(); comp++)
+        for(int comp = 0; comp < spacesVec.spaces.size(); comp++)
         {
             m_solutionArrays.push_back(SolutionArray<Scalar>());
         }
     }
-    assert(m_solutionArrays.size() == spaces.size());
-    for(int comp = 0; comp < spaces.size(); comp++)
+    assert(m_solutionArrays.size() == spacesVec.spaces.size());
+    for(int comp = 0; comp < spacesVec.spaces.size(); comp++)
     {
-        setSpace(spaces.at(comp), comp);
+        setSpace(spacesVec.spaces.at(comp), comp);
     }
 }
 
@@ -253,6 +253,8 @@ void MultiSolutionArray<Scalar>::saveToFile(const QString &solutionID)
 }
 
 
+template class MultiSpace<double>;
+template class MultiSolution<double>;
 template class SolutionArray<double>;
 template class MultiSolutionArray<double>;
 template class SolutionID<FieldInfo>;

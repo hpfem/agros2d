@@ -84,7 +84,7 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
 }
 
 template <typename Scalar>
-HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces)
+HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block, MultiSpace<Scalar> spaces)
 {
     if (block->linearityType() == LinearityType_Linear)
     {
@@ -102,9 +102,9 @@ HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* blo
 
 
 template <typename Scalar>
-LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
+LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block, MultiSpace<Scalar> spaces) : HermesSolverContainer<Scalar>(block)
 {
-    m_linearSolver = QSharedPointer<LinearSolver<Scalar> >(new LinearSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+    m_linearSolver = QSharedPointer<LinearSolver<Scalar> >(new LinearSolver<Scalar>(block->weakForm().data(), spaces.nakedConst()));
 }
 
 
@@ -117,9 +117,9 @@ void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 }
 
 template <typename Scalar>
-NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
+NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, MultiSpace<Scalar> spaces) : HermesSolverContainer<Scalar>(block)
 {
-    m_newtonSolver = QSharedPointer<NewtonSolver<Scalar> >(new NewtonSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+    m_newtonSolver = QSharedPointer<NewtonSolver<Scalar> >(new NewtonSolver<Scalar>(block->weakForm().data(), spaces.nakedConst()));
     m_newtonSolver.data()->set_verbose_output(true);
     m_newtonSolver.data()->set_verbose_callback(processSolverOutput);
     m_newtonSolver.data()->set_newton_tol(block->nonlinearTolerance());
@@ -128,19 +128,19 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, Hermes::vecto
 }
 
 template <typename Scalar>
-void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
-                                                            Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions)
+void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces,
+                                                            MultiSolution<Scalar> solutions)
 {
     if(solutions.empty())
     {
-        int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(spaces)));
+        int ndof = Space<Scalar>::get_num_dofs(spaces.nakedConst());
         memset(solutionVector, 0, ndof*sizeof(Scalar));
     }
     else
     {
         OGProjection<double> ogProjection;
-        ogProjection.project_global(castConst(desmartize(spaces)),
-                                    desmartize(solutions),
+        ogProjection.project_global(spaces.nakedConst(),
+                                    solutions.naked(),
                                     solutionVector, this->m_block->projNormTypeVector());
     }
 }
@@ -154,9 +154,9 @@ void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
 }
 
 template <typename Scalar>
-PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces) : HermesSolverContainer<Scalar>(block)
+PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block, MultiSpace<Scalar> spaces) : HermesSolverContainer<Scalar>(block)
 {
-    m_picardSolver = QSharedPointer<PicardSolver<Scalar> >(new PicardSolver<Scalar>(block->weakForm().data(), castConst(desmartize(spaces))));
+    m_picardSolver = QSharedPointer<PicardSolver<Scalar> >(new PicardSolver<Scalar>(block->weakForm().data(), spaces.nakedConst()));
     m_picardSolver.data()->set_verbose_output(true);
     m_picardSolver.data()->set_verbose_callback(processSolverOutput);
     m_picardSolver.data()->set_picard_tol(block->nonlinearTolerance());
@@ -165,19 +165,18 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block, Hermes::vecto
 }
 
 template <typename Scalar>
-void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
-                                                            Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions)
+void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions)
 {
     if(solutions.empty())
     {
-        int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(spaces)));
+        int ndof = Space<Scalar>::get_num_dofs(spaces.nakedConst());
         memset(solutionVector, 0, ndof*sizeof(Scalar));
     }
     else
     {
         OGProjection<double> ogProjection;
-        ogProjection.project_global(castConst(desmartize(spaces)),
-                                    desmartize(solutions),
+        ogProjection.project_global(spaces.nakedConst(),
+                                    solutions.naked(),
                                     solutionVector, this->m_block->projNormTypeVector());
     }
 }
@@ -464,7 +463,7 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, MultiSolutionArray<Scalar>* previousMsa, int adaptivityStep)
+void Solver<Scalar>::solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, int adaptivityStep, MultiSolution<Scalar> previousSolution)
 {
     Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
@@ -472,17 +471,13 @@ void Solver<Scalar>::solveOneProblem(Scalar *solutionVector, MultiSolutionArray<
 
     try
     {
-        if(previousMsa)
-            m_hermesSolverContainer->projectPreviousSolution(solutionVector, msa.spaces(), previousMsa->solutions());
-        else
-            m_hermesSolverContainer->projectPreviousSolution(solutionVector, msa.spaces(), Hermes::vector<QSharedPointer<Solution<Scalar> > >());
-
-        m_hermesSolverContainer->settableSpaces()->set_spaces(castConst(desmartize(msa.spaces())));
+        m_hermesSolverContainer->projectPreviousSolution(solutionVector, msa.spaces(), previousSolution);
+        m_hermesSolverContainer->settableSpaces()->set_spaces(msa.spacesNakedConst());
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverName, adaptivityStep);
         m_hermesSolverContainer->solve(solutionVector);
 
         // todo: this probably should not be done here, since we return solution vector
-        Solution<Scalar>::vector_to_solutions(solutionVector, castConst(desmartize(msa.spaces())), desmartize(msa.solutions()));
+        Solution<Scalar>::vector_to_solutions(solutionVector, msa.spacesNakedConst(), msa.solutionsNaked());
 
         // TODO: temporarily disabled
         /*
@@ -619,7 +614,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     //cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
-    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) == 0)
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(multiSolutionArray.spacesNakedConst()) == 0)
     {
         Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
@@ -631,7 +626,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     foreach (Field* field, m_block->fields())
         field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(multiSolutionArray.spaces()), Util::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(multiSolutionArray.spacesNaked(), Util::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
@@ -646,11 +641,11 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
-    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
+    int ndof = Space<Scalar>::get_num_dofs(multiSolutionArray.spacesNakedConst());
     //Scalar* coefVec = new Scalar[ndof];
     Scalar* coefVec = m_lastVector.createNew(ndof);
 
-    solveOneProblem(coefVec, multiSolutionArray, previousTSMultiSolutionArray.size() != 0 ? &previousTSMultiSolutionArray : NULL, adaptivityStep);
+    solveOneProblem(coefVec, multiSolutionArray, adaptivityStep, previousTSMultiSolutionArray.solutions());
     //Solution<Scalar>::vector_to_solutions(coefVec, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
@@ -708,19 +703,19 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
     m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
-    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces())));
+    int ndof = Space<Scalar>::get_num_dofs(multiSolutionArray.spacesNakedConst());
     Scalar* coefVec2 = new Scalar[ndof];
     MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
     multiSolutionArray2.createNewSolutions();
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
-    solveOneProblem(coefVec2, multiSolutionArray2, timeStep > 0 ? &multiSolutionArray : NULL, adaptivityStep);
+    solveOneProblem(coefVec2, multiSolutionArray2, adaptivityStep, timeStep > 0 ? multiSolutionArray.solutions() : MultiSolution<Scalar>());
 
     double nextTimeStepLength = Util::problem()->config()->constantTimeStepLength();
     bool refuseThisStep = false;
 
 
-    double error = Global<Scalar>::calc_abs_errors (desmartize(multiSolutionArray.solutions()), desmartize(multiSolutionArray2.solutions()));
+    double error = Global<Scalar>::calc_abs_errors(multiSolutionArray.solutionsNaked(), multiSolutionArray2.solutionsNaked());
 
     if(error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * Util::problem()->config()->timeMethodTolerance().number())
         refuseThisStep = true;
@@ -788,7 +783,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
         previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
 
     // check for DOFs
-    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(msa.spaces()))) == 0)
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa.spacesNakedConst()) == 0)
     {
         Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
@@ -798,7 +793,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     foreach (Field* field, m_block->fields())
         field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msa.spaces()), Util::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(msa.spacesNaked(), Util::problem()->actualTime());
 
     BDF2ATable bdf2ATable;
     if(m_block->isTransient())
@@ -812,7 +807,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
 
     // create refined spaces
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = desmartize(msa.spaces());
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = msa.spacesNaked();
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesRef;
     for (unsigned int i = 0; i < spaces.size(); i++)
     {
@@ -826,16 +821,16 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     }
     msaRef.setSpaces(smartize(spacesRef));
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(desmartize(msaRef.spaces()), Util::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(msaRef.spacesNaked(), Util::problem()->actualTime());
 
     // create solutions
     msaRef.createNewSolutions();
 
-    int ndof = Space<Scalar>::get_num_dofs(castConst(desmartize(msaRef.spaces())));
+    int ndof = Space<Scalar>::get_num_dofs(msaRef.spacesNakedConst());
     Scalar* coeffVec = new Scalar[ndof];
 
     // solve reference problem
-    solveOneProblem(coeffVec, msaRef, previousTSMultiSolutionArray.size() != 0 ? &previousTSMultiSolutionArray : NULL, adaptivityStep);
+    solveOneProblem(coeffVec, msaRef, adaptivityStep, previousTSMultiSolutionArray.solutions());
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
