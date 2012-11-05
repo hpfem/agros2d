@@ -44,12 +44,14 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
                                          SceneViewMesh *sceneMesh,
                                          SceneViewPost2D *scenePost2D,
                                          SceneViewPost3D *scenePost3D,
+                                         ChartWidget *sceneChart,
                                          QWidget *parent) : QWidget(parent)
 {
     m_sceneGeometry = sceneGeometry;
     m_sceneMesh = sceneMesh;
     m_scenePost2D = scenePost2D;
     m_scenePost3D = scenePost3D;
+    m_sceneChart = sceneChart;
 
     setWindowIcon(icon("scene-properties"));
     setObjectName("PostprocessorView");
@@ -313,6 +315,7 @@ void PostprocessorWidget::createControls()
     groupPostContourAdvanced->setVisible(false);
     groupPostVectorAdvanced->setVisible(false);
     groupPostParticalTracingAdvanced->setVisible(false);
+    groupPostChartAdvanced->setVisible(false);
 
     setLayout(layoutMain);
 }
@@ -530,6 +533,21 @@ QWidget *PostprocessorWidget::post3DWidget()
     return widget;
 }
 
+QWidget *PostprocessorWidget::chartWidget()
+{
+    QGroupBox *grpChart = new QGroupBox(tr("Chart"));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpChart);
+    layout->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
+}
+
 QWidget *PostprocessorWidget::controlsBasic()
 {
     cmbFieldInfo = new QComboBox();
@@ -578,11 +596,13 @@ QWidget *PostprocessorWidget::controlsBasic()
     groupMeshOrder = meshOrderWidget();
     groupPost2d = post2DWidget();
     groupPost3d = post3DWidget();
+    groupChart = chartWidget();
 
     widgetsLayout = new QStackedLayout();
     widgetsLayout->addWidget(groupMesh);
     widgetsLayout->addWidget(groupPost2d);
     widgetsLayout->addWidget(groupPost3d);
+    widgetsLayout->addWidget(groupChart);
 
     QVBoxLayout *layoutBasic = new QVBoxLayout();
     layoutBasic->addWidget(grpField);
@@ -603,6 +623,7 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     groupPostContour = postContourWidget();
     groupPostVector = postVectorWidget();
     groupPostParticalTracing = postParticalTracingWidget();
+    groupPostChartAdvanced = postChartWidget();
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
     layoutArea->addWidget(groupMeshOrder);
@@ -610,6 +631,7 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     layoutArea->addWidget(groupPostContour);
     layoutArea->addWidget(groupPostVector);
     layoutArea->addWidget(groupPostParticalTracing);
+    layoutArea->addWidget(groupPostChartAdvanced);
     layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
@@ -742,7 +764,6 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     gridLayoutContours->addWidget(new QLabel(tr("Contour width:")), 1, 0);
     gridLayoutContours->addWidget(txtContourWidth, 1, 1);
 
-
     QWidget *contourWidget = new QWidget();
     contourWidget->setLayout(gridLayoutContours);
 
@@ -788,6 +809,28 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     vectorWidget->setLayout(gridLayoutVectors);
 
     return vectorWidget;
+}
+
+QWidget *PostprocessorWidget::postChartWidget()
+{
+    ChartControlsWidget *chartWidget = new ChartControlsWidget(m_scenePost2D, m_sceneChart->chart(), this);
+
+    // layout
+    QVBoxLayout *controlsLayout = new QVBoxLayout();
+    controlsLayout->addWidget(chartWidget);
+
+    QGroupBox *grpChart = new QGroupBox(tr("Chart"));
+    grpChart->setLayout(controlsLayout);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(grpChart);
+    layout->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    return widget;
 }
 
 QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
@@ -1081,6 +1124,9 @@ void PostprocessorWidget::refresh()
         // particle tracing
         groupPostParticalTracing->setVisible(false);
         groupPostParticalTracingAdvanced->setVisible(false);
+        // chart
+        groupChart->setVisible(false);
+        groupPostChartAdvanced->setVisible(false);
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -1110,6 +1156,10 @@ void PostprocessorWidget::refresh()
         // partical tracing
         groupPostParticalTracing->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
         groupPostParticalTracingAdvanced->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked() && !groupPostParticalTracing->isCollapsed());
+
+        // chart
+        groupChart->setVisible(false);
+        groupPostChartAdvanced->setVisible(false);
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
@@ -1144,6 +1194,32 @@ void PostprocessorWidget::refresh()
         // partical tracing
         groupPostParticalTracing->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked());
         groupPostParticalTracingAdvanced->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked() && !groupPostParticalTracing->isCollapsed());
+
+        // chart
+        groupChart->setVisible(false);
+        groupPostChartAdvanced->setVisible(false);
+    }
+    if (m_sceneChart->actSceneModeChart->isChecked())
+    {
+        widgetsLayout->setCurrentWidget(groupChart);
+
+        // mesh
+        groupMeshOrder->setVisible(false);
+        // scalar
+        groupPostScalar->setVisible(false);
+        groupPostScalarAdvanced->setVisible(false);
+        // contour
+        groupPostContour->setVisible(false);
+        groupPostContourAdvanced->setVisible(false);
+        // vector
+        groupPostVector->setVisible(false);
+        groupPostVectorAdvanced->setVisible(false);
+        // particle tracing
+        groupPostParticalTracing->setVisible(false);
+        groupPostParticalTracingAdvanced->setVisible(false);
+        // chart
+        groupChart->setVisible(true);
+        groupPostChartAdvanced->setVisible(true);
     }
 
     // scalar view

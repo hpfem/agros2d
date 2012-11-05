@@ -26,9 +26,11 @@ class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
+class ChartWidget;
 class LineEditDouble;
 class CollapsableGroupBoxButton;
 class FieldInfo;
+class ValueLineEdit;
 
 class PostprocessorWidget : public QWidget
 {
@@ -39,6 +41,7 @@ public:
                       SceneViewMesh *sceneMesh,
                       SceneViewPost2D *scenePost2D,
                       SceneViewPost3D *scenePost3D,
+                      ChartWidget *sceneChart,
                       QWidget *parent);
 
 private slots:
@@ -49,6 +52,7 @@ private:
     SceneViewMesh *m_sceneMesh;
     SceneViewPost2D *m_scenePost2D;
     SceneViewPost3D *m_scenePost3D;
+    ChartWidget *m_sceneChart;
 
     QWidget *basic;
 
@@ -166,6 +170,7 @@ private:
     QWidget *groupMesh;
     QWidget *groupPost2d;
     QWidget *groupPost3d;
+    QWidget *groupChart;
 
     QWidget *groupMeshOrder;
     CollapsableGroupBoxButton *groupPostScalar;
@@ -176,10 +181,12 @@ private:
     QWidget *groupPostVectorAdvanced;
     CollapsableGroupBoxButton *groupPostParticalTracing;
     QWidget *groupPostParticalTracingAdvanced;
+    QWidget *groupPostChartAdvanced;
 
     QWidget *meshWidget();
     QWidget *post2DWidget();
     QWidget *post3DWidget();
+    QWidget *chartWidget();
 
     QWidget *meshOrderWidget();
     CollapsableGroupBoxButton *postScalarWidget();
@@ -190,6 +197,7 @@ private:
     QWidget *postVectorAdvancedWidget();
     CollapsableGroupBoxButton *postParticalTracingWidget();
     QWidget *postParticalTracingAdvancedWidget();
+    QWidget *postChartWidget();
 
     int selectedTimeStep();
     int selectedAdaptivityStep();
@@ -219,10 +227,13 @@ private slots:
     void doParticleDefault();
     void doOrderDefault();
     void doScalarFieldLog(int state);
+
+    void doChartLine();
+
     void doScalarFieldExpandCollapse(bool collapsed);
     void doContourFieldExpandCollapse(bool collapsed);
     void doVectorFieldExpandCollapse(bool collapsed);
-    void doParticleFieldExpandCollapse(bool collapsed);
+    void doParticleFieldExpandCollapse(bool collapsed);       
 };
 
 #endif // SCENEVIEWDIALOG_H

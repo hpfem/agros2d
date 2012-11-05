@@ -83,13 +83,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
     connect(Util::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
     // postprocessor
-    postprocessorWidget = new PostprocessorWidget(sceneViewPreprocessor, sceneViewMesh, sceneViewPost2D, sceneViewPost3D, this);
+    postprocessorWidget = new PostprocessorWidget(sceneViewPreprocessor,
+                                                  sceneViewMesh,
+                                                  sceneViewPost2D,
+                                                  sceneViewPost3D,
+                                                  sceneChart,
+                                                  this);
     // settings
     settingsWidget = new SettingsWidget(this);
     // problem
     problemWidget = new ProblemWidget(this);
-    // chart
-    chartWidget = new ChartControlsWidget(sceneViewPost2D, sceneChart->chart(), this);
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
     collaborationDownloadDialog = new ServerDownloadDialog(this);
@@ -426,7 +429,7 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
-    actSceneModeGroup->addAction(chartWidget->actChart);
+    actSceneModeGroup->addAction(sceneChart->actSceneModeChart);
     actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
@@ -516,7 +519,7 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
     mnuView->addAction(settingsWidget->actSettings);
-    mnuView->addAction(chartWidget->actChart);
+    mnuView->addAction(sceneChart->actSceneModeChart);
     mnuView->addSeparator();
     mnuView->addAction(actHideControlPanel);
     mnuView->addSeparator();
@@ -693,7 +696,6 @@ void MainWindow::createMain()
     tabControlsLayout->addWidget(preprocessorWidget);
     tabControlsLayout->addWidget(postprocessorWidget);
     tabControlsLayout->addWidget(settingsWidget);
-    tabControlsLayout->addWidget(chartWidget);
 
     viewControls = new QWidget();
     viewControls->setLayout(tabControlsLayout);
@@ -723,7 +725,7 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
-    tlbLeftBar->addAction(chartWidget->actChart);
+    tlbLeftBar->addAction(sceneChart->actSceneModeChart);
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(settingsWidget->actSettings);
     tlbLeftBar->addWidget(spacing);
@@ -1476,17 +1478,18 @@ void MainWindow::setControls()
         // hide transform dialog
         sceneTransformDialog->hide();
     }
+    if (sceneChart->actSceneModeChart->isChecked())
+    {
+        tabViewLayout->setCurrentWidget(sceneViewChartWidget);
+        tabControlsLayout->setCurrentWidget(postprocessorWidget);
+    }
+
     if (settingsWidget->actSettings->isChecked())
     {
         tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
         tabControlsLayout->setCurrentWidget(settingsWidget);
     }
 
-    if (chartWidget->actChart->isChecked())
-    {
-        tabViewLayout->setCurrentWidget(sceneViewChartWidget);
-        tabControlsLayout->setCurrentWidget(chartWidget);
-    }
 
     actDocumentExportMeshFile->setEnabled(Util::problem()->isMeshed());
 

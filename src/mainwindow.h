@@ -221,7 +221,6 @@ private:
     PostprocessorWidget *postprocessorWidget;
     SettingsWidget *settingsWidget;
     ProblemWidget *problemWidget;
-    ChartControlsWidget *chartWidget;
 
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;

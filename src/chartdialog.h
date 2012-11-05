@@ -62,10 +62,16 @@ struct ChartLine
 class ChartWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     ChartWidget(QWidget *parent = 0);
 
+    QAction *actSceneModeChart;
+
     inline Chart *chart() { return m_chart; }
+
+public slots:
+    void setControls();
 
 private:
     Chart *m_chart;
@@ -88,19 +94,12 @@ public:
                 QWidget *parent = 0);
     ~ChartControlsWidget();
 
-    virtual QIcon iconView() { return icon("chart"); }
-    virtual QString labelView() { return tr("Chart"); }
-
-    QAction *actChart;
-
 private:
     SceneViewPost2D *m_sceneViewPost2D;
 
     QTabWidget* tabAnalysisType;
 
     // geometry
-    QComboBox *cmbTimeStep;
-
     QLabel *lblStartX;
     QLabel *lblStartY;
     QLabel *lblEndX;
@@ -133,7 +132,6 @@ private:
 
     Chart *m_chart;
 
-    void createActions();
     void createControls();
 
     QList<double> getHorizontalAxisValues(ChartLine *chartLine);
@@ -155,7 +153,6 @@ private slots:
     QMap<QString, double> getData(Point point, int timeStep);
 
     void doChartLine();
-    void doTimeStepChanged(int index);
 };
 
 #endif // CHARTDIALOG_H

@@ -78,12 +78,27 @@ QList<Point> ChartLine::getPoints()
 
 ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
 {
+    actSceneModeChart = new QAction(icon("chart"), tr("Chart"), this);
+    actSceneModeChart->setShortcut(Qt::Key_F8);
+    actSceneModeChart->setStatusTip(tr("Chart"));
+    actSceneModeChart->setCheckable(true);
+
+    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
+    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+
     m_chart = new Chart(this, true);
 
     QHBoxLayout *layoutMain = new QHBoxLayout();
     layoutMain->addWidget(m_chart);
 
     setLayout(layoutMain);
+
+    setControls();
+}
+
+void ChartWidget::setControls()
+{
+    actSceneModeChart->setEnabled(Util::problem()->isSolved());
 }
 
 // **************************************************************************************************
@@ -95,9 +110,9 @@ ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
     connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
     connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
-    createActions();
     createControls();
 
+    // TODO: move to config (problem part)
     QSettings settings;
     txtStartX->setValue(settings.value("ChartDialog/StartX", "0").toString());
     txtEndX->setValue(settings.value("ChartDialog/EndX", "0").toString());
@@ -115,6 +130,7 @@ ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
 
 ChartControlsWidget::~ChartControlsWidget()
 {
+    // TODO: move to config (problem part)
     QSettings settings;
     settings.setValue("ChartDialog/StartX", txtStartX->value().text());
     settings.setValue("ChartDialog/EndX", txtEndX->value().text());
@@ -130,14 +146,11 @@ ChartControlsWidget::~ChartControlsWidget()
 
 void ChartControlsWidget::setControls()
 {
-    actChart->setEnabled(Util::problem()->isSolved());
-
     if (!Util::problem()->isSolved())
         return;
 
     fillComboBoxScalarVariable(Util::scene()->activeViewField(), cmbFieldVariable);
     doFieldVariable(cmbFieldVariable->currentIndex());
-    fillComboBoxTimeStep(Util::scene()->activeViewField(), cmbTimeStep);
 
     // correct labels
     lblStartX->setText(Util::problem()->config()->labelX() + ":");
@@ -164,18 +177,15 @@ void ChartControlsWidget::setControls()
 
 void ChartControlsWidget::createControls()
 {
-    // controls
-    QWidget *controls = new QWidget(this);
-
-    QPushButton *btnPlot = new QPushButton(controls);
+    QPushButton *btnPlot = new QPushButton();
     btnPlot->setText(tr("Plot"));
     connect(btnPlot, SIGNAL(clicked()), this, SLOT(doPlot()));
 
-    QPushButton *btnSaveImage = new QPushButton(controls);
+    QPushButton *btnSaveImage = new QPushButton();
     btnSaveImage->setText(tr("Save image"));
     connect(btnSaveImage, SIGNAL(clicked()), m_chart, SLOT(saveImage()));
 
-    QPushButton *btnExportData = new QPushButton(controls);
+    QPushButton *btnExportData = new QPushButton();
     btnExportData->setText(tr("Export"));
     connect(btnExportData, SIGNAL(clicked()), SLOT(doExportData()));
 
@@ -202,7 +212,7 @@ void ChartControlsWidget::createControls()
     layoutStart->addWidget(lblStartY, 1, 0);
     layoutStart->addWidget(txtStartY, 1, 1);
 
-    QGroupBox *grpStart = new QGroupBox(tr("Start"), this);
+    QGroupBox *grpStart = new QGroupBox(tr("Start"));
     grpStart->setLayout(layoutStart);
 
     // end
@@ -212,7 +222,7 @@ void ChartControlsWidget::createControls()
     layoutEnd->addWidget(lblEndY, 1, 0);
     layoutEnd->addWidget(txtEndY, 1, 1);
 
-    QGroupBox *grpEnd = new QGroupBox(tr("End"), this);
+    QGroupBox *grpEnd = new QGroupBox(tr("End"));
     grpEnd->setLayout(layoutEnd);
 
     // angle
@@ -223,16 +233,16 @@ void ChartControlsWidget::createControls()
     layoutAngle->addWidget(new QLabel("Angle"));
     layoutAngle->addWidget(txtAngle);
 
-    QGroupBox *grpAngle = new QGroupBox(tr("Angle"), this);
+    QGroupBox *grpAngle = new QGroupBox(tr("Angle"));
     grpAngle->setLayout(layoutAngle);
 
     // x - axis
-    radAxisLength = new QRadioButton(tr("Length"), this);
+    radAxisLength = new QRadioButton(tr("Length"));
     radAxisLength->setChecked(true);
-    radAxisX = new QRadioButton("X", this);
-    radAxisY = new QRadioButton("Y", this);
+    radAxisX = new QRadioButton("X");
+    radAxisY = new QRadioButton("Y");
 
-    QButtonGroup *axisGroup = new QButtonGroup(this);
+    QButtonGroup *axisGroup = new QButtonGroup();
     axisGroup->addButton(radAxisLength);
     axisGroup->addButton(radAxisX);
     axisGroup->addButton(radAxisY);
@@ -241,12 +251,12 @@ void ChartControlsWidget::createControls()
     connect(radAxisY, SIGNAL(clicked()), this, SLOT(doPlot()));
 
     // axis
-    QHBoxLayout *layoutAxis = new QHBoxLayout(this);
+    QHBoxLayout *layoutAxis = new QHBoxLayout();
     layoutAxis->addWidget(radAxisLength);
     layoutAxis->addWidget(radAxisX);
     layoutAxis->addWidget(radAxisY);
 
-    QGroupBox *grpAxis = new QGroupBox(tr("Horizontal axis"), this);
+    QGroupBox *grpAxis = new QGroupBox(tr("Horizontal axis"));
     grpAxis->setLayout(layoutAxis);
 
     // axis points and time step
@@ -258,15 +268,10 @@ void ChartControlsWidget::createControls()
     connect(chkAxisPointsReverse, SIGNAL(clicked()), this, SLOT(doPlot()));
 
     // timestep
-    cmbTimeStep = new QComboBox(this);
-    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
-
     QGridLayout *layoutAxisPointsAndTimeStep = new QGridLayout();
     layoutAxisPointsAndTimeStep->addWidget(new QLabel(tr("Points:")), 0, 0);
     layoutAxisPointsAndTimeStep->addWidget(txtAxisPoints, 0, 1);
     layoutAxisPointsAndTimeStep->addWidget(chkAxisPointsReverse, 0, 2);
-    layoutAxisPointsAndTimeStep->addWidget(new QLabel(tr("Time step:")), 1, 0);
-    layoutAxisPointsAndTimeStep->addWidget(cmbTimeStep, 1, 1, 1, 2);
 
     QGroupBox *grpAxisPointsAndTimeStep = new QGroupBox(tr("Points and time step"), this);
     grpAxisPointsAndTimeStep->setLayout(layoutAxisPointsAndTimeStep);
@@ -283,23 +288,20 @@ void ChartControlsWidget::createControls()
     layoutTime->addWidget(lblPointY, 1, 0);
     layoutTime->addWidget(txtPointY, 1, 1);
 
-    QGroupBox *grpTime = new QGroupBox(tr("Point"), this);
+    QGroupBox *grpTime = new QGroupBox(tr("Point"));
     grpTime->setLayout(layoutTime);
 
     // plot
     // variable
-    cmbFieldVariable = new QComboBox(this);
+    cmbFieldVariable = new QComboBox();
     connect(cmbFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariable(int)));
     // component
-    cmbFieldVariableComp = new QComboBox(this);
+    cmbFieldVariableComp = new QComboBox();
     connect(cmbFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariableComp(int)));
 
-    QFormLayout *layoutVariable = new QFormLayout(this);
+    QFormLayout *layoutVariable = new QFormLayout();
     layoutVariable->addRow(tr("Variable:"), cmbFieldVariable);
     layoutVariable->addRow(tr("Component:"), cmbFieldVariableComp);
-
-    QWidget *grpVariable = new QWidget(this);
-    grpVariable->setLayout(layoutVariable);
 
     // button bar
     QHBoxLayout *layoutButton = new QHBoxLayout();
@@ -308,11 +310,11 @@ void ChartControlsWidget::createControls()
     layoutButton->addWidget(btnSaveImage);
     layoutButton->addWidget(btnExportData);
 
-    QWidget *widButton = new QWidget(this);
+    QWidget *widButton = new QWidget();
     widButton->setLayout(layoutButton);
 
     // controls geometry
-    widGeometry = new QWidget(this);
+    widGeometry = new QWidget();
     QVBoxLayout *controlsGeometryLayout = new QVBoxLayout();
     widGeometry->setLayout(controlsGeometryLayout);
     controlsGeometryLayout->addWidget(grpStart);
@@ -323,36 +325,25 @@ void ChartControlsWidget::createControls()
     controlsGeometryLayout->addStretch();
 
     // controls time
-    widTime = new QWidget(this);
+    widTime = new QWidget();
     QVBoxLayout *controlsTimeLayout = new QVBoxLayout();
     widTime->setLayout(controlsTimeLayout);
     controlsTimeLayout->addWidget(grpTime);
     controlsTimeLayout->addStretch();
 
-    tabAnalysisType = new QTabWidget(this);
+    tabAnalysisType = new QTabWidget();
     tabAnalysisType->addTab(widGeometry, icon(""), tr("Geometry"));
     tabAnalysisType->addTab(widTime, icon(""), tr("Time"));
 
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
-    controls->setLayout(controlsLayout);
-
-    controlsLayout->addWidget(grpVariable);
-    controlsLayout->addWidget(tabAnalysisType);
-    controlsLayout->addStretch();
+    controlsLayout->setMargin(0);
+    controlsLayout->addLayout(layoutVariable);
+    controlsLayout->addWidget(tabAnalysisType);    
     controlsLayout->addWidget(widButton);
+    controlsLayout->addStretch(1);
 
-    // main layout
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addWidget(controls);
-
-    setLayout(layout);
-}
-
-void ChartControlsWidget::createActions()
-{
-    actChart = new QAction(icon("chart"), tr("Chart"), this);
-    actChart->setCheckable(true);
+    setLayout(controlsLayout);
 }
 
 QList<double> ChartControlsWidget::getHorizontalAxisValues(ChartLine *chartLine)
@@ -795,14 +786,5 @@ void ChartControlsWidget::doChartLine()
     else
     {
         emit setChartLine(ChartLine());
-    }
-}
-
-void ChartControlsWidget::doTimeStepChanged(int index)
-{
-    if (cmbTimeStep->currentIndex() != -1)
-    {
-        Util::scene()->setActiveTimeStep(cmbTimeStep->currentIndex());
-        doPlot();
     }
 }

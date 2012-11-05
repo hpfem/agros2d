@@ -91,7 +91,7 @@ public:
     LinearSolverContainer(Block* block, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces);
     ~LinearSolverContainer();
     virtual void solve(Scalar* solutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { setMatrixRhsOutputGen(m_linearSolver.data(), solverName, adaptivityStep); }
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_linearSolver.data(); }
 
 private:
@@ -107,7 +107,7 @@ public:
     virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
                                          Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions);
     virtual void solve(Scalar* solutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { setMatrixRhsOutputGen(m_newtonSolver.data(), solverName, adaptivityStep); }
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_newtonSolver.data(); }
 
 private:
@@ -123,7 +123,7 @@ public:
     virtual void projectPreviousSolution(Scalar* solutionVector, Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces,
                                          Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions);
     virtual void solve(Scalar* solutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { setMatrixRhsOutputGen(m_picardSolver.data(), solverName, adaptivityStep); }
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_picardSolver.data(); }
 
 private:
