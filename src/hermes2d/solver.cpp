@@ -45,31 +45,6 @@ void processSolverOutput(const char* aha)
     Util::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
 }
 
-
-template <typename Scalar>
-VectorStore<Scalar>::~VectorStore()
-{
-    if(m_vector)
-        delete[] m_vector;
-}
-
-template <typename Scalar>
-VectorStore<Scalar>::VectorStore()  : m_vector(NULL), m_length(0)
-{
-
-}
-
-template <typename Scalar>
-Scalar* VectorStore<Scalar>::createNew(int length)
-{
-    if(m_vector)
-        delete[] m_vector;
-    m_vector = new Scalar[length];
-    m_length = length;
-    return m_vector;
-}
-
-
 template <typename Scalar>
 void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
 {
@@ -463,11 +438,14 @@ Hermes::vector<QSharedPointer<Space<Scalar> > > Solver<Scalar>::createCoarseSpac
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, int adaptivityStep, MultiSolution<Scalar> previousSolution)
+void Solver<Scalar>::solveOneProblem(MultiSolutionArray<Scalar> msa, int adaptivityStep, MultiSolution<Scalar> previousSolution)
 {
     Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block, msa.spaces());
+
+    int ndof = Space<Scalar>::get_num_dofs(msa.spacesNakedConst());
+    Scalar solutionVector[ndof];
 
     try
     {
@@ -641,11 +619,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep, bool solution
     m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
-    int ndof = Space<Scalar>::get_num_dofs(multiSolutionArray.spacesNakedConst());
-    //Scalar* coefVec = new Scalar[ndof];
-    Scalar* coefVec = m_lastVector.createNew(ndof);
-
-    solveOneProblem(coefVec, multiSolutionArray, adaptivityStep, previousTSMultiSolutionArray.solutions());
+    solveOneProblem(multiSolutionArray, adaptivityStep, previousTSMultiSolutionArray.solutions());
     //Solution<Scalar>::vector_to_solutions(coefVec, castConst(desmartize(multiSolutionArray.spaces())), desmartize(multiSolutionArray.solutions()));
 
     multiSolutionArray.setTime(Util::problem()->actualTime());
@@ -703,13 +677,11 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
     m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
-    int ndof = Space<Scalar>::get_num_dofs(multiSolutionArray.spacesNakedConst());
-    Scalar* coefVec2 = new Scalar[ndof];
     MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
     multiSolutionArray2.createNewSolutions();
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
-    solveOneProblem(coefVec2, multiSolutionArray2, adaptivityStep, timeStep > 0 ? multiSolutionArray.solutions() : MultiSolution<Scalar>());
+    solveOneProblem(multiSolutionArray2, adaptivityStep, timeStep > 0 ? multiSolutionArray.solutions() : MultiSolution<Scalar>());
 
     double nextTimeStepLength = Util::problem()->config()->constantTimeStepLength();
     bool refuseThisStep = false;
@@ -826,11 +798,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // create solutions
     msaRef.createNewSolutions();
 
-    int ndof = Space<Scalar>::get_num_dofs(msaRef.spacesNakedConst());
-    Scalar* coeffVec = new Scalar[ndof];
-
     // solve reference problem
-    solveOneProblem(coeffVec, msaRef, adaptivityStep, previousTSMultiSolutionArray.solutions());
+    solveOneProblem(msaRef, adaptivityStep, previousTSMultiSolutionArray.solutions());
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
@@ -986,7 +955,7 @@ void Solver<Scalar>::solveInitialTimeStep()
 //}
 
 
-template class VectorStore<double>;
+//template class VectorStore<double>;
 template class LinearSolverContainer<double>;
 template class NewtonSolverContainer<double>;
 template class PicardSolverContainer<double>;

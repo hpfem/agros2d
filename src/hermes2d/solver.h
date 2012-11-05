@@ -37,26 +37,6 @@ public:
     }
 };
 
-
-// In BDF2 method, results of BDF2A and BDF2B can be combined to obtain solution of higher accuracy
-// This class stores solution vector from the last calculation (if it should be used in this combination)
-// and takes care of proper dealocation of the vector.
-template <typename Scalar>
-class VectorStore
-{
-public:
-    VectorStore();
-    ~VectorStore();
-
-    Scalar* createNew(int length);
-    int getLastLength() const { return m_length; }
-    Scalar* getLast() const { return m_vector; }
-
-private:
-    Scalar* m_vector;
-    int m_length;
-};
-
 struct NextTimeStep
 {
     NextTimeStep(double len, bool ref = false) : length(len), refuse(ref) {}
@@ -155,7 +135,7 @@ private:
     QString m_solverID;
     QString m_solverName;
 
-    VectorStore<Scalar> m_lastVector;
+    //VectorStore<Scalar> m_lastVector;
 
     // elapsed time
     double m_elapsedTime;
@@ -173,7 +153,7 @@ private:
 
     void cleanup();
 
-    void solveOneProblem(Scalar *solutionVector, MultiSolutionArray<Scalar> msa, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
+    void solveOneProblem(MultiSolutionArray<Scalar> msa, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
     void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
                       double actualTime);
