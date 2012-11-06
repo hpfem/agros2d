@@ -74,7 +74,8 @@ namespace Hermes
       template<typename Scalar>
       class HERMES_API Selector : public Hermes::Mixins::Loggable, public Hermes::Mixins::TimeMeasurable
       {
-      public:
+      protected:
+        const int max_order; ///< A maximum allowed order.
         /// Constructor
         /** \param[in] max_order A maximum order used by this selector. If it is ::H2DRS_DEFAULT_ORDER, a maximum supported order is used. */
         Selector(int max_order = H2DRS_DEFAULT_ORDER) : max_order(max_order), isAClone(false) {};
@@ -83,11 +84,6 @@ namespace Hermes
 
         /// Cloning for paralelism.
         virtual Selector<Scalar>* clone() = 0;
-
-        /// Internal.
-      protected:
-        const int max_order; ///< A maximum allowed order.
-        bool isAClone;
 
         /// Selects a refinement.
         /** This methods has to be implemented.
@@ -108,6 +104,10 @@ namespace Hermes
 
         template<typename T> friend class Adapt;
         template<typename T> friend class KellyTypeAdapt;
+        
+        /// Internal.
+      protected:
+        bool isAClone;
       };
 
       /// A selector that selects H-refinements only. \ingroup g_selectors

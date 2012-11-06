@@ -5,7 +5,7 @@
 #define NUM_THREADS 4
 
 #define HAVE_FMEMOPEN
-/* #undef HAVE_LOG2 */
+#define HAVE_LOG2
 /* #undef EXTREME_QUAD */
 
 #define WITH_UMFPACK
