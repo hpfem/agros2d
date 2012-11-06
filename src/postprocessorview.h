@@ -228,8 +228,6 @@ private slots:
     void doOrderDefault();
     void doScalarFieldLog(int state);
 
-    void doChartLine();
-
     void doScalarFieldExpandCollapse(bool collapsed);
     void doContourFieldExpandCollapse(bool collapsed);
     void doVectorFieldExpandCollapse(bool collapsed);
