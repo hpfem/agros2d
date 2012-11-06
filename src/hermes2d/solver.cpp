@@ -393,7 +393,8 @@ void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selecto
 {
     foreach(RefinementSelectors::Selector<Scalar> *select, selector)
     {
-        delete select;
+        // todo: should it be deleted?
+        //delete select;
     }
     selector.clear();
 }

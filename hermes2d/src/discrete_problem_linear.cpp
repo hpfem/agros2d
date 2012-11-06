@@ -141,18 +141,18 @@ namespace Hermes
       AsmList<Scalar>** current_als;
       WeakForm<Scalar>* current_weakform;
 
-// #define CHUNKSIZE 1
+#define CHUNKSIZE 1
       int num_threads_used = Hermes2DApi.get_param_value(Hermes::Hermes2D::numThreads);
-// #pragma omp parallel shared(trav_master, mat, rhs ) private(state_i, current_pss, current_spss, current_refmaps, current_u_ext, current_als, current_weakform) num_threads(num_threads_used)
+#pragma omp parallel shared(trav_master, mat, rhs ) private(state_i, current_pss, current_spss, current_refmaps, current_u_ext, current_als, current_weakform) num_threads(num_threads_used)
       {
-// #pragma omp for schedule(dynamic, CHUNKSIZE)
+#pragma omp for schedule(dynamic, CHUNKSIZE)
         for(state_i = 0; state_i < num_states; state_i++)
         {
           try
           {
             Traverse::State current_state;
 
-// #pragma omp critical (get_next_state)
+  #pragma omp critical (get_next_state)
             current_state = trav[omp_get_thread_num()].get_next_state(&trav_master.top, &trav_master.id);
 
             current_pss = pss[omp_get_thread_num()];

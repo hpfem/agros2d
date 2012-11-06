@@ -189,10 +189,6 @@ namespace Hermes
         idx[i] = new int[num];
 
       Element* e;
-      for (int i = 0; i < this->num; i++)
-        for_all_active_elements(e, this->spaces[i]->get_mesh())
-          this->spaces[i]->edata[e->id].changed_in_last_adaptation = false;
-
       for(int j = 0; j < max_id; j++)
         for(int l = 0; l < this->num; l++)
           idx[j][l] = -1; // element not refined
@@ -378,9 +374,6 @@ namespace Hermes
         }
       }
 
-      if(this->caughtException != NULL)
-        throw *(this->caughtException);
-
       int averageNumberOfCandidates = 0;
       for(int i = 0; i < numberOfCandidates.size(); i++)
         averageNumberOfCandidates += numberOfCandidates[i];
@@ -459,6 +452,14 @@ namespace Hermes
       // since space changed, assign dofs:
       for(unsigned int i = 0; i < this->spaces.size(); i++)
         this->spaces[i]->assign_dofs();
+
+      for (int i = 0; i < this->num; i++)
+      {
+        for_all_active_elements(e, this->spaces[i]->get_mesh())
+          this->spaces[i]->edata[e->id].changed_in_last_adaptation = false;
+        for(id_to_refine = 0; id_to_refine < ids.size(); id_to_refine++)
+          this->spaces[i]->edata[ids[id_to_refine]].changed_in_last_adaptation = false;
+      }
 
       std::cout << std::endl;
       return false;
