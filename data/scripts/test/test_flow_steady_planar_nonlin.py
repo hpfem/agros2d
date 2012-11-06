@@ -20,6 +20,10 @@ flow.polynomial_order = 2
 flow.linearity_type = "newton"
 flow.nonlinear_tolerance = 0.001
 flow.nonlinear_steps = 10
+flow.damping_coeff = 1.0
+flow.automatic_damping = True
+flow.damping_number_to_increase = 1
+
 flow.adaptivity_type = "disabled"
 
 flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : { "expression" : "cos((y-0.135)/0.035*pi/2)" }, "flow_velocity_y" : 0})
