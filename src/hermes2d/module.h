@@ -123,6 +123,8 @@ private:
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
+    virtual Hermes::Hermes2D::WeakForm<Scalar>* clone() const { return new WeakFormAgros<Scalar>(m_block); }
+
     Block* m_block;
 };
 

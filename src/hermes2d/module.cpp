@@ -210,7 +210,30 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
     // set time discretisation table
     if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
+    {
         dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
+
+        if((type == WeakForm_MatVol) || (type == WeakForm_VecVol))
+        {
+            Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > previousSlns;
+
+            int lastTimeStep = Util::problem()->actualTimeStep() - 1; // todo: check
+
+            for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
+            {
+                int timeStep = lastTimeStep - backLevel;
+                int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
+                FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
+                if(! Util::solutionStore()->contains(solutionID))
+                    solutionID.solutionMode = SolutionMode_Normal;
+                assert(Util::solutionStore()->contains(solutionID));
+
+                for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
+                    previousSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+            }
+            custom_form->set_ext(previousSlns);
+        }
+    }
 
     addForm(type, custom_form);
 }
@@ -238,6 +261,20 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // TODO at the present moment, it is impossible to have more sources !
     //assert(field->m_couplingSources.size() <= 1);
 
+    // push external solution for weak coupling
+    if (couplingInfo->isWeak())
+    {
+        Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > couplingSlns;
+
+        FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
+        assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
+
+        for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
+            couplingSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+
+        custom_form->set_ext(couplingSlns);
+    }
+
     addForm(type, custom_form);
 }
 
@@ -245,8 +282,6 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 {
-    Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > previousSlns;
-
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
@@ -305,44 +340,7 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                 }
             }
         }
-
-        // set previous time solutions
-        if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
-        {
-            int lastTimeStep = Util::problem()->actualTimeStep() - 1; // todo: check
-
-            for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
-            {
-                int timeStep = lastTimeStep - backLevel;
-                int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
-                FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
-                if(! Util::solutionStore()->contains(solutionID))
-                    solutionID.solutionMode = SolutionMode_Normal;
-                assert(Util::solutionStore()->contains(solutionID));
-
-                for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-                    previousSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
-            }
-        }
-
-        // weak coupling
-        foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
-        {
-            // push external solution for weak coupling
-            if (couplingInfo->isWeak())
-            {
-                FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
-                assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
-
-                for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-                    previousSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
-            }
-        }
     }
-
-    // add external solutions
-    if (previousSlns.size() > 0)
-        this->set_ext(previousSlns);
 
     // hard coupling
     foreach (CouplingInfo* couplingInfo, m_block->couplings())
