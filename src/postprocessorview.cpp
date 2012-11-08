@@ -299,9 +299,10 @@ void PostprocessorWidget::createControls()
     layoutButtons->addStretch(1);
     layoutButtons->addWidget(btnOK);
 
-    basic = controlsBasic();
+    m_chartWidget = new ChartControlsWidget(m_scenePost2D, m_sceneChart->chart(), this);
 
-    QWidget *advanced = controlsAdvanced();
+    basic = controlsBasic();
+    advanced = controlsAdvanced();
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 5, 3, 5);
@@ -535,7 +536,11 @@ QWidget *PostprocessorWidget::post3DWidget()
 
 QWidget *PostprocessorWidget::chartWidget()
 {
+    QVBoxLayout *layoutVariables = new QVBoxLayout();
+    layoutVariables->addWidget(m_chartWidget->variablesWidget());
+
     QGroupBox *grpChart = new QGroupBox(tr("Chart"));
+    grpChart->setLayout(layoutVariables);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
@@ -813,11 +818,9 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
 
 QWidget *PostprocessorWidget::postChartWidget()
 {
-    ChartControlsWidget *chartWidget = new ChartControlsWidget(m_scenePost2D, m_sceneChart->chart(), this);
-
     // layout
     QVBoxLayout *controlsLayout = new QVBoxLayout();
-    controlsLayout->addWidget(chartWidget);
+    controlsLayout->addWidget(m_chartWidget);
 
     QGroupBox *grpChart = new QGroupBox(tr("Chart"));
     grpChart->setLayout(controlsLayout);

@@ -94,8 +94,13 @@ public:
                 QWidget *parent = 0);
     ~ChartControlsWidget();
 
+    inline QWidget *variablesWidget() { return m_variableWidget; }
+
 private:
     SceneViewPost2D *m_sceneViewPost2D;
+
+    // variable widget
+    QWidget *m_variableWidget;
 
     QTabWidget* tabAnalysisType;
 

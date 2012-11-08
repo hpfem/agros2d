@@ -31,6 +31,7 @@ class LineEditDouble;
 class CollapsableGroupBoxButton;
 class FieldInfo;
 class ValueLineEdit;
+class ChartControlsWidget;
 
 class PostprocessorWidget : public QWidget
 {
@@ -55,6 +56,7 @@ private:
     ChartWidget *m_sceneChart;
 
     QWidget *basic;
+    QWidget *advanced;
 
     // basic
     QComboBox *cmbFieldInfo;
@@ -156,6 +158,9 @@ private:
     // toolbar
     QToolBox *tbxPostprocessor;
     QPushButton *btnOK;
+
+    // chart
+    ChartControlsWidget *m_chartWidget;
 
     void loadBasic();
     void loadAdvanced();

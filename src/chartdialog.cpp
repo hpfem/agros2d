@@ -177,6 +177,21 @@ void ChartControlsWidget::setControls()
 
 void ChartControlsWidget::createControls()
 {
+    // variable
+    cmbFieldVariable = new QComboBox();
+    connect(cmbFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariable(int)));
+    // component
+    cmbFieldVariableComp = new QComboBox();
+    connect(cmbFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariableComp(int)));
+
+    QFormLayout *layoutVariable = new QFormLayout();
+    layoutVariable->addRow(tr("Variable:"), cmbFieldVariable);
+    layoutVariable->addRow(tr("Component:"), cmbFieldVariableComp);
+
+    m_variableWidget = new QWidget();
+    m_variableWidget->setLayout(layoutVariable);
+
+    // controls
     QPushButton *btnPlot = new QPushButton();
     btnPlot->setText(tr("Plot"));
     connect(btnPlot, SIGNAL(clicked()), this, SLOT(doPlot()));
@@ -291,18 +306,6 @@ void ChartControlsWidget::createControls()
     QGroupBox *grpTime = new QGroupBox(tr("Point"));
     grpTime->setLayout(layoutTime);
 
-    // plot
-    // variable
-    cmbFieldVariable = new QComboBox();
-    connect(cmbFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariable(int)));
-    // component
-    cmbFieldVariableComp = new QComboBox();
-    connect(cmbFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariableComp(int)));
-
-    QFormLayout *layoutVariable = new QFormLayout();
-    layoutVariable->addRow(tr("Variable:"), cmbFieldVariable);
-    layoutVariable->addRow(tr("Component:"), cmbFieldVariableComp);
-
     // button bar
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addStretch();
@@ -338,7 +341,6 @@ void ChartControlsWidget::createControls()
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
     controlsLayout->setMargin(0);
-    controlsLayout->addLayout(layoutVariable);
     controlsLayout->addWidget(tabAnalysisType);    
     controlsLayout->addWidget(widButton);
     controlsLayout->addStretch(1);
