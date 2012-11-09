@@ -358,20 +358,32 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
 
         if (m_block->adaptivityType() == AdaptivityType_None)
         {
-            candList = RefinementSelectors::H2D_HP_ANISO;
+            if(Util::config()->useAniso)
+                candList = RefinementSelectors::H2D_HP_ANISO;
+            else
+                candList = RefinementSelectors::H2D_HP_ISO;
         }
         else
         {
             switch (m_block->adaptivityType())
             {
             case AdaptivityType_H:
-                candList = RefinementSelectors::H2D_H_ANISO;
+                if(Util::config()->useAniso)
+                    candList = RefinementSelectors::H2D_H_ANISO;
+                else
+                    candList = RefinementSelectors::H2D_H_ISO;
                 break;
             case AdaptivityType_P:
-                candList = RefinementSelectors::H2D_P_ANISO;
+                if(Util::config()->useAniso)
+                    candList = RefinementSelectors::H2D_P_ANISO;
+                else
+                    candList = RefinementSelectors::H2D_P_ISO;
                 break;
             case AdaptivityType_HP:
-                candList = RefinementSelectors::H2D_HP_ANISO;
+                if(Util::config()->useAniso)
+                    candList = RefinementSelectors::H2D_HP_ANISO;
+                else
+                    candList = RefinementSelectors::H2D_HP_ISO;
                 break;
             }
         }
@@ -783,16 +795,52 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // create refined spaces
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = msa.spacesNaked();
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesRef;
-    for (unsigned int i = 0; i < spaces.size(); i++)
+
+    int spaceIdx = 0;
+    foreach(Field* field, m_block->fields())
     {
-        Hermes::Hermes2D::Space<Scalar> *space = spaces.at(i);
+        AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
+        for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
+        {
+            Space<Scalar> *space = spaces.at(spaceIdx);
+            Mesh *mesh;
+            if((adaptivityType == AdaptivityType_P) && (! Util::config()->finerReference))
+            {
+                // use reference solution with increased poly order, but no mesh refinement
+                mesh = new Mesh(); //TODO probably leak ... where is the mesh released
+                mesh->copy(space->get_mesh());
+            }
+            else
+            {
+                // refine the mesh otherwise
+                Mesh::ReferenceMeshCreator meshCreator(space->get_mesh());
+                mesh = meshCreator.create_ref_mesh();
+            }
 
-        Mesh::ReferenceMeshCreator meshCreator(space->get_mesh());
-        Mesh *mesh = meshCreator.create_ref_mesh();
+            int orderIncrease = 1;
+            if((adaptivityType == AdaptivityType_H) && (! Util::config()->finerReference))
+            {
+                // for h adaptivity, the standard way is not to increase the polynomial order for the reference solution
+                orderIncrease = 0;
+            }
+            Space<double>::ReferenceSpaceCreator spaceCreator(space, mesh, orderIncrease);
+            spacesRef.push_back(spaceCreator.create_ref_space());
 
-        Space<double>::ReferenceSpaceCreator spaceCreator(space, mesh);
-        spacesRef.push_back(spaceCreator.create_ref_space());
+            spaceIdx++;
+        }
     }
+    assert(spaces.size() == spacesRef.size());
+
+//    for (unsigned int i = 0; i < spaces.size(); i++)
+//    {
+//        Hermes::Hermes2D::Space<Scalar> *space = spaces.at(i);
+
+//        Mesh::ReferenceMeshCreator meshCreator(space->get_mesh());
+//        Mesh *mesh = meshCreator.create_ref_mesh();
+
+//        Space<double>::ReferenceSpaceCreator spaceCreator(space, mesh);
+//        spacesRef.push_back(spaceCreator.create_ref_space());
+//    }
     msaRef.setSpaces(smartize(spacesRef));
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(msaRef.spacesNaked(), Util::problem()->actualTime());

@@ -100,6 +100,8 @@ private:
     QLabel *lblStrategy;
     QComboBox *cmbMeshRegularity;
     QComboBox *cmbProjNormType;
+    QCheckBox *chkUseAnIso;
+    QCheckBox *chkFinerReference;
 
     // threads
     QSpinBox *txtNumOfThreads;
