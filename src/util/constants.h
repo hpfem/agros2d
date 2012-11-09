@@ -160,6 +160,8 @@ const double ADAPTIVITY_THRESHOLD = 0.3;
 const int ADAPTIVITY_STRATEGY = 0;
 const int ADAPTIVITY_MESHREGULARITY = -1;
 const Hermes::Hermes2D::ProjNormType ADAPTIVITY_PROJNORMTYPE = Hermes::Hermes2D::HERMES_H1_NORM;
+const bool ADAPTIVITY_ANISO = true;
+const bool ADAPTIVITY_FINER_REFERENCE_H_AND_P = false;
 
 // command argument
 const QString COMMANDS_TRIANGLE = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";

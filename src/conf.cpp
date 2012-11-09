@@ -224,6 +224,8 @@ void Config::loadAdvanced()
     strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).toInt();
     meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).toInt();
     projNormType = (Hermes::Hermes2D::ProjNormType) settings.value("Adaptivity/ProjNormType", ADAPTIVITY_PROJNORMTYPE).toInt();
+    useAniso = settings.value("Adaptivity/UseAniso", ADAPTIVITY_ANISO).toBool();
+    finerReference = settings.value("Adaptivity/FinerReference", ADAPTIVITY_FINER_REFERENCE_H_AND_P).toBool();
 
     // command argument
     commandGmsh = settings.value("Commands/Gmsh", COMMANDS_GMSH).toString();
@@ -425,6 +427,8 @@ void Config::saveAdvanced()
     settings.setValue("Adaptivity/Strategy", strategy);
     settings.setValue("Adaptivity/MeshRegularity", meshRegularity);
     settings.setValue("Adaptivity/ProjNormType", projNormType);
+    settings.setValue("Adaptivity/UseAniso", useAniso);
+    settings.setValue("Adaptivity/FinerReference", finerReference);
 
     // command argument
     settings.setValue("Commands/Triangle", commandTriangle);

@@ -90,6 +90,8 @@ void ConfigDialog::load()
     cmbStrategy->setCurrentIndex(cmbStrategy->findData(Util::config()->strategy));
     cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Util::config()->meshRegularity));
     cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(Util::config()->projNormType));
+    chkUseAnIso->setChecked(Util::config()->useAniso);
+    chkFinerReference->setChecked(Util::config()->finerReference);
 
     // command argument
     txtArgumentTriangle->setText(Util::config()->commandTriangle);
@@ -157,6 +159,8 @@ void ConfigDialog::save()
     Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
     Util::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
     Util::config()->projNormType = (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
+    Util::config()->useAniso = chkUseAnIso->isChecked();
+    Util::config()->finerReference = chkFinerReference->isChecked();
 
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();
@@ -383,6 +387,9 @@ QWidget *ConfigDialog::createSolverWidget()
     cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
     cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
 
+    chkUseAnIso = new QCheckBox(tr("Use anisotropic refinements"));
+    chkFinerReference = new QCheckBox(tr("Use hp reference solution also for h and p adaptivity"));
+
     // default
     QPushButton *btnAdaptivityDefault = new QPushButton(tr("Default"));
     connect(btnAdaptivityDefault, SIGNAL(clicked()), this, SLOT(doAdaptivityDefault()));
@@ -403,6 +410,9 @@ QWidget *ConfigDialog::createSolverWidget()
     layoutAdaptivitySettings->addWidget(cmbMeshRegularity, 8, 1);
     layoutAdaptivitySettings->addWidget(new QLabel(tr("Norm:")), 9, 0);
     layoutAdaptivitySettings->addWidget(cmbProjNormType, 9, 1);
+    layoutAdaptivitySettings->addWidget(chkUseAnIso, 10, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(chkFinerReference, 11, 0, 1, 2);
+
 
     QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
     layoutAdaptivity->addLayout(layoutAdaptivitySettings);
@@ -686,6 +696,8 @@ void ConfigDialog::doAdaptivityDefault()
     cmbStrategy->setCurrentIndex(cmbStrategy->findData(ADAPTIVITY_STRATEGY));
     cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(ADAPTIVITY_MESHREGULARITY));
     cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(ADAPTIVITY_PROJNORMTYPE));
+    chkUseAnIso->setChecked(ADAPTIVITY_ANISO);
+    chkFinerReference->setChecked(ADAPTIVITY_FINER_REFERENCE_H_AND_P);
 }
 
 void ConfigDialog::doCommandsDefault()

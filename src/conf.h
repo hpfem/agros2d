@@ -186,6 +186,8 @@ public:
     int strategy;
     int meshRegularity;
     Hermes::Hermes2D::ProjNormType projNormType;
+    bool useAniso;
+    bool finerReference;
 
     // command argument
     QString commandTriangle;

@@ -243,8 +243,8 @@ void FieldWidget::createContent()
     layoutLinearity->addWidget(txtNonlinearTolerance, 1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Automatic damping:")), 3, 0);
-    layoutLinearity->addWidget(chkAutomaticDamping, 3, 1);
+    //layoutLinearity->addWidget(new QLabel(tr("Automatic damping:")), 3, 1);
+    layoutLinearity->addWidget(chkAutomaticDamping, 3, 0);
     layoutLinearity->addWidget(new QLabel(tr("Damping factor:")), 4, 0);
     layoutLinearity->addWidget(txtDampingCoeff, 4, 1);
     layoutLinearity->addWidget(new QLabel(tr("Steps to increase DF:")), 5, 0);
@@ -256,14 +256,14 @@ void FieldWidget::createContent()
     // left
     QVBoxLayout *layoutLeft = new QVBoxLayout();
     layoutLeft->addWidget(grpGeneral);
+    layoutLeft->addWidget(grpTransientAnalysis);
     layoutLeft->addWidget(grpAdaptivity);
-    layoutLeft->addWidget(grpLinearity);
     layoutLeft->addStretch();
 
     // right
     QVBoxLayout *layoutRight = new QVBoxLayout();
     layoutRight->addWidget(grpMesh);
-    layoutRight->addWidget(grpTransientAnalysis);
+    layoutRight->addWidget(grpLinearity);
     layoutRight->addStretch();
 
     // both
