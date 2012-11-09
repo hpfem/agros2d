@@ -354,34 +354,28 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
         // add norm
         projNormType.push_back(Util::config()->projNormType);
 
+        RefinementSelectors::CandList candList;
+
         if (m_block->adaptivityType() == AdaptivityType_None)
         {
-            select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
-                                                                                            Util::config()->convExp,
-                                                                                            H2DRS_DEFAULT_ORDER);
+            candList = RefinementSelectors::H2D_HP_ANISO;
         }
         else
         {
             switch (m_block->adaptivityType())
             {
             case AdaptivityType_H:
-                select = new Hermes::Hermes2D::RefinementSelectors::HOnlySelector<Scalar>();
+                candList = RefinementSelectors::H2D_H_ANISO;
                 break;
             case AdaptivityType_P:
-                select = new Hermes::Hermes2D::RefinementSelectors::POnlySelector<Scalar>(H2DRS_DEFAULT_ORDER, 1, 1);
-                /*
-                select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_P_ANISO,
-                                                                                                Util::config()->convExp,
-                                                                                                H2DRS_DEFAULT_ORDER);
-                */
+                candList = RefinementSelectors::H2D_P_ANISO;
                 break;
             case AdaptivityType_HP:
-                select = new Hermes::Hermes2D::RefinementSelectors::H1ProjBasedSelector<Scalar>(Hermes::Hermes2D::RefinementSelectors::H2D_HP_ANISO,
-                                                                                                Util::config()->convExp,
-                                                                                                H2DRS_DEFAULT_ORDER);
+                candList = RefinementSelectors::H2D_HP_ANISO;
                 break;
             }
         }
+        select = new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList, Util::config()->convExp, H2DRS_DEFAULT_ORDER);
 
         // add refinement selector
         selector.push_back(select);
