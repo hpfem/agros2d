@@ -65,15 +65,10 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
     connect(trvWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
 
     doItemSelected(NULL, Qt::UserRole);
-
-    QSettings settings;
-    splitter->restoreState(settings.value("PreprocessorView/SplitterState").toByteArray());
 }
 
 PreprocessorWidget::~PreprocessorWidget()
 {
-    QSettings settings;
-    settings.setValue("PreprocessorView/SplitterState", splitter->saveState());
 }
 
 void PreprocessorWidget::createActions()
@@ -104,16 +99,6 @@ void PreprocessorWidget::createMenu()
 
 void PreprocessorWidget::createControls()
 {
-    webView = new QWebView(this);
-    webView->setMinimumHeight(250);
-
-    QHBoxLayout *layoutInfo = new QHBoxLayout();
-    layoutInfo->setMargin(0);
-    layoutInfo->addWidget(webView);
-
-    QWidget *widgetInfo = new QWidget(this);
-    widgetInfo->setLayout(layoutInfo);
-
     trvWidget = new QTreeWidget(this);
     trvWidget->setHeaderHidden(true);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -122,22 +107,8 @@ void PreprocessorWidget::createControls()
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setIndentation(12);
 
-    splitter = new QSplitter(Qt::Vertical, this);
-    splitter->addWidget(widgetInfo);
-    splitter->addWidget(trvWidget);
-
-    /*
     QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->addLayout(layoutInfo, 2);
-    layoutMain->addWidget(trvWidget, 3);
-
-    QWidget *main = new QWidget(this);
-    main->setLayout(layoutMain);
-    */
-
-    QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->setContentsMargins(0, 5, 3, 5);
-    layoutMain->addWidget(splitter);
+    layoutMain->addWidget(trvWidget);
 
     setLayout(layoutMain);
 }
@@ -312,8 +283,6 @@ void PreprocessorWidget::refresh()
 
     setUpdatesEnabled(true);
     blockSignals(false);
-
-    QTimer::singleShot(0, this, SLOT(showInfo()));
 }
 
 void PreprocessorWidget::doContextMenu(const QPoint &pos)
@@ -470,84 +439,4 @@ void PreprocessorWidget::doDelete()
 
         m_sceneViewGeometry->refresh();
     }
-}
-
-void PreprocessorWidget::showInfo()
-{
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
-
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-
-    // template
-    std::string info;
-    ctemplate::TemplateDictionary problemInfo("info");
-
-    problemInfo.SetValue("STYLESHEET", style);
-    problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
-
-    problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::problem()->config()->coordinateType()).toStdString());
-
-    if (Util::problem()->isHarmonic())
-        problemInfo.ShowSection("HARMONIC");
-        problemInfo.SetValue("HARMONIC_LABEL", tr("Harmonic analysis").toStdString());
-        problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
-        problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
-
-    if (Util::problem()->isTransient())
-        problemInfo.ShowSection("TRANSIENT");
-    problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_ORDER_LABEL", tr("Order:").toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
-    problemInfo.SetValue("TRANSIENT_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-    problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Util::problem()->config()->timeMethodTolerance().number()).toStdString());
-    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
-    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStepLength()).toStdString() + " s");
-    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
-    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
-    problemInfo.SetValue("TRANSIENT_TOTAL_LABEL", tr("Total time:").toStdString());
-    problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
-
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
-    {
-        ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD");
-
-        field->SetValue("PHYSICAL_FIELDID", fieldInfo->fieldId().toStdString());
-        field->SetValue("PHYSICAL_FIELD", fieldInfo->name().toStdString());
-
-        field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
-        field->SetValue("ANALYSIS_TYPE", analysisTypeString(fieldInfo->analysisType()).toStdString());
-
-        field->SetValue("LINEARITY_TYPE_LABEL", tr("Solver:").toStdString());
-        field->SetValue("LINEARITY_TYPE", linearityTypeString(fieldInfo->linearityType()).toStdString());
-        /*
-        field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
-        field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements()).toStdString());
-        field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
-        field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder()).toStdString());
-
-        field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
-        field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType()).toStdString());
-
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
-        {
-            field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
-            field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps()).toStdString());
-            field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-            field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString());
-            field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
-        }
-        */
-    }
-
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/preprocessor.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
-    webView->setHtml(QString::fromStdString(info));
-
-    setFocus();
 }

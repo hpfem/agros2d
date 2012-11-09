@@ -46,15 +46,12 @@ protected:
 private:
     SceneViewPreprocessor *m_sceneViewGeometry;
 
-    QSplitter *splitter;
-
     QTreeWidget *trvWidget;
 
     QAction *actProperties;
     QAction *actDelete;
     
     QMenu *mnuPreprocessor;
-    QWebView *webView;
 
     void createActions();
     void createControls();
@@ -65,8 +62,6 @@ private slots:
     void doContextMenu(const QPoint &pos);
     void doItemDoubleClicked(QTreeWidgetItem *item, int role);
     void doItemSelected(QTreeWidgetItem *item, int role);
-
-    void showInfo();
 };
 
 #endif // PREPROCESSORVIEW_H
