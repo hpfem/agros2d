@@ -819,15 +819,9 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
 QWidget *PostprocessorWidget::postChartWidget()
 {
     // layout
-    QVBoxLayout *controlsLayout = new QVBoxLayout();
-    controlsLayout->addWidget(m_chartWidget);
-
-    QGroupBox *grpChart = new QGroupBox(tr("Chart"));
-    grpChart->setLayout(controlsLayout);
-
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
-    layout->addWidget(grpChart);
+    layout->addWidget(m_chartWidget);
     layout->addStretch(1);
 
     QWidget *widget = new QWidget(this);
