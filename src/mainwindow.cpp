@@ -475,8 +475,7 @@ void MainWindow::createMenus()
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSave);
-    if (Util::config()->showExperimentalFeatures)
-        mnuFile->addAction(actDocumentSaveWithSolution);
+    mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuFileImportExport);
@@ -1398,8 +1397,7 @@ void MainWindow::clear()
 
 void MainWindow::setControls()
 {
-    if (Util::config()->showExperimentalFeatures)
-        actDocumentSaveWithSolution->setEnabled(Util::problem()->isSolved());
+    actDocumentSaveWithSolution->setEnabled(Util::problem()->isSolved());
 
     // set controls
     Util::scene()->actTransform->setEnabled(false);

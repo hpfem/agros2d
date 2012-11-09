@@ -199,7 +199,6 @@ public:
     // global script
     QString globalScript;
 
-    bool showExperimentalFeatures;
     bool showLogStdOut;
 
     void load();

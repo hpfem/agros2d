@@ -59,10 +59,7 @@ void Config::loadWorkspace()
 
     checkVersion = settings.value("General/CheckVersion", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
-    if (showExperimentalFeatures)
-        saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
-    else
-        saveProblemWithSolution = false;
+    saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
 
     // zoom
     zoomToMouse = settings.value("Geometry/ZoomToMouse", true).toBool();
@@ -209,30 +206,30 @@ void Config::loadPostprocessor(QDomElement *config)
     angleSegmentsCount = readConfig("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT);
     curvilinearElements = readConfig("SceneViewSettings/MeshCurvilinearElements", MESHCURVILINEARELEMENTS);
 
+    // adaptivity
+    maxDofs = readConfig("Adaptivity/MaxDofs", MAX_DOFS);
+    isoOnly = readConfig("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY);
+    convExp = readConfig("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP);
+    threshold = readConfig("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD);
+    strategy = readConfig("Adaptivity/Strategy", ADAPTIVITY_STRATEGY);
+    meshRegularity = readConfig("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY);
+    projNormType = (Hermes::Hermes2D::ProjNormType) readConfig("Adaptivity/ProjNormType", ADAPTIVITY_PROJNORMTYPE);
+    useAniso = readConfig("Adaptivity/UseAniso", ADAPTIVITY_ANISO);
+    finerReference = readConfig("Adaptivity/FinerReference", ADAPTIVITY_FINER_REFERENCE_H_AND_P);
+
+    // command argument
+    commandGmsh = readConfig("Commands/Gmsh", COMMANDS_GMSH);
+    commandTriangle = readConfig("Commands/Triangle", COMMANDS_TRIANGLE);
+    // add quadratic elements (added points on the middle of edge used by rough triangle division)
+    if (!commandTriangle.contains("-o2"))
+        commandTriangle = COMMANDS_TRIANGLE;
+
     eleConfig = NULL;
 }
 
 void Config::loadAdvanced()
 {
     QSettings settings;
-
-    // adaptivity
-    maxDofs = settings.value("Adaptivity/MaxDofs", MAX_DOFS).toInt();
-    isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).toBool();
-    convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).toDouble();
-    threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).toDouble();
-    strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).toInt();
-    meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).toInt();
-    projNormType = (Hermes::Hermes2D::ProjNormType) settings.value("Adaptivity/ProjNormType", ADAPTIVITY_PROJNORMTYPE).toInt();
-    useAniso = settings.value("Adaptivity/UseAniso", ADAPTIVITY_ANISO).toBool();
-    finerReference = settings.value("Adaptivity/FinerReference", ADAPTIVITY_FINER_REFERENCE_H_AND_P).toBool();
-
-    // command argument
-    commandGmsh = settings.value("Commands/Gmsh", COMMANDS_GMSH).toString();
-    commandTriangle = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
-    // add quadratic elements (added points on the middle of edge used by rough triangle division)
-    if (!commandTriangle.contains("-o2"))
-        commandTriangle = COMMANDS_TRIANGLE;
 
     // number of threads
     numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
@@ -266,10 +263,7 @@ void Config::saveWorkspace()
 
     settings.setValue("General/CheckVersion", checkVersion);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
-    if (showExperimentalFeatures)
-        settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
-    else
-        saveProblemWithSolution = false;
+    settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
 
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", deleteMeshFiles);
@@ -412,27 +406,27 @@ void Config::savePostprocessor(QDomElement *config)
     writeConfig("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);
     writeConfig("SceneViewSettings/MeshCurvilinearElements", curvilinearElements);
 
+    // adaptivity
+    writeConfig("Adaptivity/MaxDofs", maxDofs);
+    writeConfig("Adaptivity/IsoOnly", isoOnly);
+    writeConfig("Adaptivity/ConvExp", convExp);
+    writeConfig("Adaptivity/Threshold", threshold);
+    writeConfig("Adaptivity/Strategy", strategy);
+    writeConfig("Adaptivity/MeshRegularity", meshRegularity);
+    writeConfig("Adaptivity/ProjNormType", projNormType);
+    writeConfig("Adaptivity/UseAniso", useAniso);
+    writeConfig("Adaptivity/FinerReference", finerReference);
+
+    // command argument
+    writeConfig("Commands/Triangle", commandTriangle);
+    writeConfig("Commands/Gmsh", commandGmsh);
+
     eleConfig = NULL;
 }
 
 void Config::saveAdvanced()
 {
     QSettings settings;
-
-    // adaptivity
-    settings.setValue("Adaptivity/MaxDofs", maxDofs);
-    settings.setValue("Adaptivity/IsoOnly", isoOnly);
-    settings.setValue("Adaptivity/ConvExp", convExp);
-    settings.setValue("Adaptivity/Threshold", threshold);
-    settings.setValue("Adaptivity/Strategy", strategy);
-    settings.setValue("Adaptivity/MeshRegularity", meshRegularity);
-    settings.setValue("Adaptivity/ProjNormType", projNormType);
-    settings.setValue("Adaptivity/UseAniso", useAniso);
-    settings.setValue("Adaptivity/FinerReference", finerReference);
-
-    // command argument
-    settings.setValue("Commands/Triangle", commandTriangle);
-    settings.setValue("Commands/Gmsh", commandGmsh);
 
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);

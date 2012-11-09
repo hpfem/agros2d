@@ -79,23 +79,7 @@ void ConfigDialog::load()
     chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermesMeshFile);
 
     // save problem with solution
-    if (Util::config()->showExperimentalFeatures)
-        chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
-
-    // adaptivity
-    txtMaxDOFs->setValue(Util::config()->maxDofs);
-    //chkIsoOnly->setChecked(Util::config()->isoOnly);
-    txtConvExp->setValue(Util::config()->convExp);
-    txtThreshold->setValue(Util::config()->threshold);
-    cmbStrategy->setCurrentIndex(cmbStrategy->findData(Util::config()->strategy));
-    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Util::config()->meshRegularity));
-    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(Util::config()->projNormType));
-    chkUseAnIso->setChecked(Util::config()->useAniso);
-    chkFinerReference->setChecked(Util::config()->finerReference);
-
-    // command argument
-    txtArgumentTriangle->setText(Util::config()->commandTriangle);
-    txtArgumentGmsh->setText(Util::config()->commandGmsh);
+    chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
 
     // std log
     chkLogStdOut->setChecked(Util::config()->showLogStdOut);
@@ -148,23 +132,7 @@ void ConfigDialog::save()
     Util::config()->deleteHermesMeshFile = chkDeleteHermes2DMeshFile->isChecked();
 
     // save problem with solution
-    if (Util::config()->showExperimentalFeatures)
-        Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
-
-    // adaptivity
-    Util::config()->maxDofs = txtMaxDOFs->value();
-    //Util::config()->isoOnly = chkIsoOnly->isChecked();
-    Util::config()->convExp = txtConvExp->value();
-    Util::config()->threshold = txtThreshold->value();
-    Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
-    Util::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
-    Util::config()->projNormType = (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
-    Util::config()->useAniso = chkUseAnIso->isChecked();
-    Util::config()->finerReference = chkFinerReference->isChecked();
-
-    // command argument
-    Util::config()->commandTriangle = txtArgumentTriangle->text();
-    Util::config()->commandGmsh = txtArgumentGmsh->text();
+    Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
 
     // std log
     Util::config()->showLogStdOut = chkLogStdOut->isChecked();
@@ -311,8 +279,7 @@ QWidget *ConfigDialog::createSolverWidget()
     // general
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
-    if (Util::config()->showExperimentalFeatures)
-        chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
+    chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
 
     txtNumOfThreads = new QSpinBox(this);
     txtNumOfThreads->setMinimum(1);
@@ -323,8 +290,7 @@ QWidget *ConfigDialog::createSolverWidget()
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile, 1, 0, 1, 2);
     layoutSolver->addWidget(new QLabel(tr("Number of threads:")), 2, 0);
     layoutSolver->addWidget(txtNumOfThreads, 2, 1);
-    if (Util::config()->showExperimentalFeatures)
-        layoutSolver->addWidget(chkSaveWithSolution);
+    layoutSolver->addWidget(chkSaveWithSolution);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
@@ -348,105 +314,7 @@ QWidget *ConfigDialog::createSolverWidget()
     QWidget *solverGeneralWidget = new QWidget(this);
     solverGeneralWidget->setLayout(layoutGeneral);
 
-    // adaptivity
-    lblMaxDofs = new QLabel(tr("Maximum number of DOFs:"));
-    txtMaxDOFs = new QSpinBox(this);
-    txtMaxDOFs->setMinimum(1e2);
-    txtMaxDOFs->setMaximum(1e9);
-    txtMaxDOFs->setSingleStep(1e2);
-    /*
-    chkIsoOnly = new QCheckBox(tr("Isotropic refinement"));
-    lblIsoOnly = new QLabel(tr("<table>"
-                               "<tr><td><b>true</b></td><td>isotropic refinement</td></tr>"
-                               "<tr><td><b>false</b></td><td>anisotropic refinement</td></tr>"
-                               "</table>"));
-    */
-    txtConvExp = new LineEditDouble();
-    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
-    txtThreshold = new LineEditDouble();
-    lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
-    cmbStrategy = new QComboBox();
-    cmbStrategy->addItem(tr("0"), 0);
-    cmbStrategy->addItem(tr("1"), 1);
-    cmbStrategy->addItem(tr("2"), 2);
-    lblStrategy = new QLabel(tr("<table>"
-                                "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
-                                "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
-                                "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
-                                "</table>"));
-    cmbMeshRegularity = new QComboBox();
-    cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
-    cmbMeshRegularity->addItem(tr("at most one-level hang. nodes"), 1);
-    cmbMeshRegularity->addItem(tr("at most two-level hang. nodes"), 2);
-    cmbMeshRegularity->addItem(tr("at most three-level hang. nodes"), 3);
-    cmbMeshRegularity->addItem(tr("at most four-level hang. nodes"), 4);
-    cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
-
-    cmbProjNormType = new QComboBox();
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
-
-    chkUseAnIso = new QCheckBox(tr("Use anisotropic refinements"));
-    chkFinerReference = new QCheckBox(tr("Use hp reference solution also for h and p adaptivity"));
-
-    // default
-    QPushButton *btnAdaptivityDefault = new QPushButton(tr("Default"));
-    connect(btnAdaptivityDefault, SIGNAL(clicked()), this, SLOT(doAdaptivityDefault()));
-
-    QGridLayout *layoutAdaptivitySettings = new QGridLayout();
-    layoutAdaptivitySettings->addWidget(lblMaxDofs, 0, 0);
-    layoutAdaptivitySettings->addWidget(txtMaxDOFs, 0, 1, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
-    layoutAdaptivitySettings->addWidget(txtConvExp, 2, 1);
-    layoutAdaptivitySettings->addWidget(lblConvExp, 3, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Strategy:")), 4, 0);
-    layoutAdaptivitySettings->addWidget(cmbStrategy, 4, 1);
-    layoutAdaptivitySettings->addWidget(lblStrategy, 5, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Threshold:")), 6, 0);
-    layoutAdaptivitySettings->addWidget(txtThreshold, 6, 1);
-    layoutAdaptivitySettings->addWidget(lblThreshold, 7, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Mesh regularity:")), 8, 0);
-    layoutAdaptivitySettings->addWidget(cmbMeshRegularity, 8, 1);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Norm:")), 9, 0);
-    layoutAdaptivitySettings->addWidget(cmbProjNormType, 9, 1);
-    layoutAdaptivitySettings->addWidget(chkUseAnIso, 10, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(chkFinerReference, 11, 0, 1, 2);
-
-
-    QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
-    layoutAdaptivity->addLayout(layoutAdaptivitySettings);
-    layoutAdaptivity->addStretch();
-    layoutAdaptivity->addWidget(btnAdaptivityDefault, 0, Qt::AlignLeft);
-
-    QWidget *solverAdaptivityWidget = new QWidget(this);
-    solverAdaptivityWidget->setLayout(layoutAdaptivity);
-
-    // commands
-    txtArgumentTriangle = new QLineEdit("");
-    txtArgumentGmsh = new QLineEdit("");
-
-    // default
-    QPushButton *btnCommandsDefault = new QPushButton(tr("Default"));
-    connect(btnCommandsDefault, SIGNAL(clicked()), this, SLOT(doCommandsDefault()));
-
-    QVBoxLayout *layoutCommands = new QVBoxLayout();
-    layoutCommands->addWidget(new QLabel(tr("Triangle")));
-    layoutCommands->addWidget(txtArgumentTriangle);
-    layoutCommands->addWidget(new QLabel(tr("GMSH")));
-    layoutCommands->addWidget(txtArgumentGmsh);
-    layoutCommands->addStretch();
-    layoutCommands->addWidget(btnCommandsDefault, 0, Qt::AlignLeft);
-
-    QWidget *solverCommandsWidget = new QWidget(this);
-    solverCommandsWidget->setLayout(layoutCommands);
-
-    QTabWidget *solverWidget = new QTabWidget(this);
-    solverWidget->addTab(solverGeneralWidget, icon(""), tr("General"));
-    solverWidget->addTab(solverAdaptivityWidget, icon(""), tr("Adaptivity"));
-    solverWidget->addTab(solverCommandsWidget, icon(""), tr("Commands"));
-
-    return solverWidget;
+    return solverGeneralWidget;
 }
 
 QWidget *ConfigDialog::createPluginWidget()
@@ -685,24 +553,5 @@ void ConfigDialog::doAccept()
 void ConfigDialog::doReject()
 {
     reject();
-}
-
-void ConfigDialog::doAdaptivityDefault()
-{
-    txtMaxDOFs->setValue(MAX_DOFS);
-    //chkIsoOnly->setChecked(ADAPTIVITY_ISOONLY);
-    txtConvExp->setValue(ADAPTIVITY_CONVEXP);
-    txtThreshold->setValue(ADAPTIVITY_THRESHOLD);
-    cmbStrategy->setCurrentIndex(cmbStrategy->findData(ADAPTIVITY_STRATEGY));
-    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(ADAPTIVITY_MESHREGULARITY));
-    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(ADAPTIVITY_PROJNORMTYPE));
-    chkUseAnIso->setChecked(ADAPTIVITY_ANISO);
-    chkFinerReference->setChecked(ADAPTIVITY_FINER_REFERENCE_H_AND_P);
-}
-
-void ConfigDialog::doCommandsDefault()
-{
-    txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
-    txtArgumentGmsh->setText(COMMANDS_GMSH);
 }
 

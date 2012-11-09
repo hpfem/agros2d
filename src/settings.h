@@ -89,6 +89,24 @@ private:
     QSpinBox *txtMeshAngleSegmentsCount;
     QCheckBox *chkMeshCurvilinearElements;
 
+    // adaptivity
+    QLabel *lblMaxDofs;
+    QSpinBox *txtMaxDOFs;
+    LineEditDouble *txtConvExp;
+    QLabel *lblConvExp;
+    LineEditDouble *txtThreshold;
+    QLabel *lblThreshold;
+    QComboBox *cmbStrategy;
+    QLabel *lblStrategy;
+    QComboBox *cmbMeshRegularity;
+    QComboBox *cmbProjNormType;
+    QCheckBox *chkUseAnIso;
+    QCheckBox *chkFinerReference;
+
+    // commands
+    QLineEdit *txtArgumentTriangle;
+    QLineEdit *txtArgumentGmsh;
+
     QPushButton *btnOK;
 
     void createActions();
@@ -115,6 +133,7 @@ private slots:
     void doAdvancedDefault();
     void doColorsDefault();
     void doShowGridChanged();
+    void doStrategyChanged(int index);
 };
 
 // *************************************************************************

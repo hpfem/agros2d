@@ -24,6 +24,7 @@
 #include "util/constants.h"
 #include "util/glfont.h"
 #include "gui/common.h"
+#include "gui/lineeditdouble.h"
 
 const double minWidth = 110;
 
@@ -99,6 +100,20 @@ void SettingsWidget::load()
     // mesh and solver
     txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
     chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
+
+    // adaptivity
+    txtMaxDOFs->setValue(Util::config()->maxDofs);
+    txtConvExp->setValue(Util::config()->convExp);
+    txtThreshold->setValue(Util::config()->threshold);
+    cmbStrategy->setCurrentIndex(cmbStrategy->findData(Util::config()->strategy));
+    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Util::config()->meshRegularity));
+    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(Util::config()->projNormType));
+    chkUseAnIso->setChecked(Util::config()->useAniso);
+    chkFinerReference->setChecked(Util::config()->finerReference);
+
+    // command argument
+    txtArgumentTriangle->setText(Util::config()->commandTriangle);
+    txtArgumentGmsh->setText(Util::config()->commandGmsh);
 }
 
 void SettingsWidget::save()
@@ -149,6 +164,20 @@ void SettingsWidget::save()
     // mesh and solver
     Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
     Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
+
+    // adaptivity
+    Util::config()->maxDofs = txtMaxDOFs->value();
+    Util::config()->convExp = txtConvExp->value();
+    Util::config()->threshold = txtThreshold->value();
+    Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
+    Util::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
+    Util::config()->projNormType = (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
+    Util::config()->useAniso = chkUseAnIso->isChecked();
+    Util::config()->finerReference = chkFinerReference->isChecked();
+
+    // command argument
+    Util::config()->commandTriangle = txtArgumentTriangle->text();
+    Util::config()->commandGmsh = txtArgumentGmsh->text();
 
     // save
     Util::config()->save();
@@ -347,9 +376,9 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
 
     QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
-    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 0, 1);
-    layoutMesh->addWidget(chkMeshCurvilinearElements, 1, 0, 1, 2);
+    layoutMesh->addWidget(chkMeshCurvilinearElements, 0, 0, 1, 2);
+    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 1, 0);
+    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 1, 1);
 
     QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
     grpMesh->setLayout(layoutMesh);
@@ -357,9 +386,94 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     QPushButton *btnMeshAndSolverDefault = new QPushButton(tr("Default"));
     connect(btnMeshAndSolverDefault, SIGNAL(clicked()), this, SLOT(doMeshAndSolverDefault()));
 
+    // adaptivity
+    QFont fnt = font();
+    fnt.setPointSize(fnt.pointSize() - 1);
+
+    lblMaxDofs = new QLabel(tr("Maximum number of DOFs:"));
+    txtMaxDOFs = new QSpinBox(this);
+    txtMaxDOFs->setMinimum(1e2);
+    txtMaxDOFs->setMaximum(1e9);
+    txtMaxDOFs->setSingleStep(1e2);
+
+    txtConvExp = new LineEditDouble();
+    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences the selection<br/>of candidates in hp-adaptivity"));
+    lblConvExp->setFont(fnt);
+
+    txtThreshold = new LineEditDouble();
+    lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
+    lblThreshold->setFont(fnt);
+
+    cmbStrategy = new QComboBox();
+    cmbStrategy->addItem(tr("0"), 0);
+    cmbStrategy->addItem(tr("1"), 1);
+    cmbStrategy->addItem(tr("2"), 2);
+    connect(cmbStrategy, SIGNAL(currentIndexChanged(int)), this, SLOT(doStrategyChanged(int)));
+    lblStrategy = new QLabel("");
+    lblStrategy->setFont(fnt);
+    doStrategyChanged(0);
+
+    cmbMeshRegularity = new QComboBox();
+    cmbMeshRegularity->addItem(tr("arbitrary level"), -1);
+    cmbMeshRegularity->addItem(tr("at most one-level"), 1);
+    cmbMeshRegularity->addItem(tr("at most two-level"), 2);
+    cmbMeshRegularity->addItem(tr("at most three-level"), 3);
+    cmbMeshRegularity->addItem(tr("at most four-level"), 4);
+    cmbMeshRegularity->addItem(tr("at most five-level"), 5);
+
+    cmbProjNormType = new QComboBox();
+    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
+    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
+    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
+
+    chkUseAnIso = new QCheckBox(tr("Use anisotropic refinements"));
+    chkFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
+
+    QGridLayout *layoutAdaptivitySettings = new QGridLayout();
+    layoutAdaptivitySettings->setColumnStretch(1, 1);
+    layoutAdaptivitySettings->addWidget(lblMaxDofs, 0, 0);
+    layoutAdaptivitySettings->addWidget(txtMaxDOFs, 0, 1, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
+    layoutAdaptivitySettings->addWidget(txtConvExp, 2, 1);
+    layoutAdaptivitySettings->addWidget(lblConvExp, 3, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Strategy:")), 4, 0);
+    layoutAdaptivitySettings->addWidget(cmbStrategy, 4, 1);
+    layoutAdaptivitySettings->addWidget(lblStrategy, 5, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Threshold:")), 6, 0);
+    layoutAdaptivitySettings->addWidget(txtThreshold, 6, 1);
+    layoutAdaptivitySettings->addWidget(lblThreshold, 7, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Hanging nodes:")), 8, 0);
+    layoutAdaptivitySettings->addWidget(cmbMeshRegularity, 8, 1);
+    layoutAdaptivitySettings->addWidget(new QLabel(tr("Norm:")), 9, 0);
+    layoutAdaptivitySettings->addWidget(cmbProjNormType, 9, 1);
+    layoutAdaptivitySettings->addWidget(chkUseAnIso, 10, 0, 1, 2);
+    layoutAdaptivitySettings->addWidget(chkFinerReference, 11, 0, 1, 2);
+
+    QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
+    layoutAdaptivity->addLayout(layoutAdaptivitySettings);
+
+    QGroupBox *grpAdaptivity = new QGroupBox("Adaptivity");
+    grpAdaptivity->setLayout(layoutAdaptivity);
+
+    // commands
+    txtArgumentTriangle = new QLineEdit("");
+    txtArgumentGmsh = new QLineEdit("");
+
+    // default
+    QGridLayout *layoutCommands = new QGridLayout();
+    layoutCommands->addWidget(new QLabel(tr("Triangle")), 0, 0);
+    layoutCommands->addWidget(txtArgumentTriangle, 1, 0);
+    layoutCommands->addWidget(new QLabel(tr("GMSH")), 2, 0);
+    layoutCommands->addWidget(txtArgumentGmsh, 3, 0);
+
+    QGroupBox *grpCommands = new QGroupBox("Commands");
+    grpCommands->setLayout(layoutCommands);
+
     // layout mesh and solver
     QVBoxLayout *layoutMeshAndSolver = new QVBoxLayout();
     layoutMeshAndSolver->addWidget(grpMesh);
+    layoutMeshAndSolver->addWidget(grpAdaptivity);
+    layoutMeshAndSolver->addWidget(grpCommands);
     layoutMeshAndSolver->addStretch();
     layoutMeshAndSolver->addWidget(btnMeshAndSolverDefault, 0, Qt::AlignLeft);
 
@@ -433,6 +547,26 @@ QWidget *SettingsWidget::controlsColors()
     return colorsWidget;
 }
 
+void SettingsWidget::doStrategyChanged(int index)
+{
+
+
+    switch (index)
+    {
+    case 0:
+        lblStrategy->setText(tr("refine elements until sqrt(<b>threshold</b>) times total error<br/>is processed. If more elements have similar errors, refine all<br/>to keep the mesh symmetric"));
+        break;
+    case 1:
+        lblStrategy->setText(tr("refine all elements whose error is larger<br/>than <b>threshold</b> times maximum element error"));
+        break;
+    case 2:
+        lblStrategy->setText(tr("refine all elements whose error is larger<br/>than <b>threshold</b>"));
+        break;
+    default:
+        break;
+    }
+}
+
 void SettingsWidget::setControls()
 {
 
@@ -477,6 +611,18 @@ void SettingsWidget::doMeshAndSolverDefault()
 {
     txtMeshAngleSegmentsCount->setValue(MESHANGLESEGMENTSCOUNT);
     chkMeshCurvilinearElements->setChecked(MESHCURVILINEARELEMENTS);
+
+    txtMaxDOFs->setValue(MAX_DOFS);
+    txtConvExp->setValue(ADAPTIVITY_CONVEXP);
+    txtThreshold->setValue(ADAPTIVITY_THRESHOLD);
+    cmbStrategy->setCurrentIndex(cmbStrategy->findData(ADAPTIVITY_STRATEGY));
+    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(ADAPTIVITY_MESHREGULARITY));
+    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(ADAPTIVITY_PROJNORMTYPE));
+    chkUseAnIso->setChecked(ADAPTIVITY_ANISO);
+    chkFinerReference->setChecked(ADAPTIVITY_FINER_REFERENCE_H_AND_P);
+
+    txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
+    txtArgumentGmsh->setText(COMMANDS_GMSH);
 }
 
 void SettingsWidget::doAdvancedDefault()

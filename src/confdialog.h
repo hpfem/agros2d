@@ -36,8 +36,6 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void doAdaptivityDefault();
-    void doCommandsDefault();
 
     void moduleClicked(QTreeWidgetItem *item, int role);
     void moduleDoubleClicked(QTreeWidgetItem *item, int role);
@@ -83,31 +81,8 @@ private:
     QLineEdit *txtDiscreteDirectory;
     QCheckBox *chkDiscreteSaveMatrixRHS;
 
-    // scene font
-    QLabel *lblSceneFontExample;
-    QPushButton *btnSceneFont;
-
-    // adaptivity
-    QLabel *lblMaxDofs;
-    QSpinBox *txtMaxDOFs;
-    //QCheckBox *chkIsoOnly;
-    //QLabel *lblIsoOnly;
-    LineEditDouble *txtConvExp;
-    QLabel *lblConvExp;
-    LineEditDouble *txtThreshold;
-    QLabel *lblThreshold;
-    QComboBox *cmbStrategy;
-    QLabel *lblStrategy;
-    QComboBox *cmbMeshRegularity;
-    QComboBox *cmbProjNormType;
-    QCheckBox *chkUseAnIso;
-    QCheckBox *chkFinerReference;
-
     // threads
     QSpinBox *txtNumOfThreads;
-
-    QLineEdit *txtArgumentTriangle;
-    QLineEdit *txtArgumentGmsh;
 
     // global script
     ScriptEditor *txtGlobalScript;
