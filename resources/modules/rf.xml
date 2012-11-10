@@ -27,7 +27,8 @@
     <module:quantity id="rf_te_current_density_external_real" shortname="rf_Jer"/>
     <module:quantity id="rf_te_current_density_external_imag" shortname="rf_Jei"/>
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="harmonic">
+      <module:weakform_volume analysistype="harmonic"
+        equation="\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon \right) \vecfaz{E} = \mj \omega \vecfaz{J}_{\mathrm{ext}}">
         <module:quantity id="rf_te_permittivity"/>
         <module:quantity id="rf_te_permeability"/>
         <module:quantity id="rf_te_conductivity"/>
@@ -53,25 +54,29 @@
     <module:quantity id="rf_te_impedance" shortname="rf_Z0"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="harmonic" default="rf_te_electric_field">
-        <module:boundary id="rf_te_electric_field" name="Electric field">
+        <module:boundary id="rf_te_electric_field" name="Electric field"
+          equation="\vecfaz{E} = \vecfaz{E}_0">
           <module:quantity id="rf_te_electric_field_real"/>
           <module:quantity id="rf_te_electric_field_imag"/>
           <module:essential_form id="form" axi_linear="rf_Er" axi_newton="rf_Er" i="1" planar_linear="rf_Er" planar_newton="rf_Er"/>
           <module:essential_form id="form" axi_linear="rf_Ei" axi_newton="rf_Ei" i="2" planar_linear="rf_Ei" planar_newton="rf_Ei"/>
         </module:boundary>
-        <module:boundary id="rf_te_magnetic_field" name="Magnetic field">
+        <module:boundary id="rf_te_magnetic_field" name="Magnetic field"
+          equation="">
           <module:quantity id="rf_te_magnetic_field_real"/>
           <module:quantity id="rf_te_magnetic_field_imag"/>
           <module:vector_form id="form" axi_linear="- rf_Hr * r * vval" axi_newton="rf_Hr * r * vval" i="1" j="1" planar_linear="- rf_Hr * vval" planar_newton="rf_Hr * vval"/>
           <module:vector_form id="form" axi_linear="- rf_Hi * r * vval" axi_newton="rf_Hi * r * vval" i="2" j="2" planar_linear="- rf_Hi * vval" planar_newton="rf_Hi * vval"/>
         </module:boundary>
-        <module:boundary id="rf_te_surface_current" name="Surface current">
+        <module:boundary id="rf_te_surface_current" name="Surface current"
+          equation="\faz{J}_{t} = - \frac{1}{\omega \mu} \frac{\partial \vecfaz{E}}{\partial n_0} = \faz{J}_0">
           <module:quantity id="rf_te_surface_current_real"/>
           <module:quantity id="rf_te_surface_current_imag"/>
           <module:vector_form id="form" axi_linear="- 2 * PI * f * rf_Ji * r * vval" axi_newton="- 2 * PI * f * rf_Ji * r * vval" i="1" j="1" planar_linear="- 2 * PI * f * rf_Ji * vval" planar_newton="- 2 * PI * f * rf_Ji * vval"/>
           <module:vector_form id="form" axi_linear="2 * PI * f * rf_Jr * r * vval" axi_newton="2 * PI * f * rf_Jr * r * vval" i="2" j="2" planar_linear="2 * PI * f * rf_Jr * vval" planar_newton="2 * PI * f * rf_Jr * vval"/>
         </module:boundary>
-        <module:boundary id="rf_te_impedance" name="Impedance boundary condition">
+        <module:boundary id="rf_te_impedance" name="Impedance boundary condition"
+          equation="- \frac{1}{\omega \mu} \frac{\partial \vecfaz{E}}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} \vecfaz{E}">
           <module:quantity id="rf_te_impedance"/>
           <module:matrix_form id="form" axi_linear="r * 2 * PI * f / rf_Z0 * uval * vval" axi_newton="-r * 2 * PI * f / rf_Z0 * uval * vval" i="1" j="2" planar_linear="2 * PI * f / rf_Z0 * uval * vval" planar_newton="- 2 * PI * f / rf_Z0 * uval * vval"/>
           <module:matrix_form id="form" axi_linear="- r * 2 * PI * f / rf_Z0 * uval * vval" axi_newton="r * 2 * PI * f / rf_Z0 * uval * vval" i="2" j="1" planar_linear="- 2 * PI * f / rf_Z0 * uval * vval" planar_newton="2 * PI * f / rf_Z0 * uval * vval"/>

@@ -29,6 +29,7 @@ class ScriptEditor;
 
 class LineEditDouble;
 class ValueLineEdit;
+class LaTeXViewer;
 
 class FieldInfo;
 
@@ -128,7 +129,7 @@ private:
     ValueLineEdit *txtTransientTimeSkip;
 
     // equation
-    QLabel *lblEquationPixmap;
+    LaTeXViewer *equationLaTeX;
 
     void fillComboBox();
 

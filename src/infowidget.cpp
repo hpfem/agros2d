@@ -328,7 +328,6 @@ void InfoWidget::finishLoading(bool ok)
                     arg(dataTimeSteps);
 
             webView->page()->mainFrame()->evaluateJavaScript(commandTimeSteps);
-
         }
 
         foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())

@@ -262,7 +262,7 @@
                                 <sequence>
                                         <element minOccurs="1" maxOccurs="unbounded" ref="module:weakform_surface" />
                                 </sequence>
-                        </choice>
+                        </choice>                        
                 </complexType>
         </element>
 
@@ -278,7 +278,7 @@
                                         </choice>
                                 </sequence>
                         </choice>
-                        <attribute name="analysistype" use="required" type="string" />
+                        <attribute name="analysistype" use="required" type="string" />                                                
                         <attribute name="default" type="string" />
                 </complexType>
         </element>
@@ -344,6 +344,7 @@
                                 </sequence>
                         </choice>
                         <attribute name="analysistype" use="required" type="string" />
+                        <attribute name="equation" use="required" type="string" />
                 </complexType>
         </element>
 
@@ -365,7 +366,7 @@
                         <attribute name="axi_linear" use="required" type="string" />
                         <attribute name="planar_newton" use="required" type="string" />
                         <attribute name="axi_newton" use="required" type="string" />
-                        <attribute name="symmetric" type="integer" />
+                        <attribute name="symmetric" type="integer" />                        
                 </complexType>
         </element>
 
@@ -404,6 +405,7 @@
                         </sequence>
                         <attribute name="id" use="required" type="string" />
                         <attribute name="name" use="required" type="string" />
+                        <attribute name="equation" use="required" type="string" />
                 </complexType>
         </element>
 </schema>

@@ -72,6 +72,8 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     gui/textedit.cpp \
     gui/systemoutput.cpp \
     gui/scenewidget.cpp \
+    gui/groupbox.cpp \
+    gui/latexviewer.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
@@ -133,7 +135,6 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
-    gui/groupbox.cpp \
     pythonlab_agros.cpp \
     ../pythonlab/pythonlab_functions.cpp
 
@@ -156,6 +157,7 @@ HEADERS += util.h \
     gui/textedit.h \
     gui/systemoutput.h \
     gui/scenewidget.h \
+    gui/latexviewer.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \

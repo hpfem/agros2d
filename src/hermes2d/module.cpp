@@ -431,6 +431,7 @@ Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_var
 {
     m_id = QString::fromStdString(bdy.id());
     m_name = QString::fromStdString(bdy.name());
+    m_equation = QString::fromStdString(bdy.equation());
 
     // variables
     for (unsigned int i = 0; i < bdy.quantity().size(); i++)
@@ -739,14 +740,16 @@ void Module::BasicModule::read(const QString &filename)
             for (unsigned int i = 0; i < wf.matrix_form().size(); i++)
             {
                 XMLModule::matrix_form form = wf.matrix_form().at(i);
-                m_wfMatrixVolumeExpression.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+                m_wfMatrixVolume.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
             }
 
             for (unsigned int i = 0; i < wf.vector_form().size(); i++)
             {
                 XMLModule::vector_form form = wf.vector_form().at(i);
-                m_wfVectorVolumeExpression.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
+                m_wfVectorVolume.append(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
             }
+
+            m_equation = QString::fromStdString(wf.equation());
         }
     }
 
@@ -931,13 +934,13 @@ void Module::BasicModule::clear()
     m_volumeIntegrals.clear();
 
     // volume weak form
-    for (QList<FormInfo *>::iterator it = m_wfMatrixVolumeExpression.begin(); it < m_wfMatrixVolumeExpression.end(); ++it)
+    for (QList<FormInfo *>::iterator it = m_wfMatrixVolume.begin(); it < m_wfMatrixVolume.end(); ++it)
         delete *it;
-    m_wfMatrixVolumeExpression.clear();
+    m_wfMatrixVolume.clear();
 
-    for (QList<FormInfo *>::iterator it = m_wfVectorVolumeExpression.begin(); it < m_wfVectorVolumeExpression.end(); ++it)
+    for (QList<FormInfo *>::iterator it = m_wfVectorVolume.begin(); it < m_wfVectorVolume.end(); ++it)
         delete *it;
-    m_wfVectorVolumeExpression.clear();
+    m_wfVectorVolume.clear();
 
     if (m_materialUI)
     {

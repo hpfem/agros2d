@@ -25,6 +25,7 @@
 
 class LineEditDouble;
 class ValueLineEdit;
+class LaTeXViewer;
 
 class SceneBoundary;
 class SceneMaterial;
@@ -75,7 +76,7 @@ public:
     QVBoxLayout *layout;
 
     // equation
-    QLabel *equationImage;
+    LaTeXViewer *equationLaTeX;
 
     // quantities
     QList<QString> ids;

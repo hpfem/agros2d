@@ -38,7 +38,8 @@
     <module:quantity id="magnetic_current_density_external_real" shortname="ma_Jer"/>
     <module:quantity id="magnetic_current_density_external_imag" shortname="ma_Jei"/>
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="steadystate">
+      <module:weakform_volume analysistype="steadystate"
+        equation="\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} = \vec{J}_\mathrm{ext}">
         <module:quantity id="magnetic_permeability" nonlinearity_axi="sqrt(dz1*dz1 + (dr1 + value1 / r)*(dr1 + value1 / r))" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1)"/>
         <module:quantity id="magnetic_conductivity"/>
         <module:quantity id="magnetic_remanence"/>
@@ -50,7 +51,8 @@
         <module:matrix_form id="form" axi_linear="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) - ma_gamma * uval * ma_vy * vdz" axi_newton="(abs((sign((ma_mur * ((updr + upval / (r + 1e-12)) * (updr + upval / (r + 1e-12)) + updz * updz)))))                                                                 * (- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / (r + 1e-12)) * (udr + uval / (r + 1e-12)) + updz * udz) / ((updr + upval / (r + 1e-12)) * (updr + upval / (r + 1e-12)) + updz * updz)^0.5 * (updr * vdr + updz * vdz + upval * vdr / (r + 1e-12))) + 1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) - ma_gamma * uval * ma_vy * vdz)" i="1" j="1" planar_linear="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) - ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" planar_newton="(abs(sign(dma_mur * (updx * updx + updy * updy))) * (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / (1e-12 + (updx * updx + updy * updy)^0.5) * (updx * vdx + updy * vdy)) + 1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) - ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy))"/>
         <module:vector_form id="form" axi_linear="ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" axi_newton="1 / (ma_mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) - ma_gamma * upval * ma_vy * vdz -                                 ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" i="1" j="1" planar_linear="ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" planar_newton="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) - ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy) - ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)"/>
       </module:weakform_volume>
-      <module:weakform_volume analysistype="transient">
+      <module:weakform_volume analysistype="transient"
+        equation="\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} + \sigma \frac{\partial \vec{A}}{\partial t} = \vec{J}_\mathrm{ext}">
         <module:quantity id="magnetic_permeability" nonlinearity_axi="" nonlinearity_planar=""/>
         <module:quantity id="magnetic_conductivity"/>
         <module:quantity id="magnetic_remanence"/>
@@ -62,7 +64,8 @@
         <module:matrix_form id="form" axi_linear="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) - ma_gamma * uval * ma_vy * vdz" axi_newton="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / (r + 1e-12)) - ma_gamma * uval * ma_vy * vdz" i="1" j="1" planar_linear="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -                                             ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" planar_newton="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy) -                                             ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" symmetric="1"/>
         <module:vector_form id="form" axi_linear="ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" axi_newton="1 / (ma_mur * MU0) * ((updr * vdr + updz * vdz) + upval * vdr / (r + 1e-12)) - ma_gamma * upval * ma_vy * vdz -                                         ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" i="1" j="1" planar_linear="ma_Jer * vval +  mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" planar_newton="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) -                                       ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy) -                                       ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)"/>
       </module:weakform_volume>
-      <module:weakform_volume analysistype="harmonic">
+      <module:weakform_volume analysistype="harmonic"
+        equation="\curl \left( \frac{1}{\mu}\, \left( \curl \vecfaz{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vec{J}_\mathrm{ext}">
         <module:quantity id="magnetic_permeability" nonlinearity_axi="sqrt((dr1+value1/(r + 1e-12))^2 + dz1*dz1 + (dr2+value2/(r + 1e-12))^2 + dz2*dz2)" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
         <module:quantity id="magnetic_conductivity"/>
         <module:quantity id="magnetic_remanence"/>
@@ -91,33 +94,39 @@
     <module:quantity id="magnetic_surface_current_imag" shortname="Ji"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="magnetic_potential">
-        <module:boundary id="magnetic_potential" name="Magnetic potential">
+        <module:boundary id="magnetic_potential" name="Magnetic potential"
+          equation="A = A_0">
           <module:quantity id="magnetic_potential_real"/>
           <module:essential_form id="form" axi_linear="Ar" axi_newton="Ar" i="1" planar_linear="Ar" planar_newton="Ar"/>
         </module:boundary>
-        <module:boundary id="magnetic_surface_current" name="Surface current">
+        <module:boundary id="magnetic_surface_current" name="Surface current"
+          equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0">
           <module:quantity id="magnetic_surface_current_real"/>
           <module:vector_form id="form" axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="magnetic_potential">
-        <module:boundary id="magnetic_potential" name="Magnetic potential">
+        <module:boundary id="magnetic_potential" name="Magnetic potential"
+          equation="A = A_0">
           <module:quantity id="magnetic_potential_real"/>
           <module:essential_form id="form" axi_linear="Ar" axi_newton="Ar" i="1" planar_linear="Ar" planar_newton="Ar"/>
         </module:boundary>
-        <module:boundary id="magnetic_surface_current" name="Surface current">
+        <module:boundary id="magnetic_surface_current" name="Surface current"
+          equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0">
           <module:quantity id="magnetic_surface_current_real"/>
           <module:vector_form id="form" axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="harmonic" default="magnetic_potential">
-        <module:boundary id="magnetic_potential" name="Magnetic potential">
+        <module:boundary id="magnetic_potential" name="Magnetic potential"
+          equation="\vecfaz{A} = \vecfaz{A}_0">
           <module:quantity id="magnetic_potential_real"/>
           <module:quantity id="magnetic_potential_imag"/>
           <module:essential_form id="form" axi_linear="Ar" axi_newton="Ar" i="1" planar_linear="Ar" planar_newton="Ar"/>
           <module:essential_form id="form" axi_linear="Ai" axi_newton="Ai" i="2" planar_linear="Ai" planar_newton="Ai"/>
         </module:boundary>
-        <module:boundary id="magnetic_surface_current" name="Surface current">
+        <module:boundary id="magnetic_surface_current" name="Surface current"
+          equation="\faz{K} = - \frac{1}{\mu} \frac{\partial \vecfaz{A}}{\partial n_0} = \faz{K}_0">
           <module:quantity id="magnetic_surface_current_real"/>
           <module:quantity id="magnetic_surface_current_imag"/>
           <module:vector_form id="form" axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>

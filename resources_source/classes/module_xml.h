@@ -3635,9 +3635,27 @@ namespace XMLModule
     void
     analysistype (::std::auto_ptr< analysistype_type > p);
 
+    // equation
+    // 
+    typedef ::xml_schema::string equation_type;
+    typedef ::xsd::cxx::tree::traits< equation_type, char > equation_traits;
+
+    const equation_type&
+    equation () const;
+
+    equation_type&
+    equation ();
+
+    void
+    equation (const equation_type& x);
+
+    void
+    equation (::std::auto_ptr< equation_type > p);
+
     // Constructors.
     //
-    weakform_volume (const analysistype_type&);
+    weakform_volume (const analysistype_type&,
+                     const equation_type&);
 
     weakform_volume (const ::xercesc::DOMElement& e,
                      ::xml_schema::flags f = 0,
@@ -3666,6 +3684,7 @@ namespace XMLModule
     matrix_form_sequence matrix_form_;
     vector_form_sequence vector_form_;
     ::xsd::cxx::tree::one< analysistype_type > analysistype_;
+    ::xsd::cxx::tree::one< equation_type > equation_;
   };
 
   class group: public ::xml_schema::type
@@ -4322,10 +4341,28 @@ namespace XMLModule
     void
     name (::std::auto_ptr< name_type > p);
 
+    // equation
+    // 
+    typedef ::xml_schema::string equation_type;
+    typedef ::xsd::cxx::tree::traits< equation_type, char > equation_traits;
+
+    const equation_type&
+    equation () const;
+
+    equation_type&
+    equation ();
+
+    void
+    equation (const equation_type& x);
+
+    void
+    equation (::std::auto_ptr< equation_type > p);
+
     // Constructors.
     //
     boundary (const id_type&,
-              const name_type&);
+              const name_type&,
+              const equation_type&);
 
     boundary (const ::xercesc::DOMElement& e,
               ::xml_schema::flags f = 0,
@@ -4356,6 +4393,7 @@ namespace XMLModule
     essential_form_sequence essential_form_;
     ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< name_type > name_;
+    ::xsd::cxx::tree::one< equation_type > equation_;
   };
 }
 

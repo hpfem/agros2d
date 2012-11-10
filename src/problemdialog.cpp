@@ -27,6 +27,7 @@
 #include "hermes2d/coupling.h"
 
 #include "gui/lineeditdouble.h"
+#include "gui/latexviewer.h"
 #include "gui/common.h"
 
 const int minWidth = 130;
@@ -132,15 +133,9 @@ FieldWidget::FieldWidget(FieldInfo *fieldInfo, QWidget *parent)
 
 void FieldWidget::createContent()
 {
-    /*
-    QLabel *lblField = new QLabel();
-    QPixmap pixmap;
-    pixmap.load(QString(":/fields/%1.png").arg(m_fieldInfo->fieldId()));
-    lblField->setPixmap(pixmap.scaled(QSize(48, 48), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    */
-
     // equations
-    lblEquationPixmap = new QLabel("");
+    equationLaTeX = new LaTeXViewer(this);
+    equationLaTeX->setMaximumWidth(400);
 
     cmbAdaptivityType = new QComboBox();
     txtAdaptivitySteps = new QSpinBox(this);
@@ -273,7 +268,8 @@ void FieldWidget::createContent()
 
     // equation
     QVBoxLayout *layoutEquation = new QVBoxLayout();
-    layoutEquation->addWidget(lblEquationPixmap);
+    layoutEquation->addWidget(equationLaTeX);
+    layoutEquation->addStretch();
 
     QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
     grpEquation->setLayout(layoutEquation);
@@ -390,10 +386,11 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 
 void FieldWidget::doShowEquation()
 {
-    readPixmap(lblEquationPixmap,
-               QString(":/equations/%1/%1_%2.png")
-               .arg(m_fieldInfo->fieldId())
-               .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
+    Module::ModuleAgros module(m_fieldInfo->fieldId(),
+                               Util::problem()->config()->coordinateType(),
+                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
+
+    equationLaTeX->setLatex(module.equation());
 }
 
 void FieldWidget::doAdaptivityChanged(int index)

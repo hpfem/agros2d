@@ -29,6 +29,7 @@
 #include "scenelabel.h"
 
 #include "gui/common.h"
+#include "gui/latexviewer.h"
 
 SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, QString name, QString type,
                              QHash<QString, Value> values)
@@ -106,12 +107,10 @@ void SceneFieldWidget::createContent()
     addCustomWidget(layout);
 
     // equation
-    equationImage = new QLabel();
-    equationImage->setMinimumHeight(fontMetrics().height()*2.2);
-    equationImage->setMinimumWidth(300);
+    equationLaTeX = new LaTeXViewer(this);
 
-    QHBoxLayout *layoutEquation = new QHBoxLayout();
-    layoutEquation->addWidget(equationImage);
+    QVBoxLayout *layoutEquation = new QVBoxLayout();
+    layoutEquation->addWidget(equationLaTeX);
     layoutEquation->addStretch();
 
     QGroupBox *grpEquation = new QGroupBox(tr("Equation"));
@@ -228,12 +227,7 @@ bool SceneFieldWidgetMaterial::save()
 
 void SceneFieldWidgetMaterial::refresh()
 {
-    // read equation
-    QString fileName = QString(":/equations/%1/%1_%2.png")
-            .arg(material->fieldInfo()->fieldId())
-            .arg(analysisTypeToStringKey(material->fieldInfo()->analysisType()));
-
-    readPixmap(equationImage, fileName);
+    equationLaTeX->setLatex(material->fieldInfo()->module()->equation());
 }
 
 // *************************************************************************************************************************************
@@ -294,11 +288,7 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     }
 
     // read equation
-    QString fileName = QString(":/equations/%1/%2.png")
-            .arg(boundary->fieldInfo()->fieldId())
-            .arg(comboBox->itemData(index).toString());
-
-    readPixmap(equationImage, fileName);
+    equationLaTeX->setLatex(boundary_type->equation());
 }
 
 void SceneFieldWidgetBoundary::load()

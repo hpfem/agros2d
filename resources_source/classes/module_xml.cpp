@@ -3023,6 +3023,30 @@ namespace XMLModule
     this->analysistype_.set (x);
   }
 
+  const weakform_volume::equation_type& weakform_volume::
+  equation () const
+  {
+    return this->equation_.get ();
+  }
+
+  weakform_volume::equation_type& weakform_volume::
+  equation ()
+  {
+    return this->equation_.get ();
+  }
+
+  void weakform_volume::
+  equation (const equation_type& x)
+  {
+    this->equation_.set (x);
+  }
+
+  void weakform_volume::
+  equation (::std::auto_ptr< equation_type > x)
+  {
+    this->equation_.set (x);
+  }
+
 
   // group
   // 
@@ -3683,6 +3707,30 @@ namespace XMLModule
   name (::std::auto_ptr< name_type > x)
   {
     this->name_.set (x);
+  }
+
+  const boundary::equation_type& boundary::
+  equation () const
+  {
+    return this->equation_.get ();
+  }
+
+  boundary::equation_type& boundary::
+  equation ()
+  {
+    return this->equation_.get ();
+  }
+
+  void boundary::
+  equation (const equation_type& x)
+  {
+    this->equation_.set (x);
+  }
+
+  void boundary::
+  equation (::std::auto_ptr< equation_type > x)
+  {
+    this->equation_.set (x);
   }
 }
 
@@ -7482,12 +7530,14 @@ namespace XMLModule
   //
 
   weakform_volume::
-  weakform_volume (const analysistype_type& analysistype)
+  weakform_volume (const analysistype_type& analysistype,
+                   const equation_type& equation)
   : ::xml_schema::type (),
     quantity_ (::xml_schema::flags (), this),
     matrix_form_ (::xml_schema::flags (), this),
     vector_form_ (::xml_schema::flags (), this),
-    analysistype_ (analysistype, ::xml_schema::flags (), this)
+    analysistype_ (analysistype, ::xml_schema::flags (), this),
+    equation_ (equation, ::xml_schema::flags (), this)
   {
   }
 
@@ -7499,7 +7549,8 @@ namespace XMLModule
     quantity_ (x.quantity_, f, this),
     matrix_form_ (x.matrix_form_, f, this),
     vector_form_ (x.vector_form_, f, this),
-    analysistype_ (x.analysistype_, f, this)
+    analysistype_ (x.analysistype_, f, this),
+    equation_ (x.equation_, f, this)
   {
   }
 
@@ -7511,7 +7562,8 @@ namespace XMLModule
     quantity_ (f, this),
     matrix_form_ (f, this),
     vector_form_ (f, this),
-    analysistype_ (f, this)
+    analysistype_ (f, this),
+    equation_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -7580,12 +7632,28 @@ namespace XMLModule
         this->analysistype_.set (r);
         continue;
       }
+
+      if (n.name () == "equation" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< equation_type > r (
+          equation_traits::create (i, f, this));
+
+        this->equation_.set (r);
+        continue;
+      }
     }
 
     if (!analysistype_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "analysistype",
+        "");
+    }
+
+    if (!equation_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "equation",
         "");
     }
   }
@@ -8249,14 +8317,16 @@ namespace XMLModule
 
   boundary::
   boundary (const id_type& id,
-            const name_type& name)
+            const name_type& name,
+            const equation_type& equation)
   : ::xml_schema::type (),
     quantity_ (::xml_schema::flags (), this),
     matrix_form_ (::xml_schema::flags (), this),
     vector_form_ (::xml_schema::flags (), this),
     essential_form_ (::xml_schema::flags (), this),
     id_ (id, ::xml_schema::flags (), this),
-    name_ (name, ::xml_schema::flags (), this)
+    name_ (name, ::xml_schema::flags (), this),
+    equation_ (equation, ::xml_schema::flags (), this)
   {
   }
 
@@ -8270,7 +8340,8 @@ namespace XMLModule
     vector_form_ (x.vector_form_, f, this),
     essential_form_ (x.essential_form_, f, this),
     id_ (x.id_, f, this),
-    name_ (x.name_, f, this)
+    name_ (x.name_, f, this),
+    equation_ (x.equation_, f, this)
   {
   }
 
@@ -8284,7 +8355,8 @@ namespace XMLModule
     vector_form_ (f, this),
     essential_form_ (f, this),
     id_ (f, this),
-    name_ (f, this)
+    name_ (f, this),
+    equation_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -8373,6 +8445,15 @@ namespace XMLModule
         this->name_.set (r);
         continue;
       }
+
+      if (n.name () == "equation" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< equation_type > r (
+          equation_traits::create (i, f, this));
+
+        this->equation_.set (r);
+        continue;
+      }
     }
 
     if (!id_.present ())
@@ -8386,6 +8467,13 @@ namespace XMLModule
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "name",
+        "");
+    }
+
+    if (!equation_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "equation",
         "");
     }
   }
@@ -9040,6 +9128,7 @@ namespace XMLModule
     }
 
     o << ::std::endl << "analysistype: " << i.analysistype ();
+    o << ::std::endl << "equation: " << i.equation ();
     return o;
   }
 
@@ -9137,6 +9226,7 @@ namespace XMLModule
 
     o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "name: " << i.name ();
+    o << ::std::endl << "equation: " << i.equation ();
     return o;
   }
 }
@@ -11237,6 +11327,17 @@ namespace XMLModule
 
       a << i.analysistype ();
     }
+
+    // equation
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "equation",
+          e));
+
+      a << i.equation ();
+    }
   }
 
   void
@@ -11607,6 +11708,17 @@ namespace XMLModule
           e));
 
       a << i.name ();
+    }
+
+    // equation
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "equation",
+          e));
+
+      a << i.equation ();
     }
   }
 }

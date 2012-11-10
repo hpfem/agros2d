@@ -6,9 +6,10 @@
 	<style type="text/css">
 		{{STYLESHEET}}
 	</style>
-	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />
+	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />	
 </head>
 <body>
+
 <table>
 <tr>
 <td>

@@ -306,7 +306,7 @@ private:
 // boundary condition type
 struct BoundaryType
 {
-    BoundaryType() : m_id(""), m_name("") {}
+    BoundaryType() : m_id(""), m_name(""), m_equation("") {}
     BoundaryType(QList<BoundaryTypeVariable> boundary_type_variables,
                  XMLModule::boundary bdy,
                  CoordinateType problem_type);
@@ -327,6 +327,9 @@ struct BoundaryType
     // essential
     inline QList<FormInfo *> essential() const { return m_essential; }
 
+    // latex equation
+    inline QString equation() { return m_equation; }
+
 private:
     // id
     QString m_id;
@@ -342,6 +345,9 @@ private:
 
     // essential
     QList<FormInfo *> m_essential;
+
+    // latex equation
+    QString m_equation;
 };
 
 // surface and volume integral value
@@ -475,8 +481,8 @@ struct BasicModule
     BoundaryType *boundaryTypeDefault() const { return m_boundaryTypeDefault; }
 
     // weak forms
-    inline QList<FormInfo *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
-    inline QList<FormInfo *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
+    inline QList<FormInfo *> wfMatrixVolumeExpression() const { return m_wfMatrixVolume; }
+    inline QList<FormInfo *> wfVectorVolumeExpression() const { return m_wfVectorVolume; }
 
     // all physical variables
     QList<LocalVariable *> variables;
@@ -538,6 +544,9 @@ struct BasicModule
             return PhysicFieldVariableComp_Undefined;
     }
     inline LocalVariable *defaultViewVectorVariable() const { return m_defaultViewVectorVariable; }
+
+    // latex equation
+    inline QString equation() { return m_equation; }
 
 protected:
     // id
@@ -601,8 +610,11 @@ private:
     LocalVariable *m_defaultViewVectorVariable;
 
     // weak forms
-    QList<FormInfo *> m_wfMatrixVolumeExpression;
-    QList<FormInfo *> m_wfVectorVolumeExpression;
+    QList<FormInfo *> m_wfMatrixVolume;
+    QList<FormInfo *> m_wfVectorVolume;
+
+    // latex equation
+    QString m_equation;
 
     // read form xml
     void read(const QString &filename);

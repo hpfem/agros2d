@@ -31,7 +31,8 @@
     <module:quantity id="heat_velocity_y" shortname="he_vy"/>
     <module:quantity id="heat_velocity_angular" shortname="he_va"/>
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="steadystate">
+      <module:weakform_volume analysistype="steadystate"
+        equation="-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \left(\vec{v} \cdot \grad T\right) = Q">
         <module:quantity dependence="" id="heat_conductivity" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="heat_volume_heat"/>
         <module:quantity id="heat_velocity_x"/>
@@ -42,7 +43,8 @@
         <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" i="1" id="form" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
         <module:vector_form axi_linear="he_p * r * vval" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval  + r * he_rho * he_cp * (he_vy * updz) * vval" i="1" id="form" j="1" planar_linear="he_p * vval" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval  + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
       </module:weakform_volume>
-      <module:weakform_volume analysistype="transient">
+      <module:weakform_volume analysistype="transient"
+        equation="-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad T\right) = Q">
         <module:quantity id="heat_velocity_x"/>
         <module:quantity id="heat_velocity_y"/>
         <module:quantity id="heat_velocity_angular"/>
@@ -65,11 +67,13 @@
     <module:quantity id="heat_radiation_ambient_temperature" shortname="he_Ta"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="heat_temperature">
-        <module:boundary id="heat_temperature" name="Temperature">
+        <module:boundary id="heat_temperature" name="Temperature"
+          equation="T = T_0">
           <module:quantity id="heat_temperature"/>
           <module:essential_form axi_linear="he_T" axi_newton="he_T" i="1" id="form" planar_linear="he_T" planar_newton="he_T"/>
         </module:boundary>
-        <module:boundary id="heat_heat_flux" name="Heat flux">
+        <module:boundary id="heat_heat_flux" name="Heat flux"
+          equation="f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right) + \epsilon \sigma \left ( T_\mathrm{amb}^4 - T^4 \right)">
           <module:quantity id="heat_heat_flux"/>
           <module:quantity id="heat_convection_heat_transfer_coefficient"/>
           <module:quantity id="heat_convection_external_temperature"/>
@@ -80,11 +84,13 @@
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="heat_temperature">
-        <module:boundary id="heat_temperature" name="Temperature">
+        <module:boundary id="heat_temperature" name="Temperature"
+          equation="T = T_0">
           <module:quantity id="heat_temperature"/>
           <module:essential_form axi_linear="he_T" axi_newton="he_T" i="1" id="form" planar_linear="he_T" planar_newton="he_T"/>
         </module:boundary>
-        <module:boundary id="heat_heat_flux" name="Heat flux">
+        <module:boundary id="heat_heat_flux" name="Heat flux"
+          equation="f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right) + \epsilon \sigma \left ( T_\mathrm{amb}^4 - T^4 \right)">
           <module:quantity id="heat_heat_flux"/>
           <module:quantity id="heat_convection_heat_transfer_coefficient"/>
           <module:quantity id="heat_convection_external_temperature"/>
