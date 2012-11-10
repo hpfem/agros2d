@@ -84,7 +84,7 @@ void LaTeXViewer::showLaTeX()
     problemInfo.SetValue("JS_DIRECTORY", datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels");
     problemInfo.SetValue("LATEX_SOURCE", m_latexSource.toStdString());
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/latex/latex.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/latex.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
 
     writeStringContent(tempProblemDir() + "/latex.html", QString::fromStdString(info));
 
