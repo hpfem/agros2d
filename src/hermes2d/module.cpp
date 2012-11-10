@@ -261,6 +261,8 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // TODO at the present moment, it is impossible to have more sources !
     //assert(field->m_couplingSources.size() <= 1);
 
+    assert((type == WeakForm_MatVol) || (type == WeakForm_VecVol));
+
     // push external solution for weak coupling
     if (couplingInfo->isWeak())
     {
