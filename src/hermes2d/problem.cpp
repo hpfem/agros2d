@@ -518,7 +518,7 @@ void Problem::solveAction()
                             Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
                     }
 
-                    solver->solveSimple(actualTimeStep(), 0, false);
+                    solver->solveSimple(actualTimeStep(), 0);
                 }
                 else
                 {
@@ -646,7 +646,7 @@ void Problem::solveAdaptiveStepAction()
 
     // only if solution in previous adapt step existed, solve new one (we would have two new adapt steps otherwise)
     if(solutionAlreadyExists || adaptStep == 0)
-        solver->solveSimple(0, adaptStep + 1, false);
+        solver->solveSimple(0, adaptStep + 1);
 
 
     Util::scene()->setActiveTimeStep(Util::solutionStore()->lastTimeStep(Util::scene()->activeViewField(), SolutionMode_Normal));
