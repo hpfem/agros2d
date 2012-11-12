@@ -49,7 +49,7 @@ void {{CLASS}}LocalValue::calculate()
 
     if (Util::problem()->isSolved())
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(m_fieldInfo), m_point);
+        int index = findElementInMesh(Util::problem()->meshInitial(m_fieldInfo).data(), m_point);
         if (index != -1)
         {
             // find marker

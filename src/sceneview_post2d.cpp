@@ -156,7 +156,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            int index = findElementInMesh(Util::problem()->activeMeshInitial(), p);
+            int index = findElementInMesh(Util::problem()->activeMeshInitial().data(), p);
             if (index != -1)
             {
                 SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().

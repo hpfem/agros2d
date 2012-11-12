@@ -2200,7 +2200,7 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
                        -Util::config()->particleStartingRadius / 2,
                        (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + p + dp;
 
-            int index = findElementInMesh(Util::problem()->activeMeshInitial(), Point(p.x, p.y));
+            int index = findElementInMesh(Util::problem()->activeMeshInitial().data(), Point(p.x, p.y));
 
             trials++;
             if (index > 0 || trials > 10)

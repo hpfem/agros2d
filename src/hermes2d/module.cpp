@@ -1093,7 +1093,7 @@ void readMeshDirtyFix()
     setlocale(LC_NUMERIC, plocale);
 }
 
-QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMeshesFromFile(const QString &fileName)
+QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > readMeshesFromFile(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -1101,13 +1101,13 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMeshesFromFile(const QString &file
 
     // prepare mesh array
     Hermes::vector<Hermes::Hermes2D::Mesh*> meshes;
-    QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesMap;
+    QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > meshesMap;
     foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
     {
         Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
 
         meshes.push_back(mesh);
-        meshesMap[fieldInfo] = mesh;
+        meshesMap[fieldInfo] = QSharedPointer<Hermes::Hermes2D::Mesh>(mesh);
     }
 
     // load mesh from file
@@ -1116,7 +1116,7 @@ QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMeshesFromFile(const QString &file
 
     // refine mesh
     foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
-        refineMesh(fieldInfo, meshesMap[fieldInfo], true, true, true);
+        refineMesh(fieldInfo, meshesMap[fieldInfo].data(), true, true, true);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

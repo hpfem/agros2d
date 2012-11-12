@@ -61,7 +61,7 @@ void PostHermes::processInitialMesh()
         // init linearizer for initial mesh
         try
         {
-            Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial());
+            Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial().data());
             m_linInitialMeshView.process_solution(&initial);
         }
         catch (Hermes::Exceptions::Exception& e)

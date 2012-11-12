@@ -37,16 +37,34 @@ QString FieldSolutionID::toString()
 }
 
 template <typename Scalar>
+Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > MultiSpace<Scalar>::meshes()
+{
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > meshes;
+    for(int i = 0; i < spaces.size(); i++)
+    {
+        meshes.push_back(spaces.at(i).mesh);
+    }
+    return meshes;
+}
+
+template <typename Scalar>
+void MultiSolution<Scalar>::createSolutions(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > meshes)
+{
+    for(int comp = 0; comp < meshes.size(); comp++)
+    {
+        QSharedPointer<Solution<Scalar> > newSolution(new Solution<double>(meshes.at(comp).data()));
+        solutions.push_back(SolutionAndMesh<Scalar>(newSolution, meshes.at(comp)));
+    }
+}
+
+template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
 {
-    sln.clear();
-    space.clear();
-
     time = 0.0;
 }
 
 template <typename Scalar>
-SolutionArray<Scalar>::SolutionArray(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > sln, QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, double time)
+SolutionArray<Scalar>::SolutionArray(SolutionAndMesh<Scalar> sln, SpaceAndMesh<Scalar> space, double time)
 {
     this->sln = sln;
     this->space = space;
@@ -63,6 +81,17 @@ SolutionArray<Scalar>::~SolutionArray()
 template <typename Scalar>
 MultiSolutionArray<Scalar>::MultiSolutionArray()
 {
+}
+
+template <typename Scalar>
+MultiSolutionArray<Scalar>::MultiSolutionArray(MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions, double time)
+{
+    assert(spaces.size() == solutions.size());
+    for (int i = 0; i < spaces.size(); i++)
+    {
+        assert(spaces.at(i).mesh.data() == solutions.at(i).mesh.data());
+        this->addComponent(SolutionArray<Scalar>(solutions.at(i), spaces.at(i), time));
+    }
 }
 
 template <typename Scalar>
@@ -98,20 +127,20 @@ void MultiSolutionArray<Scalar>::append(MultiSolutionArray<Scalar> msa)
 template <typename Scalar>
 MultiSpace<Scalar> MultiSolutionArray<Scalar>::spaces()
 {
-    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces;
+    Hermes::vector<SpaceAndMesh<Scalar> > sp;
 
     foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
-        spaces.push_back(solutionArray.space);
+        sp.push_back(solutionArray.space);
     }
 
-    return MultiSpace<Scalar>(spaces);
+    return MultiSpace<Scalar>(sp);
 }
 
 template <typename Scalar>
 MultiSolution<Scalar> MultiSolutionArray<Scalar>::solutions()
 {
-    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions;
+    Hermes::vector<SolutionAndMesh<Scalar> > solutions;
 
     foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
@@ -135,72 +164,72 @@ MultiSolution<Scalar> MultiSolutionArray<Scalar>::solutions()
 //    return output;
 //}
 
-template <typename Scalar>
-MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
-{
-    MultiSolutionArray<Scalar> msa;
-    foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
-    {
-        Space<Scalar>* oldSpace = solutionArray.space.data();
-//        Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
+//template <typename Scalar>
+//MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::copySpaces()
+//{
+//    MultiSolutionArray<Scalar> msa;
+//    foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
+//    {
+//        Space<Scalar>* oldSpace = solutionArray.space.data();
+////        Mesh* newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
+////        newMesh->copy(oldSpace->get_mesh());
+////        Space<Scalar>* newSpace = oldSpace->duplicate(newMesh);
+////        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(newSpace), 0));
+
+//        Mesh *newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
 //        newMesh->copy(oldSpace->get_mesh());
-//        Space<Scalar>* newSpace = oldSpace->duplicate(newMesh);
-//        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(newSpace), 0));
 
-        Mesh *newMesh = new Mesh(); //TODO probably leak ... where is the mesh released
-        newMesh->copy(oldSpace->get_mesh());
+//        Space<double>::ReferenceSpaceCreator spaceCreator(oldSpace, newMesh, 0);
+//        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), 0));
+//    }
 
-        Space<double>::ReferenceSpaceCreator spaceCreator(oldSpace, newMesh, 0);
-        msa.addComponent(SolutionArray<Scalar>(QSharedPointer<Solution<Scalar> >(), QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), 0));
-    }
+//    return msa;
+//}
 
-    return msa;
-}
+//template <typename Scalar>
+//void MultiSolutionArray<Scalar>::setSpace(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, int component)
+//{
 
-template <typename Scalar>
-void MultiSolutionArray<Scalar>::setSpace(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, int component)
-{
+//    SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
+//    newSA.space = space;
+//    m_solutionArrays.replace(component, newSA);
+//}
 
-    SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
-    newSA.space = space;
-    m_solutionArrays.replace(component, newSA);
-}
+//template <typename Scalar>
+//void MultiSolutionArray<Scalar>::setSpaces(MultiSpace<Scalar> spacesParam)
+//{
+//    if(m_solutionArrays.size() == 0)
+//    {
+//        for(int comp = 0; comp < spacesParam.spaces.size(); comp++)
+//        {
+//            m_solutionArrays.push_back(SolutionArray<Scalar>());
+//        }
+//    }
+//    assert(m_solutionArrays.size() == spacesParam.spaces.size());
+//    for(int comp = 0; comp < spacesParam.spaces.size(); comp++)
+//    {
+//        setSpace(spacesParam.spaces.at(comp), comp);
+//    }
+//}
 
-template <typename Scalar>
-void MultiSolutionArray<Scalar>::setSpaces(MultiSpace<Scalar> spacesVec)
-{
-    if(m_solutionArrays.size() == 0)
-    {
-        for(int comp = 0; comp < spacesVec.spaces.size(); comp++)
-        {
-            m_solutionArrays.push_back(SolutionArray<Scalar>());
-        }
-    }
-    assert(m_solutionArrays.size() == spacesVec.spaces.size());
-    for(int comp = 0; comp < spacesVec.spaces.size(); comp++)
-    {
-        setSpace(spacesVec.spaces.at(comp), comp);
-    }
-}
-
-template <typename Scalar>
-void  MultiSolutionArray<Scalar>::createNewSolutions()
-{
-    for(int comp = 0; comp < size(); comp++)
-    {
-        Mesh* mesh = component(comp).space->get_mesh();
-        setSolution(QSharedPointer<Solution<double> >(new Solution<double>(mesh)), comp);
-    }
-}
+//template <typename Scalar>
+//void  MultiSolutionArray<Scalar>::createNewSolutions()
+//{
+//    for(int comp = 0; comp < size(); comp++)
+//    {
+//        Mesh* mesh = component(comp).space->get_mesh();
+//        setSolution(QSharedPointer<Solution<double> >(new Solution<double>(mesh)), comp);
+//    }
+//}
 
 
-template <typename Scalar>
-void MultiSolutionArray<Scalar>::setSolution(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, int component)
-{
-    SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
-    newSA.sln = solution;
-    m_solutionArrays.replace(component, newSA);
-}
+//template <typename Scalar>
+//void MultiSolutionArray<Scalar>::setSolution(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, int component)
+//{
+//    SolutionArray<Scalar> newSA(m_solutionArrays.at(component));
+//    newSA.sln = solution;
+//    m_solutionArrays.replace(component, newSA);
+//}
 
 template <typename Scalar>
 MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, FieldInfo *fieldInfo)

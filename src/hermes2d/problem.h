@@ -149,10 +149,10 @@ public:
     // check geometry
     bool checkGeometry();
 
-    inline Hermes::Hermes2D::Mesh *meshInitial(FieldInfo* fieldInfo) { return m_meshesInitial[fieldInfo]; }
-    Hermes::Hermes2D::Mesh *activeMeshInitial();
-    inline QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshesInitial() { return m_meshesInitial; }
-    inline void setMeshesInitial(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes) { m_meshesInitial = meshes; }
+    inline QSharedPointer<Hermes::Hermes2D::Mesh> meshInitial(FieldInfo* fieldInfo) { return m_meshesInitial[fieldInfo]; }
+    QSharedPointer<Hermes::Hermes2D::Mesh> activeMeshInitial();
+    inline QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > meshesInitial() { return m_meshesInitial; }
+    inline void setMeshesInitial(QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > meshes) { m_meshesInitial = meshes; }
 
     bool isSolved() const {  return m_isSolved; }
     bool isMeshed()  const {  return !m_meshesInitial.isEmpty(); }
@@ -218,7 +218,7 @@ private:
     bool skipThisTimeStep(Block* block);
 
     // todo: move to Field
-    QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> m_meshesInitial; // linearizer only for mesh (on empty solution)
+    QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > m_meshesInitial; // linearizer only for mesh (on empty solution)
 
     void solveInit();
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions

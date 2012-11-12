@@ -130,7 +130,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             // load mesh
             try
             {
-                QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
+                QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
 
                 // FIXME: jinak
                 Util::problem()->setMeshesInitial(meshes);

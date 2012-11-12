@@ -46,7 +46,7 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const Point3 &point, const Point3 &v
 
     if (Util::problem()->isSolved())
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(fieldInfo), Point(point.x, point.y));
+        int index = findElementInMesh(Util::problem()->meshInitial(fieldInfo).data(), Point(point.x, point.y));
         if (index != -1)
         {
             // find marker

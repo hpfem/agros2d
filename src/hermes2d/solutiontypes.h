@@ -11,23 +11,55 @@
 class FieldInfo;
 class Block;
 
-template <typename entity>
-Hermes::vector<entity*> desmartize(Hermes::vector<QSharedPointer<entity> > smart_vec)
+template <typename Scalar>
+struct SpaceAndMesh
 {
-    Hermes::vector<entity*> vec;
+    SpaceAndMesh() {}
+    SpaceAndMesh(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > sp, QSharedPointer<Hermes::Hermes2D::Mesh> ms) : space(sp), mesh(ms) {}
+
+    QSharedPointer<Hermes::Hermes2D::Mesh> mesh;
+    QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space;
+    Hermes::Hermes2D::Space<Scalar>* data() { return space.data(); }
+};
+
+template <typename Scalar>
+struct SolutionAndMesh
+{
+    SolutionAndMesh() {}
+    SolutionAndMesh(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > sol, QSharedPointer<Hermes::Hermes2D::Mesh> ms) : solution(sol), mesh(ms) {}
+
+    QSharedPointer<Hermes::Hermes2D::Mesh> mesh;
+    QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution;
+    Hermes::Hermes2D::Solution<Scalar>* data() { return solution.data(); }
+};
+
+template <typename Scalar>
+Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > desmartize(Hermes::vector<SpaceAndMesh<Scalar> > smart_vec)
+{
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > vec;
     for(int i = 0; i < smart_vec.size(); i++)
         vec.push_back(smart_vec.at(i).data());
     return vec;
 }
 
-template <typename entity>
-Hermes::vector<QSharedPointer<entity> > smartize(Hermes::vector<entity*>  vec)
+template <typename Scalar>
+Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > desmartize(Hermes::vector<SolutionAndMesh<Scalar> > smart_vec)
 {
-    Hermes::vector<QSharedPointer<entity> > smart_vec;
-    for(int i = 0; i < vec.size(); i++)
-        smart_vec.push_back(QSharedPointer<entity>(vec.at(i)));
-    return smart_vec;
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > vec;
+    for(int i = 0; i < smart_vec.size(); i++)
+        vec.push_back(smart_vec.at(i).data());
+    return vec;
 }
+
+
+//template <typename entity>
+//Hermes::vector<QSharedPointer<entity> > smartize(Hermes::vector<entity*>  vec)
+//{
+//    Hermes::vector<QSharedPointer<entity> > smart_vec;
+//    for(int i = 0; i < vec.size(); i++)
+//        smart_vec.push_back(QSharedPointer<entity>(vec.at(i)));
+//    return smart_vec;
+//}
 
 template <typename Scalar>
 Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space)
@@ -44,38 +76,43 @@ struct SolutionArray
 {
     double time;
 
-    QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > sln;
-    QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space;
+    SolutionAndMesh<Scalar> sln;
+    SpaceAndMesh<Scalar> space;
 
     SolutionArray();
-    SolutionArray(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > sln, QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, double time);
+    SolutionArray(SolutionAndMesh<Scalar> sln, SpaceAndMesh<Scalar>  space, double time);
     ~SolutionArray();
 };
 
 template <typename Scalar>
 struct MultiSpace
 {
-    MultiSpace(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > sp ) : spaces(sp) {}
+    MultiSpace() {}
+    MultiSpace(Hermes::vector<SpaceAndMesh<Scalar>  > sp ) : spaces(sp) {}
     Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > naked() { return desmartize(spaces); }
     Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > nakedConst() { return castConst(desmartize(spaces)); }
     bool empty() const {return spaces.empty(); }
     int size() const {return spaces.size(); }
-    QSharedPointer<Hermes::Hermes2D::Space<Scalar> > at(int index) {return spaces.at(index); }
+    SpaceAndMesh<Scalar>  at(int index) {return spaces.at(index); }
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> >meshes();
+    void add(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, QSharedPointer<Hermes::Hermes2D::Mesh> mesh) {spaces.push_back(SpaceAndMesh<Scalar>(space, mesh)); }
 
-    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > spaces;
+    Hermes::vector<SpaceAndMesh<Scalar> > spaces;
 };
 
 template <typename Scalar>
 struct MultiSolution
 {
     MultiSolution() {}
-    MultiSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > sols ) : solutions(sols) {}
+    MultiSolution(Hermes::vector<SolutionAndMesh<Scalar> > sols ) : solutions(sols) {}
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > naked() { return desmartize(solutions); }
     bool empty() const {return solutions.empty(); }
     int size() const {return solutions.size(); }
-    QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > at(int index) {return solutions.at(index); }
+    SolutionAndMesh<Scalar> at(int index) {return solutions.at(index); }
+    void createSolutions(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > meshes);
+    void add(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, QSharedPointer<Hermes::Hermes2D::Mesh> mesh) {solutions.push_back(SolutionAndMesh<Scalar>(solution, mesh)); }
 
-    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > solutions;
+    Hermes::vector<SolutionAndMesh<Scalar> > solutions;
 };
 
 template <typename Scalar>
@@ -83,16 +120,15 @@ class MultiSolutionArray
 {
 public:
     MultiSolutionArray();
-    SolutionArray<Scalar> component(int component);
+    MultiSolutionArray(MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions, double time);
+    SolutionArray<Scalar> component(int component);    
 
-    //add next component
-    void addComponent(SolutionArray<Scalar> solutionArray);
 
-    void setSpaces(MultiSpace<Scalar> spaces);
-    void setSolutions(MultiSolution<Scalar> solutions);
+//    void setSpaces(MultiSpace<Scalar> spaces);
+//    void setSolutions(MultiSolution<Scalar> solutions);
 
-    void setSpace(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space, int component);
-    void setSolution(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution, int component);
+//    void setSpace(SpaceAndMesh<Scalar>  space, int component);
+//    void setSolution(SolutionAndMesh<Scalar> solution, int component);
 
     void append(MultiSolutionArray<Scalar> msa);
 
@@ -106,10 +142,10 @@ public:
     Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > spacesNakedConst() { return spaces().nakedConst(); }
 
     // returns the same multi solution array with spaces only (solutions are empty)
-    MultiSolutionArray<Scalar> copySpaces();
+    //MultiSolutionArray<Scalar> copySpaces();
 
     // creates new solutions, spaces has to be allready created
-    void createNewSolutions();
+    //void createNewSolutions();
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiSolutionArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);
@@ -123,6 +159,9 @@ public:
     void loadFromFile(const QString &solutionID);
 
 private:
+    //add next component
+    void addComponent(SolutionArray<Scalar> solutionArray);
+
     QList<SolutionArray<Scalar> > m_solutionArrays;
 };
 

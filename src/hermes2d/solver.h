@@ -117,8 +117,8 @@ public:
 
     void init(Block* block);
 
+    void createInitialSpace();
     void solveInitialTimeStep();
-    void createInitialSpace(int timeStep);
 
     // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
     NextTimeStep estimateTimeStepLenght(int timeStep, int adaptivityStep);
@@ -132,6 +132,9 @@ private:
 
     HermesSolverContainer<Scalar>* m_hermesSolverContainer;
 
+    MultiSpace<Scalar> m_actualSpaces;
+    MultiSpace<Scalar> m_actualSpacesRef;
+
     QString m_solverID;
     QString m_solverName;
 
@@ -143,8 +146,8 @@ private:
     // weak form
     //WeakFormAgros<Scalar> *m_wf;
 
-    QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> readMesh();
-    void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
+    QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > readMesh();
+    //void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
 //    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
     void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
@@ -153,10 +156,10 @@ private:
 
     void cleanup();
 
-    void solveOneProblem(MultiSolutionArray<Scalar> msa, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
-    void saveSolution(Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > &spaceParam,
-                      Hermes::vector<QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > > &solutionParam,
-                      double actualTime);
+    void solveOneProblem(Scalar* solutionVector, SolutionMode solutionMode, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
+
+    MultiSpace<Scalar> deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces);
+    void saveSolution(BlockSolutionID id, Scalar* solutionVector);
 
 };
 

@@ -106,7 +106,7 @@ Problem::~Problem()
     delete m_config;
 }
 
-Hermes::Hermes2D::Mesh* Problem::activeMeshInitial()
+QSharedPointer<Hermes::Hermes2D::Mesh> Problem::activeMeshInitial()
 {
     return meshInitial(Util::scene()->activeViewField());
 }
@@ -146,9 +146,6 @@ void Problem::clearSolution()
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
 
-    foreach (Hermes::Hermes2D::Mesh* mesh, m_meshesInitial)
-        if (mesh)
-            delete mesh;
     m_meshesInitial.clear();
 
     Util::solutionStore()->clearAll();
@@ -482,8 +479,8 @@ void Problem::solveAction()
     foreach (Block* block, m_blocks)
     {
         solvers[block] = block->prepareSolver();
+        solvers[block]->createInitialSpace();
     }
-
 
     NextTimeStep nextTimeStep(config()->initialTimeStepLength());
     bool doNextTimeStep = true;
@@ -521,7 +518,6 @@ void Problem::solveAction()
                             Util::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
                     }
 
-                    solver->createInitialSpace(actualTimeStep());
                     solver->solveSimple(actualTimeStep(), 0, false);
                 }
                 else
@@ -534,7 +530,6 @@ void Problem::solveAction()
                     //                        return;
                     //                    }
 
-                    solver->createInitialSpace(actualTimeStep());
                     int adaptStep = 1;
                     bool continueAdaptivity = true;
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
@@ -635,7 +630,7 @@ void Problem::solveAdaptiveStepAction()
         Util::scene()->setActiveTimeStep(0);
         Util::scene()->setActiveViewField(fieldInfos().values().at(0));
 
-        solver->createInitialSpace(0);
+        solver->createInitialSpace();
         adaptStep = 0;
     }
 
