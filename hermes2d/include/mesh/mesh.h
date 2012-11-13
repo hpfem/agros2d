@@ -233,9 +233,11 @@ namespace Hermes
     {
     public:
       Mesh();
-      ~Mesh() {
-        free();
-      }
+      ~Mesh();
+
+			/// Initializes the mesh.
+			/// \param size[in] Hash table size; must be a power of two.
+			void init(int size = H2D_DEFAULT_HASH_SIZE);
 
       virtual bool isOkay() const;
 

@@ -21,6 +21,8 @@
 */
 #ifndef __HERMES_API_2D_H_
 #define __HERMES_API_2D_H_
+// This is here because of an operator-related error in gcc
+#pragma GCC diagnostic warning "-fpermissive"
 
 #include "compat.h"
 #include "hermes_common.h"
@@ -29,11 +31,35 @@ namespace Hermes
 {
   namespace Hermes2D
   {
+    class Mesh;
+    template<typename Scalar> class Space;
+    template<typename Scalar> class Solution;
+
     /// Enumeration of potential keys in the Api2D::parameters storage.
     enum Hermes2DApiParam
     {
       numThreads,
       secondDerivatives
+    };
+
+
+    /// Class for calculating pointers of instance T.
+    template<typename T>
+    class HERMES_API PointerCalculator
+    {
+    public:
+      PointerCalculator();
+      unsigned int getNumber() const;
+    private:
+      void operator+(unsigned int increaseBy);
+      void operator++();
+      void operator-(unsigned int decreaseBy);
+      void operator--();
+      unsigned int count;
+			friend class Mesh;
+      friend class MeshReaderH2DXML;
+      template<typename T1> friend class Space;
+      template<typename T1> friend class Solution;
     };
 
     /// API Class containing settings for the whole Hermes2D.
@@ -64,6 +90,82 @@ namespace Hermes
     public:
       int get_param_value(Hermes2DApiParam);
       void set_param_value(Hermes2DApiParam, int value);
+
+			/// Returns the number of Mesh pointers that exist.
+			/// Defined as the difference between constructor calls and destructor calls.
+      unsigned int getNumberMeshPointers() const;
+      
+			/// Returns the number of Space pointers that exist.
+			/// Defined as the difference between constructor calls and destructor calls.
+			unsigned int getNumberSpacePointers() const;
+
+			/// Returns the number of Space<double> pointers that exist.
+			/// Defined as the difference between constructor calls and destructor calls.
+      unsigned int getNumberRealSpacePointers() const;
+
+			/// Returns the number of Space<std::complex<double> > pointers that exist.
+			/// Defined as the difference between constructor calls and destructor calls.
+      unsigned int getNumberComplexSpacePointers() const;
+
+			/// Returns the number of Solution pointers that exist.
+			/// Defined as the difference between constructor calls and destructor calls.
+      unsigned int getNumberSolutionPointers() const;
+
+			/// Returns the number of Solution<double> pointers that exist.
+			/// Defined as the difference between constructor calls and destructor calls.
+      unsigned int getNumberRealSolutionPointers() const;
+
+			/// Returns the number of Solution<std::complex<double> > pointers that exist.
+			/// Defined as the difference between constructor calls and destructor calls.
+      unsigned int getNumberComplexSolutionPointers() const;
+
+			/// Returns the number of Mesh data that exist.
+			/// Defined as the difference between init() calls and free() calls
+			unsigned int getNumberMeshData() const;
+
+			/// Returns the number of Space data that exist.
+			/// Defined as the difference between init() calls and free() calls
+			unsigned int getNumberSpaceData() const;
+
+			/// Returns the number of Space<double> data that exist.
+			/// Defined as the difference between init() calls and free() calls
+			unsigned int getNumberRealSpaceData() const;
+
+			/// Returns the number of Space<std::complex<double> > data that exist.
+			/// Defined as the difference between init() calls and free() calls
+			unsigned int getNumberComplexSpaceData() const;
+
+			/// Returns the number of Solution data that exist.
+			/// Defined as the difference between init() calls and free() calls
+			unsigned int getNumberSolutionData() const;
+
+			/// Returns the number of Solution<double> data that exist.
+			/// Defined as the difference between init() calls and free() calls
+			unsigned int getNumberRealSolutionData() const;
+
+			/// Returns the number of Solution<std::complex<double> > data that exist.
+			/// Defined as the difference between init() calls and free() calls
+			unsigned int getNumberComplexSolutionData() const;
+
+    private:
+			// Storage for handling constructor / destructor calls.
+			PointerCalculator<Mesh> meshPointerCalculator;
+      PointerCalculator<Space<double> > realSpacePointerCalculator;
+      PointerCalculator<Space<std::complex<double> > > complexSpacePointerCalculator;
+      PointerCalculator<Solution<double> > realSolutionPointerCalculator;
+      PointerCalculator<Solution<std::complex<double> > > complexSolutionPointerCalculator;
+
+			// Storage for handling calls to init() / free().
+			PointerCalculator<Mesh> meshDataPointerCalculator;
+			PointerCalculator<Space<double> > realSpaceDataPointerCalculator;
+			PointerCalculator<Space<std::complex<double> > > complexSpaceDataPointerCalculator;
+			PointerCalculator<Solution<double> > realSolutionDataPointerCalculator;
+			PointerCalculator<Solution<std::complex<double> > > complexSolutionDataPointerCalculator;
+
+			friend class Mesh;
+			friend class MeshReaderH2DXML;
+      template<typename T1> friend class Space;
+      template<typename T1> friend class Solution;
     };
 
     /// Global instance used inside Hermes which is also accessible to users.

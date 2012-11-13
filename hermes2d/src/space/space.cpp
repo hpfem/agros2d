@@ -18,6 +18,7 @@
 #include "space_hcurl.h"
 #include "space_hdiv.h"
 #include "space_h2d_xml.h"
+#include "api2d.h"
 #include <iostream>
 
 namespace Hermes
@@ -26,46 +27,112 @@ namespace Hermes
   {
     unsigned g_space_seq = 0;
 
-    template<typename Scalar>
-    Space<Scalar>::Space() : shapeset(NULL), essential_bcs(NULL), mesh(NULL)
+		template<>
+		void Space<double>::init()
+		{
+			this->default_tri_order = -1;
+			this->default_quad_order = -1;
+			this->ndata = NULL;
+			this->edata = NULL;
+			this->nsize = esize = 0;
+			this->ndata_allocated = 0;
+			this->mesh_seq = -1;
+			this->seq = g_space_seq;
+			this->was_assigned = false;
+			this->ndof = 0;
+
+			if(essential_bcs != NULL)
+				for(Hermes::vector<EssentialBoundaryCondition<double>*>::const_iterator it = essential_bcs->begin(); it != essential_bcs->end(); it++)
+					for(unsigned int i = 0; i < (*it)->markers.size(); i++)
+					{
+						if(mesh->boundary_markers_conversion.conversion_table_inverse.find((*it)->markers.at(i)) == mesh->boundary_markers_conversion.conversion_table_inverse.end() && (*it)->markers.at(i) != HERMES_ANY)
+							throw Hermes::Exceptions::Exception("A boundary condition defined on a non-existent marker %s.", (*it)->markers.at(i).c_str());
+					}
+
+					own_shapeset = (shapeset == NULL);
+					Hermes2DApi.realSpaceDataPointerCalculator++;
+		}
+
+		template<>
+		void Space<std::complex<double> >::init()
+		{
+			this->default_tri_order = -1;
+			this->default_quad_order = -1;
+			this->ndata = NULL;
+			this->edata = NULL;
+			this->nsize = esize = 0;
+			this->ndata_allocated = 0;
+			this->mesh_seq = -1;
+			this->seq = g_space_seq;
+			this->was_assigned = false;
+			this->ndof = 0;
+
+			if(essential_bcs != NULL)
+				for(Hermes::vector<EssentialBoundaryCondition<std::complex<double> >*>::const_iterator it = essential_bcs->begin(); it != essential_bcs->end(); it++)
+					for(unsigned int i = 0; i < (*it)->markers.size(); i++)
+					{
+						if(mesh->boundary_markers_conversion.conversion_table_inverse.find((*it)->markers.at(i)) == mesh->boundary_markers_conversion.conversion_table_inverse.end() && (*it)->markers.at(i) != HERMES_ANY)
+							throw Hermes::Exceptions::Exception("A boundary condition defined on a non-existent marker %s.", (*it)->markers.at(i).c_str());
+					}
+
+					own_shapeset = (shapeset == NULL);
+					Hermes2DApi.complexSpaceDataPointerCalculator++;
+		}
+
+		template<>
+		void Space<double>::free()
+		{
+			free_bc_data();
+			if(nsize) { ::free(ndata); nsize = 0; ndata = NULL; }
+			if(esize) { ::free(edata); edata = 0; edata = NULL; }
+			this->seq = -1;
+			Hermes2DApi.realSpaceDataPointerCalculator--;
+		}
+
+		template<>
+		void Space<std::complex<double> >::free()
+		{
+			free_bc_data();
+			if(nsize) { ::free(ndata); nsize = 0; ndata = NULL; }
+			if(esize) { ::free(edata); edata = 0; edata = NULL; }
+			this->seq = -1;
+			Hermes2DApi.complexSpaceDataPointerCalculator--;
+		}
+
+    template<>
+    Space<double>::Space() : shapeset(NULL), essential_bcs(NULL), mesh(NULL)
     {
       this->init();
+      Hermes::Hermes2D::Hermes2DApi.realSpacePointerCalculator++;
     }
 
-    template<typename Scalar>
-    Space<Scalar>::Space(const Mesh* mesh, Shapeset* shapeset, EssentialBCs<Scalar>* essential_bcs)
+    template<>
+    Space<std::complex<double> >::Space() : shapeset(NULL), essential_bcs(NULL), mesh(NULL)
+    {
+      this->init();
+      Hermes::Hermes2D::Hermes2DApi.complexSpacePointerCalculator++;
+    }
+
+     template<>
+    Space<double>::Space(const Mesh* mesh, Shapeset* shapeset, EssentialBCs<double>* essential_bcs)
       : shapeset(shapeset), essential_bcs(essential_bcs), mesh(mesh)
     {
       if(mesh == NULL)
         throw Hermes::Exceptions::NullException(0);
       this->init();
+      Hermes::Hermes2D::Hermes2DApi.realSpacePointerCalculator++;
+    }
+
+    template<>
+    Space<std::complex<double> >::Space(const Mesh* mesh, Shapeset* shapeset, EssentialBCs<std::complex<double> >* essential_bcs)
+      : shapeset(shapeset), essential_bcs(essential_bcs), mesh(mesh)
+    {
+      if(mesh == NULL)
+        throw Hermes::Exceptions::NullException(0);
+      this->init();
+      Hermes::Hermes2D::Hermes2DApi.complexSpacePointerCalculator++;
     }
     
-    template<typename Scalar>
-    void Space<Scalar>::init()
-    {
-      this->default_tri_order = -1;
-      this->default_quad_order = -1;
-      this->ndata = NULL;
-      this->edata = NULL;
-      this->nsize = esize = 0;
-      this->ndata_allocated = 0;
-      this->mesh_seq = -1;
-      this->seq = g_space_seq;
-      this->was_assigned = false;
-      this->ndof = 0;
-
-      if(essential_bcs != NULL)
-        for(typename Hermes::vector<EssentialBoundaryCondition<Scalar>*>::const_iterator it = essential_bcs->begin(); it != essential_bcs->end(); it++)
-          for(unsigned int i = 0; i < (*it)->markers.size(); i++)
-          {
-            if(mesh->boundary_markers_conversion.conversion_table_inverse.find((*it)->markers.at(i)) == mesh->boundary_markers_conversion.conversion_table_inverse.end() && (*it)->markers.at(i) != HERMES_ANY)
-              throw Hermes::Exceptions::Exception("A boundary condition defined on a non-existent marker %s.", (*it)->markers.at(i).c_str());
-          }
-
-      own_shapeset = (shapeset == NULL);
-    }
-
     template<typename Scalar>
     bool Space<Scalar>::isOkay() const
     {
@@ -77,22 +144,21 @@ namespace Hermes
       return okay;
     }
 
-    template<typename Scalar>
-    Space<Scalar>::~Space()
+    template<>
+    Space<double>::~Space()
     {
       free();
+      Hermes::Hermes2D::Hermes2DApi.realSpacePointerCalculator--;
     }
 
-    template<typename Scalar>
-    void Space<Scalar>::free()
+    template<>
+    Space<std::complex<double> >::~Space()
     {
-      free_bc_data();
-      if(nsize) { ::free(ndata); nsize = 0; ndata = NULL; }
-      if(esize) { ::free(edata); edata = 0; edata = NULL; }
-      this->seq = -1;
+      free();
+      Hermes::Hermes2D::Hermes2DApi.complexSpacePointerCalculator--;
     }
 
-    template<typename Scalar>
+		template<typename Scalar>
     Node* Space<Scalar>::get_mid_edge_vertex_node(Element* e, int i, int j)
     {
       if(e->is_triangle())

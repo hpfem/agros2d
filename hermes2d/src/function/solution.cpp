@@ -17,6 +17,7 @@
 #include "forms.h"
 
 #include "solution_h2d_xml.h"
+#include "api2d.h"
 
 #include <iostream>
 #include <algorithm>
@@ -76,7 +77,6 @@ namespace Hermes
       virtual void dummy_fn() {}
     } g_quad_2d_cheb;
 
-
     template<typename Scalar>
     void Solution<Scalar>::set_static_verbose_output(bool verbose)
     {
@@ -86,8 +86,8 @@ namespace Hermes
     template<typename Scalar>
     bool Solution<Scalar>::static_verbose_output = false;
 
-    template<typename Scalar>
-    void Solution<Scalar>::init()
+    template<>
+    void Solution<double>::init()
     {
       memset(tables, 0, sizeof(tables));
       memset(elems,  0, sizeof(elems));
@@ -99,7 +99,7 @@ namespace Hermes
 
       for(int i = 0; i < 4; i++)
         for(int j = 0; j < 4; j++)
-          tables[i][j] = new std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>;
+          tables[i][j] = new std::map<uint64_t, LightArray<struct Function<double>::Node*>*>;
 
       mono_coeffs = NULL;
       elem_coeffs[0] = elem_coeffs[1] = NULL;
@@ -109,40 +109,109 @@ namespace Hermes
       num_dofs = -1;
 
       this->set_quad_2d(&g_quad_2d_std);
+			Hermes2DApi.realSolutionDataPointerCalculator++;
     }
 
-    template<typename Scalar>
-    Solution<Scalar>::Solution()
-        : MeshFunction<Scalar>()
+		template<>
+		void Solution<std::complex<double> >::init()
+		{
+			memset(tables, 0, sizeof(tables));
+			memset(elems,  0, sizeof(elems));
+			memset(oldest, 0, sizeof(oldest));
+			transform = true;
+			sln_type = HERMES_UNDEF;
+			this->num_components = 0;
+			e_last = NULL;
+
+			for(int i = 0; i < 4; i++)
+				for(int j = 0; j < 4; j++)
+					tables[i][j] = new std::map<uint64_t, LightArray<struct Function<std::complex<double> >::Node*>*>;
+
+			mono_coeffs = NULL;
+			elem_coeffs[0] = elem_coeffs[1] = NULL;
+			elem_orders = NULL;
+			dxdy_buffer = NULL;
+			num_coeffs = num_elems = 0;
+			num_dofs = -1;
+
+			this->set_quad_2d(&g_quad_2d_std);
+			Hermes2DApi.complexSolutionDataPointerCalculator++;
+		}
+
+    template<>
+    Solution<double>::Solution()
+        : MeshFunction<double>()
     {
       space_type = HERMES_INVALID_SPACE;
       this->init();
+      Hermes::Hermes2D::Hermes2DApi.realSolutionPointerCalculator++;
     }
 
-    template<typename Scalar>
-    Solution<Scalar>::Solution(const Mesh *mesh) : MeshFunction<Scalar>(mesh)
+    template<>
+    Solution<std::complex<double> >::Solution()
+        : MeshFunction<std::complex<double> >()
+    {
+      space_type = HERMES_INVALID_SPACE;
+      this->init();
+      Hermes::Hermes2D::Hermes2DApi.complexSolutionPointerCalculator++;
+    }
+
+    template<>
+    Solution<double>::Solution(const Mesh *mesh) : MeshFunction<double>(mesh)
     {
       space_type = HERMES_INVALID_SPACE;
       this->init();
       this->mesh = mesh;
+      Hermes::Hermes2D::Hermes2DApi.realSolutionPointerCalculator++;
     }
 
-    template<typename Scalar>
-    Solution<Scalar>::Solution(Space<Scalar>* s, Vector<Scalar>* coeff_vec) : MeshFunction<Scalar>(s->get_mesh())
+    template<>
+    Solution<std::complex<double> >::Solution(const Mesh *mesh) : MeshFunction<std::complex<double> >(mesh)
+    {
+      space_type = HERMES_INVALID_SPACE;
+      this->init();
+      this->mesh = mesh;
+      Hermes::Hermes2D::Hermes2DApi.complexSolutionPointerCalculator++;
+    }
+
+    template<>
+    Solution<double>::Solution(Space<double>* s, Vector<double>* coeff_vec) : MeshFunction<double>(s->get_mesh())
     {
       space_type = s->get_type();
       this->init();
       this->mesh = s->get_mesh();
-      Solution<Scalar>::vector_to_solution(coeff_vec, s, this);
+      Solution<double>::vector_to_solution(coeff_vec, s, this);
+      Hermes::Hermes2D::Hermes2DApi.realSolutionPointerCalculator++;
     }
 
-    template<typename Scalar>
-    Solution<Scalar>::Solution(Space<Scalar>* s, Scalar* coeff_vec) : MeshFunction<Scalar>(s->get_mesh())
+    template<>
+    Solution<std::complex<double> >::Solution(Space<std::complex<double> >* s, Vector<std::complex<double> >* coeff_vec) : MeshFunction<std::complex<double> >(s->get_mesh())
     {
       space_type = s->get_type();
       this->init();
       this->mesh = s->get_mesh();
-      Solution<Scalar>::vector_to_solution(coeff_vec, s, this);
+      Solution<std::complex<double> >::vector_to_solution(coeff_vec, s, this);
+      Hermes::Hermes2D::Hermes2DApi.complexSolutionPointerCalculator++;
+    }
+
+    template<>
+    Solution<double>::Solution(Space<double>* s, double* coeff_vec) : MeshFunction<double>(s->get_mesh())
+    {
+      space_type = s->get_type();
+      this->init();
+      this->mesh = s->get_mesh();
+      Solution<double>::vector_to_solution(coeff_vec, s, this);
+      Hermes::Hermes2D::Hermes2DApi.realSolutionPointerCalculator++;
+    }
+
+    template<>
+    Solution<std::complex<double> >::Solution(Space<std::complex<double> >* s, std::complex<double> * coeff_vec) : MeshFunction<std::complex<double> >(s->get_mesh())
+    {
+      space_type = s->get_type();
+      this->init();
+      this->mesh = s->get_mesh();
+      Solution<std::complex<double> >::vector_to_solution(coeff_vec, s, this);
+      Hermes::Hermes2D::Hermes2DApi.complexSolutionPointerCalculator++;
     }
 
     template<typename Scalar>
@@ -176,6 +245,7 @@ namespace Hermes
     {
       if(sln->sln_type == HERMES_UNDEF) throw Hermes::Exceptions::Exception("Solution being copied is uninitialized.");
 
+			this->increasePointerDataCounter();
       free();
 
       this->mesh = sln->mesh;
@@ -239,8 +309,8 @@ namespace Hermes
           }
     }
 
-    template<typename Scalar>
-    void Solution<Scalar>::free()
+    template<>
+    void Solution<double>::free()
     {
       if(mono_coeffs  != NULL) { delete [] mono_coeffs;   mono_coeffs = NULL;  }
       if(elem_orders != NULL) { delete [] elem_orders;  elem_orders = NULL; }
@@ -253,13 +323,40 @@ namespace Hermes
         e_last = NULL;
 
         free_tables();
+				Hermes2DApi.realSolutionDataPointerCalculator--;
     }
 
-    template<typename Scalar>
-    Solution<Scalar>::~Solution()
+		template<>
+		void Solution<std::complex<double> >::free()
+		{
+			if(mono_coeffs  != NULL) { delete [] mono_coeffs;   mono_coeffs = NULL;  }
+			if(elem_orders != NULL) { delete [] elem_orders;  elem_orders = NULL; }
+			if(dxdy_buffer != NULL) { delete [] dxdy_buffer;  dxdy_buffer = NULL; }
+
+			for (int i = 0; i < this->num_components; i++)
+				if(elem_coeffs[i] != NULL)
+				{ delete [] elem_coeffs[i];  elem_coeffs[i] = NULL; }
+
+				e_last = NULL;
+
+				free_tables();
+				Hermes2DApi.complexSolutionDataPointerCalculator--;
+		}
+
+		template<>
+    Solution<double>::~Solution()
     {
       free();
       space_type = HERMES_INVALID_SPACE;
+      Hermes::Hermes2D::Hermes2DApi.realSolutionPointerCalculator--;
+    }
+
+    template<>
+    Solution<std::complex<double> >::~Solution()
+    {
+      free();
+      space_type = HERMES_INVALID_SPACE;
+      Hermes::Hermes2D::Hermes2DApi.complexSolutionPointerCalculator--;
     }
 
     static struct mono_lu_init
@@ -347,6 +444,19 @@ namespace Hermes
       delete pss;
     }
 
+
+		template<>
+		void Solution<double>::increasePointerDataCounter()
+		{
+			Hermes2DApi.realSolutionDataPointerCalculator++;
+		}
+
+		template<>
+		void Solution<std::complex<double> >::increasePointerDataCounter()
+		{
+			Hermes2DApi.realSolutionDataPointerCalculator++;
+		}
+
     template<typename Scalar>
     void Solution<Scalar>::set_coeff_vector(const Space<Scalar>* space, PrecalcShapeset* pss,
         const Scalar* coeff_vec, bool add_dir_lift, int start_index)
@@ -367,6 +477,8 @@ namespace Hermes
 
       if(Solution<Scalar>::static_verbose_output)
         Hermes::Mixins::Loggable::Static::info("Solution: set_coeff_vector - solution being freed.");
+			
+			this->increasePointerDataCounter();
       free();
 
       this->space_type = space->get_type();

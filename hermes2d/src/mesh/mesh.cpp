@@ -16,6 +16,7 @@
 #include "mesh.h"
 #include <algorithm>
 #include "global.h"
+#include "api2d.h"
 #include "mesh_reader_h2d.h"
 
 namespace Hermes
@@ -222,6 +223,14 @@ namespace Hermes
     {
       nbase = nactive = ntopvert = ninitial = 0;
       seq = g_mesh_seq++;
+			Hermes::Hermes2D::Hermes2DApi.meshPointerCalculator++;
+      Hermes::Hermes2D::Hermes2DApi.meshDataPointerCalculator++;
+    }
+
+    Mesh::~Mesh() 
+    {
+      free();
+      Hermes::Hermes2D::Hermes2DApi.meshPointerCalculator--;
     }
 
     bool Mesh::isOkay() const
@@ -251,13 +260,12 @@ namespace Hermes
     void Mesh::create(int nv, double2* verts, int nt, int3* tris, std::string* tri_markers,
       int nq, int4* quads, std::string* quad_markers, int nm, int2* mark, std::string* boundary_markers)
     {
-      //printf("Calling Mesh::free() in Mesh::create().\n");
       free();
 
       // initialize hash table
       int size = 16;
       while (size < 2*nv) size *= 2;
-      HashTable::init(size);
+      init(size);
 
       // create vertex nodes
       for (int i = 0; i < nv; i++)
@@ -1211,8 +1219,9 @@ namespace Hermes
     {
       unsigned int i;
 
-      //printf("Calling Mesh::free() in Mesh::copy().\n");
       free();
+			// Serves as a Mesh::init() for purposes of pointer calculation.
+			Hermes2DApi.meshDataPointerCalculator++;
 
       // copy nodes and elements
       HashTable::copy(mesh);
@@ -1281,11 +1290,17 @@ namespace Hermes
       return base->en[edge];
     }
 
+		void Mesh::init(int size)
+		{
+			HashTable::init(size);
+			Hermes2DApi.meshDataPointerCalculator++;
+		}
+
     void Mesh::copy_base(Mesh* mesh)
     {
       //printf("Calling Mesh::free() in Mesh::copy_base().\n");
       free();
-      HashTable::init();
+      init();
 
       // copy top-level vertex nodes
       for (int i = 0; i < mesh->get_max_node_id(); i++)
@@ -1348,6 +1363,7 @@ namespace Hermes
       this->element_markers_conversion.conversion_table_inverse.clear();
       this->refinements.clear();
       this->seq = -1;
+			Hermes2DApi.meshDataPointerCalculator--;
     }
 
     void Mesh::copy_converted(Mesh* mesh)
