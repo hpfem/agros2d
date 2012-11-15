@@ -95,7 +95,6 @@ void Config::loadWorkspace()
 
     // discrete
     saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
-    discreteDirectory = settings.value("SceneViewSettings/DiscreteDirectory", DISCRETEDIRECTORY).toString();
 
     // grid
     showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
@@ -297,7 +296,6 @@ void Config::saveWorkspace()
 
     // discrete
     settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
-    settings.setValue("SceneViewSettings/DiscreteDirectory", discreteDirectory);
 
     // grid
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);

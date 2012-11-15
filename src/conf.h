@@ -66,7 +66,6 @@ public:
 
     // discrete
     bool saveMatrixRHS;
-    QString discreteDirectory;
 
     // grid
     bool showGrid;

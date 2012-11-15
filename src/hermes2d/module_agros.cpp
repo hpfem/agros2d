@@ -31,6 +31,13 @@ int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
 {
     assert(mesh);
 
+    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(mesh, point.x, point.y);
+    if (e)
+        return e->id;
+    else
+        return -1;
+
+    /*
     for (int i = 0, max = mesh->get_max_element_id(); i < max; i++)
     {
         Hermes::Hermes2D::Element *element;
@@ -57,6 +64,7 @@ int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
     }
 
     return -1;
+    */
 }
 
 void Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)

@@ -68,7 +68,6 @@ void ConfigDialog::load()
     chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
 
     // discrete
-    txtDiscreteDirectory->setText(Util::config()->discreteDirectory);
     chkDiscreteSaveMatrixRHS->setChecked(Util::config()->saveMatrixRHS);
 
     // number of threads
@@ -121,7 +120,6 @@ void ConfigDialog::save()
     Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
     // discrete
-    Util::config()->discreteDirectory = txtDiscreteDirectory->text();
     Util::config()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
 
     // number of threads

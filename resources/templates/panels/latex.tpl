@@ -7,7 +7,7 @@
  	    body {border: 0; margin: 0; background: {{BACKGROUND}};}
  	</style>
  
-    <script type="text/javascript" src="{{JS_DIRECTORY}}/js/MathJax.js?config=TeX-AMS_HTML">
+    <script type="text/javascript" src="{{JS_DIRECTORY}}/js/MathJax.js?config=TeX-AMS_HTML"> 
     MathJax.Hub.Config({
           jax: ["input/TeX","output/HTML-CSS"],
           displayAlign: "left", 

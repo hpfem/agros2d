@@ -1088,9 +1088,10 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                                 arg(QString::fromStdString(quantity.shortname().get())).
                                 arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false));
 
-                        dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1.derivative(%2)").
-                                arg(QString::fromStdString(quantity.shortname().get())).
-                                arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false));
+                        if (linearityType == LinearityType_Newton)
+                            dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1.derivative(%2)").
+                                    arg(QString::fromStdString(quantity.shortname().get())).
+                                    arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false));
                     }
                 }
             }
@@ -1354,7 +1355,7 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 field->SetValue("EXPRESSION", exprCpp.toStdString());
                 // expression check
                 QString exprCppCheck = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                               coordinateType, linearityType, expression);
+                                                                    coordinateType, linearityType, expression);
                 field->SetValue("EXPRESSION_CHECK", exprCppCheck.toStdString());
 
                 // add weakform

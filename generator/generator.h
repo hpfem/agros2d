@@ -89,7 +89,7 @@ protected:
             expression = form.planar_linear().c_str();
         }
 
-        if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
         {
             expression = form.planar_newton().c_str();
         }
@@ -99,7 +99,7 @@ protected:
             expression = form.axi_linear().c_str();
         }
 
-        if ((linearityType == LinearityType_Newton || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
         {
             expression = form.axi_newton().c_str();
         }

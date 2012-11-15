@@ -69,7 +69,7 @@ const int MESHANGLESEGMENTSCOUNT = 3;
 const bool MESHCURVILINEARELEMENTS = true;
 
 // discrete saving
-const bool SAVEMATRIXANDRHS = true;
+const bool SAVEMATRIXANDRHS = false;
 const QString DISCRETEDIRECTORY = "discrete";
 
 // post2d
