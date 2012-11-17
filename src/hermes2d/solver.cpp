@@ -100,13 +100,13 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, MultiSpace<Sc
     m_newtonSolver.data()->set_newton_tol(block->nonlinearTolerance());
     m_newtonSolver.data()->set_newton_max_iter(block->nonlinearSteps());
     m_newtonSolver.data()->set_max_allowed_residual_norm(1e15);
-    if(block->automaticDamping())
+    if (block->newtonAutomaticDamping())
     {
-        m_newtonSolver.data()->set_initial_auto_damping_coeff(block->dampingCoeff());
-        m_newtonSolver.data()->set_necessary_successful_steps_to_increase(block->dampingNumberToIncrease());
+        m_newtonSolver.data()->set_initial_auto_damping_coeff(block->newtonDampingCoeff());
+        m_newtonSolver.data()->set_necessary_successful_steps_to_increase(block->newtonDampingNumberToIncrease());
     }
     else
-        m_newtonSolver.data()->set_manual_damping_coeff(true, block->dampingCoeff());
+        m_newtonSolver.data()->set_manual_damping_coeff(true, block->newtonDampingCoeff());
 }
 
 template <typename Scalar>
@@ -131,14 +131,13 @@ template <typename Scalar>
 void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
     int ndof = Space<Scalar>::get_num_dofs(m_newtonSolver.data()->get_spaces());
-    m_newtonSolver.data()->solve();
+    m_newtonSolver.data()->solve(solutionVector);
     memcpy(solutionVector, m_newtonSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
 }
 
 template <typename Scalar>
 PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block, MultiSpace<Scalar> spaces) : HermesSolverContainer<Scalar>(block)
 {
-    /*
     Hermes::vector<Solution<Scalar>* > slns;
     for (int i = 0; i < spaces.size(); i++)
     {
@@ -146,13 +145,20 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block, MultiSpace<Sc
         Hermes::Hermes2D::Space<Scalar> *spc = space.data();
         slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 200));
     }
-    */
 
     m_picardSolver = QSharedPointer<PicardSolver<Scalar> >(new PicardSolver<Scalar>(block->weakForm().data(), spaces.nakedConst()));
     m_picardSolver.data()->set_verbose_output(true);
     m_picardSolver.data()->set_verbose_callback(processSolverOutput);
     m_picardSolver.data()->set_picard_tol(block->nonlinearTolerance());
     m_picardSolver.data()->set_picard_max_iter(block->nonlinearSteps());
+    if (block->picardAndersonAcceleration())
+    {
+        m_picardSolver.data()->use_Anderson_acceleration(true);
+        m_picardSolver.data()->set_num_last_vector_used(block->picardAndersonNumberOfLastVectors());
+        m_picardSolver.data()->set_anderson_beta(block->picardAndersonBeta());
+    }
+    else
+        m_picardSolver.data()->use_Anderson_acceleration(false);
     //m_picardSolver.data()->set_max_allowed_residual_norm(1e15);
 }
 

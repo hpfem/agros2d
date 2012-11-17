@@ -164,12 +164,24 @@ void FieldWidget::createContent()
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearTolerance = new LineEditDouble(1);
-    txtDampingCoeff = new LineEditDouble(1);
-    chkAutomaticDamping = new QCheckBox(tr("Automatic damping"));
-    txtDampingNumberToIncrease = new QSpinBox(this);
-    txtDampingNumberToIncrease->setMinimum(1);
-    txtDampingNumberToIncrease->setMaximum(5);
 
+    chkNewtonAutomaticDamping = new QCheckBox(tr("Automatic damping"));
+    connect(chkNewtonAutomaticDamping, SIGNAL(stateChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
+    lblNewtonDampingCoeff = new QLabel(tr("Damping factor:"));
+    txtNewtonDampingCoeff = new LineEditDouble(1);
+    lblNewtonDampingNumberToIncrease = new QLabel(tr("Steps to increase DF:"));
+    txtNewtonDampingNumberToIncrease = new QSpinBox(this);
+    txtNewtonDampingNumberToIncrease->setMinimum(1);
+    txtNewtonDampingNumberToIncrease->setMaximum(5);
+
+    chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
+    connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
+    lblPicardAndersonBeta = new QLabel(tr("Anderson beta:"));
+    txtPicardAndersonBeta = new LineEditDouble(0.2);
+    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last vectors:"));
+    txtPicardAndersonNumberOfLastVectors = new QSpinBox(this);
+    txtPicardAndersonNumberOfLastVectors->setMinimum(1);
+    txtPicardAndersonNumberOfLastVectors->setMaximum(5);
 
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
@@ -238,12 +250,16 @@ void FieldWidget::createContent()
     layoutLinearity->addWidget(txtNonlinearTolerance, 1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
-    //layoutLinearity->addWidget(new QLabel(tr("Automatic damping:")), 3, 1);
-    layoutLinearity->addWidget(chkAutomaticDamping, 3, 0);
-    layoutLinearity->addWidget(new QLabel(tr("Damping factor:")), 4, 0);
-    layoutLinearity->addWidget(txtDampingCoeff, 4, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Steps to increase DF:")), 5, 0);
-    layoutLinearity->addWidget(txtDampingNumberToIncrease, 5, 1);
+    layoutLinearity->addWidget(lblNewtonDampingCoeff, 3, 0);
+    layoutLinearity->addWidget(txtNewtonDampingCoeff, 3, 1);
+    layoutLinearity->addWidget(chkNewtonAutomaticDamping, 4, 0, 1, 2);
+    layoutLinearity->addWidget(lblNewtonDampingNumberToIncrease, 5, 0);
+    layoutLinearity->addWidget(txtNewtonDampingNumberToIncrease, 5, 1);
+    layoutLinearity->addWidget(chkPicardAndersonAcceleration, 6, 0, 1, 2);
+    layoutLinearity->addWidget(lblPicardAndersonBeta, 7, 0);
+    layoutLinearity->addWidget(txtPicardAndersonBeta, 7, 1);
+    layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 8, 0);
+    layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 8, 1);
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Solver"));
     grpLinearity->setLayout(layoutLinearity);
@@ -326,9 +342,12 @@ void FieldWidget::load()
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
     txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps());
     txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance());
-    txtDampingCoeff->setValue(m_fieldInfo->dampingCoeff());
-    chkAutomaticDamping->setChecked(m_fieldInfo->automaticDamping());
-    txtDampingNumberToIncrease->setValue(m_fieldInfo->dampingNumberToIncrease());
+    chkNewtonAutomaticDamping->setChecked(m_fieldInfo->newtonAutomaticDamping());
+    txtNewtonDampingCoeff->setValue(m_fieldInfo->newtonDampingCoeff());
+    txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->newtonDampingNumberToIncrease());
+    chkPicardAndersonAcceleration->setChecked(m_fieldInfo->picardAndersonAcceleration());
+    txtPicardAndersonBeta->setValue(m_fieldInfo->picardAndersonBeta());
+    txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->picardAndersonNumberOfLastVectors());
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
@@ -351,9 +370,12 @@ bool FieldWidget::save()
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setNonlinearSteps(txtNonlinearSteps->value());
     m_fieldInfo->setNonlinearTolerance(txtNonlinearTolerance->value());
-    m_fieldInfo->setDampingCoeff(txtDampingCoeff->value());
-    m_fieldInfo->setAutomaticDamping(chkAutomaticDamping->isChecked());
-    m_fieldInfo->setDampingNumberToIncrease(txtDampingNumberToIncrease->value());
+    m_fieldInfo->setNewtonAutomaticDamping(chkNewtonAutomaticDamping->isChecked());
+    m_fieldInfo->setNewtonDampingCoeff(txtNewtonDampingCoeff->value());
+    m_fieldInfo->setNewtonDampingNumberToIncrease(txtNewtonDampingNumberToIncrease->value());
+    m_fieldInfo->setPicardAndersonAcceleration(chkPicardAndersonAcceleration->isChecked());
+    m_fieldInfo->setPicardAndersonBeta(txtPicardAndersonBeta->value());
+    m_fieldInfo->setPicardAndersonNumberOfLastVectors(txtPicardAndersonNumberOfLastVectors->value());
 
     return true;
 }
@@ -403,9 +425,31 @@ void FieldWidget::doLinearityTypeChanged(int index)
 {
     txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
-    txtDampingCoeff->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
-    chkAutomaticDamping->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
-    txtDampingNumberToIncrease->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+
+    chkNewtonAutomaticDamping->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    lblNewtonDampingCoeff->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    txtNewtonDampingCoeff->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    lblNewtonDampingNumberToIncrease->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    txtNewtonDampingNumberToIncrease->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    doNewtonDampingChanged(-1);
+
+    chkPicardAndersonAcceleration->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    lblPicardAndersonBeta->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    txtPicardAndersonBeta->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    lblPicardAndersonNumberOfLastVectors->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    txtPicardAndersonNumberOfLastVectors->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    doPicardAndersonChanged(-1);
+}
+
+void FieldWidget::doNewtonDampingChanged(int index)
+{
+    txtNewtonDampingNumberToIncrease->setEnabled(chkNewtonAutomaticDamping->isChecked());
+}
+
+void FieldWidget::doPicardAndersonChanged(int index)
+{
+    txtPicardAndersonBeta->setEnabled(chkPicardAndersonAcceleration->isChecked());
+    txtPicardAndersonNumberOfLastVectors->setEnabled(chkPicardAndersonAcceleration->isChecked());
 }
 
 // ********************************************************************************************

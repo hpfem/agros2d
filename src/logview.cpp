@@ -231,7 +231,7 @@ void LogDialog::printMessage(const QString &module, const QString &message, bool
     if (Util::problem()->isNonlinear())
     {
         QString strNewton = "residual norm:";
-        QString strPicard = "rel. error:";
+        QString strPicard = "relative error:";
 
         if (module == tr("Solver") && (message.contains(strNewton) || message.contains(strPicard)))
         {

@@ -120,9 +120,16 @@ private:
     // linearity
     QSpinBox *txtNonlinearSteps;
     LineEditDouble *txtNonlinearTolerance;
-    LineEditDouble *txtDampingCoeff;
-    QCheckBox *chkAutomaticDamping;
-    QSpinBox *txtDampingNumberToIncrease;
+    QCheckBox *chkNewtonAutomaticDamping;
+    QLabel *lblNewtonDampingCoeff;
+    LineEditDouble *txtNewtonDampingCoeff;
+    QLabel *lblNewtonDampingNumberToIncrease;
+    QSpinBox *txtNewtonDampingNumberToIncrease;
+    QCheckBox *chkPicardAndersonAcceleration;
+    QLabel *lblPicardAndersonBeta;
+    LineEditDouble *txtPicardAndersonBeta;
+    QLabel *lblPicardAndersonNumberOfLastVectors;
+    QSpinBox *txtPicardAndersonNumberOfLastVectors;
 
     // transient
     ValueLineEdit *txtTransientInitialCondition;
@@ -137,6 +144,8 @@ private slots:
     void doAnalysisTypeChanged(int index);
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
+    void doNewtonDampingChanged(int index);
+    void doPicardAndersonChanged(int index);
     void doShowEquation();
 };
 

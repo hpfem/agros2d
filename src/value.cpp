@@ -122,7 +122,6 @@ double Value::value(double key)
     if (m_table->size() == 0)
         return number();
     else
-      // qDebug() << m_table->valueSpline(key);
         return m_table->valueSpline(key);
 }
 

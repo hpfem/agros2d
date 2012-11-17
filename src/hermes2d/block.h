@@ -42,17 +42,26 @@ public:
     // minimal nonlinear tolerance of individual fields
     double nonlinearTolerance() const;
 
-    //maximal nonlinear steps of individual fields
+    // maximal nonlinear steps of individual fields
     int nonlinearSteps() const;
 
     // use only if true for all fields
-    bool automaticDamping() const;
+    bool newtonAutomaticDamping() const;
 
     // minimal damping coefficient
-    double dampingCoeff() const;
+    double newtonDampingCoeff() const;
 
-    // maximal
-    int dampingNumberToIncrease() const;
+    // maximal damping number to increase in one step
+    int newtonDampingNumberToIncrease() const;
+
+    // use Anderson acceleration
+    bool picardAndersonAcceleration() const;
+
+    // Anderson beta
+    double picardAndersonBeta() const;
+
+    // number of last vectors used for Anderson acceleration
+    int picardAndersonNumberOfLastVectors() const;
 
 //    Field* couplingSourceField(Coupling* coupling) const;
 //    Field* couplingTargetField(Coupling* coupling) const;

@@ -16,7 +16,7 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
         Field* field = new Field(fi);
         foreach (CouplingInfo* couplingInfo, Util::problem()->couplingInfos())
         {
-            if(couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
+            if (couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
             {
                 field->m_couplingSources.push_back(couplingInfo);
             }
@@ -34,7 +34,7 @@ Solver<double>* Block::prepareSolver()
 
     foreach (Field* field, m_fields)
     {
-        if(! field->solveInitVariables())
+        if (! field->solveInitVariables())
             assert(0); //TODO co to znamena?
     }
 
@@ -47,7 +47,7 @@ bool Block::isTransient() const
 {
     foreach (Field *field, m_fields)
     {
-        if(field->fieldInfo()->analysisType() == AnalysisType_Transient)
+        if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
             return true;
     }
 
@@ -59,11 +59,11 @@ double Block::timeSkip() const
     double skip = 0.;
     foreach (Field *field, m_fields)
     {
-        if(field->m_fieldInfo->analysisType() == AnalysisType_Transient)
+        if (field->m_fieldInfo->analysisType() == AnalysisType_Transient)
             continue;
 
         double sActual = field->fieldInfo()->timeSkip().number();
-        if((skip == 0.) || (sActual < skip))
+        if ((skip == 0.) || (sActual < skip))
             skip = sActual;
     }
     return skip;
@@ -164,7 +164,7 @@ double Block::nonlinearTolerance() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->nonlinearTolerance() < tolerance)
+        if (fieldInfo->nonlinearTolerance() < tolerance)
             tolerance = fieldInfo->nonlinearTolerance();
     }
 
@@ -178,59 +178,99 @@ int Block::nonlinearSteps() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->nonlinearSteps() > steps)
+        if (fieldInfo->nonlinearSteps() > steps)
             steps = fieldInfo->nonlinearSteps();
     }
 
     return steps;
 }
 
-bool Block::automaticDamping() const
+bool Block::newtonAutomaticDamping() const
 {
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(!fieldInfo->automaticDamping())
+        if (!fieldInfo->newtonAutomaticDamping())
             return false;
     }
 
     return true;
 }
 
-double Block::dampingCoeff() const
+double Block::newtonDampingCoeff() const
 {
     double coeff = 1.0;
 
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->dampingCoeff() < coeff)
-            coeff = fieldInfo->dampingCoeff();
+        if (fieldInfo->newtonDampingCoeff() < coeff)
+            coeff = fieldInfo->newtonDampingCoeff();
     }
 
     return coeff;
 }
 
-int Block::dampingNumberToIncrease() const
+int Block::newtonDampingNumberToIncrease() const
 {
     int number = 0;
 
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if(fieldInfo->dampingNumberToIncrease() > number)
-            number = fieldInfo->dampingNumberToIncrease();
+        if (fieldInfo->newtonDampingNumberToIncrease() > number)
+            number = fieldInfo->newtonDampingNumberToIncrease();
     }
 
     return number;
 }
 
+bool Block::picardAndersonAcceleration() const
+{
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (!fieldInfo->picardAndersonAcceleration())
+            return false;
+    }
+
+    return true;
+}
+
+double Block::picardAndersonBeta() const
+{
+    double number = 0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        // TODO: check ">"
+        if (fieldInfo->picardAndersonBeta() > number)
+            number = fieldInfo->picardAndersonBeta();
+    }
+
+    return number;
+}
+
+int Block::picardAndersonNumberOfLastVectors() const
+{
+    int number = 1;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->picardAndersonNumberOfLastVectors() > number)
+            number = fieldInfo->picardAndersonNumberOfLastVectors();
+    }
+
+    return number;
+}
 
 bool Block::contains(FieldInfo *fieldInfo) const
 {
     foreach(Field* field, m_fields)
     {
-        if(field->fieldInfo() == fieldInfo)
+        if (field->fieldInfo() == fieldInfo)
             return true;
     }
     return false;
@@ -240,7 +280,7 @@ Field* Block::field(FieldInfo *fieldInfo) const
 {
     foreach (Field* field, m_fields)
     {
-        if(fieldInfo == field->fieldInfo())
+        if (fieldInfo == field->fieldInfo())
             return field;
     }
 

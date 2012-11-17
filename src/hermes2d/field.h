@@ -55,21 +55,32 @@ public:
     inline LinearityType linearityType() const {return m_linearityType; }
     void setLinearityType(const LinearityType lt) { m_linearityType = lt; emit changed(); }
 
-    inline double nonlinearTolerance() const { return m_nonlinearTolerance; }
-    void setNonlinearTolerance(const double nt) { m_nonlinearTolerance = nt; emit changed(); }
-
+    // nonlinear settings
     inline int nonlinearSteps() const { return m_nonlinearSteps; }
     void setNonlinearSteps(const int ns) { m_nonlinearSteps = ns; emit changed(); }
 
-    inline double dampingCoeff() const {return m_dampingCoeff; }
-    void setDampingCoeff(const double df) { m_dampingCoeff = df; emit changed(); }
+    inline double nonlinearTolerance() const { return m_nonlinearTolerance; }
+    void setNonlinearTolerance(const double nt) { m_nonlinearTolerance = nt; emit changed(); }
 
-    inline bool automaticDamping() const {return m_automaticDamping; }
-    void setAutomaticDamping(const bool ad) { m_automaticDamping = ad; emit changed(); }
+    // Newton settings
+    inline bool newtonAutomaticDamping() const {return m_newtonAutomaticDamping; }
+    void setNewtonAutomaticDamping(const bool ad) { m_newtonAutomaticDamping = ad; emit changed(); }
 
-    inline int dampingNumberToIncrease() const {return m_dampingNumberToIncrease; }
-    void setDampingNumberToIncrease(const int df) { m_dampingNumberToIncrease = df; emit changed(); }
+    inline double newtonDampingCoeff() const {return m_newtonDampingCoeff; }
+    void setNewtonDampingCoeff(const double df) { m_newtonDampingCoeff = df; emit changed(); }
 
+    inline int newtonDampingNumberToIncrease() const {return m_newtonDampingNumberToIncrease; }
+    void setNewtonDampingNumberToIncrease(const int df) { m_newtonDampingNumberToIncrease = df; emit changed(); }
+
+    // Picard settings
+    inline bool picardAndersonAcceleration() const {return m_picardAndersonAcceleration; }
+    void setPicardAndersonAcceleration(const bool ab) { m_picardAndersonAcceleration = ab; emit changed(); }
+
+    inline double picardAndersonBeta() const {return m_picardAndersonBeta; }
+    void setPicardAndersonBeta(const double beta) { m_picardAndersonBeta = beta; emit changed(); }
+
+    inline int picardAndersonNumberOfLastVectors() const { return m_picardAndersonNumberOfLastVectors; }
+    void setPicardAndersonNumberOfLastVectors(const int nr) {m_picardAndersonNumberOfLastVectors = nr; emit changed(); }
 
     inline int numberOfRefinements() const { return m_numberOfRefinements; }
     void setNumberOfRefinements(const int nr) {m_numberOfRefinements = nr; emit changed(); }
@@ -133,9 +144,15 @@ private:
     double m_nonlinearTolerance; // percent
     int m_nonlinearSteps;
 
-    double m_dampingCoeff;
-    bool m_automaticDamping;
-    int m_dampingNumberToIncrease;
+    // newton
+    double m_newtonDampingCoeff;
+    bool m_newtonAutomaticDamping;
+    int m_newtonDampingNumberToIncrease;
+
+    // picard
+    bool m_picardAndersonAcceleration;
+    double m_picardAndersonBeta;
+    int m_picardAndersonNumberOfLastVectors;
 
     int m_numberOfRefinements;
     int m_polynomialOrder;
