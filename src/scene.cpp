@@ -2130,10 +2130,21 @@ ErrorResult Scene::checkGeometryResult()
     return ErrorResult();
 }
 
-void Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
+bool Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
 {
+    // check domain
+    Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->meshInitial(fieldInfo).data(),
+                                                                                                   position.x, position.y);
+    if (!element)
+        return false;
+
     // Lorentz force
-    Point3 forceLorentz = Util::plugins()[fieldInfo->fieldId()]->force(fieldInfo, position, velocity) * Util::config()->particleConstant;
+
+    // find marker
+    SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(fieldInfo)->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
+    SceneMaterial *material = label->marker(fieldInfo);
+
+    Point3 forceLorentz = Util::plugins()[fieldInfo->fieldId()]->force(fieldInfo, material, position, velocity) * Util::config()->particleConstant;
 
     // Gravitational force
     Point3 forceGravitational;
@@ -2172,6 +2183,8 @@ void Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, 
         (*newvelocity).y = (totalAccel.y) * step; // z
         (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
     }
+
+    return true;
 }
 
 void Scene::computeParticleTracingPath(QList<Point3> *positions,
@@ -2200,10 +2213,10 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
                        -Util::config()->particleStartingRadius / 2,
                        (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + p + dp;
 
-            int index = findElementInMesh(Util::problem()->activeMeshInitial().data(), Point(p.x, p.y));
-
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->activeMeshInitial().data(),
+                                                                                                     p.x, p.y);
             trials++;
-            if (index > 0 || trials > 10)
+            if (e || trials > 10)
                 break;
         }
     }
@@ -2212,8 +2225,6 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
     Point3 v;
     v.x = Util::config()->particleStartVelocity.x;
     v.y = Util::config()->particleStartVelocity.y;
-
-    int steps = 0;
 
     // position and velocity cache
     positions->append(p);
@@ -2226,73 +2237,96 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
     double relErrorMax = 1e-3;
     double dt = 1e-11;
 
-    int max_steps_iter = 0;
-    while (max_steps_iter < Util::config()->particleMaximumNumberOfSteps)
+    // QTime time;
+    // time.start();
+
+    bool stopComputation = false;
+    int maxStepsGlobal = 0;
+    while (!stopComputation && (maxStepsGlobal < Util::config()->particleMaximumNumberOfSteps))
     {
-        foreach(FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+        foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
         {
-            max_steps_iter++;
-
-            steps++;
-
-            QTime time;
-            time.start();
+            maxStepsGlobal++;
 
             // Runge-Kutta steps
             Point3 np5;
             Point3 nv5;
 
-            int max_steps_step = 0;
-            while (max_steps_step < 100)
+            int maxStepsRKF = 0;
+            while (!stopComputation && maxStepsRKF < 100)
             {
                 // Runge-Kutta-Fehlberg adaptive method
                 Point3 k1np;
                 Point3 k1nv;
-                newtonEquations(fieldInfo,
-                                dt,
-                                p,
-                                v,
-                                &k1np, &k1nv);
+                if (!newtonEquations(fieldInfo,
+                                     dt,
+                                     p,
+                                     v,
+                                     &k1np, &k1nv))
+                {
+                    stopComputation = true;
+                    break;
+                }
 
                 Point3 k2np;
                 Point3 k2nv;
-                newtonEquations(fieldInfo,
+                if (!newtonEquations(fieldInfo,
                                 dt,
                                 p + k1np * 1/4,
                                 v + k1nv * 1/4,
-                                &k2np, &k2nv);
+                                &k2np, &k2nv))
+                {
+                    stopComputation = true;
+                    break;
+                }
 
                 Point3 k3np;
                 Point3 k3nv;
-                newtonEquations(fieldInfo,
+                if (!newtonEquations(fieldInfo,
                                 dt,
                                 p + k1np * 3/32 + k2np * 9/32,
                                 v + k1nv * 3/32 + k2nv * 9/32,
-                                &k3np, &k3nv);
+                                &k3np, &k3nv))
+                {
+                    stopComputation = true;
+                    break;
+                }
 
                 Point3 k4np;
                 Point3 k4nv;
-                newtonEquations(fieldInfo,
+                if (!newtonEquations(fieldInfo,
                                 dt,
                                 p + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
                                 v + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
-                                &k4np, &k4nv);
+                                &k4np, &k4nv))
+                {
+                    stopComputation = true;
+                    break;
+                }
 
                 Point3 k5np;
                 Point3 k5nv;
-                newtonEquations(fieldInfo,
+                if (!newtonEquations(fieldInfo,
                                 dt,
                                 p + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
                                 v + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
-                                &k5np, &k5nv);
+                                &k5np, &k5nv))
+                {
+                    stopComputation = true;
+                    break;
+                }
 
                 Point3 k6np;
                 Point3 k6nv;
-                newtonEquations(fieldInfo,
+                if (!newtonEquations(fieldInfo,
                                 dt,
                                 p - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
                                 v - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
-                                &k6np, &k6nv);
+                                &k6np, &k6nv))
+                {
+                    stopComputation = true;
+                    break;
+                }
 
                 // Runge-Kutta order 4
                 Point3 np4 = p + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
@@ -2326,6 +2360,10 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
                 break;
             }
 
+            if (stopComputation)
+                break;
+
+            // check crossing
             SceneEdge *crossingEdge = NULL;
             Point intersect;
             foreach (SceneEdge *edge, edges->items())
@@ -2391,6 +2429,7 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
                         (crossingEdge->marker(fieldInfo) == Util::scene()->boundaries->getNone(fieldInfo) && !Util::config()->particleReflectOnDifferentMaterial) ||
                         (crossingEdge->marker(fieldInfo) != Util::scene()->boundaries->getNone(fieldInfo) && !Util::config()->particleReflectOnBoundary))
                 {
+                    stopComputation = true;
                     break;
                 }
             }

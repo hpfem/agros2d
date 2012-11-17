@@ -202,7 +202,7 @@ public:
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) = 0;
 
     // force calculation
-    virtual Point3 force(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity) = 0;
+    virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
 };
 
 

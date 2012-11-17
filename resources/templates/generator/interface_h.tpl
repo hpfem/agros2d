@@ -61,7 +61,7 @@ public:
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo);
 
     // force calculation
-    Point3 force(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity);
+    Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity);
 };
 
 #endif // {{ID}}_INTERFACE_H

@@ -156,11 +156,11 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            int index = findElementInMesh(Util::problem()->activeMeshInitial().data(), p);
-            if (index != -1)
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->activeMeshInitial().data(), p.x, p.y);
+            if (e)
             {
-                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().
-                                                                   get_user_marker(Util::problem()->activeMeshInitial()->get_element_fast(index)->marker).marker.c_str()));
+                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial().data()->get_element_markers_conversion().
+                                                                   get_user_marker(e->marker).marker.c_str()));
 
                 label->setSelected(!label->isSelected());
                 updateGL();

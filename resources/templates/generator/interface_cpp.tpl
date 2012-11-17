@@ -110,9 +110,9 @@ IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo)
     return new {{CLASS}}VolumeIntegral(fieldInfo);
 }
 
-Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity)
+Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
-    return force{{CLASS}}(fieldInfo, point, velocity);
+    return force{{CLASS}}(fieldInfo, material, point, velocity);
 }
 
 Q_EXPORT_PLUGIN2(agros2d_plugin_{{ID}}, {{CLASS}}Interface)

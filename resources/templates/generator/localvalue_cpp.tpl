@@ -49,17 +49,16 @@ void {{CLASS}}LocalValue::calculate()
 
     if (Util::problem()->isSolved())
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(m_fieldInfo).data(), m_point);
-        if (index != -1)
+        double x = m_point.x;
+        double y = m_point.y;
+
+        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->meshInitial(m_fieldInfo).data(),
+                                                                                                 m_point.x, m_point.y);
+        if (e)
         {
             // find marker
-            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial(m_fieldInfo)->get_element_fast(index);
-            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
+            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo).data()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
-
-            // set variables
-            double x = m_point.x;
-            double y = m_point.y;
 
             double *value = new double[m_fieldInfo->module()->numberOfSolutions()];
             double *dudx = new double[m_fieldInfo->module()->numberOfSolutions()];
@@ -81,7 +80,7 @@ void {{CLASS}}LocalValue::calculate()
                 sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
 
                 // point values
-                Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(x, y);
+                Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);
                 double val;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
                     // const solution at first time step

@@ -27,46 +27,6 @@
 #include "field.h"
 #include "problem.h"
 
-int findElementInMesh(Hermes::Hermes2D::Mesh *mesh, const Point &point)
-{
-    assert(mesh);
-
-    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(mesh, point.x, point.y);
-    if (e)
-        return e->id;
-    else
-        return -1;
-
-    /*
-    for (int i = 0, max = mesh->get_max_element_id(); i < max; i++)
-    {
-        Hermes::Hermes2D::Element *element;
-        if ((element = mesh->get_element_fast(i))->used)
-        {
-            if (element->active)
-            {
-                bool inElement = false;
-                int j;
-                int npol = (element->is_triangle()) ? 3 : 4;
-
-                for (int i = 0, j = npol-1; i < npol; j = i++) {
-                    if ((((element->vn[i]->y <= point.y) && (point.y < element->vn[j]->y)) ||
-                         ((element->vn[j]->y <= point.y) && (point.y < element->vn[i]->y))) &&
-                            (point.x < (element->vn[j]->x - element->vn[i]->x) * (point.y - element->vn[i]->y)
-                             / (element->vn[j]->y - element->vn[i]->y) + element->vn[i]->x))
-                        inElement = !inElement;
-                }
-
-                if (inElement)
-                    return i;
-            }
-        }
-    }
-
-    return -1;
-    */
-}
-
 void Module::ModuleAgros::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
     fillComboBox(cmbFieldVariable, viewScalarVariables());

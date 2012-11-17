@@ -33,71 +33,62 @@
 
 #include "hermes2d/plugin_interface.h"
 
-Point3 force{{CLASS}}(FieldInfo *fieldInfo, const Point3 &point, const Point3 &velocity)
+Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
     Point3 res;
 
-    // update time functions
-    if (fieldInfo->analysisType() == AnalysisType_Transient)
-    {
-        QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-        fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
-    }
-
     if (Util::problem()->isSolved())
     {
-        int index = findElementInMesh(Util::problem()->meshInitial(fieldInfo).data(), Point(point.x, point.y));
-        if (index != -1)
+        // update time functions
+        if (fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            // find marker
-            Hermes::Hermes2D::Element *e = Util::problem()->meshInitial(fieldInfo)->get_element_fast(index);
-            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(fieldInfo)->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
-            SceneMaterial *material = label->marker(fieldInfo);
+            QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+            fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
+        }
+
+        // set variables
+        double x = point.x;
+        double y = point.y;
+
+        double *value = new double[fieldInfo->module()->numberOfSolutions()];
+        double *dudx = new double[fieldInfo->module()->numberOfSolutions()];
+        double *dudy = new double[fieldInfo->module()->numberOfSolutions()];
+
+        std::vector<Hermes::Hermes2D::Solution<double> *> sln(fieldInfo->module()->numberOfSolutions());
+        for (int k = 0; k < fieldInfo->module()->numberOfSolutions(); k++)
+        {
+            // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
+            FieldSolutionID fsid(fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
+            sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
+
+            // point values
+            Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(point.x, point.y);
+            double val;
+            if ((fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
+                // const solution at first time step
+                val = fieldInfo->initialCondition().number();
+            else
+                val = values->val[0];
 
             // set variables
-            double x = point.x;
-            double y = point.y;
-
-            double *value = new double[fieldInfo->module()->numberOfSolutions()];
-            double *dudx = new double[fieldInfo->module()->numberOfSolutions()];
-            double *dudy = new double[fieldInfo->module()->numberOfSolutions()];
-
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(fieldInfo->module()->numberOfSolutions());
-            for (int k = 0; k < fieldInfo->module()->numberOfSolutions(); k++)
-            {
-                // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-                FieldSolutionID fsid(fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
-                sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
-
-                // point values
-                Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(point.x, point.y);
-                double val;
-                if ((fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
-                    // const solution at first time step
-                    val = fieldInfo->initialCondition().number();
-                else
-                    val = values->val[0];
-
-                // set variables
-                value[k] = val;
-                dudx[k] = values->dx[0];
-                dudy[k] = values->dy[0];
-            }
-
-            {{#VARIABLE_SOURCE}}
-            if ((fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
-             && (fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
-            {
-                res.x = {{EXPRESSION_X}};
-                res.y = {{EXPRESSION_Y}};
-                res.z = {{EXPRESSION_Z}};
-            }
-            {{/VARIABLE_SOURCE}}
-
-            delete [] value;
-            delete [] dudx;
-            delete [] dudy;
+            value[k] = val;
+            dudx[k] = values->dx[0];
+            dudy[k] = values->dy[0];
         }
+
+        {{#VARIABLE_SOURCE}}
+        if ((fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
+         && (fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
+        {
+            res.x = {{EXPRESSION_X}};
+            res.y = {{EXPRESSION_Y}};
+            res.z = {{EXPRESSION_Z}};
+        }
+        {{/VARIABLE_SOURCE}}
+
+        delete [] value;
+        delete [] dudx;
+        delete [] dudy;
     }
 
     return res;
