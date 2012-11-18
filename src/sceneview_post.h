@@ -136,7 +136,7 @@ protected:
     virtual void initializeGL();
 
     void paintScalarFieldColorBar(double min, double max);
-    void paintParticleTracingColorBar(double min, double max);
+    void paintParticleTracingColorBar(double min, double max, bool is2D = true);
 
     // palette
     const double *paletteColor2(const int pos) const;

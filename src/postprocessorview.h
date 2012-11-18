@@ -129,23 +129,29 @@ private:
     QCheckBox *chkOrderLabel;
 
     // particle tracing
-    QCheckBox *chkParticleIncludeGravitation;
+    QCheckBox *chkParticleIncludeRelativisticCorrection;
     QSpinBox *txtParticleNumberOfParticles;
     LineEditDouble *txtParticleStartingRadius;
     LineEditDouble *txtParticleMass;
     LineEditDouble *txtParticleConstant;
     LineEditDouble *txtParticlePointX;
     LineEditDouble *txtParticlePointY;
+    QLabel *lblParticlePointX;
+    QLabel *lblParticlePointY;
+    QLabel *lblParticleVelocityX;
+    QLabel *lblParticleVelocityY;
     LineEditDouble *txtParticleVelocityX;
     LineEditDouble *txtParticleVelocityY;
     QCheckBox *chkParticleReflectOnDifferentMaterial;
     QCheckBox *chkParticleReflectOnBoundary;
     LineEditDouble *txtParticleCoefficientOfRestitution;
-    QLabel *lblParticlePointX;
-    QLabel *lblParticlePointY;
-    QLabel *lblParticleVelocityX;
-    QLabel *lblParticleVelocityY;
     QLabel *lblParticleMotionEquations;
+    QLabel *lblParticleCustomForceX;
+    QLabel *lblParticleCustomForceY;
+    QLabel *lblParticleCustomForceZ;
+    LineEditDouble *txtParticleCustomForceX;
+    LineEditDouble *txtParticleCustomForceY;
+    LineEditDouble *txtParticleCustomForceZ;
     QCheckBox *chkParticleColorByVelocity;
     QCheckBox *chkParticleShowPoints;
     LineEditDouble *txtParticleMaximumRelativeError;

@@ -141,7 +141,7 @@ public:
 
     // particle tracing
     bool showParticleView;
-    bool particleIncludeGravitation;
+    bool particleIncludeRelativisticCorrection;
     double particleMass;
     double particleConstant;
     double particleMaximumRelativeError;
@@ -153,6 +153,7 @@ public:
     Point particleStart;
     Point particleStartVelocity;
     Point particleAcceleration;
+    Point3 particleCustomForce;
     int particleNumberOfParticles;
     double particleStartingRadius;
     bool particleColorByVelocity;

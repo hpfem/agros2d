@@ -180,7 +180,7 @@ void Config::loadPostprocessor(QDomElement *config)
 
     // particle tracing
     showParticleView = readConfig("SceneViewSettings/ShowParticleView", SHOWPARTICLEVIEW);
-    particleIncludeGravitation = readConfig("SceneViewSettings/ParticleIncludeGravitation", PARTICLEINCLUDEGRAVITATION);
+    particleIncludeRelativisticCorrection = readConfig("SceneViewSettings/ParticleIncludeRelativisticCorrection", PARTICLEINCLUDERELATIVISTICCORRECTION);
     particleMass = readConfig("SceneViewSettings/ParticleMass", PARTICLEMASS);
     particleConstant = readConfig("SceneViewSettings/ParticleConstant", PARTICLECONSTANT);
     particleStart.x = readConfig("SceneViewSettings/ParticleStartX", PARTICLESTARTX);
@@ -200,6 +200,9 @@ void Config::loadPostprocessor(QDomElement *config)
     particleDragDensity = readConfig("SceneViewSettings/ParticleDragDensity", PARTICLEDRAGDENSITY);
     particleDragCoefficient = readConfig("SceneViewSettings/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT);
     particleDragReferenceArea = readConfig("SceneViewSettings/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
+    particleCustomForce.x = readConfig("SceneViewSettings/ParticleCustomForceX", PARTICLECUSTOMFORCEX);
+    particleCustomForce.y = readConfig("SceneViewSettings/ParticleCustomForceY", PARTICLECUSTOMFORCEY);
+    particleCustomForce.z = readConfig("SceneViewSettings/ParticleCustomForceZ", PARTICLECUSTOMFORCEZ);
 
     // mesh
     angleSegmentsCount = readConfig("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT);
@@ -379,7 +382,7 @@ void Config::savePostprocessor(QDomElement *config)
 
     // particle tracing
     writeConfig("SceneViewSettings/ShowParticleView", showParticleView);
-    writeConfig("SceneViewSettings/ParticleIncludeGravitation", particleIncludeGravitation);
+    writeConfig("SceneViewSettings/ParticleIncludeRelativisticCorrection", particleIncludeRelativisticCorrection);
     writeConfig("SceneViewSettings/ParticleMass", particleMass);
     writeConfig("SceneViewSettings/ParticleConstant", particleConstant);
     writeConfig("SceneViewSettings/ParticleStartX", particleStart.x);
@@ -399,6 +402,9 @@ void Config::savePostprocessor(QDomElement *config)
     writeConfig("SceneViewSettings/ParticleDragDensity", particleDragDensity);
     writeConfig("SceneViewSettings/ParticleDragCoefficient", particleDragCoefficient);
     writeConfig("SceneViewSettings/ParticleDragReferenceArea", particleDragReferenceArea);
+    writeConfig("SceneViewSettings/ParticleCustomForceX", particleCustomForce.x);
+    writeConfig("SceneViewSettings/ParticleCustomForceY", particleCustomForce.y);
+    writeConfig("SceneViewSettings/ParticleCustomForceZ", particleCustomForce.z);
 
     // mesh
     writeConfig("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);

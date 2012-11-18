@@ -24,6 +24,8 @@
 
 #include "enums.h"
 
+const double SPEEDOFLIGHT = 299792458;
+
 // constants
 const QString IMAGEROOT = QString("..%1resources_source%1images").arg(QDir::separator());
 const QString XSDROOT = QString("%1resources%1xsd").arg(QDir::separator());
@@ -113,13 +115,16 @@ const bool ORDERLABEL = false;
 
 // particle
 const bool SHOWPARTICLEVIEW = false;
-const bool PARTICLEINCLUDEGRAVITATION = true;
+const bool PARTICLEINCLUDERELATIVISTICCORRECTION = true;
 const int PARTICLENUMBEROFPARTICLES = 5;
 const double PARTICLESTARTINGRADIUS = 0;
 const double PARTICLESTARTX = 0;
 const double PARTICLESTARTY = 0;
 const double PARTICLESTARTVELOCITYX = 0;
 const double PARTICLESTARTVELOCITYY = 0;
+const double PARTICLECUSTOMFORCEX = 0;
+const double PARTICLECUSTOMFORCEY = 0;
+const double PARTICLECUSTOMFORCEZ = 0;
 const double PARTICLEMASS = 9.109e-31; // mass of the electron
 const double PARTICLECONSTANT = 1.602e-19; // charge of the electron
 const bool PARTICLEREFLECTONDIFFERENTMATERIAL = true;

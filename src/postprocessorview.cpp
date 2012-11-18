@@ -153,7 +153,7 @@ void PostprocessorWidget::loadAdvanced()
     chkOrderLabel->setChecked(Util::config()->orderLabel);
 
     // particle tracing
-    chkParticleIncludeGravitation->setChecked(Util::config()->particleIncludeGravitation);
+    chkParticleIncludeRelativisticCorrection->setChecked(Util::config()->particleIncludeRelativisticCorrection);
     txtParticleNumberOfParticles->setValue(Util::config()->particleNumberOfParticles);
     txtParticleStartingRadius->setValue(Util::config()->particleStartingRadius);
     txtParticleMass->setValue(Util::config()->particleMass);
@@ -165,6 +165,9 @@ void PostprocessorWidget::loadAdvanced()
     chkParticleReflectOnDifferentMaterial->setChecked(Util::config()->particleReflectOnDifferentMaterial);
     chkParticleReflectOnBoundary->setChecked(Util::config()->particleReflectOnBoundary);
     txtParticleCoefficientOfRestitution->setValue(Util::config()->particleCoefficientOfRestitution);
+    txtParticleCustomForceX->setValue(Util::config()->particleCustomForce.x);
+    txtParticleCustomForceY->setValue(Util::config()->particleCustomForce.y);
+    txtParticleCustomForceZ->setValue(Util::config()->particleCustomForce.z);
     txtParticleMaximumRelativeError->setValue(Util::config()->particleMaximumRelativeError);
     txtParticleMinimumStep->setValue(Util::config()->particleMinimumStep);
     txtParticleMaximumNumberOfSteps->setValue(Util::config()->particleMaximumNumberOfSteps);
@@ -176,8 +179,11 @@ void PostprocessorWidget::loadAdvanced()
 
     lblParticlePointX->setText(QString("%1 (m):").arg(Util::problem()->config()->labelX()));
     lblParticlePointY->setText(QString("%1 (m):").arg(Util::problem()->config()->labelY()));
-    lblParticleVelocityX->setText(QString("%1 (m):").arg(Util::problem()->config()->labelX()));
-    lblParticleVelocityY->setText(QString("%1 (m):").arg(Util::problem()->config()->labelY()));
+    lblParticleVelocityX->setText(QString("%1 (m/s):").arg(Util::problem()->config()->labelX()));
+    lblParticleVelocityY->setText(QString("%1 (m/s):").arg(Util::problem()->config()->labelY()));
+    lblParticleCustomForceX->setText(QString("%1 (N):").arg(Util::problem()->config()->labelX()));
+    lblParticleCustomForceY->setText(QString("%1 (N):").arg(Util::problem()->config()->labelY()));
+    lblParticleCustomForceZ->setText(QString("%1 (N):").arg(Util::problem()->config()->labelZ()));
 
     if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
@@ -258,7 +264,7 @@ void PostprocessorWidget::saveAdvanced()
     Util::config()->orderLabel = chkOrderLabel->isChecked();
 
     // particle tracing
-    Util::config()->particleIncludeGravitation = chkParticleIncludeGravitation->isChecked();
+    Util::config()->particleIncludeRelativisticCorrection = chkParticleIncludeRelativisticCorrection->isChecked();
     Util::config()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
     Util::config()->particleStartingRadius = txtParticleStartingRadius->value();
     Util::config()->particleMass = txtParticleMass->value();
@@ -270,6 +276,9 @@ void PostprocessorWidget::saveAdvanced()
     Util::config()->particleReflectOnDifferentMaterial = chkParticleReflectOnDifferentMaterial->isChecked();
     Util::config()->particleReflectOnBoundary = chkParticleReflectOnBoundary->isChecked();
     Util::config()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value();
+    Util::config()->particleCustomForce.x = txtParticleCustomForceX->value();
+    Util::config()->particleCustomForce.y = txtParticleCustomForceY->value();
+    Util::config()->particleCustomForce.z = txtParticleCustomForceZ->value();
     Util::config()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
     Util::config()->particleMinimumStep = txtParticleMinimumStep->value();
     Util::config()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
@@ -833,17 +842,27 @@ QWidget *PostprocessorWidget::postChartWidget()
 QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
 {
     // particle tracing
-    chkParticleIncludeGravitation = new QCheckBox(tr("Include gravitation"));
+    chkParticleIncludeRelativisticCorrection = new QCheckBox(tr("Relativistic correction"));
     txtParticleNumberOfParticles = new QSpinBox(this);
     txtParticleNumberOfParticles->setMinimum(1);
     txtParticleNumberOfParticles->setMaximum(200);
     txtParticleStartingRadius = new LineEditDouble();
     txtParticleMass = new LineEditDouble();
     txtParticleConstant = new LineEditDouble();
+    lblParticlePointX = new QLabel();
+    lblParticlePointY = new QLabel();
     txtParticlePointX = new LineEditDouble();
     txtParticlePointY = new LineEditDouble();
+    lblParticleVelocityX = new QLabel();
+    lblParticleVelocityY = new QLabel();
     txtParticleVelocityX = new LineEditDouble();
     txtParticleVelocityY = new LineEditDouble();
+    lblParticleCustomForceX = new QLabel();
+    lblParticleCustomForceY = new QLabel();
+    lblParticleCustomForceZ = new QLabel();
+    txtParticleCustomForceX = new LineEditDouble();
+    txtParticleCustomForceY = new LineEditDouble();
+    txtParticleCustomForceZ = new LineEditDouble();
     txtParticleMaximumRelativeError = new LineEditDouble();
     txtParticleMinimumStep = new LineEditDouble();
     chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflect on different material"));
@@ -851,10 +870,6 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     txtParticleCoefficientOfRestitution = new LineEditDouble(0.0, true);
     txtParticleCoefficientOfRestitution->setBottom(0.0);
     txtParticleCoefficientOfRestitution->setTop(1.0);
-    lblParticlePointX = new QLabel();
-    lblParticlePointY = new QLabel();
-    lblParticleVelocityX = new QLabel();
-    lblParticleVelocityY = new QLabel();
     chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
     chkParticleShowPoints = new QCheckBox(tr("Show points"));
     txtParticleMaximumNumberOfSteps = new QSpinBox();
@@ -876,7 +891,7 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge (C):")), 1, 0);
     gridLayoutLorentzForce->addWidget(txtParticleConstant, 1, 1);
 
-    QGroupBox *grpLorentzForce = new QGroupBox(tr("Lorentz Force"));
+    QGroupBox *grpLorentzForce = new QGroupBox(tr("Lorentz force"));
     grpLorentzForce->setLayout(gridLayoutLorentzForce);
 
     // drag force
@@ -907,6 +922,18 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     QGroupBox *grpReflection = new QGroupBox(tr("Reflection"));
     grpReflection->setLayout(gridLayoutReflection);
 
+    // initial particle velocity
+    QGridLayout *gridCustomForce = new QGridLayout();
+    gridCustomForce->addWidget(lblParticleCustomForceX, 0, 0);
+    gridCustomForce->addWidget(txtParticleCustomForceX, 0, 1);
+    gridCustomForce->addWidget(lblParticleCustomForceY, 1, 0);
+    gridCustomForce->addWidget(txtParticleCustomForceY, 1, 1);
+    gridCustomForce->addWidget(lblParticleCustomForceZ, 2, 0);
+    gridCustomForce->addWidget(txtParticleCustomForceZ, 2, 1);
+
+    QGroupBox *grpCustomForce = new QGroupBox(tr("Custom force"));
+    grpCustomForce->setLayout(gridCustomForce);
+
     // initial particle position
     QGridLayout *gridLayoutInitialPosition = new QGridLayout();
     gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
@@ -927,21 +954,27 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
     grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
 
-    // advanced
-    QGridLayout *gridLayoutAdvanced = new QGridLayout();
-    gridLayoutAdvanced->addWidget(chkParticleIncludeGravitation, 0, 0);
-    gridLayoutAdvanced->addWidget(new QLabel(QString("<i><b>F</b></i><sub>G</sub> = (0, m g<sub>0</sub>, 0))")), 0, 1);
-    gridLayoutAdvanced->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
-    gridLayoutAdvanced->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum relative error (%):")), 4, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMaximumRelativeError, 4, 1);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Minimum step (m):")), 5, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMinimumStep, 5, 1);
-    gridLayoutAdvanced->addWidget(new QLabel(tr("Maximum number of steps:")), 6, 0);
-    gridLayoutAdvanced->addWidget(txtParticleMaximumNumberOfSteps, 6, 1);
+    // solver
+    QGridLayout *gridLayoutSolver = new QGridLayout();
+    gridLayoutSolver->addWidget(chkParticleIncludeRelativisticCorrection, 0, 0);
+    gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 0, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Maximum relative error (%):")), 1, 0);
+    gridLayoutSolver->addWidget(txtParticleMaximumRelativeError, 1, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Minimum step (m):")), 2, 0);
+    gridLayoutSolver->addWidget(txtParticleMinimumStep, 2, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Maximum number of steps:")), 3, 0);
+    gridLayoutSolver->addWidget(txtParticleMaximumNumberOfSteps, 3, 1);
 
-    QGroupBox *grpAdvanced = new QGroupBox(tr("Advanced"));
-    grpAdvanced->setLayout(gridLayoutAdvanced);
+    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
+    grpSolver->setLayout(gridLayoutSolver);
+
+    // settings
+    QGridLayout *gridLayoutSettings = new QGridLayout();
+    gridLayoutSettings->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
+    gridLayoutSettings->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
+
+    QGroupBox *grpSettings = new QGroupBox(tr("Settings"));
+    grpSettings->setLayout(gridLayoutSettings);
 
     QGridLayout *layoutParticle = new QGridLayout();
     layoutParticle->setMargin(0);
@@ -957,8 +990,10 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     layoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
     layoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
     layoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
-    layoutParticle->addWidget(grpReflection, 9, 0, 1, 2);
-    layoutParticle->addWidget(grpAdvanced, 10, 0, 1, 2);
+    layoutParticle->addWidget(grpCustomForce, 9, 0, 1, 2);
+    layoutParticle->addWidget(grpReflection, 10, 0, 1, 2);
+    layoutParticle->addWidget(grpSolver, 11, 0, 1, 2);
+    layoutParticle->addWidget(grpSettings, 12, 0, 1, 2);
 
     QWidget *particleWidget = new QWidget();
     particleWidget->setLayout(layoutParticle);
@@ -1375,7 +1410,7 @@ void PostprocessorWidget::doParticleDefault()
 {
     txtParticleNumberOfParticles->setValue(PARTICLENUMBEROFPARTICLES);
     txtParticleStartingRadius->setValue(PARTICLESTARTINGRADIUS);
-    chkParticleIncludeGravitation->setChecked(PARTICLEINCLUDEGRAVITATION);
+    chkParticleIncludeRelativisticCorrection->setChecked(PARTICLEINCLUDERELATIVISTICCORRECTION);
     txtParticleMass->setValue(PARTICLEMASS);
     txtParticleConstant->setValue(PARTICLECONSTANT);
     txtParticlePointX->setValue(PARTICLESTARTX);
@@ -1385,6 +1420,9 @@ void PostprocessorWidget::doParticleDefault()
     chkParticleReflectOnDifferentMaterial->setChecked(PARTICLEREFLECTONDIFFERENTMATERIAL);
     chkParticleReflectOnBoundary->setChecked(PARTICLEREFLECTONBOUNDARY);
     txtParticleCoefficientOfRestitution->setValue(PARTICLECOEFFICIENTOFRESTITUTION);
+    txtParticleCustomForceX->setValue(PARTICLECUSTOMFORCEX);
+    txtParticleCustomForceY->setValue(PARTICLECUSTOMFORCEY);
+    txtParticleCustomForceZ->setValue(PARTICLECUSTOMFORCEZ);
     txtParticleMaximumRelativeError->setValue(PARTICLEMAXIMUMRELATIVEERROR);
     txtParticleMinimumStep->setValue(PARTICLEMINIMUMSTEP);
     txtParticleMaximumNumberOfSteps->setValue(PARTICLEMAXIMUMNUMBEROFSTEPS);

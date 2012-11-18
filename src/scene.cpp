@@ -20,6 +20,7 @@
 #include "scene.h"
 
 #include "util/xml.h"
+#include "util/constants.h"
 
 #include "util.h"
 #include "value.h"
@@ -2151,10 +2152,8 @@ bool Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, 
 
     Point3 forceLorentz = Util::plugins()[fieldInfo->fieldId()]->force(fieldInfo, material, position, velocity) * Util::config()->particleConstant;
 
-    // Gravitational force
-    Point3 forceGravitational;
-    if (Util::config()->particleIncludeGravitation)
-        forceGravitational = Point3(0.0, - Util::config()->particleMass * GRAVITATIONAL_ACCELERATION, 0.0);
+    // custom force
+    Point3 forceCustom = Util::config()->particleCustomForce;
 
     // Drag force
     Point3 velocityReal = (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ?
@@ -2165,10 +2164,15 @@ bool Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, 
                 - 0.5 * Util::config()->particleDragDensity * velocityReal.magnitude() * velocityReal.magnitude() * Util::config()->particleDragCoefficient * Util::config()->particleDragReferenceArea;
 
     // Total force
-    Point3 totalForce = forceLorentz + forceGravitational + forceDrag;
+    Point3 totalForce = forceLorentz + forceDrag + forceCustom;
+
+    // relativistic correction
+    double mass = Util::config()->particleMass;
+    if (Util::config()->particleIncludeRelativisticCorrection)
+        mass = Util::config()->particleMass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
 
     // Total acceleration
-    Point3 totalAccel = totalForce / Util::config()->particleMass;
+    Point3 totalAccel = totalForce / mass;
 
     if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
     {

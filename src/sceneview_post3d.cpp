@@ -114,7 +114,7 @@ void SceneViewPost3D::paintGL()
             paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
 
         if (Util::config()->showParticleView && Util::config()->particleColorByVelocity)
-            paintParticleTracingColorBar(m_postHermes->particleTracingVelocityMin(), m_postHermes->particleTracingVelocityMax());
+            paintParticleTracingColorBar(m_postHermes->particleTracingVelocityMin(), m_postHermes->particleTracingVelocityMax(), false);
     }
 
     switch (Util::config()->showPost3D)
@@ -808,11 +808,7 @@ void SceneViewPost3D::paintParticleTracing()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glColor4d(0.7, 0.6, 0.7, 0.4);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-        // init normals
-        double* normal = new double[3];
+        glColor4d(0.2, 0.4, 0.1, 0.3);
 
         if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
@@ -834,28 +830,12 @@ void SceneViewPost3D::paintParticleTracing()
                 }
 
                 // z = - depth / 2.0
-                computeNormal(point[0].x, point[0].y, -depth/2.0,
-                              point[1].x, point[1].y, -depth/2.0,
-                              point[2].x, point[2].y, -depth/2.0,
-                              normal);
-                glNormal3d(normal[0], normal[1], normal[2]);
-
                 for (int j = 0; j < 3; j++)
-                {
                     glVertex3d(point[j].x, point[j].y, -depth/2.0);
-                }
 
                 // z = + depth / 2.0
-                computeNormal(point[0].x, point[0].y, depth/2.0,
-                              point[1].x, point[1].y, depth/2.0,
-                              point[2].x, point[2].y, depth/2.0,
-                              normal);
-                glNormal3d(normal[0], normal[1], normal[2]);
-
                 for (int j = 0; j < 3; j++)
-                {
                     glVertex3d(point[j].x, point[j].y, depth/2.0);
-                }
             }
             glEnd();
 
@@ -879,12 +859,6 @@ void SceneViewPost3D::paintParticleTracing()
                     if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
                         continue;
                 }
-
-                computeNormal(point[0].x, point[0].y, -depth/2.0,
-                              point[1].x, point[1].y, -depth/2.0,
-                              point[1].x, point[1].y,  depth/2.0,
-                              normal);
-                glNormal3d(normal[0], normal[1], normal[2]);
 
                 glVertex3d(point[0].x, point[0].y, -depth/2.0);
                 glVertex3d(point[1].x, point[1].y, -depth/2.0);
@@ -915,12 +889,6 @@ void SceneViewPost3D::paintParticleTracing()
 
                 for (int j = 0; j <= 360; j = j + 90)
                 {
-                    computeNormal(point[0].x * cos(j/180.0*M_PI), point[0].y, point[0].x * sin(j/180.0*M_PI),
-                                  point[1].x * cos(j/180.0*M_PI), point[1].y, point[1].x * sin(j/180.0*M_PI),
-                                  point[2].x * cos(j/180.0*M_PI), point[2].y, point[2].x * sin(j/180.0*M_PI),
-                                  normal);
-                    glNormal3d(normal[0], normal[1], normal[2]);
-
                     glVertex3d(point[0].x * cos(j/180.0*M_PI), point[0].y, point[0].x * sin(j/180.0*M_PI));
                     glVertex3d(point[1].x * cos(j/180.0*M_PI), point[1].y, point[1].x * sin(j/180.0*M_PI));
                     glVertex3d(point[2].x * cos(j/180.0*M_PI), point[2].y, point[2].x * sin(j/180.0*M_PI));
@@ -953,12 +921,6 @@ void SceneViewPost3D::paintParticleTracing()
                 double step = 360.0/count;
                 for (int j = 0; j < count; j++)
                 {
-                    computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
-                                  point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
-                                  point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
-                                  normal);
-                    glNormal3d(normal[0], normal[1], normal[2]);
-
                     glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
                     glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
                     glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
@@ -969,9 +931,7 @@ void SceneViewPost3D::paintParticleTracing()
         }
 
         glDisable(GL_BLEND);
-
-        // remove normals
-        delete [] normal;
+        glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry
         if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
@@ -1137,7 +1097,7 @@ void SceneViewPost3D::paintParticleTracing()
             }
 
             // lines
-            glLineWidth(2.0);
+            glLineWidth(3.0);
             glBegin(GL_LINES);
             for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
             {
@@ -1180,7 +1140,6 @@ void SceneViewPost3D::paintParticleTracing()
         }
 
         glDisable(GL_DEPTH_TEST);
-        glPopMatrix();
 
         glEndList();
 

@@ -324,8 +324,8 @@ cdef extern from "../../src/pythonlab_agros.h":
         void setParticleCharge(double charge)
         double particleCharge()
 
-        void setIncludeGravitation(int incl)
-        int includeGravitation()
+        void setIncludeRelativisticCorrection(int incl)
+        int includeRelativisticCorrection()
 
         void setReflectOnDifferentMaterial(int reflect)
         int reflectOnDifferentMaterial()
@@ -1395,12 +1395,12 @@ cdef class ParticleTracing:
         def __set__(self, charge):
             self.thisptr.setParticleCharge(charge)
 
-    # gravitational force
-    property include_gravitation:
+    # relativistic correction
+    property include_relativistic_correction:
         def __get__(self):
-            return self.thisptr.includeGravitation()
+            return self.thisptr.includeRelativisticCorrection()
         def __set__(self, incl):
-            self.thisptr.setIncludeGravitation(incl)
+            self.thisptr.setIncludeRelativisticCorrection(incl)
 
     # reflect on different material
     property reflect_on_different_material:

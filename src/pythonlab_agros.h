@@ -492,8 +492,8 @@ public:
     double dragForceReferenceArea() { return Util::config()->particleDragReferenceArea; }
     void setDragForceCoefficient(double coeff);
     double dragForceCoefficient() { return Util::config()->particleDragCoefficient; }
-    void setIncludeGravitation(int include);
-    int includeGravitation() { return Util::config()->particleIncludeGravitation; }
+    void setIncludeRelativisticCorrection(int include);
+    int includeRelativisticCorrection() { return Util::config()->particleIncludeRelativisticCorrection; }
     void setReflectOnDifferentMaterial(int reflect);
     int reflectOnDifferentMaterial() { return Util::config()->particleReflectOnDifferentMaterial; }
     void setReflectOnBoundary(int reflect);

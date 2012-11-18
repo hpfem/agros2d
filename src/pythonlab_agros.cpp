@@ -1935,9 +1935,9 @@ void PyParticleTracing::setDragForceCoefficient(double coeff)
     Util::scene()->invalidate();
 }
 
-void PyParticleTracing::setIncludeGravitation(int include)
+void PyParticleTracing::setIncludeRelativisticCorrection(int include)
 {
-    Util::config()->particleIncludeGravitation = include;
+    Util::config()->particleIncludeRelativisticCorrection = include;
     Util::scene()->invalidate();
 }
 

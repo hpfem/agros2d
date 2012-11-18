@@ -683,7 +683,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     }  
 }
 
-void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max)
+void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max, bool is2D)
 {
     if (!Util::problem()->isSolved() || !Util::config()->showParticleView) return;
 
@@ -698,7 +698,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
     Point scaleBorder = Point(10.0, (Util::config()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width()
-                        - (((Util::config()->showParticleView && Util::config()->showScalarView) ? scaleSize.x : 0.0) + 45.0 + textWidth));
+                        - (((Util::config()->showParticleView && Util::config()->showScalarView && is2D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
 
     // blended rectangle
