@@ -59,6 +59,7 @@ public:
     inline bool particleTracingIsPrepared() { return m_particleTracingIsPrepared; }
     inline QList<QList<Point3> > particleTracingPositionsList() const { return m_particleTracingPositionsList; }
     inline QList<QList<Point3> > particleTracingVelocitiesList() const { return m_particleTracingVelocitiesList; }
+    inline QList<QList<double> > particleTracingTimesList() const { return m_particleTracingTimesList; }
     inline double particleTracingPositionMin() { return m_particleTracingPositionMin; }
     inline double particleTracingPositionMax() { return m_particleTracingPositionMax; }
     inline double particleTracingVelocityMin() { return m_particleTracingVelocityMin; }
@@ -94,6 +95,7 @@ private:
     bool m_particleTracingIsPrepared;
     QList<QList<Point3> > m_particleTracingPositionsList;
     QList<QList<Point3> > m_particleTracingVelocitiesList;
+    QList<QList<double> > m_particleTracingTimesList;
     double m_particleTracingPositionMin;
     double m_particleTracingPositionMax;
     double m_particleTracingVelocityMin;

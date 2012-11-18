@@ -247,6 +247,10 @@ void PostHermes::processParticleTracing()
             list.clear();
         m_particleTracingVelocitiesList.clear();
 
+        foreach (QList<double> list, m_particleTracingTimesList)
+            list.clear();
+        m_particleTracingTimesList.clear();
+
         m_particleTracingVelocityMin =  numeric_limits<double>::max();
         m_particleTracingVelocityMax = -numeric_limits<double>::max();
 
@@ -258,11 +262,13 @@ void PostHermes::processParticleTracing()
             // position and velocity cache
             QList<Point3> positions;
             QList<Point3> velocities;
+            QList<double> times;
 
-            Util::scene()->computeParticleTracingPath(&positions, &velocities, (k > 0));
+            Util::scene()->computeParticleTracingPath(&positions, &velocities, &times, (k > 0));
 
             m_particleTracingPositionsList.append(positions);
             m_particleTracingVelocitiesList.append(velocities);
+            m_particleTracingTimesList.append(times);
 
             // velocity min and max value
             for (int i = 0; i < velocities.length(); i++)
@@ -281,6 +287,11 @@ void PostHermes::processParticleTracing()
                 if (position < m_particleTracingPositionMin) m_particleTracingPositionMin = position;
                 if (position > m_particleTracingPositionMax) m_particleTracingPositionMax = position;
             }
+
+            Util::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, elapsed time %3 s").
+                                      arg(k + 1).
+                                      arg(times.count()).
+                                      arg(times.last()));
         }
 
         m_particleTracingIsPrepared = true;

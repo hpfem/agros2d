@@ -1827,8 +1827,9 @@ void PyParticleTracing::solve()
     // clear
     m_positions.clear();
     m_velocities.clear();
+    m_times.clear();
 
-    Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, false);
+    Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, &m_times, false);
     currentPythonEngineAgros()->postHermes()->refresh();
 
     // restore values
@@ -1872,6 +1873,17 @@ void PyParticleTracing::velocities(std::vector<double> &x,
     x = outX;
     y = outY;
     z = outZ;
+}
+
+void PyParticleTracing::times(std::vector<double> &time)
+{
+    std::vector<double> outTime;
+    for (int i = 0; i < length(); i++)
+    {
+        outTime.push_back(m_times[i]);
+    }
+
+    time = outTime;
 }
 
 void PyParticleTracing::setInitialPosition(double x, double y)

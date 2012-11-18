@@ -215,6 +215,7 @@ public:
     bool newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity);
     void computeParticleTracingPath(QList<Point3> *positions,
                                     QList<Point3> *velocities,
+                                    QList<double> *times,
                                     bool randomPoint);
 
 private:

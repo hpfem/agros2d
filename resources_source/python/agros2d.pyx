@@ -353,6 +353,7 @@ cdef extern from "../../src/pythonlab_agros.h":
         int length()
         void positions(vector[double] x, vector[double] y, vector[double] z)
         void velocities(vector[double] x, vector[double] y, vector[double] z)
+        void times(vector[double] times)
 
 # Problem
 cdef class __Problem__:
@@ -1360,6 +1361,15 @@ cdef class ParticleTracing:
             outy.append(y[i])
             outz.append(z[i])
         return outx, outy, outz
+
+    # times
+    def times(self):
+        outtime = list()
+        cdef vector[double] time
+        self.thisptr.times(time)
+        for i in range(self.thisptr.length()):
+            outtime.append(time[i])
+        return outtime
 
     # initial position
     property initial_position:

@@ -2198,6 +2198,7 @@ bool Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, 
 
 void Scene::computeParticleTracingPath(QList<Point3> *positions,
                                        QList<Point3> *velocities,
+                                       QList<double> *times,
                                        bool randomPoint)
 {
     QTime timePart;
@@ -2238,13 +2239,15 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
     // position and velocity cache
     positions->append(p);
     velocities->append(v);
+    times->append(0);
 
     RectPoint bound = boundingBox();
 
     double minStep = (Util::config()->particleMinimumStep > 0.0) ? Util::config()->particleMinimumStep : min(bound.width(), bound.height()) / 80.0;
     double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-6;
     double relErrorMax = 1e-3;
-    double dt = 1e-11;
+    double dt = Util::config()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Util::config()->particleStartVelocity.magnitude() / 10
+                                                                      : 1e-11;
 
     // QTime time;
     // time.start();
@@ -2444,6 +2447,7 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
             }
         }
 
+        // cache
         if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             velocities->append(v);
@@ -2453,8 +2457,8 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
             velocities->append(Point3(v.x, v.y, p.x * v.z)); // v_phi = omega * r
         }
 
-        // cache
         positions->append(p);
+        times->append(times->last() + dt);
     }
 
     // qDebug() << "steps: " << steps << "total: " << timePart.elapsed();

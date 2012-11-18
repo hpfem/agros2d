@@ -512,11 +512,13 @@ public:
     inline int length() { return m_positions.length(); }
     void positions(vector<double> &x, vector<double> &y, vector<double> &z);
     void velocities(vector<double> &x, vector<double> &y, vector<double> &z);
+    void times(std::vector<double> &time);
 
 private:
     // position and velocity
     QList<Point3> m_positions;
     QList<Point3> m_velocities;
+    QList<double> m_times;
 };
 
 // functions
