@@ -78,7 +78,6 @@ private:
     QCheckBox *chkLogStdOut;
 
     // discrete
-    QLineEdit *txtDiscreteDirectory;
     QCheckBox *chkDiscreteSaveMatrixRHS;
 
     // threads

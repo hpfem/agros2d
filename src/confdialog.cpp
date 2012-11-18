@@ -293,15 +293,12 @@ QWidget *ConfigDialog::createSolverWidget()
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
 
-    txtDiscreteDirectory = new QLineEdit(this);
-    chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix"));
+    chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix and RHS"));
 
     QGridLayout *layoutDiscrete = new QGridLayout();
-    layoutDiscrete->addWidget(new QLabel(tr("Save matrix and RHS:")), 0, 0);
-    layoutDiscrete->addWidget(txtDiscreteDirectory, 0, 1);
-    layoutDiscrete->addWidget(chkDiscreteSaveMatrixRHS, 1, 0, 1, 2);
+    layoutDiscrete->addWidget(chkDiscreteSaveMatrixRHS, 0, 0, 1, 2);
 
-    QGroupBox *grpDiscrete = new QGroupBox(tr("Discrete"));
+    QGroupBox *grpDiscrete = new QGroupBox(tr("Discrete problem"));
     grpDiscrete->setLayout(layoutDiscrete);
 
     QVBoxLayout *layoutGeneral = new QVBoxLayout();

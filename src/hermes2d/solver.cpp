@@ -409,6 +409,11 @@ void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVe
 template <typename Scalar>
 void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, SolutionMode solutionMode, int adaptivityStep, MultiSolution<Scalar> previousSolution)
 {
+    cout << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
+            arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
+            arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
+            arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData()).toStdString();
+
     MultiSpace<Scalar> spaces = (solutionMode == SolutionMode_Normal) ? m_actualSpaces : m_actualSpacesRef;
     Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
