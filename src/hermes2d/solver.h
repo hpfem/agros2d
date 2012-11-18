@@ -158,7 +158,7 @@ private:
 
     void solveOneProblem(Scalar* solutionVector, SolutionMode solutionMode, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
 
-    MultiSpace<Scalar> deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces);
+    MultiSpace<Scalar> deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces, bool createReference);
     void saveSolution(BlockSolutionID id, Scalar* solutionVector);
 
 };

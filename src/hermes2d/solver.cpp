@@ -372,20 +372,41 @@ void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selecto
 //}
 
 template <typename Scalar>
-MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces)
+MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces, bool createReference)
 {
     MultiSpace<Scalar> newSpaces;
     int totalComp = 0;
     foreach(Field* field, m_block->fields())
     {
+        bool refineMesh = false;
+        int orderIncrease = 0;
+        if(createReference)
+        {
+            AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
+            if(Util::config()->finerReference || (adaptivityType != AdaptivityType_P))
+                refineMesh = true;
+
+            if(Util::config()->finerReference || (adaptivityType != AdaptivityType_H))
+                orderIncrease = 1;
+        }
+
+        QSharedPointer<Mesh> mesh;
         // Deep copy of mesh for each field separately, than use for all field component the same one
-        QSharedPointer<Mesh> mesh(new Mesh());
-        mesh.data()->copy(spaces.at(totalComp).data()->get_mesh());
+        if(refineMesh)
+        {
+            Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp).data()->get_mesh());
+            mesh = QSharedPointer<Mesh>(meshCreator.create_ref_mesh());
+        }
+        else
+        {
+            mesh = QSharedPointer<Mesh>(new Mesh());
+            mesh.data()->copy(spaces.at(totalComp).data()->get_mesh());
+        }
 
         for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             // TODO: double -> Scalar
-            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp).data(), mesh.data(), 0);
+            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp).data(), mesh.data(), orderIncrease);
             newSpaces.add(QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), mesh);
 
             totalComp++;
@@ -398,7 +419,7 @@ template <typename Scalar>
 void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVector)
 {
     MultiSpace<Scalar> spaces = ((solutionID.solutionMode == SolutionMode_Normal) ? m_actualSpaces : m_actualSpacesRef);
-    MultiSpace<Scalar> newSpaces = deepMeshAndSpaceCopy(spaces);
+    MultiSpace<Scalar> newSpaces = deepMeshAndSpaceCopy(spaces, false);
     MultiSolution<Scalar> solutions;
     solutions.createSolutions(newSpaces.meshes());
     Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces.nakedConst(), solutions.naked());
@@ -493,7 +514,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // TODO: remove
     m_block->weakForm().clear();
 
-    delete bdf2Table;
+    if(bdf2Table)
+        delete bdf2Table;
 }
 
 template <typename Scalar>
@@ -662,177 +684,170 @@ void Solver<Scalar>::createInitialSpace()
 template <typename Scalar>
 void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists)
 {
-    assert(0);
-    //    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
-    //    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
-    //    MultiSolutionArray<Scalar> msaRef;
+//    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
+//    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
+//    MultiSolutionArray<Scalar> msaRef;
 
-    //    // to be used as starting vector for the Newton solver
-    //    MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
-    //    if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
-    //        previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
+    if(Util::problem()->isTransient())
+    {
+        assert(0); // zatim vychazim z predchoziho pouziti m_actualSpace. Potom pro prechodak musim vhodne naplnit
+        // to be used as starting vector for the Newton solver
+        MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
+        if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
+            previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
+    }
+    // check for DOFs
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst()) == 0)
+    {
+        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
+        throw(AgrosSolverException("DOF is zero"));
+    }
 
-    //    // check for DOFs
-    //    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa.spacesNakedConst()) == 0)
-    //    {
-    //        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-    //        throw(AgrosSolverException("DOF is zero"));
-    //    }
+    // update timedep values
+    foreach (Field* field, m_block->fields())
+        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
 
-    //    // update timedep values
-    //    foreach (Field* field, m_block->fields())
-    //        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
+    // todo: delete? delam to pro referencni... (zkusit)
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Util::problem()->actualTime());
 
-    //    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(msa.spacesNaked(), Util::problem()->actualTime());
+    BDF2Table* bdf2Table = NULL;
+    if(m_block->isTransient())
+    {
+        bdf2Table = new BDF2ATable();
+        bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
+        bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
+    }
 
-    //    BDF2ATable bdf2ATable;
-    //    if(m_block->isTransient())
-    //    {
-    //        bdf2ATable.setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-    //        bdf2ATable.setPreviousSteps(Util::problem()->timeStepLengths());
-    //    }
-    //    m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    //    m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
-    //    m_block->weakForm().data()->registerForms(&bdf2ATable);
-    //    // msaRef.setSpaces(smartize(*Space<Scalar>::construct_refined_spaces(desmartize(msa.spaces()))));
+    // TODO: wf should be created only at the beginning
+    m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
+    m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
+    m_block->weakForm().data()->registerForms(bdf2Table);
 
-    //    // create refined spaces
-    //    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = msa.spacesNaked();
-    //    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesRef;
+//    int spaceIdx = 0;
+//    foreach(Field* field, m_block->fields())
+//    {
+//        AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
+//        for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
+//        {
+//            Space<Scalar> *space = spaces.at(spaceIdx);
+//            Mesh *mesh;
+//            if((adaptivityType == AdaptivityType_P) && (! Util::config()->finerReference))
+//            {
+//                // use reference solution with increased poly order, but no mesh refinement
+//                mesh = new Mesh(); //TODO probably leak ... where is the mesh released
+//                mesh->copy(space->get_mesh());
+//            }
+//            else
+//            {
+//                // refine the mesh otherwise
+//                Mesh::ReferenceMeshCreator meshCreator(space->get_mesh());
+//                mesh = meshCreator.create_ref_mesh();
+//            }
 
-    //    int spaceIdx = 0;
-    //    foreach(Field* field, m_block->fields())
-    //    {
-    //        AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
-    //        for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
-    //        {
-    //            Space<Scalar> *space = spaces.at(spaceIdx);
-    //            Mesh *mesh;
-    //            if((adaptivityType == AdaptivityType_P) && (! Util::config()->finerReference))
-    //            {
-    //                // use reference solution with increased poly order, but no mesh refinement
-    //                mesh = new Mesh(); //TODO probably leak ... where is the mesh released
-    //                mesh->copy(space->get_mesh());
-    //            }
-    //            else
-    //            {
-    //                // refine the mesh otherwise
-    //                Mesh::ReferenceMeshCreator meshCreator(space->get_mesh());
-    //                mesh = meshCreator.create_ref_mesh();
-    //            }
+//            int orderIncrease = 1;
+//            if((adaptivityType == AdaptivityType_H) && (! Util::config()->finerReference))
+//            {
+//                // for h adaptivity, the standard way is not to increase the polynomial order for the reference solution
+//                orderIncrease = 0;
+//            }
+//            Space<double>::ReferenceSpaceCreator spaceCreator(space, mesh, orderIncrease);
+//            spacesRef.push_back(spaceCreator.create_ref_space());
 
-    //            int orderIncrease = 1;
-    //            if((adaptivityType == AdaptivityType_H) && (! Util::config()->finerReference))
-    //            {
-    //                // for h adaptivity, the standard way is not to increase the polynomial order for the reference solution
-    //                orderIncrease = 0;
-    //            }
-    //            Space<double>::ReferenceSpaceCreator spaceCreator(space, mesh, orderIncrease);
-    //            spacesRef.push_back(spaceCreator.create_ref_space());
+//            spaceIdx++;
+//        }
+//    }
+    m_actualSpacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
+    assert(m_actualSpaces.size() == m_actualSpacesRef.size());
 
-    //            spaceIdx++;
-    //        }
-    //    }
-    //    assert(spaces.size() == spacesRef.size());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpacesRef.naked(), Util::problem()->actualTime());
 
-    ////    for (unsigned int i = 0; i < spaces.size(); i++)
-    ////    {
-    ////        Hermes::Hermes2D::Space<Scalar> *space = spaces.at(i);
+    Scalar solutionVector[Space<Scalar>::get_num_dofs(m_actualSpacesRef.nakedConst())];
 
-    ////        Mesh::ReferenceMeshCreator meshCreator(space->get_mesh());
-    ////        Mesh *mesh = meshCreator.create_ref_mesh();
+    // solve reference problem
+    // todo: posledni parametr: predchozi reseni pro projekci!!
+    solveOneProblem(solutionVector, SolutionMode_Reference, adaptivityStep, MultiSolution<Scalar>());
 
-    ////        Space<double>::ReferenceSpaceCreator spaceCreator(space, mesh);
-    ////        spacesRef.push_back(spaceCreator.create_ref_space());
-    ////    }
-    //    msaRef.setSpaces(smartize(spacesRef));
+    // output reference solution
+    BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
+    saveSolution(referenceSolutionID, solutionVector);
+    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(referenceSolutionID);
 
-    //    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(msaRef.spacesNaked(), Util::problem()->actualTime());
+    // copy spaces and create empty solutions
+    MultiSpace<Scalar> spacesCopy = deepMeshAndSpaceCopy(m_actualSpaces, false);
+    MultiSolution<Scalar> solutions;
+    solutions.createSolutions(spacesCopy.meshes());
 
-    //    // create solutions
-    //    msaRef.createNewSolutions();
+    // project the fine mesh solution onto the coarse mesh.
+    Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
+    ogProjection.project_global(m_actualSpaces.nakedConst(), msaRef.solutionsNaked(), solutions.naked());
 
-    //    // solve reference problem
-    //    solveOneProblem(msaRef, adaptivityStep, previousTSMultiSolutionArray.solutions());
+    // save the solution
+    BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
+    MultiSolutionArray<Scalar> msa(spacesCopy, solutions, Util::problem()->actualTime());
+    Util::solutionStore()->addSolution(solutionID, msa);
 
-    //    // project the fine mesh solution onto the coarse mesh.
-    //    Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
-    //    ogProjection.project_global(castConst(msa.spacesNaked()),
-    //                                msaRef.solutionsNaked(),
-    //                                msa.solutionsNaked());
+    // TODO: remove
+    m_block->weakForm().clear();
 
-    //    msa.setTime(Util::problem()->actualTime());
-    //    msaRef.setTime(Util::problem()->actualTime());
-
-    //    Util::solutionStore()->removeSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
-    //    Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal), msa);
-    //    Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference), msaRef);
+    if(bdf2Table)
+        delete bdf2Table;
 }
 
 template <typename Scalar>
 bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 {
-    assert(0);
-    //    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
-    //    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
+    return false;
+    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
+    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
-    //    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
-    //    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
-    //    initSelectors(projNormType, selector);
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+    initSelectors(projNormType, selector);
 
-    //    MultiSolutionArray<Scalar> msaNew = msa.copySpaces();
-    //    msaNew.createNewSolutions();
 
-    //    // calculate element errors and total error estimate.
-    //    //cout << "adaptivity called with space " << msa.spacesNaked().at(0) << endl;
-    //    Adapt<Scalar> adaptivity(msaNew.spacesNaked(), projNormType);
-    //    adaptivity.set_verbose_output(true);
+    cout << QString("created adapted space, m_actual: %1, msa: %2, msaRef: %3").arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()))
+            .arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa.spaces().naked())).arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaRef.spaces().naked())).toStdString() << endl;
 
-    //    // calculate error estimate for each solution component and the total error estimate.
-    //    double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
-    //    // cout << "ERROR " << error << endl;
-    //    // set adaptive error
-    //    // msa.setAdaptiveError(error);
+    // calculate element errors and total error estimate.
+    Adapt<Scalar> adaptivity(m_actualSpaces.naked(), projNormType);
+    adaptivity.set_verbose_output(true);
 
-    //    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) < Util::config()->maxDofs;
-    //    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
+    // calculate error estimate for each solution component and the total error estimate.
+    double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
+    // cout << "ERROR " << error << endl;
+    // set adaptive error
+    // msa.setAdaptiveError(error);
 
-    //    double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked());
+    // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
+    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) < Util::config()->maxDofs;
+    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
 
-    //    // condition removed, adapt allways to allow to perform single adaptivity step in the future.
-    //    // should be refacted.
-    //    //    if (adapt)
-    //    //    {
-    //    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << "tr " << Util::config()->threshold <<
-    //            ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
-    //    try
+    double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked());
+
+    // condition removed, adapt allways to allow to perform single adaptivity step in the future.
+    // should be refacted.
+    //    if (adapt)
     //    {
-    //        bool noref = adaptivity.adapt(selector,
-    //                                      Util::config()->threshold,
-    //                                      Util::config()->strategy,
-    //                                      Util::config()->meshRegularity);
-    //    }
-    //    catch (Hermes::Exceptions::Exception e)
-    //    {
-    //        QString error = QString(e.what());
-    //        Util::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
-    //        throw;
-    //    }
+    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) << "tr " << Util::config()->threshold <<
+            ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
+    try
+    {
+        bool noref = adaptivity.adapt(selector, Util::config()->threshold, Util::config()->strategy, Util::config()->meshRegularity);
+    }
+    catch (Hermes::Exceptions::Exception e)
+    {
+        QString error = QString(e.what());
+        Util::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
+        throw;
+    }
 
-    //    // cout << "last refined " << adaptivity.get_last_refinements().size() << endl;
-    //    // cout << "adapted space dofs: " << Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked())) << ", noref " << noref << endl;
+    Util::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
+                              arg(error).
+                              arg(initialDOFs).
+                              arg(Space<Scalar>::get_num_dofs(m_actualSpaces.naked())));
 
-    //    // store solution
-    //    // msaNew.setTime(Util::problem()->actualTime());
-    //    Util::solutionStore()->addSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_NonExisting), msaNew);
-
-    //    Util::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
-    //                              arg(error).
-    //                              arg(initialDOFs).
-    //                              arg(Space<Scalar>::get_num_dofs(castConst(msaNew.spacesNaked()))));
-
-    //    deleteSelectors(selector);
-    //    return adapt;
+    deleteSelectors(selector);
+    return adapt;
 }
 
 //template <typename Scalar>
