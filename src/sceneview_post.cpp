@@ -288,7 +288,7 @@ void PostHermes::processParticleTracing()
                 if (position > m_particleTracingPositionMax) m_particleTracingPositionMax = position;
             }
 
-            Util::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, elapsed time %3 s").
+            Util::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
                                       arg(k + 1).
                                       arg(times.count()).
                                       arg(times.last()));

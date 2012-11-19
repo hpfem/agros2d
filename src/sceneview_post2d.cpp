@@ -623,7 +623,7 @@ void SceneViewPost2D::paintParticleTracing()
 
                 glPointSize(Util::config()->nodeSize * 4.0/5.0);
                 glBegin(GL_POINTS);
-                for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
+                for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length(); i++)
                 {
                     glVertex2d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y);
                 }

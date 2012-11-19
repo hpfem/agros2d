@@ -1128,7 +1128,7 @@ void SceneViewPost3D::paintParticleTracing()
 
                 glPointSize(Util::config()->nodeSize * 3.0/5.0);
                 glBegin(GL_POINTS);
-                for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
+                for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length(); i++)
                 {
                     if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
                         glVertex3d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y, -depth/2.0 + (m_postHermes->particleTracingPositionsList()[k][i].z - positionMin) * depth/(positionMax - positionMin));
