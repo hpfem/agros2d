@@ -26,6 +26,9 @@
 
 #include "agros_solver.h"
 
+const QString CONSOLE_DISABLE_LOG = "disable-log";
+const QString CONSOLE_HELP = "help";
+
 int main(int argc, char *argv[])
 {
     ArgosSolver a(argc, argv);
@@ -49,43 +52,43 @@ int main(int argc, char *argv[])
 
     // parameters
     QStringList args = QCoreApplication::arguments();
-    if (args.count() == 2)
+    if ((args.count() == 2) && (args.contains( "--" + CONSOLE_HELP) || args.contains("/" + CONSOLE_HELP)))
     {
-        if (args.contains( "--help") || args.contains("/help"))
-        {
-            cout << "agros2d_solver fileName (*.a2d; *.py) | --help]" << endl;
-            exit(0);
-            return 0;
-        }
-        else
-        {
-            QFileInfo info(args[1]);
+        cout << "agros2d_solver fileName (*.a2d; *.py) | --help [--disable-log]" << endl;
+        exit(0);
+        return 0;
+    }
+    if (args.count() > 1)
+    {
+        // disable log
+        a.setEnableLog(!(args.contains("--" + CONSOLE_DISABLE_LOG) || args.contains("/" + CONSOLE_DISABLE_LOG)));
 
-            if (info.exists())
+        QFileInfo info(args[1]);
+
+        if (info.exists())
+        {
+            a.setFileName(args[1]);
+
+            if (info.suffix() == "a2d")
             {
-                a.setFileName(args[1]);
-
-                if (info.suffix() == "a2d")
-                {
-                    QTimer::singleShot(0, &a, SLOT(solveProblem()));
-                }
-                else if (info.suffix() == "py")
-                {
-                    QTimer::singleShot(0, &a, SLOT(runScript()));
-                }
-                else
-                {
-                    std::cout << QObject::tr("Unknown suffix.").toStdString() << std::endl;
-
-                    return false;
-                }
-
-                return a.exec();
+                QTimer::singleShot(0, &a, SLOT(solveProblem()));
+            }
+            else if (info.suffix() == "py")
+            {
+                QTimer::singleShot(0, &a, SLOT(runScript()));
             }
             else
             {
-                std::cout << QObject::tr("File '%1' not found.").arg(args[1]).toStdString() << std::endl;
+                std::cout << QObject::tr("Unknown suffix.").toStdString() << std::endl;
+
+                return false;
             }
+
+            return a.exec();
+        }
+        else
+        {
+            std::cout << QObject::tr("File '%1' not found.").arg(args[1]).toStdString() << std::endl;
         }
     }
 

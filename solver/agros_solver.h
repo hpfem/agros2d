@@ -34,6 +34,7 @@ public:
     virtual bool notify(QObject *receiver, QEvent *event);
 
     inline void setFileName(const QString &fileName) { m_fileName = fileName; }
+    inline void setEnableLog(bool enableLog = true) { m_enableLog = enableLog; }
 
 public slots:
     void solveProblem();
@@ -45,6 +46,7 @@ private slots:
 
 private:
     QString m_fileName;
+    bool m_enableLog;
 };
 
 #endif // AGROS_SOLVER_H

@@ -26,7 +26,10 @@
 #include "hermes2d.h"
 
 ArgosSolver::ArgosSolver(int &argc, char **argv)
-    : QApplication(argc, argv) {}
+    : QApplication(argc, argv)
+{
+    Util::createSingleton();
+}
 
 // reimplemented from QApplication so we can throw exceptions in slots
 bool ArgosSolver::notify(QObject *receiver, QEvent *event)
@@ -61,10 +64,9 @@ bool ArgosSolver::notify(QObject *receiver, QEvent *event)
 
 void ArgosSolver::solveProblem()
 {  
-    Util::createSingleton();
-
     // log stdout
-    new LogStdOut();
+    if (m_enableLog)
+        new LogStdOut();
 
     createPythonEngine(new PythonEngineAgros());
 
@@ -90,10 +92,9 @@ void ArgosSolver::solveProblem()
 
 void ArgosSolver::runScript()
 {
-    Util::createSingleton();
-
     // log stdout
-    new LogStdOut();
+    if (m_enableLog)
+        new LogStdOut();
 
     if (!QFile::exists(m_fileName))
     {
@@ -112,7 +113,7 @@ void ArgosSolver::runScript()
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
 
-    ScriptResult result = currentPythonEngineAgros()->runScript(readFileContent(m_fileName));
+    ScriptResult result = currentPythonEngineAgros()->runScript(readFileContent(m_fileName), m_fileName);
     if (result.isError)
     {
         Util::log()->printMessage(tr("Solver"), tr("%1\nLine: %2\nStacktrace:\n%3\n.").
