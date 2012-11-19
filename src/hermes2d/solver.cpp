@@ -804,23 +804,23 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
         delete bdf2Table;
 
 
-    // vzato z create adapted space (az do konce), smazat
-    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
-    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
-    initSelectors(projNormType, selector);
+//    // vzato z create adapted space (az do konce), smazat
+//    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+//    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+//    initSelectors(projNormType, selector);
 
-    Adapt<Scalar> adaptivity(m_actualSpaces.naked(), projNormType);
-    adaptivity.set_verbose_output(true);
+//    Adapt<Scalar> adaptivity(m_actualSpaces.naked(), projNormType);
+//    adaptivity.set_verbose_output(true);
 
-    Solution<Scalar>* sol1 = solutions.naked().at(0);
-    Solution<Scalar>* sol2 = solutionsRef.naked().at(0);
-    Mesh* mesh1 = sol1->get_mesh();
-    Mesh* mesh2 = sol2->get_mesh();
-    cout << QString("Mesh1 %1, Mesh2 %2").arg(mesh1->get_num_active_elements()).arg(mesh2->get_num_active_elements()).toStdString() << endl;
-    // calculate error estimate for each solution component and the total error estimate.
-    double error = adaptivity.calc_err_est(solutions.naked(), solutionsRef.naked()) * 100;
-    cout << "error " << error << endl;
-    assert(0);
+//    Solution<Scalar>* sol1 = solutions.naked().at(0);
+//    Solution<Scalar>* sol2 = solutionsRef.naked().at(0);
+//    Mesh* mesh1 = sol1->get_mesh();
+//    Mesh* mesh2 = sol2->get_mesh();
+//    cout << QString("Mesh1 %1, Mesh2 %2").arg(mesh1->get_num_active_elements()).arg(mesh2->get_num_active_elements()).toStdString() << endl;
+//    // calculate error estimate for each solution component and the total error estimate.
+//    double error = adaptivity.calc_err_est(solutions.naked(), solutionsRef.naked()) * 100;
+//    cout << "error " << error << endl;
+//    assert(0);
 
 }
 

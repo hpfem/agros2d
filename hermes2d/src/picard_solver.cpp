@@ -396,7 +396,7 @@ namespace Hermes
         if(std::abs(last_iter_vec_norm) < 1e-12)
           this->info("Picard: iteration %d, nDOFs %d, starting from zero vector.", it, ndof);
         else
-          this->info("Picard: iteration %d, nDOFs %d, relative error: %g", it, ndof, rel_error);
+          this->info("Picard: iteration %d, nDOFs %d, relative error %g%%", it, ndof, rel_error);
 
         // Stopping because error is sufficiently low.
         if(rel_error < tol)
