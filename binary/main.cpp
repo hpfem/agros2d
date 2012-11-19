@@ -48,17 +48,6 @@ public:
 
 int main(int argc, char *argv[])
 {
-    // start application
-    QString str = QString("\n\n%1: Agros2D").
-            arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz"));
-
-    QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-    QDir("/").mkpath(location);
-    appendToFile(location, str);
-
-    // register message handler
-    // TODO: qInstallMsgHandler(logOutput);
-
     ArgosApplication a(argc, argv);
     // QApplication a(argc, argv);
 

@@ -48,6 +48,8 @@ public:
 
     int showDialog(QWidget *parent, bool isNew = false);
 
+    static SceneLabel *findClosestLabel(const Point &point);
+
 private:
     Point m_point;
     double m_area;

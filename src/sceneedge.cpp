@@ -138,6 +138,25 @@ SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
     return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
 }
 
+
+static SceneEdge *SceneEdge::findClosestEdge(const Point &point)
+{
+    SceneEdge *edgeClosest = NULL;
+
+    double distance = numeric_limits<double>::max();
+    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    {
+        double edgeDistance = edge->distance(point);
+        if (edge->distance(point) < distance)
+        {
+            distance = edgeDistance;
+            edgeClosest = edge;
+        }
+    }
+
+    return edgeClosest;
+}
+
 //************************************************************************************************
 
 void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)

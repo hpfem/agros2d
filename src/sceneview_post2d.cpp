@@ -172,7 +172,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         if (actPostprocessorModeSurfaceIntegral->isChecked())
         {
             //  find edge marker
-            SceneEdge *edge = findClosestEdge(p);
+            SceneEdge *edge = SceneEdge::findClosestEdge(p);
 
             edge->setSelected(!edge->isSelected());
             updateGL();

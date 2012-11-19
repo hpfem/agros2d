@@ -45,6 +45,25 @@ SceneNodeCommandRemove* SceneNode::getRemoveCommand()
     return new SceneNodeCommandRemove(this->point());
 }
 
+
+static SceneNode *SceneNode::findClosestNode(const Point &point)
+{
+    SceneNode *nodeClosest = NULL;
+
+    double distance = numeric_limits<double>::max();
+    foreach (SceneNode *node, Util::scene()->nodes->items())
+    {
+        double nodeDistance = node->distance(point);
+        if (node->distance(point) < distance)
+        {
+            distance = nodeDistance;
+            nodeClosest = node;
+        }
+    }
+
+    return nodeClosest;
+}
+
 // *************************************************************************************************************************************
 
 SceneNode* SceneNodeContainer::get(SceneNode *node) const

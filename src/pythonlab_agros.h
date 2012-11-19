@@ -84,6 +84,7 @@ private slots:
 // current python engine agros
 PythonEngineAgros *currentPythonEngineAgros();
 
+// create script from model
 QString createPythonFromModel();
 
 // ************************************************************************************

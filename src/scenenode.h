@@ -47,6 +47,8 @@ public:
 
     SceneNodeCommandRemove* getRemoveCommand();
 
+    static SceneNode *findClosestNode(const Point &point);
+
 private:
     Point m_point;
 

@@ -58,6 +58,8 @@ public:
 
     int showDialog(QWidget *parent, bool isNew = false);
 
+    static SceneEdge *findClosestEdge(const Point &point);
+
 private:
     SceneNode *m_nodeStart;
     SceneNode *m_nodeEnd;

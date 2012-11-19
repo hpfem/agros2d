@@ -7,6 +7,9 @@
 
 static PythonEngine *pythonEngine = NULL;
 
+// silent mode
+static bool m_silentMode = false;
+
 // create custom python engine
 void createPythonEngine(PythonEngine *custom)
 {
@@ -22,6 +25,17 @@ void createPythonEngine(PythonEngine *custom)
 PythonEngine *currentPythonEngine()
 {
     return pythonEngine;
+}
+
+// silent mode
+void setSilentMode(bool mode)
+{
+    m_silentMode = mode;
+}
+
+bool silentMode()
+{
+    return m_silentMode;
 }
 
 // ****************************************************************************

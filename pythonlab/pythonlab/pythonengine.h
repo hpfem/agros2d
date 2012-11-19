@@ -66,7 +66,12 @@ private:
 
 // create custom python engine
 void createPythonEngine(PythonEngine *custom = NULL);
+
 // current python engine
 PythonEngine *currentPythonEngine();
+
+// silent mode
+void setSilentMode(bool mode);
+bool silentMode();
 
 #endif // PYTHONENGINE_H

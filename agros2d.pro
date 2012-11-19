@@ -4,6 +4,7 @@ SUBDIRS += 3rdparty
 SUBDIRS += hermes2d
 SUBDIRS += src
 SUBDIRS += binary
+SUBDIRS += solver
 SUBDIRS += generator
 
 CONFIG += ordered

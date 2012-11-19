@@ -287,7 +287,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
         {
             // highlight the closest node
-            SceneNode *node = findClosestNode(p);
+            SceneNode *node = SceneNode::findClosestNode(p);
             if (node)
             {
                 Util::scene()->highlightNone();
@@ -302,7 +302,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
             // highlight the closest edge
-            SceneEdge *edge = findClosestEdge(p);
+            SceneEdge *edge = SceneEdge::findClosestEdge(p);
             if (edge)
             {
                 // assigned boundary conditions
@@ -336,7 +336,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             // highlight the closest label
-            SceneLabel *label = findClosestLabel(p);
+            SceneLabel *label = SceneLabel::findClosestLabel(p);
             if (label)
             {
                 // assigned materials
@@ -378,7 +378,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
             // add edge directly by mouse click
-            SceneNode *node = findClosestNode(p);
+            SceneNode *node = SceneNode::findClosestNode(p);
             if (node)
             {
                 Util::scene()->highlightNone();
@@ -569,7 +569,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
             // add edge directly by mouse click
-            SceneNode *node = findClosestNode(p);
+            SceneNode *node =SceneNode::findClosestNode(p);
             if (node)
             {
                 if (m_nodeLast == NULL)
@@ -628,7 +628,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
         {
             // select the closest node
-            SceneNode *node = findClosestNode(p);
+            SceneNode *node = SceneNode::findClosestNode(p);
             if (node)
             {
                 node->setSelected(!node->isSelected());
@@ -638,8 +638,8 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
 
         if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
-            // select the closest label
-            SceneEdge *edge = findClosestEdge(p);
+            // select the closest edge
+            SceneEdge *edge = SceneEdge::findClosestEdge(p);
             if (edge)
             {
                 edge->setSelected(!edge->isSelected());
@@ -650,7 +650,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             // select the closest label
-            SceneLabel *label = findClosestLabel(p);
+            SceneLabel *label = SceneLabel::findClosestLabel(p);
             if (label)
             {
                 label->setSelected(!label->isSelected());
@@ -702,7 +702,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
             if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
             {
                 // select the closest node
-                SceneNode *node = findClosestNode(p);
+                SceneNode *node =SceneNode::findClosestNode(p);
                 if (node)
                 {
                     node->setSelected(true);
@@ -716,7 +716,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
             if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
             {
                 // select the closest label
-                SceneEdge *edge = findClosestEdge(p);
+                SceneEdge *edge = SceneEdge::findClosestEdge(p);
                 if (edge)
                 {
                     edge->setSelected(true);
@@ -730,7 +730,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
             if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
             {
                 // select the closest label
-                SceneLabel *label = findClosestLabel(p);
+                SceneLabel *label = SceneLabel::findClosestLabel(p);
                 if (label)
                 {
                     label->setSelected(true);

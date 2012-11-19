@@ -49,6 +49,7 @@ PythonEngineAgros *currentPythonEngineAgros()
     return static_cast<PythonEngineAgros *>(currentPythonEngine());
 }
 
+// create script from model
 QString createPythonFromModel()
 {
     QString str;
@@ -520,13 +521,15 @@ void PyProblem::solve()
     Util::scene()->invalidate();
 
     // trigger preprocessor
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
     Util::problem()->solve();
     if (Util::problem()->isSolved())
     {
         // trigger postprocessor
-        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        if (!silentMode())
+            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
     }
 }
 
@@ -876,8 +879,11 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
     if (Util::problem()->isSolved())
     {
         // set mode
-        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-        currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeLocalPointValue->trigger();
+        if (!silentMode())
+        {
+            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeLocalPointValue->trigger();
+        }
 
         Point point(x, y);
 
@@ -915,8 +921,11 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
     if (Util::problem()->isSolved())
     {
         // set mode
-        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-        currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeSurfaceIntegral->trigger();
+        if (!silentMode())
+        {
+            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeSurfaceIntegral->trigger();
+        }
         Util::scene()->selectNone();
 
         if (!edges.empty())
@@ -935,7 +944,8 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
                 }
             }
 
-            currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
+            if (!silentMode())
+                currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
         }
         else
         {
@@ -967,8 +977,11 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
     if (Util::problem()->isSolved())
     {
         // set mode
-        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-        currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeVolumeIntegral->trigger();
+        if (!silentMode())
+        {
+            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeVolumeIntegral->trigger();
+        }
         Util::scene()->selectNone();
 
         if (!labels.empty())
@@ -994,7 +1007,8 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
                 }
             }
 
-            currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
+            if (!silentMode())
+                currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
         }
         else
         {
@@ -1021,7 +1035,8 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
 
 void PyGeometry::activate()
 {
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 }
 
 void PyGeometry::addNode(double x, double y)
@@ -1314,7 +1329,7 @@ void PyGeometry::selectLabels(vector<int> labels)
 
 void PyGeometry::selectNodePoint(double x, double y)
 {
-    SceneNode *node = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestNode(Point(x, y));
+    SceneNode *node = SceneNode::findClosestNode(Point(x, y));
     if (node)
     {
         node->setSelected(true);
@@ -1324,7 +1339,7 @@ void PyGeometry::selectNodePoint(double x, double y)
 
 void PyGeometry::selectEdgePoint(double x, double y)
 {
-    SceneEdge *edge = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestEdge(Point(x, y));
+    SceneEdge *edge = SceneEdge::findClosestEdge(Point(x, y));
     if (edge)
     {
         edge->setSelected(true);
@@ -1334,7 +1349,7 @@ void PyGeometry::selectEdgePoint(double x, double y)
 
 void PyGeometry::selectLabelPoint(double x, double y)
 {
-    SceneLabel *label = currentPythonEngineAgros()->sceneViewPreprocessor()->findClosestLabel(Point(x, y));
+    SceneLabel *label = SceneLabel::findClosestLabel(Point(x, y));
     if (label)
     {
         label->setSelected(true);
@@ -1351,37 +1366,43 @@ void PyGeometry::selectNone()
 void PyGeometry::moveSelection(double dx, double dy, bool copy)
 {
     Util::scene()->transformTranslate(Point(dx, dy), copy);
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
 {
     Util::scene()->transformRotate(Point(x, y), angle, copy);
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
 {
     Util::scene()->transformScale(Point(x, y), scale, copy);
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::removeSelection()
 {
     Util::scene()->deleteSelected();
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::mesh()
 {
     // trigger preprocessor
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
     Util::problem()->mesh();
     if (Util::problem()->isMeshed())
     {
         // trigger mesh
-        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+        if (!silentMode())
+            currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
     }
 }
 
@@ -1394,23 +1415,27 @@ char *PyGeometry::meshFileName()
 }
 
 void PyGeometry::zoomBestFit()
-{
-    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
+{   
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
 }
 
 void PyGeometry::zoomIn()
 {
-    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomIn();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomIn();
 }
 
 void PyGeometry::zoomOut()
 {
-    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomOut();
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomOut();
 }
 
 void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
 {
-    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // ****************************************************************************************************
@@ -1478,7 +1503,8 @@ void PyViewConfig::setRulersShow(bool show)
 void PyViewMesh::activate()
 {
     if (Util::problem()->isMeshed())
-        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+        if (!silentMode())
+            currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
 }
 
 void PyViewMesh::setInitialMeshViewShow(bool show)
@@ -1519,7 +1545,8 @@ void PyViewMesh::setOrderViewPalette(char* palette)
 void PyViewPost2D::activate()
 {
     if (Util::problem()->isSolved())
-        currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        if (!silentMode())
+            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
 }
 
 void PyViewPost2D::setScalarViewShow(bool show)
@@ -1705,7 +1732,8 @@ void PyViewPost2D::setVectorColor(bool show)
 void PyViewPost3D::activate()
 {
     if (Util::problem()->isSolved())
-        currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
+        if (!silentMode())
+            currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
 }
 
 void PyViewPost3D::setPost3DMode(char* mode)

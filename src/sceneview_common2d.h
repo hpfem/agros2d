@@ -35,10 +35,6 @@ public:
     SceneViewCommon2D(PostHermes *postHermes, QWidget *parent = 0);
     ~SceneViewCommon2D();
 
-    SceneNode *findClosestNode(const Point &point);
-    SceneEdge *findClosestEdge(const Point &point);
-    SceneLabel *findClosestLabel(const Point &point);
-
     void doZoomRegion(const Point &start, const Point &end);
 
 protected:

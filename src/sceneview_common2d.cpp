@@ -98,60 +98,6 @@ void SceneViewCommon2D::loadProjection2d(bool setScene)
     }
 }
 
-SceneNode *SceneViewCommon2D::findClosestNode(const Point &point)
-{
-    SceneNode *nodeClosest = NULL;
-
-    double distance = numeric_limits<double>::max();
-    foreach (SceneNode *node, Util::scene()->nodes->items())
-    {
-        double nodeDistance = node->distance(point);
-        if (node->distance(point) < distance)
-        {
-            distance = nodeDistance;
-            nodeClosest = node;
-        }
-    }
-
-    return nodeClosest;
-}
-
-SceneEdge *SceneViewCommon2D::findClosestEdge(const Point &point)
-{
-    SceneEdge *edgeClosest = NULL;
-
-    double distance = numeric_limits<double>::max();
-    foreach (SceneEdge *edge, Util::scene()->edges->items())
-    {
-        double edgeDistance = edge->distance(point);
-        if (edge->distance(point) < distance)
-        {
-            distance = edgeDistance;
-            edgeClosest = edge;
-        }
-    }
-
-    return edgeClosest;
-}
-
-SceneLabel *SceneViewCommon2D::findClosestLabel(const Point &point)
-{
-    SceneLabel *labelClosest = NULL;
-
-    double distance = numeric_limits<double>::max();
-    foreach (SceneLabel *label, Util::scene()->labels->items())
-    {
-        double labelDistance = label->distance(point);
-        if (label->distance(point) < distance)
-        {
-            distance = labelDistance;
-            labelClosest = label;
-        }
-    }
-
-    return labelClosest;
-}
-
 void SceneViewCommon2D::paintGrid()
 {
     loadProjection2d(true);

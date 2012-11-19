@@ -68,6 +68,23 @@ SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
     return new SceneLabelCommandRemove(m_point, markersKeys(), m_area);
 }
 
+static SceneLabel *SceneLabel::findClosestLabel(const Point &point)
+{
+    SceneLabel *labelClosest = NULL;
+
+    double distance = numeric_limits<double>::max();
+    foreach (SceneLabel *label, Util::scene()->labels->items())
+    {
+        double labelDistance = label->distance(point);
+        if (label->distance(point) < distance)
+        {
+            distance = labelDistance;
+            labelClosest = label;
+        }
+    }
+
+    return labelClosest;
+}
 
 //****************************************************************************************************
 
