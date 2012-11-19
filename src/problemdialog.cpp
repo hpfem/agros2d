@@ -344,7 +344,9 @@ void FieldWidget::load()
     txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance());
     chkNewtonAutomaticDamping->setChecked(m_fieldInfo->newtonAutomaticDamping());
     txtNewtonDampingCoeff->setValue(m_fieldInfo->newtonDampingCoeff());
+    txtNewtonDampingCoeff->setEnabled(!m_fieldInfo->newtonAutomaticDamping());
     txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->newtonDampingNumberToIncrease());
+    txtNewtonDampingNumberToIncrease->setEnabled(m_fieldInfo->newtonAutomaticDamping());
     chkPicardAndersonAcceleration->setChecked(m_fieldInfo->picardAndersonAcceleration());
     txtPicardAndersonBeta->setValue(m_fieldInfo->picardAndersonBeta());
     txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->picardAndersonNumberOfLastVectors());
@@ -443,6 +445,7 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 void FieldWidget::doNewtonDampingChanged(int index)
 {
+    txtNewtonDampingCoeff->setEnabled(!chkNewtonAutomaticDamping->isChecked());
     txtNewtonDampingNumberToIncrease->setEnabled(chkNewtonAutomaticDamping->isChecked());
 }
 
@@ -966,7 +969,7 @@ void ProblemWidget::fillComboBox()
 }
 
 void ProblemWidget::updateControls()
-{   
+{
     // disconnect signals
     // without clearing solution
     txtName->disconnect();
