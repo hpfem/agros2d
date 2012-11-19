@@ -160,6 +160,12 @@ void FieldInfo::clear()
     m_linearityType = LinearityType_Linear;
     m_nonlinearTolerance = 1e-3;
     m_nonlinearSteps = 10;
+    m_newtonDampingCoeff = 1;
+    m_newtonAutomaticDamping = true;
+    m_newtonDampingNumberToIncrease = 1;
+    m_picardAndersonAcceleration = true;
+    m_picardAndersonBeta = 0.2;
+    m_picardAndersonNumberOfLastVectors = 3;
 }
 
 QString FieldInfo::name()
