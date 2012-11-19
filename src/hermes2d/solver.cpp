@@ -418,8 +418,8 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
 template <typename Scalar>
 void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVector)
 {
-    MultiSpace<Scalar> spaces = ((solutionID.solutionMode == SolutionMode_Normal) ? m_actualSpaces : m_actualSpacesRef);
-    MultiSpace<Scalar> newSpaces = deepMeshAndSpaceCopy(spaces, false);
+    assert(solutionID.solutionMode == SolutionMode_Normal);
+    MultiSpace<Scalar> newSpaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
     MultiSolution<Scalar> solutions;
     solutions.createSolutions(newSpaces.meshes());
     Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces.nakedConst(), solutions.naked());
@@ -428,14 +428,13 @@ void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVe
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, SolutionMode solutionMode, int adaptivityStep, MultiSolution<Scalar> previousSolution)
+void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> spaces, int adaptivityStep, MultiSolution<Scalar> previousSolution)
 {
     cout << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
             arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
             arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
             arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData()).toStdString();
 
-    MultiSpace<Scalar> spaces = (solutionMode == SolutionMode_Normal) ? m_actualSpaces : m_actualSpacesRef;
     Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block, spaces);
@@ -505,7 +504,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 
     Scalar solutionVector[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
 
-    solveOneProblem(solutionVector, SolutionMode_Normal, adaptivityStep, previousTSMultiSolutionArray.solutions());
+    solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, previousTSMultiSolutionArray.solutions());
 
     // output
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
@@ -562,7 +561,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
     Scalar solutionVector[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
-    solveOneProblem(solutionVector, SolutionMode_Normal, adaptivityStep, timeStep > 0 ? referenceCalculation.solutions() : MultiSolution<Scalar>());
+    solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, timeStep > 0 ? referenceCalculation.solutions() : MultiSolution<Scalar>());
 
     MultiSolution<Scalar> solutions;
     solutions.createSolutions(m_actualSpaces.meshes());
@@ -756,21 +755,33 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 //            spaceIdx++;
 //        }
 //    }
-    m_actualSpacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
-    assert(m_actualSpaces.size() == m_actualSpacesRef.size());
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpacesRef.naked(), Util::problem()->actualTime());
+//    // postaru
+//    Mesh::ReferenceMeshCreator meshCreator(m_actualSpaces.naked().at(0)->get_mesh());
+//    Mesh* mesh = meshCreator.create_ref_mesh();
+//    Space<double>::ReferenceSpaceCreator spaceCreator(m_actualSpaces.nakedConst().at(0), mesh, 1);
+//    MultiSpace<Scalar> spacesRef;
+//    spacesRef.add(QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), QSharedPointer<Mesh>(mesh));
 
-    Scalar solutionVector[Space<Scalar>::get_num_dofs(m_actualSpacesRef.nakedConst())];
+
+    MultiSpace<Scalar> spacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
+    assert(m_actualSpaces.size() == spacesRef.size());
+
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef.naked(), Util::problem()->actualTime());
+
+    Scalar solutionVector[Space<Scalar>::get_num_dofs(spacesRef.nakedConst())];
 
     // solve reference problem
     // todo: posledni parametr: predchozi reseni pro projekci!!
-    solveOneProblem(solutionVector, SolutionMode_Reference, adaptivityStep, MultiSolution<Scalar>());
+    solveOneProblem(solutionVector, spacesRef, adaptivityStep, MultiSolution<Scalar>());
 
     // output reference solution
+    MultiSolution<Scalar> solutionsRef;
+    solutionsRef.createSolutions(spacesRef.meshes());
+    Solution<Scalar>::vector_to_solutions(solutionVector, spacesRef.nakedConst(), solutionsRef.naked());
+
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
-    saveSolution(referenceSolutionID, solutionVector);
-    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(referenceSolutionID);
+    Util::solutionStore()->addSolution(referenceSolutionID, MultiSolutionArray<Scalar>(spacesRef, solutionsRef, Util::problem()->actualTime()));
 
     // copy spaces and create empty solutions
     MultiSpace<Scalar> spacesCopy = deepMeshAndSpaceCopy(m_actualSpaces, false);
@@ -779,7 +790,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
-    ogProjection.project_global(m_actualSpaces.nakedConst(), msaRef.solutionsNaked(), solutions.naked());
+    ogProjection.project_global(spacesCopy.nakedConst(), solutionsRef.naked(), solutions.naked());
 
     // save the solution
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
@@ -791,12 +802,31 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 
     if(bdf2Table)
         delete bdf2Table;
+
+
+    // vzato z create adapted space (az do konce), smazat
+    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
+    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+    initSelectors(projNormType, selector);
+
+    Adapt<Scalar> adaptivity(m_actualSpaces.naked(), projNormType);
+    adaptivity.set_verbose_output(true);
+
+    Solution<Scalar>* sol1 = solutions.naked().at(0);
+    Solution<Scalar>* sol2 = solutionsRef.naked().at(0);
+    Mesh* mesh1 = sol1->get_mesh();
+    Mesh* mesh2 = sol2->get_mesh();
+    cout << QString("Mesh1 %1, Mesh2 %2").arg(mesh1->get_num_active_elements()).arg(mesh2->get_num_active_elements()).toStdString() << endl;
+    // calculate error estimate for each solution component and the total error estimate.
+    double error = adaptivity.calc_err_est(solutions.naked(), solutionsRef.naked()) * 100;
+    cout << "error " << error << endl;
+    assert(0);
+
 }
 
 template <typename Scalar>
 bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 {
-    return false;
     MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
     MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
@@ -805,7 +835,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     initSelectors(projNormType, selector);
 
 
-    cout << QString("created adapted space, m_actual: %1, msa: %2, msaRef: %3").arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()))
+    cout << QString("create adapted space, m_actual: %1, msa: %2, msaRef: %3").arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()))
             .arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa.spaces().naked())).arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaRef.spaces().naked())).toStdString() << endl;
 
     // calculate element errors and total error estimate.
@@ -847,6 +877,10 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
                               arg(Space<Scalar>::get_num_dofs(m_actualSpaces.naked())));
 
     deleteSelectors(selector);
+
+    cout << QString("after adaptation, m_actual: %1, msa: %2, msaRef: %3").arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()))
+            .arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msa.spaces().naked())).arg(Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaRef.spaces().naked())).toStdString() << endl;
+
     return adapt;
 }
 

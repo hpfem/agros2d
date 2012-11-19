@@ -133,7 +133,6 @@ private:
     HermesSolverContainer<Scalar>* m_hermesSolverContainer;
 
     MultiSpace<Scalar> m_actualSpaces;
-    MultiSpace<Scalar> m_actualSpacesRef;
 
     QString m_solverID;
     QString m_solverName;
@@ -156,7 +155,7 @@ private:
 
     void cleanup();
 
-    void solveOneProblem(Scalar* solutionVector, SolutionMode solutionMode, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
+    void solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> spaces, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
 
     MultiSpace<Scalar> deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces, bool createReference);
     void saveSolution(BlockSolutionID id, Scalar* solutionVector);
