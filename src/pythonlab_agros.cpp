@@ -151,6 +151,44 @@ QString createPythonFromModel()
                     arg(fieldInfo->nonlinearSteps());
         }
 
+        // newton
+        if (fieldInfo->linearityType() == LinearityType_Newton)
+        {
+            str += QString("%1.automatic_damping = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg((fieldInfo->newtonAutomaticDamping()) ? "True" : "False");
+
+            if (fieldInfo->newtonAutomaticDamping())
+            {
+                str += QString("%1.damping_number_to_increase = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->newtonDampingNumberToIncrease());
+            }
+            else
+                str += QString("%1.damping_coeff = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->newtonDampingCoeff());
+        }
+
+        // picard
+        if (fieldInfo->linearityType() == LinearityType_Picard)
+        {
+            str += QString("%1.anderson_acceleration = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg((fieldInfo->picardAndersonAcceleration()) ? "True" : "False");
+
+            if (fieldInfo->picardAndersonAcceleration())
+            {
+                str += QString("%1.anderson_beta = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->picardAndersonBeta());
+
+                str += QString("%1.anderson_last_vectors = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->picardAndersonNumberOfLastVectors());
+            }
+        }
+
         str += QString("%1.adaptivity_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
                 arg(adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
@@ -632,6 +670,27 @@ void PyField::setDampingNumberToIncrease(const int dampingNumberToIncrease)
         Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonDampingNumberToIncrease(dampingNumberToIncrease);
     else
         throw invalid_argument(QObject::tr("Number of steps needed to increase the damping coefficient must be between 1 and 5 .").toStdString());
+}
+
+void PyField::setPicardAndersonAcceleration(const bool acceleration)
+{
+    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonAcceleration(acceleration);
+}
+
+void PyField::setPicardAndersonBeta(const double beta)
+{
+    if ((beta <= 1) && (beta > 0))
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonBeta(beta);
+    else
+        throw invalid_argument(QObject::tr("Anderson coefficient must be between 0 and 1 .").toStdString());
+}
+
+void PyField::setPicardAndersonNumberOfLastVectors(const int number)
+{
+    if ((number <= 5) && (number >= 1))
+        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonNumberOfLastVectors(number);
+    else
+        throw invalid_argument(QObject::tr("Number of last vector must be between 1 and 5 .").toStdString());
 }
 
 void PyField::setAdaptivityType(const char *adaptivityType)

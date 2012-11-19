@@ -190,7 +190,7 @@ class PyField
         void setNonlinearSteps(const int nonlinearSteps);
 
         // damping coefficient
-        inline int getDampingCoeff() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingCoeff(); }
+        inline double getDampingCoeff() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingCoeff(); }
         void setDampingCoeff(const double dampingCoeff);
 
         // automatic damping
@@ -200,6 +200,18 @@ class PyField
         // steps to increase damping coeff
         inline int getDampingNumberToIncrease() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingNumberToIncrease(); }
         void setDampingNumberToIncrease(const int dampingNumberToIncrease);
+
+        // picard anderson acceleration
+        inline bool getPicardAndersonAcceleration() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonAcceleration(); }
+        void setPicardAndersonAcceleration(const bool acceleration);
+
+        // picard anderson beta
+        inline double getPicardAndersonBeta() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonBeta(); }
+        void setPicardAndersonBeta(const double beta);
+
+        // picard anderson number of last vectors
+        inline int getPicardAndersonNumberOfLastVectors() const { return Util::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonNumberOfLastVectors(); }
+        void setPicardAndersonNumberOfLastVectors(const int number);
 
         // adaptivity type
         inline const char *getAdaptivityType() const { return adaptivityTypeToStringKey(Util::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }

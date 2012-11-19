@@ -87,10 +87,19 @@ cdef extern from "../../src/pythonlab_agros.h":
         void setDampingCoeff(double) except +
 
         bool getAutomaticDamping()
-        void setAutomaticDamping(bool) except +
+        void setAutomaticDamping(bool)
 
         int getDampingNumberToIncrease()
         void setDampingNumberToIncrease(int) except +
+
+        bool getPicardAndersonAcceleration()
+        void setPicardAndersonAcceleration(bool acceleration) except +
+
+        double getPicardAndersonBeta()
+        void setPicardAndersonBeta(double beta) except +
+
+        int getPicardAndersonNumberOfLastVectors()
+        void setPicardAndersonNumberOfLastVectors(int number) except +
 
         char *getAdaptivityType()
         void setAdaptivityType(char*) except +
@@ -301,7 +310,7 @@ cdef extern from "../../src/pythonlab_agros.h":
         double getScalarViewRangeMin()
         void setScalarViewRangeMax(double max)
         double getScalarViewRangeMax()
-    
+
     void pyOpenDocument(char *str) except +
     void pySaveDocument(char *str) except +
     void pyCloseDocument()
@@ -532,6 +541,27 @@ cdef class __Field__:
             return self.thisptr.getDampingNumberToIncrease()
         def __set__(self, damping_number_to_increase):
             self.thisptr.setDampingNumberToIncrease(damping_number_to_increase)
+
+    # anderson acceleration
+    property anderson_acceleration:
+        def __get__(self):
+            return self.thisptr.getPicardAndersonAcceleration()
+        def __set__(self, acceleration):
+            self.thisptr.setPicardAndersonAcceleration(acceleration)
+
+    # anderson beta
+    property anderson_beta:
+        def __get__(self):
+            return self.thisptr.getPicardAndersonBeta()
+        def __set__(self, beta):
+            self.thisptr.setPicardAndersonBeta(beta)
+
+    # anderson number of last vectors
+    property anderson_last_vectors:
+        def __get__(self):
+            return self.thisptr.getPicardAndersonNumberOfLastVectors()
+        def __set__(self, number):
+            self.thisptr.setPicardAndersonNumberOfLastVectors(number)
 
     # adaptivity_type
     property adaptivity_type:
