@@ -111,7 +111,7 @@ class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 public:
     WeakFormAgros(Block* block);
 
-    void registerForms(BDF2Table *bdf2Table);
+    void registerForms(BDF2Table *bdf2Table, bool doNotRegisterCouplings_TEMPORARY = false);
 
     //    // previous solution
     //    QList<Hermes::Hermes2D::MeshFunction<Scalar> *> solution;

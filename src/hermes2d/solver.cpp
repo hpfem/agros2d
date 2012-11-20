@@ -643,7 +643,7 @@ void Solver<Scalar>::createInitialSpace()
     // todo: neslo by to udelat tak, aby se resic mohl inicializovat bez forem? (kdyz se pak stejne vzdy nastavuji pomoci set_weak_formulation?
     m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
     m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
-    m_block->weakForm().data()->registerForms(NULL);
+    m_block->weakForm().data()->registerForms(NULL, true);
 
     assert(! m_hermesSolverContainer);
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block, m_actualSpaces);

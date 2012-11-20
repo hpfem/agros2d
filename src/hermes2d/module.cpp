@@ -282,7 +282,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
+void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table, bool doNotRegisterCouplings_TEMPORARY)
 {
     foreach(Field* field, m_block->fields())
     {
@@ -324,19 +324,23 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                     registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material, bdf2Table);
 
-                // weak coupling
-                foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
+                // todo remove this
+                if(! doNotRegisterCouplings_TEMPORARY)
                 {
-                    foreach (FormInfo *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
+                    // weak coupling
+                    foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
                     {
-                        SceneMaterial* materialSource = Util::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
-                        assert(materialSource);
-
-                        if (materialSource != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+                        foreach (FormInfo *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
                         {
-                            cout << "register coupling form " << expression << endl;
-                            registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
+                            SceneMaterial* materialSource = Util::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
+                            assert(materialSource);
+
+                            if (materialSource != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+                            {
+                                cout << "register coupling form " << expression << endl;
+                                registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
+                                                     m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
+                            }
                         }
                     }
                 }
