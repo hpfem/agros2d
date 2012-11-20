@@ -54,9 +54,11 @@ public:
     virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions) {}
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() = 0;
+    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) = 0;
 
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
+    // todo: tohle by melo vracet shared pointer
     static HermesSolverContainer* factory(Block* block, MultiSpace<Scalar> spaces);
 
 protected:
@@ -72,6 +74,9 @@ public:
     virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_linearSolver.data(); }
+    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf);}
+;
+
 
 private:
     QSharedPointer<Hermes::Hermes2D::LinearSolver<Scalar> > m_linearSolver;
@@ -87,6 +92,7 @@ public:
     virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_newtonSolver.data(); }
+    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_newtonSolver->set_weak_formulation(wf);}
 
 private:
     QSharedPointer<Hermes::Hermes2D::NewtonSolver<Scalar> > m_newtonSolver;
@@ -102,6 +108,7 @@ public:
     virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver.data(), solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_picardSolver.data(); }
+    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_picardSolver->set_weak_formulation(wf);}
 
 private:
     QSharedPointer<Hermes::Hermes2D::PicardSolver<Scalar> > m_picardSolver;

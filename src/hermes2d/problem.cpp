@@ -616,6 +616,7 @@ void Problem::solveAdaptiveStepAction()
 
     Util::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
+    assert(m_blocks.size() == 1);
     Block* block = m_blocks.at(0);
     Solver<double>* solver = block->prepareSolver();
 
