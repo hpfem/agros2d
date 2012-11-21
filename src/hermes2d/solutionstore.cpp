@@ -10,11 +10,6 @@ void SolutionStore::clearAll()
     m_multiSolutions.clear();
 }
 
-void SolutionStore::clearOne(FieldSolutionID solutionID)
-{
-    m_multiSolutions.remove(solutionID);
-}
-
 SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component) const
 {
     return multiSolution(solutionID).component(component);
@@ -23,7 +18,17 @@ SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int co
 MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID) const
 {
     assert(m_multiSolutions.contains(solutionID));
-    return m_multiSolutions[solutionID];
+
+    if (m_multiSolutionCache.first != solutionID)
+    {
+        MultiSolutionArray<double> msa;
+        msa.loadFromFile(solutionID);
+
+        m_multiSolutionCache.first = solutionID;
+        m_multiSolutionCache.second = msa;
+    }
+
+    return m_multiSolutionCache.second;
 }
 
 bool SolutionStore::contains(FieldSolutionID solutionID) const
@@ -51,7 +56,11 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<d
 void SolutionStore::removeSolution(FieldSolutionID solutionID)
 {
     assert(m_multiSolutions.contains(solutionID));
-    m_multiSolutions.remove(solutionID);
+
+    // remove from list
+    m_multiSolutions.removeOne(solutionID);
+
+    // TODO: remove files
 }
 
 void SolutionStore::replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
@@ -59,9 +68,9 @@ void SolutionStore::replaceSolution(FieldSolutionID solutionID, MultiSolutionArr
     //cout << "saving solution " << solutionID << std::endl;
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
-    m_multiSolutions[solutionID] = multiSolution;
 
-    // multiSolution.saveToFile(solutionID.toString());
+    multiSolution.saveToFile(solutionID);
+    m_multiSolutions.append(solutionID);
 }
 
 void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
@@ -95,7 +104,7 @@ void SolutionStore::removeSolution(BlockSolutionID solutionID)
 
 void SolutionStore::removeTimeStep(int timeStep)
 {
-    foreach (FieldSolutionID sid, m_multiSolutions.keys())
+    foreach (FieldSolutionID sid, m_multiSolutions)
     {
         if (sid.timeStep == timeStep)
             removeSolution(sid);
@@ -106,7 +115,7 @@ void SolutionStore::removeTimeStep(int timeStep)
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType) const
 {
     int timeStep = notFoundSoFar;
-    foreach(FieldSolutionID sid, m_multiSolutions.keys())
+    foreach(FieldSolutionID sid, m_multiSolutions)
     {
         if((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;
@@ -159,14 +168,14 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
     int timeStep = lastTimeStep(fieldInfo, SolutionMode_Normal);
     double time = notFoundSoFar;
 
-    foreach(FieldSolutionID id, m_multiSolutions.keys())
+    foreach(FieldSolutionID id, m_multiSolutions)
     {
         if((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
         {
             if(time == notFoundSoFar)
-                time = m_multiSolutions[id].component(0).time;
+                time = multiSolution(id).component(0).time;
             else
-                assert(time == m_multiSolutions[id].component(0).time);
+                assert(time == multiSolution(id).component(0).time);
         }
     }
     assert(time != notFoundSoFar);
@@ -192,7 +201,7 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionMode solutionT
         timeStep = lastTimeStep(fieldInfo, solutionType);
 
     int adaptiveStep = notFoundSoFar;
-    foreach (FieldSolutionID sid, m_multiSolutions.keys())
+    foreach (FieldSolutionID sid, m_multiSolutions)
     {
         if ((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
@@ -258,11 +267,11 @@ QList<double> SolutionStore::timeLevels(FieldInfo *fieldInfo)
 {
     QList<double> list;
 
-    foreach(FieldSolutionID fsid, m_multiSolutions.keys())
+    foreach(FieldSolutionID fsid, m_multiSolutions)
     {
         if(fsid.group == fieldInfo)
         {
-            double time = m_multiSolutions[fsid].component(0).time;
+            double time = multiSolution(fsid).component(0).time;
             if(!list.contains(time))
                 list.push_back(time);
         }

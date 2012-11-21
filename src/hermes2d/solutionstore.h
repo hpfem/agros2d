@@ -16,11 +16,8 @@ public:
     // intented to be used as initial condition for the newton method
     MultiSolutionArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
 
-    void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void removeSolution(FieldSolutionID solutionID);
     void removeSolution(BlockSolutionID solutionID);
 
     // removes all solutions with the given time step
@@ -49,10 +46,14 @@ public:
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionMode solutionType);
 
     void clearAll();
-    void clearOne(FieldSolutionID solutionID);
 
 private:
-    QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutions;
+    QList<FieldSolutionID> m_multiSolutions;
+    QPair<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;
+
+    void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void removeSolution(FieldSolutionID solutionID);
 };
 
 #endif // SOLUTIONSTORE_H

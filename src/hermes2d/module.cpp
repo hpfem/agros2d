@@ -1093,6 +1093,22 @@ void readMeshDirtyFix()
     setlocale(LC_NUMERIC, plocale);
 }
 
+QSharedPointer<Hermes::Hermes2D::Mesh> readMeshFromFile(const QString &fileName)
+{
+    // save locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
+    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
+    meshloader.load(fileName.toStdString().c_str(), mesh);
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+
+    return QSharedPointer<Hermes::Hermes2D::Mesh>(mesh);
+}
+
 QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > readMeshesFromFile(const QString &fileName)
 {
     // save locale
@@ -1124,13 +1140,13 @@ QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > readMeshesFromFile(con
     return meshesMap;
 }
 
-void writeMeshFromFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
+void writeMeshToFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    Hermes::Hermes2D::MeshReaderH2D meshloader;
+    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.save(fileName.toStdString().c_str(), mesh);
 
     // set system locale
