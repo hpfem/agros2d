@@ -1,9 +1,9 @@
-#include "solutiontypes.h"
 #include "scene.h"
 #include "field.h"
 #include "block.h"
 #include "problem.h"
 #include "module_agros.h"
+
 using namespace Hermes::Hermes2D;
 
 FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
@@ -90,7 +90,7 @@ MultiSolutionArray<Scalar>::MultiSolutionArray(MultiSpace<Scalar> spaces, MultiS
     for (int i = 0; i < spaces.size(); i++)
     {
         assert(spaces.at(i).mesh.data() == solutions.at(i).mesh.data());
-        this->addComponent(SolutionArray<Scalar>(solutions.at(i), spaces.at(i), time));
+        this->append(SolutionArray<Scalar>(solutions.at(i), spaces.at(i), time));
     }
 }
 
@@ -99,11 +99,11 @@ void MultiSolutionArray<Scalar>::createEmpty(int numComp)
 {
     m_solutionArrays.clear();
     for (int comp = 0; comp < numComp; comp++)
-        addComponent(SolutionArray<Scalar>());
+        append(SolutionArray<Scalar>());
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::addComponent(SolutionArray<Scalar> solutionArray)
+void MultiSolutionArray<Scalar>::append(SolutionArray<Scalar> solutionArray)
 {
     m_solutionArrays.push_back(solutionArray);
 }
@@ -120,7 +120,7 @@ void MultiSolutionArray<Scalar>::append(MultiSolutionArray<Scalar> msa)
 {
     foreach(SolutionArray<Scalar> sa, msa.m_solutionArrays)
     {
-        addComponent(sa);
+        append(sa);
     }
 }
 
@@ -240,7 +240,7 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, F
     int numSol = fieldInfo->module()->numberOfSolutions();
     for(int comp = offset; comp < offset + numSol; comp++)
     {
-        msa.addComponent(this->component(comp));
+        msa.append(this->component(comp));
     }
     return msa;
 }
@@ -257,25 +257,53 @@ void MultiSolutionArray<Scalar>::setTime(double time)
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::loadFromFile(const QString &solutionID)
+void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)
 {
+    // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString();
 
+    m_solutionArrays.clear();
+
+    QString fn = QString("%1_%2").
+            arg(Util::problem()->config()->fileName().left(Util::problem()->config()->fileName().count() - 4)).
+            arg(solutionID.toString());
+
+    // load the mesh file
+    QSharedPointer<Mesh> mesh = readMeshFromFile(QString("%1.mesh").arg(fn));
+
+    for (int i = 0; i < solutionID.group->module()->numberOfSolutions(); i++)
+    {
+        QSharedPointer<Space<Scalar> > space(new H1Space<Scalar>(mesh.data()));
+        space.data()->load((QString("%1_%2.spc").arg(fn).arg(i)).toStdString().c_str());
+
+        QSharedPointer<Solution<Scalar> > sln(new Solution<Scalar>());
+        sln.data()->load((QString("%1_%2.sln").arg(fn).arg(i)).toStdString().c_str(), mesh.data());
+
+        SolutionArray<Scalar> solutionArray;
+        solutionArray.space = SpaceAndMesh<Scalar>(space, mesh);
+        solutionArray.sln = SolutionAndMesh<Scalar>(sln, mesh);
+        solutionArray.time = 0.0;
+
+        m_solutionArrays.append(solutionArray);
+    }
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::saveToFile(const QString &solutionID)
+void MultiSolutionArray<Scalar>::saveToFile(FieldSolutionID solutionID)
 {
+    // qDebug() << "void MultiSolutionArray<Scalar>::saveToFile(FieldSolutionID solutionID)" << solutionID.toString();
+
+    QString fn = QString("%1_%2").
+            arg(Util::problem()->config()->fileName().left(Util::problem()->config()->fileName().count() - 4)).
+            arg(solutionID.toString());
+
+    writeMeshToFile(QString("%1.mesh").arg(fn), m_solutionArrays.at(0).space.data()->get_mesh());
+
     int solutionIndex = 0;
     foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
-    {        
-        QString fn = QString("%1_%2_%3").
-                arg(Util::problem()->config()->fileName().left(Util::problem()->config()->fileName().count() - 4)).
-                arg(solutionID).
-                arg(solutionIndex);
-
+    {           
         // TODO: check write access
-        solutionArray.sln.data()->save((fn + ".sln").toStdString().c_str());
-        solutionArray.space.data()->save((fn + ".spc").toStdString().c_str());
+        solutionArray.space.data()->save((QString("%1_%2.spc").arg(fn).arg(solutionIndex)).toStdString().c_str());
+        solutionArray.sln.data()->save((QString("%1_%2.sln").arg(fn).arg(solutionIndex)).toStdString().c_str());
 
         solutionIndex++;
     }

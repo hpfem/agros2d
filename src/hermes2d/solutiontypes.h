@@ -11,6 +11,9 @@
 class FieldInfo;
 class Block;
 
+class BlockSolutionID;
+class FieldSolutionID;
+
 template <typename Scalar>
 struct SpaceAndMesh
 {
@@ -130,6 +133,8 @@ public:
 //    void setSpace(SpaceAndMesh<Scalar>  space, int component);
 //    void setSolution(SolutionAndMesh<Scalar> solution, int component);
 
+    //add next component
+    void append(SolutionArray<Scalar> solutionArray);
     void append(MultiSolutionArray<Scalar> msa);
 
     //creates copy of spaces, used in solver
@@ -155,13 +160,12 @@ public:
     void createEmpty(int numComp);
     void setTime(double);
 
-    void saveToFile(const QString &solutionID);
-    void loadFromFile(const QString &solutionID);
+    void saveToFile(FieldSolutionID solutionID);
+    void loadFromFile(FieldSolutionID solutionID);
 
 private:
-    //add next component
-    void addComponent(SolutionArray<Scalar> solutionArray);
-
+    bool onDisc;
+    bool inMemory;
     QList<SolutionArray<Scalar> > m_solutionArrays;
 };
 
@@ -206,6 +210,12 @@ inline bool operator==(const SolutionID<Group> &sid1, const SolutionID<Group> &s
 }
 
 template <typename Group>
+inline bool operator!=(const SolutionID<Group> &sid1, const SolutionID<Group> &sid2)
+{
+    return !(sid1 == sid2);
+}
+
+template <typename Group>
 ostream& operator<<(ostream& output, const SolutionID<Group>& id)
 {
     output << "(" << *id.group << ", timeStep " << id.timeStep << ", adaptStep " <<
@@ -214,8 +224,6 @@ ostream& operator<<(ostream& output, const SolutionID<Group>& id)
 }
 
 //template class SolutionID<Block>;
-
-class BlockSolutionID;
 
 class FieldSolutionID : public SolutionID<FieldInfo>
 {
