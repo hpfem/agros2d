@@ -59,7 +59,7 @@ public:
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
     // todo: tohle by melo vracet shared pointer
-    static HermesSolverContainer* factory(Block* block, MultiSpace<Scalar> spaces);
+    static HermesSolverContainer* factory(Block* block);
 
 protected:
     Block* m_block;
@@ -69,7 +69,7 @@ template <typename Scalar>
 class LinearSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
-    LinearSolverContainer(Block* block, MultiSpace<Scalar> spaces);
+    LinearSolverContainer(Block* block);
     ~LinearSolverContainer();
     virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver.data(), solverName, adaptivityStep); }
@@ -86,7 +86,7 @@ template <typename Scalar>
 class NewtonSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
-    NewtonSolverContainer(Block* block, MultiSpace<Scalar> spaces);
+    NewtonSolverContainer(Block* block);
     ~NewtonSolverContainer();
     virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
     virtual void solve(Scalar* solutionVector);
@@ -102,7 +102,7 @@ template <typename Scalar>
 class PicardSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
-    PicardSolverContainer(Block* block, MultiSpace<Scalar> spaces);
+    PicardSolverContainer(Block* block);
     ~PicardSolverContainer();
     virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
     virtual void solve(Scalar* solutionVector);
