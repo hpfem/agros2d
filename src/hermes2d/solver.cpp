@@ -59,27 +59,27 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
 }
 
 template <typename Scalar>
-HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block, MultiSpace<Scalar> spaces)
+HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block)
 {
     if (block->linearityType() == LinearityType_Linear)
     {
-        return new LinearSolverContainer<Scalar>(block, spaces);
+        return new LinearSolverContainer<Scalar>(block);
     }
     else if (block->linearityType() == LinearityType_Newton)
     {
-        return new NewtonSolverContainer<Scalar>(block, spaces);
+        return new NewtonSolverContainer<Scalar>(block);
     }
     else if (block->linearityType() == LinearityType_Picard)
     {
-        return new PicardSolverContainer<Scalar>(block, spaces);
+        return new PicardSolverContainer<Scalar>(block);
     }
 }
 
 
 template <typename Scalar>
-LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block, MultiSpace<Scalar> spaces) : HermesSolverContainer<Scalar>(block)
+LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_linearSolver = QSharedPointer<LinearSolver<Scalar> >(new LinearSolver<Scalar>(block->weakForm().data(), spaces.nakedConst()));
+    m_linearSolver = QSharedPointer<LinearSolver<Scalar> >(new LinearSolver<Scalar>());
 }
 
 
@@ -92,9 +92,9 @@ void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 }
 
 template <typename Scalar>
-NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block, MultiSpace<Scalar> spaces) : HermesSolverContainer<Scalar>(block)
+NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_newtonSolver = QSharedPointer<NewtonSolver<Scalar> >(new NewtonSolver<Scalar>(block->weakForm().data(), spaces.nakedConst()));
+    m_newtonSolver = QSharedPointer<NewtonSolver<Scalar> >(new NewtonSolver<Scalar>());
     m_newtonSolver.data()->set_verbose_output(true);
     m_newtonSolver.data()->set_verbose_callback(processSolverOutput);
     m_newtonSolver.data()->set_newton_tol(block->nonlinearTolerance());
@@ -136,17 +136,9 @@ void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
 }
 
 template <typename Scalar>
-PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block, MultiSpace<Scalar> spaces) : HermesSolverContainer<Scalar>(block)
+PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    Hermes::vector<Solution<Scalar>* > slns;
-    for (int i = 0; i < spaces.size(); i++)
-    {
-        QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space = spaces.at(i).space;
-        Hermes::Hermes2D::Space<Scalar> *spc = space.data();
-        slns.push_back(new Hermes::Hermes2D::ConstantSolution<double>(spc->get_mesh(), 200));
-    }
-
-    m_picardSolver = QSharedPointer<PicardSolver<Scalar> >(new PicardSolver<Scalar>(block->weakForm().data(), spaces.nakedConst()));
+    m_picardSolver = QSharedPointer<PicardSolver<Scalar> >(new PicardSolver<Scalar>());
     m_picardSolver.data()->set_verbose_output(true);
     m_picardSolver.data()->set_verbose_callback(processSolverOutput);
     m_picardSolver.data()->set_picard_tol(block->nonlinearTolerance());
@@ -640,13 +632,8 @@ void Solver<Scalar>::createInitialSpace()
         }
     }
 
-    // todo: neslo by to udelat tak, aby se resic mohl inicializovat bez forem? (kdyz se pak stejne vzdy nastavuji pomoci set_weak_formulation?
-    m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
-    m_block->weakForm().data()->registerForms(NULL, true);
-
     assert(! m_hermesSolverContainer);
-    m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block, m_actualSpaces);
+    m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block);
 }
 
 template <typename Scalar>
