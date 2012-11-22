@@ -40,6 +40,11 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
 
     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + moduleId);
 
+    //documentation
+    QDir doc_root(QApplication::applicationDirPath());
+    doc_root.mkpath(QString("%1/%2").arg(GENERATOR_DOCROOT).arg(moduleId));
+    QDir().mkdir(GENERATOR_DOCROOT + "/" + moduleId);
+
     // variables
     foreach (XMLModule::quantity quantity, m_module->volume().quantity())
     {
@@ -122,6 +127,30 @@ void Agros2DGeneratorModule::generatePluginWeakFormFiles()
     generatePluginWeakFormHeaderFiles();
 }
 
+
+void Agros2DGeneratorModule::generatePluginDocuentationFiles()
+{
+    qDebug() << tr("%1: generating plugin documentation file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+    QString name = QString::fromStdString(m_module->general().name());
+    QString text = name;
+    QString underline = "\n";
+    for(int i = 0; i < text.length(); i++)
+    {
+        underline += "=";
+    }
+    underline += "\n";
+    text += underline;
+    text += QString::fromStdString(m_module->general().description());
+
+    // documentation - save to file
+    writeStringContent(QString("%1/%2/%3/%3.rst").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_DOCROOT).
+                       arg(id),
+                       text);
+}
 
 void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 {

@@ -28,6 +28,7 @@
 #include "../../resources_source/classes/coupling_xml.h"
 
 const QString GENERATOR_TEMPLATEROOT = "resources/templates/generator";
+const QString GENERATOR_DOCROOT = "documentation/plugins/source";
 const QString GENERATOR_PLUGINROOT = "plugins";
 
 class LexicalAnalyser;
@@ -70,6 +71,7 @@ public slots:
     void generateSources();
     void generateModule(const QString &moduleId);
     void generateCoupling(const QString &couplingId);
+    void generateDocumentation(const QString &couplingId);
 };
 
 class Agros2DGeneratorBase : public QObject

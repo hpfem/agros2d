@@ -33,6 +33,7 @@ public:
     void generatePluginVolumeIntegralFiles();
     void generatePluginInterfaceFiles();
     void generatePluginWeakFormFiles();
+    void generatePluginDocuentationFiles();
 
 private:
     std::auto_ptr<XMLModule::module> module_xsd;
