@@ -60,7 +60,6 @@ void MultiSolution<Scalar>::createSolutions(Hermes::vector<QSharedPointer<Hermes
 template <typename Scalar>
 SolutionArray<Scalar>::SolutionArray()
 {
-    time = 0.0;
 }
 
 template <typename Scalar>
@@ -68,7 +67,6 @@ SolutionArray<Scalar>::SolutionArray(SolutionAndMesh<Scalar> sln, SpaceAndMesh<S
 {
     this->sln = sln;
     this->space = space;
-    this->time = time;
 }
 
 template <typename Scalar>
@@ -246,20 +244,12 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, F
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::setTime(double time)
-{
-    for(int i = 0; i < m_solutionArrays.size(); i++)
-    {
-        SolutionArray<Scalar> newSA = m_solutionArrays.at(i);
-        newSA.time = time;
-        m_solutionArrays.replace(i, newSA);
-    }
-}
-
-template <typename Scalar>
 void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)
 {
     // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString();
+
+    // QTime time;
+    // time.start();
 
     m_solutionArrays.clear();
 
@@ -281,16 +271,20 @@ void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)
         SolutionArray<Scalar> solutionArray;
         solutionArray.space = SpaceAndMesh<Scalar>(space, mesh);
         solutionArray.sln = SolutionAndMesh<Scalar>(sln, mesh);
-        solutionArray.time = 0.0;
 
         m_solutionArrays.append(solutionArray);
     }
+
+    // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString() << time.elapsed();
 }
 
 template <typename Scalar>
 void MultiSolutionArray<Scalar>::saveToFile(FieldSolutionID solutionID)
 {
     // qDebug() << "void MultiSolutionArray<Scalar>::saveToFile(FieldSolutionID solutionID)" << solutionID.toString();
+
+    // QTime time;
+    // time.start();
 
     QString fn = QString("%1_%2").
             arg(Util::problem()->config()->fileName().left(Util::problem()->config()->fileName().count() - 4)).
@@ -307,6 +301,8 @@ void MultiSolutionArray<Scalar>::saveToFile(FieldSolutionID solutionID)
 
         solutionIndex++;
     }
+
+    // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString() << time.elapsed();
 }
 
 

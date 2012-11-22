@@ -80,6 +80,9 @@ void ConfigDialog::load()
     // save problem with solution
     chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
 
+    // cache size
+    txtCacheSize->setValue(Util::config()->cacheSize);
+
     // std log
     chkLogStdOut->setChecked(Util::config()->showLogStdOut);
 
@@ -131,6 +134,9 @@ void ConfigDialog::save()
 
     // save problem with solution
     Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
+
+    // cache size
+    Util::config()->cacheSize = txtCacheSize->value();
 
     // std log
     Util::config()->showLogStdOut = chkLogStdOut->isChecked();
@@ -278,6 +284,9 @@ QWidget *ConfigDialog::createSolverWidget()
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
     chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
+    txtCacheSize = new QSpinBox(this);
+    txtCacheSize->setMinimum(2);
+    txtCacheSize->setMaximum(50);
 
     txtNumOfThreads = new QSpinBox(this);
     txtNumOfThreads->setMinimum(1);
@@ -288,6 +297,8 @@ QWidget *ConfigDialog::createSolverWidget()
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile, 1, 0, 1, 2);
     layoutSolver->addWidget(new QLabel(tr("Number of threads:")), 2, 0);
     layoutSolver->addWidget(txtNumOfThreads, 2, 1);
+    layoutSolver->addWidget(new QLabel(tr("Number of cache slots:")), 3, 0);
+    layoutSolver->addWidget(txtCacheSize, 3, 1);
     layoutSolver->addWidget(chkSaveWithSolution);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));

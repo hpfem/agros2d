@@ -77,8 +77,6 @@ Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector
 template <typename Scalar>
 struct SolutionArray
 {
-    double time;
-
     SolutionAndMesh<Scalar> sln;
     SpaceAndMesh<Scalar> space;
 
@@ -126,7 +124,6 @@ public:
     MultiSolutionArray(MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions, double time);
     SolutionArray<Scalar> component(int component);    
 
-
 //    void setSpaces(MultiSpace<Scalar> spaces);
 //    void setSolutions(MultiSolution<Scalar> solutions);
 
@@ -158,14 +155,11 @@ public:
     int size() {return m_solutionArrays.size(); }
 
     void createEmpty(int numComp);
-    void setTime(double);
 
     void saveToFile(FieldSolutionID solutionID);
     void loadFromFile(FieldSolutionID solutionID);
 
 private:
-    bool onDisc;
-    bool inMemory;
     QList<SolutionArray<Scalar> > m_solutionArrays;
 };
 
@@ -229,13 +223,19 @@ class FieldSolutionID : public SolutionID<FieldInfo>
 {
 public:
     FieldSolutionID(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) :
-        SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType) {}
+        SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType), m_time(0.0) {}
 
     FieldSolutionID() : SolutionID<FieldInfo>() {}
 
     BlockSolutionID blockSolutionID(Block* block);
 
+    inline void setTime(double time) { m_time = time; }
+    double time() { return m_time; }
+
     QString toString();
+
+private:
+    double m_time;
 };
 
 class BlockSolutionID : public SolutionID<Block>
