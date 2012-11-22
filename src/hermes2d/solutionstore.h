@@ -49,7 +49,7 @@ public:
 
 private:
     QList<FieldSolutionID> m_multiSolutions;
-    QPair<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;
+    QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;
 
     void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);

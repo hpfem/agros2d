@@ -177,5 +177,8 @@ const QString COMMANDS_BUILD_PLUGIN = "./agros2d_plugin_compiler.sh %1";
 // max dofs
 const int MAX_DOFS = 60e3;
 
+// cache size
+const int CACHE_SIZE = 10;
+
 #endif // UTIL_CONSTANTS_H
 

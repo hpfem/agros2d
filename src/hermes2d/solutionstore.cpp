@@ -19,16 +19,24 @@ MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solution
 {
     assert(m_multiSolutions.contains(solutionID));
 
-    if (m_multiSolutionCache.first != solutionID)
+    if (!m_multiSolutionCache.contains(solutionID))
     {
         MultiSolutionArray<double> msa;
         msa.loadFromFile(solutionID);
 
-        m_multiSolutionCache.first = solutionID;
-        m_multiSolutionCache.second = msa;
-    }
+        // flush cache
+        if (m_multiSolutionCache.count() > Util::config()->cacheSize)
+            m_multiSolutionCache.remove(m_multiSolutionCache.keys().first());
 
-    return m_multiSolutionCache.second;
+        // add solution
+        m_multiSolutionCache.insert(solutionID, msa);
+
+        return msa;
+    }
+    else
+    {
+        return m_multiSolutionCache[solutionID];
+    }
 }
 
 bool SolutionStore::contains(FieldSolutionID solutionID) const
@@ -147,7 +155,6 @@ MultiSolutionArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(Bloc
     }
 
     return msa;
-
 }
 
 
@@ -168,14 +175,14 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
     int timeStep = lastTimeStep(fieldInfo, SolutionMode_Normal);
     double time = notFoundSoFar;
 
-    foreach(FieldSolutionID id, m_multiSolutions)
+    foreach (FieldSolutionID id, m_multiSolutions)
     {
         if((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
         {
-            if(time == notFoundSoFar)
-                time = multiSolution(id).component(0).time;
+            if (time == notFoundSoFar)
+                time = id.time();
             else
-                assert(time == multiSolution(id).component(0).time);
+                assert(time == id.time());
         }
     }
     assert(time != notFoundSoFar);
@@ -269,10 +276,10 @@ QList<double> SolutionStore::timeLevels(FieldInfo *fieldInfo)
 
     foreach(FieldSolutionID fsid, m_multiSolutions)
     {
-        if(fsid.group == fieldInfo)
+        if (fsid.group == fieldInfo)
         {
-            double time = multiSolution(fsid).component(0).time;
-            if(!list.contains(time))
+            double time = fsid.time();
+            if (!list.contains(time))
                 list.push_back(time);
         }
     }

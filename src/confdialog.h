@@ -80,6 +80,9 @@ private:
     // discrete
     QCheckBox *chkDiscreteSaveMatrixRHS;
 
+    // cache size
+    QSpinBox *txtCacheSize;
+
     // threads
     QSpinBox *txtNumOfThreads;
 
