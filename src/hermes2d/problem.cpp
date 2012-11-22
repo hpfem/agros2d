@@ -450,7 +450,7 @@ void Problem::solve()
         return;
 
     if(Util::config()->saveMatrixRHS)
-        Util::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disc. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
+        Util::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
     solveActionCatchExceptions(false);
 
