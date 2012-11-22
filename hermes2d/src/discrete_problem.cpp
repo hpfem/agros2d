@@ -75,11 +75,36 @@ namespace Hermes
     {
       // Set all attributes for which we don't need to acces wf or spaces.
       // This is important for the destructor to properly detect what needs to be deallocated.
-      sp_seq = NULL;
-      is_fvm = false;
-      RungeKutta = false;
-      RK_original_spaces_count = 0;
-      have_matrix = false;
+			// Initialize special variable for Runge-Kutta time integration.
+			RungeKutta = false;
+			RK_original_spaces_count = 0;
+
+			this->ndof = 0;
+
+			// Internal variables settings.
+			sp_seq = NULL;
+
+			// Matrix<Scalar> related settings.
+			have_matrix = false;
+
+			// There is a special function that sets a DiscreteProblem to be FVM.
+			// Purpose is that this constructor looks cleaner and is simpler.
+			this->is_fvm = false;
+
+			this->DG_matrix_forms_present = false;
+			this->DG_vector_forms_present = false;
+
+			Geom<Hermes::Ord> *tmp = init_geom_ord();
+			geom_ord = *tmp;
+			delete tmp;
+
+			current_mat = NULL;
+			current_rhs = NULL;
+			current_block_weights = NULL;
+
+			
+			cache_element_stored = NULL;
+
 			this->do_not_use_cache = false;
     }
 
@@ -131,13 +156,11 @@ namespace Hermes
       this->DG_matrix_forms_present = false;
       this->DG_vector_forms_present = false;
 
-      for(unsigned int i = 0; i < this->wf->mfsurf.size(); i++)
-        if(!this->wf->mfDG.empty())
-          this->DG_matrix_forms_present = true;
+      if(!this->wf->mfDG.empty())
+        this->DG_matrix_forms_present = true;
 
-      for(unsigned int i = 0; i < this->wf->vfsurf.size(); i++)
-        if(!this->wf->vfDG.empty())
-          this->DG_vector_forms_present = true;
+      if(!this->wf->vfDG.empty())
+        this->DG_vector_forms_present = true;
 
       Geom<Hermes::Ord> *tmp = init_geom_ord();
       geom_ord = *tmp;
@@ -248,8 +271,17 @@ namespace Hermes
     template<typename Scalar>
     void DiscreteProblem<Scalar>::set_weak_formulation(const WeakForm<Scalar>* wf)
     {
+			if(wf == NULL)
+				throw Hermes::Exceptions::NullException(0);
+
       this->wf = wf;
       this->have_matrix = false;
+
+			if(!this->wf->mfDG.empty())
+				this->DG_matrix_forms_present = true;
+
+			if(!this->wf->vfDG.empty())
+				this->DG_vector_forms_present = true;
     }
 
     template<typename Scalar>
@@ -330,6 +362,8 @@ namespace Hermes
 
 			this->spaces = spacesToSet;
 
+			this->ndof = Space<Scalar>::get_num_dofs(spaces);
+
       /// \todo TEMPORARY There is something wrong with caching vector shapesets.
       for(unsigned int i = 0; i < spacesToSet.size(); i++)
         if(spacesToSet[i]->get_shapeset()->get_num_components() > 1)
@@ -350,6 +384,9 @@ namespace Hermes
 				// Internal variables settings.
 				sp_seq = new int[spaces.size()];
 				memset(sp_seq, -1, sizeof(int) * spaces.size());
+
+				// Matrix<Scalar> related settings.
+				have_matrix = false;
 
 				cache_records_sub_idx = new std::map<uint64_t, CacheRecordPerSubIdx*>**[spaces.size()];
 				cache_records_element = new CacheRecordPerElement**[spaces.size()];
@@ -380,6 +417,7 @@ namespace Hermes
 					int max_size_i = spacesToSet[i]->get_mesh()->get_max_element_id();
 					if(max_size_i > max_size)
 						max_size = max_size_i;
+					sp_seq[i] = spacesToSet[i]->get_seq();
 				}
 
 				if(max_size * 1.0 > this->cache_size + 1)
@@ -397,7 +435,6 @@ namespace Hermes
 
 					this->cache_size = max_size;
 				}
-
 
 				for(unsigned int i = 0; i < spaces.size(); i++)
 				{

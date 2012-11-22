@@ -374,8 +374,6 @@ namespace Hermes
     template<typename Scalar>
     int Space<Scalar>::get_element_order(int id) const
     {
-      check();
-
       if(id >= esize)
       {
         this->warn("Element index %d in Space<Scalar>::get_element_order() while maximum is %d.", id, esize);
