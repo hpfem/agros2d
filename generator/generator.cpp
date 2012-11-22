@@ -230,6 +230,10 @@ void Agros2DGenerator::createStructure()
     QDir root(QApplication::applicationDirPath());
     root.mkpath(GENERATOR_PLUGINROOT);
 
+    // documentation
+    QDir doc_root(QApplication::applicationDirPath());
+    doc_root.mkpath(GENERATOR_DOCROOT);
+
     ctemplate::TemplateDictionary output("project_output");
     QMap<QString, QString> modules = availableModules();
     QMap<QString, QString> couplings = availableCouplings();
@@ -237,8 +241,21 @@ void Agros2DGenerator::createStructure()
     foreach (QString moduleId, modules.keys())
     {
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
-        field->SetValue("ID", moduleId.toStdString());
+        field->SetValue("ID", moduleId.toStdString());        
     }
+
+    // generate documentation
+    // expand template
+    std::string doc_text;
+    ctemplate::ExpandTemplate(QString("%1/%2/doc_index.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &doc_text);
+
+    // save to file
+    writeStringContent(QString("%1/%2/index.rst").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_DOCROOT),
+                       QString::fromStdString(doc_text));
+
 
     foreach (QString couplingId, couplings.keys())
     {
@@ -251,7 +268,6 @@ void Agros2DGenerator::createStructure()
     std::string text;
     ctemplate::ExpandTemplate(QString("%1/%2/plugins_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
-
     // save to file
     writeStringContent(QString("%1/%2/plugins.pro").
                        arg(QApplication::applicationDirPath()).
@@ -267,10 +283,15 @@ void Agros2DGenerator::generateSources()
     QMap<QString, QString> couplings = availableCouplings();
 
     foreach (QString moduleId, modules.keys())
+    {
         generateModule(moduleId);
+        generateDocumentation(moduleId);
+    }
 
     foreach (QString couplingId, couplings.keys())
-        generateCoupling(couplingId);
+    {
+        generateCoupling(couplingId);        
+    }
 }
 
 void Agros2DGenerator::generateModule(const QString &moduleId)
@@ -285,6 +306,15 @@ void Agros2DGenerator::generateModule(const QString &moduleId)
     generator.generatePluginSurfaceIntegralFiles();
     generator.generatePluginVolumeIntegralFiles();
     generator.generatePluginWeakFormFiles();
+
+    // generates documentations
+    generator.generatePluginDocuentationFiles();
+}
+
+void Agros2DGenerator::generateDocumentation(const QString &moduleId)
+{
+    Agros2DGeneratorModule generator(moduleId);
+
 }
 
 void Agros2DGenerator::generateCoupling(const QString &couplingId)
