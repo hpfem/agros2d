@@ -766,7 +766,7 @@ void Solver<Scalar>::solveInitialTimeStep()
             // constant initial solution
             QSharedPointer<Mesh> mesh = m_actualSpaces.meshes().at(totalComp);
             ConstantSolution<double> *initial = new ConstantSolution<double>(mesh.data(), field->fieldInfo()->initialCondition().number());
-            solutions.add(QSharedPointer<Solution<Scalar> >(initial), mesh);
+            solutions.add(QSharedPointer<ConstantSolution<Scalar> >(initial), mesh);
             totalComp++;
         }
     }
