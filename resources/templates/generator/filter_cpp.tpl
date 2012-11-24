@@ -57,26 +57,27 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 {
     bool isLinear = (m_fieldInfo->linearityType() == LinearityType_Linear);
 
-    Hermes::Hermes2D::Quad2D* quad = Hermes::Hermes2D::Filter<double>::quads[Hermes::Hermes2D::Function<double>::cur_quad];
+    Hermes::Hermes2D::Quad2D* quad = this->quads[Hermes::Hermes2D::Function<double>::cur_quad];
     int np = quad->get_num_points(order, this->get_active_element()->get_mode());
-    Hermes::Hermes2D::Function<double>::Node* node = Hermes::Hermes2D::Function<double>::new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
+    Hermes::Hermes2D::Function<double>::Node* node = this->new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
     double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
     double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
     double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
 
-    for (int k = 0; k < Hermes::Hermes2D::Filter<double>::num; k++)
+    for (int k = 0; k < this->num; k++)
     {
-        Hermes::Hermes2D::Filter<double>::sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
-        Hermes::Hermes2D::Filter<double>::sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
-        value[k] = Hermes::Hermes2D::Filter<double>::sln[k]->get_fn_values();
+        this->sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_DEFAULT);
+        dudx[k] = this->sln[k]->get_dx_values();
+        dudy[k] = this->sln[k]->get_dy_values();
+        value[k] = this->sln[k]->get_fn_values();
     }
 
-    Hermes::Hermes2D::Filter<double>::update_refmap();
+    this->update_refmap();
 
-    double *x = Hermes::Hermes2D::MeshFunction<double>::refmap->get_phys_x(order);
-    double *y = Hermes::Hermes2D::MeshFunction<double>::refmap->get_phys_y(order);
-    Hermes::Hermes2D::Element *e = Hermes::Hermes2D::MeshFunction<double>::refmap->get_active_element();
+    double *x = this->refmap->get_phys_x(order);
+    double *y = this->refmap->get_phys_y(order);
+    Hermes::Hermes2D::Element *e = this->refmap->get_active_element();
 
     // set material
     SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
@@ -95,13 +96,13 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     delete [] dudx;
     delete [] dudy;
 
-    if (Hermes::Hermes2D::Function<double>::nodes->present(order))
+    if(this->nodes->present(order))
     {
-        assert(Hermes::Hermes2D::Function<double>::nodes->get(order) == Hermes::Hermes2D::Function<double>::cur_node);
-        ::free(Hermes::Hermes2D::Function<double>::nodes->get(order));
+      assert(this->nodes->get(order) == this->cur_node);
+      ::free(this->nodes->get(order));
     }
-    Hermes::Hermes2D::Function<double>::nodes->add(node, order);
-    Hermes::Hermes2D::Function<double>::cur_node = node;
+    this->nodes->add(node, order);
+    this->cur_node = node;
 }
 
 {{CLASS}}ViewScalarFilter* {{CLASS}}ViewScalarFilter::clone() const
