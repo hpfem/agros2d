@@ -980,6 +980,360 @@ namespace XMLSolution
     //@}
 
     /**
+     * @name exact
+     *
+     * @brief Accessor and modifier functions for the %exact
+     * required attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::integer exact_type;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< exact_type, char > exact_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute.
+     *
+     * @return A constant reference to the attribute.
+     */
+    const exact_type&
+    exact () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute.
+     *
+     * @return A reference to the attribute.
+     */
+    exact_type&
+    exact ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    exact (const exact_type& x);
+
+    //@}
+
+    /**
+     * @name exactComplex
+     *
+     * @brief Accessor and modifier functions for the %exactComplex
+     * required attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::integer exactComplex_type;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< exactComplex_type, char > exactComplex_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute.
+     *
+     * @return A constant reference to the attribute.
+     */
+    const exactComplex_type&
+    exactComplex () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute.
+     *
+     * @return A reference to the attribute.
+     */
+    exactComplex_type&
+    exactComplex ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    exactComplex (const exactComplex_type& x);
+
+    //@}
+
+    /**
+     * @name exactConstantXReal
+     *
+     * @brief Accessor and modifier functions for the %exactConstantXReal
+     * optional attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::decimal exactConstantXReal_type;
+
+    /**
+     * @brief Attribute optional container type.
+     */
+    typedef ::xsd::cxx::tree::optional< exactConstantXReal_type > exactConstantXReal_optional;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< exactConstantXReal_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantXReal_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute
+     * container.
+     *
+     * @return A constant reference to the optional container.
+     */
+    const exactConstantXReal_optional&
+    exactConstantXReal () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute container.
+     *
+     * @return A reference to the optional container.
+     */
+    exactConstantXReal_optional&
+    exactConstantXReal ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    exactConstantXReal (const exactConstantXReal_type& x);
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x An optional container with the new value to set.
+     *
+     * If the value is present in @a x then this function makes a copy 
+     * of this value and sets it as the new value of the attribute.
+     * Otherwise the attribute container is set the 'not present' state.
+     */
+    void
+    exactConstantXReal (const exactConstantXReal_optional& x);
+
+    //@}
+
+    /**
+     * @name exactConstantYReal
+     *
+     * @brief Accessor and modifier functions for the %exactConstantYReal
+     * optional attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::decimal exactConstantYReal_type;
+
+    /**
+     * @brief Attribute optional container type.
+     */
+    typedef ::xsd::cxx::tree::optional< exactConstantYReal_type > exactConstantYReal_optional;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< exactConstantYReal_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantYReal_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute
+     * container.
+     *
+     * @return A constant reference to the optional container.
+     */
+    const exactConstantYReal_optional&
+    exactConstantYReal () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute container.
+     *
+     * @return A reference to the optional container.
+     */
+    exactConstantYReal_optional&
+    exactConstantYReal ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    exactConstantYReal (const exactConstantYReal_type& x);
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x An optional container with the new value to set.
+     *
+     * If the value is present in @a x then this function makes a copy 
+     * of this value and sets it as the new value of the attribute.
+     * Otherwise the attribute container is set the 'not present' state.
+     */
+    void
+    exactConstantYReal (const exactConstantYReal_optional& x);
+
+    //@}
+
+    /**
+     * @name exactConstantXComplex
+     *
+     * @brief Accessor and modifier functions for the %exactConstantXComplex
+     * optional attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::decimal exactConstantXComplex_type;
+
+    /**
+     * @brief Attribute optional container type.
+     */
+    typedef ::xsd::cxx::tree::optional< exactConstantXComplex_type > exactConstantXComplex_optional;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< exactConstantXComplex_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantXComplex_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute
+     * container.
+     *
+     * @return A constant reference to the optional container.
+     */
+    const exactConstantXComplex_optional&
+    exactConstantXComplex () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute container.
+     *
+     * @return A reference to the optional container.
+     */
+    exactConstantXComplex_optional&
+    exactConstantXComplex ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    exactConstantXComplex (const exactConstantXComplex_type& x);
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x An optional container with the new value to set.
+     *
+     * If the value is present in @a x then this function makes a copy 
+     * of this value and sets it as the new value of the attribute.
+     * Otherwise the attribute container is set the 'not present' state.
+     */
+    void
+    exactConstantXComplex (const exactConstantXComplex_optional& x);
+
+    //@}
+
+    /**
+     * @name exactConstantYComplex
+     *
+     * @brief Accessor and modifier functions for the %exactConstantYComplex
+     * optional attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::decimal exactConstantYComplex_type;
+
+    /**
+     * @brief Attribute optional container type.
+     */
+    typedef ::xsd::cxx::tree::optional< exactConstantYComplex_type > exactConstantYComplex_optional;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< exactConstantYComplex_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantYComplex_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute
+     * container.
+     *
+     * @return A constant reference to the optional container.
+     */
+    const exactConstantYComplex_optional&
+    exactConstantYComplex () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute container.
+     *
+     * @return A reference to the optional container.
+     */
+    exactConstantYComplex_optional&
+    exactConstantYComplex ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    exactConstantYComplex (const exactConstantYComplex_type& x);
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x An optional container with the new value to set.
+     *
+     * If the value is present in @a x then this function makes a copy 
+     * of this value and sets it as the new value of the attribute.
+     * Otherwise the attribute container is set the 'not present' state.
+     */
+    void
+    exactConstantYComplex (const exactConstantYComplex_optional& x);
+
+    //@}
+
+    /**
      * @name Constructors
      */
     //@{
@@ -990,7 +1344,9 @@ namespace XMLSolution
      */
     solution (const num_components_type&,
               const num_elems_type&,
-              const num_coeffs_type&);
+              const num_coeffs_type&,
+              const exact_type&,
+              const exactComplex_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1057,6 +1413,12 @@ namespace XMLSolution
     ::xsd::cxx::tree::one< num_components_type > num_components_;
     ::xsd::cxx::tree::one< num_elems_type > num_elems_;
     ::xsd::cxx::tree::one< num_coeffs_type > num_coeffs_;
+    ::xsd::cxx::tree::one< exact_type > exact_;
+    ::xsd::cxx::tree::one< exactComplex_type > exactComplex_;
+    exactConstantXReal_optional exactConstantXReal_;
+    exactConstantYReal_optional exactConstantYReal_;
+    exactConstantXComplex_optional exactConstantXComplex_;
+    exactConstantYComplex_optional exactConstantYComplex_;
 
     //@endcond
   };

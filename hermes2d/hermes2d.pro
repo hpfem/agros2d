@@ -21,6 +21,7 @@ INCLUDEPATH += include \
                include/integrals \
                include/mesh \
                include/quadrature \
+               include/projections \
                include/refinement_selectors \
                include/shapeset \
                include/space \
