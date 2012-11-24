@@ -266,7 +266,7 @@ void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)
         space.data()->load((QString("%1_%2.spc").arg(fn).arg(i)).toStdString().c_str());
 
         QSharedPointer<Solution<Scalar> > sln(new Solution<Scalar>());
-        sln.data()->load((QString("%1_%2.sln").arg(fn).arg(i)).toStdString().c_str(), mesh.data());
+        sln.data()->load((QString("%1_%2.sln").arg(fn).arg(i)).toStdString().c_str(), space.data());
 
         SolutionArray<Scalar> solutionArray;
         solutionArray.space = SpaceAndMesh<Scalar>(space, mesh);
