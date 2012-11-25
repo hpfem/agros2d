@@ -284,10 +284,10 @@
       </module:vector_view>
     </module:view>
     <module:volumeintegrals>
-      <module:volumeintegral id="magnetic_volume" name="Volume" shortname="V" unit="m3" unit_html="m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
+      <module:volumeintegral id="magnetic_volume" name="Volume" shortname="V" shortname_html="" shortname_latex="" unit="m3" unit_html="m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r" planar="1.0"/>
-        <module:expression analysistype="harmonic" axi="1.0" planar="1.0"/>
-        <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
+        <module:expression analysistype="harmonic" axi="2.0 * PI * r" planar="1.0"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_cross_section" name="Cross section" shortname="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
         <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
