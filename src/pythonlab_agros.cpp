@@ -724,7 +724,7 @@ void PyField::setInitialCondition(const double initialCondition)
 
 void PyField::setTimeSkip(const double timeSkip)
 {
-    if (timeSkip >= 0 && timeSkip < Util::problem()->config()->timeTotal().number())
+    if (timeSkip >= 0 && timeSkip <= Util::problem()->config()->timeTotal().number())
         Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(Value(QString::number(timeSkip)));
     else
         throw invalid_argument(QObject::tr("Time skip is out of range (0 - %1).").arg(Util::problem()->config()->timeTotal().number()).toStdString());
@@ -1474,7 +1474,7 @@ char *PyGeometry::meshFileName()
 }
 
 void PyGeometry::zoomBestFit()
-{   
+{
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
 }
