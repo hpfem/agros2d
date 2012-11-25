@@ -1479,7 +1479,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         field->setPicardAndersonNumberOfLastVectors(eleFieldLinearity.toElement().attribute("picard_anderson_vectors", "3").toInt());
 
         // time steps skip
-        field->setTimeSkip(eleField.toElement().attribute("time_skip", "0"));
+        field->setTimeSkip(eleField.toElement().attribute("time_skip", "0.0"));
 
         // boundary conditions
         QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);
