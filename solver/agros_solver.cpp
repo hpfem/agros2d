@@ -21,7 +21,7 @@
 
 #include "scenenode.h"
 #include "logview.h"
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d.h"
 
@@ -63,7 +63,7 @@ bool ArgosSolver::notify(QObject *receiver, QEvent *event)
 }
 
 void ArgosSolver::solveProblem()
-{  
+{
     // log stdout
     if (m_enableLog)
         new LogStdOut();

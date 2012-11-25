@@ -64,3 +64,9 @@ tmp
 *.sdf
 *.sln
 *.suo
+agros2d_generator
+agros2d_pythonlab
+agros2d_solver
+libs/
+plugins/
+resources_source/python/pythonlab.cpp

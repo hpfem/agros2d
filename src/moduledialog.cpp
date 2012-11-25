@@ -22,7 +22,7 @@
 
 #include "scene.h"
 #include "sceneview_common.h"
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
 

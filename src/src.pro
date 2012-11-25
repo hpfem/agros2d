@@ -135,7 +135,12 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
-    pythonlab_agros.cpp \
+    pythonlab/pythonengine_agros.cpp \
+    pythonlab/pyproblem.cpp \
+    pythonlab/pyfield.cpp \
+    pythonlab/pygeometry.cpp \
+    pythonlab/pyview.cpp \
+    pythonlab/pyparticletracing.cpp \
     ../pythonlab/pythonlab_functions.cpp
 
 HEADERS += util.h \
@@ -221,11 +226,15 @@ HEADERS += util.h \
     hermes2d/bdf2.h \
     hermes2d/plugin_interface.h \
     gui/groupbox.h \
-    pythonlab_agros.h
+    pythonlab/pythonengine_agros.h \
+    pythonlab/pyproblem.h \
+    pythonlab/pyfield.h \
+    pythonlab/pygeometry.h \
+    pythonlab/pyview.h \
+    pythonlab/pyparticletracing.h
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
 
-OTHER_FILES += python/agros2d.pyx \
-    functions.py \
+OTHER_FILES += functions.py \
     version.xml \
     ../resources/modules/rf.xml \
     ../resources/modules/magnetic.xml \

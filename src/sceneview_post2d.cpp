@@ -39,13 +39,13 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/plugin_interface.h"
 
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 
 SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon2D(postHermes, parent),
       m_listContours(-1),
       m_listVectors(-1),
-      m_listScalarField(-1),      
+      m_listScalarField(-1),
       m_selectedPoint(Point())
 {
     createActionsPost2D();
