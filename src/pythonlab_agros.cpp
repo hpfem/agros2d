@@ -54,15 +54,15 @@ QString createPythonFromModel()
 {
     QString str;
 
+    // import modules
+    str += "import agros2d\n\n";
+
     // description
-    /*
     if (!Util::problem()->config()->description().isEmpty())
     {
-        str += "# description\n";
         str += QString("# %1").arg(Util::problem()->config()->description());
         str += "\n\n";
     }
-    */
 
     // startup script
     if (!Util::problem()->config()->startupscript().isEmpty())
@@ -73,7 +73,6 @@ QString createPythonFromModel()
     }
 
     // model
-    str += "import agros2d\n\n";
     str += "# problem\n";
     str += QString("problem = agros2d.problem(clear = True)\n");
     if (!Util::problem()->config()->name().isEmpty())
@@ -115,15 +114,17 @@ QString createPythonFromModel()
         if (Util::problem()->isTransient())
         {
             if (fieldInfo->analysisType() == analysisTypeFromStringKey("transient"))
+            {
                 str += QString("%1.initial_condition = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->initialCondition().number());
-        }
-        else
-        {
-            str += QString("%1.time_skip = %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->timeSkip().number());
+            }
+            else
+            {
+                str += QString("%1.time_skip = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->timeSkip().number());
+            }
         }
 
         if (fieldInfo->numberOfRefinements() > 0)
@@ -135,6 +136,21 @@ QString createPythonFromModel()
             str += QString("%1.polynomial_order = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->polynomialOrder());
+
+        str += QString("%1.adaptivity_type = \"%2\"\n").
+                arg(fieldInfo->fieldId()).
+                arg(adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
+
+        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+        {
+            str += QString("%1.adaptivity_steps= %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->adaptivitySteps());
+
+            str += QString("%1.adaptivity_tolerance= %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->adaptivityTolerance());
+        }
 
         str += QString("%1.linearity_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
@@ -165,9 +181,11 @@ QString createPythonFromModel()
                         arg(fieldInfo->newtonDampingNumberToIncrease());
             }
             else
+            {
                 str += QString("%1.damping_coeff = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->newtonDampingCoeff());
+            }
         }
 
         // picard
@@ -187,21 +205,6 @@ QString createPythonFromModel()
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->picardAndersonNumberOfLastVectors());
             }
-        }
-
-        str += QString("%1.adaptivity_type = \"%2\"\n").
-                arg(fieldInfo->fieldId()).
-                arg(adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
-
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
-        {
-            str += QString("%1.adaptivity_steps= %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->adaptivitySteps());
-
-            str += QString("%1.adaptivity_tolerance= %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->adaptivityTolerance());
         }
 
         str += "\n";
@@ -313,6 +316,7 @@ QString createPythonFromModel()
             // refinement
             if (Util::problem()->fieldInfos().count() > 0)
             {
+                int refinementCount = 0;
                 QString refinements = ", refinements = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
@@ -321,15 +325,20 @@ QString createPythonFromModel()
                         refinements += QString("\"%1\" : %2, ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->edgeRefinement(edge));
+
+                        refinementCount++;
                     }
                 }
                 refinements = (refinements.endsWith(", ") ? refinements.left(refinements.length() - 2) : refinements) + "}";
-                str += refinements;
+
+                if (refinementCount > 0)
+                    str += refinements;
             }
 
             // boundaries
             if (Util::problem()->fieldInfos().count() > 0)
             {
+                int boundariesCount = 0;
                 QString boundaries = ", boundaries = {";
                 foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
                 {
@@ -340,10 +349,13 @@ QString createPythonFromModel()
                         boundaries += QString("\"%1\" : \"%2\", ").
                                 arg(fieldInfo->fieldId()).
                                 arg(marker->name());
+
+                        boundariesCount++;
                     }
                 }
                 boundaries = (boundaries.endsWith(", ") ? boundaries.left(boundaries.length() - 2) : boundaries) + "}";
-                str += boundaries;
+                if (boundariesCount > 0)
+                    str += boundaries;
             }
 
             str += ")\n";
@@ -425,6 +437,7 @@ QString createPythonFromModel()
             str += ")\n";
         }
     }
+    str += "geometry.zoom_best_fit()";
 
     return str;
 }
