@@ -28,7 +28,7 @@
 #include "sceneview_geometry.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/module_agros.h"
@@ -316,7 +316,7 @@ void InfoWidget::finishLoading(bool ok)
             QList<double> lengths = Util::problem()->timeStepLengths();
             double time = 0;
             for (int i = 0; i < lengths.size() - 1; i++)
-            {                
+            {
                 dataTimeSteps += QString("[%1, %2], ").arg(time).arg(lengths.at(i));
                 time += lengths.at(i);
             }

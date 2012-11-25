@@ -1,5 +1,8 @@
 import agros2d
 
+import user_module # don't use from ... import ... - uset module deleter don't work
+user_module.function(2)
+
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
 problem.name = "Induction heating"
@@ -13,7 +16,6 @@ magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 2
 magnetic.polynomial_order = 3
 magnetic.linearity_type = "linear"
-magnetic.weak_forms = "compiled"
 magnetic.nonlinear_tolerance = 0.001
 magnetic.nonlinear_steps = 10
 

@@ -19,7 +19,7 @@
 
 #include "settings.h"
 #include "scene.h"
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 
 #include "util/constants.h"
 #include "util/glfont.h"

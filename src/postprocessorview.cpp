@@ -28,7 +28,7 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -299,7 +299,7 @@ void PostprocessorWidget::saveAdvanced()
 }
 
 void PostprocessorWidget::createControls()
-{    
+{
     // dialog buttons
     btnOK = new QPushButton(tr("Apply"));
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));

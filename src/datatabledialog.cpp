@@ -19,7 +19,7 @@
 
 #include "datatabledialog.h"
 
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 #include "materialbrowserdialog.h"
 
 #include "gui/chart.h"
@@ -220,7 +220,7 @@ void DataTableDialog::createControls()
     layoutSettings->addWidget(chkInterpolation, 4, 0, 1, 2);
     layoutSettings->addWidget(chkDerivative, 5, 0, 1, 2);
 
-    QGridLayout *controlsLayout = new QGridLayout();    
+    QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(lblLabelX, 0, 0);
     controlsLayout->addWidget(lblInfoX, 0, 1, 1, 1, Qt::AlignRight);
     controlsLayout->addWidget(lstX, 1, 0, 1, 2);

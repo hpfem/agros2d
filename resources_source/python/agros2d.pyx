@@ -16,7 +16,7 @@ cdef extern from "limits.h":
     int c_DOUBLE_MIN "DOUBLE_MIN"
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
-cdef extern from "../../src/pythonlab_agros.h":
+cdef extern from "../../src/pythonlab/pyproblem.h":
     # PyProblem
     cdef cppclass PyProblem:
         PyProblem(int clear)
@@ -59,6 +59,7 @@ cdef extern from "../../src/pythonlab_agros.h":
 
         void solve()
 
+cdef extern from "../../src/pythonlab/pyfield.h":
     # PyField
     cdef cppclass PyField:
         PyField(char *field_id) except +
@@ -130,6 +131,7 @@ cdef extern from "../../src/pythonlab_agros.h":
         void surfaceIntegrals(vector[int], map[string, double] results) except +
         void volumeIntegrals(vector[int], map[string, double] results) except +
 
+cdef extern from "../../src/pythonlab/pygeometry.h":
     # PyGeometry
     cdef cppclass PyGeometry:
         PyGeometry()
@@ -172,6 +174,7 @@ cdef extern from "../../src/pythonlab_agros.h":
         void zoomOut()
         void zoomRegion(double, double, double, double)
 
+cdef extern from "../../src/pythonlab/pyview.h":
     # PyViewConfig
     cdef cppclass PyViewConfig:
         void setField(char *fieldid) except +
@@ -311,12 +314,7 @@ cdef extern from "../../src/pythonlab_agros.h":
         void setScalarViewRangeMax(double max)
         double getScalarViewRangeMax()
 
-    void pyOpenDocument(char *str) except +
-    void pySaveDocument(char *str) except +
-    void pyCloseDocument()
-
-    void pySaveImage(char *str, int w, int h) except +
-
+cdef extern from "../../src/pythonlab/pyparticletracing.h":
     # PyParticleTracing
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
@@ -363,6 +361,13 @@ cdef extern from "../../src/pythonlab_agros.h":
         void positions(vector[double] x, vector[double] y, vector[double] z)
         void velocities(vector[double] x, vector[double] y, vector[double] z)
         void times(vector[double] times)
+
+cdef extern from "../../src/pythonlab/pythonengine_agros.h":
+    void pyOpenDocument(char *str) except +
+    void pySaveDocument(char *str) except +
+    void pyCloseDocument()
+
+    void pySaveImage(char *str, int w, int h) except +
 
 # Problem
 cdef class __Problem__:
