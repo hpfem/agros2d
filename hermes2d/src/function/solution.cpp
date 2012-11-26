@@ -1334,6 +1334,7 @@ namespace Hermes
     {
       free();
       this->mesh = space->get_mesh();
+      this->space_type = space->get_type();
 
       try
       {
@@ -1352,7 +1353,6 @@ namespace Hermes
               OGProjection<double> ogProj;
               ogProj.project_global(space, &sln, coeff_vec);
               this->set_coeff_vector(space, coeff_vec, true, 0);
-
               sln_type = HERMES_SLN;
             }
             else
@@ -1366,7 +1366,6 @@ namespace Hermes
               OGProjection<double> ogProj;
               ogProj.project_global(space, &sln, coeff_vec);
               this->set_coeff_vector(space, coeff_vec, true, 0);
-
               sln_type = HERMES_SLN;
             }
             else
@@ -1414,6 +1413,7 @@ namespace Hermes
       free();
       sln_type = HERMES_SLN;
       this->mesh = space->get_mesh();
+			this->space_type = space->get_type();
 
       try
       {
@@ -1422,7 +1422,7 @@ namespace Hermes
 
         if(sln_type == HERMES_EXACT)
         {
-          switch(this->num_components)
+          switch(parsed_xml_solution->num_components())
           {
           case 1:
             if(parsed_xml_solution->exactComplex() == 1)
@@ -1432,6 +1432,7 @@ namespace Hermes
               OGProjection<std::complex<double> > ogProj;
               ogProj.project_global(space, &sln, coeff_vec);
               this->set_coeff_vector(space, coeff_vec, true, 0);
+              sln_type = HERMES_SLN;
             }
             else
               throw Hermes::Exceptions::SolutionLoadFailureException("Mismatched real - complex exact solutions.");
@@ -1444,6 +1445,7 @@ namespace Hermes
               OGProjection<std::complex<double> > ogProj;
               ogProj.project_global(space, &sln, coeff_vec);
               this->set_coeff_vector(space, coeff_vec, true, 0);
+              sln_type = HERMES_SLN;
             }
             else
               throw Hermes::Exceptions::SolutionLoadFailureException("Mismatched real - complex exact solutions.");
