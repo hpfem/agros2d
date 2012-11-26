@@ -156,8 +156,8 @@ public:
 
     void createEmpty(int numComp);
 
-    void saveToFile(FieldSolutionID solutionID);
-    void loadFromFile(FieldSolutionID solutionID);
+    void saveToFile(const QString &baseName, FieldSolutionID solutionID);
+    void loadFromFile(const QString &baseName, FieldSolutionID solutionID);
 
 private:
     QList<SolutionArray<Scalar> > m_solutionArrays;
@@ -230,7 +230,7 @@ public:
     BlockSolutionID blockSolutionID(Block* block);
 
     inline void setTime(double time) { m_time = time; }
-    double time() { return m_time; }
+    double time() { return timeStep; } // TODO: should be m_time
 
     QString toString();
 

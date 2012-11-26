@@ -244,7 +244,7 @@ MultiSolutionArray<Scalar> MultiSolutionArray<Scalar>::fieldPart(Block *block, F
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)
+void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID solutionID)
 {
     // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString();
 
@@ -253,20 +253,16 @@ void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)
 
     m_solutionArrays.clear();
 
-    QString fn = QString("%1_%2").
-            arg(Util::problem()->config()->fileName().left(Util::problem()->config()->fileName().count() - 4)).
-            arg(solutionID.toString());
-
     // load the mesh file
-    QSharedPointer<Mesh> mesh = readMeshFromFile(QString("%1.mesh").arg(fn));
+    QSharedPointer<Mesh> mesh = readMeshFromFile(QString("%1.mesh").arg(baseName));
 
     for (int i = 0; i < solutionID.group->module()->numberOfSolutions(); i++)
     {
         QSharedPointer<Space<Scalar> > space(new H1Space<Scalar>(mesh.data()));
-        space.data()->load((QString("%1_%2.spc").arg(fn).arg(i)).toStdString().c_str());
+        space.data()->load((QString("%1_%2.spc").arg(baseName).arg(i)).toStdString().c_str());
 
         QSharedPointer<Solution<Scalar> > sln(new Solution<Scalar>());
-        sln.data()->load((QString("%1_%2.sln").arg(fn).arg(i)).toStdString().c_str(), space.data());
+        sln.data()->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space.data());
 
         SolutionArray<Scalar> solutionArray;
         solutionArray.space = SpaceAndMesh<Scalar>(space, mesh);
@@ -279,25 +275,21 @@ void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)
 }
 
 template <typename Scalar>
-void MultiSolutionArray<Scalar>::saveToFile(FieldSolutionID solutionID)
+void MultiSolutionArray<Scalar>::saveToFile(const QString &baseName, FieldSolutionID solutionID)
 {
     // qDebug() << "void MultiSolutionArray<Scalar>::saveToFile(FieldSolutionID solutionID)" << solutionID.toString();
 
     // QTime time;
     // time.start();
 
-    QString fn = QString("%1_%2").
-            arg(Util::problem()->config()->fileName().left(Util::problem()->config()->fileName().count() - 4)).
-            arg(solutionID.toString());
-
-    writeMeshToFile(QString("%1.mesh").arg(fn), m_solutionArrays.at(0).space.data()->get_mesh());
+    writeMeshToFile(QString("%1.mesh").arg(baseName), m_solutionArrays.at(0).space.data()->get_mesh());
 
     int solutionIndex = 0;
     foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
-    {           
+    {
         // TODO: check write access
-        solutionArray.space.data()->save((QString("%1_%2.spc").arg(fn).arg(solutionIndex)).toStdString().c_str());
-        solutionArray.sln.data()->save((QString("%1_%2.sln").arg(fn).arg(solutionIndex)).toStdString().c_str());
+        solutionArray.space.data()->save((QString("%1_%2.spc").arg(baseName).arg(solutionIndex)).toStdString().c_str());
+        solutionArray.sln.data()->save((QString("%1_%2.sln").arg(baseName).arg(solutionIndex)).toStdString().c_str());
 
         solutionIndex++;
     }
