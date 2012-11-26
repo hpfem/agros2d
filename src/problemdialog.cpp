@@ -21,7 +21,7 @@
 
 #include "scene.h"
 #include "moduledialog.h"
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/coupling.h"
@@ -208,7 +208,7 @@ void FieldWidget::createContent()
     layoutTransientAnalysis->setColumnStretch(1, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 0, 0);
     layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Time skip:")), 1, 0);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Time skip (s):")), 1, 0);
     layoutTransientAnalysis->addWidget(txtTransientTimeSkip, 1, 1);
 
     QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));

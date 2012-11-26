@@ -31,7 +31,7 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 #include "problemdialog.h"
-#include "pythonlab_agros.h"
+#include "pythonlab/pythonengine_agros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
@@ -142,7 +142,7 @@ void PreprocessorWidget::refresh()
     {
         // field
         QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
-        fieldNode->setText(0, fieldInfo->name());        
+        fieldNode->setText(0, fieldInfo->name());
         fieldNode->setFont(0, fnt);
         fieldNode->setExpanded(true);
 

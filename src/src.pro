@@ -135,7 +135,12 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
-    pythonlab_agros.cpp \
+    pythonlab/pythonengine_agros.cpp \
+    pythonlab/pyproblem.cpp \
+    pythonlab/pyfield.cpp \
+    pythonlab/pygeometry.cpp \
+    pythonlab/pyview.cpp \
+    pythonlab/pyparticletracing.cpp \
     ../pythonlab/pythonlab_functions.cpp
 
 HEADERS += util.h \
@@ -221,11 +226,15 @@ HEADERS += util.h \
     hermes2d/bdf2.h \
     hermes2d/plugin_interface.h \
     gui/groupbox.h \
-    pythonlab_agros.h
+    pythonlab/pythonengine_agros.h \
+    pythonlab/pyproblem.h \
+    pythonlab/pyfield.h \
+    pythonlab/pygeometry.h \
+    pythonlab/pyview.h \
+    pythonlab/pyparticletracing.h
     # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
 
-OTHER_FILES += python/agros2d.pyx \
-    functions.py \
+OTHER_FILES += functions.py \
     version.xml \
     ../resources/modules/rf.xml \
     ../resources/modules/magnetic.xml \
@@ -248,6 +257,10 @@ OTHER_FILES += python/agros2d.pyx \
     ../resources/xslt/problem_a2d_xml.xsl \
     ../resources/modules/rf.xml \
     ../resources_source/python/agros2d.pyx \
+    ../resources_source/python/pyproblem.pxi \
+    ../resources_source/python/pyfield.pxi \
+    ../resources_source/python/pyview.pxi \
+    ../resources_source/python/pyparticletracing.pxi \
     ../resources/xsd/subdomains_h2d_xml.xsd \
     ../resources/xsd/module_xml.xsd \
     ../resources/xsd/mesh_h2d_xml.xsd \

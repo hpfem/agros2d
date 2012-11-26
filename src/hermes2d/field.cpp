@@ -154,7 +154,7 @@ void FieldInfo::clear()
 
     // transient
     m_initialCondition = Value("0.0", false);
-    m_timeSkip = Value("0", false);
+    m_timeSkip = Value("0.0", false);
 
     // linearity
     m_linearityType = LinearityType_Linear;
