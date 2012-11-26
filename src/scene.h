@@ -248,15 +248,12 @@ public:
     static void loadPlugins(QStringList plugins);
     static QMap<QString, PluginInterface *> plugins() { return Util::singleton()->m_plugins; }
 
-protected:
-    Util();
     Util(const Util &);
     Util & operator = (const Util &);
+    Util();
     ~Util();
 
 private:
-    static Util *m_singleton;
-
     Scene *m_scene;
     Config *m_config;
     Problem *m_problem;

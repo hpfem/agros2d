@@ -9,14 +9,16 @@ const int notFoundSoFar = -999;
 
 QString SolutionStore::baseStoreFileName(FieldSolutionID solutionID)
 {
-    QFileInfo info(Util::problem()->config()->fileName());
+        QFileInfo info(Util::problem()->config()->fileName());
 
-    QString fn = QString("%1/%2_%3").
-            arg(Util::config()->cacheDir).
-            arg(info.baseName()).
-            arg(solutionID.toString());
+        QString fn = QString("%1/%2_%3").
+                arg(cacheProblemDir()).
+                arg(info.baseName()).
+                arg(solutionID.toString());
 
-    return fn;
+        qDebug() << fn;
+
+        return fn;
 }
 
 void SolutionStore::clearAll()

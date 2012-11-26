@@ -223,7 +223,8 @@ MainWindow::~MainWindow()
     settings.setValue("MainWindow/SplitterState", splitter->saveState());
     settings.setValue("MainWindow/ControlPanel", actHideControlPanel->isChecked());
 
-    // remove temp files
+    // remove temp and cache files
+    removeDirectory(cacheProblemDir());
     removeDirectory(tempProblemDir());
 
     delete logStdOut;

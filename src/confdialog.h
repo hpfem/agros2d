@@ -82,7 +82,6 @@ private:
 
     // cache
     QSpinBox *txtCacheSize;
-    QLineEdit *txtCacheDir;
 
     // threads
     QSpinBox *txtNumOfThreads;
