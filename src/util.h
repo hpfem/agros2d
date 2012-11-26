@@ -90,6 +90,7 @@ QString externalFunctions();
 
 // get temp dir
 QString tempProblemDir();
+QString cacheProblemDir();
 
 // get temp filename
 QString tempProblemFileName();

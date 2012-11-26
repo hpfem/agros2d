@@ -124,8 +124,7 @@ void NewMarkerAction::doTriggered()
 
 // ************************************************************************************************************************
 
-// initialize pointer
-Util *Util::m_singleton = NULL;
+static QSharedPointer<Util> m_singleton;
 
 Util::Util()
 {
@@ -148,10 +147,15 @@ Util::Util()
 
 Util::~Util()
 {
+    /*
+    // remove temp and cache files
+    removeDirectory(cacheProblemDir());
+    removeDirectory(tempProblemDir());
+
+    delete m_problem;
     delete m_scene;
     delete m_config;
-    delete m_scriptEngineRemote;
-    delete m_problem;
+    delete m_scriptEngineRemote;    
     delete m_solutionStore;
     delete m_log;
 
@@ -159,16 +163,17 @@ Util::~Util()
     foreach (PluginInterface *plugin, Util::singleton()->m_plugins)
         delete plugin;
     Util::singleton()->m_plugins.clear();
+    */
 }
 
 void Util::createSingleton()
-{
-    m_singleton = new Util();
+{    
+    m_singleton = QSharedPointer<Util>(new Util());
 }
 
 Util *Util::singleton()
 {
-    return m_singleton;
+    return m_singleton.data();
 }
 
 void Util::loadPlugins(QStringList plugins)

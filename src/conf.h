@@ -198,7 +198,6 @@ public:
 
     // cache
     int cacheSize;
-    QString cacheDir;
 
     // global script
     QString globalScript;

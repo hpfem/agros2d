@@ -235,7 +235,6 @@ void Config::loadAdvanced()
 
     // cache size
     cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
-    cacheDir  = settings.value("Solution/CacheDir").toString();
 
     // number of threads
     numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
@@ -438,7 +437,6 @@ void Config::saveAdvanced()
 
     // cache size
     settings.setValue("Solution/CacheSize", cacheSize);
-    settings.setValue("Solution/CacheDir", cacheDir);
 
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);

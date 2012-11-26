@@ -192,9 +192,28 @@ QString datadir()
 
 QString tempProblemDir()
 {
-    QDir(QDir::temp().absolutePath()).mkpath("agros2d/" + QString::number(QApplication::applicationPid()));
+    static QString str = QString("%1/agros2d/%2").
+            arg(QDir::temp().absolutePath()).
+            arg(QString::number(QCoreApplication::applicationPid()));
 
-    return QString("%1/agros2d/%2").arg(QDir::temp().absolutePath()).arg(QApplication::applicationPid());
+    QDir dir(str);
+    if (!dir.exists())
+        dir.mkpath(str);
+
+    return str;
+}
+
+QString cacheProblemDir()
+{
+    static QString str = QString("%1/cache/%2").
+            arg(QDesktopServices::storageLocation(QDesktopServices::CacheLocation)).
+            arg(QString::number(QCoreApplication::applicationPid()));
+
+    QDir dir(str);
+    if (!dir.exists())
+        dir.mkpath(str);
+
+    return str;
 }
 
 QString tempProblemFileName()
