@@ -2,12 +2,30 @@
 #include "field.h"
 #include "block.h"
 #include "scene.h"
+#include "problem.h"
+#include "module_agros.h"
 
 const int notFoundSoFar = -999;
 
+QString SolutionStore::baseStoreFileName(FieldSolutionID solutionID)
+{
+    QFileInfo info(Util::problem()->config()->fileName());
+
+    QString fn = QString("%1/%2_%3").
+            arg(Util::config()->cacheDir).
+            arg(info.baseName()).
+            arg(solutionID.toString());
+
+    return fn;
+}
+
 void SolutionStore::clearAll()
 {
-    m_multiSolutions.clear();
+    // m_multiSolutions.clear();
+    foreach (FieldSolutionID sid, m_multiSolutions)
+    {
+        removeSolution(sid);
+    }
 }
 
 SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component) const
@@ -22,7 +40,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solution
     if (!m_multiSolutionCache.contains(solutionID))
     {
         MultiSolutionArray<double> msa;
-        msa.loadFromFile(solutionID);
+        msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
 
         // flush cache
         if (m_multiSolutionCache.count() > Util::config()->cacheSize)
@@ -67,8 +85,23 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
 
     // remove from list
     m_multiSolutions.removeOne(solutionID);
+    // remove from cache
+    m_multiSolutionCache.remove(solutionID);
 
-    // TODO: remove files
+    // remove old files
+    QFileInfo info(Util::problem()->config()->fileName());
+    if (info.exists())
+    {
+        QString fn = baseStoreFileName(solutionID);
+
+        QFile::remove(QString("%1.mesh").arg(fn));
+
+        for (int solutionIndex = 0; solutionIndex < solutionID.group->module()->numberOfSolutions(); solutionIndex++)
+        {
+            QFile::remove(QString("%1_%2.spc").arg(fn).arg(solutionIndex));
+            QFile::remove(QString("%1_%2.sln").arg(fn).arg(solutionIndex));
+        }
+    }
 }
 
 void SolutionStore::replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
@@ -77,7 +110,7 @@ void SolutionStore::replaceSolution(FieldSolutionID solutionID, MultiSolutionArr
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
 
-    multiSolution.saveToFile(solutionID);
+    multiSolution.saveToFile(baseStoreFileName(solutionID), solutionID);
     m_multiSolutions.append(solutionID);
 }
 

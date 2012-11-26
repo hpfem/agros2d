@@ -196,8 +196,9 @@ public:
     // number of threads
     int numberOfThreads;
 
-    // cache size
+    // cache
     int cacheSize;
+    QString cacheDir;
 
     // global script
     QString globalScript;

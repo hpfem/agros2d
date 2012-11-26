@@ -45,7 +45,7 @@ public:
     FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionMode solutionType);
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionMode solutionType);
 
-    void clearAll();
+    void clearAll();    
 
 private:
     QList<FieldSolutionID> m_multiSolutions;
@@ -54,6 +54,8 @@ private:
     void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void removeSolution(FieldSolutionID solutionID);
+
+    QString baseStoreFileName(FieldSolutionID solutionID);
 };
 
 #endif // SOLUTIONSTORE_H

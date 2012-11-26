@@ -82,6 +82,7 @@ void ConfigDialog::load()
 
     // cache size
     txtCacheSize->setValue(Util::config()->cacheSize);
+    txtCacheDir->setText(Util::config()->cacheDir);
 
     // std log
     chkLogStdOut->setChecked(Util::config()->showLogStdOut);
@@ -137,6 +138,7 @@ void ConfigDialog::save()
 
     // cache size
     Util::config()->cacheSize = txtCacheSize->value();
+    Util::config()->cacheDir = txtCacheDir->text();
 
     // std log
     Util::config()->showLogStdOut = chkLogStdOut->isChecked();
@@ -287,6 +289,7 @@ QWidget *ConfigDialog::createSolverWidget()
     txtCacheSize = new QSpinBox(this);
     txtCacheSize->setMinimum(2);
     txtCacheSize->setMaximum(50);
+    txtCacheDir = new QLineEdit();
 
     txtNumOfThreads = new QSpinBox(this);
     txtNumOfThreads->setMinimum(1);
@@ -299,6 +302,8 @@ QWidget *ConfigDialog::createSolverWidget()
     layoutSolver->addWidget(txtNumOfThreads, 2, 1);
     layoutSolver->addWidget(new QLabel(tr("Number of cache slots:")), 3, 0);
     layoutSolver->addWidget(txtCacheSize, 3, 1);
+    layoutSolver->addWidget(new QLabel(tr("Cache directory:")), 4, 0);
+    layoutSolver->addWidget(txtCacheDir, 5, 0, 1, 2);
     layoutSolver->addWidget(chkSaveWithSolution);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
