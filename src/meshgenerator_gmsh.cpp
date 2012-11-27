@@ -110,10 +110,10 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             {
                 QFileInfo fileInfoOrig(Util::problem()->config()->fileName());
 
-                QFile::copy(tempProblemFileName() + ".mesh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".mesh");
+                QFile::copy(cacheProblemDir() + "/initial.mesh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".mesh");
             }
 
-            //  remove triangle temp files
+            //  remove gmsh temp files
             /*
             QFile::remove(tempProblemFileName() + ".geo");
             QFile::remove(tempProblemFileName() + ".msh");
@@ -121,22 +121,6 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".gmsh.err");
             */
             Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
-
-            // load mesh
-            try
-            {
-                QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
-
-                // FIXME: jinak
-                Util::problem()->setMeshesInitial(meshes);
-            }
-            catch (Hermes::Exceptions::Exception& e)
-            {
-                m_isError = true;
-
-                Util::log()->printError(tr("Mesh generator"), QString("%1").arg(e.what()));
-            }
-
         }
         else
         {

@@ -52,12 +52,12 @@ void {{CLASS}}LocalValue::calculate()
         double x = m_point.x;
         double y = m_point.y;
 
-        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->meshInitial(m_fieldInfo).data(),
+        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(m_fieldInfo->initialMesh().data(),
                                                                                                  m_point.x, m_point.y);
         if (e)
         {
             // find marker
-            SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo).data()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
+            SceneLabel *label = Util::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
             double *value = new double[m_fieldInfo->module()->numberOfSolutions()];

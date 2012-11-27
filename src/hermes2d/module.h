@@ -637,7 +637,6 @@ void readMeshDirtyFix();
 
 // read mesh
 QSharedPointer<Hermes::Hermes2D::Mesh> readMeshFromFile(const QString &fileName);
-QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > readMeshesFromFile(const QString &fileName);
 void writeMeshToFile(const QString &fileName, Hermes::Hermes2D::Mesh *mesh);
 
 void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);

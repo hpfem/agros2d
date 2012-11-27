@@ -184,15 +184,18 @@ public:
 
     inline void invalidate() { emit invalidated(); }
 
-    // clears all solutions and remove them
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
     void setActiveViewField(FieldInfo* fieldInfo);
+
     inline int activeTimeStep() const { return m_activeTimeStep; }
     void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
+
     inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
     void setActiveAdaptivityStep(int as) { m_activeAdaptivityStep = as; }
+
     inline SolutionMode activeSolutionType() const { return m_activeSolutionMode; }
     void setActiveSolutionType(SolutionMode st) { m_activeSolutionMode = st; }
+
     // active MultiSolutionArray
     MultiSolutionArray<double> activeMultiSolutionArray();
 

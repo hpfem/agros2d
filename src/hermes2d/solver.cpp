@@ -203,52 +203,6 @@ void Solver<Scalar>::init(Block* block)
 }
 
 template <typename Scalar>
-QMap<FieldInfo*, QSharedPointer<Mesh> > Solver<Scalar>::readMesh()
-{
-    // load the mesh file
-    QMap<FieldInfo*, QSharedPointer<Mesh> > meshes = readMeshesFromFile(tempProblemFileName() + ".xml");
-
-    // check that all boundary edges have a marker assigned
-    QSet<int> boundaries;
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
-    {
-        QSharedPointer<Mesh> mesh = meshes[fieldInfo];
-        for (int i = 0; i < mesh->get_max_node_id(); i++)
-        {
-            Node *node = mesh.data()->get_node(i);
-
-            if ((node->used == 1 && node->ref < 2 && node->type == 1))
-            {
-                int marker = atoi(mesh.data()->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
-
-                assert(marker >= 0 || marker == -999);
-
-                if (marker >= 0 && Util::scene()->edges->at(marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
-                    boundaries.insert(marker);
-            }
-        }
-
-        if (boundaries.count() > 0)
-        {
-            QString markers;
-            foreach (int marker, boundaries)
-                markers += QString::number(marker) + ", ";
-            markers = markers.left(markers.length() - 2);
-
-            Util::log()->printError(m_solverID, QObject::tr("boundary edges '%1' does not have a boundary marker").arg(markers));
-
-            meshes.clear();
-            return meshes;
-        }
-        boundaries.clear();
-    }
-
-    Util::problem()->setMeshesInitial(meshes);
-
-    return meshes;
-}
-
-template <typename Scalar>
 void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
                                    Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selector)
 {
@@ -347,7 +301,9 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
         for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             // TODO: double -> Scalar
-            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp).data(), mesh.data(), orderIncrease);
+            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp).data(),
+                                                              mesh.data(),
+                                                              orderIncrease);
             newSpaces.add(QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), mesh);
 
             totalComp++;
@@ -535,9 +491,8 @@ template <typename Scalar>
 void Solver<Scalar>::createInitialSpace()
 {
     // read mesh from file
-    QMap<FieldInfo*, QSharedPointer<Mesh> > meshes = readMesh();
-    if (meshes.isEmpty())
-        throw(AgrosSolverException("Meshes are empty"));
+    if (!Util::problem()->isMeshed())
+        throw AgrosSolverException(QObject::tr("Meshes are empty"));
 
     // essential boundary conditions
     Hermes::vector<EssentialBCs<double> *> bcs;
@@ -547,6 +502,10 @@ void Solver<Scalar>::createInitialSpace()
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
+
+        // create copy of initial mesh
+        QSharedPointer<Hermes::Hermes2D::Mesh> initialMesh(new Hermes::Hermes2D::Mesh());
+        initialMesh.data()->copy(fieldInfo->initialMesh().data());
 
         ProblemID problemId;
 
@@ -571,7 +530,7 @@ void Solver<Scalar>::createInitialSpace()
                     assert(plugin);
 
                     // exact solution - Dirichlet BC
-                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form, meshes[fieldInfo].data());
+                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form, initialMesh.data());
                     function->setMarkerSource(boundary);
 
                     EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
@@ -590,10 +549,10 @@ void Solver<Scalar>::createInitialSpace()
             switch (fieldInfo->module()->spaces()[i+1].type())
             {
             case HERMES_L2_SPACE:
-                oneSpace = new L2Space<Scalar>(meshes[fieldInfo].data(), fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new L2Space<Scalar>(initialMesh.data(), fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_H1_SPACE:
-                oneSpace = new H1Space<Scalar>(meshes[fieldInfo].data(), bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new H1Space<Scalar>(initialMesh.data(), bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
                 break;
             default:
                 assert(0);
@@ -601,7 +560,7 @@ void Solver<Scalar>::createInitialSpace()
             }
 
             //cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
-            m_actualSpaces.add(QSharedPointer<Space<Scalar> >(oneSpace), meshes[fieldInfo]);
+            m_actualSpaces.add(QSharedPointer<Space<Scalar> >(oneSpace), initialMesh);
 
             // set order by element
             foreach(SceneLabel* label, Util::scene()->labels->items())

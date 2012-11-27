@@ -139,6 +139,8 @@ int FieldInfo::labelPolynomialOrder(SceneLabel *label)
 void FieldInfo::clear()
 {
     // mesh
+    m_initialMesh.clear();
+
     m_numberOfRefinements = 1;
     m_polynomialOrder = 2;
 

@@ -87,7 +87,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             {
                                 boundary = true;
                             }
-                            if ((atoi(Util::problem()->meshInitial(m_fieldInfo)->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
+                            if ((atoi(m_fieldInfo->initialMesh().data()->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
                             {
                                 integrate = true;
                             }
@@ -129,7 +129,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             int np = quad->get_num_points(eo, e->get_mode());
 
                             // set material variable
-                            SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
+                            SceneMaterial *material = Util::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().
                                                                                      get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
                             // expressions

@@ -156,10 +156,10 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->activeMeshInitial().data(), p.x, p.y);
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::scene()->activeViewField()->initialMesh().data(), p.x, p.y);
             if (e)
             {
-                SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial().data()->get_element_markers_conversion().
+                SceneLabel *label = Util::scene()->labels->at(atoi(Util::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().
                                                                    get_user_marker(e->marker).marker.c_str()));
 
                 label->setSelected(!label->isSelected());
@@ -1151,14 +1151,14 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
 
     // elements
     glBegin(GL_TRIANGLES);
-    for (int i = 0, max = Util::problem()->activeMeshInitial()->get_max_element_id(); i < max; i++)
+    for (int i = 0, max = Util::scene()->activeViewField()->initialMesh().data()->get_max_element_id(); i < max; i++)
     {
         Hermes::Hermes2D::Element *element;
-        if ((element = Util::problem()->activeMeshInitial()->get_element_fast(i))->used)
+        if ((element = Util::scene()->activeViewField()->initialMesh().data()->get_element_fast(i))->used)
         {
             if (element->active)
             {
-                if (Util::scene()->labels->at(atoi(Util::problem()->activeMeshInitial()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected())
+                if (Util::scene()->labels->at(atoi(Util::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected())
                 {
                     if (element->is_triangle())
                     {
