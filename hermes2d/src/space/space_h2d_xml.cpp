@@ -63,6 +63,36 @@ namespace XMLSpace
     this->element_data_ = s;
   }
 
+  const space::spaceType_optional& space::
+  spaceType () const
+  {
+    return this->spaceType_;
+  }
+
+  space::spaceType_optional& space::
+  spaceType ()
+  {
+    return this->spaceType_;
+  }
+
+  void space::
+  spaceType (const spaceType_type& x)
+  {
+    this->spaceType_.set (x);
+  }
+
+  void space::
+  spaceType (const spaceType_optional& x)
+  {
+    this->spaceType_ = x;
+  }
+
+  void space::
+  spaceType (::std::auto_ptr< spaceType_type > x)
+  {
+    this->spaceType_.set (x);
+  }
+
 
   // element_data
   // 
@@ -168,7 +198,8 @@ namespace XMLSpace
   space::
   space ()
   : ::xml_schema::type (),
-    element_data_ (::xml_schema::flags (), this)
+    element_data_ (::xml_schema::flags (), this),
+    spaceType_ (::xml_schema::flags (), this)
   {
   }
 
@@ -177,7 +208,8 @@ namespace XMLSpace
          ::xml_schema::flags f,
          ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    element_data_ (x.element_data_, f, this)
+    element_data_ (x.element_data_, f, this),
+    spaceType_ (x.spaceType_, f, this)
   {
   }
 
@@ -186,11 +218,12 @@ namespace XMLSpace
          ::xml_schema::flags f,
          ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    element_data_ (f, this)
+    element_data_ (f, this),
+    spaceType_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
-      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
       this->parse (p, f);
     }
   }
@@ -217,6 +250,22 @@ namespace XMLSpace
       }
 
       break;
+    }
+
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "spaceType" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< spaceType_type > r (
+          spaceType_traits::create (i, f, this));
+
+        this->spaceType_.set (r);
+        continue;
+      }
     }
   }
 
@@ -383,6 +432,11 @@ namespace XMLSpace
          b != e; ++b)
     {
       o << ::std::endl << "element_data: " << *b;
+    }
+
+    if (i.spaceType ())
+    {
+      o << ::std::endl << "spaceType: " << *i.spaceType ();
     }
 
     return o;
@@ -858,6 +912,18 @@ namespace XMLSpace
           e));
 
       s << *b;
+    }
+
+    // spaceType
+    //
+    if (i.spaceType ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "spaceType",
+          e));
+
+      a << *i.spaceType ();
     }
   }
 

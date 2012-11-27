@@ -708,6 +708,82 @@ namespace XMLSpace
     //@}
 
     /**
+     * @name spaceType
+     *
+     * @brief Accessor and modifier functions for the %spaceType
+     * optional attribute.
+     */
+    //@{
+
+    /**
+     * @brief Attribute type.
+     */
+    typedef ::xml_schema::string spaceType_type;
+
+    /**
+     * @brief Attribute optional container type.
+     */
+    typedef ::xsd::cxx::tree::optional< spaceType_type > spaceType_optional;
+
+    /**
+     * @brief Attribute traits type.
+     */
+    typedef ::xsd::cxx::tree::traits< spaceType_type, char > spaceType_traits;
+
+    /**
+     * @brief Return a read-only (constant) reference to the attribute
+     * container.
+     *
+     * @return A constant reference to the optional container.
+     */
+    const spaceType_optional&
+    spaceType () const;
+
+    /**
+     * @brief Return a read-write reference to the attribute container.
+     *
+     * @return A reference to the optional container.
+     */
+    spaceType_optional&
+    spaceType ();
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x A new value to set.
+     *
+     * This function makes a copy of its argument and sets it as
+     * the new value of the attribute.
+     */
+    void
+    spaceType (const spaceType_type& x);
+
+    /**
+     * @brief Set the attribute value.
+     *
+     * @param x An optional container with the new value to set.
+     *
+     * If the value is present in @a x then this function makes a copy 
+     * of this value and sets it as the new value of the attribute.
+     * Otherwise the attribute container is set the 'not present' state.
+     */
+    void
+    spaceType (const spaceType_optional& x);
+
+    /**
+     * @brief Set the attribute value without copying.
+     *
+     * @param p A new value to use.
+     *
+     * This function will try to use the passed value directly instead
+     * of making a copy.
+     */
+    void
+    spaceType (::std::auto_ptr< spaceType_type > p);
+
+    //@}
+
+    /**
      * @name Constructors
      */
     //@{
@@ -778,6 +854,7 @@ namespace XMLSpace
 
     protected:
     element_data_sequence element_data_;
+    spaceType_optional spaceType_;
 
     //@endcond
   };
