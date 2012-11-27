@@ -258,8 +258,7 @@ void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolu
 
     for (int i = 0; i < solutionID.group->module()->numberOfSolutions(); i++)
     {
-        QSharedPointer<Space<Scalar> > space(new H1Space<Scalar>(mesh.data()));
-        space.data()->load((QString("%1_%2.spc").arg(baseName).arg(i)).toStdString().c_str());
+        QSharedPointer<Space<Scalar> > space(Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toStdString().c_str(), mesh.data()));
 
         QSharedPointer<Solution<Scalar> > sln(new Solution<Scalar>());
         sln.data()->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space.data());

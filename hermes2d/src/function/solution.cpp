@@ -1334,9 +1334,9 @@ namespace Hermes
     {
       free();
       this->mesh = space->get_mesh();
-      this->space_type = space->get_type();
+			this->space_type = space->get_type();
 
-      try
+			try
       {
         std::auto_ptr<XMLSolution::solution> parsed_xml_solution(XMLSolution::solution_(filename));
         sln_type = parsed_xml_solution->exact() == 0 ? HERMES_SLN : HERMES_EXACT;
