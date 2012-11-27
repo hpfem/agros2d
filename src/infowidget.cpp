@@ -211,8 +211,8 @@ void InfoWidget::showInfo()
             {
                 field->SetValue("MESH_LABEL", tr("Mesh parameters").toStdString());
                 field->SetValue("INITIAL_MESH_LABEL", tr("Initial mesh:").toStdString());
-                field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(Util::problem()->meshInitial(fieldInfo)->get_num_nodes()).toStdString());
-                field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(Util::problem()->meshInitial(fieldInfo)->get_num_active_elements()).toStdString());
+                field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(fieldInfo->initialMesh().data()->get_num_nodes()).toStdString());
+                field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(fieldInfo->initialMesh().data()->get_num_active_elements()).toStdString());
 
                 if (Util::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
                 {

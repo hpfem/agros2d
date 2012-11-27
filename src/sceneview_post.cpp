@@ -56,12 +56,12 @@ void PostHermes::processInitialMesh()
 {
     if (Util::problem()->isMeshed())
     {
-        Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::problem()->activeMeshInitial()->get_num_active_elements()));
+        Util::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Util::scene()->activeViewField()->initialMesh().data()->get_num_active_elements()));
 
         // init linearizer for initial mesh
         try
         {
-            Hermes::Hermes2D::ZeroSolution<double> initial(Util::problem()->activeMeshInitial().data());
+            Hermes::Hermes2D::ZeroSolution<double> initial(Util::scene()->activeViewField()->initialMesh().data());
             m_linInitialMeshView.process_solution(&initial);
         }
         catch (Hermes::Exceptions::Exception& e)

@@ -80,7 +80,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     Hermes::Hermes2D::Element *e = this->refmap->get_active_element();
 
     // set material
-    SceneMaterial *material = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(m_fieldInfo)->get_element_markers_conversion().
+    SceneMaterial *material = Util::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().
                                                              get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
     {{#VARIABLE_SOURCE}}

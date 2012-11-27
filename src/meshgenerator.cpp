@@ -295,7 +295,7 @@ bool MeshGenerator::writeToHermes()
     }
 
     // save to file
-    QFile file(tempProblemFileName() + ".xml");
+    QFile file(cacheProblemDir() + "/initial.mesh");
     if (!file.open(QIODevice::WriteOnly))
         return false;
 

@@ -158,7 +158,6 @@ private:
     // weak form
     //WeakFormAgros<Scalar> *m_wf;
 
-    QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > readMesh();
     //void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
 //    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();

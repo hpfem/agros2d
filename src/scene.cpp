@@ -2144,7 +2144,7 @@ ErrorResult Scene::checkGeometryResult()
 bool Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
 {
     // check domain
-    Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->meshInitial(fieldInfo).data(),
+    Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh().data(),
                                                                                                    position.x, position.y);
     if (!element)
         return false;
@@ -2152,7 +2152,7 @@ bool Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, 
     // Lorentz force
 
     // find marker
-    SceneLabel *label = Util::scene()->labels->at(atoi(Util::problem()->meshInitial(fieldInfo)->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
+    SceneLabel *label = Util::scene()->labels->at(atoi(fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
     SceneMaterial *material = label->marker(fieldInfo);
 
     Point3 forceLorentz = Util::plugins()[fieldInfo->fieldId()]->force(fieldInfo, material, position, velocity) * Util::config()->particleConstant;
@@ -2228,7 +2228,7 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
                               -Util::config()->particleStartingRadius / 2,
                               (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + position + dp;
 
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::problem()->activeMeshInitial().data(),
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::scene()->activeViewField()->initialMesh().data(),
                                                                                                      position.x, position.y);
             trials++;
             if (e || trials > 10)
@@ -2455,9 +2455,11 @@ void Scene::computeParticleTracingPath(QList<Point3> *positions,
 void Scene::setActiveViewField(FieldInfo* fieldInfo)
 {
     m_activeViewField = fieldInfo;
+
     int newTimeStep = Util::solutionStore()->nearestTimeStep(fieldInfo, m_activeTimeStep);
     setActiveTimeStep(newTimeStep);
-    int lastAdapvieStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, newTimeStep);
-    setActiveAdaptivityStep(min(lastAdapvieStep, activeAdaptivityStep()));
+
+    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, newTimeStep);
+    setActiveAdaptivityStep(min(lastAdaptiveStep, activeAdaptivityStep()));
     setActiveSolutionType(SolutionMode_Normal);
 }

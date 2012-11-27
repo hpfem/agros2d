@@ -106,9 +106,13 @@ Problem::~Problem()
     delete m_config;
 }
 
-QSharedPointer<Hermes::Hermes2D::Mesh> Problem::activeMeshInitial()
+bool Problem::isMeshed() const
 {
-    return meshInitial(Util::scene()->activeViewField());
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        if (!fieldInfo->initialMesh().isNull())
+            return true;
+
+    return false;
 }
 
 bool Problem::isTransient() const
@@ -145,8 +149,6 @@ void Problem::clearSolution()
     m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
-
-    m_meshesInitial.clear();
 
     Util::solutionStore()->clearAll();
 }
@@ -310,11 +312,22 @@ bool Problem::mesh()
 
     if (pim && pim->mesh())
     {
-        emit meshed();
-        delete pim;
+        // load mesh
+        try
+        {
+            readInitialMeshesFromFile();
 
-        return true;
+            emit meshed();
+
+            delete pim;
+            return true;
+        }
+        catch (Hermes::Exceptions::Exception& e)
+        {
+            Util::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+        }
     }
+    delete pim;
 
     return false;
 }
@@ -723,6 +736,86 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 
     // warning: in the case of exception, the program will not reach this place
     // therefore the cleanup and stop of timeElapsed is done in solve / solveAdaptiveStep by calling solveFinished
+}
+
+void Problem::readInitialMeshesFromFile()
+{
+    // load initial mesh file
+    // prepare mesh array
+    Hermes::vector<Hermes::Hermes2D::Mesh*> meshesVector;
+    QMap<FieldInfo *, Hermes::Hermes2D::Mesh *> meshes;
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+    {
+        Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
+
+        meshesVector.push_back(mesh);
+        // cache
+        meshes[fieldInfo] = mesh;
+    }
+
+    // save locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    // load mesh from file
+    QString fileName = cacheProblemDir() + "/initial.mesh";
+    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
+    meshloader.load(fileName.toStdString().c_str(), meshesVector);
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+
+    QSet<int> boundaries;
+    foreach (FieldInfo *fieldInfo, m_fieldInfos)
+    {
+        Hermes::Hermes2D::Mesh *mesh = meshes[fieldInfo];
+
+        // check that all boundary edges have a marker assigned
+        for (int i = 0; i < mesh->get_max_node_id(); i++)
+        {
+            Hermes::Hermes2D::Node *node = mesh->get_node(i);
+
+            if ((node->used == 1 && node->ref < 2 && node->type == 1))
+            {
+                int marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
+
+                assert(marker >= 0 || marker == -999);
+
+                if (marker >= 0 && Util::scene()->edges->at(marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
+                    boundaries.insert(marker);
+            }
+        }
+
+        if (boundaries.count() > 0)
+        {
+            QString markers;
+            foreach (int marker, boundaries)
+                markers += QString::number(marker) + ", ";
+            markers = markers.left(markers.length() - 2);
+
+            throw AgrosException(QObject::tr("Mesh reader (%1): boundary edges '%2' does not have a boundary marker").
+                                 arg(fieldInfo->fieldId()).
+                                 arg(markers));
+
+            // delete meshes
+            foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
+                delete mesh;
+            meshes.clear();
+            meshesVector.clear();
+
+            return;
+        }
+        boundaries.clear();
+
+        // refine mesh
+        refineMesh(fieldInfo, mesh, true, true, true);
+
+        // set initial mesh
+        fieldInfo->setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh>(mesh));
+    }
+
+    meshes.clear();
+    meshesVector.clear();
 }
 
 void Problem::synchronizeCouplings()

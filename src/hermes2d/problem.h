@@ -149,13 +149,8 @@ public:
     // check geometry
     bool checkGeometry();
 
-    inline QSharedPointer<Hermes::Hermes2D::Mesh> meshInitial(FieldInfo* fieldInfo) { return m_meshesInitial[fieldInfo]; }
-    QSharedPointer<Hermes::Hermes2D::Mesh> activeMeshInitial();
-    inline QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > meshesInitial() { return m_meshesInitial; }
-    inline void setMeshesInitial(QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > meshes) { m_meshesInitial = meshes; }
-
     bool isSolved() const {  return m_isSolved; }
-    bool isMeshed()  const {  return !m_meshesInitial.isEmpty(); }
+    bool isMeshed() const;
     bool isSolving() const { return m_isSolving; }
 
     bool isTransient() const;
@@ -217,9 +212,6 @@ private:
 
     bool skipThisTimeStep(Block* block);
 
-    // todo: move to Field
-    QMap<FieldInfo*, QSharedPointer<Hermes::Hermes2D::Mesh> > m_meshesInitial; // linearizer only for mesh (on empty solution)
-
     void solveInit();
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
     void solveAction(); //called by solve, can throw SolverException
@@ -227,6 +219,8 @@ private:
 
     void solveAdaptiveStepAction();
 
+    // read initial meshes
+    void readInitialMeshesFromFile();
 };
 
 #endif // PROBLEM_H
