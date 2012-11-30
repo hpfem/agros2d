@@ -2463,3 +2463,8 @@ void Scene::setActiveViewField(FieldInfo* fieldInfo)
     setActiveAdaptivityStep(min(lastAdaptiveStep, activeAdaptivityStep()));
     setActiveSolutionType(SolutionMode_Normal);
 }
+
+void Scene::setActiveTimeStep(int ts)
+{
+    m_activeTimeStep = ts;
+}

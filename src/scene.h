@@ -188,7 +188,7 @@ public:
     void setActiveViewField(FieldInfo* fieldInfo);
 
     inline int activeTimeStep() const { return m_activeTimeStep; }
-    void setActiveTimeStep(int ts) { m_activeTimeStep = ts; }
+    void setActiveTimeStep(int ts);
 
     inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
     void setActiveAdaptivityStep(int as) { m_activeAdaptivityStep = as; }
