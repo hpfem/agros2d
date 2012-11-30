@@ -223,19 +223,16 @@ class FieldSolutionID : public SolutionID<FieldInfo>
 {
 public:
     FieldSolutionID(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) :
-        SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType), m_time(0.0) {}
+        SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType) {}
 
     FieldSolutionID() : SolutionID<FieldInfo>() {}
 
     BlockSolutionID blockSolutionID(Block* block);
 
-    inline void setTime(double time) { m_time = time; }
-    double time() { return timeStep; } // TODO: should be m_time
+    double time();
 
     QString toString();
 
-private:
-    double m_time;
 };
 
 class BlockSolutionID : public SolutionID<Block>

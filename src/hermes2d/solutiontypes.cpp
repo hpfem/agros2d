@@ -19,6 +19,11 @@ FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
     return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
 }
 
+double FieldSolutionID::time()
+{
+    return Util::problem()->timeStepToTime(timeStep);
+}
+
 BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
 {
     assert(block->contains(this->group));
