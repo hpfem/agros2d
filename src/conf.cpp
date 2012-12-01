@@ -25,6 +25,9 @@
 
 Config::Config() : eleConfig(NULL)
 {
+    // set xml schemas dir
+    Hermes::Hermes2D::Hermes2DApi.set_text_param_value(Hermes::Hermes2D::xmlSchemasDirPath, QString("%1/resources/xsd").arg(datadir()).toStdString());
+
     load();
 }
 
@@ -240,7 +243,7 @@ void Config::loadAdvanced()
     numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
     if (numberOfThreads > omp_get_max_threads())
         numberOfThreads = omp_get_max_threads();
-    Hermes::Hermes2D::Hermes2DApi.set_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
+    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
 
     // global script
     globalScript = settings.value("Python/GlobalScript", "").toString();
@@ -440,7 +443,7 @@ void Config::saveAdvanced()
 
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);
-    Hermes::Hermes2D::Hermes2DApi.set_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
+    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
 
     // global script
     settings.setValue("Python/GlobalScript", globalScript);
