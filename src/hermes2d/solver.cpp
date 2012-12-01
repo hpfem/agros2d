@@ -332,7 +332,7 @@ void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> 
             arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
             arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData()).toStdString();
 
-    Hermes::HermesCommonApi.set_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
     try
     {
