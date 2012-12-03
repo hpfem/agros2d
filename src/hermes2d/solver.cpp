@@ -327,10 +327,10 @@ void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVe
 template <typename Scalar>
 void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> spaces, int adaptivityStep, MultiSolution<Scalar> previousSolution)
 {
-    cout << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
-            arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
-            arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
-            arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData()).toStdString();
+    //    cout << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
+    //            arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
+    //            arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
+    //            arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData()).toStdString();
 
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
 
@@ -368,7 +368,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
         previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
 
-    //cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
+    // cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst()) == 0)
@@ -377,7 +377,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         throw(AgrosSolverException("DOF is zero"));
     }
 
-    cout << QString("updating with time %1\n").arg(Util::problem()->actualTime()).toStdString() << endl;
+    // cout << QString("updating with time %1\n").arg(Util::problem()->actualTime()).toStdString() << endl;
 
     // update timedep values
     foreach (Field* field, m_block->fields())
@@ -582,9 +582,9 @@ void Solver<Scalar>::createInitialSpace()
 template <typename Scalar>
 void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists)
 {
-//    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
-//    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
-//    MultiSolutionArray<Scalar> msaRef;
+    //    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
+    //    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
+    //    MultiSolutionArray<Scalar> msaRef;
 
     if(Util::problem()->isTransient())
     {
