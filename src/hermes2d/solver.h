@@ -27,7 +27,9 @@ class Block;
 class FieldInfo;
 
 template <typename Scalar>
-class WeakFormAgros;
+class ExactSolutionScalarAgros;
+
+class SceneBoundary;
 
 class AgrosSolverException : public AgrosException
 {
@@ -119,7 +121,7 @@ template <typename Scalar>
 class Solver
 {
 public:
-    Solver() : m_hermesSolverContainer(NULL) {}
+    Solver() : m_hermesSolverContainer(NULL) {m_exactSolutionFunctions.clear();}
     ~Solver();
 
     void init(Block* block);
@@ -134,6 +136,8 @@ public:
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
     bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
+    // for time dependent problems
+    void updateExactSolutionFunctions();
 private:
     Block* m_block;
 
@@ -148,6 +152,8 @@ private:
 
     // elapsed time
     double m_elapsedTime;
+
+    QMap<ExactSolutionScalarAgros<double>*, SceneBoundary *> m_exactSolutionFunctions;
 
     // weak form
     //WeakFormAgros<Scalar> *m_wf;
