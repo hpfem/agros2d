@@ -434,6 +434,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // update timedep values
     foreach (Field* field, m_block->fields())
         field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
+    updateExactSolutionFunctions();
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Util::problem()->actualTime());
 
@@ -540,6 +541,16 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
 }
 
 template <typename Scalar>
+void Solver<Scalar>::updateExactSolutionFunctions()
+{
+    foreach(ExactSolutionScalarAgros<double>* function, m_exactSolutionFunctions.keys())
+    {
+        SceneBoundary* boundary = m_exactSolutionFunctions[function];
+        function->setMarkerSource(boundary);
+    }
+}
+
+template <typename Scalar>
 void Solver<Scalar>::createInitialSpace()
 {
     // read mesh from file
@@ -551,6 +562,8 @@ void Solver<Scalar>::createInitialSpace()
     Hermes::vector<EssentialBCs<double> *> bcs;
     for (int i = 0; i < m_block->numSolutions(); i++)
         bcs.push_back(new EssentialBCs<double>());
+
+    m_exactSolutionFunctions.clear();
 
     foreach(Field* field, m_block->fields())
     {
@@ -581,6 +594,9 @@ void Solver<Scalar>::createInitialSpace()
                     // exact solution - Dirichlet BC
                     ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form, meshes[fieldInfo].data());
                     function->setMarkerSource(boundary);
+
+                    // save function - boundary pairs, so thay can be easily updated in each time step;
+                    m_exactSolutionFunctions[function] = boundary;
 
                     EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
@@ -678,6 +694,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     MultiSpace<Scalar> spacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
     assert(m_actualSpaces.size() == spacesRef.size());
 
+    // todo: delete? je to vubec potreba?
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef.naked(), Util::problem()->actualTime());
 
     Scalar solutionVector[Space<Scalar>::get_num_dofs(spacesRef.nakedConst())];
