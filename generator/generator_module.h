@@ -38,6 +38,7 @@ public:
 private:
     std::auto_ptr<XMLModule::module> module_xsd;
     XMLModule::module *m_module;
+    QString m_docString;
 
     // dictionary for variables used in weakforms
     QHash<QString, QString> m_volumeVariables;
@@ -64,6 +65,9 @@ private:
     LexicalAnalyser *weakFormLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
     QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true);
     QString parseWeakFormExpressionCheck(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr);
+
+    QString underline(QString text, char symbol);
+    QString capitalize(QString text);
 };
 
 #endif // GENERATOR_MODULE_H

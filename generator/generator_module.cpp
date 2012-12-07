@@ -128,22 +128,35 @@ void Agros2DGeneratorModule::generatePluginWeakFormFiles()
 }
 
 
+QString Agros2DGeneratorModule::underline(QString text,  char symbol)
+{
+    QString underlined = text + "\n";
+    for(int i = 0; i < text.length(); i++)
+    {
+        underlined += symbol;
+    }
+    underlined += "\n";
+    return underlined;
+}
+
+QString Agros2DGeneratorModule::capitalize(QString text)
+{
+    text[0] = text[0].toUpper();
+    return text;
+}
+
 void Agros2DGeneratorModule::generatePluginDocuentationFiles()
 {
     qDebug() << tr("%1: generating plugin documentation file.").arg(QString::fromStdString(m_module->general().id()));
-
     QString id = QString::fromStdString(m_module->general().id());
     QString name = QString::fromStdString(m_module->general().name());
-    QString text = name;
-    QString underline = "\n";
-    for(int i = 0; i < text.length(); i++)
-    {
-        underline += "=";
-    }
-    underline += "\n";
-    text += underline;
-    text += QString::fromStdString(m_module->general().description());
-
+    QString text = "";
+    text += underline(name,'=');
+    text += QString::fromStdString(m_module->general().description()) + "\n";
+    ctemplate::TemplateDictionary output("output");
+    generateWeakForms(output);
+    text += m_docString;
+    m_docString = "";
     // documentation - save to file
     writeStringContent(QString("%1/%2/%3/%3.rst").
                        arg(QApplication::applicationDirPath()).
@@ -163,10 +176,11 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
     output.SetValue("ID", m_module->general().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
-    generateWeakForms(output);
 
     std::string text;
-    ctemplate::ExpandTemplate(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+    generateWeakForms(output);
+
+    ExpandTemplate(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
     // source - save to file
@@ -205,10 +219,15 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
 
 void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &output)
 {
+    this->m_docString = "";
     foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
     {
+        // docummentation
+        m_docString += "\n" + underline(capitalize(weakform.analysistype().c_str()),'-') + "\n";
+        m_docString += "\n" + underline("Volume weakforms",'^') + "\n";
+
         foreach(XMLModule::matrix_form form, weakform.matrix_form())
-        {
+        {            
             generateForm(form, output, weakform, "VOLUME_MATRIX", 0, form.j());
         }
         foreach(XMLModule::vector_form form, weakform.vector_form())
@@ -1319,6 +1338,7 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
 {
     foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
     {
+        m_docString +=  capitalize(linearityTypeToStringKey(linearityType)) + '\n' + '\n';
         foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
         {
             QString expression = weakformExpression(coordinateType, linearityType, form);
@@ -1327,6 +1347,7 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 ctemplate::TemplateDictionary *field;
                 field = output.AddSectionDictionary(weakFormType.toStdString() + "_SOURCE");
 
+                // source files
                 QString functionName = QString("%1_%2_%3_%4_%5_%6_%7").
                         arg(weakFormType.toLower()).
                         arg(QString::fromStdString(m_module->general().id())).
@@ -1382,6 +1403,10 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 QString exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
                                                           coordinateType, linearityType, expression);
                 field->SetValue("EXPRESSION", exprCpp.toStdString());
+
+                //docummentation
+                m_docString +=  exprCpp;
+
                 // expression check
                 QString exprCppCheck = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
                                                                     coordinateType, linearityType, expression);
