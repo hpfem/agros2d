@@ -141,7 +141,8 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     pythonlab/pygeometry.cpp \
     pythonlab/pyview.cpp \
     pythonlab/pyparticletracing.cpp \
-    ../pythonlab/pythonlab_functions.cpp
+    ../pythonlab/pythonlab_functions.cpp \
+    particle/particle_tracing.cpp
 
 HEADERS += util.h \
     value.h \
@@ -231,8 +232,8 @@ HEADERS += util.h \
     pythonlab/pyfield.h \
     pythonlab/pygeometry.h \
     pythonlab/pyview.h \
-    pythonlab/pyparticletracing.h
-    # ../weakform_new/plugins/electrostatic/electrostatic_filter.h
+    pythonlab/pyparticletracing.h \
+    particle/particle_tracing.h
 
 OTHER_FILES += functions.py \
     version.xml \

@@ -23,6 +23,8 @@
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
 
+#include "particle/particle_tracing.h"
+
 void PyParticleTracing::solve()
 {
     if (!Util::problem()->isSolved())
@@ -34,12 +36,13 @@ void PyParticleTracing::solve()
     Util::config()->particleStartingRadius = 0.0;
     Util::config()->particleNumberOfParticles = 1;
 
-    // clear
-    m_positions.clear();
-    m_velocities.clear();
-    m_times.clear();
+    ParticleTracing particleTracing;
+    particleTracing.computeTrajectoryParticle(false);
 
-    Util::scene()->computeParticleTracingPath(&m_positions, &m_velocities, &m_times, false);
+    m_positions = particleTracing.positions();
+    m_velocities = particleTracing.velocities();
+    m_times = particleTracing.times();
+
     currentPythonEngineAgros()->postHermes()->refresh();
 
     // restore values

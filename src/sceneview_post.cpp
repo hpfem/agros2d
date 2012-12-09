@@ -31,6 +31,8 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
+#include "particle/particle_tracing.h"
+
 #include "logview.h"
 
 #include "hermes2d/module.h"
@@ -254,44 +256,24 @@ void PostHermes::processParticleTracing()
         m_particleTracingVelocityMin =  numeric_limits<double>::max();
         m_particleTracingVelocityMax = -numeric_limits<double>::max();
 
-        m_particleTracingPositionMin =  numeric_limits<double>::max();
-        m_particleTracingPositionMax = -numeric_limits<double>::max();
-
         for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
         {
             // position and velocity cache
-            QList<Point3> positions;
-            QList<Point3> velocities;
-            QList<double> times;
+            ParticleTracing particleTracing;
+            particleTracing.computeTrajectoryParticle(k > 0);
 
-            Util::scene()->computeParticleTracingPath(&positions, &velocities, &times, (k > 0));
-
-            m_particleTracingPositionsList.append(positions);
-            m_particleTracingVelocitiesList.append(velocities);
-            m_particleTracingTimesList.append(times);
+            m_particleTracingPositionsList.append(particleTracing.positions());
+            m_particleTracingVelocitiesList.append(particleTracing.velocities());
+            m_particleTracingTimesList.append(particleTracing.times());
 
             // velocity min and max value
-            for (int i = 0; i < velocities.length(); i++)
-            {
-                double velocity = velocities[i].magnitude();
-
-                if (velocity < m_particleTracingVelocityMin) m_particleTracingVelocityMin = velocity;
-                if (velocity > m_particleTracingVelocityMax) m_particleTracingVelocityMax = velocity;
-            }
-
-            // position min and max value
-            for (int i = 0; i < positions.length(); i++)
-            {
-                double position = positions[i].z;
-
-                if (position < m_particleTracingPositionMin) m_particleTracingPositionMin = position;
-                if (position > m_particleTracingPositionMax) m_particleTracingPositionMax = position;
-            }
+            if (particleTracing.velocityMin() < m_particleTracingVelocityMin) m_particleTracingVelocityMin = particleTracing.velocityMin();
+            if (particleTracing.velocityMax() > m_particleTracingVelocityMax) m_particleTracingVelocityMax = particleTracing.velocityMax();
 
             Util::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
                                       arg(k + 1).
-                                      arg(times.count()).
-                                      arg(times.last()));
+                                      arg(particleTracing.times().count()).
+                                      arg(particleTracing.times().last()));
         }
 
         m_particleTracingIsPrepared = true;
@@ -691,7 +673,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
         printPostAt(scaleLeft + scaleSize.x / 2.0 - m_fontPost->glyphs[GLYPH_M].width * str.count() / 2.0,
                     scaleBorder.y + scaleSize.y - 20.0,
                     str);
-    }  
+    }
 }
 
 void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max, bool is2D)

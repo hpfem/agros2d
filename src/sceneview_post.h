@@ -25,6 +25,8 @@
 
 template <typename Scalar> class SceneSolution;
 
+class ParticleTracing;
+
 class PostHermes : public QObject
 {
     Q_OBJECT
@@ -92,6 +94,7 @@ private:
     Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
 
     // particle tracing
+    ParticleTracing *particleTracing;
     bool m_particleTracingIsPrepared;
     QList<QList<Point3> > m_particleTracingPositionsList;
     QList<QList<Point3> > m_particleTracingVelocitiesList;
@@ -100,7 +103,6 @@ private:
     double m_particleTracingPositionMax;
     double m_particleTracingVelocityMin;
     double m_particleTracingVelocityMax;
-
 
 private slots:
     void processMeshed();
