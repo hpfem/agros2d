@@ -18,13 +18,16 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "settings.h"
-#include "scene.h"
-#include "pythonlab/pythonengine_agros.h"
 
 #include "util/constants.h"
 #include "util/glfont.h"
+#include "util/global.h"
+
 #include "gui/common.h"
 #include "gui/lineeditdouble.h"
+
+#include "scene.h"
+#include "pythonlab/pythonengine_agros.h"
 
 const double minWidth = 110;
 
@@ -52,135 +55,135 @@ void SettingsWidget::createActions()
 void SettingsWidget::load()
 {
     // workspace
-    txtGridStep->setText(QString::number(Util::config()->gridStep));
-    chkShowGrid->setChecked(Util::config()->showGrid);
-    chkSnapToGrid->setChecked(Util::config()->snapToGrid);
+    txtGridStep->setText(QString::number(Agros2D::config()->gridStep));
+    chkShowGrid->setChecked(Agros2D::config()->showGrid);
+    chkSnapToGrid->setChecked(Agros2D::config()->snapToGrid);
 
-    cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(Util::config()->rulersFont));
+    cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(Agros2D::config()->rulersFont));
     if (cmbRulersFont->currentIndex() == -1)
         cmbRulersFont->setCurrentIndex(0);
-    cmbPostFont->setCurrentIndex(cmbPostFont->findData(Util::config()->postFont));
+    cmbPostFont->setCurrentIndex(cmbPostFont->findData(Agros2D::config()->postFont));
     if (cmbPostFont->currentIndex() == -1)
         cmbPostFont->setCurrentIndex(0);
 
-    chkShowAxes->setChecked(Util::config()->showAxes);
-    chkShowRulers->setChecked(Util::config()->showRulers);
+    chkShowAxes->setChecked(Agros2D::config()->showAxes);
+    chkShowRulers->setChecked(Agros2D::config()->showRulers);
 
-    chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
-    txtGeometryNodeSize->setValue(Util::config()->nodeSize);
-    txtGeometryEdgeWidth->setValue(Util::config()->edgeWidth);
-    txtGeometryLabelSize->setValue(Util::config()->labelSize);
+    chkZoomToMouse->setChecked(Agros2D::config()->zoomToMouse);
+    txtGeometryNodeSize->setValue(Agros2D::config()->nodeSize);
+    txtGeometryEdgeWidth->setValue(Agros2D::config()->edgeWidth);
+    txtGeometryLabelSize->setValue(Agros2D::config()->labelSize);
 
     // 3d
-    chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
-    txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
-    chkView3DBackground->setChecked(Util::config()->scalarView3DBackground);
-    txtView3DHeight->setValue(Util::config()->scalarView3DHeight);
-    chkView3DBoundingBox->setChecked(Util::config()->scalarView3DBoundingBox);
+    chkView3DLighting->setChecked(Agros2D::config()->scalarView3DLighting);
+    txtView3DAngle->setValue(Agros2D::config()->scalarView3DAngle);
+    chkView3DBackground->setChecked(Agros2D::config()->scalarView3DBackground);
+    txtView3DHeight->setValue(Agros2D::config()->scalarView3DHeight);
+    chkView3DBoundingBox->setChecked(Agros2D::config()->scalarView3DBoundingBox);
 
     // deform shape
-    chkDeformScalar->setChecked(Util::config()->deformScalar);
-    chkDeformContour->setChecked(Util::config()->deformContour);
-    chkDeformVector->setChecked(Util::config()->deformVector);
+    chkDeformScalar->setChecked(Agros2D::config()->deformScalar);
+    chkDeformContour->setChecked(Agros2D::config()->deformContour);
+    chkDeformVector->setChecked(Agros2D::config()->deformVector);
 
     // colors
-    colorBackground->setColor(Util::config()->colorBackground);
-    colorGrid->setColor(Util::config()->colorGrid);
-    colorCross->setColor(Util::config()->colorCross);
-    colorNodes->setColor(Util::config()->colorNodes);
-    colorEdges->setColor(Util::config()->colorEdges);
-    colorLabels->setColor(Util::config()->colorLabels);
-    colorContours->setColor(Util::config()->colorContours);
-    colorVectors->setColor(Util::config()->colorVectors);
-    colorInitialMesh->setColor(Util::config()->colorInitialMesh);
-    colorSolutionMesh->setColor(Util::config()->colorSolutionMesh);
-    colorHighlighted->setColor(Util::config()->colorHighlighted);
-    colorSelected->setColor(Util::config()->colorSelected);
+    colorBackground->setColor(Agros2D::config()->colorBackground);
+    colorGrid->setColor(Agros2D::config()->colorGrid);
+    colorCross->setColor(Agros2D::config()->colorCross);
+    colorNodes->setColor(Agros2D::config()->colorNodes);
+    colorEdges->setColor(Agros2D::config()->colorEdges);
+    colorLabels->setColor(Agros2D::config()->colorLabels);
+    colorContours->setColor(Agros2D::config()->colorContours);
+    colorVectors->setColor(Agros2D::config()->colorVectors);
+    colorInitialMesh->setColor(Agros2D::config()->colorInitialMesh);
+    colorSolutionMesh->setColor(Agros2D::config()->colorSolutionMesh);
+    colorHighlighted->setColor(Agros2D::config()->colorHighlighted);
+    colorSelected->setColor(Agros2D::config()->colorSelected);
 
     // mesh and solver
-    txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
-    chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
+    txtMeshAngleSegmentsCount->setValue(Agros2D::config()->angleSegmentsCount);
+    chkMeshCurvilinearElements->setChecked(Agros2D::config()->curvilinearElements);
 
     // adaptivity
-    txtMaxDOFs->setValue(Util::config()->maxDofs);
-    txtConvExp->setValue(Util::config()->convExp);
-    txtThreshold->setValue(Util::config()->threshold);
-    cmbStrategy->setCurrentIndex(cmbStrategy->findData(Util::config()->strategy));
-    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Util::config()->meshRegularity));
-    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(Util::config()->projNormType));
-    chkUseAnIso->setChecked(Util::config()->useAniso);
-    chkFinerReference->setChecked(Util::config()->finerReference);
+    txtMaxDOFs->setValue(Agros2D::config()->maxDofs);
+    txtConvExp->setValue(Agros2D::config()->convExp);
+    txtThreshold->setValue(Agros2D::config()->threshold);
+    cmbStrategy->setCurrentIndex(cmbStrategy->findData(Agros2D::config()->strategy));
+    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Agros2D::config()->meshRegularity));
+    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(Agros2D::config()->projNormType));
+    chkUseAnIso->setChecked(Agros2D::config()->useAniso);
+    chkFinerReference->setChecked(Agros2D::config()->finerReference);
 
     // command argument
-    txtArgumentTriangle->setText(Util::config()->commandTriangle);
-    txtArgumentGmsh->setText(Util::config()->commandGmsh);
+    txtArgumentTriangle->setText(Agros2D::config()->commandTriangle);
+    txtArgumentGmsh->setText(Agros2D::config()->commandGmsh);
 }
 
 void SettingsWidget::save()
 {
     // workspace
-    Util::config()->showGrid = chkShowGrid->isChecked();
-    Util::config()->gridStep = txtGridStep->text().toDouble();
-    Util::config()->showRulers = chkShowRulers->isChecked();
-    Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
-    Util::config()->snapToGrid = chkSnapToGrid->isChecked();
+    Agros2D::config()->showGrid = chkShowGrid->isChecked();
+    Agros2D::config()->gridStep = txtGridStep->text().toDouble();
+    Agros2D::config()->showRulers = chkShowRulers->isChecked();
+    Agros2D::config()->zoomToMouse = chkZoomToMouse->isChecked();
+    Agros2D::config()->snapToGrid = chkSnapToGrid->isChecked();
 
-    Util::config()->rulersFont = cmbRulersFont->itemData(cmbRulersFont->currentIndex()).toString();
-    Util::config()->postFont = cmbPostFont->itemData(cmbPostFont->currentIndex()).toString();
+    Agros2D::config()->rulersFont = cmbRulersFont->itemData(cmbRulersFont->currentIndex()).toString();
+    Agros2D::config()->postFont = cmbPostFont->itemData(cmbPostFont->currentIndex()).toString();
 
-    Util::config()->showAxes = chkShowAxes->isChecked();
-    Util::config()->showRulers = chkShowRulers->isChecked();
+    Agros2D::config()->showAxes = chkShowAxes->isChecked();
+    Agros2D::config()->showRulers = chkShowRulers->isChecked();
 
-    Util::config()->nodeSize = txtGeometryNodeSize->value();
-    Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
-    Util::config()->labelSize = txtGeometryLabelSize->value();
+    Agros2D::config()->nodeSize = txtGeometryNodeSize->value();
+    Agros2D::config()->edgeWidth = txtGeometryEdgeWidth->value();
+    Agros2D::config()->labelSize = txtGeometryLabelSize->value();
 
     // 3d
-    Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
-    Util::config()->scalarView3DAngle = txtView3DAngle->value();
-    Util::config()->scalarView3DBackground = chkView3DBackground->isChecked();
-    Util::config()->scalarView3DHeight = txtView3DHeight->value();
-    Util::config()->scalarView3DBoundingBox = chkView3DBoundingBox->isChecked();
+    Agros2D::config()->scalarView3DLighting = chkView3DLighting->isChecked();
+    Agros2D::config()->scalarView3DAngle = txtView3DAngle->value();
+    Agros2D::config()->scalarView3DBackground = chkView3DBackground->isChecked();
+    Agros2D::config()->scalarView3DHeight = txtView3DHeight->value();
+    Agros2D::config()->scalarView3DBoundingBox = chkView3DBoundingBox->isChecked();
 
     // deform shape
-    Util::config()->deformScalar = chkDeformScalar->isChecked();
-    Util::config()->deformContour = chkDeformContour->isChecked();
-    Util::config()->deformVector = chkDeformVector->isChecked();
+    Agros2D::config()->deformScalar = chkDeformScalar->isChecked();
+    Agros2D::config()->deformContour = chkDeformContour->isChecked();
+    Agros2D::config()->deformVector = chkDeformVector->isChecked();
 
     // color
-    Util::config()->colorBackground = colorBackground->color();
-    Util::config()->colorGrid = colorGrid->color();
-    Util::config()->colorCross = colorCross->color();
-    Util::config()->colorNodes = colorNodes->color();
-    Util::config()->colorEdges = colorEdges->color();
-    Util::config()->colorLabels = colorLabels->color();
-    Util::config()->colorContours = colorContours->color();
-    Util::config()->colorVectors = colorVectors->color();
-    Util::config()->colorInitialMesh = colorInitialMesh->color();
-    Util::config()->colorSolutionMesh = colorSolutionMesh->color();
-    Util::config()->colorHighlighted = colorHighlighted->color();
-    Util::config()->colorSelected = colorSelected->color();
+    Agros2D::config()->colorBackground = colorBackground->color();
+    Agros2D::config()->colorGrid = colorGrid->color();
+    Agros2D::config()->colorCross = colorCross->color();
+    Agros2D::config()->colorNodes = colorNodes->color();
+    Agros2D::config()->colorEdges = colorEdges->color();
+    Agros2D::config()->colorLabels = colorLabels->color();
+    Agros2D::config()->colorContours = colorContours->color();
+    Agros2D::config()->colorVectors = colorVectors->color();
+    Agros2D::config()->colorInitialMesh = colorInitialMesh->color();
+    Agros2D::config()->colorSolutionMesh = colorSolutionMesh->color();
+    Agros2D::config()->colorHighlighted = colorHighlighted->color();
+    Agros2D::config()->colorSelected = colorSelected->color();
 
     // mesh and solver
-    Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
-    Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
+    Agros2D::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
+    Agros2D::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
 
     // adaptivity
-    Util::config()->maxDofs = txtMaxDOFs->value();
-    Util::config()->convExp = txtConvExp->value();
-    Util::config()->threshold = txtThreshold->value();
-    Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
-    Util::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
-    Util::config()->projNormType = (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
-    Util::config()->useAniso = chkUseAnIso->isChecked();
-    Util::config()->finerReference = chkFinerReference->isChecked();
+    Agros2D::config()->maxDofs = txtMaxDOFs->value();
+    Agros2D::config()->convExp = txtConvExp->value();
+    Agros2D::config()->threshold = txtThreshold->value();
+    Agros2D::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
+    Agros2D::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
+    Agros2D::config()->projNormType = (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
+    Agros2D::config()->useAniso = chkUseAnIso->isChecked();
+    Agros2D::config()->finerReference = chkFinerReference->isChecked();
 
     // command argument
-    Util::config()->commandTriangle = txtArgumentTriangle->text();
-    Util::config()->commandGmsh = txtArgumentGmsh->text();
+    Agros2D::config()->commandTriangle = txtArgumentTriangle->text();
+    Agros2D::config()->commandGmsh = txtArgumentGmsh->text();
 
     // save
-    Util::config()->save();
+    Agros2D::config()->save();
 }
 
 void SettingsWidget::createControls()

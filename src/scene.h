@@ -228,36 +228,4 @@ private slots:
     void doInvalidated();
 };
 
-// **************************************************************************************
-
-class Util
-{
-public:
-    static void createSingleton();
-    static Util* singleton();
-    static inline Scene *scene() { return Util::singleton()->m_scene; }
-    static inline Config *config() { return Util::singleton()->m_config; }
-    static inline Problem *problem() { return Util::singleton()->m_problem; }
-    static inline SolutionStore *solutionStore() { return Util::singleton()->m_solutionStore; }
-    static inline Log *log() { return Util::singleton()->m_log; }
-
-    static void loadPlugins(QStringList plugins);
-    static QMap<QString, PluginInterface *> plugins() { return Util::singleton()->m_plugins; }
-
-    Util(const Util &);
-    Util & operator = (const Util &);
-    Util();
-    ~Util();
-
-private:
-    Scene *m_scene;
-    Config *m_config;
-    Problem *m_problem;
-    SolutionStore *m_solutionStore;
-    ScriptEngineRemote *m_scriptEngineRemote;
-    Log *m_log;
-
-    QMap<QString, PluginInterface *> m_plugins;
-};
-
 #endif /* SCENE_H */

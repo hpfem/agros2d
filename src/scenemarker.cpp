@@ -17,10 +17,13 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "scenemarker.h"
+
+#include "util/global.h"
+
 #include "hermes2d/marker.h"
 
 #include "scene.h"
-#include "scenemarker.h"
 #include "scenemarkerdialog.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
@@ -116,7 +119,7 @@ void MarkerContainer<MarkerType>::doFieldsChanged()
 {
     foreach(FieldInfo* fieldInfo, noneMarkers.keys())
     {
-        if(! Util::problem()->fieldInfos().values().contains(fieldInfo)){
+        if (!Agros2D::problem()->fieldInfos().values().contains(fieldInfo)){
             delete noneMarkers[fieldInfo];
             noneMarkers.remove(fieldInfo);
             removeFieldMarkers(fieldInfo);

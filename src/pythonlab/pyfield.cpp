@@ -35,14 +35,14 @@ PyField::PyField(char *fieldId)
     QMap<QString, QString> modules = availableModules();
 
     if (modules.keys().contains(QString(fieldId)))
-        if (Util::problem()->hasField(QString(fieldId)))
+        if (Agros2D::problem()->hasField(QString(fieldId)))
         {
-            m_fieldInfo = Util::problem()->fieldInfo(fieldId);
+            m_fieldInfo = Agros2D::problem()->fieldInfo(fieldId);
         }
         else
         {
             m_fieldInfo = new FieldInfo(fieldId);
-            Util::problem()->addField(fieldInfo());
+            Agros2D::problem()->addField(fieldInfo());
         }
     else
         throw invalid_argument(QObject::tr("Invalid field id. Valid keys: %1").arg(stringListToString(modules.keys())).toStdString());
@@ -57,7 +57,7 @@ void PyField::setAnalysisType(const char *analysisType)
 {
     if (availableAnalyses(m_fieldInfo->fieldId()).contains(analysisTypeFromStringKey(QString(analysisType))))
     {
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
     }
     else
     {
@@ -73,7 +73,7 @@ void PyField::setAnalysisType(const char *analysisType)
 void PyField::setNumberOfRefinements(const int numberOfRefinements)
 {
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNumberOfRefinements(numberOfRefinements);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNumberOfRefinements(numberOfRefinements);
     else
         throw invalid_argument(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
 }
@@ -81,7 +81,7 @@ void PyField::setNumberOfRefinements(const int numberOfRefinements)
 void PyField::setPolynomialOrder(const int polynomialOrder)
 {
     if (polynomialOrder > 0 && polynomialOrder <= 10)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPolynomialOrder(polynomialOrder);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setPolynomialOrder(polynomialOrder);
     else
         throw invalid_argument(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 }
@@ -89,7 +89,7 @@ void PyField::setPolynomialOrder(const int polynomialOrder)
 void PyField::setLinearityType(const char *linearityType)
 {
     if (linearityTypeStringKeys().contains(QString(linearityType)))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setLinearityType(linearityTypeFromStringKey(QString(linearityType)));
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setLinearityType(linearityTypeFromStringKey(QString(linearityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
@@ -97,7 +97,7 @@ void PyField::setLinearityType(const char *linearityType)
 void PyField::setNonlinearTolerance(const double nonlinearTolerance)
 {
     if (nonlinearTolerance > 0.0)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearTolerance(nonlinearTolerance);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearTolerance(nonlinearTolerance);
     else
         throw invalid_argument(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
 }
@@ -105,7 +105,7 @@ void PyField::setNonlinearTolerance(const double nonlinearTolerance)
 void PyField::setNonlinearSteps(const int nonlinearSteps)
 {
     if (nonlinearSteps >= 1)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearSteps(nonlinearSteps);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearSteps(nonlinearSteps);
     else
         throw invalid_argument(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
 }
@@ -113,33 +113,33 @@ void PyField::setNonlinearSteps(const int nonlinearSteps)
 void PyField::setDampingCoeff(const double dampingCoeff)
 {
     if ((dampingCoeff <= 1) && (dampingCoeff > 0))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonDampingCoeff(dampingCoeff);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonDampingCoeff(dampingCoeff);
     else
         throw invalid_argument(QObject::tr("Damping coefficient must be between 0 and 1 .").toStdString());
 }
 
 void PyField::setAutomaticDamping(const bool automaticDamping)
 {
-    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonAutomaticDamping(automaticDamping);
+    Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonAutomaticDamping(automaticDamping);
 }
 
 void PyField::setDampingNumberToIncrease(const int dampingNumberToIncrease)
 {
     if ((dampingNumberToIncrease <= 5) && (dampingNumberToIncrease >= 1))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonDampingNumberToIncrease(dampingNumberToIncrease);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonDampingNumberToIncrease(dampingNumberToIncrease);
     else
         throw invalid_argument(QObject::tr("Number of steps needed to increase the damping coefficient must be between 1 and 5 .").toStdString());
 }
 
 void PyField::setPicardAndersonAcceleration(const bool acceleration)
 {
-    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonAcceleration(acceleration);
+    Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonAcceleration(acceleration);
 }
 
 void PyField::setPicardAndersonBeta(const double beta)
 {
     if ((beta <= 1) && (beta > 0))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonBeta(beta);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonBeta(beta);
     else
         throw invalid_argument(QObject::tr("Anderson coefficient must be between 0 and 1 .").toStdString());
 }
@@ -147,7 +147,7 @@ void PyField::setPicardAndersonBeta(const double beta)
 void PyField::setPicardAndersonNumberOfLastVectors(const int number)
 {
     if ((number <= 5) && (number >= 1))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonNumberOfLastVectors(number);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonNumberOfLastVectors(number);
     else
         throw invalid_argument(QObject::tr("Number of last vector must be between 1 and 5 .").toStdString());
 }
@@ -155,7 +155,7 @@ void PyField::setPicardAndersonNumberOfLastVectors(const int number)
 void PyField::setAdaptivityType(const char *adaptivityType)
 {
     if (adaptivityTypeStringKeys().contains(QString(adaptivityType)))
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityType(adaptivityTypeFromStringKey(QString(adaptivityType)));
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityType(adaptivityTypeFromStringKey(QString(adaptivityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityTypeStringKeys())).toStdString());
 }
@@ -163,7 +163,7 @@ void PyField::setAdaptivityType(const char *adaptivityType)
 void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
 {
     if (adaptivityTolerance > 0.0)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityTolerance(adaptivityTolerance);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityTolerance(adaptivityTolerance);
     else
         throw invalid_argument(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
 }
@@ -171,34 +171,34 @@ void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
 void PyField::setAdaptivitySteps(const int adaptivitySteps)
 {
     if (adaptivitySteps >= 1)
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivitySteps(adaptivitySteps);
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivitySteps(adaptivitySteps);
     else
         throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
 }
 
 void PyField::setInitialCondition(const double initialCondition)
 {
-    Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(Value(QString::number(initialCondition)));
+    Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(Value(QString::number(initialCondition)));
 }
 
 void PyField::setTimeSkip(const double timeSkip)
 {
-    if (timeSkip >= 0 && timeSkip <= Util::problem()->config()->timeTotal().number())
-        Util::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(Value(QString::number(timeSkip)));
+    if (timeSkip >= 0 && timeSkip <= Agros2D::problem()->config()->timeTotal().number())
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(Value(QString::number(timeSkip)));
     else
-        throw invalid_argument(QObject::tr("Time skip is out of range (0 - %1).").arg(Util::problem()->config()->timeTotal().number()).toStdString());
+        throw invalid_argument(QObject::tr("Time skip is out of range (0 - %1).").arg(Agros2D::problem()->config()->timeTotal().number()).toStdString());
 }
 
 void PyField::addBoundary(char *name, char *type, map<char*, double> parameters, map<char *, char *> expressions)
 {
     // check boundaries with same name
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
+    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
         if (boundary->name() == name)
             throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
     }
 
-    Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(QString(type));
+    Module::BoundaryType *boundaryType = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(QString(type));
     if (!boundaryType)
         throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
 
@@ -230,12 +230,12 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters,
             throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
     }
 
-    Util::scene()->addBoundary(new SceneBoundary(fieldInfo(), name, type, values));
+    Agros2D::scene()->addBoundary(new SceneBoundary(fieldInfo(), name, type, values));
 }
 
 void PyField::setBoundary(char *name, char *type, map<char*, double> parameters, map<char *, char *> expressions)
 {
-    SceneBoundary *sceneBoundary = Util::scene()->getBoundary(fieldInfo(), QString(name));
+    SceneBoundary *sceneBoundary = Agros2D::scene()->getBoundary(fieldInfo(), QString(name));
     if (sceneBoundary == NULL)
         throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(name).toStdString());
 
@@ -252,7 +252,7 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters,
     }
 
     // browse boundary parameters
-    Module::BoundaryType *boundaryType = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(sceneBoundary->type());
+    Module::BoundaryType *boundaryType = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(sceneBoundary->type());
     for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
@@ -282,7 +282,7 @@ void PyField::setBoundary(char *name, char *type, map<char*, double> parameters,
 
 void PyField::removeBoundary(char *name)
 {
-    Util::scene()->removeBoundary(Util::scene()->getBoundary(fieldInfo(), QString(name)));
+    Agros2D::scene()->removeBoundary(Agros2D::scene()->getBoundary(fieldInfo(), QString(name)));
 }
 
 void PyField::addMaterial(char *name, map<char*, double> parameters,
@@ -291,7 +291,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
                           map<char*, vector<double> > nonlin_y)
 {
     // check materials with same name
-    foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
+    foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
         if (material->name() == name)
             throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
@@ -301,7 +301,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
     QHash<QString, Value> values;
     for (std::map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
-        QList<Module::MaterialTypeVariable *> materials = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
+        QList<Module::MaterialTypeVariable *> materials = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
 
         bool assigned = false;
         foreach (Module::MaterialTypeVariable *variable, materials)
@@ -335,7 +335,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
             throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
     }
 
-    Util::scene()->addMaterial(new SceneMaterial(fieldInfo(), QString(name), values));
+    Agros2D::scene()->addMaterial(new SceneMaterial(fieldInfo(), QString(name), values));
 }
 
 void PyField::setMaterial(char *name, map<char*, double> parameters,
@@ -343,14 +343,14 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
                           map<char*, vector<double> > nonlin_x,
                           map<char*, vector<double> > nonlin_y)
 {
-    SceneMaterial *sceneMaterial = Util::scene()->getMaterial(fieldInfo(), QString(name));
+    SceneMaterial *sceneMaterial = Agros2D::scene()->getMaterial(fieldInfo(), QString(name));
 
     if (sceneMaterial == NULL)
         throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(name).toStdString());
 
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        QList<Module::MaterialTypeVariable *> materialVariables = Util::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
+        QList<Module::MaterialTypeVariable *> materialVariables = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
 
         bool assigned = false;
         foreach (Module::MaterialTypeVariable *variable, materialVariables)
@@ -387,14 +387,14 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
 
 void PyField::removeMaterial(char *name)
 {
-    Util::scene()->removeMaterial(Util::scene()->getMaterial(fieldInfo(), QString(name)));
+    Agros2D::scene()->removeMaterial(Agros2D::scene()->getMaterial(fieldInfo(), QString(name)));
 }
 
 void PyField::localValues(double x, double y, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         // set mode
         if (!silentMode())
@@ -405,7 +405,7 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
 
         Point point(x, y);
 
-        LocalValue *value = Util::plugins()[fieldInfo()->fieldId()]->localValue(fieldInfo(), point);
+        LocalValue *value = Agros2D::plugins()[fieldInfo()->fieldId()]->localValue(fieldInfo(), point);
         QMapIterator<Module::LocalVariable *, PointValue> it(value->values());
         while (it.hasNext())
         {
@@ -418,8 +418,8 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
             else
             {
                 values[it.key()->shortname().toStdString()] = it.value().vector.magnitude();
-                values[it.key()->shortname().toStdString() + Util::problem()->config()->labelX().toLower().toStdString()] = it.value().vector.x;
-                values[it.key()->shortname().toStdString() + Util::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
+                values[it.key()->shortname().toStdString() + Agros2D::problem()->config()->labelX().toLower().toStdString()] = it.value().vector.x;
+                values[it.key()->shortname().toStdString() + Agros2D::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
             }
         }
         delete value;
@@ -436,7 +436,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
 {
     map<std::string, double> values;
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         // set mode
         if (!silentMode())
@@ -444,19 +444,19 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
             currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeSurfaceIntegral->trigger();
         }
-        Util::scene()->selectNone();
+        Agros2D::scene()->selectNone();
 
         if (!edges.empty())
         {
             for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
             {
-                if ((*it >= 0) && (*it < Util::scene()->edges->length()))
+                if ((*it >= 0) && (*it < Agros2D::scene()->edges->length()))
                 {
-                    Util::scene()->edges->at(*it)->setSelected(true);
+                    Agros2D::scene()->edges->at(*it)->setSelected(true);
                 }
                 else
                 {
-                    throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges->length()-1).toStdString());
+                    throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Agros2D::scene()->edges->length()-1).toStdString());
                     results = values;
                     return;
                 }
@@ -467,10 +467,10 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
         }
         else
         {
-            Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
+            Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        IntegralValue *integral = Util::plugins()[fieldInfo()->fieldId()]->surfaceIntegral(fieldInfo());
+        IntegralValue *integral = Agros2D::plugins()[fieldInfo()->fieldId()]->surfaceIntegral(fieldInfo());
         QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {
@@ -492,7 +492,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
 {
     map<std::string, double> values;
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         // set mode
         if (!silentMode())
@@ -500,17 +500,17 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
             currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeVolumeIntegral->trigger();
         }
-        Util::scene()->selectNone();
+        Agros2D::scene()->selectNone();
 
         if (!labels.empty())
         {
             for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
             {
-                if ((*it >= 0) && (*it < Util::scene()->labels->length()))
+                if ((*it >= 0) && (*it < Agros2D::scene()->labels->length()))
                 {
-                    if (Util::scene()->labels->at(*it)->marker(m_fieldInfo) != Util::scene()->materials->getNone(m_fieldInfo))
+                    if (Agros2D::scene()->labels->at(*it)->marker(m_fieldInfo) != Agros2D::scene()->materials->getNone(m_fieldInfo))
                     {
-                        Util::scene()->labels->at(*it)->setSelected(true);
+                        Agros2D::scene()->labels->at(*it)->setSelected(true);
                     }
                     else
                     {
@@ -519,7 +519,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
                 }
                 else
                 {
-                    throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels->length()-1).toStdString());
+                    throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Agros2D::scene()->labels->length()-1).toStdString());
                     results = values;
                     return;
                 }
@@ -530,10 +530,10 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
         }
         else
         {
-            Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
+            Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        IntegralValue *integral = Util::plugins()[fieldInfo()->fieldId()]->volumeIntegral(fieldInfo());
+        IntegralValue *integral = Agros2D::plugins()[fieldInfo()->fieldId()]->volumeIntegral(fieldInfo());
         QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {

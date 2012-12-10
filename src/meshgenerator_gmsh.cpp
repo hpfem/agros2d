@@ -19,6 +19,8 @@
 
 #include "meshgenerator_gmsh.h"
 
+#include "util/global.h"
+
 #include "scene.h"
 
 #include "scenebasic.h"
@@ -49,7 +51,7 @@ bool MeshGeneratorGMSH::mesh()
     // create gmsh files
     if (writeToGmsh())
     {
-        Util::log()->printDebug(tr("Mesh generator"), tr("GMSH geo file was created"));
+        Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geo file was created"));
 
         // exec triangle
         QProcess processGmsh;
@@ -63,13 +65,13 @@ bool MeshGeneratorGMSH::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh"))
             gmshBinary = QApplication::applicationDirPath() + QDir::separator() + "gmsh";
 
-        processGmsh.start(QString(Util::config()->commandGmsh).
+        processGmsh.start(QString(Agros2D::config()->commandGmsh).
                           arg(gmshBinary).
                           arg(tempProblemFileName()));
 
         if (!processGmsh.waitForStarted(100000))
         {
-            Util::log()->printError(tr("Mesh generator"), tr("could not start GMSH."));
+            Agros2D::log()->printError(tr("Mesh generator"), tr("could not start GMSH."));
             processGmsh.kill();
 
             m_isError = true;
@@ -77,9 +79,9 @@ bool MeshGeneratorGMSH::mesh()
         else
         {
             // copy gmsh files
-            if ((!Util::config()->deleteMeshFiles) && (!Util::problem()->config()->fileName().isEmpty()))
+            if ((!Agros2D::config()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
-                QFileInfo fileInfoOrig(Util::problem()->config()->fileName());
+                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 
                 QFile::copy(tempProblemFileName() + ".geo", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".geo");
             }
@@ -99,16 +101,16 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were created"));
+        Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh files were created"));
         // convert gmsh mesh to hermes mesh
         if (readGmshMeshFile())
         {
-            Util::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
+            Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
-            if ((!Util::config()->deleteHermesMeshFile) && (!Util::problem()->config()->fileName().isEmpty()))
+            if ((!Agros2D::config()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
-                QFileInfo fileInfoOrig(Util::problem()->config()->fileName());
+                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 
                 QFile::copy(cacheProblemDir() + "/initial.mesh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".mesh");
             }
@@ -120,12 +122,12 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".gmsh.out");
             QFile::remove(tempProblemFileName() + ".gmsh.err");
             */
-            Util::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
+            Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
         }
         else
         {
             m_isError = true;
-            // QFile::remove(Util::problem()->config()->fileName() + ".mesh");
+            // QFile::remove(Agros2D::problem()->config()->fileName() + ".mesh");
         }
     }
     else
@@ -134,7 +136,7 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
         QString errorMessage = readFileContent(tempProblemFileName() + ".gmsh.err");
         errorMessage.insert(0, "\n");
         errorMessage.append("\n");
-        Util::log()->printError(tr("Mesh generator"), errorMessage.replace("\n", "<br/>"), false);
+        Agros2D::log()->printError(tr("Mesh generator"), errorMessage.replace("\n", "<br/>"), false);
     }
 }
 
@@ -438,7 +440,7 @@ int intersectionsParity(Point point, QList<NodeEdgeData> loop)
 
         foreach(NodeEdgeData ned, loop)
         {
-            Intersection result = intersects(point, tangent, Util::scene()->edges->at(ned.edge));
+            Intersection result = intersects(point, tangent, Agros2D::scene()->edges->at(ned.edge));
             if(result == Intersection_Uncertain)
             {
                 rejectTangent = true;
@@ -471,7 +473,7 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
     {
         // use two segments instead of arc. Point on arc to be found as intersection of arc with line going through
         // edge center and point
-        SceneEdge* edge = Util::scene()->edges->at(ned.edge);
+        SceneEdge* edge = Agros2D::scene()->edges->at(ned.edge);
         if(edge->angle() != 0)
         {
             Point intersection;
@@ -491,7 +493,7 @@ int windingNumber(Point point, QList<NodeEdgeData> loop)
         }
 
         // regular points
-        Point nodePoint = Util::scene()->nodes->at(ned.node)->point();
+        Point nodePoint = Agros2D::scene()->nodes->at(ned.node)->point();
         double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
         assert((angle <= M_PI) && (angle >= -M_PI));
 
@@ -584,13 +586,13 @@ void switchOrientation(QList<QList<NodeEdgeData> >& loops, int idx)
 LoopsInfo findLoops()
 {
     // find loops
-    Graph graph(Util::scene()->nodes->length());
-    for (int i = 0; i < Util::scene()->edges->length(); i++)
+    Graph graph(Agros2D::scene()->nodes->length());
+    for (int i = 0; i < Agros2D::scene()->edges->length(); i++)
     {
-        SceneNode* startNode = Util::scene()->edges->at(i)->nodeStart();
-        SceneNode* endNode = Util::scene()->edges->at(i)->nodeEnd();
-        int startNodeIdx = Util::scene()->nodes->items().indexOf(startNode);
-        int endNodeIdx = Util::scene()->nodes->items().indexOf(endNode);
+        SceneNode* startNode = Agros2D::scene()->edges->at(i)->nodeStart();
+        SceneNode* endNode = Agros2D::scene()->edges->at(i)->nodeEnd();
+        int startNodeIdx = Agros2D::scene()->nodes->items().indexOf(startNode);
+        int endNodeIdx = Agros2D::scene()->nodes->items().indexOf(endNode);
 
         double angle = atan2(endNode->point().y - startNode->point().y, endNode->point().x - startNode->point().x);
         if(angle < 0)
@@ -640,9 +642,9 @@ LoopsInfo findLoops()
     for(int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
     {
         labelsInsideLoop.push_back(QList<SceneLabel*>());
-        for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
+        for(int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
         {
-            SceneLabel* label = Util::scene()->labels->at(labelIdx);
+            SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
             int wn = windingNumber(label->point(), loops[loopIdx]);
             //cout << "winding number " << wn << endl;
             assert(wn < 2);
@@ -660,9 +662,9 @@ LoopsInfo findLoops()
             throw(AgrosMeshException("There is no label in some domain"));
     }
 
-    for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
+    for(int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
     {
-        SceneLabel* label = Util::scene()->labels->at(labelIdx);
+        SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
         if(!loopsContainingLabel.contains(label))
             throw(AgrosMeshException("There is a label outside of the domain"));
     }
@@ -680,9 +682,9 @@ LoopsInfo findLoops()
     // outiside loops, not to be considered
     QList<int> outsideLoops;
 
-    for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
+    for(int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
     {
-        SceneLabel* actualLabel = Util::scene()->labels->at(labelIdx);
+        SceneLabel* actualLabel = Agros2D::scene()->labels->at(labelIdx);
         QList<int> loopsWithLabel = loopsContainingLabel[actualLabel];
         if(loopsWithLabel.size() == 0)
             throw(AgrosMeshException("There is no label in some subdomain"));
@@ -738,9 +740,9 @@ LoopsInfo findLoops()
 
     QMap<SceneLabel*, QList<int> > labelLoopsInfo;
 
-    for(int labelIdx = 0; labelIdx < Util::scene()->labels->count(); labelIdx++)
+    for(int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
     {
-        SceneLabel* label = Util::scene()->labels->at(labelIdx);
+        SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
         if(!principalLoopOfLabel.contains(label))
             throw(AgrosMeshException("There is a label outside of the domain"));
 
@@ -763,14 +765,14 @@ LoopsInfo findLoops()
 bool MeshGeneratorGMSH::writeToGmsh()
 {
     // basic check
-    if (Util::scene()->nodes->length() < 3)
+    if (Agros2D::scene()->nodes->length() < 3)
     {
-        Util::log()->printError(tr("Mesh generator"), tr("invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes->length()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of nodes (%1 < 3)").arg(Agros2D::scene()->nodes->length()));
         return false;
     }
-    if (Util::scene()->edges->length() < 3)
+    if (Agros2D::scene()->edges->length() < 3)
     {
-        Util::log()->printError(tr("Mesh generator"), tr("invalid number of edges (%1 < 3)").arg(Util::scene()->edges->length()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of edges (%1 < 3)").arg(Agros2D::scene()->edges->length()));
         return false;
     }
 
@@ -784,47 +786,47 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        Util::log()->printError(tr("Mesh generator"), tr("could not create GMSH geo mesh file (%1)").arg(file.errorString()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("could not create GMSH geo mesh file (%1)").arg(file.errorString()));
         return false;
     }
     QTextStream out(&file);
 
     // mesh size
-    // RectPoint rect = Util::scene()->boundingBox();
+    // RectPoint rect = Agros2D::scene()->boundingBox();
     // out << QString("mesh_size = %1;\n").arg(qMin(rect.width(), rect.height()) / 6.0);
     out << QString("mesh_size = 0;\n");
 
     // nodes
     QString outNodes;
     int nodesCount = 0;
-    for (int i = 0; i<Util::scene()->nodes->length(); i++)
+    for (int i = 0; i<Agros2D::scene()->nodes->length(); i++)
     {
         outNodes += QString("Point(%1) = {%2, %3, 0, mesh_size};\n").
                 arg(i).
-                arg(Util::scene()->nodes->at(i)->point().x, 0, 'f', 10).
-                arg(Util::scene()->nodes->at(i)->point().y, 0, 'f', 10);
+                arg(Agros2D::scene()->nodes->at(i)->point().x, 0, 'f', 10).
+                arg(Agros2D::scene()->nodes->at(i)->point().y, 0, 'f', 10);
         nodesCount++;
     }
 
     // edges
     QString outEdges;
     int edgesCount = 0;
-    for (int i = 0; i<Util::scene()->edges->length(); i++)
+    for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
     {
-        if (Util::scene()->edges->at(i)->angle() == 0)
+        if (Agros2D::scene()->edges->at(i)->angle() == 0)
         {
             // line .. increase edge index to count from 1
             outEdges += QString("Line(%1) = {%2, %3};\n").
                     arg(edgesCount+1).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart())).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd()));
+                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeStart())).
+                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeEnd()));
             edgesCount++;
         }
         else
         {
             // arc
             // add pseudo nodes
-            Point center = Util::scene()->edges->at(i)->center();
+            Point center = Agros2D::scene()->edges->at(i)->center();
             outNodes += QString("Point(%1) = {%2, %3, 0};\n").
                     arg(nodesCount).
                     arg(center.x, 0, 'f', 10).
@@ -833,9 +835,9 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
             outEdges += QString("Circle(%1) = {%2, %3, %4};\n").
                     arg(edgesCount+1).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeStart())).
+                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeStart())).
                     arg(nodesCount - 1).
-                    arg(Util::scene()->nodes->items().indexOf(Util::scene()->edges->at(i)->nodeEnd()));
+                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeEnd()));
 
             edgesCount++;
         }
@@ -844,19 +846,19 @@ bool MeshGeneratorGMSH::writeToGmsh()
     /*
     // holes
     int holesCount = 0;
-    foreach (SceneLabel *label, Util::scene()->labels->items())
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         if (label->markersCount() == 0)
             holesCount++;
 
     QString outHoles = QString("%1\n").arg(holesCount);
     holesCount = 0;
-    foreach (SceneLabel *label, Util::scene()->labels->items())
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
         if (label->markersCount() == 0)
         {
             outHoles += QString("%1  %2  %3\n").
                     arg(holesCount).
-                    // arg(Util::scene()->labels->items().indexOf(label) + 1).
+                    // arg(Agros2D::scene()->labels->items().indexOf(label) + 1).
                     arg(label->point().x, 0, 'f', 10).
                     arg(label->point().y, 0, 'f', 10);
 
@@ -867,7 +869,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
     // labels
     QString outLabels;
     int labelsCount = 0;
-    foreach (SceneLabel *label, Util::scene()->labels->items())
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
         if (label->markersCount() > 0)
         {
@@ -876,7 +878,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
                     arg(label->point().x, 0, 'f', 10).
                     arg(label->point().y, 0, 'f', 10).
                     // arg(labelsCount + 1). // triangle returns zero region number for areas without marker, markers must start from 1
-                    arg(Util::scene()->labels->items().indexOf(label) + 1).
+                    arg(Agros2D::scene()->labels->items().indexOf(label) + 1).
                     arg(label->area());
             labelsCount++;
         }
@@ -923,10 +925,10 @@ bool MeshGeneratorGMSH::writeToGmsh()
     QList<int> surfaces;
     QMap<SceneLabel*, QList<int> > labelInfo = loopsInfo.labelToLoops;
     int surfaceCount = 0;
-    for(int i = 0; i < Util::scene()->labels->count(); i++)
+    for(int i = 0; i < Agros2D::scene()->labels->count(); i++)
     {
         surfaceCount++;
-        SceneLabel* label = Util::scene()->labels->at(i);
+        SceneLabel* label = Agros2D::scene()->labels->at(i);
         if(!label->isHole())
         {
             surfaces.push_back(surfaceCount);
@@ -951,8 +953,8 @@ bool MeshGeneratorGMSH::writeToGmsh()
 //    outLoops.append(QString("};\n"));
 
     // quad mesh
-    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad ||
-            Util::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
+    if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Quad ||
+            Agros2D::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
     {
         outLoops.append(QString("Recombine Surface {"));
         for(int i = 0; i <  surfaces.count(); i++)
@@ -971,21 +973,21 @@ bool MeshGeneratorGMSH::writeToGmsh()
     //    outLoops.append("\n");
 
     //    // quad mesh
-    //    if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    //    if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Quad)
     //        outLoops.append(QString("Recombine Surface {1, 2};\n"));
 
     // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
     QString outCommands;
-    if (Util::problem()->config()->meshType() == MeshType_GMSH_Triangle)
+    if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Triangle)
     {
         outCommands.append(QString("Mesh.Algorithm = 2;\n"));
     }
-    else if (Util::problem()->config()->meshType() == MeshType_GMSH_Quad)
+    else if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Quad)
     {
         outCommands.append(QString("Mesh.Algorithm = 2;\n"));
         outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
     }
-    else if (Util::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
+    else if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
     {
         outCommands.append(QString("Mesh.Algorithm = 8;\n"));
         outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
@@ -1020,7 +1022,7 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
     QFile fileGMSH(tempProblemFileName() + ".msh");
     if (!fileGMSH.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Util::log()->printError(tr("Mesh generator"), tr("could not read GMSH mesh file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("could not read GMSH mesh file"));
         return false;
     }
     QTextStream inGMSH(&fileGMSH);
@@ -1067,7 +1069,7 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
 
         if (marker == 0)
         {
-            Util::log()->printError(tr("Mesh generator"), tr("some areas have no label marker"));
+            Agros2D::log()->printError(tr("Mesh generator"), tr("some areas have no label marker"));
             return false;
         }
         */

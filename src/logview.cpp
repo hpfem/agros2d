@@ -18,10 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "logview.h"
-#include "scene.h"
 
+#include "util/global.h"
 #include "gui/chart.h"
 
+#include "scene.h"
 #include "hermes2d/problem.h"
 
 Log::Log()
@@ -47,10 +48,10 @@ LogWidget::LogWidget(QWidget *parent) : QTextEdit(parent)
     mnuInfo->addAction(actCopy);
     mnuInfo->addAction(actClear);
 
-    connect(Util::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
-    connect(Util::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
-    connect(Util::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
-    connect(Util::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
@@ -195,7 +196,7 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
-    connect(Util::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
 
     logWidget = new LogWidget(this);
 
@@ -203,7 +204,7 @@ void LogDialog::createControls()
     m_chart->setVisible(false);
     m_chart->setMinimumWidth(300);
 
-    if (Util::problem()->isNonlinear())
+    if (Agros2D::problem()->isNonlinear())
     {
         m_chart->setVisible(true);
 
@@ -228,7 +229,7 @@ void LogDialog::createControls()
 
 void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
 {
-    if (Util::problem()->isNonlinear())
+    if (Agros2D::problem()->isNonlinear())
     {
         QString strNewton = "residual norm:";
         QString strPicard = "relative error:";
@@ -262,10 +263,10 @@ void LogDialog::printMessage(const QString &module, const QString &message, bool
 
 LogStdOut::LogStdOut(QWidget *parent) : QObject(parent)
 {
-    connect(Util::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
-    connect(Util::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
-    connect(Util::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
-    connect(Util::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
 }
 
 void LogStdOut::printMessage(const QString &module, const QString &message, bool escaped)

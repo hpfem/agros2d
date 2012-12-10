@@ -17,10 +17,13 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "scenelabel.h"
+
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenebasic.h"
-#include "scenelabel.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
@@ -31,7 +34,7 @@
 SceneLabel::SceneLabel(const Point &point, double area)
     : MarkedSceneBasic(), m_point(point), m_area(area)
 {
-    foreach (FieldInfo* field, Util::problem()->fieldInfos())
+    foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
     {
         this->addMarker(SceneMaterialContainer::getNone(field));
     }
@@ -44,7 +47,7 @@ double SceneLabel::distance(const Point &point) const
 
 bool SceneLabel::isHole()
 {
-    foreach (FieldInfo* field, Util::problem()->fieldInfos())
+    foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
     {
         if(!marker(field)->isNone())
             return false;
@@ -73,7 +76,7 @@ static SceneLabel *SceneLabel::findClosestLabel(const Point &point)
     SceneLabel *labelClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneLabel *label, Util::scene()->labels->items())
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
         double labelDistance = label->distance(point);
         if (label->distance(point) < distance)
@@ -233,11 +236,11 @@ void SceneLabelMarker::fillComboBox()
     cmbMaterial->clear();
 
     // none marker
-    cmbMaterial->addItem(Util::scene()->materials->getNone(m_fieldInfo)->name(),
-                         Util::scene()->materials->getNone(m_fieldInfo)->variant());
+    cmbMaterial->addItem(Agros2D::scene()->materials->getNone(m_fieldInfo)->name(),
+                         Agros2D::scene()->materials->getNone(m_fieldInfo)->variant());
 
     // real markers
-    foreach (SceneMaterial *material, Util::scene()->materials->filter(m_fieldInfo).items())
+    foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_fieldInfo).items())
     {
         cmbMaterial->addItem(material->name(),
                              material->variant());
@@ -257,7 +260,7 @@ void SceneLabelMarker::doMaterialClicked()
     if (marker->showDialog(this) == QDialog::Accepted)
     {
         cmbMaterial->setItemText(cmbMaterial->currentIndex(), marker->name());
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }
 
@@ -281,7 +284,7 @@ QLayout* SceneLabelDialog::createContent()
     // markers
     QFormLayout *layout = new QFormLayout();
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         SceneLabelMarker *sceneLabel = new SceneLabelMarker(dynamic_cast<SceneLabel *>(m_object), fieldInfo, this);
         layout->addRow(sceneLabel);
@@ -299,13 +302,13 @@ QLayout* SceneLabelDialog::createContent()
     connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     // coordinates must be greater then or equal to 0 (axisymmetric case)
-    if (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
         txtPointX->setMinimum(0.0);
 
     // coordinates
     QFormLayout *layoutCoordinates = new QFormLayout();
-    layoutCoordinates->addRow(Util::problem()->config()->labelX() + " (m):", txtPointX);
-    layoutCoordinates->addRow(Util::problem()->config()->labelY() + " (m):", txtPointY);
+    layoutCoordinates->addRow(Agros2D::problem()->config()->labelX() + " (m):", txtPointX);
+    layoutCoordinates->addRow(Agros2D::problem()->config()->labelY() + " (m):", txtPointY);
 
     QGroupBox *grpCoordinates = new QGroupBox(tr("Coordinates"));
     grpCoordinates->setLayout(layoutCoordinates);
@@ -367,7 +370,7 @@ bool SceneLabelDialog::save()
     Point point(txtPointX->number(), txtPointY->number());
 
     // check if label doesn't exists
-    if (Util::scene()->getLabel(point) && ((sceneLabel->point() != point) || m_isNew))
+    if (Agros2D::scene()->getLabel(point) && ((sceneLabel->point() != point) || m_isNew))
     {
         QMessageBox::warning(this, "Label", "Label already exists.");
         return false;
@@ -385,7 +388,7 @@ bool SceneLabelDialog::save()
     {
         if (sceneLabel->point() != point)
         {
-            Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point(), point));
+            Agros2D::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point(), point));
         }
     }
 
@@ -395,7 +398,7 @@ bool SceneLabelDialog::save()
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
         labelMarker->save();
 
-    Util::scene()->invalidate();
+    Agros2D::scene()->invalidate();
     return true;
 }
 
@@ -416,7 +419,7 @@ SceneLabelSelectDialog::SceneLabelSelectDialog(MarkedSceneBasicContainer<SceneMa
     QGroupBox *grpMaterials = new QGroupBox(tr("Materials"));
     grpMaterials->setLayout(layoutMaterials);
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         QComboBox *cmbMaterial = new QComboBox();
         cmbMaterials[fieldInfo] = cmbMaterial;
@@ -445,21 +448,21 @@ void SceneLabelSelectDialog::load()
 {
     // markers
     // markers
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         cmbMaterials[fieldInfo]->clear();
 
         // none marker
-        cmbMaterials[fieldInfo]->addItem(Util::scene()->materials->getNone(fieldInfo)->name(),
-                                         Util::scene()->materials->getNone(fieldInfo)->variant());
+        cmbMaterials[fieldInfo]->addItem(Agros2D::scene()->materials->getNone(fieldInfo)->name(),
+                                         Agros2D::scene()->materials->getNone(fieldInfo)->variant());
 
         // real markers
-        foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
+        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(fieldInfo).items())
             cmbMaterials[fieldInfo]->addItem(material->name(),
                                              material->variant());
     }
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         SceneMaterial* material = NULL;
         bool match = true;
@@ -481,7 +484,7 @@ bool SceneLabelSelectDialog::save()
 {
     foreach (SceneLabel* label, m_labels.items())
     {
-        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
         {
             if (cmbMaterials[fieldInfo]->currentIndex() != -1)
                 label->addMarker(cmbMaterials[fieldInfo]->itemData(cmbMaterials[fieldInfo]->currentIndex()).value<SceneMaterial *>());
@@ -489,7 +492,7 @@ bool SceneLabelSelectDialog::save()
         }
     }
 
-    Util::scene()->invalidate();
+    Agros2D::scene()->invalidate();
     return true;
 }
 
@@ -515,8 +518,8 @@ SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QMap<QStrin
 
 void SceneLabelCommandAdd::undo()
 {
-    Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
-    Util::scene()->invalidate();
+    Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_point));
+    Agros2D::scene()->invalidate();
 }
 
 void SceneLabelCommandAdd::redo()
@@ -526,12 +529,12 @@ void SceneLabelCommandAdd::redo()
 
     foreach (QString fieldId, m_markers.keys())
     {
-        if (Util::problem()->hasField(fieldId))
+        if (Agros2D::problem()->hasField(fieldId))
         {
-            SceneMaterial *material = Util::scene()->materials->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+            SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
 
             if (!material)
-                material = Util::scene()->materials->getNone(Util::problem()->fieldInfo(fieldId));
+                material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
 
             // add marker
             label->addMarker(material);
@@ -539,8 +542,8 @@ void SceneLabelCommandAdd::redo()
     }
 
     // add edge to the list
-    Util::scene()->addLabel(label);;
-    Util::scene()->invalidate();
+    Agros2D::scene()->addLabel(label);;
+    Agros2D::scene()->invalidate();
 }
 
 SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
@@ -557,12 +560,12 @@ void SceneLabelCommandRemove::undo()
 
     foreach (QString fieldId, m_markers.keys())
     {
-        if (Util::problem()->hasField(fieldId))
+        if (Agros2D::problem()->hasField(fieldId))
         {
-            SceneMaterial *material = Util::scene()->materials->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+            SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
 
             if (!material)
-                material = Util::scene()->materials->getNone(Util::problem()->fieldInfo(fieldId));
+                material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
 
             // add marker
             label->addMarker(material);
@@ -570,14 +573,14 @@ void SceneLabelCommandRemove::undo()
     }
 
     // add edge to the list
-    Util::scene()->addLabel(label);
-    Util::scene()->invalidate();
+    Agros2D::scene()->addLabel(label);
+    Agros2D::scene()->invalidate();
 }
 
 void SceneLabelCommandRemove::redo()
 {
-    Util::scene()->labels->remove(Util::scene()->getLabel(m_point));
-    Util::scene()->invalidate();
+    Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_point));
+    Agros2D::scene()->invalidate();
 }
 
 SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
@@ -588,20 +591,20 @@ SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &po
 
 void SceneLabelCommandEdit::undo()
 {
-    SceneLabel *label = Util::scene()->getLabel(m_pointNew);
+    SceneLabel *label = Agros2D::scene()->getLabel(m_pointNew);
     if (label)
     {
         label->setPoint(m_point);
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }
 
 void SceneLabelCommandEdit::redo()
 {
-    SceneLabel *label = Util::scene()->getLabel(m_point);
+    SceneLabel *label = Agros2D::scene()->getLabel(m_point);
     if (label)
     {
         label->setPoint(m_pointNew);
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }

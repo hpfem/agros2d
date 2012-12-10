@@ -20,6 +20,7 @@
 #include "preprocessorview.h"
 
 #include "util/constants.h"
+#include "util/global.h"
 
 #include "scene.h"
 #include "logview.h"
@@ -52,11 +53,11 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
     // boundary conditions, materials and geometry information
     createControls();
 
-    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
 
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
 
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
@@ -86,11 +87,11 @@ void PreprocessorWidget::createMenu()
 {
     mnuPreprocessor->clear();
 
-    mnuPreprocessor->addAction(Util::scene()->actNewNode);
-    mnuPreprocessor->addAction(Util::scene()->actNewEdge);
-    mnuPreprocessor->addAction(Util::scene()->actNewLabel);
+    mnuPreprocessor->addAction(Agros2D::scene()->actNewNode);
+    mnuPreprocessor->addAction(Agros2D::scene()->actNewEdge);
+    mnuPreprocessor->addAction(Agros2D::scene()->actNewLabel);
     mnuPreprocessor->addSeparator();
-    Util::scene()->addBoundaryAndMaterialMenuItems(mnuPreprocessor, this);
+    Agros2D::scene()->addBoundaryAndMaterialMenuItems(mnuPreprocessor, this);
     mnuPreprocessor->addSeparator();
     mnuPreprocessor->addAction(actDelete);
     mnuPreprocessor->addSeparator();
@@ -138,7 +139,7 @@ void PreprocessorWidget::refresh()
     fnt.setBold(true);
 
     // markers
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         // field
         QTreeWidgetItem *fieldNode = new QTreeWidgetItem(trvWidget);
@@ -155,13 +156,13 @@ void PreprocessorWidget::refresh()
         materialsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMaterials;
-        foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
+        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(fieldInfo).items())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
 
             item->setText(0, material->name());
-            item->setIcon(0, (Util::scene()->labels->haveMarker(material).count() > 0) ? icon("scene-labelmarker") : icon("scene-labelmarker-notused"));
-            if (Util::scene()->labels->haveMarker(material).count() == 0)
+            item->setIcon(0, (Agros2D::scene()->labels->haveMarker(material).count() > 0) ? icon("scene-labelmarker") : icon("scene-labelmarker-notused"));
+            if (Agros2D::scene()->labels->haveMarker(material).count() == 0)
                 item->setForeground(0, QBrush(Qt::gray));
             item->setData(0, Qt::UserRole, material->variant());
 
@@ -178,15 +179,15 @@ void PreprocessorWidget::refresh()
         boundaryConditionsNode->setExpanded(true);
 
         QList<QTreeWidgetItem *> listMarkes;
-        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
+        foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(fieldInfo).items())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
             Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->type());
 
             item->setText(0, QString("%1 (%2)").arg(boundary->name()).arg(boundary_type->name()));
-            item->setIcon(0, (Util::scene()->edges->haveMarker(boundary).count() > 0) ? icon("scene-edgemarker") : icon("scene-edgemarker-notused"));
-            if (Util::scene()->edges->haveMarker(boundary).count() == 0)
+            item->setIcon(0, (Agros2D::scene()->edges->haveMarker(boundary).count() > 0) ? icon("scene-edgemarker") : icon("scene-edgemarker-notused"));
+            if (Agros2D::scene()->edges->haveMarker(boundary).count() == 0)
                 item->setForeground(0, QBrush(Qt::gray));
             item->setData(0, Qt::UserRole, boundary->variant());
 
@@ -211,7 +212,7 @@ void PreprocessorWidget::refresh()
 
     QList<QTreeWidgetItem *> listNodes;
     int inode = 0;
-    foreach (SceneNode *node, Util::scene()->nodes->items())
+    foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
@@ -237,7 +238,7 @@ void PreprocessorWidget::refresh()
 
     QList<QTreeWidgetItem *> listEdges;
     int iedge = 0;
-    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
@@ -264,7 +265,7 @@ void PreprocessorWidget::refresh()
 
     QList<QTreeWidgetItem *> listLabels;
     int ilabel = 0;
-    foreach (SceneLabel *label, Util::scene()->labels->items())
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
@@ -303,8 +304,8 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
 
     if (item != NULL)
     {
-        Util::scene()->selectNone();
-        Util::scene()->highlightNone();
+        Agros2D::scene()->selectNone();
+        Agros2D::scene()->highlightNone();
 
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
@@ -332,7 +333,7 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
             // select all edges
             m_sceneViewGeometry->actOperateOnEdges->trigger();
 
-            Util::scene()->edges->haveMarker(objectBoundary).setSelected();
+            Agros2D::scene()->edges->haveMarker(objectBoundary).setSelected();
 
             m_sceneViewGeometry->refresh();
             m_sceneViewGeometry->setFocus();
@@ -347,7 +348,7 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
             // select all labels
             m_sceneViewGeometry->actOperateOnLabels->trigger();
 
-            Util::scene()->labels->haveMarker(objectMaterial).setSelected();
+            Agros2D::scene()->labels->haveMarker(objectMaterial).setSelected();
 
             m_sceneViewGeometry->refresh();
             m_sceneViewGeometry->setFocus();
@@ -411,30 +412,30 @@ void PreprocessorWidget::doDelete()
         {
             if (SceneNode *node = dynamic_cast<SceneNode *>(objectBasic))
             {
-                Util::scene()->nodes->remove(node);
+                Agros2D::scene()->nodes->remove(node);
             }
 
             else if (SceneEdge *edge = dynamic_cast<SceneEdge *>(objectBasic))
             {
-                Util::scene()->edges->remove(edge);
+                Agros2D::scene()->edges->remove(edge);
             }
 
             else if (SceneLabel *label = dynamic_cast<SceneLabel *>(objectBasic))
             {
-                Util::scene()->labels->remove(label);
+                Agros2D::scene()->labels->remove(label);
             }
         }
 
         // label marker
         else if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
-            Util::scene()->removeMaterial(objectMaterial);
+            Agros2D::scene()->removeMaterial(objectMaterial);
         }
 
         // edge marker
         else if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
-            Util::scene()->removeBoundary(objectBoundary);
+            Agros2D::scene()->removeBoundary(objectBoundary);
         }
 
         m_sceneViewGeometry->refresh();

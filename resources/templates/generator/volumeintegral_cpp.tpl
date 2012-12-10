@@ -27,6 +27,8 @@
 #include "hermes2d/solutionstore.h"
 
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenelabel.h"
 #include "logview.h"
@@ -41,13 +43,13 @@ void {{CLASS}}VolumeIntegral::calculate()
 {
     m_values.clear();
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         // update time functions
         if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-            m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
+            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
+            m_fieldInfo->module()->updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
         }
 
         // solutions
@@ -55,8 +57,8 @@ void {{CLASS}}VolumeIntegral::calculate()
         for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
         {
             // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-            FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
-            sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
+            FieldSolutionID fsid(m_fieldInfo, Agros2D::scene()->activeTimeStep(), Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Agros2D::scene()->activeTimeStep()), SolutionMode_Normal);
+            sln.push_back(Agros2D::solutionStore()->multiSolution(fsid).component(k).sln.data());
         }
 
         double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
@@ -70,11 +72,11 @@ void {{CLASS}}VolumeIntegral::calculate()
         const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
         Hermes::Hermes2D::Element *e;
 
-        foreach (SceneLabel *label, Util::scene()->labels->items())
+        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         {
             if (label->isSelected())
             {
-                int index = Util::scene()->labels->items().indexOf(label);
+                int index = Agros2D::scene()->labels->items().indexOf(label);
 
                 SceneMaterial *material = label->marker(m_fieldInfo);
 

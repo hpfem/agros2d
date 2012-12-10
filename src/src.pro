@@ -57,6 +57,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     util.cpp \
     value.cpp \
     scene.cpp \
+    util/global.cpp \
     util/checkversion.cpp \
     util/point.cpp \
     util/xml.cpp \
@@ -147,6 +148,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
 HEADERS += util.h \
     value.h \
     scene.h \
+    util/global.h \
     util/constants.h \
     util/checkversion.h \
     util/point.h \

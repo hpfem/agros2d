@@ -18,6 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "sceneview_common.h"
+
+#include "util/global.h"
+
 #include "sceneview_data.h"
 #include "scene.h"
 #include "scenemarker.h"
@@ -38,8 +41,8 @@ SceneViewCommon::SceneViewCommon(QWidget *parent)
 {
     m_mainWindow = (QMainWindow *) parent;
 
-    m_fontRulers = textureFontFromStringKey(Util::config()->rulersFont);
-    m_fontPost = textureFontFromStringKey(Util::config()->postFont);
+    m_fontRulers = textureFontFromStringKey(Agros2D::config()->rulersFont);
+    m_fontPost = textureFontFromStringKey(Agros2D::config()->postFont);
 
     createActions();
 
@@ -82,14 +85,14 @@ void SceneViewCommon::initializeGL()
     // rulers font
     if (m_fontRulers)
         glDeleteTextures(1, &m_textureLabelRulers);
-    m_fontRulers = textureFontFromStringKey(Util::config()->rulersFont);
+    m_fontRulers = textureFontFromStringKey(Agros2D::config()->rulersFont);
     glGenTextures(1, &m_textureLabelRulers);
     initFont(m_textureLabelRulers, m_fontRulers);
 
     // rulers font
     if (m_fontPost)
         glDeleteTextures(1, &m_textureLabelPost);
-    m_fontPost = textureFontFromStringKey(Util::config()->postFont);
+    m_fontPost = textureFontFromStringKey(Agros2D::config()->postFont);
     glGenTextures(1, &m_textureLabelPost);
     initFont(m_textureLabelPost, m_fontPost);
 }
@@ -208,7 +211,7 @@ void SceneViewCommon::closeEvent(QCloseEvent *event)
 
 void SceneViewCommon::doZoomBestFit()
 {
-    RectPoint rect = Util::scene()->boundingBox();
+    RectPoint rect = Agros2D::scene()->boundingBox();
 
     doZoomRegion(rect.start, rect.end);
 }
@@ -237,13 +240,13 @@ void SceneViewCommon::refresh()
 void SceneViewCommon::doMaterialGroup(QAction *action)
 {
     if (SceneMaterial *material = action->data().value<SceneMaterial *>())
-        Util::scene()->setMaterial(material);
+        Agros2D::scene()->setMaterial(material);
 }
 
 void SceneViewCommon::doBoundaryGroup(QAction *action)
 {
     if (SceneBoundary *boundary = action->data().value<SceneBoundary *>())
-        Util::scene()->setBoundary(boundary);
+        Agros2D::scene()->setBoundary(boundary);
 }
 
 void SceneViewCommon::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const
@@ -305,22 +308,22 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
 {
     assert(0); //TODO
     //    // store sceneview settings
-    //    SceneViewSettings sceneViewSettingsCopy = Util::scene()ViewSettings;
-    //    SceneMode sceneModeCopy = Util::scene()Mode;
+    //    SceneViewSettings sceneViewSettingsCopy = Agros2D::scene()ViewSettings;
+    //    SceneMode sceneModeCopy = Agros2D::scene()Mode;
     //    double scale2dCopy = m_scale2d;
     //    Point offset2dCopy = m_offset2d;
     //    Point offset3dCopy = m_offset3d;
     //    Point3 rotation3dCopy = m_rotation3d;
 
-    //    bool showRulersCopy = Util::config()->showRulers;
-    //    bool showGridCopy = Util::config()->showGrid;
-    //    bool showAxesCopy = Util::config()->showAxes;
-    //    bool showLabelCopy = Util::config()->showLabel;
+    //    bool showRulersCopy = Agros2D::config()->showRulers;
+    //    bool showGridCopy = Agros2D::config()->showGrid;
+    //    bool showAxesCopy = Agros2D::config()->showAxes;
+    //    bool showLabelCopy = Agros2D::config()->showLabel;
 
-    //    Util::config()->showRulers = showRulers;
-    //    Util::config()->showGrid = showGrid;
-    //    Util::config()->showAxes = showAxes;
-    //    Util::config()->showLabel = showLabel;
+    //    Agros2D::config()->showRulers = showRulers;
+    //    Agros2D::config()->showGrid = showGrid;
+    //    Agros2D::config()->showAxes = showAxes;
+    //    Agros2D::config()->showLabel = showLabel;
 
     //    // remove old files
     //    QFile::remove(path + "/geometry.png");
@@ -330,11 +333,11 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
 
     //    doZoomBestFit();
 
-    //    Util::scene()ViewSettings.showGeometry = true;
-    //    Util::scene()ViewSettings.showContours = false;
-    //    Util::scene()ViewSettings.showVectors = false;
-    //    Util::scene()ViewSettings.showInitialMesh = false;
-    //    Util::scene()ViewSettings.showSolutionMesh = false;
+    //    Agros2D::scene()ViewSettings.showGeometry = true;
+    //    Agros2D::scene()ViewSettings.showContours = false;
+    //    Agros2D::scene()ViewSettings.showVectors = false;
+    //    Agros2D::scene()ViewSettings.showInitialMesh = false;
+    //    Agros2D::scene()ViewSettings.showSolutionMesh = false;
 
     //    // geometry
     //    actSceneModeLabel->trigger();
@@ -343,60 +346,60 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //        resultGeometry.showDialog();
 
     //    // mesh
-    //    if (Util::scene()->activeSceneSolution()->isMeshed())
+    //    if (Agros2D::scene()->activeSceneSolution()->isMeshed())
     //    {
     //        // show only initial mesh
     //        actSceneModeLabel->trigger();
 
-    //        Util::scene()ViewSettings.showInitialMesh = true;
-    //        Util::scene()ViewSettings.showSolutionMesh = true;
+    //        Agros2D::scene()ViewSettings.showInitialMesh = true;
+    //        Agros2D::scene()ViewSettings.showSolutionMesh = true;
     //        ErrorResult resultMesh1 = saveImageToFile(path + "/mesh.png", w, h);
     //        if (resultMesh1.isError())
     //            resultMesh1.showDialog();
-    //        Util::scene()ViewSettings.showInitialMesh = false;
-    //        Util::scene()ViewSettings.showSolutionMesh = false;
+    //        Agros2D::scene()ViewSettings.showInitialMesh = false;
+    //        Agros2D::scene()ViewSettings.showSolutionMesh = false;
     //    }
 
-    //    if (Util::scene()->activeSceneSolution()->isSolved())
+    //    if (Agros2D::scene()->activeSceneSolution()->isSolved())
     //    {
     //        // when solved show both meshes
     //        actSceneModePostprocessor->trigger();
 
-    //        Util::scene()->activeSceneSolution()->processSolutionMesh();
-    //        Util::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+    //        Agros2D::scene()->activeSceneSolution()->processSolutionMesh();
+    //        Agros2D::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
     //        updateGL();
 
-    //        Util::scene()ViewSettings.showInitialMesh = true;
-    //        Util::scene()ViewSettings.showSolutionMesh = true;
+    //        Agros2D::scene()ViewSettings.showInitialMesh = true;
+    //        Agros2D::scene()ViewSettings.showSolutionMesh = true;
     //        ErrorResult resultMesh2 = saveImageToFile(path + "/mesh.png", w, h);
     //        if (resultMesh2.isError())
     //            resultMesh2.showDialog();
-    //        Util::scene()ViewSettings.showInitialMesh = false;
-    //        Util::scene()ViewSettings.showSolutionMesh = false;
+    //        Agros2D::scene()ViewSettings.showInitialMesh = false;
+    //        Agros2D::scene()ViewSettings.showSolutionMesh = false;
 
     //        // contours
-    //        Util::scene()->activeSceneSolution()->processRangeContour();
-    //        Util::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
-    //        Util::scene()ViewSettings.showContours = true;
+    //        Agros2D::scene()->activeSceneSolution()->processRangeContour();
+    //        Agros2D::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+    //        Agros2D::scene()ViewSettings.showContours = true;
     //        updateGL();
     //        ErrorResult resultContourView = saveImageToFile(path + "/contourview.png", w, h);
     //        if (resultContourView.isError())
     //            resultContourView.showDialog();
-    //        Util::scene()ViewSettings.showContours = false;
+    //        Agros2D::scene()ViewSettings.showContours = false;
 
     //        // vectors
-    //        Util::scene()->activeSceneSolution()->processRangeVector();
-    //        Util::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
-    //        Util::scene()ViewSettings.showVectors = true;
-    //        Util::scene()ViewSettings.vectorPhysicFieldVariable = Util::problem()->config()->module()->view_default_vector_variable->id;
+    //        Agros2D::scene()->activeSceneSolution()->processRangeVector();
+    //        Agros2D::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+    //        Agros2D::scene()ViewSettings.showVectors = true;
+    //        Agros2D::scene()ViewSettings.vectorPhysicFieldVariable = Agros2D::problem()->config()->module()->view_default_vector_variable->id;
     //        updateGL();
     //        ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
     //        if (resultVectorView.isError())
     //            resultVectorView.showDialog();
-    //        Util::scene()ViewSettings.showVectors = false;
+    //        Agros2D::scene()ViewSettings.showVectors = false;
 
     //        // order
-    //        Util::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
+    //        Agros2D::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
     //        updateGL();
     //        ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
     //        if (resultOrder.isError())
@@ -405,17 +408,17 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //        actSceneModePostprocessor->trigger();
 
     //        // last step
-    //        if (Util::problem()->config()->module()->transient_solutions)
-    //            Util::scene()->activeSceneSolution()->setTimeStep(Util::scene()->activeSceneSolution()->timeStepCount() - 1);
+    //        if (Agros2D::problem()->config()->module()->transient_solutions)
+    //            Agros2D::scene()->activeSceneSolution()->setTimeStep(Agros2D::scene()->activeSceneSolution()->timeStepCount() - 1);
 
     //        // scalar field
-    //        Util::scene()->activeSceneSolution()->processRangeScalar();
-    //        Util::scene()ViewSettings.scalarRangeAuto = true;
-    //        Util::scene()ViewSettings.scalarPhysicFieldVariable = Util::problem()->config()->module()->view_default_scalar_variable->id;
-    //        Util::scene()ViewSettings.scalarPhysicFieldVariableComp = Util::problem()->config()->module()->view_default_scalar_variable_comp();
-    //        Util::scene()ViewSettings.vectorPhysicFieldVariable = Util::problem()->config()->module()->view_default_vector_variable->id;
+    //        Agros2D::scene()->activeSceneSolution()->processRangeScalar();
+    //        Agros2D::scene()ViewSettings.scalarRangeAuto = true;
+    //        Agros2D::scene()ViewSettings.scalarPhysicFieldVariable = Agros2D::problem()->config()->module()->view_default_scalar_variable->id;
+    //        Agros2D::scene()ViewSettings.scalarPhysicFieldVariableComp = Agros2D::problem()->config()->module()->view_default_scalar_variable_comp();
+    //        Agros2D::scene()ViewSettings.vectorPhysicFieldVariable = Agros2D::problem()->config()->module()->view_default_vector_variable->id;
 
-    //        Util::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
+    //        Agros2D::scene()ViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
     //        updateGL();
     //        ErrorResult resultScalarView = saveImageToFile(path + "/scalarview.png", w, h);
     //        if (resultScalarView.isError())
@@ -423,22 +426,22 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //    }
 
     //    // restore sceneview settings
-    //    Util::scene()ViewSettings = sceneViewSettingsCopy;
-    //    Util::scene()Mode = sceneModeCopy;
+    //    Agros2D::scene()ViewSettings = sceneViewSettingsCopy;
+    //    Agros2D::scene()Mode = sceneModeCopy;
     //    m_scale2d = scale2dCopy;
     //    m_offset2d = offset2dCopy;
     //    m_offset3d = offset3dCopy;
     //    m_rotation3d = rotation3dCopy;
 
-    //    Util::config()->showRulers = showRulersCopy;
-    //    Util::config()->showGrid = showGridCopy;
-    //    Util::config()->showAxes = showAxesCopy;
-    //    Util::config()->showLabel = showLabelCopy;
+    //    Agros2D::config()->showRulers = showRulersCopy;
+    //    Agros2D::config()->showGrid = showGridCopy;
+    //    Agros2D::config()->showAxes = showAxesCopy;
+    //    Agros2D::config()->showLabel = showLabelCopy;
 
-    //    if (Util::scene()Mode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
-    //    if (Util::scene()Mode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();
-    //    if (Util::scene()Mode == SceneMode_OperateOnLabels) actSceneModeLabel->isChecked();
-    //    if (Util::scene()Mode == SceneMode_Postprocessor) actSceneModePostprocessor->isChecked();
+    //    if (Agros2D::scene()Mode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
+    //    if (Agros2D::scene()Mode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();
+    //    if (Agros2D::scene()Mode == SceneMode_OperateOnLabels) actSceneModeLabel->isChecked();
+    //    if (Agros2D::scene()Mode == SceneMode_Postprocessor) actSceneModePostprocessor->isChecked();
 
     //    refresh();
 }

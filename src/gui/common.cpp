@@ -19,8 +19,8 @@
 
 #include "common.h"
 
-#include "scene.h"
 #include "util.h"
+#include "util/global.h"
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
@@ -64,7 +64,7 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
     // clear combo
     cmbFieldInfo->blockSignals(true);
     cmbFieldInfo->clear();
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
         cmbFieldInfo->addItem(fieldInfo->name(), fieldInfo->fieldId());
 
     cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(fieldId));
@@ -75,7 +75,7 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
 
 void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
         return;
 
     // store variable
@@ -94,7 +94,7 @@ void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
 
 void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
         return;
 
     // store variable
@@ -113,7 +113,7 @@ void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariab
 
 void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
         return;
 
     // store variable
@@ -132,7 +132,7 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
 
 void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
         return;
 
     cmbTimeStep->blockSignals(true);
@@ -141,8 +141,8 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
     int timeStep = cmbTimeStep->currentIndex();
     double timeValue;
     if (timeStep == -1){
-        timeStep = Util::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
-        timeValue = Util::problem()->timeStepToTime(timeStep);
+        timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
+        timeValue = Agros2D::problem()->timeStepToTime(timeStep);
     }
     else
     {
@@ -152,7 +152,7 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
     // clear combo
     cmbTimeStep->clear();
 
-    QList<double> timeLevels = Util::solutionStore()->timeLevels(fieldInfo);
+    QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(fieldInfo);
     int i = 0;
     timeStep = 0;
     foreach (double time, timeLevels)
@@ -172,12 +172,12 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
 
 void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *cmbAdaptivityStep)
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
         return;
 
     cmbAdaptivityStep->blockSignals(true);
 
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
+    int lastAdaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
 
     // store variable
     int adaptivityStep = cmbAdaptivityStep->currentIndex();
@@ -198,7 +198,7 @@ void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *c
 
 void fillComboBoxSolutionType(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QComboBox *cmbSolutionType)
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
         return;
 
     cmbSolutionType->blockSignals(true);
@@ -209,11 +209,11 @@ void fillComboBoxSolutionType(FieldInfo* fieldInfo, int timeStep, int adaptivity
     // clear combo
     cmbSolutionType->clear();
 
-    if (Util::solutionStore()->contains(FieldSolutionID(fieldInfo, timeStep, adaptivityStep, SolutionMode_Normal)))
+    if (Agros2D::solutionStore()->contains(FieldSolutionID(fieldInfo, timeStep, adaptivityStep, SolutionMode_Normal)))
     {
         cmbSolutionType->addItem(solutionTypeString(SolutionMode_Normal), SolutionMode_Normal);
     }
-    if (Util::solutionStore()->contains(FieldSolutionID(fieldInfo, timeStep, adaptivityStep, SolutionMode_Reference)))
+    if (Agros2D::solutionStore()->contains(FieldSolutionID(fieldInfo, timeStep, adaptivityStep, SolutionMode_Reference)))
     {
         cmbSolutionType->addItem(solutionTypeString(SolutionMode_Reference), SolutionMode_Reference);
     }

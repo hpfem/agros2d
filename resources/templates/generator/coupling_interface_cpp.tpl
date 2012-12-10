@@ -23,6 +23,7 @@
 #include "{{ID}}_weakform.h"
 
 #include "util.h"
+#include "util/global.h"
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)
 {

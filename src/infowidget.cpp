@@ -19,6 +19,11 @@
 
 #include "infowidget.h"
 
+#include "util/constants.h"
+#include "util/global.h"
+
+#include "gui/chart.h"
+
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenenode.h"
@@ -35,8 +40,6 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
 
-#include "util/constants.h"
-#include "gui/chart.h"
 
 #include "ctemplate/template.h"
 
@@ -56,11 +59,11 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     setLayout(layoutMain);
 
-    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
 
-    connect(Util::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
-    connect(Util::problem(), SIGNAL(couplingsChanged()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(couplingsChanged()), this, SLOT(refresh()));
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
     connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(refresh()));
@@ -95,57 +98,57 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
-    problemInfo.SetValue("NAME", Util::problem()->config()->name().toStdString());
+    problemInfo.SetValue("NAME", Agros2D::problem()->config()->name().toStdString());
 
     problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-    problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(Util::problem()->config()->coordinateType()).toStdString());
+    problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(Agros2D::problem()->config()->coordinateType()).toStdString());
 
     problemInfo.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
-    problemInfo.SetValue("MESH_TYPE", meshTypeString(Util::problem()->config()->meshType()).toStdString());
+    problemInfo.SetValue("MESH_TYPE", meshTypeString(Agros2D::problem()->config()->meshType()).toStdString());
 
-    if (Util::problem()->isHarmonic())
+    if (Agros2D::problem()->isHarmonic())
         problemInfo.ShowSection("HARMONIC");
     problemInfo.SetValue("HARMONIC_LABEL", tr("Harmonic analysis").toStdString());
     problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
-    problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Util::problem()->config()->frequency()).toStdString() + " Hz");
+    problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Agros2D::problem()->config()->frequency()).toStdString() + " Hz");
 
-    if (Util::problem()->isTransient()){
+    if (Agros2D::problem()->isTransient()){
         problemInfo.ShowSection("TRANSIENT");
-        if(Util::problem()->config()->isTransientAdaptive())
+        if(Agros2D::problem()->config()->isTransientAdaptive())
             problemInfo.ShowSection("TRANSIENT_ADAPTIVE");
     }
     problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Util::problem()->config()->timeStepMethod()).toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Agros2D::problem()->config()->timeStepMethod()).toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_ORDER_LABEL", tr("Order:").toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Util::problem()->config()->timeOrder()).toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Agros2D::problem()->config()->timeOrder()).toStdString());
     problemInfo.SetValue("TRANSIENT_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-    problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Util::problem()->config()->timeMethodTolerance().number()).toStdString());
+    problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Agros2D::problem()->config()->timeMethodTolerance().number()).toStdString());
     problemInfo.SetValue("TRANSIENT_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
-    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP", QString::number(Util::problem()->config()->constantTimeStepLength()).toStdString() + " s");
+    problemInfo.SetValue("TRANSIENT_CONSTANT_STEP", QString::number(Agros2D::problem()->config()->constantTimeStepLength()).toStdString() + " s");
     problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
-    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS", QString::number(Util::problem()->config()->numConstantTimeSteps()).toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS", QString::number(Agros2D::problem()->config()->numConstantTimeSteps()).toStdString());
     problemInfo.SetValue("TRANSIENT_TOTAL_LABEL", tr("Total time:").toStdString());
-    problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Util::problem()->config()->timeTotal().number()).toStdString() + " s");
+    problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Agros2D::problem()->config()->timeTotal().number()).toStdString() + " s");
 
     problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
     problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());
-    problemInfo.SetValue("GEOMETRY_NODES", QString::number(Util::scene()->nodes->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_NODES", QString::number(Agros2D::scene()->nodes->count()).toStdString());
     problemInfo.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges:").toStdString());
-    problemInfo.SetValue("GEOMETRY_EDGES", QString::number(Util::scene()->edges->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_EDGES", QString::number(Agros2D::scene()->edges->count()).toStdString());
     problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
-    problemInfo.SetValue("GEOMETRY_LABELS", QString::number(Util::scene()->labels->count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_LABELS", QString::number(Agros2D::scene()->labels->count()).toStdString());
     problemInfo.SetValue("GEOMETRY_MATERIALS_LABEL", tr("Materials:").toStdString());
-    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Util::scene()->materials->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Agros2D::scene()->materials->items().count()).toStdString());
     problemInfo.SetValue("GEOMETRY_BOUNDARIES_LABEL", tr("Boundaries:").toStdString());
-    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Util::scene()->boundaries->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Agros2D::scene()->boundaries->items().count()).toStdString());
     problemInfo.SetValue("GEOMETRY_SVG", generateGeometry().toStdString());
 
-    if (Util::problem()->fieldInfos().count() > 0)
+    if (Agros2D::problem()->fieldInfos().count() > 0)
     {
         problemInfo.SetValue("PHYSICAL_FIELD_MAIN_LABEL", tr("Physical fields").toStdString());
 
-        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
         {
             ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD_SECTION");
 
@@ -196,25 +199,25 @@ void InfoWidget::showInfo()
             int DOFs = 0;
             int error = 0;
 
-            if (Util::problem()->isSolved())
+            if (Agros2D::problem()->isSolved())
             {
-                int timeStep = Util::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
-                int adaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
-                MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
+                int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
+                int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
+                MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 
                 solutionMeshNodes = msa.solutions().at(0).data()->get_mesh()->get_num_nodes();
                 solutionMeshElements = msa.solutions().at(0).data()->get_mesh()->get_num_active_elements();
                 DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
             }
 
-            if (Util::problem()->isMeshed())
+            if (Agros2D::problem()->isMeshed())
             {
                 field->SetValue("MESH_LABEL", tr("Mesh parameters").toStdString());
                 field->SetValue("INITIAL_MESH_LABEL", tr("Initial mesh:").toStdString());
                 field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(fieldInfo->initialMesh().data()->get_num_nodes()).toStdString());
                 field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(fieldInfo->initialMesh().data()->get_num_active_elements()).toStdString());
 
-                if (Util::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
+                if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
                 {
                     field->SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh:").toStdString());
                     field->SetValue("SOLUTION_MESH_NODES", tr("%1 nodes").arg(solutionMeshNodes).toStdString());
@@ -222,7 +225,7 @@ void InfoWidget::showInfo()
                     field->ShowSection("MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION");
                 }
 
-                if (Util::problem()->isSolved())
+                if (Agros2D::problem()->isSolved())
                 {
                     field->SetValue("DOFS_LABEL", tr("Number of DOFs:").toStdString());
                     field->SetValue("DOFS", tr("%1").arg(DOFs).toStdString());
@@ -234,21 +237,21 @@ void InfoWidget::showInfo()
                 field->ShowSection("MESH_PARAMETERS_SECTION");
             }
 
-            //        if (Util::problem()->isMeshed())
+            //        if (Agros2D::problem()->isMeshed())
             //        {
-            //            if (Util::problem()->isSolved())
+            //            if (Agros2D::problem()->isSolved())
             //            {
             //                if (fieldInfo->adaptivityType != AdaptivityType_None)
             //                {
             //                    problemInfo.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
             //                    problemInfo.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
-            //                    problemInfo.SetValue("ADAPTIVITY_ERROR", QString::number(Util::problem()->adaptiveError(), 'f', 3).toStdString());
+            //                    problemInfo.SetValue("ADAPTIVITY_ERROR", QString::number(Agros2D::problem()->adaptiveError(), 'f', 3).toStdString());
 
             //                    problemInfo.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
             //                    problemInfo.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-            //                    problemInfo.SetValue("SOLUTION_MESH_NODES", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
+            //                    problemInfo.SetValue("SOLUTION_MESH_NODES", QString::number(Agros2D::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
             //                    problemInfo.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-            //                    problemInfo.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
+            //                    problemInfo.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Agros2D::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
 
             //                    problemInfo.ShowSection("ADAPTIVITY_SECTION");
             //                }
@@ -260,11 +263,11 @@ void InfoWidget::showInfo()
         problemInfo.ShowSection("FIELD");
     }
 
-    if (Util::problem()->couplingInfos().count() > 0)
+    if (Agros2D::problem()->couplingInfos().count() > 0)
     {
         problemInfo.SetValue("COUPLING_MAIN_LABEL", tr("Coupled fields").toStdString());
 
-        foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+        foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
         {
             ctemplate::TemplateDictionary *couplingSection = problemInfo.AddSectionDictionary("COUPLING_SECTION");
 
@@ -280,11 +283,11 @@ void InfoWidget::showInfo()
         problemInfo.ShowSection("COUPLING");
     }
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         problemInfo.SetValue("SOLUTION_LABEL", tr("Solution").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME_LABEL", tr("Total elapsed time:").toStdString());
-        problemInfo.SetValue("SOLUTION_ELAPSED_TIME", tr("%1 s").arg(Util::problem()->timeElapsed().toString("mm:ss.zzz")).toStdString());
+        problemInfo.SetValue("SOLUTION_ELAPSED_TIME", tr("%1 s").arg(Agros2D::problem()->timeElapsed().toString("mm:ss.zzz")).toStdString());
         problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
         problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)).toStdString());
         problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
@@ -304,16 +307,16 @@ void InfoWidget::showInfo()
 void InfoWidget::finishLoading(bool ok)
 {
     // adaptive error
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.js"));
         webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.flot.js"));
 
-        if(Util::problem()->isTransient() && Util::problem()->config()->isTransientAdaptive())
+        if(Agros2D::problem()->isTransient() && Agros2D::problem()->config()->isTransientAdaptive())
         {
 
             QString dataTimeSteps = "[";
-            QList<double> lengths = Util::problem()->timeStepLengths();
+            QList<double> lengths = Agros2D::problem()->timeStepLengths();
             double time = 0;
             for (int i = 0; i < lengths.size() - 1; i++)
             {
@@ -330,18 +333,18 @@ void InfoWidget::finishLoading(bool ok)
             webView->page()->mainFrame()->evaluateJavaScript(commandTimeSteps);
         }
 
-        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
         {
             if (fieldInfo->adaptivityType() != AdaptivityType_None)
             {
-                int timeStep = Util::solutionStore()->timeLevels(fieldInfo).count() - 1;
-                int adaptiveSteps = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
+                int timeStep = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
+                int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
 
                 QString dataDOFs = "[";
                 QString dataError = "[";
                 for (int i = 0; i < adaptiveSteps; i++)
                 {
-                    MultiSolutionArray<double> msa = Util::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
+                    MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
                     dataDOFs += QString("[%1, %2], ").arg(i+1).arg(Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst()));
                     // dataError += QString("[%1, %2], ").arg(i+1).arg(msa.adaptiveError());
@@ -375,7 +378,7 @@ void InfoWidget::finishLoading(bool ok)
 
 QString InfoWidget::generateGeometry()
 {
-    RectPoint boundingBox = Util::scene()->boundingBox();
+    RectPoint boundingBox = Agros2D::scene()->boundingBox();
 
     double size = 200;
     double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
@@ -392,7 +395,7 @@ QString InfoWidget::generateGeometry()
 
     str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
 
-    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
         if (edge->angle() > 0.0)
         {

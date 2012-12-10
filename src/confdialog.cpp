@@ -20,6 +20,7 @@
 #include "confdialog.h"
 
 #include "util/constants.h"
+#include "util/global.h"
 #include "gui/lineeditdouble.h"
 #include "gui/systemoutput.h"
 
@@ -48,63 +49,63 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 void ConfigDialog::load()
 {
     // gui style
-    cmbGUIStyle->setCurrentIndex(cmbGUIStyle->findText(Util::config()->guiStyle));
+    cmbGUIStyle->setCurrentIndex(cmbGUIStyle->findText(Agros2D::config()->guiStyle));
     if (cmbGUIStyle->currentIndex() == -1 && cmbGUIStyle->count() > 0) cmbGUIStyle->setCurrentIndex(0);
 
     // language
-    cmbLanguage->setCurrentIndex(cmbLanguage->findText(Util::config()->language));
+    cmbLanguage->setCurrentIndex(cmbLanguage->findText(Agros2D::config()->language));
     if (cmbLanguage->currentIndex() == -1 && cmbLanguage->count() > 0) cmbLanguage->setCurrentIndex(0);
 
     // default physic field
-    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Util::config()->defaultPhysicField));
+    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Agros2D::config()->defaultPhysicField));
 
     // collaboration server
-    txtCollaborationServerURL->setText(Util::config()->collaborationServerURL);
+    txtCollaborationServerURL->setText(Agros2D::config()->collaborationServerURL);
 
     // check version
-    chkCheckVersion->setChecked(Util::config()->checkVersion);
+    chkCheckVersion->setChecked(Agros2D::config()->checkVersion);
 
     // show result in line edit value widget
-    chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
+    chkLineEditValueShowResult->setChecked(Agros2D::config()->lineEditValueShowResult);
 
     // discrete
-    chkDiscreteSaveMatrixRHS->setChecked(Util::config()->saveMatrixRHS);
+    chkDiscreteSaveMatrixRHS->setChecked(Agros2D::config()->saveMatrixRHS);
 
     // number of threads
-    txtNumOfThreads->setValue(Util::config()->numberOfThreads);
+    txtNumOfThreads->setValue(Agros2D::config()->numberOfThreads);
 
     // delete files
-    chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteMeshFiles);
-    chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermesMeshFile);
+    chkDeleteTriangleMeshFiles->setChecked(Agros2D::config()->deleteMeshFiles);
+    chkDeleteHermes2DMeshFile->setChecked(Agros2D::config()->deleteHermesMeshFile);
 
     // save problem with solution
-    chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
+    chkSaveWithSolution->setChecked(Agros2D::config()->saveProblemWithSolution);
 
     // cache size
-    txtCacheSize->setValue(Util::config()->cacheSize);
+    txtCacheSize->setValue(Agros2D::config()->cacheSize);
 
     // std log
-    chkLogStdOut->setChecked(Util::config()->showLogStdOut);
+    chkLogStdOut->setChecked(Agros2D::config()->showLogStdOut);
 
     // global script
-    txtGlobalScript->setPlainText(Util::config()->globalScript);
+    txtGlobalScript->setPlainText(Agros2D::config()->globalScript);
 }
 
 void ConfigDialog::save()
 {
     // gui style
-    Util::config()->guiStyle = cmbGUIStyle->currentText();
+    Agros2D::config()->guiStyle = cmbGUIStyle->currentText();
     setGUIStyle(cmbGUIStyle->currentText());
 
     // language
-    if (Util::config()->language != cmbLanguage->currentText())
+    if (Agros2D::config()->language != cmbLanguage->currentText())
         QMessageBox::warning(QApplication::activeWindow(),
                              tr("Language change"),
                              tr("Interface language has been changed. You must restart the application."));
-    Util::config()->language = cmbLanguage->currentText();
+    Agros2D::config()->language = cmbLanguage->currentText();
 
     // default physic field
-    Util::config()->defaultPhysicField = cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toString();
+    Agros2D::config()->defaultPhysicField = cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toString();
 
     // collaboration server
     QString collaborationServerUrl = txtCollaborationServerURL->text();
@@ -114,38 +115,38 @@ void ConfigDialog::save()
     if (!collaborationServerUrl.endsWith("/"))
         collaborationServerUrl = QString("%1/").arg(collaborationServerUrl);
 
-    Util::config()->collaborationServerURL = collaborationServerUrl;
+    Agros2D::config()->collaborationServerURL = collaborationServerUrl;
 
     // check version
-    Util::config()->checkVersion = chkCheckVersion->isChecked();
+    Agros2D::config()->checkVersion = chkCheckVersion->isChecked();
 
     // show result in line edit value widget
-    Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
+    Agros2D::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
     // discrete
-    Util::config()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
+    Agros2D::config()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
 
     // number of threads
-    Util::config()->numberOfThreads = txtNumOfThreads->value();
+    Agros2D::config()->numberOfThreads = txtNumOfThreads->value();
 
     // delete files
-    Util::config()->deleteMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
-    Util::config()->deleteHermesMeshFile = chkDeleteHermes2DMeshFile->isChecked();
+    Agros2D::config()->deleteMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
+    Agros2D::config()->deleteHermesMeshFile = chkDeleteHermes2DMeshFile->isChecked();
 
     // save problem with solution
-    Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
+    Agros2D::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
 
     // cache size
-    Util::config()->cacheSize = txtCacheSize->value();
+    Agros2D::config()->cacheSize = txtCacheSize->value();
 
     // std log
-    Util::config()->showLogStdOut = chkLogStdOut->isChecked();
+    Agros2D::config()->showLogStdOut = chkLogStdOut->isChecked();
 
     // global script
-    Util::config()->globalScript = txtGlobalScript->toPlainText();
+    Agros2D::config()->globalScript = txtGlobalScript->toPlainText();
 
     // save
-    Util::config()->save();
+    Agros2D::config()->save();
 }
 
 void ConfigDialog::createControls()
@@ -475,7 +476,7 @@ void ConfigDialog::readModulesAndCouplings()
 
         try
         {
-            Util::loadPlugins(QStringList(itModules.key()));
+            Agros2D::loadPlugins(QStringList(itModules.key()));
             item->setText(1, tr("available"));
         }
         catch (AgrosException e)
@@ -497,7 +498,7 @@ void ConfigDialog::readModulesAndCouplings()
 
         try
         {
-            Util::loadPlugins(QStringList(itCouplings.key()));
+            Agros2D::loadPlugins(QStringList(itCouplings.key()));
             item->setText(1, tr("available"));
         }
         catch (AgrosException e)
@@ -540,7 +541,7 @@ void ConfigDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->blockSignals(false);
 
     // default physic field
-    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));
+    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Agros2D::config()->defaultPhysicField));
     if (cmbPhysicField->currentIndex() == -1)
         cmbPhysicField->setCurrentIndex(0);
 }

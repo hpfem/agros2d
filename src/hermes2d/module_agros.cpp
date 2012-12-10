@@ -20,6 +20,8 @@
 #include "module_agros.h"
 
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarker.h"
@@ -67,7 +69,7 @@ void Module::ModuleAgros::fillComboBoxMaterialProperties(QComboBox *cmbFieldVari
 
 SceneBoundary *Module::ModuleAgros::newBoundary()
 {
-    FieldInfo *field = Util::problem()->fieldInfo(this->m_fieldid);
+    FieldInfo *field = Agros2D::problem()->fieldInfo(this->m_fieldid);
 
     // TODO: (Franta) default of other boundary types
     SceneBoundary *boundary = new SceneBoundary(field, tr("new boundary"),
@@ -78,7 +80,7 @@ SceneBoundary *Module::ModuleAgros::newBoundary()
 
 SceneMaterial *Module::ModuleAgros::newMaterial()
 {
-    FieldInfo *field = Util::problem()->fieldInfo(this->m_fieldid);
+    FieldInfo *field = Agros2D::problem()->fieldInfo(this->m_fieldid);
 
     SceneMaterial *material = new SceneMaterial(field, tr("new material"));
 
@@ -88,7 +90,7 @@ SceneMaterial *Module::ModuleAgros::newMaterial()
 //SceneBoundaryContainer Module::ModuleAgros::boundaries()
 //{
 //    //TODO - how to cast???
-//    MarkerContainer<SceneBoundary> boundaries = Util::scene()->boundaries->filter(QString::fromStdString(fieldid));
+//    MarkerContainer<SceneBoundary> boundaries = Agros2D::scene()->boundaries->filter(QString::fromStdString(fieldid));
 
 //    SceneBoundaryContainer boundaryContainer;
 //    foreach (SceneBoundary *boundary, boundaries.items())
@@ -100,7 +102,7 @@ SceneMaterial *Module::ModuleAgros::newMaterial()
 //SceneMaterialContainer Module::ModuleAgros::materials()
 //{
 //    //TODO - how to cast???
-//    MarkerContainer<SceneMaterial> materials = Util::scene()->materials->filter(QString::fromStdString(fieldid));
+//    MarkerContainer<SceneMaterial> materials = Agros2D::scene()->materials->filter(QString::fromStdString(fieldid));
 
 //    SceneMaterialContainer materialContainer;
 //    foreach (SceneMaterial *material, materials.items())
@@ -112,7 +114,7 @@ SceneMaterial *Module::ModuleAgros::newMaterial()
 template <class T>
 void deformShapeTemplate(T linVert, int count)
 {
-    MultiSolutionArray<double> msa = Util::scene()->activeMultiSolutionArray();
+    MultiSolutionArray<double> msa = Agros2D::scene()->activeMultiSolutionArray();
 
     double min =  numeric_limits<double>::max();
     double max = -numeric_limits<double>::max();
@@ -130,7 +132,7 @@ void deformShapeTemplate(T linVert, int count)
         if (dm > max) max = dm;
     }
 
-    RectPoint rect = Util::scene()->boundingBox();
+    RectPoint rect = Agros2D::scene()->boundingBox();
     double k = qMax(rect.width(), rect.height()) / qMax(min, max) / 15.0;
 
     for (int i = 0; i < count; i++)
@@ -148,27 +150,27 @@ void deformShapeTemplate(T linVert, int count)
 
 void Module::ModuleAgros::deformShape(double3* linVert, int count)
 {
-    if (Util::problem()->fieldInfo(m_fieldid)->module()->hasDeformableShape())
+    if (Agros2D::problem()->fieldInfo(m_fieldid)->module()->hasDeformableShape())
         deformShapeTemplate<double3 *>(linVert, count);
 }
 
 void Module::ModuleAgros::deformShape(double4* linVert, int count)
 {
-    if (Util::problem()->fieldInfo(m_fieldid)->module()->hasDeformableShape())
+    if (Agros2D::problem()->fieldInfo(m_fieldid)->module()->hasDeformableShape())
         deformShapeTemplate<double4 *>(linVert, count);
 }
 
 void Module::ModuleAgros::updateTimeFunctions(double time)
 {
     // update materials
-    foreach (SceneMaterial *material, Util::scene()->materials->items())
+    foreach (SceneMaterial *material, Agros2D::scene()->materials->items())
         if (material->fieldInfo())
             foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
                 if (variable->isTimeDep() && material->fieldInfo()->analysisType() == AnalysisType_Transient)
                     material->evaluate(variable->id(), time);
 
     // update boundaries
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
+    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->items())
         if (boundary->fieldInfo())
             foreach (Module::BoundaryType *boundaryType, boundary->fieldInfo()->module()->boundaryTypes())
                 foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())

@@ -38,7 +38,7 @@ PyProblem::PyProblem(bool clearproblem)
 void PyProblem::setCoordinateType(const char *coordinateType)
 {
     if (coordinateTypeStringKeys().contains(QString(coordinateType)))
-        Util::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString(coordinateType)));
+        Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString(coordinateType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(coordinateTypeStringKeys())).toStdString());
 }
@@ -46,7 +46,7 @@ void PyProblem::setCoordinateType(const char *coordinateType)
 void PyProblem::setMeshType(const char *meshType)
 {
     if (meshTypeStringKeys().contains(QString(meshType)))
-        Util::problem()->config()->setMeshType(meshTypeFromStringKey(QString(meshType)));
+        Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(QString(meshType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(meshTypeStringKeys())).toStdString());
 }
@@ -54,7 +54,7 @@ void PyProblem::setMeshType(const char *meshType)
 void PyProblem::setMatrixSolver(const char *matrixSolver)
 {
     if (matrixSolverTypeStringKeys().contains(QString(matrixSolver)))
-        Util::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString(matrixSolver)));
+        Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString(matrixSolver)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
 }
@@ -62,7 +62,7 @@ void PyProblem::setMatrixSolver(const char *matrixSolver)
 void PyProblem::setFrequency(const double frequency)
 {
     if (frequency >= 0.0)
-        Util::problem()->config()->setFrequency(frequency);
+        Agros2D::problem()->config()->setFrequency(frequency);
     else
         throw invalid_argument(QObject::tr("The frequency must be positive.").toStdString());
 }
@@ -70,7 +70,7 @@ void PyProblem::setFrequency(const double frequency)
 void PyProblem::setTimeStepMethod(const char *timeStepMethod)
 {
     if (timeStepMethodStringKeys().contains(QString(timeStepMethod)))
-        Util::problem()->config()->setTimeStepMethod((TimeStepMethod) timeStepMethodFromStringKey(QString(timeStepMethod)));
+        Agros2D::problem()->config()->setTimeStepMethod((TimeStepMethod) timeStepMethodFromStringKey(QString(timeStepMethod)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(timeStepMethodStringKeys())).toStdString());
 }
@@ -78,7 +78,7 @@ void PyProblem::setTimeStepMethod(const char *timeStepMethod)
 void PyProblem::setTimeMethodOrder(const int timeMethodOrder)
 {
     if (timeMethodOrder >= 1)
-        Util::problem()->config()->setTimeOrder(timeMethodOrder);
+        Agros2D::problem()->config()->setTimeOrder(timeMethodOrder);
     else
         throw invalid_argument(QObject::tr("Number of time method order must be greater then 1.").toStdString());
 }
@@ -86,7 +86,7 @@ void PyProblem::setTimeMethodOrder(const int timeMethodOrder)
 void PyProblem::setTimeMethodTolerance(const double timeMethodTolerance)
 {
     if (timeMethodTolerance > 0.0)
-        Util::problem()->config()->setTimeMethodTolerance(Value(QString::number(timeMethodTolerance)));
+        Agros2D::problem()->config()->setTimeMethodTolerance(Value(QString::number(timeMethodTolerance)));
     else
         throw invalid_argument(QObject::tr("The time method tolerance must be positive.").toStdString());
 }
@@ -94,7 +94,7 @@ void PyProblem::setTimeMethodTolerance(const double timeMethodTolerance)
 void PyProblem::setNumConstantTimeSteps(const int timeSteps)
 {
     if (timeSteps >= 1)
-        Util::problem()->config()->setNumConstantTimeSteps(timeSteps);
+        Agros2D::problem()->config()->setNumConstantTimeSteps(timeSteps);
     else
         throw invalid_argument(QObject::tr("Number of time steps must be greater then 1.").toStdString());
 }
@@ -102,17 +102,17 @@ void PyProblem::setNumConstantTimeSteps(const int timeSteps)
 void PyProblem::setTimeTotal(const double timeTotal)
 {
     if (timeTotal >= 0.0)
-        Util::problem()->config()->setTimeTotal(Value(QString::number(timeTotal)));
+        Agros2D::problem()->config()->setTimeTotal(Value(QString::number(timeTotal)));
     else
         throw invalid_argument(QObject::tr("The total time must be positive.").toStdString());
 }
 
 char *PyProblem::getCouplingType(const char *sourceField, const char *targetField)
 {
-    if (Util::problem()->hasCoupling(QString(sourceField),
+    if (Agros2D::problem()->hasCoupling(QString(sourceField),
                                      QString(targetField)))
     {
-        CouplingInfo *couplingInfo = Util::problem()->couplingInfo(QString(sourceField),
+        CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString(sourceField),
                                                                    QString(targetField));
 
         return const_cast<char*>(couplingTypeToStringKey(couplingInfo->couplingType()).toStdString().c_str());
@@ -123,10 +123,10 @@ char *PyProblem::getCouplingType(const char *sourceField, const char *targetFiel
 
 void PyProblem::setCouplingType(const char *sourceField, const char *targetField, const char *type)
 {
-    if (Util::problem()->hasCoupling(QString(sourceField),
+    if (Agros2D::problem()->hasCoupling(QString(sourceField),
                                      QString(targetField)))
     {
-        CouplingInfo *couplingInfo = Util::problem()->couplingInfo(QString(sourceField),
+        CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString(sourceField),
                                                                    QString(targetField));
 
         if (couplingTypeStringKeys().contains(QString(type)))
@@ -140,13 +140,13 @@ void PyProblem::setCouplingType(const char *sourceField, const char *targetField
 
 void PyProblem::clear()
 {
-    Util::problem()->clearFieldsAndConfig();
-    Util::scene()->clear();
+    Agros2D::problem()->clearFieldsAndConfig();
+    Agros2D::scene()->clear();
 }
 
 void PyProblem::refresh()
 {
-    Util::scene()->invalidate();
+    Agros2D::scene()->invalidate();
 
     // refresh post view
     currentPythonEngineAgros()->postHermes()->refresh();
@@ -154,14 +154,14 @@ void PyProblem::refresh()
 
 void PyProblem::solve()
 {
-    Util::scene()->invalidate();
+    Agros2D::scene()->invalidate();
 
     // trigger preprocessor
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
-    Util::problem()->solve();
-    if (Util::problem()->isSolved())
+    Agros2D::problem()->solve();
+    if (Agros2D::problem()->isSolved())
     {
         // trigger postprocessor
         if (!silentMode())

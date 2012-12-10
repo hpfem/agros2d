@@ -19,8 +19,10 @@
 
 #include "meshgenerator.h"
 
-#include "scene.h"
+#include "conf.h"
+#include "util/global.h"
 
+#include "scene.h"
 #include "scenebasic.h"
 #include "scenenode.h"
 #include "sceneedge.h"
@@ -86,27 +88,27 @@ bool MeshGenerator::writeToHermes()
 
     // curves
     int countCurves = 0;
-    if (Util::config()->curvilinearElements)
+    if (Agros2D::config()->curvilinearElements)
     {
         for (int i = 0; i<edgeList.count(); i++)
         {
             if (edgeList[i].marker != -1)
             {
                 // curve
-                if (Util::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
+                if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
                 {
                     countCurves++;
-                    int segments = Util::scene()->edges->at(edgeList[i].marker)->segments();
+                    int segments = Agros2D::scene()->edges->at(edgeList[i].marker)->segments();
 
                     // subdivision angle and chord
-                    double theta = deg2rad(Util::scene()->edges->at(edgeList[i].marker)->angle()) / double(segments);
-                    double chord = 2 * Util::scene()->edges->at(edgeList[i].marker)->radius() * sin(theta / 2.0);
+                    double theta = deg2rad(Agros2D::scene()->edges->at(edgeList[i].marker)->angle()) / double(segments);
+                    double chord = 2 * Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(theta / 2.0);
 
                     // length of short chord
                     double chordShort = (nodeList[edgeList[i].node[1]] - nodeList[edgeList[i].node[0]]).magnitude();
 
                     // direction
-                    Point center = Util::scene()->edges->at(edgeList[i].marker)->center();
+                    Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
                     int direction = (((nodeList[edgeList[i].node[0]].x-center.x)*(nodeList[edgeList[i].node[1]].y-center.y) -
                                       (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
 
@@ -129,21 +131,21 @@ bool MeshGenerator::writeToHermes()
             if (edgeList[i].marker != -1)
             {
                 // curve
-                if (Util::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
+                if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
                 {
                     // angle
-                    Point center = Util::scene()->edges->at(edgeList[i].marker)->center();
+                    Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
                     double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
                                                center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
 
                     double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
                                                center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
 
-                    nodeList[edgeList[i].node[0]].x = center.x + Util::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle1);
-                    nodeList[edgeList[i].node[0]].y = center.y + Util::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle1);
+                    nodeList[edgeList[i].node[0]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle1);
+                    nodeList[edgeList[i].node[0]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle1);
 
-                    nodeList[edgeList[i].node[1]].x = center.x + Util::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle2);
-                    nodeList[edgeList[i].node[1]].y = center.y + Util::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle2);
+                    nodeList[edgeList[i].node[1]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle2);
+                    nodeList[edgeList[i].node[1]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle2);
                 }
             }
         }
@@ -210,7 +212,7 @@ bool MeshGenerator::writeToHermes()
     }
 
     // subdomains
-    foreach(FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+    foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
         QDomElement eleSubdomain = doc.createElement("subdomain");
         eleSubdomains.appendChild(eleSubdomain);
@@ -221,7 +223,7 @@ bool MeshGenerator::writeToHermes()
 
         for (int i = 0; i<elementList.count(); i++)
         {
-            if (elementList[i].isUsed && (Util::scene()->labels->at(elementList[i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
+            if (elementList[i].isUsed && (Agros2D::scene()->labels->at(elementList[i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
             {
                 QDomElement eleSubElement = doc.createElement("i");
                 eleSubElements.appendChild(eleSubElement);
@@ -251,14 +253,14 @@ bool MeshGenerator::writeToHermes()
                     int neigh = edgeList[i].neighElem[neigh_i];
                     if (neigh != -1)
                     {
-                        if (Util::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
+                        if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
                                 != SceneMaterialContainer::getNone(fieldInfo))
                             numNeighWithField++;
                     }
                 }
 
                 // edge has boundary condition prescribed for this field
-                bool hasFieldBoundaryCondition = (Util::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo)
+                bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo)
                                                   != SceneBoundaryContainer::getNone(fieldInfo));
 
                 if (numNeighWithField == 1)
@@ -288,7 +290,7 @@ bool MeshGenerator::writeToHermes()
             foreach (int index, unassignedEdges)
                 list += QString::number(index) + ", ";
 
-            Util::log()->printError(tr("Mesh generator"), tr("Boundary condition is not assigned on following edges %1.").arg(list.left(list.count() - 2)));
+            Agros2D::log()->printError(tr("Mesh generator"), tr("Boundary condition is not assigned on following edges %1.").arg(list.left(list.count() - 2)));
 
             return false;
         }

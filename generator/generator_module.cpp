@@ -865,7 +865,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Util::problem()->config()->frequency()";
+        dict["f"] = "Agros2D::problem()->config()->frequency()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
@@ -1042,7 +1042,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Util::problem()->config()->frequency()";
+        dict["f"] = "Agros2D::problem()->config()->frequency()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
@@ -1051,7 +1051,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["vval"] = "v->val[i]";
         dict["upval"] = "u_ext[this->j]->val[i]";
         dict["uptval"] = "ext[this->j - this->offsetJ()]->val[i]";
-        dict["deltat"] = "Util::problem()->actualTimeStepLength()";
+        dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
         dict["timedermat"] = "this->m_table->matrixFormCoefficient()";
         dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->module()->numberOfSolutions(), i)";
         dict["timederres"] = "this->m_table->residualCoefficient()";
@@ -1146,7 +1146,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     else if (dep == "time-space")
                     {
                         // spacedep boundary condition
-                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1.value(Util::problem()->actualTime(), Point(x, y))").
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1.value(Agros2D::problem()->actualTime(), Point(x, y))").
                                 arg(QString::fromStdString(quantity.shortname().get()));
                     }
                 }
@@ -1195,7 +1195,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Util::problem()->config()->frequency()";
+        dict["f"] = "Agros2D::problem()->config()->frequency()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
@@ -1204,7 +1204,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         dict["vval"] = "1";
         dict["upval"] = "1";
         dict["uptval"] = "1";
-        dict["deltat"] = "Util::problem()->actualTimeStepLength()";
+        dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
         dict["timedermat"] = "1";
         dict["timedervec"] = "1";
         dict["timederres"] = "1";

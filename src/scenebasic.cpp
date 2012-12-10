@@ -19,6 +19,8 @@
 
 #include "scenebasic.h"
 
+#include "util/global.h"
+
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
@@ -57,7 +59,7 @@ MarkerType* MarkedSceneBasic<MarkerType>::marker(FieldInfo* field)
 template <typename MarkerType>
 MarkerType* MarkedSceneBasic<MarkerType>::marker(QString fieldId)
 {
-    return marker(Util::problem()->fieldInfo(fieldId));
+    return marker(Agros2D::problem()->fieldInfo(fieldId));
 }
 
 
@@ -100,7 +102,7 @@ void MarkedSceneBasic<MarkerType>::putMarkersToList(MarkerContainer<MarkerType>*
 template <typename MarkerType>
 void MarkedSceneBasic<MarkerType>::removeMarker(QString field)
 {
-    removeMarker(Util::problem()->fieldInfo(field));
+    removeMarker(Agros2D::problem()->fieldInfo(field));
 }
 
 template <typename MarkerType>
@@ -125,18 +127,18 @@ void MarkedSceneBasic<MarkerType>::doFieldsChanged()
 {
     foreach (MarkerType* marker, m_markers)
     {
-        if(! Util::problem()->fieldInfos().contains(marker->fieldId()))
+        if(! Agros2D::problem()->fieldInfos().contains(marker->fieldId()))
             removeMarker(marker);
     }
 
-    foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
         if(! m_markers.contains(fieldInfo)){
             if(typeid(MarkerType) == typeid(SceneBoundary))
-                m_markers[fieldInfo] = (MarkerType*)Util::scene()->boundaries->getNone(fieldInfo);
+                m_markers[fieldInfo] = (MarkerType*)Agros2D::scene()->boundaries->getNone(fieldInfo);
 
             else if (typeid(MarkerType) == typeid(SceneMaterial))
-                m_markers[fieldInfo] = (MarkerType*)Util::scene()->materials->getNone(fieldInfo);
+                m_markers[fieldInfo] = (MarkerType*)Agros2D::scene()->materials->getNone(fieldInfo);
 
             else
                 assert(0);
@@ -199,10 +201,10 @@ void SceneBasicContainer<BasicType>::deleteWithUndo(QString message)
 {
     foreach (BasicType *node, data)
     {
-        Util::scene()->undoStack()->beginMacro(message);
-        Util::scene()->undoStack()->push(node->getRemoveCommand());
+        Agros2D::scene()->undoStack()->beginMacro(message);
+        Agros2D::scene()->undoStack()->push(node->getRemoveCommand());
         this->remove(node);
-        Util::scene()->undoStack()->endMacro();
+        Agros2D::scene()->undoStack()->endMacro();
     }
 }
 

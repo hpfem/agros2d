@@ -17,10 +17,14 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "solver.h"
+
+#include "util.h"
+#include "util/global.h"
+
 #include "field.h"
 #include "block.h"
 #include "problem.h"
-#include "solver.h"
 #include "module.h"
 #include "scene.h"
 #include "sceneedge.h"
@@ -31,28 +35,26 @@
 #include "solutionstore.h"
 #include "plugin_interface.h"
 #include "logview.h"
-#include "util.h"
 #include "bdf2.h"
 
 using namespace Hermes::Hermes2D;
-
 
 int DEBUG_COUNTER = 0;
 
 void processSolverOutput(const char* aha)
 {
     QString str = QString(aha).trimmed();
-    Util::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
+    Agros2D::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
 }
 
 template <typename Scalar>
 void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
 {
-    if(Util::config()->saveMatrixRHS)
+    if(Agros2D::config()->saveMatrixRHS)
     {
         solver->output_matrix();
         solver->output_rhs();
-        QString name = QString("%1/%2-%3-%4").arg(tempProblemDir()).arg(solverName).arg(Util::problem()->actualTimeStep()).arg(adaptivityStep);
+        QString name = QString("%1/%2-%3-%4").arg(tempProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
         solver->set_matrix_filename(QString("%1-Matrix").arg(name).toStdString());
         solver->set_rhs_filename(QString("%1-RHS").arg(name).toStdString());
     }
@@ -213,13 +215,13 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
     for (int i = 0; i < m_block->numSolutions(); i++)
     {
         // add norm
-        projNormType.push_back(Util::config()->projNormType);
+        projNormType.push_back(Agros2D::config()->projNormType);
 
         RefinementSelectors::CandList candList;
 
         if (m_block->adaptivityType() == AdaptivityType_None)
         {
-            if(Util::config()->useAniso)
+            if(Agros2D::config()->useAniso)
                 candList = RefinementSelectors::H2D_HP_ANISO;
             else
                 candList = RefinementSelectors::H2D_HP_ISO;
@@ -229,26 +231,26 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
             switch (m_block->adaptivityType())
             {
             case AdaptivityType_H:
-                if(Util::config()->useAniso)
+                if(Agros2D::config()->useAniso)
                     candList = RefinementSelectors::H2D_H_ANISO;
                 else
                     candList = RefinementSelectors::H2D_H_ISO;
                 break;
             case AdaptivityType_P:
-                if(Util::config()->useAniso)
+                if(Agros2D::config()->useAniso)
                     candList = RefinementSelectors::H2D_P_ANISO;
                 else
                     candList = RefinementSelectors::H2D_P_ISO;
                 break;
             case AdaptivityType_HP:
-                if(Util::config()->useAniso)
+                if(Agros2D::config()->useAniso)
                     candList = RefinementSelectors::H2D_HP_ANISO;
                 else
                     candList = RefinementSelectors::H2D_HP_ISO;
                 break;
             }
         }
-        select = new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList, Util::config()->convExp, H2DRS_DEFAULT_ORDER);
+        select = new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList, Agros2D::config()->convExp, H2DRS_DEFAULT_ORDER);
 
         // add refinement selector
         selector.push_back(select);
@@ -278,10 +280,10 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
         if(createReference)
         {
             AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
-            if(Util::config()->finerReference || (adaptivityType != AdaptivityType_P))
+            if(Agros2D::config()->finerReference || (adaptivityType != AdaptivityType_P))
                 refineMesh = true;
 
-            if(Util::config()->finerReference || (adaptivityType != AdaptivityType_H))
+            if(Agros2D::config()->finerReference || (adaptivityType != AdaptivityType_H))
                 orderIncrease = 1;
         }
 
@@ -321,7 +323,7 @@ void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVe
     solutions.createSolutions(newSpaces.meshes());
     Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces.nakedConst(), solutions.naked());
 
-    Util::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(newSpaces, solutions, Util::problem()->actualTime()));
+    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(newSpaces, solutions, Agros2D::problem()->actualTime()));
 }
 
 template <typename Scalar>
@@ -332,7 +334,7 @@ void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> 
     //            arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
     //            arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData()).toStdString();
 
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Util::problem()->config()->matrixSolver());
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
 
     try
     {
@@ -344,7 +346,7 @@ void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> 
 
         // TODO: temporarily disabled
         /*
-        Util::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
+        Agros2D::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
                                 arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
                                 arg(milisecondsToTime(newton.get_solve_time() * 1000.0).toString("mm:ss.zzz")).
                                 arg(milisecondsToTime((newton.get_assemble_time() + newton.get_solve_time()) * 1000.0).toString("mm:ss.zzz")));
@@ -355,7 +357,7 @@ void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> 
     catch (Hermes::Exceptions::Exception e)
     {
         QString error = QString("%1").arg(e.what());
-        Util::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
+        Agros2D::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
         throw;
     }
 }
@@ -366,36 +368,36 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // to be used as starting vector for the Newton solver
     MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
     if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
-        previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
+        previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
 
     // cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst()) == 0)
     {
-        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
+        Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
     }
 
-    // cout << QString("updating with time %1\n").arg(Util::problem()->actualTime()).toStdString() << endl;
+    // cout << QString("updating with time %1\n").arg(Agros2D::problem()->actualTime()).toStdString() << endl;
 
     // update timedep values
     foreach (Field* field, m_block->fields())
-        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
+        field->fieldInfo()->module()->updateTimeFunctions(Agros2D::problem()->actualTime());
     updateExactSolutionFunctions();
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Util::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
     {
         bdf2Table = new BDF2ATable();
-        bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-        bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
+        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->timeOrder()));
+        bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     }
 
     m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
+    m_block->weakForm().data()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
     Scalar solutionVector[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
@@ -418,36 +420,36 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
 {
     // todo: move to some config?
     const double MAX_TIME_STEPS_RATIO = 2.0; // todo: 3.0;
-    const double MAX_TIME_STEP_LENGTH = Util::problem()->config()->timeTotal().value() / 10;
+    const double MAX_TIME_STEP_LENGTH = Agros2D::problem()->config()->timeTotal().value() / 10;
     const double MAX_TOLERANCE_MULTIPLY_TO_ACCEPT = 2.5;  // todo: 3.0
 
-    TimeStepMethod method = Util::problem()->config()->timeStepMethod();
+    TimeStepMethod method = Agros2D::problem()->config()->timeStepMethod();
     if(method == TimeStepMethod_Fixed)
-        return NextTimeStep(Util::problem()->config()->constantTimeStepLength());
+        return NextTimeStep(Agros2D::problem()->config()->constantTimeStepLength());
 
     // At the present moment we use only estimation using BDF2A with different orders
     assert(method == TimeStepMethod_BDF2AOrder);
 
     MultiSolutionArray<Scalar> referenceCalculation =
-            Util::solutionStore()->multiSolution(Util::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
+            Agros2D::solutionStore()->multiSolution(Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
 
     // todo: ensure this in gui
-    assert(Util::problem()->config()->timeOrder() >= 2);
+    assert(Agros2D::problem()->config()->timeOrder() >= 2);
 
     // todo: in the first step, I am acualy using order 1 and thus I am unable to decrease it!
     // this is not good, since the second step is not calculated (and the error of the first is not being checked)
     if(timeStep == 1)
-        return NextTimeStep(Util::problem()->actualTimeStepLength());
+        return NextTimeStep(Agros2D::problem()->actualTimeStepLength());
 
     BDF2Table* bdf2Table = new BDF2ATable();
-    int previouslyUsedOrder = min(timeStep, Util::problem()->config()->timeOrder());
+    int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->timeOrder());
     bdf2Table->setOrder(previouslyUsedOrder - 1);
 
-    bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
-    //cout << "using time order" << min(timeStep, Util::problem()->config()->timeOrder()) << endl;
+    bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
+    //cout << "using time order" << min(timeStep, Agros2D::problem()->config()->timeOrder()) << endl;
 
     m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
+    m_block->weakForm().data()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
 
@@ -465,24 +467,24 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
 
     double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutionsNaked(), solutions.naked());
 
-    bool refuseThisStep = error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * Util::problem()->config()->timeMethodTolerance().number();
+    bool refuseThisStep = error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * Agros2D::problem()->config()->timeMethodTolerance().number();
 
     // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
-    double nextTimeStepLength = pow(Util::problem()->config()->timeMethodTolerance().number() / error,
-                                    1.0 / (Util::problem()->config()->timeOrder() + 1)) * Util::problem()->actualTimeStepLength();
+    double nextTimeStepLength = pow(Agros2D::problem()->config()->timeMethodTolerance().number() / error,
+                                    1.0 / (Agros2D::problem()->config()->timeOrder() + 1)) * Agros2D::problem()->actualTimeStepLength();
 
     nextTimeStepLength = min(nextTimeStepLength, MAX_TIME_STEP_LENGTH);
-    nextTimeStepLength = min(nextTimeStepLength, Util::problem()->actualTimeStepLength() * MAX_TIME_STEPS_RATIO);
-    nextTimeStepLength = max(nextTimeStepLength, Util::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
+    nextTimeStepLength = min(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() * MAX_TIME_STEPS_RATIO);
+    nextTimeStepLength = max(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
 
-    Util::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, step size %3 -> %4 (%5 %)").
-                            arg(Util::problem()->actualTime()).
+    Agros2D::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, step size %3 -> %4 (%5 %)").
+                            arg(Agros2D::problem()->actualTime()).
                             arg(error).
-                            arg(Util::problem()->actualTimeStepLength()).
+                            arg(Agros2D::problem()->actualTimeStepLength()).
                             arg(nextTimeStepLength).
-                            arg(nextTimeStepLength / Util::problem()->actualTimeStepLength()*100.));
+                            arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.));
     if(refuseThisStep)
-        Util::log()->printDebug(m_solverID, "time step refused");
+        Agros2D::log()->printDebug(m_solverID, "time step refused");
 
     delete bdf2Table;
     return NextTimeStep(nextTimeStepLength, refuseThisStep);
@@ -502,7 +504,7 @@ template <typename Scalar>
 void Solver<Scalar>::createInitialSpace()
 {
     // read mesh from file
-    if (!Util::problem()->isMeshed())
+    if (!Agros2D::problem()->isMeshed())
         throw AgrosSolverException(QObject::tr("Meshes are empty"));
 
     // essential boundary conditions
@@ -528,7 +530,7 @@ void Solver<Scalar>::createInitialSpace()
         problemId.linearityType = fieldInfo->linearityType();
 
         int index = 0;
-        foreach(SceneEdge* edge, Util::scene()->edges->items())
+        foreach(SceneEdge* edge, Agros2D::scene()->edges->items())
         {
             SceneBoundary *boundary = edge->marker(fieldInfo);
 
@@ -539,7 +541,7 @@ void Solver<Scalar>::createInitialSpace()
                 foreach (FormInfo *form, boundary_type->essential())
                 {
                     // plugion interface
-                    PluginInterface *plugin = Util::plugins()[fieldInfo->fieldId()];
+                    PluginInterface *plugin = Agros2D::plugins()[fieldInfo->fieldId()];
                     assert(plugin);
 
                     // exact solution - Dirichlet BC
@@ -579,13 +581,13 @@ void Solver<Scalar>::createInitialSpace()
             m_actualSpaces.add(QSharedPointer<Space<Scalar> >(oneSpace), initialMesh);
 
             // set order by element
-            foreach(SceneLabel* label, Util::scene()->labels->items())
+            foreach(SceneLabel* label, Agros2D::scene()->labels->items())
             {
                 if (!label->marker(fieldInfo)->isNone() &&
                         (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder()))
                 {
                     m_actualSpaces.at(i).data()->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
-                                                                   QString::number(Util::scene()->labels->items().indexOf(label)).toStdString());
+                                                                   QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
                 }
             }
         }
@@ -599,49 +601,49 @@ template <typename Scalar>
 void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists)
 {
     //    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
-    //    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
+    //    MultiSolutionArray<Scalar> msa = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
     //    MultiSolutionArray<Scalar> msaRef;
 
-    if(Util::problem()->isTransient())
+    if(Agros2D::problem()->isTransient())
     {
         assert(0); // zatim vychazim z predchoziho pouziti m_actualSpace. Potom pro prechodak musim vhodne naplnit
         // to be used as starting vector for the Newton solver
         MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
         if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
-            previousTSMultiSolutionArray = Util::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
+            previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
     }
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst()) == 0)
     {
-        Util::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
+        Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
     }
 
     // update timedep values
     foreach (Field* field, m_block->fields())
-        field->fieldInfo()->module()->updateTimeFunctions(Util::problem()->actualTime());
+        field->fieldInfo()->module()->updateTimeFunctions(Agros2D::problem()->actualTime());
 
     // todo: delete? delam to pro referencni... (zkusit)
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Util::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
     {
         bdf2Table = new BDF2ATable();
-        bdf2Table->setOrder(min(timeStep, Util::problem()->config()->timeOrder()));
-        bdf2Table->setPreviousSteps(Util::problem()->timeStepLengths());
+        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->timeOrder()));
+        bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     }
 
     // TODO: wf should be created only at the beginning
     m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    m_block->weakForm().data()->set_current_time(Util::problem()->actualTime());
+    m_block->weakForm().data()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
     MultiSpace<Scalar> spacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
     assert(m_actualSpaces.size() == spacesRef.size());
 
     // todo: delete? je to vubec potreba?
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef.naked(), Util::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef.naked(), Agros2D::problem()->actualTime());
 
     Scalar solutionVector[Space<Scalar>::get_num_dofs(spacesRef.nakedConst())];
 
@@ -655,7 +657,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     Solution<Scalar>::vector_to_solutions(solutionVector, spacesRef.nakedConst(), solutionsRef.naked());
 
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
-    Util::solutionStore()->addSolution(referenceSolutionID, MultiSolutionArray<Scalar>(spacesRef, solutionsRef, Util::problem()->actualTime()));
+    Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiSolutionArray<Scalar>(spacesRef, solutionsRef, Agros2D::problem()->actualTime()));
 
     // copy spaces and create empty solutions
     MultiSpace<Scalar> spacesCopy = deepMeshAndSpaceCopy(m_actualSpaces, false);
@@ -668,8 +670,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 
     // save the solution
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
-    MultiSolutionArray<Scalar> msa(spacesCopy, solutions, Util::problem()->actualTime());
-    Util::solutionStore()->addSolution(solutionID, msa);
+    MultiSolutionArray<Scalar> msa(spacesCopy, solutions, Agros2D::problem()->actualTime());
+    Agros2D::solutionStore()->addSolution(solutionID, msa);
 
     if(bdf2Table)
         delete bdf2Table;
@@ -678,8 +680,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 template <typename Scalar>
 bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 {
-    MultiSolutionArray<Scalar> msa = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
-    MultiSolutionArray<Scalar> msaRef = Util::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
+    MultiSolutionArray<Scalar> msa = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
+    MultiSolutionArray<Scalar> msaRef = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
@@ -696,8 +698,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     // msa.setAdaptiveError(error);
 
     // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
-    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) < Util::config()->maxDofs;
-    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Util::config()->maxDofs << endl;
+    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) < Agros2D::config()->maxDofs;
+    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Agros2D::config()->maxDofs << endl;
 
     double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked());
 
@@ -705,20 +707,20 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     // should be refacted.
     //    if (adapt)
     //    {
-    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) << "tr " << Util::config()->threshold <<
-            ", st " << Util::config()->strategy << ", reg " << Util::config()->meshRegularity << endl;
+    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) << "tr " << Agros2D::config()->threshold <<
+            ", st " << Agros2D::config()->strategy << ", reg " << Agros2D::config()->meshRegularity << endl;
     try
     {
-        bool noref = adaptivity.adapt(selector, Util::config()->threshold, Util::config()->strategy, Util::config()->meshRegularity);
+        bool noref = adaptivity.adapt(selector, Agros2D::config()->threshold, Agros2D::config()->strategy, Agros2D::config()->meshRegularity);
     }
     catch (Hermes::Exceptions::Exception e)
     {
         QString error = QString(e.what());
-        Util::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
+        Agros2D::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
         throw;
     }
 
-    Util::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
+    Agros2D::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
                               arg(error).
                               arg(initialDOFs).
                               arg(Space<Scalar>::get_num_dofs(m_actualSpaces.naked())));
@@ -731,7 +733,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 template <typename Scalar>
 void Solver<Scalar>::solveInitialTimeStep()
 {
-    Util::log()->printDebug(m_solverID, QObject::tr("initial time step"));
+    Agros2D::log()->printDebug(m_solverID, QObject::tr("initial time step"));
 
     MultiSolution<Scalar> solutions;
     int totalComp = 0;
@@ -748,7 +750,7 @@ void Solver<Scalar>::solveInitialTimeStep()
     }
 
     BlockSolutionID solutionID(m_block, 0, 0, SolutionMode_Normal);
-    Util::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(m_actualSpaces, solutions, Util::problem()->actualTime()));
+    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(m_actualSpaces, solutions, Agros2D::problem()->actualTime()));
 }
 
 

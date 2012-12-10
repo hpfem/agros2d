@@ -27,6 +27,8 @@
 #include "hermes2d/solutionstore.h"
 
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenelabel.h"
 #include "logview.h"
@@ -41,13 +43,13 @@ void {{CLASS}}SurfaceIntegral::calculate()
 {
     m_values.clear();
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         // update time functions
         if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
-            m_fieldInfo->module()->updateTimeFunctions(timeLevels[Util::scene()->activeTimeStep()]);
+            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
+            m_fieldInfo->module()->updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
         }
 
         // solutions
@@ -55,8 +57,8 @@ void {{CLASS}}SurfaceIntegral::calculate()
         for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
         {
             // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-            FieldSolutionID fsid(m_fieldInfo, Util::scene()->activeTimeStep(), Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Util::scene()->activeTimeStep()), SolutionMode_Normal);
-            sln.push_back(Util::solutionStore()->multiSolution(fsid).component(k).sln.data());
+            FieldSolutionID fsid(m_fieldInfo, Agros2D::scene()->activeTimeStep(), Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Agros2D::scene()->activeTimeStep()), SolutionMode_Normal);
+            sln.push_back(Agros2D::solutionStore()->multiSolution(fsid).component(k).sln.data());
         }
 
         double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
@@ -70,9 +72,9 @@ void {{CLASS}}SurfaceIntegral::calculate()
             sln[k]->set_quad_2d(quad);
 
         const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
-        for (int i = 0; i<Util::scene()->edges->length(); i++)
+        for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
         {
-            if (Util::scene()->edges->at(i)->isSelected())
+            if (Agros2D::scene()->edges->at(i)->isSelected())
             {
                 for_all_active_elements(e, mesh)
                 {
@@ -129,7 +131,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             int np = quad->get_num_points(eo, e->get_mode());
 
                             // set material variable
-                            SceneMaterial *material = Util::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().
+                            SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().
                                                                                      get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
                             // expressions

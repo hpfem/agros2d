@@ -22,6 +22,7 @@
 #include "gui/about.h"
 #include "gui/imageloader.h"
 
+#include "util/global.h"
 #include "util/checkversion.h"
 
 #include "scene.h"
@@ -56,11 +57,11 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    Util::createSingleton();
+    Agros2D::createSingleton();
 
     // log stdout
     logStdOut = NULL;
-    if (Util::config()->showLogStdOut)
+    if (Agros2D::config()->showLogStdOut)
         logStdOut = new LogStdOut();
 
     // FIXME: curve elements from script doesn't work
@@ -81,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
-    connect(Util::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
     // postprocessor
     postprocessorWidget = new PostprocessorWidget(sceneViewPreprocessor,
                                                   sceneViewMesh,
@@ -110,15 +111,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     currentPythonEngineAgros()->setPostHermes(postHermes);
 
-    connect(Util::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
-    connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
-    connect(Util::scene()->actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
+    connect(Agros2D::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
+    connect(Agros2D::scene()->actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
-    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
     connect(postprocessorWidget, SIGNAL(apply()), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(setControls()));
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), sceneViewPreprocessor, SLOT(refresh()));
@@ -131,7 +132,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
 
     // mesh
-    connect(Util::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
+    connect(Agros2D::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
 
     // postprocessor 2d
@@ -148,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(problemWidget, SIGNAL(changed()), sceneInfoWidget, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), sceneInfoWidget, SLOT(refresh()));
 
-    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(doFieldsChanged()));
 
     sceneViewPreprocessor->clear();
     sceneViewMesh->clear();
@@ -158,7 +159,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QSettings settings;
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
 
-    Util::scene()->clear();
+    Agros2D::scene()->clear();
 
     problemWidget->actProperties->trigger();
     sceneViewPreprocessor->doZoomBestFit();
@@ -310,13 +311,13 @@ void MainWindow::createActions()
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
     // undo framework
-    actUndo = Util::scene()->undoStack()->createUndoAction(this);
+    actUndo = Agros2D::scene()->undoStack()->createUndoAction(this);
     actUndo->setIcon(icon("edit-undo"));
     actUndo->setIconText(tr("&Undo"));
     actUndo->setShortcuts(QKeySequence::Undo);
     actUndo->setStatusTip(tr("Undo operation"));
 
-    actRedo = Util::scene()->undoStack()->createRedoAction(this);
+    actRedo = Agros2D::scene()->undoStack()->createRedoAction(this);
     actRedo->setIcon(icon("edit-redo"));
     actRedo->setIconText(tr("&Redo"));
     actRedo->setShortcuts(QKeySequence::Redo);
@@ -492,10 +493,10 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
-    mnuEdit->addAction(Util::scene()->actDeleteSelected);
+    mnuEdit->addAction(Agros2D::scene()->actDeleteSelected);
     mnuEdit->addSeparator();
     mnuEdit->addAction(sceneViewPreprocessor->actSceneViewSelectRegion);
-    mnuEdit->addAction(Util::scene()->actTransform);
+    mnuEdit->addAction(Agros2D::scene()->actTransform);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();
     mnuEdit->addAction(actOptions);
@@ -539,11 +540,11 @@ void MainWindow::createMenus()
     mnuProblem = menuBar()->addMenu(tr("&Problem"));
     QMenu *mnuAdd = new QMenu(tr("&Add"), this);
     mnuProblem->addMenu(mnuAdd);
-    mnuAdd->addAction(Util::scene()->actNewNode);
-    mnuAdd->addAction(Util::scene()->actNewEdge);
-    mnuAdd->addAction(Util::scene()->actNewLabel);
+    mnuAdd->addAction(Agros2D::scene()->actNewNode);
+    mnuAdd->addAction(Agros2D::scene()->actNewEdge);
+    mnuAdd->addAction(Agros2D::scene()->actNewLabel);
     mnuAdd->addSeparator();
-    Util::scene()->addBoundaryAndMaterialMenuItems(mnuAdd, this);
+    Agros2D::scene()->addBoundaryAndMaterialMenuItems(mnuAdd, this);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
@@ -555,7 +556,7 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(actSolveAdaptiveStep);
     mnuProblem->addSeparator();
-    mnuProblem->addAction(Util::problem()->actClearSolutions);
+    mnuProblem->addAction(Agros2D::problem()->actClearSolutions);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);
@@ -643,9 +644,9 @@ void MainWindow::createToolBars()
     tlbGeometry->addAction(sceneViewPreprocessor->actOperateOnLabels);
     tlbGeometry->addSeparator();
     tlbGeometry->addAction(sceneViewPreprocessor->actSceneViewSelectRegion);
-    tlbGeometry->addAction(Util::scene()->actTransform);
+    tlbGeometry->addAction(Agros2D::scene()->actTransform);
     tlbGeometry->addSeparator();
-    tlbGeometry->addAction(Util::scene()->actDeleteSelected);
+    tlbGeometry->addAction(Agros2D::scene()->actDeleteSelected);
     tlbGeometry->setMovable(false);
 
     tlbPost2D = addToolBar(tr("Postprocessor 2D"));
@@ -839,9 +840,9 @@ void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
 void MainWindow::setRecentFiles()
 {
     // recent files
-    if (!Util::problem()->config()->fileName().isEmpty())
+    if (!Agros2D::problem()->config()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(Util::problem()->config()->fileName());
+        QFileInfo fileInfo(Agros2D::problem()->config()->fileName());
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -888,13 +889,13 @@ void MainWindow::doDocumentNew()
     FieldSelectDialog dialog(QList<QString>(), this);
     if (dialog.showDialog() == QDialog::Accepted)
     {
-        Util::problem()->clearFieldsAndConfig();
-        Util::scene()->clear();
+        Agros2D::problem()->clearFieldsAndConfig();
+        Agros2D::scene()->clear();
 
         // add field
         FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
 
-        Util::problem()->addField(fieldInfo);
+        Agros2D::problem()->addField(fieldInfo);
 
         problemWidget->actProperties->trigger();
         sceneViewPreprocessor->doZoomBestFit();
@@ -928,7 +929,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
         if (fileInfo.suffix() == "a2d")
         {
             // a2d data file
-            ErrorResult result = Util::scene()->readFromFile(fileNameDocument);
+            ErrorResult result = Agros2D::scene()->readFromFile(fileNameDocument);
             if (!result.isError())
             {
                 setRecentFiles();
@@ -976,7 +977,7 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
-        ErrorResult result = Util::scene()->readFromFile(fileName);
+        ErrorResult result = Agros2D::scene()->readFromFile(fileName);
         if (!result.isError())
         {
             setRecentFiles();
@@ -992,9 +993,9 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(Util::problem()->config()->fileName()))
+    if (QFile::exists(Agros2D::problem()->config()->fileName()))
     {
-        ErrorResult result = Util::scene()->writeToFile(Util::problem()->config()->fileName());
+        ErrorResult result = Agros2D::scene()->writeToFile(Agros2D::problem()->config()->fileName());
         if (result.isError())
             result.showDialog();
     }
@@ -1026,7 +1027,7 @@ void MainWindow::doDocumentSaveAs()
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "a2d") fileName += ".a2d";
 
-        ErrorResult result = Util::scene()->writeToFile(fileName);
+        ErrorResult result = Agros2D::scene()->writeToFile(fileName);
         if (result.isError())
             result.showDialog();
 
@@ -1048,7 +1049,7 @@ void MainWindow::doDocumentClose()
 {
     // WILL BE FIXED
     /*
-    while (!Util::scene()->undoStack()->isClean())
+    while (!Agros2D::scene()->undoStack()->isClean())
     {
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("Application"), tr("Problem has been modified.\nDo you want to save your changes?"),
@@ -1062,7 +1063,7 @@ void MainWindow::doDocumentClose()
     }
     */
 
-    Util::scene()->clear();
+    Agros2D::scene()->clear();
 
     sceneViewPreprocessor->actOperateOnNodes->trigger();
     sceneViewPreprocessor->doZoomBestFit();
@@ -1079,7 +1080,7 @@ void MainWindow::doDocumentImportDXF()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), dir, tr("DXF files (*.dxf)"));
     if (!fileName.isEmpty())
     {
-        Util::scene()->readFromDxf(fileName);
+        Agros2D::scene()->readFromDxf(fileName);
         sceneViewPreprocessor->doZoomBestFit();
 
         QFileInfo fileInfo(fileName);
@@ -1098,7 +1099,7 @@ void MainWindow::doDocumentExportDXF()
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "dxf") fileName += ".dxf";
-        Util::scene()->writeToDxf(fileName);
+        Agros2D::scene()->writeToDxf(fileName);
 
         if (fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
@@ -1198,8 +1199,8 @@ void MainWindow::doCreateMesh()
     logDialog->show();
 
     // create mesh
-    Util::problem()->mesh();
-    if (Util::problem()->isMeshed())
+    Agros2D::problem()->mesh();
+    if (Agros2D::problem()->isMeshed())
     {
         // raise mesh viewer
         sceneViewMesh->actSceneModeMesh->trigger();
@@ -1215,8 +1216,8 @@ void MainWindow::doSolve()
     logDialog->show();
 
     // solve problem
-    Util::problem()->solve();
-    if (Util::problem()->isSolved())
+    Agros2D::problem()->solve();
+    if (Agros2D::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
 
@@ -1241,8 +1242,8 @@ void MainWindow::doSolveAdaptiveStep()
     logDialog->show();
 
     // solve problem
-    Util::problem()->solveAdaptiveStep();
-    if (Util::problem()->isSolved())
+    Agros2D::problem()->solveAdaptiveStep();
+    if (Agros2D::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
 
@@ -1383,8 +1384,8 @@ void MainWindow::doTimeStepChanged(int index)
     if (cmbTimeStep->currentIndex() != -1)
     {
         double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
-        int actualTimeStep = Util::problem()->timeToTimeStep(actualTime);
-        Util::scene()->setActiveTimeStep(actualTimeStep);
+        int actualTimeStep = Agros2D::problem()->timeToTimeStep(actualTime);
+        Agros2D::scene()->setActiveTimeStep(actualTimeStep);
         postprocessorWidget->updateControls();
     }
 }
@@ -1398,10 +1399,10 @@ void MainWindow::clear()
 
 void MainWindow::setControls()
 {
-    actDocumentSaveWithSolution->setEnabled(Util::problem()->isSolved());
+    actDocumentSaveWithSolution->setEnabled(Agros2D::problem()->isSolved());
 
     // set controls
-    Util::scene()->actTransform->setEnabled(false);
+    Agros2D::scene()->actTransform->setEnabled(false);
 
     sceneViewPreprocessor->actSceneZoomRegion = NULL;
     sceneViewMesh->actSceneZoomRegion = NULL;
@@ -1435,7 +1436,7 @@ void MainWindow::setControls()
         tabViewLayout->setCurrentWidget(sceneViewPreprocessorWidget);
         tabControlsLayout->setCurrentWidget(preprocessorWidget);
 
-        Util::scene()->actTransform->setEnabled(true);
+        Agros2D::scene()->actTransform->setEnabled(true);
 
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPreprocessor, SLOT(doZoomOut()));
@@ -1490,19 +1491,19 @@ void MainWindow::setControls()
     }
 
 
-    actDocumentExportMeshFile->setEnabled(Util::problem()->isMeshed());
+    actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
 
-    actSolveAdaptiveStep->setEnabled((!Util::problem()->isTransient())); // FIXME: timedep
-    actSolve->setEnabled(Util::problem()->fieldInfos().count() > 0);
-    actSolveAdaptiveStep->setEnabled(Util::problem()->fieldInfos().count() > 0);
+    actSolveAdaptiveStep->setEnabled((!Agros2D::problem()->isTransient())); // FIXME: timedep
+    actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
+    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
 
     QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
 
     // set current timestep
-    //    cmbTimeStep->setCurrentIndex(Util::problem()->timeStep());
+    //    cmbTimeStep->setCurrentIndex(Agros2D::problem()->timeStep());
 
-    //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
-    //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
+    //actProgressLog->setEnabled(Agros2D::config()->enabledProgressLog);
+    //actApplicationLog->setEnabled(Agros2D::config()->enabledApplicationLog);
 }
 
 void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
@@ -1528,7 +1529,7 @@ void MainWindow::doHelpShortCut()
 
 void MainWindow::doCollaborationServer()
 {
-    QDesktopServices::openUrl(QUrl(Util::config()->collaborationServerURL + "problems.php"));
+    QDesktopServices::openUrl(QUrl(Agros2D::config()->collaborationServerURL + "problems.php"));
 }
 
 void MainWindow::doOnlineHelp()
@@ -1554,7 +1555,7 @@ void MainWindow::doHideControlPanel()
 
 void MainWindow::doDocumentExportMeshFile()
 {
-    if (Util::problem()->isMeshed())
+    if (Agros2D::problem()->isMeshed())
     {
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();
@@ -1595,10 +1596,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     // WILL BE FIXED
     /*
-    if (!Util::scene()->undoStack()->isClean())
+    if (!Agros2D::scene()->undoStack()->isClean())
         doDocumentClose();
 
-    if (Util::scene()->undoStack()->isClean() && !scriptEditorDialog->isScriptModified())
+    if (Agros2D::scene()->undoStack()->isClean() && !scriptEditorDialog->isScriptModified())
         event->accept();
     else
     {

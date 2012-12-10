@@ -27,6 +27,8 @@
 #include "hermes2d/solutionstore.h"
 
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenelabel.h"
 #include "logview.h"
@@ -44,10 +46,10 @@ void {{CLASS}}LocalValue::calculate()
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
-        m_fieldInfo->module()->updateTimeFunctions(Util::problem()->timeStepToTime(Util::scene()->activeTimeStep()));
+        m_fieldInfo->module()->updateTimeFunctions(Agros2D::problem()->timeStepToTime(Agros2D::scene()->activeTimeStep()));
     }
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         double x = m_point.x;
         double y = m_point.y;
@@ -57,7 +59,7 @@ void {{CLASS}}LocalValue::calculate()
         if (e)
         {
             // find marker
-            SceneLabel *label = Util::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
+            SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
             double *value = new double[m_fieldInfo->module()->numberOfSolutions()];
@@ -68,21 +70,21 @@ void {{CLASS}}LocalValue::calculate()
             for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
             {
                 // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-                int adaptivityStep = Util::scene()->activeAdaptivityStep();
-                SolutionMode solutionMode = Util::scene()->activeSolutionType();
-                int timeStep = Util::solutionStore()->nearestTimeStep(m_fieldInfo, Util::scene()->activeTimeStep());
-                if(timeStep != Util::scene()->activeTimeStep())
+                int adaptivityStep = Agros2D::scene()->activeAdaptivityStep();
+                SolutionMode solutionMode = Agros2D::scene()->activeSolutionType();
+                int timeStep = Agros2D::solutionStore()->nearestTimeStep(m_fieldInfo, Agros2D::scene()->activeTimeStep());
+                if(timeStep != Agros2D::scene()->activeTimeStep())
                 {
-                    adaptivityStep = Util::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
+                    adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
                     solutionMode = SolutionMode_Normal;
                 }
                 FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
-                sln[k] = Util::solutionStore()->multiSolution(fsid).component(k).sln.data();
+                sln[k] = Agros2D::solutionStore()->multiSolution(fsid).component(k).sln.data();
 
                 // point values
                 Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);
                 double val;
-                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Util::scene()->activeTimeStep() == 0)
+                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Agros2D::scene()->activeTimeStep() == 0)
                     // const solution at first time step
                     val = m_fieldInfo->initialCondition().number();
                 else

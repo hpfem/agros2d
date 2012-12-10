@@ -19,6 +19,8 @@
 
 #include "scenemarkerselectdialog.h"
 
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneedge.h"
@@ -49,7 +51,7 @@ void SceneMarkerSelectDialog::createControls()
 {
     // surface
     lstSurface = new QListWidget(this);
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(Util::scene()->activeViewField()).items())
+    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(Agros2D::scene()->activeViewField()).items())
     {
         QListWidgetItem *item = new QListWidgetItem(lstSurface);
         item->setText(boundary->name());
@@ -66,7 +68,7 @@ void SceneMarkerSelectDialog::createControls()
 
     // volume
     lstVolume = new QListWidget(this);
-    foreach (SceneMaterial *material, Util::scene()->materials->filter(Util::scene()->activeViewField()).items())
+    foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(Agros2D::scene()->activeViewField()).items())
     {
         QListWidgetItem *item = new QListWidgetItem(lstVolume);
         item->setText(material->name());
@@ -103,15 +105,15 @@ void SceneMarkerSelectDialog::doAccept()
 {
     if (tabWidget->currentWidget() == widSurface)
     {
-        Util::scene()->selectNone();
+        Agros2D::scene()->selectNone();
         m_sceneViewPost2D->actPostprocessorModeSurfaceIntegral->trigger();
         for (int i = 0; i < lstSurface->count(); i++)
         {
             if (lstSurface->item(i)->checkState() == Qt::Checked)
             {
-                foreach (SceneEdge *edge, Util::scene()->edges->items())
+                foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
                 {
-                    if (edge->marker(Util::scene()->activeViewField()) ==
+                    if (edge->marker(Agros2D::scene()->activeViewField()) ==
                             lstSurface->item(i)->data(Qt::UserRole).value<SceneBoundary *>())
                         edge->setSelected(true);
                 }
@@ -122,15 +124,15 @@ void SceneMarkerSelectDialog::doAccept()
 
     if (tabWidget->currentWidget() == widVolume)
     {
-        Util::scene()->selectNone();
+        Agros2D::scene()->selectNone();
         m_sceneViewPost2D->actPostprocessorModeVolumeIntegral->trigger();
         for (int i = 0; i < lstVolume->count(); i++)
         {
             if (lstVolume->item(i)->checkState() == Qt::Checked)
             {
-                foreach (SceneLabel *label, Util::scene()->labels->items())
+                foreach (SceneLabel *label, Agros2D::scene()->labels->items())
                 {
-                    if (label->marker(Util::scene()->activeViewField()) ==
+                    if (label->marker(Agros2D::scene()->activeViewField()) ==
                             lstVolume->item(i)->data(Qt::UserRole).value<SceneMaterial *>())
                         label->setSelected(true);
                 }

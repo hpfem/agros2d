@@ -19,6 +19,8 @@
 
 #include "problemdialog.h"
 
+#include "util/global.h"
+
 #include "scene.h"
 #include "moduledialog.h"
 #include "pythonlab/pythonengine_agros.h"
@@ -399,7 +401,7 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 
     // time steps skip
     bool otherFieldIsTransient = false;
-    foreach (FieldInfo* otherFieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo* otherFieldInfo, Agros2D::problem()->fieldInfos())
         if (otherFieldInfo->analysisType() == AnalysisType_Transient && otherFieldInfo->fieldId() != m_fieldInfo->fieldId())
             otherFieldIsTransient = true;
 
@@ -411,7 +413,7 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 void FieldWidget::doShowEquation()
 {
     Module::ModuleAgros module(m_fieldInfo->fieldId(),
-                               Util::problem()->config()->coordinateType(),
+                               Agros2D::problem()->config()->coordinateType(),
                                (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
 
     equationLaTeX->setLatex(module.equation());
@@ -466,7 +468,7 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
     // dialog buttons
     QPushButton *btnDeleteField = new QPushButton(tr("Delete field"));
     btnDeleteField->setDefault(false);
-    btnDeleteField->setEnabled(Util::problem()->hasField(fieldInfo->fieldId()));
+    btnDeleteField->setEnabled(Agros2D::problem()->hasField(fieldInfo->fieldId()));
     connect(btnDeleteField, SIGNAL(clicked()), this, SLOT(deleteField()));
 
     QPushButton *btnModuleEditor = new QPushButton(tr("Module editor"));
@@ -509,7 +511,7 @@ void FieldDialog::deleteField()
     if (QMessageBox::question(this, tr("Delete"), tr("Physical field '%1' will be pernamently deleted. Are you sure?").
                               arg(fieldWidget->fieldInfo()->name()), tr("&Yes"), tr("&No")) == 0)
     {
-        Util::problem()->removeField(fieldWidget->fieldInfo());
+        Agros2D::problem()->removeField(fieldWidget->fieldInfo());
         accept();
     }
 }
@@ -526,8 +528,8 @@ FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
 {
     createControls();
 
-    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
 
@@ -568,7 +570,7 @@ void FieldsToobar::refresh()
     tlbFields->clear();
     actFieldsGroup->actions().clear();
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         QString hint = tr("<h3>%1</h3>"
                           "<table>").arg(fieldInfo->name());
@@ -620,7 +622,7 @@ void FieldsToobar::refresh()
 
 void FieldsToobar::fieldDialog(QAction *action)
 {
-    FieldInfo *fieldInfo = Util::problem()->fieldInfo(action->data().toString());
+    FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(action->data().toString());
     if (fieldInfo)
     {
         FieldDialog fieldDialog(fieldInfo, this);
@@ -635,7 +637,7 @@ void FieldsToobar::fieldDialog(QAction *action)
 void FieldsToobar::addField()
 {
     // select field dialog
-    FieldSelectDialog dialog(Util::problem()->fieldInfos().keys(), this);
+    FieldSelectDialog dialog(Agros2D::problem()->fieldInfos().keys(), this);
     if (dialog.showDialog() == QDialog::Accepted)
     {
         // add field
@@ -644,7 +646,7 @@ void FieldsToobar::addField()
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
         {
-            Util::problem()->addField(fieldInfo);
+            Agros2D::problem()->addField(fieldInfo);
 
             refresh();
             emit changed();
@@ -660,12 +662,12 @@ void FieldsToobar::addField()
 
 CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
 {
-    Util::problem()->synchronizeCouplings();
+    Agros2D::problem()->synchronizeCouplings();
 
     layoutTable = NULL;
     createContent();
 
-    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
 
     load();
 }
@@ -684,7 +686,7 @@ void CouplingsWidget::createContent()
 
     m_comboBoxes.clear();
     int line = 0;
-    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
     {
         layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
 
@@ -698,7 +700,7 @@ void CouplingsWidget::createContent()
     fillComboBox();
     load();
 
-    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
     {
         connect(m_comboBoxes[couplingInfo], SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
     }
@@ -718,22 +720,22 @@ void CouplingsWidget::fillComboBox()
 
 void CouplingsWidget::load()
 {
-    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
         m_comboBoxes[couplingInfo]->setCurrentIndex(m_comboBoxes[couplingInfo]->findData(couplingInfo->couplingType()));
 }
 
 void CouplingsWidget::save()
 {
-    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
         if (m_comboBoxes.contains(couplingInfo))
             couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
 
-    //Util::problem()->setCouplingInfos(Util::problem()->couplingInfos());
+    //Agros2D::problem()->setCouplingInfos(Agros2D::problem()->couplingInfos());
 }
 
 void CouplingsWidget::refresh()
 {
-    Util::problem()->synchronizeCouplings();
+    Agros2D::problem()->synchronizeCouplings();
 
     createContent();
 }
@@ -753,8 +755,8 @@ ProblemWidget::ProblemWidget(QWidget *parent) : QWidget(parent)
     updateControls();
 
     // global signals
-    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(updateControls()));
-    connect(Util::problem(), SIGNAL(fieldsChanged()), this, SLOT(updateControls()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(updateControls()));
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(updateControls()));
     connect(fieldsToolbar, SIGNAL(changed()), this, SLOT(updateControls()));
 
     // resend signal
@@ -992,45 +994,45 @@ void ProblemWidget::updateControls()
     txtStartupScript->disconnect();
 
     // main
-    txtName->setText(Util::problem()->config()->name());
-    cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Util::problem()->config()->coordinateType()));
+    txtName->setText(Agros2D::problem()->config()->name());
+    cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Agros2D::problem()->config()->coordinateType()));
     if (cmbCoordinateType->currentIndex() == -1)
         cmbCoordinateType->setCurrentIndex(0);
 
     // mesh type
-    cmbMeshType->setCurrentIndex(cmbMeshType->findData(Util::problem()->config()->meshType()));
+    cmbMeshType->setCurrentIndex(cmbMeshType->findData(Agros2D::problem()->config()->meshType()));
 
     // harmonic magnetic
-    grpHarmonicAnalysis->setVisible(Util::problem()->isHarmonic());
-    txtFrequency->setValue(Util::problem()->config()->frequency());
-    // txtFrequency->setEnabled(Util::problem()->isHarmonic());
+    grpHarmonicAnalysis->setVisible(Agros2D::problem()->isHarmonic());
+    txtFrequency->setValue(Agros2D::problem()->config()->frequency());
+    // txtFrequency->setEnabled(Agros2D::problem()->isHarmonic());
 
     // transient
-    grpTransientAnalysis->setVisible(Util::problem()->isTransient());
-    txtTransientSteps->setValue(Util::problem()->config()->numConstantTimeSteps());
-    // txtTransientTimeStep->setEnabled(Util::problem()->isTransient());
-    txtTransientTimeTotal->setValue(Util::problem()->config()->timeTotal());
-    txtTransientTolerance->setValue(Util::problem()->config()->timeMethodTolerance());
-    // txtTransientTimeTotal->setEnabled(Util::problem()->isTransient());
-    txtTransientOrder->setValue(Util::problem()->config()->timeOrder());
-    cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Util::problem()->config()->timeStepMethod()));
+    grpTransientAnalysis->setVisible(Agros2D::problem()->isTransient());
+    txtTransientSteps->setValue(Agros2D::problem()->config()->numConstantTimeSteps());
+    // txtTransientTimeStep->setEnabled(Agros2D::problem()->isTransient());
+    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal());
+    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance());
+    // txtTransientTimeTotal->setEnabled(Agros2D::problem()->isTransient());
+    txtTransientOrder->setValue(Agros2D::problem()->config()->timeOrder());
+    cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Agros2D::problem()->config()->timeStepMethod()));
     if (cmbTransientMethod->currentIndex() == -1)
         cmbTransientMethod->setCurrentIndex(0);
 
     // matrix solver
-    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Util::problem()->config()->matrixSolver()));
+    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Agros2D::problem()->config()->matrixSolver()));
 
     // startup
-    txtStartupScript->setPlainText(Util::problem()->config()->startupscript());
+    txtStartupScript->setPlainText(Agros2D::problem()->config()->startupscript());
 
     // description
-    txtDescription->setPlainText(Util::problem()->config()->description());
+    txtDescription->setPlainText(Agros2D::problem()->config()->description());
 
     // couplings
     fieldsToolbar->refresh();
     couplingsWidget->refresh();
 
-    grpCouplings->setVisible(Util::problem()->couplingInfos().count() > 0);
+    grpCouplings->setVisible(Agros2D::problem()->couplingInfos().count() > 0);
 
     transientChanged();
 
@@ -1064,8 +1066,8 @@ void ProblemWidget::updateControls()
 
 void ProblemWidget::changedWithoutClear()
 {
-    Util::problem()->config()->setName(txtName->text());
-    Util::problem()->config()->setDescription(txtDescription->toPlainText());
+    Agros2D::problem()->config()->setName(txtName->text());
+    Agros2D::problem()->config()->setDescription(txtDescription->toPlainText());
 }
 
 void ProblemWidget::changedWithClear()
@@ -1079,30 +1081,30 @@ void ProblemWidget::changedWithClear()
     }
 
     // save properties
-    Util::problem()->config()->blockSignals(true);
+    Agros2D::problem()->config()->blockSignals(true);
 
-    Util::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
-    Util::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
+    Agros2D::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
+    Agros2D::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
 
-    Util::problem()->config()->setFrequency(txtFrequency->value());
+    Agros2D::problem()->config()->setFrequency(txtFrequency->value());
 
-    Util::problem()->config()->setTimeStepMethod((TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
-    Util::problem()->config()->setTimeOrder(txtTransientOrder->value());
-    Util::problem()->config()->setTimeMethodTolerance(txtTransientTolerance->value());
-    Util::problem()->config()->setNumConstantTimeSteps(txtTransientSteps->value());
-    Util::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
+    Agros2D::problem()->config()->setTimeStepMethod((TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
+    Agros2D::problem()->config()->setTimeOrder(txtTransientOrder->value());
+    Agros2D::problem()->config()->setTimeMethodTolerance(txtTransientTolerance->value());
+    Agros2D::problem()->config()->setNumConstantTimeSteps(txtTransientSteps->value());
+    Agros2D::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
 
     // matrix solver
-    Util::problem()->config()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
+    Agros2D::problem()->config()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
 
     // script
-    Util::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
+    Agros2D::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
 
     // save couplings
     couplingsWidget->save();
 
-    Util::problem()->config()->blockSignals(false);
-    Util::problem()->config()->refresh();
+    Agros2D::problem()->config()->blockSignals(false);
+    Agros2D::problem()->config()->refresh();
 
     emit changed();
 }

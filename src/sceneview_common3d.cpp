@@ -18,6 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "sceneview_common3d.h"
+
+#include "util/global.h"
+
 #include "sceneview_data.h"
 #include "scene.h"
 #include "scenemarker.h"
@@ -43,16 +46,16 @@ SceneViewCommon3D::SceneViewCommon3D(PostHermes *postHermes, QWidget *parent)
 void SceneViewCommon3D::createActions()
 {
     // projection
-    actSetProjectionXY = new QAction(tr("Projection to %1%2").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelY()), this);
-    actSetProjectionXY->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelY()));
+    actSetProjectionXY = new QAction(tr("Projection to %1%2").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelY()), this);
+    actSetProjectionXY->setStatusTip(tr("Projection to %1%2 plane.").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelY()));
     connect(actSetProjectionXY, SIGNAL(triggered()), this, SLOT(doSetProjectionXY()));
 
-    actSetProjectionXZ = new QAction(tr("Projection to %1%2").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelZ()), this);
-    actSetProjectionXZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::problem()->config()->labelX()).arg(Util::problem()->config()->labelZ()));
+    actSetProjectionXZ = new QAction(tr("Projection to %1%2").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelZ()), this);
+    actSetProjectionXZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelZ()));
     connect(actSetProjectionXZ, SIGNAL(triggered()), this, SLOT(doSetProjectionXZ()));
 
-    actSetProjectionYZ = new QAction(tr("Projection to %1%2").arg(Util::problem()->config()->labelY()).arg(Util::problem()->config()->labelZ()), this);
-    actSetProjectionYZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::problem()->config()->labelY()).arg(Util::problem()->config()->labelZ()));
+    actSetProjectionYZ = new QAction(tr("Projection to %1%2").arg(Agros2D::problem()->config()->labelY()).arg(Agros2D::problem()->config()->labelZ()), this);
+    actSetProjectionYZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Agros2D::problem()->config()->labelY()).arg(Agros2D::problem()->config()->labelZ()));
     connect(actSetProjectionYZ, SIGNAL(triggered()), this, SLOT(doSetProjectionYZ()));
 }
 
@@ -94,15 +97,15 @@ void SceneViewCommon3D::paintBackground()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glBegin(GL_QUADS);
-    if (Util::config()->scalarView3DBackground)
+    if (Agros2D::config()->scalarView3DBackground)
         glColor3d(0.99, 0.99, 0.99);
     else
-        glColor3d(Util::config()->colorBackground.redF(),
-                  Util::config()->colorBackground.greenF(),
-                  Util::config()->colorBackground.blueF());
+        glColor3d(Agros2D::config()->colorBackground.redF(),
+                  Agros2D::config()->colorBackground.greenF(),
+                  Agros2D::config()->colorBackground.blueF());
     glVertex3d(-1.0, -1.0, 0.0);
     glVertex3d(1.0, -1.0, 0.0);
-    if (Util::config()->scalarView3DBackground)
+    if (Agros2D::config()->scalarView3DBackground)
         glColor3d(0.44, 0.56, 0.89);
     glVertex3d(1.0, 1.0, 0.0);
     glVertex3d(-1.0, 1.0, 0.0);
@@ -129,9 +132,9 @@ void SceneViewCommon3D::paintAxes()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glColor3d(Util::config()->colorCross.redF(),
-              Util::config()->colorCross.greenF(),
-              Util::config()->colorCross.blueF());
+    glColor3d(Agros2D::config()->colorCross.redF(),
+              Agros2D::config()->colorCross.greenF(),
+              Agros2D::config()->colorCross.blueF());
 
     // x-axis
     glBegin(GL_QUADS);
@@ -229,14 +232,14 @@ void SceneViewCommon3D::loadProjection3d(bool setScene)
         glRotated(m_rotation3d.z, 0.0, 1.0, 0.0);
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
-        RectPoint rect = Util::scene()->boundingBox();
-        if (Util::config()->showPost3D == SceneViewPost3DMode_ScalarView3D)
+        RectPoint rect = Agros2D::scene()->boundingBox();
+        if (Agros2D::config()->showPost3D == SceneViewPost3DMode_ScalarView3D)
         {
             glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
         }
         else
         {
-            if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
+            if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
             {
                 glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
             }
@@ -259,7 +262,7 @@ void SceneViewCommon3D::setZoom(double power)
 
 void SceneViewCommon3D::initLighting()
 {
-    if (Util::config()->scalarView3DLighting || Util::config()->showPost3D == SceneViewPost3DMode_Model)
+    if (Agros2D::config()->scalarView3DLighting || Agros2D::config()->showPost3D == SceneViewPost3DMode_Model)
     {
         // environment
         float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };

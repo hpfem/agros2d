@@ -21,6 +21,8 @@
 #define PYTHONLABPARTICLETRACING_H
 
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 
 class Solution;
@@ -39,39 +41,39 @@ public:
     void setInitialPosition(double x, double y);
     void initialPosition(double &x, double &y)
     {
-        x = Util::config()->particleStart.x;
-        y = Util::config()->particleStart.y;
+        x = Agros2D::config()->particleStart.x;
+        y = Agros2D::config()->particleStart.y;
     }
     void setInitialVelocity(double x, double y);
     void initialVelocity(double &x, double &y)
     {
-        x = Util::config()->particleStartVelocity.x;
-        y = Util::config()->particleStartVelocity.y;
+        x = Agros2D::config()->particleStartVelocity.x;
+        y = Agros2D::config()->particleStartVelocity.y;
     }
     void setParticleMass(double mass);
-    double particleMass() { return Util::config()->particleMass; }
+    double particleMass() { return Agros2D::config()->particleMass; }
     void setParticleCharge(double charge);
-    double particleCharge() { return Util::config()->particleConstant; }
+    double particleCharge() { return Agros2D::config()->particleConstant; }
     void setDragForceDensity(double rho);
-    double dragForceDensity() { return Util::config()->particleDragDensity; }
+    double dragForceDensity() { return Agros2D::config()->particleDragDensity; }
     void setDragForceReferenceArea(double area);
-    double dragForceReferenceArea() { return Util::config()->particleDragReferenceArea; }
+    double dragForceReferenceArea() { return Agros2D::config()->particleDragReferenceArea; }
     void setDragForceCoefficient(double coeff);
-    double dragForceCoefficient() { return Util::config()->particleDragCoefficient; }
+    double dragForceCoefficient() { return Agros2D::config()->particleDragCoefficient; }
     void setIncludeRelativisticCorrection(int include);
-    int includeRelativisticCorrection() { return Util::config()->particleIncludeRelativisticCorrection; }
+    int includeRelativisticCorrection() { return Agros2D::config()->particleIncludeRelativisticCorrection; }
     void setReflectOnDifferentMaterial(int reflect);
-    int reflectOnDifferentMaterial() { return Util::config()->particleReflectOnDifferentMaterial; }
+    int reflectOnDifferentMaterial() { return Agros2D::config()->particleReflectOnDifferentMaterial; }
     void setReflectOnBoundary(int reflect);
-    int reflectOnBoundary() { return Util::config()->particleReflectOnBoundary; }
+    int reflectOnBoundary() { return Agros2D::config()->particleReflectOnBoundary; }
     void setCoefficientOfRestitution(double coeff);
-    int coefficientOfRestitution() { return Util::config()->particleCoefficientOfRestitution; }
+    int coefficientOfRestitution() { return Agros2D::config()->particleCoefficientOfRestitution; }
     void setMaximumTolerance(double tolerance);
-    double maximumTolerance() { return Util::config()->particleMaximumRelativeError; }
+    double maximumTolerance() { return Agros2D::config()->particleMaximumRelativeError; }
     void setMaximumNumberOfSteps(int steps);
-    int maximumNumberOfSteps() { return Util::config()->particleMaximumNumberOfSteps; }
+    int maximumNumberOfSteps() { return Agros2D::config()->particleMaximumNumberOfSteps; }
     void setMinimumStep(int step);
-    int minimumStep() { return Util::config()->particleMinimumStep; }
+    int minimumStep() { return Agros2D::config()->particleMinimumStep; }
 
     void solve();
 

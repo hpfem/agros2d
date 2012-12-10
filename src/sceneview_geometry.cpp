@@ -18,7 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "sceneview_geometry.h"
+
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "hermes2d/problem.h"
 
@@ -97,14 +100,14 @@ void SceneViewPreprocessor::createMenuGeometry()
 {
     mnuScene = new QMenu(this);
 
-    mnuScene->addAction(Util::scene()->actNewNode);
-    mnuScene->addAction(Util::scene()->actNewEdge);
-    mnuScene->addAction(Util::scene()->actNewLabel);
+    mnuScene->addAction(Agros2D::scene()->actNewNode);
+    mnuScene->addAction(Agros2D::scene()->actNewEdge);
+    mnuScene->addAction(Agros2D::scene()->actNewLabel);
     mnuScene->addSeparator();
-    Util::scene()->addBoundaryAndMaterialMenuItems(mnuScene, this);
+    Agros2D::scene()->addBoundaryAndMaterialMenuItems(mnuScene, this);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneViewSelectRegion);
-    mnuScene->addAction(Util::scene()->actTransform);
+    mnuScene->addAction(Agros2D::scene()->actTransform);
     mnuScene->addSeparator();
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         mnuScene->addAction(actSceneEdgeSwapDirection);
@@ -115,60 +118,60 @@ void SceneViewPreprocessor::doSceneObjectProperties()
 {
     if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
     {
-        if (Util::scene()->selectedCount() == 1)
+        if (Agros2D::scene()->selectedCount() == 1)
         {
-            for (int i = 0; i < Util::scene()->nodes->length(); i++)
+            for (int i = 0; i < Agros2D::scene()->nodes->length(); i++)
             {
-                if (Util::scene()->nodes->at(i)->isSelected())
-                    Util::scene()->nodes->at(i)->showDialog(this);
+                if (Agros2D::scene()->nodes->at(i)->isSelected())
+                    Agros2D::scene()->nodes->at(i)->showDialog(this);
             }
         }
     }
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
     {
-        if (Util::scene()->selectedCount() > 1)
+        if (Agros2D::scene()->selectedCount() > 1)
         {
-            SceneEdgeSelectDialog *dialog = new SceneEdgeSelectDialog(Util::scene()->edges->selected(), this);
+            SceneEdgeSelectDialog *dialog = new SceneEdgeSelectDialog(Agros2D::scene()->edges->selected(), this);
             dialog->exec();
         }
-        if (Util::scene()->selectedCount() == 1)
+        if (Agros2D::scene()->selectedCount() == 1)
         {
-            for (int i = 0; i < Util::scene()->edges->length(); i++)
+            for (int i = 0; i < Agros2D::scene()->edges->length(); i++)
             {
-                if (Util::scene()->edges->at(i)->isSelected())
-                    Util::scene()->edges->at(i)->showDialog(this);
+                if (Agros2D::scene()->edges->at(i)->isSelected())
+                    Agros2D::scene()->edges->at(i)->showDialog(this);
             }
         }
     }
     if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
     {
-        if (Util::scene()->selectedCount() > 1)
+        if (Agros2D::scene()->selectedCount() > 1)
         {
-            SceneLabelSelectDialog *dialog = new SceneLabelSelectDialog(Util::scene()->labels->selected(), this);
+            SceneLabelSelectDialog *dialog = new SceneLabelSelectDialog(Agros2D::scene()->labels->selected(), this);
             dialog->exec();
         }
-        if (Util::scene()->selectedCount() == 1)
+        if (Agros2D::scene()->selectedCount() == 1)
         {
-            for (int i = 0; i < Util::scene()->labels->length(); i++)
+            for (int i = 0; i < Agros2D::scene()->labels->length(); i++)
             {
-                if (Util::scene()->labels->at(i)->isSelected())
-                    Util::scene()->labels->at(i)->showDialog(this);
+                if (Agros2D::scene()->labels->at(i)->isSelected())
+                    Agros2D::scene()->labels->at(i)->showDialog(this);
             }
         }
     }
 
-    Util::scene()->selectNone();
+    Agros2D::scene()->selectNone();
 }
 
 void SceneViewPreprocessor::doSceneEdgeSwapDirection()
 {
     // swap
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
-        if (Util::scene()->selectedCount() == 1)
-            for (int i = 0; i < Util::scene()->edges->length(); i++)
-                if (Util::scene()->edges->at(i)->isSelected())
+        if (Agros2D::scene()->selectedCount() == 1)
+            for (int i = 0; i < Agros2D::scene()->edges->length(); i++)
+                if (Agros2D::scene()->edges->at(i)->isSelected())
                 {
-                    Util::scene()->edges->at(i)->swapDirection();
+                    Agros2D::scene()->edges->at(i)->swapDirection();
                     refresh();
                 }
 }
@@ -230,8 +233,8 @@ void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
         break;
     }
 
-    Util::scene()->highlightNone();
-    Util::scene()->selectNone();
+    Agros2D::scene()->highlightNone();
+    Agros2D::scene()->selectNone();
     m_nodeLast = NULL;
 
     refresh();
@@ -241,23 +244,23 @@ void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
 
 void SceneViewPreprocessor::selectRegion(const Point &start, const Point &end)
 {
-    Util::scene()->selectNone();
+    Agros2D::scene()->selectNone();
 
     switch (m_sceneMode)
     {
     case SceneGeometryMode_OperateOnNodes:
-        foreach (SceneNode *node, Util::scene()->nodes->items())
+        foreach (SceneNode *node, Agros2D::scene()->nodes->items())
             if (node->point().x >= start.x && node->point().x <= end.x && node->point().y >= start.y && node->point().y <= end.y)
                 node->setSelected(true);
         break;
     case SceneGeometryMode_OperateOnEdges:
-        foreach (SceneEdge *edge, Util::scene()->edges->items())
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             if (edge->nodeStart()->point().x >= start.x && edge->nodeStart()->point().x <= end.x && edge->nodeStart()->point().y >= start.y && edge->nodeStart()->point().y <= end.y &&
                     edge->nodeEnd()->point().x >= start.x && edge->nodeEnd()->point().x <= end.x && edge->nodeEnd()->point().y >= start.y && edge->nodeEnd()->point().y <= end.y)
                 edge->setSelected(true);
         break;
     case SceneGeometryMode_OperateOnLabels:
-        foreach (SceneLabel *label, Util::scene()->labels->items())
+        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
             if (label->point().x >= start.x && label->point().x <= end.x && label->point().y >= start.y && label->point().y <= end.y)
                 label->setSelected(true);
         break;
@@ -281,7 +284,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
     if ((event->modifiers() == 0)
             || ((event->modifiers() & Qt::ControlModifier)
                 && (event->modifiers() & Qt::ShiftModifier)
-                && (Util::scene()->selectedCount() == 0)))
+                && (Agros2D::scene()->selectedCount() == 0)))
     {
         // highlight scene objects
         if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
@@ -290,12 +293,12 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             SceneNode *node = SceneNode::findClosestNode(p);
             if (node)
             {
-                Util::scene()->highlightNone();
+                Agros2D::scene()->highlightNone();
                 node->setHighlighted(true);
                 setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
                            arg(node->point().x, 0, 'g', 3).
                            arg(node->point().y, 0, 'g', 3).
-                           arg(Util::scene()->nodes->items().indexOf(node)));
+                           arg(Agros2D::scene()->nodes->items().indexOf(node)));
                 updateGL();
             }
         }
@@ -307,7 +310,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             {
                 // assigned boundary conditions
                 QString str, refinement;
-                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     str = str + QString("%1 (%2), ").
                             arg(edge->marker(fieldInfo)->name()).
@@ -319,7 +322,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
-                Util::scene()->highlightNone();
+                Agros2D::scene()->highlightNone();
                 edge->setHighlighted(true);
                 setToolTip(tr("<h3>Edge</h3><b>Point:</b> [%1; %2] - [%3; %4]<br/><b>Boundary conditions:</b> %5<br/><b>Refinement:</b> %6<br/><b>Angle:</b> %7 deg.<br/><b>Index:</b> %8").
                            arg(edge->nodeStart()->point().x, 0, 'g', 3).
@@ -329,7 +332,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                            arg(str).
                            arg(refinement).
                            arg(edge->angle(), 0, 'f', 0).
-                           arg(Util::scene()->edges->items().indexOf(edge)));
+                           arg(Agros2D::scene()->edges->items().indexOf(edge)));
                 updateGL();
             }
         }
@@ -341,7 +344,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             {
                 // assigned materials
                 QString str, polynomial_order, area_refinement;
-                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     str = str + QString("%1 (%2), ").
                             arg(label->marker(fieldInfo)->name()).
@@ -356,7 +359,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
-                Util::scene()->highlightNone();
+                Agros2D::scene()->highlightNone();
                 label->setHighlighted(true);
                 setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Area refinement:</b> %4<br/><b>Polynomial order:</b> %5<br/><b>Triangle area:</b> %6 m<sup>2</sup><br /><b>Index:</b> %7").
                            arg(label->point().x, 0, 'g', 3).
@@ -365,7 +368,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                            arg(area_refinement).
                            arg(polynomial_order).
                            arg(label->area(), 0, 'g', 3).
-                           arg(Util::scene()->labels->items().indexOf(label)));
+                           arg(Agros2D::scene()->labels->items().indexOf(label)));
                 updateGL();
             }
         }
@@ -381,7 +384,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             SceneNode *node = SceneNode::findClosestNode(p);
             if (node)
             {
-                Util::scene()->highlightNone();
+                Agros2D::scene()->highlightNone();
                 node->setHighlighted(true);
                 updateGL();
             }
@@ -389,7 +392,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
     }
 
     // snap to grid - nodes
-    m_snapToGrid = ((Util::config()->snapToGrid)
+    m_snapToGrid = ((Agros2D::config()->snapToGrid)
                     && ((event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier))
                     && (m_sceneMode == SceneGeometryMode_OperateOnNodes));
 
@@ -413,38 +416,38 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             static Point len;
             len = len + dp;
 
-            if (Util::config()->snapToGrid)
+            if (Agros2D::config()->snapToGrid)
             {
-                if (fabs(len.x) > Util::config()->gridStep)
+                if (fabs(len.x) > Agros2D::config()->gridStep)
                 {
-                    dp.x = (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                    dp.x = (len.x > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
                     dp.y = 0;
                     len.x = 0;
 
-                    Util::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false);
                 }
 
-                if (fabs(len.y) > Util::config()->gridStep)
+                if (fabs(len.y) > Agros2D::config()->gridStep)
                 {
                     dp.x = 0;
-                    dp.y = (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                    dp.y = (len.y > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
                     len.y = 0;
 
-                    Util::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false);
                 }
             }
             else
             {
-                Util::scene()->transformTranslate(dp, false);
+                Agros2D::scene()->transformTranslate(dp, false);
             }
-            foreach (SceneNode *node, Util::scene()->nodes->items())
+            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
             {
-                Util::scene()->checkNode(node);
+                Agros2D::scene()->checkNode(node);
             }
 
-            foreach (SceneEdge *edge, Util::scene()->edges->items())
+            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
-                Util::scene()->checkEdge(edge);
+                Agros2D::scene()->checkEdge(edge);
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
@@ -452,43 +455,43 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             static Point len;
             len = len + dp;
 
-            if (Util::config()->snapToGrid)
+            if (Agros2D::config()->snapToGrid)
             {
-                if (fabs(len.x) > Util::config()->gridStep)
+                if (fabs(len.x) > Agros2D::config()->gridStep)
                 {
-                    dp.x = (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                    dp.x = (len.x > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
                     dp.y = 0;
                     len.x = 0;
 
-                    Util::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false);
                 }
 
-                if (fabs(len.y) > Util::config()->gridStep)
+                if (fabs(len.y) > Agros2D::config()->gridStep)
                 {
                     dp.x = 0;
-                    dp.y = (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                    dp.y = (len.y > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
                     len.y = 0;
 
-                    Util::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false);
                 }
             }
             else
             {
-                Util::scene()->transformTranslate(dp, false);
+                Agros2D::scene()->transformTranslate(dp, false);
             }
-            foreach (SceneNode *node, Util::scene()->nodes->items())
+            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
             {
-                Util::scene()->checkNode(node);
+                Agros2D::scene()->checkNode(node);
             }
 
-            foreach (SceneEdge *edge, Util::scene()->edges->items())
+            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
-                Util::scene()->checkEdge(edge);
+                Agros2D::scene()->checkEdge(edge);
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
-            Util::scene()->transformTranslate(dp, false);
+            Agros2D::scene()->transformTranslate(dp, false);
         }
 
         updateGL();
@@ -497,8 +500,8 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
     if (m_snapToGrid)
     {
         Point snapPoint;
-        snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-        snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+        snapPoint.x = floor(p.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+        snapPoint.y = floor(p.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
 
         emit mouseMoved(snapPoint);
     }
@@ -543,8 +546,8 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             {
                 Point snapPoint = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
-                pointNode.x = floor(snapPoint.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-                pointNode.y = floor(snapPoint.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+                pointNode.x = floor(snapPoint.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+                pointNode.y = floor(snapPoint.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
             }
             else
             {
@@ -552,7 +555,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             }
 
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
+            if ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (pointNode.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
@@ -561,8 +564,8 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             else
             {
                 SceneNode *node = new SceneNode(pointNode);
-                SceneNode *nodeAdded = Util::scene()->addNode(node);
-                if (nodeAdded == node) Util::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point()));
+                SceneNode *nodeAdded = Agros2D::scene()->addNode(node);
+                if (nodeAdded == node) Agros2D::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point()));
                 updateGL();
             }
         }
@@ -582,9 +585,9 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                     if (node != m_nodeLast)
                     {
                         SceneEdge *edge = new SceneEdge(m_nodeLast, node, 0);
-                        SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
+                        SceneEdge *edgeAdded = Agros2D::scene()->addEdge(edge);
 
-                        if (edgeAdded == edge) Util::scene()->undoStack()->push(edge->getAddCommand());
+                        if (edgeAdded == edge) Agros2D::scene()->undoStack()->push(edge->getAddCommand());
                     }
 
                     m_nodeLast->setSelected(false);
@@ -598,7 +601,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             // coordinates must be greater then or equal to 0 (axisymmetric case)
-            if ((Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
+            if ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (p.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
@@ -607,10 +610,10 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             else
             {
                 SceneLabel *label = new SceneLabel(p, 0);
-                SceneLabel *labelAdded = Util::scene()->addLabel(label);
+                SceneLabel *labelAdded = Agros2D::scene()->addLabel(label);
 
                 if (labelAdded == label)
-                    Util::scene()->undoStack()->push(label->getAddCommand());
+                    Agros2D::scene()->undoStack()->push(label->getAddCommand());
 
                 updateGL();
             }
@@ -622,7 +625,7 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
     if ((event->button() & Qt::LeftButton) && ((event->modifiers() == 0)
                                                || ((event->modifiers() & Qt::ControlModifier)
                                                    && (event->modifiers() & Qt::ShiftModifier)
-                                                   && (Util::scene()->selectedCount() == 0))))
+                                                   && (Agros2D::scene()->selectedCount() == 0))))
     {
         // select scene objects
         if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
@@ -683,7 +686,7 @@ void SceneViewPreprocessor::mouseReleaseEvent(QMouseEvent *event)
     // move by mouse - select none
     if ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier))
     {
-        Util::scene()->selectNone();
+        Agros2D::scene()->selectNone();
     }
 
     SceneViewCommon2D::mouseReleaseEvent(event);
@@ -698,7 +701,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
         if (event->button() & Qt::LeftButton)
         {
             // select scene objects
-            Util::scene()->selectNone();
+            Agros2D::scene()->selectNone();
             if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
             {
                 // select the closest node
@@ -741,7 +744,7 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
                     }
                 }
             }
-            Util::scene()->selectNone();
+            Agros2D::scene()->selectNone();
             updateGL();
         }
     }
@@ -757,7 +760,7 @@ void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Delete:
     {
-        Util::scene()->deleteSelected();
+        Agros2D::scene()->deleteSelected();
     }
         break;
     case Qt::Key_Space:
@@ -770,7 +773,7 @@ void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
         // select all
         if (event->modifiers() & Qt::ControlModifier)
         {
-            Util::scene()->selectAll(m_sceneMode);
+            Agros2D::scene()->selectAll(m_sceneMode);
 
             refresh();
         }
@@ -781,7 +784,7 @@ void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
     }
 
     // snap to grid
-    m_snapToGrid = ((Util::config()->snapToGrid)
+    m_snapToGrid = ((Agros2D::config()->snapToGrid)
                     && (event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier)
                     && (m_sceneMode == SceneGeometryMode_OperateOnNodes));
 }
@@ -800,18 +803,18 @@ void SceneViewPreprocessor::contextMenuEvent(QContextMenuEvent *event)
 
     // set node context menu
     if (m_sceneMode == SceneGeometryMode_OperateOnNodes)
-        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() == 1);
+        actSceneObjectProperties->setEnabled(Agros2D::scene()->selectedCount() == 1);
 
     // set boundary context menu
     if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
     {
-        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
-        actSceneEdgeSwapDirection->setEnabled(Util::scene()->selectedCount() == 1);
+        actSceneObjectProperties->setEnabled(Agros2D::scene()->selectedCount() > 0);
+        actSceneEdgeSwapDirection->setEnabled(Agros2D::scene()->selectedCount() == 1);
     }
 
     // set material context menu
     if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
-        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
+        actSceneObjectProperties->setEnabled(Agros2D::scene()->selectedCount() > 0);
 
     if (mnuScene)
         delete mnuScene;
@@ -839,8 +842,8 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
     Point snapPoint = p;
     if (m_snapToGrid)
     {
-        snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-        snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+        snapPoint.x = floor(p.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+        snapPoint.y = floor(p.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
 
         // hint line
         glEnable(GL_LINE_STIPPLE);
@@ -935,9 +938,9 @@ void SceneViewPreprocessor::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Util::config()->colorBackground.redF(),
-                 Util::config()->colorBackground.greenF(),
-                 Util::config()->colorBackground.blueF(), 0);
+    glClearColor(Agros2D::config()->colorBackground.redF(),
+                 Agros2D::config()->colorBackground.greenF(),
+                 Agros2D::config()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glDisable(GL_DEPTH_TEST);
@@ -946,20 +949,20 @@ void SceneViewPreprocessor::paintGL()
     paintBackgroundPixmap();
 
     // grid
-    if (Util::config()->showGrid) paintGrid();
+    if (Agros2D::config()->showGrid) paintGrid();
 
     // geometry
     paintGeometry();
 
     // rulers
-    if (Util::config()->showRulers)
+    if (Agros2D::config()->showRulers)
     {
         paintRulers();
         paintRulersHintsEdges();
     }
 
     // axes
-    if (Util::config()->showAxes) paintAxes();
+    if (Agros2D::config()->showAxes) paintAxes();
 
     paintZoomRegion();
     paintSnapToGrid();
@@ -971,7 +974,7 @@ void SceneViewPreprocessor::paintGeometry()
     loadProjection2d(true);
 
     // edges
-    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
         if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
@@ -983,31 +986,31 @@ void SceneViewPreprocessor::paintGeometry()
             }
         }
 
-        glColor3d(Util::config()->colorEdges.redF(),
-                  Util::config()->colorEdges.greenF(),
-                  Util::config()->colorEdges.blueF());
-        glLineWidth(Util::config()->edgeWidth);
+        glColor3d(Agros2D::config()->colorEdges.redF(),
+                  Agros2D::config()->colorEdges.greenF(),
+                  Agros2D::config()->colorEdges.blueF());
+        glLineWidth(Agros2D::config()->edgeWidth);
 
         if (edge->isError())
         {
-            glColor3d(Util::config()->colorCrossed.redF(),
-                      Util::config()->colorCrossed.greenF(),
-                      Util::config()->colorCrossed.blueF());
-            glLineWidth(Util::config()->edgeWidth);
+            glColor3d(Agros2D::config()->colorCrossed.redF(),
+                      Agros2D::config()->colorCrossed.greenF(),
+                      Agros2D::config()->colorCrossed.blueF());
+            glLineWidth(Agros2D::config()->edgeWidth);
         }
         if (edge->isHighlighted())
         {
-            glColor3d(Util::config()->colorHighlighted.redF(),
-                      Util::config()->colorHighlighted.greenF(),
-                      Util::config()->colorHighlighted.blueF());
-            glLineWidth(Util::config()->edgeWidth + 2.0);
+            glColor3d(Agros2D::config()->colorHighlighted.redF(),
+                      Agros2D::config()->colorHighlighted.greenF(),
+                      Agros2D::config()->colorHighlighted.blueF());
+            glLineWidth(Agros2D::config()->edgeWidth + 2.0);
         }
         if (edge->isSelected())
         {
-            glColor3d(Util::config()->colorSelected.redF(),
-                      Util::config()->colorSelected.greenF(),
-                      Util::config()->colorSelected.blueF());
-            glLineWidth(Util::config()->edgeWidth + 2.0);
+            glColor3d(Agros2D::config()->colorSelected.redF(),
+                      Agros2D::config()->colorSelected.greenF(),
+                      Agros2D::config()->colorSelected.blueF());
+            glLineWidth(Agros2D::config()->edgeWidth + 2.0);
         }
 
         if (edge->isStraight())
@@ -1031,21 +1034,21 @@ void SceneViewPreprocessor::paintGeometry()
     }
 
     // nodes
-    foreach (SceneNode *node, Util::scene()->nodes->items())
+    foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {
-        glColor3d(Util::config()->colorNodes.redF(),
-                  Util::config()->colorNodes.greenF(),
-                  Util::config()->colorNodes.blueF());
-        glPointSize(Util::config()->nodeSize);
+        glColor3d(Agros2D::config()->colorNodes.redF(),
+                  Agros2D::config()->colorNodes.greenF(),
+                  Agros2D::config()->colorNodes.blueF());
+        glPointSize(Agros2D::config()->nodeSize);
 
         glBegin(GL_POINTS);
         glVertex2d(node->point().x, node->point().y);
         glEnd();
 
-        glColor3d(Util::config()->colorBackground.redF(),
-                  Util::config()->colorBackground.greenF(),
-                  Util::config()->colorBackground.blueF());
-        glPointSize(Util::config()->nodeSize - 2.0);
+        glColor3d(Agros2D::config()->colorBackground.redF(),
+                  Agros2D::config()->colorBackground.greenF(),
+                  Agros2D::config()->colorBackground.blueF());
+        glPointSize(Agros2D::config()->nodeSize - 2.0);
 
         glBegin(GL_POINTS);
         glVertex2d(node->point().x, node->point().y);
@@ -1053,21 +1056,21 @@ void SceneViewPreprocessor::paintGeometry()
 
         if ((node->isSelected()) || (node->isHighlighted()) || (node->isError()) )
         {
-            glPointSize(Util::config()->nodeSize - 2.0);
+            glPointSize(Agros2D::config()->nodeSize - 2.0);
 
             if (node->isError())
-                glColor3d(Util::config()->colorCrossed.redF(),
-                          Util::config()->colorCrossed.greenF(),
-                          Util::config()->colorCrossed.blueF());
+                glColor3d(Agros2D::config()->colorCrossed.redF(),
+                          Agros2D::config()->colorCrossed.greenF(),
+                          Agros2D::config()->colorCrossed.blueF());
 
             if (node->isHighlighted())
-                glColor3d(Util::config()->colorHighlighted.redF(),
-                          Util::config()->colorHighlighted.greenF(),
-                          Util::config()->colorHighlighted.blueF());
+                glColor3d(Agros2D::config()->colorHighlighted.redF(),
+                          Agros2D::config()->colorHighlighted.greenF(),
+                          Agros2D::config()->colorHighlighted.blueF());
             if (node->isSelected())
-                glColor3d(Util::config()->colorSelected.redF(),
-                          Util::config()->colorSelected.greenF(),
-                          Util::config()->colorSelected.blueF());
+                glColor3d(Agros2D::config()->colorSelected.redF(),
+                          Agros2D::config()->colorSelected.greenF(),
+                          Agros2D::config()->colorSelected.blueF());
 
             glBegin(GL_POINTS);
             glVertex2d(node->point().x, node->point().y);
@@ -1076,20 +1079,20 @@ void SceneViewPreprocessor::paintGeometry()
     }
 
     // labels
-    foreach (SceneLabel *label, Util::scene()->labels->items())
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
-        glColor3d(Util::config()->colorLabels.redF(),
-                  Util::config()->colorLabels.greenF(),
-                  Util::config()->colorLabels.blueF());
-        glPointSize(Util::config()->labelSize);
+        glColor3d(Agros2D::config()->colorLabels.redF(),
+                  Agros2D::config()->colorLabels.greenF(),
+                  Agros2D::config()->colorLabels.blueF());
+        glPointSize(Agros2D::config()->labelSize);
         glBegin(GL_POINTS);
         glVertex2d(label->point().x, label->point().y);
         glEnd();
 
-        glColor3d(Util::config()->colorBackground.redF(),
-                  Util::config()->colorBackground.greenF(),
-                  Util::config()->colorBackground.blueF());
-        glPointSize(Util::config()->labelSize - 2.0);
+        glColor3d(Agros2D::config()->colorBackground.redF(),
+                  Agros2D::config()->colorBackground.greenF(),
+                  Agros2D::config()->colorBackground.blueF());
+        glPointSize(Agros2D::config()->labelSize - 2.0);
         glBegin(GL_POINTS);
         glVertex2d(label->point().x, label->point().y);
         glEnd();
@@ -1097,22 +1100,22 @@ void SceneViewPreprocessor::paintGeometry()
         if ((label->isSelected()) || (label->isHighlighted()))
         {
             if (label->isHighlighted())
-                glColor3d(Util::config()->colorHighlighted.redF(),
-                          Util::config()->colorHighlighted.greenF(),
-                          Util::config()->colorHighlighted.blueF());
+                glColor3d(Agros2D::config()->colorHighlighted.redF(),
+                          Agros2D::config()->colorHighlighted.greenF(),
+                          Agros2D::config()->colorHighlighted.blueF());
             if (label->isSelected())
-                glColor3d(Util::config()->colorSelected.redF(),
-                          Util::config()->colorSelected.greenF(),
-                          Util::config()->colorSelected.blueF());
+                glColor3d(Agros2D::config()->colorSelected.redF(),
+                          Agros2D::config()->colorSelected.greenF(),
+                          Agros2D::config()->colorSelected.blueF());
 
-            glPointSize(Util::config()->labelSize - 2.0);
+            glPointSize(Agros2D::config()->labelSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point().x, label->point().y);
             glEnd();
         }
 
         // area size
-        if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (Util::config()->showInitialMeshView))
+        if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (Agros2D::config()->showInitialMeshView))
         {
             double radius = sqrt(label->area()/M_PI);
             glColor3d(0, 0.95, 0.9);
@@ -1133,7 +1136,7 @@ void SceneViewPreprocessor::paintGeometry()
     glScaled(2.0 / width(), 2.0 / height(), 1.0);
     glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
-    foreach (SceneLabel *label, Util::scene()->labels->items())
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
@@ -1141,7 +1144,7 @@ void SceneViewPreprocessor::paintGeometry()
 
             // assigned materials
             QString str;
-            foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+            foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 str = str + QString("%1, ").
                         arg(label->marker(fieldInfo)->name());
             if (str.length() > 0)
@@ -1163,13 +1166,13 @@ void SceneViewPreprocessor::paintSnapToGrid()
         Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         Point snapPoint;
-        snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
-        snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+        snapPoint.x = floor(p.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+        snapPoint.y = floor(p.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
 
-        glColor3d(Util::config()->colorHighlighted.redF(),
-                  Util::config()->colorHighlighted.greenF(),
-                  Util::config()->colorHighlighted.blueF());
-        glPointSize(Util::config()->nodeSize - 1.0);
+        glColor3d(Agros2D::config()->colorHighlighted.redF(),
+                  Agros2D::config()->colorHighlighted.greenF(),
+                  Agros2D::config()->colorHighlighted.blueF());
+        glPointSize(Agros2D::config()->nodeSize - 1.0);
         glBegin(GL_POINTS);
         glVertex2d(snapPoint.x, snapPoint.y);
         glEnd();
@@ -1186,12 +1189,12 @@ void SceneViewPreprocessor::paintEdgeLine()
 
             Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
-            glColor3d(Util::config()->colorEdges.redF(),
-                      Util::config()->colorEdges.greenF(),
-                      Util::config()->colorEdges.blueF());
+            glColor3d(Agros2D::config()->colorEdges.redF(),
+                      Agros2D::config()->colorEdges.greenF(),
+                      Agros2D::config()->colorEdges.blueF());
 
             // check for crossing
-            foreach (SceneEdge *edge, Util::scene()->edges->items())
+            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
                 QList<Point> intersects = intersection(p, m_nodeLast->point(),
                                                        m_nodeLast->point(), 0, 0,
@@ -1214,7 +1217,7 @@ void SceneViewPreprocessor::paintEdgeLine()
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
 
-            glLineWidth(Util::config()->edgeWidth);
+            glLineWidth(Agros2D::config()->edgeWidth);
 
             glBegin(GL_LINES);
             glVertex2d(m_nodeLast->point().x, m_nodeLast->point().y);
@@ -1247,9 +1250,9 @@ ErrorResult SceneViewPreprocessor::saveGeometryToFile(const QString &fileName, i
                        GL2PS_BSP_SORT, options,
                        GL_RGBA, 0, NULL, 0, 0, 0, buffsize, fp, "xxx.pdf");
 
-        glClearColor(Util::config()->colorBackground.redF(),
-                     Util::config()->colorBackground.greenF(),
-                     Util::config()->colorBackground.blueF(), 0);
+        glClearColor(Agros2D::config()->colorBackground.redF(),
+                     Agros2D::config()->colorBackground.greenF(),
+                     Agros2D::config()->colorBackground.blueF(), 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // paintSolutionMesh();

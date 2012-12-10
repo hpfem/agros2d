@@ -20,6 +20,7 @@
 #include "coupling.h"
 
 #include "util/constants.h"
+#include "util/global.h"
 
 #include "logview.h"
 #include "scene.h"
@@ -116,7 +117,7 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
             cout << e;
             std::stringstream str;
             str << e;
-            Util::log()->printError("solver",QObject::tr("Unable to read coupling file %1: %2").arg(filename).arg(QString::fromStdString(str.str())));
+            Agros2D::log()->printError("solver",QObject::tr("Unable to read coupling file %1: %2").arg(filename).arg(QString::fromStdString(str.str())));
             return false;
         }
 
@@ -242,7 +243,7 @@ Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, Coupli
 
     if (QFile::exists(filename))
     {
-        CoordinateType coordinateType = Util::problem()->config()->coordinateType();
+        CoordinateType coordinateType = Agros2D::problem()->config()->coordinateType();
         Coupling *coupling = new Coupling(couplingId,
                                           coordinateType,
                                           couplingType,

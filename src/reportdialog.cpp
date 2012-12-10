@@ -17,9 +17,13 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "reportdialog.h"
+
 #include <ctemplate/template.h>
 
-#include "reportdialog.h"
+#include "util/constants.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneview_common.h"
@@ -28,7 +32,6 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
-#include "util/constants.h"
 
 ReportDialog::ReportDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)
 {
@@ -190,9 +193,9 @@ void ReportDialog::defaultValues()
     chkFigureGeometry->setChecked(true);
     txtFigureWidth->setValue(Value("600"));
     txtFigureHeight->setValue(Value("400"));
-    chkFigureShowGrid->setChecked(Util::config()->showGrid);
-    chkFigureShowRulers->setChecked(Util::config()->showRulers);
-    chkFigureShowAxes->setChecked(Util::config()->showAxes);
+    chkFigureShowGrid->setChecked(Agros2D::config()->showGrid);
+    chkFigureShowRulers->setChecked(Agros2D::config()->showRulers);
+    chkFigureShowAxes->setChecked(Agros2D::config()->showAxes);
 
     txtTemplate->setText(QString("%1/report/default.tpl").arg(datadir() + TEMPLATEROOT));
     txtStyleSheet->setText(QString("%1/report/default.css").arg(datadir() + TEMPLATEROOT));
@@ -203,23 +206,23 @@ void ReportDialog::defaultValues()
 void ReportDialog::setControls()
 {
 //    assert(0); //TODO
-//    chkDescription->setDisabled(Util::problem()->config()->description.isEmpty());
-//    chkDescription->setChecked(!Util::problem()->config()->description.isEmpty());
-//    chkStartupScript->setDisabled(Util::problem()->config()->scriptStartup.isEmpty());
-//    chkStartupScript->setChecked(!Util::problem()->config()->scriptStartup.isEmpty());
+//    chkDescription->setDisabled(Agros2D::problem()->config()->description.isEmpty());
+//    chkDescription->setChecked(!Agros2D::problem()->config()->description.isEmpty());
+//    chkStartupScript->setDisabled(Agros2D::problem()->config()->scriptStartup.isEmpty());
+//    chkStartupScript->setChecked(!Agros2D::problem()->config()->scriptStartup.isEmpty());
 
-//    chkMeshAndSolution->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-//    chkMeshAndSolution->setChecked(Util::scene()->sceneSolution()->isSolved());
-//    chkFigureMesh->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-//    chkFigureMesh->setChecked(Util::scene()->sceneSolution()->isSolved());
-//    chkFigureOrder->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-//    chkFigureOrder->setChecked(Util::scene()->sceneSolution()->isSolved());
-//    chkFigureScalarView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-//    chkFigureScalarView->setChecked(Util::scene()->sceneSolution()->isSolved());
-//    chkFigureContourView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-//    chkFigureContourView->setChecked(Util::scene()->sceneSolution()->isSolved());
-//    chkFigureVectorView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
-//    chkFigureVectorView->setChecked(Util::scene()->sceneSolution()->isSolved());
+//    chkMeshAndSolution->setDisabled(!Agros2D::scene()->sceneSolution()->isSolved());
+//    chkMeshAndSolution->setChecked(Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureMesh->setDisabled(!Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureMesh->setChecked(Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureOrder->setDisabled(!Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureOrder->setChecked(Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureScalarView->setDisabled(!Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureScalarView->setChecked(Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureContourView->setDisabled(!Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureContourView->setChecked(Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureVectorView->setDisabled(!Agros2D::scene()->sceneSolution()->isSolved());
+//    chkFigureVectorView->setChecked(Agros2D::scene()->sceneSolution()->isSolved());
 }
 
 void ReportDialog::resetControls()
@@ -313,13 +316,13 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    dict.SetValue("STYLESHEET", "./style.css");
 
 //    // problem name
-//    dict.SetValue("NAME", Util::problem()->config()->name.toStdString());
+//    dict.SetValue("NAME", Agros2D::problem()->config()->name.toStdString());
 
 //    // description
 //    if (chkDescription->isChecked())
 //    {
 //        dict.SetValue("DESCRIPTION_LABEL", tr("Description").toStdString());
-//        dict.SetValue("DESCRIPTION", Util::problem()->config()->description.toStdString());
+//        dict.SetValue("DESCRIPTION", Agros2D::problem()->config()->description.toStdString());
 
 //        dict.ShowSection("DESCRIPTION_SECTION");
 //    }
@@ -329,56 +332,56 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("PROBLEM_LABEL", tr("Problem Information").toStdString());
 //        dict.SetValue("PROBLEM_NAME_LABEL", tr("Name:").toStdString());
-//        dict.SetValue("PROBLEM_NAME", Util::problem()->config()->name.toStdString());
+//        dict.SetValue("PROBLEM_NAME", Agros2D::problem()->config()->name.toStdString());
 //        dict.SetValue("PROBLEM_DATE_LABEL", tr("Date:").toStdString());
-//        dict.SetValue("PROBLEM_DATE", Util::problem()->config()->date.toString("dd.MM.yyyy").toStdString());
+//        dict.SetValue("PROBLEM_DATE", Agros2D::problem()->config()->date.toString("dd.MM.yyyy").toStdString());
 //        dict.SetValue("PROBLEM_FILENAME_LABEL", tr("File name:").toStdString());
-//        dict.SetValue("PROBLEM_FILENAME", QFileInfo(Util::problem()->config()->fileName).fileName().toStdString());
+//        dict.SetValue("PROBLEM_FILENAME", QFileInfo(Agros2D::problem()->config()->fileName).fileName().toStdString());
 //        dict.SetValue("PROBLEM_PROBLEMTYPE_LABEL", tr("Problem type:").toStdString());
-//        dict.SetValue("PROBLEM_PROBLEMTYPE", problemTypeString(Util::problem()->config()->problemType).toStdString());
+//        dict.SetValue("PROBLEM_PROBLEMTYPE", problemTypeString(Agros2D::problem()->config()->problemType).toStdString());
 //        dict.SetValue("PROBLEM_PHYSICFIELD_LABEL", tr("Physic field:").toStdString());
-//        dict.SetValue("PROBLEM_PHYSICFIELD", Util::problem()->config()->module()->name);
+//        dict.SetValue("PROBLEM_PHYSICFIELD", Agros2D::problem()->config()->module()->name);
 //        dict.SetValue("PROBLEM_ANALYSISTYPE_LABEL", tr("Analysis type:").toStdString());
-//        dict.SetValue("PROBLEM_ANALYSISTYPE", analysisTypeString(Util::problem()->config()->analysisType).toStdString());
+//        dict.SetValue("PROBLEM_ANALYSISTYPE", analysisTypeString(Agros2D::problem()->config()->analysisType).toStdString());
 //        dict.SetValue("PROBLEM_NUMBEROFREFINEMENTS_LABEL", tr("Number of refinements:").toStdString());
 //        dict.SetValue("PROBLEM_POLYNOMIALORDER_LABEL", tr("Polynomial order:").toStdString());
-//        dict.SetIntValue("PROBLEM_POLYNOMIALORDER", Util::problem()->config()->polynomialOrder);
-//        dict.SetIntValue("PROBLEM_NUMBEROFREFINEMENTS", Util::problem()->config()->numberOfRefinements);
+//        dict.SetIntValue("PROBLEM_POLYNOMIALORDER", Agros2D::problem()->config()->polynomialOrder);
+//        dict.SetIntValue("PROBLEM_NUMBEROFREFINEMENTS", Agros2D::problem()->config()->numberOfRefinements);
 //        dict.SetValue("PROBLEM_NEWTONTOLERANCE_LABEL", tr("Newton solver tolerance:").toStdString());
-//        dict.SetFormattedValue ("PROBLEM_NEWTONTOLERANCE", "%f", Util::problem()->config()->nonlinearTolerance);
+//        dict.SetFormattedValue ("PROBLEM_NEWTONTOLERANCE", "%f", Agros2D::problem()->config()->nonlinearTolerance);
 //        dict.SetValue("PROBLEM_NEWTONSTEPS_LABEL", tr("Newton solver steps:").toStdString());
-//        dict.SetIntValue("PROBLEM_NEWTONSTEPS", Util::problem()->config()->nonlinearSteps);
+//        dict.SetIntValue("PROBLEM_NEWTONSTEPS", Agros2D::problem()->config()->nonlinearSteps);
 
 //        // adaptivity
-//        if (Util::scene ()->problemInfo ()->adaptivityType != AdaptivityType_None)
+//        if (Agros2D::scene ()->problemInfo ()->adaptivityType != AdaptivityType_None)
 //        {
 //            dict.SetValue("PROBLEM_ADAPTIVITYTYPE_LABEL", tr("Adaptivity type:").toStdString());
-//            dict.SetValue("PROBLEM_ADAPTIVITYTYPE", adaptivityTypeString(Util::problem()->config()->adaptivityType).toStdString());
+//            dict.SetValue("PROBLEM_ADAPTIVITYTYPE", adaptivityTypeString(Agros2D::problem()->config()->adaptivityType).toStdString());
 //            dict.SetValue("PROBLEM_ADAPTIVITYSTEPS_LABEL", tr("Adaptivity steps:").toStdString());
-//            dict.SetIntValue("PROBLEM_ADAPTIVITYSTEPS", Util::problem()->config()->adaptivitySteps);
+//            dict.SetIntValue("PROBLEM_ADAPTIVITYSTEPS", Agros2D::problem()->config()->adaptivitySteps);
 //            dict.SetValue("PROBLEM_ADAPTIVITYTOLERANCE_LABEL", tr("Adaptivity tolerance:").toStdString());
-//            dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%f", Util::problem()->config()->adaptivityTolerance);
+//            dict.SetFormattedValue("PROBLEM_ADAPTIVITYTOLERANCE", "%f", Agros2D::problem()->config()->adaptivityTolerance);
 //            dict.SetValue("PROBLEM_MAXDOFS_LABEL", tr("Maximum DOFs:").toStdString());
 
 //            dict.ShowSection("PROBLEM_ADAPTIVITY_SECTION");
 //        }
 
 //        // analysis type
-//        if (Util::problem()->config()->analysisType() == AnalysisType_Harmonic)
+//        if (Agros2D::problem()->config()->analysisType() == AnalysisType_Harmonic)
 //        {
 //            dict.SetValue("PROBLEM_FREQUENCY_LABEL", tr("Frequency:").toStdString());
-//            dict.SetFormattedValue("PROBLEM_FREQUENCY", "%f", Util::problem()->config()->frequency);
+//            dict.SetFormattedValue("PROBLEM_FREQUENCY", "%f", Agros2D::problem()->config()->frequency);
 
 //            dict.ShowSection("PROBLEM_HARMONIC_SECTION");
 //        }
-//        if (Util::problem()->config()->analysisType() == AnalysisType_Transient)
+//        if (Agros2D::problem()->config()->analysisType() == AnalysisType_Transient)
 //        {
 //            dict.SetValue("PROBLEM_TIMESTEP_LABEL", tr("Time step:").toStdString());
-//            dict.SetIntValue("PROBLEM_TIMESTEP", Util::problem()->config()->timeStep.number());
+//            dict.SetIntValue("PROBLEM_TIMESTEP", Agros2D::problem()->config()->timeStep.number());
 //            dict.SetValue("PROBLEM_TIMETOTAL_LABEL", tr("Total time:").toStdString());
-//            dict.SetIntValue("PROBLEM_TIMETOTAL", Util::problem()->config()->timeTotal.number());
+//            dict.SetIntValue("PROBLEM_TIMETOTAL", Agros2D::problem()->config()->timeTotal.number());
 //            dict.SetValue("PROBLEM_INITITALCONDITION_LABEL", tr("Initial condition:").toStdString());
-//            dict.SetFormattedValue("PROBLEM_INITITALCONDITION", "%f", Util::problem()->config()->initialCondition.number());
+//            dict.SetFormattedValue("PROBLEM_INITITALCONDITION", "%f", Agros2D::problem()->config()->initialCondition.number());
 
 //            dict.ShowSection("PROBLEM_TRANSIENT_SECTION");
 //        }
@@ -390,7 +393,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    if (chkStartupScript->isChecked())
 //    {
 //        dict.SetValue("STARTUPSCRIPT_LABEL", tr("Startup Script").toStdString());
-//        dict.SetValue("STARTUPSCRIPT", Util::problem()->config()->scriptStartup.toStdString());
+//        dict.SetValue("STARTUPSCRIPT", Agros2D::problem()->config()->scriptStartup.toStdString());
 
 //        dict.ShowSection("STARTUPSCRIPT_SECTION");
 //    }
@@ -402,13 +405,13 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 
 //        // materials
 //        dict.SetValue("MATERIALS_LABEL", tr("Materials").toStdString());
-//        for (int i = 1; i < Util::scene()->materials.count(); i++)
+//        for (int i = 1; i < Agros2D::scene()->materials.count(); i++)
 //        {
-//            SceneMaterial *marker = Util::scene()->materials[i];
+//            SceneMaterial *marker = Agros2D::scene()->materials[i];
 //            ctemplate::TemplateDictionary *material_dict = dict.AddSectionDictionary("MATERIAL_SECTION");
 //            material_dict->SetValue("MATERIAL_NAME", marker->name);
 
-//            Hermes::vector<Module::MaterialTypeVariable *> variables = Util::problem()->config()->module()->material_type_variables;
+//            Hermes::vector<Module::MaterialTypeVariable *> variables = Agros2D::problem()->config()->module()->material_type_variables;
 //            for (Hermes::vector<Module::MaterialTypeVariable *>::iterator it = variables.begin(); it < variables.end(); ++it)
 //            {
 //                Module::MaterialTypeVariable *variable = ((Module::MaterialTypeVariable *) *it);
@@ -422,13 +425,13 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 
 //        // boundaries
 //        dict.SetValue("BOUNDARIES_LABEL", tr("Boundaris conditions").toStdString());
-//        for (int i = 1; i < Util::scene()->boundaries.count(); i++)
+//        for (int i = 1; i < Agros2D::scene()->boundaries.count(); i++)
 //        {
-//            SceneBoundary *marker = Util::scene()->boundaries[i];
+//            SceneBoundary *marker = Agros2D::scene()->boundaries[i];
 //            ctemplate::TemplateDictionary *boundary_dict = dict.AddSectionDictionary("BOUNDARY_SECTION");
 //            boundary_dict->SetValue("BOUNDARY_NAME", marker->name);
 
-//            Module::BoundaryType *boundary_type = Util::problem()->config()->module()->get_boundary_type(marker->type);
+//            Module::BoundaryType *boundary_type = Agros2D::problem()->config()->module()->get_boundary_type(marker->type);
 //            if (boundary_type)
 //            {
 //                for (Hermes::vector<Module::BoundaryTypeVariable *>::iterator it = boundary_type->variables.begin(); it < boundary_type->variables.end(); ++it)
@@ -448,8 +451,8 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    // geometry
 //    if (chkGeometry->isChecked())
 //    {
-//        dict.SetValue("GEOMETRY_XLABEL", Util::problem()->config()->labelX().toStdString());
-//        dict.SetValue("GEOMETRY_YLABEL", Util::problem()->config()->labelY().toStdString());
+//        dict.SetValue("GEOMETRY_XLABEL", Agros2D::problem()->config()->labelX().toStdString());
+//        dict.SetValue("GEOMETRY_YLABEL", Agros2D::problem()->config()->labelY().toStdString());
 
 //        dict.SetValue("GEOMETRY_STARTNODE", tr("Start node").toStdString());
 //        dict.SetValue("GEOMETRY_ENDNODE", tr("End node").toStdString());
@@ -462,36 +465,36 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //        // nodes
 //        dict.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
 //        dict.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes").toStdString());
-//        for (int i = 0; i < Util::scene()->nodes.count(); i++)
+//        for (int i = 0; i < Agros2D::scene()->nodes.count(); i++)
 //        {
 //            ctemplate::TemplateDictionary *node_dict = dict.AddSectionDictionary("GEOMETRY_NODE_SECTION");
-//            node_dict->SetFormattedValue("GEOMETRY_NODEX", "%f", Util::scene()->nodes[i]->point.x);
-//            node_dict->SetFormattedValue("GEOMETRY_NODEY", "%f", Util::scene()->nodes[i]->point.y);
+//            node_dict->SetFormattedValue("GEOMETRY_NODEX", "%f", Agros2D::scene()->nodes[i]->point.x);
+//            node_dict->SetFormattedValue("GEOMETRY_NODEY", "%f", Agros2D::scene()->nodes[i]->point.y);
 //        }
 
 //        // edges
 //        dict.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges").toStdString());
-//        for (int i = 0; i < Util::scene()->edges.count(); i++)
+//        for (int i = 0; i < Agros2D::scene()->edges.count(); i++)
 //        {
 //            ctemplate::TemplateDictionary *edge_dict = dict.AddSectionDictionary("GEOMETRY_EDGE_SECTION");
-//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_STARTNODEX", "%f", Util::scene()->edges[i]->nodeStart->point.x);
-//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_STARTNODEY", "%f", Util::scene()->edges[i]->nodeStart->point.y);
-//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ENDNODEX", "%f", Util::scene()->edges[i]->nodeEnd->point.x);
-//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ENDNODEY", "%f", Util::scene()->edges[i]->nodeEnd->point.y);
-//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ANGLE", "%f", Util::scene()->edges[i]->angle);
-//            edge_dict->SetValue ("GEOMETRY_EDGE_MARKER", Util::scene()->edges[i]->boundary->name);
+//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_STARTNODEX", "%f", Agros2D::scene()->edges[i]->nodeStart->point.x);
+//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_STARTNODEY", "%f", Agros2D::scene()->edges[i]->nodeStart->point.y);
+//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ENDNODEX", "%f", Agros2D::scene()->edges[i]->nodeEnd->point.x);
+//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ENDNODEY", "%f", Agros2D::scene()->edges[i]->nodeEnd->point.y);
+//            edge_dict->SetFormattedValue("GEOMETRY_EDGE_ANGLE", "%f", Agros2D::scene()->edges[i]->angle);
+//            edge_dict->SetValue ("GEOMETRY_EDGE_MARKER", Agros2D::scene()->edges[i]->boundary->name);
 //        }
 
 //        // labels
 //        dict.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels").toStdString());
-//        for (int i = 0; i < Util::scene()->labels.count(); i++)
+//        for (int i = 0; i < Agros2D::scene()->labels.count(); i++)
 //        {
 //            ctemplate::TemplateDictionary *label_dict = dict.AddSectionDictionary("GEOMETRY_LABEL_SECTION");
-//            label_dict->SetFormattedValue("GEOMETRY_LABELX", "%f", Util::scene()->labels[i]->point.x);
-//            label_dict->SetFormattedValue("GEOMETRY_LABELY", "%f", Util::scene()->labels[i]->point.y);
-//            label_dict->SetFormattedValue("GEOMETRY_LABEL_ARRAY", "%f", Util::scene()->labels[i]->area);
-//            label_dict->SetValue ("GEOMETRY_LABEL_MARKER", Util::scene()->labels[i]->material->name);
-//            label_dict->SetIntValue ("GEOMETRY_LABEL_POLYNOMIALORDER", Util::scene()->labels[i]->polynomialOrder);
+//            label_dict->SetFormattedValue("GEOMETRY_LABELX", "%f", Agros2D::scene()->labels[i]->point.x);
+//            label_dict->SetFormattedValue("GEOMETRY_LABELY", "%f", Agros2D::scene()->labels[i]->point.y);
+//            label_dict->SetFormattedValue("GEOMETRY_LABEL_ARRAY", "%f", Agros2D::scene()->labels[i]->area);
+//            label_dict->SetValue ("GEOMETRY_LABEL_MARKER", Agros2D::scene()->labels[i]->material->name);
+//            label_dict->SetIntValue ("GEOMETRY_LABEL_POLYNOMIALORDER", Agros2D::scene()->labels[i]->polynomialOrder);
 //        }
 
 //        dict.ShowSection("GEOMETRY_SECTION");
@@ -501,29 +504,29 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    if (chkMeshAndSolution->isChecked())
 //    {
 //        QTime time;
-//        time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+//        time = milisecondsToTime(Agros2D::scene()->sceneSolution()->timeElapsed());
 
 //        dict.SetValue("MESHANDSOLVER_LABEL", tr("Mesh and Solution").toStdString());
 //        dict.SetValue("SOLVER_LABEL", tr("Solver information").toStdString());
 //        dict.SetValue("SOLVER_NODES_LABEL", tr("Nodes:").toStdString());
-//        dict.SetIntValue("SOLVER_NODES", Util::scene()->sceneSolution()->meshInitial()->get_num_nodes());
+//        dict.SetIntValue("SOLVER_NODES", Agros2D::scene()->sceneSolution()->meshInitial()->get_num_nodes());
 //        dict.SetValue("SOLVER_ELEMENTS_LABEL", tr("Elements:").toStdString());
-//        dict.SetIntValue("SOLVER_ELEMENTS", Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements());
+//        dict.SetIntValue("SOLVER_ELEMENTS", Agros2D::scene()->sceneSolution()->meshInitial()->get_num_active_elements());
 //        dict.SetValue("SOLVER_DOFS_LABEL", tr("DOFs:").toStdString());
 
-//        if (Util::scene()->sceneSolution()->space())
-//            dict.SetIntValue("SOLVER_DOFS", Util::scene()->sceneSolution()->space()->get_num_dofs());
+//        if (Agros2D::scene()->sceneSolution()->space())
+//            dict.SetIntValue("SOLVER_DOFS", Agros2D::scene()->sceneSolution()->space()->get_num_dofs());
 
 //        dict.SetValue("SOLVER_TIMEELAPSED_LABEL", tr("Elapsed time:").toStdString());
 //        dict.SetValue("SOLVER_TIMEELAPSED", time.toString("mm:ss.zzz").toStdString());
 
 //        // adaptivity
-//        if (Util::problem()->config()->adaptivityType != AdaptivityType_None)
+//        if (Agros2D::problem()->config()->adaptivityType != AdaptivityType_None)
 //        {
 //            dict.SetValue("SOLVER_ADAPTIVEERROR_LABEL", tr("Adaptive error:").toStdString());
-//            dict.SetFormattedValue("SOLVER_ADAPTIVEERROR", "%f", Util::scene()->sceneSolution()->adaptiveError());
+//            dict.SetFormattedValue("SOLVER_ADAPTIVEERROR", "%f", Agros2D::scene()->sceneSolution()->adaptiveError());
 //            dict.SetValue("SOLVER_ADAPTIVESTEPS_LABEL", tr("Adaptive steps:").toStdString());
-//            dict.SetIntValue("SOLVER_ADAPTIVESTEPS", Util::scene()->sceneSolution()->adaptiveSteps());
+//            dict.SetIntValue("SOLVER_ADAPTIVESTEPS", Agros2D::scene()->sceneSolution()->adaptiveSteps());
 
 //            QFile::remove(QString("%1/report/adaptivity_convergence.png").arg(tempProblemDir()));
 //            bool copyChart = QFile::copy(QString("%1/adaptivity_conv.png").arg(tempProblemDir()), QString("%1/report/adaptivity_convergence.png").arg(tempProblemDir()));
@@ -579,7 +582,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("FIGURE_SCALARVIEW", tempProblemDir().toStdString()+ "/report/scalarview.png");
 //        dict.SetValue("FIGURE_SCALARVIEW_DESCRIPTION", tr("Figure: ").toStdString()
-//                      + QString::fromStdString(Util::problem()->config()->module()->view_default_scalar_variable->name).toStdString());
+//                      + QString::fromStdString(Agros2D::problem()->config()->module()->view_default_scalar_variable->name).toStdString());
 //        dict.ShowSection("FIGURE_SECTION");
 //    }
 
@@ -587,7 +590,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("FIGURE_CONTOURVIEW", tempProblemDir().toStdString()+ "/report/contourview.png");
 //        dict.SetValue("FIGURE_CONTOURVIEW_DESCRIPTION", tr("Figure: ").toStdString()
-//                      + QString::fromStdString(Util::problem()->config()->module()->view_default_scalar_variable->name).toStdString() + tr(" (contours)").toStdString());
+//                      + QString::fromStdString(Agros2D::problem()->config()->module()->view_default_scalar_variable->name).toStdString() + tr(" (contours)").toStdString());
 //        dict.ShowSection("FIGURE_SECTION");
 //    }
 
@@ -595,7 +598,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
 //    {
 //        dict.SetValue("FIGURE_VECTORVIEW", tempProblemDir().toStdString()+ "/report/vectorview.png");
 //        dict.SetValue("FIGURE_VECTORVIEW_DESCRIPTION", tr("Figure: ").toStdString()
-//                      + QString::fromStdString(Util::problem()->config()->module()->view_default_vector_variable->name).toStdString() + tr(" (vectors)").toStdString());
+//                      + QString::fromStdString(Agros2D::problem()->config()->module()->view_default_vector_variable->name).toStdString() + tr(" (vectors)").toStdString());
 //        dict.ShowSection("FIGURE_SECTION");
 //    }
 
