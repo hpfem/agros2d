@@ -18,6 +18,8 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "field.h"
+#include "util/global.h"
+
 #include "problem.h"
 #include "scene.h"
 #include "scenemarker.h"
@@ -36,17 +38,17 @@ bool Field::solveInitVariables()
     //
     //
     //    // transient
-    //    if (Util::problem()->config()->analysisType() == AnalysisType_Transient)
+    //    if (Agros2D::problem()->config()->analysisType() == AnalysisType_Transient)
     //    {
-    //        if (!Util::problem()->config()->timeStep.evaluate()) return false;
-    //        if (!Util::problem()->config()->timeTotal.evaluate()) return false;
-    //        if (!Util::problem()->config()->initialCondition.evaluate()) return false;
+    //        if (!Agros2D::problem()->config()->timeStep.evaluate()) return false;
+    //        if (!Agros2D::problem()->config()->timeTotal.evaluate()) return false;
+    //        if (!Agros2D::problem()->config()->initialCondition.evaluate()) return false;
     //    }
 
-    if (!Util::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
+    if (!Agros2D::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
         return false;
 
-    if (!Util::scene()->materials->filter(m_fieldInfo).evaluateAllVariables())
+    if (!Agros2D::scene()->materials->filter(m_fieldInfo).evaluateAllVariables())
         return false;
 
     return true;
@@ -59,7 +61,7 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
     if (fieldId.isEmpty())
     {
         // default
-        // read default field (Util::config() is not set)
+        // read default field (Agros2D::config() is not set)
         QSettings settings;
         m_fieldId = settings.value("General/DefaultPhysicField", "electrostatic").toString();
 
@@ -95,7 +97,7 @@ void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 
     if (m_module) delete m_module;
     m_module = new Module::ModuleAgros(m_fieldId,
-                                       Util::problem()->config()->coordinateType(),
+                                       Agros2D::problem()->config()->coordinateType(),
                                        m_analysisType);
 }
 

@@ -21,7 +21,7 @@
 
 #include "gui/chart.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "scene.h"
+#include "util/global.h"
 #include "datatable.h"
 #include "datatabledialog.h"
 
@@ -210,7 +210,7 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
     // eval time and space
     if (m_fieldInfo)
     {
-        if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
+        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
             currentPythonEngineAgros()->runExpression(QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y), false);
         else
             currentPythonEngineAgros()->runExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
@@ -380,7 +380,7 @@ bool ValueLineEdit::evaluate(bool quiet)
             {
                 m_number = val.number();
                 setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                              Util::config()->lineEditValueShowResult);
+                              Agros2D::config()->lineEditValueShowResult);
                 isOk = true;
             }
         }
@@ -557,7 +557,7 @@ void ValueTimeDialog::createControls()
     connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(checkExpression()));
 
     txtTimeTotal = new ValueLineEdit();
-    txtTimeTotal->setValue(Util::problem()->config()->timeTotal());
+    txtTimeTotal->setValue(Agros2D::problem()->config()->timeTotal());
 
     cmbPresets = new QComboBox();
     cmbPresets->addItem(tr("select a preset..."));

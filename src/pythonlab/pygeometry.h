@@ -21,6 +21,8 @@
 #define PYTHONLABGEOMETRY_H
 
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 
 class Solution;

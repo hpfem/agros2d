@@ -25,6 +25,7 @@
 #include "logview.h"
 
 #include "util.h"
+#include "util/global.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarkerdialog.h"
@@ -106,7 +107,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
 
     // get weakform
-    PluginInterface *plugin = Util::plugins()[fieldId];
+    PluginInterface *plugin = Agros2D::plugins()[fieldId];
     assert(plugin);
 
     Hermes::Hermes2D::Form<Scalar> *weakForm = NULL;
@@ -174,7 +175,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    //    Util::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
+    //    Agros2D::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
     //                            arg(weakFormString(type)).
     //                            arg(QString::fromStdString(form->getAreas().at(0))));
 
@@ -217,19 +218,19 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
         {
             Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > previousSlns;
 
-            int lastTimeStep = Util::problem()->actualTimeStep() - 1; // todo: check
+            int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
 
             for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
             {
                 int timeStep = lastTimeStep - backLevel;
-                int adaptivityStep = Util::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
+                int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
                 FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
-                if(! Util::solutionStore()->contains(solutionID))
+                if(! Agros2D::solutionStore()->contains(solutionID))
                     solutionID.solutionMode = SolutionMode_Normal;
-                assert(Util::solutionStore()->contains(solutionID));
+                assert(Agros2D::solutionStore()->contains(solutionID));
 
                 for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-                    previousSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+                    previousSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).sln.data());
             }
             custom_form->set_ext(previousSlns);
         }
@@ -268,11 +269,11 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     {
         Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > couplingSlns;
 
-        FieldSolutionID solutionID = Util::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
+        FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
         assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
 
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-            couplingSlns.push_back(Util::solutionStore()->solution(solutionID, comp).sln.data());
+            couplingSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).sln.data());
 
         custom_form->set_ext(couplingSlns);
     }
@@ -289,10 +290,10 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
         FieldInfo* fieldInfo = field->fieldInfo();
 
         // boundary conditions
-        for (int edgeNum = 0; edgeNum<Util::scene()->edges->count(); edgeNum++)
+        for (int edgeNum = 0; edgeNum<Agros2D::scene()->edges->count(); edgeNum++)
         {
-            SceneBoundary *boundary = Util::scene()->edges->at(edgeNum)->marker(fieldInfo);
-            if (boundary && boundary != Util::scene()->boundaries->getNone(fieldInfo))
+            SceneBoundary *boundary = Agros2D::scene()->edges->at(edgeNum)->marker(fieldInfo);
+            if (boundary && boundary != Agros2D::scene()->boundaries->getNone(fieldInfo))
             {
                 Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->type());
 
@@ -307,13 +308,13 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
         }
 
         // materials
-        for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
+        for (int labelNum = 0; labelNum<Agros2D::scene()->labels->count(); labelNum++)
         {
             //cout << "material " << labelNum << endl;
-            SceneMaterial *material = Util::scene()->labels->at(labelNum)->marker(fieldInfo);
+            SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(fieldInfo);
 
             assert(material);
-            if (material != Util::scene()->materials->getNone(fieldInfo))
+            if (material != Agros2D::scene()->materials->getNone(fieldInfo))
             {
                 foreach (FormInfo *expression, fieldInfo->module()->wfMatrixVolumeExpression())
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
@@ -329,10 +330,10 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                 {
                     foreach (FormInfo *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
                     {
-                        SceneMaterial* materialSource = Util::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
+                        SceneMaterial* materialSource = Agros2D::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
                         assert(materialSource);
 
-                        if (materialSource != Util::scene()->materials->getNone(couplingInfo->sourceField()))
+                        if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
                             cout << "register coupling form " << expression << endl;
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
@@ -353,13 +354,13 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
             Field* sourceField = m_block->field(couplingInfo->sourceField());
             Field* targetField = m_block->field(couplingInfo->targetField());
 
-            for (int labelNum = 0; labelNum<Util::scene()->labels->count(); labelNum++)
+            for (int labelNum = 0; labelNum<Agros2D::scene()->labels->count(); labelNum++)
             {
-                SceneMaterial *sourceMaterial = Util::scene()->labels->at(labelNum)->marker(sourceField->fieldInfo());
-                SceneMaterial *targetMaterial = Util::scene()->labels->at(labelNum)->marker(targetField->fieldInfo());
+                SceneMaterial *sourceMaterial = Agros2D::scene()->labels->at(labelNum)->marker(sourceField->fieldInfo());
+                SceneMaterial *targetMaterial = Agros2D::scene()->labels->at(labelNum)->marker(targetField->fieldInfo());
 
-                if (sourceMaterial && (sourceMaterial != Util::scene()->materials->getNone(sourceField->fieldInfo()))
-                        && targetMaterial && (targetMaterial != Util::scene()->materials->getNone(targetField->fieldInfo())))
+                if (sourceMaterial && (sourceMaterial != Agros2D::scene()->materials->getNone(sourceField->fieldInfo()))
+                        && targetMaterial && (targetMaterial != Agros2D::scene()->materials->getNone(targetField->fieldInfo())))
                 {
 
                     qDebug() << "hard coupling form on marker " << labelNum;
@@ -1040,14 +1041,14 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
     // update time functions
     /*
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-        m_fieldInfo->module()->update_time_functions(Util::problem()->time());
+        m_fieldInfo->module()->update_time_functions(Agros2D::problem()->time());
     */
 
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < numberOfSolutions(); k++)
-        sln.push_back(Util::scene()->activeMultiSolutionArray().component(k).sln.data());
+        sln.push_back(Agros2D::scene()->activeMultiSolutionArray().component(k).sln.data());
 
-    return Util::plugins()[Util::scene()->activeViewField()->fieldId()]->filter(Util::scene()->activeViewField(),
+    return Agros2D::plugins()[Agros2D::scene()->activeViewField()->fieldId()]->filter(Agros2D::scene()->activeViewField(),
                                                                                 sln,
                                                                                 physicFieldVariable->id(),
                                                                                 physicFieldVariableComp);
@@ -1131,11 +1132,11 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
 
     // refine mesh - boundary
     if (refineTowardsEdge)
-        foreach (SceneEdge *edge, Util::scene()->edges->items())
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
         {
             if (fieldInfo->edgeRefinement(edge) > 0)
             {
-                mesh->refine_towards_boundary(QString::number(Util::scene()->edges->items().indexOf(edge)).toStdString(),
+                mesh->refine_towards_boundary(QString::number(Agros2D::scene()->edges->items().indexOf(edge)).toStdString(),
                                               fieldInfo->edgeRefinement(edge));
             }
         }
@@ -1143,10 +1144,10 @@ void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineG
     // refine mesh - elements
     if (refineArea)
     {
-        foreach (SceneLabel *label, Util::scene()->labels->items())
+        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         {
             if (fieldInfo->labelRefinement(label) > 0)
-                mesh->refine_in_area(QString::number(Util::scene()->labels->items().indexOf(label)).toStdString(),
+                mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
                                      fieldInfo->labelRefinement(label));
         }
     }

@@ -17,8 +17,14 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "scenemarker.h"
 #include "scenemarkerdialog.h"
+
+#include "util/global.h"
+
+#include "gui/common.h"
+#include "gui/latexviewer.h"
+
+#include "scenemarker.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -28,8 +34,6 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-#include "gui/common.h"
-#include "gui/latexviewer.h"
 
 SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, QString name, QString type,
                              QHash<QString, Value> values)
@@ -376,7 +380,7 @@ void SceneBoundaryDialog::load()
 bool SceneBoundaryDialog::save()
 {
     // find name duplicities
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->items())
+    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->items())
     {
         if (boundary->name() == txtName->text())
         {
@@ -469,7 +473,7 @@ void SceneMaterialDialog::load()
 bool SceneMaterialDialog::save()
 {
     // find name duplicities
-    foreach (SceneMaterial *material, Util::scene()->materials->items())
+    foreach (SceneMaterial *material, Agros2D::scene()->materials->items())
     {
         if (material->name() == txtName->text())
         {

@@ -17,11 +17,14 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "sceneedge.h"
+
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenenode.h"
-#include "sceneedge.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
@@ -33,7 +36,7 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
     : MarkedSceneBasic(),
       m_nodeStart(nodeStart), m_nodeEnd(nodeEnd), m_angle(angle)
 {
-    foreach (FieldInfo* field, Util::problem()->fieldInfos())
+    foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
     {
         this->addMarker(SceneBoundaryContainer::getNone(field));
     }
@@ -98,8 +101,8 @@ int SceneEdge::segments() const
 {
     double division = 40.0;
     int segments = m_angle/division + 1;
-    if (segments < Util::config()->angleSegmentsCount)
-        segments = Util::config()->angleSegmentsCount; // minimum segments
+    if (segments < Agros2D::config()->angleSegmentsCount)
+        segments = Agros2D::config()->angleSegmentsCount; // minimum segments
 
     return segments;
 }
@@ -144,7 +147,7 @@ static SceneEdge *SceneEdge::findClosestEdge(const Point &point)
     SceneEdge *edgeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
         double edgeDistance = edge->distance(point);
         if (edge->distance(point) < distance)
@@ -165,7 +168,7 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
     {
         if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
         {
-            Util::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart()->point(),
+            Agros2D::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart()->point(),
                                                                         edge->nodeEnd()->point(),
                                                                         edge->markersKeys(),
                                                                         edge->angle()));
@@ -311,11 +314,11 @@ void SceneEdgeMarker::fillComboBox()
     cmbBoundary->clear();
 
     // none marker
-    cmbBoundary->addItem(Util::scene()->boundaries->getNone(m_fieldInfo)->name(),
-                         Util::scene()->boundaries->getNone(m_fieldInfo)->variant());
+    cmbBoundary->addItem(Agros2D::scene()->boundaries->getNone(m_fieldInfo)->name(),
+                         Agros2D::scene()->boundaries->getNone(m_fieldInfo)->variant());
 
     // real markers
-    foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(m_fieldInfo).items())
+    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(m_fieldInfo).items())
     {
         cmbBoundary->addItem(boundary->name(),
                              boundary->variant());
@@ -333,7 +336,7 @@ void SceneEdgeMarker::doBoundaryClicked()
     if (marker->showDialog(this) == QDialog::Accepted)
     {
         cmbBoundary->setItemText(cmbBoundary->currentIndex(), marker->name());
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }
 
@@ -362,7 +365,7 @@ QLayout* SceneEdgeDialog::createContent()
     // layout
     QFormLayout *layout = new QFormLayout();
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         SceneEdgeMarker *sceneEdge = new SceneEdgeMarker(dynamic_cast<SceneEdge *>(m_object), fieldInfo, this);
         layout->addRow(sceneEdge);
@@ -421,7 +424,7 @@ bool SceneEdgeDialog::save()
 
     if (!m_isNew)
     {
-        Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
+        Agros2D::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
                                                                   sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
                                                                   sceneEdge->angle(), txtAngle->number()));
     }
@@ -431,9 +434,9 @@ bool SceneEdgeDialog::save()
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->save();
 
-    Util::scene()->checkEdge(sceneEdge);
+    Agros2D::scene()->checkEdge(sceneEdge);
 
-    Util::scene()->invalidate();
+    Agros2D::scene()->invalidate();
     return true;
 }
 
@@ -466,7 +469,7 @@ SceneEdgeSelectDialog::SceneEdgeSelectDialog(MarkedSceneBasicContainer<SceneBoun
     QGroupBox *grpBoundaries = new QGroupBox(tr("Boundary conditions"));
     grpBoundaries->setLayout(layoutBoundaries);
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         QComboBox *cmbBoundary = new QComboBox();
         cmbBoundaries[fieldInfo] = cmbBoundary;
@@ -499,16 +502,16 @@ void SceneEdgeSelectDialog::load()
         cmbBoundaries[fieldInfo]->clear();
 
         // none marker
-        cmbBoundaries[fieldInfo]->addItem(Util::scene()->boundaries->getNone(fieldInfo)->name(),
-                                          Util::scene()->boundaries->getNone(fieldInfo)->variant());
+        cmbBoundaries[fieldInfo]->addItem(Agros2D::scene()->boundaries->getNone(fieldInfo)->name(),
+                                          Agros2D::scene()->boundaries->getNone(fieldInfo)->variant());
 
         // real markers
-        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
+        foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(fieldInfo).items())
             cmbBoundaries[fieldInfo]->addItem(boundary->name(),
                                               boundary->variant());
     }
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         SceneBoundary* boundary = NULL;
         bool match = true;
@@ -530,7 +533,7 @@ bool SceneEdgeSelectDialog::save()
 {
     foreach (SceneEdge* edge, m_edges.items())
     {
-        foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+        foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
         {
             if (cmbBoundaries[fieldInfo]->currentIndex() != -1)
                 edge->addMarker(cmbBoundaries[fieldInfo]->itemData(cmbBoundaries[fieldInfo]->currentIndex()).value<SceneBoundary *>());
@@ -538,7 +541,7 @@ bool SceneEdgeSelectDialog::save()
         }
     }
 
-    Util::scene()->invalidate();
+    Agros2D::scene()->invalidate();
     return true;
 }
 
@@ -567,25 +570,25 @@ SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &p
 
 void SceneEdgeCommandAdd::undo()
 {
-    Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
-    Util::scene()->invalidate();
+    Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Agros2D::scene()->invalidate();
 }
 
 void SceneEdgeCommandAdd::redo()
 {
     // new edge
-    SceneEdge *edge = new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
-                                    Util::scene()->addNode(new SceneNode(m_pointEnd)),
+    SceneEdge *edge = new SceneEdge(Agros2D::scene()->addNode(new SceneNode(m_pointStart)),
+                                    Agros2D::scene()->addNode(new SceneNode(m_pointEnd)),
                                     m_angle);
 
     foreach (QString fieldId, m_markers.keys())
     {
-        if (Util::problem()->hasField(fieldId))
+        if (Agros2D::problem()->hasField(fieldId))
         {
-            SceneBoundary *boundary = Util::scene()->boundaries->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+            SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
 
             if (!boundary)
-                boundary = Util::scene()->boundaries->getNone(Util::problem()->fieldInfo(fieldId));
+                boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
 
             // add marker
             edge->addMarker(boundary);
@@ -593,8 +596,8 @@ void SceneEdgeCommandAdd::redo()
     }
 
     // add edge to the list
-    Util::scene()->addEdge(edge);
-    Util::scene()->invalidate();
+    Agros2D::scene()->addEdge(edge);
+    Agros2D::scene()->invalidate();
 }
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
@@ -609,18 +612,18 @@ SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Po
 void SceneEdgeCommandRemove::undo()
 {
     // new edge
-    SceneEdge *edge = new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
-                                    Util::scene()->addNode(new SceneNode(m_pointEnd)),
+    SceneEdge *edge = new SceneEdge(Agros2D::scene()->addNode(new SceneNode(m_pointStart)),
+                                    Agros2D::scene()->addNode(new SceneNode(m_pointEnd)),
                                     m_angle);
 
     foreach (QString fieldId, m_markers.keys())
     {
-        if (Util::problem()->hasField(fieldId))
+        if (Agros2D::problem()->hasField(fieldId))
         {
-            SceneBoundary *boundary = Util::scene()->boundaries->filter(Util::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
+            SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
 
             if (!boundary)
-                boundary = Util::scene()->boundaries->getNone(Util::problem()->fieldInfo(fieldId));
+                boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
 
             // add marker
             edge->addMarker(boundary);
@@ -628,14 +631,14 @@ void SceneEdgeCommandRemove::undo()
     }
 
     // add edge to the list
-    Util::scene()->addEdge(edge);
-    Util::scene()->invalidate();
+    Agros2D::scene()->addEdge(edge);
+    Agros2D::scene()->invalidate();
 }
 
 void SceneEdgeCommandRemove::redo()
 {
-    Util::scene()->edges->remove(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
-    Util::scene()->invalidate();
+    Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Agros2D::scene()->invalidate();
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
@@ -651,25 +654,25 @@ SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point 
 
 void SceneEdgeCommandEdit::undo()
 {
-    SceneEdge *edge = Util::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew);
+    SceneEdge *edge = Agros2D::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew);
     if (edge)
     {
-        edge->setNodeStart(Util::scene()->getNode(m_pointStart));
-        edge->setNodeEnd(Util::scene()->getNode(m_pointEnd));
+        edge->setNodeStart(Agros2D::scene()->getNode(m_pointStart));
+        edge->setNodeEnd(Agros2D::scene()->getNode(m_pointEnd));
         edge->setAngle(m_angle);
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }
 
 void SceneEdgeCommandEdit::redo()
 {
-    SceneEdge *edge = Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle);
+    SceneEdge *edge = Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle);
     if (edge)
     {
-        edge->setNodeStart(Util::scene()->getNode(m_pointStartNew));
-        edge->setNodeEnd(Util::scene()->getNode(m_pointEndNew));
+        edge->setNodeStart(Agros2D::scene()->getNode(m_pointStartNew));
+        edge->setNodeEnd(Agros2D::scene()->getNode(m_pointEndNew));
         edge->setAngle(m_angleNew);
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }
 

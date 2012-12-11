@@ -17,9 +17,12 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "util.h"
-#include "scene.h"
 #include "scenenode.h"
+
+#include "util.h"
+#include "util/global.h"
+
+#include "scene.h"
 #include "sceneedge.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
@@ -51,7 +54,7 @@ static SceneNode *SceneNode::findClosestNode(const Point &point)
     SceneNode *nodeClosest = NULL;
 
     double distance = numeric_limits<double>::max();
-    foreach (SceneNode *node, Util::scene()->nodes->items())
+    foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {
         double nodeDistance = node->distance(point);
         if (node->distance(point) < distance)
@@ -93,7 +96,7 @@ SceneNode* SceneNodeContainer::get(const Point &point) const
 bool SceneNodeContainer::remove(SceneNode *item)
 {
     // remove all edges connected to this node
-    Util::scene()->edges->removeConnectedToNode(item);
+    Agros2D::scene()->edges->removeConnectedToNode(item);
 
     return SceneBasicContainer<SceneNode>::remove(item);
 }
@@ -173,12 +176,12 @@ QLayout* DSceneNode::createContent()
     lblAngle = new QLabel();
 
     // coordinates must be greater then or equal to 0 (axisymmetric case)
-    if (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
         txtPointX->setMinimum(0.0);
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(Util::problem()->config()->labelX() + " (m):", txtPointX);
-    layout->addRow(Util::problem()->config()->labelY() + " (m):", txtPointY);
+    layout->addRow(Agros2D::problem()->config()->labelX() + " (m):", txtPointX);
+    layout->addRow(Agros2D::problem()->config()->labelY() + " (m):", txtPointY);
     layout->addRow(tr("Distance:"), lblDistance);
     layout->addRow(tr("Angle:"), lblAngle);
 
@@ -207,7 +210,7 @@ bool DSceneNode::save()
     Point point(txtPointX->number(), txtPointY->number());
 
     // check if node doesn't exists
-    if (Util::scene()->getNode(point) && ((sceneNode->point() != point) || m_isNew))
+    if (Agros2D::scene()->getNode(point) && ((sceneNode->point() != point) || m_isNew))
     {
         QMessageBox::warning(this, tr("Node"), tr("Node already exists."));
         return false;
@@ -217,7 +220,7 @@ bool DSceneNode::save()
     {
         if (sceneNode->point() != point)
         {
-            Util::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point(), point));
+            Agros2D::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point(), point));
         }
     }
 
@@ -244,18 +247,18 @@ SceneNodeCommandAdd::SceneNodeCommandAdd(const Point &point, QUndoCommand *paren
 
 void SceneNodeCommandAdd::undo()
 {
-    SceneNode *node = Util::scene()->getNode(m_point);
+    SceneNode *node = Agros2D::scene()->getNode(m_point);
     if (node)
     {
-        Util::scene()->nodes->remove(node);
-        Util::scene()->invalidate();
+        Agros2D::scene()->nodes->remove(node);
+        Agros2D::scene()->invalidate();
     }
 }
 
 void SceneNodeCommandAdd::redo()
 {
-    Util::scene()->addNode(new SceneNode(m_point));
-    Util::scene()->invalidate();
+    Agros2D::scene()->addNode(new SceneNode(m_point));
+    Agros2D::scene()->invalidate();
 }
 
 SceneNodeCommandRemove::SceneNodeCommandRemove(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
@@ -265,17 +268,17 @@ SceneNodeCommandRemove::SceneNodeCommandRemove(const Point &point, QUndoCommand 
 
 void SceneNodeCommandRemove::undo()
 {
-    Util::scene()->addNode(new SceneNode(m_point));
-    Util::scene()->invalidate();
+    Agros2D::scene()->addNode(new SceneNode(m_point));
+    Agros2D::scene()->invalidate();
 }
 
 void SceneNodeCommandRemove::redo()
 {
-    SceneNode *node = Util::scene()->getNode(m_point);
+    SceneNode *node = Agros2D::scene()->getNode(m_point);
     if (node)
     {
-        Util::scene()->nodes->remove(node);
-        Util::scene()->invalidate();
+        Agros2D::scene()->nodes->remove(node);
+        Agros2D::scene()->invalidate();
     }
 }
 
@@ -287,27 +290,27 @@ SceneNodeCommandEdit::SceneNodeCommandEdit(const Point &point, const Point &poin
 
 void SceneNodeCommandEdit::undo()
 {
-    SceneNode *node = Util::scene()->getNode(m_pointNew);
+    SceneNode *node = Agros2D::scene()->getNode(m_pointNew);
     if (node)
     {
         node->setPoint(m_point);
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }
 
 void SceneNodeCommandEdit::redo()
 {
-    SceneNode *node = Util::scene()->getNode(m_point);
+    SceneNode *node = Agros2D::scene()->getNode(m_point);
     if (node)
     {
         node->setPoint(m_pointNew);
-        Util::scene()->invalidate();
+        Agros2D::scene()->invalidate();
     }
 }
 
 bool SceneNode::isOutsideArea() const
 {
-    return  (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
+    return  (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
             (this->point().x < - EPS_ZERO);
 }
 

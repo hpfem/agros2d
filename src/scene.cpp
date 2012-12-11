@@ -21,6 +21,7 @@
 
 #include "util/xml.h"
 #include "util/constants.h"
+#include "util/global.h"
 
 #include "util.h"
 #include "value.h"
@@ -120,104 +121,6 @@ void NewMarkerAction::doTriggered()
     emit triggered(field);
 }
 
-
-
-// ************************************************************************************************************************
-
-static QSharedPointer<Util> m_singleton;
-
-Util::Util()
-{
-    m_problem = new Problem();
-    m_scene = new Scene();
-    QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
-    QObject::connect(m_scene, SIGNAL(invalidated()), m_problem, SLOT(clearSolution()));
-
-    initLists();
-
-    m_solutionStore = new SolutionStore();
-
-    // config
-    m_config = new Config();
-    m_config->load();
-
-    // log
-    m_log = new Log();
-}
-
-Util::~Util()
-{
-    /*
-    // remove temp and cache files
-    removeDirectory(cacheProblemDir());
-    removeDirectory(tempProblemDir());
-
-    delete m_problem;
-    delete m_scene;
-    delete m_config;
-    delete m_scriptEngineRemote;    
-    delete m_solutionStore;
-    delete m_log;
-
-    // unload plugins and clear list
-    foreach (PluginInterface *plugin, Util::singleton()->m_plugins)
-        delete plugin;
-    Util::singleton()->m_plugins.clear();
-    */
-}
-
-void Util::createSingleton()
-{    
-    m_singleton = QSharedPointer<Util>(new Util());
-}
-
-Util *Util::singleton()
-{
-    return m_singleton.data();
-}
-
-void Util::loadPlugins(QStringList plugins)
-{
-    // unload plugins and clear list
-    foreach (PluginInterface *plugin, Util::singleton()->m_plugins)
-        delete plugin;
-    Util::singleton()->m_plugins.clear();
-
-    // load plugins
-    foreach (QString file, plugins)
-    {
-        QPluginLoader *loader = NULL;
-
-#ifdef Q_WS_X11
-        if (QFile::exists(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file)))
-            loader = new QPluginLoader(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file));
-
-        if (!loader)
-        {
-            if (QFile::exists(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file)))
-                loader = new QPluginLoader(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file));
-            else if (QFile::exists(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file)))
-                loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file));
-        }
-#endif
-
-#ifdef Q_WS_WIN
-        if (QFile::exists(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(file)))
-            loader = new QPluginLoader(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(file));
-#endif
-
-        if (!loader || !loader->load())
-        {
-            throw AgrosException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(file));
-            return;
-        }
-
-        assert(loader->instance());
-        Util::singleton()->m_plugins[file] = qobject_cast<PluginInterface *>(loader->instance());
-        delete loader;
-    }
-}
-
 // ************************************************************************************************************************
 
 Scene::Scene()
@@ -314,7 +217,7 @@ void Scene::createActions()
 SceneNode *Scene::addNode(SceneNode *node)
 {
     // clear solution
-    Util::problem()->clearSolution();
+    Agros2D::problem()->clearSolution();
 
     // check if node doesn't exists
     if (SceneNode* existing = nodes->get(node))
@@ -334,7 +237,7 @@ SceneNode *Scene::addNode(SceneNode *node)
 void Scene::removeNode(SceneNode *node)
 {
     // clear solution
-    Util::problem()->clearSolution();
+    Agros2D::problem()->clearSolution();
 
     nodes->remove(node);
     // delete node;
@@ -369,7 +272,7 @@ SceneNode *Scene::getNode(const Point &point)
 SceneEdge *Scene::addEdge(SceneEdge *edge)
 {
     // clear solution
-    Util::problem()->clearSolution();
+    Agros2D::problem()->clearSolution();
 
     // check if edge doesn't exists
     if (SceneEdge* existing = edges->get(edge)){
@@ -406,7 +309,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 void Scene::removeEdge(SceneEdge *edge)
 {
     // clear solution
-    Util::problem()->clearSolution();
+    Agros2D::problem()->clearSolution();
 
     // clear crosses
     foreach(SceneEdge *edgeCheck, edge->crossedEdges())
@@ -432,7 +335,7 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
     // clear solution
-    Util::problem()->clearSolution();
+    Agros2D::problem()->clearSolution();
 
     // check if label doesn't exists
     if(SceneLabel* existing = labels->get(label)){
@@ -449,7 +352,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 void Scene::removeLabel(SceneLabel *label)
 {
     // clear solution
-    Util::problem()->clearSolution();
+    Agros2D::problem()->clearSolution();
 
     labels->remove(label);
     // delete label;
@@ -519,47 +422,47 @@ void Scene::setMaterial(SceneMaterial *material)
 
 bool Scene::checkGeometryAssignement()
 {
-    if (Util::scene()->edges->length() > 2)
+    if (Agros2D::scene()->edges->length() > 2)
     {
         // at least one boundary condition has to be assigned
         int count = 0;
-        foreach (SceneEdge *edge, Util::scene()->edges->items())
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             if (edge->markersCount() > 0)
                 count++;
 
         if (count == 0)
         {
-            Util::log()->printError(tr("Geometry"), tr("at least one boundary condition has to be assigned"));
+            Agros2D::log()->printError(tr("Geometry"), tr("at least one boundary condition has to be assigned"));
             return false;
         }
     }
-    if (Util::scene()->labels->length() < 1)
+    if (Agros2D::scene()->labels->length() < 1)
     {
-        Util::log()->printError(tr("Geometry"), tr("invalid number of labels (%1 < 1)").arg(Util::scene()->labels->length()));
+        Agros2D::log()->printError(tr("Geometry"), tr("invalid number of labels (%1 < 1)").arg(Agros2D::scene()->labels->length()));
         return false;
     }
     else
     {
         // at least one material has to be assigned
         int count = 0;
-        foreach (SceneLabel *label, Util::scene()->labels->items())
+        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
             if (label->markersCount() > 0)
                 count++;
 
         if (count == 0)
         {
-            Util::log()->printError(tr("Geometry"), tr("at least one material has to be assigned"));
+            Agros2D::log()->printError(tr("Geometry"), tr("at least one material has to be assigned"));
             return false;
         }
     }
-    if (Util::scene()->boundaries->length() < 2) // + none marker
+    if (Agros2D::scene()->boundaries->length() < 2) // + none marker
     {
-        Util::log()->printError(tr("Geometry"), tr("invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries->length()));
+        Agros2D::log()->printError(tr("Geometry"), tr("invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length()));
         return false;
     }
-    if (Util::scene()->materials->length() < 2) // + none marker
+    if (Agros2D::scene()->materials->length() < 2) // + none marker
     {
-        Util::log()->printError(tr("Geometry"), tr("invalid number of materials (%1 < 1)").arg(Util::scene()->materials->length()));
+        Agros2D::log()->printError(tr("Geometry"), tr("invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length()));
         return false;
     }
 
@@ -574,10 +477,10 @@ void Scene::clear()
 
     // TODO: - not good
     // clear problem
-    if (Util::singleton() && Util::problem())
+    if (Agros2D::singleton() && Agros2D::problem())
     {
-        Util::problem()->clearSolution();
-        Util::problem()->clearFieldsAndConfig();
+        Agros2D::problem()->clearSolution();
+        Agros2D::problem()->clearFieldsAndConfig();
     }
 
     m_activeViewField = NULL;
@@ -1012,12 +915,12 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewBoundary()
 {
-    doNewBoundary(Util::scene()->activeViewField()->fieldId());
+    doNewBoundary(Agros2D::scene()->activeViewField()->fieldId());
 }
 
 void Scene::doNewBoundary(QString field)
 {
-    SceneBoundary *marker = Util::problem()->fieldInfo(field)->module()->newBoundary();
+    SceneBoundary *marker = Agros2D::problem()->fieldInfo(field)->module()->newBoundary();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addBoundary(marker);
@@ -1027,12 +930,12 @@ void Scene::doNewBoundary(QString field)
 
 void Scene::doNewMaterial()
 {
-    doNewMaterial(Util::scene()->activeViewField()->fieldId());
+    doNewMaterial(Agros2D::scene()->activeViewField()->fieldId());
 }
 
 void Scene::doNewMaterial(QString field)
 {
-    SceneMaterial *marker = Util::problem()->fieldInfo(field)->module()->newMaterial();
+    SceneMaterial *marker = Agros2D::problem()->fieldInfo(field)->module()->newMaterial();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addMaterial(marker);
@@ -1042,7 +945,7 @@ void Scene::doNewMaterial(QString field)
 
 void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
 {
-    if (Util::problem()->fieldInfos().count() == 1)
+    if (Agros2D::problem()->fieldInfos().count() == 1)
     {
         // one material and boundary
         menu->addAction(actNewBoundary);
@@ -1053,12 +956,12 @@ void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
         // multiple materials and boundaries
         QMenu* mnuSubBoundaries = new QMenu("New boundary condition", parent);
         menu->addMenu(mnuSubBoundaries);
-        foreach(FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+        foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             mnuSubBoundaries->addAction(actNewBoundaries[fieldInfo->fieldId()]);
 
         QMenu* mnuSubMaterials = new QMenu("New material", parent);
         menu->addMenu(mnuSubMaterials);
-        foreach(FieldInfo* fieldInfo, Util::problem()->fieldInfos())
+        foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             mnuSubMaterials->addAction(actNewMaterials[fieldInfo->fieldId()]);
     }
 }
@@ -1254,7 +1157,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     clear();
 
-    Util::problem()->config()->setFileName(fileName);
+    Agros2D::problem()->config()->setFileName(fileName);
     emit fileNameChanged(fileInfo.absoluteFilePath());
 
     blockSignals(true);
@@ -1362,40 +1265,40 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     QDomNode eleProblemInfo = eleDoc.elementsByTagName("problem").at(0);
 
     // name
-    Util::problem()->config()->setName(eleProblemInfo.toElement().attribute("name"));
+    Agros2D::problem()->config()->setName(eleProblemInfo.toElement().attribute("name"));
     // coordinate type
-    Util::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type")));
+    Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type")));
     // mesh type
-    Util::problem()->config()->setMeshType(meshTypeFromStringKey(eleProblemInfo.toElement().attribute("mesh_type",
+    Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(eleProblemInfo.toElement().attribute("mesh_type",
                                                                                                       meshTypeToStringKey(MeshType_Triangle))));
 
     // harmonic
-    Util::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
+    Agros2D::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
 
     // transient
-    Util::problem()->config()->setNumConstantTimeSteps(eleProblemInfo.toElement().attribute("time_steps", "2").toInt());
-    Util::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
-    Util::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
-    Util::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
+    Agros2D::problem()->config()->setNumConstantTimeSteps(eleProblemInfo.toElement().attribute("time_steps", "2").toInt());
+    Agros2D::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
+    Agros2D::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
+    Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
                                                      eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
-    Util::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05"));
+    Agros2D::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05"));
 
     // matrix solver
-    Util::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
+    Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
                                                                                                                   matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
 
     // startup script
     QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startup_script").at(0);
-    Util::problem()->config()->setStartupScript(eleScriptStartup.toElement().text());
+    Agros2D::problem()->config()->setStartupScript(eleScriptStartup.toElement().text());
 
     // FIX ME - EOL conversion
     QPlainTextEdit textEdit;
-    textEdit.setPlainText(Util::problem()->config()->startupscript());
-    Util::problem()->config()->setStartupScript(textEdit.toPlainText());
+    textEdit.setPlainText(Agros2D::problem()->config()->startupscript());
+    Agros2D::problem()->config()->setStartupScript(textEdit.toPlainText());
 
     // description
     QDomNode eleDescription = eleProblemInfo.toElement().elementsByTagName("description").at(0);
-    Util::problem()->config()->setDescription(eleDescription.toElement().text());
+    Agros2D::problem()->config()->setDescription(eleDescription.toElement().text());
 
     // field ***************************************************************************************************************
 
@@ -1430,7 +1333,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QDomElement eleEdge = nodeEdgeRefinement.toElement();
             int edge = eleEdge.toElement().attribute("edge").toInt();
             int refinement = eleEdge.toElement().attribute("refinement").toInt();
-            field->setEdgeRefinement(Util::scene()->edges->items().at(edge), refinement);
+            field->setEdgeRefinement(Agros2D::scene()->edges->items().at(edge), refinement);
 
             nodeEdgeRefinement = nodeEdgeRefinement.nextSibling();
         }
@@ -1443,7 +1346,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QDomElement eleLabel = nodeLabelRefinement.toElement();
             int label = eleLabel.toElement().attribute("label").toInt();
             int refinement = eleLabel.toElement().attribute("refinement").toInt();
-            field->setLabelRefinement(Util::scene()->labels->items().at(label), refinement);
+            field->setLabelRefinement(Agros2D::scene()->labels->items().at(label), refinement);
 
             nodeLabelRefinement = nodeLabelRefinement.nextSibling();
         }
@@ -1457,7 +1360,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             QDomElement eleLabel = nodeLabelPolynomialOrder.toElement();
             int label = eleLabel.toElement().attribute("label").toInt();
             int order = eleLabel.toElement().attribute("order").toInt();
-            field->setLabelPolynomialOrder(Util::scene()->labels->items().at(label), order);
+            field->setLabelPolynomialOrder(Agros2D::scene()->labels->items().at(label), order);
 
             nodeLabelPolynomialOrder = nodeLabelPolynomialOrder.nextSibling();
         }
@@ -1505,7 +1408,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                 boundary->setValue(variable->id(),
                                    Value(field, element.toElement().attribute(variable->id(), "0")));
 
-            Util::scene()->addBoundary(boundary);
+            Agros2D::scene()->addBoundary(boundary);
 
             // add boundary to the edge marker
             QDomNode nodeEdge = element.firstChild();
@@ -1543,7 +1446,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             }
 
             // add material
-            Util::scene()->addMaterial(material);
+            Agros2D::scene()->addMaterial(material);
 
             // add material to the label marker
             QDomNode nodeLabel = element.firstChild();
@@ -1564,14 +1467,14 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         }
 
         // add field
-        Util::problem()->addField(field);
+        Agros2D::problem()->addField(field);
 
         // next field
         nodeField = nodeField.nextSibling();
     }
 
     // couplings
-    Util::problem()->synchronizeCouplings();
+    Agros2D::problem()->synchronizeCouplings();
 
     // coupling
     QDomNode eleCouplings = eleProblemInfo.toElement().elementsByTagName("couplings").at(0);
@@ -1580,10 +1483,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         QDomElement element = nodeCoupling.toElement();
 
-        if (Util::problem()->hasCoupling(element.toElement().attribute("source_fieldid"),
+        if (Agros2D::problem()->hasCoupling(element.toElement().attribute("source_fieldid"),
                                          element.toElement().attribute("target_fieldid")))
         {
-            CouplingInfo *couplingInfo = Util::problem()->couplingInfo(element.toElement().attribute("source_fieldid"),
+            CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(element.toElement().attribute("source_fieldid"),
                                                                        element.toElement().attribute("target_fieldid"));
             couplingInfo->setCouplingType(couplingTypeFromStringKey(element.toElement().attribute("type")));
         }
@@ -1593,7 +1496,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
-    Util::config()->loadPostprocessor(&config);
+    Agros2D::config()->loadPostprocessor(&config);
 
     blockSignals(false);
 
@@ -1605,20 +1508,20 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        // TODO: Util::scene()->activeSolution()->loadMeshInitial(eleMesh.toElement());
+        // TODO: Agros2D::scene()->activeSolution()->loadMeshInitial(eleMesh.toElement());
     }
     /*
     // solutions
     if (eleDoc.elementsByTagName("solutions").count() > 0)
     {
         QDomNode eleSolutions = eleDoc.elementsByTagName("solutions").at(0);
-        Util::scene()->sceneSolution()->loadSolution(eleSolutions.toElement());
+        Agros2D::scene()->sceneSolution()->loadSolution(eleSolutions.toElement());
         emit invalidated();
     }
     */
 
     // run script
-    currentPythonEngineAgros()->runScript(Util::problem()->config()->startupscript());
+    currentPythonEngineAgros()->runScript(Agros2D::problem()->config()->startupscript());
 
     return ErrorResult();
 }
@@ -1633,7 +1536,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         if (fileInfo.absoluteDir() != tempProblemDir())
         {
             settings.setValue("General/LastProblemDir", fileInfo.absoluteFilePath());
-            Util::problem()->config()->setFileName(fileName);
+            Agros2D::problem()->config()->setFileName(fileName);
         }
     }
 
@@ -1715,39 +1618,39 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleDoc.appendChild(eleProblem);
 
     // name
-    eleProblem.setAttribute("name", Util::problem()->config()->name());
+    eleProblem.setAttribute("name", Agros2D::problem()->config()->name());
     // coordinate type
-    eleProblem.setAttribute("coordinate_type", coordinateTypeToStringKey(Util::problem()->config()->coordinateType()));
+    eleProblem.setAttribute("coordinate_type", coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()));
     // mesh type
-    eleProblem.setAttribute("mesh_type", meshTypeToStringKey(Util::problem()->config()->meshType()));
+    eleProblem.setAttribute("mesh_type", meshTypeToStringKey(Agros2D::problem()->config()->meshType()));
 
     // harmonic
-    eleProblem.setAttribute("frequency", Util::problem()->config()->frequency());
+    eleProblem.setAttribute("frequency", Agros2D::problem()->config()->frequency());
 
     // transient
-    eleProblem.setAttribute("time_steps", Util::problem()->config()->numConstantTimeSteps());
-    eleProblem.setAttribute("time_total", Util::problem()->config()->timeTotal().text());
-    eleProblem.setAttribute("time_order", QString::number(Util::problem()->config()->timeOrder()));
-    eleProblem.setAttribute("time_method", timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod()));
-    eleProblem.setAttribute("time_method_tolerance", Util::problem()->config()->timeMethodTolerance().text());
+    eleProblem.setAttribute("time_steps", Agros2D::problem()->config()->numConstantTimeSteps());
+    eleProblem.setAttribute("time_total", Agros2D::problem()->config()->timeTotal().text());
+    eleProblem.setAttribute("time_order", QString::number(Agros2D::problem()->config()->timeOrder()));
+    eleProblem.setAttribute("time_method", timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()));
+    eleProblem.setAttribute("time_method_tolerance", Agros2D::problem()->config()->timeMethodTolerance().text());
 
     // matrix solver
-    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()));
+    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));
 
     // startup script
     QDomElement eleScriptStartup = doc.createElement("startup_script");
-    eleScriptStartup.appendChild(doc.createTextNode(Util::problem()->config()->startupscript()));
+    eleScriptStartup.appendChild(doc.createTextNode(Agros2D::problem()->config()->startupscript()));
     eleProblem.appendChild(eleScriptStartup);
 
     // description
     QDomElement eleDescription = doc.createElement("description");
-    eleDescription.appendChild(doc.createTextNode(Util::problem()->config()->description()));
+    eleDescription.appendChild(doc.createTextNode(Agros2D::problem()->config()->description()));
     eleProblem.appendChild(eleDescription);
 
     // field ***************************************************************************************************************
     QDomNode eleFields = doc.createElement("fields");
     eleProblem.appendChild(eleFields);
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         QDomElement eleField = doc.createElement("field");
         eleFields.appendChild(eleField);
@@ -1778,7 +1681,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             edgeIterator.next();
             QDomElement eleEdge = doc.createElement("edge");
 
-            eleEdge.setAttribute("edge", QString::number(Util::scene()->edges->items().indexOf(edgeIterator.key())));
+            eleEdge.setAttribute("edge", QString::number(Agros2D::scene()->edges->items().indexOf(edgeIterator.key())));
             eleEdge.setAttribute("refinement", QString::number(edgeIterator.value()));
 
             eleEdgesRefinement.appendChild(eleEdge);
@@ -1793,7 +1696,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             labelIterator.next();
             QDomElement eleLabel = doc.createElement("label");
 
-            eleLabel.setAttribute("label", QString::number(Util::scene()->labels->items().indexOf(labelIterator.key())));
+            eleLabel.setAttribute("label", QString::number(Agros2D::scene()->labels->items().indexOf(labelIterator.key())));
             eleLabel.setAttribute("refinement", QString::number(labelIterator.value()));
 
             eleLabelsRefinement.appendChild(eleLabel);
@@ -1810,7 +1713,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
             labelOrderIterator.next();
             QDomElement eleLabel = doc.createElement("label");
 
-            eleLabel.setAttribute("label", QString::number(Util::scene()->labels->items().indexOf(labelOrderIterator.key())));
+            eleLabel.setAttribute("label", QString::number(Agros2D::scene()->labels->items().indexOf(labelOrderIterator.key())));
             eleLabel.setAttribute("order", QString::number(labelOrderIterator.value()));
 
             eleLabelPolynomialOrder.appendChild(eleLabel);
@@ -1915,7 +1818,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // coupling
     QDomNode eleCouplings = doc.createElement("couplings");
     eleProblem.appendChild(eleCouplings);
-    foreach (CouplingInfo *couplingInfo, Util::problem()->couplingInfos())
+    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
     {
         QDomElement eleCoupling = doc.createElement("coupling");
         eleCoupling.setAttribute("id", couplingInfo->couplingId());
@@ -1929,12 +1832,12 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     //    {
     //        // mesh
     //        QDomNode eleMesh = doc.createElement("mesh");
-    //        Util::scene()->sceneSolution()->saveMeshInitial(&doc, eleMesh.toElement());
+    //        Agros2D::scene()->sceneSolution()->saveMeshInitial(&doc, eleMesh.toElement());
     //        eleDoc.appendChild(eleMesh);
 
     //        // solution
     //        QDomNode eleSolutions = doc.createElement("solutions");
-    //        Util::scene()->sceneSolution()->saveSolution(&doc, eleSolutions.toElement());
+    //        Agros2D::scene()->sceneSolution()->saveSolution(&doc, eleSolutions.toElement());
     //        eleDoc.appendChild(eleSolutions);
     //    }
 
@@ -1948,7 +1851,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // save config
     QDomElement eleConfig = doc.createElement("config");
     eleDoc.appendChild(eleConfig);
-    Util::config()->savePostprocessor(&eleConfig);
+    Agros2D::config()->savePostprocessor(&eleConfig);
 
     QTextStream out(&file);
     doc.save(out, 4);
@@ -1967,7 +1870,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
 MultiSolutionArray<double> Scene::activeMultiSolutionArray()
 {
-    return Util::solutionStore()->multiSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
+    return Agros2D::solutionStore()->multiSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
 }
 
 void Scene::checkNodeConnect(SceneNode *node)
@@ -2092,7 +1995,7 @@ void Scene::checkGeometry()
 
 ErrorResult Scene::checkGeometryResult()
 {
-    if (Util::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
     {
         // check for nodes with r < 0
         QSet<int> nodes;
@@ -2141,325 +2044,14 @@ ErrorResult Scene::checkGeometryResult()
     return ErrorResult();
 }
 
-bool Scene::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
-{
-    // check domain
-    Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh().data(),
-                                                                                                   position.x, position.y);
-    if (!element)
-        return false;
-
-    // Lorentz force
-
-    // find marker
-    SceneLabel *label = Util::scene()->labels->at(atoi(fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
-    SceneMaterial *material = label->marker(fieldInfo);
-
-    Point3 forceLorentz = Util::plugins()[fieldInfo->fieldId()]->force(fieldInfo, material, position, velocity) * Util::config()->particleConstant;
-
-    // custom force
-    Point3 forceCustom = Util::config()->particleCustomForce;
-
-    // Drag force
-    Point3 velocityReal = (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ?
-                velocity : Point3(velocity.x, velocity.y, position.x * velocity.z);
-    Point3 forceDrag;
-    if (velocityReal.magnitude() > 0.0)
-        forceDrag = velocityReal.normalizePoint() *
-                - 0.5 * Util::config()->particleDragDensity * velocityReal.magnitude() * velocityReal.magnitude() * Util::config()->particleDragCoefficient * Util::config()->particleDragReferenceArea;
-
-    // Total force
-    Point3 totalForce = forceLorentz + forceDrag + forceCustom;
-
-    // relativistic correction
-    double mass = Util::config()->particleMass;
-    if (Util::config()->particleIncludeRelativisticCorrection)
-        mass = Util::config()->particleMass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
-
-    // Total acceleration
-    Point3 totalAccel = totalForce / mass;
-
-    if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
-    {
-        // position
-        *newposition = velocity * step;
-
-        // velocity
-        *newvelocity = totalAccel * step;
-    }
-    else
-    {
-        (*newposition).x = velocity.x * step; // r
-        (*newposition).y = velocity.y * step; // z
-        (*newposition).z = velocity.z * step; // alpha
-
-        (*newvelocity).x = (totalAccel.x + velocity.z * velocity.z * position.x) * step; // r
-        (*newvelocity).y = (totalAccel.y) * step; // z
-        (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
-    }
-
-    return true;
-}
-
-void Scene::computeParticleTracingPath(QList<Point3> *positions,
-                                       QList<Point3> *velocities,
-                                       QList<double> *times,
-                                       bool randomPoint)
-{
-    QTime timePart;
-    timePart.start();
-
-    // initial position
-    Point3 position;
-    position.x = Util::config()->particleStart.x;
-    position.y = Util::config()->particleStart.y;
-
-    // random point
-    if (randomPoint)
-    {
-        int trials = 0;
-        while (true)
-        {
-            Point3 dp(rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                      rand() * (Util::config()->particleStartingRadius) / RAND_MAX,
-                      (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
-
-            position = Point3(-Util::config()->particleStartingRadius / 2,
-                              -Util::config()->particleStartingRadius / 2,
-                              (Util::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + position + dp;
-
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::scene()->activeViewField()->initialMesh().data(),
-                                                                                                     position.x, position.y);
-            trials++;
-            if (e || trials > 10)
-                break;
-        }
-    }
-
-    // initial velocity
-    Point3 velocity;
-    velocity.x = Util::config()->particleStartVelocity.x;
-    velocity.y = Util::config()->particleStartVelocity.y;
-
-    // position and velocity cache
-    positions->append(position);
-    velocities->append(velocity);
-    times->append(0);
-
-    RectPoint bound = boundingBox();
-
-    double minStep = (Util::config()->particleMinimumStep > 0.0) ? Util::config()->particleMinimumStep : min(bound.width(), bound.height()) / 80.0;
-    double relErrorMin = (Util::config()->particleMaximumRelativeError > 0.0) ? Util::config()->particleMaximumRelativeError/100 : 1e-6;
-    double relErrorMax = 1e-3;
-    double dt = Util::config()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Util::config()->particleStartVelocity.magnitude() / 10
-                                                                      : 1e-11;
-
-    // QTime time;
-    // time.start();
-
-    bool stopComputation = false;
-    int maxStepsGlobal = 0;
-    while (!stopComputation && (maxStepsGlobal < Util::config()->particleMaximumNumberOfSteps - 1))
-    {
-        foreach (FieldInfo* fieldInfo, Util::problem()->fieldInfos())
-        {
-            maxStepsGlobal++;
-
-            // Runge-Kutta steps
-            Point3 newPosition;
-            Point3 newVelocity;
-
-            int maxStepsRKF = 0;
-            while (!stopComputation && maxStepsRKF < 100)
-            {
-                // Runge-Kutta-Fehlberg adaptive method
-                Point3 k1np;
-                Point3 k1nv;
-                if (!newtonEquations(fieldInfo,
-                                     dt,
-                                     position,
-                                     velocity,
-                                     &k1np, &k1nv))
-                    stopComputation = true;
-
-                Point3 k2np;
-                Point3 k2nv;
-                if (!newtonEquations(fieldInfo,
-                                     dt,
-                                     position + k1np * 1/4,
-                                     velocity + k1nv * 1/4,
-                                     &k2np, &k2nv))
-                    stopComputation = true;
-
-                Point3 k3np;
-                Point3 k3nv;
-                if (!newtonEquations(fieldInfo,
-                                     dt,
-                                     position + k1np * 3/32 + k2np * 9/32,
-                                     velocity + k1nv * 3/32 + k2nv * 9/32,
-                                     &k3np, &k3nv))
-                    stopComputation = true;
-
-                Point3 k4np;
-                Point3 k4nv;
-                if (!newtonEquations(fieldInfo,
-                                     dt,
-                                     position + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
-                                     velocity + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
-                                     &k4np, &k4nv))
-                    stopComputation = true;
-
-                Point3 k5np;
-                Point3 k5nv;
-                if (!newtonEquations(fieldInfo,
-                                     dt,
-                                     position + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
-                                     velocity + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
-                                     &k5np, &k5nv))
-                    stopComputation = true;
-
-                Point3 k6np;
-                Point3 k6nv;
-                if (!newtonEquations(fieldInfo,
-                                     dt,
-                                     position - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
-                                     velocity - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
-                                     &k6np, &k6nv))
-                    stopComputation = true;
-
-                // Runge-Kutta order 4
-                Point3 np4 = position + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
-                // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
-
-                // Runge-Kutta order 5
-                newPosition = position + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k6np * 2/55;
-                newVelocity = velocity + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k6nv * 2/55;
-
-                // optimal step estimation
-                double absError = abs(newPosition.magnitude() - np4.magnitude());
-                double relError = abs(absError / newPosition.magnitude());
-                double currentStep = (position - newPosition).magnitude();
-
-                // qDebug() << np5.toString();
-                // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", time step: " << dt << "current step: " << currentStep;
-
-                // minimum step
-                if ((currentStep > minStep) || (relError > relErrorMax))
-                {
-                    // decrease step
-                    dt /= 3.0;
-                    continue;
-                }
-                // relative tolerance
-                else if ((relError < relErrorMin || relError < EPS_ZERO))
-                {
-                    // increase step
-                    dt *= 2.0;
-                }
-                break;
-            }
-
-            // check crossing
-            QMap<SceneEdge *, Point> intersections;
-            foreach (SceneEdge *edge, edges->items())
-            {
-                QList<Point> incts = intersection(Point(position.x, position.y), Point(newPosition.x, newPosition.y),
-                                                  Point(), 0.0, 0.0,
-                                                  edge->nodeStart()->point(), edge->nodeEnd()->point(),
-                                                  edge->center(), edge->radius(), edge->angle());
-
-                if (incts.length() > 0)
-                    foreach (Point p, incts)
-                        intersections.insert(edge, p);
-            }
-
-            // find the closest intersection
-            Point intersect;
-            SceneEdge *crossingEdge = NULL;
-            double distance = numeric_limits<double>::max();
-            for (QMap<SceneEdge *, Point>::const_iterator it = intersections.begin(); it != intersections.end(); ++it)
-                if ((it.value() - Point(position.x, position.y)).magnitude() < distance)
-                {
-                    distance = (it.value() - Point(position.x, position.y)).magnitude();
-
-                    crossingEdge = it.key();
-                    intersect = it.value();
-                }
-
-            if (crossingEdge && distance > EPS_ZERO)
-            {
-                if ((Util::config()->particleCoefficientOfRestitution < EPS_ZERO) || // no reflection
-                        (crossingEdge->marker(fieldInfo) == Util::scene()->boundaries->getNone(fieldInfo)
-                         && !Util::config()->particleReflectOnDifferentMaterial) || // inner edge
-                        (crossingEdge->marker(fieldInfo) != Util::scene()->boundaries->getNone(fieldInfo)
-                         && !Util::config()->particleReflectOnBoundary)) // boundary
-                {
-                    newPosition.x = intersect.x;
-                    newPosition.y = intersect.y;
-
-                    stopComputation = true;
-                }
-                else
-                {
-                    // input vector moved to the origin
-                    Point vectin = Point(newPosition.x, newPosition.y) - intersect;
-
-                    // tangent vector
-                    Point tangent;
-                    if (crossingEdge->angle() > 0)
-                        tangent = (Point( (intersect.y - crossingEdge->center().y),
-                                          -(intersect.x - crossingEdge->center().x))).normalizePoint();
-                    else
-                        tangent = (crossingEdge->nodeStart()->point() - crossingEdge->nodeEnd()->point()).normalizePoint();
-
-                    Point idealReflectedPosition(intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y),
-                                                 intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y));
-
-                    // output point
-                    newPosition.x = intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
-                    newPosition.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y);
-                    // newPosition.x = intersect.x;
-                    // newPosition.y = intersect.y;
-
-                    // output vector
-                    Point vectout = (idealReflectedPosition - intersect).normalizePoint();
-
-                    // velocity in the direction of output vector
-                    Point3 oldv = newVelocity;
-                    newVelocity.x = vectout.x * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
-                    newVelocity.y = vectout.y * oldv.magnitude() * Util::config()->particleCoefficientOfRestitution;
-                }
-            }
-
-            // new values
-            velocity = newVelocity;
-            position = newPosition;
-
-            // add to the lists
-            times->append(times->last() + dt);
-            positions->append(position);
-
-            if (Util::problem()->config()->coordinateType() == CoordinateType_Planar)
-                velocities->append(velocity);
-            else
-                velocities->append(Point3(velocity.x, velocity.y, position.x * velocity.z)); // v_phi = omega * r
-
-            if (stopComputation)
-                break;
-        }
-    }
-
-    // qDebug() << "steps: " << steps << "total: " << timePart.elapsed();
-}
-
 void Scene::setActiveViewField(FieldInfo* fieldInfo)
 {
     m_activeViewField = fieldInfo;
 
-    int newTimeStep = Util::solutionStore()->nearestTimeStep(fieldInfo, m_activeTimeStep);
+    int newTimeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_activeTimeStep);
     setActiveTimeStep(newTimeStep);
 
-    int lastAdaptiveStep = Util::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, newTimeStep);
+    int lastAdaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, newTimeStep);
     setActiveAdaptivityStep(min(lastAdaptiveStep, activeAdaptivityStep()));
     setActiveSolutionType(SolutionMode_Normal);
 }

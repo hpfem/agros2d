@@ -18,7 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "sceneview_post2d.h"
+
 #include "util.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "hermes2d/problem.h"
 #include "logview.h"
@@ -52,8 +55,8 @@ SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
 
     connect(this, SIGNAL(mousePressed(Point)), this, SLOT(selectedPoint(Point)));
 
-    connect(Util::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
-    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+    connect(Agros2D::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
     connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
 }
@@ -115,14 +118,14 @@ void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
-                Util::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
+                Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
                 emit mousePressed();
             }
 
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
-                Util::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
+                Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
                 emit mousePressed();
             }
 
@@ -156,10 +159,10 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Util::scene()->activeViewField()->initialMesh().data(), p.x, p.y);
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Agros2D::scene()->activeViewField()->initialMesh().data(), p.x, p.y);
             if (e)
             {
-                SceneLabel *label = Util::scene()->labels->at(atoi(Util::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().
                                                                    get_user_marker(e->marker).marker.c_str()));
 
                 label->setSelected(!label->isSelected());
@@ -187,64 +190,64 @@ void SceneViewPost2D::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Util::config()->colorBackground.redF(),
-                 Util::config()->colorBackground.greenF(),
-                 Util::config()->colorBackground.blueF(), 0);
+    glClearColor(Agros2D::config()->colorBackground.redF(),
+                 Agros2D::config()->colorBackground.greenF(),
+                 Agros2D::config()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glDisable(GL_DEPTH_TEST);
 
     // grid
-    if (Util::config()->showGrid) paintGrid();
+    if (Agros2D::config()->showGrid) paintGrid();
 
     // view
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
-        if (Util::config()->showScalarView) paintScalarField();
-        if (Util::config()->showContourView) paintContours();
-        if (Util::config()->showVectorView) paintVectors();
-        if (Util::config()->showParticleView) paintParticleTracing();
+        if (Agros2D::config()->showScalarView) paintScalarField();
+        if (Agros2D::config()->showContourView) paintContours();
+        if (Agros2D::config()->showVectorView) paintVectors();
+        if (Agros2D::config()->showParticleView) paintParticleTracing();
     }
 
     // geometry
     paintGeometry();
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         if (actPostprocessorModeLocalPointValue->isChecked()) paintPostprocessorSelectedPoint();
         if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
         if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
 
         // bars
-        if (Util::config()->showScalarView && Util::config()->showScalarColorBar)
-            paintScalarFieldColorBar(Util::config()->scalarRangeMin, Util::config()->scalarRangeMax);
-        if (Util::config()->showParticleView && Util::config()->particleColorByVelocity)
+        if (Agros2D::config()->showScalarView && Agros2D::config()->showScalarColorBar)
+            paintScalarFieldColorBar(Agros2D::config()->scalarRangeMin, Agros2D::config()->scalarRangeMax);
+        if (Agros2D::config()->showParticleView && Agros2D::config()->particleColorByVelocity)
             paintParticleTracingColorBar(m_postHermes->particleTracingVelocityMin(), m_postHermes->particleTracingVelocityMax());
     }
 
     // rulers
-    if (Util::config()->showRulers)
+    if (Agros2D::config()->showRulers)
     {
         paintRulers();
         paintRulersHints();
     }
 
     // axes
-    if (Util::config()->showAxes) paintAxes();
+    if (Agros2D::config()->showAxes) paintAxes();
 
     paintZoomRegion();
     paintChartLine();
 
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
-        if (Util::config()->showScalarView)
+        if (Agros2D::config()->showScalarView)
         {
-            Module::LocalVariable *localVariable = Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable);
+            Module::LocalVariable *localVariable = Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->scalarVariable);
             if (localVariable)
             {
-                QString text = Util::config()->scalarVariable != "" ? localVariable->name() : "";
-                if (Util::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
-                    text += " - " + physicFieldVariableCompString(Util::config()->scalarVariableComp);
+                QString text = Agros2D::config()->scalarVariable != "" ? localVariable->name() : "";
+                if (Agros2D::config()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
+                    text += " - " + physicFieldVariableCompString(Agros2D::config()->scalarVariableComp);
                 emit labelCenter(text);
             }
         }
@@ -257,7 +260,7 @@ void SceneViewPost2D::paintGL()
 
 void SceneViewPost2D::resizeGL(int w, int h)
 {
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         paletteCreate();
     }
@@ -270,12 +273,12 @@ void SceneViewPost2D::paintGeometry()
     loadProjection2d(true);
 
     // edges
-    foreach (SceneEdge *edge, Util::scene()->edges->items())
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
-        glColor3d(Util::config()->colorEdges.redF(),
-                  Util::config()->colorEdges.greenF(),
-                  Util::config()->colorEdges.blueF());
-        glLineWidth(Util::config()->edgeWidth);
+        glColor3d(Agros2D::config()->colorEdges.redF(),
+                  Agros2D::config()->colorEdges.greenF(),
+                  Agros2D::config()->colorEdges.blueF());
+        glLineWidth(Agros2D::config()->edgeWidth);
 
         if (fabs(edge->angle()) < EPS_ZERO)
         {
@@ -310,9 +313,9 @@ void SceneViewPost2D::paintChartLine()
 {
     loadProjection2d(true);
 
-    glColor3d(Util::config()->colorSelected.redF(),
-              Util::config()->colorSelected.greenF(),
-              Util::config()->colorSelected.blueF());
+    glColor3d(Agros2D::config()->colorSelected.redF(),
+              Agros2D::config()->colorSelected.greenF(),
+              Agros2D::config()->colorSelected.blueF());
     glLineWidth(3.0);
 
     QList<Point> points = m_chartLine.getPoints();
@@ -332,7 +335,7 @@ void SceneViewPost2D::paintChartLine()
         double angle = atan2(points.at(points.length() - 1).y - points.at(points.length() - 2).y,
                              points.at(points.length() - 1).x - points.at(points.length() - 2).x);
 
-        RectPoint rect = Util::scene()->boundingBox();
+        RectPoint rect = Agros2D::scene()->boundingBox();
         double dm = (rect.width() + rect.height()) / 40.0;
 
         // head of an arrow
@@ -351,7 +354,7 @@ void SceneViewPost2D::paintChartLine()
 
 void SceneViewPost2D::paintScalarField()
 {
-    if (!Util::problem()->isSolved()) return;
+    if (!Agros2D::problem()->isSolved()) return;
     if (!m_postHermes->scalarIsPrepared()) return;
 
     loadProjection2d(true);
@@ -364,9 +367,9 @@ void SceneViewPost2D::paintScalarField()
         glNewList(m_listScalarField, GL_COMPILE);
 
         // range
-        double irange = 1.0 / (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin);
+        double irange = 1.0 / (Agros2D::config()->scalarRangeMax - Agros2D::config()->scalarRangeMin);
         // special case: constant solution
-        if (fabs(Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) < EPS_ZERO)
+        if (fabs(Agros2D::config()->scalarRangeMax - Agros2D::config()->scalarRangeMin) < EPS_ZERO)
             irange = 1.0;
 
         m_postHermes->linScalarView().lock_data();
@@ -397,19 +400,19 @@ void SceneViewPost2D::paintScalarField()
                 value[j]   = linVert[linTris[i][j]][2];
             }
 
-            if (!Util::config()->scalarRangeAuto)
+            if (!Agros2D::config()->scalarRangeAuto)
             {
                 double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
+                if (avgValue < Agros2D::config()->scalarRangeMin || avgValue > Agros2D::config()->scalarRangeMax)
                     continue;
             }
 
             for (int j = 0; j < 3; j++)
             {
-                if (Util::config()->scalarRangeLog)
-                    glTexCoord1d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[j] - Util::config()->scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase));
+                if (Agros2D::config()->scalarRangeLog)
+                    glTexCoord1d(log10(1.0 + (Agros2D::config()->scalarRangeBase-1.0)*(value[j] - Agros2D::config()->scalarRangeMin) * irange)/log10(Agros2D::config()->scalarRangeBase));
                 else
-                    glTexCoord1d((value[j] - Util::config()->scalarRangeMin) * irange);
+                    glTexCoord1d((value[j] - Agros2D::config()->scalarRangeMin) * irange);
                 glVertex2d(point[j].x, point[j].y);
             }
         }
@@ -433,9 +436,9 @@ void SceneViewPost2D::paintScalarField()
 
         /*
         // range
-        double irange = PALETTEENTRIES / (Util::config()->scalarRangeMax - Util::config()->scalarRangeMin);
+        double irange = PALETTEENTRIES / (Agros2D::config()->scalarRangeMax - Agros2D::config()->scalarRangeMin);
         // special case: constant solution
-        if (fabs(Util::config()->scalarRangeMax - Util::config()->scalarRangeMin) < EPS_ZERO)
+        if (fabs(Agros2D::config()->scalarRangeMax - Agros2D::config()->scalarRangeMin) < EPS_ZERO)
             irange = PALETTEENTRIES / 2;
 
         m_postHermes->linScalarView().lock_data();
@@ -454,10 +457,10 @@ void SceneViewPost2D::paintScalarField()
                 value[j]   = linVert[linTris[i][j]][2];
             }
 
-            if (!Util::config()->scalarRangeAuto)
+            if (!Agros2D::config()->scalarRangeAuto)
             {
                 double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                if (avgValue < Util::config()->scalarRangeMin || avgValue > Util::config()->scalarRangeMax)
+                if (avgValue < Agros2D::config()->scalarRangeMin || avgValue > Agros2D::config()->scalarRangeMax)
                     continue;
             }
 
@@ -465,10 +468,10 @@ void SceneViewPost2D::paintScalarField()
             {
                 m_arrayScalarField.push_back(QVector2D(point[j].x, point[j].y));
 
-                const double* color = paletteColor2((value[j] - Util::config()->scalarRangeMin) * irange);
+                const double* color = paletteColor2((value[j] - Agros2D::config()->scalarRangeMin) * irange);
 
                 m_arrayScalarFieldColors.push_back(QVector3D(color[0], color[1], color[2]));
-                // qDebug() << ((value[j] - Util::config()->scalarRangeMin) * irange) << m_arrayScalarFieldColors.at(m_arrayScalarFieldColors.count() - 1);
+                // qDebug() << ((value[j] - Agros2D::config()->scalarRangeMin) * irange) << m_arrayScalarFieldColors.at(m_arrayScalarFieldColors.count() - 1);
 
             }
         }
@@ -496,7 +499,7 @@ void SceneViewPost2D::paintScalarField()
 
 void SceneViewPost2D::paintContours()
 {
-    if (!Util::problem()->isSolved()) return;
+    if (!Agros2D::problem()->isSolved()) return;
     if (!m_postHermes->contourIsPrepared()) return;
 
     loadProjection2d(true);
@@ -527,13 +530,13 @@ void SceneViewPost2D::paintContours()
         }
 
         // value range
-        double step = (rangeMax-rangeMin)/Util::config()->contoursCount;
+        double step = (rangeMax-rangeMin)/Agros2D::config()->contoursCount;
 
         // draw contours
-        glLineWidth(Util::config()->contourWidth);
-        glColor3d(Util::config()->colorContours.redF(),
-                  Util::config()->colorContours.greenF(),
-                  Util::config()->colorContours.blueF());
+        glLineWidth(Agros2D::config()->contourWidth);
+        glColor3d(Agros2D::config()->colorContours.redF(),
+                  Agros2D::config()->colorContours.greenF(),
+                  Agros2D::config()->colorContours.blueF());
 
         glBegin(GL_LINES);
         for (int i = 0; i < m_postHermes->linContourView().get_num_contour_triangles(); i++)
@@ -561,7 +564,7 @@ void SceneViewPost2D::paintContours()
 
 void SceneViewPost2D::paintParticleTracing()
 {
-    if (!Util::problem()->isSolved()) return;
+    if (!Agros2D::problem()->isSolved()) return;
     if (!m_postHermes->particleTracingIsPrepared()) return;
 
     loadProjection2d(true);
@@ -571,28 +574,28 @@ void SceneViewPost2D::paintParticleTracing()
         m_listParticleTracing = glGenLists(1);
         glNewList(m_listParticleTracing, GL_COMPILE);
 
-        RectPoint rect = Util::scene()->boundingBox();
+        RectPoint rect = Agros2D::scene()->boundingBox();
         double bound = max(rect.width(), rect.height());
         if (bound < EPS_ZERO)
             return;
 
         // visualization
-        for (int k = 0; k < Util::config()->particleNumberOfParticles; k++)
+        for (int k = 0; k < Agros2D::config()->particleNumberOfParticles; k++)
         {
             // starting point
-            glPointSize(Util::config()->nodeSize * 1.2);
+            glPointSize(Agros2D::config()->nodeSize * 1.2);
             glColor3d(0.0, 0.0, 0.0);
             glBegin(GL_POINTS);
             glVertex2d(m_postHermes->particleTracingPositionsList()[k][0].x, m_postHermes->particleTracingPositionsList()[k][0].y);
             glEnd();
 
             // color
-            if (!Util::config()->particleColorByVelocity)
+            if (!Agros2D::config()->particleColorByVelocity)
             {
                 if (k == 0)
-                    glColor3d(Util::config()->colorSelected.redF(),
-                              Util::config()->colorSelected.greenF(),
-                              Util::config()->colorSelected.blueF());
+                    glColor3d(Agros2D::config()->colorSelected.redF(),
+                              Agros2D::config()->colorSelected.greenF(),
+                              Agros2D::config()->colorSelected.blueF());
                 else
                     glColor3d(rand() / double(RAND_MAX),
                               rand() / double(RAND_MAX),
@@ -604,7 +607,7 @@ void SceneViewPost2D::paintParticleTracing()
             glBegin(GL_LINES);
             for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
             {
-                if (Util::config()->particleColorByVelocity)
+                if (Agros2D::config()->particleColorByVelocity)
                     glColor3d(1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()),
                               1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()),
                               1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()));
@@ -615,13 +618,13 @@ void SceneViewPost2D::paintParticleTracing()
             glEnd();
 
             // points
-            if (Util::config()->particleShowPoints)
+            if (Agros2D::config()->particleShowPoints)
             {
-                glColor3d(Util::config()->colorSelected.redF(),
-                          Util::config()->colorSelected.greenF(),
-                          Util::config()->colorSelected.blueF());
+                glColor3d(Agros2D::config()->colorSelected.redF(),
+                          Agros2D::config()->colorSelected.greenF(),
+                          Agros2D::config()->colorSelected.blueF());
 
-                glPointSize(Util::config()->nodeSize * 4.0/5.0);
+                glPointSize(Agros2D::config()->nodeSize * 4.0/5.0);
                 glBegin(GL_POINTS);
                 for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length(); i++)
                 {
@@ -696,7 +699,7 @@ static int p_vert(int i) { return (i + 2) % 3; }
 
 void SceneViewPost2D::paintVectors()
 {
-    if (!Util::problem()->isSolved()) return;
+    if (!Agros2D::problem()->isSolved()) return;
     if (!m_postHermes->vectorIsPrepared()) return;
 
     loadProjection2d(true);
@@ -719,8 +722,8 @@ void SceneViewPost2D::paintVectors()
         double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
         // if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
 
-        RectPoint rect = Util::scene()->boundingBox();
-        double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
+        RectPoint rect = Agros2D::scene()->boundingBox();
+        double gs = (rect.width() + rect.height()) / Agros2D::config()->vectorCount;
 
         // paint
         m_postHermes->vecVectorView().lock_data();
@@ -845,16 +848,16 @@ void SceneViewPost2D::paintVectors()
                         glEnd();
 
                         // color
-                        if ((Util::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
+                        if ((Agros2D::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
                             double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
                             glColor3d(color, color, color);
                         }
                         else
                         {
-                            glColor3d(Util::config()->colorVectors.redF(),
-                                      Util::config()->colorVectors.greenF(),
-                                      Util::config()->colorVectors.blueF());
+                            glColor3d(Agros2D::config()->colorVectors.redF(),
+                                      Agros2D::config()->colorVectors.greenF(),
+                                      Agros2D::config()->colorVectors.blueF());
                         }
 
                         // Head for an arrow
@@ -924,7 +927,7 @@ void SceneViewPost2D::paintVectors()
 
 void SceneViewPost2D::paintVectors()
 {
-    if (!Util::problem()->isSolved()) return;
+    if (!Agros2D::problem()->isSolved()) return;
     if (!m_postHermes->vectorIsPrepared()) return;
 
     loadProjection2d(true);
@@ -947,8 +950,8 @@ void SceneViewPost2D::paintVectors()
         double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
         // if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
 
-        RectPoint rect = Util::scene()->boundingBox();
-        double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
+        RectPoint rect = Agros2D::scene()->boundingBox();
+        double gs = (rect.width() + rect.height()) / Agros2D::config()->vectorCount;
 
         // paint
         m_postHermes->vecVectorView().lock_data();
@@ -1027,7 +1030,7 @@ void SceneViewPost2D::paintVectors()
                         double value = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
                         double angle = atan2(dy, dx);
 
-                        if ((Util::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
+                        if ((Agros2D::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
                             if ((value / vectorRangeMax) < 1e-6)
                             {
@@ -1036,39 +1039,39 @@ void SceneViewPost2D::paintVectors()
                             }
                             else
                             {
-                                dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
-                                dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
+                                dx = ((value - vectorRangeMin) * irange) * Agros2D::config()->vectorScale * gs * cos(angle);
+                                dy = ((value - vectorRangeMin) * irange) * Agros2D::config()->vectorScale * gs * sin(angle);
                             }
                         }
                         else
                         {
-                            dx = Util::config()->vectorScale * gs * cos(angle);
-                            dy = Util::config()->vectorScale * gs * sin(angle);
+                            dx = Agros2D::config()->vectorScale * gs * cos(angle);
+                            dy = Agros2D::config()->vectorScale * gs * sin(angle);
                         }
 
                         double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
 
                         // color
-                        if ((Util::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
+                        if ((Agros2D::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
                             double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
                             glColor3d(color, color, color);
                         }
                         else
                         {
-                            glColor3d(Util::config()->colorVectors.redF(),
-                                      Util::config()->colorVectors.greenF(),
-                                      Util::config()->colorVectors.blueF());
+                            glColor3d(Agros2D::config()->colorVectors.redF(),
+                                      Agros2D::config()->colorVectors.greenF(),
+                                      Agros2D::config()->colorVectors.blueF());
                         }
 
                         // tail
                         Point shiftCenter(0.0, 0.0);
-                        if (Util::config()->vectorCenter == VectorCenter_Head)
+                        if (Agros2D::config()->vectorCenter == VectorCenter_Head)
                             shiftCenter = Point(- 2.0*dm * cos(angle), - 2.0*dm * sin(angle)); // head
-                        if (Util::config()->vectorCenter == VectorCenter_Center)
+                        if (Agros2D::config()->vectorCenter == VectorCenter_Center)
                             shiftCenter = Point(- dm * cos(angle), - dm * sin(angle)); // center
 
-                        if (Util::config()->vectorType == VectorType_Arrow)
+                        if (Agros2D::config()->vectorType == VectorType_Arrow)
                         {
                             // arrow and shaft
                             // head for an arrow
@@ -1100,7 +1103,7 @@ void SceneViewPost2D::paintVectors()
                             glVertex2d(vs3x, vs3y);
                             glVertex2d(vs2x, vs2y);
                         }
-                        else if (Util::config()->vectorType == VectorType_Cone)
+                        else if (Agros2D::config()->vectorType == VectorType_Cone)
                         {
                             // cone
                             double vh1x = point.x + dm/3.5 * cos(angle - M_PI/2.0) + shiftCenter.x;
@@ -1136,7 +1139,7 @@ void SceneViewPost2D::paintVectors()
 
 void SceneViewPost2D::paintPostprocessorSelectedVolume()
 {
-    if (!Util::problem()->isMeshed()) return;
+    if (!Agros2D::problem()->isMeshed()) return;
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -1144,21 +1147,21 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4d(Util::config()->colorSelected.redF(),
-              Util::config()->colorSelected.greenF(),
-              Util::config()->colorSelected.blueF(),
+    glColor4d(Agros2D::config()->colorSelected.redF(),
+              Agros2D::config()->colorSelected.greenF(),
+              Agros2D::config()->colorSelected.blueF(),
               0.5);
 
     // elements
     glBegin(GL_TRIANGLES);
-    for (int i = 0, max = Util::scene()->activeViewField()->initialMesh().data()->get_max_element_id(); i < max; i++)
+    for (int i = 0, max = Agros2D::scene()->activeViewField()->initialMesh().data()->get_max_element_id(); i < max; i++)
     {
         Hermes::Hermes2D::Element *element;
-        if ((element = Util::scene()->activeViewField()->initialMesh().data()->get_element_fast(i))->used)
+        if ((element = Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_fast(i))->used)
         {
             if (element->active)
             {
-                if (Util::scene()->labels->at(atoi(Util::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected())
+                if (Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected())
                 {
                     if (element->is_triangle())
                     {
@@ -1203,16 +1206,16 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4d(Util::config()->colorSelected.redF(),
-              Util::config()->colorSelected.greenF(),
-              Util::config()->colorSelected.blueF(),
+    glColor4d(Agros2D::config()->colorSelected.redF(),
+              Agros2D::config()->colorSelected.greenF(),
+              Agros2D::config()->colorSelected.blueF(),
               0.5);
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::problem()->linSolutionMeshView().get_num_triangles(); i++)
+    for (int i = 0; i < Agros2D::problem()->linSolutionMeshView().get_num_triangles(); i++)
     {
-        if (Util::scene()->labels[element->marker - 1]->isSelected)
+        if (Agros2D::scene()->labels[element->marker - 1]->isSelected)
         {
             glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
             glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
@@ -1224,15 +1227,15 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_OFFSET_FILL);
 
-    Util::problem()->linSolutionMeshView().unlock_data();
+    Agros2D::problem()->linSolutionMeshView().unlock_data();
     */
 }
 
 void SceneViewPost2D::paintPostprocessorSelectedSurface()
 {
     // edges
-    foreach (SceneEdge *edge, Util::scene()->edges->items()) {
-        glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items()) {
+        glColor3d(Agros2D::config()->colorSelected.redF(), Agros2D::config()->colorSelected.greenF(), Agros2D::config()->colorSelected.blueF());
         glLineWidth(3.0);
 
         if (edge->isSelected())
@@ -1259,7 +1262,7 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
 
 void SceneViewPost2D::paintPostprocessorSelectedPoint()
 {
-    glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
+    glColor3d(Agros2D::config()->colorSelected.redF(), Agros2D::config()->colorSelected.greenF(), Agros2D::config()->colorSelected.blueF());
     glPointSize(8.0);
 
     glBegin(GL_POINTS);
@@ -1297,11 +1300,11 @@ void SceneViewPost2D::refresh()
 void SceneViewPost2D::setControls()
 {
     // actions
-    actSceneModePost2D->setEnabled(Util::problem()->isSolved());
-    actPostprocessorModeGroup->setEnabled(Util::problem()->isSolved());
-    actSelectByMarker->setEnabled(Util::problem()->isSolved() && (actPostprocessorModeSurfaceIntegral->isChecked() || actPostprocessorModeVolumeIntegral->isChecked()));
-    actSelectPoint->setEnabled(Util::problem()->isSolved() && actPostprocessorModeLocalPointValue->isChecked());
-    actExportVTKScalar->setEnabled(Util::problem()->isSolved());
+    actSceneModePost2D->setEnabled(Agros2D::problem()->isSolved());
+    actPostprocessorModeGroup->setEnabled(Agros2D::problem()->isSolved());
+    actSelectByMarker->setEnabled(Agros2D::problem()->isSolved() && (actPostprocessorModeSurfaceIntegral->isChecked() || actPostprocessorModeVolumeIntegral->isChecked()));
+    actSelectPoint->setEnabled(Agros2D::problem()->isSolved() && actPostprocessorModeLocalPointValue->isChecked());
+    actExportVTKScalar->setEnabled(Agros2D::problem()->isSolved());
 }
 
 void SceneViewPost2D::clear()
@@ -1317,7 +1320,7 @@ void SceneViewPost2D::clear()
 
 void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
 {
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         QString fn = fileName;
 
@@ -1340,12 +1343,12 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        Hermes::Hermes2D::Filter<double> *slnScalarView = Util::scene()->activeViewField()->module()->viewScalarFilter(Util::scene()->activeViewField()->module()->localVariable(Util::config()->scalarVariable),
-                                                                                                                       Util::config()->scalarVariableComp);
+        Hermes::Hermes2D::Filter<double> *slnScalarView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->scalarVariable),
+                                                                                                                       Agros2D::config()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,
                                         fn.toStdString().c_str(),
-                                        Util::config()->scalarVariable.toStdString().c_str(),
+                                        Agros2D::config()->scalarVariable.toStdString().c_str(),
                                         true);
 
         delete slnScalarView;
@@ -1389,7 +1392,7 @@ void SceneViewPost2D::doPostprocessorModeGroup(QAction *action)
     if (actPostprocessorModeVolumeIntegral->isChecked())
         emit postprocessorModeGroupChanged(SceneModePostprocessor_VolumeIntegral);
 
-    Util::scene()->selectNone();
+    Agros2D::scene()->selectNone();
 
     setControls();
     updateGL();

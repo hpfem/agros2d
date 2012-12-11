@@ -19,8 +19,11 @@
 
 #include "chartdialog.h"
 
+#include "util/global.h"
+
 #include "scene.h"
 #include "sceneview_post2d.h"
+
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
@@ -83,8 +86,8 @@ ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
     actSceneModeChart->setStatusTip(tr("Chart"));
     actSceneModeChart->setCheckable(true);
 
-    connect(Util::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     m_chart = new Chart(this, true);
 
@@ -98,7 +101,7 @@ ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
 
 void ChartWidget::setControls()
 {
-    actSceneModeChart->setEnabled(Util::problem()->isSolved());
+    actSceneModeChart->setEnabled(Agros2D::problem()->isSolved());
 }
 
 // **************************************************************************************************
@@ -108,7 +111,7 @@ ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
                          QWidget *parent) : QWidget(parent), m_sceneViewPost2D(sceneView), m_chart(chart)
 {
     connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
-    connect(Util::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     createControls();
 
@@ -146,23 +149,23 @@ ChartControlsWidget::~ChartControlsWidget()
 
 void ChartControlsWidget::setControls()
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
         return;
 
-    fillComboBoxScalarVariable(Util::scene()->activeViewField(), cmbFieldVariable);
+    fillComboBoxScalarVariable(Agros2D::scene()->activeViewField(), cmbFieldVariable);
     doFieldVariable(cmbFieldVariable->currentIndex());
 
     // correct labels
-    lblStartX->setText(Util::problem()->config()->labelX() + ":");
-    lblStartY->setText(Util::problem()->config()->labelY() + ":");
-    lblEndX->setText(Util::problem()->config()->labelX() + ":");
-    lblEndY->setText(Util::problem()->config()->labelY() + ":");
-    lblPointX->setText(Util::problem()->config()->labelX() + ":");
-    lblPointY->setText(Util::problem()->config()->labelY() + ":");
-    radAxisX->setText(Util::problem()->config()->labelX());
-    radAxisY->setText(Util::problem()->config()->labelY());
+    lblStartX->setText(Agros2D::problem()->config()->labelX() + ":");
+    lblStartY->setText(Agros2D::problem()->config()->labelY() + ":");
+    lblEndX->setText(Agros2D::problem()->config()->labelX() + ":");
+    lblEndY->setText(Agros2D::problem()->config()->labelY() + ":");
+    lblPointX->setText(Agros2D::problem()->config()->labelX() + ":");
+    lblPointY->setText(Agros2D::problem()->config()->labelY() + ":");
+    radAxisX->setText(Agros2D::problem()->config()->labelX());
+    radAxisY->setText(Agros2D::problem()->config()->labelY());
 
-    if (Util::scene()->activeViewField()->analysisType() == AnalysisType_Transient)
+    if (Agros2D::scene()->activeViewField()->analysisType() == AnalysisType_Transient)
     {
         tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
     }
@@ -391,7 +394,7 @@ QList<double> ChartControlsWidget::getHorizontalAxisValues(ChartLine *chartLine)
 void ChartControlsWidget::plotGeometry()
 {
     // variable
-    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = Agros2D::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable) return;
 
     // variable component
@@ -408,8 +411,8 @@ void ChartControlsWidget::plotGeometry()
 
     QString text;
     if (radAxisLength->isChecked()) text = tr("Length (m)");
-    if (radAxisX->isChecked()) text = Util::problem()->config()->labelX() + " (m)";
-    if (radAxisY->isChecked()) text = Util::problem()->config()->labelY() + " (m)";
+    if (radAxisX->isChecked()) text = Agros2D::problem()->config()->labelX() + " (m)";
+    if (radAxisY->isChecked()) text = Agros2D::problem()->config()->labelY() + " (m)";
     m_chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // table
@@ -426,7 +429,7 @@ void ChartControlsWidget::plotGeometry()
     QList<double> xval = getHorizontalAxisValues(chartLine);
     QList<double> yval;
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
         {
@@ -434,7 +437,7 @@ void ChartControlsWidget::plotGeometry()
 
             foreach (Point point, points)
             {
-                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                LocalValue *localValue = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
                 QMap<Module::LocalVariable *, PointValue> values = localValue->values();
 
                 if (variable->isScalar())
@@ -469,7 +472,7 @@ void ChartControlsWidget::plotGeometry()
 void ChartControlsWidget::plotTime()
 {
     // variable
-    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
+    Module::LocalVariable *physicFieldVariable = Agros2D::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString());
     if (!physicFieldVariable)
         return;
 
@@ -478,7 +481,7 @@ void ChartControlsWidget::plotTime()
     if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
 
     // time levels
-    QList<double> timeLevels = Util::solutionStore()->timeLevels(Util::scene()->activeViewField());
+    QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
 
     // chart
     m_chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
@@ -491,14 +494,14 @@ void ChartControlsWidget::plotTime()
     QStringList head = headers();
 
     // values
-    int timeStep = Util::scene()->activeTimeStep();
+    int timeStep = Agros2D::scene()->activeTimeStep();
 
     QList<double> xval;
     QList<double> yval;
 
     doChartLine();
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
         {
@@ -507,12 +510,12 @@ void ChartControlsWidget::plotTime()
             for (int i = 0; i < timeLevels.count(); i++)
             {
                 // change time level
-                Util::scene()->setActiveTimeStep(i);
+                Agros2D::scene()->setActiveTimeStep(i);
 
                 xval.append(timeLevels.at(i));
 
                 Point point(txtPointX->value().number(), txtPointY->value().number());
-                LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                LocalValue *localValue = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
                 QMap<Module::LocalVariable *, PointValue> values = localValue->values();
 
                 if (variable->isScalar())
@@ -533,7 +536,7 @@ void ChartControlsWidget::plotTime()
     m_chart->setData(xval, yval);
 
     // restore previous timestep
-    Util::scene()->setActiveTimeStep(timeStep);
+    Agros2D::scene()->setActiveTimeStep(timeStep);
     m_sceneViewPost2D->postHermes()->refresh();
 }
 
@@ -542,7 +545,7 @@ QStringList ChartControlsWidget::headers()
     QStringList head;
     head << "x" << "y" << "t";
 
-    foreach (Module::LocalVariable *variable, Util::scene()->activeViewField()->module()->localPointVariables())
+    foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->localPointVariables())
     {
         if (variable->isScalar())
         {
@@ -552,8 +555,8 @@ QStringList ChartControlsWidget::headers()
         else
         {
             // vector variable
-            head.append(variable->shortname() + Util::problem()->config()->labelX().toLower());
-            head.append(variable->shortname() + Util::problem()->config()->labelY().toLower());
+            head.append(variable->shortname() + Agros2D::problem()->config()->labelX().toLower());
+            head.append(variable->shortname() + Agros2D::problem()->config()->labelY().toLower());
             head.append(variable->shortname());
         }
     }
@@ -563,7 +566,7 @@ QStringList ChartControlsWidget::headers()
 
 void ChartControlsWidget::doPlot()
 {
-    if (!Util::problem()->isSolved()) return;
+    if (!Agros2D::problem()->isSolved()) return;
 
     if (tabAnalysisType->currentWidget() == widGeometry)
     {
@@ -587,10 +590,10 @@ void ChartControlsWidget::doPlot()
 
 void ChartControlsWidget::doFieldVariable(int index)
 {
-    if (!Util::scene()->activeViewField())
+    if (!Agros2D::scene()->activeViewField())
         return;
 
-    Module::LocalVariable *physicFieldVariable = Util::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(index).toString());
+    Module::LocalVariable *physicFieldVariable = Agros2D::scene()->activeViewField()->module()->localVariable(cmbFieldVariable->itemData(index).toString());
     if (!physicFieldVariable)
         return;
 
@@ -602,8 +605,8 @@ void ChartControlsWidget::doFieldVariable(int index)
     else
     {
         cmbFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-        cmbFieldVariableComp->addItem(Util::problem()->config()->labelX(), PhysicFieldVariableComp_X);
-        cmbFieldVariableComp->addItem(Util::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
+        cmbFieldVariableComp->addItem(Agros2D::problem()->config()->labelX(), PhysicFieldVariableComp_X);
+        cmbFieldVariableComp->addItem(Agros2D::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
     }
 
     if (cmbFieldVariableComp->currentIndex() == -1)
@@ -655,7 +658,7 @@ void ChartControlsWidget::doExportData()
 
         foreach (Point point, chartLine->getPoints())
         {
-            QMap<QString, double> data = getData(point, Util::scene()->activeTimeStep());
+            QMap<QString, double> data = getData(point, Agros2D::scene()->activeTimeStep());
             foreach (QString key, data.keys())
             {
                 QList<double> *values = &table.operator [](key);
@@ -666,9 +669,9 @@ void ChartControlsWidget::doExportData()
     else if (tabAnalysisType->currentWidget() == widTime)
     {
         Point point(txtPointX->value().number(), txtPointY->value().number());
-        foreach (double timeLevel, Util::solutionStore()->timeLevels(Util::scene()->activeViewField()))
+        foreach (double timeLevel, Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField()))
         {
-            int timeStep = Util::solutionStore()->timeLevelIndex(Util::scene()->activeViewField(), timeLevel);
+            int timeStep = Agros2D::solutionStore()->timeLevelIndex(Agros2D::scene()->activeViewField(), timeLevel);
             QMap<QString, double> data = getData(point, timeStep);
             foreach (QString key, data.keys())
             {
@@ -728,15 +731,15 @@ void ChartControlsWidget::doExportData()
 
 QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
 {
-    FieldInfo *fieldInfo = Util::scene()->activeViewField();
+    FieldInfo *fieldInfo = Agros2D::scene()->activeViewField();
     QMap<QString, double> table;
 
-    if (Util::scene()->activeTimeStep() != timeStep)
-        Util::scene()->setActiveTimeStep(timeStep);
+    if (Agros2D::scene()->activeTimeStep() != timeStep)
+        Agros2D::scene()->setActiveTimeStep(timeStep);
 
     foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
     {
-        LocalValue *localValue = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        LocalValue *localValue = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
         QMap<Module::LocalVariable *, PointValue> values = localValue->values();
 
         if (variable->isScalar())
@@ -749,9 +752,9 @@ QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
         }
     }
 
-    table.insert(Util::problem()->config()->labelX(), point.x);
-    table.insert(Util::problem()->config()->labelY(), point.y);
-    table.insert("t", Util::solutionStore()->timeLevel(fieldInfo, timeStep));
+    table.insert(Agros2D::problem()->config()->labelX(), point.x);
+    table.insert(Agros2D::problem()->config()->labelY(), point.y);
+    table.insert("t", Agros2D::solutionStore()->timeLevel(fieldInfo, timeStep));
 
     return table;
 }

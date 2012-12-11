@@ -19,7 +19,9 @@
 
 #include "pythonlab/pythonengine_agros.h"
 
-#include <Python.h>
+#include "util/constants.h"
+#include "util/global.h"
+
 #include "../resources_source/python/agros2d.cpp"
 
 #include "sceneview_common.h"
@@ -40,7 +42,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
 
-#include "util/constants.h"
+#include <Python.h>
 
 // current python engine agros
 PythonEngineAgros *currentPythonEngineAgros()
@@ -66,12 +68,12 @@ void PythonEngineAgros::runPythonHeader()
     QString script;
 
     // global script
-    if (!Util::config()->globalScript.isEmpty())
-        script += Util::config()->globalScript + "\n";
+    if (!Agros2D::config()->globalScript.isEmpty())
+        script += Agros2D::config()->globalScript + "\n";
 
     // startup script
-    if (!Util::problem()->config()->startupscript().isEmpty())
-        script += Util::problem()->config()->startupscript() + "\n";
+    if (!Agros2D::problem()->config()->startupscript().isEmpty())
+        script += Agros2D::problem()->config()->startupscript() + "\n";
 
     // run script
     if (!script.isEmpty())
@@ -107,48 +109,48 @@ QString createPythonFromModel()
     str += "import agros2d\n\n";
 
     // description
-    if (!Util::problem()->config()->description().isEmpty())
+    if (!Agros2D::problem()->config()->description().isEmpty())
     {
-        str += QString("# %1").arg(Util::problem()->config()->description());
+        str += QString("# %1").arg(Agros2D::problem()->config()->description());
         str += "\n\n";
     }
 
     // startup script
-    if (!Util::problem()->config()->startupscript().isEmpty())
+    if (!Agros2D::problem()->config()->startupscript().isEmpty())
     {
         str += "# startup script\n\n";
-        str += Util::problem()->config()->startupscript();
+        str += Agros2D::problem()->config()->startupscript();
         str += "\n\n";
     }
 
     // model
     str += "# problem\n";
     str += QString("problem = agros2d.problem(clear = True)\n");
-    if (!Util::problem()->config()->name().isEmpty())
-        str += QString("problem.name = \"%1\"\n").arg(Util::problem()->config()->name());
-    str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Util::problem()->config()->coordinateType()));
-    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Util::problem()->config()->meshType()));
-    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Util::problem()->config()->matrixSolver()));
+    if (!Agros2D::problem()->config()->name().isEmpty())
+        str += QString("problem.name = \"%1\"\n").arg(Agros2D::problem()->config()->name());
+    str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()));
+    str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Agros2D::problem()->config()->meshType()));
+    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));
 
-    if (Util::problem()->isHarmonic())
+    if (Agros2D::problem()->isHarmonic())
         str += QString("problem.frequency = %1\n").
-                arg(Util::problem()->config()->frequency());
+                arg(Agros2D::problem()->config()->frequency());
 
-    if (Util::problem()->isTransient())
+    if (Agros2D::problem()->isTransient())
         str += QString("problem.time_step_method = \"%1\"\n"
                        "problem.time_method_order = %2\n"
                        "problem.time_method_tolerance = %3\n"
                        "problem.time_total = %4\n"
                        "problem.time_steps = %5\n").
-                arg(timeStepMethodToStringKey(Util::problem()->config()->timeStepMethod())).
-                arg(Util::problem()->config()->timeOrder()).
-                arg(Util::problem()->config()->timeMethodTolerance().toString()).
-                arg(Util::problem()->config()->timeTotal().toString()).
-                arg(Util::problem()->config()->numConstantTimeSteps());
+                arg(timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod())).
+                arg(Agros2D::problem()->config()->timeOrder()).
+                arg(Agros2D::problem()->config()->timeMethodTolerance().toString()).
+                arg(Agros2D::problem()->config()->timeTotal().toString()).
+                arg(Agros2D::problem()->config()->numConstantTimeSteps());
 
     // fields
     str += "\n# fields\n";
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         str += QString("# %1\n").arg(fieldInfo->fieldId());
 
@@ -160,7 +162,7 @@ QString createPythonFromModel()
                 arg(fieldInfo->fieldId()).
                 arg(analysisTypeToStringKey(fieldInfo->analysisType()));
 
-        if (Util::problem()->isTransient())
+        if (Agros2D::problem()->isTransient())
         {
             if (fieldInfo->analysisType() == analysisTypeFromStringKey("transient"))
             {
@@ -259,7 +261,7 @@ QString createPythonFromModel()
         str += "\n";
 
         str += "\n# boundaries\n";
-        foreach (SceneBoundary *boundary, Util::scene()->boundaries->filter(fieldInfo).items())
+        foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(fieldInfo).items())
         {
             const QHash<QString, Value> values = boundary->values();
 
@@ -295,7 +297,7 @@ QString createPythonFromModel()
         str += "\n";
 
         str += "\n# materials\n";
-        foreach (SceneMaterial *material, Util::scene()->materials->filter(fieldInfo).items())
+        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(fieldInfo).items())
         {
             const QHash<QString, Value> values = material->values();
 
@@ -348,10 +350,10 @@ QString createPythonFromModel()
     str += "geometry = agros2d.geometry\n";
 
     // edges
-    if (Util::scene()->edges->count() > 0)
+    if (Agros2D::scene()->edges->count() > 0)
     {
         //str += "\n# edges\n";
-        foreach (SceneEdge *edge, Util::scene()->edges->items())
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
         {
             str += QString("geometry.add_edge(%1, %2, %3, %4").
                     arg(edge->nodeStart()->point().x).
@@ -363,11 +365,11 @@ QString createPythonFromModel()
                 str += ", angle = " + QString::number(edge->angle());
 
             // refinement
-            if (Util::problem()->fieldInfos().count() > 0)
+            if (Agros2D::problem()->fieldInfos().count() > 0)
             {
                 int refinementCount = 0;
                 QString refinements = ", refinements = {";
-                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     if (fieldInfo->edgeRefinement(edge) > 0)
                     {
@@ -385,15 +387,15 @@ QString createPythonFromModel()
             }
 
             // boundaries
-            if (Util::problem()->fieldInfos().count() > 0)
+            if (Agros2D::problem()->fieldInfos().count() > 0)
             {
                 int boundariesCount = 0;
                 QString boundaries = ", boundaries = {";
-                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     SceneBoundary *marker = edge->marker(fieldInfo);
 
-                    if (marker != Util::scene()->boundaries->getNone(fieldInfo))
+                    if (marker != Agros2D::scene()->boundaries->getNone(fieldInfo))
                     {
                         boundaries += QString("\"%1\" : \"%2\", ").
                                 arg(fieldInfo->fieldId()).
@@ -413,10 +415,10 @@ QString createPythonFromModel()
     }
 
     // labels
-    if (Util::scene()->labels->count() > 0)
+    if (Agros2D::scene()->labels->count() > 0)
     {
         //str += "# labels\n";
-        foreach (SceneLabel *label, Util::scene()->labels->items())
+        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         {
             str += QString("geometry.add_label(%1, %2").
                     arg(label->point().x).
@@ -426,11 +428,11 @@ QString createPythonFromModel()
                 str += ", area = " + QString::number(label->area());
 
             // refinements
-            if (Util::problem()->fieldInfos().count() > 0)
+            if (Agros2D::problem()->fieldInfos().count() > 0)
             {
                 int refinementsCount = 0;
                 QString refinements = ", refinements = {";
-                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     if (fieldInfo->labelRefinement(label) > 0)
                     {
@@ -447,11 +449,11 @@ QString createPythonFromModel()
             }
 
             // orders
-            if (Util::problem()->fieldInfos().count() > 0)
+            if (Agros2D::problem()->fieldInfos().count() > 0)
             {
                 int ordersCount = 0;
                 QString orders = ", orders = {";
-                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     if (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder())
                     {
@@ -468,10 +470,10 @@ QString createPythonFromModel()
             }
 
             // materials
-            if (Util::problem()->fieldInfos().count() > 0)
+            if (Agros2D::problem()->fieldInfos().count() > 0)
             {
                 QString materials = ", materials = {";
-                foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     SceneMaterial *marker = label->marker(fieldInfo);
 
@@ -495,23 +497,23 @@ QString createPythonFromModel()
 
 void pyOpenDocument(char *str)
 {
-    ErrorResult result = Util::scene()->readFromFile(QString(str));
+    ErrorResult result = Agros2D::scene()->readFromFile(QString(str));
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
 }
 
 void pySaveDocument(char *str)
 {
-    ErrorResult result = Util::scene()->writeToFile(QString(str));
+    ErrorResult result = Agros2D::scene()->writeToFile(QString(str));
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
 }
 
 void pyCloseDocument()
 {
-    Util::scene()->clear();
+    Agros2D::scene()->clear();
     // sceneView()->doDefaultValues();
-    Util::scene()->invalidate();
+    Agros2D::scene()->invalidate();
 
     currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
@@ -533,10 +535,10 @@ void pySaveImage(char *str, int w, int h)
 // solutionfilename()
 char *pythonSolutionFileName()
 {
-    if (Util::problem()->isSolved())
+    if (Agros2D::problem()->isSolved())
     {
         char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toStdString().c_str());
-        //Util::scene()->sceneSolution()->sln()->save(fileName);
+        //Agros2D::scene()->sceneSolution()->sln()->save(fileName);
         return fileName;
     }
     else

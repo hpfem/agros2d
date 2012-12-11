@@ -20,6 +20,7 @@
 #include "enums.h"
 
 #include "util.h"
+#include "util/global.h"
 #include "scene.h"
 #include "hermes2d/problem.h"
 
@@ -310,9 +311,9 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
     case PhysicFieldVariableComp_Magnitude:
         return QObject::tr("Magnitude");
     case PhysicFieldVariableComp_X:
-        return Util::problem()->config()->labelX();
+        return Agros2D::problem()->config()->labelX();
     case PhysicFieldVariableComp_Y:
-        return Util::problem()->config()->labelY();
+        return Agros2D::problem()->config()->labelY();
     default:
         return QObject::tr("Undefined");
     }

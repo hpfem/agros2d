@@ -18,6 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "resultsview.h"
+
+#include "util/constants.h"
+#include "util/global.h"
+
 #include "scene.h"
 #include "hermes2d.h"
 #include "hermes2d/plugin_interface.h"
@@ -26,8 +30,6 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include <ctemplate/template.h>
-
-#include "util/constants.h"
 
 ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
 {
@@ -71,7 +73,7 @@ void ResultsView::doShowResults()
 
 void ResultsView::showPoint(const Point &point)
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
     {
         showEmpty();
         return;
@@ -92,15 +94,15 @@ void ResultsView::showPoint(const Point &point)
     localPointValues.SetValue("STYLESHEET", style);
     localPointValues.SetValue("LABEL", tr("Local point values").toStdString());
 
-    localPointValues.SetValue("LABELX", Util::problem()->config()->labelX().toLower().toStdString());
-    localPointValues.SetValue("LABELY", Util::problem()->config()->labelY().toLower().toStdString());
+    localPointValues.SetValue("LABELX", Agros2D::problem()->config()->labelX().toLower().toStdString());
+    localPointValues.SetValue("LABELY", Agros2D::problem()->config()->labelY().toLower().toStdString());
     localPointValues.SetValue("POINTX", (QString("%1").arg(point.x, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINTY", (QString("%1").arg(point.y, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINT_UNIT", "m");
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        LocalValue *value = Util::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        LocalValue *value = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
         QMap<Module::LocalVariable *, PointValue> values = value->values();
         delete value;
 
@@ -130,12 +132,12 @@ void ResultsView::showPoint(const Point &point)
                     itemMagnitude->SetValue("UNIT", variable->unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
                     itemX->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
-                    itemX->SetValue("PART", Util::problem()->config()->labelX().toLower().toStdString());
+                    itemX->SetValue("PART", Agros2D::problem()->config()->labelX().toLower().toStdString());
                     itemX->SetValue("VALUE", QString("%1").arg(values[variable].vector.x, 0, 'e', 3).toStdString());
                     itemX->SetValue("UNIT", variable->unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
                     itemY->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
-                    itemY->SetValue("PART", Util::problem()->config()->labelY().toLower().toStdString());
+                    itemY->SetValue("PART", Agros2D::problem()->config()->labelY().toLower().toStdString());
                     itemY->SetValue("VALUE", QString("%1").arg(values[variable].vector.y, 0, 'e', 3).toStdString());
                     itemY->SetValue("UNIT", variable->unitHtml().toStdString());
                 }
@@ -150,7 +152,7 @@ void ResultsView::showPoint(const Point &point)
 
 void ResultsView::showVolumeIntegral()
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
     {
         showEmpty();
         return;
@@ -171,9 +173,9 @@ void ResultsView::showVolumeIntegral()
     volumeIntegrals.SetValue("STYLESHEET", style);
     volumeIntegrals.SetValue("LABEL", tr("Volume integrals").toStdString());
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        IntegralValue *integral = Util::plugins()[fieldInfo->fieldId()]->volumeIntegral(fieldInfo);
+        IntegralValue *integral = Agros2D::plugins()[fieldInfo->fieldId()]->volumeIntegral(fieldInfo);
         QMap<Module::Integral*, double> values = integral->values();
         if (values.size() > 0)
         {
@@ -199,7 +201,7 @@ void ResultsView::showVolumeIntegral()
 
 void ResultsView::showSurfaceIntegral()
 {
-    if (!Util::problem()->isSolved())
+    if (!Agros2D::problem()->isSolved())
     {
         showEmpty();
         return;
@@ -220,9 +222,9 @@ void ResultsView::showSurfaceIntegral()
     surfaceIntegrals.SetValue("STYLESHEET", style);
     surfaceIntegrals.SetValue("LABEL", tr("Surface integrals").toStdString());
 
-    foreach (FieldInfo *fieldInfo, Util::problem()->fieldInfos())
+    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        IntegralValue *integral = Util::plugins()[fieldInfo->fieldId()]->surfaceIntegral(fieldInfo);
+        IntegralValue *integral = Agros2D::plugins()[fieldInfo->fieldId()]->surfaceIntegral(fieldInfo);
         QMap<Module::Integral*, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
@@ -283,8 +285,8 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
     connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     QFormLayout *layoutPoint = new QFormLayout();
-    layoutPoint->addRow(Util::problem()->config()->labelX() + " (m):", txtPointX);
-    layoutPoint->addRow(Util::problem()->config()->labelY() + " (m):", txtPointY);
+    layoutPoint->addRow(Agros2D::problem()->config()->labelX() + " (m):", txtPointX);
+    layoutPoint->addRow(Agros2D::problem()->config()->labelY() + " (m):", txtPointY);
 
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);

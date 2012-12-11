@@ -28,6 +28,7 @@
 #include "{{ID}}_volumeintegral.h"
 
 #include "util.h"
+#include "util/global.h"
 #include "hermes2d/problem.h"
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)
