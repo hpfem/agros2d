@@ -331,11 +331,14 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                     Point idealReflectedPosition(intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y),
                                                  intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y));
 
+                    double ratio = (Point(position.x, position.y) - intersect).magnitude()
+                            / (Point(newPosition.x, newPosition.y) - Point(position.x, position.y)).magnitude();
+
                     // output point
-                    newPosition.x = intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
-                    newPosition.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y);
-                    // newPosition.x = intersect.x;
-                    // newPosition.y = intersect.y;
+                    // newPosition.x = intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
+                    // newPosition.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y);
+                    newPosition.x = intersect.x;
+                    newPosition.y = intersect.y;
 
                     // output vector
                     Point vectout = (idealReflectedPosition - intersect).normalizePoint();
@@ -344,6 +347,11 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                     Point3 oldv = newVelocity;
                     newVelocity.x = vectout.x * oldv.magnitude() * Agros2D::config()->particleCoefficientOfRestitution;
                     newVelocity.y = vectout.y * oldv.magnitude() * Agros2D::config()->particleCoefficientOfRestitution;
+
+                    // set new timestep
+                    dt = dt * ratio;
+
+                    qDebug() << "newVelocity: " << newVelocity.toString() << ratio << dt;
                 }
             }
 
