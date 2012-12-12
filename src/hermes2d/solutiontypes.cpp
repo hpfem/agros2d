@@ -282,7 +282,19 @@ void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolu
     m_solutionArrays.clear();
 
     // load the mesh file
-    QSharedPointer<Mesh> mesh = readMeshFromFile(QString("%1.mesh").arg(baseName));
+    QList<QSharedPointer<Mesh> > meshes = readMeshFromFile(QString("%1.mesh").arg(baseName));
+    QSharedPointer<Mesh> mesh;
+    int i = 0;
+    foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+    {
+        if(fieldInfo == solutionID.group)
+        {
+            mesh = meshes.at(i);
+            break;
+        }
+        i++;
+    }
+    assert(! mesh.isNull());
 
     for (int i = 0; i < solutionID.group->module()->numberOfSolutions(); i++)
     {
@@ -309,7 +321,16 @@ void MultiSolutionArray<Scalar>::saveToFile(const QString &baseName, FieldSoluti
     // QTime time;
     // time.start();
 
-    writeMeshToFile(QString("%1.mesh").arg(baseName), m_solutionArrays.at(0).space.data()->get_mesh());
+    QList<QSharedPointer<Mesh> > meshes;
+    foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+    {
+        if(fieldInfo == solutionID.group)
+            meshes.push_back(m_solutionArrays.at(0).space.mesh);
+        else
+            meshes.push_back(fieldInfo->initialMesh());
+    }
+
+    writeMeshToFile(QString("%1.mesh").arg(baseName), meshes);
 
     int solutionIndex = 0;
     foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
