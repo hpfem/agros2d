@@ -49,7 +49,7 @@ namespace Hermes
       template<typename Scalar> class ProjBasedSelector;
       template<typename Scalar> class H1ProjBasedSelector;
       template<typename Scalar> class L2ProjBasedSelector;
-      class HcurlProjBasedSelector;
+      template<typename Scalar> class HcurlProjBasedSelector;
     }
 
     namespace Views
@@ -213,7 +213,7 @@ namespace Hermes
       template<typename Scalar> friend class RefinementSelectors::ProjBasedSelector;
       template<typename Scalar> friend class RefinementSelectors::H1ProjBasedSelector;
       template<typename Scalar> friend class RefinementSelectors::L2ProjBasedSelector;
-      friend class RefinementSelectors::HcurlProjBasedSelector;
+      template<typename Scalar> friend class RefinementSelectors::HcurlProjBasedSelector;
       friend class Views::ScalarView;
       friend class Views::Linearizer;
       friend class RefMap;
@@ -541,7 +541,7 @@ namespace Hermes
       template<typename Scalar> friend class RefinementSelectors::ProjBasedSelector;
       template<typename Scalar> friend class RefinementSelectors::H1ProjBasedSelector;
       template<typename Scalar> friend class RefinementSelectors::L2ProjBasedSelector;
-      friend class RefinementSelectors::HcurlProjBasedSelector;
+      template<typename Scalar> friend class RefinementSelectors::HcurlProjBasedSelector;
       friend class PrecalcShapeset;
       template<typename Scalar> friend class Space;
       template<typename Scalar> friend class H1Space;
@@ -645,8 +645,8 @@ namespace Hermes
         vn[0]                           vn[1]       vn[0]        vn[1] vn[0]        vn[1]
       */
 
-      Element* create_quad(int marker, Node* v0, Node* v1, Node* v2, Node* v3, CurvMap* cm);
-      Element* create_triangle(int marker, Node* v0, Node* v1, Node* v2, CurvMap* cm);
+      Element* create_quad(int marker, Node* v0, Node* v1, Node* v2, Node* v3, CurvMap* cm, int id = -1);
+      Element* create_triangle(int marker, Node* v0, Node* v1, Node* v2, CurvMap* cm, int id = -1);
       void refine_element(Element* e, int refinement);
 
       /// Vector for storing refinements in order to be able to save/load meshes with identical element IDs.

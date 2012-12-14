@@ -28,7 +28,8 @@ namespace Hermes
       *  Since an initialization of the class may take a long time,
       *  it is suggested to create the instance outside the adaptivity
       *  loop. */
-      class HERMES_API HcurlProjBasedSelector : public ProjBasedSelector<std::complex<double> > {
+      template<typename Scalar>
+      class HERMES_API HcurlProjBasedSelector : public ProjBasedSelector<Scalar> {
       public: //API
         /// Constructor.
         /** \param[in] cand_list A predefined list of candidates.
@@ -38,7 +39,7 @@ namespace Hermes
         HcurlProjBasedSelector(CandList cand_list = H2D_HP_ANISO, double conv_exp = 1.0, int max_order = H2DRS_DEFAULT_ORDER, HcurlShapeset* user_shapeset = NULL);
 
         /// Cloning for paralelism.
-        virtual Selector<std::complex<double> >* clone();
+        virtual Selector<Scalar>* clone();
 
         /// Destructor.
         virtual ~HcurlProjBasedSelector();
@@ -52,8 +53,8 @@ namespace Hermes
           H2D_HCFE_NUM = 3 ///< A total considered function expansion.
         };
 
-        std::complex<double>* precalc_rvals[H2D_MAX_ELEMENT_SONS][H2D_HCFE_NUM]; ///< Array of arrays of precalculates. The first index is an index of a subdomain, the second index is an index of a function expansion (see enum LocalFuncExpansion).
-        std::complex<double>** precalc_rvals_curl; ///< Pre-calculated values of curls for every subdomain. Allocated using new_matrix.
+        Scalar* precalc_rvals[H2D_MAX_ELEMENT_SONS][H2D_HCFE_NUM]; ///< Array of arrays of precalculates. The first index is an index of a subdomain, the second index is an index of a function expansion (see enum LocalFuncExpansion).
+        Scalar** precalc_rvals_curl; ///< Pre-calculated values of curls for every subdomain. Allocated using new_matrix.
 
         static const int H2DRS_MAX_HCURL_ORDER; ///< A maximum used order in this Hcurl-space selector. \todo Replace the numerical constant after a symbolic constant is added to Hcurl shapeset which would declare the maximum supported order.
 
@@ -64,15 +65,15 @@ namespace Hermes
 
         /// Returns an array of values of the reference solution at integration points.
         /**  Overriden function. For details, see ProjBasedSelector::precalc_ref_solution(). */
-        virtual std::complex<double>** precalc_ref_solution(int inx_son, Solution<std::complex<double> >* rsln, Element* element, int intr_gip_order);
+        virtual Scalar** precalc_ref_solution(int inx_son, Solution<Scalar>* rsln, Element* element, int intr_gip_order);
 
         /// Calculates values of shape function at GIP for all transformations.
         /**  Overriden function. For details, see ProjBasedSelector::precalc_shapes(). */
-        virtual void precalc_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<ShapeInx>& shapes, const int max_shape_inx, TrfShape& svals, ElementMode2D mode);
+        virtual void precalc_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<typename OptimumSelector<Scalar>::ShapeInx>& shapes, const int max_shape_inx, typename ProjBasedSelector<Scalar>::TrfShape& svals, ElementMode2D mode);
 
         /// Calculates values of orthogonalized shape function at GIP for all transformations.
         /**  Overriden function. For details, see ProjBasedSelector::precalc_ortho_shapes(). */
-        virtual void precalc_ortho_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<ShapeInx>& shapes, const int max_shape_inx, TrfShape& svals, ElementMode2D mode);
+        virtual void precalc_ortho_shapes(const double3* gip_points, const int num_gip_points, const Trf* trfs, const int num_noni_trfs, const Hermes::vector<typename OptimumSelector<Scalar>::ShapeInx>& shapes, const int max_shape_inx, typename ProjBasedSelector<Scalar>::TrfShape& svals, ElementMode2D mode);
 
         /// Builds projection matrix using a given set of shapes.
         /**  Overriden function. For details, see ProjBasedSelector::build_projection_matrix(). */
@@ -80,11 +81,11 @@ namespace Hermes
 
         /// Evaluates a value of the right-hande side in a subdomain.
         /**  Overriden function. For details, see ProjBasedSelector::evaluate_rhs_subdomain(). */
-        virtual std::complex<double> evaluate_rhs_subdomain(Element* sub_elem, const ElemGIP& sub_gip, const ElemSubTrf& sub_trf, const ElemSubShapeFunc& sub_shape);
+        virtual Scalar evaluate_rhs_subdomain(Element* sub_elem, const typename ProjBasedSelector<Scalar>::ElemGIP& sub_gip, const typename ProjBasedSelector<Scalar>::ElemSubTrf& sub_trf, const typename ProjBasedSelector<Scalar>::ElemSubShapeFunc& sub_shape);
 
         /// Evaluates an squared error of a projection of an element of a candidate onto subdomains.
         /**  Overriden function. For details, see ProjBasedSelector::evaluate_error_squared_subdomain(). */
-        virtual double evaluate_error_squared_subdomain(Element* sub_elem, const ElemGIP& sub_gip, const ElemSubTrf& sub_trf, const ElemProj& elem_proj);
+        virtual double evaluate_error_squared_subdomain(Element* sub_elem, const typename ProjBasedSelector<Scalar>::ElemGIP& sub_gip, const typename ProjBasedSelector<Scalar>::ElemSubTrf& sub_trf, const typename ProjBasedSelector<Scalar>::ElemProj& elem_proj);
       };
     }
   }
