@@ -262,7 +262,7 @@ void SceneViewCommon3D::setZoom(double power)
 
 void SceneViewCommon3D::initLighting()
 {
-    if (Agros2D::config()->scalarView3DLighting || Agros2D::config()->showPost3D == SceneViewPost3DMode_Model)
+    if (Agros2D::config()->scalarView3DLighting) // || Agros2D::config()->showPost3D == SceneViewPost3DMode_Model)
     {
         // environment
         float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };
