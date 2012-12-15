@@ -201,7 +201,7 @@ public:
     double particleDragReferenceArea;
 
     // solid view
-    QList<QString> solidViewHide;
+    QStringList solidViewHide;
 
     // adaptivity
     int maxDofs;
@@ -229,12 +229,14 @@ private:
     double readConfig(const QString &key, double defaultValue);
     QString readConfig(const QString &key, const QString &defaultValue);
     QColor readConfig(const QString &key, const QColor &defaultValue);
+    QStringList readConfig(const QString &key, const QStringList &defaultValue);
 
     void writeConfig(const QString &key, bool value);
     void writeConfig(const QString &key, int value);
     void writeConfig(const QString &key, double value);
     void writeConfig(const QString &key, const QString &value);
     void writeConfig(const QString &key, const QColor &value);
+    void writeConfig(const QString &key, const QStringList &value);
 };
 
 #endif // CONFIG_H

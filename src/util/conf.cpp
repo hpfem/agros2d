@@ -275,7 +275,7 @@ void Config::load(QDomElement *config)
     linearizerQuality = paletteQualityFromStringKey(quality);
 
     // solid view
-    // solidView
+    solidViewHide = readConfig("SceneViewSettings/SolidViewHide", QStringList());
 
     // command argument
     commandGmsh = readConfig("Commands/Gmsh", COMMANDS_GMSH);
@@ -431,6 +431,9 @@ void Config::save(QDomElement *config)
     // linearizer quality
     writeConfig("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(linearizerQuality));
 
+    // solid view
+    writeConfig("SceneViewSettings/SolidViewHide", solidViewHide);
+
     // command argument
     writeConfig("Commands/Triangle", commandTriangle);
     writeConfig("Commands/Gmsh", commandGmsh);
@@ -506,6 +509,18 @@ QColor Config::readConfig(const QString &key, const QColor &defaultValue)
     return defaultValue;
 }
 
+QStringList Config::readConfig(const QString &key, const QStringList &defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+            return eleConfig->attribute(att).split("|");
+    }
+
+    return defaultValue;
+}
+
 void Config::writeConfig(const QString &key, bool value)
 {
     QString att = key; att.replace("/", "_");
@@ -536,4 +551,10 @@ void Config::writeConfig(const QString &key, const QColor &value)
     eleConfig->setAttribute(att + "_red", value.red());
     eleConfig->setAttribute(att + "_green", value.green());
     eleConfig->setAttribute(att + "_blue", value.blue());
+}
+
+void Config::writeConfig(const QString &key, const QStringList &value)
+{
+    QString att = key; att.replace("/", "_");
+    eleConfig->setAttribute(att, value.join("|"));
 }

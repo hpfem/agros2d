@@ -211,8 +211,11 @@ void PostprocessorWidget::loadAdvanced()
         {
             QListWidgetItem *item = new QListWidgetItem(lstSolidMaterials);
             item->setText(material->name());
-            item->setCheckState(Qt::Unchecked);
             item->setData(Qt::UserRole, material->variant());
+            if (Agros2D::config()->solidViewHide.contains(material->name()))
+                item->setCheckState(Qt::Unchecked);
+            else
+                item->setCheckState(Qt::Checked);
 
             lstSolidMaterials->addItem(item);
         }
@@ -305,13 +308,21 @@ void PostprocessorWidget::saveAdvanced()
     Agros2D::config()->particleDragCoefficient = txtParticleDragCoefficient->value();
     Agros2D::config()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
 
-    // advanced
     // scalar view
     Agros2D::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
     Agros2D::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
     Agros2D::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
 
     // solid
+    Agros2D::config()->solidViewHide.clear();
+    for (int i = 0; i < lstSolidMaterials->count(); i++)
+    {
+        if (lstSolidMaterials->item(i)->checkState() == Qt::Unchecked)
+        {
+            SceneMaterial *material = lstSolidMaterials->item(i)->data(Qt::UserRole).value<SceneMaterial *>();
+            Agros2D::config()->solidViewHide.append(material->name());
+        }
+    }
 }
 
 void PostprocessorWidget::createControls()

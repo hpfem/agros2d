@@ -152,7 +152,7 @@ const double SCALARRANGEMIN = 0.0;
 const double SCALARRANGEMAX = 1.0;
 
 const bool VIEW3DLIGHTING = false;
-const double VIEW3DANGLE = 270.0;
+const double VIEW3DANGLE = 240.0;
 const bool VIEW3DBACKGROUND = true;
 const double VIEW3DHEIGHT = 4.0;
 const bool VIEW3DBOUNDINGBOX = true;

@@ -315,15 +315,20 @@
             <label x="12.32616228093383" y="3.347950341218581" id="21" area="0"/>
         </labels>
     </geometry>
-    <problem frequency="0" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_step="1.0" name="Heat Transfer Planar Building" time_total="1.0">
+    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_steps="2" name="Heat Transfer Planar Building" time_total="1.0">
         <startup_script></startup_script>
         <description>This model is an example.</description>
         <fields>
-            <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" weak_forms="compiled" analysis_type="steadystate">
+            <field field_id="heat" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" time_skip="0.0" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
                 <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="linear" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
-                    <boundary heat_convection_external_temperature="21" heat_convection_heat_transfer_coefficient="4" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Interior" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_heat_transfer_coefficient="4" heat_convection_external_temperature="21" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Interior" heat_radiation_ambient_temperature="0">
                         <edge edge="14"/>
                         <edge edge="15"/>
                         <edge edge="16"/>
@@ -381,7 +386,7 @@
                         <edge edge="151"/>
                         <edge edge="152"/>
                     </boundary>
-                    <boundary heat_convection_external_temperature="-15" heat_convection_heat_transfer_coefficient="25" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Exterior" heat_radiation_ambient_temperature="0">
+                    <boundary heat_convection_heat_transfer_coefficient="25" heat_convection_external_temperature="-15" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Exterior" heat_radiation_ambient_temperature="0">
                         <edge edge="36"/>
                         <edge edge="37"/>
                         <edge edge="38"/>
@@ -423,7 +428,7 @@
                     </boundary>
                 </boundaries>
                 <materials>
-                    <material heat_volume_heat="0" heat_conductivity="0.6" id="1" name="Brick">
+                    <material heat_volume_heat="0" heat_conductivity="0.6" heat_velocity_x="0" heat_density="0" heat_velocity_y="0" heat_specific_heat="0" heat_velocity_angular="0" id="1" name="Brick">
                         <label label="0"/>
                         <label label="1"/>
                         <label label="2"/>
@@ -432,7 +437,7 @@
                         <label label="6"/>
                         <label label="18"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.14" id="2" name="Glass">
+                    <material heat_volume_heat="0" heat_conductivity="0.14" heat_velocity_x="0" heat_density="0" heat_velocity_y="0" heat_specific_heat="0" heat_velocity_angular="0" id="2" name="Glass">
                         <label label="5"/>
                         <label label="7"/>
                         <label label="8"/>
@@ -441,7 +446,7 @@
                         <label label="20"/>
                         <label label="21"/>
                     </material>
-                    <material heat_volume_heat="0" heat_conductivity="0.04" id="3" name="Insulation">
+                    <material heat_volume_heat="0" heat_conductivity="0.04" heat_velocity_x="0" heat_density="0" heat_velocity_y="0" heat_specific_heat="0" heat_velocity_angular="0" id="3" name="Insulation">
                         <label label="10"/>
                         <label label="11"/>
                         <label label="12"/>
@@ -455,5 +460,5 @@
         </fields>
         <couplings/>
     </problem>
-    <config SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ShowContourView="0" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ActiveField="" SceneViewSettings_VectorNumber="50" SceneViewSettings_ShowParticleView="0" SceneViewSettings_VectorVariable="" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ScalarVariable="" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ScalarRangeMin="-15.04017035261456" SceneViewSettings_VectorProportional="1" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_ScalarRangeMax="20.99999984468669" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ContourVariable="" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_VectorColor="1" SceneViewSettings_ShowPost3D="2" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ScalarVariableComp="0"/>
+    <config SceneViewSettings_ScalarView3DAngle="270" SceneViewSettings_VectorColor="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" Adaptivity_Threshold="0.3" SceneViewSettings_ScalarView3DHeight="4" SceneViewSettings_ColorCross_blue="150" SceneViewSettings_RulersFont="fontGoogleDroidMono10" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_SnapToGrid="1" SceneViewSettings_ColorCross_red="150" SceneViewSettings_ParticleMinimumStep="0" Adaptivity_IsoOnly="0" SceneViewSettings_ScalarView3DLighting="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ColorBackground_green="255" SceneViewSettings_DeformScalar="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_ShowPost3D="2" SceneViewSettings_ColorInitialMesh_green="150" SceneViewSettings_ShowGrid="1" SceneViewSettings_ColorVectors_blue="0" SceneViewSettings_PostFont="fontGoogleDroidMono14" SceneViewSettings_ColorBackground_red="255" Adaptivity_UseAniso="1" Adaptivity_MeshRegularity="-1" SceneViewSettings_VectorNumber="50" Adaptivity_FinerReference="0" SceneViewSettings_ColorGrid_blue="200" SceneViewSettings_ColorNodes_red="150" SceneViewSettings_LinearizerQuality="coarse" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_ColorContours_green="0" SceneViewSettings_VectorType="0" SceneViewSettings_ColorContours_blue="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_ColorVectors_green="0" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ColorEdges_green="0" SceneViewSettings_ActiveField="heat" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_LabelSize="6" SceneViewSettings_ShowRulers="1" SceneViewSettings_ParticleCustomForceX="0" SceneViewSettings_ColorSolutionMesh_blue="0" SceneViewSettings_ParticleCustomForceY="0" SceneViewSettings_ParticleCustomForceZ="0" SceneViewSettings_DeformVector="1" SceneViewSettings_ParticleShowPoints="0" Adaptivity_MaxDofs="60000" SceneViewSettings_DeformContour="1" SceneViewSettings_NodeSize="6" SceneViewSettings_ParticleIncludeRelativisticCorrection="1" SceneViewSettings_ColorNodes_blue="0" SceneViewSettings_ScalarView3DBoundingBox="1" SceneViewSettings_ScalarRangeMin="-15.23406283116971" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" SceneViewSettings_ShowAxes="1" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ScalarVariable="heat_temperature" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ColorGrid_green="200" SceneViewSettings_ParticleReflectOnDifferentMaterial="1" SceneViewSettings_ShowContourView="0" SceneViewSettings_ColorEdges_red="0" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ParticleStartX="0" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ColorLabels_red="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ContoursWidth="1" SceneViewSettings_ShowParticleView="0" SceneViewSettings_ColorSolutionMesh_red="150" SceneViewSettings_ContourVariable="heat_temperature" SceneViewSettings_ColorContours_red="0" Adaptivity_ConvExp="1" SceneViewSettings_ColorInitialMesh_red="250" Adaptivity_ProjNormType="1" SceneViewSettings_VectorCenter="0" SceneViewSettings_MeshCurvilinearElements="1" Adaptivity_Strategy="0" SceneViewSettings_ColorBackground_blue="255" SceneViewSettings_ColorNodes_green="0" SceneViewSettings_ColorLabels_blue="0" SceneViewSettings_ScalarVariableComp="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ColorLabels_green="150" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_MeshAngleSegmentsCount="3" SceneViewSettings_ColorVectors_red="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ParticleMaximumNumberOfSteps="500" SceneViewSettings_ScalarView3DBackground="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ColorCross_green="150" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_GridStep="0.05" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_PaletteType="0" SceneViewSettings_EdgeWidth="2" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ColorSolutionMesh_green="0" SceneViewSettings_VectorVariable="heat_heat_flux" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" SceneViewSettings_ColorInitialMesh_blue="0" SceneViewSettings_ColorGrid_red="200" General_ZoomToMouse="1" SceneViewSettings_ContoursCount="15" SceneViewSettings_ColorEdges_blue="150" SceneViewSettings_ScalarRangeMax="21.04476657811517"/>
 </document>
