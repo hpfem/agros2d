@@ -57,6 +57,8 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     util.cpp \
     value.cpp \
     scene.cpp \
+    confdialog.cpp \
+    util/conf.cpp \
     util/global.cpp \
     util/checkversion.cpp \
     util/point.cpp \
@@ -119,8 +121,6 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
-    conf.cpp \
-    confdialog.cpp \
     hermes2d/module_agros.cpp \
     sceneedge.cpp \
     scenelabel.cpp \
@@ -150,6 +150,7 @@ HEADERS += util.h \
     scene.h \
     util/global.h \
     util/constants.h \
+    util/conf.h \
     util/checkversion.h \
     util/point.h \
     util/xml.h \
@@ -209,7 +210,6 @@ HEADERS += util.h \
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \
-    conf.h \
     confdialog.h \
     hermes2d/solver.h \
     hermes2d/module_agros.h \

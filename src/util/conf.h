@@ -23,6 +23,47 @@
 #include "util.h"
 #include "util/enums.h"
 
+class ConfigComputer : public QObject
+{
+    Q_OBJECT
+
+public:
+    ConfigComputer();
+    ~ConfigComputer();
+
+    // general
+    QString guiStyle;
+    QString language;
+    QString defaultPhysicField;
+
+    bool showLogStdOut;
+
+    bool checkVersion;
+    bool lineEditValueShowResult;
+    bool saveProblemWithSolution;
+
+    QString collaborationServerURL;
+
+    // global script
+    QString globalScript;
+
+    // delete files
+    bool deleteMeshFiles;
+    bool deleteHermesMeshFile;
+
+    // discrete
+    bool saveMatrixRHS;
+
+    // cache
+    int cacheSize;
+
+    // number of threads
+    int numberOfThreads;
+
+    void load();
+    void save();
+};
+
 class Config : public QObject
 {
     Q_OBJECT
@@ -31,22 +72,6 @@ public:
     Config();
     ~Config();
 
-    // general
-    QString guiStyle;
-    QString language;
-    QString defaultPhysicField;
-
-    bool checkVersion;
-    bool lineEditValueShowResult;
-    bool saveProblemWithSolution;
-
-    QString collaborationServerURL;
-
-    // geometry
-    double nodeSize;
-    double edgeWidth;
-    double labelSize;
-
     // font
     QString rulersFont;
     QString postFont;
@@ -54,18 +79,29 @@ public:
     // zoom
     bool zoomToMouse;
 
-    // delete files
-    bool deleteMeshFiles;
-    bool deleteHermesMeshFile;
+    // geometry
+    double nodeSize;
+    double edgeWidth;
+    double labelSize;
 
-    // mesh
-    bool showInitialMeshView;
-    bool showSolutionMeshView;
-    int angleSegmentsCount;
-    bool curvilinearElements;
+    // rulers
+    bool showRulers;
 
-    // discrete
-    bool saveMatrixRHS;
+    // colors
+    QColor colorBackground;
+    QColor colorGrid;
+    QColor colorCross;
+    QColor colorNodes;
+    QColor colorEdges;
+    QColor colorLabels;
+    QColor colorContours;
+    QColor colorVectors;
+    QColor colorInitialMesh;
+    QColor colorSolutionMesh;
+    QColor colorHighlighted;
+    QColor colorCrossed;
+    QColor colorSelected;
+    QColor colorNotConnected;
 
     // grid
     bool showGrid;
@@ -75,13 +111,26 @@ public:
     // axes
     bool showAxes;
 
-    QString activeField;
+    // deformations
+    bool deformScalar;
+    bool deformContour;
+    bool deformVector;
 
-    // linearizer quality
-    PaletteQuality linearizerQuality;
+    // 3d
+    bool scalarView3DLighting;
+    double scalarView3DAngle;
+    bool scalarView3DBackground;
+    double scalarView3DHeight;
+    bool scalarView3DBoundingBox;
+
+    // active field
+    QString activeField;
 
     // post3d
     SceneViewPost3DMode showPost3D;
+
+    // linearizer quality
+    PaletteQuality linearizerQuality;
 
     // contour
     bool showContourView;
@@ -110,32 +159,23 @@ public:
     VectorType vectorType;
     VectorCenter vectorCenter;
 
+    // mesh
+    bool showInitialMeshView;
+    bool showSolutionMeshView;
+    int angleSegmentsCount;
+    bool curvilinearElements;
+
     // order view
     bool showOrderView;
     bool showOrderColorBar;
     PaletteOrderType orderPaletteOrderType;
     bool orderLabel;
 
-    // deformations
-    bool deformScalar;
-    bool deformContour;
-    bool deformVector;
-
-    // 3d
-    bool scalarView3DLighting;
-    double scalarView3DAngle;
-    bool scalarView3DBackground;
-    double scalarView3DHeight;
-    bool scalarView3DBoundingBox;
-
     // palette
     bool showScalarColorBar;
     PaletteType paletteType;
     int paletteSteps;
     bool paletteFilter;
-
-    // rulers
-    bool showRulers;
 
     // particle tracing
     bool showParticleView;
@@ -163,22 +203,6 @@ public:
     // solid view
     QList<QString> solidViewHide;
 
-    // colors
-    QColor colorBackground;
-    QColor colorGrid;
-    QColor colorCross;
-    QColor colorNodes;
-    QColor colorEdges;
-    QColor colorLabels;
-    QColor colorContours;
-    QColor colorVectors;
-    QColor colorInitialMesh;
-    QColor colorSolutionMesh;
-    QColor colorHighlighted;
-    QColor colorCrossed;
-    QColor colorSelected;
-    QColor colorNotConnected;
-
     // adaptivity
     int maxDofs;
     bool isoOnly;
@@ -194,26 +218,8 @@ public:
     QString commandTriangle;
     QString commandGmsh;
 
-    // number of threads
-    int numberOfThreads;
-
-    // cache
-    int cacheSize;
-
-    // global script
-    QString globalScript;
-
-    bool showLogStdOut;
-
-    void load();
-    void loadWorkspace();
-    void loadPostprocessor(QDomElement *config);
-    void loadAdvanced();
-
-    void save();
-    void saveWorkspace();
-    void savePostprocessor(QDomElement *config);
-    void saveAdvanced();
+    void load(QDomElement *config);
+    void save(QDomElement *config);
 
 private:
     QDomElement *eleConfig;
@@ -222,10 +228,13 @@ private:
     int readConfig(const QString &key, int defaultValue);
     double readConfig(const QString &key, double defaultValue);
     QString readConfig(const QString &key, const QString &defaultValue);
+    QColor readConfig(const QString &key, const QColor &defaultValue);
+
     void writeConfig(const QString &key, bool value);
     void writeConfig(const QString &key, int value);
     void writeConfig(const QString &key, double value);
-    void writeConfig(const QString &key, const QString &value);   
+    void writeConfig(const QString &key, const QString &value);
+    void writeConfig(const QString &key, const QColor &value);
 };
 
 #endif // CONFIG_H

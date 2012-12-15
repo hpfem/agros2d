@@ -23,7 +23,7 @@
 #include "hermes2d/module.h"
 #include "util/constants.h"
 
-Config::Config() : eleConfig(NULL)
+ConfigComputer::ConfigComputer()
 {
     // set xml schemas dir
     Hermes::Hermes2D::Hermes2DApi.set_text_param_value(Hermes::Hermes2D::xmlSchemasDirPath, QString("%1/resources/xsd").arg(datadir()).toStdString());
@@ -31,19 +31,12 @@ Config::Config() : eleConfig(NULL)
     load();
 }
 
-Config::~Config()
+ConfigComputer::~ConfigComputer()
 {
     save();
 }
 
-void Config::load()
-{
-    loadWorkspace();
-    loadPostprocessor(NULL);
-    loadAdvanced();
-}
-
-void Config::loadWorkspace()
+void ConfigComputer::load()
 {
     QSettings settings;
 
@@ -64,76 +57,131 @@ void Config::loadWorkspace()
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
     saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
 
-    // zoom
-    zoomToMouse = settings.value("Geometry/ZoomToMouse", true).toBool();
-
     // delete files
     deleteMeshFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).toBool();
     deleteHermesMeshFile = settings.value("Solver/DeleteHermes2DMeshFile", true).toBool();
 
-    // colors
-    colorBackground = settings.value("SceneViewSettings/ColorBackground", COLORBACKGROUND).value<QColor>();
-    colorGrid = settings.value("SceneViewSettings/ColorGrid", COLORGRID).value<QColor>();
-    colorCross = settings.value("SceneViewSettings/ColorCross", COLORCROSS).value<QColor>();
-    colorNodes = settings.value("SceneViewSettings/ColorNodes", COLORNODES).value<QColor>();
-    colorEdges = settings.value("SceneViewSettings/ColorEdges", COLOREDGES).value<QColor>();
-    colorLabels = settings.value("SceneViewSettings/ColorLabels", COLORLABELS).value<QColor>();
-    colorContours = settings.value("SceneViewSettings/ColorContours", COLORCONTOURS).value<QColor>();
-    colorVectors = settings.value("SceneViewSettings/ColorVectors", COLORVECTORS).value<QColor>();
-    colorInitialMesh = settings.value("SceneViewSettings/ColorInitialMesh", COLORINITIALMESH).value<QColor>();
-    colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", COLORSOLUTIONMESH).value<QColor>();
-    colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", COLORHIGHLIGHTED).value<QColor>();
-    colorSelected = settings.value("SceneViewSettings/ColorSelected", COLORSELECTED).value<QColor>();
-    colorCrossed = settings.value("SceneViewSettings/ColorCrossed", COLORCROSSED).value<QColor>();
-    colorNotConnected = settings.value("SceneViewSettings/ColorCrossed", COLORNOTCONNECTED).value<QColor>();
-
-    // geometry
-    nodeSize = settings.value("SceneViewSettings/NodeSize", GEOMETRYNODESIZE).toDouble();
-    edgeWidth = settings.value("SceneViewSettings/EdgeWidth", GEOMETRYEDGEWIDTH).toDouble();
-    labelSize = settings.value("SceneViewSettings/LabelSize", GEOMETRYLABELSIZE).toDouble();
-
-    // font
-    rulersFont = settings.value("SceneViewSettings/RulersFont", RULERSFONT).toString();
-    postFont = settings.value("SceneViewSettings/PostFont", POSTFONT).toString();
-
     // discrete
     saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
 
-    // grid
-    showGrid = settings.value("SceneViewSettings/ShowGrid", SHOWGRID).toBool();
-    gridStep = settings.value("SceneViewSettings/GridStep", GRIDSTEP).toDouble();
+    // cache size
+    cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
 
-    // rulers
-    showRulers = settings.value("SceneViewSettings/ShowRulers", SHOWRULERS).toBool();
-    // snap to grid
-    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", SNAPTOGRID).toBool();
+    // number of threads
+    numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
+    if (numberOfThreads > omp_get_max_threads())
+        numberOfThreads = omp_get_max_threads();
+    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
 
-    // axes
-    showAxes = settings.value("SceneViewSettings/ShowAxes", SHOWAXES).toBool();
-
-    // linearizer quality
-    QString quality = settings.value("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(PaletteQuality_Normal)).toString();
-    linearizerQuality = paletteQualityFromStringKey(quality);
-
-    // 3d
-    scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
-    scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
-    scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
-    scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
-    scalarView3DBoundingBox = settings.value("SceneViewSettings/ScalarView3DBoundingBox", true).toBool();
-
-    // deformations
-    deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
-    deformContour = settings.value("SceneViewSettings/DeformContour", true).toBool();
-    deformVector = settings.value("SceneViewSettings/DeformVector", true).toBool();
+    // global script
+    globalScript = settings.value("Python/GlobalScript", "").toString();
 }
 
-void Config::loadPostprocessor(QDomElement *config)
+void ConfigComputer::save()
+{
+    QSettings settings;
+
+    // std log
+    settings.setValue("SceneViewSettings/LogStdOut", showLogStdOut);
+
+    // general
+    settings.setValue("General/GUIStyle", guiStyle);
+    settings.setValue("General/Language", language);
+    settings.setValue("General/DefaultPhysicField", defaultPhysicField);
+
+    settings.setValue("General/CollaborationServerURL", collaborationServerURL);
+
+    settings.setValue("General/CheckVersion", checkVersion);
+    settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
+    settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
+
+    // delete files
+    settings.setValue("Solver/DeleteTriangleMeshFiles", deleteMeshFiles);
+    settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermesMeshFile);
+
+    // discrete
+    settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
+
+    // cache size
+    settings.setValue("Solution/CacheSize", cacheSize);
+
+    // number of threads
+    settings.setValue("Parallel/NumberOfThreads", numberOfThreads);
+    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
+
+    // global script
+    settings.setValue("Python/GlobalScript", globalScript);
+}
+
+// ********************************************************************************************
+
+Config::Config() : eleConfig(NULL)
+{
+    load(NULL);
+}
+
+Config::~Config()
+{
+}
+
+void Config::load(QDomElement *config)
 {
     eleConfig = config;
 
     // active field
     activeField = readConfig("SceneViewSettings/ActiveField", QString());
+
+    // zoom
+    zoomToMouse = readConfig("Geometry/ZoomToMouse", ZOOMTOMOUSE);
+
+    // font
+    rulersFont = readConfig("SceneViewSettings/RulersFont", RULERSFONT);
+    postFont = readConfig("SceneViewSettings/PostFont", POSTFONT);
+
+    // geometry
+    nodeSize = readConfig("SceneViewSettings/NodeSize", GEOMETRYNODESIZE);
+    edgeWidth = readConfig("SceneViewSettings/EdgeWidth", GEOMETRYEDGEWIDTH);
+    labelSize = readConfig("SceneViewSettings/LabelSize", GEOMETRYLABELSIZE);
+
+    // grid
+    showGrid = readConfig("SceneViewSettings/ShowGrid", SHOWGRID);
+    gridStep = readConfig("SceneViewSettings/GridStep", GRIDSTEP);
+
+    // rulers
+    showRulers = readConfig("SceneViewSettings/ShowRulers", SHOWRULERS);
+    // snap to grid
+    snapToGrid = readConfig("SceneViewSettings/SnapToGrid", SNAPTOGRID);
+
+    // axes
+    showAxes = readConfig("SceneViewSettings/ShowAxes", SHOWAXES);
+
+    // 3d
+    scalarView3DLighting = readConfig("SceneViewSettings/ScalarView3DLighting", VIEW3DLIGHTING);
+    scalarView3DAngle = readConfig("SceneViewSettings/ScalarView3DAngle", VIEW3DANGLE);
+    scalarView3DBackground = readConfig("SceneViewSettings/ScalarView3DBackground", VIEW3DBACKGROUND);
+    scalarView3DHeight = readConfig("SceneViewSettings/ScalarView3DHeight", VIEW3DHEIGHT);
+    scalarView3DBoundingBox = readConfig("SceneViewSettings/ScalarView3DBoundingBox", VIEW3DBOUNDINGBOX);
+
+    // deformations
+    deformScalar = readConfig("SceneViewSettings/DeformScalar", DEFORMSCALAR);
+    deformContour = readConfig("SceneViewSettings/DeformContour", DEFORMCONTOUR);
+    deformVector = readConfig("SceneViewSettings/DeformVector", DEFORMVECTOR);
+
+    // colors
+    colorBackground = readConfig("SceneViewSettings/ColorBackground", COLORBACKGROUND);
+    colorGrid = readConfig("SceneViewSettings/ColorGrid", COLORGRID);
+    colorCross = readConfig("SceneViewSettings/ColorCross", COLORCROSS);
+    colorNodes = readConfig("SceneViewSettings/ColorNodes", COLORNODES);
+    colorEdges = readConfig("SceneViewSettings/ColorEdges", COLOREDGES);
+    colorLabels = readConfig("SceneViewSettings/ColorLabels", COLORLABELS);
+    colorContours = readConfig("SceneViewSettings/ColorContours", COLORCONTOURS);
+    colorVectors = readConfig("SceneViewSettings/ColorVectors", COLORVECTORS);
+    colorInitialMesh = readConfig("SceneViewSettings/ColorInitialMesh", COLORINITIALMESH);
+    colorSolutionMesh = readConfig("SceneViewSettings/ColorSolutionMesh", COLORSOLUTIONMESH);
+    colorHighlighted = readConfig("SceneViewSettings/ColorHighlighted", COLORHIGHLIGHTED);
+    colorSelected = readConfig("SceneViewSettings/ColorSelected", COLORSELECTED);
+    colorCrossed = readConfig("SceneViewSettings/ColorCrossed", COLORCROSSED);
+    colorNotConnected = readConfig("SceneViewSettings/ColorCrossed", COLORNOTCONNECTED);
 
     // view
     showPost3D = (SceneViewPost3DMode) readConfig("SceneViewSettings/ShowPost3D", (int) SCALARSHOWPOST3D);
@@ -222,6 +270,10 @@ void Config::loadPostprocessor(QDomElement *config)
     useAniso = readConfig("Adaptivity/UseAniso", ADAPTIVITY_ANISO);
     finerReference = readConfig("Adaptivity/FinerReference", ADAPTIVITY_FINER_REFERENCE_H_AND_P);
 
+    // linearizer quality
+    QString quality = readConfig("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(PALETTEQUALITY));
+    linearizerQuality = paletteQualityFromStringKey(quality);
+
     // solid view
     // solidView
 
@@ -235,111 +287,59 @@ void Config::loadPostprocessor(QDomElement *config)
     eleConfig = NULL;
 }
 
-void Config::loadAdvanced()
-{
-    QSettings settings;
-
-    // cache size
-    cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
-
-    // number of threads
-    numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
-    if (numberOfThreads > omp_get_max_threads())
-        numberOfThreads = omp_get_max_threads();
-    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
-
-    // global script
-    globalScript = settings.value("Python/GlobalScript", "").toString();
-}
-
-void Config::save()
-{
-    saveWorkspace();
-    saveAdvanced();
-}
-
-void Config::saveWorkspace()
-{
-    QSettings settings;
-
-    // std log
-    settings.setValue("SceneViewSettings/LogStdOut", showLogStdOut);
-
-    // general
-    settings.setValue("General/GUIStyle", guiStyle);
-    settings.setValue("General/Language", language);
-    settings.setValue("General/DefaultPhysicField", defaultPhysicField);
-
-    settings.setValue("General/CollaborationServerURL", collaborationServerURL);
-
-    settings.setValue("General/CheckVersion", checkVersion);
-    settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
-    settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
-
-    // delete files
-    settings.setValue("Solver/DeleteTriangleMeshFiles", deleteMeshFiles);
-    settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermesMeshFile);
-
-    // font
-    settings.setValue("SceneViewSettings/RulersFont", rulersFont);
-    settings.setValue("SceneViewSettings/PostFont", postFont);
-
-    // zoom
-    settings.setValue("General/ZoomToMouse", zoomToMouse);
-
-    // colors
-    settings.setValue("SceneViewSettings/ColorBackground", colorBackground);
-    settings.setValue("SceneViewSettings/ColorGrid", colorGrid);
-    settings.setValue("SceneViewSettings/ColorCross", colorCross);
-    settings.setValue("SceneViewSettings/ColorNodes", colorNodes);
-    settings.setValue("SceneViewSettings/ColorEdges", colorEdges);
-    settings.setValue("SceneViewSettings/ColorLabels", colorLabels);
-    settings.setValue("SceneViewSettings/ColorContours", colorContours);
-    settings.setValue("SceneViewSettings/ColorVectors", colorVectors);
-    settings.setValue("SceneViewSettings/ColorInitialMesh", colorInitialMesh);
-    settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
-    settings.setValue("SceneViewSettings/ColorInitialMesh", colorHighlighted);
-    settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSelected);
-
-    // geometry
-    settings.setValue("SceneViewSettings/NodeSize", nodeSize);
-    settings.setValue("SceneViewSettings/EdgeWidth", edgeWidth);
-    settings.setValue("SceneViewSettings/LabelSize", labelSize);
-
-    // discrete
-    settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
-
-    // grid
-    settings.setValue("SceneViewSettings/ShowGrid", showGrid);
-    settings.setValue("SceneViewSettings/GridStep", gridStep);
-
-    // rulers
-    settings.setValue("SceneViewSettings/ShowRulers", showRulers);
-    // snap to grid
-    settings.setValue("SceneViewSettings/SnapToGrid", snapToGrid);
-
-    // axes
-    settings.setValue("SceneViewSettings/ShowAxes", showAxes);
-
-    // linearizer quality
-    settings.setValue("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(linearizerQuality));
-
-    // 3d
-    settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
-    settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
-    settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
-    settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
-    settings.setValue("SceneViewSettings/ScalarView3DBoundingBox", scalarView3DBoundingBox);
-
-    // deformations
-    settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
-    settings.setValue("SceneViewSettings/DeformContour", deformContour);
-    settings.setValue("SceneViewSettings/DeformVector", deformVector);
-}
-
-void Config::savePostprocessor(QDomElement *config)
+void Config::save(QDomElement *config)
 {
     eleConfig = config;
+
+    // font
+    writeConfig("SceneViewSettings/RulersFont", rulersFont);
+    writeConfig("SceneViewSettings/PostFont", postFont);
+
+    // zoom
+    writeConfig("General/ZoomToMouse", zoomToMouse);
+
+    // geometry
+    writeConfig("SceneViewSettings/NodeSize", nodeSize);
+    writeConfig("SceneViewSettings/EdgeWidth", edgeWidth);
+    writeConfig("SceneViewSettings/LabelSize", labelSize);
+
+    // grid
+    writeConfig("SceneViewSettings/ShowGrid", showGrid);
+    writeConfig("SceneViewSettings/GridStep", gridStep);
+
+    // rulers
+    writeConfig("SceneViewSettings/ShowRulers", showRulers);
+    // snap to grid
+    writeConfig("SceneViewSettings/SnapToGrid", snapToGrid);
+
+    // axes
+    writeConfig("SceneViewSettings/ShowAxes", showAxes);
+
+    // 3d
+    writeConfig("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
+    writeConfig("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
+    writeConfig("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
+    writeConfig("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
+    writeConfig("SceneViewSettings/ScalarView3DBoundingBox", scalarView3DBoundingBox);
+
+    // deformations
+    writeConfig("SceneViewSettings/DeformScalar", deformScalar);
+    writeConfig("SceneViewSettings/DeformContour", deformContour);
+    writeConfig("SceneViewSettings/DeformVector", deformVector);
+
+    // colors
+    writeConfig("SceneViewSettings/ColorBackground", colorBackground);
+    writeConfig("SceneViewSettings/ColorGrid", colorGrid);
+    writeConfig("SceneViewSettings/ColorCross", colorCross);
+    writeConfig("SceneViewSettings/ColorNodes", colorNodes);
+    writeConfig("SceneViewSettings/ColorEdges", colorEdges);
+    writeConfig("SceneViewSettings/ColorLabels", colorLabels);
+    writeConfig("SceneViewSettings/ColorContours", colorContours);
+    writeConfig("SceneViewSettings/ColorVectors", colorVectors);
+    writeConfig("SceneViewSettings/ColorInitialMesh", colorInitialMesh);
+    writeConfig("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
+    writeConfig("SceneViewSettings/ColorInitialMesh", colorHighlighted);
+    writeConfig("SceneViewSettings/ColorSolutionMesh", colorSelected);
 
     // active field
     writeConfig("SceneViewSettings/ActiveField", activeField);
@@ -361,8 +361,6 @@ void Config::savePostprocessor(QDomElement *config)
     writeConfig("SceneViewSettings/ShowScalarColorBar", showScalarColorBar);
     writeConfig("SceneViewSettings/ScalarVariable", scalarVariable);
     writeConfig("SceneViewSettings/ScalarVariableComp", scalarVariableComp);
-    // writeConfig("SceneViewSettings/ScalarVariable3D", scalarVariable3D);
-    // writeConfig("SceneViewSettings/ScalarVariable3DComp", scalarVariable3DComp);
     writeConfig("SceneViewSettings/PaletteType", paletteType);
     writeConfig("SceneViewSettings/PaletteFilter", paletteFilter);
     writeConfig("SceneViewSettings/PaletteSteps", paletteSteps);
@@ -430,26 +428,14 @@ void Config::savePostprocessor(QDomElement *config)
     writeConfig("Adaptivity/UseAniso", useAniso);
     writeConfig("Adaptivity/FinerReference", finerReference);
 
+    // linearizer quality
+    writeConfig("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(linearizerQuality));
+
     // command argument
     writeConfig("Commands/Triangle", commandTriangle);
     writeConfig("Commands/Gmsh", commandGmsh);
 
     eleConfig = NULL;
-}
-
-void Config::saveAdvanced()
-{
-    QSettings settings;
-
-    // cache size
-    settings.setValue("Solution/CacheSize", cacheSize);
-
-    // number of threads
-    settings.setValue("Parallel/NumberOfThreads", numberOfThreads);
-    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, numberOfThreads);
-
-    // global script
-    settings.setValue("Python/GlobalScript", globalScript);
 }
 
 bool Config::readConfig(const QString &key, bool defaultValue)
@@ -500,6 +486,26 @@ QString Config::readConfig(const QString &key, const QString &defaultValue)
     return defaultValue;
 }
 
+QColor Config::readConfig(const QString &key, const QColor &defaultValue)
+{
+    if (eleConfig)
+    {
+        QString att = key; att.replace("/", "_");
+        if (eleConfig->hasAttribute(att))
+        {
+            QColor color;
+
+            color.setRed(eleConfig->attribute(att + "_red").toInt());
+            color.setGreen(eleConfig->attribute(att + "_green").toInt());
+            color.setBlue(eleConfig->attribute(att + "_blue").toInt());
+
+            return color;
+        }
+    }
+
+    return defaultValue;
+}
+
 void Config::writeConfig(const QString &key, bool value)
 {
     QString att = key; att.replace("/", "_");
@@ -522,4 +528,12 @@ void Config::writeConfig(const QString &key, const QString &value)
 {
     QString att = key; att.replace("/", "_");
     eleConfig->setAttribute(att, value);
+}
+
+void Config::writeConfig(const QString &key, const QColor &value)
+{
+    QString att = key; att.replace("/", "_");
+    eleConfig->setAttribute(att + "_red", value.red());
+    eleConfig->setAttribute(att + "_green", value.green());
+    eleConfig->setAttribute(att + "_blue", value.blue());
 }

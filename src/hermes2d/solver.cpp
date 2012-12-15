@@ -50,7 +50,7 @@ void processSolverOutput(const char* aha)
 template <typename Scalar>
 void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
 {
-    if(Agros2D::config()->saveMatrixRHS)
+    if(Agros2D::configComputer()->saveMatrixRHS)
     {
         solver->output_matrix();
         solver->output_rhs();

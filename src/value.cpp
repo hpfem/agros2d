@@ -380,7 +380,7 @@ bool ValueLineEdit::evaluate(bool quiet)
             {
                 m_number = val.number();
                 setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                              Agros2D::config()->lineEditValueShowResult);
+                              Agros2D::configComputer()->lineEditValueShowResult);
                 isOk = true;
             }
         }

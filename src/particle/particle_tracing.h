@@ -24,8 +24,7 @@
 #include "util/enums.h"
 #include "util/point.h"
 #include "util/global.h"
-
-#include "conf.h"
+#include "util/conf.h"
 
 class FieldInfo;
 

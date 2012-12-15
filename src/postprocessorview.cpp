@@ -312,9 +312,6 @@ void PostprocessorWidget::saveAdvanced()
     Agros2D::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
 
     // solid
-
-    // save
-    Agros2D::config()->save();
 }
 
 void PostprocessorWidget::createControls()

@@ -181,9 +181,6 @@ void SettingsWidget::save()
     // command argument
     Agros2D::config()->commandTriangle = txtArgumentTriangle->text();
     Agros2D::config()->commandGmsh = txtArgumentGmsh->text();
-
-    // save
-    Agros2D::config()->save();
 }
 
 void SettingsWidget::createControls()

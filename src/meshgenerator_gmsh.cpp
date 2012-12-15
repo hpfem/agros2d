@@ -79,7 +79,7 @@ bool MeshGeneratorGMSH::mesh()
         else
         {
             // copy gmsh files
-            if ((!Agros2D::config()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            if ((!Agros2D::configComputer()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 
@@ -108,7 +108,7 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
-            if ((!Agros2D::config()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            if ((!Agros2D::configComputer()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 

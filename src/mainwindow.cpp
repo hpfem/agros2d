@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // log stdout
     logStdOut = NULL;
-    if (Agros2D::config()->showLogStdOut)
+    if (Agros2D::configComputer()->showLogStdOut)
         logStdOut = new LogStdOut();
 
     // FIXME: curve elements from script doesn't work
@@ -1272,7 +1272,7 @@ void MainWindow::doFullScreen()
 
 void MainWindow::doOptions()
 {
-    ConfigDialog configDialog(this);
+    ConfigComputerDialog configDialog(this);
     if (configDialog.exec())
     {
         postHermes->refresh();
@@ -1529,7 +1529,7 @@ void MainWindow::doHelpShortCut()
 
 void MainWindow::doCollaborationServer()
 {
-    QDesktopServices::openUrl(QUrl(Agros2D::config()->collaborationServerURL + "problems.php"));
+    QDesktopServices::openUrl(QUrl(Agros2D::configComputer()->collaborationServerURL + "problems.php"));
 }
 
 void MainWindow::doOnlineHelp()

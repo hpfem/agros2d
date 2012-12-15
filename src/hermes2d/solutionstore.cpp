@@ -64,7 +64,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solution
         msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
 
         // flush cache
-        if (m_multiSolutionCache.count() > Agros2D::config()->cacheSize)
+        if (m_multiSolutionCache.count() > Agros2D::configComputer()->cacheSize)
             m_multiSolutionCache.remove(m_multiSolutionCache.keys().first());
 
         // add solution

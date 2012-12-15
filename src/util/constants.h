@@ -54,7 +54,7 @@ const bool SHOWGRID = true;
 const bool SNAPTOGRID = true;
 
 const QString RULERSFONT = "fontGoogleDroidMono10";
-const QString POSTFONT = "fontGoogleDroidMono16";
+const QString POSTFONT = "fontGoogleDroidMono14";
 
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
@@ -140,6 +140,8 @@ const double PARTICLEDRAGCOEFFICIENT = 0.0;
 const double PARTICLEDRAGREFERENCEAREA = 1e-6;
 
 // scalarview
+const PaletteQuality PALETTEQUALITY = PaletteQuality_Normal;
+
 const bool SHOWSCALARVIEW = true;
 const bool SHOWSCALARCOLORBAR = true;
 const bool SCALARFIELDRANGELOG = false;
@@ -150,9 +152,10 @@ const double SCALARRANGEMIN = 0.0;
 const double SCALARRANGEMAX = 1.0;
 
 const bool VIEW3DLIGHTING = false;
-const double VIEW3DANGLE = 230.0;
+const double VIEW3DANGLE = 270.0;
 const bool VIEW3DBACKGROUND = true;
 const double VIEW3DHEIGHT = 4.0;
+const bool VIEW3DBOUNDINGBOX = true;
 
 const bool DEFORMSCALAR = true;
 const bool DEFORMCONTOUR = true;

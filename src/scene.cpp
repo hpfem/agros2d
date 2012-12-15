@@ -1496,29 +1496,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
-    Agros2D::config()->loadPostprocessor(&config);
+    Agros2D::config()->load(&config);
 
     blockSignals(false);
 
     // default values
     emit invalidated();
     emit defaultValues();
-
-    // mesh
-    if (eleDoc.elementsByTagName("mesh").count() > 0)
-    {
-        QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        // TODO: Agros2D::scene()->activeSolution()->loadMeshInitial(eleMesh.toElement());
-    }
-    /*
-    // solutions
-    if (eleDoc.elementsByTagName("solutions").count() > 0)
-    {
-        QDomNode eleSolutions = eleDoc.elementsByTagName("solutions").at(0);
-        Agros2D::scene()->sceneSolution()->loadSolution(eleSolutions.toElement());
-        emit invalidated();
-    }
-    */
 
     // run script
     currentPythonEngineAgros()->runScript(Agros2D::problem()->config()->startupscript());
@@ -1828,19 +1812,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleCouplings.appendChild(eleCoupling);
     }
 
-    //    if (settings.value("Solver/SaveProblemWithSolution", false).value<bool>())
-    //    {
-    //        // mesh
-    //        QDomNode eleMesh = doc.createElement("mesh");
-    //        Agros2D::scene()->sceneSolution()->saveMeshInitial(&doc, eleMesh.toElement());
-    //        eleDoc.appendChild(eleMesh);
-
-    //        // solution
-    //        QDomNode eleSolutions = doc.createElement("solutions");
-    //        Agros2D::scene()->sceneSolution()->saveSolution(&doc, eleSolutions.toElement());
-    //        eleDoc.appendChild(eleSolutions);
-    //    }
-
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
@@ -1851,7 +1822,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // save config
     QDomElement eleConfig = doc.createElement("config");
     eleDoc.appendChild(eleConfig);
-    Agros2D::config()->savePostprocessor(&eleConfig);
+    Agros2D::config()->save(&eleConfig);
 
     QTextStream out(&file);
     doc.save(out, 4);

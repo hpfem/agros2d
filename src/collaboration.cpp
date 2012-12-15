@@ -101,7 +101,7 @@ void ServerLoginDialog::login(const QString &username, const QString &password)
     postData.append("login_username=" + username + "&");
     postData.append("login_password=" + password);
 
-    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::config()->collaborationServerURL + "/login_xml.php")), postData);
+    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::configComputer()->collaborationServerURL + "/login_xml.php")), postData);
 
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
@@ -169,7 +169,7 @@ ServerDownloadDialog::ServerDownloadDialog(QWidget *parent) : QDialog(parent)
     QSettings settings;
     restoreGeometry(settings.value("ServerDownloadDialog/Geometry", saveGeometry()).toByteArray());
 
-    load(Agros2D::config()->collaborationServerURL + "problems.php");
+    load(Agros2D::configComputer()->collaborationServerURL + "problems.php");
 }
 
 ServerDownloadDialog::~ServerDownloadDialog()
@@ -230,7 +230,7 @@ void ServerDownloadDialog::load(const QString &str)
 
 void ServerDownloadDialog::readFromServerXML(int ID, int version)
 {
-    networkReply = networkAccessManager->get(QNetworkRequest(QUrl(QString(Agros2D::config()->collaborationServerURL + "/problem_download.php?type=xml&id=%1&version=%2").
+    networkReply = networkAccessManager->get(QNetworkRequest(QUrl(QString(Agros2D::configComputer()->collaborationServerURL + "/problem_download.php?type=xml&id=%1&version=%2").
                                                                   arg(QString::number(ID)).
                                                                   arg(QString::number(version)))));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
@@ -251,7 +251,7 @@ void ServerDownloadDialog::httpFileFinished()
 
 void ServerDownloadDialog::linkClicked(const QUrl &url)
 {
-    if (url.toString().startsWith(Agros2D::config()->collaborationServerURL))
+    if (url.toString().startsWith(Agros2D::configComputer()->collaborationServerURL))
     {
         if (url.toString().contains("problem_download.php?type=xml&id="))
             readFromServerXML(url.queryItemValue("id").toInt(),

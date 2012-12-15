@@ -22,7 +22,7 @@
 
 #include "util.h"
 #include "util/enums.h"
-#include "conf.h"
+#include "util/conf.h"
 
 #include "hermes2d/solutiontypes.h"
 

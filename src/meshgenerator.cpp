@@ -19,8 +19,8 @@
 
 #include "meshgenerator.h"
 
-#include "conf.h"
 #include "util/global.h"
+#include "util/conf.h"
 
 #include "scene.h"
 #include "scenebasic.h"

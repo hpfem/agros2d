@@ -68,8 +68,8 @@ void PythonEngineAgros::runPythonHeader()
     QString script;
 
     // global script
-    if (!Agros2D::config()->globalScript.isEmpty())
-        script += Agros2D::config()->globalScript + "\n";
+    if (!Agros2D::configComputer()->globalScript.isEmpty())
+        script += Agros2D::configComputer()->globalScript + "\n";
 
     // startup script
     if (!Agros2D::problem()->config()->startupscript().isEmpty())

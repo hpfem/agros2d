@@ -465,7 +465,7 @@ void Problem::solve()
     if (isSolving())
         return;
 
-    if(Agros2D::config()->saveMatrixRHS)
+    if(Agros2D::configComputer()->saveMatrixRHS)
         Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
     solveActionCatchExceptions(false);

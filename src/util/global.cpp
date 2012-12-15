@@ -49,7 +49,9 @@ Agros2D::Agros2D()
 
     // config
     m_config = new Config();
-    m_config->load();
+
+    m_configComputer = new ConfigComputer();
+    m_configComputer->load();
 
     // log
     m_log = new Log();
