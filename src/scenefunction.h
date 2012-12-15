@@ -27,7 +27,7 @@ class ValueLineEdit;
 class ValueLineEdit;
 
 struct Point;
-class Chart;
+class ChartBasic;
 class SceneFunction;
 
 Q_DECLARE_METATYPE(SceneFunction *);
@@ -75,7 +75,7 @@ public:
     ~DSceneFunction();
 
 private:
-    Chart *chart;
+    ChartBasic *chart;
 
     QLineEdit *txtName;
     QLineEdit *txtFunction;

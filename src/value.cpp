@@ -568,7 +568,7 @@ void ValueTimeDialog::createControls()
     connect(cmbPresets, SIGNAL(currentIndexChanged(int)), this, SLOT(presetsChanged(int)));
 
     // chart
-    chart = new Chart(this, true);
+    chart = new Chart(this);
     // axis labels
     chart->setAxisTitle(QwtPlot::xBottom, tr("time"));
     chart->setAxisTitle(QwtPlot::yLeft, tr("value"));

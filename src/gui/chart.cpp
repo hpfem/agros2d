@@ -39,10 +39,11 @@
 #include <qwt_text.h>
 #include <qwt_scale_engine.h>
 #include <qwt_plot_renderer.h>
-#include "qwt_plot_magnifier.h"
-#include "qwt_plot_rescaler.h"
+#include <qwt_plot_magnifier.h>
+#include <qwt_plot_rescaler.h>
+#include <qwt_plot_curve.h>
 
-Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
+ChartBasic::ChartBasic(QWidget *parent) : QwtPlot(parent)
 {
     //  chart style
     setAutoReplot(false);
@@ -78,14 +79,14 @@ Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
     canvas()->setFrameShape(QFrame::NoFrame);
 
     // grid
-    QwtPlotGrid *grid = new QwtPlotGrid;
-    grid->setMajPen(QPen(Qt::gray, 0, Qt::DotLine));
-    grid->setMinPen(QPen(Qt::NoPen));
-    grid->enableX(true);
-    grid->enableY(true);
-    grid->enableXMin(true);
-    grid->enableYMin(true);
-    grid->attach(this);
+    m_grid = new QwtPlotGrid();
+    m_grid->setMajPen(QPen(Qt::gray, 0, Qt::DotLine));
+    m_grid->setMinPen(QPen(Qt::NoPen));
+    m_grid->enableX(true);
+    m_grid->enableY(true);
+    m_grid->enableXMin(true);
+    m_grid->enableYMin(true);
+    m_grid->attach(this);
 
     // axes
     QFont fnt = QFont(QApplication::font().family(), QApplication::font().pointSize() - 1, QFont::Normal);
@@ -124,12 +125,12 @@ Chart::Chart(QWidget *parent, bool showPicker) : QwtPlot(parent)
     setMinimumSize(sizeHint());
 }
 
-Chart::~Chart()
+ChartBasic::~ChartBasic()
 {
     delete m_curve;
 }
 
-void Chart::saveImage(const QString &fileName)
+void ChartBasic::saveImage(const QString &fileName)
 {
     QSettings settings;
     QString dir = settings.value("General/LastImageDir").toString();
@@ -185,7 +186,7 @@ void Chart::saveImage(const QString &fileName)
     }
 }
 
-void Chart::setData(double *xval, double *yval, int count)
+void ChartBasic::setData(double *xval, double *yval, int count)
 {
     const bool doReplot = autoReplot();
     setAutoReplot(false);
@@ -197,7 +198,7 @@ void Chart::setData(double *xval, double *yval, int count)
     replot();
 }
 
-void Chart::setData(QList<double> xval, QList<double> yval)
+void ChartBasic::setData(QList<double> xval, QList<double> yval)
 {
     double *txval = new double[xval.count()];
     double *tyval = new double[xval.count()];
@@ -216,10 +217,50 @@ void Chart::setData(QList<double> xval, QList<double> yval)
     replot();
 }
 
-void Chart::pickerValueMoved(const QPoint &pos)
+void ChartBasic::pickerValueMoved(const QPoint &pos)
 {
     QString info;
     info.sprintf("x=%g, y=%g",
                  invTransform(QwtPlot::xBottom, pos.x()),
                  invTransform(QwtPlot::yLeft, pos.y()));
 }
+
+// ***********************************************************************************************************
+
+Chart::Chart(QWidget *parent) : ChartBasic(parent)
+{
+    showGrid = new QAction(tr("Show grid"), this);
+    showGrid->setCheckable(true);
+    connect(showGrid, SIGNAL(changed()), this, SLOT(showGridChanged()));
+
+    mnuChart = new QMenu(this);
+    mnuChart->addAction(showGrid);
+
+    // load settings
+    QSettings settings;
+
+    showGrid->setChecked(settings.value("Chart/ShowGrid", true).toBool());
+    m_grid->setVisible(showGrid->isChecked());
+}
+
+void Chart::showGridChanged()
+{
+    QSettings settings;
+    settings.setValue("Chart/ShowGrid", showGrid->isChecked());
+
+    m_grid->setVisible(showGrid->isChecked());
+    replot();
+}
+
+Chart::~Chart()
+{
+}
+
+void Chart::contextMenuEvent(QContextMenuEvent *event)
+{
+    mnuChart->exec(event->globalPos());
+}
+
+
+
+

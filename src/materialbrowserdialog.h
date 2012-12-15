@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class Chart;
+class ChartBasic;
 
 class MaterialBrowserDialog : public QDialog
 {
@@ -49,7 +49,7 @@ private:
     QLabel *lblDependenceShortname;
     QLabel *lblSource;
     QLabel *lblValue;
-    Chart *chartValue;
+    ChartBasic *chartValue;
 
     QDialogButtonBox *buttonBox;
 

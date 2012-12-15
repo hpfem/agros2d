@@ -23,7 +23,7 @@
 #include "util.h"
 
 class QwtPlotCurve;
-class Chart;
+class ChartBasic;
 
 class Log: public QObject
 {
@@ -99,7 +99,7 @@ private:
      LogWidget *logWidget;
 
      QwtPlotCurve *m_curve;
-     Chart *m_chart;
+     ChartBasic *m_chart;
      QList<double> m_chartStep;
      QList<double> m_chartNorm;
 

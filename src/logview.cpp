@@ -200,7 +200,7 @@ void LogDialog::createControls()
 
     logWidget = new LogWidget(this);
 
-    m_chart = new Chart(this, true);
+    m_chart = new ChartBasic(this);
     m_chart->setVisible(false);
     m_chart->setMinimumWidth(300);
 
