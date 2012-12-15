@@ -420,7 +420,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         double3* linVert = m_postHermes->linScalarView().get_vertices();
         int3* linTris = m_postHermes->linScalarView().get_triangles();
-        int3* linEdges = m_postHermes->linScalarView().get_edges();
+        int2* linEdges = m_postHermes->linScalarView().get_edges();
         Point point[3];
         double value[3];
 
@@ -862,7 +862,7 @@ void SceneViewPost3D::paintParticleTracing()
 
         double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
         int3* linTris = m_postHermes->linInitialMeshView().get_triangles();
-        int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
+        int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
         Point point[3];
         double value[3];
 

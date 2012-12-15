@@ -238,7 +238,7 @@ void SceneViewMesh::paintInitialMesh()
         m_postHermes->linInitialMeshView().lock_data();
 
         double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
-        int3* linEdges = m_postHermes->linInitialMeshView().get_edges();
+        int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
 
         // edges
         for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
@@ -279,7 +279,7 @@ void SceneViewMesh::paintSolutionMesh()
         m_postHermes->linSolutionMeshView().lock_data();
 
         double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
-        int3* linEdges = m_postHermes->linSolutionMeshView().get_edges();
+        int2* linEdges = m_postHermes->linSolutionMeshView().get_edges();
 
         // triangles
         for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)

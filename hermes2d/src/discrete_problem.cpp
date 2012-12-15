@@ -1308,7 +1308,9 @@ namespace Hermes
         else
         {
           // If the sub_idx map exists AND contains a record for this sub_idx, we need to delete the record.
-          typename std::map<uint64_t, CacheRecordPerSubIdx*>::iterator it = this->cache_records_sub_idx[space_i][current_state->e[space_i]->id]->find(current_state->sub_idx[space_i]);
+					typename std::map<uint64_t, CacheRecordPerSubIdx*>::iterator it;
+#pragma omp critical (searching_in_cache)
+          it = this->cache_records_sub_idx[space_i][current_state->e[space_i]->id]->find(current_state->sub_idx[space_i]);
           if(it != this->cache_records_sub_idx[space_i][current_state->e[space_i]->id]->end())
             (*it).second->clear();
         }
@@ -1414,6 +1416,7 @@ namespace Hermes
         }
 
         CacheRecordPerSubIdx* newRecord;
+#pragma omp critical (searching_in_cache)
         newRecord = (*this->cache_records_sub_idx[i][current_state->e[i]->id]->find(current_state->sub_idx[i])).second;
 
         newRecord->nvert = current_state->rep->nvert;
@@ -1513,8 +1516,11 @@ namespace Hermes
 
       // Ext functions.
       // - order
-      int order = this->cache_records_sub_idx[rep_space_i][current_state->e[rep_space_i]->id]->find(current_state->sub_idx[rep_space_i])->second->order;
-      // - u_ext
+			int order;
+#pragma omp critical (searching_in_cache)
+      order = this->cache_records_sub_idx[rep_space_i][current_state->e[rep_space_i]->id]->find(current_state->sub_idx[rep_space_i])->second->order;
+      
+			// - u_ext
       int prevNewtonSize = this->wf->get_neq();
       Func<Scalar>** u_ext = new Func<Scalar>*[prevNewtonSize];
       if(current_u_ext != NULL)
@@ -1550,7 +1556,9 @@ namespace Hermes
           int form_j = current_wf->mfvol[current_mfvol_i]->j;
           CacheRecordPerSubIdx* CacheRecordPerSubIdxI;
           CacheRecordPerSubIdx* CacheRecordPerSubIdxJ;
+#pragma omp critical (searching_in_cache)
           CacheRecordPerSubIdxI = this->cache_records_sub_idx[form_i][current_state->e[form_i]->id]->find(current_state->sub_idx[form_i])->second;
+#pragma omp critical (searching_in_cache)
           CacheRecordPerSubIdxJ = this->cache_records_sub_idx[form_j][current_state->e[form_j]->id]->find(current_state->sub_idx[form_j])->second;
 
           assemble_matrix_form(current_wf->mfvol[current_mfvol_i], 
@@ -1576,6 +1584,7 @@ namespace Hermes
 
           int form_i = current_wf->vfvol[current_vfvol_i]->i;
           CacheRecordPerSubIdx* CacheRecordPerSubIdxI;
+#pragma omp critical (searching_in_cache)
           CacheRecordPerSubIdxI = this->cache_records_sub_idx[form_i][current_state->e[form_i]->id]->find(current_state->sub_idx[form_i])->second;
 
           assemble_vector_form(current_wf->vfvol[current_vfvol_i], 
@@ -1620,7 +1629,9 @@ namespace Hermes
 
           // Ext functions.
           // - order
-          int orderSurf = this->cache_records_sub_idx[rep_space_i][current_state->e[rep_space_i]->id]->find(current_state->sub_idx[rep_space_i])->second->orderSurface[current_state->isurf];
+					int orderSurf;
+#pragma omp critical (searching_in_cache)
+          orderSurf = this->cache_records_sub_idx[rep_space_i][current_state->e[rep_space_i]->id]->find(current_state->sub_idx[rep_space_i])->second->orderSurface[current_state->isurf];
           // - u_ext
           Func<Scalar>** u_extSurf = new Func<Scalar>*[prevNewtonSize];
           if(current_u_ext != NULL)
@@ -1655,7 +1666,9 @@ namespace Hermes
               int form_j = current_wf->mfsurf[current_mfsurf_i]->j;
               CacheRecordPerSubIdx* CacheRecordPerSubIdxI;
               CacheRecordPerSubIdx* CacheRecordPerSubIdxJ;
+#pragma omp critical (searching_in_cache)
               CacheRecordPerSubIdxI = this->cache_records_sub_idx[form_i][current_state->e[form_i]->id]->find(current_state->sub_idx[form_i])->second;
+#pragma omp critical (searching_in_cache)
               CacheRecordPerSubIdxJ = this->cache_records_sub_idx[form_j][current_state->e[form_j]->id]->find(current_state->sub_idx[form_j])->second;
 
               assemble_matrix_form(current_wf->mfsurf[current_mfsurf_i], 
@@ -1682,6 +1695,7 @@ namespace Hermes
 
               int form_i = current_wf->vfsurf[current_vfsurf_i]->i;
               CacheRecordPerSubIdx* CacheRecordPerSubIdxI;
+#pragma omp critical (searching_in_cache)
               CacheRecordPerSubIdxI = this->cache_records_sub_idx[form_i][current_state->e[form_i]->id]->find(current_state->sub_idx[form_i])->second;
 
               assemble_vector_form(current_wf->vfsurf[current_vfsurf_i], 

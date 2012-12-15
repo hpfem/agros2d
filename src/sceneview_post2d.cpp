@@ -1153,6 +1153,7 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
               0.5);
 
     // elements
+    /*
     glBegin(GL_TRIANGLES);
     for (int i = 0, max = Agros2D::scene()->activeViewField()->initialMesh().data()->get_max_element_id(); i < max; i++)
     {
@@ -1186,19 +1187,13 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
         }
     }
     glEnd();
+    */
 
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
-    glDisable(GL_POLYGON_OFFSET_FILL);
+    m_postHermes->linInitialMeshView().lock_data();
 
-    // how to get marker from linearizer?
-    /*
-    if (!m_post2DHermes->isMeshed()) return;
-
-    m_post2DHermes->linInitialMeshView().lock_data();
-
-    double3* linVert = m_post2DHermes->linInitialMeshView().get_vertices();
-    int3* linTris = m_post2DHermes->linInitialMeshView().get_triangles();
+    double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
+    int3* linTris = m_postHermes->linInitialMeshView().get_triangles();
+    int* linTrisMarkers = m_postHermes->linInitialMeshView().get_triangle_markers();
 
     // draw initial mesh
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -1213,9 +1208,10 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Agros2D::problem()->linSolutionMeshView().get_num_triangles(); i++)
+    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
     {
-        if (Agros2D::scene()->labels[element->marker - 1]->isSelected)
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+        if (label->isSelected())
         {
             glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
             glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
@@ -1224,11 +1220,11 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
     }
     glEnd();
 
+    glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_OFFSET_FILL);
 
-    Agros2D::problem()->linSolutionMeshView().unlock_data();
-    */
+    m_postHermes->linInitialMeshView().unlock_data();
 }
 
 void SceneViewPost2D::paintPostprocessorSelectedSurface()
