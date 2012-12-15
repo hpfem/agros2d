@@ -202,6 +202,21 @@ void PostprocessorWidget::loadAdvanced()
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
     txtScalarFieldRangeMin->setValue(Agros2D::config()->scalarRangeMin);
     txtScalarFieldRangeMax->setValue(Agros2D::config()->scalarRangeMax);
+
+    // solid
+    lstSolidMaterials->clear();
+    if (Agros2D::problem()->isSolved())
+    {
+        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(Agros2D::scene()->activeViewField()).items())
+        {
+            QListWidgetItem *item = new QListWidgetItem(lstSolidMaterials);
+            item->setText(material->name());
+            item->setCheckState(Qt::Unchecked);
+            item->setData(Qt::UserRole, material->variant());
+
+            lstSolidMaterials->addItem(item);
+        }
+    }
 }
 
 void PostprocessorWidget::saveBasic()
@@ -296,6 +311,8 @@ void PostprocessorWidget::saveAdvanced()
     Agros2D::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
     Agros2D::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
 
+    // solid
+
     // save
     Agros2D::config()->save();
 }
@@ -327,7 +344,8 @@ void PostprocessorWidget::createControls()
     groupPostContourAdvanced->setVisible(false);
     groupPostVectorAdvanced->setVisible(false);
     groupPostParticalTracingAdvanced->setVisible(false);
-    groupPostChartAdvanced->setVisible(false);
+    groupPostSolidAdvanced->setVisible(false);
+    groupPostChart->setVisible(false);
 
     setLayout(layoutMain);
 }
@@ -496,11 +514,27 @@ CollapsableGroupBoxButton *PostprocessorWidget::postParticalTracingWidget()
     layoutParticleTracing->addWidget(groupPostParticalTracingAdvanced);
 
     CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Partical tracing"));
-    connect(grpParticalTracing , SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
+    connect(grpParticalTracing, SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
     grpParticalTracing->setCollapsed(true);
-    grpParticalTracing->setLayout(layoutParticleTracing );
+    grpParticalTracing->setLayout(layoutParticleTracing);
 
     return grpParticalTracing;
+}
+
+CollapsableGroupBoxButton *PostprocessorWidget::postSolidWidget()
+{
+    // solid view
+    groupPostSolidAdvanced = postPostSolidAdvancedWidget();
+
+    QVBoxLayout *layoutSolid = new QVBoxLayout();
+    layoutSolid->addWidget(groupPostSolidAdvanced);
+
+    CollapsableGroupBoxButton *grpSolidView = new CollapsableGroupBoxButton(tr("Solid view"));
+    connect(grpSolidView, SIGNAL(collapseEvent(bool)), this, SLOT(doSolidExpandCollapse(bool)));
+    grpSolidView->setCollapsed(true);
+    grpSolidView->setLayout(layoutSolid);
+
+    return grpSolidView;
 }
 
 QWidget *PostprocessorWidget::post3DWidget()
@@ -639,7 +673,8 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     groupPostContour = postContourWidget();
     groupPostVector = postVectorWidget();
     groupPostParticalTracing = postParticalTracingWidget();
-    groupPostChartAdvanced = postChartWidget();
+    groupPostSolid = postSolidWidget();
+    groupPostChart = postChartWidget();
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
     layoutArea->addWidget(groupMeshOrder);
@@ -647,7 +682,8 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     layoutArea->addWidget(groupPostContour);
     layoutArea->addWidget(groupPostVector);
     layoutArea->addWidget(groupPostParticalTracing);
-    layoutArea->addWidget(groupPostChartAdvanced);
+    layoutArea->addWidget(groupPostSolid);
+    layoutArea->addWidget(groupPostChart);
     layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
@@ -825,6 +861,22 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     vectorWidget->setLayout(gridLayoutVectors);
 
     return vectorWidget;
+}
+
+QWidget *PostprocessorWidget::postPostSolidAdvancedWidget()
+{
+    lstSolidMaterials = new QListWidget();
+
+    QGridLayout *gridLayoutSolid = new QGridLayout();
+    gridLayoutSolid->setMargin(0);
+    gridLayoutSolid->setColumnMinimumWidth(0, minWidth);
+    gridLayoutSolid->setColumnStretch(0, 1);
+    gridLayoutSolid->addWidget(lstSolidMaterials, 0, 0);
+
+    QWidget *solidWidget = new QWidget();
+    solidWidget->setLayout(gridLayoutSolid);
+
+    return solidWidget;
 }
 
 QWidget *PostprocessorWidget::postChartWidget()
@@ -1158,9 +1210,12 @@ void PostprocessorWidget::refresh()
         // particle tracing
         groupPostParticalTracing->setVisible(false);
         groupPostParticalTracingAdvanced->setVisible(false);
+        // solid
+        groupPostSolid->setVisible(false);
+        groupPostSolidAdvanced->setVisible(false);
         // chart
         groupChart->setVisible(false);
-        groupPostChartAdvanced->setVisible(false);
+        groupPostChart->setVisible(false);
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -1191,9 +1246,13 @@ void PostprocessorWidget::refresh()
         groupPostParticalTracing->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
         groupPostParticalTracingAdvanced->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked() && !groupPostParticalTracing->isCollapsed());
 
+        // solid
+        groupPostSolid->setVisible(false);
+        groupPostSolidAdvanced->setVisible(false);
+
         // chart
         groupChart->setVisible(false);
-        groupPostChartAdvanced->setVisible(false);
+        groupPostChart->setVisible(false);
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
@@ -1229,9 +1288,16 @@ void PostprocessorWidget::refresh()
         groupPostParticalTracing->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked());
         groupPostParticalTracingAdvanced->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked() && !groupPostParticalTracing->isCollapsed());
 
+        // solid
+        groupPostSolid->setVisible((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
+                                   || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()));
+        groupPostSolidAdvanced->setVisible(((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
+                                   || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()))
+                                   && !groupPostSolid->isCollapsed());
+
         // chart
         groupChart->setVisible(false);
-        groupPostChartAdvanced->setVisible(false);
+        groupPostChart->setVisible(false);
     }
     if (m_sceneChart->actSceneModeChart->isChecked())
     {
@@ -1251,9 +1317,12 @@ void PostprocessorWidget::refresh()
         // particle tracing
         groupPostParticalTracing->setVisible(false);
         groupPostParticalTracingAdvanced->setVisible(false);
+        // solid
+        groupPostSolid->setVisible(false);
+        groupPostSolidAdvanced->setVisible(false);
         // chart
         groupChart->setVisible(true);
-        groupPostChartAdvanced->setVisible(true);
+        groupPostChart->setVisible(true);
     }
 
     // scalar view
@@ -1371,6 +1440,11 @@ void PostprocessorWidget::doContourFieldExpandCollapse(bool collapsed)
 void PostprocessorWidget::doVectorFieldExpandCollapse(bool collapsed)
 {
     groupPostVectorAdvanced->setVisible(!collapsed);
+}
+
+void PostprocessorWidget::doSolidExpandCollapse(bool collapsed)
+{
+    groupPostSolidAdvanced->setVisible(!collapsed);
 }
 
 void PostprocessorWidget::doParticleFieldExpandCollapse(bool collapsed)

@@ -420,6 +420,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         double3* linVert = m_postHermes->linScalarView().get_vertices();
         int3* linTris = m_postHermes->linScalarView().get_triangles();
+        int* linTrisMarkers = m_postHermes->linScalarView().get_triangle_markers();
         int2* linEdges = m_postHermes->linScalarView().get_edges();
         Point point[3];
         double value[3];
@@ -461,18 +462,12 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     value[j]   = linVert[linTris[i][j]][2];
                 }
 
-                // TODO: to Lukas - get marker directly from linearizer
-                /*
-                Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Agros2D::scene()->activeViewField()->initialMesh().data(),
-                                                                                                         (point[0].x + point[1].x + point[2].x) / 3.0,
-                                                                                                         (point[0].y + point[1].y + point[2].y) / 3.0);
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
                 SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
 
                 if (material->name() == "Air")
                     continue;
-                */
 
                 if (!Agros2D::config()->scalarRangeAuto)
                 {
@@ -514,57 +509,36 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 }
 
                 // length
-                /*
-                if (Agros2D::config()->scalarView3DLighting || isModel)
+                for (int i = 0; i < 3; i++)
                 {
-                    computeNormal(point[0].x, point[0].y, -depth/2.0,
-                                  point[1].x, point[1].y, -depth/2.0,
-                                  point[1].x, point[1].y,  depth/2.0,
-                                  normal);
-                    glNormal3d(normal[0], normal[1], normal[2]);
+                    if (Agros2D::config()->scalarView3DLighting || isModel)
+                    {
+                        computeNormal(point[i].x, point[i].y, -depth/2.0,
+                                      point[(i + 1) % 3].x, point[(i + 1) % 3].y, -depth/2.0,
+                                      point[(i + 1) % 3].x, point[(i + 1) % 3].y,  depth/2.0,
+                                      normal);
+                        glNormal3d(normal[0], normal[1], normal[2]);
+                    }
+
+                    if (!isModel) glTexCoord1d((value[i] - Agros2D::config()->scalarRangeMin) * irange);
+                    glVertex3d(point[i].x, point[i].y, -depth/2.0);
+                    if (!isModel) glTexCoord1d((value[(i + 1) % 3] - Agros2D::config()->scalarRangeMin) * irange);
+                    glVertex3d(point[(i + 1) % 3].x, point[1].y, -depth/2.0);
+                    if (!isModel) glTexCoord1d((value[(i + 1) % 3] - Agros2D::config()->scalarRangeMin) * irange);
+                    glVertex3d(point[(i + 1) % 3].x, point[(i + 1) % 3].y, depth/2.0);
+
+                    if (!isModel) glTexCoord1d((value[(i + 1) % 3] - Agros2D::config()->scalarRangeMin) * irange);
+                    glVertex3d(point[(i + 1) % 3].x, point[(i + 1) % 3].y, depth/2.0);
+                    if (!isModel) glTexCoord1d((value[i] - Agros2D::config()->scalarRangeMin) * irange);
+                    glVertex3d(point[i].x, point[i].y, depth/2.0);
+                    if (!isModel) glTexCoord1d((value[i] - Agros2D::config()->scalarRangeMin) * irange);
+                    glVertex3d(point[i].x, point[i].y, -depth/2.0);
                 }
-
-                if (!isModel) glTexCoord1d((value[0] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[0].x, point[0].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, depth/2.0);
-
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, depth/2.0);
-                if (!isModel) glTexCoord1d((value[0] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[0].x, point[0].y, depth/2.0);
-                if (!isModel) glTexCoord1d((value[0] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[0].x, point[0].y, -depth/2.0);
-
-                if (Agros2D::config()->scalarView3DLighting || isModel)
-                {
-                    computeNormal(point[1].x, point[1].y, -depth/2.0,
-                                  point[2].x, point[2].y, -depth/2.0,
-                                  point[2].x, point[2].y,  depth/2.0,
-                                  normal);
-                    glNormal3d(normal[0], normal[1], normal[2]);
-                }
-
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[2] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[2].x, point[2].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[2] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[2].x, point[2].y, depth/2.0);
-
-                if (!isModel) glTexCoord1d((value[2] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[2].x, point[2].y, depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::config()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, -depth/2.0);
-                */
             }
             glEnd();
 
             // length
+            /*
             glBegin(GL_QUADS);
             for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
             {
@@ -604,6 +578,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 glVertex3d(point[0].x, point[0].y, depth/2.0);
             }
             glEnd();
+            */
         }
         else
         {

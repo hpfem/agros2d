@@ -222,6 +222,9 @@ void Config::loadPostprocessor(QDomElement *config)
     useAniso = readConfig("Adaptivity/UseAniso", ADAPTIVITY_ANISO);
     finerReference = readConfig("Adaptivity/FinerReference", ADAPTIVITY_FINER_REFERENCE_H_AND_P);
 
+    // solid view
+    // solidView
+
     // command argument
     commandGmsh = readConfig("Commands/Gmsh", COMMANDS_GMSH);
     commandTriangle = readConfig("Commands/Triangle", COMMANDS_TRIANGLE);

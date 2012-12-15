@@ -93,8 +93,6 @@ public:
     bool showScalarView;
     QString scalarVariable;
     PhysicFieldVariableComp scalarVariableComp;
-    // QString scalarVariable3D;
-    // PhysicFieldVariableComp scalarVariable3DComp;
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
@@ -161,6 +159,9 @@ public:
     double particleDragDensity;
     double particleDragCoefficient;
     double particleDragReferenceArea;
+
+    // solid view
+    QList<QString> solidViewHide;
 
     // colors
     QColor colorBackground;

@@ -1152,43 +1152,6 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
               Agros2D::config()->colorSelected.blueF(),
               0.5);
 
-    // elements
-    /*
-    glBegin(GL_TRIANGLES);
-    for (int i = 0, max = Agros2D::scene()->activeViewField()->initialMesh().data()->get_max_element_id(); i < max; i++)
-    {
-        Hermes::Hermes2D::Element *element;
-        if ((element = Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_fast(i))->used)
-        {
-            if (element->active)
-            {
-                if (Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()))->isSelected())
-                {
-                    if (element->is_triangle())
-                    {
-                        // triangles
-                        glVertex2d(element->vn[0]->x, element->vn[0]->y);
-                        glVertex2d(element->vn[1]->x, element->vn[1]->y);
-                        glVertex2d(element->vn[2]->x, element->vn[2]->y);
-                    }
-                    else
-                    {
-                        // quads
-                        glVertex2d(element->vn[0]->x, element->vn[0]->y);
-                        glVertex2d(element->vn[1]->x, element->vn[1]->y);
-                        glVertex2d(element->vn[2]->x, element->vn[2]->y);
-
-                        glVertex2d(element->vn[2]->x, element->vn[2]->y);
-                        glVertex2d(element->vn[3]->x, element->vn[3]->y);
-                        glVertex2d(element->vn[0]->x, element->vn[0]->y);
-                    }
-                }
-            }
-        }
-    }
-    glEnd();
-    */
-
     m_postHermes->linInitialMeshView().lock_data();
 
     double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
