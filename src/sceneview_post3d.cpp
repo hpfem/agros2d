@@ -881,6 +881,7 @@ void SceneViewPost3D::paintParticleTracing()
         double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
         int3* linTris = m_postHermes->linInitialMeshView().get_triangles();
         int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
+        int* linEdgesMarkers = m_postHermes->linInitialMeshView().get_edge_markers();
         Point point[3];
         double value[3];
 
@@ -927,7 +928,7 @@ void SceneViewPost3D::paintParticleTracing()
             for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
             {
                 // draw only boundary edges
-                if (!linEdges[i][2]) continue;
+                if (!linEdgesMarkers[i]) continue;
 
                 for (int j = 0; j < 2; j++)
                 {
@@ -984,7 +985,7 @@ void SceneViewPost3D::paintParticleTracing()
             for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
             {
                 // draw only boundary edges
-                if (!linEdges[i][2]) continue;
+                if (!linEdgesMarkers[i]) continue;
 
                 for (int j = 0; j < 2; j++)
                 {

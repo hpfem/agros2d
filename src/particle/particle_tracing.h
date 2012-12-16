@@ -27,6 +27,7 @@
 #include "util/conf.h"
 
 class FieldInfo;
+class SceneMaterial;
 
 class ParticleTracing : public QObject
 {
@@ -54,6 +55,8 @@ private:
 
     double m_velocityMin;
     double m_velocityMax;
+
+    QMap<FieldInfo *, SceneMaterial *> m_materials;
 
     bool newtonEquations(FieldInfo* fieldInfo,
                          double step,

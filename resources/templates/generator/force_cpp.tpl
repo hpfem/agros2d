@@ -65,6 +65,12 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
 
             // point values
             Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(point.x, point.y);
+            if (!values)
+            {
+                throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));
+                return res;
+            }
+
             double val;
             if ((fieldInfo->analysisType() == AnalysisType_Transient) && Agros2D::scene()->activeTimeStep() == 0)
                 // const solution at first time step

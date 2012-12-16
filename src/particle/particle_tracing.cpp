@@ -19,6 +19,7 @@
 
 #include "particle_tracing.h"
 
+#include "util.h"
 #include "util/xml.h"
 #include "util/constants.h"
 
@@ -56,23 +57,28 @@ void ParticleTracing::clear()
 
     m_velocityMin =  numeric_limits<double>::max();
     m_velocityMax = -numeric_limits<double>::max();
+
+    m_materials.clear();
 }
 
-bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo, double step, Point3 position, Point3 velocity, Point3 *newposition, Point3 *newvelocity)
+bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo,
+                                      double step,
+                                      Point3 position,
+                                      Point3 velocity,
+                                      Point3 *newposition,
+                                      Point3 *newvelocity)
 {
-    // check domain
-    Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh().data(),
-                                                                                                   position.x, position.y);
-    if (!element)
-        return false;
-
     // Lorentz force
-
-    // find marker
-    SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
-    SceneMaterial *material = label->marker(fieldInfo);
-
-    Point3 forceLorentz = Agros2D::plugins()[fieldInfo->fieldId()]->force(fieldInfo, material, position, velocity) * Agros2D::config()->particleConstant;
+    Point3 forceLorentz;
+    try
+    {
+        forceLorentz = Agros2D::plugins()[fieldInfo->fieldId()]->force(fieldInfo, m_materials[fieldInfo], position, velocity) * Agros2D::config()->particleConstant;
+    }
+    catch (AgrosException e)
+    {
+        Agros2D::log()->printWarning(tr("Particle Tracing"), e.what());
+        return false;
+    }
 
     // custom force
     Point3 forceCustom = Agros2D::config()->particleCustomForce;
@@ -152,6 +158,23 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
         }
     }
 
+    // find materials
+    foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+    {
+        // check domain
+        Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh().data(),
+                                                                                                       position.x, position.y);
+        if (!element)
+        {
+            throw (AgrosException(tr("Element [%1, %2] lies out of the mesh ('%3').").arg(position.x).arg(position.x).arg(fieldInfo->name())));
+            return;
+        }
+
+        // find material
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
+        m_materials[fieldInfo] = label->marker(fieldInfo);
+    }
+
     // initial velocity
     Point3 velocity;
     velocity.x = Agros2D::config()->particleStartVelocity.x;
@@ -168,7 +191,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
     double relErrorMin = (Agros2D::config()->particleMaximumRelativeError > 0.0) ? Agros2D::config()->particleMaximumRelativeError/100 : 1e-6;
     double relErrorMax = 1e-3;
     double dt = Agros2D::config()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Agros2D::config()->particleStartVelocity.magnitude() / 10
-                                                                      : 1e-11;
+                                                                         : 1e-11;
 
     // QTime time;
     // time.start();
@@ -351,7 +374,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                     // set new timestep
                     dt = dt * ratio;
 
-                    qDebug() << "newVelocity: " << newVelocity.toString() << ratio << dt;
+                    // qDebug() << "newVelocity: " << newVelocity.toString() << ratio << dt;
                 }
             }
 
