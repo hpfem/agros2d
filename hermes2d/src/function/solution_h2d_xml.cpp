@@ -285,6 +285,36 @@ namespace XMLSolution
     this->exactConstantYComplex_ = x;
   }
 
+  const solution::spaceType_optional& solution::
+  spaceType () const
+  {
+    return this->spaceType_;
+  }
+
+  solution::spaceType_optional& solution::
+  spaceType ()
+  {
+    return this->spaceType_;
+  }
+
+  void solution::
+  spaceType (const spaceType_type& x)
+  {
+    this->spaceType_.set (x);
+  }
+
+  void solution::
+  spaceType (const spaceType_optional& x)
+  {
+    this->spaceType_ = x;
+  }
+
+  void solution::
+  spaceType (::std::auto_ptr< spaceType_type > x)
+  {
+    this->spaceType_.set (x);
+  }
+
 
   // mono_coeffs
   // 
@@ -501,7 +531,8 @@ namespace XMLSolution
     exactConstantXReal_ (::xml_schema::flags (), this),
     exactConstantYReal_ (::xml_schema::flags (), this),
     exactConstantXComplex_ (::xml_schema::flags (), this),
-    exactConstantYComplex_ (::xml_schema::flags (), this)
+    exactConstantYComplex_ (::xml_schema::flags (), this),
+    spaceType_ (::xml_schema::flags (), this)
   {
   }
 
@@ -521,7 +552,8 @@ namespace XMLSolution
     exactConstantXReal_ (x.exactConstantXReal_, f, this),
     exactConstantYReal_ (x.exactConstantYReal_, f, this),
     exactConstantXComplex_ (x.exactConstantXComplex_, f, this),
-    exactConstantYComplex_ (x.exactConstantYComplex_, f, this)
+    exactConstantYComplex_ (x.exactConstantYComplex_, f, this),
+    spaceType_ (x.spaceType_, f, this)
   {
   }
 
@@ -541,7 +573,8 @@ namespace XMLSolution
     exactConstantXReal_ (f, this),
     exactConstantYReal_ (f, this),
     exactConstantXComplex_ (f, this),
-    exactConstantYComplex_ (f, this)
+    exactConstantYComplex_ (f, this),
+    spaceType_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -653,6 +686,15 @@ namespace XMLSolution
       if (n.name () == "exactConstantYComplex" && n.namespace_ ().empty ())
       {
         this->exactConstantYComplex_.set (exactConstantYComplex_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "spaceType" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< spaceType_type > r (
+          spaceType_traits::create (i, f, this));
+
+        this->spaceType_.set (r);
         continue;
       }
     }
@@ -1113,6 +1155,11 @@ namespace XMLSolution
     if (i.exactConstantYComplex ())
     {
       o << ::std::endl << "exactConstantYComplex: " << *i.exactConstantYComplex ();
+    }
+
+    if (i.spaceType ())
+    {
+      o << ::std::endl << "spaceType: " << *i.spaceType ();
     }
 
     return o;
@@ -1755,6 +1802,18 @@ namespace XMLSolution
           e));
 
       a << ::xml_schema::as_decimal(*i.exactConstantYComplex ());
+    }
+
+    // spaceType
+    //
+    if (i.spaceType ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "spaceType",
+          e));
+
+      a << *i.spaceType ();
     }
   }
 
