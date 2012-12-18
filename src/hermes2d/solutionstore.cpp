@@ -63,12 +63,8 @@ MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solution
         MultiSolutionArray<double> msa;
         msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
 
-        // flush cache
-        if (m_multiSolutionCache.count() > Agros2D::configComputer()->cacheSize)
-            m_multiSolutionCache.remove(m_multiSolutionCache.keys().first());
-
-        // add solution
-        m_multiSolutionCache.insert(solutionID, msa);
+        // insert to the cache
+        insertMultiSolutionToCache(solutionID, msa);
 
         return msa;
     }
@@ -132,7 +128,11 @@ void SolutionStore::replaceSolution(FieldSolutionID solutionID, MultiSolutionArr
     assert(solutionID.adaptivityStep >= 0);
 
     multiSolution.saveToFile(baseStoreFileName(solutionID), solutionID);
+
     m_multiSolutions.append(solutionID);
+
+    // insert to the cache
+    insertMultiSolutionToCache(solutionID, multiSolution);
 }
 
 void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
@@ -362,4 +362,17 @@ double SolutionStore::timeLevel(FieldInfo *fieldInfo, int timeLevelIndex)
     QList<double> levels = timeLevels(fieldInfo);
     if (timeLevelIndex >= 0 and timeLevelIndex < levels.count())
         return levels.at(timeLevelIndex);
+}
+
+void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+{
+    if (!m_multiSolutionCache.contains(solutionID))
+    {
+        // flush cache
+        if (m_multiSolutionCache.count() > Agros2D::configComputer()->cacheSize)
+            m_multiSolutionCache.remove(m_multiSolutionCache.keys().first());
+
+        // add solution
+        m_multiSolutionCache.insert(solutionID, multiSolution);
+    }
 }

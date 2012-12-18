@@ -74,6 +74,8 @@ private:
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void removeSolution(FieldSolutionID solutionID);
 
+    void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+
     QString baseStoreFileName(FieldSolutionID solutionID);
 };
 
