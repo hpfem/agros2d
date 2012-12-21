@@ -36,8 +36,6 @@ public:
     MultiSolutionArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
 
     void addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void removeSolution(BlockSolutionID solutionID);
 
     // removes all solutions with the given time step
     void removeTimeStep(int timeStep);
@@ -73,10 +71,35 @@ private:
     void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void removeSolution(FieldSolutionID solutionID);
+    void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void removeSolution(BlockSolutionID solutionID);
 
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
 
     QString baseStoreFileName(FieldSolutionID solutionID);
+
+
+    struct StructAdaptivityStep
+    {
+        int step;
+        bool referencePresent;
+        bool normalPresent;
+    };
+
+    struct StructField
+    {
+        FieldInfo* fieldInfo;
+        QMap<int, StructAdaptivityStep> adaptivitySteps;
+    };
+
+    struct StructTimeLevel
+    {
+        int level;
+        double time;
+        QMap<FieldInfo*, StructField> fields;
+    };
+
+    QMap<int, StructTimeLevel> structure;
 };
 
 #endif // SOLUTIONSTORE_H
