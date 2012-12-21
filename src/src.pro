@@ -64,6 +64,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     util/point.cpp \
     util/xml.cpp \
     util/enums.cpp \
+    util/loops.cpp \
     util/glfont.cpp \
     gui/common.cpp \
     gui/chart.cpp \
@@ -154,6 +155,7 @@ HEADERS += util.h \
     util/checkversion.h \
     util/point.h \
     util/xml.h \
+    util/loops.h \
     util/enums.h \
     util/glfont.h \
     gui/common.h \

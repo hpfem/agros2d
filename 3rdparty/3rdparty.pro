@@ -22,7 +22,12 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     ctemplate/template_modifiers.cc \
     ctemplate/template_namelist.cc \
     ctemplate/template_pathops.cc \
-    ctemplate/template_string.cc
+    ctemplate/template_string.cc \
+    poly2tri/common/shapes.cc \
+    poly2tri/sweep/advancing_front.cc \
+    poly2tri/sweep/cdt.cc \
+    poly2tri/sweep/sweep.cc \
+    poly2tri/sweep/sweep_context.cc
 
 linux-g++|linux-g++-64|linux-g++-32 {
     TARGET = ../libs/agros2d_3rdparty

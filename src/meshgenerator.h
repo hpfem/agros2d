@@ -22,6 +22,14 @@
 
 #include "util.h"
 
+class AgrosMeshException : public AgrosException
+{
+public:
+    AgrosMeshException(const QString &what) : AgrosException(what)
+    {
+    }
+};
+
 class MeshGenerator : public QObject
 {
     Q_OBJECT

@@ -39,6 +39,7 @@ class SceneLabel;
 class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
+struct LoopsInfo;
 
 class SceneNodeContainer;
 class SceneEdgeContainer;

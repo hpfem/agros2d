@@ -21,6 +21,8 @@
 #define SCENEVIEWGEOMETRY_H
 
 #include "util.h"
+#include "util/loops.h"
+
 #include "sceneview_common2d.h"
 
 class SceneViewPreprocessor : public SceneViewCommon2D
@@ -92,6 +94,9 @@ protected:
 
 private:
     QMenu *mnuScene;
+
+    // experimental
+    LoopsInfo m_loopsInfo;
 
     // helper for snap to grid
     bool m_snapToGrid;

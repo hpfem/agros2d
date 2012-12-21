@@ -21,6 +21,8 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "util/loops.h"
+#include "logview.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"
@@ -190,6 +192,8 @@ void SceneViewPreprocessor::refresh()
     actOperateOnEdges->setEnabled(actSceneModePreprocessor->isChecked());
     actOperateOnLabels->setEnabled(actSceneModePreprocessor->isChecked());
 
+    // m_loopsInfo = findLoops();
+
     SceneViewCommon::refresh();
 }
 
@@ -203,6 +207,8 @@ void SceneViewPreprocessor::clear()
     m_backgroundTexture = -1;
 
     m_sceneMode = SceneGeometryMode_OperateOnNodes;
+
+    m_loopsInfo.clear();
 }
 
 void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
@@ -1128,6 +1134,39 @@ void SceneViewPreprocessor::paintGeometry()
             }
             glEnd();
         }
+    }
+
+    // experimental
+    try
+    {
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        // blended rectangle
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0.3, 0.1, 0.7, 0.15);
+
+        QList<QList<Point> > objects = findPolygonTriangles();
+        foreach (QList<Point> points, objects)
+        {
+            // qDebug() << "";
+            glBegin(GL_TRIANGLES);
+            foreach (Point point, points)
+            {
+                // qDebug() << point.toString();
+                glVertex2d(point.x, point.y);
+            }
+            glEnd();
+        }
+
+        glDisable(GL_BLEND);
+        glDisable(GL_POLYGON_OFFSET_FILL);
+    }
+    catch (AgrosException& ame)
+    {
+        Agros2D::log()->printError(tr("Geometry"), ame.toString());
     }
 
     // labels hints

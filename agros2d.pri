@@ -14,6 +14,7 @@ INCLUDEPATH += ./ \
     ../3rdparty/ctemplate \
     ../3rdparty/dxflib \
     ../3rdparty/rapidxml \
+    ../3rdparty/poly2tri \
     ../pythonlab
 
 linux-g++|linux-g++-64|linux-g++-32 {
