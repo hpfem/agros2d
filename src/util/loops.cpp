@@ -446,7 +446,8 @@ void addEdgePoints(QList<Point> *polyline, const SceneEdge &edge)
         double radius = edge.radius();
         double startAngle = atan2(center.y - edge.nodeStart()->point().y, center.x - edge.nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-        double segments = 20;
+        int segments = edge.angle() / 5;
+        if (segments < 2) segments = 2;
         double theta = edge.angle() / double(segments - 1);
 
         for (int i = 0; i < segments - 1; i++)
@@ -722,11 +723,11 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
     }
 
     for (int l = 0; l < Agros2D::scene()->labels->count(); l++)
-    // int l = 0;
     {
         SceneLabel* label = Agros2D::scene()->labels->at(l);
 
-        if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
+        // if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
+        if (loopsInfo.labelToLoops[label].count() > 0)
         {
             // main polyline
             QList<Point> polyline = polylines[loopsInfo.labelToLoops[label][0]];

@@ -345,6 +345,8 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             // highlight the closest label
+            Agros2D::scene()->highlightNone();
+
             SceneLabel *label = SceneLabel::findClosestLabel(p);
             if (label)
             {
@@ -365,7 +367,6 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 if (str.length() > 0)
                     str = str.left(str.length() - 2);
 
-                Agros2D::scene()->highlightNone();
                 label->setHighlighted(true);
                 setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Area refinement:</b> %4<br/><b>Polynomial order:</b> %5<br/><b>Triangle area:</b> %6 m<sup>2</sup><br /><b>Index:</b> %7").
                            arg(label->point().x, 0, 'g', 3).
@@ -1032,7 +1033,7 @@ void SceneViewPreprocessor::paintGeometry()
             double radius = edge->radius();
             double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-            drawArc(center, radius, startAngle, edge->angle(), edge->angle()/2.0);
+            drawArc(center, radius, startAngle, edge->angle(), edge->angle()/4.0);
         }
 
         glDisable(GL_LINE_STIPPLE);
@@ -1121,7 +1122,7 @@ void SceneViewPreprocessor::paintGeometry()
         }
 
         // area size
-        if ((m_sceneMode == SceneGeometryMode_OperateOnLabels) || (Agros2D::config()->showInitialMeshView))
+        if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             double radius = sqrt(label->area()/M_PI);
             glColor3d(0, 0.95, 0.9);
@@ -1136,7 +1137,6 @@ void SceneViewPreprocessor::paintGeometry()
         }
     }
 
-    // experimental
     try
     {
         glEnable(GL_POLYGON_OFFSET_FILL);
@@ -1153,10 +1153,14 @@ void SceneViewPreprocessor::paintGeometry()
         {
             i.next();
 
-             if (i.key()->isSelected())
-                 glColor4f(0.3, 0.1, 0.7, 0.45);
-             else
-                 glColor4f(0.3, 0.1, 0.7, 0.10);
+            if (i.key()->isSelected())
+                glColor4f(0.3, 0.1, 0.7, 0.55);
+            else if (i.key()->isHighlighted())
+                glColor4f(0.3, 0.1, 0.7, 0.18);
+            else if (i.key()->isHole())
+                glColor4f(0.3, 0.1, 0.7, 0.00);
+            else
+                glColor4f(0.3, 0.1, 0.7, 0.10);
 
             glBegin(GL_TRIANGLES);
             foreach (Triangle triangle, i.value())
@@ -1166,7 +1170,6 @@ void SceneViewPreprocessor::paintGeometry()
                 glVertex2d(triangle.c.x, triangle.c.y);
             }
             glEnd();
-
         }
 
         glDisable(GL_BLEND);
