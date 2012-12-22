@@ -218,6 +218,7 @@ private:
     void solveFinished();
 
     void solveAdaptiveStepAction();
+    void Problem::stepMessage(Block* block);
 
     // read initial meshes
     void readInitialMeshesFromFile();

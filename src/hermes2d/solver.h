@@ -153,6 +153,9 @@ private:
     // elapsed time
     double m_elapsedTime;
 
+    // to be used in advanced time step adaptivity
+    double m_averageErrorToLenghtRatio;
+
     QMap<ExactSolutionScalarAgros<double>*, SceneBoundary *> m_exactSolutionFunctions;
 
     // weak form

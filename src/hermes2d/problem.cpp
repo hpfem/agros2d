@@ -62,7 +62,7 @@ void ProblemConfig::clear()
     m_frequency = 0.0;
 
     // transient
-    m_timeStepMethod = TimeStepMethod_BDF2AOrder;
+    m_timeStepMethod = TimeStepMethod_BDFNumSteps;
     m_timeOrder = 2;
     m_timeMethodTolerance = Value("0.1", false);
     m_timeTotal = Value("1.0", false);
@@ -71,18 +71,23 @@ void ProblemConfig::clear()
 
 bool ProblemConfig::isTransientAdaptive() const
 {
-    if(m_timeStepMethod == TimeStepMethod_BDF2AOrder)
+    if((m_timeStepMethod == TimeStepMethod_BDFTolerance) || (m_timeStepMethod == TimeStepMethod_BDFNumSteps))
         return true;
     return false;
 }
 
-const double initialTimeStepRatio = 1000;
+// todo: put to gui
+const double initialTimeStepRatio = 500;
 double ProblemConfig::initialTimeStepLength()
 {
-    if(isTransientAdaptive())
+    if(timeStepMethod() == TimeStepMethod_BDFTolerance)
         return timeTotal().value() / initialTimeStepRatio;
-    else
+    else if(timeStepMethod() == TimeStepMethod_BDFNumSteps)
+        return constantTimeStepLength() / 3.;
+    else if (timeStepMethod() == TimeStepMethod_Fixed)
         return constantTimeStepLength();
+    else
+        assert(0);
 }
 
 Problem::Problem()
@@ -473,6 +478,41 @@ void Problem::solve()
     solveFinished();
 }
 
+void Problem::stepMessage(Block* block)
+{
+    // log analysis
+    QString fields;
+    foreach(Field *field, block->fields())
+        fields += field->fieldInfo()->fieldId() + ", ";
+    fields = fields.left(fields.length() - 2);
+
+    if (block->isTransient())
+    {
+        if(config()->isTransientAdaptive())
+        {
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
+                                  QObject::tr("transient step %1 (%2%)").
+                                  arg(actualTimeStep()).
+                                  arg(int(100*actualTime()/config()->timeTotal().number())));
+        }
+        else
+        {
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
+                                  QObject::tr("transient step %1/%2").
+                                  arg(actualTimeStep()).
+                                  arg(config()->numConstantTimeSteps()));
+        }
+    }
+    else
+    {
+        if (block->fields().count() == 1)
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("single analysis"));
+        else
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
+    }
+
+}
+
 //adaptivity step: from 0, if no adaptivity, than 0
 //time step: from 0 (initial condition), if block is not transient, calculate allways (todo: timeskipping)
 //if no block transient, everything in timestep 0
@@ -516,27 +556,7 @@ void Problem::solveAction()
             {
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    // log analysis
-                    QString fields;
-                    foreach(Field *field, block->fields())
-                        fields += field->fieldInfo()->fieldId() + ", ";
-                    fields = fields.left(fields.length() - 2);
-
-                    if (block->isTransient())
-                    {
-                        Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                                  QObject::tr("transient step %1/%2").
-                                                  arg(actualTimeStep()).
-                                                  arg(config()->numConstantTimeSteps()));
-                    }
-                    else
-                    {
-                        if (block->fields().count() == 1)
-                            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("single analysis"));
-                        else
-                            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
-                    }
-
+                    stepMessage(block);
                     solver->solveSimple(actualTimeStep(), 0);
                 }
                 else
@@ -563,7 +583,7 @@ void Problem::solveAction()
                 // todo: what if more blocks are transient? (take minimum? )
 
                 // todo: space + time adaptivity
-                if (isTransient() && (actualTimeStep() >=1))
+                if (block->isTransient() && (actualTimeStep() >=1))
                     nextTimeStep = solver->estimateTimeStepLenght(actualTimeStep(), 0);
 
             }
@@ -572,10 +592,6 @@ void Problem::solveAction()
         doNextTimeStep = false;
         if(isTransient())
         {
-
-//            nextTimeStep.refuse = (Agros2D::problem()->actualTimeStep() > 2) && random() < RAND_MAX / 2;
-//            nextTimeStep.length = Agros2D::problem()->config()->constantTimeStepLength() / (1 + 10 * random() / double(RAND_MAX));
-
             if(nextTimeStep.refuse)
             {
                 cout << "removing solutions on time step " << actualTimeStep() << endl;

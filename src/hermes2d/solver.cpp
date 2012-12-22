@@ -418,17 +418,17 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 template <typename Scalar>
 NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivityStep)
 {
+    double timeTotal = Agros2D::problem()->config()->timeTotal().number();
     // todo: move to some config?
-    const double MAX_TIME_STEPS_RATIO = 2.0; // todo: 3.0;
-    const double MAX_TIME_STEP_LENGTH = Agros2D::problem()->config()->timeTotal().value() / 10;
-    const double MAX_TOLERANCE_MULTIPLY_TO_ACCEPT = 2.5;  // todo: 3.0
+    const double relativeTimeStepLen = Agros2D::problem()->actualTimeStepLength() / timeTotal;
+    const double MAX_TIME_STEPS_RATIO = relativeTimeStepLen > 0.02 ? 2.0 : 3.0; // small steps may rise faster
+    const double MAX_TIME_STEP_LENGTH = timeTotal / 10;
+    const double MAX_TOLERANCE_MULTIPLY_TO_ACCEPT = 2.5; //3.0;
 
     TimeStepMethod method = Agros2D::problem()->config()->timeStepMethod();
     if(method == TimeStepMethod_Fixed)
         return NextTimeStep(Agros2D::problem()->config()->constantTimeStepLength());
 
-    // At the present moment we use only estimation using BDF2A with different orders
-    assert(method == TimeStepMethod_BDF2AOrder);
 
     MultiSolutionArray<Scalar> referenceCalculation =
             Agros2D::solutionStore()->multiSolution(Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
@@ -438,8 +438,10 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
 
     // todo: in the first step, I am acualy using order 1 and thus I am unable to decrease it!
     // this is not good, since the second step is not calculated (and the error of the first is not being checked)
-    if(timeStep == 1)
+    if(timeStep == 1){
+        m_averageErrorToLenghtRatio = 0.;
         return NextTimeStep(Agros2D::problem()->actualTimeStepLength());
+    }
 
     BDF2Table* bdf2Table = new BDF2ATable();
     int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->timeOrder());
@@ -467,19 +469,44 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
 
     double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutionsNaked(), solutions.naked());
 
-    bool refuseThisStep = error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * Agros2D::problem()->config()->timeMethodTolerance().number();
+    //update
+    double actualRatio = error / Agros2D::problem()->actualTimeStepLength();
+    m_averageErrorToLenghtRatio = ((timeStep - 2) * m_averageErrorToLenghtRatio + actualRatio) / (timeStep - 1);
+    //m_averageErrorToLenghtRatio = (m_averageErrorToLenghtRatio + actualRatio) / 2.;
 
-    // this guess is based on assymptotic considerations (diploma thesis of Pavel Kus)
-    double nextTimeStepLength = pow(Agros2D::problem()->config()->timeMethodTolerance().number() / error,
-                                    1.0 / (Agros2D::problem()->config()->timeOrder() + 1)) * Agros2D::problem()->actualTimeStepLength();
+    double TOL;
+    if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
+    {
+        TOL = Agros2D::problem()->config()->timeMethodTolerance().number();
+    }
+    else if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFNumSteps)
+    {
+        int desiredNumSteps = (timeTotal / Agros2D::problem()->config()->constantTimeStepLength());
+        int remainingSteps = max(2, desiredNumSteps - timeStep);
+        double desiredStepSize = (timeTotal - Agros2D::problem()->actualTime()) / remainingSteps;
+        TOL = desiredStepSize * m_averageErrorToLenghtRatio;
+
+        // to avoid problems at the end of the time interval
+        if(fabs(timeTotal - Agros2D::problem()->actualTime()) < 1e-5 * timeTotal)
+            TOL = Agros2D::problem()->actualTimeStepLength() * m_averageErrorToLenghtRatio;
+    }
+    else
+        assert(0);
+
+
+    bool refuseThisStep = error > MAX_TOLERANCE_MULTIPLY_TO_ACCEPT * TOL;
+
+    // this guess is based on assymptotic considerations
+    double nextTimeStepLength = pow(TOL / error, 1.0 / (Agros2D::problem()->config()->timeOrder() + 1)) * Agros2D::problem()->actualTimeStepLength();
 
     nextTimeStepLength = min(nextTimeStepLength, MAX_TIME_STEP_LENGTH);
     nextTimeStepLength = min(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() * MAX_TIME_STEPS_RATIO);
     nextTimeStepLength = max(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
 
-    Agros2D::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, step size %3 -> %4 (%5 %)").
+    Agros2D::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %)").
                             arg(Agros2D::problem()->actualTime()).
                             arg(error).
+                            arg(TOL).
                             arg(Agros2D::problem()->actualTimeStepLength()).
                             arg(nextTimeStepLength).
                             arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.));
