@@ -93,12 +93,77 @@ MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solution
 void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
     assert(!m_multiSolutions.contains(solutionID));
-    replaceSolution(solutionID, multiSolution);
+    assert(solutionID.timeStep >= 0);
+    assert(solutionID.adaptivityStep >= 0);
+
+    // add to structures used to generate general xml file
+    if(!structure.contains(solutionID.timeStep))
+        structure.insert(solutionID.timeStep, StructTimeLevel(solutionID.timeStep, solutionID.time()));
+    StructTimeLevel& strTimeLevel(structure[solutionID.timeStep]);
+
+    if(!strTimeLevel.fields.contains(solutionID.group))
+        strTimeLevel.fields.insert(solutionID.group, StructField(solutionID.group));
+    StructField& strField(strTimeLevel.fields[solutionID.group]);
+
+    if(!strField.adaptivitySteps.contains(solutionID.adaptivityStep))
+        strField.adaptivitySteps.insert(solutionID.adaptivityStep, StructAdaptivityStep(solutionID.adaptivityStep));
+    StructAdaptivityStep& strAdaptStep(strField.adaptivitySteps[solutionID.adaptivityStep]);
+
+    if(solutionID.solutionMode == SolutionMode_Normal)
+    {
+        assert(!strAdaptStep.normalPresent);
+        strAdaptStep.normalPresent = true;
+    }
+
+    if(solutionID.solutionMode == SolutionMode_Reference)
+    {
+        assert(!strAdaptStep.referencePresent);
+        strAdaptStep.referencePresent = true;
+    }
+
+    // save soloution
+    multiSolution.saveToFile(baseStoreFileName(solutionID), solutionID);
+
+    m_multiSolutions.append(solutionID);
+
+    // insert to the cache
+    insertMultiSolutionToCache(solutionID, multiSolution);
 }
 
 void SolutionStore::removeSolution(FieldSolutionID solutionID)
 {
     assert(m_multiSolutions.contains(solutionID));
+
+    // remove from structures used to generate xml file
+    assert(structure.contains(solutionID.timeStep));
+    StructTimeLevel& strTimeLevel(structure[solutionID.timeStep]);
+
+    assert(strTimeLevel.fields.contains(solutionID.group));
+    StructField& strField(strTimeLevel.fields[solutionID.group]);
+
+    assert(strField.adaptivitySteps.contains(solutionID.adaptivityStep));
+    StructAdaptivityStep& strAdaptStep(strField.adaptivitySteps[solutionID.adaptivityStep]);
+
+    if(solutionID.solutionMode == SolutionMode_Normal)
+    {
+        assert(strAdaptStep.normalPresent);
+        strAdaptStep.normalPresent = false;
+    }
+
+    if(solutionID.solutionMode == SolutionMode_Reference)
+    {
+        assert(strAdaptStep.referencePresent);
+        strAdaptStep.referencePresent = false;
+    }
+
+    if((!strAdaptStep.normalPresent) && (!strAdaptStep.referencePresent))
+        strField.adaptivitySteps.remove(solutionID.adaptivityStep);
+
+    if(strField.adaptivitySteps.count() == 0)
+        strTimeLevel.fields.remove(solutionID.group);
+
+    if(strTimeLevel.fields.count() == 0)
+        structure.remove(solutionID.timeStep);
 
     // remove from list
     m_multiSolutions.removeOne(solutionID);
@@ -121,20 +186,6 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     }
 }
 
-void SolutionStore::replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
-{
-    //cout << "saving solution " << solutionID << std::endl;
-    assert(solutionID.timeStep >= 0);
-    assert(solutionID.adaptivityStep >= 0);
-
-    multiSolution.saveToFile(baseStoreFileName(solutionID), solutionID);
-
-    m_multiSolutions.append(solutionID);
-
-    // insert to the cache
-    insertMultiSolutionToCache(solutionID, multiSolution);
-}
-
 void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
 {
     foreach (Field* field, solutionID.group->fields())
@@ -142,16 +193,6 @@ void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<d
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
         addSolution(fieldSID, fieldMultiSolution);
-    }
-}
-
-void SolutionStore::replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
-{
-    foreach(Field* field, solutionID.group->fields())
-    {
-        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
-        MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
-        replaceSolution(fieldSID, fieldMultiSolution);
     }
 }
 
@@ -375,4 +416,35 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
         // add solution
         m_multiSolutionCache.insert(solutionID, multiSolution);
     }
+}
+
+QString SolutionStore::StructTimeLevel::generate()
+{
+    QString str;
+    str = "open";
+    foreach(StructField sf, fields)
+    {
+        str += sf.generate();
+    }
+    str += "close";
+    return str;
+}
+
+QString SolutionStore::StructField::generate()
+{
+    QString str;
+    str = "open";
+    foreach(StructAdaptivityStep as, adaptivitySteps)
+    {
+        str += as.generate();
+    }
+    str += "close";
+    return str;
+}
+
+QString SolutionStore::StructAdaptivityStep::generate()
+{
+    QString str;
+    str = "normal = .., reference = ..";
+    return str;
 }

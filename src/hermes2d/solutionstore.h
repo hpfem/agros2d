@@ -69,18 +69,20 @@ private:
     QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;
 
     void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
-    void replaceSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void removeSolution(FieldSolutionID solutionID);
-    void replaceSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
     void removeSolution(BlockSolutionID solutionID);
 
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
 
     QString baseStoreFileName(FieldSolutionID solutionID);
 
-
     struct StructAdaptivityStep
     {
+        StructAdaptivityStep() : StructAdaptivityStep(-1) {}
+        StructAdaptivityStep(int st) : step(st), referencePresent(0), normalPresent(0) {}
+
+        QString generate();
+
         int step;
         bool referencePresent;
         bool normalPresent;
@@ -88,12 +90,22 @@ private:
 
     struct StructField
     {
+        StructField() : fieldInfo(NULL) {}
+        StructField(FieldInfo* fi) : fieldInfo(fi) {}
+
+        QString generate();
+
         FieldInfo* fieldInfo;
         QMap<int, StructAdaptivityStep> adaptivitySteps;
     };
 
     struct StructTimeLevel
     {
+        StructTimeLevel() : level(-1), time(0) {}
+        StructTimeLevel(int lev, double t) : level(lev), time(t) {}
+
+        QString generate();
+
         int level;
         double time;
         QMap<FieldInfo*, StructField> fields;
