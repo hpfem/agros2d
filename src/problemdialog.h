@@ -221,6 +221,7 @@ private:
     // transient
     QGroupBox *grpTransientAnalysis;
     ValueLineEdit *txtTransientTimeTotal;
+    QLabel* lblTransientSteps;
     QSpinBox *txtTransientSteps;
     ValueLineEdit *txtTransientTolerance;
     QSpinBox *txtTransientOrder;

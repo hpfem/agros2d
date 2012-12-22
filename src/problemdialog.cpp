@@ -835,6 +835,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtTransientSteps->setMinimum(1);
     txtTransientSteps->setMaximum(10000);
     lblTransientTimeStep = new QLabel("0.0");
+    lblTransientSteps = new QLabel(tr("Number of constant steps:"));
 
     // fill combobox
     fillComboBox();
@@ -874,7 +875,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     layoutTransientAnalysis->addWidget(txtTransientTolerance, 2, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 3, 0);
     layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 3, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Number of constant steps:")), 4, 0);
+    layoutTransientAnalysis->addWidget(lblTransientSteps, 4, 0);
     layoutTransientAnalysis->addWidget(txtTransientSteps, 4, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Constant time step:")), 5, 0);
     layoutTransientAnalysis->addWidget(lblTransientTimeStep, 5, 1);
@@ -1129,5 +1130,22 @@ void ProblemWidget::transientChanged()
     {
         lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->number() / txtTransientSteps->value()));
     }
+
+    if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
+    {
+        txtTransientTolerance->setEnabled(true);
+        txtTransientSteps->setEnabled(false);
+    }
+    else
+    {
+        txtTransientTolerance->setEnabled(false);
+        txtTransientSteps->setEnabled(true);
+        if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_Fixed)
+            lblTransientSteps->setText(tr("Number of steps:"));
+        else
+            lblTransientSteps->setText(tr("Aprox. number of steps:"));
+    }
+
+
 }
 
