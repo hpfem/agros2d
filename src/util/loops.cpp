@@ -434,11 +434,11 @@ void switchOrientation(QList<QList<LoopsNodeEdgeData> >& loops, int idx)
 
 }
 
-void addEdgePoints(vector<p2t::Point*> *polyline, const SceneEdge &edge)
+void addEdgePoints(QList<Point> *polyline, const SceneEdge &edge)
 {
     if (edge.isStraight())
     {
-        polyline->push_back(new p2t::Point(edge.nodeStart()->point().x, edge.nodeStart()->point().y));
+        polyline->append(Point(edge.nodeStart()->point().x, edge.nodeStart()->point().y));
     }
     else
     {
@@ -456,7 +456,7 @@ void addEdgePoints(vector<p2t::Point*> *polyline, const SceneEdge &edge)
             double x = radius * cos(arc);
             double y = radius * sin(arc);
 
-            polyline->push_back(new p2t::Point(center.x + x, center.y + y));
+            polyline->append(Point(center.x + x, center.y + y));
         }
     }
 }
@@ -641,17 +641,71 @@ LoopsInfo findLoops()
     return loopsInfo;
 }
 
-QList<QList<Point> > findPolygonTriangles()
+QList<Triangle> triangulateLabel(const QList<Point> &polyline, const QList<QList<Point> > &holes)
 {
-    QList<QList<Point> > objects;
+    // create p2t structure
+    vector<p2t::Point*> polylineP2T;
+
+    foreach (Point point, polyline)
+        polylineP2T.push_back(new p2t::Point(point.x, point.y));
+
+    // create CDT
+    p2t::CDT cdt(polylineP2T);
+
+    foreach (QList<Point> hole, holes)
+    {
+        vector<p2t::Point*> holesP2T;
+
+        foreach (Point point, hole)
+            holesP2T.push_back(new p2t::Point(point.x, point.y));
+
+        cdt.AddHole(holesP2T);
+    }
+
+    // triangulate
+    cdt.Triangulate();
+
+    vector<p2t::Triangle*> tri = cdt.GetTriangles();
+
+    // convert
+    QList<Triangle> triangles;
+    for (int i = 0; i < tri.size(); i++)
+    {
+        p2t::Triangle *triangle = tri[i];
+
+        p2t::Point *a = triangle->GetPoint(0);
+        p2t::Point *b = triangle->GetPoint(1);
+        p2t::Point *c = triangle->GetPoint(2);
+
+        triangles.append(Triangle(Point(a->x, a->y),
+                                  Point(b->x, b->y),
+                                  Point(c->x, c->y)));
+    }
+
+    tri.clear();
+
+    // delete structures
+    for (int i = 0; i < polylineP2T.size(); i++)
+        delete polylineP2T.at(i);
+    polylineP2T.clear();
+
+    // TODO: delete holes
+
+    return triangles;
+}
+
+
+QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
+{
+    QMap<SceneLabel*, QList<Triangle> > objects;
 
     // find loops
     LoopsInfo loopsInfo = findLoops();
 
-    QList<vector<p2t::Point*> > polylines;
+    QList<QList<Point> > polylines;
     for (int i = 0; i < loopsInfo.loops.size(); i++)
     {
-        vector<p2t::Point*> polyline;
+        QList<Point> polyline;
 
         // QList<Point> contour;
         for (int j = 0; j < loopsInfo.loops[i].size(); j++)
@@ -668,62 +722,31 @@ QList<QList<Point> > findPolygonTriangles()
     }
 
     for (int l = 0; l < Agros2D::scene()->labels->count(); l++)
-    // int l = 1;
+    // int l = 0;
     {
         SceneLabel* label = Agros2D::scene()->labels->at(l);
 
         if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
         {
-            qDebug() << "label: " << label->point().toString() << loopsInfo.labelToLoops[label][0] << ((loopsInfo.labelToLoops[label].count() == 1) ? QString("solid") : QString());
-
-            vector<p2t::Point*> polyline = polylines[loopsInfo.labelToLoops[label][0]];
-
-            p2t::CDT cdt(polyline);
+            // main polyline
+            QList<Point> polyline = polylines[loopsInfo.labelToLoops[label][0]];
 
             // holes
+            QList<QList<Point> > holes;
             for (int j = 1; j < loopsInfo.labelToLoops[label].count(); j++)
             {
-                qDebug() << "hole: " << loopsInfo.labelToLoops[label][j];
-                vector<p2t::Point*> hole = polylines[loopsInfo.labelToLoops[label][j]];
-                // cdt.AddHole(hole);
+                QList<Point> hole = polylines[loopsInfo.labelToLoops[label][j]];
+                holes.append(hole);
             }
 
-            for (int i = 0; i < polyline.size(); i++)
-            {
-                // p2t::Point *p = polyline[i];
-                // qDebug() << p->x  << p->y;
-            }
-
-            // triangulate
-            cdt.Triangulate();
-
-            QList<Point> triangles;
-            vector<p2t::Triangle*> tri = cdt.GetTriangles();
-            for (int i = 0; i < tri.size(); i++)
-            {
-                p2t::Triangle *triangle = tri[i];
-
-                p2t::Point *a = triangle->GetPoint(0);
-                p2t::Point *b = triangle->GetPoint(1);
-                p2t::Point *c = triangle->GetPoint(2);
-
-                triangles.append(Point(a->x, a->y));
-                triangles.append(Point(b->x, b->y));
-                triangles.append(Point(c->x, c->y));
-            }
-            objects.append(triangles);
-
-            tri.clear();
+            QList<Triangle> triangles = triangulateLabel(polyline, holes);
+            objects.insert(label, triangles);
         }
     }
 
     // clear polylines
-    foreach (vector<p2t::Point*> polyline, polylines)
-    {
-        for (vector<p2t::Point*>::iterator it = polyline.begin(); it != polyline.end(); ++it )
-            delete *it;
+    foreach (QList<Point> polyline, polylines)
         polyline.clear();
-    }
     polylines.clear();
 
     return objects;

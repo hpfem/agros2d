@@ -1146,19 +1146,27 @@ void SceneViewPreprocessor::paintGeometry()
         // blended rectangle
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(0.3, 0.1, 0.7, 0.15);
 
-        QList<QList<Point> > objects = findPolygonTriangles();
-        foreach (QList<Point> points, objects)
+        QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
+        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+        while (i.hasNext())
         {
-            // qDebug() << "";
+            i.next();
+
+             if (i.key()->isSelected())
+                 glColor4f(0.3, 0.1, 0.7, 0.45);
+             else
+                 glColor4f(0.3, 0.1, 0.7, 0.10);
+
             glBegin(GL_TRIANGLES);
-            foreach (Point point, points)
+            foreach (Triangle triangle, i.value())
             {
-                // qDebug() << point.toString();
-                glVertex2d(point.x, point.y);
+                glVertex2d(triangle.a.x, triangle.a.y);
+                glVertex2d(triangle.b.x, triangle.b.y);
+                glVertex2d(triangle.c.x, triangle.c.y);
             }
             glEnd();
+
         }
 
         glDisable(GL_BLEND);

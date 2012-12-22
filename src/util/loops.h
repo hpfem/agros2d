@@ -69,11 +69,20 @@ struct LoopsInfo
     }
 };
 
+struct Triangle
+{
+    Triangle(const Point &a, const Point &b, const Point &c) : a(a), b(b), c(c)
+    {
+    }
+
+    Point a, b, c;
+};
+
 // find loops
 LoopsInfo findLoops();
 
 // find polygon triangles
-QList<QList<Point> > findPolygonTriangles();
+QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles();
 
 #endif // UTIL_LOOPS_H
 
