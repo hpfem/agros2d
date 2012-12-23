@@ -667,14 +667,16 @@ QList<Triangle> triangulateLabel(const QList<Point> &polyline, const QList<QList
     // create CDT
     p2t::CDT cdt(polylineP2T);
 
+    vector<vector<p2t::Point*> > holesP2T;
     foreach (QList<Point> hole, holes)
     {
-        vector<p2t::Point*> holesP2T;
+        vector<p2t::Point*> holeP2T;
 
         foreach (Point point, hole)
-            holesP2T.push_back(new p2t::Point(point.x, point.y));
+            holeP2T.push_back(new p2t::Point(point.x, point.y));
 
-        cdt.AddHole(holesP2T);
+        holesP2T.push_back(holeP2T);
+        cdt.AddHole(holeP2T);
     }
 
     // triangulate
@@ -704,7 +706,13 @@ QList<Triangle> triangulateLabel(const QList<Point> &polyline, const QList<QList
         delete polylineP2T.at(i);
     polylineP2T.clear();
 
-    // TODO: delete holes
+    for (int i = 0; i < holesP2T.size(); i++)
+    {
+        for (int j = 0; j < holesP2T.at(i).size(); j++)
+            delete holesP2T.at(i).at(j);
+        holesP2T.at(i).clear();
+    }
+    holesP2T.clear();
 
     return triangles;
 }
