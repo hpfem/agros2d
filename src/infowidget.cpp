@@ -140,9 +140,9 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
     problemInfo.SetValue("GEOMETRY_LABELS", QString::number(Agros2D::scene()->labels->count()).toStdString());
     problemInfo.SetValue("GEOMETRY_MATERIALS_LABEL", tr("Materials:").toStdString());
-    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Agros2D::scene()->materials->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Agros2D::scene()->materials->items().count() - 1).toStdString());
     problemInfo.SetValue("GEOMETRY_BOUNDARIES_LABEL", tr("Boundaries:").toStdString());
-    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Agros2D::scene()->boundaries->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Agros2D::scene()->boundaries->items().count() - 1).toStdString());
     problemInfo.SetValue("GEOMETRY_SVG", generateGeometry().toStdString());
 
     if (Agros2D::problem()->fieldInfos().count() > 0)
