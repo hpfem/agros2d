@@ -154,8 +154,10 @@ public:
     bool isSolving() const { return m_isSolving; }
 
     bool isTransient() const;
+    int numTransientFields() const;
     bool isHarmonic() const;
     bool isNonlinear() const;
+    int numAdaptiveFields() const;
 
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
     inline FieldInfo *fieldInfo(const QString &fieldId) { assert(m_fieldInfos.contains(fieldId));

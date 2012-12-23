@@ -123,13 +123,27 @@ bool Problem::isMeshed() const
     return false;
 }
 
-bool Problem::isTransient() const
+int Problem::numAdaptiveFields() const
 {
+    int num = 0;
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+            num++;
+    return num;
+}
+
+int Problem::numTransientFields() const
+{
+    int num = 0;
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
         if (fieldInfo->analysisType() == AnalysisType_Transient)
-            return true;
+            num++;
+    return num;
+}
 
-    return false;
+bool Problem::isTransient() const
+{
+    return numTransientFields() > 0;
 }
 
 bool Problem::isHarmonic() const
@@ -469,6 +483,18 @@ void Problem::solve()
 {
     if (isSolving())
         return;
+
+    if(numTransientFields() > 1)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Coupling of more transient fields not possible at the moment.");
+        return;
+    }
+
+    if(isTransient() && (numAdaptiveFields() >= 1))
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Space adaptivity for transient problems not possible at the moment.");
+        return;
+    }
 
     if(Agros2D::configComputer()->saveMatrixRHS)
         Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
