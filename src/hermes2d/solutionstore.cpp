@@ -56,6 +56,13 @@ SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int co
 
 MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID) const
 {
+    if(solutionID.solutionMode == SolutionMode_Finer)
+    {
+        solutionID.solutionMode = SolutionMode_Reference;
+        if(!m_multiSolutions.contains(solutionID))
+            solutionID.solutionMode = SolutionMode_Normal;
+    }
+
     assert(m_multiSolutions.contains(solutionID));
 
     if (!m_multiSolutionCache.contains(solutionID))
