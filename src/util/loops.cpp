@@ -296,7 +296,7 @@ int intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
         rejectTangent = false;
         left = right = 0;
 
-        foreach(LoopsNodeEdgeData ned, loop)
+        foreach (LoopsNodeEdgeData ned, loop)
         {
             Intersection result = intersects(point, tangent, Agros2D::scene()->edges->at(ned.edge));
             if(result == Intersection_Uncertain)
@@ -317,7 +317,8 @@ int intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
 
         }
 
-    }while(rejectTangent);
+    }
+    while (rejectTangent);
 
     //cout << "intersections left " << left << ", right " << right << endl;
     assert(left%2 == right%2);
@@ -434,32 +435,45 @@ void switchOrientation(QList<QList<LoopsNodeEdgeData> >& loops, int idx)
 
 }
 
-void addEdgePoints(QList<Point> *polyline, const SceneEdge &edge)
+void addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, bool reverse = false)
 {
-    if (edge.isStraight())
-    {
-        polyline->append(Point(edge.nodeStart()->point().x, edge.nodeStart()->point().y));
-    }
-    else
+    QList<Point> localPolyline;
+
+    if (!reverse)
+        localPolyline.append(Point(edge.nodeStart()->point().x,
+                                   edge.nodeStart()->point().y));
+
+    if (!edge.isStraight())
     {
         Point center = edge.center();
         double radius = edge.radius();
-        double startAngle = atan2(center.y - edge.nodeStart()->point().y, center.x - edge.nodeStart()->point().x) / M_PI*180.0 - 180.0;
+        double startAngle = atan2(center.y - edge.nodeStart()->point().y,
+                                  center.x - edge.nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-        int segments = edge.angle() / 5;
+        int segments = edge.angle() / 5.0;
         if (segments < 2) segments = 2;
-        double theta = edge.angle() / double(segments - 1);
 
-        for (int i = 0; i < segments - 1; i++)
+        double theta = edge.angle() / double(segments);
+
+        for (int i = 1; i < segments; i++)
         {
             double arc = (startAngle + i*theta)/180.0*M_PI;
 
             double x = radius * cos(arc);
             double y = radius * sin(arc);
 
-            polyline->append(Point(center.x + x, center.y + y));
+            if (reverse)
+                localPolyline.insert(0, Point(center.x + x, center.y + y));
+            else
+                localPolyline.append(Point(center.x + x, center.y + y));
         }
     }
+
+    if (reverse)
+        localPolyline.insert(0, Point(edge.nodeEnd()->point().x,
+                                      edge.nodeEnd()->point().y));
+
+    polyline->append(localPolyline);
 }
 
 LoopsInfo findLoops()
@@ -714,7 +728,7 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
             SceneEdge *edge = Agros2D::scene()->edges->items().at(loopsInfo.loops[i][j].edge);
 
             if (loopsInfo.loops[i][j].reverse)
-                addEdgePoints(&polyline, SceneEdge(edge->nodeEnd(), edge->nodeStart(), - edge->angle()));
+                addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
             else
                 addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
         }

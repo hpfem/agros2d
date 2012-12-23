@@ -368,13 +368,12 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     str = str.left(str.length() - 2);
 
                 label->setHighlighted(true);
-                setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Area refinement:</b> %4<br/><b>Polynomial order:</b> %5<br/><b>Triangle area:</b> %6 m<sup>2</sup><br /><b>Index:</b> %7").
+                setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Area refinement:</b> %4<br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
                            arg(label->point().x, 0, 'g', 3).
                            arg(label->point().y, 0, 'g', 3).
                            arg(str).
                            arg(area_refinement).
                            arg(polynomial_order).
-                           arg(label->area(), 0, 'g', 3).
                            arg(Agros2D::scene()->labels->items().indexOf(label)));
                 updateGL();
             }
@@ -1139,6 +1138,8 @@ void SceneViewPreprocessor::paintGeometry()
 
     try
     {
+        QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
+
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1147,14 +1148,17 @@ void SceneViewPreprocessor::paintGeometry()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
         QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
         while (i.hasNext())
         {
             i.next();
 
-            if (i.key()->isSelected())
+            if (i.key()->isSelected() && i.key()->isHole())
+                glColor4f(0.7, 0.1, 0.3, 0.55);
+            else if (i.key()->isSelected())
                 glColor4f(0.3, 0.1, 0.7, 0.55);
+            else if (i.key()->isHighlighted() && i.key()->isHole())
+                glColor4f(0.7, 0.1, 0.3, 0.10);
             else if (i.key()->isHighlighted())
                 glColor4f(0.3, 0.1, 0.7, 0.18);
             else if (i.key()->isHole())
@@ -1174,6 +1178,31 @@ void SceneViewPreprocessor::paintGeometry()
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
+
+        // FIX: temp
+        /*
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        QMapIterator<SceneLabel*, QList<Triangle> > j(labels);
+        while (j.hasNext())
+        {
+            j.next();
+
+            glColor4f(0.3, 0.1, 0.7, 0.55);
+
+            glBegin(GL_TRIANGLES);
+            foreach (Triangle triangle, j.value())
+            {
+                glVertex2d(triangle.a.x, triangle.a.y);
+                glVertex2d(triangle.b.x, triangle.b.y);
+                glVertex2d(triangle.c.x, triangle.c.y);
+            }
+            glEnd();
+        }
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
+        */
     }
     catch (AgrosException& ame)
     {
