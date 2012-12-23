@@ -152,7 +152,7 @@ void PostHermes::processRangeContour()
 
 void PostHermes::processRangeScalar()
 {
-    if (Agros2D::problem()->isSolved() && Agros2D::config()->showScalarView)
+    if (Agros2D::problem()->isSolved() && ((Agros2D::config()->showScalarView) || (Agros2D::config()->showPost3D == SceneViewPost3DMode_ScalarView3D)))
     {
         bool contains = false;
         foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->viewScalarVariables())

@@ -221,6 +221,8 @@ public:
     void load(QDomElement *config);
     void save(QDomElement *config);
 
+    void clear();
+
 private:
     QDomElement *eleConfig;
 

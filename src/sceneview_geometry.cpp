@@ -1206,7 +1206,7 @@ void SceneViewPreprocessor::paintGeometry()
     }
     catch (AgrosException& ame)
     {
-        Agros2D::log()->printError(tr("Geometry"), ame.toString());
+        // Agros2D::log()->printError(tr("Geometry"), ame.toString());
     }
 
     // labels hints

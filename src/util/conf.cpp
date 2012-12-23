@@ -117,11 +117,16 @@ void ConfigComputer::save()
 
 Config::Config() : eleConfig(NULL)
 {
-    load(NULL);
+    clear();
 }
 
 Config::~Config()
 {
+}
+
+void Config::clear()
+{
+    load(NULL);
 }
 
 void Config::load(QDomElement *config)

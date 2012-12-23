@@ -532,7 +532,7 @@ LoopsInfo findLoops()
 
     QMap<QPair<SceneLabel*, int>, int> windingNumbers;
 
-    //find what labels are inside what loops
+    // find what labels are inside what loops
     for (int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
     {
         labelsInsideLoop.push_back(QList<SceneLabel*>());

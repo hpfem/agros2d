@@ -91,7 +91,7 @@ const double VECTORSSCALEMIN = 0.1;
 const double VECTORSSCALEMAX = 20.0;
 
 // post3d
-const SceneViewPost3DMode SCALARSHOWPOST3D = SceneViewPost3DMode_ScalarView3D;
+const SceneViewPost3DMode SCALARSHOWPOST3D = SceneViewPost3DMode_None;
 
 const bool SHOWCONTOURVIEW = false;
 const int CONTOURSCOUNT = 15;
@@ -174,7 +174,6 @@ const bool ADAPTIVITY_FINER_REFERENCE_H_AND_P = false;
 // command argument
 const QString COMMANDS_TRIANGLE = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
 const QString COMMANDS_GMSH = "%1 -2 \"%2.geo\"";
-const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
 const QString COMMANDS_BUILD_PLUGIN = "./agros2d_plugin_compiler.sh %1";
 
 // max dofs

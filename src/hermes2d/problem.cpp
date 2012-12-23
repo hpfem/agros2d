@@ -194,6 +194,9 @@ void Problem::clearFieldsAndConfig()
 
     // clear config
     m_config->clear();
+
+    // TODO: join m_config and Agros2D::config()
+    Agros2D::config()->clear();
 }
 
 void Problem::addField(FieldInfo *field)
