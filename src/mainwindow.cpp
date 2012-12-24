@@ -52,6 +52,7 @@
 #include "hermes2d/problem.h"
 #include "scenetransformdialog.h"
 #include "chartdialog.h"
+#include "examplesdialog.h"
 
 #include "gl2ps/gl2ps.h"
 
@@ -296,6 +297,9 @@ void MainWindow::createActions()
     actDocumentSaveGeometry->setStatusTip(tr("Export geometry to file"));
     connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
 
+    actExamples = new QAction(tr("New example..."), this);
+    connect(actExamples, SIGNAL(triggered()), this, SLOT(doExamples()));
+
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
     actCreateVideo->setStatusTip(tr("Create video"));
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
@@ -473,6 +477,7 @@ void MainWindow::createMenus()
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
+    mnuFile->addAction(actExamples);
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addSeparator();
@@ -1174,6 +1179,20 @@ void MainWindow::doDocumentSaveGeometry()
         if (fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
+}
+
+void MainWindow::doExamples()
+{
+    ExamplesDialog *examples = new ExamplesDialog(this);
+    if (examples->showDialog() == QDialog::Accepted)
+    {
+        if (QFile::exists(examples->selectedFilename()))
+        {
+            doDocumentOpen(examples->selectedFilename());
+        }
+    }
+
+    delete examples;
 }
 
 void MainWindow::doCreateVideo()

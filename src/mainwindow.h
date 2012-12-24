@@ -77,6 +77,7 @@ private slots:
     void doDocumentSaveImage();
     void doDocumentSaveGeometry();
     void doLoadBackground();
+    void doExamples();
 
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -153,6 +154,7 @@ private:
     QAction *actDocumentExportMeshFile;
     QAction *actDocumentSaveImage;
     QAction *actDocumentSaveGeometry;
+    QAction *actExamples;
     QAction *actExit;
     QAction *actLoadBackground;
     QActionGroup *actDocumentOpenRecentGroup;

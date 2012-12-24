@@ -17,36 +17,37 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef INFOWIDGET_H
-#define INFOWIDGET_H
+#ifndef EXAMPLESDIALOG_H
+#define EXAMPLESDIALOG_H
 
 #include "util.h"
-#include "sceneview_common.h"
 
-#include <QWebView>
-
-class SceneViewPreprocessor;
-
-class InfoWidget : public QWidget
+class ExamplesDialog : public QDialog
 {
     Q_OBJECT
-
 public:
-    InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
-    ~InfoWidget();
+    ExamplesDialog(QWidget *parent);
 
-public slots:
-    void refresh();
-
-private:
-    SceneViewPreprocessor *m_sceneViewGeometry;
-
-    QWebView *webView;
+    int showDialog();
+    inline QString selectedFilename() { return m_selectedFilename; }
 
 private slots:
-    void showInfo();
+    void doAccept();
+    void doReject();
 
-    void finishLoading(bool ok);
+    void doItemSelected(QTreeWidgetItem *item, int column);
+    void doItemDoubleClicked(QTreeWidgetItem *item, int column);
+
+private:
+    QWebView *webView;
+
+    QTreeWidget *lstProblems;
+    QString m_selectedFilename;
+
+    QDialogButtonBox *buttonBox;
+
+    void readProblems();
+    void showProblemInfo(const QString &fileName);
 };
 
-#endif // SCENEINFOVIEW_H
+#endif // EXAMPLESDIALOG_H

@@ -84,6 +84,7 @@ public:
 
     /// returns bounding box, assumes container not empty
     RectPoint boundingBox() const;
+    static RectPoint boundingBox(QList<SceneEdge *> edges);
 };
 
 

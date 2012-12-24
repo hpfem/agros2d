@@ -119,6 +119,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
+    examplesdialog.cpp \
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
@@ -209,6 +210,7 @@ HEADERS += util.h \
     indicators/indicator_unity.h \
     collaboration.h \
     resultsview.h \
+    examplesdialog.h \
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \

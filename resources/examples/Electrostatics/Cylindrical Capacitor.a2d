@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0" y="0.2" id="0"/>
+            <node x="0" y="0.08" id="1"/>
+            <node x="0.01" y="0.08" id="2"/>
+            <node x="0.01" y="0" id="3"/>
+            <node x="0.03" y="0" id="4"/>
+            <node x="0.03" y="0.08" id="5"/>
+            <node x="0.05" y="0.08" id="6"/>
+            <node x="0.05" y="0" id="7"/>
+            <node x="0.06" y="0" id="8"/>
+            <node x="0.06" y="0.08" id="9"/>
+            <node x="0.2" y="0" id="10"/>
+        </nodes>
+        <edges>
+            <edge end="1" id="0" start="0" angle="0"/>
+            <edge end="3" id="1" start="2" angle="0"/>
+            <edge end="4" id="2" start="3" angle="0"/>
+            <edge end="5" id="3" start="4" angle="0"/>
+            <edge end="6" id="4" start="5" angle="0"/>
+            <edge end="4" id="5" start="7" angle="0"/>
+            <edge end="7" id="6" start="6" angle="0"/>
+            <edge end="9" id="7" start="8" angle="0"/>
+            <edge end="9" id="8" start="6" angle="0"/>
+            <edge end="10" id="9" start="8" angle="0"/>
+            <edge end="0" id="10" start="10" angle="90"/>
+            <edge end="5" id="11" start="2" angle="0"/>
+            <edge end="1" id="12" start="2" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.019" y="0.021" id="0" area="0"/>
+            <label x="0.0379" y="0.051" id="1" area="0"/>
+            <label x="0.0284191" y="0.123601" id="2" area="0"/>
+        </labels>
+    </geometry>
+    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="2" name="Electrostatic Axisymmetric Capacitor" time_total="1.0">
+        <startup_script>U = 10
+eps1 = 10
+eps2 = 3</startup_script>
+        <description>This model is an example.</description>
+        <fields>
+            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="3" number_of_refinements="1" time_skip="0.0" analysis_type="steadystate">
+                <refinement>
+                    <edges>
+                        <edge refinement="1" edge="12"/>
+                        <edge refinement="1" edge="6"/>
+                        <edge refinement="1" edge="8"/>
+                        <edge refinement="1" edge="1"/>
+                    </edges>
+                    <labels/>
+                </refinement>
+                <polynomial_order>
+                    <label order="3" label="0"/>
+                    <label order="3" label="1"/>
+                </polynomial_order>
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary electrostatic_potential="U" type="electrostatic_potential" id="1" name="Source">
+                        <edge edge="1"/>
+                        <edge edge="12"/>
+                    </boundary>
+                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground">
+                        <edge edge="6"/>
+                        <edge edge="7"/>
+                        <edge edge="8"/>
+                    </boundary>
+                    <boundary type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0">
+                        <edge edge="0"/>
+                        <edge edge="2"/>
+                        <edge edge="5"/>
+                        <edge edge="9"/>
+                        <edge edge="10"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1">
+                        <label label="2"/>
+                    </material>
+                    <material id="2" electrostatic_charge_density="0" name="Dielectric 1" electrostatic_permittivity="eps1">
+                        <label label="0"/>
+                    </material>
+                    <material id="3" electrostatic_charge_density="0" name="Dielectric 2" electrostatic_permittivity="eps2">
+                        <label label="1"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+        <couplings/>
+    </problem>
+    <config SceneViewSettings_ScalarView3DAngle="240" SceneViewSettings_VectorColor="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" Adaptivity_Threshold="0.3" SceneViewSettings_ScalarView3DHeight="4" SceneViewSettings_ColorCross_blue="150" SceneViewSettings_RulersFont="fontGoogleDroidMono10" SceneViewSettings_ShowSolutionMeshView="1" SceneViewSettings_SnapToGrid="1" SceneViewSettings_ColorCross_red="150" SceneViewSettings_ParticleMinimumStep="0" Adaptivity_IsoOnly="0" SceneViewSettings_ScalarView3DLighting="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ColorBackground_green="255" SceneViewSettings_DeformScalar="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_ShowPost3D="2" SceneViewSettings_ColorInitialMesh_green="150" SceneViewSettings_ShowGrid="1" SceneViewSettings_ColorVectors_blue="0" SceneViewSettings_PostFont="fontGoogleDroidMono14" SceneViewSettings_ColorBackground_red="255" Adaptivity_UseAniso="1" Adaptivity_MeshRegularity="-1" SceneViewSettings_VectorNumber="50" Adaptivity_FinerReference="0" SceneViewSettings_ColorGrid_blue="200" SceneViewSettings_ColorNodes_red="150" SceneViewSettings_LinearizerQuality="normal" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_ColorContours_green="0" SceneViewSettings_VectorType="0" SceneViewSettings_ColorContours_blue="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_ColorVectors_green="0" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ColorEdges_green="0" SceneViewSettings_ActiveField="electrostatic" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_LabelSize="6" SceneViewSettings_ShowRulers="1" SceneViewSettings_ParticleCustomForceX="0" SceneViewSettings_ColorSolutionMesh_blue="0" SceneViewSettings_ParticleCustomForceY="0" SceneViewSettings_ParticleCustomForceZ="0" SceneViewSettings_DeformVector="1" SceneViewSettings_ParticleShowPoints="0" Adaptivity_MaxDofs="60000" SceneViewSettings_DeformContour="1" SceneViewSettings_NodeSize="6" SceneViewSettings_ParticleIncludeRelativisticCorrection="1" SceneViewSettings_ColorNodes_blue="0" SceneViewSettings_ScalarView3DBoundingBox="1" SceneViewSettings_ScalarRangeMin="-4.440892098500626e-16" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" SceneViewSettings_ShowAxes="1" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ScalarVariable="electrostatic_potential" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ColorGrid_green="200" SceneViewSettings_ParticleReflectOnDifferentMaterial="1" SceneViewSettings_SolidViewHide="" SceneViewSettings_ShowContourView="0" SceneViewSettings_ColorEdges_red="0" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ParticleStartX="0" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ColorLabels_red="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ContoursWidth="1" SceneViewSettings_ShowParticleView="0" SceneViewSettings_ColorSolutionMesh_red="150" SceneViewSettings_ContourVariable="electrostatic_potential" SceneViewSettings_ColorContours_red="0" Adaptivity_ConvExp="1" SceneViewSettings_ColorInitialMesh_red="250" Adaptivity_ProjNormType="1" SceneViewSettings_VectorCenter="0" SceneViewSettings_MeshCurvilinearElements="1" Adaptivity_Strategy="0" SceneViewSettings_ColorBackground_blue="255" SceneViewSettings_ColorNodes_green="0" SceneViewSettings_ColorLabels_blue="0" SceneViewSettings_ScalarVariableComp="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ColorLabels_green="150" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_MeshAngleSegmentsCount="3" SceneViewSettings_ColorVectors_red="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ParticleMaximumNumberOfSteps="1000" SceneViewSettings_ScalarView3DBackground="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ColorCross_green="150" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_GridStep="0.05" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_PaletteType="0" SceneViewSettings_EdgeWidth="2" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ColorSolutionMesh_green="0" SceneViewSettings_VectorVariable="electrostatic_electric_field" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" SceneViewSettings_ColorInitialMesh_blue="0" SceneViewSettings_ColorGrid_red="200" General_ZoomToMouse="1" SceneViewSettings_ContoursCount="15" SceneViewSettings_ColorEdges_blue="150" SceneViewSettings_ScalarRangeMax="10"/>
+</document>

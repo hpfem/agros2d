@@ -207,10 +207,15 @@ SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEn
 
 RectPoint SceneEdgeContainer::boundingBox() const
 {
+    return SceneEdgeContainer::boundingBox(data);
+}
+
+static RectPoint SceneEdgeContainer::boundingBox(QList<SceneEdge *> edges)
+{
     Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
     Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
 
-    foreach (SceneEdge *edge, data)
+    foreach (SceneEdge *edge, edges)
     {
         // start and end node
         min.x = qMin(min.x, qMin(edge->nodeStart()->point().x, edge->nodeEnd()->point().x));

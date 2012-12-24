@@ -51,6 +51,69 @@
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
 
+QString generateSvgGeometry(QList<SceneEdge*> edges)
+{
+    RectPoint boundingBox = SceneEdgeContainer::boundingBox(edges);
+
+    double size = 200;
+    double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
+
+    // svg
+    QString str;
+    str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
+            arg(size).
+            arg(size).
+            arg(boundingBox.start.x).
+            arg(0).
+            arg(boundingBox.width()).
+            arg(boundingBox.height());
+
+    str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
+
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->angle() > 0.0)
+        {
+            Point center = edge->center();
+            double radius = edge->radius();
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+            int segments = edge->angle() / 5.0;
+            if (segments < 2) segments = 2;
+            double theta = edge->angle() / double(segments - 1);
+
+            for (int i = 0; i < segments-1; i++)
+            {
+                double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                double x1 = radius * cos(arc1);
+                double y1 = radius * sin(arc1);
+                double x2 = radius * cos(arc2);
+                double y2 = radius * sin(arc2);
+
+                str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                        arg(center.x + x1).
+                        arg(boundingBox.end.y - (center.y + y1)).
+                        arg(center.x + x2).
+                        arg(boundingBox.end.y - (center.y + y2));
+            }
+        }
+        else
+        {
+            str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                    arg(edge->nodeStart()->point().x).
+                    arg(boundingBox.end.y - edge->nodeStart()->point().y).
+                    arg(edge->nodeEnd()->point().x).
+                    arg(boundingBox.end.y - edge->nodeEnd()->point().y);
+        }
+    }
+    str += "</g>\n";
+    str += "</svg>\n";
+
+    return str;
+}
+
 ostream& operator<<(ostream& output, FieldInfo& id)
 {
     output << "FieldInfo " << id.fieldId().toStdString();

@@ -61,6 +61,8 @@ class Log;
 
 class PluginInterface;
 
+QString generateSvgGeometry(QList<SceneEdge *> edges);
+
 class DxfFilter : public DL_CreationAdapter
 {
 public:
