@@ -544,7 +544,7 @@ LoopsInfo findLoops()
             assert(wn < 2);
             windingNumbers[QPair<SceneLabel*, int>(label, loopIdx)] = wn;
             int ip = intersectionsParity(label->point(), loops[loopIdx]);
-            assert(abs(wn) == ip);
+            // assert(abs(wn) == ip);
             if(ip == 1){
                 labelsInsideLoop[loopIdx].push_back(label);
                 if(!loopsContainingLabel.contains(label))

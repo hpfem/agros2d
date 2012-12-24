@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0.03" y="0" id="0"/>
+            <node x="0" y="0.03" id="1"/>
+            <node x="-0.03" y="0" id="2"/>
+            <node x="0" y="-0.03" id="3"/>
+            <node x="0.046" y="-0.019" id="4"/>
+            <node x="0.046" y="-0.01" id="5"/>
+            <node x="0.046" y="0.019" id="6"/>
+            <node x="0.046" y="0.01" id="7"/>
+            <node x="0.0465" y="-0.01" id="8"/>
+            <node x="0.0475" y="-0.008999999999999999" id="9"/>
+            <node x="0.0475" y="0.008999999999999999" id="10"/>
+            <node x="0.0465" y="0.01" id="11"/>
+            <node x="0.0385" y="0.01" id="12"/>
+            <node x="0.0375" y="0.008999999999999999" id="13"/>
+            <node x="0.0375" y="-0.008999999999999999" id="14"/>
+            <node x="0.0385" y="-0.01" id="15"/>
+            <node x="0.0337643" y="-0.0196222" id="16"/>
+            <node x="0.0334108" y="-0.0196222" id="17"/>
+            <node x="0.039598" y="0.0254558" id="18"/>
+            <node x="0.0399515" y="0.0258094" id="19"/>
+            <node x="0.0399515" y="0.0272236" id="20"/>
+            <node x="0.0272236" y="0.0399515" id="21"/>
+            <node x="0.0258094" y="0.0399515" id="22"/>
+            <node x="0.0254558" y="0.039598" id="23"/>
+            <node x="0.0201525" y="0.0342947" id="24"/>
+            <node x="0.0201525" y="0.0328805" id="25"/>
+            <node x="0.0328805" y="0.0201525" id="26"/>
+            <node x="0.0342947" y="0.0201525" id="27"/>
+            <node x="0.01" y="0.046" id="28"/>
+            <node x="0.01" y="0.0465" id="29"/>
+            <node x="0.008999999999999999" y="0.0475" id="30"/>
+            <node x="-0.008999999999999999" y="0.0475" id="31"/>
+            <node x="-0.01" y="0.0465" id="32"/>
+            <node x="-0.01" y="0.046" id="33"/>
+            <node x="-0.01" y="0.0385" id="34"/>
+            <node x="-0.008999999999999999" y="0.0375" id="35"/>
+            <node x="0.008999999999999999" y="0.0375" id="36"/>
+            <node x="0.01" y="0.0385" id="37"/>
+            <node x="-0.0254558" y="0.039598" id="38"/>
+            <node x="-0.0258094" y="0.0399515" id="39"/>
+            <node x="-0.0272236" y="0.0399515" id="40"/>
+            <node x="-0.0399515" y="0.0272236" id="41"/>
+            <node x="-0.0399515" y="0.0258094" id="42"/>
+            <node x="-0.039598" y="0.0254558" id="43"/>
+            <node x="-0.0342947" y="0.0201525" id="44"/>
+            <node x="-0.0328805" y="0.0201525" id="45"/>
+            <node x="-0.0201525" y="0.0328805" id="46"/>
+            <node x="-0.0201525" y="0.0342947" id="47"/>
+            <node x="-0.046" y="0.01" id="48"/>
+            <node x="-0.0465" y="0.01" id="49"/>
+            <node x="-0.0475" y="0.008999999999999999" id="50"/>
+            <node x="-0.0475" y="-0.008999999999999999" id="51"/>
+            <node x="-0.0465" y="-0.01" id="52"/>
+            <node x="-0.046" y="-0.01" id="53"/>
+            <node x="-0.0385" y="-0.01" id="54"/>
+            <node x="-0.0375" y="-0.008999999999999999" id="55"/>
+            <node x="-0.0375" y="0.008999999999999999" id="56"/>
+            <node x="-0.0385" y="0.01" id="57"/>
+            <node x="-0.039598" y="-0.0254558" id="58"/>
+            <node x="-0.0399515" y="-0.0258094" id="59"/>
+            <node x="-0.0399515" y="-0.0272236" id="60"/>
+            <node x="-0.0272236" y="-0.0399515" id="61"/>
+            <node x="-0.0258094" y="-0.0399515" id="62"/>
+            <node x="-0.0254558" y="-0.039598" id="63"/>
+            <node x="-0.0201525" y="-0.0342947" id="64"/>
+            <node x="-0.0201525" y="-0.0328805" id="65"/>
+            <node x="-0.0328805" y="-0.0201525" id="66"/>
+            <node x="-0.0342947" y="-0.0201525" id="67"/>
+            <node x="-0.01" y="-0.046" id="68"/>
+            <node x="-0.01" y="-0.0465" id="69"/>
+            <node x="-0.008999999999999999" y="-0.0475" id="70"/>
+            <node x="0.008999999999999999" y="-0.0475" id="71"/>
+            <node x="0.01" y="-0.0465" id="72"/>
+            <node x="0.01" y="-0.046" id="73"/>
+            <node x="0.01" y="-0.0385" id="74"/>
+            <node x="0.008999999999999999" y="-0.0375" id="75"/>
+            <node x="-0.008999999999999999" y="-0.0375" id="76"/>
+            <node x="-0.01" y="-0.0385" id="77"/>
+            <node x="0.0254558" y="-0.039598" id="78"/>
+            <node x="0.0258094" y="-0.0399515" id="79"/>
+            <node x="0.0272236" y="-0.0399515" id="80"/>
+            <node x="0.0399515" y="-0.0272236" id="81"/>
+            <node x="0.0399515" y="-0.0258094" id="82"/>
+            <node x="0.039598" y="-0.0254558" id="83"/>
+            <node x="0.0342947" y="-0.0201525" id="84"/>
+            <node x="0.0328805" y="-0.0201525" id="85"/>
+            <node x="0.0201525" y="-0.0328805" id="86"/>
+            <node x="0.0201525" y="-0.0342947" id="87"/>
+            <node x="0.019" y="0.046" id="88"/>
+            <node x="-0.019" y="0.046" id="89"/>
+            <node x="-0.046" y="0.019" id="90"/>
+            <node x="-0.046" y="-0.019" id="91"/>
+            <node x="-0.019" y="-0.046" id="92"/>
+            <node x="0.019" y="-0.046" id="93"/>
+            <node x="0.099" y="-0.06105" id="94"/>
+            <node x="0.0505" y="-0.06105" id="95"/>
+            <node x="0.099" y="-0.09855" id="96"/>
+            <node x="-0.099" y="-0.09855" id="97"/>
+            <node x="-0.099" y="-0.06105" id="98"/>
+            <node x="-0.0505" y="-0.06105" id="99"/>
+            <node x="0.07645" y="0" id="100"/>
+            <node x="-0.07645" y="0" id="101"/>
+            <node x="0" y="0.07645" id="102"/>
+        </nodes>
+        <edges>
+            <edge end="1" id="0" start="0" angle="90"/>
+            <edge end="2" id="1" start="1" angle="90"/>
+            <edge end="3" id="2" start="2" angle="90"/>
+            <edge end="0" id="3" start="3" angle="90"/>
+            <edge end="5" id="4" start="4" angle="0"/>
+            <edge end="7" id="5" start="6" angle="0"/>
+            <edge end="8" id="6" start="5" angle="0"/>
+            <edge end="9" id="7" start="8" angle="90"/>
+            <edge end="10" id="8" start="9" angle="0"/>
+            <edge end="11" id="9" start="10" angle="90"/>
+            <edge end="7" id="10" start="11" angle="0"/>
+            <edge end="12" id="11" start="7" angle="0"/>
+            <edge end="13" id="12" start="12" angle="90"/>
+            <edge end="14" id="13" start="13" angle="0"/>
+            <edge end="15" id="14" start="14" angle="90"/>
+            <edge end="5" id="15" start="15" angle="0"/>
+            <edge end="17" id="16" start="16" angle="90"/>
+            <edge end="19" id="17" start="18" angle="0"/>
+            <edge end="20" id="18" start="19" angle="90"/>
+            <edge end="21" id="19" start="20" angle="0"/>
+            <edge end="22" id="20" start="21" angle="90"/>
+            <edge end="23" id="21" start="22" angle="0"/>
+            <edge end="24" id="22" start="23" angle="0"/>
+            <edge end="25" id="23" start="24" angle="90"/>
+            <edge end="26" id="24" start="25" angle="0"/>
+            <edge end="27" id="25" start="26" angle="90"/>
+            <edge end="18" id="26" start="27" angle="0"/>
+            <edge end="29" id="27" start="28" angle="0"/>
+            <edge end="30" id="28" start="29" angle="90"/>
+            <edge end="31" id="29" start="30" angle="0"/>
+            <edge end="32" id="30" start="31" angle="90"/>
+            <edge end="33" id="31" start="32" angle="0"/>
+            <edge end="34" id="32" start="33" angle="0"/>
+            <edge end="35" id="33" start="34" angle="90"/>
+            <edge end="36" id="34" start="35" angle="0"/>
+            <edge end="37" id="35" start="36" angle="90"/>
+            <edge end="28" id="36" start="37" angle="0"/>
+            <edge end="39" id="37" start="38" angle="0"/>
+            <edge end="40" id="38" start="39" angle="90"/>
+            <edge end="41" id="39" start="40" angle="0"/>
+            <edge end="42" id="40" start="41" angle="90"/>
+            <edge end="43" id="41" start="42" angle="0"/>
+            <edge end="44" id="42" start="43" angle="0"/>
+            <edge end="45" id="43" start="44" angle="90"/>
+            <edge end="46" id="44" start="45" angle="0"/>
+            <edge end="47" id="45" start="46" angle="90"/>
+            <edge end="38" id="46" start="47" angle="0"/>
+            <edge end="49" id="47" start="48" angle="0"/>
+            <edge end="50" id="48" start="49" angle="90"/>
+            <edge end="51" id="49" start="50" angle="0"/>
+            <edge end="52" id="50" start="51" angle="90"/>
+            <edge end="53" id="51" start="52" angle="0"/>
+            <edge end="54" id="52" start="53" angle="0"/>
+            <edge end="55" id="53" start="54" angle="90"/>
+            <edge end="56" id="54" start="55" angle="0"/>
+            <edge end="57" id="55" start="56" angle="90"/>
+            <edge end="48" id="56" start="57" angle="0"/>
+            <edge end="59" id="57" start="58" angle="0"/>
+            <edge end="60" id="58" start="59" angle="90"/>
+            <edge end="61" id="59" start="60" angle="0"/>
+            <edge end="62" id="60" start="61" angle="90"/>
+            <edge end="63" id="61" start="62" angle="0"/>
+            <edge end="64" id="62" start="63" angle="0"/>
+            <edge end="65" id="63" start="64" angle="90"/>
+            <edge end="66" id="64" start="65" angle="0"/>
+            <edge end="67" id="65" start="66" angle="90"/>
+            <edge end="58" id="66" start="67" angle="0"/>
+            <edge end="69" id="67" start="68" angle="0"/>
+            <edge end="70" id="68" start="69" angle="90"/>
+            <edge end="71" id="69" start="70" angle="0"/>
+            <edge end="72" id="70" start="71" angle="90"/>
+            <edge end="73" id="71" start="72" angle="0"/>
+            <edge end="74" id="72" start="73" angle="0"/>
+            <edge end="75" id="73" start="74" angle="90"/>
+            <edge end="76" id="74" start="75" angle="0"/>
+            <edge end="77" id="75" start="76" angle="90"/>
+            <edge end="68" id="76" start="77" angle="0"/>
+            <edge end="79" id="77" start="78" angle="0"/>
+            <edge end="80" id="78" start="79" angle="90"/>
+            <edge end="81" id="79" start="80" angle="0"/>
+            <edge end="82" id="80" start="81" angle="90"/>
+            <edge end="83" id="81" start="82" angle="0"/>
+            <edge end="84" id="82" start="83" angle="0"/>
+            <edge end="85" id="83" start="84" angle="90"/>
+            <edge end="86" id="84" start="85" angle="0"/>
+            <edge end="87" id="85" start="86" angle="90"/>
+            <edge end="78" id="86" start="87" angle="0"/>
+            <edge end="18" id="87" start="6" angle="0"/>
+            <edge end="88" id="88" start="23" angle="0"/>
+            <edge end="28" id="89" start="88" angle="0"/>
+            <edge end="89" id="90" start="33" angle="0"/>
+            <edge end="38" id="91" start="89" angle="0"/>
+            <edge end="90" id="92" start="43" angle="0"/>
+            <edge end="48" id="93" start="90" angle="0"/>
+            <edge end="91" id="94" start="53" angle="0"/>
+            <edge end="58" id="95" start="91" angle="0"/>
+            <edge end="92" id="96" start="63" angle="0"/>
+            <edge end="68" id="97" start="92" angle="0"/>
+            <edge end="93" id="98" start="73" angle="0"/>
+            <edge end="78" id="99" start="93" angle="0"/>
+            <edge end="4" id="100" start="83" angle="0"/>
+            <edge end="95" id="101" start="94" angle="0"/>
+            <edge end="94" id="102" start="96" angle="0"/>
+            <edge end="96" id="103" start="97" angle="0"/>
+            <edge end="99" id="104" start="98" angle="0"/>
+            <edge end="97" id="105" start="98" angle="0"/>
+            <edge end="100" id="106" start="95" angle="45"/>
+            <edge end="99" id="107" start="101" angle="45"/>
+            <edge end="102" id="108" start="100" angle="90"/>
+            <edge end="101" id="109" start="102" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0" y="0" id="0" area="0"/>
+            <label x="0" y="-0.0798" id="1" area="0"/>
+            <label x="0.041" y="0" id="2" area="0"/>
+            <label x="0.0289914" y="0.0289914" id="3" area="0"/>
+            <label x="2.51044e-18" y="0.041" id="4" area="0"/>
+            <label x="-0.0289914" y="0.0289914" id="5" area="0"/>
+            <label x="-0.041" y="5.02089e-18" id="6" area="0"/>
+            <label x="-0.0289914" y="-0.0289914" id="7" area="0"/>
+            <label x="-1.56972e-17" y="-0.041" id="8" area="0"/>
+            <label x="0.0289914" y="-0.0289914" id="9" area="0"/>
+            <label x="0.01569" y="0.0378791" id="10" area="0"/>
+        </labels>
+    </geometry>
+    <problem time_order="2" frequency="0" time_method="fixed" time_method_tolerance="0.1" matrix_solver="umfpack" coordinate_type="planar" mesh_type="triangle" time_steps="20" name="Rotating induction heating" time_total="180">
+        <startup_script></startup_script>
+        <description>Induction heating of cylindrical nonmagnetic billets by their rotation in static magnetic field is modeled. The magnetic field is produced by a system of appropriately arranged permanent magnets.</description>
+        <fields>
+            <field field_id="heat" initial_condition="20" polynomial_order="2" number_of_refinements="1" time_skip="0.0" analysis_type="transient">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="0"/>
+                <solver linearity_type="newton" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="20" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary heat_convection_external_temperature="20" heat_convection_heat_transfer_coefficient="125" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Convection" heat_radiation_ambient_temperature="0">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material heat_volume_heat="0" heat_conductivity="236.11;20,22.5253,25.0505,27.5758,30.101,32.6263,35.1515,37.6768,40.202,42.7273,45.2525,47.7778,50.303,52.8283,55.3535,57.8788,60.404,62.9293,65.4545,67.9798,70.5051,73.0303,75.5556,78.0808,80.6061,83.1313,85.6566,88.1818,90.7071,93.2323,95.7576,98.2828,100.808,103.333,105.859,108.384,110.909,113.434,115.96,118.485,121.01,123.535,126.061,128.586,131.111,133.636,136.162,138.687,141.212,143.737,146.263,148.788,151.313,153.838,156.364,158.889,161.414,163.939,166.465,168.99,171.515,174.04,176.566,179.091,181.616,184.141,186.667,189.192,191.717,194.242,196.768,199.293,201.818,204.343,206.869,209.394,211.919,214.444,216.97,219.495,222.02,224.545,227.071,229.596,232.121,234.646,237.172,239.697,242.222,244.747,247.273,249.798,252.323,254.848,257.374,259.899,262.424,264.949,267.475,270;236.11,236.628,237.04,237.263,237.476,237.679,237.872,238.055,238.229,238.393,238.549,238.696,238.834,238.964,239.085,239.199,239.305,239.403,239.494,239.577,239.654,239.723,239.786,239.842,239.892,239.936,239.973,240.005,240.031,240.051,240.066,240.076,240.08,240.08,240.074,240.064,240.049,240.03,240.007,239.979,239.947,239.911,239.872,239.828,239.781,239.731,239.677,239.62,239.559,239.496,239.429,239.36,239.287,239.213,239.135,239.055,238.972,238.887,238.8,238.711,238.619,238.526,238.43,238.333,238.233,238.132,238.03,237.925,237.819,237.712,237.603,237.492,237.38,237.267,237.153,237.037,236.92,236.802,236.684,236.564,236.443,236.321,236.198,236.074,235.949,235.824,235.698,235.571,235.443,235.315,235.186,235.056,234.926,234.795,234.663,234.531,234.399,234.265,234.132,233.998" heat_density="2700.1;20,22.5253,25.0505,27.5758,30.101,32.6263,35.1515,37.6768,40.202,42.7273,45.2525,47.7778,50.303,52.8283,55.3535,57.8788,60.404,62.9293,65.4545,67.9798,70.5051,73.0303,75.5556,78.0808,80.6061,83.1313,85.6566,88.1818,90.7071,93.2323,95.7576,98.2828,100.808,103.333,105.859,108.384,110.909,113.434,115.96,118.485,121.01,123.535,126.061,128.586,131.111,133.636,136.162,138.687,141.212,143.737,146.263,148.788,151.313,153.838,156.364,158.889,161.414,163.939,166.465,168.99,171.515,174.04,176.566,179.091,181.616,184.141,186.667,189.192,191.717,194.242,196.768,199.293,201.818,204.343,206.869,209.394,211.919,214.444,216.97,219.495,222.02,224.545,227.071,229.596,232.121,234.646,237.172,239.697,242.222,244.747,247.273,249.798,252.323,254.848,257.374,259.899,262.424,264.949,267.475,270;2700.1,2699.63,2699.16,2698.69,2698.22,2697.75,2697.27,2696.8,2696.32,2695.84,2695.36,2694.89,2694.41,2693.93,2693.44,2692.96,2692.48,2691.99,2691.51,2691.02,2690.54,2690.05,2689.56,2689.07,2688.59,2688.1,2687.6,2687.11,2686.62,2686.13,2685.63,2685.14,2684.64,2684.15,2683.65,2683.16,2682.66,2682.16,2681.66,2681.16,2680.66,2680.16,2679.66,2679.15,2678.65,2678.15,2677.64,2677.14,2676.63,2676.12,2675.62,2675.11,2674.6,2674.09,2673.58,2673.07,2672.56,2672.05,2671.53,2671.02,2670.51,2669.99,2669.48,2668.96,2668.44,2667.92,2667.4,2666.89,2666.36,2665.84,2665.32,2664.8,2664.28,2663.75,2663.23,2662.7,2662.17,2661.65,2661.12,2660.59,2660.06,2659.53,2659,2658.46,2657.93,2657.4,2656.86,2656.32,2655.79,2655.25,2654.71,2654.17,2653.63,2653.09,2652.55,2652,2651.46,2650.91,2650.36,2649.82" heat_velocity_x="0" heat_velocity_y="0" heat_specific_heat="893.601;20,22.5253,25.0505,27.5758,30.101,32.6263,35.1515,37.6768,40.202,42.7273,45.2525,47.7778,50.303,52.8283,55.3535,57.8788,60.404,62.9293,65.4545,67.9798,70.5051,73.0303,75.5556,78.0808,80.6061,83.1313,85.6566,88.1818,90.7071,93.2323,95.7576,98.2828,100.808,103.333,105.859,108.384,110.909,113.434,115.96,118.485,121.01,123.535,126.061,128.586,131.111,133.636,136.162,138.687,141.212,143.737,146.263,148.788,151.313,153.838,156.364,158.889,161.414,163.939,166.465,168.99,171.515,174.04,176.566,179.091,181.616,184.141,186.667,189.192,191.717,194.242,196.768,199.293,201.818,204.343,206.869,209.394,211.919,214.444,216.97,219.495,222.02,224.545,227.071,229.596,232.121,234.646,237.172,239.697,242.222,244.747,247.273,249.798,252.323,254.848,257.374,259.899,262.424,264.949,267.475,270;893.601,895.322,897.013,898.676,900.312,901.923,903.51,905.075,906.619,908.144,909.65,911.115,912.593,914.06,915.517,916.964,918.401,919.829,921.246,922.655,924.054,925.443,926.824,928.195,929.558,930.912,932.257,933.594,934.922,936.242,937.554,938.858,940.154,941.442,942.723,943.996,945.262,946.521,947.772,949.017,950.254,951.485,952.709,953.927,955.138,956.344,957.543,958.736,959.923,961.104,962.28,963.451,964.616,965.775,966.93,968.08,969.225,970.365,971.5,972.631,973.758,974.881,975.999,977.113,978.224,979.331,980.434,981.534,982.63,983.724,984.814,985.901,986.985,988.067,989.146,990.223,991.297,992.369,993.439,994.507,995.573,996.638,997.701,998.762,999.822,1000.88,1001.94,1003,1004.05,1005.11,1006.16,1007.22,1008.27,1009.32,1010.38,1011.43,1012.49,1013.54,1014.6,1015.65" heat_velocity_angular="148.702" id="1" name="Aluminium">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+            <field field_id="magnetic" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" time_skip="180" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="0"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="30" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
+                        <edge edge="101"/>
+                        <edge edge="102"/>
+                        <edge edge="103"/>
+                        <edge edge="104"/>
+                        <edge edge="105"/>
+                        <edge edge="106"/>
+                        <edge edge="107"/>
+                        <edge edge="108"/>
+                        <edge edge="109"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="148.702" magnetic_permeability="1" magnetic_conductivity="3.06327e+07" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Aluminium" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="13000;0,0.227065,0.45413,0.681195,0.90826,1.13533,1.36239,1.58935,1.81236,2.01004,2.13316,2.19999,2.25479,2.29993,2.34251,2.37876,2.41501,2.45126,2.4875,2.52375,2.56,3,5,10,20;13001,13001,13001,12786,12168,10967,7494,1409,315,90,41,26,19,15,12,11,9,8,8,7,6,4,3,3,2" magnetic_conductivity="1.09678e+07" magnetic_remanence="0" id="2" magnetic_remanence_angle="0" name="Iron" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="1"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="3" magnetic_remanence_angle="0" name="NdBFe 0" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="4" magnetic_remanence_angle="45" name="NdBFe 45" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="7"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="5" magnetic_remanence_angle="90" name="NdBFe 90" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="4"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="6" magnetic_remanence_angle="135" name="NdBFe 135" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="9"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="7" magnetic_remanence_angle="180" name="NdBFe 180" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="6"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="8" magnetic_remanence_angle="225" name="NdBFe 225" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="3"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="9" magnetic_remanence_angle="270" name="NdBFe 270" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="8"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1.21" magnetic_remanence="1.45" magnetic_conductivity="667000" id="10" magnetic_remanence_angle="315" name="NdBFe 315" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="5"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="11" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="10"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+        <couplings>
+            <coupling source_fieldid="magnetic" target_fieldid="heat" type="weak" id="magnetic-heat"/>
+        </couplings>
+    </problem>
+    <config SceneViewSettings_ScalarView3DAngle="240" SceneViewSettings_VectorColor="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" Adaptivity_Threshold="0.3" SceneViewSettings_ScalarView3DHeight="4" SceneViewSettings_ColorCross_blue="150" SceneViewSettings_RulersFont="fontGoogleDroidMono10" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_SnapToGrid="1" SceneViewSettings_ColorCross_red="150" SceneViewSettings_ParticleMinimumStep="0" Adaptivity_IsoOnly="0" SceneViewSettings_ScalarView3DLighting="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ColorBackground_green="255" SceneViewSettings_DeformScalar="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_ShowPost3D="0" SceneViewSettings_ColorInitialMesh_green="150" SceneViewSettings_ShowGrid="1" SceneViewSettings_ColorVectors_blue="0" SceneViewSettings_PostFont="fontGoogleDroidMono14" SceneViewSettings_ColorBackground_red="255" Adaptivity_UseAniso="1" Adaptivity_MeshRegularity="-1" SceneViewSettings_VectorNumber="50" Adaptivity_FinerReference="0" SceneViewSettings_ColorGrid_blue="200" SceneViewSettings_ColorNodes_red="150" SceneViewSettings_LinearizerQuality="normal" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_ColorContours_green="0" SceneViewSettings_VectorType="0" SceneViewSettings_ColorContours_blue="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_ColorVectors_green="0" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ColorEdges_green="0" SceneViewSettings_ActiveField="" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_LabelSize="6" SceneViewSettings_ShowRulers="1" SceneViewSettings_ParticleCustomForceX="0" SceneViewSettings_ColorSolutionMesh_blue="0" SceneViewSettings_ParticleCustomForceY="0" SceneViewSettings_ParticleCustomForceZ="0" SceneViewSettings_DeformVector="1" SceneViewSettings_ParticleShowPoints="0" Adaptivity_MaxDofs="60000" SceneViewSettings_DeformContour="1" SceneViewSettings_NodeSize="6" SceneViewSettings_ParticleIncludeRelativisticCorrection="1" SceneViewSettings_ColorNodes_blue="0" SceneViewSettings_ScalarView3DBoundingBox="1" SceneViewSettings_ScalarRangeMin="269.003238319229" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" SceneViewSettings_ShowAxes="1" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ScalarVariable="heat_temperature" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ColorGrid_green="200" SceneViewSettings_ParticleReflectOnDifferentMaterial="1" SceneViewSettings_SolidViewHide="" SceneViewSettings_ShowContourView="0" SceneViewSettings_ColorEdges_red="0" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ParticleStartX="0" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ColorLabels_red="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ContoursWidth="1" SceneViewSettings_ShowParticleView="0" SceneViewSettings_ColorSolutionMesh_red="150" SceneViewSettings_ContourVariable="heat_temperature" SceneViewSettings_ColorContours_red="0" Adaptivity_ConvExp="1" SceneViewSettings_ColorInitialMesh_red="250" Adaptivity_ProjNormType="1" SceneViewSettings_VectorCenter="0" SceneViewSettings_MeshCurvilinearElements="1" Adaptivity_Strategy="0" SceneViewSettings_ColorBackground_blue="255" SceneViewSettings_ColorNodes_green="0" SceneViewSettings_ColorLabels_blue="0" SceneViewSettings_ScalarVariableComp="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ColorLabels_green="150" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_MeshAngleSegmentsCount="3" SceneViewSettings_ColorVectors_red="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ParticleMaximumNumberOfSteps="500" SceneViewSettings_ScalarView3DBackground="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ColorCross_green="150" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_GridStep="0.05" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_PaletteType="0" SceneViewSettings_EdgeWidth="2" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleMaximumRelativeError="0.01" SceneViewSettings_ColorSolutionMesh_green="0" SceneViewSettings_VectorVariable="heat_heat_flux" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" SceneViewSettings_ColorInitialMesh_blue="0" SceneViewSettings_ColorGrid_red="200" General_ZoomToMouse="1" SceneViewSettings_ContoursCount="15" SceneViewSettings_ColorEdges_blue="150" SceneViewSettings_ScalarRangeMax="270.8317835748329"/>
+</document>
