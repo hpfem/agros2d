@@ -74,13 +74,16 @@ private slots:
     void doClose();
     void doLogin();
     void httpFileFinished();
+// #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+//     void linkClicked(const QUrlQuery &url);
+// #else
     void linkClicked(const QUrl &url);
+// #endif
 
 private:
     QString m_fileName;
 
     QWebView *webView;
-
     QNetworkReply *networkReply;
 };
 
@@ -111,7 +114,7 @@ private:
     QRadioButton *radDocumentExisting;
     QComboBox *cmbName;
     QLineEdit *txtName;
-    QLabel *lblInformation;    
+    QLabel *lblInformation;
     QPushButton *btnUpload;
 };
 

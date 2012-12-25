@@ -27,6 +27,12 @@
 #include <QtWebKit>
 #include <QtXmlPatterns>
 #include <QtPlugin>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets>
+#include <QtWebKitWidgets>
+#include <QtPrintSupport>
+#endif
 
 #include <typeinfo>
 #include <iostream>
@@ -40,6 +46,19 @@
 #include "util/point.h"
 
 #include "indicators/indicators.h"
+
+// qt5
+#ifdef Q_OS_WIN
+#define Q_WS_WIN
+#endif
+
+#ifdef Q_OS_MAC
+#define Q_WS_MAC
+#endif
+
+#ifdef Q_OS_LINUX
+#define Q_WS_X11
+#endif
 
 // zero
 #define EPS_ZERO 1e-10

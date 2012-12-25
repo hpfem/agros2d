@@ -1,38 +1,51 @@
-/**************************************************************************
+/****************************************************************************
 **
-** This file is part of Qt Creator
+** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** All rights reserved.
 **
-** Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** Contact:  Qt Software Information (qt-info@nokia.com)
+** This file is part of a Qt Solutions component.
 **
-** Commercial Usage
+** You may use this file under the terms of the BSD license as follows:
 **
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** "Redistribution and use in source and binary forms, with or without
+** modification, are permitted provided that the following conditions are
+** met:
+**   * Redistributions of source code must retain the above copyright
+**     notice, this list of conditions and the following disclaimer.
+**   * Redistributions in binary form must reproduce the above copyright
+**     notice, this list of conditions and the following disclaimer in
+**     the documentation and/or other materials provided with the
+**     distribution.
+**   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
+**     the names of its contributors may be used to endorse or promote
+**     products derived from this software without specific prior written
+**     permission.
 **
-** GNU Lesser General Public License Usage
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 **
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-**
-**************************************************************************/
+****************************************************************************/
 
 #ifndef QTLOCKEDFILE_H
 #define QTLOCKEDFILE_H
 
 #include <QtCore/QFile>
+#ifdef Q_OS_WIN
+#include <QtCore/QVector>
+#endif
 
-#if defined(Q_WS_WIN)
+#if defined(Q_WS_WIN) || defined(Q_OS_WIN)
 #  if !defined(QT_QTLOCKEDFILE_EXPORT) && !defined(QT_QTLOCKEDFILE_IMPORT)
 #    define QT_QTLOCKEDFILE_EXPORT
 #  elif defined(QT_QTLOCKEDFILE_IMPORT)
@@ -48,27 +61,36 @@
 #  define QT_QTLOCKEDFILE_EXPORT
 #endif
 
+namespace QtLP_Private {
+
 class QT_QTLOCKEDFILE_EXPORT QtLockedFile : public QFile
 {
-public:    
+public:
     enum LockMode { NoLock = 0, ReadLock, WriteLock };
 
     QtLockedFile();
     QtLockedFile(const QString &name);
     ~QtLockedFile();
-    
+
+    bool open(OpenMode mode);
+
     bool lock(LockMode mode, bool block = true);
     bool unlock();
     bool isLocked() const;
     LockMode lockMode() const;
-    
+
 private:
 #ifdef Q_OS_WIN
-    Qt::HANDLE m_semaphore_hnd;
-    Qt::HANDLE m_mutex_hnd;
+    Qt::HANDLE wmutex;
+    Qt::HANDLE rmutex;
+    QVector<Qt::HANDLE> rmutexes;
+    QString mutexname;
+
+    Qt::HANDLE getMutexHandle(int idx, bool doCreate);
+    bool waitMutex(Qt::HANDLE mutex, bool doBlock);
+
 #endif
     LockMode m_lock_mode;
 };
-
-
-#endif // QTLOCKEDFILE_H
+}
+#endif

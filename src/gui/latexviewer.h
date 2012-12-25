@@ -20,7 +20,10 @@
 #ifndef GUI_LATEXVIEWER_H
 #define GUI_LATEXVIEWER_H
 
-#include "QtWebKit"
+#include <QtWebKit>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWebKitWidgets>
+#endif
 
 class LaTeXViewer : public QWebView
 {

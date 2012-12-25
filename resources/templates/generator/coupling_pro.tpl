@@ -1,4 +1,4 @@
-QT += core opengl svg gui network xml webkit xmlpatterns
+QT += core opengl svg gui network xml webkit xmlpatterns widgets webkitwidgets
 
 TEMPLATE = lib
 CONFIG += plugin

@@ -1,4 +1,4 @@
-QT += opengl xml network webkit svg xmlpatterns
+QT += opengl xml network webkit svg xmlpatterns    widgets printsupport webkitwidgets
 
 DEFINES += VERSION_MAJOR=3
 DEFINES += VERSION_MINOR=0

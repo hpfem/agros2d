@@ -69,6 +69,8 @@ private:
     QList<SceneNode *> m_lyingNodes;
 };
 
+Q_DECLARE_METATYPE(SceneEdge *)
+
 // *************************************************************************************************************************************
 
 class SceneEdgeContainer : public MarkedSceneBasicContainer<SceneBoundary, SceneEdge>

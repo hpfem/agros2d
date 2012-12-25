@@ -163,7 +163,7 @@ public:
     inline FieldInfo *fieldInfo(const QString &fieldId) { assert(m_fieldInfos.contains(fieldId));
                                                           return m_fieldInfos[fieldId]; }
     inline FieldInfo *fieldInfo(const std::string &name) { return fieldInfo(QString::fromStdString(name)); }
-    inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromAscii(name)); }
+    inline FieldInfo *fieldInfo(const char* name) { return fieldInfo(QString::fromLatin1(name)); }
     inline bool hasField(const QString &fieldId) { return m_fieldInfos.contains(fieldId); }
     void addField(FieldInfo *field);
     void removeField(FieldInfo *field);

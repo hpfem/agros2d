@@ -1,4 +1,4 @@
-QT += opengl xml network webkit svg xmlpatterns
+QT += opengl xml network webkit svg xmlpatterns widgets printsupport webkitwidgets
 
 OBJECTS_DIR = build
 MOC_DIR = build

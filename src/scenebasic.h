@@ -39,10 +39,10 @@ class FieldInfo;
 class SceneBoundary;
 class SceneMaterial;
 
-Q_DECLARE_METATYPE(SceneBasic *)
-Q_DECLARE_METATYPE(SceneNode *)
-Q_DECLARE_METATYPE(SceneEdge *)
-Q_DECLARE_METATYPE(SceneLabel *)
+
+// Q_DECLARE_METATYPE(SceneNode *)
+// Q_DECLARE_METATYPE(SceneEdge *)
+// Q_DECLARE_METATYPE(SceneLabel *)
 
 class SceneBasic 
 {
@@ -95,6 +95,7 @@ protected:
     QString containerName;
 };
 
+Q_DECLARE_METATYPE(SceneBasic *)
 
 // *************************************************************************************************************************************
 

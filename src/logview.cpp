@@ -133,16 +133,28 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     {
         str += "<span style=\"color: gray;\">";
         // str += Qt::escape(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") + ": ");
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         str += Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ");
+#else
+        str += QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped();
+#endif
         str += "</span>";
     }
 
     // message
     if (!color.isEmpty())
         str += "<span style=\"color: " + color + ";\">";
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     str += "<strong>" + Qt::escape(module) + "</strong>: ";
+#else
+    str += "<strong>" + QString(module).toHtmlEscaped() + "</strong>: ";
+#endif
     if (escaped)
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         str += Qt::escape(message);
+#else
+        str += QString(message).toHtmlEscaped();
+#endif
     else
         str += message;
     if (!color.isEmpty())
@@ -150,7 +162,7 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
 
     insertHtml(str);
 
-    repaint();    
+    repaint();
 }
 
 void LogWidget::welcomeMessage()

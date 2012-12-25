@@ -56,6 +56,8 @@ private:
     QList<SceneEdge *> m_lyingEdges;
 };
 
+Q_DECLARE_METATYPE(SceneNode *)
+
 class SceneNodeContainer : public SceneBasicContainer<SceneNode>
 {
 public:
