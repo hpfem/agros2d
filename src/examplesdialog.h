@@ -47,7 +47,9 @@ private:
     QDialogButtonBox *buttonBox;
 
     void readProblems();
-    void showProblemInfo(const QString &fileName);
+    void readProblems(QDir dir, QTreeWidgetItem *parentItem);
+    void problemInfo(const QString &fileName);
+    QList<QIcon> problemIcons(const QString &fileName);
 };
 
 #endif // EXAMPLESDIALOG_H

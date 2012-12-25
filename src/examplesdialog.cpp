@@ -48,7 +48,8 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
     lstProblems = new QTreeWidget(this);
     lstProblems->setMouseTracking(true);
     lstProblems->setColumnCount(1);
-    lstProblems->setIndentation(20);
+    lstProblems->setIndentation(15);
+    lstProblems->setIconSize(QSize(24, 24));
     lstProblems->setHeaderHidden(true);
     lstProblems->setMinimumWidth(230);
 
@@ -109,7 +110,7 @@ void ExamplesDialog::doItemSelected(QTreeWidgetItem *item, int column)
     m_selectedFilename = item->data(0, Qt::UserRole).toString();
     if (!m_selectedFilename.isEmpty())
     {
-        showProblemInfo(m_selectedFilename);
+        problemInfo(m_selectedFilename);
         buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
     }
     else
@@ -133,42 +134,49 @@ void ExamplesDialog::readProblems()
     lstProblems->clear();
 
     QDir dir(QString("%1/resources/examples").arg(datadir()));
-    dir.setFilter(QDir::Dirs | QDir::NoSymLinks);
+    dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks);
 
-    QFileInfoList listDir = dir.entryInfoList();
-    for (int i = 0; i < listDir.size(); ++i)
+    readProblems(dir, lstProblems->invisibleRootItem());
+}
+
+void ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
+{
+    QFileInfoList listExamples = dir.entryInfoList();
+    for (int i = 0; i < listExamples.size(); ++i)
     {
-        QFileInfo dirInfo = listDir.at(i);
-        if (dirInfo.fileName() == "." || dirInfo.fileName() == "..")
+        QFileInfo fileInfo = listExamples.at(i);
+        if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
             continue;
 
-        QTreeWidgetItem *dirItem = new QTreeWidgetItem(lstProblems);
-        dirItem->setText(0, dirInfo.fileName());
-        dirItem->setExpanded(true);
-
-        // examples
-        QDir dirExamples(QString("%1/resources/examples/%2").arg(datadir()).arg(dirInfo.fileName()));
-        dirExamples.setFilter(QDir::Files | QDir::NoSymLinks);
-
-        QFileInfoList listExamples = dirExamples.entryInfoList();
-        for (int j = 0; j < listExamples.size(); ++j)
+        if (fileInfo.isDir())
         {
-            QFileInfo fileInfo = listExamples.at(j);
-            if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
-                continue;
+            QFont fnt = lstProblems->font();
+            fnt.setBold(true);
 
-            if (fileInfo.suffix() == "a2d")
-            {
-                QTreeWidgetItem *exampleItem = new QTreeWidgetItem(dirItem);
-                // item->setIcon(icon("fields/" + it.key()));
-                exampleItem->setText(0, fileInfo.baseName());
-                exampleItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
-            }
+            QTreeWidgetItem *dirItem = new QTreeWidgetItem(parentItem);
+            dirItem->setText(0, fileInfo.fileName());
+            dirItem->setFont(0, fnt);
+            dirItem->setExpanded(true);
+
+            // recursive read
+            readProblems(fileInfo.absoluteFilePath(), dirItem);
+        }
+        else if (fileInfo.suffix() == "a2d")
+        {
+            QList<QIcon> icons = problemIcons(fileInfo.absoluteFilePath());
+
+            QTreeWidgetItem *exampleItem = new QTreeWidgetItem(parentItem);
+            if (icons.count() == 1)
+                exampleItem->setIcon(0, icons.at(0));
+            else
+                exampleItem->setIcon(0, icon("fields/empty"));
+            exampleItem->setText(0, fileInfo.baseName());
+            exampleItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
         }
     }
 }
 
-void ExamplesDialog::showProblemInfo(const QString &fileName)
+void ExamplesDialog::problemInfo(const QString &fileName)
 {
     if (QFile::exists(fileName))
     {
@@ -321,4 +329,43 @@ void ExamplesDialog::showProblemInfo(const QString &fileName)
         writeStringContent(tempProblemDir() + "/example.html", QString::fromStdString(info));
         webView->load(tempProblemDir() + "/example.html");
     }
+}
+
+QList<QIcon> ExamplesDialog::problemIcons(const QString &fileName)
+{
+    QList<QIcon> icons;
+
+    if (QFile::exists(fileName))
+    {
+        // open file
+        QFile file(fileName);
+
+        QDomDocument doc;
+        if (!doc.setContent(&file))
+        {
+            file.close();
+            throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
+            return;
+        }
+        file.close();
+
+        // main document
+        QDomElement eleDoc = doc.documentElement();
+
+        // problem info
+        QDomNode eleProblemInfo = eleDoc.elementsByTagName("problem").at(0);
+
+        QDomNode eleFields = eleProblemInfo.toElement().elementsByTagName("fields").at(0);
+        QDomNode nodeField = eleFields.firstChild();
+        while (!nodeField.isNull())
+        {
+            QDomNode eleField = nodeField.toElement();
+            icons.append(icon("fields/" + eleField.toElement().attribute("field_id")));
+
+            // next field
+            nodeField = nodeField.nextSibling();
+        }
+    }
+
+    return icons;
 }
