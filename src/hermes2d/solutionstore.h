@@ -25,10 +25,10 @@
 class SolutionStore
 {
 public:
-    SolutionArray<double> solution(FieldSolutionID solutionID, int component) const;
+    SolutionArray<double> solution(FieldSolutionID solutionID, int component);
     bool contains(FieldSolutionID solutionID) const;
-    MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID) const;
-    MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID) const;
+    MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
+    MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
 
     // returns MultiSolution with components related to last time step, in which was each respective field calculated
     // this time step can be different for respective fields due to time step skipping
@@ -62,7 +62,7 @@ public:
     FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionMode solutionType);
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionMode solutionType);
 
-    void clearAll();    
+    void clearAll();
 
 private:
     QList<FieldSolutionID> m_multiSolutions;
@@ -74,11 +74,11 @@ private:
 
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
 
-    QString baseStoreFileName(FieldSolutionID solutionID);
+    QString baseStoreFileName(FieldSolutionID solutionID) const;
 
     struct StructAdaptivityStep
     {
-        StructAdaptivityStep() : StructAdaptivityStep(-1) {}
+        StructAdaptivityStep() {}
         StructAdaptivityStep(int st) : step(st), referencePresent(0), normalPresent(0) {}
 
         QString generate();

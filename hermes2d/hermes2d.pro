@@ -1,6 +1,5 @@
 QT -= GUI
 
-TARGET = ../libs/agros2d_hermes2d
 OBJECTS_DIR = build
 
 TEMPLATE = lib
@@ -123,7 +122,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/views/orderizer.cpp \
                 src/views/vectorizer.cpp \
                 src/weakform/weakform.cpp  \
-				src/neighbor.cpp \
+                                src/neighbor.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
                 src/discrete_problem_linear.cpp \
@@ -135,6 +134,8 @@ HEADERS += \
     ../hermes_common/include/config.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    TARGET = ../libs/agros2d_hermes2d
+
     CONFIG += warn_off
 
     QMAKE_LFLAGS += -fopenmp
@@ -169,9 +170,10 @@ linux-g++|linux-g++-64|linux-g++-32 {
 }
 
 macx-g++ {
+    TARGET = ../libs/agros2d_hermes2d
+
     DEFINES += HAVE_FMEMOPEN
     DEFINES += HAVE_LOG2
-
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
@@ -188,13 +190,15 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-	QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+    TARGET = ../../libs/agros2d_hermes2d
+
+    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
-	QMAKE_CXXFLAGS_RELEASE += -MD
+    QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     DEFINES += XERCES_STATIC_LIBRARY
-	DEFINES += AGROS
+    DEFINES += AGROS
     DEFINES += HERMES_FOR_AGROS
     DEFINES += XML_LIBRARY
     DEFINES += WIN32
@@ -202,23 +206,23 @@ win32-msvc2010 {
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
     DEFINES += "M_LN2=0.69314718055994530942"
-	
+
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
     LIBS += -Lc:/Python27/libs
-	LIBS += -Lc:/Qt/4.8.2/lib
+    LIBS += -Lc:/Qt/4.8.2/lib
     LIBS += -Lc:/hpfem/hermes/dependencies/lib
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -llibumfpack
     LIBS += -llibamd
     # LIBS += -lblas
     LIBS += -lpthreadVCE2
-	LIBS += -lxerces-c_static_3
+    LIBS += -lxerces-c_static_3
     LIBS += -lpython27
-	LIBS += -lvcomp
+    LIBS += -lvcomp
     LIBS += -ladvapi32
     LIBS += -lws2_32
 }

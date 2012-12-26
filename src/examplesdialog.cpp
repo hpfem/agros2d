@@ -347,7 +347,7 @@ QList<QIcon> ExamplesDialog::problemIcons(const QString &fileName)
         {
             file.close();
             throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
-            return;
+            return icons;
         }
         file.close();
 

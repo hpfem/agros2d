@@ -611,7 +611,7 @@ void Problem::solveAction()
 
                 // todo: space + time adaptivity
                 if (block->isTransient() && (actualTimeStep() >=1))
-                    nextTimeStep = solver->estimateTimeStepLenght(actualTimeStep(), 0);
+                    nextTimeStep = solver->estimateTimeStepLength(actualTimeStep(), 0);
 
             }
         }

@@ -130,7 +130,7 @@ public:
     void solveInitialTimeStep();
 
     // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
-    NextTimeStep estimateTimeStepLenght(int timeStep, int adaptivityStep);
+    NextTimeStep estimateTimeStepLength(int timeStep, int adaptivityStep);
 
     void solveSimple(int timeStep, int adaptivityStep);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);

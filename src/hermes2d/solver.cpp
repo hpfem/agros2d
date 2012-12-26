@@ -400,13 +400,16 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     m_block->weakForm().data()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm().data()->registerForms(bdf2Table);
 
-    Scalar solutionVector[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
+    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
 
     solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, previousTSMultiSolutionArray.solutions());
 
     // output
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
     saveSolution(solutionID, solutionVector);
+
+    // free vector
+    delete [] solutionVector;
 
     // TODO: remove
     m_block->weakForm().clear();
@@ -416,7 +419,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 }
 
 template <typename Scalar>
-NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivityStep)
+NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
 {
     double timeTotal = Agros2D::problem()->config()->timeTotal().number();
     // todo: move to some config?
@@ -458,7 +461,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
     //    MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
     //    multiSolutionArray2.createNewSolutions();
 
-    Scalar solutionVector[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
+    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
     solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, timeStep > 0 ? referenceCalculation.solutions() : MultiSolution<Scalar>());
@@ -466,6 +469,9 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLenght(int timeStep, int adaptivity
     MultiSolution<Scalar> solutions;
     solutions.createSolutions(m_actualSpaces.meshes());
     Solution<Scalar>::vector_to_solutions(solutionVector, m_actualSpaces.nakedConst(), solutions.naked());
+
+    // free vector
+    delete [] solutionVector;
 
     double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutionsNaked(), solutions.naked());
 
@@ -672,7 +678,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // todo: delete? je to vubec potreba?
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef.naked(), Agros2D::problem()->actualTime());
 
-    Scalar solutionVector[Space<Scalar>::get_num_dofs(spacesRef.nakedConst())];
+    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(spacesRef.nakedConst())];
 
     // solve reference problem
     // todo: posledni parametr: predchozi reseni pro projekci!!
@@ -682,6 +688,9 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     MultiSolution<Scalar> solutionsRef;
     solutionsRef.createSolutions(spacesRef.meshes());
     Solution<Scalar>::vector_to_solutions(solutionVector, spacesRef.nakedConst(), solutionsRef.naked());
+
+    // free vector
+    delete [] solutionVector;
 
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
     Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiSolutionArray<Scalar>(spacesRef, solutionsRef, Agros2D::problem()->actualTime()));

@@ -29,10 +29,8 @@
 
 const int notFoundSoFar = -999;
 
-QString SolutionStore::baseStoreFileName(FieldSolutionID solutionID)
+QString SolutionStore::baseStoreFileName(FieldSolutionID solutionID) const
 {
-    QFileInfo info(Agros2D::problem()->config()->fileName());
-
     QString fn = QString("%1/%2").
             arg(cacheProblemDir()).
             arg(solutionID.toString());
@@ -49,12 +47,12 @@ void SolutionStore::clearAll()
     }
 }
 
-SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component) const
+SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component)
 {
     return multiSolution(solutionID).component(component);
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID) const
+MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
 {
     if(solutionID.solutionMode == SolutionMode_Finer)
     {
@@ -86,7 +84,7 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
     return m_multiSolutions.contains(solutionID);
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID) const
+MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
 {
     MultiSolutionArray<double> msa;
     foreach(Field *field, solutionID.group->fields())
@@ -408,7 +406,7 @@ int SolutionStore::timeLevelIndex(FieldInfo *fieldInfo, double time)
 double SolutionStore::timeLevel(FieldInfo *fieldInfo, int timeLevelIndex)
 {
     QList<double> levels = timeLevels(fieldInfo);
-    if (timeLevelIndex >= 0 and timeLevelIndex < levels.count())
+    if (timeLevelIndex >= 0 && timeLevelIndex < levels.count())
         return levels.at(timeLevelIndex);
 }
 

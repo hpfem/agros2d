@@ -51,7 +51,7 @@ public:
     QString fieldId() const { return m_fieldId; }
 
     inline QSharedPointer<Hermes::Hermes2D::Mesh> initialMesh() const { return m_initialMesh; }
-    inline setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh) { m_initialMesh = mesh; }
+    inline void setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh) { m_initialMesh = mesh; }
 
     AnalysisType analysisType() const { return m_analysisType; }
     void setAnalysisType(const AnalysisType analysisType);

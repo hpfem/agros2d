@@ -142,7 +142,7 @@ SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
 }
 
 
-static SceneEdge *SceneEdge::findClosestEdge(const Point &point)
+SceneEdge *SceneEdge::findClosestEdge(const Point &point)
 {
     SceneEdge *edgeClosest = NULL;
 
@@ -210,7 +210,7 @@ RectPoint SceneEdgeContainer::boundingBox() const
     return SceneEdgeContainer::boundingBox(data);
 }
 
-static RectPoint SceneEdgeContainer::boundingBox(QList<SceneEdge *> edges)
+RectPoint SceneEdgeContainer::boundingBox(QList<SceneEdge *> edges)
 {
     Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
     Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());

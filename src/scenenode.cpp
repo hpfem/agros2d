@@ -49,7 +49,7 @@ SceneNodeCommandRemove* SceneNode::getRemoveCommand()
 }
 
 
-static SceneNode *SceneNode::findClosestNode(const Point &point)
+SceneNode *SceneNode::findClosestNode(const Point &point)
 {
     SceneNode *nodeClosest = NULL;
 

@@ -374,10 +374,10 @@ int windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
     }
 
     double winding = totalAngle / (2*M_PI);
-    int intWinding = round(winding);
+    int intWinding = floor(winding + 0.5);
 
     // check that total angle was multiple of 2*M_PI
-    assert(fabs(winding - (double)intWinding) < 0.00001);
+    assert(fabs(winding - (double) intWinding) < 0.00001);
     return intWinding;
 }
 
