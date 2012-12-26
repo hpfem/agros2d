@@ -58,6 +58,8 @@ public:
     AdaptivityType adaptivityType() const;
     int adaptivitySteps() const;
     double adaptivityTolerance() const;
+    int adaptivityBackSteps() const;
+    int adaptivityRedoneEach() const;
 
     // minimal nonlinear tolerance of individual fields
     double nonlinearTolerance() const;
