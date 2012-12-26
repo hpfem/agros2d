@@ -316,26 +316,26 @@ bool Problem::mesh()
 
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
-    MeshGenerator *pim = NULL;
+    MeshGenerator *meshGenerator = NULL;
     switch (config()->meshType())
     {
     case MeshType_Triangle:
     case MeshType_Triangle_QuadFineDivision:
     case MeshType_Triangle_QuadRoughDivision:
     case MeshType_Triangle_QuadJoin:
-        pim = new MeshGeneratorTriangle();
+        meshGenerator = new MeshGeneratorTriangle();
         break;
     case MeshType_GMSH_Triangle:
     case MeshType_GMSH_Quad:
     case MeshType_GMSH_QuadDelaunay_Experimental:
-        pim = new MeshGeneratorGMSH();
+        meshGenerator = new MeshGeneratorGMSH();
         break;
     default:
         QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(config()->meshType())));
         break;
     }
 
-    if (pim && pim->mesh())
+    if (meshGenerator && meshGenerator->mesh())
     {
         // load mesh
         try
@@ -344,7 +344,7 @@ bool Problem::mesh()
 
             emit meshed();
 
-            delete pim;
+            delete meshGenerator;
             return true;
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -352,7 +352,7 @@ bool Problem::mesh()
             Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
         }
     }
-    delete pim;
+    delete meshGenerator;
 
     return false;
 }
@@ -381,11 +381,9 @@ void Problem::solveInit()
 
     createStructure();
 
-    if (!isMeshed())
-    {
-        if(!mesh())
-            throw AgrosSolverException("Could not create mesh");
-    }
+    // todo: we should not mesh allways, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
+    if(!mesh())
+        throw AgrosSolverException("Could not create mesh");
 
     // check geometry
     if (!Agros2D::scene()->checkGeometryAssignement())
@@ -583,9 +581,9 @@ void Problem::solveAction()
             }
             else if(!skipThisTimeStep(block))
             {
+                stepMessage(block);
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    stepMessage(block);
                     solver->solveSimple(actualTimeStep(), 0);
                 }
                 else
