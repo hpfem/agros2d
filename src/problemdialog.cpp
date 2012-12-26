@@ -145,6 +145,12 @@ void FieldWidget::createContent()
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new LineEditDouble(1, true);
     txtAdaptivityTolerance->setBottom(0.0);
+    txtAdaptivityBackSteps = new QSpinBox(this);
+    txtAdaptivityBackSteps->setMinimum(0);
+    txtAdaptivityBackSteps->setMaximum(100);
+    txtAdaptivityRedoneEach = new QSpinBox(this);
+    txtAdaptivityRedoneEach->setMinimum(1);
+    txtAdaptivityRedoneEach->setMaximum(100);
 
     // mesh
     txtNumberOfRefinements = new QSpinBox(this);
@@ -238,6 +244,11 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
+    // todo: meaningfull labels
+    layoutAdaptivity->addWidget(new QLabel(tr("Steps back in trans:")), 3, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 3, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans st:")), 4, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 4, 1);
 
     QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
@@ -334,6 +345,8 @@ void FieldWidget::load()
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType()));
     txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps());
     txtAdaptivityTolerance->setValue(m_fieldInfo->adaptivityTolerance());
+    txtAdaptivityBackSteps->setValue(m_fieldInfo->adaptivityBackSteps());
+    txtAdaptivityRedoneEach->setValue(m_fieldInfo->adaptivityRedoneEach());
     //mesh
     txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements());
     txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder());
@@ -364,6 +377,8 @@ bool FieldWidget::save()
     m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
     m_fieldInfo->setAdaptivitySteps(txtAdaptivitySteps->value());
     m_fieldInfo->setAdaptivityTolerance(txtAdaptivityTolerance->value());
+    m_fieldInfo->setAdaptivityBackSteps(txtAdaptivityBackSteps->value());
+    m_fieldInfo->setAdaptivityRedoneEach(txtAdaptivityRedoneEach->value());
     //mesh
     m_fieldInfo->setNumberOfRefinements(txtNumberOfRefinements->value());
     m_fieldInfo->setPolynomialOrder(txtPolynomialOrder->value());
@@ -423,6 +438,8 @@ void FieldWidget::doAdaptivityChanged(int index)
 {
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityBackSteps->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityRedoneEach->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void FieldWidget::doLinearityTypeChanged(int index)

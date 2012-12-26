@@ -73,7 +73,10 @@ bool ProblemConfig::isTransientAdaptive() const
 {
     if((m_timeStepMethod == TimeStepMethod_BDFTolerance) || (m_timeStepMethod == TimeStepMethod_BDFNumSteps))
         return true;
-    return false;
+    else if(m_timeStepMethod == TimeStepMethod_Fixed)
+        return false;
+
+    assert(0);
 }
 
 // todo: put to gui
@@ -491,9 +494,15 @@ void Problem::solve()
         return;
     }
 
-    if(isTransient() && (numAdaptiveFields() >= 1))
+    if((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Space adaptivity for transient problems not possible at the moment.");
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Space adaptivity for transient coupled problems not possible at the moment.");
+        return;
+    }
+
+    if(isTransient() && config()->isTransientAdaptive() && (numAdaptiveFields() >= 1))
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Both space and transient adaptivity at the same time not possible at the moment.");
         return;
     }
 

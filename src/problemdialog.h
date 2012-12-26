@@ -110,6 +110,8 @@ private:
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     LineEditDouble *txtAdaptivityTolerance;
+    QSpinBox *txtAdaptivityBackSteps;
+    QSpinBox *txtAdaptivityRedoneEach;
 
     QComboBox *cmbLinearityType;
 

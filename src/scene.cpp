@@ -1436,6 +1436,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         field->setAdaptivityType(adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivity_type")));
         field->setAdaptivitySteps(eleFieldAdaptivity.toElement().attribute("adaptivity_steps").toInt());
         field->setAdaptivityTolerance(eleFieldAdaptivity.toElement().attribute("adaptivity_tolerance").toDouble());
+        field->setAdaptivityBackSteps(eleFieldAdaptivity.toElement().attribute("adaptivity_back_steps").toInt());
+        field->setAdaptivityRedoneEach(eleFieldAdaptivity.toElement().attribute("adaptivity_redone_each").toInt());
 
         // linearity
         QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
@@ -1776,6 +1778,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleAdaptivity.setAttribute("adaptivity_type", adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
         eleAdaptivity.setAttribute("adaptivity_steps", fieldInfo->adaptivitySteps());
         eleAdaptivity.setAttribute("adaptivity_tolerance", fieldInfo->adaptivityTolerance());
+        eleAdaptivity.setAttribute("adaptivity_back_steps", fieldInfo->adaptivityBackSteps());
+        eleAdaptivity.setAttribute("adaptivity_redone_each", fieldInfo->adaptivityRedoneEach());
 
         // linearity
         QDomElement eleLinearity = doc.createElement("solver");

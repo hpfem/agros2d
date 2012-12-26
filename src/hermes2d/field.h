@@ -116,6 +116,12 @@ public:
     inline double adaptivityTolerance() const { return m_adaptivityTolerance; }
     void setAdaptivityTolerance(const double at) { m_adaptivityTolerance = at; emit changed(); }
 
+    inline int adaptivityBackSteps() const { return m_adaptivityBackSteps; }
+    void setAdaptivityBackSteps(const int abs) { m_adaptivityBackSteps = abs; emit changed(); }
+
+    inline int adaptivityRedoneEach() const { return m_adaptivityRedoneEach; }
+    void setAdaptivityRedoneEach(const int re) { m_adaptivityRedoneEach = re; emit changed(); }
+
     inline Value initialCondition() const { return m_initialCondition; }
     void setInitialCondition(const Value& value) { m_initialCondition = value; emit changed(); }
 
@@ -173,6 +179,8 @@ private:
     AdaptivityType m_adaptivityType;
     int m_adaptivitySteps;
     double m_adaptivityTolerance; // percent
+    int m_adaptivityBackSteps;
+    int m_adaptivityRedoneEach;
 
     // transient
     Value m_initialCondition;

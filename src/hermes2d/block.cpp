@@ -96,6 +96,7 @@ AdaptivityType Block::adaptivityType() const
 
     foreach (Field *field, m_fields)
     {
+        // todo: ensure in GUI
         assert(field->fieldInfo()->adaptivityType() == at);
     }
 
@@ -108,10 +109,37 @@ int Block::adaptivitySteps() const
 
     foreach (Field *field, m_fields)
     {
+        // todo: ensure in GUI
         assert(field->fieldInfo()->adaptivitySteps() == as);
     }
 
     return as;
+}
+
+int Block::adaptivityBackSteps() const
+{
+    int abs = m_fields.at(0)->fieldInfo()->adaptivityBackSteps();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert(field->fieldInfo()->adaptivityBackSteps() == abs);
+    }
+
+    return abs;
+}
+
+int Block::adaptivityRedoneEach() const
+{
+    int re = m_fields.at(0)->fieldInfo()->adaptivityRedoneEach();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert(field->fieldInfo()->adaptivityRedoneEach() == re);
+    }
+
+    return re;
 }
 
 double Block::adaptivityTolerance() const
@@ -120,6 +148,7 @@ double Block::adaptivityTolerance() const
 
     foreach (Field *field, m_fields)
     {
+        // todo: ensure in GUI
         assert(field->fieldInfo()->adaptivityTolerance() == at);
     }
 
