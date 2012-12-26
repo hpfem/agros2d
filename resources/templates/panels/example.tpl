@@ -10,76 +10,76 @@
 </head>
 <body>
 
-<table>
+<img style="float: right;" src="{{AGROS2D}}" />
+<h1>{{NAME}}</h1>
+<div>
+<table class="heading">
 <tr>
-<td>
-<div class="section">
-<h2>{{NAME}}</h2>
-<table>
-<tr>
-<td>
-	<table>
-	<tr>
-		<td colspan="2">{{DESCRIPTION}}</td>
-	</tr>		
-	<tr>
-	<td>&nbsp;</td>	
-	</tr>
-	
-	<tr>
 	<td><b>{{COORDINATE_TYPE_LABEL}}</b></td><td>{{COORDINATE_TYPE}}</td>
-	</tr>
-	{{#HARMONIC}}
-	<tr>
-    <td colspan="2">
-        <h3>{{HARMONIC_LABEL}}</h3>
-        <table>
-            <tr><td><b>{{HARMONIC_FREQUENCY_LABEL}}</b></td><td>{{HARMONIC_FREQUENCY}}</td></tr>
-        </table>
-    </td>
-	</tr>
-	{{/HARMONIC}}
-    {{#TRANSIENT}}
-    <tr>
-    <td colspan="2">
-        <h3>{{TRANSIENT_LABEL}}</h3>
-        <table>
-            <tr><td><b>{{TRANSIENT_STEP_METHOD_LABEL}}</b></td><td>{{TRANSIENT_STEP_METHOD}}</td></tr>
-            <tr><td><b>{{TRANSIENT_STEP_ORDER_LABEL}}</b></td><td>{{TRANSIENT_STEP_ORDER}}</td></tr>
-            <tr><td><b>{{TRANSIENT_TOLERANCE_LABEL}}</b></td><td>{{TRANSIENT_TOLERANCE}}</td></tr>
-            <tr><td><b>{{TRANSIENT_CONSTANT_NUM_STEPS_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_NUM_STEPS}}</td></tr>
-            <tr><td><b>{{TRANSIENT_CONSTANT_STEP_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_STEP}}</td></tr>
-            <tr><td><b>{{TRANSIENT_TOTAL_LABEL}}</b></td><td>{{TRANSIENT_TOTAL}}</td></tr>
-        </table>
-    </td>
-    </tr>
-    {{/TRANSIENT}}
-	<td>
-		<h3>{{GEOMETRY_LABEL}}</h3>
-		<table>
-			<tr><td><b>{{GEOMETRY_NODES_LABEL}}</b></td><td>{{GEOMETRY_NODES}}</td></tr>
-			<tr><td><b>{{GEOMETRY_EDGES_LABEL}}</b></td><td>{{GEOMETRY_EDGES}}</td></tr>
-			<tr><td><b>{{GEOMETRY_LABELS_LABEL}}</b></td><td>{{GEOMETRY_LABELS}}</td></tr>
-		</table>
-	</td>
-	</td>
-	</tr>
-	</table>
-</td>
-<td>
-	<div class="figure">{{GEOMETRY_SVG}}</div>
-</td>
+</tr>
+<tr>
+	<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
 </tr>
 </table>
+<p>{{DESCRIPTION}}</p>
 </div>
 
-{{#FIELD}}
 <table>
 <tr>
-{{#FIELD_SECTION}}
 <td>
 <div class="section">
+<h2>{{GEOMETRY_LABEL}}</h2>
+<hr/>
+<table>
+	<tr><td rowspan="6"><div class="figure">{{GEOMETRY_SVG}}</div></td><td><b>{{GEOMETRY_NODES_LABEL}}</b></td><td>{{GEOMETRY_NODES}}</td></tr>
+	<tr><td><b>{{GEOMETRY_EDGES_LABEL}}</b></td><td>{{GEOMETRY_EDGES}}</td></tr>
+	<tr><td><b>{{GEOMETRY_LABELS_LABEL}}</b></td><td>{{GEOMETRY_LABELS}}</td></tr>
+	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
+	<tr><td><b>{{GEOMETRY_MATERIALS_LABEL}}</b></td><td>{{GEOMETRY_MATERIALS}}</td></tr>
+	<tr><td><b>{{GEOMETRY_BOUNDARIES_LABEL}}</b></td><td>{{GEOMETRY_BOUNDARIES}}</td></tr>
+</table>
+{{#HARMONIC}}
+<h2>{{HARMONIC_LABEL}}</h2>
+<hr/>
+<table>
+    <tr><td><b>{{HARMONIC_FREQUENCY_LABEL}}</b></td><td>{{HARMONIC_FREQUENCY}}</td></tr>
+</table>
+{{/HARMONIC}}
+{{#TRANSIENT}}
+<h2>{{TRANSIENT_LABEL}}</h2>
+<hr/>
+<table>
+    <tr><td><b>{{TRANSIENT_STEP_METHOD_LABEL}}</b></td><td>{{TRANSIENT_STEP_METHOD}}</td></tr>
+    <tr><td><b>{{TRANSIENT_STEP_ORDER_LABEL}}</b></td><td>{{TRANSIENT_STEP_ORDER}}</td></tr>
+    <tr><td><b>{{TRANSIENT_TOLERANCE_LABELS}}</b></td><td>{{TRANSIENT_TOLERANCE}}</td></tr>
+    <tr><td><b>{{TRANSIENT_CONSTANT_NUM_STEPS_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_NUM_STEPS}}</td></tr>
+    <tr><td><b>{{TRANSIENT_CONSTANT_STEP_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_STEP}}</td></tr>
+    <tr><td><b>{{TRANSIENT_TOTAL_LABEL}}</b></td><td>{{TRANSIENT_TOTAL}}</td></tr>
+</table>
+{{/TRANSIENT}}
+</div>
+
+<div class="section">
+{{#COUPLING}}
+<h2>{{COUPLING_MAIN_LABEL}}</h2>
+<hr/>
+{{#COUPLING_SECTION}}
+<table>
+	<tr><td><b>{{COUPLING_LABEL}}</b></td><td>&nbsp;</td>
+	<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{COUPLING_SOURCE_LABEL}}</b></td><td>{{COUPLING_SOURCE}}</td></tr>
+	<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{COUPLING_TARGET_LABEL}}</b></td><td>{{COUPLING_TARGET}}</td></tr>
+	<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{COUPLING_TYPE_LABEL}}</b></td><td>{{COUPLING_TYPE}}</td></tr>
+</table>
+{{/COUPLING_SECTION}}
+</div>
+{{/COUPLING}}
+
+<td>
+{{#FIELD}}
+{{#FIELD_SECTION}}
+<div class="section">
 <h2>{{PHYSICAL_FIELD_LABEL}}</h2>
+<hr/>
 <table>
 	<tr>
 		<td><b>{{ANALYSIS_TYPE_LABEL}}</b></td><td>{{ANALYSIS_TYPE}}</td>
@@ -89,11 +89,11 @@
 	</tr>	
 </table>
 </div>
-</td>
 {{/FIELD_SECTION}}
+{{/FIELD}}
+</td>
 </tr>
 </table>
-{{/FIELD}}
 	
 {{#IMAGE_SECTION}}
 <table>

@@ -10,109 +10,75 @@
 </head>
 <body>
 
+<img style="float: right;" src="{{AGROS2D}}" />
+<h1>{{NAME}}</h1>
+<div>
+<table class="heading">
+<tr>
+	<td><b>{{COORDINATE_TYPE_LABEL}}</b></td><td>{{COORDINATE_TYPE}}</td>
+</tr>
+<tr>
+	<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
+</tr>
+</table>
+</div>
+
 <table>
 <tr>
 <td>
 <div class="section">
-<h2>{{BASIC_INFORMATION_LABEL}}</h2>
+<h2>{{GEOMETRY_LABEL}}</h2>
+<hr/>
 <table>
-	<tr>
-		<td><b>{{NAME_LABEL}}</b></td><td>{{NAME}}</td>
-	</tr>
-	<tr>
-		<td><b>{{COORDINATE_TYPE_LABEL}}</b></td><td>{{COORDINATE_TYPE}}</td>
-	</tr>
-	<tr>
-		<td><b>{{MESH_TYPE_LABEL}}</b></td><td>{{MESH_TYPE}}</td>
-	</tr>
-	{{#HARMONIC}}
-	<tr>
-    <td colspan="2">
-        <h3>{{HARMONIC_LABEL}}</h3>
-        <table>
-            <tr><td><b>{{HARMONIC_FREQUENCY_LABEL}}</b></td><td>{{HARMONIC_FREQUENCY}}</td></tr>
-        </table>
-    </td>
-	</tr>
-	{{/HARMONIC}}
-    {{#TRANSIENT}}
-    <tr>
-    <td colspan="2">
-        <h3>{{TRANSIENT_LABEL}}</h3>
-        <table>
-            <tr><td><b>{{TRANSIENT_STEP_METHOD_LABEL}}</b></td><td>{{TRANSIENT_STEP_METHOD}}</td></tr>
-            <tr><td><b>{{TRANSIENT_STEP_ORDER_LABEL}}</b></td><td>{{TRANSIENT_STEP_ORDER}}</td></tr>
-            <tr><td><b>{{TRANSIENT_TOLERANCE_LABELS}}</b></td><td>{{TRANSIENT_TOLERANCE}}</td></tr>
-            <tr><td><b>{{TRANSIENT_CONSTANT_NUM_STEPS_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_NUM_STEPS}}</td></tr>
-            <tr><td><b>{{TRANSIENT_CONSTANT_STEP_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_STEP}}</td></tr>
-            <tr><td><b>{{TRANSIENT_TOTAL_LABEL}}</b></td><td>{{TRANSIENT_TOTAL}}</td></tr>
-        </table>
-    </td>
-    </tr>
-    {{/TRANSIENT}}
-	<tr>
-	<td>
-		<h3>{{GEOMETRY_LABEL}}</h3>
-		<table>
-			<tr><td><b>{{GEOMETRY_NODES_LABEL}}</b></td><td>{{GEOMETRY_NODES}}</td></tr>
-			<tr><td><b>{{GEOMETRY_EDGES_LABEL}}</b></td><td>{{GEOMETRY_EDGES}}</td></tr>
-			<tr><td><b>{{GEOMETRY_LABELS_LABEL}}</b></td><td>{{GEOMETRY_LABELS}}</td></tr>
-			<tr><td><b>{{GEOMETRY_MATERIALS_LABEL}}</b></td><td>{{GEOMETRY_MATERIALS}}</td></tr>
-			<tr><td><b>{{GEOMETRY_BOUNDARIES_LABEL}}</b></td><td>{{GEOMETRY_BOUNDARIES}}</td></tr>
-		</table>
-	</td>
-	<td><div class="figure">{{GEOMETRY_SVG}}</div></td>
-	</tr>
+	<tr><td rowspan="6"><div class="figure">{{GEOMETRY_SVG}}</div></td><td><b>{{GEOMETRY_NODES_LABEL}}</b></td><td>{{GEOMETRY_NODES}}</td></tr>
+	<tr><td><b>{{GEOMETRY_EDGES_LABEL}}</b></td><td>{{GEOMETRY_EDGES}}</td></tr>
+	<tr><td><b>{{GEOMETRY_LABELS_LABEL}}</b></td><td>{{GEOMETRY_LABELS}}</td></tr>
+	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
+	<tr><td><b>{{GEOMETRY_MATERIALS_LABEL}}</b></td><td>{{GEOMETRY_MATERIALS}}</td></tr>
+	<tr><td><b>{{GEOMETRY_BOUNDARIES_LABEL}}</b></td><td>{{GEOMETRY_BOUNDARIES}}</td></tr>
 </table>
+{{#HARMONIC}}
+<h2>{{HARMONIC_LABEL}}</h2>
+<hr/>
+<table>
+    <tr><td><b>{{HARMONIC_FREQUENCY_LABEL}}</b></td><td>{{HARMONIC_FREQUENCY}}</td></tr>
+</table>
+{{/HARMONIC}}
+{{#TRANSIENT}}
+<h2>{{TRANSIENT_LABEL}}</h2>
+<hr/>
+<table>
+    <tr><td><b>{{TRANSIENT_STEP_METHOD_LABEL}}</b></td><td>{{TRANSIENT_STEP_METHOD}}</td></tr>
+    <tr><td><b>{{TRANSIENT_STEP_ORDER_LABEL}}</b></td><td>{{TRANSIENT_STEP_ORDER}}</td></tr>
+    <tr><td><b>{{TRANSIENT_TOLERANCE_LABELS}}</b></td><td>{{TRANSIENT_TOLERANCE}}</td></tr>
+    <tr><td><b>{{TRANSIENT_CONSTANT_NUM_STEPS_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_NUM_STEPS}}</td></tr>
+    <tr><td><b>{{TRANSIENT_CONSTANT_STEP_LABEL}}</b></td><td>{{TRANSIENT_CONSTANT_STEP}}</td></tr>
+    <tr><td><b>{{TRANSIENT_TOTAL_LABEL}}</b></td><td>{{TRANSIENT_TOTAL}}</td></tr>
+</table>
+{{/TRANSIENT}}
 </div>
 
 <div class="section">
 {{#COUPLING}}
 <h2>{{COUPLING_MAIN_LABEL}}</h2>
+<hr/>
+{{#COUPLING_SECTION}}
 <table>
-	{{#COUPLING_SECTION}}
-	<tr>
-		<td colspan=2><h3>{{COUPLING_LABEL}}</h3></td>
-	<tr>
-	<tr>
-		<td><b>{{COUPLING_SOURCE_LABEL}}</b></td><td>{{COUPLING_SOURCE}}</td>
-	<tr>
-	</tr>
-		<td><b>{{COUPLING_TARGET_LABEL}}</b></td><td>{{COUPLING_TARGET}}</td>
-	<tr>
-	</tr>
-		<td><b>{{COUPLING_TYPE_LABEL}}</b></td><td>{{COUPLING_TYPE}}</td>		
-	</tr>
-	{{/COUPLING_SECTION}}
+	<tr><td><b>{{COUPLING_LABEL}}</b></td><td>&nbsp;</td>
+	<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{COUPLING_SOURCE_LABEL}}</b></td><td>{{COUPLING_SOURCE}}</td></tr>
+	<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{COUPLING_TARGET_LABEL}}</b></td><td>{{COUPLING_TARGET}}</td></tr>
+	<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{COUPLING_TYPE_LABEL}}</b></td><td>{{COUPLING_TYPE}}</td></tr>
 </table>
+{{/COUPLING_SECTION}}
 </div>
 {{/COUPLING}}
-
-{{#SOLUTION_PARAMETERS_SECTION}}
-<div class="section">
-<h2>{{SOLUTION_LABEL}}</h2>
-<table>
-    <tr>
-        <td><b>{{SOLUTION_ELAPSED_TIME_LABEL}}</b></td><td>{{SOLUTION_ELAPSED_TIME}}</td>
-    </tr>
-    <tr>
-        <td><b>{{NUM_THREADS_LABEL}}</b></td><td>{{NUM_THREADS}}</td>
-    </tr>
-    {{#TRANSIENT_ADAPTIVE}}
-    <tr>
-        <td colspan="2"><div style="text-align: center;">Time step length</div><div id="chart_time_step_length" style="width:100%; height:130px;"></div></td>
-    </tr>
-    {{/TRANSIENT_ADAPTIVE}}
-</table>
-</div>
-{{/SOLUTION_PARAMETERS_SECTION}}
-</td>
 
 <td>
 {{#FIELD}}
 {{#FIELD_SECTION}}
 <div class="section">
 <h2>{{PHYSICAL_FIELD_LABEL}}</h2>
+<hr/>
 <table>
 	<tr>
 		<td><b>{{ANALYSIS_TYPE_LABEL}}</b></td><td>{{ANALYSIS_TYPE}}</td>
@@ -130,10 +96,10 @@
 	</tr>
 	{{#SOLVER_PARAMETERS_SECTION}}
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_STEPS_LABEL}}</b></td><td>{{NONLINEAR_STEPS}}</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_STEPS_LABEL}}</b></td><td>{{NONLINEAR_STEPS}}</td>
 	</tr>
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_TOLERANCE_LABEL}}</b></td><td>{{NONLINEAR_TOLERANCE}}</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_TOLERANCE_LABEL}}</b></td><td>{{NONLINEAR_TOLERANCE}}</td>
 	</tr>		
 	{{/SOLVER_PARAMETERS_SECTION}}
 	<tr>
@@ -141,10 +107,10 @@
 	</tr>
 	{{#ADAPTIVITY_PARAMETERS_SECTION}}
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;<b>{{ADAPTIVITY_STEPS_LABEL}}</b></td><td>{{ADAPTIVITY_STEPS}}</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ADAPTIVITY_STEPS_LABEL}}</b></td><td>{{ADAPTIVITY_STEPS}}</td>
 	</tr>
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;<b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td>
 	</tr>
 	{{/ADAPTIVITY_PARAMETERS_SECTION}}
 	<tr>
@@ -176,16 +142,11 @@
     <tr>
         <td><b>{{DOFS_LABEL}}</b></td><td>{{DOFS}}</td>
     </tr>
+    {{/MESH_SOLUTION_DOFS_PARAMETERS_SECTION}}    
     {{#MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
     <tr>
         <td><b>{{ERROR_LABEL}}</b></td><td>{{ERROR}}</td>
-    </tr>
-    <tr>
-        <td colspan="2"><div style="text-align: center;">Relative error</div><div id="chart_error_steps_{{PHYSICAL_FIELD_ID}}" style="width:100%; height:130px;"></div></td>
-    </tr>   
-    <tr>
-        <td colspan="2"><div style="text-align: center;">DOFs</div><div id="chart_dofs_steps_{{PHYSICAL_FIELD_ID}}" style="width:100%; height:130px;"></div></td>
-    </tr>   
+    </tr>    
     <!--
 	<script type="text/javascript">
 	$(function () 
@@ -221,16 +182,37 @@
 	</script>    
 	-->
     {{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
-    {{/MESH_SOLUTION_DOFS_PARAMETERS_SECTION}}
     {{/MESH_PARAMETERS_SECTION}}
 </table>
-
+{{#MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
+<div style="text-align: center; width: 100%; height: 160px;">Relative error<br/><div id="chart_error_steps_{{PHYSICAL_FIELD_ID}}" style="width: 100%; height: 90%;"></div></div>
+<div style="text-align: center; width: 100%; height: 160px;">DOFs<br/><div id="chart_dofs_steps_{{PHYSICAL_FIELD_ID}}" style="width: 100%; height: 90%;"></div></div>
+{{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
 </div>
 {{/FIELD_SECTION}}
 {{/FIELD}}
 </td>
 </tr>
 </table>
+
+{{#SOLUTION_PARAMETERS_SECTION}}
+<div class="section">
+<h2>{{SOLUTION_LABEL}}</h2>
+<hr/>
+<table>
+    <tr>
+        <td><b>{{SOLUTION_ELAPSED_TIME_LABEL}}</b></td><td>{{SOLUTION_ELAPSED_TIME}}</td>
+    </tr>
+    <tr>
+        <td><b>{{NUM_THREADS_LABEL}}</b></td><td>{{NUM_THREADS}}</td>
+    </tr>
+</table>
+{{#TRANSIENT_ADAPTIVE}}
+<div style="text-align: center; width: 50%; height: 160px;">Time step length<br/><div id="chart_time_step_length" style="width: 100%; height: 90%;"></div></div>
+{{/TRANSIENT_ADAPTIVE}}
+</div>
+{{/SOLUTION_PARAMETERS_SECTION}}
+</td>
 
 <div class="cleaner"></div>
 

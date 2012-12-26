@@ -55,7 +55,7 @@ QString generateSvgGeometry(QList<SceneEdge*> edges)
 {
     RectPoint boundingBox = SceneEdgeContainer::boundingBox(edges);
 
-    double size = 200;
+    double size = 180;
     double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
 
     // svg

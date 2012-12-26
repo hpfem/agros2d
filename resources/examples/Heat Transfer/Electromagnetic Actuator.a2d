@@ -64,7 +64,7 @@
             <label x="0.0112064" y="0.0336487" id="4" area="0"/>
         </labels>
     </geometry>
-    <problem time_order="2" frequency="0" time_method="adaptive_numsteps" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="20" name="Electromagnetic Actuator" time_total="15e3">
+    <problem time_order="2" frequency="0" time_method="adaptive_numsteps" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="3" name="Electromagnetic Actuator" time_total="15e3">
         <startup_script></startup_script>
         <description>Heating of electromagnetic actuator.</description>
         <fields>
