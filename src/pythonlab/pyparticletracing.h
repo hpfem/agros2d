@@ -53,6 +53,7 @@ public:
         x = Agros2D::problem()->configView()->particleStartVelocity.x;
         y = Agros2D::problem()->configView()->particleStartVelocity.y;
     }
+
     void setParticleMass(double mass);
     double particleMass() { return Agros2D::problem()->configView()->particleMass; }
     void setParticleCharge(double charge);
@@ -63,6 +64,8 @@ public:
     double dragForceReferenceArea() { return Agros2D::problem()->configView()->particleDragReferenceArea; }
     void setDragForceCoefficient(double coeff);
     double dragForceCoefficient() { return Agros2D::problem()->configView()->particleDragCoefficient; }
+    void setCustomForce(map<char*, double> force);
+    void customForce(map<string, double> &force);
     void setIncludeRelativisticCorrection(int include);
     int includeRelativisticCorrection() { return Agros2D::problem()->configView()->particleIncludeRelativisticCorrection; }
     void setReflectOnDifferentMaterial(int reflect);

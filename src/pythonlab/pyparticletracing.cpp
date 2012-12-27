@@ -160,6 +160,33 @@ void PyParticleTracing::setDragForceCoefficient(double coeff)
     Agros2D::scene()->invalidate();
 }
 
+void PyParticleTracing::setCustomForce(map<char*, double> force)
+{
+    for (map<char*, double>::iterator i = force.begin(); i != force.end(); ++i)
+    {
+        if (QString((*i).first) == "x")
+            Agros2D::problem()->configView()->particleCustomForce.x = (*i).second;
+        else if (QString((*i).first) == "y")
+            Agros2D::problem()->configView()->particleCustomForce.y = (*i).second;
+        else if (QString((*i).first) == "z")
+            Agros2D::problem()->configView()->particleCustomForce.z = (*i).second;
+        else
+            throw invalid_argument(QObject::tr("Key %1 is not defined.").arg(QString((*i).first)).toStdString());
+    }
+
+    Agros2D::scene()->invalidate();
+}
+
+void PyParticleTracing::customForce(map<std::string, double> &force)
+{
+    map<std::string, double> values;
+    values["x"] = Agros2D::problem()->configView()->particleCustomForce.x;
+    values["y"] = Agros2D::problem()->configView()->particleCustomForce.y;
+    values["z"] = Agros2D::problem()->configView()->particleCustomForce.z;
+
+    force = values;
+}
+
 void PyParticleTracing::setIncludeRelativisticCorrection(int include)
 {
     Agros2D::problem()->configView()->particleIncludeRelativisticCorrection = include;
