@@ -24,6 +24,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/block.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
 #include "util.h"

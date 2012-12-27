@@ -24,11 +24,12 @@
 
 #include "scene.h"
 #include "hermes2d.h"
-#include "module.h"
-#include "module_agros.h"
-#include "field.h"
-#include "problem.h"
-#include "bdf2.h"
+#include "hermes2d/module.h"
+#include "hermes2d/module_agros.h"
+#include "hermes2d/field.h"
+#include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
+#include "hermes2d/bdf2.h"
  		
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
