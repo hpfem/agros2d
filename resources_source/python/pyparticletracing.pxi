@@ -11,6 +11,11 @@ cdef extern from "../../src/pythonlab/pyparticletracing.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
 
+        void setNumberOfParticles(int particles)  except +
+        int numberOfParticles()
+        void setStartingRadius(double radius) except +
+        double startingRadius()
+
         void setInitialPosition(double x, double y) except +
         void initialPosition(double x, double y)
 
@@ -64,6 +69,20 @@ cdef class ParticleTracing:
         self.thisptr = new PyParticleTracing()
     def __dealloc__(self):
         del self.thisptr
+
+    # number of particles
+    property number_of_particles:
+        def __get__(self):
+            return self.thisptr.numberOfParticles()
+        def __set__(self, particles):
+            self.thisptr.setNumberOfParticles(particles)
+
+    # particles dispersion
+    property particles_dispersion:
+        def __get__(self):
+            return self.thisptr.startingRadius()
+        def __set__(self, dispersion):
+            self.thisptr.setStartingRadius(dispersion)
 
     # solve
     def solve(self):

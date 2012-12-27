@@ -53,7 +53,10 @@ public:
         x = Agros2D::problem()->configView()->particleStartVelocity.x;
         y = Agros2D::problem()->configView()->particleStartVelocity.y;
     }
-
+    void setNumberOfParticles(int particles);
+    int numberOfParticles() { return Agros2D::problem()->configView()->particleNumberOfParticles; }
+    void setStartingRadius(double radius);
+    double startingRadius() { return Agros2D::problem()->configView()->particleStartingRadius; }
     void setParticleMass(double mass);
     double particleMass() { return Agros2D::problem()->configView()->particleMass; }
     void setParticleCharge(double charge);

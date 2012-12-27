@@ -33,8 +33,8 @@ void PyParticleTracing::solve()
     // store values
     // double particleStartingRadius = Agros2D::problem()->configView()->particleStartingRadius;
     // int particleNumberOfParticles = Agros2D::problem()->configView()->particleNumberOfParticles;
-    Agros2D::problem()->configView()->particleStartingRadius = 0.0;
-    Agros2D::problem()->configView()->particleNumberOfParticles = 1;
+    // Agros2D::problem()->configView()->particleStartingRadius = 0.0;
+    // Agros2D::problem()->configView()->particleNumberOfParticles = 1;
 
     ParticleTracing particleTracing;
     particleTracing.computeTrajectoryParticle(false);
@@ -86,6 +86,24 @@ void PyParticleTracing::velocities(std::vector<double> &x,
     x = outX;
     y = outY;
     z = outZ;
+}
+
+void PyParticleTracing::setNumberOfParticles(int particles)
+{
+    if (particles < 1)
+        throw out_of_range(QObject::tr("Number of particles must be bigger then 1.").toStdString());
+
+    Agros2D::problem()->configView()->particleNumberOfParticles = particles;
+    Agros2D::scene()->invalidate();
+}
+
+void PyParticleTracing::setStartingRadius(double radius)
+{
+    if (radius < 0.00)
+        throw out_of_range(QObject::tr("Particles dispersion must be possitive.").toStdString());
+
+    Agros2D::problem()->configView()->particleStartingRadius = radius;
+    Agros2D::scene()->invalidate();
 }
 
 void PyParticleTracing::times(std::vector<double> &time)
