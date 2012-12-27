@@ -84,6 +84,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     hermes2d/field.cpp \
     hermes2d/block.cpp \
     hermes2d/problem.cpp \
+    hermes2d/problem_config.cpp \
     ../pythonlab/pythonlab/pythonconsole.cpp \
     ../pythonlab/pythonlab/pythoncompleter.cpp \
     ../pythonlab/pythonlab/pythonhighlighter.cpp \
@@ -173,6 +174,7 @@ HEADERS += util.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \
+    hermes2d/problem_config.h \
     ../pythonlab/pythonlab/pythonconsole.h \
     ../pythonlab/pythonlab/pythoncompleter.h \
     ../pythonlab/pythonlab/pythonhighlighter.h \

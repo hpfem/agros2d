@@ -23,6 +23,7 @@
 
 #include "scene.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 {

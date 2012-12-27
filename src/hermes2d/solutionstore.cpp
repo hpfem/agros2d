@@ -25,6 +25,7 @@
 #include "block.h"
 #include "scene.h"
 #include "problem.h"
+#include "problem_config.h"
 #include "module_agros.h"
 
 const int notFoundSoFar = -999;

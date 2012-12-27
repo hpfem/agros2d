@@ -25,6 +25,7 @@
 #include "field.h"
 #include "block.h"
 #include "problem.h"
+#include "hermes2d/problem_config.h"
 #include "module.h"
 #include "scene.h"
 #include "sceneedge.h"

@@ -31,6 +31,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 SceneLabel::SceneLabel(const Point &point, double area)
     : MarkedSceneBasic(), m_point(point), m_area(area)

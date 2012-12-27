@@ -38,6 +38,7 @@
 #include "hermes2d/coupling.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
 #include "ctemplate/template.h"

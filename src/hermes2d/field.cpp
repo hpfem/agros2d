@@ -21,6 +21,7 @@
 #include "util/global.h"
 
 #include "problem.h"
+#include "hermes2d/problem_config.h"
 #include "scene.h"
 #include "scenemarker.h"
 #include "module.h"

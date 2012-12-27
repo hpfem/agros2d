@@ -25,6 +25,7 @@
 
 #include "scene.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 class Solution;
 class SceneViewPreprocessor;

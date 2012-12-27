@@ -23,6 +23,7 @@
 #include "util/global.h"
 #include "scene.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;

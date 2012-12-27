@@ -29,6 +29,8 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
+
 #include <ctemplate/template.h>
 
 ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)

@@ -29,6 +29,7 @@
 
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 #include "../../resources_source/classes/coupling_xml.h"
 

@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "problem.h"
+#include "problem_config.h"
 
 #include "util/global.h"
 
@@ -38,60 +39,6 @@
 #include "meshgenerator_triangle.h"
 #include "meshgenerator_gmsh.h"
 #include "logview.h"
-
-ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
-{
-    clear();
-}
-
-void ProblemConfig::clear()
-{
-    m_coordinateType = CoordinateType_Planar;
-    m_name = QObject::tr("unnamed");
-    m_fileName = "";
-    m_startupscript = "";
-    m_description = "";
-
-    // matrix solver
-    m_matrixSolver = Hermes::SOLVER_UMFPACK;
-
-    // mesh type
-    m_meshType = MeshType_Triangle;
-
-    // harmonic
-    m_frequency = 0.0;
-
-    // transient
-    m_timeStepMethod = TimeStepMethod_BDFNumSteps;
-    m_timeOrder = 2;
-    m_timeMethodTolerance = Value("0.1", false);
-    m_timeTotal = Value("1.0", false);
-    m_numConstantTimeSteps = 10;
-}
-
-bool ProblemConfig::isTransientAdaptive() const
-{
-    if((m_timeStepMethod == TimeStepMethod_BDFTolerance) || (m_timeStepMethod == TimeStepMethod_BDFNumSteps))
-        return true;
-    else if(m_timeStepMethod == TimeStepMethod_Fixed)
-        return false;
-
-    assert(0);
-}
-
-// todo: put to gui
-const double initialTimeStepRatio = 500;
-double ProblemConfig::initialTimeStepLength()
-{
-    if(timeStepMethod() == TimeStepMethod_BDFTolerance)
-        return timeTotal().value() / initialTimeStepRatio;
-    else if(timeStepMethod() == TimeStepMethod_BDFNumSteps)
-        return constantTimeStepLength() / 3.;
-    else if (timeStepMethod() == TimeStepMethod_Fixed)
-        return constantTimeStepLength();
-    else
-        assert(0);
-}
 
 Problem::Problem()
 {
