@@ -115,135 +115,134 @@ void ProblemConfigView::load(QDomElement *config)
     eleConfig = config;
 
     // active field
-    activeField = readConfig("SceneViewSettings/ActiveField", QString());
+    activeField = readConfig("View/ActiveField", QString());
 
-    // zoom
-    zoomToMouse = readConfig("Geometry/ZoomToMouse", ZOOMTOMOUSE);
 
     // font
-    rulersFont = readConfig("SceneViewSettings/RulersFont", RULERSFONT);
-    postFont = readConfig("SceneViewSettings/PostFont", POSTFONT);
+    rulersFont = readConfig("View/RulersFont", RULERSFONT);
+    postFont = readConfig("View/PostFont", POSTFONT);
 
     // geometry
-    nodeSize = readConfig("SceneViewSettings/NodeSize", GEOMETRYNODESIZE);
-    edgeWidth = readConfig("SceneViewSettings/EdgeWidth", GEOMETRYEDGEWIDTH);
-    labelSize = readConfig("SceneViewSettings/LabelSize", GEOMETRYLABELSIZE);
+    nodeSize = readConfig("View/NodeSize", GEOMETRYNODESIZE);
+    edgeWidth = readConfig("View/EdgeWidth", GEOMETRYEDGEWIDTH);
+    labelSize = readConfig("View/LabelSize", GEOMETRYLABELSIZE);
 
-    // grid
-    showGrid = readConfig("SceneViewSettings/ShowGrid", SHOWGRID);
-    gridStep = readConfig("SceneViewSettings/GridStep", GRIDSTEP);
+    // zoom and grid
+    zoomToMouse = readConfig("View/ZoomToMouse", ZOOMTOMOUSE);
+    showGrid = readConfig("View/ShowGrid", SHOWGRID);
+    gridStep = readConfig("View/GridStep", GRIDSTEP);
 
     // rulers
-    showRulers = readConfig("SceneViewSettings/ShowRulers", SHOWRULERS);
+    showRulers = readConfig("View/ShowRulers", SHOWRULERS);
     // snap to grid
-    snapToGrid = readConfig("SceneViewSettings/SnapToGrid", SNAPTOGRID);
+    snapToGrid = readConfig("View/SnapToGrid", SNAPTOGRID);
 
     // axes
-    showAxes = readConfig("SceneViewSettings/ShowAxes", SHOWAXES);
+    showAxes = readConfig("View/ShowAxes", SHOWAXES);
 
     // 3d
-    scalarView3DLighting = readConfig("SceneViewSettings/ScalarView3DLighting", VIEW3DLIGHTING);
-    scalarView3DAngle = readConfig("SceneViewSettings/ScalarView3DAngle", VIEW3DANGLE);
-    scalarView3DBackground = readConfig("SceneViewSettings/ScalarView3DBackground", VIEW3DBACKGROUND);
-    scalarView3DHeight = readConfig("SceneViewSettings/ScalarView3DHeight", VIEW3DHEIGHT);
-    scalarView3DBoundingBox = readConfig("SceneViewSettings/ScalarView3DBoundingBox", VIEW3DBOUNDINGBOX);
+    scalarView3DLighting = readConfig("View/ScalarView3DLighting", VIEW3DLIGHTING);
+    scalarView3DAngle = readConfig("View/ScalarView3DAngle", VIEW3DANGLE);
+    scalarView3DBackground = readConfig("View/ScalarView3DBackground", VIEW3DBACKGROUND);
+    scalarView3DHeight = readConfig("View/ScalarView3DHeight", VIEW3DHEIGHT);
+    scalarView3DBoundingBox = readConfig("View/ScalarView3DBoundingBox", VIEW3DBOUNDINGBOX);
 
     // deformations
-    deformScalar = readConfig("SceneViewSettings/DeformScalar", DEFORMSCALAR);
-    deformContour = readConfig("SceneViewSettings/DeformContour", DEFORMCONTOUR);
-    deformVector = readConfig("SceneViewSettings/DeformVector", DEFORMVECTOR);
+    deformScalar = readConfig("View/DeformScalar", DEFORMSCALAR);
+    deformContour = readConfig("View/DeformContour", DEFORMCONTOUR);
+    deformVector = readConfig("View/DeformVector", DEFORMVECTOR);
 
     // colors
-    colorBackground = readConfig("SceneViewSettings/ColorBackground", COLORBACKGROUND);
-    colorGrid = readConfig("SceneViewSettings/ColorGrid", COLORGRID);
-    colorCross = readConfig("SceneViewSettings/ColorCross", COLORCROSS);
-    colorNodes = readConfig("SceneViewSettings/ColorNodes", COLORNODES);
-    colorEdges = readConfig("SceneViewSettings/ColorEdges", COLOREDGES);
-    colorLabels = readConfig("SceneViewSettings/ColorLabels", COLORLABELS);
-    colorContours = readConfig("SceneViewSettings/ColorContours", COLORCONTOURS);
-    colorVectors = readConfig("SceneViewSettings/ColorVectors", COLORVECTORS);
-    colorInitialMesh = readConfig("SceneViewSettings/ColorInitialMesh", COLORINITIALMESH);
-    colorSolutionMesh = readConfig("SceneViewSettings/ColorSolutionMesh", COLORSOLUTIONMESH);
-    colorHighlighted = readConfig("SceneViewSettings/ColorHighlighted", COLORHIGHLIGHTED);
-    colorSelected = readConfig("SceneViewSettings/ColorSelected", COLORSELECTED);
-    colorCrossed = readConfig("SceneViewSettings/ColorCrossed", COLORCROSSED);
-    colorNotConnected = readConfig("SceneViewSettings/ColorCrossed", COLORNOTCONNECTED);
+    colorBackground = readConfig("View/ColorBackground", COLORBACKGROUND);
+    colorGrid = readConfig("View/ColorGrid", COLORGRID);
+    colorCross = readConfig("View/ColorCross", COLORCROSS);
+    colorNodes = readConfig("View/ColorNodes", COLORNODES);
+    colorEdges = readConfig("View/ColorEdges", COLOREDGES);
+    colorLabels = readConfig("View/ColorLabels", COLORLABELS);
+    colorContours = readConfig("View/ColorContours", COLORCONTOURS);
+    colorVectors = readConfig("View/ColorVectors", COLORVECTORS);
+    colorInitialMesh = readConfig("View/ColorInitialMesh", COLORINITIALMESH);
+    colorSolutionMesh = readConfig("View/ColorSolutionMesh", COLORSOLUTIONMESH);
+    colorHighlighted = readConfig("View/ColorHighlighted", COLORHIGHLIGHTED);
+    colorSelected = readConfig("View/ColorSelected", COLORSELECTED);
+    colorCrossed = readConfig("View/ColorCrossed", COLORCROSSED);
+    colorNotConnected = readConfig("View/ColorCrossed", COLORNOTCONNECTED);
 
     // view
-    showPost3D = (SceneViewPost3DMode) readConfig("SceneViewSettings/ShowPost3D", (int) SCALARSHOWPOST3D);
+    showPost3D = (SceneViewPost3DMode) readConfig("View/ShowPost3D", (int) SCALARSHOWPOST3D);
 
     // mesh
-    showInitialMeshView = readConfig("SceneViewSettings/ShowInitialMeshView", SHOWINITIALMESHVIEW);
-    showSolutionMeshView = readConfig("SceneViewSettings/ShowSolutionMeshView", SHOWSOLUTIONMESHVIEW);
+    showInitialMeshView = readConfig("View/ShowInitialMeshView", SHOWINITIALMESHVIEW);
+    showSolutionMeshView = readConfig("View/ShowSolutionMeshView", SHOWSOLUTIONMESHVIEW);
 
     // contour
-    showContourView = readConfig("SceneViewSettings/ShowContourView", SHOWCONTOURVIEW);
-    contourVariable = readConfig("SceneViewSettings/ContourVariable", QString());
-    contoursCount = readConfig("SceneViewSettings/ContoursCount", CONTOURSCOUNT);
-    contourWidth = readConfig("SceneViewSettings/ContoursWidth", CONTOURSWIDTH);
+    showContourView = readConfig("View/ShowContourView", SHOWCONTOURVIEW);
+    contourVariable = readConfig("View/ContourVariable", QString());
+    contoursCount = readConfig("View/ContoursCount", CONTOURSCOUNT);
+    contourWidth = readConfig("View/ContoursWidth", CONTOURSWIDTH);
 
     // scalar view
-    showScalarView = readConfig("SceneViewSettings/ShowScalarView", SHOWSCALARVIEW);
-    showScalarColorBar = readConfig("SceneViewSettings/ShowScalarColorBar", SHOWSCALARCOLORBAR);
-    scalarVariable = readConfig("SceneViewSettings/ScalarVariable", QString());
-    scalarVariableComp = (PhysicFieldVariableComp) readConfig("SceneViewSettings/ScalarVariableComp", (int) PhysicFieldVariableComp_Scalar);
-    // scalarVariable3D = readConfig("SceneViewSettings/ScalarVariable3D", QString());
-    // scalarVariable3DComp = (PhysicFieldVariableComp) readConfig("SceneViewSettings/ScalarVariable3DComp", (int) PhysicFieldVariableComp_Scalar);
-    paletteType = (PaletteType) readConfig("SceneViewSettings/PaletteType", PALETTETYPE);
-    paletteFilter = readConfig("SceneViewSettings/PaletteFilter", PALETTEFILTER);
-    paletteSteps = readConfig("SceneViewSettings/PaletteSteps", PALETTESTEPS);
-    scalarRangeLog = readConfig("SceneViewSettings/ScalarRangeLog", SCALARFIELDRANGELOG);
-    scalarRangeBase = readConfig("SceneViewSettings/ScalarRangeBase", SCALARFIELDRANGEBASE);
-    scalarDecimalPlace = readConfig("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE);
-    scalarRangeAuto = readConfig("SceneViewSettings/ScalarRangeAuto", SCALARRANGEAUTO);
-    scalarRangeMin = readConfig("SceneViewSettings/ScalarRangeMin", SCALARRANGEMIN);
-    scalarRangeMax = readConfig("SceneViewSettings/ScalarRangeMax", SCALARRANGEMAX);
+    showScalarView = readConfig("View/ShowScalarView", SHOWSCALARVIEW);
+    showScalarColorBar = readConfig("View/ShowScalarColorBar", SHOWSCALARCOLORBAR);
+    scalarVariable = readConfig("View/ScalarVariable", QString());
+    scalarVariableComp = (PhysicFieldVariableComp) readConfig("View/ScalarVariableComp", (int) PhysicFieldVariableComp_Scalar);
+    // scalarVariable3D = readConfig("View/ScalarVariable3D", QString());
+    // scalarVariable3DComp = (PhysicFieldVariableComp) readConfig("View/ScalarVariable3DComp", (int) PhysicFieldVariableComp_Scalar);
+    paletteType = (PaletteType) readConfig("View/PaletteType", PALETTETYPE);
+    paletteFilter = readConfig("View/PaletteFilter", PALETTEFILTER);
+    paletteSteps = readConfig("View/PaletteSteps", PALETTESTEPS);
+    scalarRangeLog = readConfig("View/ScalarRangeLog", SCALARFIELDRANGELOG);
+    scalarRangeBase = readConfig("View/ScalarRangeBase", SCALARFIELDRANGEBASE);
+    scalarDecimalPlace = readConfig("View/ScalarDecimalPlace", SCALARDECIMALPLACE);
+    scalarRangeAuto = readConfig("View/ScalarRangeAuto", SCALARRANGEAUTO);
+    scalarRangeMin = readConfig("View/ScalarRangeMin", SCALARRANGEMIN);
+    scalarRangeMax = readConfig("View/ScalarRangeMax", SCALARRANGEMAX);
 
     // vector view
-    showVectorView = readConfig("SceneViewSettings/ShowVectorView", SHOWVECTORVIEW);
-    vectorVariable = readConfig("SceneViewSettings/VectorVariable", QString());
-    vectorProportional = readConfig("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL);
-    vectorColor = readConfig("SceneViewSettings/VectorColor", VECTORCOLOR);
-    vectorCount = readConfig("SceneViewSettings/VectorNumber", VECTORCOUNT);
-    vectorScale = readConfig("SceneViewSettings/VectorScale", VECTORSCALE);
-    vectorType = (VectorType) readConfig("SceneViewSettings/VectorType", (int) VECTORTYPE);
-    vectorCenter = (VectorCenter) readConfig("SceneViewSettings/VectorCenter", (int) VECTORCENTER);
+    showVectorView = readConfig("View/ShowVectorView", SHOWVECTORVIEW);
+    vectorVariable = readConfig("View/VectorVariable", QString());
+    vectorProportional = readConfig("View/VectorProportional", VECTORPROPORTIONAL);
+    vectorColor = readConfig("View/VectorColor", VECTORCOLOR);
+    vectorCount = readConfig("View/VectorNumber", VECTORCOUNT);
+    vectorScale = readConfig("View/VectorScale", VECTORSCALE);
+    vectorType = (VectorType) readConfig("View/VectorType", (int) VECTORTYPE);
+    vectorCenter = (VectorCenter) readConfig("View/VectorCenter", (int) VECTORCENTER);
 
     // order view
-    showOrderView = readConfig("SceneViewSettings/ShowOrderView", SHOWORDERVIEW);
-    showOrderColorBar = readConfig("SceneViewSettings/ShowOrderColorBar", SHOWORDERCOLORBAR);
-    orderPaletteOrderType = (PaletteOrderType) readConfig("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE);
-    orderLabel = readConfig("SceneViewSettings/OrderLabel", ORDERLABEL);
+    showOrderView = readConfig("View/ShowOrderView", SHOWORDERVIEW);
+    showOrderColorBar = readConfig("View/ShowOrderColorBar", SHOWORDERCOLORBAR);
+    orderPaletteOrderType = (PaletteOrderType) readConfig("View/OrderPaletteOrderType", ORDERPALETTEORDERTYPE);
+    orderLabel = readConfig("View/OrderLabel", ORDERLABEL);
 
     // particle tracing
-    showParticleView = readConfig("SceneViewSettings/ShowParticleView", SHOWPARTICLEVIEW);
-    particleIncludeRelativisticCorrection = readConfig("SceneViewSettings/ParticleIncludeRelativisticCorrection", PARTICLEINCLUDERELATIVISTICCORRECTION);
-    particleMass = readConfig("SceneViewSettings/ParticleMass", PARTICLEMASS);
-    particleConstant = readConfig("SceneViewSettings/ParticleConstant", PARTICLECONSTANT);
-    particleStart.x = readConfig("SceneViewSettings/ParticleStartX", PARTICLESTARTX);
-    particleStart.y = readConfig("SceneViewSettings/ParticleStartY", PARTICLESTARTY);
-    particleStartVelocity.x = readConfig("SceneViewSettings/ParticleStartVelocityX", PARTICLESTARTVELOCITYX);
-    particleStartVelocity.y = readConfig("SceneViewSettings/ParticleStartVelocityY", PARTICLESTARTVELOCITYY);
-    particleNumberOfParticles = readConfig("SceneViewSettings/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES);
-    particleStartingRadius = readConfig("SceneViewSettings/ParticleStartingRadius", PARTICLESTARTINGRADIUS);
-    particleReflectOnDifferentMaterial = readConfig("SceneViewSettings/ParticleReflectOnDifferentMaterial", PARTICLEREFLECTONDIFFERENTMATERIAL);
-    particleReflectOnBoundary = readConfig("SceneViewSettings/ParticleReflectOnBoundary", PARTICLEREFLECTONBOUNDARY);
-    particleCoefficientOfRestitution = readConfig("SceneViewSettings/ParticleCoefficientOfRestitution", PARTICLECOEFFICIENTOFRESTITUTION);
-    particleMaximumRelativeError = readConfig("SceneViewSettings/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR);
-    particleShowPoints = readConfig("SceneViewSettings/ParticleShowPoints", PARTICLESHOWPOINTS);
-    particleColorByVelocity = readConfig("SceneViewSettings/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY);
-    particleMaximumNumberOfSteps = readConfig("SceneViewSettings/ParticleMaximumNumberOfSteps", PARTICLEMAXIMUMNUMBEROFSTEPS);
-    particleMinimumStep = readConfig("SceneViewSettings/ParticleMinimumStep", PARTICLEMINIMUMSTEP);
-    particleDragDensity = readConfig("SceneViewSettings/ParticleDragDensity", PARTICLEDRAGDENSITY);
-    particleDragCoefficient = readConfig("SceneViewSettings/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT);
-    particleDragReferenceArea = readConfig("SceneViewSettings/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
-    particleCustomForce.x = readConfig("SceneViewSettings/ParticleCustomForceX", PARTICLECUSTOMFORCEX);
-    particleCustomForce.y = readConfig("SceneViewSettings/ParticleCustomForceY", PARTICLECUSTOMFORCEY);
-    particleCustomForce.z = readConfig("SceneViewSettings/ParticleCustomForceZ", PARTICLECUSTOMFORCEZ);
+    showParticleView = readConfig("View/ShowParticleView", SHOWPARTICLEVIEW);
+    particleIncludeRelativisticCorrection = readConfig("View/ParticleIncludeRelativisticCorrection", PARTICLEINCLUDERELATIVISTICCORRECTION);
+    particleMass = readConfig("View/ParticleMass", PARTICLEMASS);
+    particleConstant = readConfig("View/ParticleConstant", PARTICLECONSTANT);
+    particleStart.x = readConfig("View/ParticleStartX", PARTICLESTARTX);
+    particleStart.y = readConfig("View/ParticleStartY", PARTICLESTARTY);
+    particleStartVelocity.x = readConfig("View/ParticleStartVelocityX", PARTICLESTARTVELOCITYX);
+    particleStartVelocity.y = readConfig("View/ParticleStartVelocityY", PARTICLESTARTVELOCITYY);
+    particleNumberOfParticles = readConfig("View/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES);
+    particleStartingRadius = readConfig("View/ParticleStartingRadius", PARTICLESTARTINGRADIUS);
+    particleReflectOnDifferentMaterial = readConfig("View/ParticleReflectOnDifferentMaterial", PARTICLEREFLECTONDIFFERENTMATERIAL);
+    particleReflectOnBoundary = readConfig("View/ParticleReflectOnBoundary", PARTICLEREFLECTONBOUNDARY);
+    particleCoefficientOfRestitution = readConfig("View/ParticleCoefficientOfRestitution", PARTICLECOEFFICIENTOFRESTITUTION);
+    particleMaximumRelativeError = readConfig("View/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR);
+    particleShowPoints = readConfig("View/ParticleShowPoints", PARTICLESHOWPOINTS);
+    particleColorByVelocity = readConfig("View/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY);
+    particleMaximumNumberOfSteps = readConfig("View/ParticleMaximumNumberOfSteps", PARTICLEMAXIMUMNUMBEROFSTEPS);
+    particleMinimumStep = readConfig("View/ParticleMinimumStep", PARTICLEMINIMUMSTEP);
+    particleDragDensity = readConfig("View/ParticleDragDensity", PARTICLEDRAGDENSITY);
+    particleDragCoefficient = readConfig("View/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT);
+    particleDragReferenceArea = readConfig("View/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
+    particleCustomForce.x = readConfig("View/ParticleCustomForceX", PARTICLECUSTOMFORCEX);
+    particleCustomForce.y = readConfig("View/ParticleCustomForceY", PARTICLECUSTOMFORCEY);
+    particleCustomForce.z = readConfig("View/ParticleCustomForceZ", PARTICLECUSTOMFORCEZ);
 
     // mesh
-    angleSegmentsCount = readConfig("SceneViewSettings/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT);
-    curvilinearElements = readConfig("SceneViewSettings/MeshCurvilinearElements", MESHCURVILINEARELEMENTS);
+    angleSegmentsCount = readConfig("View/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT);
+    curvilinearElements = readConfig("View/MeshCurvilinearElements", MESHCURVILINEARELEMENTS);
 
     // adaptivity
     maxDofs = readConfig("Adaptivity/MaxDofs", MAX_DOFS);
@@ -257,11 +256,11 @@ void ProblemConfigView::load(QDomElement *config)
     finerReference = readConfig("Adaptivity/FinerReference", ADAPTIVITY_FINER_REFERENCE_H_AND_P);
 
     // linearizer quality
-    QString quality = readConfig("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(PALETTEQUALITY));
+    QString quality = readConfig("View/LinearizerQuality", paletteQualityToStringKey(PALETTEQUALITY));
     linearizerQuality = paletteQualityFromStringKey(quality);
 
     // solid view
-    solidViewHide = readConfig("SceneViewSettings/SolidViewHide", QStringList());
+    solidViewHide = readConfig("View/SolidViewHide", QStringList());
 
     // command argument
     commandGmsh = readConfig("Commands/Gmsh", COMMANDS_GMSH);
@@ -278,130 +277,130 @@ void ProblemConfigView::save(QDomElement *config)
     eleConfig = config;
 
     // font
-    writeConfig("SceneViewSettings/RulersFont", rulersFont);
-    writeConfig("SceneViewSettings/PostFont", postFont);
+    writeConfig("View/RulersFont", rulersFont);
+    writeConfig("View/PostFont", postFont);
 
     // zoom
     writeConfig("General/ZoomToMouse", zoomToMouse);
 
     // geometry
-    writeConfig("SceneViewSettings/NodeSize", nodeSize);
-    writeConfig("SceneViewSettings/EdgeWidth", edgeWidth);
-    writeConfig("SceneViewSettings/LabelSize", labelSize);
+    writeConfig("View/NodeSize", nodeSize);
+    writeConfig("View/EdgeWidth", edgeWidth);
+    writeConfig("View/LabelSize", labelSize);
 
     // grid
-    writeConfig("SceneViewSettings/ShowGrid", showGrid);
-    writeConfig("SceneViewSettings/GridStep", gridStep);
+    writeConfig("View/ShowGrid", showGrid);
+    writeConfig("View/GridStep", gridStep);
 
     // rulers
-    writeConfig("SceneViewSettings/ShowRulers", showRulers);
+    writeConfig("View/ShowRulers", showRulers);
     // snap to grid
-    writeConfig("SceneViewSettings/SnapToGrid", snapToGrid);
+    writeConfig("View/SnapToGrid", snapToGrid);
 
     // axes
-    writeConfig("SceneViewSettings/ShowAxes", showAxes);
+    writeConfig("View/ShowAxes", showAxes);
 
     // 3d
-    writeConfig("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
-    writeConfig("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
-    writeConfig("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
-    writeConfig("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
-    writeConfig("SceneViewSettings/ScalarView3DBoundingBox", scalarView3DBoundingBox);
+    writeConfig("View/ScalarView3DLighting", scalarView3DLighting);
+    writeConfig("View/ScalarView3DAngle", scalarView3DAngle);
+    writeConfig("View/ScalarView3DBackground", scalarView3DBackground);
+    writeConfig("View/ScalarView3DHeight", scalarView3DHeight);
+    writeConfig("View/ScalarView3DBoundingBox", scalarView3DBoundingBox);
 
     // deformations
-    writeConfig("SceneViewSettings/DeformScalar", deformScalar);
-    writeConfig("SceneViewSettings/DeformContour", deformContour);
-    writeConfig("SceneViewSettings/DeformVector", deformVector);
+    writeConfig("View/DeformScalar", deformScalar);
+    writeConfig("View/DeformContour", deformContour);
+    writeConfig("View/DeformVector", deformVector);
 
     // colors
-    writeConfig("SceneViewSettings/ColorBackground", colorBackground);
-    writeConfig("SceneViewSettings/ColorGrid", colorGrid);
-    writeConfig("SceneViewSettings/ColorCross", colorCross);
-    writeConfig("SceneViewSettings/ColorNodes", colorNodes);
-    writeConfig("SceneViewSettings/ColorEdges", colorEdges);
-    writeConfig("SceneViewSettings/ColorLabels", colorLabels);
-    writeConfig("SceneViewSettings/ColorContours", colorContours);
-    writeConfig("SceneViewSettings/ColorVectors", colorVectors);
-    writeConfig("SceneViewSettings/ColorInitialMesh", colorInitialMesh);
-    writeConfig("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
-    writeConfig("SceneViewSettings/ColorInitialMesh", colorHighlighted);
-    writeConfig("SceneViewSettings/ColorSolutionMesh", colorSelected);
+    writeConfig("View/ColorBackground", colorBackground);
+    writeConfig("View/ColorGrid", colorGrid);
+    writeConfig("View/ColorCross", colorCross);
+    writeConfig("View/ColorNodes", colorNodes);
+    writeConfig("View/ColorEdges", colorEdges);
+    writeConfig("View/ColorLabels", colorLabels);
+    writeConfig("View/ColorContours", colorContours);
+    writeConfig("View/ColorVectors", colorVectors);
+    writeConfig("View/ColorInitialMesh", colorInitialMesh);
+    writeConfig("View/ColorSolutionMesh", colorSolutionMesh);
+    writeConfig("View/ColorInitialMesh", colorHighlighted);
+    writeConfig("View/ColorSolutionMesh", colorSelected);
 
     // active field
-    writeConfig("SceneViewSettings/ActiveField", activeField);
+    writeConfig("View/ActiveField", activeField);
 
     // mesh
-    writeConfig("SceneViewSettings/ShowInitialMeshView", showInitialMeshView);
-    writeConfig("SceneViewSettings/ShowSolutionMeshView", showSolutionMeshView);
+    writeConfig("View/ShowInitialMeshView", showInitialMeshView);
+    writeConfig("View/ShowSolutionMeshView", showSolutionMeshView);
 
-    writeConfig("SceneViewSettings/ShowPost3D", showPost3D);
+    writeConfig("View/ShowPost3D", showPost3D);
 
     // contour
-    writeConfig("SceneViewSettings/ContourVariable", contourVariable);
-    writeConfig("SceneViewSettings/ShowContourView", showContourView);
-    writeConfig("SceneViewSettings/ContoursCount", contoursCount);
-    writeConfig("SceneViewSettings/ContoursWidth", contourWidth);
+    writeConfig("View/ContourVariable", contourVariable);
+    writeConfig("View/ShowContourView", showContourView);
+    writeConfig("View/ContoursCount", contoursCount);
+    writeConfig("View/ContoursWidth", contourWidth);
 
     // scalar view
-    writeConfig("SceneViewSettings/ShowScalarView", showScalarView);
-    writeConfig("SceneViewSettings/ShowScalarColorBar", showScalarColorBar);
-    writeConfig("SceneViewSettings/ScalarVariable", scalarVariable);
-    writeConfig("SceneViewSettings/ScalarVariableComp", scalarVariableComp);
-    writeConfig("SceneViewSettings/PaletteType", paletteType);
-    writeConfig("SceneViewSettings/PaletteFilter", paletteFilter);
-    writeConfig("SceneViewSettings/PaletteSteps", paletteSteps);
-    writeConfig("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
-    writeConfig("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
-    writeConfig("SceneViewSettings/ScalarDecimalPlace", scalarDecimalPlace);
-    writeConfig("SceneViewSettings/ScalarRangeAuto", scalarRangeAuto);
-    writeConfig("SceneViewSettings/ScalarRangeMin", scalarRangeMin);
-    writeConfig("SceneViewSettings/ScalarRangeMax", scalarRangeMax);
+    writeConfig("View/ShowScalarView", showScalarView);
+    writeConfig("View/ShowScalarColorBar", showScalarColorBar);
+    writeConfig("View/ScalarVariable", scalarVariable);
+    writeConfig("View/ScalarVariableComp", scalarVariableComp);
+    writeConfig("View/PaletteType", paletteType);
+    writeConfig("View/PaletteFilter", paletteFilter);
+    writeConfig("View/PaletteSteps", paletteSteps);
+    writeConfig("View/ScalarRangeLog", scalarRangeLog);
+    writeConfig("View/ScalarRangeBase", scalarRangeBase);
+    writeConfig("View/ScalarDecimalPlace", scalarDecimalPlace);
+    writeConfig("View/ScalarRangeAuto", scalarRangeAuto);
+    writeConfig("View/ScalarRangeMin", scalarRangeMin);
+    writeConfig("View/ScalarRangeMax", scalarRangeMax);
 
     // vector view
-    writeConfig("SceneViewSettings/ShowVectorView", showVectorView);
-    writeConfig("SceneViewSettings/VectorVariable", vectorVariable);
-    writeConfig("SceneViewSettings/VectorProportional", vectorProportional);
-    writeConfig("SceneViewSettings/VectorColor", vectorColor);
-    writeConfig("SceneViewSettings/VectorNumber", vectorCount);
-    writeConfig("SceneViewSettings/VectorScale", vectorScale);
-    writeConfig("SceneViewSettings/VectorType", vectorType);
-    writeConfig("SceneViewSettings/VectorCenter", vectorCenter);
+    writeConfig("View/ShowVectorView", showVectorView);
+    writeConfig("View/VectorVariable", vectorVariable);
+    writeConfig("View/VectorProportional", vectorProportional);
+    writeConfig("View/VectorColor", vectorColor);
+    writeConfig("View/VectorNumber", vectorCount);
+    writeConfig("View/VectorScale", vectorScale);
+    writeConfig("View/VectorType", vectorType);
+    writeConfig("View/VectorCenter", vectorCenter);
 
     // order view
-    writeConfig("SceneViewSettings/ShowOrderView", showOrderView);
-    writeConfig("SceneViewSettings/ShowOrderColorBar", showOrderColorBar);
-    writeConfig("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
-    writeConfig("SceneViewSettings/OrderLabel", orderLabel);
+    writeConfig("View/ShowOrderView", showOrderView);
+    writeConfig("View/ShowOrderColorBar", showOrderColorBar);
+    writeConfig("View/OrderPaletteOrderType", orderPaletteOrderType);
+    writeConfig("View/OrderLabel", orderLabel);
 
     // particle tracing
-    writeConfig("SceneViewSettings/ShowParticleView", showParticleView);
-    writeConfig("SceneViewSettings/ParticleIncludeRelativisticCorrection", particleIncludeRelativisticCorrection);
-    writeConfig("SceneViewSettings/ParticleMass", particleMass);
-    writeConfig("SceneViewSettings/ParticleConstant", particleConstant);
-    writeConfig("SceneViewSettings/ParticleStartX", particleStart.x);
-    writeConfig("SceneViewSettings/ParticleStartY", particleStart.y);
-    writeConfig("SceneViewSettings/ParticleStartVelocityX", particleStartVelocity.x);
-    writeConfig("SceneViewSettings/ParticleStartVelocityY", particleStartVelocity.y);
-    writeConfig("SceneViewSettings/ParticleNumberOfParticles", particleNumberOfParticles);
-    writeConfig("SceneViewSettings/ParticleStartingRadius", particleStartingRadius);
-    writeConfig("SceneViewSettings/ParticleReflectOnDifferentMaterial", particleReflectOnDifferentMaterial);
-    writeConfig("SceneViewSettings/ParticleReflectOnBoundary", particleReflectOnBoundary);
-    writeConfig("SceneViewSettings/ParticleCoefficientOfRestitution", particleCoefficientOfRestitution);
-    writeConfig("SceneViewSettings/ParticleMaximumRelativeError", particleMaximumRelativeError);
-    writeConfig("SceneViewSettings/ParticleShowPoints", particleShowPoints);
-    writeConfig("SceneViewSettings/ParticleColorByVelocity", particleColorByVelocity);
-    writeConfig("SceneViewSettings/ParticleMaximumNumberOfSteps", particleMaximumNumberOfSteps);
-    writeConfig("SceneViewSettings/ParticleMinimumStep", particleMinimumStep);
-    writeConfig("SceneViewSettings/ParticleDragDensity", particleDragDensity);
-    writeConfig("SceneViewSettings/ParticleDragCoefficient", particleDragCoefficient);
-    writeConfig("SceneViewSettings/ParticleDragReferenceArea", particleDragReferenceArea);
-    writeConfig("SceneViewSettings/ParticleCustomForceX", particleCustomForce.x);
-    writeConfig("SceneViewSettings/ParticleCustomForceY", particleCustomForce.y);
-    writeConfig("SceneViewSettings/ParticleCustomForceZ", particleCustomForce.z);
+    writeConfig("View/ShowParticleView", showParticleView);
+    writeConfig("View/ParticleIncludeRelativisticCorrection", particleIncludeRelativisticCorrection);
+    writeConfig("View/ParticleMass", particleMass);
+    writeConfig("View/ParticleConstant", particleConstant);
+    writeConfig("View/ParticleStartX", particleStart.x);
+    writeConfig("View/ParticleStartY", particleStart.y);
+    writeConfig("View/ParticleStartVelocityX", particleStartVelocity.x);
+    writeConfig("View/ParticleStartVelocityY", particleStartVelocity.y);
+    writeConfig("View/ParticleNumberOfParticles", particleNumberOfParticles);
+    writeConfig("View/ParticleStartingRadius", particleStartingRadius);
+    writeConfig("View/ParticleReflectOnDifferentMaterial", particleReflectOnDifferentMaterial);
+    writeConfig("View/ParticleReflectOnBoundary", particleReflectOnBoundary);
+    writeConfig("View/ParticleCoefficientOfRestitution", particleCoefficientOfRestitution);
+    writeConfig("View/ParticleMaximumRelativeError", particleMaximumRelativeError);
+    writeConfig("View/ParticleShowPoints", particleShowPoints);
+    writeConfig("View/ParticleColorByVelocity", particleColorByVelocity);
+    writeConfig("View/ParticleMaximumNumberOfSteps", particleMaximumNumberOfSteps);
+    writeConfig("View/ParticleMinimumStep", particleMinimumStep);
+    writeConfig("View/ParticleDragDensity", particleDragDensity);
+    writeConfig("View/ParticleDragCoefficient", particleDragCoefficient);
+    writeConfig("View/ParticleDragReferenceArea", particleDragReferenceArea);
+    writeConfig("View/ParticleCustomForceX", particleCustomForce.x);
+    writeConfig("View/ParticleCustomForceY", particleCustomForce.y);
+    writeConfig("View/ParticleCustomForceZ", particleCustomForce.z);
 
     // mesh
-    writeConfig("SceneViewSettings/MeshAngleSegmentsCount", angleSegmentsCount);
-    writeConfig("SceneViewSettings/MeshCurvilinearElements", curvilinearElements);
+    writeConfig("View/MeshAngleSegmentsCount", angleSegmentsCount);
+    writeConfig("View/MeshCurvilinearElements", curvilinearElements);
 
     // adaptivity
     writeConfig("Adaptivity/MaxDofs", maxDofs);
@@ -415,10 +414,10 @@ void ProblemConfigView::save(QDomElement *config)
     writeConfig("Adaptivity/FinerReference", finerReference);
 
     // linearizer quality
-    writeConfig("SceneViewSettings/LinearizerQuality", paletteQualityToStringKey(linearizerQuality));
+    writeConfig("View/LinearizerQuality", paletteQualityToStringKey(linearizerQuality));
 
     // solid view
-    writeConfig("SceneViewSettings/SolidViewHide", solidViewHide);
+    writeConfig("View/SolidViewHide", solidViewHide);
 
     // command argument
     writeConfig("Commands/Triangle", commandTriangle);
