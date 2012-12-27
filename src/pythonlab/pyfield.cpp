@@ -177,6 +177,22 @@ void PyField::setAdaptivitySteps(const int adaptivitySteps)
         throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
 }
 
+void PyField::setAdaptivityBackSteps(const int adaptivityBackSteps)
+{
+    if (adaptivityBackSteps >= 0)
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityBackSteps(adaptivityBackSteps);
+    else
+        throw invalid_argument(QObject::tr("Adaptivity back steps must be positive.").toStdString());
+}
+
+void PyField::setAdaptivityRedoneEach(const int adaptivityRedoneEach)
+{
+    if (adaptivityRedoneEach >= 1)
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityRedoneEach(adaptivityRedoneEach);
+    else
+        throw invalid_argument(QObject::tr("Adaptivity back steps must be higher than 1.").toStdString());
+}
+
 void PyField::setInitialCondition(const double initialCondition)
 {
     Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(Value(QString::number(initialCondition)));
