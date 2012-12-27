@@ -31,6 +31,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 SceneViewCommon::SceneViewCommon(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
@@ -41,8 +42,8 @@ SceneViewCommon::SceneViewCommon(QWidget *parent)
 {
     m_mainWindow = (QMainWindow *) parent;
 
-    m_fontRulers = textureFontFromStringKey(Agros2D::config()->rulersFont);
-    m_fontPost = textureFontFromStringKey(Agros2D::config()->postFont);
+    m_fontRulers = textureFontFromStringKey(Agros2D::problem()->configView()->rulersFont);
+    m_fontPost = textureFontFromStringKey(Agros2D::problem()->configView()->postFont);
 
     createActions();
 
@@ -85,14 +86,14 @@ void SceneViewCommon::initializeGL()
     // rulers font
     if (m_fontRulers)
         glDeleteTextures(1, &m_textureLabelRulers);
-    m_fontRulers = textureFontFromStringKey(Agros2D::config()->rulersFont);
+    m_fontRulers = textureFontFromStringKey(Agros2D::problem()->configView()->rulersFont);
     glGenTextures(1, &m_textureLabelRulers);
     initFont(m_textureLabelRulers, m_fontRulers);
 
     // rulers font
     if (m_fontPost)
         glDeleteTextures(1, &m_textureLabelPost);
-    m_fontPost = textureFontFromStringKey(Agros2D::config()->postFont);
+    m_fontPost = textureFontFromStringKey(Agros2D::problem()->configView()->postFont);
     glGenTextures(1, &m_textureLabelPost);
     initFont(m_textureLabelPost, m_fontPost);
 }
@@ -315,15 +316,15 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //    Point offset3dCopy = m_offset3d;
     //    Point3 rotation3dCopy = m_rotation3d;
 
-    //    bool showRulersCopy = Agros2D::config()->showRulers;
-    //    bool showGridCopy = Agros2D::config()->showGrid;
-    //    bool showAxesCopy = Agros2D::config()->showAxes;
-    //    bool showLabelCopy = Agros2D::config()->showLabel;
+    //    bool showRulersCopy = Agros2D::problem()->configView()->showRulers;
+    //    bool showGridCopy = Agros2D::problem()->configView()->showGrid;
+    //    bool showAxesCopy = Agros2D::problem()->configView()->showAxes;
+    //    bool showLabelCopy = Agros2D::problem()->configView()->showLabel;
 
-    //    Agros2D::config()->showRulers = showRulers;
-    //    Agros2D::config()->showGrid = showGrid;
-    //    Agros2D::config()->showAxes = showAxes;
-    //    Agros2D::config()->showLabel = showLabel;
+    //    Agros2D::problem()->configView()->showRulers = showRulers;
+    //    Agros2D::problem()->configView()->showGrid = showGrid;
+    //    Agros2D::problem()->configView()->showAxes = showAxes;
+    //    Agros2D::problem()->configView()->showLabel = showLabel;
 
     //    // remove old files
     //    QFile::remove(path + "/geometry.png");
@@ -433,10 +434,10 @@ void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bo
     //    m_offset3d = offset3dCopy;
     //    m_rotation3d = rotation3dCopy;
 
-    //    Agros2D::config()->showRulers = showRulersCopy;
-    //    Agros2D::config()->showGrid = showGridCopy;
-    //    Agros2D::config()->showAxes = showAxesCopy;
-    //    Agros2D::config()->showLabel = showLabelCopy;
+    //    Agros2D::problem()->configView()->showRulers = showRulersCopy;
+    //    Agros2D::problem()->configView()->showGrid = showGridCopy;
+    //    Agros2D::problem()->configView()->showAxes = showAxesCopy;
+    //    Agros2D::problem()->configView()->showLabel = showLabelCopy;
 
     //    if (Agros2D::scene()Mode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
     //    if (Agros2D::scene()Mode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();

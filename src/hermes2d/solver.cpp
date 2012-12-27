@@ -216,13 +216,13 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
     for (int i = 0; i < m_block->numSolutions(); i++)
     {
         // add norm
-        projNormType.push_back(Agros2D::config()->projNormType);
+        projNormType.push_back(Agros2D::problem()->configView()->projNormType);
 
         RefinementSelectors::CandList candList;
 
         if (m_block->adaptivityType() == AdaptivityType_None)
         {
-            if(Agros2D::config()->useAniso)
+            if(Agros2D::problem()->configView()->useAniso)
                 candList = RefinementSelectors::H2D_HP_ANISO;
             else
                 candList = RefinementSelectors::H2D_HP_ISO;
@@ -232,26 +232,26 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
             switch (m_block->adaptivityType())
             {
             case AdaptivityType_H:
-                if(Agros2D::config()->useAniso)
+                if(Agros2D::problem()->configView()->useAniso)
                     candList = RefinementSelectors::H2D_H_ANISO;
                 else
                     candList = RefinementSelectors::H2D_H_ISO;
                 break;
             case AdaptivityType_P:
-                if(Agros2D::config()->useAniso)
+                if(Agros2D::problem()->configView()->useAniso)
                     candList = RefinementSelectors::H2D_P_ANISO;
                 else
                     candList = RefinementSelectors::H2D_P_ISO;
                 break;
             case AdaptivityType_HP:
-                if(Agros2D::config()->useAniso)
+                if(Agros2D::problem()->configView()->useAniso)
                     candList = RefinementSelectors::H2D_HP_ANISO;
                 else
                     candList = RefinementSelectors::H2D_HP_ISO;
                 break;
             }
         }
-        select = new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList, Agros2D::config()->convExp, H2DRS_DEFAULT_ORDER);
+        select = new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList, Agros2D::problem()->configView()->convExp, H2DRS_DEFAULT_ORDER);
 
         // add refinement selector
         selector.push_back(select);
@@ -281,10 +281,10 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
         if(createReference)
         {
             AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
-            if(Agros2D::config()->finerReference || (adaptivityType != AdaptivityType_P))
+            if(Agros2D::problem()->configView()->finerReference || (adaptivityType != AdaptivityType_P))
                 refineMesh = true;
 
-            if(Agros2D::config()->finerReference || (adaptivityType != AdaptivityType_H))
+            if(Agros2D::problem()->configView()->finerReference || (adaptivityType != AdaptivityType_H))
                 orderIncrease = 1;
         }
 
@@ -765,8 +765,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     // msa.setAdaptiveError(error);
 
     // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
-    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) < Agros2D::config()->maxDofs;
-    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Agros2D::config()->maxDofs << endl;
+    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) < Agros2D::problem()->configView()->maxDofs;
+    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Agros2D::problem()->configView()->maxDofs << endl;
 
     double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked());
 
@@ -774,11 +774,11 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     // should be refacted.
     //    if (adapt)
     //    {
-    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) << "tr " << Agros2D::config()->threshold <<
-            ", st " << Agros2D::config()->strategy << ", reg " << Agros2D::config()->meshRegularity << endl;
+    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) << "tr " << Agros2D::problem()->configView()->threshold <<
+            ", st " << Agros2D::problem()->configView()->strategy << ", reg " << Agros2D::problem()->configView()->meshRegularity << endl;
     try
     {
-        bool noref = adaptivity.adapt(selector, Agros2D::config()->threshold, Agros2D::config()->strategy, Agros2D::config()->meshRegularity);
+        bool noref = adaptivity.adapt(selector, Agros2D::problem()->configView()->threshold, Agros2D::problem()->configView()->strategy, Agros2D::problem()->configView()->meshRegularity);
     }
     catch (Hermes::Exceptions::Exception e)
     {

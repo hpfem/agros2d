@@ -24,6 +24,7 @@
 #include "scene.h"
 #include "sceneview_post2d.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
 #include "gui/lineeditdouble.h"
@@ -43,9 +44,9 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes 
     // store adaptive step
     m_adaptiveStepStore = Agros2D::scene()->activeAdaptivityStep();
 
-    m_showRulersStore = Agros2D::config()->showRulers;
-    m_showGridStore = Agros2D::config()->showGrid;
-    m_showAxesStore = Agros2D::config()->showAxes;
+    m_showRulersStore = Agros2D::problem()->configView()->showRulers;
+    m_showGridStore = Agros2D::problem()->configView()->showGrid;
+    m_showAxesStore = Agros2D::problem()->configView()->showAxes;
 
     // timer create images
     timer = new QTimer(this);
@@ -66,9 +67,9 @@ VideoDialog::~VideoDialog()
     Agros2D::scene()->setActiveTimeStep(m_timeStepStore);
     Agros2D::scene()->setActiveAdaptivityStep(m_adaptiveStepStore);
 
-    Agros2D::config()->showRulers = m_showRulersStore;
-    Agros2D::config()->showGrid = m_showGridStore;
-    Agros2D::config()->showAxes = m_showAxesStore;
+    Agros2D::problem()->configView()->showRulers = m_showRulersStore;
+    Agros2D::problem()->configView()->showGrid = m_showGridStore;
+    Agros2D::problem()->configView()->showAxes = m_showAxesStore;
 
     m_postHermes->refresh();
 
@@ -136,11 +137,11 @@ void VideoDialog::createControls()
     chkSaveImages->setChecked(settings.value("VideoDialog/SaveImages", true).toBool());
 
     chkFigureShowGrid = new QCheckBox(tr("Show grid"));
-    chkFigureShowGrid->setChecked(settings.value("VideoDialog/ShowGrid", Agros2D::config()->showGrid).toBool());
+    chkFigureShowGrid->setChecked(settings.value("VideoDialog/ShowGrid", Agros2D::problem()->configView()->showGrid).toBool());
     chkFigureShowRulers = new QCheckBox(tr("Show rulers"));
-    chkFigureShowRulers->setChecked(settings.value("VideoDialog/ShowRulers", Agros2D::config()->showRulers).toBool());
+    chkFigureShowRulers->setChecked(settings.value("VideoDialog/ShowRulers", Agros2D::problem()->configView()->showRulers).toBool());
     chkFigureShowAxes = new QCheckBox(tr("Show axes"));
-    chkFigureShowAxes->setChecked(settings.value("VideoDialog/ShowAxes", Agros2D::config()->showAxes).toBool());
+    chkFigureShowAxes->setChecked(settings.value("VideoDialog/ShowAxes", Agros2D::problem()->configView()->showAxes).toBool());
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
@@ -241,9 +242,9 @@ void VideoDialog::transientAnimateNextStep()
 
 void VideoDialog::setTransientStep(int transientStep)
 {
-    Agros2D::config()->showRulers = chkFigureShowRulers->isChecked();
-    Agros2D::config()->showGrid = chkFigureShowGrid->isChecked();
-    Agros2D::config()->showAxes = chkFigureShowAxes->isChecked();
+    Agros2D::problem()->configView()->showRulers = chkFigureShowRulers->isChecked();
+    Agros2D::problem()->configView()->showGrid = chkFigureShowGrid->isChecked();
+    Agros2D::problem()->configView()->showAxes = chkFigureShowAxes->isChecked();
 
     Agros2D::scene()->setActiveTimeStep(transientStep);
     m_postHermes->refresh();
@@ -290,9 +291,9 @@ void VideoDialog::adaptiveAnimateNextStep()
 
 void VideoDialog::adaptiveSetStep(int adaptiveStep)
 {
-    Agros2D::config()->showRulers = chkFigureShowRulers->isChecked();
-    Agros2D::config()->showGrid = chkFigureShowGrid->isChecked();
-    Agros2D::config()->showAxes = chkFigureShowAxes->isChecked();
+    Agros2D::problem()->configView()->showRulers = chkFigureShowRulers->isChecked();
+    Agros2D::problem()->configView()->showGrid = chkFigureShowGrid->isChecked();
+    Agros2D::problem()->configView()->showAxes = chkFigureShowAxes->isChecked();
 
     Agros2D::scene()->setActiveAdaptivityStep(adaptiveStep - 1);
     m_postHermes->refresh();

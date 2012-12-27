@@ -30,6 +30,7 @@
 
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
@@ -101,8 +102,8 @@ int SceneEdge::segments() const
 {
     double division = 40.0;
     int segments = m_angle/division + 1;
-    if (segments < Agros2D::config()->angleSegmentsCount)
-        segments = Agros2D::config()->angleSegmentsCount; // minimum segments
+    if (segments < Agros2D::problem()->configView()->angleSegmentsCount)
+        segments = Agros2D::problem()->configView()->angleSegmentsCount; // minimum segments
 
     return segments;
 }

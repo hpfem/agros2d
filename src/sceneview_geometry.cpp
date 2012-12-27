@@ -399,7 +399,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
     }
 
     // snap to grid - nodes
-    m_snapToGrid = ((Agros2D::config()->snapToGrid)
+    m_snapToGrid = ((Agros2D::problem()->configView()->snapToGrid)
                     && ((event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier))
                     && (m_sceneMode == SceneGeometryMode_OperateOnNodes));
 
@@ -423,21 +423,21 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             static Point len;
             len = len + dp;
 
-            if (Agros2D::config()->snapToGrid)
+            if (Agros2D::problem()->configView()->snapToGrid)
             {
-                if (fabs(len.x) > Agros2D::config()->gridStep)
+                if (fabs(len.x) > Agros2D::problem()->configView()->gridStep)
                 {
-                    dp.x = (len.x > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
+                    dp.x = (len.x > 0) ? Agros2D::problem()->configView()->gridStep : -Agros2D::problem()->configView()->gridStep;
                     dp.y = 0;
                     len.x = 0;
 
                     Agros2D::scene()->transformTranslate(dp, false);
                 }
 
-                if (fabs(len.y) > Agros2D::config()->gridStep)
+                if (fabs(len.y) > Agros2D::problem()->configView()->gridStep)
                 {
                     dp.x = 0;
-                    dp.y = (len.y > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
+                    dp.y = (len.y > 0) ? Agros2D::problem()->configView()->gridStep : -Agros2D::problem()->configView()->gridStep;
                     len.y = 0;
 
                     Agros2D::scene()->transformTranslate(dp, false);
@@ -462,21 +462,21 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             static Point len;
             len = len + dp;
 
-            if (Agros2D::config()->snapToGrid)
+            if (Agros2D::problem()->configView()->snapToGrid)
             {
-                if (fabs(len.x) > Agros2D::config()->gridStep)
+                if (fabs(len.x) > Agros2D::problem()->configView()->gridStep)
                 {
-                    dp.x = (len.x > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
+                    dp.x = (len.x > 0) ? Agros2D::problem()->configView()->gridStep : -Agros2D::problem()->configView()->gridStep;
                     dp.y = 0;
                     len.x = 0;
 
                     Agros2D::scene()->transformTranslate(dp, false);
                 }
 
-                if (fabs(len.y) > Agros2D::config()->gridStep)
+                if (fabs(len.y) > Agros2D::problem()->configView()->gridStep)
                 {
                     dp.x = 0;
-                    dp.y = (len.y > 0) ? Agros2D::config()->gridStep : -Agros2D::config()->gridStep;
+                    dp.y = (len.y > 0) ? Agros2D::problem()->configView()->gridStep : -Agros2D::problem()->configView()->gridStep;
                     len.y = 0;
 
                     Agros2D::scene()->transformTranslate(dp, false);
@@ -507,8 +507,8 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
     if (m_snapToGrid)
     {
         Point snapPoint;
-        snapPoint.x = floor(p.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
-        snapPoint.y = floor(p.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+        snapPoint.x = floor(p.x / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
+        snapPoint.y = floor(p.y / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
 
         emit mouseMoved(snapPoint);
     }
@@ -553,8 +553,8 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
             {
                 Point snapPoint = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
-                pointNode.x = floor(snapPoint.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
-                pointNode.y = floor(snapPoint.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+                pointNode.x = floor(snapPoint.x / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
+                pointNode.y = floor(snapPoint.y / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
             }
             else
             {
@@ -791,7 +791,7 @@ void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
     }
 
     // snap to grid
-    m_snapToGrid = ((Agros2D::config()->snapToGrid)
+    m_snapToGrid = ((Agros2D::problem()->configView()->snapToGrid)
                     && (event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier)
                     && (m_sceneMode == SceneGeometryMode_OperateOnNodes));
 }
@@ -849,8 +849,8 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
     Point snapPoint = p;
     if (m_snapToGrid)
     {
-        snapPoint.x = floor(p.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
-        snapPoint.y = floor(p.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+        snapPoint.x = floor(p.x / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
+        snapPoint.y = floor(p.y / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
 
         // hint line
         glEnable(GL_LINE_STIPPLE);
@@ -945,9 +945,9 @@ void SceneViewPreprocessor::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Agros2D::config()->colorBackground.redF(),
-                 Agros2D::config()->colorBackground.greenF(),
-                 Agros2D::config()->colorBackground.blueF(), 0);
+    glClearColor(Agros2D::problem()->configView()->colorBackground.redF(),
+                 Agros2D::problem()->configView()->colorBackground.greenF(),
+                 Agros2D::problem()->configView()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glDisable(GL_DEPTH_TEST);
@@ -956,20 +956,20 @@ void SceneViewPreprocessor::paintGL()
     paintBackgroundPixmap();
 
     // grid
-    if (Agros2D::config()->showGrid) paintGrid();
+    if (Agros2D::problem()->configView()->showGrid) paintGrid();
 
     // geometry
     paintGeometry();
 
     // rulers
-    if (Agros2D::config()->showRulers)
+    if (Agros2D::problem()->configView()->showRulers)
     {
         paintRulers();
         paintRulersHintsEdges();
     }
 
     // axes
-    if (Agros2D::config()->showAxes) paintAxes();
+    if (Agros2D::problem()->configView()->showAxes) paintAxes();
 
     paintZoomRegion();
     paintSnapToGrid();
@@ -993,31 +993,31 @@ void SceneViewPreprocessor::paintGeometry()
             }
         }
 
-        glColor3d(Agros2D::config()->colorEdges.redF(),
-                  Agros2D::config()->colorEdges.greenF(),
-                  Agros2D::config()->colorEdges.blueF());
-        glLineWidth(Agros2D::config()->edgeWidth);
+        glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
+                  Agros2D::problem()->configView()->colorEdges.greenF(),
+                  Agros2D::problem()->configView()->colorEdges.blueF());
+        glLineWidth(Agros2D::problem()->configView()->edgeWidth);
 
         if (edge->isError())
         {
-            glColor3d(Agros2D::config()->colorCrossed.redF(),
-                      Agros2D::config()->colorCrossed.greenF(),
-                      Agros2D::config()->colorCrossed.blueF());
-            glLineWidth(Agros2D::config()->edgeWidth);
+            glColor3d(Agros2D::problem()->configView()->colorCrossed.redF(),
+                      Agros2D::problem()->configView()->colorCrossed.greenF(),
+                      Agros2D::problem()->configView()->colorCrossed.blueF());
+            glLineWidth(Agros2D::problem()->configView()->edgeWidth);
         }
         if (edge->isHighlighted())
         {
-            glColor3d(Agros2D::config()->colorHighlighted.redF(),
-                      Agros2D::config()->colorHighlighted.greenF(),
-                      Agros2D::config()->colorHighlighted.blueF());
-            glLineWidth(Agros2D::config()->edgeWidth + 2.0);
+            glColor3d(Agros2D::problem()->configView()->colorHighlighted.redF(),
+                      Agros2D::problem()->configView()->colorHighlighted.greenF(),
+                      Agros2D::problem()->configView()->colorHighlighted.blueF());
+            glLineWidth(Agros2D::problem()->configView()->edgeWidth + 2.0);
         }
         if (edge->isSelected())
         {
-            glColor3d(Agros2D::config()->colorSelected.redF(),
-                      Agros2D::config()->colorSelected.greenF(),
-                      Agros2D::config()->colorSelected.blueF());
-            glLineWidth(Agros2D::config()->edgeWidth + 2.0);
+            glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
+                      Agros2D::problem()->configView()->colorSelected.greenF(),
+                      Agros2D::problem()->configView()->colorSelected.blueF());
+            glLineWidth(Agros2D::problem()->configView()->edgeWidth + 2.0);
         }
 
         if (edge->isStraight())
@@ -1043,19 +1043,19 @@ void SceneViewPreprocessor::paintGeometry()
     // nodes
     foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {
-        glColor3d(Agros2D::config()->colorNodes.redF(),
-                  Agros2D::config()->colorNodes.greenF(),
-                  Agros2D::config()->colorNodes.blueF());
-        glPointSize(Agros2D::config()->nodeSize);
+        glColor3d(Agros2D::problem()->configView()->colorNodes.redF(),
+                  Agros2D::problem()->configView()->colorNodes.greenF(),
+                  Agros2D::problem()->configView()->colorNodes.blueF());
+        glPointSize(Agros2D::problem()->configView()->nodeSize);
 
         glBegin(GL_POINTS);
         glVertex2d(node->point().x, node->point().y);
         glEnd();
 
-        glColor3d(Agros2D::config()->colorBackground.redF(),
-                  Agros2D::config()->colorBackground.greenF(),
-                  Agros2D::config()->colorBackground.blueF());
-        glPointSize(Agros2D::config()->nodeSize - 2.0);
+        glColor3d(Agros2D::problem()->configView()->colorBackground.redF(),
+                  Agros2D::problem()->configView()->colorBackground.greenF(),
+                  Agros2D::problem()->configView()->colorBackground.blueF());
+        glPointSize(Agros2D::problem()->configView()->nodeSize - 2.0);
 
         glBegin(GL_POINTS);
         glVertex2d(node->point().x, node->point().y);
@@ -1063,21 +1063,21 @@ void SceneViewPreprocessor::paintGeometry()
 
         if ((node->isSelected()) || (node->isHighlighted()) || (node->isError()) )
         {
-            glPointSize(Agros2D::config()->nodeSize - 2.0);
+            glPointSize(Agros2D::problem()->configView()->nodeSize - 2.0);
 
             if (node->isError())
-                glColor3d(Agros2D::config()->colorCrossed.redF(),
-                          Agros2D::config()->colorCrossed.greenF(),
-                          Agros2D::config()->colorCrossed.blueF());
+                glColor3d(Agros2D::problem()->configView()->colorCrossed.redF(),
+                          Agros2D::problem()->configView()->colorCrossed.greenF(),
+                          Agros2D::problem()->configView()->colorCrossed.blueF());
 
             if (node->isHighlighted())
-                glColor3d(Agros2D::config()->colorHighlighted.redF(),
-                          Agros2D::config()->colorHighlighted.greenF(),
-                          Agros2D::config()->colorHighlighted.blueF());
+                glColor3d(Agros2D::problem()->configView()->colorHighlighted.redF(),
+                          Agros2D::problem()->configView()->colorHighlighted.greenF(),
+                          Agros2D::problem()->configView()->colorHighlighted.blueF());
             if (node->isSelected())
-                glColor3d(Agros2D::config()->colorSelected.redF(),
-                          Agros2D::config()->colorSelected.greenF(),
-                          Agros2D::config()->colorSelected.blueF());
+                glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
+                          Agros2D::problem()->configView()->colorSelected.greenF(),
+                          Agros2D::problem()->configView()->colorSelected.blueF());
 
             glBegin(GL_POINTS);
             glVertex2d(node->point().x, node->point().y);
@@ -1088,18 +1088,18 @@ void SceneViewPreprocessor::paintGeometry()
     // labels
     foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
-        glColor3d(Agros2D::config()->colorLabels.redF(),
-                  Agros2D::config()->colorLabels.greenF(),
-                  Agros2D::config()->colorLabels.blueF());
-        glPointSize(Agros2D::config()->labelSize);
+        glColor3d(Agros2D::problem()->configView()->colorLabels.redF(),
+                  Agros2D::problem()->configView()->colorLabels.greenF(),
+                  Agros2D::problem()->configView()->colorLabels.blueF());
+        glPointSize(Agros2D::problem()->configView()->labelSize);
         glBegin(GL_POINTS);
         glVertex2d(label->point().x, label->point().y);
         glEnd();
 
-        glColor3d(Agros2D::config()->colorBackground.redF(),
-                  Agros2D::config()->colorBackground.greenF(),
-                  Agros2D::config()->colorBackground.blueF());
-        glPointSize(Agros2D::config()->labelSize - 2.0);
+        glColor3d(Agros2D::problem()->configView()->colorBackground.redF(),
+                  Agros2D::problem()->configView()->colorBackground.greenF(),
+                  Agros2D::problem()->configView()->colorBackground.blueF());
+        glPointSize(Agros2D::problem()->configView()->labelSize - 2.0);
         glBegin(GL_POINTS);
         glVertex2d(label->point().x, label->point().y);
         glEnd();
@@ -1107,15 +1107,15 @@ void SceneViewPreprocessor::paintGeometry()
         if ((label->isSelected()) || (label->isHighlighted()))
         {
             if (label->isHighlighted())
-                glColor3d(Agros2D::config()->colorHighlighted.redF(),
-                          Agros2D::config()->colorHighlighted.greenF(),
-                          Agros2D::config()->colorHighlighted.blueF());
+                glColor3d(Agros2D::problem()->configView()->colorHighlighted.redF(),
+                          Agros2D::problem()->configView()->colorHighlighted.greenF(),
+                          Agros2D::problem()->configView()->colorHighlighted.blueF());
             if (label->isSelected())
-                glColor3d(Agros2D::config()->colorSelected.redF(),
-                          Agros2D::config()->colorSelected.greenF(),
-                          Agros2D::config()->colorSelected.blueF());
+                glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
+                          Agros2D::problem()->configView()->colorSelected.greenF(),
+                          Agros2D::problem()->configView()->colorSelected.blueF());
 
-            glPointSize(Agros2D::config()->labelSize - 2.0);
+            glPointSize(Agros2D::problem()->configView()->labelSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point().x, label->point().y);
             glEnd();
@@ -1246,13 +1246,13 @@ void SceneViewPreprocessor::paintSnapToGrid()
         Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         Point snapPoint;
-        snapPoint.x = floor(p.x / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
-        snapPoint.y = floor(p.y / Agros2D::config()->gridStep + 0.5) * Agros2D::config()->gridStep;
+        snapPoint.x = floor(p.x / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
+        snapPoint.y = floor(p.y / Agros2D::problem()->configView()->gridStep + 0.5) * Agros2D::problem()->configView()->gridStep;
 
-        glColor3d(Agros2D::config()->colorHighlighted.redF(),
-                  Agros2D::config()->colorHighlighted.greenF(),
-                  Agros2D::config()->colorHighlighted.blueF());
-        glPointSize(Agros2D::config()->nodeSize - 1.0);
+        glColor3d(Agros2D::problem()->configView()->colorHighlighted.redF(),
+                  Agros2D::problem()->configView()->colorHighlighted.greenF(),
+                  Agros2D::problem()->configView()->colorHighlighted.blueF());
+        glPointSize(Agros2D::problem()->configView()->nodeSize - 1.0);
         glBegin(GL_POINTS);
         glVertex2d(snapPoint.x, snapPoint.y);
         glEnd();
@@ -1269,9 +1269,9 @@ void SceneViewPreprocessor::paintEdgeLine()
 
             Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
-            glColor3d(Agros2D::config()->colorEdges.redF(),
-                      Agros2D::config()->colorEdges.greenF(),
-                      Agros2D::config()->colorEdges.blueF());
+            glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
+                      Agros2D::problem()->configView()->colorEdges.greenF(),
+                      Agros2D::problem()->configView()->colorEdges.blueF());
 
             // check for crossing
             foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
@@ -1297,7 +1297,7 @@ void SceneViewPreprocessor::paintEdgeLine()
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
 
-            glLineWidth(Agros2D::config()->edgeWidth);
+            glLineWidth(Agros2D::problem()->configView()->edgeWidth);
 
             glBegin(GL_LINES);
             glVertex2d(m_nodeLast->point().x, m_nodeLast->point().y);
@@ -1330,9 +1330,9 @@ ErrorResult SceneViewPreprocessor::saveGeometryToFile(const QString &fileName, i
                        GL2PS_BSP_SORT, options,
                        GL_RGBA, 0, NULL, 0, 0, 0, buffsize, fp, "xxx.pdf");
 
-        glClearColor(Agros2D::config()->colorBackground.redF(),
-                     Agros2D::config()->colorBackground.greenF(),
-                     Agros2D::config()->colorBackground.blueF(), 0);
+        glClearColor(Agros2D::problem()->configView()->colorBackground.redF(),
+                     Agros2D::problem()->configView()->colorBackground.greenF(),
+                     Agros2D::problem()->configView()->colorBackground.blueF(), 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // paintSolutionMesh();

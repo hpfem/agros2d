@@ -23,13 +23,13 @@
 #include "util.h"
 #include "util/enums.h"
 
-class ConfigComputer : public QObject
+class Config : public QObject
 {
     Q_OBJECT
 
 public:
-    ConfigComputer();
-    ~ConfigComputer();
+    Config();
+    ~Config();
 
     // general
     QString guiStyle;
@@ -62,183 +62,6 @@ public:
 
     void load();
     void save();
-};
-
-class Config : public QObject
-{
-    Q_OBJECT
-
-public:
-    Config();
-    ~Config();
-
-    // font
-    QString rulersFont;
-    QString postFont;
-
-    // zoom
-    bool zoomToMouse;
-
-    // geometry
-    double nodeSize;
-    double edgeWidth;
-    double labelSize;
-
-    // rulers
-    bool showRulers;
-
-    // colors
-    QColor colorBackground;
-    QColor colorGrid;
-    QColor colorCross;
-    QColor colorNodes;
-    QColor colorEdges;
-    QColor colorLabels;
-    QColor colorContours;
-    QColor colorVectors;
-    QColor colorInitialMesh;
-    QColor colorSolutionMesh;
-    QColor colorHighlighted;
-    QColor colorCrossed;
-    QColor colorSelected;
-    QColor colorNotConnected;
-
-    // grid
-    bool showGrid;
-    double gridStep;
-    bool snapToGrid;
-
-    // axes
-    bool showAxes;
-
-    // deformations
-    bool deformScalar;
-    bool deformContour;
-    bool deformVector;
-
-    // 3d
-    bool scalarView3DLighting;
-    double scalarView3DAngle;
-    bool scalarView3DBackground;
-    double scalarView3DHeight;
-    bool scalarView3DBoundingBox;
-
-    // active field
-    QString activeField;
-
-    // post3d
-    SceneViewPost3DMode showPost3D;
-
-    // linearizer quality
-    PaletteQuality linearizerQuality;
-
-    // contour
-    bool showContourView;
-    QString contourVariable;
-    int contoursCount;
-    double contourWidth;
-
-    // scalar view
-    bool showScalarView;
-    QString scalarVariable;
-    PhysicFieldVariableComp scalarVariableComp;
-    bool scalarRangeAuto;
-    double scalarRangeMin;
-    double scalarRangeMax;
-    bool scalarRangeLog;
-    double scalarRangeBase;
-    int scalarDecimalPlace;
-
-    // vector view
-    bool showVectorView;
-    QString vectorVariable;
-    bool vectorProportional;
-    bool vectorColor;
-    int vectorCount;
-    double vectorScale;
-    VectorType vectorType;
-    VectorCenter vectorCenter;
-
-    // mesh
-    bool showInitialMeshView;
-    bool showSolutionMeshView;
-    int angleSegmentsCount;
-    bool curvilinearElements;
-
-    // order view
-    bool showOrderView;
-    bool showOrderColorBar;
-    PaletteOrderType orderPaletteOrderType;
-    bool orderLabel;
-
-    // palette
-    bool showScalarColorBar;
-    PaletteType paletteType;
-    int paletteSteps;
-    bool paletteFilter;
-
-    // particle tracing
-    bool showParticleView;
-    bool particleIncludeRelativisticCorrection;
-    double particleMass;
-    double particleConstant;
-    double particleMaximumRelativeError;
-    double particleMinimumStep;
-    int particleMaximumNumberOfSteps;
-    bool particleReflectOnDifferentMaterial;
-    bool particleReflectOnBoundary;
-    double particleCoefficientOfRestitution;
-    Point particleStart;
-    Point particleStartVelocity;
-    Point particleAcceleration;
-    Point3 particleCustomForce;
-    int particleNumberOfParticles;
-    double particleStartingRadius;
-    bool particleColorByVelocity;
-    bool particleShowPoints;
-    double particleDragDensity;
-    double particleDragCoefficient;
-    double particleDragReferenceArea;
-
-    // solid view
-    QStringList solidViewHide;
-
-    // adaptivity
-    int maxDofs;
-    bool isoOnly;
-    double convExp;
-    double threshold;
-    int strategy;
-    int meshRegularity;
-    Hermes::Hermes2D::ProjNormType projNormType;
-    bool useAniso;
-    bool finerReference;
-
-    // command argument
-    QString commandTriangle;
-    QString commandGmsh;
-
-    void load(QDomElement *config);
-    void save(QDomElement *config);
-
-    void clear();
-
-private:
-    QDomElement *eleConfig;
-
-    bool readConfig(const QString &key, bool defaultValue);
-    int readConfig(const QString &key, int defaultValue);
-    double readConfig(const QString &key, double defaultValue);
-    QString readConfig(const QString &key, const QString &defaultValue);
-    QColor readConfig(const QString &key, const QColor &defaultValue);
-    QStringList readConfig(const QString &key, const QStringList &defaultValue);
-
-    void writeConfig(const QString &key, bool value);
-    void writeConfig(const QString &key, int value);
-    void writeConfig(const QString &key, double value);
-    void writeConfig(const QString &key, const QString &value);
-    void writeConfig(const QString &key, const QColor &value);
-    void writeConfig(const QString &key, const QStringList &value);
 };
 
 #endif // CONFIG_H

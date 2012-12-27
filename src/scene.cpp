@@ -1564,7 +1564,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
-    Agros2D::config()->load(&config);
+    Agros2D::problem()->configView()->load(&config);
 
     blockSignals(false);
 
@@ -1892,7 +1892,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // save config
     QDomElement eleConfig = doc.createElement("config");
     eleDoc.appendChild(eleConfig);
-    Agros2D::config()->save(&eleConfig);
+    Agros2D::problem()->configView()->save(&eleConfig);
 
     QTextStream out(&file);
     doc.save(out, 4);

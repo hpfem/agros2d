@@ -119,37 +119,37 @@ void SceneViewCommon2D::paintGrid()
     glLineStipple(1, 0x1C47);
     glBegin(GL_LINES);
 
-    if ((((cornerMax.x-cornerMin.x)/Agros2D::config()->gridStep + (cornerMin.y-cornerMax.y)/Agros2D::config()->gridStep) < 200) &&
-            ((cornerMax.x-cornerMin.x)/Agros2D::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Agros2D::config()->gridStep > 0))
+    if ((((cornerMax.x-cornerMin.x)/Agros2D::problem()->configView()->gridStep + (cornerMin.y-cornerMax.y)/Agros2D::problem()->configView()->gridStep) < 200) &&
+            ((cornerMax.x-cornerMin.x)/Agros2D::problem()->configView()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Agros2D::problem()->configView()->gridStep > 0))
     {
         // vertical lines
-        for (int i = cornerMin.x/Agros2D::config()->gridStep - 1; i < cornerMax.x/Agros2D::config()->gridStep + 1; i++)
+        for (int i = cornerMin.x/Agros2D::problem()->configView()->gridStep - 1; i < cornerMax.x/Agros2D::problem()->configView()->gridStep + 1; i++)
         {
             if (i % heavyLine == 0)
-                glColor3d(Agros2D::config()->colorCross.redF(),
-                          Agros2D::config()->colorCross.greenF(),
-                          Agros2D::config()->colorCross.blueF());
+                glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
+                          Agros2D::problem()->configView()->colorCross.greenF(),
+                          Agros2D::problem()->configView()->colorCross.blueF());
             else
-                glColor3d(Agros2D::config()->colorGrid.redF(),
-                          Agros2D::config()->colorGrid.greenF(),
-                          Agros2D::config()->colorGrid.blueF());
-            glVertex2d(i*Agros2D::config()->gridStep, cornerMin.y);
-            glVertex2d(i*Agros2D::config()->gridStep, cornerMax.y);
+                glColor3d(Agros2D::problem()->configView()->colorGrid.redF(),
+                          Agros2D::problem()->configView()->colorGrid.greenF(),
+                          Agros2D::problem()->configView()->colorGrid.blueF());
+            glVertex2d(i*Agros2D::problem()->configView()->gridStep, cornerMin.y);
+            glVertex2d(i*Agros2D::problem()->configView()->gridStep, cornerMax.y);
         }
 
         // horizontal lines
-        for (int i = cornerMax.y/Agros2D::config()->gridStep - 1; i < cornerMin.y/Agros2D::config()->gridStep + 1; i++)
+        for (int i = cornerMax.y/Agros2D::problem()->configView()->gridStep - 1; i < cornerMin.y/Agros2D::problem()->configView()->gridStep + 1; i++)
         {
             if (i % heavyLine == 0)
-                glColor3d(Agros2D::config()->colorCross.redF(),
-                          Agros2D::config()->colorCross.greenF(),
-                          Agros2D::config()->colorCross.blueF());
+                glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
+                          Agros2D::problem()->configView()->colorCross.greenF(),
+                          Agros2D::problem()->configView()->colorCross.blueF());
             else
-                glColor3d(Agros2D::config()->colorGrid.redF(),
-                          Agros2D::config()->colorGrid.greenF(),
-                          Agros2D::config()->colorGrid.blueF());
-            glVertex2d(cornerMin.x, i*Agros2D::config()->gridStep);
-            glVertex2d(cornerMax.x, i*Agros2D::config()->gridStep);
+                glColor3d(Agros2D::problem()->configView()->colorGrid.redF(),
+                          Agros2D::problem()->configView()->colorGrid.greenF(),
+                          Agros2D::problem()->configView()->colorGrid.blueF());
+            glVertex2d(cornerMin.x, i*Agros2D::problem()->configView()->gridStep);
+            glVertex2d(cornerMax.x, i*Agros2D::problem()->configView()->gridStep);
         }
     }
     glEnd();
@@ -159,15 +159,15 @@ void SceneViewCommon2D::paintGrid()
     {
         drawBlend(cornerMin,
                   Point(0, cornerMax.y),
-                  Agros2D::config()->colorGrid.redF(),
-                  Agros2D::config()->colorGrid.greenF(),
-                  Agros2D::config()->colorGrid.blueF(), 0.25);
+                  Agros2D::problem()->configView()->colorGrid.redF(),
+                  Agros2D::problem()->configView()->colorGrid.greenF(),
+                  Agros2D::problem()->configView()->colorGrid.blueF(), 0.25);
     }
 
     // axes
-    glColor3d(Agros2D::config()->colorCross.redF(),
-              Agros2D::config()->colorCross.greenF(),
-              Agros2D::config()->colorCross.blueF());
+    glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
+              Agros2D::problem()->configView()->colorCross.greenF(),
+              Agros2D::problem()->configView()->colorCross.blueF());
     glLineWidth(1.5);
     glBegin(GL_LINES);
     // y axis
@@ -189,12 +189,12 @@ void SceneViewCommon2D::paintAxes()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glColor3d(Agros2D::config()->colorCross.redF(),
-              Agros2D::config()->colorCross.greenF(),
-              Agros2D::config()->colorCross.blueF());
+    glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
+              Agros2D::problem()->configView()->colorCross.greenF(),
+              Agros2D::problem()->configView()->colorCross.blueF());
 
     Point rulersArea = rulersAreaSize();
-    Point border = (Agros2D::config()->showRulers) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
+    Point border = (Agros2D::problem()->configView()->showRulers) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
                                                 : Point(10.0, 10.0);
 
     // x-axis
@@ -239,7 +239,7 @@ void SceneViewCommon2D::paintRulers()
     Point cornerMin = transform(Point(0, 0));
     Point cornerMax = transform(Point(width(), height()));
 
-    double gridStep = Agros2D::config()->gridStep;
+    double gridStep = Agros2D::problem()->configView()->gridStep;
     if (gridStep < EPS_ZERO)
         return;
 
@@ -317,9 +317,9 @@ void SceneViewCommon2D::paintRulers()
         glEnd();
 
         // zero axes
-        glColor3d(Agros2D::config()->colorCross.redF(),
-                  Agros2D::config()->colorCross.greenF(),
-                  Agros2D::config()->colorCross.blueF());
+        glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
+                  Agros2D::problem()->configView()->colorCross.greenF(),
+                  Agros2D::problem()->configView()->colorCross.blueF());
 
         glLineWidth(1.5);
         glBegin(GL_LINES);
@@ -420,9 +420,9 @@ void SceneViewCommon2D::paintZoomRegion()
         Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         drawBlend(posStart, posEnd,
-                  Agros2D::config()->colorHighlighted.redF(),
-                  Agros2D::config()->colorHighlighted.greenF(),
-                  Agros2D::config()->colorHighlighted.blueF());
+                  Agros2D::problem()->configView()->colorHighlighted.redF(),
+                  Agros2D::problem()->configView()->colorHighlighted.greenF(),
+                  Agros2D::problem()->configView()->colorHighlighted.blueF());
     }
 }
 
@@ -547,8 +547,8 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
     double sceneWidth = end.x - start.x;
     double sceneHeight = end.y - start.y;
 
-    double w = (Agros2D::config()->showRulers) ? width() - rulersAreaScreen.x : width();
-    double h = (Agros2D::config()->showRulers) ? height() - rulersAreaScreen.y : height();
+    double w = (Agros2D::problem()->configView()->showRulers) ? width() - rulersAreaScreen.x : width();
+    double h = (Agros2D::problem()->configView()->showRulers) ? height() - rulersAreaScreen.y : height();
     double maxScene = ((w / h) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
@@ -557,8 +557,8 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
     Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
                      2.0/height()*rulersAreaScreen.y/m_scale2d);
 
-    m_offset2d.x = ((Agros2D::config()->showRulers) ? start.x + end.x - rulersArea.x : start.x + end.x) / 2.0;
-    m_offset2d.y = ((Agros2D::config()->showRulers) ? start.y + end.y - rulersArea.y : start.y + end.y) / 2.0;
+    m_offset2d.x = ((Agros2D::problem()->configView()->showRulers) ? start.x + end.x - rulersArea.x : start.x + end.x) / 2.0;
+    m_offset2d.y = ((Agros2D::problem()->configView()->showRulers) ? start.y + end.y - rulersArea.y : start.y + end.y) / 2.0;
 
     setZoom(0);
 }
@@ -659,13 +659,13 @@ void SceneViewCommon2D::mouseMoveEvent(QMouseEvent *event)
 
     emit mouseMoved(p);
 
-    if (Agros2D::config()->showRulers)
+    if (Agros2D::problem()->configView()->showRulers)
         updateGL();
 }
 
 void SceneViewCommon2D::wheelEvent(QWheelEvent *event)
 {
-    if (Agros2D::config()->zoomToMouse)
+    if (Agros2D::problem()->configView()->zoomToMouse)
     {
         Point posMouse;
         posMouse = Point((2.0/width()*(event->pos().x() - width()/2.0))/m_scale2d*aspect(),

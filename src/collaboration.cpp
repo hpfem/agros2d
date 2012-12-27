@@ -396,7 +396,7 @@ void ServerUploadDialog::readFromServerContent()
     //    QByteArray postData;
     //    postData.append("physicfield=" + QString::fromStdString(Agros2D::problem()->config()->fieldId()));
 
-    //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::config()->collaborationServerURL + "problems_xml.php")), postData);
+    //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::problem()->configView()->collaborationServerURL + "problems_xml.php")), postData);
     //    connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
 
@@ -457,7 +457,7 @@ void ServerUploadDialog::uploadToServer()
     //    postData.append("physicfield=" + QString::fromStdString(Agros2D::problem()->config()->fieldId()) + "&");
     //    postData.append("content=" + text);
 
-    //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::config()->collaborationServerURL + "problem_upload.php")), postData);
+    //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::problem()->configView()->collaborationServerURL + "problem_upload.php")), postData);
     //    connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
 }
 

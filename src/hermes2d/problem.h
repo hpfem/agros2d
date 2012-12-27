@@ -11,6 +11,7 @@ class CouplingInfo;
 class Field;
 class Problem;
 class ProblemConfig;
+class ProblemConfigView;
 
 /// intented as central for solution process
 /// shielded from gui and QT
@@ -42,6 +43,7 @@ public:
     QAction *actClearSolutions;
 
     inline ProblemConfig *config() const { return m_config; }
+    inline ProblemConfigView *configView() const { return m_configView; }
 
     void createStructure();
 
@@ -104,6 +106,8 @@ public:
 
 private:
     ProblemConfig *m_config;
+    ProblemConfigView *m_configView;
+
     QList<Block*> m_blocks;
 
     QMap<QString, FieldInfo *> m_fieldInfos;

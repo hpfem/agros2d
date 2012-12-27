@@ -29,6 +29,7 @@
 #include "sceneview_common.h"
 #include "scenemarkerdialog.h"
 #include "pythonlab/pythonengine_agros.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 
@@ -156,9 +157,9 @@ void ReportDialog::defaultValues()
     chkFigureGeometry->setChecked(true);
     txtFigureWidth->setValue(Value("600"));
     txtFigureHeight->setValue(Value("400"));
-    chkFigureShowGrid->setChecked(Agros2D::config()->showGrid);
-    chkFigureShowRulers->setChecked(Agros2D::config()->showRulers);
-    chkFigureShowAxes->setChecked(Agros2D::config()->showAxes);
+    chkFigureShowGrid->setChecked(Agros2D::problem()->configView()->showGrid);
+    chkFigureShowRulers->setChecked(Agros2D::problem()->configView()->showRulers);
+    chkFigureShowAxes->setChecked(Agros2D::problem()->configView()->showAxes);
 }
 
 void ReportDialog::setControls()

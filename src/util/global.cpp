@@ -47,10 +47,7 @@ Agros2D::Agros2D()
 
     m_solutionStore = new SolutionStore();
 
-    // config
-    m_config = new Config();
-
-    m_configComputer = new ConfigComputer();
+    m_configComputer = new Config();
     m_configComputer->load();
 
     // log

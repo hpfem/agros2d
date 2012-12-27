@@ -73,7 +73,7 @@ bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo,
     Point3 forceLorentz;
     try
     {
-        forceLorentz = Agros2D::plugins()[fieldInfo->fieldId()]->force(fieldInfo, m_materials[fieldInfo], position, velocity) * Agros2D::config()->particleConstant;
+        forceLorentz = Agros2D::plugins()[fieldInfo->fieldId()]->force(fieldInfo, m_materials[fieldInfo], position, velocity) * Agros2D::problem()->configView()->particleConstant;
     }
     catch (AgrosException e)
     {
@@ -82,7 +82,7 @@ bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo,
     }
 
     // custom force
-    Point3 forceCustom = Agros2D::config()->particleCustomForce;
+    Point3 forceCustom = Agros2D::problem()->configView()->particleCustomForce;
 
     // Drag force
     Point3 velocityReal = (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ?
@@ -90,15 +90,15 @@ bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo,
     Point3 forceDrag;
     if (velocityReal.magnitude() > 0.0)
         forceDrag = velocityReal.normalizePoint() *
-                - 0.5 * Agros2D::config()->particleDragDensity * velocityReal.magnitude() * velocityReal.magnitude() * Agros2D::config()->particleDragCoefficient * Agros2D::config()->particleDragReferenceArea;
+                - 0.5 * Agros2D::problem()->configView()->particleDragDensity * velocityReal.magnitude() * velocityReal.magnitude() * Agros2D::problem()->configView()->particleDragCoefficient * Agros2D::problem()->configView()->particleDragReferenceArea;
 
     // Total force
     Point3 totalForce = forceLorentz + forceDrag + forceCustom;
 
     // relativistic correction
-    double mass = Agros2D::config()->particleMass;
-    if (Agros2D::config()->particleIncludeRelativisticCorrection)
-        mass = Agros2D::config()->particleMass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
+    double mass = Agros2D::problem()->configView()->particleMass;
+    if (Agros2D::problem()->configView()->particleIncludeRelativisticCorrection)
+        mass = Agros2D::problem()->configView()->particleMass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
 
     // Total acceleration
     Point3 totalAccel = totalForce / mass;
@@ -134,8 +134,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
 
     // initial position
     Point3 position;
-    position.x = Agros2D::config()->particleStart.x;
-    position.y = Agros2D::config()->particleStart.y;
+    position.x = Agros2D::problem()->configView()->particleStart.x;
+    position.y = Agros2D::problem()->configView()->particleStart.y;
 
     // random point
     if (randomPoint)
@@ -143,12 +143,12 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
         int trials = 0;
         while (true)
         {
-            Point3 dp(rand() * (Agros2D::config()->particleStartingRadius) / RAND_MAX,
-                      rand() * (Agros2D::config()->particleStartingRadius) / RAND_MAX,
+            Point3 dp(rand() * (Agros2D::problem()->configView()->particleStartingRadius) / RAND_MAX,
+                      rand() * (Agros2D::problem()->configView()->particleStartingRadius) / RAND_MAX,
                       (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
 
-            position = Point3(-Agros2D::config()->particleStartingRadius / 2,
-                              -Agros2D::config()->particleStartingRadius / 2,
+            position = Point3(-Agros2D::problem()->configView()->particleStartingRadius / 2,
+                              -Agros2D::problem()->configView()->particleStartingRadius / 2,
                               (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + position + dp;
 
             Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Agros2D::scene()->activeViewField()->initialMesh().data(),
@@ -178,8 +178,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
 
     // initial velocity
     Point3 velocity;
-    velocity.x = Agros2D::config()->particleStartVelocity.x;
-    velocity.y = Agros2D::config()->particleStartVelocity.y;
+    velocity.x = Agros2D::problem()->configView()->particleStartVelocity.x;
+    velocity.y = Agros2D::problem()->configView()->particleStartVelocity.y;
 
     // position and velocity cache
     m_positionsList.append(position);
@@ -188,10 +188,10 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
 
     RectPoint bound = Agros2D::scene()->boundingBox();
 
-    double minStep = (Agros2D::config()->particleMinimumStep > 0.0) ? Agros2D::config()->particleMinimumStep : min(bound.width(), bound.height()) / 80.0;
-    double relErrorMin = (Agros2D::config()->particleMaximumRelativeError > 0.0) ? Agros2D::config()->particleMaximumRelativeError/100 : 1e-6;
+    double minStep = (Agros2D::problem()->configView()->particleMinimumStep > 0.0) ? Agros2D::problem()->configView()->particleMinimumStep : min(bound.width(), bound.height()) / 80.0;
+    double relErrorMin = (Agros2D::problem()->configView()->particleMaximumRelativeError > 0.0) ? Agros2D::problem()->configView()->particleMaximumRelativeError/100 : 1e-6;
     double relErrorMax = 1e-3;
-    double dt = Agros2D::config()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Agros2D::config()->particleStartVelocity.magnitude() / 10
+    double dt = Agros2D::problem()->configView()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Agros2D::problem()->configView()->particleStartVelocity.magnitude() / 10
                                                                          : 1e-11;
 
     // QTime time;
@@ -199,7 +199,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
 
     bool stopComputation = false;
     int maxStepsGlobal = 0;
-    while (!stopComputation && (maxStepsGlobal < Agros2D::config()->particleMaximumNumberOfSteps - 1))
+    while (!stopComputation && (maxStepsGlobal < Agros2D::problem()->configView()->particleMaximumNumberOfSteps - 1))
     {
         foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
         {
@@ -328,11 +328,11 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
 
             if (crossingEdge && distance > EPS_ZERO)
             {
-                if ((Agros2D::config()->particleCoefficientOfRestitution < EPS_ZERO) || // no reflection
+                if ((Agros2D::problem()->configView()->particleCoefficientOfRestitution < EPS_ZERO) || // no reflection
                         (crossingEdge->marker(fieldInfo) == Agros2D::scene()->boundaries->getNone(fieldInfo)
-                         && !Agros2D::config()->particleReflectOnDifferentMaterial) || // inner edge
+                         && !Agros2D::problem()->configView()->particleReflectOnDifferentMaterial) || // inner edge
                         (crossingEdge->marker(fieldInfo) != Agros2D::scene()->boundaries->getNone(fieldInfo)
-                         && !Agros2D::config()->particleReflectOnBoundary)) // boundary
+                         && !Agros2D::problem()->configView()->particleReflectOnBoundary)) // boundary
                 {
                     newPosition.x = intersect.x;
                     newPosition.y = intersect.y;
@@ -369,8 +369,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
 
                     // velocity in the direction of output vector
                     Point3 oldv = newVelocity;
-                    newVelocity.x = vectout.x * oldv.magnitude() * Agros2D::config()->particleCoefficientOfRestitution;
-                    newVelocity.y = vectout.y * oldv.magnitude() * Agros2D::config()->particleCoefficientOfRestitution;
+                    newVelocity.x = vectout.x * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
+                    newVelocity.y = vectout.y * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
 
                     // set new timestep
                     dt = dt * ratio;

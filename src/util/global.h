@@ -24,8 +24,8 @@
 #include "util/enums.h"
 
 class Problem;
+class ProblemConfigView;
 class Config;
-class ConfigComputer;
 class SolutionStore;
 class Log;
 class Scene;
@@ -38,8 +38,7 @@ public:
     static void createSingleton();
     static Agros2D* singleton();
     static inline Scene *scene() { return Agros2D::singleton()->m_scene; }
-    static inline Config *config() { return Agros2D::singleton()->m_config; }
-    static inline ConfigComputer *configComputer() { return Agros2D::singleton()->m_configComputer; }
+    static inline Config *configComputer() { return Agros2D::singleton()->m_configComputer; }
     static inline Problem *problem() { return Agros2D::singleton()->m_problem; }
     static inline SolutionStore *solutionStore() { return Agros2D::singleton()->m_solutionStore; }
     static inline Log *log() { return Agros2D::singleton()->m_log; }
@@ -54,8 +53,7 @@ public:
 
 private:
     Scene *m_scene;
-    Config *m_config;
-    ConfigComputer *m_configComputer;
+    Config *m_configComputer;
     Problem *m_problem;
     SolutionStore *m_solutionStore;
     ScriptEngineRemote *m_scriptEngineRemote;

@@ -1522,8 +1522,8 @@ void MainWindow::setControls()
     // set current timestep
     //    cmbTimeStep->setCurrentIndex(Agros2D::problem()->timeStep());
 
-    //actProgressLog->setEnabled(Agros2D::config()->enabledProgressLog);
-    //actApplicationLog->setEnabled(Agros2D::config()->enabledApplicationLog);
+    //actProgressLog->setEnabled(Agros2D::problem()->configView()->enabledProgressLog);
+    //actApplicationLog->setEnabled(Agros2D::problem()->configView()->enabledApplicationLog);
 }
 
 void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)

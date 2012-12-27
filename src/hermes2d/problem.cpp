@@ -48,6 +48,7 @@ Problem::Problem()
     m_isSolving = false;
 
     m_config = new ProblemConfig();
+    m_configView = new ProblemConfigView();
 
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
 
@@ -144,9 +145,7 @@ void Problem::clearFieldsAndConfig()
 
     // clear config
     m_config->clear();
-
-    // TODO: join m_config and Agros2D::config()
-    Agros2D::config()->clear();
+    m_configView->clear();
 }
 
 void Problem::addField(FieldInfo *field)

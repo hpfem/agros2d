@@ -67,7 +67,7 @@ bool MeshGeneratorGMSH::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh"))
             gmshBinary = QApplication::applicationDirPath() + QDir::separator() + "gmsh";
 
-        processGmsh.start(QString(Agros2D::config()->commandGmsh).
+        processGmsh.start(QString(Agros2D::problem()->configView()->commandGmsh).
                           arg(gmshBinary).
                           arg(tempProblemFileName()));
 

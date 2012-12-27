@@ -70,22 +70,22 @@ void PyViewConfig::setActiveSolutionType(char* solutionType)
 
 void PyViewConfig::setGridShow(bool show)
 {
-    Agros2D::config()->showGrid = show;
+    Agros2D::problem()->configView()->showGrid = show;
 }
 
 void PyViewConfig::setGridStep(double step)
 {
-    Agros2D::config()->gridStep = step;
+    Agros2D::problem()->configView()->gridStep = step;
 }
 
 void PyViewConfig::setAxesShow(bool show)
 {
-    Agros2D::config()->showAxes = show;
+    Agros2D::problem()->configView()->showAxes = show;
 }
 
 void PyViewConfig::setRulersShow(bool show)
 {
-    Agros2D::config()->showRulers = show;
+    Agros2D::problem()->configView()->showRulers = show;
 }
 
 // ****************************************************************************************************
@@ -99,33 +99,33 @@ void PyViewMesh::activate()
 
 void PyViewMesh::setInitialMeshViewShow(bool show)
 {
-    Agros2D::config()->showInitialMeshView = show;
+    Agros2D::problem()->configView()->showInitialMeshView = show;
 }
 
 void PyViewMesh::setSolutionMeshViewShow(bool show)
 {
-    Agros2D::config()->showSolutionMeshView = show;
+    Agros2D::problem()->configView()->showSolutionMeshView = show;
 }
 
 void PyViewMesh::setOrderViewShow(bool show)
 {
-    Agros2D::config()->showOrderView = show;
+    Agros2D::problem()->configView()->showOrderView = show;
 }
 
 void PyViewMesh::setOrderViewColorBar(bool show)
 {
-    Agros2D::config()->showOrderColorBar = show;
+    Agros2D::problem()->configView()->showOrderColorBar = show;
 }
 
 void PyViewMesh::setOrderViewLabel(bool show)
 {
-    Agros2D::config()->orderLabel = show;
+    Agros2D::problem()->configView()->orderLabel = show;
 }
 
 void PyViewMesh::setOrderViewPalette(char* palette)
 {
     if (paletteOrderTypeStringKeys().contains(QString(palette)))
-        Agros2D::config()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+        Agros2D::problem()->configView()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteOrderTypeStringKeys())).toStdString());
 }
@@ -141,7 +141,7 @@ void PyViewPost2D::activate()
 
 void PyViewPost2D::setScalarViewShow(bool show)
 {
-    Agros2D::config()->showScalarView = show;
+    Agros2D::problem()->configView()->showScalarView = show;
 }
 
 void PyViewPost2D::setScalarViewVariable(char* var)
@@ -154,7 +154,7 @@ void PyViewPost2D::setScalarViewVariable(char* var)
         list.append(variable->id());
         if (variable->id() == QString(var))
         {
-            Agros2D::config()->scalarVariable = QString(var);
+            Agros2D::problem()->configView()->scalarVariable = QString(var);
             return;
         }
     }
@@ -165,7 +165,7 @@ void PyViewPost2D::setScalarViewVariable(char* var)
 void PyViewPost2D::setScalarViewVariableComp(char* component)
 {
     if (physicFieldVariableCompTypeStringKeys().contains(QString(component)))
-        Agros2D::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+        Agros2D::problem()->configView()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(physicFieldVariableCompTypeStringKeys())).toStdString());
 }
@@ -173,7 +173,7 @@ void PyViewPost2D::setScalarViewVariableComp(char* component)
 void PyViewPost2D::setScalarViewPalette(char* palette)
 {
     if (paletteTypeStringKeys().contains(QString(palette)))
-        Agros2D::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+        Agros2D::problem()->configView()->paletteType = paletteTypeFromStringKey(QString(palette));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteTypeStringKeys())).toStdString());
 }
@@ -181,7 +181,7 @@ void PyViewPost2D::setScalarViewPalette(char* palette)
 void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
 {
     if (paletteQualityStringKeys().contains(QString(quality)))
-        Agros2D::config()->linearizerQuality = paletteQualityFromStringKey(QString(quality));
+        Agros2D::problem()->configView()->linearizerQuality = paletteQualityFromStringKey(QString(quality));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }
@@ -189,63 +189,63 @@ void PyViewPost2D::setScalarViewPaletteQuality(char* quality)
 void PyViewPost2D::setScalarViewPaletteSteps(int steps)
 {
     if (steps >= PALETTESTEPSMIN && steps <= PALETTESTEPSMAX)
-        Agros2D::config()->paletteSteps = steps;
+        Agros2D::problem()->configView()->paletteSteps = steps;
     else
         throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALETTESTEPSMIN).arg(PALETTESTEPSMAX).toStdString());
 }
 
 void PyViewPost2D::setScalarViewPaletteFilter(bool filter)
 {
-    Agros2D::config()->paletteFilter = filter;
+    Agros2D::problem()->configView()->paletteFilter = filter;
 }
 
 void PyViewPost2D::setScalarViewRangeLog(bool log)
 {
-    Agros2D::config()->scalarRangeLog = log;
+    Agros2D::problem()->configView()->scalarRangeLog = log;
 }
 
 void PyViewPost2D::setScalarViewRangeBase(double base)
 {
-    Agros2D::config()->scalarRangeBase = base;
+    Agros2D::problem()->configView()->scalarRangeBase = base;
 }
 
 void PyViewPost2D::setScalarViewColorBar(bool show)
 {
-    Agros2D::config()->showScalarColorBar = show;
+    Agros2D::problem()->configView()->showScalarColorBar = show;
 }
 
 void PyViewPost2D::setScalarViewDecimalPlace(int place)
 {
     if (place >= SCALARDECIMALPLACEMIN && place <= SCALARDECIMALPLACEMAX)
-        Agros2D::config()->scalarDecimalPlace = place;
+        Agros2D::problem()->configView()->scalarDecimalPlace = place;
     else
         throw invalid_argument(QObject::tr("Decimal place must be in the range from %1 to %2.").arg(SCALARDECIMALPLACEMIN).arg(SCALARDECIMALPLACEMAX).toStdString());
 }
 
 void PyViewPost2D::setScalarViewRangeAuto(bool autoRange)
 {
-    Agros2D::config()->scalarRangeAuto = autoRange;
+    Agros2D::problem()->configView()->scalarRangeAuto = autoRange;
 }
 
 void PyViewPost2D::setScalarViewRangeMin(double min)
 {
-    Agros2D::config()->scalarRangeMin = min;
+    Agros2D::problem()->configView()->scalarRangeMin = min;
 }
 
 void PyViewPost2D::setScalarViewRangeMax(double max)
 {
-    Agros2D::config()->scalarRangeMax = max;
+    Agros2D::problem()->configView()->scalarRangeMax = max;
 }
 
 void PyViewPost2D::setContourShow(bool show)
 {
-    Agros2D::config()->showContourView = show;
+    Agros2D::problem()->configView()->showContourView = show;
 }
 
 void PyViewPost2D::setContourCount(int count)
 {
     if (count > CONTOURSCOUNTMIN && count <= CONTOURSCOUNTMAX)
-        Agros2D::config()->contoursCount = count;
+        Agros2D::problem()->configView()->contoursCount = count;
     else
         throw invalid_argument(QObject::tr("Contour count must be in the range from %1 to %2.").arg(CONTOURSCOUNTMIN).arg(CONTOURSCOUNTMAX).toStdString());
 }
@@ -261,7 +261,7 @@ void PyViewPost2D::setContourVariable(char* var)
 
             if (variable->id() == QString(var))
             {
-                Agros2D::config()->contourVariable = QString(var);
+                Agros2D::problem()->configView()->contourVariable = QString(var);
                 return;
             }
         }
@@ -272,13 +272,13 @@ void PyViewPost2D::setContourVariable(char* var)
 
 void PyViewPost2D::setVectorShow(bool show)
 {
-    Agros2D::config()->showVectorView = show;
+    Agros2D::problem()->configView()->showVectorView = show;
 }
 
 void PyViewPost2D::setVectorCount(int count)
 {
     if (count > VECTORSCOUNTMIN && count <= VECTORSCOUNTMAX)
-        Agros2D::config()->vectorCount = count;
+        Agros2D::problem()->configView()->vectorCount = count;
     else
         throw invalid_argument(QObject::tr("Vector count must be in the range from %1 to %2.").arg(VECTORSCOUNTMIN).arg(VECTORSCOUNTMAX).toStdString());
 }
@@ -286,7 +286,7 @@ void PyViewPost2D::setVectorCount(int count)
 void PyViewPost2D::setVectorScale(double scale)
 {
     if (scale > VECTORSSCALEMIN && scale <= VECTORSSCALEMAX)
-        Agros2D::config()->vectorScale = scale;
+        Agros2D::problem()->configView()->vectorScale = scale;
     else
         throw invalid_argument(QObject::tr("Vector scale must be in the range from %1 to %2.").arg(VECTORSSCALEMIN).arg(VECTORSSCALEMAX).toStdString());
 }
@@ -299,7 +299,7 @@ void PyViewPost2D::setVectorVariable(char* var)
         list.append(variable->id());
         if (variable->id() == QString(var))
         {
-            Agros2D::config()->vectorVariable = QString(var);
+            Agros2D::problem()->configView()->vectorVariable = QString(var);
             return;
         }
     }
@@ -309,12 +309,12 @@ void PyViewPost2D::setVectorVariable(char* var)
 
 void PyViewPost2D::setVectorProportional(bool show)
 {
-    Agros2D::config()->vectorProportional = show;
+    Agros2D::problem()->configView()->vectorProportional = show;
 }
 
 void PyViewPost2D::setVectorColor(bool show)
 {
-    Agros2D::config()->vectorColor = show;
+    Agros2D::problem()->configView()->vectorColor = show;
 }
 
 // ****************************************************************************************************
@@ -329,7 +329,7 @@ void PyViewPost3D::activate()
 void PyViewPost3D::setPost3DMode(char* mode)
 {
     if (sceneViewPost3DModeStringKeys().contains(QString(mode)))
-        Agros2D::config()->showPost3D = sceneViewPost3DModeFromStringKey(QString(mode));
+        Agros2D::problem()->configView()->showPost3D = sceneViewPost3DModeFromStringKey(QString(mode));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(sceneViewPost3DModeStringKeys())).toStdString());
 }
@@ -345,7 +345,7 @@ void PyViewPost3D::setScalarViewVariable(char* var)
         list.append(variable->id());
         if (variable->id() == QString(var))
         {
-            Agros2D::config()->scalarVariable = QString(var);
+            Agros2D::problem()->configView()->scalarVariable = QString(var);
             return;
         }
     }
@@ -356,7 +356,7 @@ void PyViewPost3D::setScalarViewVariable(char* var)
 void PyViewPost3D::setScalarViewVariableComp(char* component)
 {
     if (physicFieldVariableCompTypeStringKeys().contains(QString(component)))
-        Agros2D::config()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+        Agros2D::problem()->configView()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(physicFieldVariableCompTypeStringKeys())).toStdString());
 }
@@ -364,7 +364,7 @@ void PyViewPost3D::setScalarViewVariableComp(char* component)
 void PyViewPost3D::setScalarViewPalette(char* palette)
 {
     if (paletteTypeStringKeys().contains(QString(palette)))
-        Agros2D::config()->paletteType = paletteTypeFromStringKey(QString(palette));
+        Agros2D::problem()->configView()->paletteType = paletteTypeFromStringKey(QString(palette));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteTypeStringKeys())).toStdString());
 }
@@ -372,7 +372,7 @@ void PyViewPost3D::setScalarViewPalette(char* palette)
 void PyViewPost3D::setScalarViewPaletteQuality(char* quality)
 {
     if (paletteQualityStringKeys().contains(QString(quality)))
-        Agros2D::config()->linearizerQuality = paletteQualityFromStringKey(QString(quality));
+        Agros2D::problem()->configView()->linearizerQuality = paletteQualityFromStringKey(QString(quality));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
 }
@@ -380,50 +380,50 @@ void PyViewPost3D::setScalarViewPaletteQuality(char* quality)
 void PyViewPost3D::setScalarViewPaletteSteps(int steps)
 {
     if (steps >= PALETTESTEPSMIN && steps <= PALETTESTEPSMAX)
-        Agros2D::config()->paletteSteps = steps;
+        Agros2D::problem()->configView()->paletteSteps = steps;
     else
         throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALETTESTEPSMIN).arg(PALETTESTEPSMAX).toStdString());
 }
 
 void PyViewPost3D::setScalarViewPaletteFilter(bool filter)
 {
-    Agros2D::config()->paletteFilter = filter;
+    Agros2D::problem()->configView()->paletteFilter = filter;
 }
 
 void PyViewPost3D::setScalarViewRangeLog(bool log)
 {
-    Agros2D::config()->scalarRangeLog = log;
+    Agros2D::problem()->configView()->scalarRangeLog = log;
 }
 
 void PyViewPost3D::setScalarViewRangeBase(double base)
 {
-    Agros2D::config()->scalarRangeBase = base;
+    Agros2D::problem()->configView()->scalarRangeBase = base;
 }
 
 void PyViewPost3D::setScalarViewColorBar(bool show)
 {
-    Agros2D::config()->showScalarColorBar = show;
+    Agros2D::problem()->configView()->showScalarColorBar = show;
 }
 
 void PyViewPost3D::setScalarViewDecimalPlace(int place)
 {
     if (place >= SCALARDECIMALPLACEMIN && place <= SCALARDECIMALPLACEMAX)
-        Agros2D::config()->scalarDecimalPlace = place;
+        Agros2D::problem()->configView()->scalarDecimalPlace = place;
     else
         throw invalid_argument(QObject::tr("Decimal place must be in the range from %1 to %2.").arg(SCALARDECIMALPLACEMIN).arg(SCALARDECIMALPLACEMAX).toStdString());
 }
 
 void PyViewPost3D::setScalarViewRangeAuto(bool autoRange)
 {
-    Agros2D::config()->scalarRangeAuto = autoRange;
+    Agros2D::problem()->configView()->scalarRangeAuto = autoRange;
 }
 
 void PyViewPost3D::setScalarViewRangeMin(double min)
 {
-    Agros2D::config()->scalarRangeMin = min;
+    Agros2D::problem()->configView()->scalarRangeMin = min;
 }
 
 void PyViewPost3D::setScalarViewRangeMax(double max)
 {
-    Agros2D::config()->scalarRangeMax = max;
+    Agros2D::problem()->configView()->scalarRangeMax = max;
 }
