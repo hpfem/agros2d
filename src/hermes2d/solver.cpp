@@ -640,23 +640,25 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 
     if(Agros2D::problem()->isTransient())
     {
-        //assert(0); // zatim vychazim z predchoziho pouziti m_actualSpace. Potom pro prechodak musim vhodne naplnit
-        if(timeStep % m_block->adaptivityRedoneEach() == 0)
+        if(adaptivityStep == 0)
         {
-            assert(timeStep != 0);
-            BlockSolutionID solID(m_block, timeStep-1, 0, SolutionMode_Normal);
-            MultiSolutionArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiSolution(solID);
-            m_actualSpaces = deepMeshAndSpaceCopy(msaPrevTS.spaces(), false);
-        }
-        else
-        {
-            if(timeStep > 1)
+            if(timeStep % m_block->adaptivityRedoneEach() == 0)
             {
-                int lastTimeStepNumAdaptations = Agros2D::solutionStore()->lastAdaptiveStep(m_block, SolutionMode_Normal, timeStep - 1);
-                BlockSolutionID solID(m_block, timeStep-1, max(lastTimeStepNumAdaptations - m_block->adaptivityBackSteps(), 0), SolutionMode_Normal);
+                assert(timeStep != 0);
+                BlockSolutionID solID(m_block, 1, 0, SolutionMode_Normal);
                 MultiSolutionArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiSolution(solID);
                 m_actualSpaces = deepMeshAndSpaceCopy(msaPrevTS.spaces(), false);
+            }
+            else
+            {
+                if(timeStep > 1)
+                {
+                    int lastTimeStepNumAdaptations = Agros2D::solutionStore()->lastAdaptiveStep(m_block, SolutionMode_Normal, timeStep - 1);
+                    BlockSolutionID solID(m_block, timeStep-1, max(lastTimeStepNumAdaptations - m_block->adaptivityBackSteps(), 0), SolutionMode_Normal);
+                    MultiSolutionArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiSolution(solID);
+                    m_actualSpaces = deepMeshAndSpaceCopy(msaPrevTS.spaces(), false);
 
+                }
             }
         }
 
@@ -665,15 +667,6 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 //        if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
 //            previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
     }
-
-
-    // todo:
-    // todo: when those two lines are uncomented, the second fails (probably Hermes problem)
-    //m_actualSpaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
-    //m_actualSpaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
-
-
-
 
     // check for DOFs
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst()) == 0)
