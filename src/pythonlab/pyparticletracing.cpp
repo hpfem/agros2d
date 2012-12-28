@@ -33,8 +33,8 @@ void PyParticleTracing::solve()
     // store values
     // double particleStartingRadius = Agros2D::problem()->configView()->particleStartingRadius;
     // int particleNumberOfParticles = Agros2D::problem()->configView()->particleNumberOfParticles;
-    Agros2D::problem()->configView()->particleStartingRadius = 0.0;
-    Agros2D::problem()->configView()->particleNumberOfParticles = 1;
+    // Agros2D::problem()->configView()->particleStartingRadius = 0.0;
+    // Agros2D::problem()->configView()->particleNumberOfParticles = 1;
 
     ParticleTracing particleTracing;
     particleTracing.computeTrajectoryParticle(false);
@@ -86,6 +86,24 @@ void PyParticleTracing::velocities(std::vector<double> &x,
     x = outX;
     y = outY;
     z = outZ;
+}
+
+void PyParticleTracing::setNumberOfParticles(int particles)
+{
+    if (particles < 1)
+        throw out_of_range(QObject::tr("Number of particles must be bigger then 1.").toStdString());
+
+    Agros2D::problem()->configView()->particleNumberOfParticles = particles;
+    Agros2D::scene()->invalidate();
+}
+
+void PyParticleTracing::setStartingRadius(double radius)
+{
+    if (radius < 0.00)
+        throw out_of_range(QObject::tr("Particles dispersion must be possitive.").toStdString());
+
+    Agros2D::problem()->configView()->particleStartingRadius = radius;
+    Agros2D::scene()->invalidate();
 }
 
 void PyParticleTracing::times(std::vector<double> &time)
@@ -158,6 +176,33 @@ void PyParticleTracing::setDragForceCoefficient(double coeff)
 
     Agros2D::problem()->configView()->particleDragCoefficient = coeff;
     Agros2D::scene()->invalidate();
+}
+
+void PyParticleTracing::setCustomForce(map<char*, double> force)
+{
+    for (map<char*, double>::iterator i = force.begin(); i != force.end(); ++i)
+    {
+        if (QString((*i).first) == "x")
+            Agros2D::problem()->configView()->particleCustomForce.x = (*i).second;
+        else if (QString((*i).first) == "y")
+            Agros2D::problem()->configView()->particleCustomForce.y = (*i).second;
+        else if (QString((*i).first) == "z")
+            Agros2D::problem()->configView()->particleCustomForce.z = (*i).second;
+        else
+            throw invalid_argument(QObject::tr("Key %1 is not defined.").arg(QString((*i).first)).toStdString());
+    }
+
+    Agros2D::scene()->invalidate();
+}
+
+void PyParticleTracing::customForce(map<std::string, double> &force)
+{
+    map<std::string, double> values;
+    values["x"] = Agros2D::problem()->configView()->particleCustomForce.x;
+    values["y"] = Agros2D::problem()->configView()->particleCustomForce.y;
+    values["z"] = Agros2D::problem()->configView()->particleCustomForce.z;
+
+    force = values;
 }
 
 void PyParticleTracing::setIncludeRelativisticCorrection(int include)

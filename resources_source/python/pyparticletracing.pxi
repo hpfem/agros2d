@@ -11,6 +11,11 @@ cdef extern from "../../src/pythonlab/pyparticletracing.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
 
+        void setNumberOfParticles(int particles)  except +
+        int numberOfParticles()
+        void setStartingRadius(double radius) except +
+        double startingRadius()
+
         void setInitialPosition(double x, double y) except +
         void initialPosition(double x, double y)
 
@@ -40,6 +45,9 @@ cdef extern from "../../src/pythonlab/pyparticletracing.h":
         void setDragForceCoefficient(double coeff) except +
         double dragForceCoefficient()
 
+        void setCustomForce(map[char*, double] force) except +
+        void customForce(map[string, double] force) except +
+
         void setMaximumTolerance(double tolerance) except +
         double maximumTolerance()
         void setMaximumNumberOfSteps(int steps) except +
@@ -61,6 +69,20 @@ cdef class ParticleTracing:
         self.thisptr = new PyParticleTracing()
     def __dealloc__(self):
         del self.thisptr
+
+    # number of particles
+    property number_of_particles:
+        def __get__(self):
+            return self.thisptr.numberOfParticles()
+        def __set__(self, particles):
+            self.thisptr.setNumberOfParticles(particles)
+
+    # particles dispersion
+    property particles_dispersion:
+        def __get__(self):
+            return self.thisptr.startingRadius()
+        def __set__(self, dispersion):
+            self.thisptr.setStartingRadius(dispersion)
 
     # solve
     def solve(self):
@@ -188,6 +210,31 @@ cdef class ParticleTracing:
             return self.thisptr.dragForceCoefficient()
         def __set__(self, coeff):
             self.thisptr.setDragForceCoefficient(coeff)
+
+    # custom force
+    property custom_force:
+        def __get__(self):
+            out = dict()
+            cdef map[string, double] force
+
+            self.thisptr.customForce(force)
+            it = force.begin()
+            while it != force.end():
+                out[deref(it).first.c_str()] = deref(it).second
+                incr(it)
+
+            return out
+
+        def __set__(self, forces):
+            cdef map[char*, double] forces_map
+            cdef pair[char*, double] force
+
+            for key in forces:
+                force.first = key
+                force.second = forces[key]
+                forces_map.insert(force)
+
+            self.thisptr.setCustomForce(forces_map)
 
     # maximum number of steps
     property maximum_number_of_steps:
