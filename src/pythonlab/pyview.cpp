@@ -37,6 +37,7 @@ void PyViewConfig::setField(char* fieldid)
         if (fieldInfo->fieldId() == QString(fieldid))
         {
             Agros2D::scene()->setActiveViewField(fieldInfo);
+            currentPythonEngineAgros()->postHermes()->refresh();
             return;
         }
     }
@@ -50,6 +51,7 @@ void PyViewConfig::setActiveTimeStep(int timeStep)
         throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Agros2D::problem()->numTimeLevels()).toStdString());
 
     Agros2D::scene()->setActiveTimeStep(timeStep);
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
@@ -58,12 +60,16 @@ void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
         throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(Agros2D::scene()->activeViewField()->fieldId()).arg(Agros2D::scene()->activeViewField()->adaptivitySteps()).toStdString());
 
     Agros2D::scene()->setActiveAdaptivityStep(adaptivityStep);
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setActiveSolutionType(char* solutionType)
 {
     if (solutionTypeStringKeys().contains(QString(solutionType)))
+    {
         Agros2D::scene()->setActiveSolutionType(solutionTypeFromStringKey(QString(solutionType)));
+        currentPythonEngineAgros()->postHermes()->refresh();
+    }
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 }
@@ -71,21 +77,25 @@ void PyViewConfig::setActiveSolutionType(char* solutionType)
 void PyViewConfig::setGridShow(bool show)
 {
     Agros2D::problem()->configView()->showGrid = show;
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setGridStep(double step)
 {
     Agros2D::problem()->configView()->gridStep = step;
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setAxesShow(bool show)
 {
     Agros2D::problem()->configView()->showAxes = show;
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setRulersShow(bool show)
 {
     Agros2D::problem()->configView()->showRulers = show;
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 // ****************************************************************************************************
