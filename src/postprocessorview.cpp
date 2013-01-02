@@ -1095,7 +1095,7 @@ void PostprocessorWidget::doFieldInfo(int index)
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
 
         int currentStep = Agros2D::solutionStore()->nearestTimeStep(Agros2D::scene()->activeViewField(), Agros2D::scene()->activeTimeStep());
-        double currentTime = Agros2D::problem()->timeStepToTime(currentStep);
+        double currentTime = Agros2D::problem()->timeStepToTotalTime(currentStep);
         int stepIndex = Agros2D::solutionStore()->timeLevelIndex(selectedField(), currentTime);
         cmbTimeStep->setCurrentIndex(stepIndex);
         cmbAdaptivityStep->setCurrentIndex(Agros2D::scene()->activeAdaptivityStep());

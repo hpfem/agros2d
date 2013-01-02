@@ -55,7 +55,7 @@ void Config::load()
 
     checkVersion = settings.value("General/CheckVersion", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
-    saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
+    saveProblemWithSolution = settings.value("General/SaveProblemWithSolution", false).toBool();
 
     // delete files
     deleteMeshFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).toBool();

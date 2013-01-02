@@ -15,6 +15,7 @@ INCLUDEPATH += ./ \
     ../3rdparty/dxflib \
     ../3rdparty/rapidxml \
     ../3rdparty/poly2tri \
+    ../3rdparty/quazip \
     ../pythonlab
 
 linux-g++|linux-g++-64|linux-g++-32 {

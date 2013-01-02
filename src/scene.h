@@ -206,6 +206,8 @@ public:
     void writeToDxf(const QString &fileName);
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
+    void readSolutionFromFile(const QString &fileName);
+    void writeSolutionToFile(const QString &fileName);
 
     void checkEdge(SceneEdge *edge);
     void checkNode(SceneNode *node);

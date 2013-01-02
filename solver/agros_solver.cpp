@@ -85,7 +85,10 @@ void ArgosSolver::solveProblem()
     else
     {
         Agros2D::log()->printMessage(tr("Solver"), tr("Problem '%1' successfuly loaded.").arg(m_fileName));
+        // solve
         Agros2D::problem()->solve();
+        // save solution
+        Agros2D::scene()->writeSolutionToFile(m_fileName);
         Agros2D::log()->printMessage(tr("Solver"), tr("Problem was solved in %1.").arg(milisecondsToTime(time.elapsed()).toString("mm:ss.zzz")));
 
         QApplication::exit(0);

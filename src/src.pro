@@ -136,6 +136,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     hermes2d/solutionstore.cpp \
     ../resources_source/classes/module_xml.cpp \
     ../resources_source/classes/coupling_xml.cpp \
+    ../resources_source/classes/agros2d_structure_xml.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \

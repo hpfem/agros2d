@@ -52,6 +52,8 @@
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
 
+#include "../3rdparty/quazip/JlCompress.h"
+
 QString generateSvgGeometry(QList<SceneEdge*> edges)
 {
     RectPoint boundingBox = SceneEdgeContainer::boundingBox(edges);
@@ -932,7 +934,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
-    actNewLabel->setEnabled(materials->length() >= 1);    
+    actNewLabel->setEnabled(materials->length() >= 1);
 }
 
 void Scene::doNewNode(const Point &point)
@@ -1336,7 +1338,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type")));
     // mesh type
     Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(eleProblemInfo.toElement().attribute("mesh_type",
-                                                                                                      meshTypeToStringKey(MeshType_Triangle))));
+                                                                                                         meshTypeToStringKey(MeshType_Triangle))));
 
     // harmonic
     Agros2D::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
@@ -1346,12 +1348,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Agros2D::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
     Agros2D::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
     Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
-                                                     eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
+                                                        eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
     Agros2D::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05"));
 
     // matrix solver
     Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
-                                                                                                                  matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
+                                                                                                                     matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
 
     // startup script
     QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startup_script").at(0);
@@ -1552,10 +1554,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         QDomElement element = nodeCoupling.toElement();
 
         if (Agros2D::problem()->hasCoupling(element.toElement().attribute("source_fieldid"),
-                                         element.toElement().attribute("target_fieldid")))
+                                            element.toElement().attribute("target_fieldid")))
         {
             CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(element.toElement().attribute("source_fieldid"),
-                                                                       element.toElement().attribute("target_fieldid"));
+                                                                          element.toElement().attribute("target_fieldid"));
             couplingInfo->setCouplingType(couplingTypeFromStringKey(element.toElement().attribute("type")));
         }
 
@@ -1574,6 +1576,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // run script
     currentPythonEngineAgros()->runScript(Agros2D::problem()->config()->startupscript());
+
+    // load solution
+    readSolutionFromFile(fileName);
 
     return ErrorResult();
 }
@@ -1900,6 +1905,10 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     file.waitForBytesWritten(0);
     file.close();
 
+    // save solution
+    if (Agros2D::configComputer()->saveProblemWithSolution)
+        writeSolutionToFile(fileName);
+
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
         emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
 
@@ -1907,6 +1916,33 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 
     return ErrorResult();
+}
+
+void Scene::readSolutionFromFile(const QString &fileName)
+{
+    QFileInfo fileInfo(fileName);
+    QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
+    if (QFile::exists(solutionFile))
+    {
+        JlCompress::extractDir(solutionFile, cacheProblemDir());
+
+        // experimental
+
+        // read mesh file
+        if (QFile::exists(QString("%1/initial.mesh").arg(cacheProblemDir())))
+        {
+            Agros2D::problem()->readInitialMeshesFromFile();
+        }
+
+        Agros2D::problem()->readSolutionsFromFile();
+    }
+}
+
+void Scene::writeSolutionToFile(const QString &fileName)
+{
+    QFileInfo fileInfo(fileName);
+    QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
+    JlCompress::compressDir(solutionFile, cacheProblemDir());
 }
 
 MultiSolutionArray<double> Scene::activeMultiSolutionArray()

@@ -257,12 +257,12 @@ void MainWindow::createActions()
 
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
-    actDocumentSave->setStatusTip(tr("Save the file to disk"));
+    actDocumentSave->setStatusTip(tr("Save project file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
 
-    actDocumentSaveWithSolution = new QAction(icon(""), tr("Save with solution"), this);
-    actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
-    connect(actDocumentSaveWithSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveWithSolution()));
+    actDocumentSaveSolution = new QAction(icon(""), tr("Save solution"), this);
+    actDocumentSaveSolution->setStatusTip(tr("Save solution to disk"));
+    connect(actDocumentSaveSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveSolution()));
 
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -483,7 +483,7 @@ void MainWindow::createMenus()
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSave);
-    mnuFile->addAction(actDocumentSaveWithSolution);
+    mnuFile->addAction(actDocumentSaveSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuFileImportExport);
@@ -1009,17 +1009,12 @@ void MainWindow::doDocumentSave()
         doDocumentSaveAs();
 }
 
-void MainWindow::doDocumentSaveWithSolution()
+void MainWindow::doDocumentSaveSolution()
 {
-    QSettings settings;
-
-    // save state
-    bool state = settings.value("Solver/SaveProblemWithSolution", false).value<bool>();
-    settings.setValue("Solver/SaveProblemWithSolution", true);
-
-    doDocumentSave();
-
-    settings.setValue("Solver/SaveProblemWithSolution", state);
+    if (QFile::exists(Agros2D::problem()->config()->fileName()))
+    {
+        Agros2D::scene()->writeSolutionToFile(Agros2D::problem()->config()->fileName());
+    }
 }
 
 void MainWindow::doDocumentSaveAs()
@@ -1419,7 +1414,7 @@ void MainWindow::clear()
 
 void MainWindow::setControls()
 {
-    actDocumentSaveWithSolution->setEnabled(Agros2D::problem()->isSolved());
+    actDocumentSaveSolution->setEnabled(Agros2D::problem()->isSolved());
 
     // set controls
     Agros2D::scene()->actTransform->setEnabled(false);

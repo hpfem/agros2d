@@ -44,6 +44,7 @@ public:
     static inline Log *log() { return Agros2D::singleton()->m_log; }
 
     static void loadPlugins(QStringList plugins);
+    static void loadActivePlugins();
     static QMap<QString, PluginInterface *> plugins() { return Agros2D::singleton()->m_plugins; }
 
     Agros2D(const Agros2D &);

@@ -20,6 +20,7 @@
 #include "solutionstore.h"
 
 #include "util/global.h"
+#include "util/constants.h"
 
 #include "field.h"
 #include "block.h"
@@ -27,6 +28,8 @@
 #include "problem.h"
 #include "problem_config.h"
 #include "module_agros.h"
+
+#include "../../resources_source/classes/agros2d_structure_xml.h"
 
 const int notFoundSoFar = -999;
 
@@ -102,6 +105,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<d
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
 
+    /*
     // add to structures used to generate general xml file
     if(!structure.contains(solutionID.timeStep))
         structure.insert(solutionID.timeStep, StructTimeLevel(solutionID.timeStep, solutionID.time()));
@@ -126,20 +130,32 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<d
         assert(!strAdaptStep.referencePresent);
         strAdaptStep.referencePresent = true;
     }
+    */
 
     // save soloution
     multiSolution.saveToFile(baseStoreFileName(solutionID), solutionID);
 
+    // append multisolution
     m_multiSolutions.append(solutionID);
+
+    // append properties
+    m_multiSolutionStructures.insert(solutionID,
+                                     FieldSolutionStructure(Agros2D::problem()->timeStepToTime(solutionID.timeStep),
+                                                            0.0,
+                                                            Hermes::Hermes2D::Space<double>::get_num_dofs(multiSolution.spacesNakedConst())));
 
     // insert to the cache
     insertMultiSolutionToCache(solutionID, multiSolution);
+
+    // save structure to the file
+    saveStructure();
 }
 
 void SolutionStore::removeSolution(FieldSolutionID solutionID)
 {
     assert(m_multiSolutions.contains(solutionID));
 
+    /*
     // remove from structures used to generate xml file
     assert(structure.contains(solutionID.timeStep));
     StructTimeLevel& strTimeLevel(structure[solutionID.timeStep]);
@@ -170,9 +186,12 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
 
     if(strTimeLevel.fields.count() == 0)
         structure.remove(solutionID.timeStep);
+    */
 
     // remove from list
     m_multiSolutions.removeOne(solutionID);
+    // remove properties
+    m_multiSolutionStructures.remove(solutionID);
     // remove from cache
     m_multiSolutionCache.remove(solutionID);
 
@@ -190,6 +209,9 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
             QFile::remove(QString("%1_%2.sln").arg(fn).arg(solutionIndex));
         }
     }
+
+    // save structure to the file
+    saveStructure();
 }
 
 void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
@@ -424,33 +446,91 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
     }
 }
 
-QString SolutionStore::StructTimeLevel::generate()
+void SolutionStore::loadStructure()
 {
-    QString str;
-    str = "open";
-    foreach(StructField sf, fields)
+    QString fn = QString("%1/structure.xml").arg(cacheProblemDir());
+
+    try
     {
-        str += sf.generate();
+        std::auto_ptr<XMLStructure::structure> structure_xsd = XMLStructure::structure_(fn.toStdString().c_str());
+        XMLStructure::structure *structure = structure_xsd.get();
+
+        int time_step = 0;
+        for (unsigned int i = 0; i < structure->element_data().size(); i++)
+        {
+            XMLStructure::element_data data = structure->element_data().at(i);
+
+            FieldSolutionID solutionID(Agros2D::problem()->fieldInfo(QString::fromStdString(data.field_id())),
+                                       data.time_step(),
+                                       data.adaptivity_step(),
+                                       solutionTypeFromStringKey(QString::fromStdString(data.solution_type())));
+            // append multisolution
+            m_multiSolutions.append(solutionID);
+
+            // TODO: remove "problem time step structures"
+            // define transient time step
+            if (data.time_step() > time_step)
+            {
+                // new time step
+                time_step = data.time_step();
+
+                Agros2D::problem()->defineActualTimeStepLength(data.time_step_length().get());
+            }
+
+            // append properties
+            m_multiSolutionStructures.insert(solutionID,
+                                             FieldSolutionStructure(0.0,
+                                                                    0.0,
+                                                                    data.dofs().get()));
+        }
     }
-    str += "close";
-    return str;
+    catch (const xml_schema::exception& e)
+    {
+        std::cerr << e << std::endl;
+    }
 }
 
-QString SolutionStore::StructField::generate()
+void SolutionStore::saveStructure()
 {
-    QString str;
-    str = "open";
-    foreach(StructAdaptivityStep as, adaptivitySteps)
+    QString fn = QString("%1/structure.xml").arg(cacheProblemDir());
+
+    try
     {
-        str += as.generate();
+        XMLStructure::structure structure;
+        foreach (FieldSolutionID solutionID, m_multiSolutionStructures.keys())
+        {
+            FieldSolutionStructure str = m_multiSolutionStructures[solutionID];
+
+            // solution id
+            XMLStructure::element_data data(solutionID.group->fieldId().toStdString(),
+                                            solutionID.timeStep,
+                                            solutionID.adaptivityStep,
+                                            solutionTypeToStringKey(solutionID.solutionMode).toStdString());
+
+            // properties
+            data.time_step_length().set(str.time_step_length);
+            data.adaptivity_error().set(str.adaptivity_error);
+            data.dofs().set(str.DOFs);
+
+            structure.element_data().push_back(data);
+        }
+
+        std::string mesh_schema_location("");
+
+        // TODO: set path more general
+        mesh_schema_location.append(QString("%1/agros2d_structure_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
+        ::xml_schema::namespace_info namespace_info_mesh("XMLStructure", mesh_schema_location);
+
+        ::xml_schema::namespace_infomap namespace_info_map;
+        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("structure", namespace_info_mesh));
+
+        std::ofstream out(fn.toStdString().c_str());
+        XMLStructure::structure_(out, structure, namespace_info_map);
     }
-    str += "close";
-    return str;
+    catch (const xml_schema::exception& e)
+    {
+        std::cerr << e << std::endl;
+    }
 }
 
-QString SolutionStore::StructAdaptivityStep::generate()
-{
-    QString str;
-    str = "normal = .., reference = ..";
-    return str;
-}
+

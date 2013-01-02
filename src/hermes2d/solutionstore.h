@@ -62,10 +62,23 @@ public:
     FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionMode solutionType);
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionMode solutionType);
 
+    void loadStructure();
+
     void clearAll();
 
 private:
+    struct FieldSolutionStructure
+    {
+        FieldSolutionStructure(double time_step_length = 0.0, double error = 0.0, int DOFs = 0)
+            : time_step_length(time_step_length), adaptivity_error(error), DOFs(DOFs) {}
+
+        double time_step_length;
+        double adaptivity_error;
+        int DOFs;
+    };
+
     QList<FieldSolutionID> m_multiSolutions;
+    QMap<FieldSolutionID, FieldSolutionStructure> m_multiSolutionStructures;
     QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;
 
     void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
@@ -76,42 +89,7 @@ private:
 
     QString baseStoreFileName(FieldSolutionID solutionID) const;
 
-    struct StructAdaptivityStep
-    {
-        StructAdaptivityStep() {}
-        StructAdaptivityStep(int st) : step(st), referencePresent(0), normalPresent(0) {}
-
-        QString generate();
-
-        int step;
-        bool referencePresent;
-        bool normalPresent;
-    };
-
-    struct StructField
-    {
-        StructField() : fieldInfo(NULL) {}
-        StructField(FieldInfo* fi) : fieldInfo(fi) {}
-
-        QString generate();
-
-        FieldInfo* fieldInfo;
-        QMap<int, StructAdaptivityStep> adaptivitySteps;
-    };
-
-    struct StructTimeLevel
-    {
-        StructTimeLevel() : level(-1), time(0) {}
-        StructTimeLevel(int lev, double t) : level(lev), time(t) {}
-
-        QString generate();
-
-        int level;
-        double time;
-        QMap<FieldInfo*, StructField> fields;
-    };
-
-    QMap<int, StructTimeLevel> structure;
+    void saveStructure();
 };
 
 #endif // SOLUTIONSTORE_H

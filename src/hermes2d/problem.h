@@ -92,17 +92,22 @@ public:
     double actualTimeStepLength() const;
     QList<double> timeStepLengths() const { return m_timeStepLengths; }
     double timeStepToTime(int timeStepIndex) const;
+    double timeStepToTotalTime(int timeStepIndex) const;
     int timeToTimeStep(double time) const;
 
     int actualTimeStep() {return m_timeStepLengths.size(); }
 
-    // terminlolgy: time levels are actual times, whre calculations are performed
+    // terminology: time levels are actual times, whre calculations are performed
     int numTimeLevels() {return m_timeStepLengths.size() + 1; }
 
-    // sets next time step lenght. If it would mean exceeding total time, smaller time step is used instead
+    // sets next time step length. If it would mean exceeding total time, smaller time step is used instead
     // to fit the desired total time period. If we are allready at the end of the interval, returns false. True otherwise (to continue)
     bool defineActualTimeStepLength(double ts);
     void refuseLastTimeStepLength();
+
+    // read initial meshes and solution
+    void readInitialMeshesFromFile();
+    void readSolutionsFromFile();
 
 private:
     ProblemConfig *m_config;
@@ -129,10 +134,7 @@ private:
     void solveFinished();
 
     void solveAdaptiveStepAction();
-    void Problem::stepMessage(Block* block);
-
-    // read initial meshes
-    void readInitialMeshesFromFile();
+    void stepMessage(Block* block);
 };
 
 #endif // PROBLEM_H

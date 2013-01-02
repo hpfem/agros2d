@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLStructure" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:coupling="XMLStructure">
+  <element name="structure">
+    <complexType>
+      <sequence>
+        <element minOccurs="1" maxOccurs="unbounded" name="element_data">
+          <complexType>
+            <attribute name="field_id" type="string" use="required" />
+            <attribute name="time_step" type="integer" use="required" />
+            <attribute name="adaptivity_step" type="integer" use="required" />
+            <attribute name="solution_type" type="string" use="required" />
+            <attribute name="time_step_length" type="double" use="optional" />
+            <attribute name="adaptivity_error" type="double" use="optional" />
+            <attribute name="dofs" type="int" use="optional" />
+          </complexType>
+        </element>
+      </sequence>
+    </complexType>
+  </element>
+</schema>
+

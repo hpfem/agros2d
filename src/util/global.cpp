@@ -30,9 +30,9 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
-
 
 static QSharedPointer<Agros2D> m_singleton;
 
@@ -83,6 +83,21 @@ void Agros2D::createSingleton()
 Agros2D *Agros2D::singleton()
 {
     return m_singleton.data();
+}
+
+void Agros2D::loadActivePlugins()
+{
+    // load plugins
+    QStringList modules = Agros2D::problem()->fieldInfos().keys();
+    QStringList couplings;
+    foreach (CouplingInfo *info, Agros2D::problem()->couplingInfos().values())
+        couplings.append(info->couplingId());
+
+    QStringList plugins;
+    plugins.append(modules);
+    plugins.append(couplings);
+
+    Agros2D::loadPlugins(plugins);
 }
 
 void Agros2D::loadPlugins(QStringList plugins)

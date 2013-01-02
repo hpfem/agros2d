@@ -44,7 +44,7 @@ FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
 
 double FieldSolutionID::time()
 {
-    return Agros2D::problem()->timeStepToTime(timeStep);
+    return Agros2D::problem()->timeStepToTotalTime(timeStep);
 }
 
 BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)

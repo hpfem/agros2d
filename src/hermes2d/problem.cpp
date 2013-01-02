@@ -291,8 +291,6 @@ bool Problem::mesh()
         {
             readInitialMeshesFromFile();
 
-            emit meshed();
-
             delete meshGenerator;
             return true;
         }
@@ -346,6 +344,14 @@ void Problem::solveInit()
 }
 
 double Problem::timeStepToTime(int timeStepIndex) const
+{
+    if (timeStepIndex == 0)
+        return 0.0;
+    else
+        return m_timeStepLengths[timeStepIndex - 1];
+}
+
+double Problem::timeStepToTotalTime(int timeStepIndex) const
 {
     double time = 0;
     for(int ts = 0; ts < timeStepIndex; ts++)
@@ -403,7 +409,7 @@ void Problem::refuseLastTimeStepLength()
 
 double Problem::actualTime() const
 {
-    return timeStepToTime(m_timeStepLengths.size());
+    return timeStepToTotalTime(m_timeStepLengths.size());
 }
 
 double Problem::actualTimeStepLength() const
@@ -424,6 +430,18 @@ void Problem::solveFinished()
     }
 
     m_isSolving = false;
+
+    Agros2D::scene()->blockSignals(true);
+
+    Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
+    Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
+    Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
+    //cout << "setting active adapt step to " << Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal) << endl;
+
+    Agros2D::scene()->blockSignals(false);
+
+    m_isSolved = true;
+    emit solved();
 
     // close indicator progress
     Indicator::closeProgress();
@@ -584,15 +602,6 @@ void Problem::solveAction()
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
     }
-
-    Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
-
-    Agros2D::scene()->blockSignals(false);
-
-    m_isSolved = true;
-    emit solved();
 }
 
 void Problem::solveAdaptiveStep()
@@ -665,34 +674,13 @@ void Problem::solveAdaptiveStepAction()
     // only if solution in previous adapt step existed, solve new one (we would have two new adapt steps otherwise)
     if(solutionAlreadyExists || adaptStep == 0)
         solver->solveSimple(0, adaptStep + 1);
-
-
-    Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
-    //cout << "setting active adapt step to " << Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal) << endl;
-
-    Agros2D::scene()->blockSignals(false);
-
-    m_isSolved = true;
-    emit solved();
 }
 
 void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 {
-    // load plugins
-    QStringList modules = fieldInfos().keys();
-    QStringList couplings;
-    foreach (CouplingInfo *info, couplingInfos().values())
-        couplings.append(info->couplingId());
-
-    QStringList plugins;
-    plugins.append(modules);
-    plugins.append(couplings);
-
     try
     {
-        Agros2D::loadPlugins(plugins);
+        Agros2D::loadActivePlugins();
     }
     catch (AgrosException e)
     {
@@ -817,7 +805,33 @@ void Problem::readInitialMeshesFromFile()
 
     meshes.clear();
     meshesVector.clear();
+
+    emit meshed();
 }
+
+void Problem::readSolutionsFromFile()
+{
+    if (QFile::exists(QString("%1/structure.xml").arg(cacheProblemDir())))
+    {
+        // load active plugins
+        try
+        {
+            Agros2D::loadActivePlugins();
+        }
+        catch (AgrosException e)
+        {
+            Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
+            return;
+        }
+
+        // load structure
+        Agros2D::solutionStore()->loadStructure();
+
+        // emit solve
+        solveFinished();
+    }
+}
+
 
 void Problem::synchronizeCouplings()
 {

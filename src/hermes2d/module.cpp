@@ -1048,10 +1048,12 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
     for (int k = 0; k < numberOfSolutions(); k++)
         sln.push_back(Agros2D::scene()->activeMultiSolutionArray().component(k).sln.data());
 
-    return Agros2D::plugins()[Agros2D::scene()->activeViewField()->fieldId()]->filter(Agros2D::scene()->activeViewField(),
-                                                                                sln,
-                                                                                physicFieldVariable->id(),
-                                                                                physicFieldVariableComp);
+    FieldInfo* activeViewField = Agros2D::scene()->activeViewField();
+    PluginInterface *interface = Agros2D::plugins()[activeViewField->fieldId()];
+    return interface->filter(activeViewField,
+                             sln,
+                             physicFieldVariable->id(),
+                             physicFieldVariableComp);
 }
 
 // ***********************************************************************************************

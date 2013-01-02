@@ -87,7 +87,7 @@ void PostHermes::processSolutionMesh()
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
         const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh();
-        Hermes::Hermes2D::ZeroSolution<double> solution(Agros2D::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
+        Hermes::Hermes2D::ZeroSolution<double> solution(mesh);
         m_linSolutionMeshView.process_solution(&solution);
     }
 }
