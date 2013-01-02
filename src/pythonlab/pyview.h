@@ -91,6 +91,9 @@ struct PyViewMesh
     inline bool getOrderViewLabel() const { return Agros2D::problem()->configView()->orderLabel; }
     void setOrderViewPalette(char* palette);
     inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Agros2D::problem()->configView()->orderPaletteOrderType).toStdString().c_str()); }
+
+    // save image
+    void saveImageToFile(char *file, int width, int height);
 };
 
 // post2d
@@ -153,6 +156,9 @@ struct PyViewPost2D
     inline bool getVectorProportional() const { return Agros2D::problem()->configView()->vectorProportional; }
     void setVectorColor(bool show);
     inline bool getVectorColor() const { return Agros2D::problem()->configView()->vectorColor; }
+
+    // save image
+    void saveImageToFile(char *file, int width, int height);
 };
 
 // post3d
@@ -195,6 +201,9 @@ struct PyViewPost3D
     inline double getScalarViewRangeMin() const { return Agros2D::problem()->configView()->scalarRangeMin; }
     void setScalarViewRangeMax(double max);
     inline double getScalarViewRangeMax() const { return Agros2D::problem()->configView()->scalarRangeMax; }
+
+    // save image
+    void saveImageToFile(char *file, int width, int height);
 };
 
 #endif // PYTHONLABVIEW_H

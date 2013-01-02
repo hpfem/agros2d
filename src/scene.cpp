@@ -932,7 +932,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
-    actNewLabel->setEnabled(materials->length() >= 1);    
+    actNewLabel->setEnabled(materials->length() >= 1);
 }
 
 void Scene::doNewNode(const Point &point)

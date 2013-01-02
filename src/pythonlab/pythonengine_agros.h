@@ -94,6 +94,4 @@ void pyOpenDocument(char *str);
 void pySaveDocument(char *str);
 void pyCloseDocument();
 
-void pySaveImage(char *str, int w, int h);
-
 #endif // PYTHONENGINEAGROS_H

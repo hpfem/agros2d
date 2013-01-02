@@ -130,6 +130,15 @@ void PyViewMesh::setOrderViewPalette(char* palette)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteOrderTypeStringKeys())).toStdString());
 }
 
+void PyViewMesh::saveImageToFile(char *file, int width, int height)
+{
+    activate();
+
+    ErrorResult result = currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(file, width, height);
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
+
 // ****************************************************************************************************
 
 void PyViewPost2D::activate()
@@ -317,6 +326,15 @@ void PyViewPost2D::setVectorColor(bool show)
     Agros2D::problem()->configView()->vectorColor = show;
 }
 
+void PyViewPost2D::saveImageToFile(char *file, int width, int height)
+{
+    activate();
+
+    ErrorResult result = currentPythonEngineAgros()->sceneViewPost2D()->saveImageToFile(file, width, height);
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
+
 // ****************************************************************************************************
 
 void PyViewPost3D::activate()
@@ -426,4 +444,13 @@ void PyViewPost3D::setScalarViewRangeMin(double min)
 void PyViewPost3D::setScalarViewRangeMax(double max)
 {
     Agros2D::problem()->configView()->scalarRangeMax = max;
+}
+
+void PyViewPost3D::saveImageToFile(char *file, int width, int height)
+{
+    activate();
+
+    ErrorResult result = currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(file, width, height);
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
 }

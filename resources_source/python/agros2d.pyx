@@ -19,6 +19,3 @@ def save_document(char *str):
 
 def close_document():
     pyCloseDocument()
-
-def save_image(char *str, int w = 0, int h = 0):
-    pySaveImage(str, w, h)
