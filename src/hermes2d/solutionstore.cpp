@@ -452,7 +452,7 @@ void SolutionStore::loadStructure()
 
     try
     {
-        std::auto_ptr<XMLStructure::structure> structure_xsd = XMLStructure::structure_(fn.toStdString().c_str());
+        std::auto_ptr<XMLStructure::structure> structure_xsd = XMLStructure::structure_(fn.toStdString().c_str(), xml_schema::flags::dont_validate);
         XMLStructure::structure *structure = structure_xsd.get();
 
         int time_step = 0;

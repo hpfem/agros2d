@@ -34,8 +34,8 @@ namespace Hermes
 
     bool MeshReaderH2DXML::load(const char *filename, Mesh *mesh)
     {
-			if(mesh->nactive == 0)
-				Hermes2DApi.meshDataPointerCalculator++;
+            if(mesh->nactive == 0)
+                Hermes2DApi.meshDataPointerCalculator++;
       mesh->free();
 
       std::map<unsigned int, unsigned int> vertex_is;
@@ -141,17 +141,17 @@ namespace Hermes
     bool MeshReaderH2DXML::load(const char *filename, Hermes::vector<Mesh *> meshes)
     {
       for(unsigned int meshes_i = 0; meshes_i < meshes.size(); meshes_i++)
-			{
-				if(meshes.at(meshes_i)->nactive == 0)
-					Hermes2DApi.meshDataPointerCalculator++;
+            {
+                if(meshes.at(meshes_i)->nactive == 0)
+                    Hermes2DApi.meshDataPointerCalculator++;
         meshes.at(meshes_i)->free();
-			}
+            }
 
       Mesh global_mesh;
 
       try
       {
-        std::auto_ptr<XMLSubdomains::domain> parsed_xml_domain (XMLSubdomains::domain_(filename));
+        std::auto_ptr<XMLSubdomains::domain> parsed_xml_domain (XMLSubdomains::domain_(filename, xml_schema::flags::dont_validate));
 
         int* vertex_is = new int[H2D_MAX_NODE_ID];
         for(int i = 0; i < H2D_MAX_NODE_ID; i++)
