@@ -9,6 +9,10 @@ cdef extern from "limits.h":
 
 cdef extern from "../../src/pythonlab/pyview.h":
     # PyViewConfig
+    cdef cppclass PyView:
+        void saveImageToFile(char *file, int width, int height)  except +
+
+    # PyViewConfig
     cdef cppclass PyViewConfig:
         void setField(char *fieldid) except +
         char *getField()
@@ -51,8 +55,6 @@ cdef extern from "../../src/pythonlab/pyview.h":
         bool getOrderViewLabel()
         void setOrderViewPalette(char *palette) except +
         char* getOrderViewPalette()
-
-        void saveImageToFile(char *file, int width, int height)  except +
 
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
@@ -111,8 +113,6 @@ cdef extern from "../../src/pythonlab/pyview.h":
         void setVectorColor(bool show)
         bool getVectorColor()
 
-        void saveImageToFile(char *file, int width, int height)  except +
-
     # PyViewPost3D
     cdef cppclass PyViewPost3D:
         void activate()
@@ -150,8 +150,6 @@ cdef extern from "../../src/pythonlab/pyview.h":
         double getScalarViewRangeMin()
         void setScalarViewRangeMax(double max)
         double getScalarViewRangeMax()
-
-        void saveImageToFile(char *file, int width, int height)  except +
 
 # ViewConfig
 cdef class __ViewConfig__:
@@ -257,9 +255,6 @@ cdef class __ViewMesh__:
             return self.thisptr.getOrderViewPalette()
         def __set__(self, palette):
             self.thisptr.setOrderViewPalette(palette)
-
-    def save_image(self, char *file, int width = 0, int height = 0):
-        self.thisptr.saveImageToFile(file, width, height)
 
 # ViewPost2D
 cdef class __ViewPost2D__:
@@ -414,9 +409,6 @@ cdef class __ViewPost2D__:
         def __set__(self, show):
             self.thisptr.setVectorColor(show)
 
-    def save_image(self, char *file, int width = 0, int height = 0):
-        self.thisptr.saveImageToFile(file, width, height)
-
 # ViewPost3D
 cdef class __ViewPost3D__:
     cdef PyViewPost3D *thisptr
@@ -515,14 +507,22 @@ cdef class __ViewPost3D__:
         def __set__(self, max):
             self.thisptr.setScalarViewRangeMax(max)
 
-    def save_image(self, char *file, int width = 0, int height = 0):
-        self.thisptr.saveImageToFile(file, width, height)
+# View
+cdef class __View__:
+    cdef PyView *thisptr
 
-class __View__:
+    def __cinit__(self):
+        self.thisptr = new PyView()
+    def __dealloc__(self):
+        del self.thisptr
+
     config = __ViewConfig__()
 
     mesh = __ViewMesh__()
     post2d = __ViewPost2D__()
     post3d = __ViewPost3D__()
+
+    def save_image(self, char *file, int width = 0, int height = 0):
+        self.thisptr.saveImageToFile(file, width, height)
 
 view = __View__()
