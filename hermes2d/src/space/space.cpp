@@ -1250,7 +1250,7 @@ namespace Hermes
       try
       {
 				Space<Scalar>* space;
-        std::auto_ptr<XMLSpace::space> parsed_xml_space (XMLSpace::space_(filename));
+        std::auto_ptr<XMLSpace::space> parsed_xml_space (XMLSpace::space_(filename, xml_schema::flags::dont_validate));
 
 				if(!strcmp(parsed_xml_space->spaceType().get().c_str(),"h1"))
 				{
