@@ -543,13 +543,6 @@ void pyCloseDocument()
     currentPythonEngineAgros()->sceneViewPost3D()->doZoomBestFit();
 }
 
-void pySaveImage(char *str, int w, int h)
-{
-    // ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
-    // if (result.isError())
-    //    throw invalid_argument(result.message().toStdString());
-}
-
 // ************************************************************************************
 
 // solutionfilename()

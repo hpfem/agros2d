@@ -9,6 +9,10 @@ cdef extern from "limits.h":
 
 cdef extern from "../../src/pythonlab/pyview.h":
     # PyViewConfig
+    cdef cppclass PyView:
+        void saveImageToFile(char *file, int width, int height)  except +
+
+    # PyViewConfig
     cdef cppclass PyViewConfig:
         void setField(char *fieldid) except +
         char *getField()
@@ -503,15 +507,22 @@ cdef class __ViewPost3D__:
         def __set__(self, max):
             self.thisptr.setScalarViewRangeMax(max)
 
-# config
-# class __Config__:
-# config = __Config__()
+# View
+cdef class __View__:
+    cdef PyView *thisptr
 
-class __View__:
+    def __cinit__(self):
+        self.thisptr = new PyView()
+    def __dealloc__(self):
+        del self.thisptr
+
     config = __ViewConfig__()
 
     mesh = __ViewMesh__()
     post2d = __ViewPost2D__()
     post3d = __ViewPost3D__()
+
+    def save_image(self, char *file, int width = 0, int height = 0):
+        self.thisptr.saveImageToFile(file, width, height)
 
 view = __View__()

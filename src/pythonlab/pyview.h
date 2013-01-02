@@ -36,6 +36,12 @@ class SceneViewPost3D;
 class PostHermes;
 
 // view
+struct PyView
+{
+    void saveImageToFile(char *file, int width, int height);
+};
+
+// view config
 struct PyViewConfig
 {
     // field

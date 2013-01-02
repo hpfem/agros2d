@@ -427,3 +427,23 @@ void PyViewPost3D::setScalarViewRangeMax(double max)
 {
     Agros2D::problem()->configView()->scalarRangeMax = max;
 }
+
+void PyView::saveImageToFile(char *file, int width, int height)
+{
+    ErrorResult result;
+    // TODO: (Franta) preprocessor
+    if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
+        result = currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(file, width, height);
+
+    else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
+        result = currentPythonEngineAgros()->sceneViewPost2D()->saveImageToFile(file, width, height);
+
+    else if (currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->isChecked())
+        result = currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(file, width, height);
+
+    else
+        result = ErrorResult(ErrorResultType_Critical, QObject::tr("Image is not saved."));
+
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
+}
