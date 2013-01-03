@@ -150,12 +150,6 @@ void PyViewMesh::setOrderViewPalette(char* palette)
 
 // ****************************************************************************************************
 
-void PyViewPost::setScalarViewShow(bool show)
-{
-    Agros2D::problem()->configView()->showScalarView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
-}
-
 void PyViewPost::setScalarViewVariable(char* var)
 {
     QStringList list;
@@ -279,6 +273,12 @@ void PyViewPost2D::activate()
     if (Agros2D::problem()->isSolved())
         if (!silentMode())
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+}
+
+void PyViewPost2D::setScalarViewShow(bool show)
+{
+    Agros2D::problem()->configView()->showScalarView = show;
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setContourShow(bool show)

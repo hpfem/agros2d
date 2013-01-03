@@ -103,8 +103,6 @@ struct PyViewMesh
 struct PyViewPost
 {
     // scalar view
-    void setScalarViewShow(bool show);
-    inline bool getScalarViewShow() const { return Agros2D::problem()->configView()->showScalarView; }
     void setScalarViewVariable(char* var);
     inline char* getScalarViewVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->scalarVariable.toStdString().c_str()); }
     void setScalarViewVariableComp(char* component);
@@ -141,6 +139,10 @@ struct PyViewPost
 struct PyViewPost2D
 {
     void activate();
+
+    // scalar
+    void setScalarViewShow(bool show);
+    inline bool getScalarViewShow() const { return Agros2D::problem()->configView()->showScalarView; }
 
     // contour
     void setContourShow(bool show);
