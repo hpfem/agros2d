@@ -347,10 +347,12 @@ void InfoWidget::finishLoading(bool ok)
                 QString dataError = "[";
                 for (int i = 0; i < adaptiveSteps; i++)
                 {
-                    SolutionStore::FieldSolutionStructure structure = Agros2D::solutionStore()->multiSolutionStructures()[FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal)];
+                    SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
-                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(structure.DOFs);
-                    dataError += QString("[%1, %2], ").arg(i+1).arg(structure.adaptivity_error);
+                    // qDebug() << structure.adaptivity_error;
+
+                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(runTime.DOFs);
+                    dataError += QString("[%1, %2], ").arg(i+1).arg(runTime.adaptivity_error);
                 }
                 dataDOFs += "]";
                 dataError += "]";

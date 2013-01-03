@@ -93,7 +93,7 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
 MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
 {
     MultiSolutionArray<double> msa;
-    foreach(Field *field, solutionID.group->fields())
+    foreach (Field *field, solutionID.group->fields())
     {
         msa.append(multiSolution(solutionID.fieldSolutionID(field->fieldInfo())));
     }
@@ -101,7 +101,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solution
     return msa;
 }
 
-void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime)
 {
     assert(!m_multiSolutions.contains(solutionID));
     assert(solutionID.timeStep >= 0);
@@ -114,16 +114,13 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<d
     m_multiSolutions.append(solutionID);
 
     // append properties
-    m_multiSolutionStructures.insert(solutionID,
-                                     FieldSolutionStructure(Agros2D::problem()->timeStepToTime(solutionID.timeStep),
-                                                            0.0,
-                                                            Hermes::Hermes2D::Space<double>::get_num_dofs(multiSolution.spacesNakedConst())));
+    m_multiSolutionRunTimeDetails.insert(solutionID, runTime);
 
     // insert to the cache
     insertMultiSolutionToCache(solutionID, multiSolution);
 
-    // save structure to the file
-    saveStructure();
+    // save run time details to the file
+    saveRunTimeDetails();
 }
 
 void SolutionStore::removeSolution(FieldSolutionID solutionID)
@@ -133,7 +130,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     // remove from list
     m_multiSolutions.removeOne(solutionID);
     // remove properties
-    m_multiSolutionStructures.remove(solutionID);
+    m_multiSolutionRunTimeDetails.remove(solutionID);
     // remove from cache
     m_multiSolutionCache.remove(solutionID);
 
@@ -153,16 +150,16 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     }
 
     // save structure to the file
-    saveStructure();
+    saveRunTimeDetails();
 }
 
-void SolutionStore::addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime)
 {
-    foreach (Field* field, solutionID.group->fields())
+    foreach (Field* field, blockSolutionID.group->fields())
     {
-        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
-        MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(solutionID.group, field->fieldInfo());
-        addSolution(fieldSID, fieldMultiSolution);
+        FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
+        MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
+        addSolution(fieldSID, fieldMultiSolution, runTime);
     }
 }
 
@@ -242,12 +239,12 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
 
     foreach (FieldSolutionID id, m_multiSolutions)
     {
-        if((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
+        if ((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
         {
             if (time == notFoundSoFar)
-                time = id.time();
+                time = Agros2D::problem()->timeStepToTotalTime(id.timeStep);
             else
-                assert(time == id.time());
+                assert(time == Agros2D::problem()->timeStepToTotalTime(id.timeStep));
         }
     }
     assert(time != notFoundSoFar);
@@ -343,7 +340,7 @@ QList<double> SolutionStore::timeLevels(FieldInfo *fieldInfo)
     {
         if (fsid.group == fieldInfo)
         {
-            double time = fsid.time();
+            double time = Agros2D::problem()->timeStepToTotalTime(fsid.timeStep);
             if (!list.contains(time))
                 list.push_back(time);
         }
@@ -388,9 +385,9 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
     }
 }
 
-void SolutionStore::loadStructure()
+void SolutionStore::loadRunTimeDetails()
 {
-    QString fn = QString("%1/structure.xml").arg(cacheProblemDir());
+    QString fn = QString("%1/runtime.xml").arg(cacheProblemDir());
 
     try
     {
@@ -419,10 +416,10 @@ void SolutionStore::loadStructure()
                 Agros2D::problem()->defineActualTimeStepLength(data.time_step_length().get());
             }
 
-            // append properties
-            m_multiSolutionStructures.insert(solutionID,
-                                             FieldSolutionStructure(0.0,
-                                                                    0.0,
+            // append run time details
+            m_multiSolutionRunTimeDetails.insert(solutionID,
+                                             SolutionRunTimeDetails(data.time_step_length().get(),
+                                                                    data.adaptivity_error().get(),
                                                                     data.dofs().get()));
         }
     }
@@ -432,22 +429,23 @@ void SolutionStore::loadStructure()
     }
 }
 
-void SolutionStore::saveStructure()
+void SolutionStore::saveRunTimeDetails()
 {
-    QString fn = QString("%1/structure.xml").arg(cacheProblemDir());
+    QString fn = QString("%1/runtime.xml").arg(cacheProblemDir());
 
     try
     {
         XMLStructure::structure structure;
-        foreach (FieldSolutionID solutionID, m_multiSolutionStructures.keys())
+        foreach (FieldSolutionID solutionID, m_multiSolutions)
         {
-            FieldSolutionStructure str = m_multiSolutionStructures[solutionID];
+            SolutionRunTimeDetails str = m_multiSolutionRunTimeDetails[solutionID];
 
             // solution id
             XMLStructure::element_data data(solutionID.group->fieldId().toStdString(),
                                             solutionID.timeStep,
                                             solutionID.adaptivityStep,
                                             solutionTypeToStringKey(solutionID.solutionMode).toStdString());
+
 
             // properties
             data.time_step_length().set(str.time_step_length);
@@ -475,4 +473,12 @@ void SolutionStore::saveStructure()
     }
 }
 
+void SolutionStore::multiSolutionRunTimeDetailReplace(FieldSolutionID solutionID, SolutionRunTimeDetails runTime)
+{
+    assert(m_multiSolutionRunTimeDetails.contains(solutionID));
+    m_multiSolutionRunTimeDetails[solutionID] = runTime;
+
+    // save structure to the file
+    saveRunTimeDetails();
+}
 

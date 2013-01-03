@@ -25,9 +25,9 @@
 class SolutionStore
 {
 public:
-    struct FieldSolutionStructure
+    struct SolutionRunTimeDetails
     {
-        FieldSolutionStructure(double time_step_length = 0.0, double error = 0.0, int DOFs = 0)
+        SolutionRunTimeDetails(double time_step_length = 0.0, double error = 0.0, int DOFs = 0)
             : time_step_length(time_step_length), adaptivity_error(error), DOFs(DOFs) {}
 
         double time_step_length;
@@ -45,7 +45,7 @@ public:
     // intented to be used as initial condition for the newton method
     MultiSolutionArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
 
-    void addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime);
 
     // removes all solutions with the given time step
     void removeTimeStep(int timeStep);
@@ -72,18 +72,19 @@ public:
     FieldSolutionID lastTimeAndAdaptiveSolution(FieldInfo* fieldInfo, SolutionMode solutionType);
     BlockSolutionID lastTimeAndAdaptiveSolution(Block* block, SolutionMode solutionType);
 
-    void loadStructure();
+    void loadRunTimeDetails();
 
-    QMap<FieldSolutionID, FieldSolutionStructure> multiSolutionStructures() const { return m_multiSolutionStructures; }
+    SolutionRunTimeDetails multiSolutionRunTimeDetail(FieldSolutionID solutionID) const { assert(m_multiSolutionRunTimeDetails.contains(solutionID)); return m_multiSolutionRunTimeDetails[solutionID]; }
+    void multiSolutionRunTimeDetailReplace(FieldSolutionID solutionID, SolutionRunTimeDetails runTime);
 
     void clearAll();
 
 private:
     QList<FieldSolutionID> m_multiSolutions;
-    QMap<FieldSolutionID, FieldSolutionStructure> m_multiSolutionStructures;
+    QMap<FieldSolutionID, SolutionRunTimeDetails> m_multiSolutionRunTimeDetails;
     QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;
 
-    void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime);
     void removeSolution(FieldSolutionID solutionID);
     void removeSolution(BlockSolutionID solutionID);
 
@@ -91,7 +92,7 @@ private:
 
     QString baseStoreFileName(FieldSolutionID solutionID) const;
 
-    void saveStructure();
+    void saveRunTimeDetails();
 };
 
 #endif // SOLUTIONSTORE_H

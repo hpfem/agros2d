@@ -320,11 +320,16 @@ void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVe
 {
     assert(solutionID.solutionMode == SolutionMode_Normal);
     MultiSpace<Scalar> newSpaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
+
     MultiSolution<Scalar> solutions;
     solutions.createSolutions(newSpaces.meshes());
     Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces.nakedConst(), solutions.naked());
 
-    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(newSpaces, solutions, Agros2D::problem()->actualTime()));
+    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
+                                                  0.0,
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(newSpaces.nakedConst()));
+
+    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(newSpaces, solutions), runTime);
 }
 
 template <typename Scalar>
@@ -717,7 +722,10 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     delete [] solutionVector;
 
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
-    Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiSolutionArray<Scalar>(spacesRef, solutionsRef, Agros2D::problem()->actualTime()));
+    SolutionStore::SolutionRunTimeDetails runTimeRef(Agros2D::problem()->actualTimeStepLength(),
+                                                  0.0,
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(spacesRef.nakedConst()));
+    Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiSolutionArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
     MultiSpace<Scalar> spacesCopy = deepMeshAndSpaceCopy(m_actualSpaces, false);
@@ -729,9 +737,15 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     ogProjection.project_global(spacesCopy.nakedConst(), solutionsRef.naked(), solutions.naked());
 
     // save the solution
+
+    // calculate element errors and total error estimate.
+
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
-    MultiSolutionArray<Scalar> msa(spacesCopy, solutions, Agros2D::problem()->actualTime());
-    Agros2D::solutionStore()->addSolution(solutionID, msa);
+    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
+                                                  0.0,
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(spacesCopy.nakedConst()));
+    MultiSolutionArray<Scalar> msa(spacesCopy, solutions);
+    Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
 
     if(bdf2Table)
         delete bdf2Table;
@@ -749,26 +763,26 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 
     // calculate element errors and total error estimate.
     Adapt<Scalar> adaptivity(m_actualSpaces.naked(), projNormType);
-    adaptivity.set_verbose_output(true);
+    adaptivity.set_verbose_output(false);
 
     // calculate error estimate for each solution component and the total error estimate.
     double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
-    // cout << "ERROR " << error << endl;
-    // set adaptive error
-    // msa.setAdaptiveError(error);
+    // update error in solution store
+    foreach (Field *field, m_block->fields())
+    {
+        FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep - 1, SolutionMode_Normal);
+
+        // get run time
+        SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(solutionID);
+        // set error
+        runTime.adaptivity_error = error;
+        // replace runtime
+        Agros2D::solutionStore()->multiSolutionRunTimeDetailReplace(solutionID, runTime);
+    }
 
     // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) < Agros2D::problem()->configView()->maxDofs;
-    // cout << "adapt " << adapt << ", error " << error << ", adpat tol " << m_block->adaptivityTolerance() << ", num dofs " <<  Hermes::Hermes2D::Space<Scalar>::get_num_dofs(msaNew.spacesNaked()) << ", max dofs " << Agros2D::problem()->configView()->maxDofs << endl;
 
-    double initialDOFs = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked());
-
-    // condition removed, adapt allways to allow to perform single adaptivity step in the future.
-    // should be refacted.
-    //    if (adapt)
-    //    {
-    cout << "*** starting adaptivity. dofs before adapt " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) << "tr " << Agros2D::problem()->configView()->threshold <<
-            ", st " << Agros2D::problem()->configView()->strategy << ", reg " << Agros2D::problem()->configView()->meshRegularity << endl;
     try
     {
         bool noref = adaptivity.adapt(selector, Agros2D::problem()->configView()->threshold, Agros2D::problem()->configView()->strategy, Agros2D::problem()->configView()->meshRegularity);
@@ -782,8 +796,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 
     Agros2D::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
                               arg(error).
-                              arg(initialDOFs).
-                              arg(Space<Scalar>::get_num_dofs(m_actualSpaces.naked())));
+                              arg(Space<Scalar>::get_num_dofs(msa.spacesNakedConst())).
+                              arg(Space<Scalar>::get_num_dofs(msaRef.spacesNakedConst())));
 
     deleteSelectors(selector);
 
@@ -810,7 +824,10 @@ void Solver<Scalar>::solveInitialTimeStep()
     }
 
     BlockSolutionID solutionID(m_block, 0, 0, SolutionMode_Normal);
-    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(m_actualSpaces, solutions, Agros2D::problem()->actualTime()));
+    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
+                                                  0.0,
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(m_actualSpaces.nakedConst()));
+    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(m_actualSpaces, solutions), runTime);
 }
 
 

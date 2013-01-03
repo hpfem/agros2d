@@ -100,7 +100,7 @@ struct SolutionArray
     SpaceAndMesh<Scalar> space;
 
     SolutionArray();
-    SolutionArray(SolutionAndMesh<Scalar> sln, SpaceAndMesh<Scalar>  space, double time);
+    SolutionArray(SolutionAndMesh<Scalar> sln, SpaceAndMesh<Scalar> space);
     ~SolutionArray();
 };
 
@@ -140,7 +140,7 @@ class MultiSolutionArray
 {
 public:
     MultiSolutionArray();
-    MultiSolutionArray(MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions, double time);
+    MultiSolutionArray(MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
     SolutionArray<Scalar> component(int component);    
 
 //    void setSpaces(MultiSpace<Scalar> spaces);
@@ -248,10 +248,7 @@ public:
 
     BlockSolutionID blockSolutionID(Block* block);
 
-    double time();
-
     QString toString();
-
 };
 
 class BlockSolutionID : public SolutionID<Block>

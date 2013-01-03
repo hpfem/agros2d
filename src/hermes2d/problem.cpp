@@ -124,6 +124,9 @@ void Problem::clearSolution()
     m_timeStepLengths.clear();
 
     Agros2D::solutionStore()->clearAll();
+
+    // remove cache
+    removeDirectory(cacheProblemDir());
 }
 
 void Problem::clearFieldsAndConfig()
@@ -644,7 +647,6 @@ void Problem::solveAdaptiveStepAction()
 
     assert(isMeshed());
 
-
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
     assert(m_blocks.size() == 1);
@@ -823,7 +825,7 @@ void Problem::readSolutionsFromFile()
 {
     Agros2D::log()->printMessage(tr("Problem"), tr("Loading spaces and solutions from disk"));
 
-    if (QFile::exists(QString("%1/structure.xml").arg(cacheProblemDir())))
+    if (QFile::exists(QString("%1/runtime.xml").arg(cacheProblemDir())))
     {
         // load active plugins
         try
@@ -837,7 +839,7 @@ void Problem::readSolutionsFromFile()
         }
 
         // load structure
-        Agros2D::solutionStore()->loadStructure();
+        Agros2D::solutionStore()->loadRunTimeDetails();
 
         // emit solve
         solveFinished();
