@@ -58,8 +58,6 @@ cdef extern from "../../src/pythonlab/pyview.h":
 
     # PyViewPost
     cdef cppclass PyViewPost:
-        void setScalarViewShow(bool show)
-        bool getScalarViewShow()
         void setScalarViewVariable(char *variable) except +
         char *getScalarViewVariable()
         void setScalarViewVariableComp(char *component) except +
@@ -94,6 +92,9 @@ cdef extern from "../../src/pythonlab/pyview.h":
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
         void activate()
+
+        void setScalarViewShow(bool show)
+        bool getScalarViewShow()
 
         void setContourShow(bool show)
         bool getContourShow()
@@ -321,6 +322,13 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     def activate(self):
         self.thisptr2d.activate()
+
+    # scalar
+    property scalar:
+        def __get__(self):
+            return self.thisptr2d.getScalarViewShow()
+        def __set__(self, show):
+            self.thisptr2d.setScalarViewShow(show)
 
     # contour
     property contours:
