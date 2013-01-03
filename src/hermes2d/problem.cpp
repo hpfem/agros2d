@@ -42,7 +42,7 @@
 
 Problem::Problem()
 {
-    m_timeStep = 0;
+    // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_isSolved = false;
     m_isSolving = false;
@@ -119,7 +119,7 @@ void Problem::clearSolution()
 {
     m_isSolved = false;
     m_isSolving = false;
-    m_timeStep = 0;
+    // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
 
@@ -729,6 +729,8 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 
 void Problem::readInitialMeshesFromFile()
 {
+    Agros2D::log()->printMessage(tr("Problem"), tr("Loading initial mesh from disk"));
+
     // load initial mesh file
     // prepare mesh array
     Hermes::vector<Hermes::Hermes2D::Mesh*> meshesVector;
@@ -811,6 +813,8 @@ void Problem::readInitialMeshesFromFile()
 
 void Problem::readSolutionsFromFile()
 {
+    Agros2D::log()->printMessage(tr("Problem"), tr("Loading spaces and solutions from disk"));
+
     if (QFile::exists(QString("%1/structure.xml").arg(cacheProblemDir())))
     {
         // load active plugins

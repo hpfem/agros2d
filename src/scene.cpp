@@ -1920,13 +1920,13 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
 void Scene::readSolutionFromFile(const QString &fileName)
 {
+    Agros2D::log()->printMessage(tr("Scene"), tr("Loading solution from disk"));
+
     QFileInfo fileInfo(fileName);
     QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
     if (QFile::exists(solutionFile))
     {
         JlCompress::extractDir(solutionFile, cacheProblemDir());
-
-        // experimental
 
         // read mesh file
         if (QFile::exists(QString("%1/initial.mesh").arg(cacheProblemDir())))
@@ -1940,6 +1940,8 @@ void Scene::readSolutionFromFile(const QString &fileName)
 
 void Scene::writeSolutionToFile(const QString &fileName)
 {
+    Agros2D::log()->printMessage(tr("Scene"), tr("Saving solution to disk"));
+
     QFileInfo fileInfo(fileName);
     QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
     JlCompress::compressDir(solutionFile, cacheProblemDir());

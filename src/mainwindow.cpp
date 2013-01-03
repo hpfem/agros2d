@@ -1290,8 +1290,8 @@ void MainWindow::doOptions()
     ConfigComputerDialog configDialog(this);
     if (configDialog.exec())
     {
-        postHermes->refresh();
-        setControls();
+        // postHermes->refresh();
+        // setControls();
     }
 
     activateWindow();

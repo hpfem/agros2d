@@ -1732,7 +1732,7 @@ namespace Hermes
           return toReturn;
         }
 
-        this->warn("Point (%g, %g) does not lie in any element.", x, y);
+        // this->warn("Point (%g, %g) does not lie in any element.", x, y);
         return NULL;
       }
     }

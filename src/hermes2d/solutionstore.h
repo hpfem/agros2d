@@ -25,6 +25,16 @@
 class SolutionStore
 {
 public:
+    struct FieldSolutionStructure
+    {
+        FieldSolutionStructure(double time_step_length = 0.0, double error = 0.0, int DOFs = 0)
+            : time_step_length(time_step_length), adaptivity_error(error), DOFs(DOFs) {}
+
+        double time_step_length;
+        double adaptivity_error;
+        int DOFs;
+    };
+
     SolutionArray<double> solution(FieldSolutionID solutionID, int component);
     bool contains(FieldSolutionID solutionID) const;
     MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
@@ -64,19 +74,11 @@ public:
 
     void loadStructure();
 
+    QMap<FieldSolutionID, FieldSolutionStructure> multiSolutionStructures() const { return m_multiSolutionStructures; }
+
     void clearAll();
 
 private:
-    struct FieldSolutionStructure
-    {
-        FieldSolutionStructure(double time_step_length = 0.0, double error = 0.0, int DOFs = 0)
-            : time_step_length(time_step_length), adaptivity_error(error), DOFs(DOFs) {}
-
-        double time_step_length;
-        double adaptivity_error;
-        int DOFs;
-    };
-
     QList<FieldSolutionID> m_multiSolutions;
     QMap<FieldSolutionID, FieldSolutionStructure> m_multiSolutionStructures;
     QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;

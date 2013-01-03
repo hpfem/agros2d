@@ -69,6 +69,8 @@ MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solution
 
     if (!m_multiSolutionCache.contains(solutionID))
     {
+        // qDebug() << "Read from disk: " << solutionID.toString();
+
         MultiSolutionArray<double> msa;
         msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
 
@@ -105,33 +107,6 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<d
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);
 
-    /*
-    // add to structures used to generate general xml file
-    if(!structure.contains(solutionID.timeStep))
-        structure.insert(solutionID.timeStep, StructTimeLevel(solutionID.timeStep, solutionID.time()));
-    StructTimeLevel& strTimeLevel(structure[solutionID.timeStep]);
-
-    if(!strTimeLevel.fields.contains(solutionID.group))
-        strTimeLevel.fields.insert(solutionID.group, StructField(solutionID.group));
-    StructField& strField(strTimeLevel.fields[solutionID.group]);
-
-    if(!strField.adaptivitySteps.contains(solutionID.adaptivityStep))
-        strField.adaptivitySteps.insert(solutionID.adaptivityStep, StructAdaptivityStep(solutionID.adaptivityStep));
-    StructAdaptivityStep& strAdaptStep(strField.adaptivitySteps[solutionID.adaptivityStep]);
-
-    if(solutionID.solutionMode == SolutionMode_Normal)
-    {
-        assert(!strAdaptStep.normalPresent);
-        strAdaptStep.normalPresent = true;
-    }
-
-    if(solutionID.solutionMode == SolutionMode_Reference)
-    {
-        assert(!strAdaptStep.referencePresent);
-        strAdaptStep.referencePresent = true;
-    }
-    */
-
     // save soloution
     multiSolution.saveToFile(baseStoreFileName(solutionID), solutionID);
 
@@ -154,39 +129,6 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<d
 void SolutionStore::removeSolution(FieldSolutionID solutionID)
 {
     assert(m_multiSolutions.contains(solutionID));
-
-    /*
-    // remove from structures used to generate xml file
-    assert(structure.contains(solutionID.timeStep));
-    StructTimeLevel& strTimeLevel(structure[solutionID.timeStep]);
-
-    assert(strTimeLevel.fields.contains(solutionID.group));
-    StructField& strField(strTimeLevel.fields[solutionID.group]);
-
-    assert(strField.adaptivitySteps.contains(solutionID.adaptivityStep));
-    StructAdaptivityStep& strAdaptStep(strField.adaptivitySteps[solutionID.adaptivityStep]);
-
-    if(solutionID.solutionMode == SolutionMode_Normal)
-    {
-        assert(strAdaptStep.normalPresent);
-        strAdaptStep.normalPresent = false;
-    }
-
-    if(solutionID.solutionMode == SolutionMode_Reference)
-    {
-        assert(strAdaptStep.referencePresent);
-        strAdaptStep.referencePresent = false;
-    }
-
-    if((!strAdaptStep.normalPresent) && (!strAdaptStep.referencePresent))
-        strField.adaptivitySteps.remove(solutionID.adaptivityStep);
-
-    if(strField.adaptivitySteps.count() == 0)
-        strTimeLevel.fields.remove(solutionID.group);
-
-    if(strTimeLevel.fields.count() == 0)
-        structure.remove(solutionID.timeStep);
-    */
 
     // remove from list
     m_multiSolutions.removeOne(solutionID);

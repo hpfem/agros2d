@@ -294,7 +294,7 @@ void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolu
         }
         i++;
     }
-    assert(! mesh.isNull());
+    assert(!mesh.isNull());
 
     for (int i = 0; i < solutionID.group->module()->numberOfSolutions(); i++)
     {

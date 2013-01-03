@@ -121,10 +121,10 @@ private:
     QTime m_lastTimeElapsed;
 
     bool m_isSolving;
-    int m_timeStep;
     bool m_isSolved;
 
     QList<double> m_timeStepLengths;
+    // int m_timeStep;
 
     bool skipThisTimeStep(Block* block);
 

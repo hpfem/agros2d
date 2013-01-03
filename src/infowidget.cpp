@@ -319,7 +319,6 @@ void InfoWidget::finishLoading(bool ok)
 
         if(Agros2D::problem()->isTransient() && Agros2D::problem()->config()->isTransientAdaptive())
         {
-
             QString dataTimeSteps = "[";
             QList<double> lengths = Agros2D::problem()->timeStepLengths();
             double time = 0;
@@ -329,7 +328,6 @@ void InfoWidget::finishLoading(bool ok)
                 time += lengths.at(i);
             }
             dataTimeSteps += "]";
-
 
             // chart DOFs vs. steps
             QString commandTimeSteps = QString("$(function () { $.plot($(\"#chart_time_step_length\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });})").
@@ -349,10 +347,10 @@ void InfoWidget::finishLoading(bool ok)
                 QString dataError = "[";
                 for (int i = 0; i < adaptiveSteps; i++)
                 {
-                    MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
+                    SolutionStore::FieldSolutionStructure structure = Agros2D::solutionStore()->multiSolutionStructures()[FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal)];
 
-                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst()));
-                    // dataError += QString("[%1, %2], ").arg(i+1).arg(msa.adaptiveError());
+                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(structure.DOFs);
+                    dataError += QString("[%1, %2], ").arg(i+1).arg(structure.adaptivity_error);
                 }
                 dataDOFs += "]";
                 dataError += "]";
