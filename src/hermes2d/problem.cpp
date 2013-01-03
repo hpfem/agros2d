@@ -54,7 +54,7 @@ Problem::Problem()
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));       
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));
 }
 
 Problem::~Problem()
@@ -478,6 +478,14 @@ void Problem::solve()
     solveFinished();
 }
 
+void Problem::solveCommandLine()
+{
+    if (Agros2D::configComputer()->saveMatrixRHS)
+        Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
+
+    solveActionCatchExceptions(false);
+}
+
 void Problem::stepMessage(Block* block)
 {
     // log analysis
@@ -491,16 +499,16 @@ void Problem::stepMessage(Block* block)
         if(config()->isTransientAdaptive())
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                  QObject::tr("transient step %1 (%2%)").
-                                  arg(actualTimeStep()).
-                                  arg(int(100*actualTime()/config()->timeTotal().number())));
+                                         QObject::tr("transient step %1 (%2%)").
+                                         arg(actualTimeStep()).
+                                         arg(int(100*actualTime()/config()->timeTotal().number())));
         }
         else
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                  QObject::tr("transient step %1/%2").
-                                  arg(actualTimeStep()).
-                                  arg(config()->numConstantTimeSteps()));
+                                         QObject::tr("transient step %1/%2").
+                                         arg(actualTimeStep()).
+                                         arg(config()->numConstantTimeSteps()));
         }
     }
     else

@@ -940,6 +940,9 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 setRecentFiles();
 
+                // load solution
+                Agros2D::scene()->readSolutionFromFile(fileNameDocument);
+
                 problemWidget->actProperties->trigger();
                 sceneViewPreprocessor->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();

@@ -51,6 +51,7 @@ public:
     bool mesh();
     // solve
     void solve();
+    void solveCommandLine();
     void solveAdaptiveStep();
 
     // check geometry

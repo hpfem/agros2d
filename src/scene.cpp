@@ -1576,9 +1576,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // run script
     currentPythonEngineAgros()->runScript(Agros2D::problem()->config()->startupscript());
 
-    // load solution
-    readSolutionFromFile(fileName);
-
     return ErrorResult();
 }
 
