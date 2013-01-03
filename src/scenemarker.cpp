@@ -29,6 +29,12 @@
 #include "hermes2d/problem.h"
 
 template <typename MarkerType>
+MarkerContainer<MarkerType>::~MarkerContainer()
+{
+    // clear();
+}
+
+template <typename MarkerType>
 void MarkerContainer<MarkerType>::add(MarkerType *marker)
 {
     data.append(marker);
@@ -55,7 +61,8 @@ void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
 template <typename MarkerType>
 MarkerType* MarkerContainer<MarkerType>::getNone(FieldInfo* field)
 {
-    if(!noneMarkers.contains(field)){
+    if (!noneMarkers.contains(field))
+    {
         noneMarkers[field] = new MarkerType(field, "none");
         noneMarkers[field]->setNone();
     }

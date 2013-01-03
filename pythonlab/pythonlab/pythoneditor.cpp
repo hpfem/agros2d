@@ -555,14 +555,14 @@ void PythonEditorDialog::createControls()
     tlbTools->addAction(actCheckPyLint);
 
     // path
-    QLineEdit *txtPath = new QLineEdit(this);
-    txtPath->setReadOnly(true);
+    QLabel *lblPath = new QLabel(this);
+    lblPath->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPushButton *btnPath = new QPushButton(icon("three-dots"), "");
     btnPath->setMaximumSize(btnPath->sizeHint());
 
     connect(btnPath, SIGNAL(clicked()), this, SLOT(doPathChangeDir()));
-    connect(filBrowser, SIGNAL(directoryChanged(QString)), txtPath, SLOT(setText(QString)));
+    connect(filBrowser, SIGNAL(directoryChanged(QString)), lblPath, SLOT(setText(QString)));
 
     QToolBar *tlbPath = addToolBar(tr("Path"));
 #ifdef Q_WS_MAC
@@ -571,7 +571,7 @@ void PythonEditorDialog::createControls()
 #endif
     tlbPath->setObjectName("Path");
     tlbPath->addWidget(new QLabel(tr("Working directory: "), this));
-    tlbPath->addWidget(txtPath);
+    tlbPath->addWidget(lblPath);
     tlbPath->addWidget(btnPath);
 
     // contents

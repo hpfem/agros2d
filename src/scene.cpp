@@ -217,7 +217,6 @@ Scene::~Scene()
 
     delete m_undoStack;
 
-    // TODO write destructors or use QSharedPointers...
     delete boundaries;
     delete materials;
     delete nodes;

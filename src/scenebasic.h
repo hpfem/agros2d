@@ -69,6 +69,9 @@ template <typename BasicType>
 class SceneBasicContainer
 {
 public:
+    SceneBasicContainer() : data(QList<BasicType* >()) {}
+    ~SceneBasicContainer();
+
     /// items() should be removed step by step from the code.
     /// more methods operating with list data should be defined here
     QList<BasicType*> items() { return data; }

@@ -153,6 +153,12 @@ template class MarkedSceneBasic<SceneMaterial>;
 // *************************************************************************************************************************************
 
 template <typename BasicType>
+SceneBasicContainer<BasicType>::~SceneBasicContainer()
+{
+    // clear();
+}
+
+template <typename BasicType>
 bool SceneBasicContainer<BasicType>::add(BasicType *item)
 {
     //TODO add check
