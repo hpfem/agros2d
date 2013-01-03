@@ -293,8 +293,8 @@ void InfoWidget::showInfo()
         problemInfo.SetValue("SOLUTION_LABEL", tr("Solution").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME_LABEL", tr("Total elapsed time:").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME", tr("%1 s").arg(Agros2D::problem()->timeElapsed().toString("mm:ss.zzz")).toStdString());
-        problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
-        problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)).toStdString());
+        // problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
+        // problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)).toStdString());
         problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
     }
 
