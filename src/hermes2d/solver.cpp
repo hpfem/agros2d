@@ -85,6 +85,11 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
     m_linearSolver = QSharedPointer<LinearSolver<Scalar> >(new LinearSolver<Scalar>());
 }
 
+template <typename Scalar>
+LinearSolverContainer<Scalar>::~LinearSolverContainer()
+{
+    m_linearSolver.clear();
+}
 
 template <typename Scalar>
 void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
@@ -110,6 +115,12 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     }
     else
         m_newtonSolver.data()->set_manual_damping_coeff(true, block->newtonDampingCoeff());
+}
+
+template <typename Scalar>
+NewtonSolverContainer<Scalar>::~NewtonSolverContainer()
+{
+    m_newtonSolver.clear();
 }
 
 template <typename Scalar>
@@ -158,9 +169,15 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
 }
 
 template <typename Scalar>
+PicardSolverContainer<Scalar>::~PicardSolverContainer()
+{
+    m_picardSolver.clear();
+}
+
+template <typename Scalar>
 void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions)
 {
-    if(solutions.empty())
+    if (solutions.empty())
     {
         int ndof = Space<Scalar>::get_num_dofs(spaces.nakedConst());
         memset(solutionVector, 0, ndof*sizeof(Scalar));
@@ -281,10 +298,10 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
         if(createReference)
         {
             AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
-            if(Agros2D::problem()->configView()->finerReference || (adaptivityType != AdaptivityType_P))
+            if (Agros2D::problem()->configView()->finerReference || (adaptivityType != AdaptivityType_P))
                 refineMesh = true;
 
-            if(Agros2D::problem()->configView()->finerReference || (adaptivityType != AdaptivityType_H))
+            if (Agros2D::problem()->configView()->finerReference || (adaptivityType != AdaptivityType_H))
                 orderIncrease = 1;
         }
 
@@ -417,10 +434,10 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // free vector
     delete [] solutionVector;
 
-    // TODO: remove
+    // clear weakform
     m_block->weakForm().clear();
 
-    if(bdf2Table)
+    if (bdf2Table)
         delete bdf2Table;
 }
 

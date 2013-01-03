@@ -38,6 +38,11 @@ struct SpaceAndMesh
 {
     SpaceAndMesh() {}
     SpaceAndMesh(QSharedPointer<Hermes::Hermes2D::Space<Scalar> > sp, QSharedPointer<Hermes::Hermes2D::Mesh> ms) : space(sp), mesh(ms) {}
+    ~SpaceAndMesh()
+    {
+        mesh.clear();
+        space.clear();
+    }
 
     QSharedPointer<Hermes::Hermes2D::Mesh> mesh;
     QSharedPointer<Hermes::Hermes2D::Space<Scalar> > space;
@@ -49,6 +54,11 @@ struct SolutionAndMesh
 {
     SolutionAndMesh() {}
     SolutionAndMesh(QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > sol, QSharedPointer<Hermes::Hermes2D::Mesh> ms) : solution(sol), mesh(ms) {}
+    ~SolutionAndMesh()
+    {
+        mesh.clear();
+        solution.clear();
+    }
 
     QSharedPointer<Hermes::Hermes2D::Mesh> mesh;
     QSharedPointer<Hermes::Hermes2D::Solution<Scalar> > solution;
@@ -109,6 +119,7 @@ struct MultiSpace
 {
     MultiSpace() {}
     MultiSpace(Hermes::vector<SpaceAndMesh<Scalar>  > sp ) : spaces(sp) {}
+
     Hermes::vector<Hermes::Hermes2D::Space<Scalar>* > naked() { return desmartize(spaces); }
     Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > nakedConst() { return castConst(desmartize(spaces)); }
     bool empty() const {return spaces.empty(); }
@@ -125,6 +136,7 @@ struct MultiSolution
 {
     MultiSolution() {}
     MultiSolution(Hermes::vector<SolutionAndMesh<Scalar> > sols ) : solutions(sols) {}
+
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > naked() { return desmartize(solutions); }
     bool empty() const {return solutions.empty(); }
     int size() const {return solutions.size(); }
@@ -143,13 +155,7 @@ public:
     MultiSolutionArray(MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
     SolutionArray<Scalar> component(int component);    
 
-//    void setSpaces(MultiSpace<Scalar> spaces);
-//    void setSolutions(MultiSolution<Scalar> solutions);
-
-//    void setSpace(SpaceAndMesh<Scalar>  space, int component);
-//    void setSolution(SolutionAndMesh<Scalar> solution, int component);
-
-    //add next component
+    // add next component
     void append(SolutionArray<Scalar> solutionArray);
     void append(MultiSolutionArray<Scalar> msa);
 
@@ -161,12 +167,6 @@ public:
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar>* > solutionsNaked() { return solutions().naked(); }
 
     Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > spacesNakedConst() { return spaces().nakedConst(); }
-
-    // returns the same multi solution array with spaces only (solutions are empty)
-    //MultiSolutionArray<Scalar> copySpaces();
-
-    // creates new solutions, spaces has to be allready created
-    //void createNewSolutions();
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiSolutionArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);
