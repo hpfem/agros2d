@@ -99,11 +99,9 @@ struct PyViewMesh
     inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Agros2D::problem()->configView()->orderPaletteOrderType).toStdString().c_str()); }
 };
 
-// post2d
-struct PyViewPost2D
+// post
+struct PyViewPost
 {
-    void activate();
-
     // scalar view
     void setScalarViewShow(bool show);
     inline bool getScalarViewShow() const { return Agros2D::problem()->configView()->showScalarView; }
@@ -137,6 +135,12 @@ struct PyViewPost2D
     inline double getScalarViewRangeMin() const { return Agros2D::problem()->configView()->scalarRangeMin; }
     void setScalarViewRangeMax(double max);
     inline double getScalarViewRangeMax() const { return Agros2D::problem()->configView()->scalarRangeMax; }
+};
+
+// post2d
+struct PyViewPost2D
+{
+    void activate();
 
     // contour
     void setContourShow(bool show);
@@ -170,37 +174,6 @@ struct PyViewPost3D
     void setPost3DMode(char* mode);
     inline char* getPost3DMode() const { return const_cast<char*>(sceneViewPost3DModeToStringKey(Agros2D::problem()->configView()->showPost3D).toStdString().c_str()); }
 
-    // TODO: (Franta) duplicated code
-    void setScalarViewVariable(char* var);
-    inline char* getScalarViewVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->scalarVariable.toStdString().c_str()); }
-    void setScalarViewVariableComp(char* component);
-    inline char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Agros2D::problem()->configView()->scalarVariableComp).toStdString().c_str()); }
-
-    void setScalarViewPalette(char* palette);
-    inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Agros2D::problem()->configView()->paletteType).toStdString().c_str()); }
-    void setScalarViewPaletteQuality(char* quality);
-    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(Agros2D::problem()->configView()->linearizerQuality).toStdString().c_str()); }
-    void setScalarViewPaletteSteps(int steps);
-    inline int getScalarViewPaletteSteps() const { return Agros2D::problem()->configView()->paletteSteps; }
-    void setScalarViewPaletteFilter(bool filter);
-    inline bool getScalarViewPaletteFilter() const { return Agros2D::problem()->configView()->paletteFilter; }
-
-    void setScalarViewRangeLog(bool log);
-    inline bool getScalarViewRangeLog() const { return Agros2D::problem()->configView()->scalarRangeLog; }
-    void setScalarViewRangeBase(double base);
-    inline double getScalarViewRangeBase() const { return Agros2D::problem()->configView()->scalarRangeBase; }
-
-    void setScalarViewColorBar(bool show);
-    inline bool getScalarViewColorBar() const { return Agros2D::problem()->configView()->showScalarColorBar; }
-    void setScalarViewDecimalPlace(int place);
-    inline int getScalarViewDecimalPlace() const { return Agros2D::problem()->configView()->scalarDecimalPlace; }
-
-    void setScalarViewRangeAuto(bool autoRange);
-    inline bool getScalarViewRangeAuto() const { return Agros2D::problem()->configView()->scalarRangeAuto; }
-    void setScalarViewRangeMin(double min);
-    inline double getScalarViewRangeMin() const { return Agros2D::problem()->configView()->scalarRangeMin; }
-    void setScalarViewRangeMax(double max);
-    inline double getScalarViewRangeMax() const { return Agros2D::problem()->configView()->scalarRangeMax; }
 };
 
 #endif // PYTHONLABVIEW_H
