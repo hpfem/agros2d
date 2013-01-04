@@ -45,8 +45,8 @@ cdef extern from "../../src/pythonlab/pyparticletracing.h":
         void setDragForceCoefficient(double coeff) except +
         double getDragForceCoefficient()
 
-        void setCustomForce(map[char*, double] force) except +
-        void getCustomForce(map[string, double] force) except +
+        void setCustomForce(double x, double y, double z) except +
+        void getCustomForce(double x, double y, double z) except +
 
         void setMaximumTolerance(double tolerance) except +
         double getMaximumTolerance()
@@ -214,27 +214,13 @@ cdef class __ParticleTracing__:
     # custom force
     property custom_force:
         def __get__(self):
-            out = dict()
-            cdef map[string, double] force
-
-            self.thisptr.getCustomForce(force)
-            it = force.begin()
-            while it != force.end():
-                out[deref(it).first.c_str()] = deref(it).second
-                incr(it)
-
-            return out
-
-        def __set__(self, forces):
-            cdef map[char*, double] forces_map
-            cdef pair[char*, double] force
-
-            for key in forces:
-                force.first = key
-                force.second = forces[key]
-                forces_map.insert(force)
-
-            self.thisptr.setCustomForce(forces_map)
+            cdef double x = 0.0
+            cdef double y = 0.0
+            cdef double z = 0.0
+            self.thisptr.getCustomForce(x, y, z)
+            return x, y, z
+        def __set__(self, xyz):
+            self.thisptr.setCustomForce(xyz[0], xyz[1], xyz[2])
 
     # maximum number of steps
     property maximum_number_of_steps:

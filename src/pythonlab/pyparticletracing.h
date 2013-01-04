@@ -67,8 +67,8 @@ public:
     inline double getDragForceReferenceArea() const { return Agros2D::problem()->configView()->particleDragReferenceArea; }
     void setDragForceCoefficient(double coeff);
     inline double getDragForceCoefficient() const { return Agros2D::problem()->configView()->particleDragCoefficient; }
-    void setCustomForce(map<char*, double> force);
-    inline void getCustomForce(map<string, double> &force);
+    void setCustomForce(double x, double y, double z);
+    void getCustomForce(double &x, double &y, double &z);
     void setIncludeRelativisticCorrection(bool include);
     inline bool getIncludeRelativisticCorrection() const { return Agros2D::problem()->configView()->particleIncludeRelativisticCorrection; }
     void setReflectOnDifferentMaterial(bool reflect);
