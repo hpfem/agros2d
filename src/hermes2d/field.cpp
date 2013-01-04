@@ -89,8 +89,16 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 
 FieldInfo::~FieldInfo()
 {
-    if (m_module) delete m_module;
+    if (m_module)
+        delete m_module;
 }
+
+void FieldInfo::setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh)
+{
+    m_initialMesh.clear();
+    m_initialMesh = mesh;
+}
+
 
 void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 {

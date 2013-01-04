@@ -39,6 +39,7 @@ class Block
 {
 public:
     Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings);
+    ~Block();
 
     Solver<double>* prepareSolver();
 

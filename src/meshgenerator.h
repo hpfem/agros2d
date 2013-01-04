@@ -36,6 +36,7 @@ class MeshGenerator : public QObject
 
 public:
     MeshGenerator();
+    virtual ~MeshGenerator() {}
 
     virtual bool mesh() = 0;
 

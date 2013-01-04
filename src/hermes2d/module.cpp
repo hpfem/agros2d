@@ -326,7 +326,7 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                                  m_block->offset(field), m_block->offset(field), material, bdf2Table);
 
                 // weak coupling
-                foreach(CouplingInfo* couplingInfo, field->m_couplingSources)
+                foreach(CouplingInfo* couplingInfo, field->couplingInfos())
                 {
                     foreach (FormInfo *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
                     {

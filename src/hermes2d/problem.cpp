@@ -123,6 +123,9 @@ void Problem::clearSolution()
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
 
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        fieldInfo->clearInitialMesh();
+
     Agros2D::solutionStore()->clearAll();
 
     // remove cache
@@ -613,6 +616,10 @@ void Problem::solveAction()
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
     }
+
+    // free solvers
+    foreach (Block* block, m_blocks)
+        delete solvers[block];
 }
 
 void Problem::solveAdaptiveStep()
@@ -651,7 +658,7 @@ void Problem::solveAdaptiveStepAction()
 
     assert(m_blocks.size() == 1);
     Block* block = m_blocks.at(0);
-    Solver<double>* solver = block->prepareSolver();
+    Solver<double> *solver = block->prepareSolver();
 
     int adaptStepNormal = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
     int adaptStepNonExisting = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
@@ -684,6 +691,9 @@ void Problem::solveAdaptiveStepAction()
     // only if solution in previous adapt step existed, solve new one (we would have two new adapt steps otherwise)
     if(solutionAlreadyExists || adaptStep == 0)
         solver->solveSimple(0, adaptStep + 1);
+
+    // free solver
+    delete solver;
 }
 
 void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)

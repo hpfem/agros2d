@@ -68,7 +68,7 @@ void PostHermes::processInitialMesh()
         try
         {
             Hermes::Hermes2D::ZeroSolution<double> initial(Agros2D::scene()->activeViewField()->initialMesh().data());
-            m_linInitialMeshView.process_solution(&initial);
+            m_linInitialMeshView.process_solution(&initial);            
         }
         catch (Hermes::Exceptions::Exception& e)
         {

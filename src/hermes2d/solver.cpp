@@ -82,45 +82,47 @@ HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* blo
 template <typename Scalar>
 LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_linearSolver = QSharedPointer<LinearSolver<Scalar> >(new LinearSolver<Scalar>());
+    m_linearSolver = new LinearSolver<Scalar>();
 }
 
 template <typename Scalar>
 LinearSolverContainer<Scalar>::~LinearSolverContainer()
 {
-    m_linearSolver.clear();
+    delete m_linearSolver;
+    m_linearSolver = NULL;
 }
 
 template <typename Scalar>
 void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    int ndof = Space<Scalar>::get_num_dofs(m_linearSolver.data()->get_spaces());
-    m_linearSolver.data()->solve();
-    memcpy(solutionVector, m_linearSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
+    int ndof = Space<Scalar>::get_num_dofs(m_linearSolver->get_spaces());
+    m_linearSolver->solve();
+    memcpy(solutionVector, m_linearSolver->get_sln_vector(), ndof * sizeof(Scalar));
 }
 
 template <typename Scalar>
 NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_newtonSolver = QSharedPointer<NewtonSolver<Scalar> >(new NewtonSolver<Scalar>());
-    m_newtonSolver.data()->set_verbose_output(true);
-    m_newtonSolver.data()->set_verbose_callback(processSolverOutput);
-    m_newtonSolver.data()->set_newton_tol(block->nonlinearTolerance());
-    m_newtonSolver.data()->set_newton_max_iter(block->nonlinearSteps());
-    m_newtonSolver.data()->set_max_allowed_residual_norm(1e15);
+    m_newtonSolver = new NewtonSolver<Scalar>();
+    m_newtonSolver->set_verbose_output(true);
+    m_newtonSolver->set_verbose_callback(processSolverOutput);
+    m_newtonSolver->set_newton_tol(block->nonlinearTolerance());
+    m_newtonSolver->set_newton_max_iter(block->nonlinearSteps());
+    m_newtonSolver->set_max_allowed_residual_norm(1e15);
     if (block->newtonAutomaticDamping())
     {
-        m_newtonSolver.data()->set_initial_auto_damping_coeff(block->newtonDampingCoeff());
-        m_newtonSolver.data()->set_necessary_successful_steps_to_increase(block->newtonDampingNumberToIncrease());
+        m_newtonSolver->set_initial_auto_damping_coeff(block->newtonDampingCoeff());
+        m_newtonSolver->set_necessary_successful_steps_to_increase(block->newtonDampingNumberToIncrease());
     }
     else
-        m_newtonSolver.data()->set_manual_damping_coeff(true, block->newtonDampingCoeff());
+        m_newtonSolver->set_manual_damping_coeff(true, block->newtonDampingCoeff());
 }
 
 template <typename Scalar>
 NewtonSolverContainer<Scalar>::~NewtonSolverContainer()
 {
-    m_newtonSolver.clear();
+    delete m_newtonSolver;
+    m_newtonSolver = NULL;
 }
 
 template <typename Scalar>
@@ -144,34 +146,35 @@ void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
 template <typename Scalar>
 void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    int ndof = Space<Scalar>::get_num_dofs(m_newtonSolver.data()->get_spaces());
-    m_newtonSolver.data()->solve(solutionVector);
-    memcpy(solutionVector, m_newtonSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
+    int ndof = Space<Scalar>::get_num_dofs(m_newtonSolver->get_spaces());
+    m_newtonSolver->solve(solutionVector);
+    memcpy(solutionVector, m_newtonSolver->get_sln_vector(), ndof * sizeof(Scalar));
 }
 
 template <typename Scalar>
 PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_picardSolver = QSharedPointer<PicardSolver<Scalar> >(new PicardSolver<Scalar>());
-    m_picardSolver.data()->set_verbose_output(true);
-    m_picardSolver.data()->set_verbose_callback(processSolverOutput);
-    m_picardSolver.data()->set_picard_tol(block->nonlinearTolerance());
-    m_picardSolver.data()->set_picard_max_iter(block->nonlinearSteps());
+    m_picardSolver = new PicardSolver<Scalar>();
+    m_picardSolver->set_verbose_output(true);
+    m_picardSolver->set_verbose_callback(processSolverOutput);
+    m_picardSolver->set_picard_tol(block->nonlinearTolerance());
+    m_picardSolver->set_picard_max_iter(block->nonlinearSteps());
     if (block->picardAndersonAcceleration())
     {
-        m_picardSolver.data()->use_Anderson_acceleration(true);
-        m_picardSolver.data()->set_num_last_vector_used(block->picardAndersonNumberOfLastVectors());
-        m_picardSolver.data()->set_anderson_beta(block->picardAndersonBeta());
+        m_picardSolver->use_Anderson_acceleration(true);
+        m_picardSolver->set_num_last_vector_used(block->picardAndersonNumberOfLastVectors());
+        m_picardSolver->set_anderson_beta(block->picardAndersonBeta());
     }
     else
-        m_picardSolver.data()->use_Anderson_acceleration(false);
+        m_picardSolver->use_Anderson_acceleration(false);
     //m_picardSolver.data()->set_max_allowed_residual_norm(1e15);
 }
 
 template <typename Scalar>
 PicardSolverContainer<Scalar>::~PicardSolverContainer()
 {
-    m_picardSolver.clear();
+    delete m_picardSolver;
+    m_picardSolver = NULL;
 }
 
 template <typename Scalar>
@@ -194,15 +197,15 @@ void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
 template <typename Scalar>
 void PicardSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    int ndof = Space<Scalar>::get_num_dofs(m_picardSolver.data()->get_spaces());
-    m_picardSolver.data()->solve();
-    memcpy(solutionVector, m_picardSolver.data()->get_sln_vector(), ndof * sizeof(Scalar));
+    int ndof = Space<Scalar>::get_num_dofs(m_picardSolver->get_spaces());
+    m_picardSolver->solve();
+    memcpy(solutionVector, m_picardSolver->get_sln_vector(), ndof * sizeof(Scalar));
 }
 
 template <typename Scalar>
 Solver<Scalar>::~Solver()
 {
-    if(m_hermesSolverContainer)
+    if (m_hermesSolverContainer)
         delete m_hermesSolverContainer;
     m_hermesSolverContainer = NULL;
 }
@@ -328,6 +331,7 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
 
             totalComp++;
         }
+        mesh.clear();
     }
     return newSpaces;
 }
@@ -649,7 +653,7 @@ void Solver<Scalar>::createInitialSpace()
         }
     }
 
-    assert(! m_hermesSolverContainer);
+    assert(!m_hermesSolverContainer);
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block);
 }
 

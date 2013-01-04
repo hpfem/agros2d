@@ -51,7 +51,8 @@ public:
     QString fieldId() const { return m_fieldId; }
 
     inline QSharedPointer<Hermes::Hermes2D::Mesh> initialMesh() const { return m_initialMesh; }
-    inline void setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh) { m_initialMesh = mesh; }
+    inline void clearInitialMesh() { m_initialMesh.clear(); }
+    void setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh);
 
     AnalysisType analysisType() const { return m_analysisType; }
     void setAnalysisType(const AnalysisType analysisType);
@@ -194,16 +195,18 @@ class Field
 public:
     Field(FieldInfo* fieldInfo);
     bool solveInitVariables();
+
     FieldInfo* fieldInfo() { return m_fieldInfo; }
+
+    void addCouplingInfo(CouplingInfo *couplingInfo) { m_couplingInfos.append(couplingInfo); }
+    QList<CouplingInfo* > couplingInfos() { return m_couplingInfos; }
 
     // mesh
     void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
 
-public:
-//private:
-    QList<CouplingInfo* > m_couplingSources;
+private:
+    QList<CouplingInfo* > m_couplingInfos;
     FieldInfo* m_fieldInfo;
-
 };
 
 #endif // FIELD_H

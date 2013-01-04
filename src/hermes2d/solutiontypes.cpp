@@ -29,6 +29,20 @@
 
 using namespace Hermes::Hermes2D;
 
+template <typename Scalar>
+SpaceAndMesh<Scalar>::~SpaceAndMesh()
+{
+    mesh.clear();
+    space.clear();
+}
+
+template <typename Scalar>
+SolutionAndMesh<Scalar>::~SolutionAndMesh()
+{
+    mesh.clear();
+    solution.clear();
+}
+
 FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
 {
     bool contains = false;
@@ -86,22 +100,34 @@ SolutionArray<Scalar>::SolutionArray()
 }
 
 template <typename Scalar>
-SolutionArray<Scalar>::SolutionArray(SolutionAndMesh<Scalar> sln, SpaceAndMesh<Scalar> space)
-{
-    this->sln = sln;
-    this->space = space;
-}
-
-template <typename Scalar>
 SolutionArray<Scalar>::~SolutionArray()
 {
 }
+
+template <typename Scalar>
+MultiSpace<Scalar>::~MultiSpace()
+{
+    spaces.clear();
+}
+
+template <typename Scalar>
+MultiSolution<Scalar>::~MultiSolution()
+{
+    solutions.clear();
+}
+
 
 // *********************************************************************************************
 
 template <typename Scalar>
 MultiSolutionArray<Scalar>::MultiSolutionArray()
 {
+}
+
+template <typename Scalar>
+MultiSolutionArray<Scalar>::~MultiSolutionArray()
+{
+    m_solutionArrays.clear();
 }
 
 template <typename Scalar>
@@ -199,9 +225,9 @@ void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolu
     QList<QSharedPointer<Mesh> > meshes = readMeshFromFile(QString("%1.mesh").arg(baseName));
     QSharedPointer<Mesh> mesh;
     int i = 0;
-    foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+    foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        if(fieldInfo == solutionID.group)
+        if (fieldInfo == solutionID.group)
         {
             mesh = meshes.at(i);
             break;
@@ -222,6 +248,7 @@ void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolu
         solutionArray.sln = SolutionAndMesh<Scalar>(sln, mesh);
 
         m_solutionArrays.append(solutionArray);
+        sln.clear();
     }
 
     // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString() << time.elapsed();

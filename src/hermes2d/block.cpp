@@ -39,7 +39,7 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
         {
             if (couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
             {
-                field->m_couplingSources.push_back(couplingInfo);
+                field->addCouplingInfo(couplingInfo);
             }
         }
 
@@ -47,10 +47,15 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
     }
 }
 
+Block::~Block()
+{
+    foreach (Field *field, m_fields)
+        delete field;
+    m_fields.clear();
+}
+
 Solver<double>* Block::prepareSolver()
 {
-    //Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("prepare solver"));
-
     Solver<double>* solver = new Solver<double>;
 
     foreach (Field* field, m_fields)
@@ -80,7 +85,7 @@ double Block::timeSkip() const
     double skip = 0.;
     foreach (Field *field, m_fields)
     {
-        if (field->m_fieldInfo->analysisType() == AnalysisType_Transient)
+        if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
             continue;
 
         double sActual = field->fieldInfo()->timeSkip().number();
