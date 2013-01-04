@@ -42,47 +42,47 @@ public:
     ~PyParticleTracing() {}
 
     void setInitialPosition(double x, double y);
-    void initialPosition(double &x, double &y)
+    void getInitialPosition(double &x, double &y)
     {
         x = Agros2D::problem()->configView()->particleStart.x;
         y = Agros2D::problem()->configView()->particleStart.y;
     }
     void setInitialVelocity(double x, double y);
-    void initialVelocity(double &x, double &y)
+    void getInitialVelocity(double &x, double &y)
     {
         x = Agros2D::problem()->configView()->particleStartVelocity.x;
         y = Agros2D::problem()->configView()->particleStartVelocity.y;
     }
     void setNumberOfParticles(int particles);
-    int numberOfParticles() { return Agros2D::problem()->configView()->particleNumberOfParticles; }
+    inline int getNumberOfParticles() const { return Agros2D::problem()->configView()->particleNumberOfParticles; }
     void setStartingRadius(double radius);
-    double startingRadius() { return Agros2D::problem()->configView()->particleStartingRadius; }
+    inline double getStartingRadius() const { return Agros2D::problem()->configView()->particleStartingRadius; }
     void setParticleMass(double mass);
-    double particleMass() { return Agros2D::problem()->configView()->particleMass; }
+    inline double getParticleMass() const { return Agros2D::problem()->configView()->particleMass; }
     void setParticleCharge(double charge);
-    double particleCharge() { return Agros2D::problem()->configView()->particleConstant; }
+    inline double getParticleCharge() const { return Agros2D::problem()->configView()->particleConstant; }
     void setDragForceDensity(double rho);
-    double dragForceDensity() { return Agros2D::problem()->configView()->particleDragDensity; }
+    inline double getDragForceDensity() const { return Agros2D::problem()->configView()->particleDragDensity; }
     void setDragForceReferenceArea(double area);
-    double dragForceReferenceArea() { return Agros2D::problem()->configView()->particleDragReferenceArea; }
+    inline double getDragForceReferenceArea() const { return Agros2D::problem()->configView()->particleDragReferenceArea; }
     void setDragForceCoefficient(double coeff);
-    double dragForceCoefficient() { return Agros2D::problem()->configView()->particleDragCoefficient; }
+    inline double getDragForceCoefficient() const { return Agros2D::problem()->configView()->particleDragCoefficient; }
     void setCustomForce(map<char*, double> force);
-    void customForce(map<string, double> &force);
-    void setIncludeRelativisticCorrection(int include);
-    int includeRelativisticCorrection() { return Agros2D::problem()->configView()->particleIncludeRelativisticCorrection; }
-    void setReflectOnDifferentMaterial(int reflect);
-    int reflectOnDifferentMaterial() { return Agros2D::problem()->configView()->particleReflectOnDifferentMaterial; }
-    void setReflectOnBoundary(int reflect);
-    int reflectOnBoundary() { return Agros2D::problem()->configView()->particleReflectOnBoundary; }
+    inline void getCustomForce(map<string, double> &force);
+    void setIncludeRelativisticCorrection(bool include);
+    inline bool getIncludeRelativisticCorrection() const { return Agros2D::problem()->configView()->particleIncludeRelativisticCorrection; }
+    void setReflectOnDifferentMaterial(bool reflect);
+    inline bool getReflectOnDifferentMaterial() const { return Agros2D::problem()->configView()->particleReflectOnDifferentMaterial; }
+    void setReflectOnBoundary(bool reflect);
+    inline bool getReflectOnBoundary() const { return Agros2D::problem()->configView()->particleReflectOnBoundary; }
     void setCoefficientOfRestitution(double coeff);
-    int coefficientOfRestitution() { return Agros2D::problem()->configView()->particleCoefficientOfRestitution; }
+    inline int getCoefficientOfRestitution() const { return Agros2D::problem()->configView()->particleCoefficientOfRestitution; }
     void setMaximumTolerance(double tolerance);
-    double maximumTolerance() { return Agros2D::problem()->configView()->particleMaximumRelativeError; }
+    inline double getMaximumTolerance() const { return Agros2D::problem()->configView()->particleMaximumRelativeError; }
     void setMaximumNumberOfSteps(int steps);
-    int maximumNumberOfSteps() { return Agros2D::problem()->configView()->particleMaximumNumberOfSteps; }
+    inline int getMaximumNumberOfSteps() const { return Agros2D::problem()->configView()->particleMaximumNumberOfSteps; }
     void setMinimumStep(int step);
-    int minimumStep() { return Agros2D::problem()->configView()->particleMinimumStep; }
+    inline int getMinimumStep() const { return Agros2D::problem()->configView()->particleMinimumStep; }
 
     void solve();
 
