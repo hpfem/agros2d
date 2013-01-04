@@ -133,6 +133,12 @@ struct PyViewPost
     inline double getScalarViewRangeMin() const { return Agros2D::problem()->configView()->scalarRangeMin; }
     void setScalarViewRangeMax(double max);
     inline double getScalarViewRangeMax() const { return Agros2D::problem()->configView()->scalarRangeMax; }
+
+    // particle tracing
+    void setParticleColoredByVelocity(bool colored);
+    inline bool getParticleColoredByVelocity() const { return Agros2D::problem()->configView()->particleColorByVelocity; }
+    void setParticleShowPoints(bool points);
+    inline bool getParticleShowPoints() const { return Agros2D::problem()->configView()->particleShowPoints; }
 };
 
 // post2d
@@ -165,6 +171,10 @@ struct PyViewPost2D
     inline bool getVectorProportional() const { return Agros2D::problem()->configView()->vectorProportional; }
     void setVectorColor(bool show);
     inline bool getVectorColor() const { return Agros2D::problem()->configView()->vectorColor; }
+
+    // particle tracing
+    void setParticleShow(bool show);
+    inline bool getParticleShow() const { return Agros2D::problem()->configView()->showParticleView; }
 };
 
 // post3d
