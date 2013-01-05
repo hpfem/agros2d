@@ -32,15 +32,15 @@ using namespace Hermes::Hermes2D;
 template <typename Scalar>
 SpaceAndMesh<Scalar>::~SpaceAndMesh()
 {
-    mesh.clear();
-    space.clear();
+    m_mesh.clear();
+    m_space.clear();
 }
 
 template <typename Scalar>
 SolutionAndMesh<Scalar>::~SolutionAndMesh()
 {
-    mesh.clear();
-    solution.clear();
+    m_mesh.clear();
+    m_solution.clear();
 }
 
 FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
@@ -77,10 +77,9 @@ template <typename Scalar>
 Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > MultiSpace<Scalar>::meshes()
 {
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > meshes;
-    for(int i = 0; i < spaces.size(); i++)
-    {
-        meshes.push_back(spaces.at(i).mesh);
-    }
+    foreach (SpaceAndMesh<Scalar> spaceAndMesh, spacesAndMeshes)
+        meshes.push_back(spaceAndMesh.mesh());
+
     return meshes;
 }
 
@@ -90,7 +89,7 @@ void MultiSolution<Scalar>::createSolutions(Hermes::vector<QSharedPointer<Hermes
     for(int comp = 0; comp < meshes.size(); comp++)
     {
         QSharedPointer<Solution<Scalar> > newSolution(new Solution<double>(meshes.at(comp).data()));
-        solutions.push_back(SolutionAndMesh<Scalar>(newSolution, meshes.at(comp)));
+        solutionsAndMeshes.push_back(SolutionAndMesh<Scalar>(newSolution, meshes.at(comp)));
     }
 }
 
@@ -107,13 +106,13 @@ SolutionArray<Scalar>::~SolutionArray()
 template <typename Scalar>
 MultiSpace<Scalar>::~MultiSpace()
 {
-    spaces.clear();
+    spacesAndMeshes.clear();
 }
 
 template <typename Scalar>
 MultiSolution<Scalar>::~MultiSolution()
 {
-    solutions.clear();
+    solutionsAndMeshes.clear();
 }
 
 
@@ -136,7 +135,7 @@ MultiSolutionArray<Scalar>::MultiSolutionArray(MultiSpace<Scalar> spaces, MultiS
     assert(spaces.size() == solutions.size());
     for (int i = 0; i < spaces.size(); i++)
     {
-        assert(spaces.at(i).mesh.data() == solutions.at(i).mesh.data());
+        assert(spaces.at(i).mesh().data() == solutions.at(i).mesh().data());
         this->append(SolutionArray<Scalar>(solutions.at(i), spaces.at(i)));
     }
 }
@@ -178,7 +177,7 @@ MultiSpace<Scalar> MultiSolutionArray<Scalar>::spaces()
 
     foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
-        sp.push_back(solutionArray.space);
+        sp.push_back(solutionArray.spaceAndMesh);
     }
 
     return MultiSpace<Scalar>(sp);
@@ -191,7 +190,7 @@ MultiSolution<Scalar> MultiSolutionArray<Scalar>::solutions()
 
     foreach(SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
-        solutions.push_back(solutionArray.sln);
+        solutions.push_back(solutionArray.solutionAndMesh);
     }
 
     return MultiSolution<Scalar>(solutions);
@@ -244,8 +243,8 @@ void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolu
         sln.data()->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space.data());
 
         SolutionArray<Scalar> solutionArray;
-        solutionArray.space = SpaceAndMesh<Scalar>(space, mesh);
-        solutionArray.sln = SolutionAndMesh<Scalar>(sln, mesh);
+        solutionArray.spaceAndMesh = SpaceAndMesh<Scalar>(space, mesh);
+        solutionArray.solutionAndMesh = SolutionAndMesh<Scalar>(sln, mesh);
 
         m_solutionArrays.append(solutionArray);
         sln.clear();
@@ -265,8 +264,8 @@ void MultiSolutionArray<Scalar>::saveToFile(const QString &baseName, FieldSoluti
     QList<QSharedPointer<Mesh> > meshes;
     foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        if(fieldInfo == solutionID.group)
-            meshes.push_back(m_solutionArrays.at(0).space.mesh);
+        if (fieldInfo == solutionID.group)
+            meshes.push_back(m_solutionArrays.at(0).spaceAndMesh.mesh());
         else
             meshes.push_back(fieldInfo->initialMesh());
     }
@@ -277,8 +276,8 @@ void MultiSolutionArray<Scalar>::saveToFile(const QString &baseName, FieldSoluti
     foreach (SolutionArray<Scalar> solutionArray, m_solutionArrays)
     {
         // TODO: check write access
-        solutionArray.space.data()->save((QString("%1_%2.spc").arg(baseName).arg(solutionIndex)).toStdString().c_str());
-        solutionArray.sln.data()->save((QString("%1_%2.sln").arg(baseName).arg(solutionIndex)).toStdString().c_str());
+        solutionArray.spaceAndMesh.spaceNaked()->save((QString("%1_%2.spc").arg(baseName).arg(solutionIndex)).toStdString().c_str());
+        solutionArray.solutionAndMesh.solutionNaked()->save((QString("%1_%2.sln").arg(baseName).arg(solutionIndex)).toStdString().c_str());
 
         solutionIndex++;
     }

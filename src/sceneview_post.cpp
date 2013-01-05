@@ -82,11 +82,11 @@ void PostHermes::processSolutionMesh()
     if (Agros2D::problem()->isSolved())
     {
         // ERROR: FIX component(0)
-        Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh()->get_num_active_elements()));
+        Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().component(0).solutionAndMesh.solutionNaked()->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
-        const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh();
+        const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().component(0).solutionAndMesh.solutionNaked()->get_mesh();
         Hermes::Hermes2D::ZeroSolution<double> solution(mesh);
         m_linSolutionMeshView.process_solution(&solution);
     }
@@ -100,7 +100,7 @@ void PostHermes::processOrder()
         Agros2D::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
         // ERROR: FIX component(0)
-        m_orderView.process_space(Agros2D::scene()->activeMultiSolutionArray().component(0).space.data());
+        m_orderView.process_space(Agros2D::scene()->activeMultiSolutionArray().component(0).spaceAndMesh.spaceNaked());
     }
 }
 

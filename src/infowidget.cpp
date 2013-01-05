@@ -210,8 +210,8 @@ void InfoWidget::showInfo()
                 int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
                 MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 
-                solutionMeshNodes = msa.solutions().at(0).data()->get_mesh()->get_num_nodes();
-                solutionMeshElements = msa.solutions().at(0).data()->get_mesh()->get_num_active_elements();
+                solutionMeshNodes = msa.solutions().at(0).solutionNaked()->get_mesh()->get_num_nodes();
+                solutionMeshElements = msa.solutions().at(0).solutionNaked()->get_mesh()->get_num_active_elements();
                 DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
             }
 

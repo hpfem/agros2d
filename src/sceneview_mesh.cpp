@@ -128,10 +128,10 @@ void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
 
         Hermes::Hermes2D::Views::Orderizer orderView;
         if (exportMeshOnly)
-            orderView.save_mesh_vtk(Agros2D::scene()->activeMultiSolutionArray().component(0).space.data(),
+            orderView.save_mesh_vtk(Agros2D::scene()->activeMultiSolutionArray().component(0).spaceAndMesh.spaceNaked(),
                                     fn.toStdString().c_str());
         else
-            orderView.save_orders_vtk(Agros2D::scene()->activeMultiSolutionArray().component(0).space.data(),
+            orderView.save_orders_vtk(Agros2D::scene()->activeMultiSolutionArray().component(0).spaceAndMesh.spaceNaked(),
                                       fn.toStdString().c_str());
 
         if (!fn.isEmpty())
@@ -337,8 +337,8 @@ void SceneViewMesh::paintOrder()
         {
             int color = vert[tris[i][0]][2];
             QVector3D colorVector = QVector3D(paletteColorOrder(color)[0],
-                                              paletteColorOrder(color)[1],
-                                              paletteColorOrder(color)[2]);
+                    paletteColorOrder(color)[1],
+                    paletteColorOrder(color)[2]);
 
             m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][0]][0], vert[tris[i][0]][1]));
             m_arrayOrderMeshColor.push_back(colorVector);
@@ -394,7 +394,7 @@ void SceneViewMesh::paintOrder()
             // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
             {
                 Point scr = untransform(vert[lvert[i]][0],
-                                        vert[lvert[i]][1]);
+                        vert[lvert[i]][1]);
 
                 printRulersAt(scr.x - m_fontPost->glyphs[GLYPH_M].width / 2.0,
                               scr.y - m_fontPost->height / 2.0,

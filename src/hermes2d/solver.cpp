@@ -312,19 +312,19 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
         // Deep copy of mesh for each field separately, than use for all field component the same one
         if(refineMesh)
         {
-            Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp).data()->get_mesh());
+            Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp).spaceNaked()->get_mesh());
             mesh = QSharedPointer<Mesh>(meshCreator.create_ref_mesh());
         }
         else
         {
             mesh = QSharedPointer<Mesh>(new Mesh());
-            mesh.data()->copy(spaces.at(totalComp).data()->get_mesh());
+            mesh.data()->copy(spaces.at(totalComp).spaceNaked()->get_mesh());
         }
 
         for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             // TODO: double -> Scalar
-            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp).data(),
+            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp).spaceNaked(),
                                                               mesh.data(),
                                                               orderIncrease);
             newSpaces.add(QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), mesh);
@@ -646,7 +646,7 @@ void Solver<Scalar>::createInitialSpace()
                 if (!label->marker(fieldInfo)->isNone() &&
                         (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder()))
                 {
-                    m_actualSpaces.at(i).data()->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
+                    m_actualSpaces.at(i).spaceNaked()->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
                                                                    QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
                 }
             }

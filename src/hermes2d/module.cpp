@@ -230,7 +230,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
                 assert(Agros2D::solutionStore()->contains(solutionID));
 
                 for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-                    previousSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).sln.data());
+                    previousSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).solutionAndMesh.solutionNaked());
             }
             custom_form->set_ext(previousSlns);
         }
@@ -273,7 +273,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
         assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
 
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-            couplingSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).sln.data());
+            couplingSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).solutionAndMesh.solutionNaked());
 
         custom_form->set_ext(couplingSlns);
     }
@@ -1046,7 +1046,7 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
 
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < numberOfSolutions(); k++)
-        sln.push_back(Agros2D::scene()->activeMultiSolutionArray().component(k).sln.data());
+        sln.push_back(Agros2D::scene()->activeMultiSolutionArray().component(k).solutionAndMesh.solutionNaked());
 
     FieldInfo* activeViewField = Agros2D::scene()->activeViewField();
     assert(activeViewField);
