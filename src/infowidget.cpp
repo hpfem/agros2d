@@ -322,7 +322,7 @@ void InfoWidget::finishLoading(bool ok)
             QString dataTimeSteps = "[";
             QList<double> lengths = Agros2D::problem()->timeStepLengths();
             double time = 0;
-            for (int i = 0; i < lengths.size() - 1; i++)
+            for (int i = 0; i < lengths.size(); i++)
             {
                 dataTimeSteps += QString("[%1, %2], ").arg(time).arg(lengths.at(i));
                 time += lengths.at(i);

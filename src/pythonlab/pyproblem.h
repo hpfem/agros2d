@@ -93,8 +93,7 @@ class PyProblem
 
         void solve();
         double timeElapsed();
-        inline int numberOfTimeSteps() { return Agros2D::problem()->numTimeLevels(); }
-        void timeStepsLenght(vector<double> &steps);
+        void timeStepsLength(vector<double> &steps);
 };
 
 #endif // PYTHONLABPROBLEM_H

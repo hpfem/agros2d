@@ -49,8 +49,7 @@ cdef extern from "../../src/pythonlab/pyproblem.h":
         void solve()
 
         double timeElapsed()
-        int numberOfTimeSteps()
-        void timeStepsLenght(vector[double] steps) except +
+        void timeStepsLength(vector[double] steps) except +
 
 cdef class __Problem__:
     cdef PyProblem *thisptr
@@ -154,21 +153,21 @@ cdef class __Problem__:
     def elapsed_time(self):
         return self.thisptr.timeElapsed()
 
-    # time steps lenght
-    def time_steps_lenght(self):
+    # time steps length
+    def time_steps_length(self):
         cdef vector[double] steps_vector
-        self.thisptr.timeStepsLenght(steps_vector)
+        self.thisptr.timeStepsLength(steps_vector)
 
         steps = list()
-        for i in range(self.thisptr.numberOfTimeSteps()-1):
+        for i in range(steps_vector.size()):
             steps.append(steps_vector[i])
 
         return steps
 
     # time steps
     def time_steps(self):
-        steps = self.time_steps_lenght()
-        time = [0]
+        steps = self.time_steps_length()
+        time = [0.0]
         for step in steps:
             time.append(time[-1] + step)
 
