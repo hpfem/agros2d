@@ -43,6 +43,12 @@ SolutionAndMesh<Scalar>::~SolutionAndMesh()
     m_solution.clear();
 }
 
+template <typename Scalar>
+Hermes::Hermes2D::Solution<Scalar>* SolutionAndMesh<Scalar>::solutionNaked()
+{
+    return m_solution.data();
+}
+
 FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
 {
     bool contains = false;
@@ -77,7 +83,7 @@ template <typename Scalar>
 Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > MultiSpace<Scalar>::meshes()
 {
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::Mesh> > meshes;
-    foreach (SpaceAndMesh<Scalar> spaceAndMesh, spacesAndMeshes)
+    foreach (SpaceAndMesh<Scalar> spaceAndMesh, m_spacesAndMeshes)
         meshes.push_back(spaceAndMesh.mesh());
 
     return meshes;
@@ -89,13 +95,9 @@ void MultiSolution<Scalar>::createSolutions(Hermes::vector<QSharedPointer<Hermes
     for(int comp = 0; comp < meshes.size(); comp++)
     {
         QSharedPointer<Solution<Scalar> > newSolution(new Solution<double>(meshes.at(comp).data()));
-        solutionsAndMeshes.push_back(SolutionAndMesh<Scalar>(newSolution, meshes.at(comp)));
+        m_solutionsAndMeshes.push_back(SolutionAndMesh<Scalar>(newSolution, meshes.at(comp)));
+        newSolution.clear();
     }
-}
-
-template <typename Scalar>
-SolutionArray<Scalar>::SolutionArray()
-{
 }
 
 template <typename Scalar>
@@ -106,13 +108,13 @@ SolutionArray<Scalar>::~SolutionArray()
 template <typename Scalar>
 MultiSpace<Scalar>::~MultiSpace()
 {
-    spacesAndMeshes.clear();
+    m_spacesAndMeshes.clear();
 }
 
 template <typename Scalar>
 MultiSolution<Scalar>::~MultiSolution()
 {
-    solutionsAndMeshes.clear();
+    m_solutionsAndMeshes.clear();
 }
 
 
@@ -138,14 +140,6 @@ MultiSolutionArray<Scalar>::MultiSolutionArray(MultiSpace<Scalar> spaces, MultiS
         assert(spaces.at(i).mesh().data() == solutions.at(i).mesh().data());
         this->append(SolutionArray<Scalar>(solutions.at(i), spaces.at(i)));
     }
-}
-
-template <typename Scalar>
-void MultiSolutionArray<Scalar>::createEmpty(int numComp)
-{
-    m_solutionArrays.clear();
-    for (int comp = 0; comp < numComp; comp++)
-        append(SolutionArray<Scalar>());
 }
 
 template <typename Scalar>
@@ -242,9 +236,8 @@ void MultiSolutionArray<Scalar>::loadFromFile(const QString &baseName, FieldSolu
         QSharedPointer<Solution<Scalar> > sln(new Solution<Scalar>());
         sln.data()->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space.data());
 
-        SolutionArray<Scalar> solutionArray;
-        solutionArray.spaceAndMesh = SpaceAndMesh<Scalar>(space, mesh);
-        solutionArray.solutionAndMesh = SolutionAndMesh<Scalar>(sln, mesh);
+        SolutionArray<Scalar> solutionArray(SolutionAndMesh<Scalar>(sln, mesh),
+                                            SpaceAndMesh<Scalar>(space, mesh));
 
         m_solutionArrays.append(solutionArray);
         sln.clear();

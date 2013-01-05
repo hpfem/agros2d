@@ -132,7 +132,16 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     // remove properties
     m_multiSolutionRunTimeDetails.remove(solutionID);
     // remove from cache
+    Hermes::Hermes2D::Solution<double> *sln = NULL;
+    foreach (FieldSolutionID solutionID, m_multiSolutionCache.keys())
+    {
+        MultiSolutionArray<double> msa = m_multiSolutionCache.value(solutionID);
+        qDebug() << msa.solutions().at(0).solution().isNull();
+
+        sln = msa.solutions().at(0).solutionNaked();
+    }
     m_multiSolutionCache.remove(solutionID);
+    qDebug() << sln;
 
     // remove old files
     QFileInfo info(Agros2D::problem()->config()->fileName());

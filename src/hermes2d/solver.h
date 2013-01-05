@@ -123,7 +123,7 @@ template <typename Scalar>
 class Solver
 {
 public:
-    Solver() : m_hermesSolverContainer(NULL) {m_exactSolutionFunctions.clear();}
+    Solver() : m_hermesSolverContainer(NULL) {}
     ~Solver();
 
     void init(Block* block);
