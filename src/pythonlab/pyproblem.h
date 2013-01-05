@@ -92,6 +92,9 @@ class PyProblem
         void setCouplingType(const char *sourceField, const char *targetField, const char *type);
 
         void solve();
+        double timeElapsed();
+        inline int numberOfTimeSteps() { return Agros2D::problem()->numTimeLevels(); }
+        void timeStepsLenght(vector<double> &steps);
 };
 
 #endif // PYTHONLABPROBLEM_H

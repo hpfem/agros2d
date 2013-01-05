@@ -9,8 +9,6 @@ cdef extern from "../../src/pythonlab/pythonengine_agros.h":
     void pySaveDocument(char *str) except +
     void pyCloseDocument()
 
-    void pySaveImage(char *str, int w, int h) except +
-
 def open_document(char *str):
     pyOpenDocument(str)
 

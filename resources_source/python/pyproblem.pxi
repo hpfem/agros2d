@@ -1,3 +1,5 @@
+from libcpp.vector cimport vector
+
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
     int c_INT_MAX "INT_MAX"
@@ -45,6 +47,10 @@ cdef extern from "../../src/pythonlab/pyproblem.h":
         void setCouplingType(char *sourceField, char *targetField, char *type) except +
 
         void solve()
+
+        double timeElapsed()
+        int numberOfTimeSteps()
+        void timeStepsLenght(vector[double] steps) except +
 
 cdef class __Problem__:
     cdef PyProblem *thisptr
@@ -143,6 +149,30 @@ cdef class __Problem__:
     # solve
     def solve(self):
         self.thisptr.solve()
+
+    # elapsed time
+    def elapsed_time(self):
+        return self.thisptr.timeElapsed()
+
+    # time steps lenght
+    def time_steps_lenght(self):
+        cdef vector[double] steps_vector
+        self.thisptr.timeStepsLenght(steps_vector)
+
+        steps = list()
+        for i in range(self.thisptr.numberOfTimeSteps()-1):
+            steps.append(steps_vector[i])
+
+        return steps
+
+    # time steps
+    def time_steps(self):
+        steps = self.time_steps_lenght()
+        time = [0]
+        for step in steps:
+            time.append(time[-1] + step)
+
+        return time
 
 __problem__ = __Problem__()
 def problem(int clear = False):

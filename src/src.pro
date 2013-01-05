@@ -269,6 +269,7 @@ OTHER_FILES += functions.py \
     ../resources_source/python/agros2d.pyx \
     ../resources_source/python/pyproblem.pxi \
     ../resources_source/python/pyfield.pxi \
+    ../resources_source/python/pygeometry.pxi \
     ../resources_source/python/pyview.pxi \
     ../resources_source/python/pyparticletracing.pxi \
     ../resources/xsd/subdomains_h2d_xml.xsd \
