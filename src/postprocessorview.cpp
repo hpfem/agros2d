@@ -611,7 +611,7 @@ QWidget *PostprocessorWidget::controlsBasic()
 {
     cmbFieldInfo = new QComboBox();
     connect(cmbFieldInfo, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldInfo(int)));
-    // connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doCalculationFinished()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doCalculationFinished()));
 
     QGridLayout *layoutField = new QGridLayout();
     layoutField->setColumnMinimumWidth(0, minWidth);

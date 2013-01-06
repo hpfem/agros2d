@@ -50,7 +50,7 @@ PostHermes::PostHermes() :
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
-    // connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(refresh()));
 }
 
 PostHermes::~PostHermes()

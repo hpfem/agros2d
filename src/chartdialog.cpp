@@ -88,7 +88,7 @@ ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
     actSceneModeChart->setCheckable(true);
 
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
-    // connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     m_chart = new Chart(this);
 
@@ -112,7 +112,7 @@ ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
                          QWidget *parent) : QWidget(parent), m_sceneViewPost2D(sceneView), m_chart(chart)
 {
     connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
-    // connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     createControls();
 
