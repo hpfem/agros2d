@@ -152,6 +152,10 @@ class PyField
         void localValues(double x, double y, map<std::string, double> &results);
         void surfaceIntegrals(vector<int> edges, map<std::string, double> &results);
         void volumeIntegrals(vector<int> labels, map<std::string, double> &results);
+
+        // mesh parameters
+        void initialMeshParameters(map<std::string, int> &parameters);
+        void solutionMeshParameters(map<std::string, int> &parameters);
 };
 
 #endif // PYTHONLABFIELD_H

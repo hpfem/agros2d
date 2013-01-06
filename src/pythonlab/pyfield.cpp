@@ -20,16 +20,12 @@
 #include "pythonlab/pyfield.h"
 #include "pythonlab/pythonengine_agros.h"
 
-#include "sceneview_common.h"
-#include "sceneview_mesh.h"
-#include "sceneview_post2d.h"
-#include "sceneview_post3d.h"
-#include "scenemarker.h"
-#include "scenemarkerdialog.h"
-
-#include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem_config.h"
+#include "hermes2d/solutionstore.h"
+
+#include "scenemarker.h"
+#include "sceneview_post2d.h"
 
 PyField::PyField(char *fieldId)
 {
@@ -566,4 +562,40 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
     }
 
     results = values;
+}
+
+void PyField::initialMeshParameters(map<std::string, int> &parameters)
+{
+    if (!Agros2D::problem()->isMeshed())
+        throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
+
+    parameters["nodes"] = Agros2D::problem()->fieldInfo(fieldInfo()->fieldId())->initialMesh().data()->get_num_nodes();
+    parameters["elements"] = Agros2D::problem()->fieldInfo(fieldInfo()->fieldId())->initialMesh().data()->get_num_active_elements();
+
+    if (Agros2D::problem()->isSolved())
+    {
+        int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo(), SolutionMode_Normal);
+        MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo(), timeStep, 0, SolutionMode_Normal));
+
+        parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
+    }
+}
+
+void PyField::solutionMeshParameters(map<std::string, int> &parameters)
+{
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
+    if (Agros2D::problem()->fieldInfo(fieldInfo()->fieldId())->adaptivityType() != AdaptivityType_None)
+    {
+        int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo(), SolutionMode_Normal);
+        int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal);
+        MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo(), timeStep, adaptiveStep, SolutionMode_Normal));
+
+        parameters["nodes"] = msa.solutions().at(0).data()->get_mesh()->get_num_nodes();
+        parameters["elements"] = msa.solutions().at(0).data()->get_mesh()->get_num_active_elements();
+        parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
+    }
+    else
+        initialMeshParameters(parameters);
 }

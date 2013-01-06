@@ -93,6 +93,9 @@ cdef extern from "../../src/pythonlab/pyfield.h":
         void surfaceIntegrals(vector[int], map[string, double] results) except +
         void volumeIntegrals(vector[int], map[string, double] results) except +
 
+        void initialMeshParameters(map[string , int] parameters) except +
+        void solutionMeshParameters(map[string , int] parameters) except +
+
 cdef class __Field__:
     cdef PyField *thisptr
 
@@ -446,6 +449,32 @@ cdef class __Field__:
             incr(it)
 
         return out
+
+    # initial mesh parameters
+    def initial_mesh_parameters(self):
+        parameters = dict()
+        cdef map[string, int] parameters_map
+
+        self.thisptr.initialMeshParameters(parameters_map)
+        it = parameters_map.begin()
+        while it != parameters_map.end():
+            parameters[deref(it).first.c_str()] = deref(it).second
+            incr(it)
+
+        return parameters
+
+    # solution mesh parameters
+    def solution_mesh_parameters(self):
+        parameters = dict()
+        cdef map[string, int] parameters_map
+
+        self.thisptr.solutionMeshParameters(parameters_map)
+        it = parameters_map.begin()
+        while it != parameters_map.end():
+            parameters[deref(it).first.c_str()] = deref(it).second
+            incr(it)
+
+        return parameters
 
 def field(char *field_id):
     return __Field__(field_id)
