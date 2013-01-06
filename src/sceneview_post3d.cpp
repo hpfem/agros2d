@@ -464,7 +464,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 }
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
                 SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
 
                 // hide material
@@ -596,7 +596,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 }
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh().data()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
                 SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
 
                 // hide material

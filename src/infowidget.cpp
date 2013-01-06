@@ -208,10 +208,10 @@ void InfoWidget::showInfo()
             {
                 int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
                 int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
-                MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
+                MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 
-                solutionMeshNodes = msa.solutions().at(0).mesh()->get_num_nodes();
-                solutionMeshElements = msa.solutions().at(0).mesh()->get_num_active_elements();
+                solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
+                solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
                 DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
             }
 
@@ -219,8 +219,8 @@ void InfoWidget::showInfo()
             {
                 field->SetValue("MESH_LABEL", tr("Mesh parameters").toStdString());
                 field->SetValue("INITIAL_MESH_LABEL", tr("Initial mesh:").toStdString());
-                field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(fieldInfo->initialMesh().data()->get_num_nodes()).toStdString());
-                field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(fieldInfo->initialMesh().data()->get_num_active_elements()).toStdString());
+                field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(fieldInfo->initialMesh()->get_num_nodes()).toStdString());
+                field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(fieldInfo->initialMesh()->get_num_active_elements()).toStdString());
 
                 if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
                 {

@@ -35,17 +35,16 @@ public:
         int DOFs;
     };
 
-    SolutionArray<double> solution(FieldSolutionID solutionID, int component);
     bool contains(FieldSolutionID solutionID) const;
-    MultiSolutionArray<double> multiSolution(FieldSolutionID solutionID);
-    MultiSolutionArray<double> multiSolution(BlockSolutionID solutionID);
+    MultiArray<double> multiArray(FieldSolutionID solutionID);
+    MultiArray<double> multiArray(BlockSolutionID solutionID);
 
     // returns MultiSolution with components related to last time step, in which was each respective field calculated
     // this time step can be different for respective fields due to time step skipping
     // intented to be used as initial condition for the newton method
-    MultiSolutionArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
+    MultiArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
 
-    void addSolution(BlockSolutionID solutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime);
+    void addSolution(BlockSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
 
     // removes all solutions with the given time step
     void removeTimeStep(int timeStep);
@@ -82,13 +81,13 @@ public:
 private:
     QList<FieldSolutionID> m_multiSolutions;
     QMap<FieldSolutionID, SolutionRunTimeDetails> m_multiSolutionRunTimeDetails;
-    QMap<FieldSolutionID, MultiSolutionArray<double> > m_multiSolutionCache;
+    QMap<FieldSolutionID, MultiArray<double> > m_multiSolutionCache;
 
-    void addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime);
+    void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(FieldSolutionID solutionID);
     void removeSolution(BlockSolutionID solutionID);
 
-    void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution);
+    void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray<double> multiArray);
 
     QString baseStoreFileName(FieldSolutionID solutionID) const;
 

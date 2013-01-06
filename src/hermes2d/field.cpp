@@ -56,9 +56,8 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
+    : m_module(NULL), m_initialMesh(NULL)
 {
-    m_module = NULL;
-
     if (fieldId.isEmpty())
     {
         // default
@@ -93,9 +92,9 @@ FieldInfo::~FieldInfo()
         delete m_module;
 }
 
-void FieldInfo::setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh)
+void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)
 {
-    m_initialMesh.clear();
+    clearInitialMesh();
     m_initialMesh = mesh;
 }
 
@@ -150,7 +149,7 @@ int FieldInfo::labelPolynomialOrder(SceneLabel *label)
 void FieldInfo::clear()
 {
     // mesh
-    m_initialMesh.clear();
+    clearInitialMesh();
 
     m_numberOfRefinements = 1;
     m_polynomialOrder = 2;

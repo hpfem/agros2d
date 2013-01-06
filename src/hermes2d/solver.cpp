@@ -126,19 +126,20 @@ NewtonSolverContainer<Scalar>::~NewtonSolverContainer()
 }
 
 template <typename Scalar>
-void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces,
-                                                            MultiSolution<Scalar> solutions)
+void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
+                                                            Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                                            Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions)
 {
     if(solutions.empty())
     {
-        int ndof = Space<Scalar>::get_num_dofs(spaces.nakedConst());
+        int ndof = Space<Scalar>::get_num_dofs(castConst(spaces));
         memset(solutionVector, 0, ndof*sizeof(Scalar));
     }
     else
     {
         OGProjection<double> ogProjection;
-        ogProjection.project_global(spaces.nakedConst(),
-                                    solutions.naked(),
+        ogProjection.project_global(castConst(spaces),
+                                    solutions,
                                     solutionVector, this->m_block->projNormTypeVector());
     }
 }
@@ -178,18 +179,20 @@ PicardSolverContainer<Scalar>::~PicardSolverContainer()
 }
 
 template <typename Scalar>
-void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions)
+void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
+                                                            Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                                            Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions)
 {
     if (solutions.empty())
     {
-        int ndof = Space<Scalar>::get_num_dofs(spaces.nakedConst());
+        int ndof = Space<Scalar>::get_num_dofs(castConst(spaces));
         memset(solutionVector, 0, ndof*sizeof(Scalar));
     }
     else
     {
         OGProjection<double> ogProjection;
-        ogProjection.project_global(spaces.nakedConst(),
-                                    solutions.naked(),
+        ogProjection.project_global(castConst(spaces),
+                                    solutions,
                                     solutionVector, this->m_block->projNormTypeVector());
     }
 }
@@ -290,9 +293,9 @@ void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selecto
 }
 
 template <typename Scalar>
-MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces, bool createReference)
+Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> Solver<Scalar>::deepMeshAndSpaceCopy(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, bool createReference)
 {
-    MultiSpace<Scalar> newSpaces;
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> newSpaces;
     int totalComp = 0;
     foreach(Field* field, m_block->fields())
     {
@@ -308,53 +311,71 @@ MultiSpace<Scalar> Solver<Scalar>::deepMeshAndSpaceCopy(MultiSpace<Scalar> space
                 orderIncrease = 1;
         }
 
-        QSharedPointer<Mesh> mesh;
+        Mesh *mesh = NULL;
         // Deep copy of mesh for each field separately, than use for all field component the same one
         if(refineMesh)
         {
-            Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp).spaceNaked()->get_mesh());
-            mesh = QSharedPointer<Mesh>(meshCreator.create_ref_mesh());
+            Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp)->get_mesh());
+            mesh = meshCreator.create_ref_mesh();
         }
         else
         {
-            mesh = QSharedPointer<Mesh>(new Mesh());
-            mesh.data()->copy(spaces.at(totalComp).spaceNaked()->get_mesh());
+            mesh = new Mesh();
+            mesh->copy(spaces.at(totalComp)->get_mesh());
         }
 
-        for(int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
+        for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             // TODO: double -> Scalar
-            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp).spaceNaked(),
-                                                              mesh.data(),
+            Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp),
+                                                              mesh,
                                                               orderIncrease);
-            newSpaces.add(QSharedPointer<Space<Scalar> >(spaceCreator.create_ref_space()), mesh);
+            newSpaces.push_back(spaceCreator.create_ref_space());
 
             totalComp++;
         }
-        mesh.clear();
     }
+
     return newSpaces;
 }
 
 template <typename Scalar>
-void Solver<Scalar>::saveSolution(BlockSolutionID solutionID, Scalar* solutionVector)
+void Solver<Scalar>::setActualSpaces(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces)
 {
-    assert(solutionID.solutionMode == SolutionMode_Normal);
-    MultiSpace<Scalar> newSpaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
-
-    MultiSolution<Scalar> solutions;
-    solutions.createSolutions(newSpaces.meshes());
-    Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces.nakedConst(), solutions.naked());
-
-    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
-                                                  0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(newSpaces.nakedConst()));
-
-    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(newSpaces, solutions), runTime);
+    clearActualSpaces();
+    m_actualSpaces = spaces;
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> spaces, int adaptivityStep, MultiSolution<Scalar> previousSolution)
+void Solver<Scalar>::clearActualSpaces()
+{
+    foreach (Hermes::Hermes2D::Space<Scalar> *space, m_actualSpaces)
+    {
+        delete space->get_mesh();
+        delete space;
+    }
+    m_actualSpaces.clear();
+}
+
+template <typename Scalar>
+void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solutionVector)
+{
+    assert(solutionID.solutionMode == SolutionMode_Normal);
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> newSpaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
+
+    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(newSpaces);
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
+    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(newSpaces), solutions);
+
+    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
+                                                  0.0,
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(newSpaces)));
+
+    Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(newSpaces, solutions), runTime);
+}
+
+template <typename Scalar>
+void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, int adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> previousSolution)
 {
     //    cout << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
     //            arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
@@ -366,8 +387,8 @@ void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> 
     try
     {
         m_hermesSolverContainer->projectPreviousSolution(solutionVector, spaces, previousSolution);
-        m_hermesSolverContainer->settableSpaces()->set_spaces(spaces.nakedConst());
-        m_hermesSolverContainer->set_weak_formulation(m_block->weakForm().data());
+        m_hermesSolverContainer->settableSpaces()->set_spaces(castConst(spaces));
+        m_hermesSolverContainer->set_weak_formulation(m_block->weakForm());
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverName, adaptivityStep);
         m_hermesSolverContainer->solve(solutionVector);
 
@@ -393,14 +414,15 @@ template <typename Scalar>
 void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 {
     // to be used as starting vector for the Newton solver
-    MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
+    MultiArray<Scalar> previousTSMultiSolutionArray;
     if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
         previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
 
     // cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
-    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst()) == 0)
+    int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(m_actualSpaces));
+    if (ndof == 0)
     {
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
@@ -413,33 +435,30 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         field->fieldInfo()->module()->updateTimeFunctions(Agros2D::problem()->actualTime());
     updateExactSolutionFunctions();
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Agros2D::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces, Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
-    if(m_block->isTransient())
+    if (m_block->isTransient())
     {
         bdf2Table = new BDF2ATable();
         bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->timeOrder()));
         bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     }
 
-    m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    m_block->weakForm().data()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm().data()->registerForms(bdf2Table);
+    m_block->setWeakForm(new WeakFormAgros<double>(m_block));
+    m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
+    m_block->weakForm()->registerForms(bdf2Table);
 
-    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
+    Scalar *solutionVector = new Scalar[ndof];
 
     solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, previousTSMultiSolutionArray.solutions());
 
     // output
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
-    saveSolution(solutionID, solutionVector);
+    addSolutionToStore(solutionID, solutionVector);
 
     // free vector
     delete [] solutionVector;
-
-    // clear weakform
-    m_block->weakForm().clear();
 
     if (bdf2Table)
         delete bdf2Table;
@@ -460,8 +479,8 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
         return NextTimeStep(Agros2D::problem()->config()->constantTimeStepLength());
 
 
-    MultiSolutionArray<Scalar> referenceCalculation =
-            Agros2D::solutionStore()->multiSolution(Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
+    MultiArray<Scalar> referenceCalculation =
+            Agros2D::solutionStore()->multiArray(Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
 
     // todo: ensure this in gui
     assert(Agros2D::problem()->config()->timeOrder() >= 2);
@@ -480,27 +499,32 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
     bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     //cout << "using time order" << min(timeStep, Agros2D::problem()->config()->timeOrder()) << endl;
 
-    m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    m_block->weakForm().data()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm().data()->registerForms(bdf2Table);
-
+    m_block->setWeakForm(new WeakFormAgros<double>(m_block));
+    m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
+    m_block->weakForm()->registerForms(bdf2Table);
 
     //    MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
     //    multiSolutionArray2.createNewSolutions();
 
-    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst())];
+    // number of DOFs
+    int ndof = Space<Scalar>::get_num_dofs(castConst(m_actualSpaces));
+
+    Scalar *solutionVector = new Scalar[ndof];
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
-    solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, timeStep > 0 ? referenceCalculation.solutions() : MultiSolution<Scalar>());
+    solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, timeStep > 0 ? referenceCalculation.solutions() : Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 
-    MultiSolution<Scalar> solutions;
-    solutions.createSolutions(m_actualSpaces.meshes());
-    Solution<Scalar>::vector_to_solutions(solutionVector, m_actualSpaces.nakedConst(), solutions.naked());
+    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(m_actualSpaces);
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
+    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(m_actualSpaces), solutions);
 
     // free vector
     delete [] solutionVector;
 
-    double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutionsNaked(), solutions.naked());
+    double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutions(), solutions);
+
+    // delete solutions
+    deleteSolutions(solutions);
 
     //update
     double actualRatio = error / Agros2D::problem()->actualTimeStepLength();
@@ -537,12 +561,12 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
     nextTimeStepLength = max(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() / MAX_TIME_STEPS_RATIO);
 
     Agros2D::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %)").
-                            arg(Agros2D::problem()->actualTime()).
-                            arg(error).
-                            arg(TOL).
-                            arg(Agros2D::problem()->actualTimeStepLength()).
-                            arg(nextTimeStepLength).
-                            arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.));
+                               arg(Agros2D::problem()->actualTime()).
+                               arg(error).
+                               arg(TOL).
+                               arg(Agros2D::problem()->actualTimeStepLength()).
+                               arg(nextTimeStepLength).
+                               arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.));
     if(refuseThisStep)
         Agros2D::log()->printDebug(m_solverID, "time step refused");
 
@@ -567,20 +591,16 @@ void Solver<Scalar>::createInitialSpace()
     if (!Agros2D::problem()->isMeshed())
         throw AgrosSolverException(QObject::tr("Meshes are empty"));
 
-    // essential boundary conditions
-    Hermes::vector<EssentialBCs<double> *> bcs;
-    for (int i = 0; i < m_block->numSolutions(); i++)
-        bcs.push_back(new EssentialBCs<double>());
-
     m_exactSolutionFunctions.clear();
+    clearActualSpaces();
 
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
         // create copy of initial mesh
-        QSharedPointer<Hermes::Hermes2D::Mesh> initialMesh(new Hermes::Hermes2D::Mesh());
-        initialMesh.data()->copy(fieldInfo->initialMesh().data());
+        Hermes::Hermes2D::Mesh *initialMesh = new Hermes::Hermes2D::Mesh();
+        initialMesh->copy(fieldInfo->initialMesh());
 
         ProblemID problemId;
 
@@ -605,7 +625,7 @@ void Solver<Scalar>::createInitialSpace()
                     assert(plugin);
 
                     // exact solution - Dirichlet BC
-                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form, initialMesh.data());
+                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form, initialMesh);
                     function->setMarkerSource(boundary);
 
                     // save function - boundary pairs, so thay can be easily updated in each time step;
@@ -613,7 +633,7 @@ void Solver<Scalar>::createInitialSpace()
 
                     EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
-                    bcs[form->i - 1 + m_block->offset(field)]->add_boundary_condition(custom_form);
+                    m_block->bcs().at(form->i - 1 + m_block->offset(field))->add_boundary_condition(custom_form);
                     //  cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                 }
             }
@@ -623,14 +643,14 @@ void Solver<Scalar>::createInitialSpace()
         // create space
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
-            Space<Scalar>* oneSpace;
+            Space<Scalar> *oneSpace = NULL;
             switch (fieldInfo->module()->spaces()[i+1].type())
             {
             case HERMES_L2_SPACE:
-                oneSpace = new L2Space<Scalar>(initialMesh.data(), fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new L2Space<Scalar>(initialMesh, fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_H1_SPACE:
-                oneSpace = new H1Space<Scalar>(initialMesh.data(), bcs[i + m_block->offset(field)], fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new H1Space<Scalar>(initialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
                 break;
             default:
                 assert(0);
@@ -638,7 +658,7 @@ void Solver<Scalar>::createInitialSpace()
             }
 
             //cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
-            m_actualSpaces.add(QSharedPointer<Space<Scalar> >(oneSpace), initialMesh);
+            m_actualSpaces.push_back(oneSpace);
 
             // set order by element
             foreach(SceneLabel* label, Agros2D::scene()->labels->items())
@@ -646,8 +666,8 @@ void Solver<Scalar>::createInitialSpace()
                 if (!label->marker(fieldInfo)->isNone() &&
                         (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder()))
                 {
-                    m_actualSpaces.at(i).spaceNaked()->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
-                                                                   QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
+                    m_actualSpaces.at(i)->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
+                                                            QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
                 }
             }
         }
@@ -664,16 +684,17 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     //    MultiSolutionArray<Scalar> msa = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
     //    MultiSolutionArray<Scalar> msaRef;
 
-    if(Agros2D::problem()->isTransient())
+    if (Agros2D::problem()->isTransient())
     {
         if(adaptivityStep == 0)
         {
-            if(timeStep % m_block->adaptivityRedoneEach() == 0)
+            if (timeStep % m_block->adaptivityRedoneEach() == 0)
             {
                 assert(timeStep != 0);
                 BlockSolutionID solID(m_block, 1, 0, SolutionMode_Normal);
-                MultiSolutionArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiSolution(solID);
-                m_actualSpaces = deepMeshAndSpaceCopy(msaPrevTS.spaces(), false);
+                MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
+
+                setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
             }
             else
             {
@@ -681,21 +702,21 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
                 {
                     int lastTimeStepNumAdaptations = Agros2D::solutionStore()->lastAdaptiveStep(m_block, SolutionMode_Normal, timeStep - 1);
                     BlockSolutionID solID(m_block, timeStep-1, max(lastTimeStepNumAdaptations - m_block->adaptivityBackSteps(), 0), SolutionMode_Normal);
-                    MultiSolutionArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiSolution(solID);
-                    m_actualSpaces = deepMeshAndSpaceCopy(msaPrevTS.spaces(), false);
+                    MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
 
+                    setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
                 }
             }
         }
 
         // todo: to be used as starting vector for the Newton solver
-//        MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
-//        if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
-//            previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
+        //        MultiSolutionArray<Scalar> previousTSMultiSolutionArray;
+        //        if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
+        //            previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
     }
 
     // check for DOFs
-    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.nakedConst()) == 0)
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces) == 0)
     {
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
@@ -706,7 +727,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
         field->fieldInfo()->module()->updateTimeFunctions(Agros2D::problem()->actualTime());
 
     // todo: delete? delam to pro referencni... (zkusit)
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces.naked(), Agros2D::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces, Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
@@ -717,45 +738,45 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     }
 
     // TODO: wf should be created only at the beginning
-    m_block->setWeakForm(QSharedPointer<WeakFormAgros<double> >(new WeakFormAgros<double>(m_block)));
-    m_block->weakForm().data()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm().data()->registerForms(bdf2Table);
+    m_block->setWeakForm(new WeakFormAgros<double>(m_block));
+    m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
+    m_block->weakForm()->registerForms(bdf2Table);
 
     // create reference spaces
-    MultiSpace<Scalar> spacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
     assert(m_actualSpaces.size() == spacesRef.size());
 
     // todo: delete? je to vubec potreba?
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef.naked(), Agros2D::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef, Agros2D::problem()->actualTime());
 
-    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(spacesRef.nakedConst())];
+    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(castConst(spacesRef))];
 
     // solve reference problem
     // todo: posledni parametr: predchozi reseni pro projekci!!
-    solveOneProblem(solutionVector, spacesRef, adaptivityStep, MultiSolution<Scalar>());
+    solveOneProblem(solutionVector, spacesRef, adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 
     // output reference solution
-    MultiSolution<Scalar> solutionsRef;
-    solutionsRef.createSolutions(spacesRef.meshes());
-    Solution<Scalar>::vector_to_solutions(solutionVector, spacesRef.nakedConst(), solutionsRef.naked());
+    Hermes::vector<Hermes::Hermes2D::Mesh *> meshesRef = spacesMeshes(spacesRef);
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionsRef = createSolutions<Scalar>(meshesRef);
+    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(spacesRef), solutionsRef);
 
     // free vector
     delete [] solutionVector;
 
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
     SolutionStore::SolutionRunTimeDetails runTimeRef(Agros2D::problem()->actualTimeStepLength(),
-                                                  0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(spacesRef.nakedConst()));
-    Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiSolutionArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
+                                                     0.0,
+                                                     Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(spacesRef)));
+    Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
-    MultiSpace<Scalar> spacesCopy = deepMeshAndSpaceCopy(m_actualSpaces, false);
-    MultiSolution<Scalar> solutions;
-    solutions.createSolutions(spacesCopy.meshes());
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesCopy = deepMeshAndSpaceCopy(m_actualSpaces, false);
+    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(m_actualSpaces);
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
-    ogProjection.project_global(spacesCopy.nakedConst(), solutionsRef.naked(), solutions.naked());
+    ogProjection.project_global(castConst(spacesCopy), solutionsRef, solutions);
 
     // save the solution
 
@@ -764,8 +785,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(spacesCopy.nakedConst()));
-    MultiSolutionArray<Scalar> msa(spacesCopy, solutions);
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(spacesCopy)));
+    MultiArray<Scalar> msa(spacesCopy, solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
 
     if(bdf2Table)
@@ -775,19 +796,19 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 template <typename Scalar>
 bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 {
-    MultiSolutionArray<Scalar> msa = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
-    MultiSolutionArray<Scalar> msaRef = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
+    MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
+    MultiArray<Scalar> msaRef = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
     initSelectors(projNormType, selector);
 
     // calculate element errors and total error estimate.
-    Adapt<Scalar> adaptivity(m_actualSpaces.naked(), projNormType);
+    Adapt<Scalar> adaptivity(m_actualSpaces, projNormType);
     adaptivity.set_verbose_output(false);
 
     // calculate error estimate for each solution component and the total error estimate.
-    double error = adaptivity.calc_err_est(msa.solutionsNaked(), msaRef.solutionsNaked()) * 100;
+    double error = adaptivity.calc_err_est(msa.solutions(), msaRef.solutions()) * 100;
     // update error in solution store
     foreach (Field *field, m_block->fields())
     {
@@ -802,7 +823,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     }
 
     // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
-    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces.naked()) < Agros2D::problem()->configView()->maxDofs;
+    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces) < Agros2D::problem()->configView()->maxDofs;
 
     try
     {
@@ -816,9 +837,9 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     }
 
     Agros2D::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
-                              arg(error).
-                              arg(Space<Scalar>::get_num_dofs(msa.spacesNakedConst())).
-                              arg(Space<Scalar>::get_num_dofs(msaRef.spacesNakedConst())));
+                                 arg(error).
+                                 arg(Space<Scalar>::get_num_dofs(msa.spacesNakedConst())).
+                                 arg(Space<Scalar>::get_num_dofs(msaRef.spacesNakedConst())));
 
     deleteSelectors(selector);
 
@@ -830,16 +851,17 @@ void Solver<Scalar>::solveInitialTimeStep()
 {
     Agros2D::log()->printDebug(m_solverID, QObject::tr("initial time step"));
 
-    MultiSolution<Scalar> solutions;
+    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions;
     int totalComp = 0;
     foreach(Field* field, m_block->fields())
     {
         for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
         {
             // constant initial solution
-            QSharedPointer<Mesh> mesh = m_actualSpaces.meshes().at(totalComp);
-            ConstantSolution<double> *initial = new ConstantSolution<double>(mesh.data(), field->fieldInfo()->initialCondition().number());
-            solutions.add(QSharedPointer<ConstantSolution<Scalar> >(initial), mesh);
+            Mesh *mesh = m_actualSpaces.at(totalComp)->get_mesh();
+            ConstantSolution<double> *initial = new ConstantSolution<double>(mesh,
+                                                                             field->fieldInfo()->initialCondition().number());
+            solutions.push_back(initial);
             totalComp++;
         }
     }
@@ -847,8 +869,10 @@ void Solver<Scalar>::solveInitialTimeStep()
     BlockSolutionID solutionID(m_block, 0, 0, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(m_actualSpaces.nakedConst()));
-    Agros2D::solutionStore()->addSolution(solutionID, MultiSolutionArray<Scalar>(m_actualSpaces, solutions), runTime);
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(m_actualSpaces)));
+    Agros2D::solutionStore()->addSolution(solutionID,
+                                          MultiArray<Scalar>(m_actualSpaces, solutions),
+                                          runTime);
 }
 
 

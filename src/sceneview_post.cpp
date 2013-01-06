@@ -62,12 +62,12 @@ void PostHermes::processInitialMesh()
 {
     if (Agros2D::problem()->isMeshed())
     {
-        Agros2D::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Agros2D::scene()->activeViewField()->initialMesh().data()->get_num_active_elements()));
+        Agros2D::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Agros2D::scene()->activeViewField()->initialMesh()->get_num_active_elements()));
 
         // init linearizer for initial mesh
         try
         {
-            Hermes::Hermes2D::ZeroSolution<double> initial(Agros2D::scene()->activeViewField()->initialMesh().data());
+            Hermes::Hermes2D::ZeroSolution<double> initial(Agros2D::scene()->activeViewField()->initialMesh());
             m_linInitialMeshView.process_solution(&initial);            
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -82,11 +82,11 @@ void PostHermes::processSolutionMesh()
     if (Agros2D::problem()->isSolved())
     {
         // ERROR: FIX component(0)
-        Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().component(0).solutionAndMesh.mesh()->get_num_active_elements()));
+        Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
-        const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().component(0).solutionAndMesh.mesh().data();
+        const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh();
         Hermes::Hermes2D::ZeroSolution<double> solution(mesh);
         m_linSolutionMeshView.process_solution(&solution);
     }
@@ -100,7 +100,7 @@ void PostHermes::processOrder()
         Agros2D::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
         // ERROR: FIX component(0)
-        m_orderView.process_space(Agros2D::scene()->activeMultiSolutionArray().component(0).spaceAndMesh.spaceNaked());
+        m_orderView.process_space(Agros2D::scene()->activeMultiSolutionArray().spaces().at(0));
     }
 }
 

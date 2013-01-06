@@ -172,7 +172,12 @@ void Coupling::clear()
 {
     m_constants.clear();
 
+    foreach (FormInfo *formInfo, m_wfMatrixVolumeExpression)
+        delete formInfo;
     m_wfMatrixVolumeExpression.clear();
+
+    foreach (FormInfo *formInfo, m_wfVectorVolumeExpression)
+        delete formInfo;
     m_wfVectorVolumeExpression.clear();
 }
 

@@ -30,7 +30,7 @@
 #include "module_agros.h"
 
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
-    m_couplings(couplings)
+    m_couplings(couplings), m_wf(NULL)
 {
     foreach (FieldInfo* fi, fieldInfos)
     {
@@ -45,13 +45,32 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
 
         m_fields.append(field);
     }
+
+    // essential boundary conditions
+    for (int i = 0; i < numSolutions(); i++)
+        m_bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
 }
 
 Block::~Block()
 {
+    // clear fields
     foreach (Field *field, m_fields)
         delete field;
     m_fields.clear();
+
+    // clear boundary conditions
+    foreach (Hermes::Hermes2D::EssentialBCs<double> *bc, m_bcs)
+    {
+        for (Hermes::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
+            delete *it;
+        delete bc;
+    }
+    m_bcs.clear();
+
+    // delete weakform
+    if (m_wf)
+        delete m_wf;
+    m_wf = NULL;
 }
 
 Solver<double>* Block::prepareSolver()

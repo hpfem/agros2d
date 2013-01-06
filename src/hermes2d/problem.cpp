@@ -63,12 +63,13 @@ Problem::~Problem()
     clearFieldsAndConfig();
 
     delete m_config;
+    delete m_configView;
 }
 
 bool Problem::isMeshed() const
 {
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
-        if (!fieldInfo->initialMesh().isNull())
+        if (fieldInfo->initialMesh())
             return true;
 
     return false;
@@ -135,6 +136,10 @@ void Problem::clearSolution()
 void Problem::clearFieldsAndConfig()
 {
     clearSolution();
+
+    foreach (Block* block, m_blocks)
+        delete block;
+    m_blocks.clear();
 
     // clear couplings
     foreach (CouplingInfo* couplingInfo, m_couplingInfos)
@@ -822,7 +827,7 @@ void Problem::readInitialMeshesFromFile()
         refineMesh(fieldInfo, mesh, true, true, true);
 
         // set initial mesh
-        fieldInfo->setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh>(mesh));
+        fieldInfo->setInitialMesh(mesh);
     }
 
     meshes.clear();

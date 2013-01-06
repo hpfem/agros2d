@@ -50,13 +50,14 @@ void SolutionStore::clearAll()
         removeSolution(sid);
     }
 }
-
+/*
 SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component)
 {
     return multiSolution(solutionID).component(component);
 }
+*/
 
-MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solutionID)
+MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
 {
     if(solutionID.solutionMode == SolutionMode_Finer)
     {
@@ -71,7 +72,7 @@ MultiSolutionArray<double> SolutionStore::multiSolution(FieldSolutionID solution
     {
         // qDebug() << "Read from disk: " << solutionID.toString();
 
-        MultiSolutionArray<double> msa;
+        MultiArray<double> msa;
         msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
 
         // insert to the cache
@@ -90,18 +91,19 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
     return m_multiSolutions.contains(solutionID);
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolution(BlockSolutionID solutionID)
+MultiArray<double> SolutionStore::multiArray(BlockSolutionID solutionID)
 {
-    MultiSolutionArray<double> msa;
+    MultiArray<double> ma;
     foreach (Field *field, solutionID.group->fields())
     {
-        msa.append(multiSolution(solutionID.fieldSolutionID(field->fieldInfo())));
+        MultiArray<double> maGroup = multiArray(solutionID.fieldSolutionID(field->fieldInfo()));
+        ma.append(maGroup.spaces(), maGroup.solutions());
     }
 
-    return msa;
+    return ma;
 }
 
-void SolutionStore::addSolution(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime)
+void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)
 {
     assert(!m_multiSolutions.contains(solutionID));
     assert(solutionID.timeStep >= 0);
@@ -132,16 +134,13 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     // remove properties
     m_multiSolutionRunTimeDetails.remove(solutionID);
     // remove from cache
-    Hermes::Hermes2D::Solution<double> *sln = NULL;
-    foreach (FieldSolutionID solutionID, m_multiSolutionCache.keys())
+    if (m_multiSolutionCache.contains(solutionID))
     {
-        MultiSolutionArray<double> msa = m_multiSolutionCache.value(solutionID);
-        qDebug() << msa.solutions().at(0).solution().isNull();
+        MultiArray<double> msa = m_multiSolutionCache[solutionID];
+        msa.clear();
 
-        sln = msa.solutions().at(0).solutionNaked();
+        m_multiSolutionCache.remove(solutionID);
     }
-    m_multiSolutionCache.remove(solutionID);
-    qDebug() << sln;
 
     // remove old files
     QFileInfo info(Agros2D::problem()->config()->fileName());
@@ -162,12 +161,12 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     saveRunTimeDetails();
 }
 
-void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiSolutionArray<double> multiSolution, SolutionRunTimeDetails runTime)
+void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)
 {
     foreach (Field* field, blockSolutionID.group->fields())
     {
         FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
-        MultiSolutionArray<double> fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
+        MultiArray<double> fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
         addSolution(fieldSID, fieldMultiSolution, runTime);
     }
 }
@@ -215,17 +214,19 @@ int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType) const
     return timeStep;
 }
 
-MultiSolutionArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID)
+MultiArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID)
 {
-    MultiSolutionArray<double> msa;
+    MultiArray<double> ma;
     foreach(Field *field, solutionID.group->fields())
     {
         FieldSolutionID fieldSolutionID = solutionID.fieldSolutionID(field->fieldInfo());
         fieldSolutionID.timeStep = nearestTimeStep(field->fieldInfo(), solutionID.timeStep - 1);
-        msa.append(multiSolution(fieldSolutionID));
+
+        MultiArray<double> maGroup = multiArray(fieldSolutionID);
+        ma.append(maGroup.spaces(), maGroup.solutions());
     }
 
-    return msa;
+    return ma;
 }
 
 
@@ -381,7 +382,7 @@ double SolutionStore::timeLevel(FieldInfo *fieldInfo, int timeLevelIndex)
         return levels.at(timeLevelIndex);
 }
 
-void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, MultiSolutionArray<double> multiSolution)
+void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray<double> multiSolution)
 {
     if (!m_multiSolutionCache.contains(solutionID))
     {

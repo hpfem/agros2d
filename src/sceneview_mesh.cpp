@@ -128,10 +128,10 @@ void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
 
         Hermes::Hermes2D::Views::Orderizer orderView;
         if (exportMeshOnly)
-            orderView.save_mesh_vtk(Agros2D::scene()->activeMultiSolutionArray().component(0).spaceAndMesh.spaceNaked(),
+            orderView.save_mesh_vtk(Agros2D::scene()->activeMultiSolutionArray().spaces().at(0),
                                     fn.toStdString().c_str());
         else
-            orderView.save_orders_vtk(Agros2D::scene()->activeMultiSolutionArray().component(0).spaceAndMesh.spaceNaked(),
+            orderView.save_orders_vtk(Agros2D::scene()->activeMultiSolutionArray().spaces().at(0),
                                       fn.toStdString().c_str());
 
         if (!fn.isEmpty())

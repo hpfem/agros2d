@@ -200,7 +200,7 @@ public:
     void setActiveSolutionType(SolutionMode st) { m_activeSolutionMode = st; }
 
     // active MultiSolutionArray
-    MultiSolutionArray<double> activeMultiSolutionArray();
+    MultiArray<double> activeMultiSolutionArray();
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);

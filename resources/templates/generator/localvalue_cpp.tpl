@@ -55,12 +55,12 @@ void {{CLASS}}LocalValue::calculate()
         double x = m_point.x;
         double y = m_point.y;
 
-        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(m_fieldInfo->initialMesh().data(),
+        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(m_fieldInfo->initialMesh(),
                                                                                                  m_point.x, m_point.y);
         if (e)
         {
             // find marker
-            SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
+            SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
             double *value = new double[m_fieldInfo->module()->numberOfSolutions()];
@@ -87,7 +87,7 @@ void {{CLASS}}LocalValue::calculate()
                     solutionMode = SolutionMode_Finer;
                 }
                 FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
-                sln[k] = Agros2D::solutionStore()->multiSolution(fsid).component(k).sln.data();
+                sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
 
                 // point values
                 Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);

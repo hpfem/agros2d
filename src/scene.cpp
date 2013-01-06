@@ -1943,9 +1943,9 @@ void Scene::writeSolutionToFile(const QString &fileName)
     JlCompress::compressDir(solutionFile, cacheProblemDir());
 }
 
-MultiSolutionArray<double> Scene::activeMultiSolutionArray()
+MultiArray<double> Scene::activeMultiSolutionArray()
 {
-    return Agros2D::solutionStore()->multiSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
+    return Agros2D::solutionStore()->multiArray(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
 }
 
 void Scene::checkNodeConnect(SceneNode *node)

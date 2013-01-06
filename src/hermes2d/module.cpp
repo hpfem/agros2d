@@ -230,7 +230,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
                 assert(Agros2D::solutionStore()->contains(solutionID));
 
                 for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-                    previousSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).solutionAndMesh.solutionNaked());
+                    previousSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
             }
             custom_form->set_ext(previousSlns);
         }
@@ -273,7 +273,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
         assert(solutionID.group->module()->numberOfSolutions() <= maxSourceFieldComponents);
 
         for (int comp = 0; comp < solutionID.group->module()->numberOfSolutions(); comp++)
-            couplingSlns.push_back(Agros2D::solutionStore()->solution(solutionID, comp).solutionAndMesh.solutionNaked());
+            couplingSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
 
         custom_form->set_ext(couplingSlns);
     }
@@ -1046,7 +1046,7 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
 
     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
     for (int k = 0; k < numberOfSolutions(); k++)
-        sln.push_back(Agros2D::scene()->activeMultiSolutionArray().component(k).solutionAndMesh.solutionNaked());
+        sln.push_back(Agros2D::scene()->activeMultiSolutionArray().solutions().at(k));
 
     FieldInfo* activeViewField = Agros2D::scene()->activeViewField();
     assert(activeViewField);
@@ -1098,47 +1098,37 @@ void readMeshDirtyFix()
     setlocale(LC_NUMERIC, plocale);
 }
 
-QList<QSharedPointer<Hermes::Hermes2D::Mesh> > readMeshFromFile(const QString &fileName)
+Hermes::vector<Hermes::Hermes2D::Mesh *> readMeshFromFile(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    Hermes::vector<Hermes::Hermes2D::Mesh* > vectorMeshes;
+    Hermes::vector<Hermes::Hermes2D::Mesh* > meshes;
     int numMeshes = Agros2D::problem()->fieldInfos().count();
     for(int i = 0; i < numMeshes; i++)
     {
         Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
-        vectorMeshes.push_back(mesh);
+        meshes.push_back(mesh);
     }
 
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.load(fileName.toStdString().c_str(), vectorMeshes);
+    meshloader.load(fileName.toStdString().c_str(), meshes);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
-    QList<QSharedPointer<Hermes::Hermes2D::Mesh> > meshes;
-    for(int i = 0; i < numMeshes; i++)
-        meshes.push_back(QSharedPointer<Hermes::Hermes2D::Mesh>(vectorMeshes.at(i)));
-
     return meshes;
 }
 
-void writeMeshToFile(const QString &fileName, QList<QSharedPointer<Hermes::Hermes2D::Mesh> > meshes)
+void writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Hermes2D::Mesh *> meshes)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    Hermes::vector<Hermes::Hermes2D::Mesh* > vectorMeshes;
-    foreach(QSharedPointer<Hermes::Hermes2D::Mesh> mesh, meshes)
-    {
-        vectorMeshes.push_back(mesh.data());
-    }
-
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.save(fileName.toStdString().c_str(), vectorMeshes);
+    meshloader.save(fileName.toStdString().c_str(), meshes);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

@@ -43,8 +43,8 @@ public:
 
     Solver<double>* prepareSolver();
 
-    QSharedPointer<WeakFormAgros<double> > weakForm() { return m_wf;}
-    void setWeakForm(QSharedPointer<WeakFormAgros<double> > wf) {m_wf = wf;}
+    inline WeakFormAgros<double> *weakForm() { return m_wf;}
+    inline void setWeakForm(WeakFormAgros<double> *wf) { if (m_wf) delete m_wf; m_wf = wf;}
 
     int numSolutions() const;
     int offset(Field* field) const;
@@ -86,19 +86,19 @@ public:
     // number of last vectors used for Anderson acceleration
     int picardAndersonNumberOfLastVectors() const;
 
-//    Field* couplingSourceField(Coupling* coupling) const;
-//    Field* couplingTargetField(Coupling* coupling) const;
-
     bool contains(FieldInfo* fieldInfo) const;
     Field* field(FieldInfo* fieldInfo) const;
 
     inline QList<Field*> fields() const { return m_fields; }
     inline QList<CouplingInfo*> couplings() const { return m_couplings; }
 
+    inline Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs() const { return m_bcs; }
+
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormTypeVector() const;
 
 private:
-    QSharedPointer<WeakFormAgros<double> > m_wf;
+    WeakFormAgros<double> *m_wf;
+    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> m_bcs;
 
     QList<Field*> m_fields;
     QList<CouplingInfo*> m_couplings;

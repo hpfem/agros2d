@@ -50,9 +50,9 @@ public:
 
     QString fieldId() const { return m_fieldId; }
 
-    inline QSharedPointer<Hermes::Hermes2D::Mesh> initialMesh() const { return m_initialMesh; }
-    inline void clearInitialMesh() { m_initialMesh.clear(); }
-    void setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh);
+    inline Hermes::Hermes2D::Mesh *initialMesh() const { return m_initialMesh; }
+    inline void clearInitialMesh() { if (m_initialMesh) delete m_initialMesh; m_initialMesh = NULL; }
+    void setInitialMesh(Hermes::Hermes2D::Mesh *mesh);
 
     AnalysisType analysisType() const { return m_analysisType; }
     void setAnalysisType(const AnalysisType analysisType);
@@ -148,7 +148,7 @@ private:
     QString m_fieldId;
 
     // initial mesh
-    QSharedPointer<Hermes::Hermes2D::Mesh> m_initialMesh;
+    Hermes::Hermes2D::Mesh *m_initialMesh;
 
     // analysis type
     AnalysisType m_analysisType;

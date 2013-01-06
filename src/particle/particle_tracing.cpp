@@ -151,7 +151,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                               -Agros2D::problem()->configView()->particleStartingRadius / 2,
                               (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + position + dp;
 
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Agros2D::scene()->activeViewField()->initialMesh().data(),
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Agros2D::scene()->activeViewField()->initialMesh(),
                                                                                                      position.x, position.y);
             trials++;
             if (e || trials > 10)
@@ -163,7 +163,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
         // check domain
-        Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh().data(),
+        Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh(),
                                                                                                        position.x, position.y);
         if (!element)
         {
@@ -172,7 +172,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
         }
 
         // find material
-        SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
         m_materials[fieldInfo] = label->marker(fieldInfo);
     }
 

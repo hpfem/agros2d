@@ -74,7 +74,7 @@ void {{CLASS}}VolumeIntegral::calculate()
                 solutionMode = SolutionMode_Finer;
             }
             FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
-            sln.push_back(Agros2D::solutionStore()->multiSolution(fsid).component(k).sln.data());
+            sln.push_back(Agros2D::solutionStore()->multiArray(fsid).solutions().at(k));
         }
 
         double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
@@ -98,7 +98,7 @@ void {{CLASS}}VolumeIntegral::calculate()
 
                 for_all_active_elements(e, mesh)
                 {
-                    if (m_fieldInfo->initialMesh().data()->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(index).toStdString())
+                    if (m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(index).toStdString())
                     {
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
