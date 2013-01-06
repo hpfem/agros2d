@@ -31,7 +31,7 @@
 
 #include "../../resources_source/classes/agros2d_structure_xml.h"
 
-const int notFoundSoFar = -999;
+using namespace Hermes::Hermes2D;
 
 QString SolutionStore::baseStoreFileName(FieldSolutionID solutionID) const
 {
@@ -46,16 +46,8 @@ void SolutionStore::clearAll()
 {
     // m_multiSolutions.clear();
     foreach (FieldSolutionID sid, m_multiSolutions)
-    {
         removeSolution(sid);
-    }
 }
-/*
-SolutionArray<double> SolutionStore::solution(FieldSolutionID solutionID, int component)
-{
-    return multiSolution(solutionID).component(component);
-}
-*/
 
 MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
 {
@@ -192,7 +184,7 @@ void SolutionStore::removeTimeStep(int timeStep)
 
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType) const
 {
-    int timeStep = notFoundSoFar;
+    int timeStep = NOT_FOUND_SO_FAR;
     foreach(FieldSolutionID sid, m_multiSolutions)
     {
         if((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep > timeStep))
@@ -245,19 +237,19 @@ int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
 double SolutionStore::lastTime(FieldInfo *fieldInfo)
 {
     int timeStep = lastTimeStep(fieldInfo, SolutionMode_Normal);
-    double time = notFoundSoFar;
+    double time = NOT_FOUND_SO_FAR;
 
     foreach (FieldSolutionID id, m_multiSolutions)
     {
         if ((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
         {
-            if (time == notFoundSoFar)
+            if (time == NOT_FOUND_SO_FAR)
                 time = Agros2D::problem()->timeStepToTotalTime(id.timeStep);
             else
                 assert(time == Agros2D::problem()->timeStepToTotalTime(id.timeStep));
         }
     }
-    assert(time != notFoundSoFar);
+    assert(time != NOT_FOUND_SO_FAR);
     return time;
 }
 
@@ -279,7 +271,7 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionMode solutionT
     if (timeStep == -1)
         timeStep = lastTimeStep(fieldInfo, solutionType);
 
-    int adaptiveStep = notFoundSoFar;
+    int adaptiveStep = NOT_FOUND_SO_FAR;
     foreach (FieldSolutionID sid, m_multiSolutions)
     {
         if ((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
@@ -428,9 +420,9 @@ void SolutionStore::loadRunTimeDetails()
 
             // append run time details
             m_multiSolutionRunTimeDetails.insert(solutionID,
-                                             SolutionRunTimeDetails(data.time_step_length().get(),
-                                                                    data.adaptivity_error().get(),
-                                                                    data.dofs().get()));
+                                                 SolutionRunTimeDetails(data.time_step_length().get(),
+                                                                        data.adaptivity_error().get(),
+                                                                        data.dofs().get()));
         }
     }
     catch (const xml_schema::exception& e)

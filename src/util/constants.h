@@ -182,5 +182,7 @@ const int MAX_DOFS = 60e3;
 // cache size
 const int CACHE_SIZE = 10;
 
+const int NOT_FOUND_SO_FAR = -999;
+
 #endif // UTIL_CONSTANTS_H
 

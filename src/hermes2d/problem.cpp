@@ -21,6 +21,7 @@
 #include "problem_config.h"
 
 #include "util/global.h"
+#include "util/constants.h"
 
 #include "field.h"
 #include "block.h"
@@ -356,7 +357,7 @@ void Problem::solveInit()
 
 double Problem::timeStepToTime(int timeStepIndex) const
 {
-    if (timeStepIndex == 0)
+    if (timeStepIndex == 0 || timeStepIndex == NOT_FOUND_SO_FAR)
         return 0.0;
     else
         return m_timeStepLengths[timeStepIndex - 1];

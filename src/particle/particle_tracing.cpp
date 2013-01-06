@@ -73,7 +73,8 @@ bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo,
     Point3 forceLorentz;
     try
     {
-        forceLorentz = Agros2D::plugins()[fieldInfo->fieldId()]->force(fieldInfo, m_materials[fieldInfo], position, velocity) * Agros2D::problem()->configView()->particleConstant;
+        forceLorentz = Agros2D::plugin(fieldInfo->fieldId())->force(fieldInfo, m_materials[fieldInfo], position, velocity)
+                * Agros2D::problem()->configView()->particleConstant;
     }
     catch (AgrosException e)
     {

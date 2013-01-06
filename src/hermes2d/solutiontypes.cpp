@@ -81,12 +81,19 @@ void MultiArray<Scalar>::clear()
 
     m_solutions.clear();
 
+    // used meshes (should be shared between spaces)
+    QList<Hermes::Hermes2D::Mesh *> meshes;
+    foreach (Hermes::Hermes2D::Space<Scalar> *space, m_spaces)
+        if (!meshes.contains(space->get_mesh()))
+            meshes.append(space->get_mesh());
+
+    // clear meshes
+    foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
+        delete mesh;
+
     // clear spaces
     foreach (Hermes::Hermes2D::Space<Scalar> *space, m_spaces)
-    {
-        delete space->get_mesh();
         delete space;
-    }
 
     m_spaces.clear();
 }

@@ -107,7 +107,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
 
     // get weakform
-    PluginInterface *plugin = Agros2D::plugins()[fieldId];
+    PluginInterface *plugin = Agros2D::plugin(fieldId);
     assert(plugin);
 
     Hermes::Hermes2D::Form<Scalar> *weakForm = NULL;
@@ -1050,9 +1050,9 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
 
     FieldInfo* activeViewField = Agros2D::scene()->activeViewField();
     assert(activeViewField);
-    PluginInterface *interface = Agros2D::plugins()[activeViewField->fieldId()];
-    assert(interface);
-    return interface->filter(activeViewField,
+    PluginInterface *plugin = Agros2D::plugin(activeViewField->fieldId());
+    assert(plugin);
+    return plugin->filter(activeViewField,
                              sln,
                              physicFieldVariable->id(),
                              physicFieldVariableComp);

@@ -63,7 +63,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     connect(Agros2D::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
-    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(refresh()));
+    // connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(refresh()));
     connect(Agros2D::problem(), SIGNAL(couplingsChanged()), this, SLOT(refresh()));
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
@@ -212,7 +212,7 @@ void InfoWidget::showInfo()
 
                 solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
                 solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
-                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
+                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesConst());
             }
 
             if (Agros2D::problem()->isMeshed())

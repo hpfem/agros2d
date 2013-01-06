@@ -476,7 +476,9 @@ void ConfigComputerDialog::readModulesAndCouplings()
 
         try
         {
-            Agros2D::loadPlugins(QStringList(itModules.key()));
+            foreach (QString plugin, QStringList(itModules.key()))
+                Agros2D::loadPlugin(plugin);
+
             item->setText(1, tr("available"));
         }
         catch (AgrosException e)
@@ -498,7 +500,9 @@ void ConfigComputerDialog::readModulesAndCouplings()
 
         try
         {
-            Agros2D::loadPlugins(QStringList(itCouplings.key()));
+            foreach (QString plugin, QStringList(itCouplings.key()))
+                Agros2D::loadPlugin(plugin);
+
             item->setText(1, tr("available"));
         }
         catch (AgrosException e)

@@ -313,7 +313,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> Solver<Scalar>::deepMeshAndSpa
 
         Mesh *mesh = NULL;
         // Deep copy of mesh for each field separately, than use for all field component the same one
-        if(refineMesh)
+        if (refineMesh)
         {
             Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp)->get_mesh());
             mesh = meshCreator.create_ref_mesh();
@@ -349,11 +349,20 @@ void Solver<Scalar>::setActualSpaces(Hermes::vector<Hermes::Hermes2D::Space<Scal
 template <typename Scalar>
 void Solver<Scalar>::clearActualSpaces()
 {
+    // used meshes (should be shared between spaces)
+    QList<Hermes::Hermes2D::Mesh *> meshes;
     foreach (Hermes::Hermes2D::Space<Scalar> *space, m_actualSpaces)
-    {
-        delete space->get_mesh();
+        if (!meshes.contains(space->get_mesh()))
+            meshes.append(space->get_mesh());
+
+    // clear meshes
+    foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
+        delete mesh;
+
+    // clear spaces
+    foreach (Hermes::Hermes2D::Space<Scalar> *space, m_actualSpaces)
         delete space;
-    }
+
     m_actualSpaces.clear();
 }
 
@@ -377,10 +386,10 @@ void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solu
 template <typename Scalar>
 void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, int adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> previousSolution)
 {
-    //    cout << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
-    //            arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
-    //            arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
-    //            arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData()).toStdString();
+    //    qDebug() << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
+    //                arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
+    //                arg(Hermes2DApi.getNumberSpacePointers()).arg(Hermes2DApi.getNumberSpaceData()).
+    //                arg(Hermes2DApi.getNumberSolutionPointers()).arg(Hermes2DApi.getNumberSolutionData());
 
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
 
@@ -621,7 +630,7 @@ void Solver<Scalar>::createInitialSpace()
                 foreach (FormInfo *form, boundary_type->essential())
                 {
                     // plugion interface
-                    PluginInterface *plugin = Agros2D::plugins()[fieldInfo->fieldId()];
+                    PluginInterface *plugin = Agros2D::plugin(fieldInfo->fieldId());
                     assert(plugin);
 
                     // exact solution - Dirichlet BC
@@ -643,21 +652,25 @@ void Solver<Scalar>::createInitialSpace()
         // create space
         for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
         {
+            // create copy of initial mesh
+            Hermes::Hermes2D::Mesh *oneInitialMesh = new Hermes::Hermes2D::Mesh();
+            oneInitialMesh->copy(initialMesh);
+
             Space<Scalar> *oneSpace = NULL;
             switch (fieldInfo->module()->spaces()[i+1].type())
             {
             case HERMES_L2_SPACE:
-                oneSpace = new L2Space<Scalar>(initialMesh, fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new L2Space<Scalar>(oneInitialMesh, fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_H1_SPACE:
-                oneSpace = new H1Space<Scalar>(initialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new H1Space<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
                 break;
             default:
                 assert(0);
                 break;
             }
 
-            //cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
+            // cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             m_actualSpaces.push_back(oneSpace);
 
             // set order by element
@@ -671,6 +684,9 @@ void Solver<Scalar>::createInitialSpace()
                 }
             }
         }
+
+        // delete temp initial mesh
+        delete initialMesh;
     }
 
     assert(!m_hermesSolverContainer);
@@ -838,8 +854,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 
     Agros2D::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
                                  arg(error).
-                                 arg(Space<Scalar>::get_num_dofs(msa.spacesNakedConst())).
-                                 arg(Space<Scalar>::get_num_dofs(msaRef.spacesNakedConst())));
+                                 arg(Space<Scalar>::get_num_dofs(msa.spacesConst())).
+                                 arg(Space<Scalar>::get_num_dofs(msaRef.spacesConst())));
 
     deleteSelectors(selector);
 

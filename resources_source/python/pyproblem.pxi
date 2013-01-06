@@ -165,7 +165,7 @@ cdef class __Problem__:
         return steps
 
     # time steps
-    def time_steps(self):
+    def time_steps_total(self):
         steps = self.time_steps_length()
         time = [0.0]
         for step in steps:

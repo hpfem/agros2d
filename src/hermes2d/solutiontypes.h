@@ -91,11 +91,10 @@ public:
     void append(Hermes::Hermes2D::Space<Scalar> *space, Hermes::Hermes2D::Solution<Scalar> *solution);
     void append(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
 
-    //creates copy of spaces, used in solver
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces() { return m_spaces; }
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions() { return m_solutions; }
 
-    Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > spacesNakedConst() { return castConst(m_spaces); }
+    Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > spacesConst() { return castConst(m_spaces); }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);

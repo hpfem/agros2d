@@ -104,7 +104,7 @@ void ResultsView::showPoint(const Point &point)
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        LocalValue *value = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        LocalValue *value = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
         QMap<Module::LocalVariable *, PointValue> values = value->values();
         delete value;
 
@@ -177,7 +177,7 @@ void ResultsView::showVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        IntegralValue *integral = Agros2D::plugins()[fieldInfo->fieldId()]->volumeIntegral(fieldInfo);
+        IntegralValue *integral = Agros2D::plugin(fieldInfo->fieldId())->volumeIntegral(fieldInfo);
         QMap<Module::Integral*, double> values = integral->values();
         if (values.size() > 0)
         {
@@ -226,7 +226,7 @@ void ResultsView::showSurfaceIntegral()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        IntegralValue *integral = Agros2D::plugins()[fieldInfo->fieldId()]->surfaceIntegral(fieldInfo);
+        IntegralValue *integral = Agros2D::plugin(fieldInfo->fieldId())->surfaceIntegral(fieldInfo);
         QMap<Module::Integral*, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
