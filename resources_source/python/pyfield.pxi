@@ -23,31 +23,31 @@ cdef extern from "../../src/pythonlab/pyfield.h":
         char *getFieldId()
 
         char *getAnalysisType()
-        void setAnalysisType(char*) except +
+        void setAnalysisType(char* analysisType) except +
 
         int getNumberOfRefinements()
-        void setNumberOfRefinements(int) except +
+        void setNumberOfRefinements(int numberOfRefinements) except +
 
         int getPolynomialOrder()
-        void setPolynomialOrder(int) except +
+        void setPolynomialOrder(int polynomialOrder) except +
 
         char *getLinearityType()
-        void setLinearityType(char*) except +
+        void setLinearityType(char* linearityType) except +
 
         double getNonlinearTolerance()
-        void setNonlinearTolerance(double) except +
+        void setNonlinearTolerance(double nonlinearTolerance) except +
 
         int getNonlinearSteps()
-        void setNonlinearSteps(int) except +
+        void setNonlinearSteps(int nonlinearSteps) except +
 
         double getDampingCoeff()
-        void setDampingCoeff(double) except +
+        void setDampingCoeff(double dampingCoeff) except +
 
         bool getAutomaticDamping()
-        void setAutomaticDamping(bool)
+        void setAutomaticDamping(bool automaticDamping)
 
         int getDampingNumberToIncrease()
-        void setDampingNumberToIncrease(int) except +
+        void setDampingNumberToIncrease(int dampingNumberToIncrease) except +
 
         bool getPicardAndersonAcceleration()
         void setPicardAndersonAcceleration(bool acceleration) except +
@@ -59,13 +59,13 @@ cdef extern from "../../src/pythonlab/pyfield.h":
         void setPicardAndersonNumberOfLastVectors(int number) except +
 
         char *getAdaptivityType()
-        void setAdaptivityType(char*) except +
+        void setAdaptivityType(char* adaptivityType) except +
 
         double getAdaptivityTolerance()
-        void setAdaptivityTolerance(double) except +
+        void setAdaptivityTolerance(double adaptivityTolerance) except +
 
         int getAdaptivitySteps()
-        void setAdaptivitySteps(int) except +
+        void setAdaptivitySteps(int adaptivitySteps) except +
 
         int getAdaptivityBackSteps()
         void setAdaptivityBackSteps(int adaptivityBackSteps) except +
@@ -74,10 +74,10 @@ cdef extern from "../../src/pythonlab/pyfield.h":
         void setAdaptivityRedoneEach(int adaptivityRedoneEach) except +
 
         double getInitialCondition()
-        void setInitialCondition(double) except +
+        void setInitialCondition(double initialCondition) except +
 
         double getTimeSkip()
-        void setTimeSkip(double) except +
+        void setTimeSkip(double timeSkip) except +
 
         void addBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
         void setBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
@@ -101,47 +101,45 @@ cdef extern from "../../src/pythonlab/pyfield.h":
 cdef class __Field__:
     cdef PyField *thisptr
 
-    # Field(field_id)
     def __cinit__(self, char *field_id):
-        # todo - more problems
         self.thisptr = new PyField(field_id)
     def __dealloc__(self):
         del self.thisptr
 
-    # field_id
+    # field id
     property field_id:
         def __get__(self):
             return self.thisptr.getFieldId()
 
-    # analysis_type
+    # analysis type
     property analysis_type:
         def __get__(self):
             return self.thisptr.getAnalysisType()
         def __set__(self, field_id):
             self.thisptr.setAnalysisType(field_id)
 
-    # number_of_refinements
+    # number of refinements
     property number_of_refinements:
         def __get__(self):
             return self.thisptr.getNumberOfRefinements()
         def __set__(self, number_of_refinements):
             self.thisptr.setNumberOfRefinements(number_of_refinements)
 
-    # polynomial_order
+    # polynomial order
     property polynomial_order:
         def __get__(self):
             return self.thisptr.getPolynomialOrder()
         def __set__(self, polynomial_order):
             self.thisptr.setPolynomialOrder(polynomial_order)
 
-    # linearity_type
+    # linearity type
     property linearity_type:
         def __get__(self):
             return self.thisptr.getLinearityType()
         def __set__(self, linearity_type):
             self.thisptr.setLinearityType(linearity_type)
 
-    # nonlinear_tolerance
+    # nonlinear tolerance
     property nonlinear_tolerance:
         def __get__(self):
             return self.thisptr.getNonlinearTolerance()
@@ -197,35 +195,35 @@ cdef class __Field__:
         def __set__(self, number):
             self.thisptr.setPicardAndersonNumberOfLastVectors(number)
 
-    # adaptivity_type
+    # adaptivity type
     property adaptivity_type:
         def __get__(self):
             return self.thisptr.getAdaptivityType()
         def __set__(self, adaptivity_type):
             self.thisptr.setAdaptivityType(adaptivity_type)
 
-    # adaptivity_tolerance
+    # adaptivity tolerance
     property adaptivity_tolerance:
         def __get__(self):
             return self.thisptr.getAdaptivityTolerance()
         def __set__(self, adaptivity_tolerance):
             self.thisptr.setAdaptivityTolerance(adaptivity_tolerance)
 
-    # adaptivity_back_steps
+    # adaptivity back_steps
     property adaptivity_back_steps:
         def __get__(self):
             return self.thisptr.getAdaptivityBackSteps()
         def __set__(self, adaptivity_back_steps):
             self.thisptr.setAdaptivityBackSteps(adaptivity_back_steps)
 
-    # adaptivity_redone
+    # adaptivity redone
     property adaptivity_redone:
         def __get__(self):
             return self.thisptr.getAdaptivityRedoneEach()
         def __set__(self, adaptivity_redone_each):
             self.thisptr.setAdaptivityRedoneEach(adaptivity_redone_each)
 
-    # adaptivity_steps
+    # adaptivity steps
     property adaptivity_steps:
         def __get__(self):
             return self.thisptr.getAdaptivitySteps()
@@ -233,14 +231,14 @@ cdef class __Field__:
             self.thisptr.setAdaptivitySteps(adaptivity_steps)
 
 
-    # initial_condition
+    # initial condition
     property initial_condition:
         def __get__(self):
             return self.thisptr.getInitialCondition()
         def __set__(self, initial_condition):
             self.thisptr.setInitialCondition(initial_condition)
 
-    # time_skip
+    # time skip
     property time_skip:
         def __get__(self):
             return self.thisptr.getTimeSkip()
