@@ -96,6 +96,8 @@ cdef extern from "../../src/pythonlab/pyfield.h":
         void initialMeshParameters(map[string , int] parameters) except +
         void solutionMeshParameters(map[string , int] parameters) except +
 
+        void adaptivityInfo(vector[double] &error, vector[int] &dofs) except +
+
 cdef class __Field__:
     cdef PyField *thisptr
 
@@ -475,6 +477,30 @@ cdef class __Field__:
             incr(it)
 
         return parameters
+
+    # relative error
+    def relative_error(self):
+        cdef vector[double] error_vector
+        cdef vector[int] dofs_vector
+        self.thisptr.adaptivityInfo(error_vector, dofs_vector)
+
+        error = list()
+        for i in range(error_vector.size()):
+            error.append(error_vector[i])
+
+        return error
+
+    # dofs
+    def dofs(self):
+        cdef vector[double] error_vector
+        cdef vector[int] dofs_vector
+        self.thisptr.adaptivityInfo(error_vector, dofs_vector)
+
+        dofs = list()
+        for i in range(dofs_vector.size()):
+            dofs.append(dofs_vector[i])
+
+        return dofs
 
 def field(char *field_id):
     return __Field__(field_id)

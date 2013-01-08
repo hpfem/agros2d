@@ -156,6 +156,9 @@ class PyField
         // mesh parameters
         void initialMeshParameters(map<std::string, int> &parameters);
         void solutionMeshParameters(map<std::string, int> &parameters);
+
+        // adaptivity parameters
+        void adaptivityInfo(vector<double> &error, vector<int> &dofs);
 };
 
 #endif // PYTHONLABFIELD_H

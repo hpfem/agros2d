@@ -599,3 +599,24 @@ void PyField::solutionMeshParameters(map<std::string, int> &parameters)
     else
         initialMeshParameters(parameters);
 }
+
+void PyField::adaptivityInfo(vector<double> &error, vector<int> &dofs)
+{
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
+    if (Agros2D::problem()->fieldInfo(fieldInfo()->fieldId())->adaptivityType() != AdaptivityType_None)
+    {
+        int timeStep = Agros2D::solutionStore()->timeLevels(fieldInfo()).count() - 1;
+        int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal) + 1;
+
+        for (int i = 0; i < adaptiveSteps; i++)
+        {
+            SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo(), timeStep, i, SolutionMode_Normal)); // TODO: (Franta) wrapper
+            error.push_back(runTime.adaptivity_error);
+            dofs.push_back(runTime.DOFs);
+        }
+    }
+    else
+        throw logic_error(QObject::tr("Solution is not adaptive.").toStdString());
+}
