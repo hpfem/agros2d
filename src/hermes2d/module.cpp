@@ -1128,6 +1128,7 @@ void writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Hermes2D::M
     setlocale (LC_NUMERIC, "C");
 
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
+    meshloader.set_validation(false);
     meshloader.save(fileName.toStdString().c_str(), meshes);
 
     // set system locale

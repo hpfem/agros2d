@@ -156,9 +156,10 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
     for (int i = 0; i < solutionID.group->module()->numberOfSolutions(); i++)
     {
         Space<Scalar> *space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toStdString().c_str(),
-                                                   mesh);
+                                                   mesh, false);
 
         Solution<Scalar> *sln = new Solution<Scalar>();
+        sln->set_validation(false);
         sln->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space);
 
         append(space, sln);

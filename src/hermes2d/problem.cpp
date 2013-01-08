@@ -777,6 +777,7 @@ void Problem::readInitialMeshesFromFile()
     // load mesh from file
     QString fileName = cacheProblemDir() + "/initial.mesh";
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
+    meshloader.set_validation(false);
     meshloader.load(fileName.toStdString().c_str(), meshesVector);
 
     // set system locale

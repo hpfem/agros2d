@@ -110,34 +110,34 @@ namespace Hermes
       num_dofs = -1;
 
       this->set_quad_2d(&g_quad_2d_std);
-            Hermes2DApi.realSolutionDataPointerCalculator++;
+			Hermes2DApi.realSolutionDataPointerCalculator++;
     }
 
-        template<>
-        void Solution<std::complex<double> >::init()
-        {
-            memset(tables, 0, sizeof(tables));
-            memset(elems,  0, sizeof(elems));
-            memset(oldest, 0, sizeof(oldest));
-            transform = true;
-            sln_type = HERMES_UNDEF;
-            this->num_components = 0;
-            e_last = NULL;
+		template<>
+		void Solution<std::complex<double> >::init()
+		{
+			memset(tables, 0, sizeof(tables));
+			memset(elems,  0, sizeof(elems));
+			memset(oldest, 0, sizeof(oldest));
+			transform = true;
+			sln_type = HERMES_UNDEF;
+			this->num_components = 0;
+			e_last = NULL;
 
-            for(int i = 0; i < 4; i++)
-                for(int j = 0; j < 4; j++)
-                    tables[i][j] = new std::map<uint64_t, LightArray<struct Function<std::complex<double> >::Node*>*>;
+			for(int i = 0; i < 4; i++)
+				for(int j = 0; j < 4; j++)
+					tables[i][j] = new std::map<uint64_t, LightArray<struct Function<std::complex<double> >::Node*>*>;
 
-            mono_coeffs = NULL;
-            elem_coeffs[0] = elem_coeffs[1] = NULL;
-            elem_orders = NULL;
-            dxdy_buffer = NULL;
-            num_coeffs = num_elems = 0;
-            num_dofs = -1;
+			mono_coeffs = NULL;
+			elem_coeffs[0] = elem_coeffs[1] = NULL;
+			elem_orders = NULL;
+			dxdy_buffer = NULL;
+			num_coeffs = num_elems = 0;
+			num_dofs = -1;
 
-            this->set_quad_2d(&g_quad_2d_std);
-            Hermes2DApi.complexSolutionDataPointerCalculator++;
-        }
+			this->set_quad_2d(&g_quad_2d_std);
+			Hermes2DApi.complexSolutionDataPointerCalculator++;
+		}
 
     template<>
     Solution<double>::Solution()
@@ -246,7 +246,7 @@ namespace Hermes
     {
       if(sln->sln_type == HERMES_UNDEF) throw Hermes::Exceptions::Exception("Solution being copied is uninitialized.");
 
-            this->increasePointerDataCounter();
+			this->increasePointerDataCounter();
       free();
 
       this->mesh = sln->mesh;
@@ -324,27 +324,27 @@ namespace Hermes
         e_last = NULL;
 
         free_tables();
-                Hermes2DApi.realSolutionDataPointerCalculator--;
+				Hermes2DApi.realSolutionDataPointerCalculator--;
     }
 
-        template<>
-        void Solution<std::complex<double> >::free()
-        {
-            if(mono_coeffs  != NULL) { delete [] mono_coeffs;   mono_coeffs = NULL;  }
-            if(elem_orders != NULL) { delete [] elem_orders;  elem_orders = NULL; }
-            if(dxdy_buffer != NULL) { delete [] dxdy_buffer;  dxdy_buffer = NULL; }
+		template<>
+		void Solution<std::complex<double> >::free()
+		{
+			if(mono_coeffs  != NULL) { delete [] mono_coeffs;   mono_coeffs = NULL;  }
+			if(elem_orders != NULL) { delete [] elem_orders;  elem_orders = NULL; }
+			if(dxdy_buffer != NULL) { delete [] dxdy_buffer;  dxdy_buffer = NULL; }
 
-            for (int i = 0; i < this->num_components; i++)
-                if(elem_coeffs[i] != NULL)
-                { delete [] elem_coeffs[i];  elem_coeffs[i] = NULL; }
+			for (int i = 0; i < this->num_components; i++)
+				if(elem_coeffs[i] != NULL)
+				{ delete [] elem_coeffs[i];  elem_coeffs[i] = NULL; }
 
-                e_last = NULL;
+				e_last = NULL;
 
-                free_tables();
-                Hermes2DApi.complexSolutionDataPointerCalculator--;
-        }
+				free_tables();
+				Hermes2DApi.complexSolutionDataPointerCalculator--;
+		}
 
-        template<>
+		template<>
     Solution<double>::~Solution()
     {
       free();
@@ -446,17 +446,17 @@ namespace Hermes
     }
 
 
-        template<>
-        void Solution<double>::increasePointerDataCounter()
-        {
-            Hermes2DApi.realSolutionDataPointerCalculator++;
-        }
+		template<>
+		void Solution<double>::increasePointerDataCounter()
+		{
+			Hermes2DApi.realSolutionDataPointerCalculator++;
+		}
 
-        template<>
-        void Solution<std::complex<double> >::increasePointerDataCounter()
-        {
-            Hermes2DApi.realSolutionDataPointerCalculator++;
-        }
+		template<>
+		void Solution<std::complex<double> >::increasePointerDataCounter()
+		{
+			Hermes2DApi.realSolutionDataPointerCalculator++;
+		}
 
     template<typename Scalar>
     void Solution<Scalar>::set_coeff_vector(const Space<Scalar>* space, PrecalcShapeset* pss,
@@ -478,8 +478,8 @@ namespace Hermes
 
       if(Solution<Scalar>::static_verbose_output)
         Hermes::Mixins::Loggable::Static::info("Solution: set_coeff_vector - solution being freed.");
-
-            this->increasePointerDataCounter();
+			
+			this->increasePointerDataCounter();
       free();
 
       this->space_type = space->get_type();
@@ -709,7 +709,7 @@ namespace Hermes
         start_indices_new.push_back(counter);
         counter += spaces[i]->get_num_dofs();
       }
-
+      
       for(unsigned int i = 0; i < solutions.size(); i++)
         Solution<Scalar>::vector_to_solution(solution_vector, spaces[i], solutions[i], add_dir_lift, start_indices_new[i]);
 
@@ -731,7 +731,7 @@ namespace Hermes
         start_indices_new.push_back(counter);
         counter += spaces[i]->get_num_dofs();
       }
-
+      
       for(unsigned int i = 0; i < solutions.size(); i++)
         Solution<Scalar>::vector_to_solution(solution_vector, spaces[i], solutions[i], add_dir_lift, start_indices_new[i]);
 
@@ -1367,11 +1367,15 @@ namespace Hermes
       this->mesh = space->get_mesh();
       this->space_type = space->get_type();
 
-            try
+			try
       {
-        std::auto_ptr<XMLSolution::solution> parsed_xml_solution(XMLSolution::solution_(filename, xml_schema::flags::dont_validate));
-        sln_type = parsed_xml_solution->exact() == 0 ? HERMES_SLN : HERMES_EXACT;
+        ::xml_schema::flags parsing_flags = 0;
+        if(!this->validate)
+          parsing_flags = xml_schema::flags::dont_validate;
 
+        std::auto_ptr<XMLSolution::solution> parsed_xml_solution(XMLSolution::solution_(filename, parsing_flags));
+        sln_type = parsed_xml_solution->exact() == 0 ? HERMES_SLN : HERMES_EXACT;
+  
         if(sln_type == HERMES_EXACT)
         {
           switch(parsed_xml_solution->num_components())
@@ -1443,7 +1447,7 @@ namespace Hermes
           for (unsigned int component_i = 0; component_i < this->num_components; component_i++)
             for (unsigned int elems_i = 0; elems_i < num_elems; elems_i++)
               this->elem_coeffs[component_i][parsed_xml_solution->component().at(component_i).elem_coeffs().at(elems_i).id()] = parsed_xml_solution->component().at(component_i).elem_coeffs().at(elems_i).coeff();
-
+        
         }
           init_dxdy_buffer();
       }
@@ -1461,12 +1465,16 @@ namespace Hermes
       sln_type = HERMES_SLN;
       this->mesh = space->get_mesh();
       this->space_type = space->get_type();
-
+      
       try
       {
-        std::auto_ptr<XMLSolution::solution> parsed_xml_solution(XMLSolution::solution_(filename, xml_schema::flags::dont_validate));
-        sln_type = parsed_xml_solution->exact() == 0 ? HERMES_SLN : HERMES_EXACT;
+        ::xml_schema::flags parsing_flags = 0;
+        if(!this->validate)
+          parsing_flags = xml_schema::flags::dont_validate;
 
+        std::auto_ptr<XMLSolution::solution> parsed_xml_solution(XMLSolution::solution_(filename, parsing_flags));
+        sln_type = parsed_xml_solution->exact() == 0 ? HERMES_SLN : HERMES_EXACT;
+        
         if(sln_type == HERMES_EXACT)
         {
           switch(parsed_xml_solution->num_components())
@@ -1517,7 +1525,11 @@ namespace Hermes
             if(this->space_type != HERMES_HDIV_SPACE)
               throw Exceptions::Exception("Space types not compliant in Solution::load().");
 
-          std::auto_ptr<XMLSolution::solution> parsed_xml_solution(XMLSolution::solution_(filename, xml_schema::flags::dont_validate));
+          ::xml_schema::flags parsing_flags = 0;
+          if(!this->validate)
+            parsing_flags = xml_schema::flags::dont_validate;
+
+          std::auto_ptr<XMLSolution::solution> parsed_xml_solution(XMLSolution::solution_(filename, parsing_flags));
 
           this->num_coeffs = parsed_xml_solution->num_coeffs();
           this->num_elems = parsed_xml_solution->num_elems();
@@ -1698,7 +1710,7 @@ namespace Hermes
             Scalar dy = get_ref_value(e, xi1, xi2, 0, 2);
             toReturn->dx[0] = m[0][0]*dx + m[0][1]*dy;
             toReturn->dy[0] = m[1][0]*dx + m[1][1]*dy;
-
+    
 #ifdef H2D_SECOND_DERIVATIVES_ENABLED
             double2x2 mat;
             double3x2 mat2;
@@ -1732,7 +1744,7 @@ namespace Hermes
           return toReturn;
         }
 
-        // this->warn("Point (%g, %g) does not lie in any element.", x, y);
+        this->warn("Point (%g, %g) does not lie in any element.", x, y);
         return NULL;
       }
     }
