@@ -20,6 +20,7 @@
 #include "pythonlab/pyview.h"
 #include "pythonlab/pythonengine_agros.h"
 
+#include "sceneview_geometry.h"
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
@@ -420,8 +421,9 @@ void PyViewPost3D::setPost3DMode(char* mode)
 void PyView::saveImageToFile(char *file, int width, int height)
 {
     ErrorResult result;
-    // TODO: (Franta) preprocessor
-    if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
+    if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())
+        result = currentPythonEngineAgros()->sceneViewPreprocessor()->saveImageToFile(file, width, height);
+    else if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
         result = currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(file, width, height);
 
     else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
