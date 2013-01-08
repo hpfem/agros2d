@@ -57,11 +57,14 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     util.cpp \
     value.cpp \
     scene.cpp \
+    confdialog.cpp \
+    util/conf.cpp \
     util/global.cpp \
     util/checkversion.cpp \
     util/point.cpp \
     util/xml.cpp \
     util/enums.cpp \
+    util/loops.cpp \
     util/glfont.cpp \
     gui/common.cpp \
     gui/chart.cpp \
@@ -81,6 +84,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     hermes2d/field.cpp \
     hermes2d/block.cpp \
     hermes2d/problem.cpp \
+    hermes2d/problem_config.cpp \
     ../pythonlab/pythonlab/pythonconsole.cpp \
     ../pythonlab/pythonlab/pythoncompleter.cpp \
     ../pythonlab/pythonlab/pythonhighlighter.cpp \
@@ -116,11 +120,10 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
+    examplesdialog.cpp \
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
-    conf.cpp \
-    confdialog.cpp \
     hermes2d/module_agros.cpp \
     sceneedge.cpp \
     scenelabel.cpp \
@@ -133,6 +136,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     hermes2d/solutionstore.cpp \
     ../resources_source/classes/module_xml.cpp \
     ../resources_source/classes/coupling_xml.cpp \
+    ../resources_source/classes/agros2d_structure_xml.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
@@ -150,9 +154,11 @@ HEADERS += util.h \
     scene.h \
     util/global.h \
     util/constants.h \
+    util/conf.h \
     util/checkversion.h \
     util/point.h \
     util/xml.h \
+    util/loops.h \
     util/enums.h \
     util/glfont.h \
     gui/common.h \
@@ -169,6 +175,7 @@ HEADERS += util.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \
+    hermes2d/problem_config.h \
     ../pythonlab/pythonlab/pythonconsole.h \
     ../pythonlab/pythonlab/pythoncompleter.h \
     ../pythonlab/pythonlab/pythonhighlighter.h \
@@ -206,10 +213,10 @@ HEADERS += util.h \
     indicators/indicator_unity.h \
     collaboration.h \
     resultsview.h \
+    examplesdialog.h \
     datatable.h \
     datatabledialog.h \
     materialbrowserdialog.h \
-    conf.h \
     confdialog.h \
     hermes2d/solver.h \
     hermes2d/module_agros.h \
@@ -262,6 +269,7 @@ OTHER_FILES += functions.py \
     ../resources_source/python/agros2d.pyx \
     ../resources_source/python/pyproblem.pxi \
     ../resources_source/python/pyfield.pxi \
+    ../resources_source/python/pygeometry.pxi \
     ../resources_source/python/pyview.pxi \
     ../resources_source/python/pyparticletracing.pxi \
     ../resources/xsd/subdomains_h2d_xml.xsd \

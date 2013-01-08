@@ -11,41 +11,49 @@ cdef extern from "../../src/pythonlab/pyparticletracing.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
 
+        void setNumberOfParticles(int particles)  except +
+        int getNumberOfParticles()
+        void setStartingRadius(double radius) except +
+        double getStartingRadius()
+
         void setInitialPosition(double x, double y) except +
-        void initialPosition(double x, double y)
+        void getInitialPosition(double x, double y)
 
         void setInitialVelocity(double x, double y)
-        void initialVelocity(double x, double y)
+        void getInitialVelocity(double x, double y)
 
         void setParticleMass(double mass) except +
-        double particleMass()
+        double getParticleMass()
 
         void setParticleCharge(double charge)
-        double particleCharge()
+        double getParticleCharge()
 
-        void setIncludeRelativisticCorrection(int incl)
-        int includeRelativisticCorrection()
+        void setIncludeRelativisticCorrection(bool incl)
+        bool getIncludeRelativisticCorrection()
 
-        void setReflectOnDifferentMaterial(int reflect)
-        int reflectOnDifferentMaterial()
-        void setReflectOnBoundary(int reflect)
-        int reflectOnBoundary()
+        void setReflectOnDifferentMaterial(bool reflect)
+        bool getReflectOnDifferentMaterial()
+        void setReflectOnBoundary(bool reflect)
+        bool getReflectOnBoundary()
         void setCoefficientOfRestitution(double coeff)
-        double coefficientOfRestitution()
+        double getCoefficientOfRestitution()
 
         void setDragForceDensity(double rho) except +
-        double dragForceDensity()
+        double getDragForceDensity()
         void setDragForceReferenceArea(double area) except +
-        double dragForceReferenceArea()
+        double getDragForceReferenceArea()
         void setDragForceCoefficient(double coeff) except +
-        double dragForceCoefficient()
+        double getDragForceCoefficient()
+
+        void setCustomForce(double x, double y, double z) except +
+        void getCustomForce(double x, double y, double z) except +
 
         void setMaximumTolerance(double tolerance) except +
-        double maximumTolerance()
+        double getMaximumTolerance()
         void setMaximumNumberOfSteps(int steps) except +
-        int maximumNumberOfSteps()
+        int getMaximumNumberOfSteps()
         void setMinimumStep(double step) except +
-        double minimumStep()
+        double getMinimumStep()
 
         void solve() except +
 
@@ -54,13 +62,27 @@ cdef extern from "../../src/pythonlab/pyparticletracing.h":
         void velocities(vector[double] x, vector[double] y, vector[double] z)
         void times(vector[double] times)
 
-cdef class ParticleTracing:
+cdef class __ParticleTracing__:
     cdef PyParticleTracing *thisptr
 
     def __cinit__(self):
         self.thisptr = new PyParticleTracing()
     def __dealloc__(self):
         del self.thisptr
+
+    # number of particles
+    property number_of_particles:
+        def __get__(self):
+            return self.thisptr.getNumberOfParticles()
+        def __set__(self, particles):
+            self.thisptr.setNumberOfParticles(particles)
+
+    # particles dispersion
+    property particles_dispersion:
+        def __get__(self):
+            return self.thisptr.getStartingRadius()
+        def __set__(self, dispersion):
+            self.thisptr.setStartingRadius(dispersion)
 
     # solve
     def solve(self):
@@ -114,7 +136,7 @@ cdef class ParticleTracing:
         def __get__(self):
             cdef double x = 0.0
             cdef double y = 0.0
-            self.thisptr.initialPosition(x, y)
+            self.thisptr.getInitialPosition(x, y)
             return x, y
         def __set__(self, xy):
             self.thisptr.setInitialPosition(xy[0], xy[1])
@@ -124,7 +146,7 @@ cdef class ParticleTracing:
         def __get__(self):
             cdef double x = 0.0
             cdef double y = 0.0
-            self.thisptr.initialVelocity(x, y)
+            self.thisptr.getInitialVelocity(x, y)
             return x, y
         def __set__(self, xy):
             self.thisptr.setInitialVelocity(xy[0], xy[1])
@@ -132,80 +154,93 @@ cdef class ParticleTracing:
     # mass
     property mass:
         def __get__(self):
-            return self.thisptr.particleMass()
+            return self.thisptr.getParticleMass()
         def __set__(self, mass):
             self.thisptr.setParticleMass(mass)
 
     # charge
     property charge:
         def __get__(self):
-            return self.thisptr.particleCharge()
+            return self.thisptr.getParticleCharge()
         def __set__(self, charge):
             self.thisptr.setParticleCharge(charge)
 
     # relativistic correction
     property include_relativistic_correction:
         def __get__(self):
-            return self.thisptr.includeRelativisticCorrection()
+            return self.thisptr.getIncludeRelativisticCorrection()
         def __set__(self, incl):
             self.thisptr.setIncludeRelativisticCorrection(incl)
 
     # reflect on different material
     property reflect_on_different_material:
         def __get__(self):
-            return self.thisptr.reflectOnDifferentMaterial()
+            return self.thisptr.getReflectOnDifferentMaterial()
         def __set__(self, reflect):
             self.thisptr.setReflectOnDifferentMaterial(reflect)
 
     # reflect on boundary
     property reflect_on_boundary:
         def __get__(self):
-            return self.thisptr.reflectOnBoundary()
+            return self.thisptr.getReflectOnBoundary()
         def __set__(self, reflect):
             self.thisptr.setReflectOnBoundary(reflect)
 
     property coefficient_of_restitution:
         def __get__(self):
-            return self.thisptr.coefficientOfRestitution()
+            return self.thisptr.getCoefficientOfRestitution()
         def __set__(self, coeff):
             self.thisptr.setCoefficientOfRestitution(coeff)
 
     # drag force
     property drag_force_density:
         def __get__(self):
-            return self.thisptr.dragForceDensity()
+            return self.thisptr.getDragForceDensity()
         def __set__(self, rho):
             self.thisptr.setDragForceDensity(rho)
 
     property drag_force_reference_area:
         def __get__(self):
-            return self.thisptr.dragForceReferenceArea()
+            return self.thisptr.getDragForceReferenceArea()
         def __set__(self, area):
             self.thisptr.setDragForceReferenceArea(area)
 
     property drag_force_coefficient:
         def __get__(self):
-            return self.thisptr.dragForceCoefficient()
+            return self.thisptr.getDragForceCoefficient()
         def __set__(self, coeff):
             self.thisptr.setDragForceCoefficient(coeff)
+
+    # custom force
+    property custom_force:
+        def __get__(self):
+            cdef double x = 0.0
+            cdef double y = 0.0
+            cdef double z = 0.0
+            self.thisptr.getCustomForce(x, y, z)
+            return x, y, z
+        def __set__(self, xyz):
+            self.thisptr.setCustomForce(xyz[0], xyz[1], xyz[2])
 
     # maximum number of steps
     property maximum_number_of_steps:
         def __get__(self):
-            return self.thisptr.maximumNumberOfSteps()
+            return self.thisptr.getMaximumNumberOfSteps()
         def __set__(self, steps):
             self.thisptr.setMaximumNumberOfSteps(steps)
 
     # tolerance
     property tolerance:
         def __get__(self):
-            return self.thisptr.maximumTolerance()
+            return self.thisptr.getMaximumTolerance()
         def __set__(self, tolerance):
             self.thisptr.setMaximumTolerance(tolerance)
 
     # minimum step
     property minimum_step:
         def __get__(self):
-            return self.thisptr.minimumStep()
+            return self.thisptr.getMinimumStep()
         def __set__(self, step):
             self.thisptr.setMinimumStep(step)
+
+particle_tracing = __ParticleTracing__()

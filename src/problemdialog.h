@@ -110,6 +110,8 @@ private:
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     LineEditDouble *txtAdaptivityTolerance;
+    QSpinBox *txtAdaptivityBackSteps;
+    QSpinBox *txtAdaptivityRedoneEach;
 
     QComboBox *cmbLinearityType;
 
@@ -221,6 +223,7 @@ private:
     // transient
     QGroupBox *grpTransientAnalysis;
     ValueLineEdit *txtTransientTimeTotal;
+    QLabel* lblTransientSteps;
     QSpinBox *txtTransientSteps;
     ValueLineEdit *txtTransientTolerance;
     QSpinBox *txtTransientOrder;

@@ -34,7 +34,7 @@ acoustic.add_material("Air", {"acoustic_density" : 1.25, "acoustic_speed" : 343}
 geometry = agros2d.geometry
 geometry.add_edge(0, 1.25, 1.05, 1.25, refinements = {}, boundaries = {"acoustic" : "Wall"})
 geometry.add_edge(0.25, 0, 1.05, 1.25, angle = 90, refinements = {}, boundaries = {"acoustic" : "Matched boundary"})
-geometry.add_edge(0.25, 0, 0, 0, refinements = {}, boundaries = {"acoustic" : "Source pressure"})
+geometry.add_edge(0.25, 0, 0, 0, refinements = {}, boundaries = {"acoustic" : "Source"})
 geometry.add_edge(0, 0, 0, 0.5, refinements = {}, boundaries = {"acoustic" : "Wall"})
 geometry.add_edge(0, 0.8, 0, 1.25, refinements = {}, boundaries = {"acoustic" : "Wall"})
 geometry.add_edge(0, 0.5, 0.15, 0.65, angle = 90, refinements = {}, boundaries = {"acoustic" : "Wall"})

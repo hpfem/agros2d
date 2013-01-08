@@ -50,8 +50,9 @@ public:
 
     QString fieldId() const { return m_fieldId; }
 
-    inline QSharedPointer<Hermes::Hermes2D::Mesh> initialMesh() const { return m_initialMesh; }
-    inline setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh> mesh) { m_initialMesh = mesh; }
+    inline Hermes::Hermes2D::Mesh *initialMesh() const { return m_initialMesh; }
+    inline void clearInitialMesh() { if (m_initialMesh) delete m_initialMesh; m_initialMesh = NULL; }
+    void setInitialMesh(Hermes::Hermes2D::Mesh *mesh);
 
     AnalysisType analysisType() const { return m_analysisType; }
     void setAnalysisType(const AnalysisType analysisType);
@@ -116,6 +117,12 @@ public:
     inline double adaptivityTolerance() const { return m_adaptivityTolerance; }
     void setAdaptivityTolerance(const double at) { m_adaptivityTolerance = at; emit changed(); }
 
+    inline int adaptivityBackSteps() const { return m_adaptivityBackSteps; }
+    void setAdaptivityBackSteps(const int abs) { m_adaptivityBackSteps = abs; emit changed(); }
+
+    inline int adaptivityRedoneEach() const { return m_adaptivityRedoneEach; }
+    void setAdaptivityRedoneEach(const int re) { m_adaptivityRedoneEach = re; emit changed(); }
+
     inline Value initialCondition() const { return m_initialCondition; }
     void setInitialCondition(const Value& value) { m_initialCondition = value; emit changed(); }
 
@@ -141,7 +148,7 @@ private:
     QString m_fieldId;
 
     // initial mesh
-    QSharedPointer<Hermes::Hermes2D::Mesh> m_initialMesh;
+    Hermes::Hermes2D::Mesh *m_initialMesh;
 
     // analysis type
     AnalysisType m_analysisType;
@@ -173,6 +180,8 @@ private:
     AdaptivityType m_adaptivityType;
     int m_adaptivitySteps;
     double m_adaptivityTolerance; // percent
+    int m_adaptivityBackSteps;
+    int m_adaptivityRedoneEach;
 
     // transient
     Value m_initialCondition;
@@ -186,16 +195,18 @@ class Field
 public:
     Field(FieldInfo* fieldInfo);
     bool solveInitVariables();
+
     FieldInfo* fieldInfo() { return m_fieldInfo; }
+
+    void addCouplingInfo(CouplingInfo *couplingInfo) { m_couplingInfos.append(couplingInfo); }
+    QList<CouplingInfo* > couplingInfos() { return m_couplingInfos; }
 
     // mesh
     void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
 
-public:
-//private:
-    QList<CouplingInfo* > m_couplingSources;
+private:
+    QList<CouplingInfo* > m_couplingInfos;
     FieldInfo* m_fieldInfo;
-
 };
 
 #endif // FIELD_H

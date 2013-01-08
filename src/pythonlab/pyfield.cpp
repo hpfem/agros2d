@@ -29,6 +29,7 @@
 
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
+#include "hermes2d/problem_config.h"
 
 PyField::PyField(char *fieldId)
 {
@@ -174,6 +175,22 @@ void PyField::setAdaptivitySteps(const int adaptivitySteps)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivitySteps(adaptivitySteps);
     else
         throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
+}
+
+void PyField::setAdaptivityBackSteps(const int adaptivityBackSteps)
+{
+    if (adaptivityBackSteps >= 0)
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityBackSteps(adaptivityBackSteps);
+    else
+        throw invalid_argument(QObject::tr("Adaptivity back steps must be positive.").toStdString());
+}
+
+void PyField::setAdaptivityRedoneEach(const int adaptivityRedoneEach)
+{
+    if (adaptivityRedoneEach >= 1)
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityRedoneEach(adaptivityRedoneEach);
+    else
+        throw invalid_argument(QObject::tr("Adaptivity back steps must be higher than 1.").toStdString());
 }
 
 void PyField::setInitialCondition(const double initialCondition)
@@ -405,7 +422,7 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
 
         Point point(x, y);
 
-        LocalValue *value = Agros2D::plugins()[fieldInfo()->fieldId()]->localValue(fieldInfo(), point);
+        LocalValue *value = Agros2D::plugin(fieldInfo()->fieldId())->localValue(fieldInfo(), point);
         QMapIterator<Module::LocalVariable *, PointValue> it(value->values());
         while (it.hasNext())
         {
@@ -470,7 +487,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        IntegralValue *integral = Agros2D::plugins()[fieldInfo()->fieldId()]->surfaceIntegral(fieldInfo());
+        IntegralValue *integral = Agros2D::plugin(fieldInfo()->fieldId())->surfaceIntegral(fieldInfo());
         QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {
@@ -533,7 +550,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        IntegralValue *integral = Agros2D::plugins()[fieldInfo()->fieldId()]->volumeIntegral(fieldInfo());
+        IntegralValue *integral = Agros2D::plugin(fieldInfo()->fieldId())->volumeIntegral(fieldInfo());
         QMapIterator<Module::Integral *, double> it(integral->values());
         while (it.hasNext())
         {

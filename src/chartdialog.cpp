@@ -29,6 +29,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
+#include "hermes2d/problem_config.h"
 
 #include "gui/chart.h"
 #include "gui/common.h"
@@ -89,7 +90,7 @@ ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
-    m_chart = new Chart(this, true);
+    m_chart = new Chart(this);
 
     QHBoxLayout *layoutMain = new QHBoxLayout();
     layoutMain->addWidget(m_chart);
@@ -107,7 +108,7 @@ void ChartWidget::setControls()
 // **************************************************************************************************
 
 ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
-                         Chart *chart,
+                         ChartBasic *chart,
                          QWidget *parent) : QWidget(parent), m_sceneViewPost2D(sceneView), m_chart(chart)
 {
     connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
@@ -437,7 +438,7 @@ void ChartControlsWidget::plotGeometry()
 
             foreach (Point point, points)
             {
-                LocalValue *localValue = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                LocalValue *localValue = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
                 QMap<Module::LocalVariable *, PointValue> values = localValue->values();
 
                 if (variable->isScalar())
@@ -515,7 +516,7 @@ void ChartControlsWidget::plotTime()
                 xval.append(timeLevels.at(i));
 
                 Point point(txtPointX->value().number(), txtPointY->value().number());
-                LocalValue *localValue = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+                LocalValue *localValue = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
                 QMap<Module::LocalVariable *, PointValue> values = localValue->values();
 
                 if (variable->isScalar())
@@ -739,7 +740,7 @@ QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
 
     foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
     {
-        LocalValue *localValue = Agros2D::plugins()[fieldInfo->fieldId()]->localValue(fieldInfo, point);
+        LocalValue *localValue = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
         QMap<Module::LocalVariable *, PointValue> values = localValue->values();
 
         if (variable->isScalar())

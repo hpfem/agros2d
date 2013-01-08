@@ -104,7 +104,7 @@ void MaterialBrowserDialog::createControls()
     lblSource->setMaximumWidth(350);
     lblValue = new QLabel("0.0");
 
-    chartValue = new Chart(this, true);
+    chartValue = new Chart(this);
 
     QVBoxLayout *layoutChartValue = new QVBoxLayout();
     layoutChartValue->addWidget(chartValue);

@@ -69,6 +69,8 @@ private:
     QList<SceneNode *> m_lyingNodes;
 };
 
+Q_DECLARE_METATYPE(SceneEdge *)
+
 // *************************************************************************************************************************************
 
 class SceneEdgeContainer : public MarkedSceneBasicContainer<SceneBoundary, SceneEdge>
@@ -84,6 +86,7 @@ public:
 
     /// returns bounding box, assumes container not empty
     RectPoint boundingBox() const;
+    static RectPoint boundingBox(QList<SceneEdge *> edges);
 };
 
 

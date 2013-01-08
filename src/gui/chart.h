@@ -26,12 +26,14 @@
 
 #include "util.h"
 
-class Chart : public QwtPlot
+class QwtPlotGrid;
+
+class ChartBasic : public QwtPlot
 {
     Q_OBJECT
 public:
-    Chart(QWidget *parent = 0, bool showPicker = false);
-    ~Chart();
+    ChartBasic(QWidget *parent = 0);
+    ~ChartBasic();
 
     inline QwtPlotCurve *curve() { return m_curve; }
 
@@ -40,12 +42,33 @@ public slots:
    void setData(QList<double> xval, QList<double> yval);
    void saveImage(const QString &fileName = "");
 
-private:
+protected:
     QwtPlotCurve *m_curve;
-
+    QwtPlotGrid *m_grid;
 
 private slots:
     void pickerValueMoved(const QPoint &pos);
+};
+
+class Chart : public ChartBasic
+{
+    Q_OBJECT
+public:
+    Chart(QWidget *parent = 0);
+    ~Chart();
+
+public slots:
+
+protected:
+   virtual void contextMenuEvent(QContextMenuEvent *event);
+
+private:
+    QMenu *mnuChart;
+
+    QAction *showGrid;
+
+private slots:
+    void showGridChanged();
 };
 
 #endif // GUI_CHART_H

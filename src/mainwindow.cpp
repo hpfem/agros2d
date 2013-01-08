@@ -50,8 +50,10 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "scenetransformdialog.h"
 #include "chartdialog.h"
+#include "examplesdialog.h"
 
 #include "gl2ps/gl2ps.h"
 
@@ -61,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // log stdout
     logStdOut = NULL;
-    if (Agros2D::config()->showLogStdOut)
+    if (Agros2D::configComputer()->showLogStdOut)
         logStdOut = new LogStdOut();
 
     // FIXME: curve elements from script doesn't work
@@ -255,12 +257,12 @@ void MainWindow::createActions()
 
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
-    actDocumentSave->setStatusTip(tr("Save the file to disk"));
+    actDocumentSave->setStatusTip(tr("Save project file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
 
-    actDocumentSaveWithSolution = new QAction(icon(""), tr("Save with solution"), this);
-    actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
-    connect(actDocumentSaveWithSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveWithSolution()));
+    actDocumentSaveSolution = new QAction(icon(""), tr("Save solution"), this);
+    actDocumentSaveSolution->setStatusTip(tr("Save solution to disk"));
+    connect(actDocumentSaveSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveSolution()));
 
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -295,6 +297,9 @@ void MainWindow::createActions()
     actDocumentSaveGeometry = new QAction(tr("Export geometry..."), this);
     actDocumentSaveGeometry->setStatusTip(tr("Export geometry to file"));
     connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
+
+    actExamples = new QAction(tr("New example..."), this);
+    connect(actExamples, SIGNAL(triggered()), this, SLOT(doExamples()));
 
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
     actCreateVideo->setStatusTip(tr("Create video"));
@@ -473,11 +478,12 @@ void MainWindow::createMenus()
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
+    mnuFile->addAction(actExamples);
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSave);
-    mnuFile->addAction(actDocumentSaveWithSolution);
+    mnuFile->addAction(actDocumentSaveSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuFileImportExport);
@@ -934,6 +940,9 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 setRecentFiles();
 
+                // load solution
+                Agros2D::scene()->readSolutionFromFile(fileNameDocument);
+
                 problemWidget->actProperties->trigger();
                 sceneViewPreprocessor->doZoomBestFit();
                 sceneViewMesh->doZoomBestFit();
@@ -1003,17 +1012,12 @@ void MainWindow::doDocumentSave()
         doDocumentSaveAs();
 }
 
-void MainWindow::doDocumentSaveWithSolution()
+void MainWindow::doDocumentSaveSolution()
 {
-    QSettings settings;
-
-    // save state
-    bool state = settings.value("Solver/SaveProblemWithSolution", false).value<bool>();
-    settings.setValue("Solver/SaveProblemWithSolution", true);
-
-    doDocumentSave();
-
-    settings.setValue("Solver/SaveProblemWithSolution", state);
+    if (QFile::exists(Agros2D::problem()->config()->fileName()))
+    {
+        Agros2D::scene()->writeSolutionToFile(Agros2D::problem()->config()->fileName());
+    }
 }
 
 void MainWindow::doDocumentSaveAs()
@@ -1176,6 +1180,20 @@ void MainWindow::doDocumentSaveGeometry()
     }
 }
 
+void MainWindow::doExamples()
+{
+    ExamplesDialog *examples = new ExamplesDialog(this);
+    if (examples->showDialog() == QDialog::Accepted)
+    {
+        if (QFile::exists(examples->selectedFilename()))
+        {
+            doDocumentOpen(examples->selectedFilename());
+        }
+    }
+
+    delete examples;
+}
+
 void MainWindow::doCreateVideo()
 {
     VideoDialog *videoDialog = NULL;
@@ -1272,11 +1290,11 @@ void MainWindow::doFullScreen()
 
 void MainWindow::doOptions()
 {
-    ConfigDialog configDialog(this);
+    ConfigComputerDialog configDialog(this);
     if (configDialog.exec())
     {
-        postHermes->refresh();
-        setControls();
+        // postHermes->refresh();
+        // setControls();
     }
 
     activateWindow();
@@ -1399,7 +1417,7 @@ void MainWindow::clear()
 
 void MainWindow::setControls()
 {
-    actDocumentSaveWithSolution->setEnabled(Agros2D::problem()->isSolved());
+    actDocumentSaveSolution->setEnabled(Agros2D::problem()->isSolved());
 
     // set controls
     Agros2D::scene()->actTransform->setEnabled(false);
@@ -1502,8 +1520,8 @@ void MainWindow::setControls()
     // set current timestep
     //    cmbTimeStep->setCurrentIndex(Agros2D::problem()->timeStep());
 
-    //actProgressLog->setEnabled(Agros2D::config()->enabledProgressLog);
-    //actApplicationLog->setEnabled(Agros2D::config()->enabledApplicationLog);
+    //actProgressLog->setEnabled(Agros2D::problem()->configView()->enabledProgressLog);
+    //actApplicationLog->setEnabled(Agros2D::problem()->configView()->enabledApplicationLog);
 }
 
 void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
@@ -1529,7 +1547,7 @@ void MainWindow::doHelpShortCut()
 
 void MainWindow::doCollaborationServer()
 {
-    QDesktopServices::openUrl(QUrl(Agros2D::config()->collaborationServerURL + "problems.php"));
+    QDesktopServices::openUrl(QUrl(Agros2D::configComputer()->collaborationServerURL + "problems.php"));
 }
 
 void MainWindow::doOnlineHelp()

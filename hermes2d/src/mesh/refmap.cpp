@@ -727,7 +727,7 @@ namespace Hermes
           return e;
         }
       }
-      Hermes::Mixins::Loggable::Static::warn("Point (%g, %g) does not lie in any element.", x, y);
+      // Hermes::Mixins::Loggable::Static::warn("Point (%g, %g) does not lie in any element.", x, y);
       return NULL;
     }
 

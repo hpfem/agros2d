@@ -21,15 +21,18 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "util/loops.h"
 
 #include "scene.h"
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "meshgenerator.h"
 
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 SceneLabel::SceneLabel(const Point &point, double area)
     : MarkedSceneBasic(), m_point(point), m_area(area)
@@ -71,8 +74,9 @@ SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
     return new SceneLabelCommandRemove(m_point, markersKeys(), m_area);
 }
 
-static SceneLabel *SceneLabel::findClosestLabel(const Point &point)
+SceneLabel *SceneLabel::findClosestLabel(const Point &point)
 {
+    /*
     SceneLabel *labelClosest = NULL;
 
     double distance = numeric_limits<double>::max();
@@ -87,6 +91,41 @@ static SceneLabel *SceneLabel::findClosestLabel(const Point &point)
     }
 
     return labelClosest;
+    */
+
+    QMap<SceneLabel*, QList<Triangle> > labels;
+    try
+    {
+        labels = findPolygonTriangles();
+        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+        while (i.hasNext())
+        {
+            i.next();
+
+
+            foreach (Triangle triangle, i.value())
+            {
+                bool b1 = (point.x - triangle.b.x) * (triangle.a.y - triangle.b.y) - (triangle.a.x - triangle.b.x) * (point.y - triangle.b.y) < 0.0;
+                bool b2 = (point.x - triangle.c.x) * (triangle.b.y - triangle.c.y) - (triangle.b.x - triangle.c.x) * (point.y - triangle.c.y) < 0.0;
+                bool b3 = (point.x - triangle.a.x) * (triangle.c.y - triangle.a.y) - (triangle.c.x - triangle.a.x) * (point.y - triangle.a.y) < 0.0;
+
+                if ((b1 == b2) && (b2 == b3))
+                {
+                    // in triangle
+                    return i.key();
+                }
+            }
+
+        }
+    }
+    catch (AgrosMeshException &ame)
+    {
+        // qDebug() << labels.count();
+        // Agros2D::log()->printError(tr("Geometry"), ame.toString());
+    }
+
+
+    return NULL;
 }
 
 //****************************************************************************************************

@@ -66,9 +66,6 @@ private:
     QCheckBox *chkFigureShowRulers;
     QCheckBox *chkFigureShowAxes;
 
-    QLineEdit *txtTemplate;
-    QLineEdit *txtStyleSheet;
-
     QPushButton *btnShowReport;
     QPushButton *btnDefault;
     QPushButton *btnClose;
@@ -84,7 +81,6 @@ private:
 private slots:
     void resetControls();
     void defaultValues();
-    void checkPaths();
 
     void doClose();
     void doShowReport();

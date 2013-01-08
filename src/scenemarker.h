@@ -31,6 +31,9 @@ template <typename MarkerType>
 class MarkerContainer
 {
 public:
+    MarkerContainer() : data(QList<MarkerType* >()) {}
+    ~MarkerContainer();
+
     /// items() should be removed step by step from the code.
     /// more methods operating with list data should be defined here
     QList<MarkerType*> items() { return data; }

@@ -38,8 +38,8 @@
 #include "hermes2d/coupling.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
-
 
 #include "ctemplate/template.h"
 
@@ -63,6 +63,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     connect(Agros2D::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(refresh()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(refresh()));
     connect(Agros2D::problem(), SIGNAL(couplingsChanged()), this, SLOT(refresh()));
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
@@ -86,13 +87,15 @@ void InfoWidget::showInfo()
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() - 1).toStdString()));
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() + 1).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem_style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string info;
     ctemplate::TemplateDictionary problemInfo("info");
+
+    problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d.png");
 
     problemInfo.SetValue("STYLESHEET", style);
     problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
@@ -108,13 +111,15 @@ void InfoWidget::showInfo()
 
     if (Agros2D::problem()->isHarmonic())
         problemInfo.ShowSection("HARMONIC");
+
     problemInfo.SetValue("HARMONIC_LABEL", tr("Harmonic analysis").toStdString());
     problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
     problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Agros2D::problem()->config()->frequency()).toStdString() + " Hz");
 
-    if (Agros2D::problem()->isTransient()){
+    if (Agros2D::problem()->isTransient())
+    {
         problemInfo.ShowSection("TRANSIENT");
-        if(Agros2D::problem()->config()->isTransientAdaptive())
+        if (Agros2D::problem()->config()->isTransientAdaptive())
             problemInfo.ShowSection("TRANSIENT_ADAPTIVE");
     }
     problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
@@ -139,10 +144,10 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
     problemInfo.SetValue("GEOMETRY_LABELS", QString::number(Agros2D::scene()->labels->count()).toStdString());
     problemInfo.SetValue("GEOMETRY_MATERIALS_LABEL", tr("Materials:").toStdString());
-    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Agros2D::scene()->materials->items().count()).toStdString());
+    problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Agros2D::scene()->materials->items().count() - 1).toStdString());
     problemInfo.SetValue("GEOMETRY_BOUNDARIES_LABEL", tr("Boundaries:").toStdString());
-    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Agros2D::scene()->boundaries->items().count()).toStdString());
-    problemInfo.SetValue("GEOMETRY_SVG", generateGeometry().toStdString());
+    problemInfo.SetValue("GEOMETRY_BOUNDARIES", QString::number(Agros2D::scene()->boundaries->items().count() - 1).toStdString());
+    problemInfo.SetValue("GEOMETRY_SVG", generateSvgGeometry(Agros2D::scene()->edges->items()).toStdString());
 
     if (Agros2D::problem()->fieldInfos().count() > 0)
     {
@@ -203,19 +208,19 @@ void InfoWidget::showInfo()
             {
                 int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
                 int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
-                MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
+                MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 
-                solutionMeshNodes = msa.solutions().at(0).data()->get_mesh()->get_num_nodes();
-                solutionMeshElements = msa.solutions().at(0).data()->get_mesh()->get_num_active_elements();
-                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst());
+                solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_nodes();
+                solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
+                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesConst());
             }
 
             if (Agros2D::problem()->isMeshed())
             {
                 field->SetValue("MESH_LABEL", tr("Mesh parameters").toStdString());
                 field->SetValue("INITIAL_MESH_LABEL", tr("Initial mesh:").toStdString());
-                field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(fieldInfo->initialMesh().data()->get_num_nodes()).toStdString());
-                field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(fieldInfo->initialMesh().data()->get_num_active_elements()).toStdString());
+                field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(fieldInfo->initialMesh()->get_num_nodes()).toStdString());
+                field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(fieldInfo->initialMesh()->get_num_active_elements()).toStdString());
 
                 if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
                 {
@@ -288,8 +293,8 @@ void InfoWidget::showInfo()
         problemInfo.SetValue("SOLUTION_LABEL", tr("Solution").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME_LABEL", tr("Total elapsed time:").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME", tr("%1 s").arg(Agros2D::problem()->timeElapsed().toString("mm:ss.zzz")).toStdString());
-        problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
-        problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)).toStdString());
+        // problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
+        // problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)).toStdString());
         problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
     }
 
@@ -314,17 +319,15 @@ void InfoWidget::finishLoading(bool ok)
 
         if(Agros2D::problem()->isTransient() && Agros2D::problem()->config()->isTransientAdaptive())
         {
-
             QString dataTimeSteps = "[";
             QList<double> lengths = Agros2D::problem()->timeStepLengths();
             double time = 0;
-            for (int i = 0; i < lengths.size() - 1; i++)
+            for (int i = 0; i < lengths.size(); i++)
             {
                 dataTimeSteps += QString("[%1, %2], ").arg(time).arg(lengths.at(i));
                 time += lengths.at(i);
             }
             dataTimeSteps += "]";
-
 
             // chart DOFs vs. steps
             QString commandTimeSteps = QString("$(function () { $.plot($(\"#chart_time_step_length\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });})").
@@ -344,10 +347,12 @@ void InfoWidget::finishLoading(bool ok)
                 QString dataError = "[";
                 for (int i = 0; i < adaptiveSteps; i++)
                 {
-                    MultiSolutionArray<double> msa = Agros2D::solutionStore()->multiSolution(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
+                    SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
-                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesNakedConst()));
-                    // dataError += QString("[%1, %2], ").arg(i+1).arg(msa.adaptiveError());
+                    // qDebug() << structure.adaptivity_error;
+
+                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(runTime.DOFs);
+                    dataError += QString("[%1, %2], ").arg(i+1).arg(runTime.adaptivity_error);
                 }
                 dataDOFs += "]";
                 dataError += "]";
@@ -374,67 +379,4 @@ void InfoWidget::finishLoading(bool ok)
             }
         }
     }
-}
-
-QString InfoWidget::generateGeometry()
-{
-    RectPoint boundingBox = Agros2D::scene()->boundingBox();
-
-    double size = 200;
-    double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
-
-    // svg
-    QString str;
-    str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
-            arg(size).
-            arg(size).
-            arg(boundingBox.start.x).
-            arg(0).
-            arg(boundingBox.width()).
-            arg(boundingBox.height());
-
-    str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
-
-    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-    {
-        if (edge->angle() > 0.0)
-        {
-            Point center = edge->center();
-            double radius = edge->radius();
-            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
-
-            int segments = edge->angle() / 5.0;
-            if (segments < 2) segments = 2;
-            double theta = edge->angle() / double(segments - 1);
-
-            for (int i = 0; i < segments-1; i++)
-            {
-                double arc1 = (startAngle + i*theta)/180.0*M_PI;
-                double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
-
-                double x1 = radius * cos(arc1);
-                double y1 = radius * sin(arc1);
-                double x2 = radius * cos(arc2);
-                double y2 = radius * sin(arc2);
-
-                str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
-                        arg(center.x + x1).
-                        arg(boundingBox.end.y - (center.y + y1)).
-                        arg(center.x + x2).
-                        arg(boundingBox.end.y - (center.y + y2));
-            }
-        }
-        else
-        {
-            str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
-                    arg(edge->nodeStart()->point().x).
-                    arg(boundingBox.end.y - edge->nodeStart()->point().y).
-                    arg(edge->nodeEnd()->point().x).
-                    arg(boundingBox.end.y - edge->nodeEnd()->point().y);
-        }
-    }
-    str += "</g>\n";
-    str += "</svg>\n";
-
-    return str;
 }

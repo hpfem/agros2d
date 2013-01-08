@@ -42,6 +42,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 PostHermes::PostHermes() :
     m_particleTracingIsPrepared(false)
@@ -61,13 +62,13 @@ void PostHermes::processInitialMesh()
 {
     if (Agros2D::problem()->isMeshed())
     {
-        Agros2D::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Agros2D::scene()->activeViewField()->initialMesh().data()->get_num_active_elements()));
+        Agros2D::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Agros2D::scene()->activeViewField()->initialMesh()->get_num_active_elements()));
 
         // init linearizer for initial mesh
         try
         {
-            Hermes::Hermes2D::ZeroSolution<double> initial(Agros2D::scene()->activeViewField()->initialMesh().data());
-            m_linInitialMeshView.process_solution(&initial);
+            Hermes::Hermes2D::ZeroSolution<double> initial(Agros2D::scene()->activeViewField()->initialMesh());
+            m_linInitialMeshView.process_solution(&initial);            
         }
         catch (Hermes::Exceptions::Exception& e)
         {
@@ -81,12 +82,12 @@ void PostHermes::processSolutionMesh()
     if (Agros2D::problem()->isSolved())
     {
         // ERROR: FIX component(0)
-        Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh()->get_num_active_elements()));
+        Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
-        const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh();
-        Hermes::Hermes2D::ZeroSolution<double> solution(Agros2D::scene()->activeMultiSolutionArray().component(0).sln.data()->get_mesh());
+        const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh();
+        Hermes::Hermes2D::ZeroSolution<double> solution(mesh);
         m_linSolutionMeshView.process_solution(&solution);
     }
 }
@@ -99,51 +100,51 @@ void PostHermes::processOrder()
         Agros2D::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
         // ERROR: FIX component(0)
-        m_orderView.process_space(Agros2D::scene()->activeMultiSolutionArray().component(0).space.data());
+        m_orderView.process_space(Agros2D::scene()->activeMultiSolutionArray().spaces().at(0));
     }
 }
 
 void PostHermes::processRangeContour()
 {
-    if (Agros2D::problem()->isSolved() && Agros2D::config()->showContourView)
+    if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showContourView)
     {
         bool contains = false;
         foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->viewScalarVariables())
         {
-            if (variable->id() == Agros2D::config()->contourVariable)
+            if (variable->id() == Agros2D::problem()->configView()->contourVariable)
             {
                 contains = true;
                 break;
             }
         }
 
-        if (Agros2D::config()->contourVariable == "" || !contains)
+        if (Agros2D::problem()->configView()->contourVariable == "" || !contains)
         {
             // default values
-            Agros2D::config()->contourVariable = Agros2D::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
+            Agros2D::problem()->configView()->contourVariable = Agros2D::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
         }
 
-        Agros2D::log()->printMessage(tr("PostView"), tr("contour view (%1)").arg(Agros2D::config()->contourVariable));
+        Agros2D::log()->printMessage(tr("PostView"), tr("contour view (%1)").arg(Agros2D::problem()->configView()->contourVariable));
 
-        QString variableName = Agros2D::config()->contourVariable;
+        QString variableName = Agros2D::problem()->configView()->contourVariable;
         Module::LocalVariable* variable = Agros2D::scene()->activeViewField()->module()->localVariable(variableName);
         if (!variable)
             qDebug() << "error, trying to get variable " << variableName << " from module " << Agros2D::scene()->activeViewField()->fieldId();
 
         Hermes::Hermes2D::Filter<double> *slnContourView = NULL;
         if (variable->isScalar())
-            slnContourView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->contourVariable),
+            slnContourView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->contourVariable),
                                                                                           PhysicFieldVariableComp_Scalar);
         else
-            slnContourView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->contourVariable),
+            slnContourView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->contourVariable),
                                                                                           PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
-                                          paletteQualityToDouble(Agros2D::config()->linearizerQuality));
+                                          paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
 
         // deformed shape
-        if (Agros2D::config()->deformContour)
+        if (Agros2D::problem()->configView()->deformContour)
             Agros2D::scene()->activeViewField()->module()->deformShape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
 
         delete slnContourView;
@@ -152,43 +153,43 @@ void PostHermes::processRangeContour()
 
 void PostHermes::processRangeScalar()
 {
-    if (Agros2D::problem()->isSolved() && Agros2D::config()->showScalarView)
+    if (Agros2D::problem()->isSolved() && ((Agros2D::problem()->configView()->showScalarView) || (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D)))
     {
         bool contains = false;
         foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->viewScalarVariables())
         {
-            if (variable->id() == Agros2D::config()->scalarVariable)
+            if (variable->id() == Agros2D::problem()->configView()->scalarVariable)
             {
                 contains = true;
                 break;
             }
         }
 
-        if (Agros2D::config()->scalarVariable == "" || !contains)
+        if (Agros2D::problem()->configView()->scalarVariable == "" || !contains)
         {
             // default values
-            Agros2D::config()->scalarVariable = Agros2D::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
-            Agros2D::config()->scalarVariableComp = Agros2D::scene()->activeViewField()->module()->defaultViewScalarVariableComp();
+            Agros2D::problem()->configView()->scalarVariable = Agros2D::scene()->activeViewField()->module()->defaultViewScalarVariable()->id();
+            Agros2D::problem()->configView()->scalarVariableComp = Agros2D::scene()->activeViewField()->module()->defaultViewScalarVariableComp();
         }
 
-        Agros2D::log()->printMessage(tr("PostView"), tr("scalar view (%1)").arg(Agros2D::config()->scalarVariable));
+        Agros2D::log()->printMessage(tr("PostView"), tr("scalar view (%1)").arg(Agros2D::problem()->configView()->scalarVariable));
 
-        Hermes::Hermes2D::Filter<double> *slnScalarView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->scalarVariable),
-                                                                                                                       Agros2D::config()->scalarVariableComp);
+        Hermes::Hermes2D::Filter<double> *slnScalarView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->scalarVariable),
+                                                                                                                       Agros2D::problem()->configView()->scalarVariableComp);
 
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         paletteQualityToDouble(Agros2D::config()->linearizerQuality));
+                                         paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
 
         // deformed shape
-        if (Agros2D::config()->deformScalar)
+        if (Agros2D::problem()->configView()->deformScalar)
             Agros2D::scene()->activeViewField()->module()->deformShape(m_linScalarView.get_vertices(),
                                                                     m_linScalarView.get_num_vertices());
 
-        if (Agros2D::config()->scalarRangeAuto)
+        if (Agros2D::problem()->configView()->scalarRangeAuto)
         {
-            Agros2D::config()->scalarRangeMin = m_linScalarView.get_min_value();
-            Agros2D::config()->scalarRangeMax = m_linScalarView.get_max_value();
+            Agros2D::problem()->configView()->scalarRangeMin = m_linScalarView.get_min_value();
+            Agros2D::problem()->configView()->scalarRangeMax = m_linScalarView.get_max_value();
         }
 
         delete slnScalarView;
@@ -197,30 +198,30 @@ void PostHermes::processRangeScalar()
 
 void PostHermes::processRangeVector()
 {
-    if (Agros2D::problem()->isSolved() && Agros2D::config()->showVectorView)
+    if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showVectorView)
     {
         bool contains = false;
         foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->viewVectorVariables())
         {
-            if (variable->id() == Agros2D::config()->vectorVariable)
+            if (variable->id() == Agros2D::problem()->configView()->vectorVariable)
             {
                 contains = true;
                 break;
             }
         }
 
-        if (Agros2D::config()->vectorVariable == "" || !contains)
+        if (Agros2D::problem()->configView()->vectorVariable == "" || !contains)
         {
             // default values
-            Agros2D::config()->vectorVariable = Agros2D::scene()->activeViewField()->module()->defaultViewVectorVariable()->id();
+            Agros2D::problem()->configView()->vectorVariable = Agros2D::scene()->activeViewField()->module()->defaultViewVectorVariable()->id();
         }
 
-        Agros2D::log()->printMessage(tr("PostView"), tr("vector view (%1)").arg(Agros2D::config()->vectorVariable));
+        Agros2D::log()->printMessage(tr("PostView"), tr("vector view (%1)").arg(Agros2D::problem()->configView()->vectorVariable));
 
-        Hermes::Hermes2D::Filter<double> *slnVectorXView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorXView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->vectorVariable),
                                                                                                                         PhysicFieldVariableComp_X);
 
-        Hermes::Hermes2D::Filter<double> *slnVectorYView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorYView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->vectorVariable),
                                                                                                                         PhysicFieldVariableComp_Y);
 
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
@@ -228,7 +229,7 @@ void PostHermes::processRangeVector()
                                          Hermes::Hermes2D::Views::HERMES_EPS_LOW);
 
         // deformed shape
-        if (Agros2D::config()->deformVector)
+        if (Agros2D::problem()->configView()->deformVector)
             Agros2D::scene()->activeViewField()->module()->deformShape(m_vecVectorView.get_vertices(),
                                                                     m_vecVectorView.get_num_vertices());
 
@@ -239,7 +240,7 @@ void PostHermes::processRangeVector()
 
 void PostHermes::processParticleTracing()
 {
-    if (Agros2D::problem()->isSolved() && Agros2D::config()->showParticleView)
+    if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showParticleView)
     {
         Agros2D::log()->printMessage(tr("PostView"), tr("particle view"));
 
@@ -259,7 +260,7 @@ void PostHermes::processParticleTracing()
         m_particleTracingVelocityMin =  numeric_limits<double>::max();
         m_particleTracingVelocityMax = -numeric_limits<double>::max();
 
-        for (int k = 0; k < Agros2D::config()->particleNumberOfParticles; k++)
+        for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
         {
             // position and velocity cache
             ParticleTracing particleTracing;
@@ -347,14 +348,14 @@ void SceneViewPostInterface::initializeGL()
 
 const double* SceneViewPostInterface::paletteColor2(const int pos) const
 {
-    int n = (int) (pos / (PALETTEENTRIES / Agros2D::config()->paletteSteps)) * (PALETTEENTRIES / Agros2D::config()->paletteSteps);
+    int n = (int) (pos / (PALETTEENTRIES / Agros2D::problem()->configView()->paletteSteps)) * (PALETTEENTRIES / Agros2D::problem()->configView()->paletteSteps);
 
     if (n < 0)
         n = 0;
     else if (n > PALETTEENTRIES - 1)
         n = PALETTEENTRIES - 1;
 
-    switch (Agros2D::config()->paletteType)
+    switch (Agros2D::problem()->configView()->paletteType)
     {
     case Palette_Agros2D:
         return paletteDataAgros2D[n];
@@ -363,7 +364,7 @@ const double* SceneViewPostInterface::paletteColor2(const int pos) const
 
 const double* SceneViewPostInterface::paletteColor(double x) const
 {
-    switch (Agros2D::config()->paletteType)
+    switch (Agros2D::problem()->configView()->paletteType)
     {
     case Palette_Agros2D:
     {
@@ -488,14 +489,14 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     }
         break;
     default:
-        qWarning() << QString("Undefined: %1.").arg(Agros2D::config()->paletteType);
+        qWarning() << QString("Undefined: %1.").arg(Agros2D::problem()->configView()->paletteType);
         return NULL;
     }
 }
 
 const double* SceneViewPostInterface::paletteColorOrder(int n) const
 {
-    switch (Agros2D::config()->orderPaletteOrderType)
+    switch (Agros2D::problem()->configView()->orderPaletteOrderType)
     {
     case PaletteOrder_Hermes:
         return paletteOrderHermes[n];
@@ -526,14 +527,14 @@ const double* SceneViewPostInterface::paletteColorOrder(int n) const
     case PaletteOrder_BWDesc:
         return paletteOrderBWDesc[n];
     default:
-        qWarning() << QString("Undefined: %1.").arg(Agros2D::config()->orderPaletteOrderType);
+        qWarning() << QString("Undefined: %1.").arg(Agros2D::problem()->configView()->orderPaletteOrderType);
         return NULL;
     }
 }
 
 void SceneViewPostInterface::paletteCreate()
 {
-    int paletteSteps = Agros2D::config()->paletteFilter ? 100 : Agros2D::config()->paletteSteps;
+    int paletteSteps = Agros2D::problem()->configView()->paletteFilter ? 100 : Agros2D::problem()->configView()->paletteSteps;
 
     unsigned char palette[256][3];
     for (int i = 0; i < paletteSteps; i++)
@@ -550,7 +551,7 @@ void SceneViewPostInterface::paletteCreate()
         glDeleteTextures(1, &m_textureScalar);
     glGenTextures(1, &m_textureScalar);
 
-    int palFilter = Agros2D::config()->paletteFilter ? GL_LINEAR : GL_NEAREST;
+    int palFilter = Agros2D::problem()->configView()->paletteFilter ? GL_LINEAR : GL_NEAREST;
     glBindTexture(GL_TEXTURE_1D, m_textureScalar);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, palFilter);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, palFilter);
@@ -558,7 +559,7 @@ void SceneViewPostInterface::paletteCreate()
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 
     // adjust palette
-    if (Agros2D::config()->paletteFilter)
+    if (Agros2D::problem()->configView()->paletteFilter)
     {
         m_texScale = (double) (paletteSteps-1) / 256.0;
         m_texShift = 0.5 / 256.0;
@@ -572,7 +573,7 @@ void SceneViewPostInterface::paletteCreate()
 
 void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
 {
-    if (!Agros2D::problem()->isSolved() || !Agros2D::config()->showScalarColorBar) return;
+    if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->configView()->showScalarColorBar) return;
 
     loadProjectionViewPort();
 
@@ -580,10 +581,10 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     // dimensions
-    int textWidth = m_fontPost->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Agros2D::config()->scalarDecimalPlace).length() + 1);
+    int textWidth = m_fontPost->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Agros2D::problem()->configView()->scalarDecimalPlace).length() + 1);
     int textHeight = m_fontPost->height;
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
-    Point scaleBorder = Point(10.0, (Agros2D::config()->showRulers) ? 1.8 * textHeight : 10.0);
+    Point scaleBorder = Point(10.0, (Agros2D::problem()->configView()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -652,26 +653,26 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     for (int i = 1; i < numTicks+1; i++)
     {
         double value = 0.0;
-        if (!Agros2D::config()->scalarRangeLog)
+        if (!Agros2D::problem()->configView()->scalarRangeLog)
             value = min + (double) (i-1) / (numTicks-1) * (max - min);
         else
-            value = min + (double) pow(Agros2D::config()->scalarRangeBase, ((i-1) / (numTicks-1)))/Agros2D::config()->scalarRangeBase * (max - min);
+            value = min + (double) pow(Agros2D::problem()->configView()->scalarRangeBase, ((i-1) / (numTicks-1)))/Agros2D::problem()->configView()->scalarRangeBase * (max - min);
 
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
         printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? m_fontPost->glyphs[GLYPH_M].width : 0.0),
                     scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
-                    QString::number(value, '+e', Agros2D::config()->scalarDecimalPlace));
+                    QString::number(value, '+e', Agros2D::problem()->configView()->scalarDecimalPlace));
     }
 
     // variable
-    Module::LocalVariable *localVariable = Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::config()->scalarVariable);
+    Module::LocalVariable *localVariable = Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->scalarVariable);
     if (localVariable)
     {
         QString str = QString("%1 (%2)").
-                arg(Agros2D::config()->scalarVariable != "" ? localVariable->shortname() : "").
-                arg(Agros2D::config()->scalarVariable != "" ? localVariable->unit() : "");
+                arg(Agros2D::problem()->configView()->scalarVariable != "" ? localVariable->shortname() : "").
+                arg(Agros2D::problem()->configView()->scalarVariable != "" ? localVariable->unit() : "");
 
         printPostAt(scaleLeft + scaleSize.x / 2.0 - m_fontPost->glyphs[GLYPH_M].width * str.count() / 2.0,
                     scaleBorder.y + scaleSize.y - 20.0,
@@ -681,7 +682,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
 
 void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max, bool is2D)
 {
-    if (!Agros2D::problem()->isSolved() || !Agros2D::config()->showParticleView) return;
+    if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->configView()->showParticleView) return;
 
     loadProjectionViewPort();
 
@@ -689,12 +690,12 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     // dimensions
-    int textWidth = m_fontPost->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Agros2D::config()->scalarDecimalPlace).length() + 1);
+    int textWidth = m_fontPost->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Agros2D::problem()->configView()->scalarDecimalPlace).length() + 1);
     int textHeight = m_fontPost->height;
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Agros2D::config()->showRulers) ? 1.8 * textHeight : 10.0);
+    Point scaleBorder = Point(10.0, (Agros2D::problem()->configView()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width()
-                        - (((Agros2D::config()->showParticleView && Agros2D::config()->showScalarView && is2D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
+                        - (((Agros2D::problem()->configView()->showParticleView && Agros2D::problem()->configView()->showScalarView && is2D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
     int numTicks = 11;
 
     // blended rectangle
@@ -756,7 +757,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
 
         printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? m_fontPost->glyphs[GLYPH_M].width : 0.0),
                     scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
-                    QString::number(value, '+e', Agros2D::config()->scalarDecimalPlace));
+                    QString::number(value, '+e', Agros2D::problem()->configView()->scalarDecimalPlace));
     }
 
     // variable

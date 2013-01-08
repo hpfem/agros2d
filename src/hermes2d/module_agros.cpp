@@ -114,7 +114,7 @@ SceneMaterial *Module::ModuleAgros::newMaterial()
 template <class T>
 void deformShapeTemplate(T linVert, int count)
 {
-    MultiSolutionArray<double> msa = Agros2D::scene()->activeMultiSolutionArray();
+    MultiArray<double> msa = Agros2D::scene()->activeMultiSolutionArray();
 
     double min =  numeric_limits<double>::max();
     double max = -numeric_limits<double>::max();
@@ -123,8 +123,8 @@ void deformShapeTemplate(T linVert, int count)
         double x = linVert[i][0];
         double y = linVert[i][1];
 
-        double dx = msa.component(0).sln.data()->get_pt_value(x, y)->val[0];
-        double dy = msa.component(1).sln.data()->get_pt_value(x, y)->val[0];
+        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
+        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
 
         double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
 
@@ -140,8 +140,8 @@ void deformShapeTemplate(T linVert, int count)
         double x = linVert[i][0];
         double y = linVert[i][1];
 
-        double dx = msa.component(0).sln.data()->get_pt_value(x, y)->val[0];
-        double dy = msa.component(1).sln.data()->get_pt_value(x, y)->val[0];
+        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
+        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
 
         linVert[i][0] += k*dx;
         linVert[i][1] += k*dy;

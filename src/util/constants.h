@@ -54,7 +54,7 @@ const bool SHOWGRID = true;
 const bool SNAPTOGRID = true;
 
 const QString RULERSFONT = "fontGoogleDroidMono10";
-const QString POSTFONT = "fontGoogleDroidMono16";
+const QString POSTFONT = "fontGoogleDroidMono14";
 
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
@@ -91,7 +91,7 @@ const double VECTORSSCALEMIN = 0.1;
 const double VECTORSSCALEMAX = 20.0;
 
 // post3d
-const SceneViewPost3DMode SCALARSHOWPOST3D = SceneViewPost3DMode_ScalarView3D;
+const SceneViewPost3DMode SCALARSHOWPOST3D = SceneViewPost3DMode_None;
 
 const bool SHOWCONTOURVIEW = false;
 const int CONTOURSCOUNT = 15;
@@ -140,6 +140,8 @@ const double PARTICLEDRAGCOEFFICIENT = 0.0;
 const double PARTICLEDRAGREFERENCEAREA = 1e-6;
 
 // scalarview
+const PaletteQuality PALETTEQUALITY = PaletteQuality_Normal;
+
 const bool SHOWSCALARVIEW = true;
 const bool SHOWSCALARCOLORBAR = true;
 const bool SCALARFIELDRANGELOG = false;
@@ -150,9 +152,10 @@ const double SCALARRANGEMIN = 0.0;
 const double SCALARRANGEMAX = 1.0;
 
 const bool VIEW3DLIGHTING = false;
-const double VIEW3DANGLE = 230.0;
+const double VIEW3DANGLE = 240.0;
 const bool VIEW3DBACKGROUND = true;
 const double VIEW3DHEIGHT = 4.0;
+const bool VIEW3DBOUNDINGBOX = true;
 
 const bool DEFORMSCALAR = true;
 const bool DEFORMCONTOUR = true;
@@ -171,7 +174,6 @@ const bool ADAPTIVITY_FINER_REFERENCE_H_AND_P = false;
 // command argument
 const QString COMMANDS_TRIANGLE = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
 const QString COMMANDS_GMSH = "%1 -2 \"%2.geo\"";
-const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
 const QString COMMANDS_BUILD_PLUGIN = "./agros2d_plugin_compiler.sh %1";
 
 // max dofs
@@ -179,6 +181,8 @@ const int MAX_DOFS = 60e3;
 
 // cache size
 const int CACHE_SIZE = 10;
+
+const int NOT_FOUND_SO_FAR = -999;
 
 #endif // UTIL_CONSTANTS_H
 

@@ -22,6 +22,7 @@
 #include "util/xml.h"
 #include "util/constants.h"
 #include "util/global.h"
+#include "util/loops.h"
 
 #include "util.h"
 #include "value.h"
@@ -46,9 +47,75 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
+
+#include "../3rdparty/quazip/JlCompress.h"
+
+QString generateSvgGeometry(QList<SceneEdge*> edges)
+{
+    RectPoint boundingBox = SceneEdgeContainer::boundingBox(edges);
+
+    double size = 180;
+    double stroke_width = max(boundingBox.width(), boundingBox.height()) / size / 2.0;
+
+    // svg
+    QString str;
+    str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
+            arg(size).
+            arg(size).
+            arg(boundingBox.start.x).
+            arg(0).
+            arg(boundingBox.width()).
+            arg(boundingBox.height());
+
+    str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
+
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->angle() > 0.0)
+        {
+            Point center = edge->center();
+            double radius = edge->radius();
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+            int segments = edge->angle() / 5.0;
+            if (segments < 2) segments = 2;
+            double theta = edge->angle() / double(segments - 1);
+
+            for (int i = 0; i < segments-1; i++)
+            {
+                double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                double x1 = radius * cos(arc1);
+                double y1 = radius * sin(arc1);
+                double x2 = radius * cos(arc2);
+                double y2 = radius * sin(arc2);
+
+                str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                        arg(center.x + x1).
+                        arg(boundingBox.end.y - (center.y + y1)).
+                        arg(center.x + x2).
+                        arg(boundingBox.end.y - (center.y + y2));
+            }
+        }
+        else
+        {
+            str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                    arg(edge->nodeStart()->point().x).
+                    arg(boundingBox.end.y - edge->nodeStart()->point().y).
+                    arg(edge->nodeEnd()->point().x).
+                    arg(boundingBox.end.y - edge->nodeEnd()->point().y);
+        }
+    }
+    str += "</g>\n";
+    str += "</svg>\n";
+
+    return str;
+}
 
 ostream& operator<<(ostream& output, FieldInfo& id)
 {
@@ -150,7 +217,6 @@ Scene::~Scene()
 
     delete m_undoStack;
 
-    // TODO write destructors or use QSharedPointers...
     delete boundaries;
     delete materials;
     delete nodes;
@@ -231,6 +297,7 @@ SceneNode *Scene::addNode(SceneNode *node)
 
     checkNodeConnect(node);
     checkNode(node);
+
     return node;
 }
 
@@ -1270,7 +1337,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type")));
     // mesh type
     Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(eleProblemInfo.toElement().attribute("mesh_type",
-                                                                                                      meshTypeToStringKey(MeshType_Triangle))));
+                                                                                                         meshTypeToStringKey(MeshType_Triangle))));
 
     // harmonic
     Agros2D::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
@@ -1280,12 +1347,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Agros2D::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
     Agros2D::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
     Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
-                                                     eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
+                                                        eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
     Agros2D::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05"));
 
     // matrix solver
     Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
-                                                                                                                  matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
+                                                                                                                     matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
 
     // startup script
     QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startup_script").at(0);
@@ -1371,6 +1438,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         field->setAdaptivityType(adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivity_type")));
         field->setAdaptivitySteps(eleFieldAdaptivity.toElement().attribute("adaptivity_steps").toInt());
         field->setAdaptivityTolerance(eleFieldAdaptivity.toElement().attribute("adaptivity_tolerance").toDouble());
+        field->setAdaptivityBackSteps(eleFieldAdaptivity.toElement().attribute("adaptivity_back_steps").toInt());
+        field->setAdaptivityRedoneEach(eleFieldAdaptivity.toElement().attribute("adaptivity_redone_each").toInt());
 
         // linearity
         QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
@@ -1484,10 +1553,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         QDomElement element = nodeCoupling.toElement();
 
         if (Agros2D::problem()->hasCoupling(element.toElement().attribute("source_fieldid"),
-                                         element.toElement().attribute("target_fieldid")))
+                                            element.toElement().attribute("target_fieldid")))
         {
             CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(element.toElement().attribute("source_fieldid"),
-                                                                       element.toElement().attribute("target_fieldid"));
+                                                                          element.toElement().attribute("target_fieldid"));
             couplingInfo->setCouplingType(couplingTypeFromStringKey(element.toElement().attribute("type")));
         }
 
@@ -1496,29 +1565,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
-    Agros2D::config()->loadPostprocessor(&config);
+    Agros2D::problem()->configView()->load(&config);
 
     blockSignals(false);
 
     // default values
     emit invalidated();
     emit defaultValues();
-
-    // mesh
-    if (eleDoc.elementsByTagName("mesh").count() > 0)
-    {
-        QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        // TODO: Agros2D::scene()->activeSolution()->loadMeshInitial(eleMesh.toElement());
-    }
-    /*
-    // solutions
-    if (eleDoc.elementsByTagName("solutions").count() > 0)
-    {
-        QDomNode eleSolutions = eleDoc.elementsByTagName("solutions").at(0);
-        Agros2D::scene()->sceneSolution()->loadSolution(eleSolutions.toElement());
-        emit invalidated();
-    }
-    */
 
     // run script
     currentPythonEngineAgros()->runScript(Agros2D::problem()->config()->startupscript());
@@ -1727,6 +1780,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleAdaptivity.setAttribute("adaptivity_type", adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
         eleAdaptivity.setAttribute("adaptivity_steps", fieldInfo->adaptivitySteps());
         eleAdaptivity.setAttribute("adaptivity_tolerance", fieldInfo->adaptivityTolerance());
+        eleAdaptivity.setAttribute("adaptivity_back_steps", fieldInfo->adaptivityBackSteps());
+        eleAdaptivity.setAttribute("adaptivity_redone_each", fieldInfo->adaptivityRedoneEach());
 
         // linearity
         QDomElement eleLinearity = doc.createElement("solver");
@@ -1828,19 +1883,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         eleCouplings.appendChild(eleCoupling);
     }
 
-    //    if (settings.value("Solver/SaveProblemWithSolution", false).value<bool>())
-    //    {
-    //        // mesh
-    //        QDomNode eleMesh = doc.createElement("mesh");
-    //        Agros2D::scene()->sceneSolution()->saveMeshInitial(&doc, eleMesh.toElement());
-    //        eleDoc.appendChild(eleMesh);
-
-    //        // solution
-    //        QDomNode eleSolutions = doc.createElement("solutions");
-    //        Agros2D::scene()->sceneSolution()->saveSolution(&doc, eleSolutions.toElement());
-    //        eleDoc.appendChild(eleSolutions);
-    //    }
-
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
@@ -1851,13 +1893,17 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // save config
     QDomElement eleConfig = doc.createElement("config");
     eleDoc.appendChild(eleConfig);
-    Agros2D::config()->savePostprocessor(&eleConfig);
+    Agros2D::problem()->configView()->save(&eleConfig);
 
     QTextStream out(&file);
     doc.save(out, 4);
 
     file.waitForBytesWritten(0);
     file.close();
+
+    // save solution
+    if (Agros2D::configComputer()->saveProblemWithSolution)
+        writeSolutionToFile(fileName);
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
         emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
@@ -1868,9 +1914,38 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     return ErrorResult();
 }
 
-MultiSolutionArray<double> Scene::activeMultiSolutionArray()
+void Scene::readSolutionFromFile(const QString &fileName)
 {
-    return Agros2D::solutionStore()->multiSolution(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
+    Agros2D::log()->printMessage(tr("Scene"), tr("Loading solution from disk"));
+
+    QFileInfo fileInfo(fileName);
+    QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
+    if (QFile::exists(solutionFile))
+    {
+        JlCompress::extractDir(solutionFile, cacheProblemDir());
+
+        // read mesh file
+        if (QFile::exists(QString("%1/initial.mesh").arg(cacheProblemDir())))
+        {
+            Agros2D::problem()->readInitialMeshesFromFile();
+        }
+
+        Agros2D::problem()->readSolutionsFromFile();
+    }
+}
+
+void Scene::writeSolutionToFile(const QString &fileName)
+{
+    Agros2D::log()->printMessage(tr("Scene"), tr("Saving solution to disk"));
+
+    QFileInfo fileInfo(fileName);
+    QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
+    JlCompress::compressDir(solutionFile, cacheProblemDir());
+}
+
+MultiArray<double> Scene::activeMultiSolutionArray()
+{
+    return Agros2D::solutionStore()->multiArray(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
 }
 
 void Scene::checkNodeConnect(SceneNode *node)

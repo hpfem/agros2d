@@ -774,28 +774,44 @@ namespace Hermes
     template<typename Scalar>
     L2Space<Scalar>* Space<Scalar>::ReferenceSpaceCreator::init_construction_l2()
     {
-      L2Space<Scalar>* ref_space = new L2Space<Scalar>(this->ref_mesh, 0, this->coarse_space->get_shapeset());
+      L2Space<Scalar>* ref_space;
+      if(this->coarse_space->own_shapeset)
+        ref_space = new L2Space<Scalar>(this->ref_mesh, 0);
+      else
+        ref_space = new L2Space<Scalar>(this->ref_mesh, 0, this->coarse_space->get_shapeset());
       return ref_space;
     }
 
     template<typename Scalar>
     H1Space<Scalar>* Space<Scalar>::ReferenceSpaceCreator::init_construction_h1()
     {
-      H1Space<Scalar>* ref_space = new H1Space<Scalar>(this->ref_mesh, this->coarse_space->get_essential_bcs(), 1, this->coarse_space->get_shapeset());
+      H1Space<Scalar>* ref_space;
+      if(this->coarse_space->own_shapeset)
+        ref_space = new H1Space<Scalar>(this->ref_mesh, this->coarse_space->get_essential_bcs(), 1);
+      else
+        ref_space = new H1Space<Scalar>(this->ref_mesh, this->coarse_space->get_essential_bcs(), 1, this->coarse_space->get_shapeset());
       return ref_space;
     }
 
     template<typename Scalar>
     HcurlSpace<Scalar>* Space<Scalar>::ReferenceSpaceCreator::init_construction_hcurl()
     {
-      HcurlSpace<Scalar>* ref_space = new HcurlSpace<Scalar>(this->ref_mesh, this->coarse_space->essential_bcs, 1, this->coarse_space->shapeset);
+      HcurlSpace<Scalar>* ref_space;
+      if(this->coarse_space->own_shapeset)
+        ref_space = new HcurlSpace<Scalar>(this->ref_mesh, this->coarse_space->essential_bcs, 1);
+      else
+        ref_space = new HcurlSpace<Scalar>(this->ref_mesh, this->coarse_space->essential_bcs, 1, this->coarse_space->shapeset);
       return ref_space;
     }
 
     template<typename Scalar>
     HdivSpace<Scalar>* Space<Scalar>::ReferenceSpaceCreator::init_construction_hdiv()
     {
-      HdivSpace<Scalar>* ref_space = new HdivSpace<Scalar>(this->ref_mesh, this->coarse_space->essential_bcs, 1, this->coarse_space->shapeset);
+      HdivSpace<Scalar>* ref_space;
+      if(this->coarse_space->own_shapeset)
+        ref_space = new HdivSpace<Scalar>(this->ref_mesh, this->coarse_space->essential_bcs, 1);
+      else
+        ref_space = new HdivSpace<Scalar>(this->ref_mesh, this->coarse_space->essential_bcs, 1, this->coarse_space->shapeset);
       return ref_space;
     }
 
@@ -1191,23 +1207,23 @@ namespace Hermes
     {
       XMLSpace::space xmlspace;
 
-			switch(this->get_type())
-			{
-			case HERMES_H1_SPACE:
-				xmlspace.spaceType().set("h1");
-				break;
-			case HERMES_HCURL_SPACE:
-				xmlspace.spaceType().set("hcurl");
-				break;
-			case HERMES_HDIV_SPACE:
-				xmlspace.spaceType().set("hdiv");
-				break;
-			case HERMES_L2_SPACE:
-				xmlspace.spaceType().set("l2");
-				break;
-			default:
-				return false;
-			}
+      switch(this->get_type())
+      {
+        case HERMES_H1_SPACE:
+            xmlspace.spaceType().set("h1");
+            break;
+        case HERMES_HCURL_SPACE:
+            xmlspace.spaceType().set("hcurl");
+            break;
+        case HERMES_HDIV_SPACE:
+            xmlspace.spaceType().set("hdiv");
+            break;
+        case HERMES_L2_SPACE:
+            xmlspace.spaceType().set("l2");
+            break;
+        default:
+            return false;
+      }
 
       // Utility pointer.
       Element *e;
@@ -1234,7 +1250,7 @@ namespace Hermes
       try
       {
 				Space<Scalar>* space;
-        std::auto_ptr<XMLSpace::space> parsed_xml_space (XMLSpace::space_(filename));
+        std::auto_ptr<XMLSpace::space> parsed_xml_space (XMLSpace::space_(filename, xml_schema::flags::dont_validate));
 
 				if(!strcmp(parsed_xml_space->spaceType().get().c_str(),"h1"))
 				{
@@ -1348,9 +1364,9 @@ namespace Hermes
           space->edata[parsed_xml_space->element_data().at(elem_data_i).element_id()].changed_in_last_adaptation = parsed_xml_space->element_data().at(elem_data_i).changed_in_last_adaptation();
         }
 
-				space->assign_dofs();
-				space->seq = g_space_seq++;
-				return space;
+        space->assign_dofs();
+        space->seq = g_space_seq++;
+        return space;
       }
       catch (const xml_schema::exception& e)
       {

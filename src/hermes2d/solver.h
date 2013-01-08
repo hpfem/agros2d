@@ -52,16 +52,20 @@ class HermesSolverContainer
 {
 public:
     HermesSolverContainer(Block* block) : m_block(block) {}
+    virtual ~HermesSolverContainer() {}
+
     virtual void solve(Scalar* solutionVector) = 0;
-    virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions) {}
+    virtual void projectPreviousSolution(Scalar* solutionVector,
+                                         Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions) {}
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() = 0;
     virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) = 0;
 
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
-    // todo: tohle by melo vracet shared pointer
-    static HermesSolverContainer* factory(Block* block);
+    // solver factory
+    static HermesSolverContainer<Scalar> *factory(Block* block);
 
 protected:
     Block* m_block;
@@ -73,15 +77,13 @@ class LinearSolverContainer : public HermesSolverContainer<Scalar>
 public:
     LinearSolverContainer(Block* block);
     ~LinearSolverContainer();
+
     virtual void solve(Scalar* solutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver.data(), solverName, adaptivityStep); }
-    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_linearSolver.data(); }
-    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf);}
-;
-
-
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver, solverName, adaptivityStep); }
+    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_linearSolver; }
+    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
 private:
-    QSharedPointer<Hermes::Hermes2D::LinearSolver<Scalar> > m_linearSolver;
+    Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;
 };
 
 template <typename Scalar>
@@ -90,14 +92,17 @@ class NewtonSolverContainer : public HermesSolverContainer<Scalar>
 public:
     NewtonSolverContainer(Block* block);
     ~NewtonSolverContainer();
-    virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
+
+    virtual void projectPreviousSolution(Scalar* solutionVector,
+                                         Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
     virtual void solve(Scalar* solutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver.data(), solverName, adaptivityStep); }
-    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_newtonSolver.data(); }
-    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_newtonSolver->set_weak_formulation(wf);}
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver, solverName, adaptivityStep); }
+    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_newtonSolver; }
+    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_newtonSolver->set_weak_formulation(wf); }
 
 private:
-    QSharedPointer<Hermes::Hermes2D::NewtonSolver<Scalar> > m_newtonSolver;
+    Hermes::Hermes2D::NewtonSolver<Scalar> *m_newtonSolver;
 };
 
 template <typename Scalar>
@@ -106,14 +111,17 @@ class PicardSolverContainer : public HermesSolverContainer<Scalar>
 public:
     PicardSolverContainer(Block* block);
     ~PicardSolverContainer();
-    virtual void projectPreviousSolution(Scalar* solutionVector, MultiSpace<Scalar> spaces, MultiSolution<Scalar> solutions);
+
+    virtual void projectPreviousSolution(Scalar* solutionVector,
+                                         Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
     virtual void solve(Scalar* solutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver.data(), solverName, adaptivityStep); }
-    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_picardSolver.data(); }
-    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_picardSolver->set_weak_formulation(wf);}
+    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver, solverName, adaptivityStep); }
+    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_picardSolver; }
+    virtual void set_weak_formulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_picardSolver->set_weak_formulation(wf); }
 
 private:
-    QSharedPointer<Hermes::Hermes2D::PicardSolver<Scalar> > m_picardSolver;
+    Hermes::Hermes2D::PicardSolver<Scalar> *m_picardSolver;
 };
 
 // solve
@@ -121,7 +129,7 @@ template <typename Scalar>
 class Solver
 {
 public:
-    Solver() : m_hermesSolverContainer(NULL) {m_exactSolutionFunctions.clear();}
+    Solver() : m_hermesSolverContainer(NULL) {}
     ~Solver();
 
     void init(Block* block);
@@ -130,7 +138,7 @@ public:
     void solveInitialTimeStep();
 
     // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
-    NextTimeStep estimateTimeStepLenght(int timeStep, int adaptivityStep);
+    NextTimeStep estimateTimeStepLength(int timeStep, int adaptivityStep);
 
     void solveSimple(int timeStep, int adaptivityStep);
     void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
@@ -138,40 +146,35 @@ public:
 
     // for time dependent problems
     void updateExactSolutionFunctions();
+
 private:
     Block* m_block;
 
-    HermesSolverContainer<Scalar>* m_hermesSolverContainer;
+    HermesSolverContainer<Scalar> *m_hermesSolverContainer;
 
-    MultiSpace<Scalar> m_actualSpaces;
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> m_actualSpaces;
 
     QString m_solverID;
     QString m_solverName;
 
-    //VectorStore<Scalar> m_lastVector;
-
     // elapsed time
     double m_elapsedTime;
 
+    // to be used in advanced time step adaptivity
+    double m_averageErrorToLenghtRatio;
+
     QMap<ExactSolutionScalarAgros<double>*, SceneBoundary *> m_exactSolutionFunctions;
 
-    // weak form
-    //WeakFormAgros<Scalar> *m_wf;
-
-    //void createSpace(QMap<FieldInfo*, Hermes::Hermes2D::Mesh*> meshes, MultiSolutionArray<Scalar>& msa);
-//    void createInitialSolution(Hermes::Hermes2D::Mesh* mesh, MultiSolutionArray<Scalar>& msa);
-    Hermes::vector<QSharedPointer<Hermes::Hermes2D::Space<Scalar> > > createCoarseSpace();
     void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
                        Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);
     void deleteSelectors(Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selector);
 
-    void cleanup();
+    void solveOneProblem(Scalar* solutionVector, Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, int adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> previousSolution = Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 
-    void solveOneProblem(Scalar* solutionVector, MultiSpace<Scalar> spaces, int adaptivityStep, MultiSolution<Scalar> previousSolution = MultiSolution<Scalar>());
-
-    MultiSpace<Scalar> deepMeshAndSpaceCopy(MultiSpace<Scalar> spaces, bool createReference);
-    void saveSolution(BlockSolutionID id, Scalar* solutionVector);
-
+    void clearActualSpaces();
+    void setActualSpaces(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces);
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> deepMeshAndSpaceCopy(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, bool createReference);
+    void addSolutionToStore(BlockSolutionID id, Scalar* solutionVector);
 };
 
 #endif // SOLVER_H

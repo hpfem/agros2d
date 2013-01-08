@@ -19,11 +19,12 @@
 
 #include "value.h"
 
+#include "util/global.h"
 #include "gui/chart.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "util/global.h"
 #include "datatable.h"
 #include "datatabledialog.h"
+#include "hermes2d/problem_config.h"
 
 Value::Value()
     : m_fieldInfo(NULL), m_isEvaluated(false), m_table(new DataTable())
@@ -380,7 +381,7 @@ bool ValueLineEdit::evaluate(bool quiet)
             {
                 m_number = val.number();
                 setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                              Agros2D::config()->lineEditValueShowResult);
+                              Agros2D::configComputer()->lineEditValueShowResult);
                 isOk = true;
             }
         }
@@ -568,7 +569,7 @@ void ValueTimeDialog::createControls()
     connect(cmbPresets, SIGNAL(currentIndexChanged(int)), this, SLOT(presetsChanged(int)));
 
     // chart
-    chart = new Chart(this, true);
+    chart = new Chart(this);
     // axis labels
     chart->setAxisTitle(QwtPlot::xBottom, tr("time"));
     chart->setAxisTitle(QwtPlot::yLeft, tr("value"));

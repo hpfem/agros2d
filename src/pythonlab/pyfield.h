@@ -109,6 +109,14 @@ class PyField
         inline int getAdaptivitySteps() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps(); }
         void setAdaptivitySteps(const int adaptivitySteps);
 
+        // adaptivity back steps
+        inline int getAdaptivityBackSteps() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityBackSteps(); }
+        void setAdaptivityBackSteps(const int adaptivityBackSteps);
+
+        //adaptivity redone each
+        inline int getAdaptivityRedoneEach() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityRedoneEach(); }
+        void setAdaptivityRedoneEach(const int adaptivityRedoneEach);
+
         // initial condition
         inline double getInitialCondition() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
         void setInitialCondition(const double initialCondition);

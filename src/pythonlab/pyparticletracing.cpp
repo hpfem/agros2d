@@ -30,12 +30,6 @@ void PyParticleTracing::solve()
     if (!Agros2D::problem()->isSolved())
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-    // store values
-    // double particleStartingRadius = Agros2D::config()->particleStartingRadius;
-    // int particleNumberOfParticles = Agros2D::config()->particleNumberOfParticles;
-    Agros2D::config()->particleStartingRadius = 0.0;
-    Agros2D::config()->particleNumberOfParticles = 1;
-
     ParticleTracing particleTracing;
     particleTracing.computeTrajectoryParticle(false);
 
@@ -44,10 +38,6 @@ void PyParticleTracing::solve()
     m_times = particleTracing.times();
 
     currentPythonEngineAgros()->postHermes()->refresh();
-
-    // restore values
-    // Agros2D::config()->particleStartingRadius = particleStartingRadius;
-    // Agros2D::config()->particleNumberOfParticles = particleNumberOfParticles;
 }
 
 void PyParticleTracing::positions(std::vector<double> &x,
@@ -88,6 +78,22 @@ void PyParticleTracing::velocities(std::vector<double> &x,
     z = outZ;
 }
 
+void PyParticleTracing::setNumberOfParticles(int particles)
+{
+    if (particles < 1)
+        throw out_of_range(QObject::tr("Number of particles must be bigger then 1.").toStdString());
+
+    Agros2D::problem()->configView()->particleNumberOfParticles = particles;
+}
+
+void PyParticleTracing::setStartingRadius(double radius)
+{
+    if (radius < 0.00)
+        throw out_of_range(QObject::tr("Particles dispersion must be possitive.").toStdString());
+
+    Agros2D::problem()->configView()->particleStartingRadius = radius;
+}
+
 void PyParticleTracing::times(std::vector<double> &time)
 {
     std::vector<double> outTime;
@@ -108,14 +114,12 @@ void PyParticleTracing::setInitialPosition(double x, double y)
     if (y < rect.start.y || y > rect.end.y)
         throw out_of_range(QObject::tr("y coordinate is out of range.").toStdString());
 
-    Agros2D::config()->particleStart = Point(x, y);
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleStart = Point(x, y);
 }
 
 void PyParticleTracing::setInitialVelocity(double x, double y)
 {
-    Agros2D::config()->particleStartVelocity = Point(x, y);
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleStartVelocity = Point(x, y);
 }
 
 void PyParticleTracing::setParticleMass(double mass)
@@ -123,14 +127,12 @@ void PyParticleTracing::setParticleMass(double mass)
     if (mass <= 0.0)
         throw out_of_range(QObject::tr("Mass must be positive.").toStdString());
 
-    Agros2D::config()->particleMass = mass;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleMass = mass;
 }
 
 void PyParticleTracing::setParticleCharge(double charge)
 {
-    Agros2D::config()->particleConstant = charge;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleConstant = charge;
 }
 
 void PyParticleTracing::setDragForceDensity(double rho)
@@ -138,8 +140,7 @@ void PyParticleTracing::setDragForceDensity(double rho)
     if (rho < 0.0)
         throw out_of_range(QObject::tr("Density cannot be negative.").toStdString());
 
-    Agros2D::config()->particleDragDensity = rho;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleDragDensity = rho;
 }
 
 void PyParticleTracing::setDragForceReferenceArea(double area)
@@ -147,8 +148,7 @@ void PyParticleTracing::setDragForceReferenceArea(double area)
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area cannot be negative.").toStdString());
 
-    Agros2D::config()->particleDragReferenceArea = area;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleDragReferenceArea = area;
 }
 
 void PyParticleTracing::setDragForceCoefficient(double coeff)
@@ -156,26 +156,36 @@ void PyParticleTracing::setDragForceCoefficient(double coeff)
     if (coeff < 0.0)
         throw out_of_range(QObject::tr("Coefficient cannot be negative.").toStdString());
 
-    Agros2D::config()->particleDragCoefficient = coeff;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleDragCoefficient = coeff;
 }
 
-void PyParticleTracing::setIncludeRelativisticCorrection(int include)
+void PyParticleTracing::setCustomForce(double x, double y, double z)
 {
-    Agros2D::config()->particleIncludeRelativisticCorrection = include;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleCustomForce.x = x;
+    Agros2D::problem()->configView()->particleCustomForce.y = y;
+    Agros2D::problem()->configView()->particleCustomForce.z = z;
 }
 
-void PyParticleTracing::setReflectOnDifferentMaterial(int reflect)
+void PyParticleTracing::getCustomForce(double &x, double &y, double &z)
 {
-    Agros2D::config()->particleReflectOnDifferentMaterial = reflect;
-    Agros2D::scene()->invalidate();
+    x = Agros2D::problem()->configView()->particleCustomForce.x;
+    y = Agros2D::problem()->configView()->particleCustomForce.y;
+    z = Agros2D::problem()->configView()->particleCustomForce.z;
 }
 
-void PyParticleTracing::setReflectOnBoundary(int reflect)
+void PyParticleTracing::setIncludeRelativisticCorrection(bool include)
 {
-    Agros2D::config()->particleReflectOnBoundary = reflect;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleIncludeRelativisticCorrection = include;
+}
+
+void PyParticleTracing::setReflectOnDifferentMaterial(bool reflect)
+{
+    Agros2D::problem()->configView()->particleReflectOnDifferentMaterial = reflect;
+}
+
+void PyParticleTracing::setReflectOnBoundary(bool reflect)
+{
+    Agros2D::problem()->configView()->particleReflectOnBoundary = reflect;
 }
 
 void PyParticleTracing::setCoefficientOfRestitution(double coeff)
@@ -183,8 +193,7 @@ void PyParticleTracing::setCoefficientOfRestitution(double coeff)
     if (coeff < 0.0)
         throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
 
-    Agros2D::config()->particleCoefficientOfRestitution = coeff;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleCoefficientOfRestitution = coeff;
 }
 
 void PyParticleTracing::setMaximumTolerance(double tolerance)
@@ -192,8 +201,7 @@ void PyParticleTracing::setMaximumTolerance(double tolerance)
     if (tolerance < 0.0)
         throw out_of_range(QObject::tr("Tolerance cannot be negative.").toStdString());
 
-    Agros2D::config()->particleMaximumRelativeError = tolerance;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleMaximumRelativeError = tolerance;
 }
 
 void PyParticleTracing::setMaximumNumberOfSteps(int steps)
@@ -201,8 +209,7 @@ void PyParticleTracing::setMaximumNumberOfSteps(int steps)
     if (steps < 0.0)
         throw out_of_range(QObject::tr("Maximum number of steps cannot be negative.").toStdString());
 
-    Agros2D::config()->particleMaximumNumberOfSteps = steps;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleMaximumNumberOfSteps = steps;
 }
 
 void PyParticleTracing::setMinimumStep(int step)
@@ -210,6 +217,5 @@ void PyParticleTracing::setMinimumStep(int step)
     if (step < 0.0)
         throw out_of_range(QObject::tr("Minimum step cannot be negative.").toStdString());
 
-    Agros2D::config()->particleMinimumStep = step;
-    Agros2D::scene()->invalidate();
+    Agros2D::problem()->configView()->particleMinimumStep = step;
 }

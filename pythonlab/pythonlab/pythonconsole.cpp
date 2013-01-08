@@ -37,6 +37,9 @@
 #include "pythonbrowser.h"
 
 #include <QtGui>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets>
+#endif
 
 #include <iostream>
 #include <Python.h>
@@ -668,7 +671,11 @@ void PythonScriptingConsole::consoleMessage(const QString &message, const QColor
     QString str;
 
     str = "<span style=\"color: " + color.name() + ";\">";
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     str += Qt::escape(message);
+#else
+    QString(message).toHtmlEscaped();
+#endif
     str += "</span>";
 
     insertHtml(str);

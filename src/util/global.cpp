@@ -1,4 +1,4 @@
-// This file is part of Agros2D.
+// This plugin is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
-
 
 static QSharedPointer<Agros2D> m_singleton;
 
@@ -47,9 +47,8 @@ Agros2D::Agros2D()
 
     m_solutionStore = new SolutionStore();
 
-    // config
-    m_config = new Config();
-    m_config->load();
+    m_configComputer = new Config();
+    m_configComputer->load();
 
     // log
     m_log = new Log();
@@ -58,13 +57,13 @@ Agros2D::Agros2D()
 Agros2D::~Agros2D()
 {
     /*
-    // remove temp and cache files
+    // remove temp and cache plugins
     removeDirectory(cacheProblemDir());
     removeDirectory(tempProblemDir());
 
     delete m_problem;
     delete m_scene;
-    delete m_config;
+    delete m_configComputer;
     delete m_scriptEngineRemote;    
     delete m_solutionStore;
     delete m_log;
@@ -86,45 +85,72 @@ Agros2D *Agros2D::singleton()
     return m_singleton.data();
 }
 
-void Agros2D::loadPlugins(QStringList plugins)
+void Agros2D::loadActivePlugins()
 {
+    // load plugins
+    QStringList modules = Agros2D::problem()->fieldInfos().keys();
+    QStringList couplings;
+    foreach (CouplingInfo *info, Agros2D::problem()->couplingInfos().values())
+        couplings.append(info->couplingId());
+
+    QStringList plugins;
+    plugins.append(modules);
+    plugins.append(couplings);
+
     // unload plugins and clear list
     foreach (PluginInterface *plugin, Agros2D::singleton()->m_plugins)
         delete plugin;
     Agros2D::singleton()->m_plugins.clear();
 
     // load plugins
-    foreach (QString file, plugins)
-    {
-        QPluginLoader *loader = NULL;
+    foreach (QString plugin, plugins)
+        Agros2D::loadPlugin(plugin);
+}
+
+static void Agros2D::loadPlugin(const QString &plugin)
+{
+    QPluginLoader *loader = NULL;
 
 #ifdef Q_WS_X11
-        if (QFile::exists(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file)))
-            loader = new QPluginLoader(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(file));
+    if (QFile::exists(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(plugin)))
+        loader = new QPluginLoader(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(plugin));
 
-        if (!loader)
-        {
-            if (QFile::exists(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file)))
-                loader = new QPluginLoader(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(file));
-            else if (QFile::exists(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file)))
-                loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(file));
-        }
+    if (!loader)
+    {
+        if (QFile::exists(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(plugin)))
+            loader = new QPluginLoader(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(plugin));
+        else if (QFile::exists(QString("/usr/lib/libagros2d_plugin_%1.so").arg(plugin)))
+            loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(plugin));
+    }
 #endif
 
 #ifdef Q_WS_WIN
-        if (QFile::exists(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(file)))
-            loader = new QPluginLoader(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(file));
+    if (QFile::exists(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(plugin)))
+        loader = new QPluginLoader(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(plugin));
 #endif
 
-        if (!loader || !loader->load())
-        {
-            throw AgrosException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(file));
-            return;
-        }
-
-        assert(loader->instance());
-        Agros2D::singleton()->m_plugins[file] = qobject_cast<PluginInterface *>(loader->instance());
-        delete loader;
+    if (!loader)
+    {
+        throw AgrosException(QObject::tr("Could not find 'agros2d_plugin_%1'").arg(plugin));
+        return;
     }
+    if (!loader->load())
+    {
+        throw AgrosException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(plugin));
+        delete loader;
+        return;
+    }
+
+    assert(loader->instance());
+    Agros2D::singleton()->m_plugins[plugin] = qobject_cast<PluginInterface *>(loader->instance());
+    delete loader;
 }
 
+PluginInterface *Agros2D::plugin(const QString &plugin)
+{
+    if (!Agros2D::singleton()->m_plugins.contains(plugin))
+        Agros2D::loadPlugin(plugin);
+
+    assert(Agros2D::singleton()->m_plugins.contains(plugin));
+    return Agros2D::singleton()->m_plugins[plugin];
+}

@@ -33,7 +33,7 @@
 #include "hermes2d/coupling.h"
 
 
-ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
+ConfigComputerDialog::ConfigComputerDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("options"));
     setWindowTitle(tr("Options"));
@@ -46,66 +46,66 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
     setMaximumSize(sizeHint());
 }
 
-void ConfigDialog::load()
+void ConfigComputerDialog::load()
 {
     // gui style
-    cmbGUIStyle->setCurrentIndex(cmbGUIStyle->findText(Agros2D::config()->guiStyle));
+    cmbGUIStyle->setCurrentIndex(cmbGUIStyle->findText(Agros2D::configComputer()->guiStyle));
     if (cmbGUIStyle->currentIndex() == -1 && cmbGUIStyle->count() > 0) cmbGUIStyle->setCurrentIndex(0);
 
     // language
-    cmbLanguage->setCurrentIndex(cmbLanguage->findText(Agros2D::config()->language));
+    cmbLanguage->setCurrentIndex(cmbLanguage->findText(Agros2D::configComputer()->language));
     if (cmbLanguage->currentIndex() == -1 && cmbLanguage->count() > 0) cmbLanguage->setCurrentIndex(0);
 
     // default physic field
-    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Agros2D::config()->defaultPhysicField));
+    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Agros2D::configComputer()->defaultPhysicField));
 
     // collaboration server
-    txtCollaborationServerURL->setText(Agros2D::config()->collaborationServerURL);
+    txtCollaborationServerURL->setText(Agros2D::configComputer()->collaborationServerURL);
 
     // check version
-    chkCheckVersion->setChecked(Agros2D::config()->checkVersion);
+    chkCheckVersion->setChecked(Agros2D::configComputer()->checkVersion);
 
     // show result in line edit value widget
-    chkLineEditValueShowResult->setChecked(Agros2D::config()->lineEditValueShowResult);
+    chkLineEditValueShowResult->setChecked(Agros2D::configComputer()->lineEditValueShowResult);
 
     // discrete
-    chkDiscreteSaveMatrixRHS->setChecked(Agros2D::config()->saveMatrixRHS);
+    chkDiscreteSaveMatrixRHS->setChecked(Agros2D::configComputer()->saveMatrixRHS);
 
     // number of threads
-    txtNumOfThreads->setValue(Agros2D::config()->numberOfThreads);
+    txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
 
     // delete files
-    chkDeleteTriangleMeshFiles->setChecked(Agros2D::config()->deleteMeshFiles);
-    chkDeleteHermes2DMeshFile->setChecked(Agros2D::config()->deleteHermesMeshFile);
+    chkDeleteTriangleMeshFiles->setChecked(Agros2D::configComputer()->deleteMeshFiles);
+    chkDeleteHermes2DMeshFile->setChecked(Agros2D::configComputer()->deleteHermesMeshFile);
 
     // save problem with solution
-    chkSaveWithSolution->setChecked(Agros2D::config()->saveProblemWithSolution);
+    chkSaveWithSolution->setChecked(Agros2D::configComputer()->saveProblemWithSolution);
 
     // cache size
-    txtCacheSize->setValue(Agros2D::config()->cacheSize);
+    txtCacheSize->setValue(Agros2D::configComputer()->cacheSize);
 
     // std log
-    chkLogStdOut->setChecked(Agros2D::config()->showLogStdOut);
+    chkLogStdOut->setChecked(Agros2D::configComputer()->showLogStdOut);
 
     // global script
-    txtGlobalScript->setPlainText(Agros2D::config()->globalScript);
+    txtGlobalScript->setPlainText(Agros2D::configComputer()->globalScript);
 }
 
-void ConfigDialog::save()
+void ConfigComputerDialog::save()
 {
     // gui style
-    Agros2D::config()->guiStyle = cmbGUIStyle->currentText();
+    Agros2D::configComputer()->guiStyle = cmbGUIStyle->currentText();
     setGUIStyle(cmbGUIStyle->currentText());
 
     // language
-    if (Agros2D::config()->language != cmbLanguage->currentText())
+    if (Agros2D::configComputer()->language != cmbLanguage->currentText())
         QMessageBox::warning(QApplication::activeWindow(),
                              tr("Language change"),
                              tr("Interface language has been changed. You must restart the application."));
-    Agros2D::config()->language = cmbLanguage->currentText();
+    Agros2D::configComputer()->language = cmbLanguage->currentText();
 
     // default physic field
-    Agros2D::config()->defaultPhysicField = cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toString();
+    Agros2D::configComputer()->defaultPhysicField = cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toString();
 
     // collaboration server
     QString collaborationServerUrl = txtCollaborationServerURL->text();
@@ -115,41 +115,41 @@ void ConfigDialog::save()
     if (!collaborationServerUrl.endsWith("/"))
         collaborationServerUrl = QString("%1/").arg(collaborationServerUrl);
 
-    Agros2D::config()->collaborationServerURL = collaborationServerUrl;
+    Agros2D::configComputer()->collaborationServerURL = collaborationServerUrl;
 
     // check version
-    Agros2D::config()->checkVersion = chkCheckVersion->isChecked();
+    Agros2D::configComputer()->checkVersion = chkCheckVersion->isChecked();
 
     // show result in line edit value widget
-    Agros2D::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
+    Agros2D::configComputer()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
     // discrete
-    Agros2D::config()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
+    Agros2D::configComputer()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
 
     // number of threads
-    Agros2D::config()->numberOfThreads = txtNumOfThreads->value();
+    Agros2D::configComputer()->numberOfThreads = txtNumOfThreads->value();
 
     // delete files
-    Agros2D::config()->deleteMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
-    Agros2D::config()->deleteHermesMeshFile = chkDeleteHermes2DMeshFile->isChecked();
+    Agros2D::configComputer()->deleteMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
+    Agros2D::configComputer()->deleteHermesMeshFile = chkDeleteHermes2DMeshFile->isChecked();
 
     // save problem with solution
-    Agros2D::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
+    Agros2D::configComputer()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
 
     // cache size
-    Agros2D::config()->cacheSize = txtCacheSize->value();
+    Agros2D::configComputer()->cacheSize = txtCacheSize->value();
 
     // std log
-    Agros2D::config()->showLogStdOut = chkLogStdOut->isChecked();
+    Agros2D::configComputer()->showLogStdOut = chkLogStdOut->isChecked();
 
     // global script
-    Agros2D::config()->globalScript = txtGlobalScript->toPlainText();
+    Agros2D::configComputer()->globalScript = txtGlobalScript->toPlainText();
 
     // save
-    Agros2D::config()->save();
+    Agros2D::configComputer()->save();
 }
 
-void ConfigDialog::createControls()
+void ConfigComputerDialog::createControls()
 {
     lstView = new QListWidget(this);
     pages = new QStackedWidget(this);
@@ -217,7 +217,7 @@ void ConfigDialog::createControls()
     setLayout(layout);
 }
 
-QWidget *ConfigDialog::createMainWidget()
+QWidget *ConfigComputerDialog::createMainWidget()
 {
     QWidget *mainWidget = new QWidget(this);
 
@@ -279,7 +279,7 @@ QWidget *ConfigDialog::createMainWidget()
     return mainWidget;
 }
 
-QWidget *ConfigDialog::createSolverWidget()
+QWidget *ConfigComputerDialog::createSolverWidget()
 {
     // general
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
@@ -324,7 +324,7 @@ QWidget *ConfigDialog::createSolverWidget()
     return solverGeneralWidget;
 }
 
-QWidget *ConfigDialog::createPluginWidget()
+QWidget *ConfigComputerDialog::createPluginWidget()
 {
     QWidget *pluginWidget = new QWidget(this);
 
@@ -399,12 +399,12 @@ QWidget *ConfigDialog::createPluginWidget()
     return pluginWidget;
 }
 
-void ConfigDialog::moduleClicked(QTreeWidgetItem *item, int role)
+void ConfigComputerDialog::moduleClicked(QTreeWidgetItem *item, int role)
 {
     btnBuildModule->setEnabled(item);
 }
 
-void ConfigDialog::moduleDoubleClicked(QTreeWidgetItem *item, int role)
+void ConfigComputerDialog::moduleDoubleClicked(QTreeWidgetItem *item, int role)
 {
     QString module = item->data(0, Qt::UserRole).toString();
     if (!module.isEmpty())
@@ -416,12 +416,12 @@ void ConfigDialog::moduleDoubleClicked(QTreeWidgetItem *item, int role)
     }
 }
 
-void ConfigDialog::couplingClicked(QTreeWidgetItem *item, int role)
+void ConfigComputerDialog::couplingClicked(QTreeWidgetItem *item, int role)
 {
     btnBuildCoupling->setEnabled(item);
 }
 
-void ConfigDialog::couplingDoubleClicked(QTreeWidgetItem *item, int role)
+void ConfigComputerDialog::couplingDoubleClicked(QTreeWidgetItem *item, int role)
 {
     QString module = item->data(0, Qt::UserRole).toString();
     if (!module.isEmpty())
@@ -430,7 +430,7 @@ void ConfigDialog::couplingDoubleClicked(QTreeWidgetItem *item, int role)
     }
 }
 
-void ConfigDialog::buildModule()
+void ConfigComputerDialog::buildModule()
 {
     if (treeModules->selectedItems().count() == 1)
     {
@@ -442,7 +442,7 @@ void ConfigDialog::buildModule()
     }
 }
 
-void ConfigDialog::buildCoupling()
+void ConfigComputerDialog::buildCoupling()
 {
     if (treeCouplings->selectedItems().count() == 1)
     {
@@ -454,7 +454,7 @@ void ConfigDialog::buildCoupling()
     }
 }
 
-void ConfigDialog::buildModuleOrCoupling(const QString &id)
+void ConfigComputerDialog::buildModuleOrCoupling(const QString &id)
 {
     SystemOutputWidget *output = new SystemOutputWidget();
     output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(id));
@@ -462,7 +462,7 @@ void ConfigDialog::buildModuleOrCoupling(const QString &id)
     readModulesAndCouplings();
 }
 
-void ConfigDialog::readModulesAndCouplings()
+void ConfigComputerDialog::readModulesAndCouplings()
 {
     treeModules->clear();
     QMapIterator<QString, QString> itModules(availableModules());
@@ -476,7 +476,9 @@ void ConfigDialog::readModulesAndCouplings()
 
         try
         {
-            Agros2D::loadPlugins(QStringList(itModules.key()));
+            foreach (QString plugin, QStringList(itModules.key()))
+                Agros2D::loadPlugin(plugin);
+
             item->setText(1, tr("available"));
         }
         catch (AgrosException e)
@@ -498,7 +500,9 @@ void ConfigDialog::readModulesAndCouplings()
 
         try
         {
-            Agros2D::loadPlugins(QStringList(itCouplings.key()));
+            foreach (QString plugin, QStringList(itCouplings.key()))
+                Agros2D::loadPlugin(plugin);
+
             item->setText(1, tr("available"));
         }
         catch (AgrosException e)
@@ -509,7 +513,7 @@ void ConfigDialog::readModulesAndCouplings()
     }
 }
 
-QWidget *ConfigDialog::createGlobalScriptWidget()
+QWidget *ConfigComputerDialog::createGlobalScriptWidget()
 {
     QWidget *viewWidget = new QWidget(this);
 
@@ -524,7 +528,7 @@ QWidget *ConfigDialog::createGlobalScriptWidget()
     return viewWidget;
 }
 
-void ConfigDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
+void ConfigComputerDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 {
     // block signals
     cmbPhysicField->blockSignals(true);
@@ -541,23 +545,23 @@ void ConfigDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->blockSignals(false);
 
     // default physic field
-    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Agros2D::config()->defaultPhysicField));
+    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Agros2D::configComputer()->defaultPhysicField));
     if (cmbPhysicField->currentIndex() == -1)
         cmbPhysicField->setCurrentIndex(0);
 }
 
-void ConfigDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+void ConfigComputerDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     pages->setCurrentIndex(lstView->row(current));
 }
 
-void ConfigDialog::doAccept()
+void ConfigComputerDialog::doAccept()
 {
     save();
     accept();
 }
 
-void ConfigDialog::doReject()
+void ConfigComputerDialog::doReject()
 {
     reject();
 }

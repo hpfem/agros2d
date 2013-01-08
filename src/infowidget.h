@@ -45,7 +45,6 @@ private:
 
 private slots:
     void showInfo();
-    QString generateGeometry();
 
     void finishLoading(bool ok);
 };

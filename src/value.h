@@ -25,7 +25,7 @@
 #include "hermes2d/module.h"
 
 class QwtPlotCurve;
-class Chart;
+class ChartBasic;
 class DataTable;
 class FieldInfo;
 
@@ -169,7 +169,7 @@ public:
     void setValue(Value value);
 
 private:
-    Chart *chart;
+    ChartBasic *chart;
     QwtPlotCurve *chartCurve;
 
     QPushButton *btnOk;

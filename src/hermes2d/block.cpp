@@ -30,7 +30,7 @@
 #include "module_agros.h"
 
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
-    m_couplings(couplings)
+    m_couplings(couplings), m_wf(NULL)
 {
     foreach (FieldInfo* fi, fieldInfos)
     {
@@ -39,18 +39,42 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
         {
             if (couplingInfo->isWeak() && (couplingInfo->targetField() == fi))
             {
-                field->m_couplingSources.push_back(couplingInfo);
+                field->addCouplingInfo(couplingInfo);
             }
         }
 
         m_fields.append(field);
     }
+
+    // essential boundary conditions
+    for (int i = 0; i < numSolutions(); i++)
+        m_bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
+}
+
+Block::~Block()
+{
+    // clear fields
+    foreach (Field *field, m_fields)
+        delete field;
+    m_fields.clear();
+
+    // clear boundary conditions
+    foreach (Hermes::Hermes2D::EssentialBCs<double> *bc, m_bcs)
+    {
+        for (Hermes::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
+            delete *it;
+        delete bc;
+    }
+    m_bcs.clear();
+
+    // delete weakform
+    if (m_wf)
+        delete m_wf;
+    m_wf = NULL;
 }
 
 Solver<double>* Block::prepareSolver()
 {
-    //Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("prepare solver"));
-
     Solver<double>* solver = new Solver<double>;
 
     foreach (Field* field, m_fields)
@@ -80,7 +104,7 @@ double Block::timeSkip() const
     double skip = 0.;
     foreach (Field *field, m_fields)
     {
-        if (field->m_fieldInfo->analysisType() == AnalysisType_Transient)
+        if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
             continue;
 
         double sActual = field->fieldInfo()->timeSkip().number();
@@ -96,6 +120,7 @@ AdaptivityType Block::adaptivityType() const
 
     foreach (Field *field, m_fields)
     {
+        // todo: ensure in GUI
         assert(field->fieldInfo()->adaptivityType() == at);
     }
 
@@ -108,10 +133,37 @@ int Block::adaptivitySteps() const
 
     foreach (Field *field, m_fields)
     {
+        // todo: ensure in GUI
         assert(field->fieldInfo()->adaptivitySteps() == as);
     }
 
     return as;
+}
+
+int Block::adaptivityBackSteps() const
+{
+    int abs = m_fields.at(0)->fieldInfo()->adaptivityBackSteps();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert(field->fieldInfo()->adaptivityBackSteps() == abs);
+    }
+
+    return abs;
+}
+
+int Block::adaptivityRedoneEach() const
+{
+    int re = m_fields.at(0)->fieldInfo()->adaptivityRedoneEach();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert(field->fieldInfo()->adaptivityRedoneEach() == re);
+    }
+
+    return re;
 }
 
 double Block::adaptivityTolerance() const
@@ -120,6 +172,7 @@ double Block::adaptivityTolerance() const
 
     foreach (Field *field, m_fields)
     {
+        // todo: ensure in GUI
         assert(field->fieldInfo()->adaptivityTolerance() == at);
     }
 

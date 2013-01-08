@@ -80,7 +80,7 @@ QWidget *AboutDialog::createAgros2D()
                                          "<p>"
                                          "<b>Pavel Karban</b> - main developer (University of West Bohemia, Pilsen)<br/>"
                                          "<b>František Mach</b> - developer, documentation (University of West Bohemia, Pilsen)<br/>"
-                                         "<b>Pavel Kůs</b> - developer (Academy of Sciences of the Czech Republic, Prague)<br/>"
+                                         "<b>Pavel Kůs</b> - developer, coupled problems, time domain adaptivity (University of West Bohemia, Prague)<br/>"
                                          "<b>David Pánek</b> - developer (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Lukáš Koudela</b> - developer - RF module (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Bartosz Sawicki</b> - Polish translation (Warsaw University of Technology, Warsaw)<br/>"
@@ -152,12 +152,18 @@ QWidget *AboutDialog::createHermes2D()
 QWidget *AboutDialog::createLibraries()
 {
     QLabel *labelContent = new QLabel(tr("<h3>Libraries</h3>"
-                                         "<b>Nokia Qt:</b> Nokia Qt (<a href=\"http://qt.nokia.com/\">Qt - A cross-platform framework</a>)<br/>"
+                                         "<b>Digia Qt:</b> Digia Qt (<a href=\"http://qt.digia.com/\">Qt - A cross-platform framework</a>)<br/>"
                                          "<b>Qwt:</b> Qwt (<a href=\"http://qwt.sourceforge.net/\">Qt Widgets for Technical Applications</a>)<br/>"
                                          "<b>Python:</b> Python Programming Language (<a href=\"http://www.python.org\">Python</a>)<br/>"
                                          "<b>dxflib:</b> Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)<br/>"
+                                         "<b>GL2PS:</b> An OpenGL to PostScript printing library (<a href=\"http://www.geuz.org/gl2ps/\">GL2PS</a>)<br/>"
+                                         "<b>ctemplate:</b> Simple but powerful template language for C++ (<a href=\"http://code.google.com/p/ctemplate/\">ctemplate</a>)<br/>"
+                                         "<b>poly2tri:</b> A 2D constrained Delaunay triangulation library (<a href=\"http://code.google.com/p/poly2tri/\">poly2tri</a>)<br/>"
                                          "<b>Triangle:</b> Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)<br/>"
-                                         "<b>FFmpeg:</b> FFmpeg group (<a href=\"http://ffmpeg.org/\">FFmpeg</a>)<br/>"
+                                         "<b>Gmsh:</b> A three-dimensional finite element mesh generator (<a href=\"http://geuz.org/gmsh\">Gmsh</a>)<br/>"
+                                         "<b>UMFPACK:</b> unsymmetric multifrontal sparse LU factorization package (<a href=\"http://www.cise.ufl.edu/research/sparse/umfpack/\">MUMPS</a>)<br/>"
+                                         "<b>MUMPS:</b> A MUltifrontal Massively Parallel sparse direct Solver (<a href=\"http://graal.ens-lyon.fr/MUMPS/\">MUMPS</a>)<br/>"
+                                         "<b>SuperLU:</b> Direct solver for large sparse systems of linear equations (<a href=\"http://crd-legacy.lbl.gov/~xiaoye/SuperLU/\">SuperLU</a>)<br/>"
                                          ));
     labelContent->setWordWrap(true);
     labelContent->setOpenExternalLinks(true);

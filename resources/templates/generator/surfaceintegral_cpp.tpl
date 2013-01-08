@@ -24,6 +24,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/block.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
 #include "util.h"
@@ -56,9 +57,24 @@ void {{CLASS}}SurfaceIntegral::calculate()
         Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
         for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
         {
-            // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-            FieldSolutionID fsid(m_fieldInfo, Agros2D::scene()->activeTimeStep(), Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, Agros2D::scene()->activeTimeStep()), SolutionMode_Normal);
-            sln.push_back(Agros2D::solutionStore()->multiSolution(fsid).component(k).sln.data());
+            int adaptivityStep, timeStep;
+            SolutionMode solutionMode;
+            if(m_fieldInfo == Agros2D::scene()->activeViewField())
+            {
+                // if calculating values for active view field, use the solution that is viewed
+                timeStep = Agros2D::scene()->activeTimeStep();
+                adaptivityStep = Agros2D::scene()->activeAdaptivityStep();
+                solutionMode = Agros2D::scene()->activeSolutionType();
+            }
+            else
+            {
+                // else use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+                timeStep = Agros2D::solutionStore()->nearestTimeStep(m_fieldInfo, Agros2D::scene()->activeTimeStep());
+                adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
+                solutionMode = SolutionMode_Finer;
+            }
+            FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
+            sln.push_back(Agros2D::solutionStore()->multiArray(fsid).solutions().at(k));
         }
 
         double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
@@ -89,7 +105,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             {
                                 boundary = true;
                             }
-                            if ((atoi(m_fieldInfo->initialMesh().data()->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
+                            if ((atoi(m_fieldInfo->initialMesh()->get_boundary_markers_conversion().get_user_marker(e->en[edge]->marker).marker.c_str())) == i)
                             {
                                 integrate = true;
                             }
@@ -131,7 +147,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             int np = quad->get_num_points(eo, e->get_mode());
 
                             // set material variable
-                            SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().
+                            SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
                                                                                      get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
                             // expressions

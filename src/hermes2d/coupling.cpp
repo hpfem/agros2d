@@ -29,6 +29,7 @@
 
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 #include "../../resources_source/classes/coupling_xml.h"
 
@@ -171,7 +172,12 @@ void Coupling::clear()
 {
     m_constants.clear();
 
+    foreach (FormInfo *formInfo, m_wfMatrixVolumeExpression)
+        delete formInfo;
     m_wfMatrixVolumeExpression.clear();
+
+    foreach (FormInfo *formInfo, m_wfVectorVolumeExpression)
+        delete formInfo;
     m_wfVectorVolumeExpression.clear();
 }
 

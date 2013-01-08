@@ -171,7 +171,7 @@ void DataTableDialog::createControls()
     lblInfoError->setPalette(palette);
 
     // chart
-    chartValue = new Chart(this, true);
+    chartValue = new Chart(this);
     // axis labels
     chartValue->setAxisTitle(QwtPlot::xBottom, m_labelX);
     chartValue->setAxisTitle(QwtPlot::yLeft, m_labelY);
@@ -184,7 +184,7 @@ void DataTableDialog::createControls()
     chartValueCurveMarkers->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::black), QColor(Qt::black), QSize(5, 5)));
     chartValueCurveMarkers->attach(chartValue);
 
-    chartDerivative = new Chart(this, true);
+    chartDerivative = new Chart(this);
     // axis labels
     chartDerivative->setAxisTitle(QwtPlot::xBottom, m_labelX);
     chartDerivative->setAxisTitle(QwtPlot::yLeft, QString("d%1/d%2").arg(m_labelY).arg(m_labelX));

@@ -24,6 +24,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/block.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
 #include "util.h"
@@ -61,10 +62,16 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
         {
             // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
             FieldSolutionID fsid(fieldInfo, Agros2D::scene()->activeTimeStep(), Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, Agros2D::scene()->activeTimeStep()), SolutionMode_Normal);
-            sln[k] = Agros2D::solutionStore()->multiSolution(fsid).component(k).sln.data();
+            sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
 
             // point values
             Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(point.x, point.y);
+            if (!values)
+            {
+                throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));
+                return res;
+            }
+
             double val;
             if ((fieldInfo->analysisType() == AnalysisType_Transient) && Agros2D::scene()->activeTimeStep() == 0)
                 // const solution at first time step

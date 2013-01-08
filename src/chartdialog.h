@@ -24,7 +24,7 @@
 #include "gui/chart.h"
 #include "hermes2d/plugin_interface.h"
 
-class Chart;
+class ChartBasic;
 class LineEditDouble;
 class ValueLineEdit;
 class LocalValue;
@@ -68,7 +68,7 @@ public:
 
     QAction *actSceneModeChart;
 
-    inline Chart *chart() { return m_chart; }
+    inline ChartBasic *chart() { return m_chart; }
 
 public slots:
     void setControls();
@@ -90,7 +90,7 @@ public slots:
 
 public:
     ChartControlsWidget(SceneViewPost2D *sceneView,
-                Chart *chart,
+                ChartBasic *chart,
                 QWidget *parent = 0);
     ~ChartControlsWidget();
 
@@ -135,7 +135,7 @@ private:
     QWidget *widGeometry;
     QWidget *widTime;
 
-    Chart *m_chart;
+    ChartBasic *m_chart;
 
     void createControls();
 

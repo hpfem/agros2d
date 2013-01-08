@@ -67,8 +67,8 @@ private slots:
     void doDocumentDownloadFromServer();
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();
-    void doDocumentSaveWithSolution();
     void doDocumentSaveAs();
+    void doDocumentSaveSolution();
     void doDocumentUploadToServer();
     void doDocumentClose();
     void doDocumentImportDXF();
@@ -77,6 +77,7 @@ private slots:
     void doDocumentSaveImage();
     void doDocumentSaveGeometry();
     void doLoadBackground();
+    void doExamples();
 
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -144,7 +145,7 @@ private:
     QAction *actDocumentOpen;
     QAction *actDocumentDownloadFromServer;
     QAction *actDocumentSave;
-    QAction *actDocumentSaveWithSolution;
+    QAction *actDocumentSaveSolution;
     QAction *actDocumentSaveAs;
     QAction *actDocumentUploadToServer;
     QAction *actDocumentClose;
@@ -153,6 +154,7 @@ private:
     QAction *actDocumentExportMeshFile;
     QAction *actDocumentSaveImage;
     QAction *actDocumentSaveGeometry;
+    QAction *actExamples;
     QAction *actExit;
     QAction *actLoadBackground;
     QActionGroup *actDocumentOpenRecentGroup;

@@ -21,6 +21,7 @@
 #include "util/global.h"
 
 #include "problem.h"
+#include "hermes2d/problem_config.h"
 #include "scene.h"
 #include "scenemarker.h"
 #include "module.h"
@@ -55,9 +56,8 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
+    : m_module(NULL), m_initialMesh(NULL)
 {
-    m_module = NULL;
-
     if (fieldId.isEmpty())
     {
         // default
@@ -88,8 +88,16 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 
 FieldInfo::~FieldInfo()
 {
-    if (m_module) delete m_module;
+    if (m_module)
+        delete m_module;
 }
+
+void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)
+{
+    clearInitialMesh();
+    m_initialMesh = mesh;
+}
+
 
 void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 {
@@ -141,7 +149,7 @@ int FieldInfo::labelPolynomialOrder(SceneLabel *label)
 void FieldInfo::clear()
 {
     // mesh
-    m_initialMesh.clear();
+    clearInitialMesh();
 
     m_numberOfRefinements = 1;
     m_polynomialOrder = 2;

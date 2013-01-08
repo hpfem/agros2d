@@ -36,6 +36,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
 #include "util/constants.h"
@@ -69,56 +70,56 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
 
 void PostprocessorWidget::loadBasic()
 {
-    // cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(Agros2D::config()->activeField));
+    // cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(Agros2D::problem()->configView()->activeField));
     if (cmbFieldInfo->currentIndex() == -1)
         cmbFieldInfo->setCurrentIndex(0);
     doFieldInfo(cmbFieldInfo->currentIndex());
 
     // show
-    chkShowInitialMeshView->setChecked(Agros2D::config()->showInitialMeshView);
-    chkShowSolutionMeshView->setChecked(Agros2D::config()->showSolutionMeshView);
-    chkShowOrderView->setChecked(Agros2D::config()->showOrderView);
+    chkShowInitialMeshView->setChecked(Agros2D::problem()->configView()->showInitialMeshView);
+    chkShowSolutionMeshView->setChecked(Agros2D::problem()->configView()->showSolutionMeshView);
+    chkShowOrderView->setChecked(Agros2D::problem()->configView()->showOrderView);
 
-    radPost3DNone->setChecked(Agros2D::config()->showPost3D == SceneViewPost3DMode_None);
-    radPost3DScalarField3D->setChecked(Agros2D::config()->showPost3D == SceneViewPost3DMode_ScalarView3D);
-    radPost3DScalarField3DSolid->setChecked(Agros2D::config()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid);
-    radPost3DModel->setChecked(Agros2D::config()->showPost3D == SceneViewPost3DMode_Model);
-    radPost3DParticleTracing->setChecked(Agros2D::config()->showPost3D == SceneViewPost3DMode_ParticleTracing);
+    radPost3DNone->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_None);
+    radPost3DScalarField3D->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D);
+    radPost3DScalarField3DSolid->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid);
+    radPost3DModel->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model);
+    radPost3DParticleTracing->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ParticleTracing);
     doPostprocessorGroupClicked(butPost3DGroup->checkedButton());
 
-    chkShowPost2DContourView->setChecked(Agros2D::config()->showContourView);
-    chkShowPost2DVectorView->setChecked(Agros2D::config()->showVectorView);
-    chkShowPost2DScalarView->setChecked(Agros2D::config()->showScalarView);
-    chkShowPost2DParticleView->setChecked(Agros2D::config()->showParticleView);
+    chkShowPost2DContourView->setChecked(Agros2D::problem()->configView()->showContourView);
+    chkShowPost2DVectorView->setChecked(Agros2D::problem()->configView()->showVectorView);
+    chkShowPost2DScalarView->setChecked(Agros2D::problem()->configView()->showScalarView);
+    chkShowPost2DParticleView->setChecked(Agros2D::problem()->configView()->showParticleView);
 
     // contour field
-    cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Agros2D::config()->contourVariable));
+    cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Agros2D::problem()->configView()->contourVariable));
     if (cmbPost2DContourVariable->currentIndex() == -1 && cmbPost2DContourVariable->count() > 0)
     {
         // set first variable
         cmbPost2DContourVariable->setCurrentIndex(0);
     }
-    Agros2D::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
+    Agros2D::problem()->configView()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
-    cmbPostScalarFieldVariable->setCurrentIndex(cmbPostScalarFieldVariable->findData(Agros2D::config()->scalarVariable));
+    cmbPostScalarFieldVariable->setCurrentIndex(cmbPostScalarFieldVariable->findData(Agros2D::problem()->configView()->scalarVariable));
     if (cmbPostScalarFieldVariable->currentIndex() == -1 && cmbPostScalarFieldVariable->count() > 0)
     {
         // set first variable
         cmbPostScalarFieldVariable->setCurrentIndex(0);
     }
-    Agros2D::config()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
+    Agros2D::problem()->configView()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
     doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
-    Agros2D::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
+    Agros2D::problem()->configView()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
 
     // vector field
-    cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Agros2D::config()->vectorVariable));
+    cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Agros2D::problem()->configView()->vectorVariable));
     if (cmbPost2DVectorFieldVariable->currentIndex() == -1 && cmbPost2DVectorFieldVariable->count() > 0)
     {
         // set first variable
         cmbPost2DVectorFieldVariable->setCurrentIndex(0);
     }
-    Agros2D::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
+    Agros2D::problem()->configView()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
 
     // transient view
     // cmbTimeStep->setCurrentIndex(Agros2D::scene()->sceneSolution()->timeStep());
@@ -129,55 +130,55 @@ void PostprocessorWidget::loadBasic()
 void PostprocessorWidget::loadAdvanced()
 {
     // scalar field
-    chkShowScalarColorBar->setChecked(Agros2D::config()->showScalarColorBar);
-    cmbPalette->setCurrentIndex(cmbPalette->findData(Agros2D::config()->paletteType));
-    chkPaletteFilter->setChecked(Agros2D::config()->paletteFilter);
+    chkShowScalarColorBar->setChecked(Agros2D::problem()->configView()->showScalarColorBar);
+    cmbPalette->setCurrentIndex(cmbPalette->findData(Agros2D::problem()->configView()->paletteType));
+    chkPaletteFilter->setChecked(Agros2D::problem()->configView()->paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
-    txtPaletteSteps->setValue(Agros2D::config()->paletteSteps);
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(Agros2D::config()->linearizerQuality));
+    txtPaletteSteps->setValue(Agros2D::problem()->configView()->paletteSteps);
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(Agros2D::problem()->configView()->linearizerQuality));
 
     // contours
-    txtContoursCount->setValue(Agros2D::config()->contoursCount);
-    txtContourWidth->setValue(Agros2D::config()->contourWidth);
+    txtContoursCount->setValue(Agros2D::problem()->configView()->contoursCount);
+    txtContourWidth->setValue(Agros2D::problem()->configView()->contourWidth);
 
     // vector field
-    chkVectorProportional->setChecked(Agros2D::config()->vectorProportional);
-    chkVectorColor->setChecked(Agros2D::config()->vectorColor);
-    txtVectorCount->setValue(Agros2D::config()->vectorCount);
+    chkVectorProportional->setChecked(Agros2D::problem()->configView()->vectorProportional);
+    chkVectorColor->setChecked(Agros2D::problem()->configView()->vectorColor);
+    txtVectorCount->setValue(Agros2D::problem()->configView()->vectorCount);
     txtVectorCount->setToolTip(tr("Width and height of bounding box over vector count."));
-    txtVectorScale->setValue(Agros2D::config()->vectorScale);
-    cmbVectorType->setCurrentIndex(cmbVectorType->findData(Agros2D::config()->vectorType));
-    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData(Agros2D::config()->vectorCenter));
+    txtVectorScale->setValue(Agros2D::problem()->configView()->vectorScale);
+    cmbVectorType->setCurrentIndex(cmbVectorType->findData(Agros2D::problem()->configView()->vectorType));
+    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData(Agros2D::problem()->configView()->vectorCenter));
 
     // order view
-    chkShowOrderColorbar->setChecked(Agros2D::config()->showOrderColorBar);
-    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Agros2D::config()->orderPaletteOrderType));
-    chkOrderLabel->setChecked(Agros2D::config()->orderLabel);
+    chkShowOrderColorbar->setChecked(Agros2D::problem()->configView()->showOrderColorBar);
+    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Agros2D::problem()->configView()->orderPaletteOrderType));
+    chkOrderLabel->setChecked(Agros2D::problem()->configView()->orderLabel);
 
     // particle tracing
-    chkParticleIncludeRelativisticCorrection->setChecked(Agros2D::config()->particleIncludeRelativisticCorrection);
-    txtParticleNumberOfParticles->setValue(Agros2D::config()->particleNumberOfParticles);
-    txtParticleStartingRadius->setValue(Agros2D::config()->particleStartingRadius);
-    txtParticleMass->setValue(Agros2D::config()->particleMass);
-    txtParticleConstant->setValue(Agros2D::config()->particleConstant);
-    txtParticlePointX->setValue(Agros2D::config()->particleStart.x);
-    txtParticlePointY->setValue(Agros2D::config()->particleStart.y);
-    txtParticleVelocityX->setValue(Agros2D::config()->particleStartVelocity.x);
-    txtParticleVelocityY->setValue(Agros2D::config()->particleStartVelocity.y);
-    chkParticleReflectOnDifferentMaterial->setChecked(Agros2D::config()->particleReflectOnDifferentMaterial);
-    chkParticleReflectOnBoundary->setChecked(Agros2D::config()->particleReflectOnBoundary);
-    txtParticleCoefficientOfRestitution->setValue(Agros2D::config()->particleCoefficientOfRestitution);
-    txtParticleCustomForceX->setValue(Agros2D::config()->particleCustomForce.x);
-    txtParticleCustomForceY->setValue(Agros2D::config()->particleCustomForce.y);
-    txtParticleCustomForceZ->setValue(Agros2D::config()->particleCustomForce.z);
-    txtParticleMaximumRelativeError->setValue(Agros2D::config()->particleMaximumRelativeError);
-    txtParticleMinimumStep->setValue(Agros2D::config()->particleMinimumStep);
-    txtParticleMaximumNumberOfSteps->setValue(Agros2D::config()->particleMaximumNumberOfSteps);
-    chkParticleColorByVelocity->setChecked(Agros2D::config()->particleColorByVelocity);
-    chkParticleShowPoints->setChecked(Agros2D::config()->particleShowPoints);
-    txtParticleDragDensity->setValue(Agros2D::config()->particleDragDensity);
-    txtParticleDragReferenceArea->setValue(Agros2D::config()->particleDragReferenceArea);
-    txtParticleDragCoefficient->setValue(Agros2D::config()->particleDragCoefficient);
+    chkParticleIncludeRelativisticCorrection->setChecked(Agros2D::problem()->configView()->particleIncludeRelativisticCorrection);
+    txtParticleNumberOfParticles->setValue(Agros2D::problem()->configView()->particleNumberOfParticles);
+    txtParticleStartingRadius->setValue(Agros2D::problem()->configView()->particleStartingRadius);
+    txtParticleMass->setValue(Agros2D::problem()->configView()->particleMass);
+    txtParticleConstant->setValue(Agros2D::problem()->configView()->particleConstant);
+    txtParticlePointX->setValue(Agros2D::problem()->configView()->particleStart.x);
+    txtParticlePointY->setValue(Agros2D::problem()->configView()->particleStart.y);
+    txtParticleVelocityX->setValue(Agros2D::problem()->configView()->particleStartVelocity.x);
+    txtParticleVelocityY->setValue(Agros2D::problem()->configView()->particleStartVelocity.y);
+    chkParticleReflectOnDifferentMaterial->setChecked(Agros2D::problem()->configView()->particleReflectOnDifferentMaterial);
+    chkParticleReflectOnBoundary->setChecked(Agros2D::problem()->configView()->particleReflectOnBoundary);
+    txtParticleCoefficientOfRestitution->setValue(Agros2D::problem()->configView()->particleCoefficientOfRestitution);
+    txtParticleCustomForceX->setValue(Agros2D::problem()->configView()->particleCustomForce.x);
+    txtParticleCustomForceY->setValue(Agros2D::problem()->configView()->particleCustomForce.y);
+    txtParticleCustomForceZ->setValue(Agros2D::problem()->configView()->particleCustomForce.z);
+    txtParticleMaximumRelativeError->setValue(Agros2D::problem()->configView()->particleMaximumRelativeError);
+    txtParticleMinimumStep->setValue(Agros2D::problem()->configView()->particleMinimumStep);
+    txtParticleMaximumNumberOfSteps->setValue(Agros2D::problem()->configView()->particleMaximumNumberOfSteps);
+    chkParticleColorByVelocity->setChecked(Agros2D::problem()->configView()->particleColorByVelocity);
+    chkParticleShowPoints->setChecked(Agros2D::problem()->configView()->particleShowPoints);
+    txtParticleDragDensity->setValue(Agros2D::problem()->configView()->particleDragDensity);
+    txtParticleDragReferenceArea->setValue(Agros2D::problem()->configView()->particleDragReferenceArea);
+    txtParticleDragCoefficient->setValue(Agros2D::problem()->configView()->particleDragCoefficient);
 
     lblParticlePointX->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelX()));
     lblParticlePointY->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelY()));
@@ -194,110 +195,135 @@ void PostprocessorWidget::loadAdvanced()
 
     // advanced
     // scalar field
-    chkScalarFieldRangeLog->setChecked(Agros2D::config()->scalarRangeLog);
+    chkScalarFieldRangeLog->setChecked(Agros2D::problem()->configView()->scalarRangeLog);
     doScalarFieldLog(chkScalarFieldRangeLog->checkState());
-    txtScalarFieldRangeBase->setText(QString::number(Agros2D::config()->scalarRangeBase));
-    txtScalarDecimalPlace->setValue(Agros2D::config()->scalarDecimalPlace);
-    chkScalarFieldRangeAuto->setChecked(Agros2D::config()->scalarRangeAuto);
+    txtScalarFieldRangeBase->setText(QString::number(Agros2D::problem()->configView()->scalarRangeBase));
+    txtScalarDecimalPlace->setValue(Agros2D::problem()->configView()->scalarDecimalPlace);
+    chkScalarFieldRangeAuto->setChecked(Agros2D::problem()->configView()->scalarRangeAuto);
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
-    txtScalarFieldRangeMin->setValue(Agros2D::config()->scalarRangeMin);
-    txtScalarFieldRangeMax->setValue(Agros2D::config()->scalarRangeMax);
+    txtScalarFieldRangeMin->setValue(Agros2D::problem()->configView()->scalarRangeMin);
+    txtScalarFieldRangeMax->setValue(Agros2D::problem()->configView()->scalarRangeMax);
+
+    // solid
+    lstSolidMaterials->clear();
+    if (Agros2D::problem()->isSolved())
+    {
+        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(Agros2D::scene()->activeViewField()).items())
+        {
+            QListWidgetItem *item = new QListWidgetItem(lstSolidMaterials);
+            item->setText(material->name());
+            item->setData(Qt::UserRole, material->variant());
+            if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+                item->setCheckState(Qt::Unchecked);
+            else
+                item->setCheckState(Qt::Checked);
+
+            lstSolidMaterials->addItem(item);
+        }
+    }
 }
 
 void PostprocessorWidget::saveBasic()
 {
     // active field
-    Agros2D::config()->activeField = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
+    Agros2D::problem()->configView()->activeField = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
 
-    Agros2D::config()->showInitialMeshView = chkShowInitialMeshView->isChecked();
-    Agros2D::config()->showSolutionMeshView = chkShowSolutionMeshView->isChecked();
-    Agros2D::config()->showOrderView = chkShowOrderView->isChecked();
+    Agros2D::problem()->configView()->showInitialMeshView = chkShowInitialMeshView->isChecked();
+    Agros2D::problem()->configView()->showSolutionMeshView = chkShowSolutionMeshView->isChecked();
+    Agros2D::problem()->configView()->showOrderView = chkShowOrderView->isChecked();
 
     // show
-    if (radPost3DNone->isChecked()) Agros2D::config()->showPost3D = SceneViewPost3DMode_None;
-    if (radPost3DScalarField3D->isChecked()) Agros2D::config()->showPost3D = SceneViewPost3DMode_ScalarView3D;
-    if (radPost3DScalarField3DSolid->isChecked()) Agros2D::config()->showPost3D = SceneViewPost3DMode_ScalarView3DSolid;
-    if (radPost3DModel->isChecked()) Agros2D::config()->showPost3D = SceneViewPost3DMode_Model;
-    if (radPost3DParticleTracing->isChecked()) Agros2D::config()->showPost3D = SceneViewPost3DMode_ParticleTracing;
+    if (radPost3DNone->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_None;
+    if (radPost3DScalarField3D->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ScalarView3D;
+    if (radPost3DScalarField3DSolid->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ScalarView3DSolid;
+    if (radPost3DModel->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_Model;
+    if (radPost3DParticleTracing->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ParticleTracing;
 
-    Agros2D::config()->showContourView = chkShowPost2DContourView->isChecked();
-    Agros2D::config()->showScalarView = chkShowPost2DScalarView->isChecked();
-    Agros2D::config()->showVectorView = chkShowPost2DVectorView->isChecked();
-    Agros2D::config()->showParticleView = chkShowPost2DParticleView->isChecked();
+    Agros2D::problem()->configView()->showContourView = chkShowPost2DContourView->isChecked();
+    Agros2D::problem()->configView()->showScalarView = chkShowPost2DScalarView->isChecked();
+    Agros2D::problem()->configView()->showVectorView = chkShowPost2DVectorView->isChecked();
+    Agros2D::problem()->configView()->showParticleView = chkShowPost2DParticleView->isChecked();
 
     // contour field
-    Agros2D::config()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
+    Agros2D::problem()->configView()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
 
     // scalar field
-    Agros2D::config()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
-    Agros2D::config()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
-    Agros2D::config()->scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
-    Agros2D::config()->scalarRangeMin = txtScalarFieldRangeMin->value();
-    Agros2D::config()->scalarRangeMax = txtScalarFieldRangeMax->value();
+    Agros2D::problem()->configView()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
+    Agros2D::problem()->configView()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
+    Agros2D::problem()->configView()->scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
+    Agros2D::problem()->configView()->scalarRangeMin = txtScalarFieldRangeMin->value();
+    Agros2D::problem()->configView()->scalarRangeMax = txtScalarFieldRangeMax->value();
 
     // vector field
-    Agros2D::config()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
+    Agros2D::problem()->configView()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
 }
 
 void PostprocessorWidget::saveAdvanced()
 {
     // scalar field
-    Agros2D::config()->showScalarColorBar = chkShowScalarColorBar->isChecked();
-    Agros2D::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
-    Agros2D::config()->paletteFilter = chkPaletteFilter->isChecked();
-    Agros2D::config()->paletteSteps = txtPaletteSteps->value();
-    Agros2D::config()->linearizerQuality = (PaletteQuality) cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toInt();
+    Agros2D::problem()->configView()->showScalarColorBar = chkShowScalarColorBar->isChecked();
+    Agros2D::problem()->configView()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
+    Agros2D::problem()->configView()->paletteFilter = chkPaletteFilter->isChecked();
+    Agros2D::problem()->configView()->paletteSteps = txtPaletteSteps->value();
+    Agros2D::problem()->configView()->linearizerQuality = (PaletteQuality) cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toInt();
 
     // contours
-    Agros2D::config()->contoursCount = txtContoursCount->value();
-    Agros2D::config()->contourWidth = txtContourWidth->value();
+    Agros2D::problem()->configView()->contoursCount = txtContoursCount->value();
+    Agros2D::problem()->configView()->contourWidth = txtContourWidth->value();
 
     // vector field
-    Agros2D::config()->vectorProportional = chkVectorProportional->isChecked();
-    Agros2D::config()->vectorColor = chkVectorColor->isChecked();
-    Agros2D::config()->vectorCount = txtVectorCount->value();
-    Agros2D::config()->vectorScale = txtVectorScale->value();
-    Agros2D::config()->vectorType = (VectorType) cmbVectorType->itemData(cmbVectorType->currentIndex()).toInt();
-    Agros2D::config()->vectorCenter = (VectorCenter) cmbVectorCenter->itemData(cmbVectorCenter->currentIndex()).toInt();
+    Agros2D::problem()->configView()->vectorProportional = chkVectorProportional->isChecked();
+    Agros2D::problem()->configView()->vectorColor = chkVectorColor->isChecked();
+    Agros2D::problem()->configView()->vectorCount = txtVectorCount->value();
+    Agros2D::problem()->configView()->vectorScale = txtVectorScale->value();
+    Agros2D::problem()->configView()->vectorType = (VectorType) cmbVectorType->itemData(cmbVectorType->currentIndex()).toInt();
+    Agros2D::problem()->configView()->vectorCenter = (VectorCenter) cmbVectorCenter->itemData(cmbVectorCenter->currentIndex()).toInt();
 
     // order view
-    Agros2D::config()->showOrderColorBar = chkShowOrderColorbar->isChecked();
-    Agros2D::config()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
-    Agros2D::config()->orderLabel = chkOrderLabel->isChecked();
+    Agros2D::problem()->configView()->showOrderColorBar = chkShowOrderColorbar->isChecked();
+    Agros2D::problem()->configView()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
+    Agros2D::problem()->configView()->orderLabel = chkOrderLabel->isChecked();
 
     // particle tracing
-    Agros2D::config()->particleIncludeRelativisticCorrection = chkParticleIncludeRelativisticCorrection->isChecked();
-    Agros2D::config()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
-    Agros2D::config()->particleStartingRadius = txtParticleStartingRadius->value();
-    Agros2D::config()->particleMass = txtParticleMass->value();
-    Agros2D::config()->particleConstant = txtParticleConstant->value();
-    Agros2D::config()->particleStart.x = txtParticlePointX->value();
-    Agros2D::config()->particleStart.y = txtParticlePointY->value();
-    Agros2D::config()->particleStartVelocity.x = txtParticleVelocityX->value();
-    Agros2D::config()->particleStartVelocity.y = txtParticleVelocityY->value();
-    Agros2D::config()->particleReflectOnDifferentMaterial = chkParticleReflectOnDifferentMaterial->isChecked();
-    Agros2D::config()->particleReflectOnBoundary = chkParticleReflectOnBoundary->isChecked();
-    Agros2D::config()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value();
-    Agros2D::config()->particleCustomForce.x = txtParticleCustomForceX->value();
-    Agros2D::config()->particleCustomForce.y = txtParticleCustomForceY->value();
-    Agros2D::config()->particleCustomForce.z = txtParticleCustomForceZ->value();
-    Agros2D::config()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
-    Agros2D::config()->particleMinimumStep = txtParticleMinimumStep->value();
-    Agros2D::config()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
-    Agros2D::config()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
-    Agros2D::config()->particleShowPoints = chkParticleShowPoints->isChecked();
-    Agros2D::config()->particleDragDensity = txtParticleDragDensity->value();
-    Agros2D::config()->particleDragCoefficient = txtParticleDragCoefficient->value();
-    Agros2D::config()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
+    Agros2D::problem()->configView()->particleIncludeRelativisticCorrection = chkParticleIncludeRelativisticCorrection->isChecked();
+    Agros2D::problem()->configView()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
+    Agros2D::problem()->configView()->particleStartingRadius = txtParticleStartingRadius->value();
+    Agros2D::problem()->configView()->particleMass = txtParticleMass->value();
+    Agros2D::problem()->configView()->particleConstant = txtParticleConstant->value();
+    Agros2D::problem()->configView()->particleStart.x = txtParticlePointX->value();
+    Agros2D::problem()->configView()->particleStart.y = txtParticlePointY->value();
+    Agros2D::problem()->configView()->particleStartVelocity.x = txtParticleVelocityX->value();
+    Agros2D::problem()->configView()->particleStartVelocity.y = txtParticleVelocityY->value();
+    Agros2D::problem()->configView()->particleReflectOnDifferentMaterial = chkParticleReflectOnDifferentMaterial->isChecked();
+    Agros2D::problem()->configView()->particleReflectOnBoundary = chkParticleReflectOnBoundary->isChecked();
+    Agros2D::problem()->configView()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value();
+    Agros2D::problem()->configView()->particleCustomForce.x = txtParticleCustomForceX->value();
+    Agros2D::problem()->configView()->particleCustomForce.y = txtParticleCustomForceY->value();
+    Agros2D::problem()->configView()->particleCustomForce.z = txtParticleCustomForceZ->value();
+    Agros2D::problem()->configView()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
+    Agros2D::problem()->configView()->particleMinimumStep = txtParticleMinimumStep->value();
+    Agros2D::problem()->configView()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
+    Agros2D::problem()->configView()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
+    Agros2D::problem()->configView()->particleShowPoints = chkParticleShowPoints->isChecked();
+    Agros2D::problem()->configView()->particleDragDensity = txtParticleDragDensity->value();
+    Agros2D::problem()->configView()->particleDragCoefficient = txtParticleDragCoefficient->value();
+    Agros2D::problem()->configView()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
 
-    // advanced
     // scalar view
-    Agros2D::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
-    Agros2D::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
-    Agros2D::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
+    Agros2D::problem()->configView()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
+    Agros2D::problem()->configView()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
+    Agros2D::problem()->configView()->scalarDecimalPlace = txtScalarDecimalPlace->value();
 
-    // save
-    Agros2D::config()->save();
+    // solid
+    Agros2D::problem()->configView()->solidViewHide.clear();
+    for (int i = 0; i < lstSolidMaterials->count(); i++)
+    {
+        if (lstSolidMaterials->item(i)->checkState() == Qt::Unchecked)
+        {
+            SceneMaterial *material = lstSolidMaterials->item(i)->data(Qt::UserRole).value<SceneMaterial *>();
+            Agros2D::problem()->configView()->solidViewHide.append(material->name());
+        }
+    }
 }
 
 void PostprocessorWidget::createControls()
@@ -327,7 +353,8 @@ void PostprocessorWidget::createControls()
     groupPostContourAdvanced->setVisible(false);
     groupPostVectorAdvanced->setVisible(false);
     groupPostParticalTracingAdvanced->setVisible(false);
-    groupPostChartAdvanced->setVisible(false);
+    groupPostSolidAdvanced->setVisible(false);
+    groupPostChart->setVisible(false);
 
     setLayout(layoutMain);
 }
@@ -496,11 +523,27 @@ CollapsableGroupBoxButton *PostprocessorWidget::postParticalTracingWidget()
     layoutParticleTracing->addWidget(groupPostParticalTracingAdvanced);
 
     CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Partical tracing"));
-    connect(grpParticalTracing , SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
+    connect(grpParticalTracing, SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
     grpParticalTracing->setCollapsed(true);
-    grpParticalTracing->setLayout(layoutParticleTracing );
+    grpParticalTracing->setLayout(layoutParticleTracing);
 
     return grpParticalTracing;
+}
+
+CollapsableGroupBoxButton *PostprocessorWidget::postSolidWidget()
+{
+    // solid view
+    groupPostSolidAdvanced = postPostSolidAdvancedWidget();
+
+    QVBoxLayout *layoutSolid = new QVBoxLayout();
+    layoutSolid->addWidget(groupPostSolidAdvanced);
+
+    CollapsableGroupBoxButton *grpSolidView = new CollapsableGroupBoxButton(tr("Solid view"));
+    connect(grpSolidView, SIGNAL(collapseEvent(bool)), this, SLOT(doSolidExpandCollapse(bool)));
+    grpSolidView->setCollapsed(true);
+    grpSolidView->setLayout(layoutSolid);
+
+    return grpSolidView;
 }
 
 QWidget *PostprocessorWidget::post3DWidget()
@@ -639,7 +682,8 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     groupPostContour = postContourWidget();
     groupPostVector = postVectorWidget();
     groupPostParticalTracing = postParticalTracingWidget();
-    groupPostChartAdvanced = postChartWidget();
+    groupPostSolid = postSolidWidget();
+    groupPostChart = postChartWidget();
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
     layoutArea->addWidget(groupMeshOrder);
@@ -647,7 +691,8 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     layoutArea->addWidget(groupPostContour);
     layoutArea->addWidget(groupPostVector);
     layoutArea->addWidget(groupPostParticalTracing);
-    layoutArea->addWidget(groupPostChartAdvanced);
+    layoutArea->addWidget(groupPostSolid);
+    layoutArea->addWidget(groupPostChart);
     layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
@@ -825,6 +870,22 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     vectorWidget->setLayout(gridLayoutVectors);
 
     return vectorWidget;
+}
+
+QWidget *PostprocessorWidget::postPostSolidAdvancedWidget()
+{
+    lstSolidMaterials = new QListWidget();
+
+    QGridLayout *gridLayoutSolid = new QGridLayout();
+    gridLayoutSolid->setMargin(0);
+    gridLayoutSolid->setColumnMinimumWidth(0, minWidth);
+    gridLayoutSolid->setColumnStretch(0, 1);
+    gridLayoutSolid->addWidget(lstSolidMaterials, 0, 0);
+
+    QWidget *solidWidget = new QWidget();
+    solidWidget->setLayout(gridLayoutSolid);
+
+    return solidWidget;
 }
 
 QWidget *PostprocessorWidget::postChartWidget()
@@ -1034,7 +1095,7 @@ void PostprocessorWidget::doFieldInfo(int index)
         doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
 
         int currentStep = Agros2D::solutionStore()->nearestTimeStep(Agros2D::scene()->activeViewField(), Agros2D::scene()->activeTimeStep());
-        double currentTime = Agros2D::problem()->timeStepToTime(currentStep);
+        double currentTime = Agros2D::problem()->timeStepToTotalTime(currentStep);
         int stepIndex = Agros2D::solutionStore()->timeLevelIndex(selectedField(), currentTime);
         cmbTimeStep->setCurrentIndex(stepIndex);
         cmbAdaptivityStep->setCurrentIndex(Agros2D::scene()->activeAdaptivityStep());
@@ -1158,9 +1219,12 @@ void PostprocessorWidget::refresh()
         // particle tracing
         groupPostParticalTracing->setVisible(false);
         groupPostParticalTracingAdvanced->setVisible(false);
+        // solid
+        groupPostSolid->setVisible(false);
+        groupPostSolidAdvanced->setVisible(false);
         // chart
         groupChart->setVisible(false);
-        groupPostChartAdvanced->setVisible(false);
+        groupPostChart->setVisible(false);
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -1191,9 +1255,13 @@ void PostprocessorWidget::refresh()
         groupPostParticalTracing->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
         groupPostParticalTracingAdvanced->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked() && !groupPostParticalTracing->isCollapsed());
 
+        // solid
+        groupPostSolid->setVisible(false);
+        groupPostSolidAdvanced->setVisible(false);
+
         // chart
         groupChart->setVisible(false);
-        groupPostChartAdvanced->setVisible(false);
+        groupPostChart->setVisible(false);
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
@@ -1229,9 +1297,16 @@ void PostprocessorWidget::refresh()
         groupPostParticalTracing->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked());
         groupPostParticalTracingAdvanced->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked() && !groupPostParticalTracing->isCollapsed());
 
+        // solid
+        groupPostSolid->setVisible((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
+                                   || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()));
+        groupPostSolidAdvanced->setVisible(((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
+                                   || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()))
+                                   && !groupPostSolid->isCollapsed());
+
         // chart
         groupChart->setVisible(false);
-        groupPostChartAdvanced->setVisible(false);
+        groupPostChart->setVisible(false);
     }
     if (m_sceneChart->actSceneModeChart->isChecked())
     {
@@ -1251,9 +1326,12 @@ void PostprocessorWidget::refresh()
         // particle tracing
         groupPostParticalTracing->setVisible(false);
         groupPostParticalTracingAdvanced->setVisible(false);
+        // solid
+        groupPostSolid->setVisible(false);
+        groupPostSolidAdvanced->setVisible(false);
         // chart
         groupChart->setVisible(true);
-        groupPostChartAdvanced->setVisible(true);
+        groupPostChart->setVisible(true);
     }
 
     // scalar view
@@ -1349,8 +1427,8 @@ void PostprocessorWidget::doApply()
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
     {
-        txtScalarFieldRangeMin->setValue(Agros2D::config()->scalarRangeMin);
-        txtScalarFieldRangeMax->setValue(Agros2D::config()->scalarRangeMax);
+        txtScalarFieldRangeMin->setValue(Agros2D::problem()->configView()->scalarRangeMin);
+        txtScalarFieldRangeMax->setValue(Agros2D::problem()->configView()->scalarRangeMax);
     }
 
     emit apply();
@@ -1371,6 +1449,11 @@ void PostprocessorWidget::doContourFieldExpandCollapse(bool collapsed)
 void PostprocessorWidget::doVectorFieldExpandCollapse(bool collapsed)
 {
     groupPostVectorAdvanced->setVisible(!collapsed);
+}
+
+void PostprocessorWidget::doSolidExpandCollapse(bool collapsed)
+{
+    groupPostSolidAdvanced->setVisible(!collapsed);
 }
 
 void PostprocessorWidget::doParticleFieldExpandCollapse(bool collapsed)

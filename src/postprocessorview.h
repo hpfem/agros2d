@@ -161,6 +161,9 @@ private:
     LineEditDouble *txtParticleDragCoefficient;
     LineEditDouble *txtParticleDragReferenceArea;
 
+    // solid view - materials
+    QListWidget *lstSolidMaterials;
+
     // toolbar
     QToolBox *tbxPostprocessor;
     QPushButton *btnOK;
@@ -192,7 +195,9 @@ private:
     QWidget *groupPostVectorAdvanced;
     CollapsableGroupBoxButton *groupPostParticalTracing;
     QWidget *groupPostParticalTracingAdvanced;
-    QWidget *groupPostChartAdvanced;
+    CollapsableGroupBoxButton *groupPostSolid;
+    QWidget *groupPostSolidAdvanced;
+    QWidget *groupPostChart;
 
     QWidget *meshWidget();
     QWidget *post2DWidget();
@@ -208,6 +213,8 @@ private:
     QWidget *postVectorAdvancedWidget();
     CollapsableGroupBoxButton *postParticalTracingWidget();
     QWidget *postParticalTracingAdvancedWidget();
+    CollapsableGroupBoxButton *postSolidWidget();
+    QWidget *postPostSolidAdvancedWidget();
     QWidget *postChartWidget();
 
     int selectedTimeStep();
@@ -242,6 +249,7 @@ private slots:
     void doScalarFieldExpandCollapse(bool collapsed);
     void doContourFieldExpandCollapse(bool collapsed);
     void doVectorFieldExpandCollapse(bool collapsed);
+    void doSolidExpandCollapse(bool collapsed);
     void doParticleFieldExpandCollapse(bool collapsed);       
 };
 

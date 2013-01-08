@@ -23,6 +23,7 @@
 #include "util/global.h"
 #include "scene.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 static QHash<CoordinateType, QString> coordinateTypeList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
@@ -149,7 +150,8 @@ void initLists()
     meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
 
     timeStepMethodList.insert(TimeStepMethod_Fixed, "fixed");
-    timeStepMethodList.insert(TimeStepMethod_BDF2AOrder, "adaptive");
+    timeStepMethodList.insert(TimeStepMethod_BDFTolerance, "adaptive");
+    timeStepMethodList.insert(TimeStepMethod_BDFNumSteps, "adaptive_numsteps");
 //    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2_adaptive");
 //    timeStepMethodList.insert(TimeStepMethod_BDF2Combine, "bdf2_combine");
 //    timeStepMethodList.insert(TimeStepMethod_FixedBDF2B, "fixed_bdf2b");
@@ -366,16 +368,10 @@ QString timeStepMethodString(TimeStepMethod timeStepMethod)
     {
     case TimeStepMethod_Fixed:
         return QObject::tr("Fixed step");
-    case TimeStepMethod_BDF2AOrder:
-        return QObject::tr("Adaptive");
-//    case TimeStepMethod_BDF2:
-//        return QObject::tr("BDF2 adaptive");
-//    case TimeStepMethod_BDF2Combine:
-//        return QObject::tr("adaptive comb");
-//    case TimeStepMethod_FixedBDF2B:
-//        return QObject::tr("Fixed BDF2B");
-//    case TimeStepMethod_FixedCombine:
-//        return QObject::tr("Fixed comb");
+    case TimeStepMethod_BDFTolerance:
+        return QObject::tr("Adaptive (tolerance)");
+    case TimeStepMethod_BDFNumSteps:
+        return QObject::tr("Adaptive (num steps)");
     default:
         std::cerr << "Time step method '" + QString::number(timeStepMethod).toStdString() + "' is not implemented. timeStepMethodString(TimeStepMethod timeStepMethod)" << endl;
         throw;

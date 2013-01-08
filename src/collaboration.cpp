@@ -21,6 +21,9 @@
 
 #include <QSvgRenderer>
 #include <QtWebKit>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWebKitWidgets>
+#endif
 
 #include "util/global.h"
 
@@ -28,7 +31,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
-
+#include "hermes2d/problem_config.h"
 
 static QNetworkAccessManager *networkAccessManager = NULL;
 static ServerLoginDialog *serverLoginDialog;
@@ -101,7 +104,7 @@ void ServerLoginDialog::login(const QString &username, const QString &password)
     postData.append("login_username=" + username + "&");
     postData.append("login_password=" + password);
 
-    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::config()->collaborationServerURL + "/login_xml.php")), postData);
+    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::configComputer()->collaborationServerURL + "/login_xml.php")), postData);
 
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
@@ -169,7 +172,7 @@ ServerDownloadDialog::ServerDownloadDialog(QWidget *parent) : QDialog(parent)
     QSettings settings;
     restoreGeometry(settings.value("ServerDownloadDialog/Geometry", saveGeometry()).toByteArray());
 
-    load(Agros2D::config()->collaborationServerURL + "problems.php");
+    load(Agros2D::configComputer()->collaborationServerURL + "problems.php");
 }
 
 ServerDownloadDialog::~ServerDownloadDialog()
@@ -230,7 +233,7 @@ void ServerDownloadDialog::load(const QString &str)
 
 void ServerDownloadDialog::readFromServerXML(int ID, int version)
 {
-    networkReply = networkAccessManager->get(QNetworkRequest(QUrl(QString(Agros2D::config()->collaborationServerURL + "/problem_download.php?type=xml&id=%1&version=%2").
+    networkReply = networkAccessManager->get(QNetworkRequest(QUrl(QString(Agros2D::configComputer()->collaborationServerURL + "/problem_download.php?type=xml&id=%1&version=%2").
                                                                   arg(QString::number(ID)).
                                                                   arg(QString::number(version)))));
     connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
@@ -249,9 +252,13 @@ void ServerDownloadDialog::httpFileFinished()
     accept();
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+void ServerDownloadDialog::linkClicked(const QUrlQuery &url)
+#else
 void ServerDownloadDialog::linkClicked(const QUrl &url)
+#endif
 {
-    if (url.toString().startsWith(Agros2D::config()->collaborationServerURL))
+    if (url.toString().startsWith(Agros2D::configComputer()->collaborationServerURL))
     {
         if (url.toString().contains("problem_download.php?type=xml&id="))
             readFromServerXML(url.queryItemValue("id").toInt(),
@@ -306,50 +313,50 @@ int ServerUploadDialog::showDialog()
 void ServerUploadDialog::createControls()
 {
     assert(0); //TODO
-//    cmbName = new QComboBox(this);
-//    cmbName->setVisible(false);
-//    txtName = new QLineEdit(this);
+    //    cmbName = new QComboBox(this);
+    //    cmbName->setVisible(false);
+    //    txtName = new QLineEdit(this);
 
-//    lblInformation = new QLabel(this);
-//    QPalette palette = lblInformation->palette();
-//    palette.setColor(QPalette::WindowText, Qt::blue);
-//    lblInformation->setPalette(palette);
+    //    lblInformation = new QLabel(this);
+    //    QPalette palette = lblInformation->palette();
+    //    palette.setColor(QPalette::WindowText, Qt::blue);
+    //    lblInformation->setPalette(palette);
 
-//    radDocumentNew = new QRadioButton(tr("New"), this);
-//    radDocumentNew->setChecked(true);
-//    radDocumentExisting = new QRadioButton(tr("Existing"), this);
-//    connect(radDocumentNew, SIGNAL(clicked()), this, SLOT(doDocumentChanged()));
-//    connect(radDocumentExisting, SIGNAL(clicked()), this, SLOT(doDocumentChanged()));
+    //    radDocumentNew = new QRadioButton(tr("New"), this);
+    //    radDocumentNew->setChecked(true);
+    //    radDocumentExisting = new QRadioButton(tr("Existing"), this);
+    //    connect(radDocumentNew, SIGNAL(clicked()), this, SLOT(doDocumentChanged()));
+    //    connect(radDocumentExisting, SIGNAL(clicked()), this, SLOT(doDocumentChanged()));
 
-//    QGridLayout *layoutDialog = new QGridLayout();
-//    layoutDialog->addWidget(new QLabel(tr("Document:")), 0, 0);
-//    layoutDialog->addWidget(radDocumentNew, 0, 1);
-//    layoutDialog->addWidget(radDocumentExisting, 1, 1);
-//    layoutDialog->addWidget(new QLabel(tr("Name:")), 2, 0);
-//    layoutDialog->addWidget(cmbName, 2, 1, 1, 2);
-//    layoutDialog->addWidget(txtName, 2, 1, 1, 2);
-//    layoutDialog->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-//    layoutDialog->addWidget(new QLabel(QString::fromStdString(Agros2D::problem()->config()->fieldId())), 3, 1);
-//    layoutDialog->addWidget(lblInformation, 5, 1);
+    //    QGridLayout *layoutDialog = new QGridLayout();
+    //    layoutDialog->addWidget(new QLabel(tr("Document:")), 0, 0);
+    //    layoutDialog->addWidget(radDocumentNew, 0, 1);
+    //    layoutDialog->addWidget(radDocumentExisting, 1, 1);
+    //    layoutDialog->addWidget(new QLabel(tr("Name:")), 2, 0);
+    //    layoutDialog->addWidget(cmbName, 2, 1, 1, 2);
+    //    layoutDialog->addWidget(txtName, 2, 1, 1, 2);
+    //    layoutDialog->addWidget(new QLabel(tr("Physic field:")), 3, 0);
+    //    layoutDialog->addWidget(new QLabel(QString::fromStdString(Agros2D::problem()->config()->fieldId())), 3, 1);
+    //    layoutDialog->addWidget(lblInformation, 5, 1);
 
-//    // dialog buttons
-//    btnUpload = new QPushButton(tr("Upload"));
-//    connect(btnUpload, SIGNAL(clicked()), this, SLOT(doUpload()));
-//    QPushButton *btnClose = new QPushButton(tr("Close"));
-//    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
+    //    // dialog buttons
+    //    btnUpload = new QPushButton(tr("Upload"));
+    //    connect(btnUpload, SIGNAL(clicked()), this, SLOT(doUpload()));
+    //    QPushButton *btnClose = new QPushButton(tr("Close"));
+    //    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
-//    QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
-//    layoutButtonViewport->addStretch();
-//    layoutButtonViewport->addWidget(btnClose);
-//    layoutButtonViewport->addWidget(btnUpload);
+    //    QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
+    //    layoutButtonViewport->addStretch();
+    //    layoutButtonViewport->addWidget(btnClose);
+    //    layoutButtonViewport->addWidget(btnUpload);
 
-//    QVBoxLayout *layout = new QVBoxLayout();
-//    layout->addLayout(layoutDialog);
-//    layout->addStretch();
-//    layout->addLayout(layoutButtonViewport);
+    //    QVBoxLayout *layout = new QVBoxLayout();
+    //    layout->addLayout(layoutDialog);
+    //    layout->addStretch();
+    //    layout->addLayout(layoutButtonViewport);
 
-//    doDocumentChanged();
-//    setLayout(layout);
+    //    doDocumentChanged();
+    //    setLayout(layout);
 }
 
 void ServerUploadDialog::doDocumentChanged()
@@ -386,11 +393,11 @@ void ServerUploadDialog::doExistingProblemSelected(int index)
 void ServerUploadDialog::readFromServerContent()
 {
     assert(0); //TODO
-//    QByteArray postData;
-//    postData.append("physicfield=" + QString::fromStdString(Agros2D::problem()->config()->fieldId()));
+    //    QByteArray postData;
+    //    postData.append("physicfield=" + QString::fromStdString(Agros2D::problem()->config()->fieldId()));
 
-//    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::config()->collaborationServerURL + "problems_xml.php")), postData);
-//    connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
+    //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::problem()->configView()->collaborationServerURL + "problems_xml.php")), postData);
+    //    connect(networkReply, SIGNAL(finished()), this, SLOT(httpContentFinished()));
 }
 
 void ServerUploadDialog::httpContentFinished()
@@ -433,25 +440,25 @@ void ServerUploadDialog::httpContentFinished()
 void ServerUploadDialog::uploadToServer()
 {
     assert(0); //TODO
-//    QByteArray text = readFileContentByteArray(Agros2D::problem()->config()->fileName);
+    //    QByteArray text = readFileContentByteArray(Agros2D::problem()->config()->fileName);
 
-//    int id_problem = 0;
-//    QString name = Agros2D::problem()->config()->name;
+    //    int id_problem = 0;
+    //    QString name = Agros2D::problem()->config()->name;
 
-//    if (radDocumentExisting->isChecked())
-//    {
-//        id_problem = cmbName->itemData(cmbName->currentIndex()).toInt();
-//        name = cmbName->itemText(cmbName->currentIndex());
-//    }
+    //    if (radDocumentExisting->isChecked())
+    //    {
+    //        id_problem = cmbName->itemData(cmbName->currentIndex()).toInt();
+    //        name = cmbName->itemText(cmbName->currentIndex());
+    //    }
 
-//    QByteArray postData;
-//    postData.append("id_problem=" + QString::number(id_problem) + "&");
-//    postData.append("name=" + name + "&");
-//    postData.append("physicfield=" + QString::fromStdString(Agros2D::problem()->config()->fieldId()) + "&");
-//    postData.append("content=" + text);
+    //    QByteArray postData;
+    //    postData.append("id_problem=" + QString::number(id_problem) + "&");
+    //    postData.append("name=" + name + "&");
+    //    postData.append("physicfield=" + QString::fromStdString(Agros2D::problem()->config()->fieldId()) + "&");
+    //    postData.append("content=" + text);
 
-//    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::config()->collaborationServerURL + "problem_upload.php")), postData);
-//    connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
+    //    networkReply = networkAccessManager->post(QNetworkRequest(QUrl(Agros2D::problem()->configView()->collaborationServerURL + "problem_upload.php")), postData);
+    //    connect(networkReply, SIGNAL(finished()), this, SLOT(httpFileFinished()));
 }
 
 void ServerUploadDialog::httpFileFinished()

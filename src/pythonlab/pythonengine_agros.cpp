@@ -68,8 +68,8 @@ void PythonEngineAgros::runPythonHeader()
     QString script;
 
     // global script
-    if (!Agros2D::config()->globalScript.isEmpty())
-        script += Agros2D::config()->globalScript + "\n";
+    if (!Agros2D::configComputer()->globalScript.isEmpty())
+        script += Agros2D::configComputer()->globalScript + "\n";
 
     // startup script
     if (!Agros2D::problem()->config()->startupscript().isEmpty())
@@ -118,7 +118,7 @@ QString createPythonFromModel()
     // startup script
     if (!Agros2D::problem()->config()->startupscript().isEmpty())
     {
-        str += "# startup script\n\n";
+        str += "# startup script\n";
         str += Agros2D::problem()->config()->startupscript();
         str += "\n\n";
     }
@@ -137,16 +137,25 @@ QString createPythonFromModel()
                 arg(Agros2D::problem()->config()->frequency());
 
     if (Agros2D::problem()->isTransient())
+    {
         str += QString("problem.time_step_method = \"%1\"\n"
                        "problem.time_method_order = %2\n"
-                       "problem.time_method_tolerance = %3\n"
-                       "problem.time_total = %4\n"
-                       "problem.time_steps = %5\n").
+                       "problem.time_total = %3\n").
                 arg(timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod())).
                 arg(Agros2D::problem()->config()->timeOrder()).
-                arg(Agros2D::problem()->config()->timeMethodTolerance().toString()).
-                arg(Agros2D::problem()->config()->timeTotal().toString()).
-                arg(Agros2D::problem()->config()->numConstantTimeSteps());
+                arg(Agros2D::problem()->config()->timeTotal().toString());
+
+        if (Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
+        {
+            str += QString("problem.time_method_tolerance = %3\n").
+                    arg(Agros2D::problem()->config()->timeMethodTolerance().toString());
+        }
+        else
+        {
+            str += QString("problem.time_steps = %5\n").
+                    arg(Agros2D::problem()->config()->numConstantTimeSteps());
+        }
+    }
 
     // fields
     str += "\n# fields\n";
@@ -194,13 +203,24 @@ QString createPythonFromModel()
 
         if (fieldInfo->adaptivityType() != AdaptivityType_None)
         {
-            str += QString("%1.adaptivity_steps= %2\n").
+            str += QString("%1.adaptivity_steps = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->adaptivitySteps());
 
-            str += QString("%1.adaptivity_tolerance= %2\n").
+            str += QString("%1.adaptivity_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->adaptivityTolerance());
+
+            if (Agros2D::problem()->isTransient())
+            {
+                str += QString("%1.adaptivity_back_steps = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->adaptivityBackSteps());
+
+                str += QString("%1.adaptivity_redone = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->adaptivityRedoneEach());
+            }
         }
 
         str += QString("%1.linearity_type = \"%2\"\n").
@@ -521,13 +541,6 @@ void pyCloseDocument()
     currentPythonEngineAgros()->sceneViewMesh()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewPost2D()->doZoomBestFit();
     currentPythonEngineAgros()->sceneViewPost3D()->doZoomBestFit();
-}
-
-void pySaveImage(char *str, int w, int h)
-{
-    // ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
-    // if (result.isError())
-    //    throw invalid_argument(result.message().toStdString());
 }
 
 // ************************************************************************************

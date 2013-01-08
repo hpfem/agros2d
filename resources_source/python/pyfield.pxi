@@ -67,6 +67,12 @@ cdef extern from "../../src/pythonlab/pyfield.h":
         int getAdaptivitySteps()
         void setAdaptivitySteps(int) except +
 
+        int getAdaptivityBackSteps()
+        void setAdaptivityBackSteps(int adaptivityBackSteps) except +
+
+        int getAdaptivityRedoneEach()
+        void setAdaptivityRedoneEach(int adaptivityRedoneEach) except +
+
         double getInitialCondition()
         void setInitialCondition(double) except +
 
@@ -200,12 +206,27 @@ cdef class __Field__:
         def __set__(self, adaptivity_tolerance):
             self.thisptr.setAdaptivityTolerance(adaptivity_tolerance)
 
+    # adaptivity_back_steps
+    property adaptivity_back_steps:
+        def __get__(self):
+            return self.thisptr.getAdaptivityBackSteps()
+        def __set__(self, adaptivity_back_steps):
+            self.thisptr.setAdaptivityBackSteps(adaptivity_back_steps)
+
+    # adaptivity_redone
+    property adaptivity_redone:
+        def __get__(self):
+            return self.thisptr.getAdaptivityRedoneEach()
+        def __set__(self, adaptivity_redone_each):
+            self.thisptr.setAdaptivityRedoneEach(adaptivity_redone_each)
+
     # adaptivity_steps
     property adaptivity_steps:
         def __get__(self):
             return self.thisptr.getAdaptivitySteps()
         def __set__(self, adaptivity_steps):
             self.thisptr.setAdaptivitySteps(adaptivity_steps)
+
 
     # initial_condition
     property initial_condition:

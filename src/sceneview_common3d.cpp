@@ -36,6 +36,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 SceneViewCommon3D::SceneViewCommon3D(PostHermes *postHermes, QWidget *parent)
     : SceneViewPostInterface(postHermes, parent)
@@ -97,15 +98,15 @@ void SceneViewCommon3D::paintBackground()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glBegin(GL_QUADS);
-    if (Agros2D::config()->scalarView3DBackground)
+    if (Agros2D::problem()->configView()->scalarView3DBackground)
         glColor3d(0.99, 0.99, 0.99);
     else
-        glColor3d(Agros2D::config()->colorBackground.redF(),
-                  Agros2D::config()->colorBackground.greenF(),
-                  Agros2D::config()->colorBackground.blueF());
+        glColor3d(Agros2D::problem()->configView()->colorBackground.redF(),
+                  Agros2D::problem()->configView()->colorBackground.greenF(),
+                  Agros2D::problem()->configView()->colorBackground.blueF());
     glVertex3d(-1.0, -1.0, 0.0);
     glVertex3d(1.0, -1.0, 0.0);
-    if (Agros2D::config()->scalarView3DBackground)
+    if (Agros2D::problem()->configView()->scalarView3DBackground)
         glColor3d(0.44, 0.56, 0.89);
     glVertex3d(1.0, 1.0, 0.0);
     glVertex3d(-1.0, 1.0, 0.0);
@@ -132,9 +133,9 @@ void SceneViewCommon3D::paintAxes()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glColor3d(Agros2D::config()->colorCross.redF(),
-              Agros2D::config()->colorCross.greenF(),
-              Agros2D::config()->colorCross.blueF());
+    glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
+              Agros2D::problem()->configView()->colorCross.greenF(),
+              Agros2D::problem()->configView()->colorCross.blueF());
 
     // x-axis
     glBegin(GL_QUADS);
@@ -233,7 +234,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene)
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
         RectPoint rect = Agros2D::scene()->boundingBox();
-        if (Agros2D::config()->showPost3D == SceneViewPost3DMode_ScalarView3D)
+        if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D)
         {
             glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
         }
@@ -262,7 +263,7 @@ void SceneViewCommon3D::setZoom(double power)
 
 void SceneViewCommon3D::initLighting()
 {
-    if (Agros2D::config()->scalarView3DLighting || Agros2D::config()->showPost3D == SceneViewPost3DMode_Model)
+    if (Agros2D::problem()->configView()->scalarView3DLighting) // || Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model)
     {
         // environment
         float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };

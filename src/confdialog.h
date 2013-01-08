@@ -28,11 +28,11 @@ class ScriptEditor;
 class LineEditDouble;
 class ValueLineEdit;
 
-class ConfigDialog : public QDialog
+class ConfigComputerDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ConfigDialog(QWidget *parent);
+    ConfigComputerDialog(QWidget *parent);
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);

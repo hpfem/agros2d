@@ -25,6 +25,10 @@
 
 #define M_PI_2 1.57079632679489661923	/* pi/2 */
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QStandardPaths>
+#endif
+
 const QString LANGUAGEROOT = QString("%1/resources%1lang").arg(QDir::separator());
 
 QString stringListToString(const QStringList &list)
@@ -84,7 +88,7 @@ void setGUIStyle(const QString &styleName)
 void setLanguage(const QString &locale)
 {
     // non latin-1 chars
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
 
     QTranslator *qtTranslator = new QTranslator();
     QTranslator *appTranslator = new QTranslator();
@@ -205,9 +209,16 @@ QString tempProblemDir()
 
 QString cacheProblemDir()
 {
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    static QString str = QString("%1/cache/%2").
+            arg(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)).
+            arg(QString::number(QCoreApplication::applicationPid()));
+#else
     static QString str = QString("%1/cache/%2").
             arg(QDesktopServices::storageLocation(QDesktopServices::CacheLocation)).
             arg(QString::number(QCoreApplication::applicationPid()));
+#endif
 
     QDir dir(str);
     if (!dir.exists())

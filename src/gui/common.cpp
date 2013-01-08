@@ -142,7 +142,7 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
     double timeValue;
     if (timeStep == -1){
         timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
-        timeValue = Agros2D::problem()->timeStepToTime(timeStep);
+        timeValue = Agros2D::problem()->timeStepToTotalTime(timeStep);
     }
     else
     {

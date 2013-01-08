@@ -1,4 +1,5 @@
 QT -= GUI
+CONFIG += qt
 OBJECTS_DIR = build
 TEMPLATE = lib
 
@@ -22,7 +23,42 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     ctemplate/template_modifiers.cc \
     ctemplate/template_namelist.cc \
     ctemplate/template_pathops.cc \
-    ctemplate/template_string.cc
+    ctemplate/template_string.cc \
+    poly2tri/common/shapes.cc \
+    poly2tri/sweep/advancing_front.cc \
+    poly2tri/sweep/cdt.cc \
+    poly2tri/sweep/sweep.cc \
+    poly2tri/sweep/sweep_context.cc \
+    quazip/JlCompress.cpp \
+    quazip/qioapi.cpp \
+    quazip/quaadler32.cpp \
+    quazip/quacrc32.cpp \
+    quazip/quagzipfile.cpp \
+    quazip/quaziodevice.cpp \
+    quazip/quazip.cpp \
+    quazip/quazipdir.cpp \
+    quazip/quazipfile.cpp \
+    quazip/quazipnewinfo.cpp \
+    quazip/unzip.c \
+    quazip/zip.c
+
+HEADERS += \
+    quazip/crypt.h \
+    quazip/ioapi.h \
+    quazip/JlCompress.h \
+    quazip/quaadler32.h \
+    quazip/quachecksum32.h \
+    quazip/quacrc32.h \
+    quazip/quagzipfile.h \
+    quazip/quaziodevice.h \
+    quazip/quazipdir.h \
+    quazip/quazipfile.h \
+    quazip/quazipfileinfo.h \
+    quazip/quazip_global.h \
+    quazip/quazip.h \
+    quazip/quazipnewinfo.h \
+    quazip/unzip.h \
+    quazip/zip.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
     TARGET = ../libs/agros2d_3rdparty

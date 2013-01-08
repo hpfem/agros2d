@@ -1,4 +1,4 @@
-QT += opengl xml network webkit svg xmlpatterns
+QT += opengl xml network webkit svg xmlpatterns    widgets printsupport webkitwidgets
 
 DEFINES += VERSION_MAJOR=3
 DEFINES += VERSION_MINOR=0
@@ -14,6 +14,8 @@ INCLUDEPATH += ./ \
     ../3rdparty/ctemplate \
     ../3rdparty/dxflib \
     ../3rdparty/rapidxml \
+    ../3rdparty/poly2tri \
+    ../3rdparty/quazip \
     ../pythonlab
 
 linux-g++|linux-g++-64|linux-g++-32 {

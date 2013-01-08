@@ -18,8 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "problem.h"
+#include "problem_config.h"
 
 #include "util/global.h"
+#include "util/constants.h"
 
 #include "field.h"
 #include "block.h"
@@ -39,66 +41,21 @@
 #include "meshgenerator_gmsh.h"
 #include "logview.h"
 
-ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
-{
-    clear();
-}
-
-void ProblemConfig::clear()
-{
-    m_coordinateType = CoordinateType_Planar;
-    m_name = QObject::tr("unnamed");
-    m_fileName = "";
-    m_startupscript = "";
-    m_description = "";
-
-    // matrix solver
-    m_matrixSolver = Hermes::SOLVER_UMFPACK;
-
-    // mesh type
-    m_meshType = MeshType_Triangle;
-
-    // harmonic
-    m_frequency = 0.0;
-
-    // transient
-    m_timeStepMethod = TimeStepMethod_BDF2AOrder;
-    m_timeOrder = 2;
-    m_timeMethodTolerance = Value("0.1", false);
-    m_timeTotal = Value("1.0", false);
-    m_numConstantTimeSteps = 10;
-}
-
-bool ProblemConfig::isTransientAdaptive() const
-{
-    if(m_timeStepMethod == TimeStepMethod_BDF2AOrder)
-        return true;
-    return false;
-}
-
-const double initialTimeStepRatio = 1000;
-double ProblemConfig::initialTimeStepLength()
-{
-    if(isTransientAdaptive())
-        return timeTotal().value() / initialTimeStepRatio;
-    else
-        return constantTimeStepLength();
-}
-
 Problem::Problem()
 {
-    m_timeStep = 0;
+    // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_isSolved = false;
     m_isSolving = false;
 
     m_config = new ProblemConfig();
+    m_configView = new ProblemConfigView();
 
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
 
     actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
     actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));       
+    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));
 }
 
 Problem::~Problem()
@@ -107,24 +64,39 @@ Problem::~Problem()
     clearFieldsAndConfig();
 
     delete m_config;
+    delete m_configView;
 }
 
 bool Problem::isMeshed() const
 {
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
-        if (!fieldInfo->initialMesh().isNull())
+        if (fieldInfo->initialMesh())
             return true;
 
     return false;
 }
 
-bool Problem::isTransient() const
+int Problem::numAdaptiveFields() const
 {
+    int num = 0;
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+            num++;
+    return num;
+}
+
+int Problem::numTransientFields() const
+{
+    int num = 0;
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
         if (fieldInfo->analysisType() == AnalysisType_Transient)
-            return true;
+            num++;
+    return num;
+}
 
-    return false;
+bool Problem::isTransient() const
+{
+    return numTransientFields() > 0;
 }
 
 bool Problem::isHarmonic() const
@@ -149,16 +121,26 @@ void Problem::clearSolution()
 {
     m_isSolved = false;
     m_isSolving = false;
-    m_timeStep = 0;
+    // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
 
+    foreach (FieldInfo* fieldInfo, m_fieldInfos)
+        fieldInfo->clearInitialMesh();
+
     Agros2D::solutionStore()->clearAll();
+
+    // remove cache
+    removeDirectory(cacheProblemDir());
 }
 
 void Problem::clearFieldsAndConfig()
 {
     clearSolution();
+
+    foreach (Block* block, m_blocks)
+        delete block;
+    m_blocks.clear();
 
     // clear couplings
     foreach (CouplingInfo* couplingInfo, m_couplingInfos)
@@ -175,6 +157,7 @@ void Problem::clearFieldsAndConfig()
 
     // clear config
     m_config->clear();
+    m_configView->clear();
 }
 
 void Problem::addField(FieldInfo *field)
@@ -294,35 +277,33 @@ bool Problem::mesh()
 
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
-    MeshGenerator *pim = NULL;
+    MeshGenerator *meshGenerator = NULL;
     switch (config()->meshType())
     {
     case MeshType_Triangle:
     case MeshType_Triangle_QuadFineDivision:
     case MeshType_Triangle_QuadRoughDivision:
     case MeshType_Triangle_QuadJoin:
-        pim = new MeshGeneratorTriangle();
+        meshGenerator = new MeshGeneratorTriangle();
         break;
     case MeshType_GMSH_Triangle:
     case MeshType_GMSH_Quad:
     case MeshType_GMSH_QuadDelaunay_Experimental:
-        pim = new MeshGeneratorGMSH();
+        meshGenerator = new MeshGeneratorGMSH();
         break;
     default:
         QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(config()->meshType())));
         break;
     }
 
-    if (pim && pim->mesh())
+    if (meshGenerator && meshGenerator->mesh())
     {
         // load mesh
         try
         {
             readInitialMeshesFromFile();
 
-            emit meshed();
-
-            delete pim;
+            delete meshGenerator;
             return true;
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -330,7 +311,7 @@ bool Problem::mesh()
             Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
         }
     }
-    delete pim;
+    delete meshGenerator;
 
     return false;
 }
@@ -359,11 +340,9 @@ void Problem::solveInit()
 
     createStructure();
 
-    if (!isMeshed())
-    {
-        if(!mesh())
-            throw AgrosSolverException("Could not create mesh");
-    }
+    // todo: we should not mesh allways, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
+    if(!mesh())
+        throw AgrosSolverException("Could not create mesh");
 
     // check geometry
     if (!Agros2D::scene()->checkGeometryAssignement())
@@ -377,6 +356,14 @@ void Problem::solveInit()
 }
 
 double Problem::timeStepToTime(int timeStepIndex) const
+{
+    if (timeStepIndex == 0 || timeStepIndex == NOT_FOUND_SO_FAR)
+        return 0.0;
+    else
+        return m_timeStepLengths[timeStepIndex - 1];
+}
+
+double Problem::timeStepToTotalTime(int timeStepIndex) const
 {
     double time = 0;
     for(int ts = 0; ts < timeStepIndex; ts++)
@@ -434,7 +421,7 @@ void Problem::refuseLastTimeStepLength()
 
 double Problem::actualTime() const
 {
-    return timeStepToTime(m_timeStepLengths.size());
+    return timeStepToTotalTime(m_timeStepLengths.size());
 }
 
 double Problem::actualTimeStepLength() const
@@ -456,6 +443,18 @@ void Problem::solveFinished()
 
     m_isSolving = false;
 
+    Agros2D::scene()->blockSignals(true);
+
+    Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
+    Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
+    Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
+    //cout << "setting active adapt step to " << Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal) << endl;
+
+    Agros2D::scene()->blockSignals(false);
+
+    m_isSolved = true;
+    emit solved();
+
     // close indicator progress
     Indicator::closeProgress();
 }
@@ -465,12 +464,73 @@ void Problem::solve()
     if (isSolving())
         return;
 
-    if(Agros2D::config()->saveMatrixRHS)
+    if(numTransientFields() > 1)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Coupling of more transient fields not possible at the moment.");
+        return;
+    }
+
+    if((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Space adaptivity for transient coupled problems not possible at the moment.");
+        return;
+    }
+
+    if(isTransient() && config()->isTransientAdaptive() && (numAdaptiveFields() >= 1))
+    {
+        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Both space and transient adaptivity at the same time not possible at the moment.");
+        return;
+    }
+
+    if(Agros2D::configComputer()->saveMatrixRHS)
         Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
     solveActionCatchExceptions(false);
 
     solveFinished();
+}
+
+void Problem::solveCommandLine()
+{
+    if (Agros2D::configComputer()->saveMatrixRHS)
+        Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
+
+    solveActionCatchExceptions(false);
+}
+
+void Problem::stepMessage(Block* block)
+{
+    // log analysis
+    QString fields;
+    foreach(Field *field, block->fields())
+        fields += field->fieldInfo()->fieldId() + ", ";
+    fields = fields.left(fields.length() - 2);
+
+    if (block->isTransient())
+    {
+        if(config()->isTransientAdaptive())
+        {
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
+                                         QObject::tr("transient step %1 (%2%)").
+                                         arg(actualTimeStep()).
+                                         arg(int(100*actualTime()/config()->timeTotal().number())));
+        }
+        else
+        {
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
+                                         QObject::tr("transient step %1/%2").
+                                         arg(actualTimeStep()).
+                                         arg(config()->numConstantTimeSteps()));
+        }
+    }
+    else
+    {
+        if (block->fields().count() == 1)
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("single analysis"));
+        else
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
+    }
+
 }
 
 //adaptivity step: from 0, if no adaptivity, than 0
@@ -514,29 +574,9 @@ void Problem::solveAction()
             }
             else if(!skipThisTimeStep(block))
             {
+                stepMessage(block);
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
-                    // log analysis
-                    QString fields;
-                    foreach(Field *field, block->fields())
-                        fields += field->fieldInfo()->fieldId() + ", ";
-                    fields = fields.left(fields.length() - 2);
-
-                    if (block->isTransient())
-                    {
-                        Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                                  QObject::tr("transient step %1/%2").
-                                                  arg(actualTimeStep()).
-                                                  arg(config()->numConstantTimeSteps()));
-                    }
-                    else
-                    {
-                        if (block->fields().count() == 1)
-                            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("single analysis"));
-                        else
-                            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
-                    }
-
                     solver->solveSimple(actualTimeStep(), 0);
                 }
                 else
@@ -563,8 +603,8 @@ void Problem::solveAction()
                 // todo: what if more blocks are transient? (take minimum? )
 
                 // todo: space + time adaptivity
-                if (isTransient() && (actualTimeStep() >=1))
-                    nextTimeStep = solver->estimateTimeStepLenght(actualTimeStep(), 0);
+                if (block->isTransient() && (actualTimeStep() >=1))
+                    nextTimeStep = solver->estimateTimeStepLength(actualTimeStep(), 0);
 
             }
         }
@@ -572,10 +612,6 @@ void Problem::solveAction()
         doNextTimeStep = false;
         if(isTransient())
         {
-
-//            nextTimeStep.refuse = (Agros2D::problem()->actualTimeStep() > 2) && random() < RAND_MAX / 2;
-//            nextTimeStep.length = Agros2D::problem()->config()->constantTimeStepLength() / (1 + 10 * random() / double(RAND_MAX));
-
             if(nextTimeStep.refuse)
             {
                 cout << "removing solutions on time step " << actualTimeStep() << endl;
@@ -587,14 +623,9 @@ void Problem::solveAction()
         }
     }
 
-    Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
-
-    Agros2D::scene()->blockSignals(false);
-
-    m_isSolved = true;
-    emit solved();
+    // free solvers
+    foreach (Block* block, m_blocks)
+        delete solvers[block];
 }
 
 void Problem::solveAdaptiveStep()
@@ -629,12 +660,11 @@ void Problem::solveAdaptiveStepAction()
 
     assert(isMeshed());
 
-
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
     assert(m_blocks.size() == 1);
     Block* block = m_blocks.at(0);
-    Solver<double>* solver = block->prepareSolver();
+    Solver<double> *solver = block->prepareSolver();
 
     int adaptStepNormal = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
     int adaptStepNonExisting = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
@@ -668,33 +698,15 @@ void Problem::solveAdaptiveStepAction()
     if(solutionAlreadyExists || adaptStep == 0)
         solver->solveSimple(0, adaptStep + 1);
 
-
-    Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-    Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
-    //cout << "setting active adapt step to " << Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal) << endl;
-
-    Agros2D::scene()->blockSignals(false);
-
-    m_isSolved = true;
-    emit solved();
+    // free solver
+    delete solver;
 }
 
 void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 {
-    // load plugins
-    QStringList modules = fieldInfos().keys();
-    QStringList couplings;
-    foreach (CouplingInfo *info, couplingInfos().values())
-        couplings.append(info->couplingId());
-
-    QStringList plugins;
-    plugins.append(modules);
-    plugins.append(couplings);
-
     try
     {
-        Agros2D::loadPlugins(plugins);
+        Agros2D::loadActivePlugins();
     }
     catch (AgrosException e)
     {
@@ -743,6 +755,8 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 
 void Problem::readInitialMeshesFromFile()
 {
+    Agros2D::log()->printMessage(tr("Problem"), tr("Loading initial mesh from disk"));
+
     // load initial mesh file
     // prepare mesh array
     Hermes::vector<Hermes::Hermes2D::Mesh*> meshesVector;
@@ -814,12 +828,40 @@ void Problem::readInitialMeshesFromFile()
         refineMesh(fieldInfo, mesh, true, true, true);
 
         // set initial mesh
-        fieldInfo->setInitialMesh(QSharedPointer<Hermes::Hermes2D::Mesh>(mesh));
+        fieldInfo->setInitialMesh(mesh);
     }
 
     meshes.clear();
     meshesVector.clear();
+
+    emit meshed();
 }
+
+void Problem::readSolutionsFromFile()
+{
+    Agros2D::log()->printMessage(tr("Problem"), tr("Loading spaces and solutions from disk"));
+
+    if (QFile::exists(QString("%1/runtime.xml").arg(cacheProblemDir())))
+    {
+        // load active plugins
+        try
+        {
+            Agros2D::loadActivePlugins();
+        }
+        catch (AgrosException e)
+        {
+            Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
+            return;
+        }
+
+        // load structure
+        Agros2D::solutionStore()->loadRunTimeDetails();
+
+        // emit solve
+        solveFinished();
+    }
+}
+
 
 void Problem::synchronizeCouplings()
 {

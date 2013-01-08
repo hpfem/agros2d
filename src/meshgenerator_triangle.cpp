@@ -37,6 +37,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 MeshGeneratorTriangle::MeshGeneratorTriangle() : MeshGenerator()
 {    
@@ -65,7 +66,7 @@ bool MeshGeneratorTriangle::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle"))
             triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
-        processTriangle.start(QString(Agros2D::config()->commandTriangle).
+        processTriangle.start(QString(Agros2D::problem()->configView()->commandTriangle).
                               arg(triangleBinary).
                               arg(tempProblemFileName()));
 
@@ -79,7 +80,7 @@ bool MeshGeneratorTriangle::mesh()
         else
         {
             // copy triangle files
-            if ((!Agros2D::config()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            if ((!Agros2D::configComputer()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 
@@ -112,7 +113,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
-            if ((!Agros2D::config()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            if ((!Agros2D::configComputer()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 

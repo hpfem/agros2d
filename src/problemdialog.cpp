@@ -24,9 +24,11 @@
 #include "scene.h"
 #include "moduledialog.h"
 #include "pythonlab/pythonengine_agros.h"
+
 #include "hermes2d/module.h"
 #include "hermes2d/module_agros.h"
 #include "hermes2d/coupling.h"
+#include "hermes2d/problem_config.h"
 
 #include "gui/lineeditdouble.h"
 #include "gui/latexviewer.h"
@@ -145,6 +147,12 @@ void FieldWidget::createContent()
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new LineEditDouble(1, true);
     txtAdaptivityTolerance->setBottom(0.0);
+    txtAdaptivityBackSteps = new QSpinBox(this);
+    txtAdaptivityBackSteps->setMinimum(0);
+    txtAdaptivityBackSteps->setMaximum(100);
+    txtAdaptivityRedoneEach = new QSpinBox(this);
+    txtAdaptivityRedoneEach->setMinimum(1);
+    txtAdaptivityRedoneEach->setMaximum(100);
 
     // mesh
     txtNumberOfRefinements = new QSpinBox(this);
@@ -238,6 +246,11 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
+    // todo: meaningfull labels
+    layoutAdaptivity->addWidget(new QLabel(tr("Steps back in trans:")), 3, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 3, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans st:")), 4, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 4, 1);
 
     QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
@@ -334,6 +347,8 @@ void FieldWidget::load()
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType()));
     txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps());
     txtAdaptivityTolerance->setValue(m_fieldInfo->adaptivityTolerance());
+    txtAdaptivityBackSteps->setValue(m_fieldInfo->adaptivityBackSteps());
+    txtAdaptivityRedoneEach->setValue(m_fieldInfo->adaptivityRedoneEach());
     //mesh
     txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements());
     txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder());
@@ -364,6 +379,8 @@ bool FieldWidget::save()
     m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
     m_fieldInfo->setAdaptivitySteps(txtAdaptivitySteps->value());
     m_fieldInfo->setAdaptivityTolerance(txtAdaptivityTolerance->value());
+    m_fieldInfo->setAdaptivityBackSteps(txtAdaptivityBackSteps->value());
+    m_fieldInfo->setAdaptivityRedoneEach(txtAdaptivityRedoneEach->value());
     //mesh
     m_fieldInfo->setNumberOfRefinements(txtNumberOfRefinements->value());
     m_fieldInfo->setPolynomialOrder(txtPolynomialOrder->value());
@@ -423,6 +440,8 @@ void FieldWidget::doAdaptivityChanged(int index)
 {
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityBackSteps->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityRedoneEach->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void FieldWidget::doLinearityTypeChanged(int index)
@@ -835,6 +854,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtTransientSteps->setMinimum(1);
     txtTransientSteps->setMaximum(10000);
     lblTransientTimeStep = new QLabel("0.0");
+    lblTransientSteps = new QLabel(tr("Number of constant steps:"));
 
     // fill combobox
     fillComboBox();
@@ -874,7 +894,7 @@ QWidget *ProblemWidget::createControlsGeneral()
     layoutTransientAnalysis->addWidget(txtTransientTolerance, 2, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 3, 0);
     layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 3, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Number of constant steps:")), 4, 0);
+    layoutTransientAnalysis->addWidget(lblTransientSteps, 4, 0);
     layoutTransientAnalysis->addWidget(txtTransientSteps, 4, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Constant time step:")), 5, 0);
     layoutTransientAnalysis->addWidget(lblTransientTimeStep, 5, 1);
@@ -967,7 +987,8 @@ void ProblemWidget::fillComboBox()
 #endif
 
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_Fixed), TimeStepMethod_Fixed);
-    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDF2AOrder), TimeStepMethod_BDF2AOrder);
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDFTolerance), TimeStepMethod_BDFTolerance);
+    cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDFNumSteps), TimeStepMethod_BDFNumSteps);
 }
 
 void ProblemWidget::updateControls()
@@ -1128,5 +1149,22 @@ void ProblemWidget::transientChanged()
     {
         lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->number() / txtTransientSteps->value()));
     }
+
+    if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
+    {
+        txtTransientTolerance->setEnabled(true);
+        txtTransientSteps->setEnabled(false);
+    }
+    else
+    {
+        txtTransientTolerance->setEnabled(false);
+        txtTransientSteps->setEnabled(true);
+        if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_Fixed)
+            lblTransientSteps->setText(tr("Number of steps:"));
+        else
+            lblTransientSteps->setText(tr("Aprox. number of steps:"));
+    }
+
+
 }
 

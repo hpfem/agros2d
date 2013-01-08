@@ -22,7 +22,7 @@
 
 #include "util.h"
 #include "util/enums.h"
-#include "conf.h"
+#include "util/conf.h"
 
 #include "hermes2d/solutiontypes.h"
 
@@ -39,6 +39,7 @@ class SceneLabel;
 class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
+struct LoopsInfo;
 
 class SceneNodeContainer;
 class SceneEdgeContainer;
@@ -59,6 +60,8 @@ class SolutionStore;
 class Log;
 
 class PluginInterface;
+
+QString generateSvgGeometry(QList<SceneEdge *> edges);
 
 class DxfFilter : public DL_CreationAdapter
 {
@@ -197,12 +200,14 @@ public:
     void setActiveSolutionType(SolutionMode st) { m_activeSolutionMode = st; }
 
     // active MultiSolutionArray
-    MultiSolutionArray<double> activeMultiSolutionArray();
+    MultiArray<double> activeMultiSolutionArray();
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
+    void readSolutionFromFile(const QString &fileName);
+    void writeSolutionToFile(const QString &fileName);
 
     void checkEdge(SceneEdge *edge);
     void checkNode(SceneNode *node);

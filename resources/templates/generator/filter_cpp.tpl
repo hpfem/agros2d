@@ -24,6 +24,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/block.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
 #include "util.h"
@@ -82,7 +83,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     Hermes::Hermes2D::Element *e = this->refmap->get_active_element();
 
     // set material
-    SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh().data()->get_element_markers_conversion().
+    SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
                                                              get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
     {{#VARIABLE_SOURCE}}

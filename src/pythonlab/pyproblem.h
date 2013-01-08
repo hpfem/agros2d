@@ -25,6 +25,7 @@
 
 #include "scene.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 class Solution;
 class SceneViewPreprocessor;
@@ -91,6 +92,8 @@ class PyProblem
         void setCouplingType(const char *sourceField, const char *targetField, const char *type);
 
         void solve();
+        double timeElapsed();
+        void timeStepsLength(vector<double> &steps);
 };
 
 #endif // PYTHONLABPROBLEM_H

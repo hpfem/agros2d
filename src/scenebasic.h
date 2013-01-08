@@ -39,10 +39,10 @@ class FieldInfo;
 class SceneBoundary;
 class SceneMaterial;
 
-Q_DECLARE_METATYPE(SceneBasic *)
-Q_DECLARE_METATYPE(SceneNode *)
-Q_DECLARE_METATYPE(SceneEdge *)
-Q_DECLARE_METATYPE(SceneLabel *)
+
+// Q_DECLARE_METATYPE(SceneNode *)
+// Q_DECLARE_METATYPE(SceneEdge *)
+// Q_DECLARE_METATYPE(SceneLabel *)
 
 class SceneBasic 
 {
@@ -69,6 +69,9 @@ template <typename BasicType>
 class SceneBasicContainer
 {
 public:
+    SceneBasicContainer() : data(QList<BasicType* >()) {}
+    ~SceneBasicContainer();
+
     /// items() should be removed step by step from the code.
     /// more methods operating with list data should be defined here
     QList<BasicType*> items() { return data; }
@@ -95,6 +98,7 @@ protected:
     QString containerName;
 };
 
+Q_DECLARE_METATYPE(SceneBasic *)
 
 // *************************************************************************************************************************************
 

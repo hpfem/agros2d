@@ -19,8 +19,8 @@
 
 #include "meshgenerator.h"
 
-#include "conf.h"
 #include "util/global.h"
+#include "util/conf.h"
 
 #include "scene.h"
 #include "scenebasic.h"
@@ -34,6 +34,7 @@
 #include "hermes2d/module_agros.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
 
 MeshGenerator::MeshGenerator() : QObject()
 {    
@@ -88,7 +89,7 @@ bool MeshGenerator::writeToHermes()
 
     // curves
     int countCurves = 0;
-    if (Agros2D::config()->curvilinearElements)
+    if (Agros2D::problem()->configView()->curvilinearElements)
     {
         for (int i = 0; i<edgeList.count(); i++)
         {
