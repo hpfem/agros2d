@@ -11,6 +11,7 @@ cdef extern from "../../src/pythonlab/pyproblem.h":
         PyProblem(int clear)
 
         void clear()
+        void clearSolution()
         void refresh()
 
         char *getName()
@@ -46,15 +47,16 @@ cdef extern from "../../src/pythonlab/pyproblem.h":
         char *getCouplingType(char *sourceField, char *targetField) except +
         void setCouplingType(char *sourceField, char *targetField, char *type) except +
 
+        void mesh()
         void solve()
+        void solveAdaptiveStep()
 
-        double timeElapsed()
+        double timeElapsed() except +
         void timeStepsLength(vector[double] steps) except +
 
 cdef class __Problem__:
     cdef PyProblem *thisptr
 
-    # Problem(clear)
     def __cinit__(self, int clear = 0):
         self.thisptr = new PyProblem(clear)
 
@@ -64,6 +66,10 @@ cdef class __Problem__:
     # clear
     def clear(self):
         self.thisptr.clear()
+
+    # clear solution
+    def clear_solution(self):
+        self.thisptr.clearSolution()
 
     # refresh
     def refresh(self):
@@ -76,21 +82,21 @@ cdef class __Problem__:
         def __set__(self, name):
             self.thisptr.setName(name)
 
-    # coordinate_type
+    # coordinate type
     property coordinate_type:
         def __get__(self):
             return self.thisptr.getCoordinateType()
         def __set__(self, coordinate_type):
             self.thisptr.setCoordinateType(coordinate_type)
 
-    # mesh_type
+    # mesh type
     property mesh_type:
         def __get__(self):
             return self.thisptr.getMeshType()
         def __set__(self, mesh_type):
             self.thisptr.setMeshType(mesh_type)
 
-    # matrix_solver
+    # matrix solver
     property matrix_solver:
         def __get__(self):
             return self.thisptr.getMatrixSolver()
@@ -104,35 +110,35 @@ cdef class __Problem__:
         def __set__(self, frequency):
             self.thisptr.setFrequency(frequency)
 
-    # time_step_method
+    # time step method
     property time_step_method:
         def __get__(self):
             return self.thisptr.getTimeStepMethod()
         def __set__(self, time_step_method):
             self.thisptr.setTimeStepMethod(time_step_method)
 
-    # time_method_order
+    # time method order
     property time_method_order:
         def __get__(self):
             return self.thisptr.getTimeMethodOrder()
         def __set__(self, time_method_order):
             self.thisptr.setTimeMethodOrder(time_method_order)
 
-    # time_method_tolerance
+    # time method tolerance
     property time_method_tolerance:
         def __get__(self):
             return self.thisptr.getTimeMethodTolerance()
         def __set__(self, time_method_tolerance):
             self.thisptr.setTimeMethodTolerance(time_method_tolerance)
 
-    # time_total
+    # time total
     property time_total:
         def __get__(self):
             return self.thisptr.getTimeTotal()
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
 
-    # time_steps
+    # time steps
     property time_steps:
         def __get__(self):
             return self.thisptr.getNumConstantTimeSteps()
@@ -145,9 +151,17 @@ cdef class __Problem__:
     def set_coupling_type(self, source_field, target_field, type):
             self.thisptr.setCouplingType(source_field, target_field, type)
 
+    # mesh
+    def mesh(self):
+        self.thisptr.mesh()
+
     # solve
     def solve(self):
         self.thisptr.solve()
+
+    # adaptive step
+    def solve_adaptive_step(self):
+        self.thisptr.solveAdaptiveStep()
 
     # elapsed time
     def elapsed_time(self):
@@ -164,7 +178,7 @@ cdef class __Problem__:
 
         return steps
 
-    # time steps
+    # time steps total
     def time_steps_total(self):
         steps = self.time_steps_length()
         time = [0.0]

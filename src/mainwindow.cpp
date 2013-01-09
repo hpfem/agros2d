@@ -908,6 +908,7 @@ void MainWindow::doDocumentNew()
         sceneViewMesh->doZoomBestFit();
         sceneViewPost2D->doZoomBestFit();
         sceneViewPost3D->doZoomBestFit();
+        settingsWidget->updateControls();
     }
 }
 
