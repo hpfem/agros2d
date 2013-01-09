@@ -172,7 +172,7 @@ void PyProblem::solve()
 double PyProblem::timeElapsed()
 {
     if (!Agros2D::problem()->isSolved())
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
     double time = Agros2D::problem()->timeElapsed().hour()*3600 + Agros2D::problem()->timeElapsed().minute()*60 +
                   Agros2D::problem()->timeElapsed().second() + Agros2D::problem()->timeElapsed().msec() * 1e-3;
@@ -182,10 +182,10 @@ double PyProblem::timeElapsed()
 void PyProblem::timeStepsLength(vector<double> &steps)
 {
     if (!Agros2D::problem()->isTransient())
-        throw invalid_argument(QObject::tr("Problem is not transient.").toStdString());
+        throw logic_error(QObject::tr("Problem is not transient.").toStdString());
 
     if (!Agros2D::problem()->isSolved())
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
     vector<double> values;
     for (int i = 0; i < Agros2D::problem()->timeStepLengths().size(); i++)

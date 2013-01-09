@@ -34,15 +34,19 @@ namespace Hermes
 
     bool MeshReaderH2DXML::load(const char *filename, Mesh *mesh)
     {
-            if(mesh->nactive == 0)
-                Hermes2DApi.meshDataPointerCalculator++;
+			if(mesh->nactive == 0)
+				Hermes2DApi.meshDataPointerCalculator++;
       mesh->free();
 
       std::map<unsigned int, unsigned int> vertex_is;
 
       try
       {
-        std::auto_ptr<XMLMesh::mesh> parsed_xml_mesh(XMLMesh::mesh_(filename));
+        ::xml_schema::flags parsing_flags = 0;
+        if(!this->validate)
+          parsing_flags = xml_schema::flags::dont_validate;
+
+        std::auto_ptr<XMLMesh::mesh> parsed_xml_mesh(XMLMesh::mesh_(filename, parsing_flags));
 
         if(!load(parsed_xml_mesh, mesh, vertex_is))
           return false;
@@ -141,17 +145,21 @@ namespace Hermes
     bool MeshReaderH2DXML::load(const char *filename, Hermes::vector<Mesh *> meshes)
     {
       for(unsigned int meshes_i = 0; meshes_i < meshes.size(); meshes_i++)
-            {
-                if(meshes.at(meshes_i)->nactive == 0)
-                    Hermes2DApi.meshDataPointerCalculator++;
+			{
+				if(meshes.at(meshes_i)->nactive == 0)
+					Hermes2DApi.meshDataPointerCalculator++;
         meshes.at(meshes_i)->free();
-            }
+			}
 
       Mesh global_mesh;
 
       try
       {
-        std::auto_ptr<XMLSubdomains::domain> parsed_xml_domain (XMLSubdomains::domain_(filename, xml_schema::flags::dont_validate));
+        ::xml_schema::flags parsing_flags = 0;
+        if(!this->validate)
+          parsing_flags = xml_schema::flags::dont_validate;
+
+        std::auto_ptr<XMLSubdomains::domain> parsed_xml_domain (XMLSubdomains::domain_(filename, parsing_flags));
 
         int* vertex_is = new int[H2D_MAX_NODE_ID];
         for(int i = 0; i < H2D_MAX_NODE_ID; i++)
@@ -221,9 +229,12 @@ namespace Hermes
 
             std::map<std::string, double> variables;
             for (unsigned int variables_i = 0; variables_i < variables_count; variables_i++)
-              variables.insert(std::make_pair<std::string, double>(parsed_xml_domain->variables()->variable().at(variables_i).name(), parsed_xml_domain->variables()->variable().at(variables_i).value()));
-
-            // Vertex numbers //
+#ifdef _MSC_VER
+				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->variable().at(variables_i).name(), (double&&)parsed_xml_domain->variables()->variable().at(variables_i).value()));
+#else
+				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->variable().at(variables_i).name(), parsed_xml_domain->variables()->variable().at(variables_i).value()));
+#endif
+			// Vertex numbers //
             // create a mapping order-in-the-whole-domain <-> order-in-this-subdomain.
             std::map<unsigned int, unsigned int> vertex_vertex_numbers;
 
@@ -741,7 +752,11 @@ namespace Hermes
         unsigned int variables_count = parsed_xml_mesh->variables().present() ? parsed_xml_mesh->variables()->variable().size() : 0;
         std::map<std::string, double> variables;
         for (unsigned int variables_i = 0; variables_i < variables_count; variables_i++)
-          variables.insert(std::make_pair<std::string, double>(parsed_xml_mesh->variables()->variable().at(variables_i).name(), parsed_xml_mesh->variables()->variable().at(variables_i).value()));
+#ifdef _MSC_VER
+				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->variable().at(variables_i).name(), (double&&)parsed_xml_mesh->variables()->variable().at(variables_i).value()));
+#else
+				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->variable().at(variables_i).name(), parsed_xml_mesh->variables()->variable().at(variables_i).value()));
+#endif
 
         // Vertices //
         int vertices_count = parsed_xml_mesh->vertices().vertex().size();
@@ -985,7 +1000,12 @@ namespace Hermes
         unsigned int variables_count = parsed_xml_domain->variables().present() ? parsed_xml_domain->variables()->variable().size() : 0;
         std::map<std::string, double> variables;
         for (unsigned int variables_i = 0; variables_i < variables_count; variables_i++)
-          variables.insert(std::make_pair<std::string, double>(parsed_xml_domain->variables()->variable().at(variables_i).name(), parsed_xml_domain->variables()->variable().at(variables_i).value()));
+#ifdef _MSC_VER
+				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->variable().at(variables_i).name(), (double&&)parsed_xml_domain->variables()->variable().at(variables_i).value()));
+#else
+				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->variable().at(variables_i).name(), parsed_xml_domain->variables()->variable().at(variables_i).value()));
+#endif
+
 
         // Vertices //
         int vertices_count = parsed_xml_domain->vertices().vertex().size();
