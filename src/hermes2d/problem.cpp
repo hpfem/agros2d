@@ -309,6 +309,7 @@ bool Problem::mesh()
         catch (Hermes::Exceptions::Exception& e)
         {
             Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+            throw(AgrosMeshException(e.what()));
         }
     }
     delete meshGenerator;
@@ -491,7 +492,6 @@ void Problem::solve()
     }
     catch (AgrosSolverException)
     {
-        std::cout << "Solve";
         return;
     }
 
@@ -561,7 +561,6 @@ void Problem::solveAction()
     }
     catch(AgrosException& e)
     {
-        std::cout << "Before throw exception ";
         throw(AgrosSolverException("Exception"));
     }
 
@@ -748,25 +747,25 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
         else
             solveAction();
     }
+    // ToDo: Create better system of exceptions
     catch (Hermes::Exceptions::Exception& e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
-        return;
+        AgrosSolverException(e.what());
     }
     catch (Hermes::Exceptions::Exception* e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e->what()));
-        return;
+        throw(AgrosSolverException(e->what()));
     }
     catch (AgrosSolverException& e)
     {
-        std::cout << "Agros Solver Exception";
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.what());
-        throw( AgrosSolverException("Exception"));
+        throw(AgrosSolverException(e.what()));
     }
     catch (...)
     {
-                std::cout << "General exception";
+
     }
 
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
