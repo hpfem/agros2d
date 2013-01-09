@@ -485,7 +485,15 @@ void Problem::solve()
     if(Agros2D::configComputer()->saveMatrixRHS)
         Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
-    solveActionCatchExceptions(false);
+    try
+    {
+        solveActionCatchExceptions(false);
+    }
+    catch (AgrosSolverException)
+    {
+        std::cout << "Solve";
+        return;
+    }
 
     solveFinished();
 }
@@ -547,7 +555,15 @@ void Problem::solveAction()
     Agros2D::scene()->setActiveTimeStep(0);
     Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
 
-    solveInit();
+    try
+    {
+        solveInit();
+    }
+    catch(AgrosException& e)
+    {
+        std::cout << "Before throw exception ";
+        throw(AgrosSolverException("Exception"));
+    }
 
     assert(isMeshed());
 
@@ -656,7 +672,14 @@ void Problem::solveAdaptiveStepAction()
 {
     Agros2D::scene()->blockSignals(true);
 
-    solveInit();
+    try
+    {
+        solveInit();
+    }
+    catch(AgrosSolverException& e)
+    {
+        throw(AgrosSolverException("exception"));
+    }
 
     assert(isMeshed());
 
@@ -737,9 +760,15 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     }
     catch (AgrosSolverException& e)
     {
+        std::cout << "Agros Solver Exception";
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.what());
-        return;
+        throw( AgrosSolverException("Exception"));
     }
+    catch (...)
+    {
+                std::cout << "General exception";
+    }
+
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
     //                        catch (...)
     //                        {
