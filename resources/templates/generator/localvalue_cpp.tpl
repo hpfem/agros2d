@@ -102,6 +102,8 @@ void {{CLASS}}LocalValue::calculate()
                 value[k] = val;
                 dudx[k] = values->dx[0];
                 dudy[k] = values->dy[0];
+
+                delete values;
             }
 
             // expressions

@@ -59,7 +59,6 @@ Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> createSolutions(Hermes::vec
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> slns;
     foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
     {
-        // TODO: try to use QSharedPointer or QScopedPointer
         Hermes::Hermes2D::Solution<Scalar> *sln = new Hermes::Hermes2D::Solution<double>(mesh);
         slns.push_back(sln);
     }

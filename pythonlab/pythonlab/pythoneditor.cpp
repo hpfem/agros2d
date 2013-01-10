@@ -1181,6 +1181,7 @@ ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
 ScriptEditor::~ScriptEditor()
 {
     delete lineNumberArea;
+    delete completer;
 }
 
 void ScriptEditor::resizeEvent(QResizeEvent *e)

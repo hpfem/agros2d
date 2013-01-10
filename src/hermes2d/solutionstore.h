@@ -25,6 +25,8 @@
 class SolutionStore
 {
 public:
+    ~SolutionStore();
+
     struct SolutionRunTimeDetails
     {
         SolutionRunTimeDetails(double time_step_length = 0.0, double error = 0.0, int DOFs = 0)
