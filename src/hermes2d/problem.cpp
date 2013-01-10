@@ -309,7 +309,7 @@ bool Problem::mesh()
         catch (Hermes::Exceptions::Exception& e)
         {
             Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
-            throw(AgrosMeshException(e.what()));
+            throw;
         }
     }
     delete meshGenerator;
@@ -561,7 +561,7 @@ void Problem::solveAction()
     }
     catch(AgrosException& e)
     {
-        throw(AgrosSolverException("Exception"));
+        throw;
     }
 
     assert(isMeshed());
@@ -677,7 +677,7 @@ void Problem::solveAdaptiveStepAction()
     }
     catch(AgrosSolverException& e)
     {
-        throw(AgrosSolverException("exception"));
+        throw;
     }
 
     assert(isMeshed());
@@ -756,12 +756,12 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     catch (Hermes::Exceptions::Exception* e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e->what()));
-        throw(AgrosSolverException(e->what()));
+        throw;
     }
     catch (AgrosSolverException& e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.what());
-        throw(AgrosSolverException(e.what()));
+        throw;
     }
     catch (...)
     {
