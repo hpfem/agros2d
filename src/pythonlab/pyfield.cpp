@@ -72,7 +72,7 @@ void PyField::setNumberOfRefinements(const int numberOfRefinements)
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNumberOfRefinements(numberOfRefinements);
     else
-        throw invalid_argument(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
+        throw out_of_range(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
 }
 
 void PyField::setPolynomialOrder(const int polynomialOrder)
@@ -80,7 +80,7 @@ void PyField::setPolynomialOrder(const int polynomialOrder)
     if (polynomialOrder > 0 && polynomialOrder <= 10)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setPolynomialOrder(polynomialOrder);
     else
-        throw invalid_argument(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
+        throw out_of_range(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 }
 
 void PyField::setLinearityType(const char *linearityType)
@@ -96,7 +96,7 @@ void PyField::setNonlinearTolerance(const double nonlinearTolerance)
     if (nonlinearTolerance > 0.0)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearTolerance(nonlinearTolerance);
     else
-        throw invalid_argument(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
+        throw out_of_range(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
 }
 
 void PyField::setNonlinearSteps(const int nonlinearSteps)
@@ -104,7 +104,7 @@ void PyField::setNonlinearSteps(const int nonlinearSteps)
     if (nonlinearSteps >= 1)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNonlinearSteps(nonlinearSteps);
     else
-        throw invalid_argument(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
+        throw out_of_range(QObject::tr("Nonlinearity steps must be higher than 1.").toStdString());
 }
 
 void PyField::setDampingCoeff(const double dampingCoeff)
@@ -112,7 +112,7 @@ void PyField::setDampingCoeff(const double dampingCoeff)
     if ((dampingCoeff <= 1) && (dampingCoeff > 0))
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonDampingCoeff(dampingCoeff);
     else
-        throw invalid_argument(QObject::tr("Damping coefficient must be between 0 and 1 .").toStdString());
+        throw out_of_range(QObject::tr("Damping coefficient must be between 0 and 1 .").toStdString());
 }
 
 void PyField::setAutomaticDamping(const bool automaticDamping)
@@ -125,7 +125,7 @@ void PyField::setDampingNumberToIncrease(const int dampingNumberToIncrease)
     if ((dampingNumberToIncrease <= 5) && (dampingNumberToIncrease >= 1))
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonDampingNumberToIncrease(dampingNumberToIncrease);
     else
-        throw invalid_argument(QObject::tr("Number of steps needed to increase the damping coefficient must be between 1 and 5 .").toStdString());
+        throw out_of_range(QObject::tr("Number of steps needed to increase the damping coefficient must be between 1 and 5 .").toStdString());
 }
 
 void PyField::setPicardAndersonAcceleration(const bool acceleration)
@@ -138,7 +138,7 @@ void PyField::setPicardAndersonBeta(const double beta)
     if ((beta <= 1) && (beta > 0))
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonBeta(beta);
     else
-        throw invalid_argument(QObject::tr("Anderson coefficient must be between 0 and 1 .").toStdString());
+        throw out_of_range(QObject::tr("Anderson coefficient must be between 0 and 1 .").toStdString());
 }
 
 void PyField::setPicardAndersonNumberOfLastVectors(const int number)
@@ -146,7 +146,7 @@ void PyField::setPicardAndersonNumberOfLastVectors(const int number)
     if ((number <= 5) && (number >= 1))
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setPicardAndersonNumberOfLastVectors(number);
     else
-        throw invalid_argument(QObject::tr("Number of last vector must be between 1 and 5 .").toStdString());
+        throw out_of_range(QObject::tr("Number of last vector must be between 1 and 5 .").toStdString());
 }
 
 void PyField::setAdaptivityType(const char *adaptivityType)
@@ -162,7 +162,7 @@ void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
     if (adaptivityTolerance > 0.0)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityTolerance(adaptivityTolerance);
     else
-        throw invalid_argument(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
+        throw out_of_range(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
 }
 
 void PyField::setAdaptivitySteps(const int adaptivitySteps)
@@ -170,7 +170,7 @@ void PyField::setAdaptivitySteps(const int adaptivitySteps)
     if (adaptivitySteps >= 1)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivitySteps(adaptivitySteps);
     else
-        throw invalid_argument(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
+        throw out_of_range(QObject::tr("Adaptivity steps must be higher than 1.").toStdString());
 }
 
 void PyField::setAdaptivityBackSteps(const int adaptivityBackSteps)
@@ -178,7 +178,7 @@ void PyField::setAdaptivityBackSteps(const int adaptivityBackSteps)
     if (adaptivityBackSteps >= 0)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityBackSteps(adaptivityBackSteps);
     else
-        throw invalid_argument(QObject::tr("Adaptivity back steps must be positive.").toStdString());
+        throw out_of_range(QObject::tr("Adaptivity back steps must be positive.").toStdString());
 }
 
 void PyField::setAdaptivityRedoneEach(const int adaptivityRedoneEach)
@@ -186,7 +186,7 @@ void PyField::setAdaptivityRedoneEach(const int adaptivityRedoneEach)
     if (adaptivityRedoneEach >= 1)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAdaptivityRedoneEach(adaptivityRedoneEach);
     else
-        throw invalid_argument(QObject::tr("Adaptivity back steps must be higher than 1.").toStdString());
+        throw out_of_range(QObject::tr("Adaptivity back steps must be higher than 1.").toStdString());
 }
 
 void PyField::setInitialCondition(const double initialCondition)
@@ -199,7 +199,7 @@ void PyField::setTimeSkip(const double timeSkip)
     if (timeSkip >= 0 && timeSkip <= Agros2D::problem()->config()->timeTotal().number())
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(Value(QString::number(timeSkip)));
     else
-        throw invalid_argument(QObject::tr("Time skip is out of range (0 - %1).").arg(Agros2D::problem()->config()->timeTotal().number()).toStdString());
+        throw out_of_range(QObject::tr("Time skip is out of range (0 - %1).").arg(Agros2D::problem()->config()->timeTotal().number()).toStdString());
 }
 
 void PyField::addBoundary(char *name, char *type, map<char*, double> parameters, map<char *, char *> expressions)
@@ -325,9 +325,9 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
                 int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
                 if (lenx != leny)
                     if (lenx > leny)
-                        throw out_of_range(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
+                        throw invalid_argument(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
                     else
-                        throw out_of_range(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
+                        throw invalid_argument(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
@@ -374,9 +374,9 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
                 int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
                 if (lenx != leny)
                     if (lenx > leny)
-                        throw out_of_range(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
+                        throw invalid_argument(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
                     else
-                        throw out_of_range(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
+                        throw invalid_argument(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
@@ -439,7 +439,7 @@ void PyField::localValues(double x, double y, map<std::string, double> &results)
     }
     else
     {
-        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
     }
 
     results = values;
@@ -495,7 +495,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
     }
     else
     {
-        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
     }
 
     results = values;
@@ -558,7 +558,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
     }
     else
     {
-        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
     }
 
     results = values;

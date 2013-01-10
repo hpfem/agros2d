@@ -65,7 +65,6 @@ public:
     CouplingsWidget(QWidget *parent);
 
     void createContent();
-
     void load();
 
 signals:

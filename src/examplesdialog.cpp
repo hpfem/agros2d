@@ -139,8 +139,10 @@ void ExamplesDialog::readProblems()
     readProblems(dir, lstProblems->invisibleRootItem());
 }
 
-void ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
+int ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
 {
+    int count = 0;
+
     QFileInfoList listExamples = dir.entryInfoList();
     for (int i = 0; i < listExamples.size(); ++i)
     {
@@ -159,7 +161,16 @@ void ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
             dirItem->setExpanded(true);
 
             // recursive read
-            readProblems(fileInfo.absoluteFilePath(), dirItem);
+            int numberOfProblems = readProblems(fileInfo.absoluteFilePath(), dirItem);
+
+            if (numberOfProblems == 0)
+            {
+                // remove dir from tree
+                parentItem->removeChild(dirItem);
+            }
+
+            // increase counter
+            count += numberOfProblems;
         }
         else if (fileInfo.suffix() == "a2d")
         {
@@ -172,8 +183,13 @@ void ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
                 exampleItem->setIcon(0, icon("fields/empty"));
             exampleItem->setText(0, fileInfo.baseName());
             exampleItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+
+            // increase counter
+            count++;
         }
     }
+
+    return count;
 }
 
 void ExamplesDialog::problemInfo(const QString &fileName)
@@ -312,14 +328,16 @@ void ExamplesDialog::problemInfo(const QString &fileName)
             nodeField = nodeField.nextSibling();
         }
 
-        // image
+        // details
         QFileInfo fileInfo(fileName);
-        QString imageFilename(QString("%1/%2.png").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()));
-        if (QFile::exists(imageFilename))
+        QString detailsFilename(QString("%1/%2/index.html").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()));
+        if (QFile::exists(detailsFilename))
         {
-            problemInfo.ShowSection("IMAGE_SECTION");
-            problemInfo.SetValue("IMAGE_LABEL", tr("Image").toStdString());
-            problemInfo.SetValue("EXAMPLE_IMAGE", imageFilename.toStdString());
+            // replace current path in index.html
+            QString detail = readFileContent(detailsFilename);
+            detail = detail.replace("{{DIR}}", QString("%1/%2").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()));
+
+            problemInfo.SetValue("PROBLEM_DETAILS", detail.toStdString());
         }
 
         ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/example.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);

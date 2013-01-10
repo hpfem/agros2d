@@ -27,24 +27,15 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-class Solution;
-class SceneViewPreprocessor;
-class SceneViewMesh;
-class SceneViewPost2D;
-class SceneViewPost3D;
-class PostHermes;
-
 class PyProblem
 {
     public:
         PyProblem(bool clearproblem);
         ~PyProblem() {}
 
-        // clear
+        // clear and refresh
         void clear();
-        void field(char *fieldId);
-
-        // refresh
+        void clearSolution() { Agros2D::problem()->clearSolution(); }
         void refresh();
 
         // name
@@ -91,8 +82,15 @@ class PyProblem
         char *getCouplingType(const char *sourceField, const char *targetField);
         void setCouplingType(const char *sourceField, const char *targetField, const char *type);
 
+        //mesh and solve
+        void mesh();
         void solve();
+        void solveAdaptiveStep();
+
+        // time elapsed
         double timeElapsed();
+
+        // time steps
         void timeStepsLength(vector<double> &steps);
 };
 

@@ -23,16 +23,8 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "scene.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
-
-class Solution;
-class SceneViewPreprocessor;
-class SceneViewMesh;
-class SceneViewPost2D;
-class SceneViewPost3D;
-class PostHermes;
 
 // field
 class PyField
