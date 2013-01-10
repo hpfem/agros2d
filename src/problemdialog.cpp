@@ -707,10 +707,9 @@ void CouplingsWidget::createContent()
     int line = 0;
     foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
     {
-        layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
-
         m_comboBoxes[couplingInfo] = new QComboBox();
 
+        layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
 
         line++;

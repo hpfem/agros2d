@@ -104,4 +104,6 @@
 </div>
 {{/IMAGE_SECTION}}
 
+{{PROBLEM_DETAILS}}
+
 <div class="cleaner"></div>
