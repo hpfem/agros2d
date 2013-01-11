@@ -137,6 +137,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     // remove from cache
     if (m_multiSolutionCache.contains(solutionID))
     {
+        // free ma
         MultiArray<double> msa = m_multiSolutionCache[solutionID];
         msa.clear();
 
@@ -389,7 +390,13 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
     {
         // flush cache
         if (m_multiSolutionCache.count() > Agros2D::configComputer()->cacheSize)
+        {
+            // free ma
+            MultiArray<double> msa = m_multiSolutionCache[m_multiSolutionCache.keys().first()];
+            msa.clear();
+
             m_multiSolutionCache.remove(m_multiSolutionCache.keys().first());
+        }
 
         // add solution
         m_multiSolutionCache.insert(solutionID, multiSolution);

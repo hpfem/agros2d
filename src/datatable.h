@@ -48,7 +48,7 @@ public:
     void add(double *keys, double *values, int count);
     void add(vector<double> keys, vector<double> values);
     void get(double *keys, double *values, double *derivatives);
-    DataTable *copy() const;
+    DataTable *copy();
 
     void initSpline();
 

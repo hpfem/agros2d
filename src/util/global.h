@@ -29,12 +29,15 @@ class Config;
 class SolutionStore;
 class Log;
 class Scene;
-class ScriptEngineRemote;
 class PluginInterface;
 
 class Agros2D
 {
 public:
+    Agros2D(const Agros2D &);
+    Agros2D & operator = (const Agros2D &);
+    Agros2D();
+
     static void createSingleton();
     static Agros2D* singleton();
     static inline Scene *scene() { return Agros2D::singleton()->m_scene; }
@@ -47,17 +50,13 @@ public:
     static void loadPlugin(const QString &plugin);
     static PluginInterface *plugin(const QString &plugin);
 
-    Agros2D(const Agros2D &);
-    Agros2D & operator = (const Agros2D &);
-    Agros2D();
-    ~Agros2D();
+    static void clear();
 
 private:
     Scene *m_scene;
     Config *m_configComputer;
     Problem *m_problem;
     SolutionStore *m_solutionStore;
-    ScriptEngineRemote *m_scriptEngineRemote;
     Log *m_log;
 
     QMap<QString, PluginInterface *> m_plugins;

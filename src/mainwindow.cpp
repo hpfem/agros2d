@@ -231,6 +231,8 @@ MainWindow::~MainWindow()
     removeDirectory(tempProblemDir());
 
     delete logStdOut;
+
+    Agros2D::Agros2D().clear();
 }
 
 void MainWindow::open(const QString &fileName)
@@ -1249,6 +1251,9 @@ void MainWindow::doSolve()
 
         // raise postprocessor
         postprocessorWidget->raise();
+
+        // Agros2D::problem()->clearFieldsAndConfig();
+        // QApplication::exit();
 
         // successful run
         logDialog->close();

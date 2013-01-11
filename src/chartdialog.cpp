@@ -108,8 +108,8 @@ void ChartWidget::setControls()
 // **************************************************************************************************
 
 ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
-                         ChartBasic *chart,
-                         QWidget *parent) : QWidget(parent), m_sceneViewPost2D(sceneView), m_chart(chart)
+                                         ChartBasic *chart,
+                                         QWidget *parent) : QWidget(parent), m_sceneViewPost2D(sceneView), m_chart(chart)
 {
     connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
@@ -261,10 +261,10 @@ void ChartControlsWidget::createControls()
     radAxisX = new QRadioButton("X");
     radAxisY = new QRadioButton("Y");
 
-    QButtonGroup *axisGroup = new QButtonGroup();
-    axisGroup->addButton(radAxisLength);
-    axisGroup->addButton(radAxisX);
-    axisGroup->addButton(radAxisY);
+    // QButtonGroup *axisGroup = new QButtonGroup();
+    // axisGroup->addButton(radAxisLength);
+    // axisGroup->addButton(radAxisX);
+    // axisGroup->addButton(radAxisY);
     connect(radAxisLength, SIGNAL(clicked()), this, SLOT(doPlot()));
     connect(radAxisX, SIGNAL(clicked()), this, SLOT(doPlot()));
     connect(radAxisY, SIGNAL(clicked()), this, SLOT(doPlot()));
@@ -345,7 +345,7 @@ void ChartControlsWidget::createControls()
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
     controlsLayout->setMargin(0);
-    controlsLayout->addWidget(tabAnalysisType);    
+    controlsLayout->addWidget(tabAnalysisType);
     controlsLayout->addWidget(widButton);
     controlsLayout->addStretch(1);
 
@@ -372,7 +372,7 @@ QList<double> ChartControlsWidget::getHorizontalAxisValues(ChartLine *chartLine)
                     Point center = centerPoint(points.at(i-1), points.at(i), chartLine->angle/(points.length() - 1));
                     double radius = (points.at(i-1) - center).magnitude();
                     double angle = atan2(points.at(i).y - center.y, points.at(i).x - center.x)
-                                   - atan2(points.at(i-1).y - center.y, points.at(i-1).x - center.x);
+                            - atan2(points.at(i-1).y - center.y, points.at(i-1).x - center.x);
                     xval.append(xval[i-1] + radius * angle);
                 }
             }
@@ -407,8 +407,8 @@ void ChartControlsWidget::plotGeometry()
 
     // chart
     m_chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
-                        arg(physicFieldVariable->name()).
-                        arg(physicFieldVariable->unit()));
+                          arg(physicFieldVariable->name()).
+                          arg(physicFieldVariable->unit()));
 
     QString text;
     if (radAxisLength->isChecked()) text = tr("Length (m)");
@@ -420,14 +420,14 @@ void ChartControlsWidget::plotGeometry()
     QStringList head = headers();
 
     // values
-    ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
-                                         Point(txtEndX->value().number(), txtEndY->value().number()),
-                                         txtAngle->value().number(),
-                                         count);
+    ChartLine chartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                        Point(txtEndX->value().number(), txtEndY->value().number()),
+                        txtAngle->value().number(),
+                        count);
     doChartLine();
 
-    QList<Point> points = chartLine->getPoints();
-    QList<double> xval = getHorizontalAxisValues(chartLine);
+    QList<Point> points = chartLine.getPoints();
+    QList<double> xval = getHorizontalAxisValues(&chartLine);
     QList<double> yval;
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
@@ -488,8 +488,8 @@ void ChartControlsWidget::plotTime()
 
     // chart
     m_chart->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
-                        arg(physicFieldVariable->name()).
-                        arg(physicFieldVariable->unit()));
+                          arg(physicFieldVariable->name()).
+                          arg(physicFieldVariable->unit()));
 
     m_chart->setAxisTitle(QwtPlot::xBottom, tr("time (s)"));
 

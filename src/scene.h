@@ -48,8 +48,6 @@ class SceneLabelContainer;
 class SceneBoundaryContainer;
 class SceneMaterialContainer;
 
-class ScriptEngineRemote;
-
 class ProblemWidget;
 class SceneTransformDialog;
 class ProgressItemSolve;

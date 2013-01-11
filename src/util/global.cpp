@@ -54,25 +54,22 @@ Agros2D::Agros2D()
     m_log = new Log();
 }
 
-Agros2D::~Agros2D()
+void Agros2D::clear()
 {
-    /*
     // remove temp and cache plugins
     removeDirectory(cacheProblemDir());
     removeDirectory(tempProblemDir());
 
-    delete m_problem;
-    delete m_scene;
-    delete m_configComputer;
-    delete m_scriptEngineRemote;    
-    delete m_solutionStore;
-    delete m_log;
+    delete m_singleton.data()->m_scene;
+    delete m_singleton.data()->m_problem;
+    delete m_singleton.data()->m_configComputer;
+    delete m_singleton.data()->m_solutionStore;
+    delete m_singleton.data()->m_log;
 
     // unload plugins and clear list
     foreach (PluginInterface *plugin, Agros2D::singleton()->m_plugins)
         delete plugin;
-    Agros2D::singleton()->m_plugins.clear();
-    */
+    m_singleton.data()->m_plugins.clear();
 }
 
 void Agros2D::createSingleton()

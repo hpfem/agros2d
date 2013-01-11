@@ -931,9 +931,13 @@ void Module::BasicModule::clear()
     m_localPointVariables.clear();
 
     // surface integrals
+    foreach (Integral *integral, m_surfaceIntegrals)
+        delete integral;
     m_surfaceIntegrals.clear();
 
     // volume integrals
+    foreach (Integral *integral, m_volumeIntegrals)
+        delete integral;
     m_volumeIntegrals.clear();
 
     // volume weak form

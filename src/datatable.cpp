@@ -187,7 +187,7 @@ void DataTable::get(double *keys, double *values, double *derivatives)
     }
 }
 
-DataTable *DataTable::copy() const
+DataTable *DataTable::copy()
 {
     DataTable *table = new DataTable();
 

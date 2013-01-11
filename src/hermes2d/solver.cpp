@@ -776,9 +776,6 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     ogProjection.project_global(castConst(spacesCopy), solutionsRef, solutions);
 
     // save the solution
-
-    // calculate element errors and total error estimate.
-
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,

@@ -73,6 +73,7 @@ private:
     bool m_isEvaluated;
     QString m_text;
     double m_number;
+
     DataTable *m_table;
 };
 
