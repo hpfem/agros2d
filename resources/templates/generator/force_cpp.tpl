@@ -83,6 +83,8 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
             value[k] = val;
             dudx[k] = values->dx[0];
             dudy[k] = values->dy[0];
+
+            delete values;
         }
 
         {{#VARIABLE_SOURCE}}

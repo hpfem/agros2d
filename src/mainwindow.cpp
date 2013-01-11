@@ -1236,6 +1236,9 @@ void MainWindow::doSolve()
 
     // solve problem
     Agros2D::problem()->solve();
+    // Agros2D::problem()->clearFieldsAndConfig();
+    // QApplication::exit();
+
     if (Agros2D::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();

@@ -62,7 +62,16 @@ Block::~Block()
     foreach (Hermes::Hermes2D::EssentialBCs<double> *bc, m_bcs)
     {
         for (Hermes::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
+        {
+            // delete function
+            Hermes::Hermes2D::ExactSolutionScalar<double> *exact_solution = static_cast<Hermes::Hermes2D::DefaultEssentialBCNonConst<double> *>(*it)->exact_solution;
+            delete exact_solution;
+
+            // delete bc
             delete *it;
+        }
+
+
         delete bc;
     }
     m_bcs.clear();

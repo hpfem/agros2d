@@ -33,6 +33,11 @@
 
 using namespace Hermes::Hermes2D;
 
+SolutionStore::~SolutionStore()
+{
+    clearAll();
+}
+
 QString SolutionStore::baseStoreFileName(FieldSolutionID solutionID) const
 {
     QString fn = QString("%1/%2").
@@ -47,6 +52,10 @@ void SolutionStore::clearAll()
     // m_multiSolutions.clear();
     foreach (FieldSolutionID sid, m_multiSolutions)
         removeSolution(sid);
+
+    assert(m_multiSolutions.count() == 0);
+    assert(m_multiSolutionRunTimeDetails.count() == 0);
+    assert(m_multiSolutionCache.count() == 0);
 }
 
 MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)

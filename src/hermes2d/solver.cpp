@@ -93,11 +93,10 @@ LinearSolverContainer<Scalar>::~LinearSolverContainer()
 }
 
 template <typename Scalar>
-void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
+Scalar *LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    int ndof = Space<Scalar>::get_num_dofs(m_linearSolver->get_spaces());
     m_linearSolver->solve();
-    memcpy(solutionVector, m_linearSolver->get_sln_vector(), ndof * sizeof(Scalar));
+    return m_linearSolver->get_sln_vector();
 }
 
 template <typename Scalar>
@@ -145,11 +144,10 @@ void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
 }
 
 template <typename Scalar>
-void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
+Scalar *NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    int ndof = Space<Scalar>::get_num_dofs(m_newtonSolver->get_spaces());
     m_newtonSolver->solve(solutionVector);
-    memcpy(solutionVector, m_newtonSolver->get_sln_vector(), ndof * sizeof(Scalar));
+    return m_newtonSolver->get_sln_vector();
 }
 
 template <typename Scalar>
@@ -198,16 +196,17 @@ void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
 }
 
 template <typename Scalar>
-void PicardSolverContainer<Scalar>::solve(Scalar* solutionVector)
+Scalar *PicardSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    int ndof = Space<Scalar>::get_num_dofs(m_picardSolver->get_spaces());
-    m_picardSolver->solve();
-    memcpy(solutionVector, m_picardSolver->get_sln_vector(), ndof * sizeof(Scalar));
+    m_picardSolver->solve(solutionVector);
+    return m_picardSolver->get_sln_vector();
 }
 
 template <typename Scalar>
 Solver<Scalar>::~Solver()
 {
+    clearActualSpaces();
+
     if (m_hermesSolverContainer)
         delete m_hermesSolverContainer;
     m_hermesSolverContainer = NULL;
@@ -230,7 +229,7 @@ void Solver<Scalar>::init(Block* block)
 
 template <typename Scalar>
 void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
-                                   Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selector)
+                                   Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
 {
     // set adaptivity selector
     RefinementSelectors::Selector<Scalar> *select = NULL;
@@ -277,19 +276,16 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
         select = new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList, Agros2D::problem()->configView()->convExp, H2DRS_DEFAULT_ORDER);
 
         // add refinement selector
-        selector.push_back(select);
+        selectors.push_back(select);
     }
 }
 
 template <typename Scalar>
-void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selector)
+void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
 {
-    foreach(RefinementSelectors::Selector<Scalar> *select, selector)
-    {
-        // todo: should it be deleted?
-        //delete select;
-    }
-    selector.clear();
+    foreach(RefinementSelectors::Selector<Scalar> *select, selectors)
+        delete select;
+    selectors.clear();
 }
 
 template <typename Scalar>
@@ -384,7 +380,7 @@ void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solu
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, int adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> previousSolution)
+Scalar *Solver<Scalar>::solveOneProblem(Scalar* solutionVector, Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, int adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> previousSolution)
 {
     //    qDebug() << QString("solveOneProblems starts, memory status: pointers/data: mesh %1/%2, space %3/%4, solution %5/%6\n").
     //                arg(Hermes2DApi.getNumberMeshPointers()).arg(Hermes2DApi.getNumberMeshData()).
@@ -396,12 +392,10 @@ void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, Hermes::vector<Herm
     try
     {
         m_hermesSolverContainer->projectPreviousSolution(solutionVector, spaces, previousSolution);
-        m_hermesSolverContainer->settableSpaces()->set_spaces(castConst(spaces));
-        m_hermesSolverContainer->set_weak_formulation(m_block->weakForm());
+        m_hermesSolverContainer->setTableSpaces()->set_spaces(castConst(spaces));
+        m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverName, adaptivityStep);
-        m_hermesSolverContainer->solve(solutionVector);
 
-        // TODO: temporarily disabled
         /*
         Agros2D::log()->printDebug(m_solverID, QObject::tr("Newton's solver - assemble/solve/total: %1/%2/%3 s").
                                 arg(milisecondsToTime(newton.get_assemble_time() * 1000.0).toString("mm:ss.zzz")).
@@ -410,6 +404,11 @@ void Solver<Scalar>::solveOneProblem(Scalar* solutionVector, Hermes::vector<Herm
         msa.setAssemblyTime(newton.get_assemble_time() * 1000.0);
         msa.setSolveTime(newton.get_solve_time() * 1000.0);
         */
+
+        return m_hermesSolverContainer->solve(solutionVector);
+
+        // TODO: temporarily disabled
+
     }
     catch (Hermes::Exceptions::Exception e)
     {
@@ -458,16 +457,11 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm()->registerForms(bdf2Table);
 
-    Scalar *solutionVector = new Scalar[ndof];
-
-    solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, previousTSMultiSolutionArray.solutions());
+    Scalar *solutionVector = solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, previousTSMultiSolutionArray.solutions());
 
     // output
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
     addSolutionToStore(solutionID, solutionVector);
-
-    // free vector
-    delete [] solutionVector;
 
     if (bdf2Table)
         delete bdf2Table;
@@ -515,20 +509,12 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
     //    MultiSolutionArray<Scalar> multiSolutionArray2 = multiSolutionArray.copySpaces();
     //    multiSolutionArray2.createNewSolutions();
 
-    // number of DOFs
-    int ndof = Space<Scalar>::get_num_dofs(castConst(m_actualSpaces));
-
-    Scalar *solutionVector = new Scalar[ndof];
-
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
-    solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, timeStep > 0 ? referenceCalculation.solutions() : Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
+    Scalar *solutionVector = solveOneProblem(solutionVector, m_actualSpaces, adaptivityStep, timeStep > 0 ? referenceCalculation.solutions() : Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 
     Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(m_actualSpaces);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
     Solution<Scalar>::vector_to_solutions(solutionVector, castConst(m_actualSpaces), solutions);
-
-    // free vector
-    delete [] solutionVector;
 
     double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutions(), solutions);
 
@@ -765,19 +751,14 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     // todo: delete? je to vubec potreba?
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef, Agros2D::problem()->actualTime());
 
-    Scalar *solutionVector = new Scalar[Space<Scalar>::get_num_dofs(castConst(spacesRef))];
-
     // solve reference problem
     // todo: posledni parametr: predchozi reseni pro projekci!!
-    solveOneProblem(solutionVector, spacesRef, adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
+    Scalar *solutionVector = solveOneProblem(solutionVector, spacesRef, adaptivityStep, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
 
     // output reference solution
     Hermes::vector<Hermes::Hermes2D::Mesh *> meshesRef = spacesMeshes(spacesRef);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionsRef = createSolutions<Scalar>(meshesRef);
     Solution<Scalar>::vector_to_solutions(solutionVector, castConst(spacesRef), solutionsRef);
-
-    // free vector
-    delete [] solutionVector;
 
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
     SolutionStore::SolutionRunTimeDetails runTimeRef(Agros2D::problem()->actualTimeStepLength(),
@@ -805,7 +786,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
     MultiArray<Scalar> msa(spacesCopy, solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
 
-    if(bdf2Table)
+    if (bdf2Table)
         delete bdf2Table;
 }
 

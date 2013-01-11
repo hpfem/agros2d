@@ -452,6 +452,8 @@ void ChartControlsWidget::plotGeometry()
                     else
                         yval.append(values[variable].vector.magnitude());
                 }
+
+                delete localValue;
             }
         }
     }

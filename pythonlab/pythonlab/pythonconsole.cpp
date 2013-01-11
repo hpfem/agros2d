@@ -78,6 +78,8 @@ PythonScriptingConsole::~PythonScriptingConsole()
 
     QSettings settings;
     settings.setValue("PythonScriptingConsole/History", PythonScriptingConsole::history);
+
+    delete completer;
 }
 
 void PythonScriptingConsole::stdClear()
