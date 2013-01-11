@@ -12,6 +12,9 @@ problem.time_total = 0.001
 problem.time_steps = 250
 
 # disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
 agros2d.view.post2d.scalar = False
 agros2d.view.post2d.contours = False
 agros2d.view.post2d.vectors = False

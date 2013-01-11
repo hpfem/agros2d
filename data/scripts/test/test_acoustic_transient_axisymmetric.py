@@ -12,6 +12,14 @@ problem.time_method_tolerance = 0.1
 problem.time_total = 1
 problem.time_steps = 10
 
+# disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # fields
 # acoustic
 acoustic = agros2d.field("acoustic")
