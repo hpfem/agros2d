@@ -60,7 +60,7 @@ PostHermes::~PostHermes()
 
 void PostHermes::processInitialMesh()
 {
-    if (Agros2D::problem()->isMeshed())
+    if (Agros2D::problem()->isMeshed() && Agros2D::problem()->configView()->showInitialMeshView)
     {
         Agros2D::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Agros2D::scene()->activeViewField()->initialMesh()->get_num_active_elements()));
 
@@ -68,6 +68,8 @@ void PostHermes::processInitialMesh()
         try
         {
             Hermes::Hermes2D::ZeroSolution<double> initial(Agros2D::scene()->activeViewField()->initialMesh());
+
+            m_linInitialMeshView.free();
             m_linInitialMeshView.process_solution(&initial);            
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -79,7 +81,7 @@ void PostHermes::processInitialMesh()
 
 void PostHermes::processSolutionMesh()
 {
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showSolutionMeshView)
     {
         // ERROR: FIX component(0)
         Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh()->get_num_active_elements()));
@@ -88,6 +90,8 @@ void PostHermes::processSolutionMesh()
         // ERROR: FIX component(0)
         const Hermes::Hermes2D::Mesh *mesh = Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh();
         Hermes::Hermes2D::ZeroSolution<double> solution(mesh);
+
+        m_linSolutionMeshView.free();
         m_linSolutionMeshView.process_solution(&solution);
     }
 }
@@ -95,11 +99,12 @@ void PostHermes::processSolutionMesh()
 void PostHermes::processOrder()
 {
     // init linearizer for order view
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showOrderView)
     {
         Agros2D::log()->printMessage(tr("MeshView"), tr("polynomial order"));
 
         // ERROR: FIX component(0)
+        m_orderView.free();
         m_orderView.process_space(Agros2D::scene()->activeMultiSolutionArray().spaces().at(0));
     }
 }
@@ -139,6 +144,7 @@ void PostHermes::processRangeContour()
             slnContourView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->contourVariable),
                                                                                           PhysicFieldVariableComp_Magnitude);
 
+        m_linContourView.free();
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
                                           paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
@@ -177,6 +183,7 @@ void PostHermes::processRangeScalar()
         Hermes::Hermes2D::Filter<double> *slnScalarView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->scalarVariable),
                                                                                                                        Agros2D::problem()->configView()->scalarVariableComp);
 
+        m_linScalarView.free();
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
                                          paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
@@ -224,6 +231,7 @@ void PostHermes::processRangeVector()
         Hermes::Hermes2D::Filter<double> *slnVectorYView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->vectorVariable),
                                                                                                                         PhysicFieldVariableComp_Y);
 
+        m_vecVectorView.free();
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
                                          Hermes::Hermes2D::Views::HERMES_EPS_LOW);

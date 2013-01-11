@@ -52,7 +52,6 @@ namespace Hermes
     template<typename Scalar>
     Function<Scalar>::~Function()
     {
-
     }
 
     template<typename Scalar>

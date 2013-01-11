@@ -1238,6 +1238,7 @@ void MainWindow::doSolve()
 
     // solve problem
     Agros2D::problem()->solve();
+    // Agros2D::problem()->solve();
     // Agros2D::problem()->clearFieldsAndConfig();
     // QApplication::exit();
 

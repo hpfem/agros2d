@@ -251,6 +251,11 @@ void Scene::createActions()
     actNewBoundary->setStatusTip(tr("New boundary condition"));
     connect(actNewBoundary, SIGNAL(triggered()), this, SLOT(doNewBoundary()));
 
+    // clear actions
+    foreach (QAction *action, actNewBoundaries.values())
+        delete action;
+    actNewBoundaries.clear();
+
     QMapIterator<QString, QString> iEdge(availableModules());
     while (iEdge.hasNext())
     {
@@ -266,12 +271,17 @@ void Scene::createActions()
     actNewMaterial->setStatusTip(tr("New material"));
     connect(actNewMaterial, SIGNAL(triggered()), this, SLOT(doNewMaterial()));
 
+    // clear actions
+    foreach (QAction *action, actNewMaterials.values())
+        delete action;
+    actNewMaterials.clear();
+
     QMapIterator<QString, QString> iLabel(availableModules());
     while (iLabel.hasNext())
     {
         iLabel.next();
 
-        NewMarkerAction* action = new NewMarkerAction(icon("scene-labelmarker"), this, iLabel.key());
+        NewMarkerAction *action = new NewMarkerAction(icon("scene-labelmarker"), this, iLabel.key());
         connect(action, SIGNAL(triggered(QString)), this, SLOT(doNewMaterial(QString)));
         actNewMaterials[iLabel.key()] = action;
     }
