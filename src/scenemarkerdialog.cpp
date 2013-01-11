@@ -306,7 +306,10 @@ void SceneFieldWidgetBoundary::load()
 
     // conditions
     for (int j = 0; j < conditions.count(); j++)
-        values.at(j)->setCondition(conditions.at(j));
+        if(values.at(j)->isEnabled())
+        {
+            values.at(j)->setCondition(conditions.at(j));
+        }
 }
 
 bool SceneFieldWidgetBoundary::save()

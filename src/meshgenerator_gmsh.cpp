@@ -279,6 +279,8 @@ bool MeshGeneratorGMSH::writeToGmsh()
     catch (AgrosMeshException& ame)
     {
         Agros2D::log()->printError(tr("GMSH"), ame.toString());
+        std::cout << "Missing Label";
+        return false;
     }
 
     QList<QList<LoopsNodeEdgeData> > loops = loopsInfo.loops;

@@ -309,6 +309,7 @@ bool Problem::mesh()
         catch (Hermes::Exceptions::Exception& e)
         {
             Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+            throw;
         }
     }
     delete meshGenerator;
@@ -485,7 +486,14 @@ void Problem::solve()
     if(Agros2D::configComputer()->saveMatrixRHS)
         Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
-    solveActionCatchExceptions(false);
+    try
+    {
+        solveActionCatchExceptions(false);
+    }
+    catch (AgrosSolverException)
+    {
+        return;
+    }
 
     solveFinished();
 }
@@ -547,7 +555,14 @@ void Problem::solveAction()
     Agros2D::scene()->setActiveTimeStep(0);
     Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
 
-    solveInit();
+    try
+    {
+        solveInit();
+    }
+    catch(AgrosException& e)
+    {
+        throw;
+    }
 
     assert(isMeshed());
 
@@ -656,7 +671,14 @@ void Problem::solveAdaptiveStepAction()
 {
     Agros2D::scene()->blockSignals(true);
 
-    solveInit();
+    try
+    {
+        solveInit();
+    }
+    catch(AgrosSolverException& e)
+    {
+        throw;
+    }
 
     assert(isMeshed());
 
@@ -725,21 +747,27 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
         else
             solveAction();
     }
+    // ToDo: Create better system of exceptions
     catch (Hermes::Exceptions::Exception& e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
-        return;
+        AgrosSolverException(e.what());
     }
     catch (Hermes::Exceptions::Exception* e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e->what()));
-        return;
+        throw;
     }
     catch (AgrosSolverException& e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/e.what());
-        return;
+        throw;
     }
+    catch (...)
+    {
+
+    }
+
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
     //                        catch (...)
     //                        {
