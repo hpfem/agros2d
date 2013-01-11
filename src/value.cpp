@@ -22,24 +22,23 @@
 #include "util/global.h"
 #include "gui/chart.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "datatable.h"
 #include "datatabledialog.h"
 #include "hermes2d/problem_config.h"
 
 Value::Value()
-    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(new DataTable())
+    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(DataTable())
 {
     setText("0");
 }
 
-Value::Value(FieldInfo *fieldInfo, const QString &value, DataTable *table)
+Value::Value(FieldInfo *fieldInfo, const QString &value, const DataTable &table)
     : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(table)
 {
     setText(value.isEmpty() ? "0" : value);
 }
 
 Value::Value(FieldInfo *fieldInfo, const QString &str, bool evaluateExpression)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(new DataTable())
+    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(DataTable())
 {
     fromString(str);
 
@@ -48,7 +47,7 @@ Value::Value(FieldInfo *fieldInfo, const QString &str, bool evaluateExpression)
 }
 
 Value::Value(const QString &str, bool evaluateExpression)
-    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(new DataTable())
+    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(DataTable())
 {
     fromString(str);
 
@@ -57,40 +56,40 @@ Value::Value(const QString &str, bool evaluateExpression)
 }
 
 Value::Value(double value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(NULL), m_isEvaluated(true), m_table(new DataTable())
+    : m_fieldInfo(NULL), m_isEvaluated(true), m_table(DataTable())
 {
     m_text = QString::number(value);
     m_number = value;
-    m_table->add(x, y);
+    m_table.add(x, y);
 }
 
 Value::Value(const QString &value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(new DataTable())
+    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(DataTable())
 {
     m_text = value;
     m_number = 0.0;
-    m_table->add(x, y);
+    m_table.add(x, y);
 }
 
 Value::Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(true), m_table(new DataTable())
+    : m_fieldInfo(fieldInfo), m_isEvaluated(true), m_table(DataTable())
 {
     m_text = QString::number(value);
     m_number = value;
-    m_table->add(x, y);
+    m_table.add(x, y);
 }
 
 Value::Value(FieldInfo *fieldInfo, const QString &value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(new DataTable())
+    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(DataTable())
 {
     m_text = value;
     m_number = 0.0;
-    m_table->add(x, y);
+    m_table.add(x, y);
 }
 
 Value::~Value()
 {
-    // delete m_table;
+    m_table.clear();
 }
 
 bool Value::hasExpression()
@@ -104,7 +103,7 @@ bool Value::hasTable() const
         if (m_fieldInfo->linearityType() == LinearityType_Linear)
             return false;
         else
-            return (m_table->size() > 0);
+            return (m_table.size() > 0);
     else
         return false;
 }
@@ -120,10 +119,10 @@ double Value::number()
 double Value::value(double key)
 {
     // TODO: fix if (!hasTable())
-    if (m_table->size() == 0)
+    if (m_table.size() == 0)
         return number();
     else
-        return m_table->valueSpline(key);
+        return m_table.value(key);
 }
 
 Hermes::Ord Value::value(Hermes::Ord key)
@@ -148,7 +147,7 @@ double Value::value(double time, const Point &point)
 double Value::derivative(double key)
 {
     if ((m_fieldInfo->linearityType() == LinearityType_Newton) && hasTable())
-        return m_table->derivativeSpline(key);
+        return m_table.derivative(key);
     else
         return 0.0;
 }
@@ -160,18 +159,15 @@ Hermes::Ord Value::derivative(Hermes::Ord key)
 
 QString Value::toString() const
 {
-    if (m_table->size() == 0)
+    if (m_table.size() == 0)
         return m_text;
     else
-        return m_text + ";" + QString::fromStdString(m_table->toString());
+        return m_text + ";" + m_table.toString();
 }
 
 void Value::fromString(const QString &str)
 {
-    if (m_table)
-        delete m_table;
-
-    m_table = new DataTable();
+    m_table.clear();
 
     if (str.contains(";"))
     {
@@ -179,7 +175,7 @@ void Value::fromString(const QString &str)
         QStringList lst = str.split(";");
         this->setText(lst.at(0));
 
-        m_table->fromString((lst.at(1) + ";" + lst.at(2)).toStdString());
+        m_table.fromString((lst.at(1) + ";" + lst.at(2)).toStdString());
     }
     else
     {
@@ -243,15 +239,12 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
 // ***********************************************************************************
 
 ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
-    : QWidget(parent), m_fieldInfo(NULL), m_hasTimeDep(hasTimeDep), m_hasNonlin(hasNonlin)
+    : QWidget(parent), m_fieldInfo(NULL), m_hasTimeDep(hasTimeDep), m_hasNonlin(hasNonlin),
+      m_minimum(-numeric_limits<double>::max()),
+      m_minimumSharp(-numeric_limits<double>::max()),
+      m_maximum(numeric_limits<double>::max()),
+      m_maximumSharp(numeric_limits<double>::max())
 {
-    m_minimum = -numeric_limits<double>::max();
-    m_minimumSharp = -numeric_limits<double>::max();
-    m_maximum = numeric_limits<double>::max();
-    m_maximumSharp = numeric_limits<double>::max();
-
-    m_table = new DataTable();
-
     // create controls
     txtLineEdit = new QLineEdit(this);
     txtLineEdit->setToolTip(tr("This textedit allows using variables."));
@@ -308,8 +301,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
 }
 
 ValueLineEdit::~ValueLineEdit()
-{
-    delete m_table;
+{  
 }
 
 void ValueLineEdit::setNumber(double value)
@@ -326,15 +318,14 @@ double ValueLineEdit::number()
         return 0.0;
 }
 
-void ValueLineEdit::setValue(Value value)
+void ValueLineEdit::setValue(const Value &value)
 {
     m_fieldInfo = value.fieldInfo();
 
     txtLineEdit->setText(value.text());
 
-    if (m_table)
-        delete m_table;
-    m_table = value.table()->copy();
+    m_table = DataTable(value.table().pointsVector(),
+                        value.table().valuesVector());
 
     setLayoutValue();
     evaluate();
@@ -342,14 +333,16 @@ void ValueLineEdit::setValue(Value value)
 
 Value ValueLineEdit::value()
 {
-    return Value(m_fieldInfo, txtLineEdit->text(), m_table->copy());
+    return Value(m_fieldInfo, txtLineEdit->text(),
+                 DataTable(m_table.pointsVector(),
+                           m_table.valuesVector()));
 }
 
 bool ValueLineEdit::evaluate(bool quiet)
 {
     bool isOk = false;
 
-    if (!m_hasNonlin || m_table->size() == 0)
+    if (!m_hasNonlin || m_table.size() == 0)
     {
         Value val = value();
 
@@ -447,12 +440,12 @@ void ValueLineEdit::setLayoutValue()
     btnDataTableDelete->setVisible(false);
     btnDataTableDialog->setVisible(false);
 
-    if ((!m_hasNonlin) || (m_hasNonlin && m_table->size() == 0))
+    if ((!m_hasNonlin) || (m_hasNonlin && m_table.size() == 0))
     {
         txtLineEdit->setVisible(true);
         lblValue->setVisible(true);
     }
-    if (m_hasNonlin && m_table->size() > 0)
+    if (m_hasNonlin && m_table.size() > 0)
     {
         if (!m_labelX.isEmpty() && !m_labelY.isEmpty())
             lblInfo->setText(tr("nonlinear %1(%2)").arg(m_labelY).arg(m_labelX));
@@ -499,7 +492,7 @@ void ValueLineEdit::doOpenValueTimeDialog()
 
 void ValueLineEdit::doOpenDataTableDelete()
 {
-    m_table->clear();
+    m_table.clear();
 
     setLayoutValue();
     evaluate();
@@ -508,7 +501,7 @@ void ValueLineEdit::doOpenDataTableDelete()
 void ValueLineEdit::doOpenDataTableDialog()
 {
     DataTableDialog dataTableDialog(this, m_labelX, m_labelY);
-    dataTableDialog.setTable(m_table);
+    dataTableDialog.setCubicSpline(m_table);
     if (dataTableDialog.exec() == QDialog::Accepted)
         m_table = dataTableDialog.table();
 

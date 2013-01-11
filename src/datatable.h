@@ -23,36 +23,21 @@
 #include "util.h"
 #include "spline.h"
 
-// data table row
-struct DataTableRow
-{
-    DataTableRow() : key(0.0), value(0.0), next(NULL) {}
-
-    double key;
-    double value;
-    DataTableRow *next;
-};
-
-class DataTable
+class DataTable : public Hermes::Hermes2D::CubicSpline
 {
 public:
     DataTable();
+    DataTable(Hermes::vector<double> points, Hermes::vector<double> values);
     DataTable(double key, double value);
     DataTable(double *keys, double *values, int count);
-    ~DataTable();
 
     void clear();
     void remove(double key);
 
-    void add(double key, double value, bool init = true);
+    void add(double key, double value, bool calculate);
     void add(double *keys, double *values, int count);
-    void add(vector<double> keys, vector<double> values);
-    void get(double *keys, double *values, double *derivatives);
-    DataTable *copy();
-
-    void initSpline();
-
-    inline DataTableRow *data() { return m_data; }
+    void add(Hermes::vector<double> points, Hermes::vector<double> values);
+    void add(vector<double> points, vector<double> values);
 
     int size();
 
@@ -61,30 +46,18 @@ public:
     double minValue();
     double maxValue();
 
-    double value(double key);
-    Hermes::Ord value(Hermes::Ord key);
+    inline Hermes::vector<double> pointsVector() { return points; }
+    inline Hermes::vector<double> valuesVector() { return values; }
 
-    double derivative(double key);
-    Hermes::Ord derivative(Hermes::Ord key);
-
-    double valueSpline(double key);
-    Hermes::Ord valueSpline(Hermes::Ord key);
-
-    double derivativeSpline(double key);
-    Hermes::Ord derivativeSpline(Hermes::Ord key);
-
-    std::string toString() const;
-    std::string toStringX() const;
-    std::string toStringY() const;
+    QString toString() const;
+    QString toStringX() const;
+    QString toStringY() const;
     void fromString(const std::string &str);
+    inline void fromString(const QString &str) { fromString(str.toStdString()); }
 
-    void print();
-    void save(const char *filename, double start, double end, int count);
+    // void save(const char *filename, double start, double end, int count);
 
 private:
-    DataTableRow *m_data;
-
-    Hermes::Hermes2D::CubicSpline *m_spline;
 };
 
 #endif // DATATABLE_H

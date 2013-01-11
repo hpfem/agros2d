@@ -26,14 +26,14 @@ namespace Hermes
       bool extrapolate_der_left, bool extrapolate_der_right) : Hermes::Hermes1DFunction<double>(), points(points), values(values),
       bc_left(bc_left), bc_right(bc_right), first_der_left(first_der_left),
       first_der_right(first_der_right), extrapolate_der_left(extrapolate_der_left),
-      extrapolate_der_right(extrapolate_der_right)
+      extrapolate_der_right(extrapolate_der_right), coeffs(NULL)
     {
       this->is_const = false;
       bool success = this->calculate_coeffs();
-      if(!success) throw Hermes::Exceptions::Exception("There was a problem constructing a cubic spline.");
+      // if(!success) throw Hermes::Exceptions::Exception("There was a problem constructing a cubic spline.");
     }
 
-    CubicSpline::CubicSpline(double const_value) : Hermes::Hermes1DFunction<double>(const_value)
+    CubicSpline::CubicSpline(double const_value) : Hermes::Hermes1DFunction<double>(const_value), coeffs(NULL)
     {
     }
 
@@ -244,6 +244,8 @@ namespace Hermes
       /* START COMPUTATION */
 
       // Initializing coefficient array.
+      if (coeffs)
+          delete coeffs;
       coeffs = new SplineCoeff[nelem];
 
       // Allocate matrix and rhs.

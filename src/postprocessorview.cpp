@@ -332,10 +332,6 @@ void PostprocessorWidget::createControls()
     btnOK = new QPushButton(tr("Apply"));
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch(1);
-    layoutButtons->addWidget(btnOK);
-
     m_chartWidget = new ChartControlsWidget(m_scenePost2D, m_sceneChart->chart(), this);
 
     basic = controlsBasic();

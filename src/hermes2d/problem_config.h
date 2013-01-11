@@ -60,7 +60,7 @@ public:
     inline int numConstantTimeSteps() const { return m_numConstantTimeSteps; }
     void setNumConstantTimeSteps(const int numConstantTimeSteps) { m_numConstantTimeSteps = numConstantTimeSteps; emit changed(); }
 
-    inline Value timeTotal() { return m_timeTotal; }
+    inline Value timeTotal() const { return m_timeTotal; }
     void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
 
     inline double constantTimeStepLength() { return m_timeTotal.number() / m_numConstantTimeSteps; }
@@ -73,7 +73,7 @@ public:
     int timeOrder() const { return m_timeOrder; }
     void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
 
-    inline Value timeMethodTolerance() { return m_timeMethodTolerance; }
+    inline Value timeMethodTolerance() const { return m_timeMethodTolerance; }
     void setTimeMethodTolerance(Value timeMethodTolerance) {m_timeMethodTolerance = timeMethodTolerance; }
 
     // matrix

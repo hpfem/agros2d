@@ -26,12 +26,10 @@
 #include "qwt_symbol.h"
 
 DataTableDialog::DataTableDialog(QWidget *parent, const QString &labelX, const QString &labelY)
-    : QDialog(parent), m_labelX(labelX), m_labelY(labelY)
+    : QDialog(parent), m_labelX(labelX), m_labelY(labelY), m_table(DataTable())
 {
     setWindowIcon(icon("scene-function"));
     setWindowTitle(tr("Data Table"));
-
-    m_table = new DataTable();
 
     createControls();
     load();
@@ -41,7 +39,6 @@ DataTableDialog::DataTableDialog(QWidget *parent, const QString &labelX, const Q
 
     QSettings settings;
     restoreGeometry(settings.value("DataTableDialog/Geometry", saveGeometry()).toByteArray());
-    chkInterpolation->setChecked(settings.value("DataTableDialog/Interpolation", true).toBool());
     chkDerivative->setChecked(settings.value("DataTableDialog/Derivative", false).toBool());
     chkMarkers->setChecked(settings.value("DataTableDialog/Markers", true).toBool());
 
@@ -52,30 +49,18 @@ DataTableDialog::~DataTableDialog()
 {
     QSettings settings;
     settings.setValue("DataTableDialog/Geometry", saveGeometry());
-    settings.setValue("DataTableDialog/Interpolation", chkInterpolation->isChecked());
     settings.setValue("DataTableDialog/Derivative", chkDerivative->isChecked());
     settings.setValue("DataTableDialog/Markers", chkMarkers->isChecked());
-
-    if (m_table)
-        delete m_table;
 }
 
-void DataTableDialog::setTable(const DataTable *table)
+void DataTableDialog::setCubicSpline(const DataTable &table)
 {
-    delete m_table;
+    m_table = table;
 
-    m_table = table->copy();
-
-    DataTableRow *data = m_table->data();
-    while (data)
+    for (int i = 0; i < table.pointsVector().size(); i++)
     {
-        DataTableRow *tmp = data;
-
-        lstX->appendPlainText(QString::number(tmp->key));
-        lstY->appendPlainText(QString::number(tmp->value));
-
-        // next row
-        data = data->next;
+        lstX->appendPlainText(QString::number(table.pointsVector().at(i)));
+        lstY->appendPlainText(QString::number(table.valuesVector().at(i)));
     }
 
     // plot
@@ -145,8 +130,8 @@ bool DataTableDialog::parseTable(bool addToTable)
 
     if (addToTable)
     {
-        m_table->clear();
-        m_table->add(keys, values, count);
+        m_table.clear();
+        m_table.add(keys, values, count);
     }
 
     delete [] keys;
@@ -208,17 +193,13 @@ void DataTableDialog::createControls()
     chkMarkers = new QCheckBox(tr("Show markers"));
     connect(chkMarkers, SIGNAL(clicked()), this, SLOT(doPlot()));
 
-    chkInterpolation = new QCheckBox(tr("Spline interpolation"));
-    connect(chkInterpolation, SIGNAL(clicked()), this, SLOT(doPlot()));
-
     chkDerivative = new QCheckBox(tr("Derivative chart"));
     connect(chkDerivative, SIGNAL(clicked()), this, SLOT(doShowDerivativeClicked()));
     doShowDerivativeClicked();
 
     QGridLayout *layoutSettings = new QGridLayout();
     layoutSettings->addWidget(chkMarkers, 3, 0, 1, 2);
-    layoutSettings->addWidget(chkInterpolation, 4, 0, 1, 2);
-    layoutSettings->addWidget(chkDerivative, 5, 0, 1, 2);
+    layoutSettings->addWidget(chkDerivative, 4, 0, 1, 2);
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(lblLabelX, 0, 0);
@@ -325,48 +306,38 @@ void DataTableDialog::doPlot()
     parseTable();
 
     // points
-    int count = m_table->size();
+    int count = m_table.size();
 
-    double *keys = new double[count];
-    double *values = new double[count];
-    double *derivatives = new double[count];
+    Hermes::vector<double> pointsVector = m_table.pointsVector();
+    Hermes::vector<double> valuesVector = m_table.valuesVector();
 
-    m_table->get(keys, values, derivatives);
+    double *keys = new double[pointsVector.size()];
+    double *values = new double[valuesVector.size()];
+    for (int i = 0; i < pointsVector.size(); i++)
+    {
+        keys[i] = pointsVector[i];
+        values[i] = valuesVector[i];
+    }
+
     chartValueCurveMarkers->setSamples(keys, values, count);
 
     delete [] keys;
     delete [] values;
-    delete [] derivatives;
 
     // interpolation
     int countSpline = count*1e3;
-    double dx = (m_table->maxKey() - m_table->minKey()) / (countSpline);
+    double dx = (m_table.maxKey() - m_table.minKey()) / (countSpline);
 
     double *keysSpline = new double[countSpline];
     double *valuesSpline = new double[countSpline];
     double *derivativesSpline = new double[countSpline];
 
-    if (chkInterpolation->isChecked())
+    // spline
+    for (int i = 0; i < countSpline; i++)
     {
-        // spline
-        for (int i = 0; i < countSpline; i++)
-        {
-            keysSpline[i] = m_table->minKey() + (i * dx);
-            // values[i] = m_table->value(keys[i]);
-            valuesSpline[i] = m_table->valueSpline(keysSpline[i]);
-            // derivatives[i] = m_table->derivative(keys[i]);
-            derivativesSpline[i] = m_table->derivativeSpline(keysSpline[i]);
-        }
-    }
-    else
-    {
-        // lines
-        for (int i = 0; i < countSpline; i++)
-        {
-            keysSpline[i] = m_table->minKey() + (i * dx);
-            valuesSpline[i] = m_table->value(keysSpline[i]);
-            derivativesSpline[i] = m_table->derivative(keysSpline[i]);
-        }
+        keysSpline[i] = m_table.minKey() + (i * dx);
+        valuesSpline[i] = m_table.value(keysSpline[i]);
+        derivativesSpline[i] = m_table.derivative(keysSpline[i]);
     }
 
     chartValue->setData(keysSpline, valuesSpline, countSpline);
@@ -422,7 +393,7 @@ void DataTableDialog::doReject()
     reject();
 }
 
-DataTable *DataTableDialog::table()
+DataTable DataTableDialog::table()
 {
-    return m_table->copy();
+    return m_table;
 }

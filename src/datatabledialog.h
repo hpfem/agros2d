@@ -34,8 +34,8 @@ public:
     DataTableDialog(QWidget *parent = 0, const QString &labelX = "x", const QString &labelY = "y");
     ~DataTableDialog();
 
-    DataTable *table();
-    void setTable(const DataTable *table);
+    DataTable table();
+    void setCubicSpline(const DataTable &table);
 
 private:
     // captions
@@ -43,7 +43,7 @@ private:
     QString m_labelY;
 
     // charts
-    DataTable *m_table;
+    DataTable m_table;
     Chart *chartValue;
     QwtPlotCurve *chartValueCurveMarkers;
     Chart *chartDerivative;
@@ -59,7 +59,6 @@ private:
     QLabel *lblInfoY;
     QLabel *lblInfoError;
 
-    QCheckBox *chkInterpolation;
     QCheckBox *chkDerivative;
     QCheckBox *chkMarkers;
 

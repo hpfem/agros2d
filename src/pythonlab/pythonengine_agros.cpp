@@ -332,14 +332,14 @@ QString createPythonFromModel()
                         variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
                                 arg(variable->id()).
                                 arg(value.text()).
-                                arg(QString::fromStdString(value.table()->toStringX())).
-                                arg(QString::fromStdString(value.table()->toStringY()));
+                                arg(value.table().toStringX()).
+                                arg(value.table().toStringY());
                     else
                         variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
                                 arg(variable->id()).
                                 arg(value.number()).
-                                arg(QString::fromStdString(value.table()->toStringX())).
-                                arg(QString::fromStdString(value.table()->toStringY()));
+                                arg(value.table().toStringX()).
+                                arg(value.table().toStringY());
                 }
                 else if (value.hasExpression())
                 {

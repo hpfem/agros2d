@@ -20,445 +20,199 @@
 #include "datatable.h"
 
 DataTable::DataTable()
-    : m_data(NULL), m_spline(NULL)
+    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
 {
+}
+
+DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> values)
+    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
+{
+    add(points, values);
 }
 
 DataTable::DataTable(double key, double value)
-    : m_data(NULL), m_spline(NULL)
+    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
 {
-    add(key, value, false);
-
-    initSpline();
+    add(key, value);
 }
 
 DataTable::DataTable(double *keys, double *values, int count)
-    : m_data(NULL), m_spline(NULL)
+    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
 {
     add(keys, values, count);
 }
 
-DataTable::~DataTable()
-{
-    clear();
-}
-
 void DataTable::clear()
 {
-    if (m_data)
-    {
-        DataTableRow *data = m_data;
-        while (data)
-        {
-            DataTableRow *tmp = data;
+    points.clear();
+    values.clear();
 
-            // next row
-            data = data->next;
-
-            delete tmp;
-        }
-
-        m_data = NULL;
-    }
-
-    if (m_spline)
-    {
-        delete m_spline;
-        m_spline = NULL;
-    }
+    this->calculate_coeffs();
 }
 
 void DataTable::remove(double key)
 {
-    DataTableRow *previous = NULL;
-    DataTableRow *data = m_data;
+    Hermes::vector<double>::iterator ip = points.begin();
+    Hermes::vector<double>::iterator iv = values.begin();
 
-    while (data)
+    while (ip != points.end())
     {
-        if (fabs(key - data->key) < EPS_ZERO)
+        if (fabs((*ip) - key) < EPS_ZERO)
         {
-            previous->next = data->next;
-            delete data;
+            ip = points.erase(ip);
+            iv = values.erase(iv);
 
-            return;
+            break;
         }
-
-        // previous row
-        previous = data;
-
-        // next row
-        data = data->next;
+        ++ip;
+        ++iv;
     }
 }
 
-void DataTable::add(double key, double value, bool init)
+void DataTable::add(double key, double value, bool calculate)
 {
-    DataTableRow *data = m_data;
+    Hermes::vector<double>::iterator ip = points.begin();
+    Hermes::vector<double>::iterator iv = values.begin();
 
     // first value
-    if ((m_data && key < m_data->key) || (!m_data))
+    if (key < (*ip))
     {
-        DataTableRow *tmp = new DataTableRow();
-
-        tmp->key = key;
-        tmp->value = value;
-        tmp->next = data;
-        m_data = tmp;
-
-        return;
+        points.insert(ip, key);
+        values.insert(iv, value);
     }
 
-    while (data)
+
+    while (ip != points.end())
     {
         // key already exists -> replace value
-        if (fabs(key - data->key) < EPS_ZERO)
+        if (((*ip) - key) < EPS_ZERO)
         {
-            data->key = key;
-            data->value = value;
-
+            (*iv) = value;
             break;
         }
 
-        // key inside
-        if (data->next && key > data->key && key < data->next->key)
-        {
-            DataTableRow *tmp = new DataTableRow();
-
-            tmp->key = key;
-            tmp->value = value;
-            tmp->next = data->next;
-            data->next = tmp;
-
-            break;
-        }
-
-        // last value
-        if (!data->next)
-        {
-            DataTableRow *tmp = new DataTableRow();
-
-            tmp->key = key;
-            tmp->value = value;
-            tmp->next = NULL;
-            data->next = tmp;
-
-            break;
-        }
-
-        // next value
-        data = data->next;
+        ++ip;
+        ++iv;
     }
 
-    if (init)
-        initSpline();
+    // last value
+    if (key > (*ip))
+    {
+        points.push_back(key);
+        values.push_back(value);
+    }
+
+    calculate_coeffs();
 }
 
 void DataTable::add(double *keys, double *values, int count)
 {
-    for (int i = 0; i<count; i++)
-        add(keys[i], values[i], false);
-
-    initSpline();
-}
-
-void DataTable::add(vector<double> keys, vector<double> values)
-{
-    for (int i = 0; i<keys.size(); i++)
-        add(keys[i], values[i], false);
-
-    initSpline();
-}
-
-void DataTable::get(double *keys, double *values, double *derivatives)
-{
-    DataTableRow *data = m_data;
-    int i = 0;
-    while (data)
+    for (int i = 0; i < count; i++)
     {
-        DataTableRow *tmp = data;
-
-        keys[i] = tmp->key;
-        values[i] = tmp->value;
-        derivatives[i] = derivative(tmp->key);
-
-        // next row
-        data = data->next;
-        i++;
-    }
-}
-
-DataTable *DataTable::copy()
-{
-    DataTable *table = new DataTable();
-
-    DataTableRow *data = m_data;
-    while (data)
-    {
-        DataTableRow *tmp = data;
-
-        table->add(tmp->key, tmp->value, false);
-
-        // next row
-        data = data->next;
+        this->points.push_back(keys[i]);
+        this->values.push_back(values[i]);
     }
 
-    table->initSpline();
-    return table;
+    calculate_coeffs();
 }
 
-void DataTable::initSpline()
+void DataTable::add(vector<double> points, vector<double> values)
 {
-    int length = size();
+    assert(points.size() == values.size());
 
-    if (length <= 1)
-        return;
-
-    if (m_spline)
-        delete m_spline;
-    m_spline = NULL;
-
-    // prepare data
-    Hermes::vector<double> points;
-    Hermes::vector<double> values;
-
-    DataTableRow *data = m_data;
-    while (data)
+    for (int i = 0; i < points.size(); i++)
     {
-        DataTableRow *tmp = data;
-
-        points.push_back(tmp->key);
-        values.push_back(tmp->value);
-
-        // next row
-        data = data->next;
+        this->points.push_back(points[i]);
+        this->values.push_back(values[i]);
     }
 
-    m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, false, false, false, false);
-    // m_spline = new Hermes::Hermes2D::CubicSpline(points, values, values.at(0), values.at(values.size() - 1), true, true, true, true);
-    // m_spline = new Hermes::Hermes2D::CubicSpline(points, values, 0, 0, true, true, false, false);
+    calculate_coeffs();
+}
+
+void DataTable::add(Hermes::vector<double> points, Hermes::vector<double> values)
+{
+    assert(points.size() == values.size());
+
+    this->points = points;
+    this->values = values;
+
+    calculate_coeffs();
 }
 
 int DataTable::size()
 {
-    int size = 0;
+    assert(points.size() == values.size());
 
-    DataTableRow *data = m_data;
-    while (data)
-    {
-        size++;
-
-        // next row
-        data = data->next;
-    }
-
-    return size;
+    return points.size();
 }
 
 double DataTable::minKey()
-{
-    if (m_data)
-        return m_data->key;
-    else
-        return 0.0;
+{   
+    double min = 0.0;
+    foreach (double point, points)
+        min = std::min(point, min);
+
+    return min;
 }
 
 double DataTable::maxKey()
 {
     double max = 0.0;
-
-    DataTableRow *data = m_data;
-    while (data)
-    {
-        max = data->key;
-
-        // next row
-        data = data->next;
-    }
+    foreach (double point, points)
+        max = std::max(point, max);
 
     return max;
 }
 
 double DataTable::minValue()
 {
-    if (m_data)
-        return m_data->value;
-    else
-        return 0.0;
+    double min = 0.0;
+    foreach (double value, values)
+        min = std::min(value, min);
+
+    return min;
 }
 
 double DataTable::maxValue()
 {
     double max = 0.0;
-
-    DataTableRow *data = m_data;
-    while (data)
-    {
-        max = data->value;
-
-        // next row
-        data = data->next;
-    }
+    foreach (double value, values)
+        max = std::max(value, max);
 
     return max;
 }
 
-double DataTable::value(double key)
-{
-    DataTableRow *data = m_data;
-
-    // just one row
-    if (!data->next)
-        return data->value;
-
-    // key < first value
-    if (key <= data->key)
-        return data->value;
-
-    while (data)
-    {
-        // key > last value
-        if (!data->next && key >= data->key)
-            return data->value;
-
-        // key
-        if (fabs(key - data->key) < EPS_ZERO)
-            return data->value;
-
-        // linear interpolation between two keys
-        if (data->next && key > data->key && key < data->next->key)
-        {
-            // std::cout << data->value + (key - data->key) / (data->next->key - data->key) * (data->next->value - data->value) << std::endl;
-            // std::cout << key << std::endl;
-            return data->value + (key - data->key) / (data->next->key - data->key) * (data->next->value - data->value);
-        }
-
-        // next row
-        data = data->next;
-    }
-}
-
-Hermes::Ord DataTable::value(Hermes::Ord key)
-{
-    return Hermes::Ord(1);
-}
-
-double DataTable::derivative(double key)
-{
-    DataTableRow *previous = NULL;
-    DataTableRow *data = m_data;
-
-    // just one row
-    if (!data->next)
-        return 0.0;
-
-    // key < first value
-    if (key <= data->key)
-        return 0.0; // (data->next->value - data->value) / (data->next->key - data->key);
-
-    while (data)
-    {
-        // key > last value
-        if (!data->next && key >= data->key)
-            return 0.0; // (data->value - previous->value) / (data->key - previous->key);
-
-        // key
-        if (data->next && fabs(key - data->key) < EPS_ZERO)
-            return (previous->value - data->next->value) / (previous->key - data->next->key);
-
-        // between two keys
-        if (data->next && key >= data->key && key < data->next->key)
-            return (data->next->value - data->value) / (data->next->key - data->key);
-
-        // previous row
-        previous = data;
-
-        // next row
-        data = data->next;
-    }
-}
-
-Hermes::Ord DataTable::derivative(Hermes::Ord key)
-{
-    return Hermes::Ord(1);
-}
-
-double DataTable::valueSpline(double key)
-{
-    if (m_data && m_data->next)
-        return m_spline->value(key);
-    else
-        return 0.0;
-}
-
-Hermes::Ord DataTable::valueSpline(Hermes::Ord key)
-{
-    return Hermes::Ord(1);
-}
-
-double DataTable::derivativeSpline(double key)
-{
-    if (m_data && m_data->next)
-    {
-        return m_spline->derivative(key);
-    }
-    else
-        return 0.0;
-}
-
-Hermes::Ord DataTable::derivativeSpline(Hermes::Ord key)
-{
-    return Hermes::Ord(1);
-}
-
-std::string DataTable::toString() const
+QString DataTable::toString() const
 {
     return (toStringX() + ";" + toStringY());
 }
 
-std::string DataTable::toStringX() const
+QString DataTable::toStringX() const
 {
-    std::string str_key;
+    QString str;
 
-    DataTableRow *data = m_data;
-    while (data)
+    for (int i = 0; i < points.size(); i++)
     {
-        std::ostringstream o_key;
-
-        o_key << data->key;
-        str_key += o_key.str();
-
-        // next row
-        data = data->next;
-
-        // separator
-        if (data)
-            str_key += ",";
+        str += QString::number(points[i]);
+        if (i < points.size() - 1)
+            str += ",";
     }
 
-    return str_key;
+    return str;
 }
 
-std::string DataTable::toStringY() const
+QString DataTable::toStringY() const
 {
-    std::string str_value;
+    QString str;
 
-    DataTableRow *data = m_data;
-    while (data)
+    for (int i = 0; i < values.size(); i++)
     {
-        std::ostringstream o_value;
-
-        o_value << data->value;
-        str_value += o_value.str();
-
-        // next row
-        data = data->next;
-
-        // separator
-        if (data)
-            str_value += ",";
+        str += QString::number(values[i]);
+        if (i < values.size() - 1)
+            str += ",";
     }
 
-    return str_value;
+    return str;
 }
 
 void DataTable::fromString(const std::string &str)
@@ -492,67 +246,12 @@ void DataTable::fromString(const std::string &str)
 
     // add to the array
     for (int i = 0; i < keys_double.size(); i++)
-        add(keys_double[i], values_double[i], false);
+        add(keys_double[i], values_double[i]);
 
-    initSpline();
+    calculate_coeffs();
 }
 
-void DataTable::print()
-{
-    DataTableRow *data = m_data;
-    while (data)
-    {
-        printf("%.14g\t%.14g", data->key, data->value);
-
-        // next row
-        data = data->next;
-    }
-}
-
-void DataTable::save(const char *filename, double start, double end, int count)
-{
-    FILE* f = fopen(filename, "w");
-    if (f == NULL) printf("Error writing to %s.", filename);
-
-    for (double val = start; val <= end; val += (end - start) / (count-1))
-    {
-        fprintf(f, "%.14g\t%.14g\t%.14g\n", val, value(val), derivative(val));
-    }
-
-    fclose(f);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void _assert(bool a)
-{
-    if (!a) throw std::runtime_error("Assertion failed.");
-}
-
+/*
 void test()
 {
     DataTable table;
@@ -598,3 +297,4 @@ void test()
 
     // table.print();
 }
+*/

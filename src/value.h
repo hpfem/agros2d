@@ -24,6 +24,8 @@
 #include "util/point.h"
 #include "hermes2d/module.h"
 
+#include "datatable.h"
+
 class QwtPlotCurve;
 class ChartBasic;
 class DataTable;
@@ -32,7 +34,7 @@ class FieldInfo;
 struct Value
 {
     Value();
-    Value(FieldInfo *fieldInfo, const QString &value, DataTable *m_table);
+    Value(FieldInfo *fieldInfo, const QString &value, const DataTable &m_table);
     Value(FieldInfo *fieldInfo, const QString &value, bool evaluateExpression = true);
     Value(const QString &value, bool evaluateExpression = true);
     Value(double value, std::vector<double> x, std::vector<double> y);
@@ -45,7 +47,7 @@ struct Value
 
     bool hasExpression();
 
-    DataTable *table() const { return m_table; }
+    inline DataTable table() const { return m_table; }
     bool hasTable() const;
 
     double value(double key = 0.0);
@@ -74,7 +76,7 @@ private:
     QString m_text;
     double m_number;
 
-    DataTable *m_table;
+    DataTable m_table;
 };
 
 // ****************************************************************************************************
@@ -91,7 +93,7 @@ public:
     void setNumber(double number);
 
     Value value();
-    void setValue(Value value);
+    void setValue(const Value &value);
 
     inline void setMinimum(double min) { m_minimum = min; }
     inline void setMinimumSharp(double min) { m_minimumSharp = min; }
@@ -129,7 +131,7 @@ private:
 
     bool m_hasTimeDep;
     bool m_hasNonlin;
-    DataTable *m_table;
+    DataTable m_table;
     QString m_labelX;
     QString m_labelY;
 
