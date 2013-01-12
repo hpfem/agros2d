@@ -98,6 +98,12 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 }
 
 template <typename Scalar>
+WeakFormAgros::~WeakFormAgros()
+{
+
+}
+
+template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* markerSource, Material *markerTarget,

@@ -1241,14 +1241,14 @@ void MainWindow::doSolve()
     try
     {
         Agros2D::problem()->solve();
+        // Agros2D::problem()->solve();
+        // Agros2D::problem()->clearFieldsAndConfig();
+        // QApplication::exit();
     }
     catch (AgrosSolverException &e)
     {
     }
 
-    // Agros2D::problem()->solve();
-    // Agros2D::problem()->clearFieldsAndConfig();
-    // QApplication::exit();
 
     if (Agros2D::problem()->isSolved())
     {
@@ -1261,8 +1261,8 @@ void MainWindow::doSolve()
         // raise postprocessor
         postprocessorWidget->raise();
 
-        // Agros2D::problem()->clearFieldsAndConfig();
-        // QApplication::exit();
+        Agros2D::problem()->clearFieldsAndConfig();
+        QApplication::exit();
 
         // successful run
         logDialog->close();
