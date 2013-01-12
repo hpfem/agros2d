@@ -52,7 +52,8 @@ void PyViewConfig::setActiveTimeStep(int timeStep)
         throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Agros2D::problem()->numTimeLevels()).toStdString());
 
     Agros2D::scene()->setActiveTimeStep(timeStep);
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
@@ -61,7 +62,8 @@ void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
         throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(Agros2D::scene()->activeViewField()->fieldId()).arg(Agros2D::scene()->activeViewField()->adaptivitySteps()).toStdString());
 
     Agros2D::scene()->setActiveAdaptivityStep(adaptivityStep);
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setActiveSolutionType(char* solutionType)
@@ -69,7 +71,8 @@ void PyViewConfig::setActiveSolutionType(char* solutionType)
     if (solutionTypeStringKeys().contains(QString(solutionType)))
     {
         Agros2D::scene()->setActiveSolutionType(solutionTypeFromStringKey(QString(solutionType)));
-        currentPythonEngineAgros()->postHermes()->refresh();
+        if (!silentMode())
+            currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
@@ -78,25 +81,29 @@ void PyViewConfig::setActiveSolutionType(char* solutionType)
 void PyViewConfig::setGridShow(bool show)
 {
     Agros2D::problem()->configView()->showGrid = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setGridStep(double step)
 {
     Agros2D::problem()->configView()->gridStep = step;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setAxesShow(bool show)
 {
     Agros2D::problem()->configView()->showAxes = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setRulersShow(bool show)
 {
     Agros2D::problem()->configView()->showRulers = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 // ****************************************************************************************************
@@ -111,31 +118,36 @@ void PyViewMesh::activate()
 void PyViewMesh::setInitialMeshViewShow(bool show)
 {
     Agros2D::problem()->configView()->showInitialMeshView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setSolutionMeshViewShow(bool show)
 {
     Agros2D::problem()->configView()->showSolutionMeshView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setOrderViewShow(bool show)
 {
     Agros2D::problem()->configView()->showOrderView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setOrderViewColorBar(bool show)
 {
     Agros2D::problem()->configView()->showOrderColorBar = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setOrderViewLabel(bool show)
 {
     Agros2D::problem()->configView()->orderLabel = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setOrderViewPalette(char* palette)
@@ -143,7 +155,8 @@ void PyViewMesh::setOrderViewPalette(char* palette)
     if (paletteOrderTypeStringKeys().contains(QString(palette)))
     {
         Agros2D::problem()->configView()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
-        currentPythonEngineAgros()->postHermes()->refresh();
+        if (!silentMode())
+            currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteOrderTypeStringKeys())).toStdString());
@@ -292,13 +305,15 @@ void PyViewPost2D::activate()
 void PyViewPost2D::setScalarViewShow(bool show)
 {
     Agros2D::problem()->configView()->showScalarView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setContourShow(bool show)
 {
     Agros2D::problem()->configView()->showContourView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setContourCount(int count)
@@ -306,7 +321,8 @@ void PyViewPost2D::setContourCount(int count)
     if (count >= CONTOURSCOUNTMIN && count <= CONTOURSCOUNTMAX)
     {
         Agros2D::problem()->configView()->contoursCount = count;
-        currentPythonEngineAgros()->postHermes()->refresh();
+        if (!silentMode())
+            currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
         throw invalid_argument(QObject::tr("Contour count must be in the range from %1 to %2.").arg(CONTOURSCOUNTMIN).arg(CONTOURSCOUNTMAX).toStdString());
@@ -324,7 +340,8 @@ void PyViewPost2D::setContourVariable(char* var)
             if (variable->id() == QString(var))
             {
                 Agros2D::problem()->configView()->contourVariable = QString(var);
-                currentPythonEngineAgros()->postHermes()->refresh();
+                if (!silentMode())
+                    currentPythonEngineAgros()->postHermes()->refresh();
                 return;
             }
         }
@@ -336,7 +353,8 @@ void PyViewPost2D::setContourVariable(char* var)
 void PyViewPost2D::setVectorShow(bool show)
 {
     Agros2D::problem()->configView()->showVectorView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setVectorCount(int count)
@@ -344,7 +362,8 @@ void PyViewPost2D::setVectorCount(int count)
     if (count >= VECTORSCOUNTMIN && count <= VECTORSCOUNTMAX)
     {
         Agros2D::problem()->configView()->vectorCount = count;
-        currentPythonEngineAgros()->postHermes()->refresh();
+        if (!silentMode())
+            currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
         throw invalid_argument(QObject::tr("Vector count must be in the range from %1 to %2.").arg(VECTORSCOUNTMIN).arg(VECTORSCOUNTMAX).toStdString());
@@ -355,7 +374,8 @@ void PyViewPost2D::setVectorScale(double scale)
     if (scale >= VECTORSSCALEMIN && scale <= VECTORSSCALEMAX)
     {
         Agros2D::problem()->configView()->vectorScale = scale;
-        currentPythonEngineAgros()->postHermes()->refresh();
+        if (!silentMode())
+            currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
         throw invalid_argument(QObject::tr("Vector scale must be in the range from %1 to %2.").arg(VECTORSSCALEMIN).arg(VECTORSSCALEMAX).toStdString());
@@ -370,7 +390,8 @@ void PyViewPost2D::setVectorVariable(char* var)
         if (variable->id() == QString(var))
         {
             Agros2D::problem()->configView()->vectorVariable = QString(var);
-            currentPythonEngineAgros()->postHermes()->refresh();
+            if (!silentMode())
+                currentPythonEngineAgros()->postHermes()->refresh();
             return;
         }
     }
@@ -381,19 +402,22 @@ void PyViewPost2D::setVectorVariable(char* var)
 void PyViewPost2D::setVectorProportional(bool show)
 {
     Agros2D::problem()->configView()->vectorProportional = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setVectorColor(bool show)
 {
     Agros2D::problem()->configView()->vectorColor = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setParticleShow(bool show)
 {
     Agros2D::problem()->configView()->showParticleView = show;
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 // ****************************************************************************************************
@@ -410,7 +434,8 @@ void PyViewPost3D::setPost3DMode(char* mode)
     if (sceneViewPost3DModeStringKeys().contains(QString(mode)))
     {
         Agros2D::problem()->configView()->showPost3D = sceneViewPost3DModeFromStringKey(QString(mode));
-        currentPythonEngineAgros()->postHermes()->refresh();
+        if (!silentMode())
+            currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(sceneViewPost3DModeStringKeys())).toStdString());
