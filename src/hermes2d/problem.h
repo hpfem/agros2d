@@ -130,9 +130,9 @@ private:
     bool skipThisTimeStep(Block* block);
 
     void solveInit();
+    void solve(bool adaptiveStepOnly, bool commandLine);
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions
-    void solveAction(); //called by solve, can throw SolverException
-    void solveFinished();
+    void solveAction(); // called by solve, can throw SolverException
 
     void solveAdaptiveStepAction();
     void stepMessage(Block* block);

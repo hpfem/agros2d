@@ -28,7 +28,7 @@ namespace Hermes
 
       void StateQueryable::check() const
       {
-        if(!this->isOkay())
+        if (!this->isOkay())
           {
             std::stringstream ss;
             ss << "The instance of " << this->getClassName() << " is not OK.";

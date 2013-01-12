@@ -36,8 +36,7 @@ namespace Hermes
       /// Destructor.
       virtual ~CubicSpline()
       {
-        if (coeffs != NULL)
-            delete [] coeffs;
+        coeffs.clear();
 
         points.clear();
         values.clear();
@@ -99,7 +98,7 @@ namespace Hermes
       double point_right, value_right, derivative_right;
 
       /// A set of four coefficients a, b, c, d for an elementary cubic spline.
-      SplineCoeff* coeffs;
+      Hermes::vector<SplineCoeff> coeffs;
 
       /// Gets derivative at a point that lies in interval 'm'.
       double get_derivative_from_interval(double x_in, int m) const;

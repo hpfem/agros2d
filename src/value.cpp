@@ -25,12 +25,6 @@
 #include "datatabledialog.h"
 #include "hermes2d/problem_config.h"
 
-Value::Value()
-    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(DataTable())
-{
-    setText("0");
-}
-
 Value::Value(FieldInfo *fieldInfo, const QString &value, const DataTable &table)
     : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(table)
 {
@@ -46,6 +40,13 @@ Value::Value(FieldInfo *fieldInfo, const QString &str, bool evaluateExpression)
         evaluate(true);
 }
 
+Value::Value(FieldInfo *fieldInfo, double value)
+    : m_fieldInfo(fieldInfo), m_isEvaluated(true), m_table(DataTable())
+{
+    m_text = QString::number(value);
+    m_number = value;
+}
+
 Value::Value(const QString &str, bool evaluateExpression)
     : m_fieldInfo(NULL), m_isEvaluated(false), m_table(DataTable())
 {
@@ -53,6 +54,13 @@ Value::Value(const QString &str, bool evaluateExpression)
 
     if (evaluateExpression)
         evaluate(true);
+}
+
+Value::Value(double value)
+    : m_fieldInfo(NULL), m_isEvaluated(true), m_table(DataTable())
+{
+    m_text = QString::number(value);
+    m_number = value;
 }
 
 Value::Value(double value, std::vector<double> x, std::vector<double> y)

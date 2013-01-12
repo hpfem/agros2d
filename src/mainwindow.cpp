@@ -54,6 +54,7 @@
 #include "scenetransformdialog.h"
 #include "chartdialog.h"
 #include "examplesdialog.h"
+#include "hermes2d/solver.h"
 
 #include "gl2ps/gl2ps.h"
 
@@ -1237,10 +1238,17 @@ void MainWindow::doSolve()
     logDialog->show();
 
     // solve problem
-    Agros2D::problem()->solve();
+    try
+    {
+        Agros2D::problem()->solve();
+    }
+    catch (AgrosSolverException &e)
+    {
+    }
+
     // Agros2D::problem()->solve();
-    Agros2D::problem()->clearFieldsAndConfig();
-    QApplication::exit();
+    // Agros2D::problem()->clearFieldsAndConfig();
+    // QApplication::exit();
 
     if (Agros2D::problem()->isSolved())
     {
@@ -1270,7 +1278,14 @@ void MainWindow::doSolveAdaptiveStep()
     logDialog->show();
 
     // solve problem
-    Agros2D::problem()->solveAdaptiveStep();
+    try
+    {
+        Agros2D::problem()->solveAdaptiveStep();
+    }
+    catch (AgrosSolverException &e)
+    {
+    }
+
     if (Agros2D::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();

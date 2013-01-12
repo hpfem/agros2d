@@ -65,8 +65,8 @@ void ProblemConfig::clear()
     // transient
     m_timeStepMethod = TimeStepMethod_BDFNumSteps;
     m_timeOrder = 2;
-    m_timeMethodTolerance = Value("0.1", false);
-    m_timeTotal = Value("1.0", false);
+    m_timeMethodTolerance = Value(0.1);
+    m_timeTotal = Value(1.0);
     m_numConstantTimeSteps = 10;
 }
 

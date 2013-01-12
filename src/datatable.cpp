@@ -217,6 +217,10 @@ QString DataTable::toStringY() const
 
 void DataTable::fromString(const std::string &str)
 {
+    // clear
+    points.clear();
+    values.clear();
+
     std::string::const_iterator pos = std::find(str.begin(), str.end(), ';');
 
     std::string str_keys(str.begin(), pos);
@@ -226,27 +230,23 @@ void DataTable::fromString(const std::string &str)
 
     // keys
     std::istringstream i_keys(str_keys);
-    std::vector<double> keys_double;
     while (i_keys >> number)
     {
-        keys_double.push_back(number);
+        points.push_back(number);
         if (i_keys.peek() == ',')
             i_keys.ignore();
     }
 
     // values
     std::istringstream i_values(str_values);
-    std::vector<double> values_double;
     while (i_values >> number)
     {
-        values_double.push_back(number);
+        values.push_back(number);
         if (i_values.peek() == ',')
             i_values.ignore();
     }
 
-    // add to the array
-    for (int i = 0; i < keys_double.size(); i++)
-        add(keys_double[i], values_double[i]);
+    assert(points.size() == values.size());
 
     calculate_coeffs();
 }

@@ -33,13 +33,14 @@ class FieldInfo;
 
 struct Value
 {
-    Value();
+    Value(double value = 0.0);
+    Value(double value, std::vector<double> x, std::vector<double> y);
+    Value(const QString &value, bool evaluateExpression = true);
+    Value(const QString &value, std::vector<double> x, std::vector<double> y);
+    Value(FieldInfo *fieldInfo, double value);
+    Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y);
     Value(FieldInfo *fieldInfo, const QString &value, const DataTable &m_table);
     Value(FieldInfo *fieldInfo, const QString &value, bool evaluateExpression = true);
-    Value(const QString &value, bool evaluateExpression = true);
-    Value(double value, std::vector<double> x, std::vector<double> y);
-    Value(const QString &value, std::vector<double> x, std::vector<double> y);
-    Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y);
     Value(FieldInfo *fieldInfo, const QString &value, std::vector<double> x, std::vector<double> y);
     ~Value();
 

@@ -165,8 +165,8 @@ void FieldInfo::clear()
     m_adaptivityTolerance = 1.0;
 
     // transient
-    m_initialCondition = Value("0.0", false);
-    m_timeSkip = Value("0.0", false);
+    m_initialCondition = Value(0.0);
+    m_timeSkip = Value(0.0);
 
     // linearity
     m_linearityType = LinearityType_Linear;

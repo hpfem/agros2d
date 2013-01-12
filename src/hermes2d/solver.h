@@ -51,10 +51,10 @@ template <typename Scalar>
 class HermesSolverContainer
 {
 public:
-    HermesSolverContainer(Block* block) : m_block(block) {}
+    HermesSolverContainer(Block* block) : m_block(block), m_slnVector(NULL) {}
     virtual ~HermesSolverContainer() {}
 
-    virtual Scalar *solve(Scalar* solutionVector) = 0;
+    virtual void solve(Scalar* solutionVector) = 0;
     virtual void projectPreviousSolution(Scalar* solutionVector,
                                          Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
                                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions) {}
@@ -64,11 +64,14 @@ public:
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
+    inline Scalar *slnVector() { return m_slnVector; }
+
     // solver factory
     static HermesSolverContainer<Scalar> *factory(Block* block);
 
 protected:
     Block* m_block;
+    Scalar *m_slnVector;
 };
 
 template <typename Scalar>
@@ -78,7 +81,7 @@ public:
     LinearSolverContainer(Block* block);
     ~LinearSolverContainer();
 
-    virtual Scalar *solve(Scalar* solutionVector);
+    void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_linearSolver; }
     virtual void setWeakFormulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
@@ -96,7 +99,7 @@ public:
     virtual void projectPreviousSolution(Scalar* solutionVector,
                                          Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
                                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
-    virtual Scalar *solve(Scalar* solutionVector);
+    virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_newtonSolver; }
     virtual void setWeakFormulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_newtonSolver->set_weak_formulation(wf); }
@@ -115,7 +118,7 @@ public:
     virtual void projectPreviousSolution(Scalar* solutionVector,
                                          Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
                                          Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
-    virtual Scalar *solve(Scalar* solutionVector);
+    virtual void solve(Scalar* solutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_picardSolver; }
     virtual void setWeakFormulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_picardSolver->set_weak_formulation(wf); }
