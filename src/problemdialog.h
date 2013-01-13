@@ -179,13 +179,16 @@ public slots:
     void refresh();
 
 private:
-    QActionGroup *actFieldsGroup;
-    QToolBar *tlbFields;
+    QGridLayout *layoutFields;
+    QButtonGroup *buttonBar;
+    QList<FieldInfo *> fields;
+    QList<QToolButton *> buttons;
+    QList<QLabel *> labels;
 
     void createControls();
 
 private slots:
-    void fieldDialog(QAction *action);
+    void fieldDialog(int index);
     void addField();
 };
 
@@ -233,8 +236,6 @@ private:
 
     void createActions();
     void createControls();
-    QWidget *createControlsGeneral();
-    QWidget *createControlsScriptAndDescription();
 
     void fillComboBox();
 
@@ -242,7 +243,6 @@ private slots:
     void transientChanged();
 
     void changedWithClear();
-    void changedWithoutClear();
 };
 
 #endif // PROBLEMDIALOG_H

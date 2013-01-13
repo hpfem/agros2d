@@ -557,14 +557,10 @@ FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
 
 void FieldsToobar::createControls()
 {
-    actFieldsGroup = new QActionGroup(this);
-    connect(actFieldsGroup, SIGNAL(triggered(QAction *)), this, SLOT(fieldDialog(QAction *)));
+    buttonBar = new QButtonGroup(this);
+    connect(buttonBar, SIGNAL(buttonClicked(int)), this, SLOT(fieldDialog(int)));
 
-    tlbFields = new QToolBar(this);
-    tlbFields->setIconSize(QSize(36, 36));
-    tlbFields->setOrientation(Qt::Horizontal);
-    tlbFields->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    tlbFields->setStyleSheet("QToolButton { font-size: 8pt; }");
+    layoutFields = new QGridLayout();
 
     // dialog buttons
     QPushButton *btnAddField = new QPushButton(tr("Add field")); // icon("tabadd")
@@ -575,8 +571,9 @@ void FieldsToobar::createControls()
     layoutButtons->addWidget(btnAddField);
 
     QVBoxLayout *layoutToolBar = new QVBoxLayout();
-    layoutToolBar->setContentsMargins(0, 1, 0, 0);
-    layoutToolBar->addWidget(tlbFields);
+    layoutToolBar->setContentsMargins(0, 2, 0, 1);
+    // layoutToolBar->addWidget(tlbFields);
+    layoutToolBar->addLayout(layoutFields);
     layoutToolBar->addLayout(layoutButtons);
     layoutToolBar->addStretch();
 
@@ -586,62 +583,67 @@ void FieldsToobar::createControls()
 void FieldsToobar::refresh()
 {
     // fields
-    tlbFields->clear();
-    actFieldsGroup->actions().clear();
+    buttonBar->buttons().clear();
+    fields.clear();
 
+    foreach (QToolButton *button, buttons)
+    {
+        layoutFields->removeWidget(button);
+        delete button;
+    }
+    buttons.clear();
+    foreach (QLabel *label, labels)
+    {
+        layoutFields->removeWidget(label);
+        delete label;
+    }
+    labels.clear();
+
+    int row = 0;
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        QString hint = tr("<h3>%1</h3>"
-                          "<table>").arg(fieldInfo->name());
-        hint += tr("<tr><td><b>Analysis:</b></td><td>%1</td></tr>"
-                   "<tr><td><b>Number of refinements:</b></td><td>%2</td></tr>"
-                   "<tr><td><b>Polynomial order:</b></td><td>%3</td></tr>")
+        QString hint = tr("<table>"
+                          "<tr><td><b>Analysis:</b></td><td>%1</td></tr>"
+                          "<tr><td><b>Solver:</b></td><td>%3</td></tr>"
+                          "<tr><td><b>Adaptivity:</b></td><td>%2</td></tr>"
+                          "<tr><td><b>Number of ref. / order:</b></td><td>%4 / %5</td></tr>"
+                          "</table>")
                 .arg(analysisTypeString(fieldInfo->analysisType()))
+                .arg(adaptivityTypeString(fieldInfo->adaptivityType()))
+                .arg(linearityTypeString(fieldInfo->linearityType()))
                 .arg(fieldInfo->numberOfRefinements())
                 .arg(fieldInfo->polynomialOrder());
 
-        // adaptivity
-        hint += tr("<tr><td><b>Adaptivity:</b></td><td>%1</td></tr>")
-                .arg(adaptivityTypeString(fieldInfo->adaptivityType()));
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
-        {
-            hint += tr("<tr><td><b>&nbsp;&nbsp;&nbsp;Steps:</b></td><td>%1</td></tr>"
-                       "<tr><td><b>&nbsp;&nbsp;&nbsp;Tolerance:</b></td><td>%2</td></tr>")
-                    .arg(fieldInfo->adaptivitySteps())
-                    .arg(fieldInfo->adaptivityTolerance());
-        }
+        QLabel *label = new QLabel(hint);
+        label->setStyleSheet("QLabel { font-size: 8.5pt; }");
 
-        // linearity
-        hint += tr("<tr><td><b>Solver:</b></td><td>%1</td></tr>")
-                .arg(linearityTypeString(fieldInfo->linearityType()));
-        if (fieldInfo->linearityType() != LinearityType_Linear)
-        {
-            hint += tr("<tr><td><b>&nbsp;&nbsp;&nbsp;Steps:</b></td><td>%1</td></tr>"
-                       "<tr><td><b>&nbsp;&nbsp;&nbsp;Tolerance:</b></td><td>%2</td></tr>")
-                    .arg(fieldInfo->nonlinearSteps())
-                    .arg(fieldInfo->nonlinearTolerance());
-        }
+        QToolButton *button = new QToolButton();
+        button->setMinimumWidth(120);
+        button->setText(fieldInfo->module() ? fieldInfo->name() : fieldInfo->fieldId());
+        button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        button->setStyleSheet("QToolButton { font-size: 8pt; }");
+        button->setIconSize(QSize(36, 36));
+        button->setIcon(icon("fields/" + fieldInfo->fieldId()));
 
-        hint += tr("</table>");
+        // add to layout
+        layoutFields->addWidget(button, row, 0);
+        layoutFields->addWidget(label, row, 1);
 
-        QAction *actField = new QAction(fieldInfo->module() ? fieldInfo->name() : fieldInfo->fieldId(), this);
-        actField->setIcon(icon("fields/" + fieldInfo->fieldId()));
-        actField->setData(fieldInfo->fieldId());
-        actField->setToolTip(hint);
+        // add to lists
+        buttonBar->addButton(button, row);
+        fields.append(fieldInfo);
+        buttons.append(button);
+        labels.append(label);
 
-        actFieldsGroup->addAction(actField);
-        tlbFields->addAction(actField);
+        row++;
     }
 
-    // spacing
-    QLabel *spacing = new QLabel;
-    spacing->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    tlbFields->addWidget(spacing);
+    repaint();
 }
 
-void FieldsToobar::fieldDialog(QAction *action)
+void FieldsToobar::fieldDialog(int index)
 {
-    FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(action->data().toString());
+    FieldInfo *fieldInfo = fields[index];
     if (fieldInfo)
     {
         FieldDialog fieldDialog(fieldInfo, this);
@@ -795,7 +797,7 @@ void ProblemWidget::createActions()
 void ProblemWidget::createControls()
 {
     // fields toolbar
-    fieldsToolbar = new FieldsToobar(this);
+    fieldsToolbar = new FieldsToobar();
     QVBoxLayout *layoutFields = new QVBoxLayout();
     layoutFields->addWidget(fieldsToolbar);
     layoutFields->addStretch();
@@ -803,39 +805,41 @@ void ProblemWidget::createControls()
     QGroupBox *grpFieldsToolbar = new QGroupBox(tr("Physical fields"));
     grpFieldsToolbar->setLayout(layoutFields);
 
-    // couplings
-    couplingsWidget = new CouplingsWidget(this);
-    connect(couplingsWidget, SIGNAL(changed()), couplingsWidget, SLOT(save()));
-
-    QVBoxLayout *layoutCouplings = new QVBoxLayout();
-    layoutCouplings->addWidget(couplingsWidget);
-
-    grpCouplings = new QGroupBox(tr("Couplings"));
-    grpCouplings->setLayout(layoutCouplings);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(createControlsGeneral());
-    layout->addWidget(grpFieldsToolbar);
-    layout->addWidget(grpCouplings);
-    layout->addStretch();
-
-    setLayout(layout);
-}
-
-QWidget *ProblemWidget::createControlsGeneral()
-{
     // problem
     cmbCoordinateType = new QComboBox();
     txtName = new QLineEdit("");
-
     // matrix solver
     cmbMatrixSolver = new QComboBox();
-
     // mesh type
     cmbMeshType = new QComboBox();
 
+    // general
+    QGridLayout *layoutGeneral = new QGridLayout();
+    layoutGeneral->setColumnMinimumWidth(0, minWidth);
+    layoutGeneral->setColumnStretch(1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layoutGeneral->addWidget(txtName, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Coordinate type:")), 1, 0);
+    layoutGeneral->addWidget(cmbCoordinateType, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 2, 0);
+    layoutGeneral->addWidget(cmbMatrixSolver, 2, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Mesh type:")), 3, 0);
+    layoutGeneral->addWidget(cmbMeshType, 3, 1);
+
+    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
+    grpGeneral->setLayout(layoutGeneral);
+
     // harmonic
     txtFrequency = new LineEditDouble();
+
+    // harmonic analysis
+    QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
+    layoutHarmonicAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutHarmonicAnalysis->addWidget(new QLabel(tr("Frequency (Hz):")), 0, 0);
+    layoutHarmonicAnalysis->addWidget(txtFrequency, 0, 1);
+
+    grpHarmonicAnalysis = new QGroupBox(tr("Harmonic analysis"));
+    grpHarmonicAnalysis->setLayout(layoutHarmonicAnalysis);
 
     // transient
     cmbTransientMethod = new QComboBox();
@@ -849,32 +853,6 @@ QWidget *ProblemWidget::createControlsGeneral()
     txtTransientSteps->setMaximum(10000);
     lblTransientTimeStep = new QLabel("0.0");
     lblTransientSteps = new QLabel(tr("Number of constant steps:"));
-
-    // fill combobox
-    fillComboBox();
-
-    // general
-    QGridLayout *layoutGeneral = new QGridLayout();
-    layoutGeneral->setColumnMinimumWidth(0, minWidth);
-    layoutGeneral->setColumnStretch(1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Coordinate type:")), 0, 0);
-    layoutGeneral->addWidget(cmbCoordinateType, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 1, 0);
-    layoutGeneral->addWidget(cmbMatrixSolver, 1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Mesh type:")), 2, 0);
-    layoutGeneral->addWidget(cmbMeshType, 2, 1);
-
-    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
-    grpGeneral->setLayout(layoutGeneral);
-
-    // harmonic analysis
-    QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
-    layoutHarmonicAnalysis->setColumnMinimumWidth(0, minWidth);
-    layoutHarmonicAnalysis->addWidget(new QLabel(tr("Frequency (Hz):")), 0, 0);
-    layoutHarmonicAnalysis->addWidget(txtFrequency, 0, 1);
-
-    grpHarmonicAnalysis = new QGroupBox(tr("Harmonic analysis"));
-    grpHarmonicAnalysis->setLayout(layoutHarmonicAnalysis);
 
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
@@ -896,27 +874,28 @@ QWidget *ProblemWidget::createControlsGeneral()
     grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
 
-    // both
-    QVBoxLayout *layoutPanel = new QVBoxLayout();
-    layoutPanel->addWidget(grpGeneral);
-    layoutPanel->addWidget(grpHarmonicAnalysis);
-    layoutPanel->addWidget(grpTransientAnalysis);
-    layoutPanel->addStretch();
+    // fill combobox
+    fillComboBox();
 
-    // name
-    QGridLayout *layoutName = new QGridLayout();
-    layoutName->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layoutName->addWidget(txtName, 0, 1);
+    // couplings
+    couplingsWidget = new CouplingsWidget(this);
+    connect(couplingsWidget, SIGNAL(changed()), couplingsWidget, SLOT(save()));
 
-    QVBoxLayout *layoutProblem = new QVBoxLayout();
-    layoutProblem->addLayout(layoutName);
-    layoutProblem->addLayout(layoutPanel);
-    layoutProblem->addStretch();
+    QVBoxLayout *layoutCouplings = new QVBoxLayout();
+    layoutCouplings->addWidget(couplingsWidget);
 
-    QWidget *widMain = new QWidget();
-    widMain->setLayout(layoutProblem);
+    grpCouplings = new QGroupBox(tr("Couplings"));
+    grpCouplings->setLayout(layoutCouplings);
 
-    return widMain;
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpGeneral);
+    layout->addWidget(grpFieldsToolbar);
+    layout->addWidget(grpCouplings);
+    layout->addWidget(grpHarmonicAnalysis);
+    layout->addWidget(grpTransientAnalysis);
+    layout->addStretch(1);
+
+    setLayout(layout);
 }
 
 void ProblemWidget::fillComboBox()
@@ -1004,8 +983,6 @@ void ProblemWidget::updateControls()
     transientChanged();
 
     // connect signals
-    // without clearing solution
-    connect(txtName, SIGNAL(editingFinished()), this, SLOT(changedWithoutClear()));
 
     // with clearing solution
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
