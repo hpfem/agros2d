@@ -28,6 +28,7 @@ class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
 class LineEditDouble;
+class ScriptEditor;
 
 class SettingsWidget : public QWidget
 {
@@ -107,13 +108,20 @@ private:
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentGmsh;
 
+    // script and description
+    // startup script
+    ScriptEditor *txtStartupScript;
+    QLabel *lblStartupScriptError;
+    // description
+    QTextEdit *txtDescription;
+
     QPushButton *btnOK;
 
     void createActions();
 
     void createControls();
+    QWidget *controlsControlsScriptAndDescription();
     QWidget *controlsWorkspace();
-    QWidget *controlsAdvanced();
     QWidget *controlsMeshAndSolver();
     QWidget *controlsColors();
 
@@ -130,9 +138,9 @@ public slots:
 private slots:
     void doWorkspaceDefault();
     void doMeshAndSolverDefault();
-    void doAdvancedDefault();
     void doColorsDefault();
     void doShowGridChanged();
+    void doStartupScriptChanged();
     void doStrategyChanged(int index);
 };
 

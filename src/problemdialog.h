@@ -25,7 +25,6 @@
 class ProblemConfig;
 class FieldInfo;
 class CouplingInfo;
-class ScriptEditor;
 
 class LineEditDouble;
 class ValueLineEdit;
@@ -229,13 +228,6 @@ private:
     QComboBox *cmbTransientMethod;
     QLabel *lblTransientTimeStep;
 
-    // startup script
-    ScriptEditor *txtStartupScript;
-    QLabel *lblStartupScriptError;
-
-    // description
-    QTextEdit *txtDescription;
-
     // couplings
     QGroupBox *grpCouplings;
 
@@ -248,7 +240,6 @@ private:
 
 private slots:
     void transientChanged();
-    void startupScriptChanged();
 
     void changedWithClear();
     void changedWithoutClear();

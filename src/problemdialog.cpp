@@ -794,11 +794,6 @@ void ProblemWidget::createActions()
 
 void ProblemWidget::createControls()
 {
-    // tab
-    QTabWidget *tabType = new QTabWidget();
-    tabType->addTab(createControlsGeneral(), icon(""), tr("General"));
-    tabType->addTab(createControlsScriptAndDescription(), icon(""), tr("Script and description"));
-
     // fields toolbar
     fieldsToolbar = new FieldsToobar(this);
     QVBoxLayout *layoutFields = new QVBoxLayout();
@@ -819,7 +814,7 @@ void ProblemWidget::createControls()
     grpCouplings->setLayout(layoutCouplings);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tabType);
+    layout->addWidget(createControlsGeneral());
     layout->addWidget(grpFieldsToolbar);
     layout->addWidget(grpCouplings);
     layout->addStretch();
@@ -924,45 +919,6 @@ QWidget *ProblemWidget::createControlsGeneral()
     return widMain;
 }
 
-QWidget *ProblemWidget::createControlsScriptAndDescription()
-{
-    // startup script
-    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
-    lblStartupScriptError = new QLabel();
-
-    QPalette palette = lblStartupScriptError->palette();
-    palette.setColor(QPalette::WindowText, QColor(Qt::red));
-    lblStartupScriptError->setPalette(palette);
-
-    QVBoxLayout *layoutStartup = new QVBoxLayout();
-    layoutStartup->addWidget(txtStartupScript);
-    layoutStartup->addWidget(lblStartupScriptError);
-
-    QGroupBox *grpStartup = new QGroupBox(tr("Startup script"));
-    grpStartup->setLayout(layoutStartup);
-
-    // description
-    txtDescription = new QTextEdit(this);
-    txtDescription->setAcceptRichText(false);
-
-    QVBoxLayout *layoutDescription = new QVBoxLayout();
-    layoutDescription->addWidget(txtDescription);
-
-    QGroupBox *grpDescription = new QGroupBox(tr("Description"));
-    grpDescription->setLayout(layoutDescription);
-
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpStartup, 2);
-    layout->addWidget(grpDescription, 1);
-    layout->addStretch();
-
-    QWidget *widget = new QWidget();
-    widget->setLayout(layout);
-
-    return widget;
-}
-
 void ProblemWidget::fillComboBox()
 {
     cmbCoordinateType->clear();
@@ -995,7 +951,6 @@ void ProblemWidget::updateControls()
     // disconnect signals
     // without clearing solution
     txtName->disconnect();
-    txtDescription->disconnect();
 
     // with clearing solution
     cmbCoordinateType->disconnect();
@@ -1010,8 +965,6 @@ void ProblemWidget::updateControls()
     txtTransientTimeTotal->disconnect();
     txtTransientTolerance->disconnect();
     txtTransientSteps->disconnect();
-
-    txtStartupScript->disconnect();
 
     // main
     txtName->setText(Agros2D::problem()->config()->name());
@@ -1042,12 +995,6 @@ void ProblemWidget::updateControls()
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Agros2D::problem()->config()->matrixSolver()));
 
-    // startup
-    txtStartupScript->setPlainText(Agros2D::problem()->config()->startupscript());
-
-    // description
-    txtDescription->setPlainText(Agros2D::problem()->config()->description());
-
     // couplings
     fieldsToolbar->refresh();
     couplingsWidget->refresh();
@@ -1059,7 +1006,6 @@ void ProblemWidget::updateControls()
     // connect signals
     // without clearing solution
     connect(txtName, SIGNAL(editingFinished()), this, SLOT(changedWithoutClear()));
-    connect(txtDescription, SIGNAL(textChanged()), this, SLOT(changedWithoutClear()));
 
     // with clearing solution
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
@@ -1074,9 +1020,6 @@ void ProblemWidget::updateControls()
     connect(txtTransientTolerance, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
     connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
 
-    connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(startupScriptChanged()));
-    connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(changedWithClear()));
-
     // transient
     connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
     connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
@@ -1084,22 +1027,8 @@ void ProblemWidget::updateControls()
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
 }
 
-void ProblemWidget::changedWithoutClear()
-{
-    Agros2D::problem()->config()->setName(txtName->text());
-    Agros2D::problem()->config()->setDescription(txtDescription->toPlainText());
-}
-
 void ProblemWidget::changedWithClear()
 {
-    // run and check startup script
-    if (!txtStartupScript->toPlainText().isEmpty())
-    {
-        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
-        if (scriptResult.isError)
-            return;
-    }
-
     // save properties
     Agros2D::problem()->config()->blockSignals(true);
 
@@ -1117,9 +1046,6 @@ void ProblemWidget::changedWithClear()
     // matrix solver
     Agros2D::problem()->config()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
 
-    // script
-    Agros2D::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
-
     // save couplings
     couplingsWidget->save();
 
@@ -1127,19 +1053,6 @@ void ProblemWidget::changedWithClear()
     Agros2D::problem()->config()->refresh();
 
     emit changed();
-}
-
-void ProblemWidget::startupScriptChanged()
-{
-    lblStartupScriptError->clear();
-
-    // run and check startup script
-    if (!txtStartupScript->toPlainText().isEmpty())
-    {
-        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
-        if (scriptResult.isError)
-            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(scriptResult.text));
-    }
 }
 
 void ProblemWidget::transientChanged()

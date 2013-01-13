@@ -76,6 +76,10 @@ void SettingsWidget::load()
     txtGeometryEdgeWidth->setValue(Agros2D::problem()->configView()->edgeWidth);
     txtGeometryLabelSize->setValue(Agros2D::problem()->configView()->labelSize);
 
+    // script and description
+    txtDescription->setPlainText(Agros2D::problem()->config()->description());
+    txtStartupScript->setPlainText(Agros2D::problem()->config()->startupscript());
+
     // 3d
     chkView3DLighting->setChecked(Agros2D::problem()->configView()->scalarView3DLighting);
     txtView3DAngle->setValue(Agros2D::problem()->configView()->scalarView3DAngle);
@@ -123,6 +127,14 @@ void SettingsWidget::load()
 
 void SettingsWidget::save()
 {
+    // run and check startup script
+    if (!txtStartupScript->toPlainText().isEmpty())
+    {
+        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        if (scriptResult.isError)
+            return;
+    }
+
     // workspace
     Agros2D::problem()->configView()->showGrid = chkShowGrid->isChecked();
     Agros2D::problem()->configView()->gridStep = txtGridStep->text().toDouble();
@@ -139,6 +151,10 @@ void SettingsWidget::save()
     Agros2D::problem()->configView()->nodeSize = txtGeometryNodeSize->value();
     Agros2D::problem()->configView()->edgeWidth = txtGeometryEdgeWidth->value();
     Agros2D::problem()->configView()->labelSize = txtGeometryLabelSize->value();
+
+    // script and description
+    Agros2D::problem()->config()->setDescription(txtDescription->toPlainText());
+    Agros2D::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
 
     // 3d
     Agros2D::problem()->configView()->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -190,14 +206,14 @@ void SettingsWidget::createControls()
     QWidget *workspace = controlsWorkspace();
     QWidget *colors = controlsColors();
     QWidget *meshAndSolver = controlsMeshAndSolver();
-    QWidget *advanced = controlsAdvanced();
+    QWidget *descriptionAndScript = controlsControlsScriptAndDescription();
 
     // tab widget
     QToolBox *tbxWorkspace = new QToolBox();
     tbxWorkspace->addItem(workspace, icon(""), tr("Workspace"));
+    tbxWorkspace->addItem(descriptionAndScript, icon(""), tr("Script and description"));
     tbxWorkspace->addItem(colors, icon(""), tr("Colors"));
     tbxWorkspace->addItem(meshAndSolver, icon(""), tr("Mesh and Solver"));
-    tbxWorkspace->addItem(advanced, icon(""), tr("Advanced"));
 
     // layout workspace
     QVBoxLayout *layout = new QVBoxLayout();
@@ -225,6 +241,46 @@ void SettingsWidget::createControls()
     setLayout(layoutMain);
 }
 
+QWidget *SettingsWidget::controlsControlsScriptAndDescription()
+{
+    // startup script
+    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);   
+    connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(doStartupScriptChanged()));
+    lblStartupScriptError = new QLabel();
+
+    QPalette palette = lblStartupScriptError->palette();
+    palette.setColor(QPalette::WindowText, QColor(Qt::red));
+    lblStartupScriptError->setPalette(palette);
+
+    QVBoxLayout *layoutStartup = new QVBoxLayout();
+    layoutStartup->addWidget(txtStartupScript);
+    layoutStartup->addWidget(lblStartupScriptError);
+
+    QGroupBox *grpStartup = new QGroupBox(tr("Startup script"));
+    grpStartup->setLayout(layoutStartup);
+
+    // description
+    txtDescription = new QTextEdit(this);
+    txtDescription->setAcceptRichText(false);
+
+    QVBoxLayout *layoutDescription = new QVBoxLayout();
+    layoutDescription->addWidget(txtDescription);
+
+    QGroupBox *grpDescription = new QGroupBox(tr("Description"));
+    grpDescription->setLayout(layoutDescription);
+
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpStartup, 2);
+    layout->addWidget(grpDescription, 1);
+    layout->addStretch();
+
+    QWidget *widget = new QWidget();
+    widget->setLayout(layout);
+
+    return widget;
+}
+
 QWidget *SettingsWidget::controlsWorkspace()
 {
     // workspace
@@ -233,14 +289,18 @@ QWidget *SettingsWidget::controlsWorkspace()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));   
+    chkShowRulers = new QCheckBox(tr("Show rulers"));
+    chkShowAxes = new QCheckBox(tr("Show axes"));
 
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
-    layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
-    layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
-    layoutGrid->addWidget(chkZoomToMouse, 3, 0, 1, 2);
+    layoutGrid->addWidget(chkShowGrid, 1, 0);
+    layoutGrid->addWidget(chkShowAxes, 2, 0);
+    layoutGrid->addWidget(chkShowRulers, 3, 0);
+    layoutGrid->addWidget(chkSnapToGrid, 1, 1);
+    layoutGrid->addWidget(chkZoomToMouse, 2, 1);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
@@ -281,36 +341,6 @@ QWidget *SettingsWidget::controlsWorkspace()
     QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
     grpGeometry->setLayout(layoutGeometry);
 
-    // other
-    chkShowRulers = new QCheckBox(tr("Show rulers"));
-    chkShowAxes = new QCheckBox(tr("Show axes"));
-
-    QVBoxLayout *layoutOther = new QVBoxLayout();
-    layoutOther->addWidget(chkShowAxes);
-    layoutOther->addWidget(chkShowRulers);
-
-    QGroupBox *grpOther = new QGroupBox(tr("Other"));
-    grpOther->setLayout(layoutOther);
-
-    QPushButton *btnWorkspaceDefault = new QPushButton(tr("Default"));
-    connect(btnWorkspaceDefault, SIGNAL(clicked()), this, SLOT(doWorkspaceDefault()));
-
-    QVBoxLayout *layoutWorkspace = new QVBoxLayout();
-    layoutWorkspace->addWidget(grpGrid);
-    layoutWorkspace->addWidget(grpFont);
-    layoutWorkspace->addWidget(grpGeometry);
-    layoutWorkspace->addWidget(grpOther);
-    layoutWorkspace->addStretch();
-    layoutWorkspace->addWidget(btnWorkspaceDefault, 0, Qt::AlignLeft);
-
-    QWidget *workspaceWidget = new QWidget();
-    workspaceWidget->setLayout(layoutWorkspace);
-
-    return workspaceWidget;
-}
-
-QWidget *SettingsWidget::controlsAdvanced()
-{
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
     txtView3DAngle = new QDoubleSpinBox(this);
@@ -333,7 +363,7 @@ QWidget *SettingsWidget::controlsAdvanced()
     layout3D->addWidget(new QLabel(tr("Height:")), 1, 1);
     layout3D->addWidget(txtView3DHeight, 1, 2);
     layout3D->addWidget(chkView3DBackground, 1, 3);
-    layout3D->addWidget(chkView3DBoundingBox, 2, 1, 1, 2);
+    layout3D->addWidget(chkView3DBoundingBox, 2, 3);
 
     QGroupBox *grp3D = new QGroupBox(tr("3D view"));
     grp3D->setLayout(layout3D);
@@ -345,26 +375,28 @@ QWidget *SettingsWidget::controlsAdvanced()
 
     QGridLayout *layoutDeformShape = new QGridLayout();
     layoutDeformShape->addWidget(chkDeformScalar, 0, 0);
-    layoutDeformShape->addWidget(chkDeformContour, 1, 0);
-    layoutDeformShape->addWidget(chkDeformVector, 2, 0);
+    layoutDeformShape->addWidget(chkDeformContour, 0, 1);
+    layoutDeformShape->addWidget(chkDeformVector, 0, 2);
 
     QGroupBox *grpDeformShape = new QGroupBox(tr("Deform shape"));
     grpDeformShape->setLayout(layoutDeformShape);
 
-    QPushButton *btnAdvancedDefault = new QPushButton(tr("Default"));
-    connect(btnAdvancedDefault, SIGNAL(clicked()), this, SLOT(doAdvancedDefault()));
+    QPushButton *btnWorkspaceDefault = new QPushButton(tr("Default"));
+    connect(btnWorkspaceDefault, SIGNAL(clicked()), this, SLOT(doWorkspaceDefault()));
 
-    // layout postprocessor
-    QVBoxLayout *layoutAdvanced = new QVBoxLayout();
-    layoutAdvanced->addWidget(grp3D);
-    layoutAdvanced->addWidget(grpDeformShape);
-    layoutAdvanced->addStretch();
-    layoutAdvanced->addWidget(btnAdvancedDefault, 0, Qt::AlignLeft);
+    QVBoxLayout *layoutWorkspace = new QVBoxLayout();
+    layoutWorkspace->addWidget(grpGrid);
+    layoutWorkspace->addWidget(grpFont);
+    layoutWorkspace->addWidget(grpGeometry);
+    layoutWorkspace->addWidget(grp3D);
+    layoutWorkspace->addWidget(grpDeformShape);
+    layoutWorkspace->addStretch();
+    layoutWorkspace->addWidget(btnWorkspaceDefault, 0, Qt::AlignLeft);
 
-    QWidget *advancedWidget = new QWidget(this);
-    advancedWidget->setLayout(layoutAdvanced);
+    QWidget *workspaceWidget = new QWidget();
+    workspaceWidget->setLayout(layoutWorkspace);
 
-    return advancedWidget;
+    return workspaceWidget;
 }
 
 QWidget *SettingsWidget::controlsMeshAndSolver()
@@ -607,6 +639,15 @@ void SettingsWidget::doWorkspaceDefault()
     txtGeometryNodeSize->setValue(GEOMETRYNODESIZE);
     txtGeometryEdgeWidth->setValue(GEOMETRYEDGEWIDTH);
     txtGeometryLabelSize->setValue(GEOMETRYLABELSIZE);
+
+    chkView3DLighting->setChecked(VIEW3DLIGHTING);
+    txtView3DAngle->setValue(VIEW3DANGLE);
+    chkView3DBackground->setChecked(VIEW3DBACKGROUND);
+    txtView3DHeight->setValue(VIEW3DHEIGHT);
+
+    chkDeformScalar->setChecked(DEFORMSCALAR);
+    chkDeformContour->setChecked(DEFORMCONTOUR);
+    chkDeformVector->setChecked(DEFORMVECTOR);
 }
 
 void SettingsWidget::doMeshAndSolverDefault()
@@ -625,18 +666,6 @@ void SettingsWidget::doMeshAndSolverDefault()
 
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentGmsh->setText(COMMANDS_GMSH);
-}
-
-void SettingsWidget::doAdvancedDefault()
-{
-    chkView3DLighting->setChecked(VIEW3DLIGHTING);
-    txtView3DAngle->setValue(VIEW3DANGLE);
-    chkView3DBackground->setChecked(VIEW3DBACKGROUND);
-    txtView3DHeight->setValue(VIEW3DHEIGHT);
-
-    chkDeformScalar->setChecked(DEFORMSCALAR);
-    chkDeformContour->setChecked(DEFORMCONTOUR);
-    chkDeformVector->setChecked(DEFORMVECTOR);
 }
 
 void SettingsWidget::doColorsDefault()
@@ -658,6 +687,21 @@ void SettingsWidget::doColorsDefault()
 void SettingsWidget::doShowGridChanged()
 {
     chkSnapToGrid->setEnabled(chkShowGrid->isChecked());
+}
+
+void SettingsWidget::doStartupScriptChanged()
+{
+    lblStartupScriptError->clear();
+
+    // run and check startup script
+    if (!txtStartupScript->toPlainText().isEmpty())
+    {
+        currentPythonEngineAgros()->blockSignals(true);
+        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        currentPythonEngineAgros()->blockSignals(false);
+        if (scriptResult.isError)
+            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(scriptResult.text));
+    }
 }
 
 // *******************************************************************************************************
