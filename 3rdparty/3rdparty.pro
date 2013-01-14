@@ -78,13 +78,19 @@ win32-msvc2010 {
     CONFIG += staticlib
     TARGET = ../../libs/agros2d_3rdparty
 
-    QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
+    # /openmp
+    QMAKE_CXXFLAGS += /MP /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     INCLUDEPATH += ctemplate
     INCLUDEPATH += ctemplate/windows
+    INCLUDEPATH += c:/hpfem/hermes/dependencies/include
+    INCLUDEPATH += d:/hpfem/hermes/dependencies/include
+
+    LIBS += -Lc:/hpfem/hermes/dependencies/lib
+    LIBS += -Ld:/hpfem/hermes/dependencies/lib
 
     SOURCES += ctemplate/windows/port.cc
 }

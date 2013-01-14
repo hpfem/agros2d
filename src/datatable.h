@@ -39,7 +39,7 @@ public:
     void add(Hermes::vector<double> points, Hermes::vector<double> values);
     void add(vector<double> points, vector<double> values);
 
-    int size();
+    int size() const;
 
     double minKey();
     double maxKey();

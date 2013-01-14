@@ -53,7 +53,7 @@ DataTableDialog::~DataTableDialog()
     settings.setValue("DataTableDialog/Markers", chkMarkers->isChecked());
 }
 
-void DataTableDialog::setCubicSpline(const DataTable &table)
+void DataTableDialog::setCubicSpline(DataTable table)
 {
     m_table = table;
 

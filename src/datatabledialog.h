@@ -35,7 +35,7 @@ public:
     ~DataTableDialog();
 
     DataTable table();
-    void setCubicSpline(const DataTable &table);
+    void setCubicSpline(DataTable table);
 
 private:
     // captions

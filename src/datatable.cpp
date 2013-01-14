@@ -139,7 +139,7 @@ void DataTable::add(Hermes::vector<double> points, Hermes::vector<double> values
     calculate_coeffs();
 }
 
-int DataTable::size()
+int DataTable::size() const
 {
     assert(points.size() == values.size());
 

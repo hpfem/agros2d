@@ -104,7 +104,7 @@ void Agros2D::loadActivePlugins()
         Agros2D::loadPlugin(plugin);
 }
 
-static void Agros2D::loadPlugin(const QString &plugin)
+void Agros2D::loadPlugin(const QString &plugin)
 {
     QPluginLoader *loader = NULL;
 
