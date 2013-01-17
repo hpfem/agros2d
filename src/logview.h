@@ -59,7 +59,6 @@ private slots:
     void printWarning(const QString &module, const QString &message, bool escaped = true);
     void printDebug(const QString &module, const QString &message, bool escaped = true);
 
-
     void showTimestamp();
     void showDebug();
 
@@ -85,7 +84,7 @@ public:
     LogView(QWidget *parent = 0);
 
 private:
-     LogWidget *logWidget;
+     LogWidget *logWidget;     
 };
 
 class LogDialog : public QDialog
@@ -98,6 +97,8 @@ public:
 private:
      LogWidget *logWidget;
 
+     QLabel *memoryLabel;
+
      QwtPlotCurve *m_curve;
      ChartBasic *m_chart;
      QList<double> m_chartStep;
@@ -107,6 +108,7 @@ private:
 
 private slots:
      void printMessage(const QString &module, const QString &message, bool escaped = true);
+     void refreshStatus();
 };
 
 class LogStdOut : public QObject

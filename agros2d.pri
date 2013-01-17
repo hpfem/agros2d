@@ -120,4 +120,5 @@ win32-msvc2010 {
     LIBS += -lxerces-c_static_3
     LIBS += -ladvapi32
     LIBS += -lws2_32
+    LIBS += -lpsapi # process memory usage (system_utils.h)
 }

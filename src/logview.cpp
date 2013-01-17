@@ -20,6 +20,7 @@
 #include "logview.h"
 
 #include "util/global.h"
+#include "util/system_utils.h"
 #include "gui/chart.h"
 
 #include "scene.h"
@@ -211,6 +212,7 @@ void LogDialog::createControls()
     connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
 
     logWidget = new LogWidget(this);
+    memoryLabel = new QLabel("                                                         ");
 
     m_chart = new ChartBasic(this);
     m_chart->setVisible(false);
@@ -225,8 +227,12 @@ void LogDialog::createControls()
         m_chart->setAxisTitle(QwtPlot::xBottom, tr("iteration"));
     }
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    QPushButton *btnClose = new QPushButton(tr("Close"));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+
+    QHBoxLayout *layoutStatus = new QHBoxLayout();
+    layoutStatus->addWidget(memoryLabel, 1, Qt::AlignLeft);
+    layoutStatus->addWidget(btnClose, 0, Qt::AlignRight);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(logWidget, 1);
@@ -234,7 +240,7 @@ void LogDialog::createControls()
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutHorizontal);
-    layout->addWidget(buttonBox);
+    layout->addLayout(layoutStatus);
 
     setLayout(layout);
 }
@@ -269,6 +275,16 @@ void LogDialog::printMessage(const QString &module, const QString &message, bool
             // m_chartNorm.clear();
         }
     }
+
+    refreshStatus();
+}
+
+void LogDialog::refreshStatus()
+{
+    int memory = getCurrentRSS() / 1024 / 1024;
+
+    memoryLabel->setText(tr("Process Memory: %1 MB").arg(memory));
+    // memoryLabel->repaint();
 }
 
 // *******************************************************************************************

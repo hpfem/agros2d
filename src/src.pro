@@ -66,6 +66,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     util/enums.cpp \
     util/loops.cpp \
     util/glfont.cpp \
+    util/system_utils.cpp \
     gui/common.cpp \
     gui/chart.cpp \
     gui/filebrowser.cpp \
@@ -161,6 +162,7 @@ HEADERS += util.h \
     util/loops.h \
     util/enums.h \
     util/glfont.h \
+    util/system_utils.h \
     gui/common.h \
     gui/chart.h \
     gui/filebrowser.h \
