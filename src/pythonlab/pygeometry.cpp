@@ -401,7 +401,7 @@ void PyGeometry::mesh()
     }
 }
 
-char *PyGeometry::meshFileName()
+const char *PyGeometry::meshFileName()
 {
     if (Agros2D::problem()->isMeshed())
         return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());

@@ -36,19 +36,19 @@ class PyProblem
         void refresh();
 
         // name
-        inline char *getName() { return Agros2D::problem()->config()->name().toStdString().c_str(); }
+        inline const char *getName() { return Agros2D::problem()->config()->name().toStdString().c_str(); }
         void setName(const char *name) { Agros2D::problem()->config()->setName(QString(name)); }
 
         // coordinate type
-        inline char *getCoordinateType() { return coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString().c_str(); }
+        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString().c_str(); }
         void setCoordinateType(const char *coordinateType);
 
         // mesh type
-        inline char *getMeshType() { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString().c_str(); }
+        inline const char *getMeshType() { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString().c_str(); }
         void setMeshType(const char *meshType);
 
         // matrix solver
-        inline char *getMatrixSolver() { return matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString().c_str(); }
+        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString().c_str(); }
         void setMatrixSolver(const char *matrixSolver);
 
         // frequency
@@ -56,7 +56,7 @@ class PyProblem
         void setFrequency(const double frequency);
 
         // time step method
-        inline char *getTimeStepMethod() { return timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString().c_str(); }
+        inline const char *getTimeStepMethod() { return timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString().c_str(); }
         void setTimeStepMethod(const char *timeStepMethod);
 
         // time method order

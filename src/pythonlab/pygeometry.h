@@ -75,7 +75,7 @@ class PyGeometry
 
         // mesh
         void mesh();
-        char *meshFileName();
+        const char *meshFileName();
 
         // zoom operations
         void zoomBestFit();

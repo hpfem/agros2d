@@ -39,10 +39,10 @@ class PyField
         FieldInfo *fieldInfo();
 
         // field id
-        inline char *fieldId() { return m_fieldInfo->fieldId().toStdString().c_str(); }
+        inline const char *fieldId() { return m_fieldInfo->fieldId().toStdString().c_str(); }
 
         // analysis type
-        inline char *getAnalysisType() { return analysisTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
+        inline const char *getAnalysisType() { return analysisTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
         void setAnalysisType(const char *analysisType);
 
         // number of refinements
@@ -54,7 +54,7 @@ class PyField
         void setPolynomialOrder(const int polynomialOrder);
 
         // linearity type
-        inline char *getLinearityType() { return linearityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType()).toStdString().c_str(); }
+        inline const char *getLinearityType() { return linearityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType()).toStdString().c_str(); }
         void setLinearityType(const char *linearityType);
 
         // nonlinear tolerance
@@ -90,7 +90,7 @@ class PyField
         void setPicardAndersonNumberOfLastVectors(const int number);
 
         // adaptivity type
-        inline char *getAdaptivityType() { return adaptivityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
+        inline const char *getAdaptivityType() { return adaptivityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
         void setAdaptivityType(const char *adaptivityType);
 
         // adaptivity tolerance
