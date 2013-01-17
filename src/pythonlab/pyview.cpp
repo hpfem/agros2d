@@ -31,7 +31,7 @@
 #include "util/constants.h"
 #include "util/global.h"
 
-void PyViewConfig::setField(char* fieldid)
+void PyViewConfig::setField(const char* fieldid)
 {
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
@@ -443,7 +443,7 @@ void PyViewPost3D::setPost3DMode(char* mode)
 
 // ****************************************************************************************************
 
-void PyView::saveImageToFile(char *file, int width, int height)
+void PyView::saveImageToFile(const char *file, int width, int height)
 {
     ErrorResult result;
     if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())

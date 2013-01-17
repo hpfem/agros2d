@@ -38,15 +38,15 @@ class PostHermes;
 // view
 struct PyView
 {
-    void saveImageToFile(char *file, int width, int height);
+    void saveImageToFile(const char *file, int width, int height);
 };
 
 // view config
 struct PyViewConfig
 {
     // field
-    void setField(char *fieldid);
-    inline char* getField() const { return const_cast<char*>(Agros2D::scene()->activeViewField()->fieldId().toStdString().c_str()); }
+    void setField(const char *fieldid);
+    inline const char* getField() const { return const_cast<char*>(Agros2D::scene()->activeViewField()->fieldId().toStdString().c_str()); }
 
     // time step
     void setActiveTimeStep(int timeStep);
@@ -57,8 +57,8 @@ struct PyViewConfig
     inline int getActiveAdaptivityStep() const { return Agros2D::scene()->activeAdaptivityStep(); }
 
     // solution type
-    void setActiveSolutionType(char *solutionType);
-    inline char* getActiveSolutionType() const { return const_cast<char*>(solutionTypeToStringKey(Agros2D::scene()->activeSolutionType()).toStdString().c_str()); }
+    void setActiveSolutionType(const char *solutionType);
+    inline const char* getActiveSolutionType() const { return const_cast<char*>(solutionTypeToStringKey(Agros2D::scene()->activeSolutionType()).toStdString().c_str()); }
 
     // grid
     void setGridShow(bool show);
@@ -96,7 +96,7 @@ struct PyViewMesh
     void setOrderViewLabel(bool show);
     inline bool getOrderViewLabel() const { return Agros2D::problem()->configView()->orderLabel; }
     void setOrderViewPalette(char* palette);
-    inline char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Agros2D::problem()->configView()->orderPaletteOrderType).toStdString().c_str()); }
+    inline const char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey(Agros2D::problem()->configView()->orderPaletteOrderType).toStdString().c_str()); }
 };
 
 // post
@@ -104,14 +104,14 @@ struct PyViewPost
 {
     // scalar view
     void setScalarViewVariable(char* var);
-    inline char* getScalarViewVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->scalarVariable.toStdString().c_str()); }
+    inline const char* getScalarViewVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->scalarVariable.toStdString().c_str()); }
     void setScalarViewVariableComp(char* component);
-    inline char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Agros2D::problem()->configView()->scalarVariableComp).toStdString().c_str()); }
+    inline const char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey(Agros2D::problem()->configView()->scalarVariableComp).toStdString().c_str()); }
 
     void setScalarViewPalette(char* palette);
-    inline char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Agros2D::problem()->configView()->paletteType).toStdString().c_str()); }
+    inline const char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey(Agros2D::problem()->configView()->paletteType).toStdString().c_str()); }
     void setScalarViewPaletteQuality(char* quality);
-    inline char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(Agros2D::problem()->configView()->linearizerQuality).toStdString().c_str()); }
+    inline const char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey(Agros2D::problem()->configView()->linearizerQuality).toStdString().c_str()); }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Agros2D::problem()->configView()->paletteSteps; }
     void setScalarViewPaletteFilter(bool filter);
@@ -156,7 +156,7 @@ struct PyViewPost2D
     void setContourCount(int count);
     inline int getContourCount() const { return Agros2D::problem()->configView()->contoursCount; }
     void setContourVariable(char* var);
-    inline char* getContourVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->contourVariable.toStdString().c_str()); }
+    inline const char* getContourVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->contourVariable.toStdString().c_str()); }
 
     // vector
     void setVectorShow(bool show);
@@ -166,7 +166,7 @@ struct PyViewPost2D
     void setVectorScale(double scale);
     inline int getVectorScale() const { return Agros2D::problem()->configView()->vectorScale; }
     void setVectorVariable(char* var);
-    inline char* getVectorVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->vectorVariable.toStdString().c_str()); }
+    inline const char* getVectorVariable() const { return const_cast<char*>(Agros2D::problem()->configView()->vectorVariable.toStdString().c_str()); }
     void setVectorProportional(bool show);
     inline bool getVectorProportional() const { return Agros2D::problem()->configView()->vectorProportional; }
     void setVectorColor(bool show);
@@ -184,7 +184,7 @@ struct PyViewPost3D
 
     // scalar view
     void setPost3DMode(char* mode);
-    inline char* getPost3DMode() const { return const_cast<char*>(sceneViewPost3DModeToStringKey(Agros2D::problem()->configView()->showPost3D).toStdString().c_str()); }
+    inline const char* getPost3DMode() const { return const_cast<char*>(sceneViewPost3DModeToStringKey(Agros2D::problem()->configView()->showPost3D).toStdString().c_str()); }
 
 };
 
