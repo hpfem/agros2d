@@ -66,7 +66,7 @@ void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
-void PyViewConfig::setActiveSolutionType(char* solutionType)
+void PyViewConfig::setActiveSolutionType(const char *solutionType)
 {
     if (solutionTypeStringKeys().contains(QString(solutionType)))
     {
