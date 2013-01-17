@@ -103,15 +103,15 @@
 #include "projections/ogprojection.h"
 #include "projections/ogprojection_nox.h"
 
-#include "precalculated_forms/weakforms_h1_const.h"
-#include "precalculated_forms/weakforms_h1_nonlinear.h"
-
 #include "runge_kutta.h"
 #include "spline.h"
 
 #if defined (AGROS)
 // No inclusions here.
 #else
+#include "precalculated_forms/weakforms_h1_const.h"
+#include "precalculated_forms/weakforms_h1_nonlinear.h"
+
 #include "weakform_library/weakforms_elasticity.h"
 #include "weakform_library/weakforms_h1.h"
 #include "weakform_library/weakforms_hcurl.h"
