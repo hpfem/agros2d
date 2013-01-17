@@ -209,13 +209,7 @@ namespace Hermes
         virtual void handle_orders(Space<Scalar>* ref_space);
 
         /// Methods that user calls to get the reference space pointer (has to be properly casted if necessary).
-        virtual Space<Scalar>* create_ref_space();
-
-        /// Methods that user calls to get the reference space with designed type.
-        virtual L2Space<Scalar>* create_ref_l2_space();
-        virtual H1Space<Scalar>* create_ref_h1_space();
-        virtual HcurlSpace<Scalar>* create_ref_hcurl_space();
-        virtual HdivSpace<Scalar>* create_ref_hdiv_space();
+        virtual Space<Scalar>* create_ref_space(bool assign_dofs = true);
 
         /// Construction initialization.
       private:
@@ -248,7 +242,7 @@ namespace Hermes
       /// \brief Assings the degrees of freedom to all Spaces in the Hermes::vector.
       static int assign_dofs(Hermes::vector<Space<Scalar>*> spaces);
 
-      virtual Scalar* get_bc_projection(SurfPos* surf_pos, int order) = 0;
+      virtual Scalar* get_bc_projection(SurfPos* surf_pos, int order, EssentialBoundaryCondition<Scalar> *bc) = 0;
 
       static void update_essential_bc_values(Hermes::vector<Space<Scalar>*> spaces, double time);
 
@@ -311,7 +305,7 @@ namespace Hermes
       int first_dof, next_dof;
       int stride;
       int seq, mesh_seq;
-      bool was_assigned;
+      int was_assigned;
 
       struct BaseComponent
       {

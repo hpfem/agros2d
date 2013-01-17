@@ -75,8 +75,7 @@ namespace Hermes
       class HERMES_API Selector : public Hermes::Mixins::Loggable, public Hermes::Mixins::TimeMeasurable
       {
       public:
-          virtual ~Selector() {};
-
+        virtual ~Selector() {};
       protected:
         const int max_order; ///< A maximum allowed order.
         /// Constructor

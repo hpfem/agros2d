@@ -28,7 +28,7 @@ namespace Hermes
 
       void StateQueryable::check() const
       {
-        if (!this->isOkay())
+        if(!this->isOkay())
           {
             std::stringstream ss;
             ss << "The instance of " << this->getClassName() << " is not OK.";
@@ -62,6 +62,13 @@ namespace Hermes
       {
         this->matrixFilename = name;
       }
+
+      template<typename Scalar>
+      void MatrixRhsOutput<Scalar>::set_print_zero_matrix_entries(bool to_set)
+      {
+        this->print_matrix_zero_values = to_set;
+      }
+
       template<typename Scalar>
       void MatrixRhsOutput<Scalar>::set_matrix_varname(std::string name)
       {

@@ -26,6 +26,8 @@
 #include "refinement_selectors/selector.h"
 #include "exceptions.h"
 #include "mixins2d.h"
+#include "elemwise_parameter/elemwise_parameter_mesh_func.h"
+#include "elemwise_parameter/elemwise_parameter_nonlinear.h"
 
 namespace Hermes
 {
@@ -184,6 +186,12 @@ namespace Hermes
       void assemble_one_state(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, 
         AsmList<Scalar>** current_als, Traverse::State* current_state, WeakForm<Scalar>* current_wf);
 
+      /// Assemble constant forms in one state.
+      void assemble_constant_forms(RefMap* current_refmap, AsmList<Scalar>** current_als, Traverse::State* current_state, WeakForm<Scalar>* current_wf);
+
+      /// Assemble Dirichlet in constant forms.
+      void assemble_constant_forms_Dirichlet(Traverse::State* current_state, int n_quadrature_points, Geom<double>* geometry, double* jacobian_x_weights, Func<double>** base_fns, Func<double>** test_fns, AsmList<Scalar>** current_als, MatrixForm<Scalar>* form);
+
       /// Adjusts order to refmaps.
       void adjust_order_to_refmaps(Form<Scalar> *form, int& order, Hermes::Ord* o, RefMap** current_refmaps);
 
@@ -237,6 +245,9 @@ namespace Hermes
       /// If the problem has only constant test functions, there is no need for order calculation,
       /// which saves time.
       bool is_fvm;
+
+      /// Internal.
+      bool is_linear;
 
       /// Matrix structure can be reused.
       /// If other conditions apply.

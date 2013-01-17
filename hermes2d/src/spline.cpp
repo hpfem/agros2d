@@ -29,13 +29,18 @@ namespace Hermes
       extrapolate_der_right(extrapolate_der_right)
     {
       this->is_const = false;
-      bool success = this->calculate_coeffs();
-      // if(!success) throw Hermes::Exceptions::Exception("There was a problem constructing a cubic spline.");
     }
 
     CubicSpline::CubicSpline(double const_value) : Hermes::Hermes1DFunction<double>(const_value)
     {
     }
+
+    CubicSpline::~CubicSpline() 
+    {
+      coeffs.clear();  
+      points.clear();
+      values.clear();
+    };
 
     double CubicSpline::value(double x) const
     {
@@ -51,7 +56,8 @@ namespace Hermes
         {
           // Spline should be extrapolated by constant function
           // matching the value at the end.
-          if(extrapolate_der_left == false) return value_left;
+          if(extrapolate_der_left == false)
+            return value_left;
           // Spline should be extrapolated as a linear function
           // matching the derivative at the end.
           else return extrapolate_value(point_left, value_left, derivative_left, x);
@@ -61,7 +67,8 @@ namespace Hermes
         {
           // Spline should be extrapolated by constant function
           // matching the value at the end.
-          if(extrapolate_der_right == false) return value_right;
+          if(extrapolate_der_right == false)
+            return value_right;
           // Spline should be extrapolated as a linear function
           // matching the derivative at the end.
           else return extrapolate_value(point_right, value_right, derivative_right, x);
@@ -209,25 +216,25 @@ namespace Hermes
       fclose(f);
     }
 
-    bool CubicSpline::calculate_coeffs()
+    void CubicSpline::calculate_coeffs()
     {
       int nelem = points.size() - 1;
 
       // Basic sanity checks.
       if(points.empty() || values.empty())
       {
-        this->warn("Empty points or values vector in CubicSpline, returning false.");
-        return false;
+        this->warn("Empty points or values vector in CubicSpline, cancelling coefficients calculation.");
+        return;
       }
       if(points.size() < 2 || values.size() < 2)
       {
-        this->warn("At least two points and values required in CubicSpline, returning false.");
-        return false;
+        this->warn("At least two points and values required in CubicSpline, cancelling coefficients calculation.");
+        return;
       }
       if(points.size() != values.size())
       {
-        this->warn("Mismatched number fo points and values in CubicSpline, returning false.");
-        return false;
+        this->warn("Mismatched number of points and values in CubicSpline, cancelling coefficients calculation.");
+        return;
       }
 
       // Check for improperly ordered or duplicated points.
@@ -236,15 +243,12 @@ namespace Hermes
       {
         if(points[i + 1] < points[i] + eps)
         {
-          this->warn("Duplicated or improperly ordered points in CubicSpline detected, returning false.");
-          return false;
+          this->warn("Duplicated or improperly ordered points in CubicSpline detected, cancelling coefficients calculation.");
+          return;
         }
       }
 
       /* START COMPUTATION */
-
-      // Initializing coefficient array.
-      this->coeffs.clear();
 
       // Allocate matrix and rhs.
       const int n = 4 * nelem;
@@ -358,15 +362,15 @@ namespace Hermes
       lubksb<double>(matrix, n, perm, rhs);
 
       // Copy the solution into the coeffs array.
+      coeffs.clear();
       for (int i = 0; i < nelem; i++)
       {
-        SplineCoeff cfs;
-        cfs.a = rhs[4*i + 0];
-        cfs.b = rhs[4*i + 1];
-        cfs.c = rhs[4*i + 2];
-        cfs.d = rhs[4*i + 3];
-
-        coeffs.push_back(cfs);
+        SplineCoeff coeff;
+        coeff.a = rhs[4*i + 0];
+        coeff.b = rhs[4*i + 1];
+        coeff.c = rhs[4*i + 2];
+        coeff.d = rhs[4*i + 3];
+        coeffs.push_back(coeff);
       }
 
       // Define end point values and derivatives so that
@@ -383,7 +387,7 @@ namespace Hermes
       delete [] matrix;
       delete [] rhs;
 
-      return true;
+      return;
     }
   }
 }

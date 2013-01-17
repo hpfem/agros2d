@@ -26,7 +26,7 @@ INCLUDEPATH += include \
                include/space \
                include/views \
                include/weakform \
-               include/weakform_library \
+               include/elemwise_parameter \
                ../hermes_common \
                ../hermes_common/include/ \
                ../hermes_common/include/solvers/ \
@@ -122,13 +122,17 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/views/orderizer.cpp \
                 src/views/vectorizer.cpp \
                 src/weakform/weakform.cpp  \
-                                src/neighbor.cpp \
+                src/neighbor.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
                 src/discrete_problem_linear.cpp \
                 src/runge_kutta.cpp \
                 src/spline.cpp \
-                src/global.cpp
+                src/global.cpp \
+                src/elemwise_parameter/elemwise_parameter.cpp \
+                src/elemwise_parameter/elemwise_parameter_func.cpp \
+                src/elemwise_parameter/elemwise_parameter_mesh_func.cpp \
+                src/elemwise_parameter/elemwise_parameter_nonlinear.cpp
 
 HEADERS += \
     ../hermes_common/include/config.h

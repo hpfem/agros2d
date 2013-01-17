@@ -1063,9 +1063,9 @@ Hermes::Hermes2D::Filter<double> *Module::BasicModule::viewScalarFilter(Module::
     PluginInterface *plugin = Agros2D::plugin(activeViewField->fieldId());
     assert(plugin);
     return plugin->filter(activeViewField,
-                             sln,
-                             physicFieldVariable->id(),
-                             physicFieldVariableComp);
+                          sln,
+                          physicFieldVariable->id(),
+                          physicFieldVariableComp);
 }
 
 // ***********************************************************************************************
