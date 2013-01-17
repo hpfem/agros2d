@@ -83,14 +83,8 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
             foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
             {
                 // default for GUI
-                if (Module::DialogRow *row = fieldInfo->module()->boundaryUI()->dialogRow(variable->id()))
-                {
-                    this->m_values[variable->id()] = Value(QString::number(row->defaultValue()));
-                }
-                else
-                {
-                    this->m_values[variable->id()] = Value();
-                }
+                Module::DialogRow row = fieldInfo->module()->boundaryUI()->dialogRow(variable->id());
+                this->m_values[variable->id()] = Value(QString::number(row.defaultValue()));
             }
         }
     }
@@ -110,14 +104,8 @@ Material::Material(FieldInfo *fieldInfo, QString name,
             foreach (Module::MaterialTypeVariable *variable, fieldInfo->module()->materialTypeVariables())
             {
                 // default for GUI
-                if (Module::DialogRow *row = fieldInfo->module()->materialUI()->dialogRow(variable->id()))
-                {
-                    this->m_values[variable->id()] = Value(QString::number(row->defaultValue()));
-                }
-                else
-                {
-                    this->m_values[variable->id()] = Value();
-                }
+                Module::DialogRow row = fieldInfo->module()->materialUI()->dialogRow(variable->id());
+                this->m_values[variable->id()] = Value(QString::number(row.defaultValue()));
             }
         }
     }

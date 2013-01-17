@@ -579,12 +579,12 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
     }
 }
 
-Module::DialogRow *Module::DialogUI::dialogRow(const QString &id)
+Module::DialogRow Module::DialogUI::dialogRow(const QString &id)
 {
-    for(int i = 0; i < m_groups.count(); i++)
-        for(int j = 0; j < m_groups[i].count(); j++)
-            if (m_groups[i][j].id() == id)
-                return &m_groups[i][j];
+    foreach (QList<Module::DialogRow> rows, m_groups)
+        foreach (Module::DialogRow row, rows)
+            if (row.id() == id)
+                return row;
 }
 
 void Module::DialogUI::clear()

@@ -439,7 +439,7 @@ struct DialogUI
     DialogUI(XMLModule::gui ui);
 
     inline QMap<QString, QList<Module::DialogRow> > groups() const { return m_groups; }
-    Module::DialogRow *dialogRow(const QString &id);
+    DialogRow dialogRow(const QString &id);
     void clear();
 
 private:
