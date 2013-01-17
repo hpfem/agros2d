@@ -1,4 +1,5 @@
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
@@ -8,7 +9,7 @@ cdef extern from "limits.h":
 
 cdef extern from "../../src/pythonlab/pyproblem.h":
     cdef cppclass PyProblem:
-        PyProblem(int clear)
+        PyProblem(bool clear)
 
         void clear()
         void clearSolution()
@@ -42,14 +43,14 @@ cdef extern from "../../src/pythonlab/pyproblem.h":
         void setTimeTotal(double timeTotal) except +
 
         int getNumConstantTimeSteps()
-        void setNumConstantTimeSteps(int numConstantTimeSteps) except +
+        void setNumConstantTimeSteps(int timeSteps) except +
 
         char *getCouplingType(char *sourceField, char *targetField) except +
         void setCouplingType(char *sourceField, char *targetField, char *type) except +
 
-        void mesh()
-        void solve()
-        void solveAdaptiveStep()
+        void mesh() except +
+        void solve() except +
+        void solveAdaptiveStep() except +
 
         double timeElapsed() except +
         void timeStepsLength(vector[double] steps) except +
@@ -57,7 +58,7 @@ cdef extern from "../../src/pythonlab/pyproblem.h":
 cdef class __Problem__:
     cdef PyProblem *thisptr
 
-    def __cinit__(self, int clear = 0):
+    def __cinit__(self, clear = False):
         self.thisptr = new PyProblem(clear)
 
     def __dealloc__(self):
@@ -142,8 +143,8 @@ cdef class __Problem__:
     property time_steps:
         def __get__(self):
             return self.thisptr.getNumConstantTimeSteps()
-        def __set__(self, steps):
-            self.thisptr.setNumConstantTimeSteps(steps)
+        def __set__(self, time_steps):
+            self.thisptr.setNumConstantTimeSteps(time_steps)
 
     # coupling type
     def get_coupling_type(self, source_field, target_field):

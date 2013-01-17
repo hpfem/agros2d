@@ -12,24 +12,24 @@ body {
 h1 {
 	padding: 2pt;
 	margin: 0;
-    color: rgb(41, 41, 140);
+	color: rgb(41, 41, 140);
 }
 
 h2 {
 	padding: 1pt;
 	margin: 0;
-    color: rgb(41, 41, 140);
+	color: rgb(41, 41, 140);
 }
 
 h3 {
-    padding: 1pt 0pt 0pt 1pt;
-    margin: 0;
+	padding: 1pt 0pt 0pt 1pt;
+	margin: 0;
 	font-size: 90%;
-    color: rgb(41, 41, 140);
+	color: rgb(41, 41, 140);
 }
 
 table, td, tr {
-	font-size: 93%;		
+	font-size: 93%;
 	padding: 1pt 0pt 0pt 1pt;
 	/*border: 1pt solid black;*/
 }
@@ -43,15 +43,15 @@ td.description {
 }
 
 td.quantity {
-	width: 60px;	
+	width: 60px;
 }
 
-td.unit {	
+td.unit {
 	width: 60px;
 }
 
 .maintable {
-	/* width: 100%;	 */
+	/* width: 100%; */
 }
 
 .section {

@@ -12,29 +12,29 @@ body {
 }
 
 h1 {
-	font-size: 190%;	
-    color: rgb(91, 91, 91);
-    padding-left: 10px;
+	font-size: 190%;
+	color: rgb(91, 91, 91);
+	padding-left: 10px;
 	padding-top: 0px;
 	padding-bottom: 1px;
 }
 
 h2 {
 	font-size: 130%;
-	margin-top: 2px;	
-	margin-bottom: 2px;	
-    color: rgb(91, 91, 91);
+	margin-top: 2px;
+	margin-bottom: 2px;
+	color: rgb(91, 91, 91);
 }
 
 h3 {
 	font-size: 110%;
-	margin-top: 2px;	
-	margin-bottom: 2px;	
-    color: rgb(91, 91, 91);
+	margin-top: 2px;
+	margin-bottom: 2px;
+	color: rgb(91, 91, 91);
 }
 
-p {	
-    padding-left: 1px;
+p {
+	padding-left: 1px;
 	padding-top: 0px;
 	padding-bottom: 0px;
 	margin-left: 10px;
@@ -43,7 +43,6 @@ p {
 }
 
 table {
-	
 	padding-bottom: 10px;
 	padding-top: 1px;
 }
@@ -62,7 +61,7 @@ hr {
 	border: 1px;
 	margin-top: 3px;
 	margin-bottom: 5px;
- 	color: rgb(207, 174, 133);
+	color: rgb(207, 174, 133);
 	background-color: rgb(207, 174, 133);
 	height: 2px;
 }
@@ -79,15 +78,14 @@ b {
 	padding-bottom: 1px;
 }
 
-
-.figure { 
+.figure {
 	border: 8px;
-  	text-align: left; 
+	text-align: left;
 }
 
 .section {
 	/* background: rgba(206, 206, 206, 0.6); */
-    /* border-radius: 6px; */
+	/* border-radius: 6px; */
 	/* margin-bottom: 20px; */
 	width: 100%;
 }
@@ -97,6 +95,10 @@ b {
 	margin: 0;
 }
 
-.cleaner { 
-  clear: both; 
+.cleaner {
+	clear: both;
+}
+
+.image {
+	padding: 5pt 5pt 5pt 5pt;
 }

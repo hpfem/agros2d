@@ -39,89 +39,89 @@ class PyField
         FieldInfo *fieldInfo();
 
         // field id
-        inline const char *getFieldId() const { return m_fieldInfo->fieldId().toStdString().c_str(); }
+        inline char *fieldId() { return m_fieldInfo->fieldId().toStdString().c_str(); }
 
         // analysis type
-        inline const char *getAnalysisType() const { return analysisTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
+        inline char *getAnalysisType() { return analysisTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->analysisType()).toStdString().c_str(); }
         void setAnalysisType(const char *analysisType);
 
         // number of refinements
-        inline int getNumberOfRefinements() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements(); }
+        inline int getNumberOfRefinements() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->numberOfRefinements(); }
         void setNumberOfRefinements(const int numberOfRefinements);
 
         // polynomial order
-        inline int getPolynomialOrder() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder(); }
+        inline int getPolynomialOrder() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->polynomialOrder(); }
         void setPolynomialOrder(const int polynomialOrder);
 
         // linearity type
-        inline const char *getLinearityType() const { return linearityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType()).toStdString().c_str(); }
+        inline char *getLinearityType() { return linearityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->linearityType()).toStdString().c_str(); }
         void setLinearityType(const char *linearityType);
 
         // nonlinear tolerance
-        inline double getNonlinearTolerance() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance(); }
+        inline double getNonlinearTolerance() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearTolerance(); }
         void setNonlinearTolerance(const double nonlinearTolerance);
 
         // nonlinear steps
-        inline int getNonlinearSteps() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps(); }
+        inline int getNonlinearSteps() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->nonlinearSteps(); }
         void setNonlinearSteps(const int nonlinearSteps);
 
         // damping coefficient
-        inline double getDampingCoeff() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingCoeff(); }
+        inline double getDampingCoeff() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingCoeff(); }
         void setDampingCoeff(const double dampingCoeff);
 
         // automatic damping
-        inline bool getAutomaticDamping() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDamping(); }
+        inline bool getAutomaticDamping() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDamping(); }
         void setAutomaticDamping(const bool automaticDamping);
 
         // steps to increase damping coeff
-        inline int getDampingNumberToIncrease() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingNumberToIncrease(); }
+        inline int getDampingNumberToIncrease() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingNumberToIncrease(); }
         void setDampingNumberToIncrease(const int dampingNumberToIncrease);
 
         // picard anderson acceleration
-        inline bool getPicardAndersonAcceleration() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonAcceleration(); }
+        inline bool getPicardAndersonAcceleration() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonAcceleration(); }
         void setPicardAndersonAcceleration(const bool acceleration);
 
         // picard anderson beta
-        inline double getPicardAndersonBeta() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonBeta(); }
+        inline double getPicardAndersonBeta() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonBeta(); }
         void setPicardAndersonBeta(const double beta);
 
         // picard anderson number of last vectors
-        inline int getPicardAndersonNumberOfLastVectors() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonNumberOfLastVectors(); }
+        inline int getPicardAndersonNumberOfLastVectors() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonNumberOfLastVectors(); }
         void setPicardAndersonNumberOfLastVectors(const int number);
 
         // adaptivity type
-        inline const char *getAdaptivityType() const { return adaptivityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
+        inline char *getAdaptivityType() { return adaptivityTypeToStringKey(Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityType()).toStdString().c_str(); }
         void setAdaptivityType(const char *adaptivityType);
 
         // adaptivity tolerance
-        inline double getAdaptivityTolerance() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance(); }
+        inline double getAdaptivityTolerance() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityTolerance(); }
         void setAdaptivityTolerance(const double adaptivityTolerance);
 
         // adaptivity steps
-        inline int getAdaptivitySteps() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps(); }
+        inline int getAdaptivitySteps() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivitySteps(); }
         void setAdaptivitySteps(const int adaptivitySteps);
 
         // adaptivity back steps
-        inline int getAdaptivityBackSteps() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityBackSteps(); }
+        inline int getAdaptivityBackSteps() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityBackSteps(); }
         void setAdaptivityBackSteps(const int adaptivityBackSteps);
 
         //adaptivity redone each
-        inline int getAdaptivityRedoneEach() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityRedoneEach(); }
+        inline int getAdaptivityRedoneEach() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->adaptivityRedoneEach(); }
         void setAdaptivityRedoneEach(const int adaptivityRedoneEach);
 
         // initial condition
-        inline double getInitialCondition() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
+        inline double getInitialCondition() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
         void setInitialCondition(const double initialCondition);
 
         // time steps skip
-        inline int getTimeSkip() const { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->timeSkip().number(); }
+        inline int getTimeSkip() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->timeSkip().number(); }
         void setTimeSkip(const double timeSkip);
 
         // boundaries
-        void addBoundary(char *name, char *type,
+        void addBoundary(char const *name, const char *type,
                          map<char*, double> parameters,
                          map<char*, char* > expressions);
-        void setBoundary(char *name, char *type,
+        void setBoundary(const char *name, const char *type,
                          map<char*, double> parameters,
                          map<char *, char *> expressions);
         void removeBoundary(char *name);
@@ -137,11 +137,8 @@ class PyField
                          map<char *, vector<double> > nonlin_y);
         void removeMaterial(char *name);
 
-        // solve
-        void solve() { assert(0); qDebug() << "Not now :)"; }
-
         // local values, integrals
-        void localValues(double x, double y, map<std::string, double> &results);
+        void localValues(const double x, const double y, map<std::string, double> &results);
         void surfaceIntegrals(vector<int> edges, map<std::string, double> &results);
         void volumeIntegrals(vector<int> labels, map<std::string, double> &results);
 

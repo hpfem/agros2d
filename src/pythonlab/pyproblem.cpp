@@ -19,12 +19,8 @@
 
 #include "pythonlab/pyproblem.h"
 #include "pythonlab/pythonengine_agros.h"
-
 #include "sceneview_geometry.h"
-#include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
-#include "sceneview_post3d.h"
-
 #include "hermes2d/coupling.h"
 
 PyProblem::PyProblem(bool clearproblem)
@@ -160,6 +156,8 @@ void PyProblem::mesh()
         // trigger preprocessor
         if (!silentMode())
             currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+
+        throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
     }
 }
 
@@ -179,6 +177,8 @@ void PyProblem::solve()
         // trigger preprocessor
         if (!silentMode())
             currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
     }
 }
 
@@ -198,6 +198,8 @@ void PyProblem::solveAdaptiveStep()
         // trigger preprocessor
         if (!silentMode())
             currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
     }
 }
 
