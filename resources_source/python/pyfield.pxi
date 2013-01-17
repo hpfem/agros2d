@@ -20,7 +20,7 @@ cdef extern from "../../src/pythonlab/pyfield.h":
     cdef cppclass PyField:
         PyField(char *field_id) except +
 
-        char *getFieldId()
+        char *fieldId()
 
         char *getAnalysisType()
         void setAnalysisType(char* analysisType) except +
@@ -109,7 +109,7 @@ cdef class __Field__:
     # field id
     property field_id:
         def __get__(self):
-            return self.thisptr.getFieldId()
+            return self.thisptr.fieldId()
 
     # analysis type
     property analysis_type:

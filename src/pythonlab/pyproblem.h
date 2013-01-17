@@ -20,10 +20,7 @@
 #ifndef PYTHONLABPROBLEM_H
 #define PYTHONLABPROBLEM_H
 
-#include "util.h"
 #include "util/global.h"
-
-#include "scene.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
@@ -39,43 +36,43 @@ class PyProblem
         void refresh();
 
         // name
-        inline const char *getName() const { return Agros2D::problem()->config()->name().toStdString().c_str(); }
+        inline char *getName() { return Agros2D::problem()->config()->name().toStdString().c_str(); }
         void setName(const char *name) { Agros2D::problem()->config()->setName(QString(name)); }
 
         // coordinate type
-        inline const char *getCoordinateType() const { return coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString().c_str(); }
+        inline char *getCoordinateType() { return coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString().c_str(); }
         void setCoordinateType(const char *coordinateType);
 
         // mesh type
-        inline const char *getMeshType() const { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString().c_str(); }
+        inline char *getMeshType() { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString().c_str(); }
         void setMeshType(const char *meshType);
 
         // matrix solver
-        inline const char *getMatrixSolver() const { return matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString().c_str(); }
+        inline char *getMatrixSolver() { return matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString().c_str(); }
         void setMatrixSolver(const char *matrixSolver);
 
         // frequency
-        inline double getFrequency() const { return Agros2D::problem()->config()->frequency(); }
+        inline double getFrequency() { return Agros2D::problem()->config()->frequency(); }
         void setFrequency(const double frequency);
 
         // time step method
-        inline const char *getTimeStepMethod() const { return timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString().c_str(); }
+        inline char *getTimeStepMethod() { return timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString().c_str(); }
         void setTimeStepMethod(const char *timeStepMethod);
 
         // time method order
-        inline int getTimeMethodOrder() const { return Agros2D::problem()->config()->timeOrder(); }
+        inline int getTimeMethodOrder() { return Agros2D::problem()->config()->timeOrder(); }
         void setTimeMethodOrder(const int timeMethodOrder);
 
         // time method tolerance
-        inline double getTimeMethodTolerance() const { return Agros2D::problem()->config()->timeMethodTolerance().number(); }
+        inline double getTimeMethodTolerance() { return Agros2D::problem()->config()->timeMethodTolerance().number(); }
         void setTimeMethodTolerance(const double timeMethodTolerance);
 
         // time total
-        inline double getTimeTotal() const { return Agros2D::problem()->config()->timeTotal().number(); }
+        inline double getTimeTotal() { return Agros2D::problem()->config()->timeTotal().number(); }
         void setTimeTotal(const double timeTotal);
 
         // time steps
-        inline int getNumConstantTimeSteps() const { return Agros2D::problem()->config()->numConstantTimeSteps(); }
+        inline int getNumConstantTimeSteps() { return Agros2D::problem()->config()->numConstantTimeSteps(); }
         void setNumConstantTimeSteps(const int timeSteps);
 
         // coupling

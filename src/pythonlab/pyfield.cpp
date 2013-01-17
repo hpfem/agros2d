@@ -202,7 +202,7 @@ void PyField::setTimeSkip(const double timeSkip)
         throw out_of_range(QObject::tr("Time skip is out of range (0 - %1).").arg(Agros2D::problem()->config()->timeTotal().number()).toStdString());
 }
 
-void PyField::addBoundary(char *name, char *type, map<char*, double> parameters, map<char *, char *> expressions)
+void PyField::addBoundary(const char *name, const char *type, map<char*, double> parameters, map<char *, char *> expressions)
 {
     // check boundaries with same name
     foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
@@ -246,7 +246,7 @@ void PyField::addBoundary(char *name, char *type, map<char*, double> parameters,
     Agros2D::scene()->addBoundary(new SceneBoundary(fieldInfo(), name, type, values));
 }
 
-void PyField::setBoundary(char *name, char *type, map<char*, double> parameters, map<char *, char *> expressions)
+void PyField::setBoundary(const char *name, const char *type, map<char*, double> parameters, map<char *, char *> expressions)
 {
     SceneBoundary *sceneBoundary = Agros2D::scene()->getBoundary(fieldInfo(), QString(name));
     if (sceneBoundary == NULL)
@@ -403,7 +403,7 @@ void PyField::removeMaterial(char *name)
     Agros2D::scene()->removeMaterial(Agros2D::scene()->getMaterial(fieldInfo(), QString(name)));
 }
 
-void PyField::localValues(double x, double y, map<std::string, double> &results)
+void PyField::localValues(const double x, const double y, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
