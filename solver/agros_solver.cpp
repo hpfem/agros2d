@@ -93,6 +93,9 @@ void ArgosSolver::solveProblem()
 
         Agros2D::log()->printMessage(tr("Solver"), tr("Problem was solved in %1.").arg(milisecondsToTime(time.elapsed()).toString("mm:ss.zzz")));
 
+        // clear all
+        Agros2D::problem()->clearFieldsAndConfig();
+
         QApplication::exit(0);
     }
 }
