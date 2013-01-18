@@ -60,7 +60,7 @@ void ConfigComputerDialog::load()
     cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Agros2D::configComputer()->defaultPhysicField));
 
     // collaboration server
-    txtCollaborationServerURL->setText(Agros2D::configComputer()->collaborationServerURL);
+    // txtCollaborationServerURL->setText(Agros2D::configComputer()->collaborationServerURL);
 
     // check version
     chkCheckVersion->setChecked(Agros2D::configComputer()->checkVersion);
@@ -108,14 +108,14 @@ void ConfigComputerDialog::save()
     Agros2D::configComputer()->defaultPhysicField = cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toString();
 
     // collaboration server
-    QString collaborationServerUrl = txtCollaborationServerURL->text();
-    if (!collaborationServerUrl.startsWith("http://"))
-        collaborationServerUrl = QString("http://%1").arg(collaborationServerUrl);
+    // QString collaborationServerUrl = txtCollaborationServerURL->text();
+    // if (!collaborationServerUrl.startsWith("http://"))
+    //     collaborationServerUrl = QString("http://%1").arg(collaborationServerUrl);
 
-    if (!collaborationServerUrl.endsWith("/"))
-        collaborationServerUrl = QString("%1/").arg(collaborationServerUrl);
+    // if (!collaborationServerUrl.endsWith("/"))
+    //     collaborationServerUrl = QString("%1/").arg(collaborationServerUrl);
 
-    Agros2D::configComputer()->collaborationServerURL = collaborationServerUrl;
+    // Agros2D::configComputer()->collaborationServerURL = collaborationServerUrl;
 
     // check version
     Agros2D::configComputer()->checkVersion = chkCheckVersion->isChecked();
@@ -244,14 +244,14 @@ QWidget *ConfigComputerDialog::createMainWidget()
     grpGeneral->setLayout(layoutGeneral);
 
     // collaboration
-    txtCollaborationServerURL = new LineEditDouble();
+    // txtCollaborationServerURL = new LineEditDouble();
 
-    QVBoxLayout *layoutCollaboration = new QVBoxLayout();
-    layoutCollaboration->addWidget(new QLabel(tr("Collaboration server URL:")));
-    layoutCollaboration->addWidget(txtCollaborationServerURL);
+    // QVBoxLayout *layoutCollaboration = new QVBoxLayout();
+    // layoutCollaboration->addWidget(new QLabel(tr("Collaboration server URL:")));
+    // layoutCollaboration->addWidget(txtCollaborationServerURL);
 
-    QGroupBox *grpCollaboration = new QGroupBox(tr("Collaboration"));
-    grpCollaboration->setLayout(layoutCollaboration);
+    // QGroupBox *grpCollaboration = new QGroupBox(tr("Collaboration"));
+    // grpCollaboration->setLayout(layoutCollaboration);
 
     // other
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
@@ -270,7 +270,7 @@ QWidget *ConfigComputerDialog::createMainWidget()
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
-    layout->addWidget(grpCollaboration);
+    // layout->addWidget(grpCollaboration);
     layout->addWidget(grpOther);
     layout->addStretch();
 

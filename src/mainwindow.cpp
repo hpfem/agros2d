@@ -99,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     problemWidget = new ProblemWidget(this);
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
-    collaborationDownloadDialog = new ServerDownloadDialog(this);
+    // collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(this);
 
     createActions();
@@ -253,10 +253,10 @@ void MainWindow::createActions()
     actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
 
-    actDocumentDownloadFromServer = new QAction(icon(""), tr("&Download from server..."), this);
-    actDocumentDownloadFromServer->setShortcut(tr("Ctrl+Shift+O"));
-    actDocumentDownloadFromServer->setStatusTip(tr("Download from server..."));
-    connect(actDocumentDownloadFromServer, SIGNAL(triggered()), this, SLOT(doDocumentDownloadFromServer()));
+    // actDocumentDownloadFromServer = new QAction(icon(""), tr("&Download from server..."), this);
+    // actDocumentDownloadFromServer->setShortcut(tr("Ctrl+Shift+O"));
+    // actDocumentDownloadFromServer->setStatusTip(tr("Download from server..."));
+    // connect(actDocumentDownloadFromServer, SIGNAL(triggered()), this, SLOT(doDocumentDownloadFromServer()));
 
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
@@ -272,9 +272,9 @@ void MainWindow::createActions()
     actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
 
-    actDocumentUploadToServer = new QAction(icon(""), tr("Upload to server..."), this);
-    actDocumentUploadToServer->setStatusTip(tr("Upload to server..."));
-    connect(actDocumentUploadToServer, SIGNAL(triggered()), this, SLOT(doDocumentUploadToServer()));
+    // actDocumentUploadToServer = new QAction(icon(""), tr("Upload to server..."), this);
+    // actDocumentUploadToServer->setStatusTip(tr("Upload to server..."));
+    // connect(actDocumentUploadToServer, SIGNAL(triggered()), this, SLOT(doDocumentUploadToServer()));
 
     actDocumentClose = new QAction(tr("&Close"), this);
     actDocumentClose->setShortcuts(QKeySequence::Close);
@@ -345,9 +345,9 @@ void MainWindow::createActions()
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
-    actCollaborationServer = new QAction(icon("collaboration"), tr("Collaboration server"), this);
-    actCollaborationServer->setStatusTip(tr("Collaboration server..."));
-    connect(actCollaborationServer, SIGNAL(triggered()), this, SLOT(doCollaborationServer()));
+    // actCollaborationServer = new QAction(icon("collaboration"), tr("Collaboration server"), this);
+    // actCollaborationServer->setStatusTip(tr("Collaboration server..."));
+    // connect(actCollaborationServer, SIGNAL(triggered()), this, SLOT(doCollaborationServer()));
 
     actOnlineHelp = new QAction(icon(""), tr("&Online help"), this);
     actOnlineHelp->setStatusTip(tr("Online help"));
@@ -474,10 +474,10 @@ void MainWindow::createMenus()
     mnuFileImportExport->addAction(sceneViewMesh->actExportVTKOrder);
     mnuFileImportExport->addAction(sceneViewPost2D->actExportVTKScalar);
 
-    QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
-    mnuServer->addAction(actDocumentDownloadFromServer);
-    mnuServer->addAction(actDocumentUploadToServer);
-    mnuServer->addAction(actCollaborationServer);
+    // QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
+    // mnuServer->addAction(actDocumentDownloadFromServer);
+    // mnuServer->addAction(actDocumentUploadToServer);
+    // mnuServer->addAction(actCollaborationServer);
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
@@ -490,7 +490,7 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuFileImportExport);
-    mnuFile->addMenu(mnuServer);
+    // mnuFile->addMenu(mnuServer);
     mnuFile->addSeparator();
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
@@ -585,7 +585,7 @@ void MainWindow::createMenus()
     mnuHelp->addAction(actHelp);
     mnuHelp->addAction(actOnlineHelp);
     mnuHelp->addAction(actHelpShortCut);
-    mnuHelp->addAction(actCollaborationServer);
+    // mnuHelp->addAction(actCollaborationServer);
 #ifndef Q_WS_MAC
     mnuHelp->addSeparator();
 #else
@@ -1261,8 +1261,8 @@ void MainWindow::doSolve()
         // raise postprocessor
         postprocessorWidget->raise();
 
-        Agros2D::problem()->clearFieldsAndConfig();
-        QApplication::exit();
+        // Agros2D::problem()->clearFieldsAndConfig();
+        // QApplication::exit();
 
         // successful run
         logDialog->close();

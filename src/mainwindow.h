@@ -143,11 +143,11 @@ private:
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
-    QAction *actDocumentDownloadFromServer;
+    // QAction *actDocumentDownloadFromServer;
     QAction *actDocumentSave;
     QAction *actDocumentSaveSolution;
     QAction *actDocumentSaveAs;
-    QAction *actDocumentUploadToServer;
+    // QAction *actDocumentUploadToServer;
     QAction *actDocumentClose;
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
@@ -182,7 +182,7 @@ private:
     QAction *actHelp;
     QAction *actHelpShortCut;
     QAction *actOnlineHelp;
-    QAction *actCollaborationServer;
+    // QAction *actCollaborationServer;
     QAction *actCheckVersion;
     QAction *actAbout;
     QAction *actAboutQt;

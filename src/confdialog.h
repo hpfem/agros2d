@@ -59,7 +59,7 @@ private:
     QComboBox *cmbGUIStyle;
     QComboBox *cmbLanguage;
     QComboBox *cmbDefaultPhysicField;
-    LineEditDouble *txtCollaborationServerURL;
+    // LineEditDouble *txtCollaborationServerURL;
 
     // delete files
     QCheckBox *chkDeleteTriangleMeshFiles;
