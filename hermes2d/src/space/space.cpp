@@ -1305,6 +1305,7 @@ namespace Hermes
         }
 
         space->seq = g_space_seq++;
+
         space->assign_dofs();
 
         return space;
