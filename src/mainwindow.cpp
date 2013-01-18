@@ -407,9 +407,9 @@ void MainWindow::createActions()
     actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
     connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
 
-    actReport = new QAction(icon("report"), tr("&Report..."), this);
-    actReport->setStatusTip(tr("Problem html report"));
-    connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
+    // actReport = new QAction(icon("report"), tr("&Report..."), this);
+    // actReport->setStatusTip(tr("Problem html report"));
+    // connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 
     actMaterialBrowser = new QAction(icon(""), tr("Material browser..."), this);
     actMaterialBrowser->setStatusTip(tr("Material browser"));
@@ -574,7 +574,7 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actMaterialBrowser);
     mnuTools->addSeparator();
-    mnuTools->addAction(actReport);
+    // mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();

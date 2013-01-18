@@ -175,7 +175,7 @@ private:
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;
     QAction *actScriptEditorRunCommand;
-    QAction *actReport;
+    // QAction *actReport;
     QAction *actMaterialBrowser;
     QAction *actCreateVideo;
 
