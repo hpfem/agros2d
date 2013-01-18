@@ -1261,8 +1261,8 @@ void MainWindow::doSolve()
         // raise postprocessor
         postprocessorWidget->raise();
 
-        // Agros2D::problem()->clearFieldsAndConfig();
-        // QApplication::exit();
+        Agros2D::problem()->clearFieldsAndConfig();
+        QApplication::exit();
 
         // successful run
         logDialog->close();

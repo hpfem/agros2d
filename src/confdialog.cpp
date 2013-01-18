@@ -345,7 +345,7 @@ QWidget *ConfigComputerDialog::createPluginWidget()
     headModules << tr("Name") << tr("Availability");
     treeModules->setHeaderLabels(headModules);
 
-    connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(moduleDoubleClicked(QTreeWidgetItem *, int)));
+    // connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(moduleDoubleClicked(QTreeWidgetItem *, int)));
     connect(treeModules, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(moduleClicked(QTreeWidgetItem *, int)));
     connect(treeModules, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(moduleClicked(QTreeWidgetItem *, int)));
 
