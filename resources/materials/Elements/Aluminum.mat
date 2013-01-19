@@ -32,14 +32,14 @@
         <material:function body="def agros2d_material(t) :&#xA;    t = t + 273.15&#xA;    if t >= 100.0 and t &lt; 320.0 :&#xA;        return -4.608220e-08*t*t*t*t +7.112754e-05*t*t*t -4.125401e-02*t*t +1.118100e+01*t -2.904161e+02&#xA;    elif t >= 320.0 and t &lt;= 933.0 :&#xA;        return 1.303608e-06*t*t*t -2.070065e-03*t*t +1.513029e+00*t +5.956585e+02&#xA;    else :&#xA;        return 1.000000e+100" interval_from="-100" interval_to="659.85"/>
       </material:dependence>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" id="density" name="Density (Kelvin)" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941) and R. Feder, A.S. Norwick, Physical Review, v109, p1959 (1958) and D.F. Gibbons, Physical Review, v112, p136 (1958)" unit="kg/m3">
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" id="density" name="Density (Kelvin)" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941) and R. Feder, A.S. Norwick, Physical Review, v109, p1959 (1958) and D.F. Gibbons, Physical Review, v112, p136 (1958)" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="2700"/>
       <material:dependence>
         <material:table keys="" values=""/>
         <material:function body="def agros2d_material(t) :&#xA;    if t >= 20.0 and t &lt; 130.0 :&#xA;        return 5.734155e-08*t*t*t*t -1.700864e-05*t*t*t +1.016054e-03*t*t -2.751647e-02*t +2.734317e+03&#xA;    elif t >= 130.0 and t &lt;= 933.0 :&#xA;        return 5.177991e-13*t*t*t*t*t -1.367828e-09*t*t*t*t +1.358200e-06*t*t*t -7.012444e-04*t*t -6.011681e-03*t +2.736893e+03&#xA;    else :&#xA;        return 1.000000e+100" interval_from="20" interval_to="933"/>
       </material:dependence>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="deg." id="density" name="Density (Celsius)" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941) and R. Feder, A.S. Norwick, Physical Review, v109, p1959 (1958) and D.F. Gibbons, Physical Review, v112, p136 (1958)" unit="kg/m3">
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="deg." id="density" name="Density (Celsius)" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941) and R. Feder, A.S. Norwick, Physical Review, v109, p1959 (1958) and D.F. Gibbons, Physical Review, v112, p136 (1958)" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="2700"/>
       <material:dependence>
         <material:table keys="" values=""/>
