@@ -22,53 +22,59 @@
 
 #include "util.h"
 
-/*
-class ChartBasic;
+class LineEditDouble;
 
-class MaterialBrowserDialog : public QDialog
+class MaterialEditDialog : public QDialog
 {
     Q_OBJECT
 public:
-    MaterialBrowserDialog(QWidget *parent = 0);
-    ~MaterialBrowserDialog();
+    MaterialEditDialog(const QString &fileName, QWidget *parent = 0);
+    ~MaterialEditDialog();
 
-    int showDialog(bool select = false);
-
-    inline QList<double> x() const { return m_x; }
-    inline QList<double> y() const { return m_y; }
+    int showDialog();
 
 protected:
     void createControls();
-    void readMaterials();
+    void readMaterial();
+    bool writeMaterial();
 
 private:
-    QTreeWidget *trvMaterial;
-    QTreeWidget *trvProperty;
-    QLabel *lblMaterial;
-    QLabel *lblProperty;
-    QLabel *lblShortname;
-    QLabel *lblDependenceShortname;
-    QLabel *lblSource;
-    QLabel *lblValue;
-    ChartBasic *chartValue;
+    struct Property
+    {
+        QLineEdit *txtID;
+        QLineEdit *txtName;
+        QLineEdit *txtShortname;
+        QLineEdit *txtUnit;
+        QLineEdit *txtSource;
+        QLineEdit *txtDependenceShortname;
+        QLineEdit *txtDependenceUnit;
 
-    QDialogButtonBox *buttonBox;
+        LineEditDouble *txtConstant;
 
-    QList<double> m_x;
-    QList<double> m_y;
+        QLineEdit *txtTableKeys;
+        QLineEdit *txtTableValues;
 
-    bool m_select;
+        QTextEdit *txtFunction;
+        LineEditDouble *txtFunctionFrom;
+        LineEditDouble *txtFunctionTo;
+    };
+
+    QString m_fileName;
+
+    QLineEdit *txtName;
+    QLineEdit *txtDescription;
+    QList<Property> propertiesUI;
+
+    QTabWidget *tabProperties;
+
+    MaterialEditDialog::Property addPropertyUI(const QString &name);
 
 private slots:
-    void doMaterialSelected(QTreeWidgetItem *item, int role);
-    void doMaterialSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-    void doPropertySelected(QTreeWidgetItem *item, int role);
-    void doPropertySelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-
     void doAccept();
+    void addProperty();
+    void closeProperty(int index);
 };
 
-*/
 class MaterialBrowserDialog : public QDialog
 {
     Q_OBJECT
@@ -89,9 +95,8 @@ protected:
 private:
     QWebView *webView;
     QTreeWidget *trvMaterial;
+    QPushButton *btnEdit;
     QString m_selectedFilename;
-
-    QDialogButtonBox *buttonBox;
 
     QList<double> m_selected_x;
     QList<double> m_selected_y;
@@ -101,11 +106,11 @@ private:
     void functionValues(const QString &function, double from, double to, int count, QList<double> *keys, QList<double> *values);
 
 private slots:
-    void doReject();
-
     void doItemSelected(QTreeWidgetItem *item, int column);
+    void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
     void linkClicked(const QUrl &url);
+    void doEdit();
 };
 
 #endif // MATERIALBROWSERDIALOG_H

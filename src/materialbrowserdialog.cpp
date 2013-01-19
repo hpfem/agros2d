@@ -1,321 +1,4 @@
-// This file is part of Agros2D.
-//
-// Agros2D is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 2 of the License, or
-// (at your option) any later version.
-//
-// Agros2D is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
-//
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "materialbrowserdialog.h"
-#include "datatable.h"
-
-#include "gui/chart.h"
-
-#include "pythonlab/pythonengine_agros.h"
-
-/*
-struct MaterialProperty
-{
-    QString id;
-    QString name;
-    QString shortname;
-    QString unit;
-    QString dependence_shortname;
-    QString dependence_unit;
-    QString source;
-    QString key;
-    QString value;
-};
-Q_DECLARE_METATYPE(MaterialProperty)
-
-MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent)
-{
-    setWindowIcon(icon(""));
-    setWindowTitle(tr("Material browser"));
-
-    createControls();
-
-    readMaterials();
-
-    QSettings settings;
-    restoreGeometry(settings.value("MaterialBrowserDialog/Geometry", saveGeometry()).toByteArray());
-}
-
-MaterialBrowserDialog::~MaterialBrowserDialog()
-{
-    QSettings settings;
-    settings.setValue("MaterialBrowserDialog/Geometry", saveGeometry());
-}
-
-int MaterialBrowserDialog::showDialog(bool select)
-{
-    m_select = select;
-    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(m_select);
-
-    return exec();
-}
-
-void MaterialBrowserDialog::createControls()
-{
-    trvMaterial = new QTreeWidget(this);
-    // trvMaterial->setContextMenuPolicy(Qt::CustomContextMenu);
-    trvMaterial->setMouseTracking(true);
-    trvMaterial->setColumnCount(1);
-    trvMaterial->setColumnWidth(0, 150);
-    trvMaterial->setIndentation(12);
-
-    connect(trvMaterial, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doMaterialSelected(QTreeWidgetItem *, int)));
-    connect(trvMaterial, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(doMaterialSelected(QTreeWidgetItem *, int)));
-    connect(trvMaterial, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doMaterialSelected(QTreeWidgetItem *, QTreeWidgetItem *)));
-
-    QStringList materialLabels;
-    materialLabels << tr("Material");
-    trvMaterial->setHeaderLabels(materialLabels);
-
-    trvProperty = new QTreeWidget(this);
-    // trvProperty->setContextMenuPolicy(Qt::CustomContextMenu);
-    trvProperty->setMouseTracking(true);
-    trvProperty->setColumnCount(1);
-    trvProperty->setColumnWidth(0, 150);
-    trvProperty->setIndentation(12);
-
-    connect(trvProperty, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doPropertySelected(QTreeWidgetItem *, int)));
-    connect(trvProperty, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(doPropertySelected(QTreeWidgetItem *, int)));
-    connect(trvProperty, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doPropertySelected(QTreeWidgetItem *, QTreeWidgetItem *)));
-
-    QStringList propertyLabels;
-    propertyLabels << tr("Property");
-    trvProperty->setHeaderLabels(propertyLabels);
-
-    lblMaterial = new QLabel("-");
-    lblProperty = new QLabel("-");
-    lblShortname = new QLabel("-");
-    lblDependenceShortname = new QLabel("-");
-    lblSource = new QLabel("-");
-    lblSource->setWordWrap(true);
-    lblSource->setMaximumWidth(350);
-    lblValue = new QLabel("0.0");
-
-    chartValue = new Chart(this);
-
-    QVBoxLayout *layoutChartValue = new QVBoxLayout();
-    layoutChartValue->addWidget(chartValue);
-
-    QGroupBox *grpChartValue = new QGroupBox(tr("Chart"));
-    grpChartValue->setLayout(layoutChartValue);
-
-    QGridLayout *layoutProperty = new QGridLayout();
-    layoutProperty->addWidget(new QLabel(tr("Material:")), 0, 0);
-    layoutProperty->addWidget(lblMaterial, 0, 1);
-    layoutProperty->addWidget(new QLabel(tr("Property:")), 1, 0);
-    layoutProperty->addWidget(lblProperty, 1, 1);
-    layoutProperty->addWidget(new QLabel(tr("Variable:")), 2, 0);
-    layoutProperty->addWidget(lblShortname, 2, 1);
-    layoutProperty->addWidget(new QLabel(tr("Dependence:")), 3, 0);
-    layoutProperty->addWidget(lblDependenceShortname, 3, 1);
-    layoutProperty->addWidget(new QLabel(tr("Source:")), 4, 0);
-    layoutProperty->addWidget(lblSource, 4, 1);
-    layoutProperty->addWidget(new QLabel(tr("Value:")), 5, 0);
-    layoutProperty->addWidget(lblValue, 5, 1);
-    layoutProperty->setRowStretch(6, 1);
-    layoutProperty->setColumnStretch(1, 1);
-
-    QGroupBox *grpProperty = new QGroupBox(tr("Property"));
-    grpProperty->setLayout(layoutProperty);
-
-    QVBoxLayout *layoutPropertyChart = new QVBoxLayout();
-    layoutPropertyChart->addWidget(grpProperty);
-    layoutPropertyChart->addWidget(grpChartValue, 1);
-
-    QHBoxLayout *layoutMaterials = new QHBoxLayout();
-    layoutMaterials->addWidget(trvMaterial);
-    layoutMaterials->addWidget(trvProperty);
-    layoutMaterials->addLayout(layoutPropertyChart, 1);
-
-    // dialog buttons
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMaterials, 1);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
-
-    setLayout(layout);
-}
-
-
-void MaterialBrowserDialog::readMaterials()
-{
-    QDir dir;
-    dir.setPath(datadir() + "/resources/materials");
-
-    // add all translations
-    QStringList filters;
-    filters << "*.xml";
-    dir.setNameFilters(filters);
-    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-
-    // remove extension
-    QStringList list = dir.entryList();
-    list.replaceInStrings(".xml", "");
-
-    trvMaterial->clear();
-
-    for (int i = 0; i < list.count(); i++)
-    {
-        QTreeWidgetItem *node = new QTreeWidgetItem(trvMaterial);
-        node->setText(0, list.at(i));
-    }
-}
-
-void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *current, QTreeWidgetItem *previous)
-{
-    doMaterialSelected(current, Qt::UserRole);
-}
-
-void MaterialBrowserDialog::doMaterialSelected(QTreeWidgetItem *item, int role)
-{
-    if (item != NULL)
-    {
-        trvProperty->clear();
-        QString fileName = datadir() + "/resources/materials/" + item->text(0) + ".xml";
-
-        QDomDocument doc;
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly))
-        {
-
-            // qDebug << tr("File '%1' cannot be opened (%2).").
-            //           arg(fileName).
-            //           arg(file.errorString());
-
-            return;
-        }
-
-        if (!doc.setContent(&file)) {
-            file.close();
-            // qDebug << tr("File '%1' is not valid material file.").arg(fileName);
-            return;
-        }
-        file.close();
-
-        // main document
-        QDomElement eleDoc = doc.documentElement();
-
-        QDomNode eleProperty = eleDoc.toElement().elementsByTagName("property").at(0);
-        QDomNode n = eleProperty.firstChild();
-        while(!n.isNull())
-        {
-            QDomElement element = n.toElement();
-
-            MaterialProperty material;
-
-            material.id = element.toElement().attribute("id");
-            material.name = element.toElement().attribute("name");
-            material.shortname = element.toElement().attribute("shortname");
-            material.dependence_shortname = element.toElement().attribute("dependence_shortname");
-            material.dependence_unit = element.toElement().attribute("dependence_unit");
-            material.unit = element.toElement().attribute("unit");
-            material.source = element.toElement().attribute("source");
-            material.key = element.toElement().attribute("key");
-            material.value = element.toElement().attribute("value");
-
-            QVariant v;
-            v.setValue(material);
-
-            QTreeWidgetItem *node = new QTreeWidgetItem(trvProperty);
-            node->setText(0, material.name);
-            node->setData(0, Qt::UserRole, v);
-
-            n = n.nextSibling();
-        }
-
-        if (trvProperty->topLevelItemCount() > 0.0)
-        {
-            trvProperty->topLevelItem(0)->setSelected(true);
-            doPropertySelected(trvProperty->topLevelItem(0), trvProperty->topLevelItem(0));
-        }
-    }
-}
-
-void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *current, QTreeWidgetItem *previous)
-{
-    doPropertySelected(current, Qt::UserRole);
-}
-
-void MaterialBrowserDialog::doPropertySelected(QTreeWidgetItem *item, int role)
-{
-    m_x.clear();
-    m_y.clear();
-
-    if (item != NULL)
-    {
-        MaterialProperty material = item->data(0, Qt::UserRole).value<MaterialProperty>();
-
-        lblMaterial->setText(trvMaterial->currentItem()->text(0));
-        lblProperty->setText(material.name);
-        lblShortname->setText(QString("%1 (%2)").arg(material.shortname).arg(material.unit));
-        lblDependenceShortname->setText(QString("%1 (%2)").arg(material.dependence_shortname).arg(material.dependence_unit));
-        lblSource->setText(material.source);
-
-        if (!material.key.isEmpty())
-        {
-            // nonlinear material
-            lblValue->setText(tr("nonlinear material"));
-            chartValue->setVisible(true);
-
-            // axes
-            chartValue->setAxisTitle(QwtPlot::yLeft, lblShortname->text());
-            chartValue->setAxisTitle(QwtPlot::xBottom, lblDependenceShortname->text());
-
-            // data
-            QStringList strx = material.key.split(",");
-            QStringList stry = material.value.split(",");
-
-            double *x = new double[strx.count()];
-            double *y = new double[stry.count()];
-            for (int i = 0; i < strx.count(); i++)
-            {
-                x[i] = strx.at(i).toDouble();
-                y[i] = stry.at(i).toDouble();
-
-                m_x.append(x[i]);
-                m_y.append(y[i]);
-            }
-
-            chartValue->setData(x, y, strx.count());
-
-            // clean up
-            delete [] x;
-            delete [] y;
-        }
-        else
-        {
-            // linear material
-            lblValue->setText(material.value);
-            chartValue->setVisible(false);
-        }
-    }
-}
-
-void MaterialBrowserDialog::doAccept()
-{
-    accept();
-}
-*/
 // ***********************************************************************************************************************************************
 
 // This file is part of Agros2D.
@@ -341,6 +24,7 @@ void MaterialBrowserDialog::doAccept()
 
 #include "util/constants.h"
 #include "util/global.h"
+#include "gui/lineeditdouble.h"
 
 #include "scene.h"
 #include "scenenode.h"
@@ -355,7 +39,303 @@ void MaterialBrowserDialog::doAccept()
 
 #include "ctemplate/template.h"
 
+#include "pythonlab/pythonengine_agros.h"
+
 #include "../resources_source/classes/material_xml.h";
+
+
+MaterialEditDialog::MaterialEditDialog(const QString &fileName, QWidget *parent) : QDialog(parent),
+    m_fileName(fileName)
+{
+    setWindowIcon(icon(""));
+    setWindowTitle(tr("Material editor"));
+
+    createControls();
+
+    readMaterial();
+
+    QSettings settings;
+    restoreGeometry(settings.value("MaterialEditDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+MaterialEditDialog::~MaterialEditDialog()
+{
+    QSettings settings;
+    settings.setValue("MaterialEditDialog/Geometry", saveGeometry());
+}
+
+int MaterialEditDialog::showDialog()
+{
+    return exec();
+}
+
+void MaterialEditDialog::createControls()
+{    
+    tabProperties = new QTabWidget(this);
+
+    txtName = new QLineEdit();
+    txtDescription = new QLineEdit();
+
+    QGridLayout *layoutProperty = new QGridLayout();
+    layoutProperty->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layoutProperty->addWidget(txtName, 0, 1);
+    layoutProperty->addWidget(new QLabel(tr("Description:")), 1, 0);
+    layoutProperty->addWidget(txtDescription, 1, 1);
+    layoutProperty->setColumnStretch(1, 1);
+
+    // dialog buttons
+    QPushButton *btnAddProperty = new QPushButton(tr("Add property"));
+    btnAddProperty->setDefault(false);
+    connect(btnAddProperty, SIGNAL(clicked()), this, SLOT(addProperty()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnAddProperty, QDialogButtonBox::ActionRole);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutProperty, 1);
+    layout->addWidget(tabProperties);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+MaterialEditDialog::Property MaterialEditDialog::addPropertyUI(const QString &name)
+{
+    Property propUI;
+
+    propUI.txtID = new QLineEdit();
+    propUI.txtName = new QLineEdit();
+    propUI.txtShortname = new QLineEdit();
+    propUI.txtUnit = new QLineEdit();
+    propUI.txtSource = new QLineEdit();
+    propUI.txtDependenceShortname = new QLineEdit();
+    propUI.txtDependenceUnit = new QLineEdit();
+
+    // constant
+    propUI.txtConstant = new LineEditDouble(0.0);
+
+    QGridLayout *layoutConstant = new QGridLayout();
+    layoutConstant->addWidget(new QLabel(tr("Value:")), 0, 0);
+    layoutConstant->addWidget(propUI.txtConstant, 0, 1);
+
+    QGroupBox *grpConstant = new QGroupBox(tr("Constant"));
+    grpConstant->setLayout(layoutConstant);
+
+    // table
+    propUI.txtTableKeys = new QLineEdit();
+    propUI.txtTableValues = new QLineEdit();
+
+    QGridLayout *layoutTable = new QGridLayout();
+    layoutTable->addWidget(new QLabel(tr("Keys:")), 0, 0);
+    layoutTable->addWidget(propUI.txtTableKeys, 0, 1);
+    layoutTable->addWidget(new QLabel(tr("Values:")), 1, 0);
+    layoutTable->addWidget(propUI.txtTableValues, 1, 1);
+
+    QGroupBox *grpTable = new QGroupBox(tr("Table"));
+    grpTable->setLayout(layoutTable);
+
+    // function
+    propUI.txtFunction = new QTextEdit();
+    propUI.txtFunctionFrom = new LineEditDouble(0.0);
+    propUI.txtFunctionTo = new LineEditDouble(0.0);
+
+
+    QGridLayout *layoutFunction = new QGridLayout();
+    layoutFunction->addWidget(new QLabel(tr("Function:")), 0, 0);
+    layoutFunction->addWidget(propUI.txtFunction, 0, 1);
+    layoutFunction->addWidget(new QLabel(tr("From:")), 1, 0);
+    layoutFunction->addWidget(propUI.txtFunctionFrom, 1, 1);
+    layoutFunction->addWidget(new QLabel(tr("To:")), 2, 0);
+    layoutFunction->addWidget(propUI.txtFunctionTo, 2, 1);
+
+    QGroupBox *grpFunction = new QGroupBox(tr("Table"));
+    grpFunction->setLayout(layoutFunction);
+
+    QGridLayout *layoutProperty = new QGridLayout();
+    layoutProperty->addWidget(new QLabel(tr("ID:")), 0, 0);
+    layoutProperty->addWidget(propUI.txtID, 0, 1);
+    layoutProperty->addWidget(new QLabel(tr("Name:")), 1, 0);
+    layoutProperty->addWidget(propUI.txtName, 1, 1);
+    layoutProperty->addWidget(new QLabel(tr("Shortname:")), 2, 0);
+    layoutProperty->addWidget(propUI.txtShortname, 2, 1);
+    layoutProperty->addWidget(new QLabel(tr("Unit:")), 3, 0);
+    layoutProperty->addWidget(propUI.txtUnit, 3, 1);
+    layoutProperty->addWidget(new QLabel(tr("Source:")), 4, 0);
+    layoutProperty->addWidget(propUI.txtSource, 4, 1);
+    layoutProperty->addWidget(new QLabel(tr("Dependence shortname:")), 5, 0);
+    layoutProperty->addWidget(propUI.txtDependenceShortname, 5, 1);
+    layoutProperty->addWidget(new QLabel(tr("Dependence unit:")), 6, 0);
+    layoutProperty->addWidget(propUI.txtDependenceUnit, 6, 1);
+
+    layoutProperty->addWidget(grpConstant, 10, 0, 1, 2);
+    layoutProperty->addWidget(grpTable, 11, 0, 1, 2);
+    layoutProperty->addWidget(grpFunction, 12, 0, 1, 2);
+
+    // add property UI to the list
+    propertiesUI.append(propUI);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layoutProperty);
+
+    tabProperties->addTab(widget, name);
+    tabProperties->setTabsClosable(true);
+    connect(tabProperties, SIGNAL(tabCloseRequested(int)), this, SLOT(closeProperty(int)));
+
+    return propUI;
+}
+
+void MaterialEditDialog::readMaterial()
+{
+    if (QFile::exists(m_fileName))
+    {
+        std::auto_ptr<XMLMaterial::material> material_xsd;
+        material_xsd = XMLMaterial::material_(m_fileName.toStdString().c_str(), xml_schema::flags::dont_validate);
+        XMLMaterial::material *material = material_xsd.get();
+
+        txtName->setText(QString::fromStdString(material->general().name()));
+        if (material->general().description().present())
+            txtDescription->setText(QString::fromStdString(material->general().description().get()));
+
+        tabProperties->clear();
+
+        // properties
+        for (unsigned int i = 0; i < material->properties().property().size(); i++)
+        {
+            XMLMaterial::property prop = material->properties().property().at(i);
+
+            Property propUI = addPropertyUI(QString::fromStdString(prop.id()));
+
+            propUI.txtID->setText(QString::fromStdString(prop.id()));
+            propUI.txtName->setText(QString::fromStdString(prop.name()));
+            propUI.txtShortname->setText(QString::fromStdString(prop.shortname()));
+            propUI.txtUnit->setText(QString::fromStdString(prop.unit()));
+            propUI.txtSource->setText(QString::fromStdString(prop.source()));
+            propUI.txtDependenceShortname->setText(QString::fromStdString(prop.dependence_shortname()));
+            propUI.txtDependenceUnit->setText(QString::fromStdString(prop.dependence_unit()));
+
+            // constant
+            if (prop.constant().present())
+                propUI.txtConstant->setValue(prop.constant().get().value());
+
+            // table
+            if (prop.dependence().present())
+            {
+                if (prop.dependence().get().table().present())
+                {
+                    XMLMaterial::table table = prop.dependence().get().table().get();
+
+                    propUI.txtTableKeys->setText(QString::fromStdString(table.keys()));
+                    propUI.txtTableValues->setText(QString::fromStdString(table.values()));
+                }
+            }
+
+            // function
+            if (prop.dependence().present())
+            {
+                if (prop.dependence().get().function().present())
+                {
+                    XMLMaterial::function function = prop.dependence().get().function().get();
+
+                    propUI.txtFunction->setText(QString::fromStdString(function.body()));
+                    propUI.txtFunctionFrom->setValue(function.interval_from());
+                    propUI.txtFunctionTo->setValue(function.interval_to());
+                }
+            }
+        }
+    }
+}
+
+bool MaterialEditDialog::writeMaterial()
+{
+    try
+    {
+        // general
+        XMLMaterial::general general(txtName->text().toStdString());
+        general.description().set(txtDescription->text().toStdString());
+
+        // properties
+        XMLMaterial::properties properties;
+        foreach (Property propUI, propertiesUI)
+        {
+            // property
+            XMLMaterial::property prop(propUI.txtID->text().toStdString(),
+                                       propUI.txtName->text().toStdString(),
+                                       propUI.txtShortname->text().toStdString(),
+                                       propUI.txtUnit->text().toStdString(),
+                                       propUI.txtDependenceShortname->text().toStdString(),
+                                       propUI.txtDependenceUnit->text().toStdString(),
+                                       propUI.txtSource->text().toStdString());
+
+            // constant
+            prop.constant().set(XMLMaterial::constant(propUI.txtConstant->value()));
+
+            // dependence
+            XMLMaterial::dependence dependence;
+
+            // table
+            dependence.table().set(XMLMaterial::table(propUI.txtTableKeys->text().toStdString(),
+                                                      propUI.txtTableValues->text().toStdString()));
+            // function
+            dependence.function().set(XMLMaterial::function(propUI.txtFunction->toPlainText().toStdString(),
+                                                            propUI.txtFunctionFrom->value(),
+                                                            propUI.txtFunctionTo->value()));
+
+            prop.dependence().set(dependence);
+
+            // add property
+            properties.property().push_back(prop);
+        }
+
+        // material
+        XMLMaterial::material material(general, properties);
+
+        std::string mesh_schema_location("");
+
+        // TODO: set path more general
+        mesh_schema_location.append(QString("%1/material_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
+        ::xml_schema::namespace_info namespace_info_mesh("XMLMaterial", mesh_schema_location);
+
+        ::xml_schema::namespace_infomap namespace_info_map;
+        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("material", namespace_info_mesh));
+
+        std::ofstream out(m_fileName.toStdString().c_str());
+        XMLMaterial::material_(out, material, namespace_info_map);
+
+        return true;
+    }
+    catch (const xml_schema::exception& e)
+    {
+        std::cerr << e << std::endl;
+
+        return false;
+    }
+}
+
+void MaterialEditDialog::addProperty()
+{
+    addPropertyUI(tr("New property"));
+    writeMaterial();
+}
+
+void MaterialEditDialog::closeProperty(int index)
+{
+    if (index != -1)
+    {
+        propertiesUI.removeAt(index);
+        tabProperties->removeTab(index);
+    }
+}
+
+void MaterialEditDialog::doAccept()
+{
+    if (writeMaterial())
+        accept();
+}
+
+// ***********************************************************************************************************
 
 MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     m_select(false)
@@ -376,6 +356,8 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     trvMaterial->setHeaderHidden(true);
     trvMaterial->setMinimumWidth(230);
 
+    connect(trvMaterial, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+            this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     connect(trvMaterial, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
     connect(trvMaterial, SIGNAL(itemPressed(QTreeWidgetItem *, int)),
@@ -388,26 +370,39 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     QWidget *widget = new QWidget();
     widget->setLayout(layoutSurface);
 
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+    QPushButton *btnClose = new QPushButton();
+    btnClose->setText(tr("Close"));
+    btnClose->setDefault(true);
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(reject()));
+
+    btnEdit = new QPushButton();
+    btnEdit->setText(tr("Edit"));
+    btnEdit->setDefault(false);
+    btnEdit->setEnabled(false);
+    connect(btnEdit, SIGNAL(clicked()), this, SLOT(doEdit()));
+
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch(1);
+    layoutButtons->addWidget(btnEdit);
+    layoutButtons->addWidget(btnClose);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(widget, 1);
     layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addLayout(layoutButtons);
 
     setLayout(layout);
 
     readMaterials();
+
+    QSettings settings;
+    settings.setValue("MaterialBrowserDialog/Geometry", saveGeometry());
 }
 
 MaterialBrowserDialog::~MaterialBrowserDialog()
 {
-}
-
-void MaterialBrowserDialog::doReject()
-{
-    reject();
+    QSettings settings;
+    restoreGeometry(settings.value("MaterialBrowserDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 int MaterialBrowserDialog::showDialog(bool select)
@@ -422,72 +417,25 @@ void MaterialBrowserDialog::doItemSelected(QTreeWidgetItem *item, int column)
     if (!m_selectedFilename.isEmpty())
     {
         materialInfo(m_selectedFilename);
+        btnEdit->setEnabled(true);
     }
     else
     {
         webView->setHtml("");
+        btnEdit->setEnabled(false);
+    }
+}
+
+void MaterialBrowserDialog::doItemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    if (trvMaterial->currentItem())
+    {
+        doEdit();
     }
 }
 
 void MaterialBrowserDialog::readMaterials()
 {
-    /*
-    try
-    {
-        // general
-        XMLMaterial::general general("Aluminum");
-        general.description().set("desc.");
-
-        // property
-        XMLMaterial::property prop1("thermal_capacity", "Thermal capacity 1", "lambda", "W/m.K", "T", "deg.",
-                                    "C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)");
-        prop1.constant().set(XMLMaterial::constant(100));
-
-        XMLMaterial::dependence dependence1;
-        dependence1.function().set(XMLMaterial::function("def agros2d_material(t) :\n"
-                                                         "    if t >= 293.0 and t <= 848.0 :\n"
-                                                         "        return -1.078824e-08*t*t*t*t +2.414973e-05*t*t*t -1.834293e-02*t*t +6.018500e+00*t -2.157306e+02\n"
-                                                         "    else :\n"
-                                                         "        return 1.000000e+100\n", 293.0, 848));
-        prop1.dependence().set(dependence1);
-
-        XMLMaterial::property prop2("thermal_conductivity", "Thermal conductivity", "lambda", "W/m.K", "T", "deg.", "C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)");
-        prop2.constant().set(XMLMaterial::constant(238));
-
-        XMLMaterial::dependence dependence2;
-        dependence2.table().set(XMLMaterial::table("-173.16,-156.16,-139.16,-122.16,-105.16,-88.16,-71.16,-54.16,-37.16,-20.16,-3.16,13.84,30.84,47.84,64.84,81.84,98.84,115.84,132.84,149.84,166.84,183.84,200.84,217.84,234.84,251.84,268.84,285.84,302.84,319.84,336.84,353.84,370.84,387.84,404.84,421.84,438.84,455.84,472.84,489.84,506.84,523.84,540.84,557.84,574.84,591.84,608.84,625.84,642.84,659.84",
-                                                   "300.847,272.734599091,255.320111188,245.451888257,240.509215237,238.402310044,237.572323566,236.991339667,236.162375186,235.119379934,234.4272367,235.181761244,237.537361254,238.699849161,239.472587025,239.914252479,240.077201716,240.007810588,239.746815718,239.329655603,238.786811725,238.14414965,237.423260141,236.641800264,235.813834488,234.950175801,234.058726808,233.144820843,232.211563073,231.260171604,230.29031859,229.300471336,228.288233408,227.250685736,226.184727723,225.08741835,223.956317284,222.789825983,221.587528802,220.350534102,219.081815354,217.786552245,216.472471787,215.150189424,213.833550132,212.539969534,211.290775,210.111546758,209.032458997,208.088620975"));
-        prop2.dependence().set(dependence2);
-
-        // properties
-        XMLMaterial::properties properties;
-        properties.property().push_back(prop1);
-        properties.property().push_back(prop2);
-
-        // material
-        XMLMaterial::material material(general, properties);
-
-        // general
-        // material.general().name().set("x");
-
-        std::string mesh_schema_location("");
-
-        // TODO: set path more general
-        mesh_schema_location.append(QString("%1/material_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
-        ::xml_schema::namespace_info namespace_info_mesh("XMLMaterial", mesh_schema_location);
-
-        ::xml_schema::namespace_infomap namespace_info_map;
-        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("material", namespace_info_mesh));
-
-        std::ofstream out("/home/karban/Prvek.mat");
-        XMLMaterial::material_(out, material, namespace_info_map);
-    }
-    catch (const xml_schema::exception& e)
-    {
-        std::cerr << e << std::endl;
-    }
-    */
-
     // clear listview
     trvMaterial->clear();
 
@@ -522,10 +470,6 @@ void MaterialBrowserDialog::readMaterials(QDir dir, QTreeWidgetItem *parentItem)
         else if (fileInfo.suffix() == "mat")
         {
             QTreeWidgetItem *exampleItem = new QTreeWidgetItem(parentItem);
-            // if (icons.count() == 1)
-            //     exampleItem->setIcon(0, icons.at(0));
-            // else
-            //    exampleItem->setIcon(0, icon("fields/empty"));
             exampleItem->setText(0, fileInfo.baseName());
             exampleItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
         }
@@ -537,7 +481,7 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
     if (QFile::exists(fileName))
     {
         std::auto_ptr<XMLMaterial::material> material_xsd;
-        material_xsd = XMLMaterial::material_(fileName.toStdString().c_str());
+        material_xsd = XMLMaterial::material_(fileName.toStdString().c_str(), xml_schema::flags::dont_validate);
         XMLMaterial::material *material = material_xsd.get();
 
         // stylesheet
@@ -606,8 +550,11 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
 
                     for (int j = 0; j < keysString.size(); j++)
                     {
-                        keys.append(keysString.at(j).toDouble());
-                        values.append(valuesString.at(j).toDouble());
+                        if ((!keysString.at(j).isEmpty()) && (!valuesString.at(j).isEmpty()))
+                        {
+                            keys.append(keysString.at(j).toDouble());
+                            values.append(valuesString.at(j).toDouble());
+                        }
                     }
                 }
 
@@ -662,7 +609,10 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
 
 void MaterialBrowserDialog::functionValues(const QString &function, double from, double to, int count, QList<double> *keys, QList<double> *values)
 {
-    double step = (to - from) / (count - 1);
+    if (function.isEmpty())
+        return;
+
+    double step = ((to - from) - 2 * EPS_ZERO) / (count - 1);
 
     ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(function, false);
     if (!expressionResult.error.isEmpty())
@@ -670,7 +620,7 @@ void MaterialBrowserDialog::functionValues(const QString &function, double from,
 
     for (int i = 0; i < count; i++)
     {
-        double key = from + i * step;
+        double key = from + i * step + EPS_ZERO;
 
         ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(QString("agros2d_material(%1)").arg(key), true);
         if (expressionResult.error.isEmpty())
@@ -708,5 +658,14 @@ void MaterialBrowserDialog::linkClicked(const QUrl &url)
         }
 
         accept();
+    }
+}
+
+void MaterialBrowserDialog::doEdit()
+{
+    MaterialEditDialog dialog(m_selectedFilename, this);
+    if (dialog.showDialog() == QDialog::Accepted)
+    {
+        materialInfo(m_selectedFilename);
     }
 }
