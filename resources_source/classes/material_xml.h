@@ -838,9 +838,39 @@ namespace XMLMaterial
     void
     body (::std::auto_ptr< body_type > p);
 
+    // interval_from
+    // 
+    typedef ::xml_schema::double_ interval_from_type;
+    typedef ::xsd::cxx::tree::traits< interval_from_type, char, ::xsd::cxx::tree::schema_type::double_ > interval_from_traits;
+
+    const interval_from_type&
+    interval_from () const;
+
+    interval_from_type&
+    interval_from ();
+
+    void
+    interval_from (const interval_from_type& x);
+
+    // interval_to
+    // 
+    typedef ::xml_schema::double_ interval_to_type;
+    typedef ::xsd::cxx::tree::traits< interval_to_type, char, ::xsd::cxx::tree::schema_type::double_ > interval_to_traits;
+
+    const interval_to_type&
+    interval_to () const;
+
+    interval_to_type&
+    interval_to ();
+
+    void
+    interval_to (const interval_to_type& x);
+
     // Constructors.
     //
-    function (const body_type&);
+    function (const body_type&,
+              const interval_from_type&,
+              const interval_to_type&);
 
     function (const ::xercesc::DOMElement& e,
               ::xml_schema::flags f = 0,
@@ -866,6 +896,8 @@ namespace XMLMaterial
 
     protected:
     ::xsd::cxx::tree::one< body_type > body_;
+    ::xsd::cxx::tree::one< interval_from_type > interval_from_;
+    ::xsd::cxx::tree::one< interval_to_type > interval_to_;
   };
 }
 

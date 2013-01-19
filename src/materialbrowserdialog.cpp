@@ -468,7 +468,7 @@ void MaterialBrowserDialog::readMaterials()
                                                    "if t &gt;= 293.0 and t &lt;= 848.0 :"
                                                    "    return -1.078824e-08*t*t*t*t +2.414973e-05*t*t*t -1.834293e-02*t*t +6.018500e+00*t -2.157306e+02"
                                                    "else :"
-                                                   "    return 1.000000e+100"));
+                                                   "    return 1.000000e+100", 0, 848));
 
         XMLMaterial::property prop2("thermal_conductivity", "Thermal conductivity", "lambda", "W/m.K", "T", "deg.", "C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)");
         prop2.constant().set(XMLMaterial::constant(238));

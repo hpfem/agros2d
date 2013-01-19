@@ -45,8 +45,6 @@ private:
 
 private slots:
     void showInfo();
-
-    void finishLoading(bool ok);
 };
 
 #endif // SCENEINFOVIEW_H

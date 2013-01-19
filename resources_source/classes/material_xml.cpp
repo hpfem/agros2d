@@ -536,6 +536,42 @@ namespace XMLMaterial
   {
     this->body_.set (x);
   }
+
+  const function::interval_from_type& function::
+  interval_from () const
+  {
+    return this->interval_from_.get ();
+  }
+
+  function::interval_from_type& function::
+  interval_from ()
+  {
+    return this->interval_from_.get ();
+  }
+
+  void function::
+  interval_from (const interval_from_type& x)
+  {
+    this->interval_from_.set (x);
+  }
+
+  const function::interval_to_type& function::
+  interval_to () const
+  {
+    return this->interval_to_.get ();
+  }
+
+  function::interval_to_type& function::
+  interval_to ()
+  {
+    return this->interval_to_.get ();
+  }
+
+  void function::
+  interval_to (const interval_to_type& x)
+  {
+    this->interval_to_.set (x);
+  }
 }
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
@@ -1240,9 +1276,13 @@ namespace XMLMaterial
   //
 
   function::
-  function (const body_type& body)
+  function (const body_type& body,
+            const interval_from_type& interval_from,
+            const interval_to_type& interval_to)
   : ::xml_schema::type (),
-    body_ (body, ::xml_schema::flags (), this)
+    body_ (body, ::xml_schema::flags (), this),
+    interval_from_ (interval_from, ::xml_schema::flags (), this),
+    interval_to_ (interval_to, ::xml_schema::flags (), this)
   {
   }
 
@@ -1251,7 +1291,9 @@ namespace XMLMaterial
             ::xml_schema::flags f,
             ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    body_ (x.body_, f, this)
+    body_ (x.body_, f, this),
+    interval_from_ (x.interval_from_, f, this),
+    interval_to_ (x.interval_to_, f, this)
   {
   }
 
@@ -1260,7 +1302,9 @@ namespace XMLMaterial
             ::xml_schema::flags f,
             ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    body_ (f, this)
+    body_ (f, this),
+    interval_from_ (f, this),
+    interval_to_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1287,12 +1331,38 @@ namespace XMLMaterial
         this->body_.set (r);
         continue;
       }
+
+      if (n.name () == "interval_from" && n.namespace_ ().empty ())
+      {
+        this->interval_from_.set (interval_from_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "interval_to" && n.namespace_ ().empty ())
+      {
+        this->interval_to_.set (interval_to_traits::create (i, f, this));
+        continue;
+      }
     }
 
     if (!body_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "body",
+        "");
+    }
+
+    if (!interval_from_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "interval_from",
+        "");
+    }
+
+    if (!interval_to_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "interval_to",
         "");
     }
   }
@@ -1403,6 +1473,8 @@ namespace XMLMaterial
   operator<< (::std::ostream& o, const function& i)
   {
     o << ::std::endl << "body: " << i.body ();
+    o << ::std::endl << "interval_from: " << i.interval_from ();
+    o << ::std::endl << "interval_to: " << i.interval_to ();
     return o;
   }
 }
@@ -2118,6 +2190,28 @@ namespace XMLMaterial
           e));
 
       a << i.body ();
+    }
+
+    // interval_from
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "interval_from",
+          e));
+
+      a << ::xml_schema::as_double(i.interval_from ());
+    }
+
+    // interval_to
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "interval_to",
+          e));
+
+      a << ::xml_schema::as_double(i.interval_to ());
     }
   }
 }

@@ -58,6 +58,8 @@
   <element name="function">
     <complexType>
 		<attribute name="body" type="string" use="required" />
+		<attribute name="interval_from" type="double" use="required" />
+		<attribute name="interval_to" type="double" use="required" />
     </complexType>
   </element>
   

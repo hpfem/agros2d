@@ -6,6 +6,8 @@
 	<style type="text/css">
 		{{STYLESHEET}}
 	</style>
+    <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.js"></script> 
+    <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.flot.js"></script> 	
 	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />	
 </head>
 <body>
@@ -189,6 +191,8 @@
 <div style="text-align: center; width: 100%; height: 160px;">DOFs<br/><div id="chart_dofs_steps_{{PHYSICAL_FIELD_ID}}" style="width: 100%; height: 90%;"></div></div>
 {{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
 </div>
+{{ERROR_STEPS_CHART}}
+{{DOFS_STEPS_CHART}}
 {{/FIELD_SECTION}}
 {{/FIELD}}
 </td>
@@ -209,6 +213,7 @@
 </table>
 {{#TRANSIENT_ADAPTIVE}}
 <div style="text-align: center; width: 50%; height: 160px;">Time step length<br/><div id="chart_time_step_length" style="width: 100%; height: 90%;"></div></div>
+{{TIME_STEPS_CHART}}
 {{/TRANSIENT_ADAPTIVE}}
 </div>
 {{/SOLUTION_PARAMETERS_SECTION}}

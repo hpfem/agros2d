@@ -51,7 +51,6 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
     // problem information
     webView = new QWebView(this);
-    connect(webView, SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
 
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
     // layoutMain->setContentsMargins(0, 5, 3, 5);
@@ -98,6 +97,8 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d.png");
 
     problemInfo.SetValue("STYLESHEET", style);
+    problemInfo.SetValue("JS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
+
     problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
@@ -120,7 +121,28 @@ void InfoWidget::showInfo()
     {
         problemInfo.ShowSection("TRANSIENT");
         if (Agros2D::problem()->config()->isTransientAdaptive())
+        {
             problemInfo.ShowSection("TRANSIENT_ADAPTIVE");
+
+            if (Agros2D::problem()->isSolved())
+            {
+                QString dataTimeSteps = "[";
+                QList<double> lengths = Agros2D::problem()->timeStepLengths();
+                double time = 0;
+                for (int i = 0; i < lengths.size(); i++)
+                {
+                    dataTimeSteps += QString("[%1, %2], ").arg(time).arg(lengths.at(i));
+                    time += lengths.at(i);
+                }
+                dataTimeSteps += "]";
+
+                // chart DOFs vs. steps
+                QString timeSteps = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_time_step_length\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });});</script>").
+                        arg(dataTimeSteps);
+
+                problemInfo.SetValue("TIME_STEPS_CHART", timeSteps.toStdString());
+            }
+        }
     }
     problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
@@ -228,6 +250,43 @@ void InfoWidget::showInfo()
                     field->SetValue("SOLUTION_MESH_NODES", tr("%1 nodes").arg(solutionMeshNodes).toStdString());
                     field->SetValue("SOLUTION_MESH_ELEMENTS", tr("%1 elements").arg(solutionMeshElements).toStdString());
                     field->ShowSection("MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION");
+
+                    int timeStep = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
+                    int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
+
+                    QString dataDOFs = "[";
+                    QString dataError = "[";
+                    for (int i = 0; i < adaptiveSteps; i++)
+                    {
+                        SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
+
+                        // qDebug() << structure.adaptivity_error;
+
+                        dataDOFs += QString("[%1, %2], ").arg(i+1).arg(runTime.DOFs);
+                        dataError += QString("[%1, %2], ").arg(i+1).arg(runTime.adaptivity_error);
+                    }
+                    dataDOFs += "]";
+                    dataError += "]";
+
+                    // error
+                    QString prescribedError = QString("[[1, %1], [%2, %3]]").
+                            arg(fieldInfo->adaptivityTolerance()).
+                            arg(adaptiveSteps).
+                            arg(fieldInfo->adaptivityTolerance());
+
+                    // chart error vs. steps
+                    QString commandError = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_error_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } }, { data: %3, color: \"rgb(240, 0, 0)\" } ], { grid: { hoverable : true } });});</script>").
+                            arg(fieldInfo->fieldId()).
+                            arg(dataError).
+                            arg(prescribedError);
+
+                    // chart DOFs vs. steps
+                    QString commandDOFs = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_dofs_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });});</script>").
+                            arg(fieldInfo->fieldId()).
+                            arg(dataDOFs);
+
+                    field->SetValue("ERROR_STEPS_CHART", commandError.toStdString());
+                    field->SetValue("DOFS_STEPS_CHART", commandDOFs.toStdString());
                 }
 
                 if (Agros2D::problem()->isSolved())
@@ -241,28 +300,6 @@ void InfoWidget::showInfo()
 
                 field->ShowSection("MESH_PARAMETERS_SECTION");
             }
-
-            //        if (Agros2D::problem()->isMeshed())
-            //        {
-            //            if (Agros2D::problem()->isSolved())
-            //            {
-            //                if (fieldInfo->adaptivityType != AdaptivityType_None)
-            //                {
-            //                    problemInfo.SetValue("ADAPTIVITY_LABEL", tr("Adaptivity").toStdString());
-            //                    problemInfo.SetValue("ADAPTIVITY_ERROR_LABEL", tr("Error:").toStdString());
-            //                    problemInfo.SetValue("ADAPTIVITY_ERROR", QString::number(Agros2D::problem()->adaptiveError(), 'f', 3).toStdString());
-
-            //                    problemInfo.SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh").toStdString());
-            //                    problemInfo.SetValue("SOLUTION_MESH_NODES_LABEL", tr("Nodes:").toStdString());
-            //                    problemInfo.SetValue("SOLUTION_MESH_NODES", QString::number(Agros2D::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()).toStdString());
-            //                    problemInfo.SetValue("SOLUTION_MESH_ELEMENTS_LABEL", tr("Elements:").toStdString());
-            //                    problemInfo.SetValue("SOLUTION_MESH_ELEMENTS", QString::number(Agros2D::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()).toStdString());
-
-            //                    problemInfo.ShowSection("ADAPTIVITY_SECTION");
-            //                }
-            //                problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
-            //            }
-            //        }
         }
 
         problemInfo.ShowSection("FIELD");
@@ -306,77 +343,4 @@ void InfoWidget::showInfo()
     // load(...) works
     writeStringContent(tempProblemDir() + "/info.html", QString::fromStdString(info));
     webView->load(tempProblemDir() + "/info.html");
-}
-
-
-void InfoWidget::finishLoading(bool ok)
-{
-    // adaptive error
-    if (Agros2D::problem()->isSolved())
-    {
-        webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.js"));
-        webView->page()->mainFrame()->evaluateJavaScript(readFileContent(datadir() + TEMPLATEROOT + "/panels/js/jquery.flot.js"));
-
-        if(Agros2D::problem()->isTransient() && Agros2D::problem()->config()->isTransientAdaptive())
-        {
-            QString dataTimeSteps = "[";
-            QList<double> lengths = Agros2D::problem()->timeStepLengths();
-            double time = 0;
-            for (int i = 0; i < lengths.size(); i++)
-            {
-                dataTimeSteps += QString("[%1, %2], ").arg(time).arg(lengths.at(i));
-                time += lengths.at(i);
-            }
-            dataTimeSteps += "]";
-
-            // chart DOFs vs. steps
-            QString commandTimeSteps = QString("$(function () { $.plot($(\"#chart_time_step_length\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });})").
-                    arg(dataTimeSteps);
-
-            webView->page()->mainFrame()->evaluateJavaScript(commandTimeSteps);
-        }
-
-        foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
-        {
-            if (fieldInfo->adaptivityType() != AdaptivityType_None)
-            {
-                int timeStep = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
-                int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
-
-                QString dataDOFs = "[";
-                QString dataError = "[";
-                for (int i = 0; i < adaptiveSteps; i++)
-                {
-                    SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
-
-                    // qDebug() << structure.adaptivity_error;
-
-                    dataDOFs += QString("[%1, %2], ").arg(i+1).arg(runTime.DOFs);
-                    dataError += QString("[%1, %2], ").arg(i+1).arg(runTime.adaptivity_error);
-                }
-                dataDOFs += "]";
-                dataError += "]";
-
-                // error
-                QString prescribedError = QString("[[1, %1], [%2, %3]]").
-                        arg(fieldInfo->adaptivityTolerance()).
-                        arg(adaptiveSteps).
-                        arg(fieldInfo->adaptivityTolerance());
-
-                // chart error vs. steps
-                QString commandError = QString("$(function () { $.plot($(\"#chart_error_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } }, { data: %3, color: \"rgb(240, 0, 0)\" } ], { grid: { hoverable : true } });})").
-                        arg(fieldInfo->fieldId()).
-                        arg(dataError).
-                        arg(prescribedError);
-
-                // chart DOFs vs. steps
-                QString commandDOFs = QString("$(function () { $.plot($(\"#chart_dofs_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });})").
-                        arg(fieldInfo->fieldId()).
-                        arg(dataDOFs);
-
-                webView->page()->mainFrame()->evaluateJavaScript(commandError);
-                webView->page()->mainFrame()->evaluateJavaScript(commandDOFs);
-            }
-        }
-    }
 }
