@@ -546,7 +546,7 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     catch (Hermes::Exceptions::Exception& e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
-        AgrosSolverException(e.what());
+        throw AgrosSolverException(e.what());
     }
     catch (Hermes::Exceptions::Exception* e)
     {
