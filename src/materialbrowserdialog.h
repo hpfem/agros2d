@@ -78,8 +78,8 @@ public:
 
     int showDialog(bool select = false);
 
-    inline QList<double> x() const { return m_x; }
-    inline QList<double> y() const { return m_y; }
+    inline QList<double> x() const { return m_selected_x; }
+    inline QList<double> y() const { return m_selected_y; }
 
 protected:
     void readMaterials();
@@ -93,17 +93,19 @@ private:
 
     QDialogButtonBox *buttonBox;
 
-    QList<double> m_x;
-    QList<double> m_y;
+    QList<double> m_selected_x;
+    QList<double> m_selected_y;
 
     bool m_select;
 
+    void functionValues(const QString &function, double from, double to, int count, QList<double> *keys, QList<double> *values);
+
 private slots:
-    void doAccept();
     void doReject();
 
     void doItemSelected(QTreeWidgetItem *item, int column);
-    void doItemDoubleClicked(QTreeWidgetItem *item, int column);
+
+    void linkClicked(const QUrl &url);
 };
 
 #endif // MATERIALBROWSERDIALOG_H

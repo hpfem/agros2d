@@ -33,6 +33,9 @@
 	<tr><td><b>{{PROPERTY_DEPENDENCE_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_DEPENDENCE_SHORTNAME}}</td></tr>
 	<tr><td><b>{{PROPERTY_DEPENDENCE_UNIT_LABEL}}</b></td><td>{{PROPERTY_DEPENDENCE_UNIT}}</td></tr>
 </table>
+{{#PROPERTY_SELECTABLE}}
+<a href="property?id={{PROPERTY_ID}}&amp;constant={{PROPERTY_CONSTANT}}&amp;x={{PROPERTY_DEPENDENCE_X}}&amp;y={{PROPERTY_DEPENDENCE_Y}}" style="float: right;">Select property</a>
+{{/PROPERTY_SELECTABLE}}
 </div>
 </td>
 </tr>

@@ -70,6 +70,17 @@ b {
 	color: rgb(91, 91, 91);
 }
 
+a:link {
+	color: blue;
+}
+a:hover {
+	color: red;
+}
+
+a:link, a:visited {
+	text-decoration: none;
+}
+
 .heading td {
 	width: 100px;
 	padding-left: 10px;

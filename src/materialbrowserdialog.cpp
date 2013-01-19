@@ -365,6 +365,8 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
 
     // problem information
     webView = new QWebView(this);
+    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
     trvMaterial = new QTreeWidget(this);
     trvMaterial->setMouseTracking(true);
@@ -374,8 +376,6 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     trvMaterial->setHeaderHidden(true);
     trvMaterial->setMinimumWidth(230);
 
-    connect(trvMaterial, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
-            this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     connect(trvMaterial, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
     connect(trvMaterial, SIGNAL(itemPressed(QTreeWidgetItem *, int)),
@@ -388,8 +388,7 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     QWidget *widget = new QWidget();
     widget->setLayout(layoutSurface);
 
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -400,17 +399,10 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     setLayout(layout);
 
     readMaterials();
-
-    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
 
 MaterialBrowserDialog::~MaterialBrowserDialog()
 {
-}
-
-void MaterialBrowserDialog::doAccept()
-{
-    accept();
 }
 
 void MaterialBrowserDialog::doReject()
@@ -421,8 +413,6 @@ void MaterialBrowserDialog::doReject()
 int MaterialBrowserDialog::showDialog(bool select)
 {
     m_select = select;
-    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(m_select);
-
     return exec();
 }
 
@@ -432,20 +422,10 @@ void MaterialBrowserDialog::doItemSelected(QTreeWidgetItem *item, int column)
     if (!m_selectedFilename.isEmpty())
     {
         materialInfo(m_selectedFilename);
-        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
     }
     else
     {
         webView->setHtml("");
-    }
-}
-
-void MaterialBrowserDialog::doItemDoubleClicked(QTreeWidgetItem *item, int column)
-{
-    if (trvMaterial->currentItem())
-    {
-        m_selectedFilename = trvMaterial->currentItem()->data(0, Qt::UserRole).toString();
-        accept();
     }
 }
 
@@ -459,7 +439,7 @@ void MaterialBrowserDialog::readMaterials()
         general.description().set("desc.");
 
         // property
-        XMLMaterial::property prop1("thermal_conductivity", "Thermal conductivity 1", "lambda", "W/m.K", "T", "deg.",
+        XMLMaterial::property prop1("thermal_capacity", "Thermal capacity 1", "lambda", "W/m.K", "T", "deg.",
                                     "C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)");
         prop1.constant().set(XMLMaterial::constant(100));
 
@@ -586,6 +566,8 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
 
             ctemplate::TemplateDictionary *propSection = materialInfo.AddSectionDictionary("PROPERTIES_SECTION");
 
+            propSection->SetValue("PROPERTY_ID", prop.id());
+
             propSection->SetValue("PROPERTY_LABEL", prop.name());
             propSection->SetValue("PROPERTY_SOURCE", prop.source());
 
@@ -599,6 +581,9 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
             propSection->SetValue("PROPERTY_DEPENDENCE_UNIT_LABEL", tr("Dependence unit:").toStdString());
             propSection->SetValue("PROPERTY_DEPENDENCE_UNIT", prop.dependence_unit());
 
+            if (m_select)
+                propSection->ShowSection("PROPERTY_SELECTABLE");
+
             if (prop.constant().present())
             {
                 XMLMaterial::constant constant = prop.constant().get();
@@ -606,56 +591,49 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                 propSection->SetValue("PROPERTY_CONSTANT", QString::number(constant.value()).toStdString());
             }
 
-
             if (prop.dependence().present())
             {
-                QStringList keys;
-                QStringList values;
+                QList<double> keys;
+                QList<double> values;
 
                 if (prop.dependence().get().table().present())
                 {
                     XMLMaterial::table table = prop.dependence().get().table().get();
 
-                    keys = QString::fromStdString(table.keys()).split(",");
-                    values = QString::fromStdString(table.values()).split(",");
+                    QStringList keysString = QString::fromStdString(table.keys()).split(",");
+                    QStringList valuesString = QString::fromStdString(table.values()).split(",");
                     assert(keys.size() == values.size());
+
+                    for (int j = 0; j < keysString.size(); j++)
+                    {
+                        keys.append(keysString.at(j).toDouble());
+                        values.append(valuesString.at(j).toDouble());
+                    }
                 }
 
                 if (prop.dependence().get().function().present())
                 {
                     XMLMaterial::function function = prop.dependence().get().function().get();
 
-                    int N = 20;
-                    double step = (function.interval_to() - function.interval_from()) / (N - 1);
-
-                    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(QString::fromStdString(function.body()), false);
-                    if (!expressionResult.error.isEmpty())
-                        qDebug() << "Function: " << expressionResult.error;
-
-                    for (int i = 0; i < N; i++)
-                    {
-                        double key = function.interval_from() + i * step;
-
-                        ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(QString("agros2d_material(%1)").arg(key), true);
-                        if (expressionResult.error.isEmpty())
-                        {
-                            keys.append(QString::number(key));
-                            values.append(QString::number(expressionResult.value));
-                        }
-                        else
-                        {
-                            qDebug() << "Function eval: " << expressionResult.error;
-                        }
-                    }
-                    currentPythonEngineAgros()->runExpression("del agros2d_material", false);
+                    functionValues(QString::fromStdString(function.body()),
+                                   function.interval_from(),
+                                   function.interval_to(),
+                                   20,
+                                   &keys, &values);
                 }
-
 
                 if (keys.size() > 0)
                 {
+                    QString keysString;
+                    QString valuesString;
+
                     QString chart = "[";
                     for (int i = 0; i < keys.size(); i++)
+                    {
                         chart += QString("[%1, %2], ").arg(keys[i]).arg(values[i]);
+                        keysString += QString("%1").arg(keys[i]) + ((i < keys.size() - 1) ? "," : "");
+                        valuesString += QString("%1").arg(values[i]) + ((i < keys.size() - 1) ? "," : "");
+                    }
                     chart += "]";
 
                     QString id = QUuid::createUuid().toString().remove("{").remove("}");
@@ -663,6 +641,9 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                     propSection->SetValue("PROPERTY_CHART", QString("chart_%1").arg(id).toStdString());
                     propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: false } } ], { grid: { hoverable : false } });});</script>")
                                           .arg(id).arg(chart).toStdString());
+
+                    propSection->SetValue("PROPERTY_DEPENDENCE_X", keysString.toStdString());
+                    propSection->SetValue("PROPERTY_DEPENDENCE_Y", valuesString.toStdString());
                 }
             }
 
@@ -676,5 +657,56 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
         // load(...) works
         writeStringContent(tempProblemDir() + "/material.html", QString::fromStdString(info));
         webView->load(tempProblemDir() + "/material.html");
+    }
+}
+
+void MaterialBrowserDialog::functionValues(const QString &function, double from, double to, int count, QList<double> *keys, QList<double> *values)
+{
+    double step = (to - from) / (count - 1);
+
+    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(function, false);
+    if (!expressionResult.error.isEmpty())
+        qDebug() << "Function: " << expressionResult.error;
+
+    for (int i = 0; i < count; i++)
+    {
+        double key = from + i * step;
+
+        ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(QString("agros2d_material(%1)").arg(key), true);
+        if (expressionResult.error.isEmpty())
+        {
+            keys->append(key);
+            values->append(expressionResult.value);
+        }
+        else
+        {
+            qDebug() << "Function eval: " << expressionResult.error;
+        }
+    }
+    currentPythonEngineAgros()->runExpression("del agros2d_material", false);
+}
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+void MaterialBrowserDialog::linkClicked(const QUrlQuery &url)
+#else
+void MaterialBrowserDialog::linkClicked(const QUrl &url)
+#endif
+{
+    QString search = "/property?";
+    if (url.toString().contains(search))
+    {
+        m_selected_x.clear();
+        m_selected_y.clear();
+
+        QStringList keysString = url.queryItemValue("x").split(",");
+        QStringList valuesString = url.queryItemValue("y").split(",");
+
+        for (int j = 0; j < keysString.size(); j++)
+        {
+            m_selected_x.append(keysString.at(j).toDouble());
+            m_selected_y.append(valuesString.at(j).toDouble());
+        }
+
+        accept();
     }
 }
