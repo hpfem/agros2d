@@ -26,12 +26,11 @@
   </element>
         
   <element name="property">
-    <complexType>
-	    <sequence minOccurs="1" maxOccurs="1">
-	        <element ref="material:constant" minOccurs="0" maxOccurs="1" />
-	        <element ref="material:table" minOccurs="0" maxOccurs="1" />
-	        <element ref="material:function" minOccurs="0" maxOccurs="1" />	        
-        </sequence>        
+    <complexType>	   
+        <sequence minOccurs="0" maxOccurs="1">     
+	        <element ref="material:constant" minOccurs="1" maxOccurs="1" />
+	        <element ref="material:dependence" minOccurs="1" maxOccurs="1" />
+	    </sequence>
 		<attribute name="id" type="string" use="required" />
 		<attribute name="name" type="string" use="required" />
 		<attribute name="shortname" type="string" use="required" />
@@ -48,6 +47,15 @@
     </complexType>
   </element>
   
+  <element name="dependence">
+    <complexType>	   
+      <choice minOccurs="1" maxOccurs="1">
+        <element ref="material:table" minOccurs="0" maxOccurs="1" />
+        <element ref="material:function" minOccurs="0" maxOccurs="1" />	        
+      </choice>  
+    </complexType>	   
+  </element>
+
   <element name="table">
     <complexType>
 		<attribute name="keys" type="string" use="required" />

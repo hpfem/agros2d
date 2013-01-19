@@ -22,6 +22,8 @@
 
 #include "gui/chart.h"
 
+#include "pythonlab/pythonengine_agros.h"
+
 /*
 struct MaterialProperty
 {
@@ -449,6 +451,7 @@ void MaterialBrowserDialog::doItemDoubleClicked(QTreeWidgetItem *item, int colum
 
 void MaterialBrowserDialog::readMaterials()
 {
+    /*
     try
     {
         // general
@@ -456,24 +459,25 @@ void MaterialBrowserDialog::readMaterials()
         general.description().set("desc.");
 
         // property
-        XMLMaterial::property prop1("thermal_conductivity", "Thermal conductivity 1", "lambda", "W/m.K", "T", "deg.", "C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)");
+        XMLMaterial::property prop1("thermal_conductivity", "Thermal conductivity 1", "lambda", "W/m.K", "T", "deg.",
+                                    "C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)");
         prop1.constant().set(XMLMaterial::constant(100));
-        prop1.function().set(XMLMaterial::function("def A514_UNS_K11872_spec_heat_0(t) :"
-                                                   "# ASM Handbook, vol 1, 10th edition, ASM International (1990)"
-                                                   "# bal. Fe, 0.15-0.21 C, 0.7 Cr, 0.95 Mn, 0.5 Mo, 0.7 Si, 0.08 Zr,"
-                                                   "# 0.0025 B max (wt%)"
-                                                   "# same data as 1030 steel; UNS K11872"
-                                                   "# data is in units of J/(kg-K)"
-                                                   "# t must be in degrees Kelvin for these equations"
-                                                   "if t &gt;= 293.0 and t &lt;= 848.0 :"
-                                                   "    return -1.078824e-08*t*t*t*t +2.414973e-05*t*t*t -1.834293e-02*t*t +6.018500e+00*t -2.157306e+02"
-                                                   "else :"
-                                                   "    return 1.000000e+100", 0, 848));
+
+        XMLMaterial::dependence dependence1;
+        dependence1.function().set(XMLMaterial::function("def agros2d_material(t) :\n"
+                                                         "    if t >= 293.0 and t <= 848.0 :\n"
+                                                         "        return -1.078824e-08*t*t*t*t +2.414973e-05*t*t*t -1.834293e-02*t*t +6.018500e+00*t -2.157306e+02\n"
+                                                         "    else :\n"
+                                                         "        return 1.000000e+100\n", 293.0, 848));
+        prop1.dependence().set(dependence1);
 
         XMLMaterial::property prop2("thermal_conductivity", "Thermal conductivity", "lambda", "W/m.K", "T", "deg.", "C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)");
         prop2.constant().set(XMLMaterial::constant(238));
-        prop2.table().set(XMLMaterial::table("-173.16,-156.16,-139.16,-122.16,-105.16,-88.16,-71.16,-54.16,-37.16,-20.16,-3.16,13.84,30.84,47.84,64.84,81.84,98.84,115.84,132.84,149.84,166.84,183.84,200.84,217.84,234.84,251.84,268.84,285.84,302.84,319.84,336.84,353.84,370.84,387.84,404.84,421.84,438.84,455.84,472.84,489.84,506.84,523.84,540.84,557.84,574.84,591.84,608.84,625.84,642.84,659.84",
-                                             "300.847,272.734599091,255.320111188,245.451888257,240.509215237,238.402310044,237.572323566,236.991339667,236.162375186,235.119379934,234.4272367,235.181761244,237.537361254,238.699849161,239.472587025,239.914252479,240.077201716,240.007810588,239.746815718,239.329655603,238.786811725,238.14414965,237.423260141,236.641800264,235.813834488,234.950175801,234.058726808,233.144820843,232.211563073,231.260171604,230.29031859,229.300471336,228.288233408,227.250685736,226.184727723,225.08741835,223.956317284,222.789825983,221.587528802,220.350534102,219.081815354,217.786552245,216.472471787,215.150189424,213.833550132,212.539969534,211.290775,210.111546758,209.032458997,208.088620975"));
+
+        XMLMaterial::dependence dependence2;
+        dependence2.table().set(XMLMaterial::table("-173.16,-156.16,-139.16,-122.16,-105.16,-88.16,-71.16,-54.16,-37.16,-20.16,-3.16,13.84,30.84,47.84,64.84,81.84,98.84,115.84,132.84,149.84,166.84,183.84,200.84,217.84,234.84,251.84,268.84,285.84,302.84,319.84,336.84,353.84,370.84,387.84,404.84,421.84,438.84,455.84,472.84,489.84,506.84,523.84,540.84,557.84,574.84,591.84,608.84,625.84,642.84,659.84",
+                                                   "300.847,272.734599091,255.320111188,245.451888257,240.509215237,238.402310044,237.572323566,236.991339667,236.162375186,235.119379934,234.4272367,235.181761244,237.537361254,238.699849161,239.472587025,239.914252479,240.077201716,240.007810588,239.746815718,239.329655603,238.786811725,238.14414965,237.423260141,236.641800264,235.813834488,234.950175801,234.058726808,233.144820843,232.211563073,231.260171604,230.29031859,229.300471336,228.288233408,227.250685736,226.184727723,225.08741835,223.956317284,222.789825983,221.587528802,220.350534102,219.081815354,217.786552245,216.472471787,215.150189424,213.833550132,212.539969534,211.290775,210.111546758,209.032458997,208.088620975"));
+        prop2.dependence().set(dependence2);
 
         // properties
         XMLMaterial::properties properties;
@@ -502,6 +506,7 @@ void MaterialBrowserDialog::readMaterials()
     {
         std::cerr << e << std::endl;
     }
+    */
 
     // clear listview
     trvMaterial->clear();
@@ -601,23 +606,66 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                 propSection->SetValue("PROPERTY_CONSTANT", QString::number(constant.value()).toStdString());
             }
 
-            if (prop.table().present())
+
+            if (prop.dependence().present())
             {
-                XMLMaterial::table table = prop.table().get();
+                QStringList keys;
+                QStringList values;
 
-                QStringList keys = QString::fromStdString(table.keys()).split(",");
-                QStringList values = QString::fromStdString(table.values()).split(",");
-                assert(keys.size() == values.size());
+                if (prop.dependence().get().table().present())
+                {
+                    XMLMaterial::table table = prop.dependence().get().table().get();
 
-                QString chart = "[";
-                for (int i = 0; i < keys.size(); i++)
-                    chart += QString("[%1, %2], ").arg(keys[i]).arg(values[i]);
-                chart += "]";
+                    keys = QString::fromStdString(table.keys()).split(",");
+                    values = QString::fromStdString(table.values()).split(",");
+                    assert(keys.size() == values.size());
+                }
 
-                propSection->SetValue("PROPERTY_CHART", QString("chart_%1").arg(QString::fromStdString(prop.id())).toStdString());
-                propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });});</script>")
-                                       .arg(QString::fromStdString(prop.id())).arg(chart).toStdString());
+                if (prop.dependence().get().function().present())
+                {
+                    XMLMaterial::function function = prop.dependence().get().function().get();
+
+                    int N = 20;
+                    double step = (function.interval_to() - function.interval_from()) / (N - 1);
+
+                    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(QString::fromStdString(function.body()), false);
+                    if (!expressionResult.error.isEmpty())
+                        qDebug() << "Function: " << expressionResult.error;
+
+                    for (int i = 0; i < N; i++)
+                    {
+                        double key = function.interval_from() + i * step;
+
+                        ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(QString("agros2d_material(%1)").arg(key), true);
+                        if (expressionResult.error.isEmpty())
+                        {
+                            keys.append(QString::number(key));
+                            values.append(QString::number(expressionResult.value));
+                        }
+                        else
+                        {
+                            qDebug() << "Function eval: " << expressionResult.error;
+                        }
+                    }
+                    currentPythonEngineAgros()->runExpression("del agros2d_material", false);
+                }
+
+
+                if (keys.size() > 0)
+                {
+                    QString chart = "[";
+                    for (int i = 0; i < keys.size(); i++)
+                        chart += QString("[%1, %2], ").arg(keys[i]).arg(values[i]);
+                    chart += "]";
+
+                    QString id = QUuid::createUuid().toString().remove("{").remove("}");
+
+                    propSection->SetValue("PROPERTY_CHART", QString("chart_%1").arg(id).toStdString());
+                    propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: false } } ], { grid: { hoverable : false } });});</script>")
+                                          .arg(id).arg(chart).toStdString());
+                }
             }
+
         }
 
         ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/material.tpl", ctemplate::DO_NOT_STRIP, &materialInfo, &info);

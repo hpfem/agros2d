@@ -207,64 +207,34 @@ namespace XMLMaterial
     this->constant_.set (x);
   }
 
-  const property::table_optional& property::
-  table () const
+  const property::dependence_optional& property::
+  dependence () const
   {
-    return this->table_;
+    return this->dependence_;
   }
 
-  property::table_optional& property::
-  table ()
+  property::dependence_optional& property::
+  dependence ()
   {
-    return this->table_;
-  }
-
-  void property::
-  table (const table_type& x)
-  {
-    this->table_.set (x);
+    return this->dependence_;
   }
 
   void property::
-  table (const table_optional& x)
+  dependence (const dependence_type& x)
   {
-    this->table_ = x;
+    this->dependence_.set (x);
   }
 
   void property::
-  table (::std::auto_ptr< table_type > x)
+  dependence (const dependence_optional& x)
   {
-    this->table_.set (x);
-  }
-
-  const property::function_optional& property::
-  function () const
-  {
-    return this->function_;
-  }
-
-  property::function_optional& property::
-  function ()
-  {
-    return this->function_;
+    this->dependence_ = x;
   }
 
   void property::
-  function (const function_type& x)
+  dependence (::std::auto_ptr< dependence_type > x)
   {
-    this->function_.set (x);
-  }
-
-  void property::
-  function (const function_optional& x)
-  {
-    this->function_ = x;
-  }
-
-  void property::
-  function (::std::auto_ptr< function_type > x)
-  {
-    this->function_.set (x);
+    this->dependence_.set (x);
   }
 
   const property::id_type& property::
@@ -455,6 +425,70 @@ namespace XMLMaterial
   value (const value_type& x)
   {
     this->value_.set (x);
+  }
+
+
+  // dependence
+  // 
+
+  const dependence::table_optional& dependence::
+  table () const
+  {
+    return this->table_;
+  }
+
+  dependence::table_optional& dependence::
+  table ()
+  {
+    return this->table_;
+  }
+
+  void dependence::
+  table (const table_type& x)
+  {
+    this->table_.set (x);
+  }
+
+  void dependence::
+  table (const table_optional& x)
+  {
+    this->table_ = x;
+  }
+
+  void dependence::
+  table (::std::auto_ptr< table_type > x)
+  {
+    this->table_.set (x);
+  }
+
+  const dependence::function_optional& dependence::
+  function () const
+  {
+    return this->function_;
+  }
+
+  dependence::function_optional& dependence::
+  function ()
+  {
+    return this->function_;
+  }
+
+  void dependence::
+  function (const function_type& x)
+  {
+    this->function_.set (x);
+  }
+
+  void dependence::
+  function (const function_optional& x)
+  {
+    this->function_ = x;
+  }
+
+  void dependence::
+  function (::std::auto_ptr< function_type > x)
+  {
+    this->function_.set (x);
   }
 
 
@@ -869,8 +903,7 @@ namespace XMLMaterial
             const source_type& source)
   : ::xml_schema::type (),
     constant_ (::xml_schema::flags (), this),
-    table_ (::xml_schema::flags (), this),
-    function_ (::xml_schema::flags (), this),
+    dependence_ (::xml_schema::flags (), this),
     id_ (id, ::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this),
     shortname_ (shortname, ::xml_schema::flags (), this),
@@ -887,8 +920,7 @@ namespace XMLMaterial
             ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     constant_ (x.constant_, f, this),
-    table_ (x.table_, f, this),
-    function_ (x.function_, f, this),
+    dependence_ (x.dependence_, f, this),
     id_ (x.id_, f, this),
     name_ (x.name_, f, this),
     shortname_ (x.shortname_, f, this),
@@ -905,8 +937,7 @@ namespace XMLMaterial
             ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     constant_ (f, this),
-    table_ (f, this),
-    function_ (f, this),
+    dependence_ (f, this),
     id_ (f, this),
     name_ (f, this),
     shortname_ (f, this),
@@ -946,30 +977,16 @@ namespace XMLMaterial
         }
       }
 
-      // table
+      // dependence
       //
-      if (n.name () == "table" && n.namespace_ () == "XMLMaterial")
+      if (n.name () == "dependence" && n.namespace_ () == "XMLMaterial")
       {
-        ::std::auto_ptr< table_type > r (
-          table_traits::create (i, f, this));
+        ::std::auto_ptr< dependence_type > r (
+          dependence_traits::create (i, f, this));
 
-        if (!this->table_)
+        if (!this->dependence_)
         {
-          this->table_.set (r);
-          continue;
-        }
-      }
-
-      // function
-      //
-      if (n.name () == "function" && n.namespace_ () == "XMLMaterial")
-      {
-        ::std::auto_ptr< function_type > r (
-          function_traits::create (i, f, this));
-
-        if (!this->function_)
-        {
-          this->function_.set (r);
+          this->dependence_.set (r);
           continue;
         }
       }
@@ -1176,6 +1193,96 @@ namespace XMLMaterial
 
   constant::
   ~constant ()
+  {
+  }
+
+  // dependence
+  //
+
+  dependence::
+  dependence ()
+  : ::xml_schema::type (),
+    table_ (::xml_schema::flags (), this),
+    function_ (::xml_schema::flags (), this)
+  {
+  }
+
+  dependence::
+  dependence (const dependence& x,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    table_ (x.table_, f, this),
+    function_ (x.function_, f, this)
+  {
+  }
+
+  dependence::
+  dependence (const ::xercesc::DOMElement& e,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    table_ (f, this),
+    function_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void dependence::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // table
+      //
+      if (n.name () == "table" && n.namespace_ () == "XMLMaterial")
+      {
+        ::std::auto_ptr< table_type > r (
+          table_traits::create (i, f, this));
+
+        if (!this->table_)
+        {
+          this->table_.set (r);
+          continue;
+        }
+      }
+
+      // function
+      //
+      if (n.name () == "function" && n.namespace_ () == "XMLMaterial")
+      {
+        ::std::auto_ptr< function_type > r (
+          function_traits::create (i, f, this));
+
+        if (!this->function_)
+        {
+          this->function_.set (r);
+          continue;
+        }
+      }
+
+      break;
+    }
+  }
+
+  dependence* dependence::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class dependence (*this, f, c);
+  }
+
+  dependence::
+  ~dependence ()
   {
   }
 
@@ -1434,14 +1541,9 @@ namespace XMLMaterial
       o << ::std::endl << "constant: " << *i.constant ();
     }
 
-    if (i.table ())
+    if (i.dependence ())
     {
-      o << ::std::endl << "table: " << *i.table ();
-    }
-
-    if (i.function ())
-    {
-      o << ::std::endl << "function: " << *i.function ();
+      o << ::std::endl << "dependence: " << *i.dependence ();
     }
 
     o << ::std::endl << "id: " << i.id ();
@@ -1458,6 +1560,22 @@ namespace XMLMaterial
   operator<< (::std::ostream& o, const constant& i)
   {
     o << ::std::endl << "value: " << i.value ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const dependence& i)
+  {
+    if (i.table ())
+    {
+      o << ::std::endl << "table: " << *i.table ();
+    }
+
+    if (i.function ())
+    {
+      o << ::std::endl << "function: " << *i.function ();
+    }
+
     return o;
   }
 
@@ -2027,30 +2145,17 @@ namespace XMLMaterial
       s << *i.constant ();
     }
 
-    // table
+    // dependence
     //
-    if (i.table ())
+    if (i.dependence ())
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "table",
+          "dependence",
           "XMLMaterial",
           e));
 
-      s << *i.table ();
-    }
-
-    // function
-    //
-    if (i.function ())
-    {
-      ::xercesc::DOMElement& s (
-        ::xsd::cxx::xml::dom::create_element (
-          "function",
-          "XMLMaterial",
-          e));
-
-      s << *i.function ();
+      s << *i.dependence ();
     }
 
     // id
@@ -2145,6 +2250,38 @@ namespace XMLMaterial
           e));
 
       a << ::xml_schema::as_double(i.value ());
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const dependence& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // table
+    //
+    if (i.table ())
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "table",
+          "XMLMaterial",
+          e));
+
+      s << *i.table ();
+    }
+
+    // function
+    //
+    if (i.function ())
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "function",
+          "XMLMaterial",
+          e));
+
+      s << *i.function ();
     }
   }
 

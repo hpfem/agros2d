@@ -258,6 +258,7 @@ namespace XMLMaterial
   class properties;
   class property;
   class constant;
+  class dependence;
   class table;
   class function;
 }
@@ -496,47 +497,26 @@ namespace XMLMaterial
     void
     constant (::std::auto_ptr< constant_type > p);
 
-    // table
+    // dependence
     // 
-    typedef ::XMLMaterial::table table_type;
-    typedef ::xsd::cxx::tree::optional< table_type > table_optional;
-    typedef ::xsd::cxx::tree::traits< table_type, char > table_traits;
+    typedef ::XMLMaterial::dependence dependence_type;
+    typedef ::xsd::cxx::tree::optional< dependence_type > dependence_optional;
+    typedef ::xsd::cxx::tree::traits< dependence_type, char > dependence_traits;
 
-    const table_optional&
-    table () const;
+    const dependence_optional&
+    dependence () const;
 
-    table_optional&
-    table ();
-
-    void
-    table (const table_type& x);
+    dependence_optional&
+    dependence ();
 
     void
-    table (const table_optional& x);
+    dependence (const dependence_type& x);
 
     void
-    table (::std::auto_ptr< table_type > p);
-
-    // function
-    // 
-    typedef ::XMLMaterial::function function_type;
-    typedef ::xsd::cxx::tree::optional< function_type > function_optional;
-    typedef ::xsd::cxx::tree::traits< function_type, char > function_traits;
-
-    const function_optional&
-    function () const;
-
-    function_optional&
-    function ();
+    dependence (const dependence_optional& x);
 
     void
-    function (const function_type& x);
-
-    void
-    function (const function_optional& x);
-
-    void
-    function (::std::auto_ptr< function_type > p);
+    dependence (::std::auto_ptr< dependence_type > p);
 
     // id
     // 
@@ -691,8 +671,7 @@ namespace XMLMaterial
 
     protected:
     constant_optional constant_;
-    table_optional table_;
-    function_optional function_;
+    dependence_optional dependence_;
     ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< name_type > name_;
     ::xsd::cxx::tree::one< shortname_type > shortname_;
@@ -747,6 +726,82 @@ namespace XMLMaterial
 
     protected:
     ::xsd::cxx::tree::one< value_type > value_;
+  };
+
+  class dependence: public ::xml_schema::type
+  {
+    public:
+    // table
+    // 
+    typedef ::XMLMaterial::table table_type;
+    typedef ::xsd::cxx::tree::optional< table_type > table_optional;
+    typedef ::xsd::cxx::tree::traits< table_type, char > table_traits;
+
+    const table_optional&
+    table () const;
+
+    table_optional&
+    table ();
+
+    void
+    table (const table_type& x);
+
+    void
+    table (const table_optional& x);
+
+    void
+    table (::std::auto_ptr< table_type > p);
+
+    // function
+    // 
+    typedef ::XMLMaterial::function function_type;
+    typedef ::xsd::cxx::tree::optional< function_type > function_optional;
+    typedef ::xsd::cxx::tree::traits< function_type, char > function_traits;
+
+    const function_optional&
+    function () const;
+
+    function_optional&
+    function ();
+
+    void
+    function (const function_type& x);
+
+    void
+    function (const function_optional& x);
+
+    void
+    function (::std::auto_ptr< function_type > p);
+
+    // Constructors.
+    //
+    dependence ();
+
+    dependence (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
+
+    dependence (const dependence& x,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
+
+    virtual dependence*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~dependence ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    table_optional table_;
+    function_optional function_;
   };
 
   class table: public ::xml_schema::type
@@ -919,6 +974,9 @@ namespace XMLMaterial
 
   ::std::ostream&
   operator<< (::std::ostream&, const constant&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const dependence&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const table&);
@@ -1121,6 +1179,9 @@ namespace XMLMaterial
 
   void
   operator<< (::xercesc::DOMElement&, const constant&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const dependence&);
 
   void
   operator<< (::xercesc::DOMElement&, const table&);
