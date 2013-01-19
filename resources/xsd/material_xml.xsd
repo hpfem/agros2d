@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLMaterial" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:material="XMLMaterial">
+
+  <element name="material">
+	<complexType>
+	    <sequence>
+	      <element ref="material:general" minOccurs="1" maxOccurs="1" />	      
+	      <element ref="material:properties" minOccurs="1" maxOccurs="1" />
+	    </sequence>		
+	</complexType>
+  </element>
+  
+  <element name="general">
+	<complexType>
+		<attribute name="name" type="string" use="required" />
+		<attribute name="description" type="string" use="optional" />
+	</complexType>
+  </element>  
+        
+  <element name="properties">
+    <complexType>
+      <sequence>
+        <element ref="material:property" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+    </complexType>
+  </element>
+        
+  <element name="property">
+    <complexType>
+	    <sequence minOccurs="1" maxOccurs="1">
+	        <element ref="material:constant" minOccurs="0" maxOccurs="1" />
+	        <element ref="material:table" minOccurs="0" maxOccurs="1" />
+	        <element ref="material:function" minOccurs="0" maxOccurs="1" />	        
+        </sequence>        
+		<attribute name="id" type="string" use="required" />
+		<attribute name="name" type="string" use="required" />
+		<attribute name="shortname" type="string" use="required" />
+		<attribute name="unit" type="string" use="required" />
+		<attribute name="dependence_shortname" type="string" use="required" />
+		<attribute name="dependence_unit" type="string" use="required" />
+		<attribute name="source" type="string" use="required" />		
+    </complexType>
+  </element>
+  
+  <element name="constant">
+    <complexType>
+		<attribute name="value" type="double" use="required" />
+    </complexType>
+  </element>
+  
+  <element name="table">
+    <complexType>
+		<attribute name="keys" type="string" use="required" />
+		<attribute name="values" type="string" use="required" />
+    </complexType>
+  </element>
+
+  <element name="function">
+    <complexType>
+		<attribute name="body" type="string" use="required" />
+    </complexType>
+  </element>
+  
+</schema>
+

@@ -402,16 +402,12 @@ void MainWindow::createActions()
     actScriptEditorRunScript->setStatusTip(tr("Run script..."));
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
 
-    actScriptEditorRunCommand = new QAction(icon("run"), tr("Run &command..."), this);
-    actScriptEditorRunCommand->setShortcut(QKeySequence(tr("Alt+C")));
-    actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
-    connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
-
     // actReport = new QAction(icon("report"), tr("&Report..."), this);
     // actReport->setStatusTip(tr("Problem html report"));
     // connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 
     actMaterialBrowser = new QAction(icon(""), tr("Material browser..."), this);
+    actMaterialBrowser->setShortcut(QKeySequence(tr("Ctrl+M")));
     actMaterialBrowser->setStatusTip(tr("Material browser"));
     connect(actMaterialBrowser, SIGNAL(triggered()), this, SLOT(doMaterialBrowser()));
 
@@ -570,7 +566,6 @@ void MainWindow::createMenus()
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
-    mnuTools->addAction(actScriptEditorRunCommand);
     mnuTools->addSeparator();
     mnuTools->addAction(actMaterialBrowser);
     mnuTools->addSeparator();
@@ -1388,12 +1383,6 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
         if (!fileNameScript.isEmpty())
             QMessageBox::critical(this, tr("File open"), tr("File '%1' doesn't exists.").arg(fileNameScript));
     }
-}
-
-void MainWindow::doScriptEditorRunCommand()
-{
-    consoleView->show();
-    consoleView->activateWindow();
 }
 
 void MainWindow::doCut()

@@ -87,7 +87,6 @@ private slots:
 
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
-    void doScriptEditorRunCommand();
     void doOptions();
     void doTransform();
     void doReport();
@@ -174,7 +173,6 @@ private:
 
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;
-    QAction *actScriptEditorRunCommand;
     // QAction *actReport;
     QAction *actMaterialBrowser;
     QAction *actCreateVideo;

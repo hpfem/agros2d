@@ -22,6 +22,7 @@
 
 #include "util.h"
 
+/*
 class ChartBasic;
 
 class MaterialBrowserDialog : public QDialog
@@ -65,6 +66,44 @@ private slots:
     void doPropertySelected(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
     void doAccept();
+};
+
+*/
+class MaterialBrowserDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    MaterialBrowserDialog(QWidget *parent = 0);
+    ~MaterialBrowserDialog();
+
+    int showDialog(bool select = false);
+
+    inline QList<double> x() const { return m_x; }
+    inline QList<double> y() const { return m_y; }
+
+protected:
+    void readMaterials();
+    void readMaterials(QDir dir, QTreeWidgetItem *parentItem);
+    void materialInfo(const QString &fileName);
+
+private:
+    QWebView *webView;
+    QTreeWidget *trvMaterial;
+    QString m_selectedFilename;
+
+    QDialogButtonBox *buttonBox;
+
+    QList<double> m_x;
+    QList<double> m_y;
+
+    bool m_select;
+
+private slots:
+    void doAccept();
+    void doReject();
+
+    void doItemSelected(QTreeWidgetItem *item, int column);
+    void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 };
 
 #endif // MATERIALBROWSERDIALOG_H
