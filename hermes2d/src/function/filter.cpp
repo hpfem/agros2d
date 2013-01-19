@@ -24,6 +24,11 @@ namespace Hermes
   namespace Hermes2D
   {
     template<typename Scalar>
+    Filter<Scalar>::Filter()
+    {
+    }
+
+    template<typename Scalar>
     Filter<Scalar>::Filter(MeshFunction<Scalar>** solutions, int num) : MeshFunction<Scalar>()
     {
       this->num = num;
@@ -120,7 +125,7 @@ namespace Hermes
     template<typename Scalar>
     Filter<Scalar>::~Filter()
     {
-      free();
+      this->free();
       if(this->deleteSolutions)
       {
         for(int i = 0; i < this->num; i++)
@@ -174,7 +179,7 @@ namespace Hermes
     template<typename Scalar>
     void Filter<Scalar>::free()
     {
-      for (int i = 0; i < num; i++)
+      for (int i = 0; i < 4; i++)
       {
         for(typename std::map<uint64_t, LightArray<struct Filter<Scalar>::Node*>*>::iterator it = tables[i].begin(); it != tables[i].end(); it++)
         {
@@ -235,6 +240,11 @@ namespace Hermes
       }
     }
 
+    template<typename Scalar>
+    SimpleFilter<Scalar>::SimpleFilter() : Filter<Scalar>()
+    {
+    }
+    
     template<typename Scalar>
     SimpleFilter<Scalar>::SimpleFilter(const Hermes::vector<MeshFunction<Scalar>*>& solutions, const Hermes::vector<int>& items)
     {
@@ -371,6 +381,11 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    DXFilter<Scalar>::~DXFilter()
+    {
+    }
+
+    template<typename Scalar>
     void DXFilter<Scalar>::filter_fn(int n, Hermes::vector<Scalar *> values, Hermes::vector<Scalar *> dx, Hermes::vector<Scalar *> dy, Scalar* rslt, Scalar* rslt_dx, Scalar* rslt_dy)
     {
       for (int i = 0; i < n; i++)
@@ -399,7 +414,6 @@ namespace Hermes
       return filter;
     }
 
-
     ComplexFilter::ComplexFilter(MeshFunction<std::complex<double> >* solution, int item) : Filter<double>()
     {
       this->num = 0;
@@ -410,16 +424,29 @@ namespace Hermes
       set_quad_2d(&g_quad_2d_std);
     }
 
+    ComplexFilter::~ComplexFilter()
+    {
+      this->free();
+    }
+
     void ComplexFilter::free()
     {
-      for(std::map<uint64_t, LightArray<struct Filter<double>::Node*>*>::iterator it = tables[this->cur_quad].begin(); it != tables[this->cur_quad].end(); it++)
+      for (int i = 0; i < 4; i++)
       {
-        for(unsigned int l = 0; l < it->second->get_size(); l++)
-          if(it->second->present(l))
-            ::free(it->second->get(l));
-        delete it->second;
+#ifdef _MSC_VER // For Visual Studio compiler the latter does not compile.
+        for(std::map<uint64_t, LightArray<Node*>*>::iterator it = tables[i].begin(); it != tables[i].end(); it++)
+#else
+        for(typename std::map<uint64_t, LightArray<struct Function<double>::Node*>*>::iterator it = tables[i].begin(); it != tables[i].end(); it++)
+#endif
+        {
+          for(unsigned int l = 0; l < it->second->get_size(); l++)
+            if(it->second->present(l))
+              ::free(it->second->get(l));
+          delete it->second;
+        }
+        tables[i].clear();
       }
-      tables[this->cur_quad].clear();
+
       if(this->deleteSolutions)
         delete this->sln_complex;
     }
@@ -438,7 +465,7 @@ namespace Hermes
 
       memset(sln_sub, 0, sizeof(sln_sub));
 
-      for(std::map<uint64_t, LightArray<struct Filter<double>::Node*>*>::iterator it = tables[this->cur_quad].begin(); it != tables[this->cur_quad].end(); it++)
+      for(std::map<uint64_t, LightArray<struct Function<double>::Node*>*>::iterator it = tables[this->cur_quad].begin(); it != tables[this->cur_quad].end(); it++)
       {
         for(unsigned int l = 0; l < it->second->get_size(); l++)
           if(it->second->present(l))
@@ -516,6 +543,11 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    DXDYFilter<Scalar>::DXDYFilter() : Filter<Scalar>()
+    {
+    }
+
+    template<typename Scalar>
     DXDYFilter<Scalar>::DXDYFilter(const Hermes::vector<MeshFunction<Scalar>*>& solutions) : Filter<Scalar>(solutions)
     {
       init_components();
@@ -525,6 +557,11 @@ namespace Hermes
     DXDYFilter<Scalar>::DXDYFilter(const Hermes::vector<Solution<Scalar>*>& solutions) : Filter<Scalar>(solutions)
     {
       init_components();
+    }
+
+    template<typename Scalar>
+    DXDYFilter<Scalar>::~DXDYFilter()
+    {
     }
 
     template<typename Scalar>
@@ -624,6 +661,11 @@ namespace Hermes
     };
 
     template<typename Scalar>
+    MagFilter<Scalar>::~MagFilter()
+    {
+    };
+
+    template<typename Scalar>
     MeshFunction<Scalar>* MagFilter<Scalar>::clone() const
     {
       Hermes::vector<MeshFunction<Scalar>*> slns;
@@ -665,6 +707,10 @@ namespace Hermes
       Filter<double>::init();
     };
 
+    TopValFilter::~TopValFilter()
+    {
+    }
+
     MeshFunction<double>* TopValFilter::clone() const
     {
       Hermes::vector<MeshFunction<double>*> slns;
@@ -705,6 +751,10 @@ namespace Hermes
       this->num = 1;
       Filter<double>::init();
     };
+    
+    BottomValFilter::~BottomValFilter()
+    {
+    }
 
     MeshFunction<double>* BottomValFilter::clone() const
     {
@@ -751,6 +801,10 @@ namespace Hermes
       Filter<double>::init();
     };
 
+    ValFilter::~ValFilter()
+    {
+    }
+
     MeshFunction<double>* ValFilter::clone() const
     {
       Hermes::vector<MeshFunction<double>*> slns;
@@ -773,6 +827,11 @@ namespace Hermes
 
     template<typename Scalar>
     DiffFilter<Scalar>::DiffFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items) : SimpleFilter<Scalar>(solutions, items) {}
+
+    template<typename Scalar>
+    DiffFilter<Scalar>::~DiffFilter()
+    {
+    }
 
     template<typename Scalar>
     MeshFunction<Scalar>* DiffFilter<Scalar>::clone() const
@@ -802,6 +861,11 @@ namespace Hermes
 
     template<typename Scalar>
     SumFilter<Scalar>::SumFilter(Hermes::vector<MeshFunction<Scalar>*> solutions, Hermes::vector<int> items) : SimpleFilter<Scalar>(solutions, items) {}
+
+    template<typename Scalar>
+    SumFilter<Scalar>::~SumFilter()
+    {
+    }
 
     template<typename Scalar>
     MeshFunction<Scalar>* SumFilter<Scalar>::clone() const
@@ -839,6 +903,11 @@ namespace Hermes
       if(solutions.size() > 1)
         throw Hermes::Exceptions::Exception("SquareFilter only supports one MeshFunction.");
     };
+
+    template<typename Scalar>
+    SquareFilter<Scalar>::~SquareFilter()
+    {
+    }
 
     template<typename Scalar>
     MeshFunction<Scalar>* SquareFilter<Scalar>::clone() const
@@ -880,6 +949,10 @@ namespace Hermes
       init_components();
     };
 
+    AbsFilter::~AbsFilter()
+    {
+    }
+
     MeshFunction<double>* AbsFilter::clone() const
     {
       Hermes::vector<MeshFunction<double>*> slns;
@@ -912,6 +985,10 @@ namespace Hermes
     {
     };
 
+    RealFilter::~RealFilter()
+    {
+    }
+
     void ImagFilter::filter_fn(int n, std::complex<double>* values, double* result)
     {
       for (int i = 0; i < n; i++)
@@ -922,6 +999,10 @@ namespace Hermes
       : ComplexFilter(solution, item)
     {
     };
+
+    ImagFilter::~ImagFilter()
+    {
+    }
 
     MeshFunction<double>* ImagFilter::clone() const
     {
@@ -948,6 +1029,10 @@ namespace Hermes
     {
     };
 
+    ComplexAbsFilter::~ComplexAbsFilter()
+    {
+    }
+
     void AngleFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
     {
       for (int i = 0; i < n; i++)
@@ -960,6 +1045,10 @@ namespace Hermes
       if(solutions.size() > 1)
         throw Hermes::Exceptions::Exception("RealFilter only supports one MeshFunction.");
     };
+
+    AngleFilter::~AngleFilter()
+    {
+    }
 
     void VonMisesFilter::precalculate(int order, int mask)
     {
@@ -1026,6 +1115,10 @@ namespace Hermes
       this->cyl = cyl;
       this->item1 = item1;
       this->item2 = item2;
+    }
+
+    VonMisesFilter::~VonMisesFilter()
+    {
     }
 
     MeshFunction<double>* VonMisesFilter::clone() const
@@ -1102,6 +1195,11 @@ namespace Hermes
     {
       this->tau_frac = tau_frac;
       init_components();
+    }
+
+    template<typename Scalar>
+    LinearFilter<Scalar>::~LinearFilter()
+    {
     }
 
     template<typename Scalar>
