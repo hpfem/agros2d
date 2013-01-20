@@ -34,7 +34,6 @@ public:
                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                      const QString &variable,
                      PhysicFieldVariableComp physicFieldVariableComp);
-    ~{{CLASS}}ViewScalarFilter();
 
     virtual Hermes::Hermes2D::Func<double> *get_pt_value(double x, double y);
 

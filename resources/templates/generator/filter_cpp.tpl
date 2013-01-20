@@ -46,11 +46,6 @@
 
 }
 
-{{CLASS}}ViewScalarFilter::~{{CLASS}}ViewScalarFilter()
-{
-
-}
-
 Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y)
 {
     return NULL;
@@ -115,6 +110,9 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]->clone());
 
-    return new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_physicFieldVariableComp);
+    {{CLASS}}ViewScalarFilter *filter = new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_physicFieldVariableComp);
+    filter->setDeleteSolutions();
+
+    return filter;
 }
 

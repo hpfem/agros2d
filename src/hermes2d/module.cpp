@@ -100,7 +100,6 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 WeakFormAgros<Scalar>::~WeakFormAgros()
 {
-
 }
 
 template <typename Scalar>

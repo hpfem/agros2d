@@ -893,8 +893,8 @@ void MainWindow::doDocumentNew()
     FieldSelectDialog dialog(QList<QString>(), this);
     if (dialog.showDialog() == QDialog::Accepted)
     {
-        Agros2D::problem()->clearFieldsAndConfig();
         Agros2D::scene()->clear();
+        Agros2D::problem()->clearFieldsAndConfig();
 
         // add field
         FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
@@ -1236,9 +1236,6 @@ void MainWindow::doSolve()
     try
     {
         Agros2D::problem()->solve();
-        // Agros2D::problem()->solve();
-        // Agros2D::problem()->clearFieldsAndConfig();
-        // QApplication::exit();
     }
     catch (AgrosSolverException &e)
     {
@@ -1256,12 +1253,12 @@ void MainWindow::doSolve()
         // raise postprocessor
         postprocessorWidget->raise();
 
-        // Agros2D::problem()->clearFieldsAndConfig();
-        // QApplication::exit();
-
         // successful run
         logDialog->close();
     }
+
+    // Agros2D::problem()->clearFieldsAndConfig();
+    // QApplication::exit();
 
     setFocus();
     activateWindow();

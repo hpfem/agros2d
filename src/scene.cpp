@@ -222,6 +222,15 @@ Scene::~Scene()
     delete nodes;
     delete edges;
     delete labels;
+
+    // clear actions
+    foreach (QAction *action, actNewBoundaries.values())
+        delete action;
+    actNewBoundaries.clear();
+
+    foreach (QAction *action, actNewMaterials.values())
+        delete action;
+    actNewMaterials.clear();
 }
 
 void Scene::createActions()

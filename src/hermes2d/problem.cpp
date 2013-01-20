@@ -151,6 +151,7 @@ void Problem::clearFieldsAndConfig()
     while (i.hasNext())
     {
         i.next();
+        removeField(i.value());
         delete i.value();
     }
     m_fieldInfos.clear();
@@ -162,7 +163,11 @@ void Problem::clearFieldsAndConfig()
 
 void Problem::addField(FieldInfo *field)
 {
-    // add to the collection
+    // remove field
+    if (hasField(field->fieldId()))
+        removeField(m_fieldInfos[field->fieldId()]);
+
+    // add to the collection    
     m_fieldInfos[field->fieldId()] = field;
 
     // couplings
