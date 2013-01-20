@@ -72,6 +72,7 @@ int MaterialEditDialog::showDialog()
 void MaterialEditDialog::createControls()
 {    
     tabProperties = new QTabWidget(this);
+    connect(tabProperties, SIGNAL(tabCloseRequested(int)), this, SLOT(closeProperty(int)));
 
     txtName = new QLineEdit();
     txtDescription = new QLineEdit();
@@ -124,23 +125,23 @@ MaterialEditDialog::Property MaterialEditDialog::addPropertyUI(const QString &na
     grpConstant->setLayout(layoutConstant);
 
     // table
-    propUI.txtTableKeys = new QLineEdit();
-    propUI.txtTableValues = new QLineEdit();
+    propUI.txtTableKeys = new QTextEdit();
+    propUI.txtTableValues = new QTextEdit();
 
     QGridLayout *layoutTable = new QGridLayout();
     layoutTable->addWidget(new QLabel(tr("Keys:")), 0, 0);
     layoutTable->addWidget(propUI.txtTableKeys, 0, 1);
     layoutTable->addWidget(new QLabel(tr("Values:")), 1, 0);
     layoutTable->addWidget(propUI.txtTableValues, 1, 1);
+    layoutTable->setRowStretch(10, 1);
 
-    QGroupBox *grpTable = new QGroupBox(tr("Table"));
-    grpTable->setLayout(layoutTable);
+    QWidget *widTable = new QWidget();
+    widTable->setLayout(layoutTable);
 
     // function
     propUI.txtFunction = new QTextEdit();
     propUI.txtFunctionFrom = new LineEditDouble(0.0);
     propUI.txtFunctionTo = new LineEditDouble(0.0);
-
 
     QGridLayout *layoutFunction = new QGridLayout();
     layoutFunction->addWidget(new QLabel(tr("Function:")), 0, 0);
@@ -149,9 +150,15 @@ MaterialEditDialog::Property MaterialEditDialog::addPropertyUI(const QString &na
     layoutFunction->addWidget(propUI.txtFunctionFrom, 1, 1);
     layoutFunction->addWidget(new QLabel(tr("To:")), 2, 0);
     layoutFunction->addWidget(propUI.txtFunctionTo, 2, 1);
+    layoutFunction->setRowStretch(0, 1);
 
-    QGroupBox *grpFunction = new QGroupBox(tr("Function"));
-    grpFunction->setLayout(layoutFunction);
+    QWidget *widFunction = new QWidget();
+    widFunction->setLayout(layoutFunction);
+
+    // table and function tab
+    propUI.tabTableAndFunction = new QTabWidget();
+    propUI.tabTableAndFunction->addTab(widFunction, tr("Function"));
+    propUI.tabTableAndFunction->addTab(widTable, tr("Table"));
 
     QGridLayout *layoutProperty = new QGridLayout();
     layoutProperty->addWidget(new QLabel(tr("Name:")), 0, 0);
@@ -168,8 +175,8 @@ MaterialEditDialog::Property MaterialEditDialog::addPropertyUI(const QString &na
     layoutProperty->addWidget(propUI.txtDependenceUnit, 3, 3);
 
     layoutProperty->addWidget(grpConstant, 10, 0, 1, 4);
-    layoutProperty->addWidget(grpTable, 11, 0, 1, 4);
-    layoutProperty->addWidget(grpFunction, 12, 0, 1, 4);
+    layoutProperty->addWidget(propUI.tabTableAndFunction, 11, 0, 1, 4);
+    layoutProperty->setRowStretch(11, 1);
 
     // add property UI to the list
     propertiesUI.append(propUI);
@@ -179,7 +186,6 @@ MaterialEditDialog::Property MaterialEditDialog::addPropertyUI(const QString &na
 
     tabProperties->addTab(widget, name);
     tabProperties->setTabsClosable(true);
-    connect(tabProperties, SIGNAL(tabCloseRequested(int)), this, SLOT(closeProperty(int)));
 
     return propUI;
 }
@@ -240,6 +246,11 @@ void MaterialEditDialog::readMaterial()
                     propUI.txtFunctionTo->setValue(function.interval_to());
                 }
             }
+
+            if (propUI.txtFunction->toPlainText().trimmed().isEmpty())
+                propUI.tabTableAndFunction->setCurrentIndex(1);
+            else
+                propUI.tabTableAndFunction->setCurrentIndex(0);
         }
     }
 }
@@ -271,12 +282,18 @@ bool MaterialEditDialog::writeMaterial()
             XMLMaterial::dependence dependence;
 
             // table
-            dependence.table().set(XMLMaterial::table(propUI.txtTableKeys->text().toStdString(),
-                                                      propUI.txtTableValues->text().toStdString()));
-            // function
-            dependence.function().set(XMLMaterial::function(propUI.txtFunction->toPlainText().toStdString(),
-                                                            propUI.txtFunctionFrom->value(),
-                                                            propUI.txtFunctionTo->value()));
+            if (propUI.tabTableAndFunction->currentIndex() == 0)
+            {
+                // function
+                dependence.function().set(XMLMaterial::function(propUI.txtFunction->toPlainText().toStdString(),
+                                                                propUI.txtFunctionFrom->value(),
+                                                                propUI.txtFunctionTo->value()));
+            }
+            else
+            {
+                dependence.table().set(XMLMaterial::table(propUI.txtTableKeys->toPlainText().toStdString(),
+                                                          propUI.txtTableValues->toPlainText().toStdString()));
+            }
 
             prop.dependence().set(dependence);
 
@@ -319,8 +336,13 @@ void MaterialEditDialog::closeProperty(int index)
 {
     if (index != -1)
     {
-        propertiesUI.removeAt(index);
-        tabProperties->removeTab(index);
+        if (QMessageBox::question(this, tr("Delete property"),
+                                  tr("Property '%1' will be pernamently deleted. Are you sure?").arg(tabProperties->tabText(index)),
+                                  tr("&Yes"), tr("&No")) == 0)
+        {
+            tabProperties->removeTab(index);
+            propertiesUI.removeAt(index);
+        }
     }
 }
 
@@ -368,7 +390,7 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     QPushButton *btnClose = new QPushButton();
     btnClose->setText(tr("Close"));
     btnClose->setDefault(true);
-    connect(btnClose, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
 
     btnEdit = new QPushButton();
     btnEdit->setText(tr("Edit"));
@@ -431,6 +453,8 @@ void MaterialBrowserDialog::doItemDoubleClicked(QTreeWidgetItem *item, int colum
 
 void MaterialBrowserDialog::readMaterials()
 {
+    QTreeWidgetItem *currentItem = trvMaterial->currentItem();
+
     // clear listview
     trvMaterial->clear();
 
@@ -438,6 +462,11 @@ void MaterialBrowserDialog::readMaterials()
     dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks);
 
     readMaterials(dir, trvMaterial->invisibleRootItem());
+
+    if (currentItem)
+    {
+        trvMaterial->setCurrentItem(currentItem);
+    }
 }
 
 void MaterialBrowserDialog::readMaterials(QDir dir, QTreeWidgetItem *parentItem)

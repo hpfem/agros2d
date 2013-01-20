@@ -50,12 +50,14 @@ private:
 
         LineEditDouble *txtConstant;
 
-        QLineEdit *txtTableKeys;
-        QLineEdit *txtTableValues;
+        QTextEdit *txtTableKeys;
+        QTextEdit *txtTableValues;
 
         QTextEdit *txtFunction;
         LineEditDouble *txtFunctionFrom;
         LineEditDouble *txtFunctionTo;
+
+        QTabWidget *tabTableAndFunction;
     };
 
     QString m_fileName;
