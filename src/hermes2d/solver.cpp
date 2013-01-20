@@ -104,7 +104,7 @@ template <typename Scalar>
 NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
     m_newtonSolver = new NewtonSolver<Scalar>();
-    m_newtonSolver->set_verbose_output(false);
+    m_newtonSolver->set_verbose_output(true);
     m_newtonSolver->set_verbose_callback(processSolverOutput);
     m_newtonSolver->set_newton_tol(block->nonlinearTolerance());
     m_newtonSolver->set_newton_max_iter(block->nonlinearSteps());

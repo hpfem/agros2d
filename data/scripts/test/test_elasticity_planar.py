@@ -25,9 +25,9 @@ elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
 elasticity.add_boundary("Load", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : -1.2e4})
 
-elasticity.add_material("Material 1", {"elasticity_young_modulus" : 2e11, "elasticity_poisson_ratio" : 0.33, "elasticity_volume_force_x" : -1e6, "elasticity_volume_force_y" : 0, "elasticity_alpha" : 1e-6, "elasticity_temperature_difference" : 10, "elasticity_temperature_reference" : 20})
-elasticity.add_material("Material 2", {"elasticity_young_modulus" : 1e11, "elasticity_poisson_ratio" : 0.33, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 3e4, "elasticity_alpha" : 1e-6, "elasticity_temperature_difference" : 10, "elasticity_temperature_reference" : 20})
-elasticity.add_material("Material 3", {"elasticity_young_modulus" : 1e11, "elasticity_poisson_ratio" : 0.33, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 0, "elasticity_alpha" : 1e-6, "elasticity_temperature_difference" : 10, "elasticity_temperature_reference" : 20})
+elasticity.add_material("Material 1", {"elasticity_young_modulus" : 2e11, "elasticity_poisson_ratio" : 0.33, "elasticity_volume_force_x" : -1e6, "elasticity_volume_force_y" : 0, "elasticity_alpha" : 1e-6, "elasticity_temperature_difference" : 10})
+elasticity.add_material("Material 2", {"elasticity_young_modulus" : 1e11, "elasticity_poisson_ratio" : 0.33, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 3e4, "elasticity_alpha" : 1e-6, "elasticity_temperature_difference" : 10})
+elasticity.add_material("Material 3", {"elasticity_young_modulus" : 1e11, "elasticity_poisson_ratio" : 0.33, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 0, "elasticity_alpha" : 1e-6, "elasticity_temperature_difference" : 10})
 
 # geometry
 geometry = agros2d.geometry

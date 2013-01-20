@@ -11,6 +11,7 @@
 
   <module:constants>
     <module:constant id="SIGMA0" value="5.670373e-08"/>
+    <module:constant id="T0ABS" value="273.15"/>
   </module:constants>
 
   <module:spaces>
@@ -119,12 +120,12 @@
     </module:gui>
     <module:gui type="surface">
       <module:group>
-        <module:quantity id="heat_temperature" name="Temperature" shortname="T" shortname_html="&lt;i>T&lt;/i>" shortname_latex="T" unit="K" unit_html="K" unit_latex="K"/>
+        <module:quantity id="heat_temperature" name="Temperature" shortname="T" shortname_html="&lt;i>T&lt;/i>" shortname_latex="T" unit="deg." unit_html="&amp;deg;C" unit_latex="^0 C"/>
         <module:quantity id="heat_heat_flux" name="Heat flux" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="" unit="W/m2" unit_html="W.m&lt;sup>-2&lt;/sup>" unit_latex="W \cdot m^{-2}"/>
         <module:quantity condition="value >= 0" default="5" id="heat_convection_heat_transfer_coefficient" name="Heat transfer coefficient" shortname="alpha" shortname_html="&lt;i>&amp;alpha;&lt;/i>" shortname_latex="" unit="W/m2.K" unit_html="W.m&lt;sup>-2&lt;/sup>.K&lt;sup>-1&lt;/sup>" unit_latex="W \cdot m^{-2} \cdot K^{-1}"/>
-        <module:quantity default="20" id="heat_convection_external_temperature" name="Convection - external temperature" shortname="Te" shortname_html="&lt;i>T&lt;/i>&lt;sub>e&lt;/sub>" shortname_latex="T_\mathrm{e}" unit="K" unit_html="K" unit_latex="K"/>
+        <module:quantity default="20" id="heat_convection_external_temperature" name="Convection - external temperature" shortname="Te" shortname_html="&lt;i>T&lt;/i>&lt;sub>e&lt;/sub>" shortname_latex="T_\mathrm{e}" unit="deg." unit_html="&amp;deg;C" unit_latex="^0 C"/>
         <module:quantity condition="value >= 0" default="0" id="heat_radiation_emissivity" name="Emissivity" shortname="eps" shortname_html="&lt;i>&amp;epsilon;&lt;/i>" shortname_latex="" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity default="20" id="heat_radiation_ambient_temperature" name="Radiation - ambient temperature" shortname="Ta" shortname_html="&lt;i>T&lt;/i>&lt;sub>a&lt;/sub>" shortname_latex="T_\mathrm{a}" unit="K" unit_html="K" unit_latex="K"/>
+        <module:quantity default="20" id="heat_radiation_ambient_temperature" name="Radiation - ambient temperature" shortname="Ta" shortname_html="&lt;i>T&lt;/i>&lt;sub>a&lt;/sub>" shortname_latex="T_\mathrm{a}" unit="deg." unit_html="&amp;deg;C" unit_latex="^0 C"/>
       </module:group>
     </module:gui>
   </module:preprocessor>

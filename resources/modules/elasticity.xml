@@ -26,7 +26,6 @@
     <module:quantity id="elasticity_volume_force_y" shortname="st_fvy"/>
     <module:quantity id="elasticity_alpha" shortname="st_alpha"/>
     <module:quantity id="elasticity_temperature_difference" shortname="st_dT"/>
-    <module:quantity id="elasticity_temperature_reference" shortname="st_Tr"/>
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate"
         equation="-\, (\lambda + \mu)~\grad \div \vec{u} -\, \mu \triangle \vec{u} - \alpha_\mathrm{T} \left( 3 \lambda + 2 \mu \right) \grad T = \vec{f},\,\,\, \lambda = \frac{\nu E}{(1 + \nu) (1 - 2 \nu)},\,\, \mu = \frac{E}{2(1 + \nu)}">
@@ -36,7 +35,6 @@
         <module:quantity id="elasticity_volume_force_y"/>
         <module:quantity id="elasticity_alpha"/>
         <module:quantity id="elasticity_temperature_difference"/>
-        <module:quantity id="elasticity_temperature_reference"/>
         <module:matrix_form id="form" axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" i="1" j="1" planar_linear="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)" planar_newton="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)"/>
         <module:matrix_form id="form" axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) + (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) + (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" i="1" j="2" planar_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)" planar_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)                        + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)"/>
         <module:matrix_form id="form" axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) + (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) + (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr" i="2" j="1" planar_linear="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx) + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx) + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)"/>
@@ -96,8 +94,7 @@
         <module:quantity id="elasticity_volume_force_x" name="Force - x" shortname="fx" shortname_html="&lt;i>f&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="f_{x}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
         <module:quantity id="elasticity_volume_force_y" name="Force - y" shortname="fy" shortname_html="&lt;i>f&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="f_{y}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
         <module:quantity id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" shortname_html="&lt;i>&amp;alpha;&lt;/i>" shortname_latex="\alpha" unit="1/K" unit_html="K&lt;sup>-1&lt;/sup>" unit_latex="K^{-1}"/>
-        <module:quantity id="elasticity_temperature_difference" name="Temperature difference" shortname="dT" shortname_html="D&lt;i>T&lt;/i>" shortname_latex="\triangle T" unit="K" unit_html="K" unit_latex="K"/>
-        <module:quantity id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" shortname_html="&lt;i>T&lt;/i>&lt;sub>ref&lt;/sub>" shortname_latex="T_{ref}" unit="K" unit_html="K" unit_latex="K"/>
+        <module:quantity id="elasticity_temperature_difference" name="Temperature difference" shortname="dT" shortname_html="&amp;Delta;&lt;i>T&lt;/i>" shortname_latex="\triangle T" unit="K" unit_html="K" unit_latex="K"/>
       </module:group>
     </module:gui>
     <module:gui type="surface">
@@ -129,9 +126,6 @@
       </module:localvariable>
       <module:localvariable id="elasticity_temperature_difference" name="Temperature difference" shortname="dT" shortname_html="D&lt;i>T&lt;/i>" shortname_latex="\triangle T" type="scalar" unit="K" unit_html="K" unit_latex="K">
         <module:expression analysistype="steadystate" axi="st_dT" planar="st_dT"/>
-      </module:localvariable>
-      <module:localvariable id="elasticity_temperature_reference" name="Reference temperature" shortname="Tr" shortname_html="&lt;i>T&lt;/i>&lt;sub>ref&lt;/sub>" shortname_latex="T_{ref}" type="scalar" unit="K" unit_html="K" unit_latex="K">
-        <module:expression analysistype="steadystate" axi="st_Tr" planar="st_Tr"/>
       </module:localvariable>
     </module:localvariables>
     <module:view>
