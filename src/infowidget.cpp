@@ -136,8 +136,8 @@ void InfoWidget::showInfo()
                 }
                 dataTimeSteps += "]";
 
-                // chart DOFs vs. steps
-                QString timeSteps = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_time_step_length\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });});</script>").
+                // chart time step vs. steps
+                QString timeSteps = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_time_step_length\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'Time (s)' } ], yaxes: [ { axisLabel: 'Time step (s)' } ] });});</script>").
                         arg(dataTimeSteps);
 
                 problemInfo.SetValue("TIME_STEPS_CHART", timeSteps.toStdString());
@@ -275,13 +275,13 @@ void InfoWidget::showInfo()
                             arg(fieldInfo->adaptivityTolerance());
 
                     // chart error vs. steps
-                    QString commandError = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_error_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } }, { data: %3, color: \"rgb(240, 0, 0)\" } ], { grid: { hoverable : true } });});</script>").
+                    QString commandError = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_error_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } }, { data: %3, color: \"rgb(240, 0, 0)\" } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'steps (-)' } ], yaxes: [ { axisLabel: 'Rel. error (%)' } ] });});</script>").
                             arg(fieldInfo->fieldId()).
                             arg(dataError).
                             arg(prescribedError);
 
                     // chart DOFs vs. steps
-                    QString commandDOFs = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_dofs_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true } });});</script>").
+                    QString commandDOFs = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_dofs_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'steps (-)' } ], yaxes: [ { axisLabel: 'Num. of DOFs (-)' } ] });});</script>").
                             arg(fieldInfo->fieldId()).
                             arg(dataDOFs);
 

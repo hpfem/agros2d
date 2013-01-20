@@ -7,7 +7,8 @@
 		{{STYLESHEET}}
 	</style>
     <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.js"></script> 
-    <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.flot.js"></script> 
+    <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.flot.axislabels.js"></script>  
 </head>
 <body>
 

@@ -586,8 +586,13 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                     QString id = QUuid::createUuid().toString().remove("{").remove("}");
 
                     propSection->SetValue("PROPERTY_CHART", QString("chart_%1").arg(id).toStdString());
-                    propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: false } } ], { grid: { hoverable : false } });});</script>")
-                                          .arg(id).arg(chart).toStdString());
+                    propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: false } } ], { grid: { hoverable : false }, xaxes: [ { axisLabel: '%3 (%4)' } ], yaxes: [ { axisLabel: '%5 (%6)' } ] });});</script>")
+                                          .arg(id)
+                                          .arg(chart)
+                                          .arg(QString::fromStdString(prop.dependence_shortname()))
+                                          .arg(QString::fromStdString(prop.dependence_unit()))
+                                          .arg(QString::fromStdString(prop.shortname()))
+                                          .arg(QString::fromStdString(prop.unit())).toStdString());
 
                     propSection->SetValue("PROPERTY_DEPENDENCE_X", keysString.toStdString());
                     propSection->SetValue("PROPERTY_DEPENDENCE_Y", valuesString.toStdString());

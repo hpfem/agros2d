@@ -8,6 +8,7 @@
 	</style>
     <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.js"></script> 
     <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.flot.js"></script> 	
+    <script language="javascript" type="text/javascript" src="{{JS_DIRECTORY}}/js/jquery.flot.axislabels.js"></script>  
 	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />	
 </head>
 <body>
