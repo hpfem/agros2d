@@ -514,14 +514,14 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
         stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
         stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() + 1).toStdString()));
 
-        ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem_style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+        ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
         // template
         std::string info;
         ctemplate::TemplateDictionary materialInfo("info");
 
         materialInfo.SetValue("STYLESHEET", style);
-        materialInfo.SetValue("JS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
+        materialInfo.SetValue("PANELS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
 
         materialInfo.SetValue("NAME", material->general().name());
         if (material->general().description().present())

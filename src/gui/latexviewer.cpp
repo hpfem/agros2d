@@ -81,7 +81,7 @@ void LaTeXViewer::showLaTeX()
                          .arg(palette().background().color().red())
                          .arg(palette().background().color().green())
                          .arg(palette().background().color().blue()).toStdString());
-    problemInfo.SetValue("JS_DIRECTORY", datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels");
+    problemInfo.SetValue("PANELS_DIRECTORY", datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels");
     problemInfo.SetValue("LATEX_SOURCE", m_latexSource.toStdString());
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/latex.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);

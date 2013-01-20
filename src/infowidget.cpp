@@ -88,7 +88,7 @@ void InfoWidget::showInfo()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() + 1).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/problem_style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string info;
@@ -97,7 +97,7 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d.png");
 
     problemInfo.SetValue("STYLESHEET", style);
-    problemInfo.SetValue("JS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
+    problemInfo.SetValue("PANELS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
 
     problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 

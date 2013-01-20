@@ -6,8 +6,7 @@
 	<style type="text/css">
 		{{STYLESHEET}}
 	</style>
-	<link rel="stylesheet" href="problem_style.tpl" type="text/css" />
-	<script type="text/javascript" src="{{JS_DIRECTORY}}/js/MathJax.js?config=TeX-AMS_HTML"> 
+    <script type="text/javascript" src="{{PANELS_DIRECTORY}}/js/MathJax.js?config=TeX-AMS_HTML">
 		MathJax.Hub.Config({
 			jax: ["input/TeX","output/HTML-CSS"],
 			displayAlign: "left", 

@@ -87,7 +87,7 @@ void ResultsView::showPoint(const Point &point)
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string results;
@@ -166,7 +166,7 @@ void ResultsView::showVolumeIntegral()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string results;
@@ -215,7 +215,7 @@ void ResultsView::showSurfaceIntegral()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string results;
@@ -257,7 +257,7 @@ void ResultsView::showEmpty()
     stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style.tpl", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
 
     // template
     std::string results;
