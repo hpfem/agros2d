@@ -41,7 +41,6 @@ protected:
 private:
     struct Property
     {
-        QLineEdit *txtID;
         QLineEdit *txtName;
         QLineEdit *txtShortname;
         QLineEdit *txtUnit;

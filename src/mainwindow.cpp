@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewMesh = new SceneViewMesh(postHermes, this);
     sceneViewPost2D = new SceneViewPost2D(postHermes, this);
     sceneViewPost3D = new SceneViewPost3D(postHermes, this);
-    sceneViewBlank = new QLabel("TODO");
+    sceneViewBlank = new QLabel("", this);
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     sceneChart = new ChartWidget(this);
 

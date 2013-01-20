@@ -31,7 +31,6 @@
 	        <element ref="material:constant" minOccurs="1" maxOccurs="1" />
 	        <element ref="material:dependence" minOccurs="1" maxOccurs="1" />
 	    </sequence>
-		<attribute name="id" type="string" use="required" />
 		<attribute name="name" type="string" use="required" />
 		<attribute name="shortname" type="string" use="required" />
 		<attribute name="unit" type="string" use="required" />

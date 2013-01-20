@@ -4,14 +4,14 @@
   <material:general description="Aluminum is a chemical element in the boron group with symbol Al and atomic number 13. It is silvery white, and it is not soluble in water under normal circumstances." name="Aluminum"/>
 
   <material:properties>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" id="thermal_conductivity" name="Thermal capacity (Kelvin)" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" id="thermal_conductivity" name="Thermal conductivity (Kelvin)" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
       <material:constant value="236"/>
       <material:dependence>
         <material:table keys="" values=""/>
         <material:function body="def agros2d_material(t) :&#xA;    if t >= 0.0 and t &lt; 14.0 :&#xA;        return 2.066400e+00*t*t*t*t -5.643400e+01*t*t*t +2.034200e+02*t*t +3.895700e+03*t&#xA;    elif t >= 14.0 and t &lt; 50.0 :&#xA;        return -4.660500e-01*t*t*t +6.317500e+01*t*t -2.950900e+03*t +4.914800e+04&#xA;    elif t >= 50.0 and t &lt; 82.0 :&#xA;        return 2.291700e-04*t*t*t*t -7.867600e-02*t*t*t +1.034800e+01*t*t -6.260000e+02*t +1.511700e+04&#xA;    elif t >= 82.0 and t &lt; 297.0 :&#xA;        return 2.648700e-07*t*t*t*t -2.398800e-04*t*t*t +8.087500e-02*t*t -1.207600e+01*t +9.130900e+02&#xA;    elif t >= 297.0 and t &lt;= 933.0 :&#xA;        return 2.002000e-12*t*t*t*t*t -6.537000e-09*t*t*t*t +8.431300e-06*t*t*t -5.413400e-03*t*t +1.684000e+00*t +3.964600e+01&#xA;    else :&#xA;        return 1.000000e+100" interval_from="100" interval_to="933"/>
       </material:dependence>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="deg." id="thermal_conductivity" name="Thermal capacity (Celsius)" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="deg." id="thermal_conductivity" name="Thermal conductivity (Celsius)" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
       <material:constant value="236"/>
       <material:dependence>
         <material:table keys="" values=""/>

@@ -518,23 +518,6 @@ namespace XMLMaterial
     void
     dependence (::std::auto_ptr< dependence_type > p);
 
-    // id
-    // 
-    typedef ::xml_schema::string id_type;
-    typedef ::xsd::cxx::tree::traits< id_type, char > id_traits;
-
-    const id_type&
-    id () const;
-
-    id_type&
-    id ();
-
-    void
-    id (const id_type& x);
-
-    void
-    id (::std::auto_ptr< id_type > p);
-
     // name
     // 
     typedef ::xml_schema::string name_type;
@@ -639,8 +622,7 @@ namespace XMLMaterial
 
     // Constructors.
     //
-    property (const id_type&,
-              const name_type&,
+    property (const name_type&,
               const shortname_type&,
               const unit_type&,
               const dependence_shortname_type&,
@@ -672,7 +654,6 @@ namespace XMLMaterial
     protected:
     constant_optional constant_;
     dependence_optional dependence_;
-    ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< name_type > name_;
     ::xsd::cxx::tree::one< shortname_type > shortname_;
     ::xsd::cxx::tree::one< unit_type > unit_;

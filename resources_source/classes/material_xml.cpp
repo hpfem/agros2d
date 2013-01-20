@@ -237,30 +237,6 @@ namespace XMLMaterial
     this->dependence_.set (x);
   }
 
-  const property::id_type& property::
-  id () const
-  {
-    return this->id_.get ();
-  }
-
-  property::id_type& property::
-  id ()
-  {
-    return this->id_.get ();
-  }
-
-  void property::
-  id (const id_type& x)
-  {
-    this->id_.set (x);
-  }
-
-  void property::
-  id (::std::auto_ptr< id_type > x)
-  {
-    this->id_.set (x);
-  }
-
   const property::name_type& property::
   name () const
   {
@@ -894,8 +870,7 @@ namespace XMLMaterial
   //
 
   property::
-  property (const id_type& id,
-            const name_type& name,
+  property (const name_type& name,
             const shortname_type& shortname,
             const unit_type& unit,
             const dependence_shortname_type& dependence_shortname,
@@ -904,7 +879,6 @@ namespace XMLMaterial
   : ::xml_schema::type (),
     constant_ (::xml_schema::flags (), this),
     dependence_ (::xml_schema::flags (), this),
-    id_ (id, ::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this),
     shortname_ (shortname, ::xml_schema::flags (), this),
     unit_ (unit, ::xml_schema::flags (), this),
@@ -921,7 +895,6 @@ namespace XMLMaterial
   : ::xml_schema::type (x, f, c),
     constant_ (x.constant_, f, this),
     dependence_ (x.dependence_, f, this),
-    id_ (x.id_, f, this),
     name_ (x.name_, f, this),
     shortname_ (x.shortname_, f, this),
     unit_ (x.unit_, f, this),
@@ -938,7 +911,6 @@ namespace XMLMaterial
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     constant_ (f, this),
     dependence_ (f, this),
-    id_ (f, this),
     name_ (f, this),
     shortname_ (f, this),
     unit_ (f, this),
@@ -1000,15 +972,6 @@ namespace XMLMaterial
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      if (n.name () == "id" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< id_type > r (
-          id_traits::create (i, f, this));
-
-        this->id_.set (r);
-        continue;
-      }
-
       if (n.name () == "name" && n.namespace_ ().empty ())
       {
         ::std::auto_ptr< name_type > r (
@@ -1062,13 +1025,6 @@ namespace XMLMaterial
         this->source_.set (r);
         continue;
       }
-    }
-
-    if (!id_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "id",
-        "");
     }
 
     if (!name_.present ())
@@ -1546,7 +1502,6 @@ namespace XMLMaterial
       o << ::std::endl << "dependence: " << *i.dependence ();
     }
 
-    o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "name: " << i.name ();
     o << ::std::endl << "shortname: " << i.shortname ();
     o << ::std::endl << "unit: " << i.unit ();
@@ -2156,17 +2111,6 @@ namespace XMLMaterial
           e));
 
       s << *i.dependence ();
-    }
-
-    // id
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "id",
-          e));
-
-      a << i.id ();
     }
 
     // name
