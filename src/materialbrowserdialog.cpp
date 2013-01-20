@@ -150,7 +150,7 @@ MaterialEditDialog::Property MaterialEditDialog::addPropertyUI(const QString &na
     layoutFunction->addWidget(new QLabel(tr("To:")), 2, 0);
     layoutFunction->addWidget(propUI.txtFunctionTo, 2, 1);
 
-    QGroupBox *grpFunction = new QGroupBox(tr("Table"));
+    QGroupBox *grpFunction = new QGroupBox(tr("Function"));
     grpFunction->setLayout(layoutFunction);
 
     QGridLayout *layoutProperty = new QGridLayout();
