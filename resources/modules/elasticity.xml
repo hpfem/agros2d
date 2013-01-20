@@ -96,7 +96,7 @@
         <module:quantity id="elasticity_volume_force_x" name="Force - x" shortname="fx" shortname_html="&lt;i>f&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="f_{x}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
         <module:quantity id="elasticity_volume_force_y" name="Force - y" shortname="fy" shortname_html="&lt;i>f&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="f_{y}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
         <module:quantity id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" shortname_html="&lt;i>&amp;alpha;&lt;/i>" shortname_latex="\alpha" unit="1/K" unit_html="K&lt;sup>-1&lt;/sup>" unit_latex="K^{-1}"/>
-        <module:quantity id="elasticity_temperature_difference" name="Temperature difference" shortname="dT" shortname_html="D&lt;i>T&lt;/i>" shortname_latex="\triangle T" unit="K" unit_html="K" unit_latex="K"/>
+        <module:quantity id="elasticity_temperature_difference" name="Temperature difference" shortname="dT" shortname_html="&amp;Delta;&lt;i>T&lt;/i>" shortname_latex="\triangle T" unit="K" unit_html="K" unit_latex="K"/>
         <module:quantity id="elasticity_temperature_reference" name="Reference emperature" shortname="Tr" shortname_html="&lt;i>T&lt;/i>&lt;sub>ref&lt;/sub>" shortname_latex="T_{ref}" unit="K" unit_html="K" unit_latex="K"/>
       </module:group>
     </module:gui>
