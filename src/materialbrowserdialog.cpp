@@ -155,21 +155,21 @@ MaterialEditDialog::Property MaterialEditDialog::addPropertyUI(const QString &na
 
     QGridLayout *layoutProperty = new QGridLayout();
     layoutProperty->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layoutProperty->addWidget(propUI.txtName, 0, 1);
-    layoutProperty->addWidget(new QLabel(tr("Shortname:")), 1, 0);
-    layoutProperty->addWidget(propUI.txtShortname, 1, 1);
-    layoutProperty->addWidget(new QLabel(tr("Unit:")), 2, 0);
-    layoutProperty->addWidget(propUI.txtUnit, 2, 1);
-    layoutProperty->addWidget(new QLabel(tr("Source:")), 3, 0);
-    layoutProperty->addWidget(propUI.txtSource, 3, 1);
-    layoutProperty->addWidget(new QLabel(tr("Dependence shortname:")), 4, 0);
-    layoutProperty->addWidget(propUI.txtDependenceShortname, 4, 1);
-    layoutProperty->addWidget(new QLabel(tr("Dependence unit:")), 5, 0);
-    layoutProperty->addWidget(propUI.txtDependenceUnit, 5, 1);
+    layoutProperty->addWidget(propUI.txtName, 0, 1, 1, 3);
+    layoutProperty->addWidget(new QLabel(tr("Source:")), 1, 0);
+    layoutProperty->addWidget(propUI.txtSource, 1, 1, 1, 3);
+    layoutProperty->addWidget(new QLabel(tr("Shortname:")), 2, 0);
+    layoutProperty->addWidget(propUI.txtShortname, 2, 1);
+    layoutProperty->addWidget(new QLabel(tr("Unit:")), 3, 0);
+    layoutProperty->addWidget(propUI.txtUnit, 3, 1);
+    layoutProperty->addWidget(new QLabel(tr("Dependence shortname:")), 2, 2);
+    layoutProperty->addWidget(propUI.txtDependenceShortname, 2, 3);
+    layoutProperty->addWidget(new QLabel(tr("Dependence unit:")), 3, 2);
+    layoutProperty->addWidget(propUI.txtDependenceUnit, 3, 3);
 
-    layoutProperty->addWidget(grpConstant, 10, 0, 1, 2);
-    layoutProperty->addWidget(grpTable, 11, 0, 1, 2);
-    layoutProperty->addWidget(grpFunction, 12, 0, 1, 2);
+    layoutProperty->addWidget(grpConstant, 10, 0, 1, 4);
+    layoutProperty->addWidget(grpTable, 11, 0, 1, 4);
+    layoutProperty->addWidget(grpFunction, 12, 0, 1, 4);
 
     // add property UI to the list
     propertiesUI.append(propUI);
@@ -208,9 +208,9 @@ void MaterialEditDialog::readMaterial()
             propUI.txtName->setText(QString::fromStdString(prop.name()));
             propUI.txtShortname->setText(QString::fromStdString(prop.shortname()));
             propUI.txtUnit->setText(QString::fromStdString(prop.unit()));
-            propUI.txtSource->setText(QString::fromStdString(prop.source()));
             propUI.txtDependenceShortname->setText(QString::fromStdString(prop.dependence_shortname()));
             propUI.txtDependenceUnit->setText(QString::fromStdString(prop.dependence_unit()));
+            propUI.txtSource->setText(QString::fromStdString(prop.source()));
 
             // constant
             if (prop.constant().present())
@@ -558,7 +558,7 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                     functionValues(QString::fromStdString(function.body()),
                                    function.interval_from(),
                                    function.interval_to(),
-                                   20,
+                                   40,
                                    &keys, &values);
                 }
 
