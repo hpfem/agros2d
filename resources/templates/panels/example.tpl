@@ -103,15 +103,6 @@
 </td>
 </tr>
 </table>
-	
-{{#IMAGE_SECTION}}
-<table>
-	<tr>
-		<td><img width="100%" src="{{EXAMPLE_IMAGE}}" /></td>
-	</tr>
-</table>
-</div>
-{{/IMAGE_SECTION}}
 
 {{PROBLEM_DETAILS}}
 
