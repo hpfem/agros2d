@@ -31,8 +31,9 @@ public:
     void generatePluginLocalPointFiles();
     void generatePluginInterfaceFiles();
     void generatePluginWeakFormFiles();
-    QHash<QString, QString>  sourceVaribales() const {return m_sourceVariables;}
-    QHash<QString, QString>  targetVaribales() const {return m_targetVariables;}
+    QMap<QString, QString>  sourceVaribales() const {return m_sourceVariables;}
+    QMap<QString, QString>  targetVaribales() const {return m_targetVariables;}
+
 
 private:
     std::auto_ptr<XMLCoupling::coupling> coupling_xsd;
@@ -45,8 +46,9 @@ private:
     XMLModule::module *m_targetModule;
 
     // dictionary for variables used in weakforms
-    QHash<QString, QString> m_sourceVariables;
-    QHash<QString, QString> m_targetVariables;
+    QMap<QString, QString> m_sourceVariables;
+    QMap<QString, QString> m_targetVariables;
+
 
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
@@ -58,7 +60,8 @@ private:
     //QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
 
-    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);
+    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);    
+    QString generateDocWeakFormExpression(QString symbol);
 };
 
 #endif // GENERATOR_COUPLING_H

@@ -209,6 +209,66 @@ void LexicalAnalyser::setExpression(const QString &expr)
     }
 }
 
+QString LexicalAnalyser::latexVariables(QMap<QString, QString> dict, const QString &expr)
+{
+    QMap<QString, QString> greek_letters;
+
+    greek_letters["eps"] = "\\varepsilon";
+    greek_letters["rho"] = "\\rho";
+    greek_letters["gamma"] = "\\gamma";
+    greek_letters["mu"] = "\\mu";
+
+    if (!expr.isEmpty())
+        setExpression(expr);
+
+    // replace tokens
+    QString output;
+    foreach (Token token, tokens())
+    {
+        bool isReplaced = false;
+        QString token_text = token.toString();
+        // iterate whole m_patterns
+        QMapIterator<QString, QString> i(dict);
+        while (i.hasNext())
+        {
+            i.next();
+
+            if (token_text == i.key())
+            {
+                output += i.value();
+                isReplaced = true;
+                break;
+            }
+        }
+
+        // without replacing
+        if (!isReplaced)
+        {
+            QStringList symbol= token_text.split("_");
+            if (symbol.length() > 1)
+            {
+                QMapIterator<QString, QString> i(greek_letters);
+                while (i.hasNext())
+                {
+                    i.next();
+
+                    if (symbol[1] == i.key())
+                    {
+                        symbol[1] =  i.value();
+                        break;
+                    }
+                }
+                output += symbol[1] + "_{" + symbol[0] + "}";
+            }
+
+            else
+                output += symbol[0];
+        }
+    }
+
+    return output;
+}
+
 QString LexicalAnalyser::replaceVariables(QMap<QString, QString> dict, const QString &expr)
 {
     if (!expr.isEmpty())

@@ -78,6 +78,7 @@ public:
 
     inline ParserTokenType type() { return this->m_type; }
     inline QString toString() { return this->m_text; }    
+    inline void setText(QString text) { m_text = text; }
     inline int position() { return m_position; }
     inline int nestingLevel() { return m_nestingLevel; }
     inline void setNestingLevel(int nestingLevel) { m_nestingLevel = nestingLevel; }
@@ -113,6 +114,7 @@ public:
     QString replaceOperatorByFunction(QString expr);
 
     QString replaceVariables(QMap<QString, QString> dict, const QString &expr = QString());
+    QString latexVariables(QMap<QString, QString> dict, const QString &expr = QString());
 
 private:
     QList<Token> m_tokens;

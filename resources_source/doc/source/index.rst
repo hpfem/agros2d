@@ -33,7 +33,7 @@ Mathematical Background
 .. toctree::
    :maxdepth: 1
 
-   ./mathematical_background/physical_fields_theory.rst
+   ./mathematical_background/index.rst
 
 Scripting
 ^^^^^^^^^

@@ -1,9 +1,3 @@
-.. plugins docummentation Documentation master file.
-
-#################################################
-Welcome to plugins docummentation's Documentation
-#################################################
-
 .. toctree::
    :maxdepth: 2
    

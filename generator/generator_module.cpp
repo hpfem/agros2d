@@ -181,7 +181,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
     generateWeakForms(output);
 
     ExpandTemplate(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
-                              ctemplate::DO_NOT_STRIP, &output, &text);
+                   ctemplate::DO_NOT_STRIP, &output, &text);
 
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_weakform.cpp").
@@ -227,7 +227,7 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
         m_docString += "\n" + underline("Volume weakforms",'^') + "\n";
 
         foreach(XMLModule::matrix_form form, weakform.matrix_form())
-        {            
+        {
             generateForm(form, output, weakform, "VOLUME_MATRIX", 0, form.j());
         }
         foreach(XMLModule::vector_form form, weakform.vector_form())
@@ -1333,6 +1333,142 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
     }
 }
 
+QString Agros2DGeneratorModule::generateDocWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables)
+{
+    try
+    {
+        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
+
+        QMap<QString, QString> dict;
+
+        // coordinates
+        dict["x"] = "x";
+        dict["y"] = "x";
+        dict["r"] = "r";
+        dict["z"] = "y";
+        dict["PI"] = "\pi";
+        dict["f"] = "f";
+//        foreach (XMLModule::constant cnst, m_module->constants().constant())
+//            dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
+
+        // functions
+        dict["uval"] = "u";
+        dict["vval"] = "v";
+        dict["upval"] = "u_ext";
+        dict["uptval"] = "\\frac{\\partial u_ext}{\\partial t}";
+        dict["deltat"] = "\Delta t";
+        dict["timedermat"] = "timedermat";
+        dict["timedervec"] = "timedervec";
+        dict["timederres"] = "timederres";
+        dict["udx"] = "\\frac{\\partial u}{\\partial x}";
+        dict["vdx"] = "\\frac{\\partial v}{\\partial x}";
+        dict["udy"] = "\\frac{\\partial u}{\\partial y}";
+        dict["vdy"] = "\\frac{\\partial v}{\\partial y}";
+        dict["updx"] = "\\frac{\\partial u_{ext}j}{\\partial x_i}";
+        dict["updy"] = "\\frac{\\partial u_{ext}j}{\\partial u_i}";
+        dict["uptdx"] = "\\frac{\\partial u_{ext}j}{\\partial x_i}";
+        dict["uptdy"] = "\\frac{\\partial u_{ext}j}{\\partial u_i}";
+        dict["udr"] = "\\frac{\\partial u}{\\partial r}";
+        dict["vdr"] = "\\frac{\\partial v}{\\partial r}";
+        dict["udz"] = "\\frac{\\partial u}{\\partial z}";
+        dict["vdz"] = "\\frac{\\partial v}{\\partial z}";
+        dict["updr"] = "\\frac{\\partial u_j}{\\partial x_i}";
+        dict["updz"] = "\\frac{\\partial u_j}{\\partial y_i}";
+        dict["uptdr"] = "\\frac{\\partial u_{ext}j}{\\partial x_i}";
+        dict["uptdz"] = "\\frac{\\partial u_{ext}j}{\\partial y_i}";
+        dict["*"] = "\\cdot ";
+        dict["EPS0"] = "\\varepsilon_0";
+
+        for (int i = 1; i < numOfSol + 1; i++)
+        {
+            dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->val[i]").arg(i-1);
+
+            if (coordinateType == CoordinateType_Planar)
+            {
+                dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dx[i]").arg(i-1);
+                dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dy[i]").arg(i-1);
+            }
+            else
+            {
+                dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dx[i]").arg(i-1);
+                dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dy[i]").arg(i-1);
+            }
+        }
+
+        // variables
+        if (includeVariables)
+        {
+            foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+            {
+                if (quantity.shortname_latex().present())
+                {
+                    QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
+
+                    if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+                    {
+                        // linear material
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString::fromStdString(quantity.shortname_latex().get());
+                    }
+                    else
+                    {
+                        // nonlinear material
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString::fromStdString(quantity.shortname_latex().get());
+
+                        if (linearityType == LinearityType_Newton)
+                            dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1.derivative(%2)").
+                                    arg(QString::fromStdString(quantity.shortname().get())).
+                                    arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false));
+                    }
+                }
+            }
+
+            foreach (XMLModule::quantity quantity, m_module->surface().quantity())
+            {
+                if (quantity.shortname().present())
+                {
+                    QString dep = dependence(QString::fromStdString(quantity.id()), analysisType);
+
+                    if (dep.isEmpty() || dep == "time")
+                    {
+                        // linear boundary condition
+                        dict[QString::fromStdString(quantity.shortname().get())] =QString::fromStdString(quantity.shortname().get());
+                    }
+                    else if (dep == "space")
+                    {
+                        // spacedep boundary condition
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1.value(Point(x, y))").
+                                arg(QString::fromStdString(quantity.shortname().get()));
+                    }
+                    else if (dep == "time-space")
+                    {
+                        // spacedep boundary condition
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1.value(Agros2D::problem()->actualTime(), Point(x, y))").
+                                arg(QString::fromStdString(quantity.shortname().get()));
+                    }
+                }
+            }
+        }
+
+        LexicalAnalyser *lex = weakFormLexicalAnalyser(analysisType, coordinateType);
+        lex->setExpression(expr);
+        QString exprCpp = lex->latexVariables(dict);
+
+
+        // TODO: move from lex
+        exprCpp = lex->replaceOperatorByFunction(exprCpp);
+
+        delete lex;
+
+        return exprCpp;
+    }
+    catch (ParserException e)
+    {
+        qDebug() << e.toString() << "in module: " << QString::fromStdString(m_module->general().id());
+
+        return "";
+    }
+}
+
 template <typename Form, typename WeakForm>
 void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0, int j = 0)
 {
@@ -1405,7 +1541,13 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 field->SetValue("EXPRESSION", exprCpp.toStdString());
 
                 //docummentation
-                m_docString +=  exprCpp;
+                m_docString += ".. math::\n\n";
+                m_docString +=  "   " + generateDocWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                              coordinateType, linearityType, expression);
+                m_docString += "\n\n";
+
+                // qDebug() << generateDocWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                //                                         coordinateType, linearityType, expression);
 
                 // expression check
                 QString exprCppCheck = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),

@@ -307,7 +307,7 @@ void Agros2DGenerator::generateModule(const QString &moduleId)
     generator.generatePluginVolumeIntegralFiles();
     generator.generatePluginWeakFormFiles();
 
-    // generates documentations
+    // generates documentation
     generator.generatePluginDocuentationFiles();
 }
 

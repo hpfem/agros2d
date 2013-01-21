@@ -28,7 +28,7 @@
 #include "../../resources_source/classes/coupling_xml.h"
 
 const QString GENERATOR_TEMPLATEROOT = "resources/templates/generator";
-const QString GENERATOR_DOCROOT = "documentation/plugins/source";
+const QString GENERATOR_DOCROOT = "resources_source/doc/source/mathematical_background";
 const QString GENERATOR_PLUGINROOT = "plugins";
 
 class LexicalAnalyser;
