@@ -98,6 +98,7 @@ private:
     QTreeWidget *trvMaterial;
     QPushButton *btnEdit;
     QString m_selectedFilename;
+    QString m_cascadeStyleSheet;
 
     QList<double> m_selected_x;
     QList<double> m_selected_y;

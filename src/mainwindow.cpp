@@ -1257,8 +1257,8 @@ void MainWindow::doSolve()
         logDialog->close();
     }
 
-    Agros2D::problem()->clearFieldsAndConfig();
-    QApplication::exit();
+    // Agros2D::problem()->clearFieldsAndConfig();
+    // QApplication::exit();
 
     setFocus();
     activateWindow();

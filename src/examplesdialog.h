@@ -40,6 +40,7 @@ private slots:
 
 private:
     QWebView *webView;
+    QString m_cascadeStyleSheet;
 
     QTreeWidget *lstProblems;
     QString m_selectedFilename;

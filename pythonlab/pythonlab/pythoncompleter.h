@@ -42,7 +42,14 @@ public:
     QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 };
 
-// return completer
-QCompleter *createCompleter();
+class PythonCompleter : public QCompleter
+{
+public:
+    PythonCompleter();
+    ~PythonCompleter();
+
+private:
+    PythonCompleterDelegate *m_delegate;
+};
 
 #endif // PYTHONCOMPLETER_H

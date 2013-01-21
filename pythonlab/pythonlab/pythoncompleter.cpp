@@ -77,16 +77,20 @@ QSize PythonCompleterDelegate::sizeHint(const QStyleOptionViewItem & option, con
     return result;
 }
 
-QCompleter *createCompleter()
+PythonCompleter::PythonCompleter()
 {
-    PythonCompleterListView *lstView = new PythonCompleterListView();
-    lstView->setItemDelegateForColumn(0, new PythonCompleterDelegate());
+    m_delegate = new PythonCompleterDelegate();
 
-    QCompleter *completer = new QCompleter();
-    completer->setPopup(lstView);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setCaseSensitivity(Qt::CaseSensitive);
-    completer->setModelSorting(QCompleter::CaseSensitivelySortedModel);
+    PythonCompleterListView *view = new PythonCompleterListView();
+    view->setItemDelegateForColumn(0, m_delegate);
 
-    return completer;
+    setPopup(view);
+    setCompletionMode(QCompleter::PopupCompletion);
+    setCaseSensitivity(Qt::CaseSensitive);
+    setModelSorting(QCompleter::CaseSensitivelySortedModel);
+}
+
+PythonCompleter::~PythonCompleter()
+{
+    delete m_delegate;
 }

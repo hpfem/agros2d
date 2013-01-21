@@ -52,6 +52,15 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     // problem information
     webView = new QWebView(this);
 
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() + 1).toStdString()));
+
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    m_cascadeStyleSheet = QString::fromStdString(style);
+
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
     // layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(webView);
@@ -81,22 +90,14 @@ void InfoWidget::refresh()
 }
 
 void InfoWidget::showInfo()
-{
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() + 1).toStdString()));
-
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-
+{    
     // template
     std::string info;
     ctemplate::TemplateDictionary problemInfo("info");
 
     problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d.png");
 
-    problemInfo.SetValue("STYLESHEET", style);
+    problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
     problemInfo.SetValue("PANELS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
 
     problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());

@@ -1173,7 +1173,7 @@ ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
 
-    completer = createCompleter();
+    completer = new PythonCompleter();
     completer->setWidget(this);
     connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 }

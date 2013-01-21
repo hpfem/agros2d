@@ -100,6 +100,10 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 WeakFormAgros<Scalar>::~WeakFormAgros()
 {
+    foreach (Hermes::Hermes2D::Form<Scalar> *form, this->forms)
+        delete form;
+
+    delete_all();
 }
 
 template <typename Scalar>
@@ -195,8 +199,6 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
     else
         assert(0);
 }
-
-
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker* marker, BDF2Table* bdf2Table)

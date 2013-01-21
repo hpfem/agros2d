@@ -53,6 +53,7 @@ public:
 
 private:
     SceneModePostprocessor m_sceneModePostprocessor;
+    QString m_cascadeStyleSheet;
 
     QAction *actPoint;
     QWebView *webView;

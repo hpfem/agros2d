@@ -57,7 +57,7 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
     // _context = context;
     PythonScriptingConsole::historyPosition = 0;
 
-    completer = createCompleter();
+    completer = new PythonCompleter();
     completer->setWidget(this);
     QObject::connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 

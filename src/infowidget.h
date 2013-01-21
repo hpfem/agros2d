@@ -40,6 +40,7 @@ public slots:
 
 private:
     SceneViewPreprocessor *m_sceneViewGeometry;
+    QString m_cascadeStyleSheet;
 
     QWebView *webView;
 

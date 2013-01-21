@@ -42,6 +42,15 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
 
     webView = new QWebView(this);
 
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
+
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    m_cascadeStyleSheet = QString::fromStdString(style);
+
     // main widget
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(webView);
@@ -81,19 +90,11 @@ void ResultsView::showPoint(const Point &point)
         return;
     }
 
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
-
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-
     // template
     std::string results;
     ctemplate::TemplateDictionary localPointValues("results");
 
-    localPointValues.SetValue("STYLESHEET", style);
+    localPointValues.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
     localPointValues.SetValue("LABEL", tr("Local point values").toStdString());
 
     localPointValues.SetValue("LABELX", Agros2D::problem()->config()->labelX().toLower().toStdString());
@@ -160,19 +161,11 @@ void ResultsView::showVolumeIntegral()
         return;
     }
 
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
-
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-
     // template
     std::string results;
     ctemplate::TemplateDictionary volumeIntegrals("results");
 
-    volumeIntegrals.SetValue("STYLESHEET", style);
+    volumeIntegrals.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
     volumeIntegrals.SetValue("LABEL", tr("Volume integrals").toStdString());
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
@@ -209,19 +202,11 @@ void ResultsView::showSurfaceIntegral()
         return;
     }
 
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
-
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-
     // template
     std::string results;
     ctemplate::TemplateDictionary surfaceIntegrals("results");
 
-    surfaceIntegrals.SetValue("STYLESHEET", style);
+    surfaceIntegrals.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
     surfaceIntegrals.SetValue("LABEL", tr("Surface integrals").toStdString());
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
@@ -251,19 +236,11 @@ void ResultsView::showSurfaceIntegral()
 
 void ResultsView::showEmpty()
 {
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
-
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-
     // template
     std::string results;
     ctemplate::TemplateDictionary empty("empty");
 
-    empty.SetValue("STYLESHEET", style);
+    empty.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
     empty.SetValue("LABEL", tr("Problem is not solved.").toStdString());
 
     // expand template
