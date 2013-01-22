@@ -59,6 +59,9 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
         QString iD = QString::fromStdString(quantity.id().c_str()).replace(" ", "");
         m_surfaceVariables.insert(iD, shortName);
     }
+
+    // localization
+    getNames(moduleId);
 }
 
 void Agros2DGeneratorModule::generatePluginProjectFile()
@@ -70,7 +73,7 @@ void Agros2DGeneratorModule::generatePluginProjectFile()
     ctemplate::TemplateDictionary output("output");
     output.SetValue("ID", id.toStdString());
 
-    // expand template
+     // expand template
     std::string text;
     ctemplate::ExpandTemplate(QString("%1/%2/module_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
@@ -111,8 +114,15 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
     text.clear();
     generateWeakForms(output);
 
+    foreach(QString name, m_names)
+    {
+        ctemplate::TemplateDictionary *field = output.AddSectionDictionary("NAMES");
+        field->SetValue("NAME",name.toStdString());
+    }
+
     ctemplate::ExpandTemplate(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
+
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_interface.cpp").
                        arg(QApplication::applicationDirPath()).
@@ -1560,4 +1570,24 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
             }
         }
     }
+}
+
+void Agros2DGeneratorModule::getNames(const QString &moduleId)
+{
+    QFile * file = new QFile((datadir().toStdString() + MODULEROOT.toStdString() + "/" + moduleId.toStdString() + ".xml").c_str());
+    file->open(QIODevice::ReadOnly | QIODevice::Text);
+    QXmlStreamReader xml(file);
+    QStringList names;
+    while(!xml.atEnd())
+    {
+        /* Read next element.*/
+        QXmlStreamReader::TokenType token = xml.readNext();
+        if(token == QXmlStreamReader::EndDocument)
+            break;
+        if(xml.attributes().hasAttribute("name"))
+        {
+            if(!m_names.contains(xml.attributes().value("name").toString()))
+                m_names.append(xml.attributes().value("name").toString());
+        }
+    }    
 }

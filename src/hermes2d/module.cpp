@@ -117,7 +117,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 
     // get weakform
     PluginInterface *plugin = Agros2D::plugin(fieldId);
-    assert(plugin);
+    assert(plugin);    
 
     Hermes::Hermes2D::Form<Scalar> *weakForm = NULL;
 
@@ -395,9 +395,10 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv, const QString 
 {
     PluginInterface *plugin = Agros2D::plugin(fieldId);
     assert(plugin);
-
-    m_id = QString::fromStdString(lv.id());
+    qDebug() << plugin->fieldId();
+    m_id = QString::fromStdString(lv.id());  
     m_name = QString::fromStdString(lv.name());
+    m_name = plugin->getName(QString::fromStdString(lv.name()));
     m_shortname = QString::fromStdString(lv.shortname());
     m_shortnameHtml = (lv.shortname_html().present()) ? QString::fromStdString(lv.shortname_html().get()) : m_shortname;
     m_unit = QString::fromStdString(lv.unit());

@@ -35,15 +35,17 @@ public:
     void generatePluginWeakFormFiles();
     void generatePluginDocuentationFiles();
 
+
 private:
     std::auto_ptr<XMLModule::module> module_xsd;
     XMLModule::module *m_module;
     QString m_docString;
-
+    QStringList m_names;
     // dictionary for variables used in weakforms
     QHash<QString, QString> m_volumeVariables;
     QHash<QString, QString> m_surfaceVariables;
 
+    void getNames(const QString &moduleId);
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 

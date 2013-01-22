@@ -117,4 +117,13 @@ Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, const SceneMaterial *mate
     return force{{CLASS}}(fieldInfo, material, point, velocity);
 }
 
+QString {{CLASS}}Interface::getName(QString name)
+{
+   {{#NAMES}}
+   if (name == "{{NAME}}")
+	return tr("{{NAME}}"); 
+   {{/NAMES}}
+   return "";	
+}
+
 Q_EXPORT_PLUGIN2(agros2d_plugin_{{ID}}, {{CLASS}}Interface)
