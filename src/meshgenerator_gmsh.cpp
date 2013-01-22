@@ -53,7 +53,7 @@ bool MeshGeneratorGMSH::mesh()
     // create gmsh files
     if (writeToGmsh())
     {
-        Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geo file was created"));
+        Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geo file was created."));
 
         // exec triangle
         QProcess processGmsh;
@@ -73,7 +73,7 @@ bool MeshGeneratorGMSH::mesh()
 
         if (!processGmsh.waitForStarted(100000))
         {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("could not start GMSH."));
+            Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start GMSH."));
             processGmsh.kill();
 
             m_isError = true;
