@@ -64,7 +64,7 @@ public:
     virtual QString getName(QString name);	
 
     // force calculation
-    Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity);    
+    virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity);    
 };
 
 #endif // {{ID}}_INTERFACE_H

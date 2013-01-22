@@ -60,8 +60,11 @@ public:
     // volume integrals
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) { assert(0); return NULL; }
 
+    // localization	
+    virtual QString getName(QString name);	
+
     // force calculation
-    Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) { assert(0); return Point3(); }
+    virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) { assert(0); return Point3(); }
 };
 
 #endif // {{CLASS}}_INTERFACE_H
