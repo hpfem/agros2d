@@ -160,7 +160,7 @@ struct LocalVariable
           m_unitHtml(unitHtml),
           m_isScalar(true),
           m_expression(Expression()) {}
-    LocalVariable(XMLModule::localvariable lv, CoordinateType problemType, AnalysisType analysisType);
+    LocalVariable(XMLModule::localvariable lv, const QString &fieldId, CoordinateType problemType, AnalysisType analysisType);
 
     // id
     inline QString id() const { return m_id; }

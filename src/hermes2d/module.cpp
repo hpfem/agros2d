@@ -390,9 +390,12 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 
 // ***********************************************************************************************
 
-Module::LocalVariable::LocalVariable(XMLModule::localvariable lv,
+Module::LocalVariable::LocalVariable(XMLModule::localvariable lv, const QString &fieldId,
                                      CoordinateType coordinateType, AnalysisType analysisType)
 {
+    PluginInterface *plugin = Agros2D::plugin(fieldId);
+    assert(plugin);
+
     m_id = QString::fromStdString(lv.id());
     m_name = QString::fromStdString(lv.name());
     m_shortname = QString::fromStdString(lv.shortname());
@@ -775,6 +778,7 @@ void Module::BasicModule::read(const QString &filename)
             if (expr.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
             {
                 Module::LocalVariable *var = new Module::LocalVariable(lv,
+                                                                       m_fieldid,
                                                                        m_coordinateType,
                                                                        m_analysisType);
                 variables.append(var);

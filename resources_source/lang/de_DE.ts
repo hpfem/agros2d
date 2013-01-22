@@ -1597,58 +1597,58 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="206"/>
-        <location filename="../../src/examplesdialog.cpp" line="368"/>
+        <location filename="../../src/examplesdialog.cpp" line="215"/>
+        <location filename="../../src/examplesdialog.cpp" line="369"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="233"/>
+        <location filename="../../src/examplesdialog.cpp" line="234"/>
         <source>Basic informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="235"/>
+        <location filename="../../src/examplesdialog.cpp" line="236"/>
         <source>Name:</source>
         <translation type="unfinished">Name:</translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="238"/>
+        <location filename="../../src/examplesdialog.cpp" line="239"/>
         <source>Coordinate type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="292"/>
+        <location filename="../../src/examplesdialog.cpp" line="293"/>
         <source>Geometry</source>
         <translation type="unfinished">Geometrie</translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="293"/>
+        <location filename="../../src/examplesdialog.cpp" line="294"/>
         <source>Nodes:</source>
         <translation type="unfinished">Knoten:</translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="295"/>
+        <location filename="../../src/examplesdialog.cpp" line="296"/>
         <source>Edges:</source>
         <translation type="unfinished">Kanten:</translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="297"/>
+        <location filename="../../src/examplesdialog.cpp" line="298"/>
         <source>Labels:</source>
         <translation type="unfinished">Zeichen der Gebiete:</translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="305"/>
+        <location filename="../../src/examplesdialog.cpp" line="306"/>
         <source>Physical fields</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="317"/>
+        <location filename="../../src/examplesdialog.cpp" line="318"/>
         <source>Analysis:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/examplesdialog.cpp" line="323"/>
+        <location filename="../../src/examplesdialog.cpp" line="324"/>
         <source>Solver:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2627,223 +2627,223 @@
 <context>
     <name>InfoWidget</name>
     <message>
-        <location filename="../../src/infowidget.cpp" line="102"/>
+        <location filename="../../src/infowidget.cpp" line="103"/>
         <source>Basic informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="104"/>
+        <location filename="../../src/infowidget.cpp" line="105"/>
         <source>Name:</source>
         <translation type="unfinished">Name:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="107"/>
+        <location filename="../../src/infowidget.cpp" line="108"/>
         <source>Coordinate type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="110"/>
+        <location filename="../../src/infowidget.cpp" line="111"/>
         <source>Mesh type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="116"/>
+        <location filename="../../src/infowidget.cpp" line="117"/>
         <source>Harmonic analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="117"/>
+        <location filename="../../src/infowidget.cpp" line="118"/>
         <source>Frequency:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="147"/>
+        <location filename="../../src/infowidget.cpp" line="148"/>
         <source>Transient analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="148"/>
+        <location filename="../../src/infowidget.cpp" line="149"/>
         <source>Method:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="150"/>
+        <location filename="../../src/infowidget.cpp" line="151"/>
         <source>Order:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="152"/>
-        <location filename="../../src/infowidget.cpp" line="207"/>
-        <location filename="../../src/infowidget.cpp" line="219"/>
+        <location filename="../../src/infowidget.cpp" line="153"/>
+        <location filename="../../src/infowidget.cpp" line="208"/>
+        <location filename="../../src/infowidget.cpp" line="220"/>
         <source>Tolerance:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="154"/>
+        <location filename="../../src/infowidget.cpp" line="155"/>
         <source>Constant time step:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="156"/>
+        <location filename="../../src/infowidget.cpp" line="157"/>
         <source>Number of const. time steps:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="158"/>
+        <location filename="../../src/infowidget.cpp" line="159"/>
         <source>Total time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="161"/>
+        <location filename="../../src/infowidget.cpp" line="162"/>
         <source>Geometry</source>
         <translation type="unfinished">Geometrie</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="162"/>
+        <location filename="../../src/infowidget.cpp" line="163"/>
         <source>Nodes:</source>
         <translation type="unfinished">Knoten:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="164"/>
+        <location filename="../../src/infowidget.cpp" line="165"/>
         <source>Edges:</source>
         <translation type="unfinished">Kanten:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="166"/>
+        <location filename="../../src/infowidget.cpp" line="167"/>
         <source>Labels:</source>
         <translation type="unfinished">Zeichen der Gebiete:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="168"/>
+        <location filename="../../src/infowidget.cpp" line="169"/>
         <source>Materials:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="170"/>
+        <location filename="../../src/infowidget.cpp" line="171"/>
         <source>Boundaries:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="176"/>
+        <location filename="../../src/infowidget.cpp" line="177"/>
         <source>Physical fields</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="185"/>
+        <location filename="../../src/infowidget.cpp" line="186"/>
         <source>Analysis:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="190"/>
+        <location filename="../../src/infowidget.cpp" line="191"/>
         <source>Initial condition:</source>
         <translation type="unfinished">Anfangsbedingung:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="195"/>
+        <location filename="../../src/infowidget.cpp" line="196"/>
         <source>Number of refinements:</source>
         <translation type="unfinished">Anzahl der Verfeinerung:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="197"/>
+        <location filename="../../src/infowidget.cpp" line="198"/>
         <source>Polynomial order:</source>
         <translation type="unfinished">Zehnerpotenz des Polynoms:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="200"/>
+        <location filename="../../src/infowidget.cpp" line="201"/>
         <source>Adaptivity:</source>
         <translation type="unfinished">Adaptivität:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="205"/>
-        <location filename="../../src/infowidget.cpp" line="217"/>
+        <location filename="../../src/infowidget.cpp" line="206"/>
+        <location filename="../../src/infowidget.cpp" line="218"/>
         <source>Steps:</source>
         <translation type="unfinished">Anzahl der Schritte:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="212"/>
+        <location filename="../../src/infowidget.cpp" line="213"/>
         <source>Solver:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="242"/>
+        <location filename="../../src/infowidget.cpp" line="243"/>
         <source>Mesh parameters</source>
         <translation type="unfinished">Parametern des Netzes</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="243"/>
+        <location filename="../../src/infowidget.cpp" line="244"/>
         <source>Initial mesh:</source>
         <translation type="unfinished">Anfangsnetz:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="244"/>
-        <location filename="../../src/infowidget.cpp" line="250"/>
+        <location filename="../../src/infowidget.cpp" line="245"/>
+        <location filename="../../src/infowidget.cpp" line="251"/>
         <source>%1 nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="245"/>
-        <location filename="../../src/infowidget.cpp" line="251"/>
+        <location filename="../../src/infowidget.cpp" line="246"/>
+        <location filename="../../src/infowidget.cpp" line="252"/>
         <source>%1 elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="249"/>
+        <location filename="../../src/infowidget.cpp" line="250"/>
         <source>Solution mesh:</source>
         <translation type="unfinished">Gelöstes Netz:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="294"/>
+        <location filename="../../src/infowidget.cpp" line="295"/>
         <source>Number of DOFs:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="295"/>
-        <location filename="../../src/infowidget.cpp" line="323"/>
+        <location filename="../../src/infowidget.cpp" line="296"/>
+        <location filename="../../src/infowidget.cpp" line="324"/>
         <source>%1</source>
         <translation type="unfinished">%1</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="296"/>
+        <location filename="../../src/infowidget.cpp" line="297"/>
         <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="297"/>
+        <location filename="../../src/infowidget.cpp" line="298"/>
         <source>%1 %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="310"/>
+        <location filename="../../src/infowidget.cpp" line="311"/>
         <source>Coupled fields</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="318"/>
+        <location filename="../../src/infowidget.cpp" line="319"/>
         <source>Source:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="320"/>
+        <location filename="../../src/infowidget.cpp" line="321"/>
         <source>Target:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="322"/>
+        <location filename="../../src/infowidget.cpp" line="323"/>
         <source>Coupling type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="330"/>
+        <location filename="../../src/infowidget.cpp" line="331"/>
         <source>Solution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="331"/>
+        <location filename="../../src/infowidget.cpp" line="332"/>
         <source>Total elapsed time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="332"/>
+        <location filename="../../src/infowidget.cpp" line="333"/>
         <source>%1 s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2862,7 +2862,7 @@
 <context>
     <name>LocalPointValueDialog</name>
     <message>
-        <location filename="../../src/resultsview.cpp" line="277"/>
+        <location filename="../../src/resultsview.cpp" line="254"/>
         <source>Local point value</source>
         <translation>Lokale Kenngröße im Punkt</translation>
     </message>
@@ -3767,37 +3767,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/materialbrowserdialog.cpp" line="391"/>
+        <location filename="../../src/materialbrowserdialog.cpp" line="400"/>
         <source>Close</source>
         <translation type="unfinished">Schließen</translation>
     </message>
     <message>
-        <location filename="../../src/materialbrowserdialog.cpp" line="396"/>
+        <location filename="../../src/materialbrowserdialog.cpp" line="405"/>
         <source>Edit</source>
         <translation type="unfinished">Editieren</translation>
     </message>
     <message>
-        <location filename="../../src/materialbrowserdialog.cpp" line="540"/>
+        <location filename="../../src/materialbrowserdialog.cpp" line="541"/>
         <source>Variable:</source>
         <translation type="unfinished">Kenngröße:</translation>
     </message>
     <message>
-        <location filename="../../src/materialbrowserdialog.cpp" line="542"/>
+        <location filename="../../src/materialbrowserdialog.cpp" line="543"/>
         <source>Unit:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/materialbrowserdialog.cpp" line="545"/>
+        <location filename="../../src/materialbrowserdialog.cpp" line="546"/>
         <source>Dependence variable:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/materialbrowserdialog.cpp" line="547"/>
+        <location filename="../../src/materialbrowserdialog.cpp" line="548"/>
         <source>Dependence unit:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/materialbrowserdialog.cpp" line="556"/>
+        <location filename="../../src/materialbrowserdialog.cpp" line="557"/>
         <source>Constant:</source>
         <translation type="unfinished">Konstante:</translation>
     </message>
@@ -8126,22 +8126,22 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Lokale Kenngröße im Punkt</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="176"/>
+        <location filename="../../src/resultsview.cpp" line="169"/>
         <source>Volume integrals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="225"/>
+        <location filename="../../src/resultsview.cpp" line="210"/>
         <source>Surface integrals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="267"/>
+        <location filename="../../src/resultsview.cpp" line="244"/>
         <source>Problem is not solved.</source>
         <translation type="unfinished">Das Problem ist nicht gelöst.</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="97"/>
+        <location filename="../../src/resultsview.cpp" line="98"/>
         <source>Local point values</source>
         <translation type="unfinished"></translation>
     </message>
