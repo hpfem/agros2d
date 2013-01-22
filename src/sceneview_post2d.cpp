@@ -70,7 +70,7 @@ void SceneViewPost2D::createActionsPost2D()
 {
     // scene mode
     actSceneModePost2D = new QAction(iconView(), tr("Post 2D"), this);
-    actSceneModePost2D->setShortcut(Qt::Key_F7);
+    actSceneModePost2D->setShortcut(tr("Ctrl+4"));
     actSceneModePost2D->setStatusTip(tr("Postprocessor 2D"));
     actSceneModePost2D->setCheckable(true);
 

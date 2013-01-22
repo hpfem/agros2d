@@ -83,7 +83,7 @@ QList<Point> ChartLine::getPoints()
 ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
 {
     actSceneModeChart = new QAction(icon("chart"), tr("Chart"), this);
-    actSceneModeChart->setShortcut(Qt::Key_F8);
+    actSceneModeChart->setShortcut(tr("Ctrl+6"));
     actSceneModeChart->setStatusTip(tr("Chart"));
     actSceneModeChart->setCheckable(true);
 

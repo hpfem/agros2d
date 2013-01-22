@@ -524,8 +524,8 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewMesh->actSceneModeMesh);
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
-    mnuView->addAction(settingsWidget->actSettings);
     mnuView->addAction(sceneChart->actSceneModeChart);
+    mnuView->addAction(settingsWidget->actSettings);
     mnuView->addSeparator();
     mnuView->addAction(actHideControlPanel);
     mnuView->addSeparator();

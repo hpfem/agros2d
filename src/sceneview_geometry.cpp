@@ -56,7 +56,7 @@ SceneViewPreprocessor::~SceneViewPreprocessor()
 void SceneViewPreprocessor::createActionsGeometry()
 {
     actSceneModePreprocessor = new QAction(iconView(), tr("Preprocessor"), this);
-    actSceneModePreprocessor->setShortcut(Qt::Key_F5);
+    actSceneModePreprocessor->setShortcut(tr("Ctrl+2"));
     actSceneModePreprocessor->setStatusTip(tr("Preprocessor"));
     actSceneModePreprocessor->setCheckable(true);
 

@@ -51,7 +51,7 @@ void SceneViewMesh::createActionsMesh()
 {
     // scene mode
     actSceneModeMesh = new QAction(iconView(), tr("Mesh"), this);
-    actSceneModeMesh->setShortcut(Qt::Key_F6);
+    actSceneModeMesh->setShortcut(tr("Ctrl+3"));
     actSceneModeMesh->setStatusTip(tr("Mesh"));
     actSceneModeMesh->setCheckable(true);
 

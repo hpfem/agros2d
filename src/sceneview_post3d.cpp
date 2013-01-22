@@ -81,7 +81,7 @@ SceneViewPost3D::~SceneViewPost3D()
 void SceneViewPost3D::createActionsPost3D()
 {
     actSceneModePost3D = new QAction(iconView(), tr("Post 3D"), this);
-    actSceneModePost3D->setShortcut(Qt::Key_F8);
+    actSceneModePost3D->setShortcut(tr("Ctrl+5"));
     actSceneModePost3D->setStatusTip(tr("Postprocessor 3D"));
     actSceneModePost3D->setCheckable(true);
 }
