@@ -623,9 +623,9 @@ ModuleItemQuantityAnalysisDialog::ModuleItemQuantityAnalysisDialog(ModuleDialog 
         txtDependence->setText(QString::fromStdString(quantity->dependence().get()));
 
     QGridLayout *layoutGeneral = new QGridLayout();
-    layoutGeneral->addWidget(new QLabel(tr("Planar nelinearity:")), 0, 0);
+    layoutGeneral->addWidget(new QLabel(tr("Planar nonlinearity:")), 0, 0);
     layoutGeneral->addWidget(txtPlanarNonlinearity, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Axisymmetric nelinearity:")), 1, 0);
+    layoutGeneral->addWidget(new QLabel(tr("Axisymmetric nonlinearity:")), 1, 0);
     layoutGeneral->addWidget(txtAxiNonlinearity, 1, 1);
     layoutGeneral->addWidget(new QLabel(tr("Dependence:")), 2, 0);
     layoutGeneral->addWidget(txtDependence, 2, 1);

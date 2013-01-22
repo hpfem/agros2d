@@ -4143,12 +4143,12 @@
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="56"/>
-        <source>GMSH geo file was created</source>
+        <source>GMSH geo file was created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="76"/>
-        <source>could not start GMSH.</source>
+        <source>Could not start GMSH.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

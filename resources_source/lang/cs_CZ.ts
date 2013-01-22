@@ -3316,57 +3316,57 @@
         <location filename="../../src/meshgenerator_gmsh.cpp" line="169"/>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="407"/>
         <source>Mesh generator</source>
-        <translation type="unfinished">Generátor sítě</translation>
+        <translation>Generátor sítě</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="56"/>
-        <source>GMSH geo file was created</source>
-        <translation type="unfinished"></translation>
+        <source>GMSH geo file was created.</source>
+        <translation>GMSH soubor s geometrií byl vytvořen.</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="76"/>
-        <source>could not start GMSH.</source>
-        <translation type="unfinished"></translation>
+        <source>Could not start GMSH.</source>
+        <translation>Nelze spustit GMSH.</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="106"/>
         <source>mesh files were created</source>
-        <translation type="unfinished"></translation>
+        <translation>byly vytvořeny soubory sítí</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="110"/>
         <source>mesh was converted to Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>síť byla převedena do formátu Hermes2D sítě</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="127"/>
         <source>mesh files were deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>soubory sítí byly smazány</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="150"/>
         <source>invalid number of nodes (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>chybný počet uzlů (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="155"/>
         <source>invalid number of edges (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>chybný počet hran (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="169"/>
         <source>could not create GMSH geo mesh file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>nelze vytvořit GMSH geo soubor sítě (%1)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="281"/>
         <source>GMSH</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="407"/>
         <source>could not read GMSH mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>nelze číst GMSH soubor sítě</translation>
     </message>
 </context>
 <context>
@@ -3374,7 +3374,7 @@
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="58"/>
         <source>GMSH</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="69"/>
@@ -3392,72 +3392,72 @@
         <location filename="../../src/meshgenerator_triangle.cpp" line="368"/>
         <location filename="../../src/meshgenerator_triangle.cpp" line="461"/>
         <source>Mesh generator</source>
-        <translation type="unfinished">Generátor sítě</translation>
+        <translation>Generátor sítě</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="69"/>
         <source>Poly file was created</source>
-        <translation type="unfinished">Soubor poly byl vytvořen</translation>
+        <translation>Soubor poly byl vytvořen</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="89"/>
         <source>could not start Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>program Triangle nelze spustit</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="122"/>
         <source>mesh files were created</source>
-        <translation type="unfinished"></translation>
+        <translation>byly vytvořeny soubory sítí</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="127"/>
         <source>mesh was converted to Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>síť byla převedena do formátu Hermes2D sítě</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="146"/>
         <source>mesh files were deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>soubory sítí byly smazány</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="169"/>
         <source>invalid number of nodes (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>chybný počet uzlů (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="174"/>
         <source>invalid number of edges (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>chybný počet hran (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="188"/>
         <source>could not create Triangle poly mesh file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>nelze vytvořit soubor Triangle poly (%1)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="344"/>
         <source>could not read Triangle node file</source>
-        <translation type="unfinished"></translation>
+        <translation>nelze přečíst soubor Triangle s uzly</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="352"/>
         <source>could not read Triangle edge file</source>
-        <translation type="unfinished"></translation>
+        <translation>nelze přečíst soubor Triangle s hranami</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="360"/>
         <source>could not read Triangle ele file</source>
-        <translation type="unfinished"></translation>
+        <translation>nelze přečíst soubor Triangle s elementy</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="368"/>
         <source>could not read Triangle neigh file</source>
-        <translation type="unfinished"></translation>
+        <translation>nelze přečíst soubor Triangle se sousedními elementy</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="461"/>
         <source>some areas have no label marker</source>
-        <translation type="unfinished"></translation>
+        <translation>některé oblasti neobsahují značky oblastí</translation>
     </message>
 </context>
 <context>
@@ -3465,12 +3465,12 @@
     <message>
         <location filename="../../src/hermes2d/module_agros.cpp" line="75"/>
         <source>new boundary</source>
-        <translation type="unfinished">nová podmínka</translation>
+        <translation>nová podmínka</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/module_agros.cpp" line="85"/>
         <source>new material</source>
-        <translation type="unfinished">nový materiál</translation>
+        <translation>nový materiál</translation>
     </message>
 </context>
 <context>
@@ -3478,33 +3478,33 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="1080"/>
         <source>Module editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor modulu</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1158"/>
         <location filename="../../src/moduledialog.cpp" line="1255"/>
         <location filename="../../src/moduledialog.cpp" line="2004"/>
         <source>linear</source>
-        <translation type="unfinished"></translation>
+        <translation>lineární</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1163"/>
         <location filename="../../src/moduledialog.cpp" line="1260"/>
         <location filename="../../src/moduledialog.cpp" line="2009"/>
         <source>nonlinear</source>
-        <translation type="unfinished"></translation>
+        <translation>nelineární</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1191"/>
         <location filename="../../src/moduledialog.cpp" line="1297"/>
         <source>Matrix form</source>
-        <translation type="unfinished"></translation>
+        <translation>Maticová forma</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1209"/>
         <location filename="../../src/moduledialog.cpp" line="1315"/>
         <source>Vector form</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektorová forma</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1333"/>
@@ -3514,59 +3514,59 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="1407"/>
         <source>Scalar view</source>
-        <translation type="unfinished">Skalární zobrazení</translation>
+        <translation>Skalární zobrazení</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1423"/>
         <source>Vector view</source>
-        <translation type="unfinished">Vektorové zobrazení</translation>
+        <translation>Vektorové zobrazení</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1539"/>
         <source>Main</source>
-        <translation type="unfinished">Hlavní</translation>
+        <translation>Hlavní</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1544"/>
         <location filename="../../src/moduledialog.cpp" line="1707"/>
         <location filename="../../src/moduledialog.cpp" line="1766"/>
         <source>Weakforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Slabé formy</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1549"/>
         <source>Preprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Preprocesor</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1554"/>
         <source>Postprocessor</source>
-        <translation type="unfinished">Postprocesor</translation>
+        <translation>Postprocesor</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1569"/>
         <source>Build plugin</source>
-        <translation type="unfinished">Sestavující plugin</translation>
+        <translation>Sestavující plugin</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1573"/>
         <source>XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>XML soubor</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1600"/>
         <source>Name:</source>
-        <translation type="unfinished">Název:</translation>
+        <translation>Název:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1602"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1604"/>
         <source>Description:</source>
-        <translation type="unfinished">Popis:</translation>
+        <translation>Popis:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1613"/>
@@ -3575,12 +3575,12 @@
         <location filename="../../src/moduledialog.cpp" line="1725"/>
         <location filename="../../src/moduledialog.cpp" line="1736"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1613"/>
         <source>Value</source>
-        <translation type="unfinished">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1634"/>
@@ -3590,7 +3590,7 @@
         <location filename="../../src/moduledialog.cpp" line="1869"/>
         <location filename="../../src/moduledialog.cpp" line="1887"/>
         <source>Name</source>
-        <translation type="unfinished">Název</translation>
+        <translation>Název</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1634"/>
@@ -3598,22 +3598,22 @@
         <location filename="../../src/moduledialog.cpp" line="1758"/>
         <location filename="../../src/moduledialog.cpp" line="1838"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1634"/>
         <source>Number of Solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet řešení</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1641"/>
         <source>Constants:</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstanty:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1642"/>
         <source>Analysis:</source>
-        <translation type="unfinished">Analýza:</translation>
+        <translation>Analýza:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1666"/>
@@ -3624,69 +3624,69 @@
         <location filename="../../src/moduledialog.cpp" line="1869"/>
         <location filename="../../src/moduledialog.cpp" line="1887"/>
         <source>Shortname</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkratka</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1677"/>
         <location filename="../../src/moduledialog.cpp" line="1736"/>
         <source>Linearity</source>
-        <translation type="unfinished">Linearita</translation>
+        <translation>Linearita</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1677"/>
         <location filename="../../src/moduledialog.cpp" line="1736"/>
         <source>Dependence</source>
-        <translation type="unfinished"></translation>
+        <translation>Závislost</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1683"/>
         <location filename="../../src/moduledialog.cpp" line="1742"/>
         <source>Definitions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Definice:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1684"/>
         <source>Parameters for particular analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry pro zvláštní analýzu:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1688"/>
         <location filename="../../src/moduledialog.cpp" line="1747"/>
         <source>Quantities</source>
-        <translation type="unfinished"></translation>
+        <translation>Množství</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1699"/>
         <location filename="../../src/moduledialog.cpp" line="1758"/>
         <source>Solution</source>
-        <translation type="unfinished">Řešení</translation>
+        <translation>Řešení</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1699"/>
         <location filename="../../src/moduledialog.cpp" line="1758"/>
         <source>Test function</source>
-        <translation type="unfinished"></translation>
+        <translation>Testovací funkce</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1699"/>
         <location filename="../../src/moduledialog.cpp" line="1758"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1743"/>
         <source>Parameters for partial analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry pro částečnou analýzu:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1778"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1779"/>
         <source>Surface</source>
-        <translation type="unfinished">Povrch</translation>
+        <translation>Povrch</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1793"/>
@@ -3695,49 +3695,49 @@
         <location filename="../../src/moduledialog.cpp" line="1869"/>
         <location filename="../../src/moduledialog.cpp" line="1887"/>
         <source>Unit</source>
-        <translation type="unfinished">Jednotka</translation>
+        <translation>Jednotka</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1823"/>
         <source>Materials</source>
-        <translation type="unfinished">Materiály</translation>
+        <translation>Materiály</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1824"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished">Okrajové podmínky</translation>
+        <translation>Okrajové podmínky</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1838"/>
         <location filename="../../src/moduledialog.cpp" line="1869"/>
         <location filename="../../src/moduledialog.cpp" line="1887"/>
         <source>Analyses</source>
-        <translation type="unfinished"></translation>
+        <translation>Analýzy</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1850"/>
         <source>View</source>
-        <translation type="unfinished">Zobrazení</translation>
+        <translation>Zobrazení</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1850"/>
         <source>Local variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokální proměnná</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1899"/>
         <source>Local variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokální proměnné</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1900"/>
         <source>Volume integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Objemové integrály</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1901"/>
         <source>Surface integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Povrchové integrály</translation>
     </message>
 </context>
 <context>
@@ -3745,13 +3745,13 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="259"/>
         <source>Coordinates</source>
-        <translation type="unfinished">Souřadnice</translation>
+        <translation>Souřadnice</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="295"/>
         <location filename="../../src/moduledialog.cpp" line="355"/>
         <source>Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkce</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="314"/>
@@ -3759,7 +3759,7 @@
         <location filename="../../src/moduledialog.cpp" line="374"/>
         <location filename="../../src/moduledialog.cpp" line="393"/>
         <source>Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Proměnné</translation>
     </message>
 </context>
 <context>
@@ -3767,22 +3767,22 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="556"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="558"/>
         <source>Name:</source>
-        <translation type="unfinished">Název:</translation>
+        <translation>Název:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="560"/>
         <source>Type:</source>
-        <translation type="unfinished">Typ:</translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="562"/>
         <source>Solution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Řešení:</translation>
     </message>
 </context>
 <context>
@@ -3790,12 +3790,12 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="515"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="517"/>
         <source>Value:</source>
-        <translation type="unfinished">Hodnota:</translation>
+        <translation>Hodnota:</translation>
     </message>
 </context>
 <context>
@@ -3803,52 +3803,52 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="427"/>
         <source>Item editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor položky</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="440"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="442"/>
         <source>Name:</source>
-        <translation type="unfinished">Název:</translation>
+        <translation>Název:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="444"/>
         <source>Shortname:</source>
-        <translation type="unfinished">Zkratka:</translation>
+        <translation>Zkratka:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="446"/>
         <source>Shortname (HTML):</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkratka (HTML):</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="448"/>
         <source>Shortname (LaTeX):</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkratka (LaTeX):</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="450"/>
         <source>Unit:</source>
-        <translation type="unfinished">Jednotka:</translation>
+        <translation>Jednotka:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="452"/>
         <source>Unit (HTML):</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednotka (HTML):</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="454"/>
         <source>Unit (LaTeX):</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednotka (LaTeX):</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="457"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Základní</translation>
     </message>
 </context>
 <context>
@@ -3856,7 +3856,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="409"/>
         <source>Item editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor položky</translation>
     </message>
 </context>
 <context>
@@ -3872,32 +3872,36 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="158"/>
         <source>Planar:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartézský:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="160"/>
         <source>Axisymmetric:</source>
-        <translation type="unfinished"></translation>
+        <translation>Osově symetrický:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="181"/>
         <source>Planar X:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>doplnit</translatorcomment>
+        <translation>Kartézský X:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="183"/>
         <source>Planar Y:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>dopnit</translatorcomment>
+        <translation>Kartézský Y:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="185"/>
         <source>Axisymmetric R:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>???</translatorcomment>
+        <translation>Osově symetrický R:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="187"/>
         <source>Axisymmetric Z:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>???</translatorcomment>
+        <translation>Osově symetrický Z:</translation>
     </message>
 </context>
 <context>
