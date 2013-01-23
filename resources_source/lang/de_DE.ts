@@ -4540,12 +4540,12 @@
     <name>ModuleItemQuantityAnalysisDialog</name>
     <message>
         <location filename="../../src/moduledialog.cpp" line="626"/>
-        <source>Planar nelinearity:</source>
+        <source>Planar nonlinearity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="628"/>
-        <source>Axisymmetric nelinearity:</source>
+        <source>Axisymmetric nonlinearity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -3908,12 +3908,12 @@
     <name>ModuleItemQuantityAnalysisDialog</name>
     <message>
         <location filename="../../src/moduledialog.cpp" line="626"/>
-        <source>Planar nelinearity:</source>
+        <source>Planar nonlinearity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="628"/>
-        <source>Axisymmetric nelinearity:</source>
+        <source>Axisymmetric nonlinearity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3927,7 +3927,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="592"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="594"/>
@@ -3940,7 +3940,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="747"/>
         <source>Vector form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vektorová forma</translation>
     </message>
 </context>
 <context>
@@ -3956,12 +3956,12 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="652"/>
         <source>Matrix form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Maticová forma</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="669"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="671"/>
@@ -3977,13 +3977,13 @@
         <location filename="../../src/moduledialog.cpp" line="677"/>
         <location filename="../../src/moduledialog.cpp" line="686"/>
         <source>Planar:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kartézský:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="679"/>
         <location filename="../../src/moduledialog.cpp" line="688"/>
         <source>Axisymmetric:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Osově symetrický:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="682"/>
@@ -5456,7 +5456,7 @@
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Typ</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
@@ -5481,7 +5481,7 @@
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="122"/>
         <source>Variables</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Proměnné</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="126"/>
@@ -5491,7 +5491,7 @@
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="130"/>
         <source>Functions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Funkce</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="134"/>
@@ -7692,12 +7692,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/resultsview.cpp" line="169"/>
         <source>Volume integrals</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objemové integrály</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="210"/>
         <source>Surface integrals</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Povrchové integrály</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="244"/>
@@ -9068,7 +9068,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/sceneview_geometry.cpp" line="58"/>
         <location filename="../../src/sceneview_geometry.cpp" line="60"/>
         <source>Preprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Preprocesor</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="64"/>
@@ -9857,7 +9857,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="500"/>
         <source>GMSH</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GMSH</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="541"/>
@@ -10200,7 +10200,7 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
     <message>
         <location filename="../../src/value.cpp" line="461"/>
         <source>nonlinear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">nelineární</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="391"/>
