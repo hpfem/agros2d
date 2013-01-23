@@ -21,6 +21,7 @@
 #define {{CLASS}}_INTERFACE_H
 
 #include <QObject>
+#include <QString>
 
 #include "util.h"
 #include "hermes2d/plugin_interface.h"
@@ -61,7 +62,7 @@ public:
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo);
 
     // localization	
-    virtual QString getName(QString name);	
+    virtual QString localeName(const QString &name);	
 
     // force calculation
     virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity);    
