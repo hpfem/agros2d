@@ -35,17 +35,6 @@ Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 
 bool Field::solveInitVariables()
 {
-    //TODO transient
-    //
-    //
-    //    // transient
-    //    if (Agros2D::problem()->config()->analysisType() == AnalysisType_Transient)
-    //    {
-    //        if (!Agros2D::problem()->config()->timeStep.evaluate()) return false;
-    //        if (!Agros2D::problem()->config()->timeTotal.evaluate()) return false;
-    //        if (!Agros2D::problem()->config()->initialCondition.evaluate()) return false;
-    //    }
-
     if (!Agros2D::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
         return false;
 

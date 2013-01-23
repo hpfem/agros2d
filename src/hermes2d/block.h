@@ -41,7 +41,7 @@ public:
     Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings);
     ~Block();
 
-    Solver<double>* prepareSolver();
+    Solver<double> *prepareSolver();
 
     inline WeakFormAgros<double> *weakForm() { return m_wf;}
     inline void setWeakForm(WeakFormAgros<double> *wf) { if (m_wf) delete m_wf; m_wf = wf;}

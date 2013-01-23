@@ -164,7 +164,6 @@ void SceneViewCommon2D::paintGrid()
                   Agros2D::problem()->configView()->colorGrid.blueF(), 0.25);
     }
 
-    // axes
     glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
               Agros2D::problem()->configView()->colorCross.greenF(),
               Agros2D::problem()->configView()->colorCross.blueF());
@@ -195,7 +194,7 @@ void SceneViewCommon2D::paintAxes()
 
     Point rulersArea = rulersAreaSize();
     Point border = (Agros2D::problem()->configView()->showRulers) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
-                                                : Point(10.0, 10.0);
+                                                                  : Point(10.0, 10.0);
 
     // x-axis
     glBegin(GL_QUADS);

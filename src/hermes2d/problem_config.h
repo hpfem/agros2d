@@ -84,14 +84,6 @@ public:
     inline MeshType meshType() const { return m_meshType; }
     void setMeshType(const MeshType meshType) { m_meshType = meshType; emit changed(); }
 
-    // startup script
-    inline QString startupscript() const { return m_startupscript; }
-    void setStartupScript(const QString &startupscript) { m_startupscript = startupscript; emit changed(); }
-
-    // description
-    inline QString description() const { return m_description; }
-    void setDescription(const QString &description) { m_description = description; }
-
     void refresh() { emit changed(); }
 
 signals:
@@ -117,9 +109,6 @@ private:
 
     // mesh type
     MeshType m_meshType;
-
-    QString m_startupscript;
-    QString m_description;
 };
 
 class ProblemConfigView : public QObject
@@ -129,6 +118,9 @@ class ProblemConfigView : public QObject
 public:
     ProblemConfigView();
     ~ProblemConfigView();
+
+    QString startupScript;
+    QString description;
 
     // font
     QString rulersFont;

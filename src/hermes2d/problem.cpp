@@ -493,8 +493,6 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
             config()->setFileName("");
         }
 
-        m_isSolving = false;
-
         if (!commandLine)
         {
             Agros2D::scene()->blockSignals(true);
@@ -505,6 +503,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
             Agros2D::scene()->blockSignals(false);
 
+            m_isSolving = false;
             m_isSolved = true;
             emit solved();
 
@@ -597,13 +596,20 @@ void Problem::solveAction()
 
     assert(isMeshed());
 
-    QMap<Block*, Solver<double>* > solvers;
+    QMap<Block*, Solver<double> *> solvers;
 
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
     foreach (Block* block, m_blocks)
-    {
-        solvers[block] = block->prepareSolver();
+    {       
+        Solver<double> *solver = block->prepareSolver();
+        if (!solver)
+        {
+            qDeleteAll(solvers);
+            throw AgrosSolverException(tr("Cannot create solver."));
+        }
+
+        solvers[block] = solver;
         solvers[block]->createInitialSpace();
     }
 
@@ -613,7 +619,6 @@ void Problem::solveAction()
     {
         foreach (Block* block, m_blocks)
         {
-            Solver<double>* solver = solvers[block];
             if (block->isTransient() && (actualTimeStep() == 0))
             {
                 solvers[block]->solveInitialTimeStep();
@@ -624,7 +629,7 @@ void Problem::solveAction()
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
                     // no adaptivity
-                    solver->solveSimple(actualTimeStep(), 0);
+                    solvers[block]->solveSimple(actualTimeStep(), 0);
                 }
                 else
                 {
@@ -634,9 +639,9 @@ void Problem::solveAction()
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
                     {
                         // solve problem
-                        solver->solveReferenceAndProject(actualTimeStep(), adaptStep - 1, false);
+                        solvers[block]->solveReferenceAndProject(actualTimeStep(), adaptStep - 1, false);
                         // create adapted space
-                        continueAdaptivity = solver->createAdaptedSpace(actualTimeStep(), adaptStep);
+                        continueAdaptivity = solvers[block]->createAdaptedSpace(actualTimeStep(), adaptStep);
 
                         adaptStep++;
                     }
@@ -647,7 +652,7 @@ void Problem::solveAction()
 
                 // TODO: space + time adaptivity
                 if (block->isTransient() && (actualTimeStep() >= 1))
-                    nextTimeStep = solver->estimateTimeStepLength(actualTimeStep(), 0);
+                    nextTimeStep = solvers[block]->estimateTimeStepLength(actualTimeStep(), 0);
             }
         }
 
@@ -663,11 +668,10 @@ void Problem::solveAction()
 
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
-    }
+    }    
 
-    // free solvers
-    foreach (Block* block, m_blocks)
-        delete solvers[block];
+    // delete solvers
+    qDeleteAll(solvers);
 }
 
 void Problem::solveAdaptiveStepAction()
@@ -685,6 +689,8 @@ void Problem::solveAdaptiveStepAction()
         assert(m_blocks.size() == 1);
         Block* block = m_blocks.at(0);
         Solver<double> *solver = block->prepareSolver();
+        if (!solver)
+            throw AgrosSolverException(tr("Cannot create solver."));
 
         int adaptStepNormal = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
         int adaptStepNonExisting = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
@@ -718,7 +724,7 @@ void Problem::solveAdaptiveStepAction()
         if (solutionAlreadyExists || adaptStep == 0)
             solver->solveSimple(0, adaptStep + 1);
 
-        // free solver
+        // delete solver
         delete solver;
     }
     catch (AgrosSolverException& e)

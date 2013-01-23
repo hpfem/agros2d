@@ -20,6 +20,7 @@
 #include "value.h"
 
 #include "util/global.h"
+#include "logview.h"
 #include "gui/chart.h"
 #include "pythonlab/pythonengine_agros.h"
 #include "datatabledialog.h"
@@ -233,8 +234,7 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
     }
     else
     {
-        if (!quiet)
-            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
+        Agros2D::log()->printDebug(QObject::tr("Value"), expressionResult.error);
     }
 
     if (!signalBlocked)

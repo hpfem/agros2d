@@ -50,8 +50,6 @@ void ProblemConfig::clear()
     m_coordinateType = CoordinateType_Planar;
     m_name = QObject::tr("unnamed");
     m_fileName = "";
-    m_startupscript = "";
-    m_description = "";
 
     // matrix solver
     m_matrixSolver = Hermes::SOLVER_UMFPACK;
@@ -114,9 +112,15 @@ void ProblemConfigView::load(QDomElement *config)
 {
     eleConfig = config;
 
+    // FIX ME - EOL conversion
+    QPlainTextEdit textEdit;
+    textEdit.setPlainText(readConfig("Problem/StartupScript", QString()));
+    startupScript = textEdit.toPlainText();
+
+    description = readConfig("Problem/Description", QString());
+
     // active field
     activeField = readConfig("View/ActiveField", QString());
-
 
     // font
     rulersFont = readConfig("View/RulersFont", RULERSFONT);
@@ -275,6 +279,9 @@ void ProblemConfigView::load(QDomElement *config)
 void ProblemConfigView::save(QDomElement *config)
 {
     eleConfig = config;
+
+    writeConfig("Problem/StartupScript", startupScript);
+    writeConfig("Problem/Description", description);
 
     // font
     writeConfig("View/RulersFont", rulersFont);

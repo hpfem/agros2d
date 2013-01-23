@@ -82,14 +82,18 @@ Block::~Block()
     m_wf = NULL;
 }
 
-Solver<double>* Block::prepareSolver()
+Solver<double> *Block::prepareSolver()
 {
-    Solver<double>* solver = new Solver<double>;
+    Solver<double> *solver = new Solver<double>();
 
     foreach (Field* field, m_fields)
     {
-        if (! field->solveInitVariables())
-            assert(0); //TODO co to znamena?
+        // evaluate startup script values
+        if (!field->solveInitVariables())
+        {
+            delete solver;
+            return NULL;
+        }
     }
 
     solver->init(this);

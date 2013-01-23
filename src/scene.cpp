@@ -1373,18 +1373,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
                                                                                                                      matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
 
-    // startup script
-    QDomNode eleScriptStartup = eleProblemInfo.toElement().elementsByTagName("startup_script").at(0);
-    Agros2D::problem()->config()->setStartupScript(eleScriptStartup.toElement().text());
-
-    // FIX ME - EOL conversion
-    QPlainTextEdit textEdit;
-    textEdit.setPlainText(Agros2D::problem()->config()->startupscript());
-    Agros2D::problem()->config()->setStartupScript(textEdit.toPlainText());
-
-    // description
-    QDomNode eleDescription = eleProblemInfo.toElement().elementsByTagName("description").at(0);
-    Agros2D::problem()->config()->setDescription(eleDescription.toElement().text());
+    // read config
+    QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
+    Agros2D::problem()->configView()->load(&config);
 
     // field ***************************************************************************************************************
 
@@ -1582,10 +1573,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         nodeCoupling = nodeCoupling.nextSibling();
     }
 
-    // read config
-    QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
-    Agros2D::problem()->configView()->load(&config);
-
     blockSignals(false);
 
     // default values
@@ -1593,7 +1580,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     emit defaultValues();
 
     // run script
-    currentPythonEngineAgros()->runScript(Agros2D::problem()->config()->startupscript());
+    currentPythonEngineAgros()->runScript(Agros2D::problem()->configView()->startupScript);
 
     return ErrorResult();
 }
@@ -1707,17 +1694,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("time_method_tolerance", Agros2D::problem()->config()->timeMethodTolerance().text());
 
     // matrix solver
-    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));
-
-    // startup script
-    QDomElement eleScriptStartup = doc.createElement("startup_script");
-    eleScriptStartup.appendChild(doc.createTextNode(Agros2D::problem()->config()->startupscript()));
-    eleProblem.appendChild(eleScriptStartup);
-
-    // description
-    QDomElement eleDescription = doc.createElement("description");
-    eleDescription.appendChild(doc.createTextNode(Agros2D::problem()->config()->description()));
-    eleProblem.appendChild(eleDescription);
+    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));   
 
     // field ***************************************************************************************************************
     QDomNode eleFields = doc.createElement("fields");

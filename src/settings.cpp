@@ -77,8 +77,8 @@ void SettingsWidget::load()
     txtGeometryLabelSize->setValue(Agros2D::problem()->configView()->labelSize);
 
     // script and description
-    txtDescription->setPlainText(Agros2D::problem()->config()->description());
-    txtStartupScript->setPlainText(Agros2D::problem()->config()->startupscript());
+    txtDescription->setPlainText(Agros2D::problem()->configView()->description);
+    txtStartupScript->setPlainText(Agros2D::problem()->configView()->startupScript);
 
     // 3d
     chkView3DLighting->setChecked(Agros2D::problem()->configView()->scalarView3DLighting);
@@ -130,7 +130,9 @@ void SettingsWidget::save()
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
     {
+        currentPythonEngineAgros()->blockSignals(true);
         ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        currentPythonEngineAgros()->blockSignals(false);
         if (scriptResult.isError)
             return;
     }
@@ -153,8 +155,8 @@ void SettingsWidget::save()
     Agros2D::problem()->configView()->labelSize = txtGeometryLabelSize->value();
 
     // script and description
-    Agros2D::problem()->config()->setDescription(txtDescription->toPlainText());
-    Agros2D::problem()->config()->setStartupScript(txtStartupScript->toPlainText());
+    Agros2D::problem()->configView()->description = txtDescription->toPlainText();
+    Agros2D::problem()->configView()->startupScript = txtStartupScript->toPlainText();
 
     // 3d
     Agros2D::problem()->configView()->scalarView3DLighting = chkView3DLighting->isChecked();

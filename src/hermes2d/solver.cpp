@@ -83,7 +83,7 @@ template <typename Scalar>
 LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
     m_linearSolver = new LinearSolver<Scalar>();
-    m_linearSolver->set_verbose_output(false);
+    m_linearSolver->set_verbose_output(true);
 }
 
 template <typename Scalar>
@@ -132,7 +132,7 @@ void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
 {
     if (solutions.empty())
     {
-        int ndof = Space<Scalar>::get_num_dofs(castConst(spaces));        
+        int ndof = Space<Scalar>::get_num_dofs(castConst(spaces));
         memset(solutionVector, 0, ndof*sizeof(Scalar));
     }
     else
@@ -400,9 +400,8 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
     catch (Hermes::Exceptions::Exception e)
     {
         QString error = QString("%1").arg(e.what());
-        Agros2D::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
-
-        return NULL;
+        // Agros2D::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
+        throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(error));
     }
 
     return m_hermesSolverContainer->slnVector();
@@ -448,20 +447,30 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     m_block->weakForm()->registerForms(bdf2Table);
 
     // TODO: remove for linear solver
-    Scalar *initialSolutionVector = new Scalar[ndof];
-    Scalar *solutionVector = solveOneProblem(initialSolutionVector, m_actualSpaces, adaptivityStep,
-                                             previousTSMultiSolutionArray.solutions());
-    delete [] initialSolutionVector;
-
-    // output
-    if (solutionVector)
+    Scalar *initialSolutionVector;
+    try
     {
+        initialSolutionVector = new Scalar[ndof];
+        Scalar *solutionVector = solveOneProblem(initialSolutionVector, m_actualSpaces, adaptivityStep,
+                                                 previousTSMultiSolutionArray.solutions());
+        delete [] initialSolutionVector;
+
+        if (bdf2Table)
+            delete bdf2Table;
+
+        // output
         BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
         addSolutionToStore(solutionID, solutionVector);
     }
+    catch (AgrosSolverException e)
+    {
+        delete [] initialSolutionVector;
 
-    if (bdf2Table)
-        delete bdf2Table;
+        if (bdf2Table)
+            delete bdf2Table;
+
+        throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(e.toString()));
+    }
 }
 
 template <typename Scalar>

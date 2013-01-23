@@ -72,12 +72,15 @@ void PythonEngineAgros::runPythonHeader()
         script += Agros2D::configComputer()->globalScript + "\n";
 
     // startup script
-    if (!Agros2D::problem()->config()->startupscript().isEmpty())
-        script += Agros2D::problem()->config()->startupscript() + "\n";
+    if (!Agros2D::problem()->configView()->startupScript.trimmed().isEmpty())
+        script += Agros2D::problem()->configView()->startupScript + "\n";
 
     // run script
-    if (!script.isEmpty())
+    if (!script.trimmed().isEmpty())
         PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+
+    if (script.isEmpty())
+        qDebug() << script;
 }
 
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
@@ -108,18 +111,11 @@ QString createPythonFromModel()
     // import modules
     str += "import agros2d\n\n";
 
-    // description
-    if (!Agros2D::problem()->config()->description().isEmpty())
-    {
-        str += QString("# %1").arg(Agros2D::problem()->config()->description());
-        str += "\n\n";
-    }
-
     // startup script
-    if (!Agros2D::problem()->config()->startupscript().isEmpty())
+    if (!Agros2D::problem()->configView()->startupScript.trimmed().isEmpty())
     {
         str += "# startup script\n";
-        str += Agros2D::problem()->config()->startupscript();
+        str += Agros2D::problem()->configView()->startupScript;
         str += "\n\n";
     }
 
