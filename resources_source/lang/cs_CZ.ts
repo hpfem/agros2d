@@ -3514,7 +3514,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="1333"/>
         <source>Essential form</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirichlet</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1407"/>
@@ -3869,7 +3869,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="791"/>
         <source>Essential form</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirichlet</translation>
     </message>
 </context>
 <context>
@@ -9176,7 +9176,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="98"/>
         <source>Swap direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočit směr</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="305"/>
@@ -9217,7 +9217,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/sceneview_geometry.h" line="69"/>
         <source>Geometry editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor geometrie</translation>
     </message>
 </context>
 <context>
@@ -9225,7 +9225,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/gui/scenewidget.cpp" line="53"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info</translation>
     </message>
 </context>
 <context>
@@ -9508,27 +9508,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1521"/>
         <source>Search for:</source>
-        <translation type="unfinished">Vyhledat:</translation>
+        <translation>Vyhledat:</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1522"/>
         <source>Replace with:</source>
-        <translation type="unfinished">Nahradit:</translation>
+        <translation>Nahradit:</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1529"/>
         <source>Find</source>
-        <translation type="unfinished">Najít</translation>
+        <translation>Najít</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1533"/>
         <source>Replace all</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahradit vše</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1536"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrýt</translation>
     </message>
 </context>
 <context>
@@ -9633,370 +9633,370 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="52"/>
         <source>Settings</source>
-        <translation type="unfinished">Nastavení</translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="53"/>
         <source>Ctrl+7</source>
-        <translation type="unfinished">Ctrl+7</translation>
+        <translation>Ctrl+7</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="215"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Pracovní prostor</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="216"/>
         <source>Script and description</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript a popis</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="217"/>
         <location filename="../../src/settings.cpp" line="573"/>
         <source>Colors</source>
-        <translation type="unfinished">Barvy</translation>
+        <translation>Barvy</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="218"/>
         <source>Mesh and Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Síť a řešič</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="229"/>
         <source>Apply</source>
-        <translation type="unfinished">Potvrdit</translation>
+        <translation>Potvrdit</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="261"/>
         <source>Startup script</source>
-        <translation type="unfinished">Definice proměnných</translation>
+        <translation>Spuštěcí skript</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="271"/>
         <source>Description</source>
-        <translation type="unfinished">Popis</translation>
+        <translation>Popis</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="291"/>
         <source>Show grid</source>
-        <translation type="unfinished">Zobrazit mřížku</translation>
+        <translation>Zobrazit mřížku</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="293"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Přichytávat k mřížce</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="294"/>
         <source>Zoom to mouse pointer</source>
-        <translation type="unfinished">Zvětšení k pozici kurzoru myši</translation>
+        <translation>Zvětšení k pozici kurzoru myši</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="295"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Zobrazit pravítko</translation>
+        <translation>Zobrazit pravítka</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="296"/>
         <source>Show axes</source>
-        <translation type="unfinished">Zobrazit osy</translation>
+        <translation>Zobrazit osy</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="299"/>
         <source>Grid step:</source>
-        <translation type="unfinished">Krok mřížky:</translation>
+        <translation>Krok mřížky:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="307"/>
         <source>Grid</source>
-        <translation type="unfinished">Mřížka</translation>
+        <translation>Mřížka</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="316"/>
         <source>Rulers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pravítka:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="318"/>
         <source>Postprocessor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprocesor:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="321"/>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonty</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="336"/>
         <source>Node size:</source>
-        <translation type="unfinished">Velikost uzlů:</translation>
+        <translation>Velikost uzlů:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="338"/>
         <source>Edge width:</source>
-        <translation type="unfinished">Šířka hrany:</translation>
+        <translation>Šířka hrany:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="340"/>
         <source>Label size:</source>
-        <translation type="unfinished">Velikost značek oblastí:</translation>
+        <translation>Velikost značek oblastí:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="343"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="347"/>
         <source>Ligthing</source>
-        <translation type="unfinished">Osvětlení</translation>
+        <translation>Osvětlení</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="353"/>
         <source>Gradient background</source>
-        <translation type="unfinished">Gradientní pozadí</translation>
+        <translation>Gradientní pozadí</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="359"/>
         <source>Bounding box</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohraničovací rámeček</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="362"/>
         <source>Angle:</source>
-        <translation type="unfinished">Úhel:</translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="365"/>
         <source>Height:</source>
-        <translation type="unfinished">Výška:</translation>
+        <translation>Výška:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="370"/>
         <source>3D view</source>
-        <translation type="unfinished"></translation>
+        <translation>3D pohled</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="374"/>
         <source>Scalar field</source>
-        <translation type="unfinished">Skalární pole</translation>
+        <translation>Skalární pole</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="375"/>
         <source>Contours</source>
-        <translation type="unfinished">Kontury</translation>
+        <translation>Vrstevnice</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="376"/>
         <source>Vector field</source>
-        <translation type="unfinished">Vektorové pole</translation>
+        <translation>Vektorové pole</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="383"/>
         <source>Deform shape</source>
-        <translation type="unfinished">Tvar deformace</translation>
+        <translation>Deformace tvaru</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="386"/>
         <location filename="../../src/settings.cpp" line="422"/>
         <location filename="../../src/settings.cpp" line="570"/>
         <source>Default</source>
-        <translation type="unfinished">Výchozí</translation>
+        <translation>Výchozí</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="412"/>
         <source>Curvilinear elements</source>
-        <translation type="unfinished">Křivočaré elementy</translation>
+        <translation>Křivočaré elementy</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="416"/>
         <source>Angle segments count:</source>
-        <translation type="unfinished">Počet segmentů úhlu:</translation>
+        <translation>Počet segmentů úhlu:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="419"/>
         <source>Mesh</source>
-        <translation type="unfinished">Síť</translation>
+        <translation>Síť</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="429"/>
         <source>Maximum number of DOFs:</source>
-        <translation type="unfinished">Maximální počet st. volnosti:</translation>
+        <translation>Maximální počet st. volnosti:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="436"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences the selection&lt;br/&gt;of candidates in hp-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&lt;/b&gt;výchozí hodnota je 1.0, tento parametr ovlivňuje výběr &lt;br/&gt;kandidátů při &lt;i&gt;hp&lt;/i&gt;-adaptivitě</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="440"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
-        <translation type="unfinished">&lt;b&gt;&lt;/b&gt;kvantitativní parametr adaptivní funkce&lt;br/&gt;s různýmy významy pro různé adaptivní strategie</translation>
+        <translation>&lt;b&gt;&lt;/b&gt;kvantitativní parametr adaptivní funkce&lt;br/&gt;s různýmy významy pro různé adaptivní strategie</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="444"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="445"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="446"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="453"/>
         <source>arbitrary level</source>
-        <translation type="unfinished"></translation>
+        <translation>libovolný stupeň</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="454"/>
         <source>at most one-level</source>
-        <translation type="unfinished"></translation>
+        <translation>nejvýše jednostupňový</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="455"/>
         <source>at most two-level</source>
-        <translation type="unfinished"></translation>
+        <translation>nejvýše dvoustupňový</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="456"/>
         <source>at most three-level</source>
-        <translation type="unfinished"></translation>
+        <translation>nejvýše třístupňový</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="457"/>
         <source>at most four-level</source>
-        <translation type="unfinished"></translation>
+        <translation>nejvýše čtyřstupňový</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="458"/>
         <source>at most five-level</source>
-        <translation type="unfinished"></translation>
+        <translation>nejvýše pětistupňový</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="465"/>
         <source>Use anisotropic refinements</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít anizotropní zjemnění</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="466"/>
         <source>Use hp reference solution for h and p adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít hp referenční řešení pro h a p adaptivitu</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="472"/>
         <source>Conv. exp.:</source>
-        <translation type="unfinished">Konv. exp.:</translation>
+        <translation>Konv. exp.:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="475"/>
         <source>Strategy:</source>
-        <translation type="unfinished">Strategie:</translation>
+        <translation>Strategie:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="478"/>
         <source>Threshold:</source>
-        <translation type="unfinished">Práh:</translation>
+        <translation>Práh:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="481"/>
         <source>Hanging nodes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Visící uzly:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="483"/>
         <source>Norm:</source>
-        <translation type="unfinished">Norma:</translation>
+        <translation>Norma:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="500"/>
         <source>Triangle</source>
-        <translation type="unfinished">Trojúhelníková</translation>
+        <translation>Trojúhelníková</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="502"/>
         <source>GMSH</source>
-        <translation type="unfinished">GMSH</translation>
+        <translation>GMSH</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="543"/>
         <source>Background:</source>
-        <translation type="unfinished">Pozadí:</translation>
+        <translation>Pozadí:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="544"/>
         <source>Grid:</source>
-        <translation type="unfinished">Mřížka:</translation>
+        <translation>Mřížka:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="545"/>
         <source>Cross:</source>
-        <translation type="unfinished">Kříž:</translation>
+        <translation>Kříž:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="546"/>
         <source>Nodes:</source>
-        <translation type="unfinished">Uzly:</translation>
+        <translation>Uzly:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="547"/>
         <source>Edges:</source>
-        <translation type="unfinished">Hrany:</translation>
+        <translation>Hrany:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="548"/>
         <source>Labels:</source>
-        <translation type="unfinished">Značky oblastí:</translation>
+        <translation>Značky oblastí:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="549"/>
         <source>Contours:</source>
-        <translation type="unfinished">Kontury:</translation>
+        <translation>Vrstevnice:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="550"/>
         <source>Vectors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektory:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="551"/>
         <source>Initial mesh:</source>
-        <translation type="unfinished">Počáteční síť:</translation>
+        <translation>Počáteční síť:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="552"/>
         <source>Solution mesh:</source>
-        <translation type="unfinished">Řešená síť:</translation>
+        <translation>Výsledná síť:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="553"/>
         <source>Highlighted elements:</source>
-        <translation type="unfinished">Zvýrazněné elementy:</translation>
+        <translation>Zvýrazněné elementy:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="554"/>
         <source>Selected elements:</source>
-        <translation type="unfinished">Vybrané elementy:</translation>
+        <translation>Vybrané elementy:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="593"/>
         <source>refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors, refine all&lt;br/&gt;to keep the mesh symmetric</source>
-        <translation type="unfinished"></translation>
+        <translation>zjemni elementy pokud odmocnin(&lt;b&gt;práh&lt;/b&gt;) krát celková chyba&lt;br/&gt;je zpracována. Pokud má více elementů podobnou chybu, zjmení všechny&lt;br/&gt;pro zachování symetrické matice</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="596"/>
         <source>refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt; times maximum element error</source>
-        <translation type="unfinished"></translation>
+        <translation>zjemni všechny elementy jejichž chyba je větší &lt;br/&gt; než &lt;b&gt;práh&lt;/b&gt; krát maximální chyba elementu</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="599"/>
         <source>refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>zjemni všechny elementy jejichž chyba je větší&lt;br/&gt;než &lt;b&gt;práh&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -10039,12 +10039,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/gui/systemoutput.cpp" line="25"/>
         <source>System shell</source>
-        <translation type="unfinished"></translation>
+        <translation>Systémový interpret příkazů</translation>
     </message>
     <message>
         <location filename="../../src/gui/systemoutput.cpp" line="74"/>
         <source>&lt;b&gt;Working directory:&lt;/b&gt; %1&lt;/br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Pracovní adresář:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
 </context>
 <context>
@@ -10254,17 +10254,18 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
         <location filename="../../src/value.cpp" line="436"/>
         <source>Condition couldn&apos;t be evaluated:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Podmínka nemůže být vyčíslena:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="459"/>
         <source>nonlinear %1(%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>nelineární %1(%2)</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="461"/>
         <source>nonlinear</source>
-        <translation type="unfinished">nelineární</translation>
+        <translation>nelineární</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="391"/>
@@ -10353,64 +10354,64 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
         <location filename="../../src/videodialog.cpp" line="258"/>
         <location filename="../../src/videodialog.cpp" line="302"/>
         <source>%1 / %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 / %2</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="85"/>
         <location filename="../../src/videodialog.cpp" line="259"/>
         <source>%1 / %2 s</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 / %2 s</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="114"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptivita</translation>
+        <translation>Adaptivita</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="115"/>
         <source>Transient</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="122"/>
         <source>Show video</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit video</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="126"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="136"/>
         <source>Save images to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit obrázek na disk</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="139"/>
         <source>Show grid</source>
-        <translation type="unfinished">Zobrazit mřížku</translation>
+        <translation>Zobrazit mřížku</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="141"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Zobrazit pravítko</translation>
+        <translation>Zobrazit pravítka</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="143"/>
         <source>Show axes</source>
-        <translation type="unfinished">Zobrazit osy</translation>
+        <translation>Zobrazit osy</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="197"/>
         <source>Adaptive step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivní krok:</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="218"/>
         <location filename="../../src/videodialog.cpp" line="271"/>
         <source>Run</source>
-        <translation type="unfinished">Spustit</translation>
+        <translation>Spustit</translation>
     </message>
     <message>
         <source>Viewport</source>
