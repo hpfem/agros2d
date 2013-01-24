@@ -924,8 +924,8 @@ QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
     txtParticleCustomForceZ = new LineEditDouble();
     txtParticleMaximumRelativeError = new LineEditDouble();
     txtParticleMinimumStep = new LineEditDouble();
-    chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflect on different material"));
-    chkParticleReflectOnBoundary = new QCheckBox(tr("Reflect on boundary"));
+    chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflection on different material"));
+    chkParticleReflectOnBoundary = new QCheckBox(tr("Reflection on boundary"));
     txtParticleCoefficientOfRestitution = new LineEditDouble(0.0, true);
     txtParticleCoefficientOfRestitution->setBottom(0.0);
     txtParticleCoefficientOfRestitution->setTop(1.0);

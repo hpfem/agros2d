@@ -316,6 +316,11 @@
         <source>Chart</source>
         <translation>Graf</translation>
     </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="86"/>
+        <source>Ctrl+6</source>
+        <translation>Ctrl+6</translation>
+    </message>
 </context>
 <context>
     <name>CheckVersion</name>
@@ -3509,7 +3514,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="1333"/>
         <source>Essential form</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirichlet</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1407"/>
@@ -3864,7 +3869,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="791"/>
         <source>Essential form</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirichlet</translation>
     </message>
 </context>
 <context>
@@ -3908,18 +3913,18 @@
     <name>ModuleItemQuantityAnalysisDialog</name>
     <message>
         <location filename="../../src/moduledialog.cpp" line="626"/>
-        <source>Planar nelinearity:</source>
-        <translation type="unfinished"></translation>
+        <source>Planar nonlinearity:</source>
+        <translation>Rovinná nelinearita:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="628"/>
-        <source>Axisymmetric nelinearity:</source>
-        <translation type="unfinished"></translation>
+        <source>Axisymmetric nonlinearity:</source>
+        <translation>Osově symetrická nelinearita:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="630"/>
         <source>Dependence:</source>
-        <translation type="unfinished"></translation>
+        <translation>Závislost:</translation>
     </message>
 </context>
 <context>
@@ -3927,12 +3932,12 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="592"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="594"/>
         <source>Shortname:</source>
-        <translation type="unfinished">Zkratka:</translation>
+        <translation>Zkratka:</translation>
     </message>
 </context>
 <context>
@@ -3940,7 +3945,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="747"/>
         <source>Vector form</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektorová forma</translation>
     </message>
 </context>
 <context>
@@ -3948,7 +3953,7 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="954"/>
         <source>Local variable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokální proměnná:</translation>
     </message>
 </context>
 <context>
@@ -3956,44 +3961,44 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="652"/>
         <source>Matrix form</source>
-        <translation type="unfinished"></translation>
+        <translation>Maticová forma</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="669"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="671"/>
         <source>Solution index:</source>
-        <translation type="unfinished"></translation>
+        <translation>Index řešení:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="673"/>
         <source>Test function index:</source>
-        <translation type="unfinished"></translation>
+        <translation>Index testovací funkce:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="677"/>
         <location filename="../../src/moduledialog.cpp" line="686"/>
         <source>Planar:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartézský:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="679"/>
         <location filename="../../src/moduledialog.cpp" line="688"/>
         <source>Axisymmetric:</source>
-        <translation type="unfinished"></translation>
+        <translation>Osově symetrický:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="682"/>
         <source>Linear</source>
-        <translation type="unfinished">Lineární</translation>
+        <translation>Lineární</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="691"/>
         <source>Nonlinear</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelineární</translation>
     </message>
 </context>
 <context>
@@ -4001,17 +4006,17 @@
     <message>
         <location filename="../../src/moduledialog.cpp" line="853"/>
         <source>Condition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Podmínka:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="855"/>
         <source>Default:</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="858"/>
         <source>Constraints and default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Omezení a výchozí hodnota</translation>
     </message>
 </context>
 <context>
@@ -4019,7 +4024,7 @@
     <message>
         <location filename="../../src/scene.cpp" line="182"/>
         <source>New boundary condition</source>
-        <translation type="unfinished">Nová okrajová podmínka</translation>
+        <translation>Nová okrajová podmínka</translation>
     </message>
 </context>
 <context>
@@ -4027,12 +4032,12 @@
     <message>
         <location filename="../../src/particle/particle_tracing.cpp" line="81"/>
         <source>Particle Tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Sledování částic</translation>
     </message>
     <message>
         <location filename="../../src/particle/particle_tracing.cpp" line="171"/>
         <source>Element [%1, %2] lies out of the mesh (&apos;%3&apos;).</source>
-        <translation type="unfinished"></translation>
+        <translation>Element [%1, %2] leží mimo síť (&apos;%3&apos;).</translation>
     </message>
 </context>
 <context>
@@ -4042,22 +4047,22 @@
         <location filename="../../src/sceneview_post.cpp" line="87"/>
         <location filename="../../src/sceneview_post.cpp" line="104"/>
         <source>MeshView</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhled sítě</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="65"/>
         <source>initial mesh with %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>výchozí síť s %1 elementy</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="87"/>
         <source>solution mesh with %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>výsledná síť s %1 elementy</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="104"/>
         <source>polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>řád polynomu</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="132"/>
@@ -4065,37 +4070,37 @@
         <location filename="../../src/sceneview_post.cpp" line="226"/>
         <location filename="../../src/sceneview_post.cpp" line="253"/>
         <source>PostView</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazení výsledků</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="132"/>
         <source>contour view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>zobrazení vrstevnic (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="181"/>
         <source>scalar view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>zobrazení skaláru (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="226"/>
         <source>vector view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>zobrazení vektoru (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="253"/>
         <source>particle view</source>
-        <translation type="unfinished"></translation>
+        <translation>zobrazení částic</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="285"/>
         <source>Particle Tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Sledování částic</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="285"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
-        <translation type="unfinished"></translation>
+        <translation>Částice %1: %2 kroků, výsledný čas %3 s</translation>
     </message>
 </context>
 <context>
@@ -4390,484 +4395,484 @@
     <message>
         <location filename="../../src/postprocessorview.cpp" line="148"/>
         <source>Width and height of bounding box over vector count.</source>
-        <translation type="unfinished">Śířka a výška hranice dělená počtem.</translation>
+        <translation>Śířka a výška ohraničovacího boxu nad počtem vektorů.</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="332"/>
         <source>Apply</source>
-        <translation type="unfinished">Potvrdit</translation>
+        <translation>Potvrdit</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="361"/>
         <source>Initial mesh</source>
-        <translation type="unfinished">Počáteční síť</translation>
+        <translation>Počáteční síť</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="362"/>
         <source>Solution mesh</source>
-        <translation type="unfinished">Řešená síť</translation>
+        <translation>Výsledná síť</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="363"/>
         <location filename="../../src/postprocessorview.cpp" line="405"/>
         <source>Polynomial order</source>
-        <translation type="unfinished">Řád polynomu</translation>
+        <translation>Řád polynomu</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="371"/>
         <source>Mesh</source>
-        <translation type="unfinished">Síť</translation>
+        <translation>Síť</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="381"/>
         <source>Hermes</source>
-        <translation type="unfinished">Hermes</translation>
+        <translation>Hermes</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="382"/>
         <source>Jet</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryskáč</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="383"/>
         <source>Copper</source>
-        <translation type="unfinished">Měď</translation>
+        <translation>Měď</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="384"/>
         <source>Hot</source>
-        <translation type="unfinished">Horko</translation>
+        <translation>Horko</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="385"/>
         <source>Cool</source>
-        <translation type="unfinished">Chladno</translation>
+        <translation>Chladno</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="386"/>
         <source>Bone</source>
-        <translation type="unfinished">Kost</translation>
+        <translation>Kost</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="387"/>
         <source>Pink</source>
-        <translation type="unfinished">Růžový</translation>
+        <translation>Růžový</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="388"/>
         <source>Spring</source>
-        <translation type="unfinished">Jaro</translation>
+        <translation>Jaro</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="389"/>
         <source>Summer</source>
-        <translation type="unfinished">Léto</translation>
+        <translation>Léto</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="390"/>
         <source>Autumn</source>
-        <translation type="unfinished">Podzim</translation>
+        <translation>Podzim</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="391"/>
         <source>Winter</source>
-        <translation type="unfinished">Zima</translation>
+        <translation>Zima</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="392"/>
         <source>HSV</source>
-        <translation type="unfinished">HSV</translation>
+        <translation>HSV</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="393"/>
         <source>B/W ascending</source>
-        <translation type="unfinished">ČB stoupající</translation>
+        <translation>ČB stoupající</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="394"/>
         <source>B/W descending</source>
-        <translation type="unfinished">ČB klesající</translation>
+        <translation>ČB klesající</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="396"/>
         <source>Show order colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit barevnou stupnici řádu</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="397"/>
         <source>Show order labels</source>
-        <translation type="unfinished">Zobrazit řár polynomu číselně</translation>
+        <translation>Zobrazit řár číselně</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="400"/>
         <source>Order palette:</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta řádu:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="414"/>
         <source>Contours</source>
-        <translation type="unfinished">Kontury</translation>
+        <translation>Vrstevnice</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="416"/>
         <source>Vectors</source>
-        <translation type="unfinished">Vektory</translation>
+        <translation>Vektory</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="418"/>
         <location filename="../../src/postprocessorview.cpp" line="549"/>
         <source>Scalar view</source>
-        <translation type="unfinished">Skalární zobrazení</translation>
+        <translation>Skalární zobrazení</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="420"/>
         <location filename="../../src/postprocessorview.cpp" line="551"/>
         <source>Particle tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Sledování částic</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="433"/>
         <source>Postprocessor 2D</source>
-        <translation type="unfinished">Postprocesor 2D</translation>
+        <translation>Postprocesor 2D</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="447"/>
         <source>Auto range</source>
-        <translation type="unfinished">Autom. rozsah</translation>
+        <translation>Autom. rozsah</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="455"/>
         <location filename="../../src/postprocessorview.cpp" line="479"/>
         <location filename="../../src/postprocessorview.cpp" line="501"/>
         <source>Variable:</source>
-        <translation type="unfinished">Veličina:</translation>
+        <translation>Proměnná:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="457"/>
         <source>Component:</source>
-        <translation type="unfinished">Složka:</translation>
+        <translation>Složka:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="461"/>
         <source>Scalar field</source>
-        <translation type="unfinished">Skalární pole</translation>
+        <translation>Skalární pole</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="483"/>
         <source>Contour field</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrstevnicové pole</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="505"/>
         <source>Vector field</source>
-        <translation type="unfinished">Vektorové pole</translation>
+        <translation>Vektorové pole</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="521"/>
         <source>Partical tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Sledování částic</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="537"/>
         <source>Solid view</source>
-        <translation type="unfinished"></translation>
+        <translation>Pevné zobrazení</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="548"/>
         <source>None</source>
-        <translation type="unfinished">Bez zobrazení</translation>
+        <translation>Bez zobrazení</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="550"/>
         <source>Scalar view solid</source>
-        <translation type="unfinished">Obj. skalární pole</translation>
+        <translation>Obj. skalární pole</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="573"/>
         <source>Postprocessor 3D</source>
-        <translation type="unfinished">Postprocesor 2D {3D?}</translation>
+        <translation>Postprocesor 3D</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="592"/>
         <source>Chart</source>
-        <translation type="unfinished">Graf</translation>
+        <translation>Graf</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="615"/>
         <source>Physical field:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fyzikální pole:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="618"/>
         <source>Physical field</source>
-        <translation type="unfinished"></translation>
+        <translation>Fyzikální pole</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="628"/>
         <source>Time step:</source>
-        <translation type="unfinished">Časový krok:</translation>
+        <translation>Časový krok:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="631"/>
         <source>Transient analysis</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="642"/>
         <source>Step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="644"/>
         <location filename="../../src/postprocessorview.cpp" line="860"/>
         <source>Type:</source>
-        <translation type="unfinished">Typ:</translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="647"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptivita</translation>
+        <translation>Adaptivita</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="718"/>
         <source>Filter</source>
-        <translation type="unfinished">Filtr</translation>
+        <translation>Filtr</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="727"/>
         <source>Log. scale</source>
-        <translation type="unfinished">Log. škála</translation>
+        <translation>Log. škála</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="746"/>
         <source>Minimum:</source>
-        <translation type="unfinished">Minimum:</translation>
+        <translation>Minimum:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="751"/>
         <source>Maximum:</source>
-        <translation type="unfinished">Maximum:</translation>
+        <translation>Maximum:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="756"/>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozsah</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="762"/>
         <source>Palette:</source>
-        <translation type="unfinished">Paleta:</translation>
+        <translation>Paleta:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="764"/>
         <source>Quality:</source>
-        <translation type="unfinished">Kvalita:</translation>
+        <translation>Kvalita:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="766"/>
         <source>Steps:</source>
-        <translation type="unfinished">Počet kroků:</translation>
+        <translation>Počet kroků:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="769"/>
         <source>Base:</source>
-        <translation type="unfinished">Základ log.:</translation>
+        <translation>Základ log.:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="773"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="782"/>
         <source>Show colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit bar. stupnici</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="785"/>
         <source>Decimal places:</source>
-        <translation type="unfinished">Počet des. míst:</translation>
+        <translation>Počet des. míst:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="789"/>
         <source>Colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Bar. stupnice</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="819"/>
         <source>Number of contours:</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet vrstevnic:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="821"/>
         <source>Contour width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka vrstevnic:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="833"/>
         <source>Proportional</source>
-        <translation type="unfinished">Proporční</translation>
+        <translation>Proporční</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="834"/>
         <source>Color (b/w)</source>
-        <translation type="unfinished">Barva (čb.)</translation>
+        <translation>Barva (čb.)</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="854"/>
         <source>Number of vectors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet vektorů:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="857"/>
         <source>Scale:</source>
-        <translation type="unfinished">Měřítko:</translation>
+        <translation>Měřítko:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="862"/>
         <source>Center:</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="904"/>
         <source>Relativistic correction</source>
-        <translation type="unfinished"></translation>
+        <translation>Relativistická korekce</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="927"/>
-        <source>Reflect on different material</source>
-        <translation type="unfinished"></translation>
+        <source>Reflection on different material</source>
+        <translation>Odraz na rozhraní růz. materiálů</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="928"/>
-        <source>Reflect on boundary</source>
-        <translation type="unfinished"></translation>
+        <source>Reflection on boundary</source>
+        <translation>Odraz na hranici</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="932"/>
         <source>Line color is controlled by velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Barva čáry je kontrolována rychlostí</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="933"/>
         <source>Show points</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit body</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="948"/>
         <location filename="../../src/postprocessorview.cpp" line="960"/>
         <source>Equation:</source>
-        <translation type="unfinished">Rovnice:</translation>
+        <translation>Rovnice:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="950"/>
         <source>Charge (C):</source>
-        <translation type="unfinished"></translation>
+        <translation>Náboj (C):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="953"/>
         <source>Lorentz force</source>
-        <translation type="unfinished">Lorentzova síla</translation>
+        <translation>Lorentzova síla</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="962"/>
         <source>Density (kg/m&lt;sup&gt;3&lt;/sup&gt;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Hustota (kg/m&lt;sup&gt;3&lt;/sup):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="964"/>
         <source>Reference area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Referenční plocha (m&lt;sup&gt;2&lt;/sup):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="966"/>
         <source>Coefficient (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeficient (-):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="969"/>
         <source>Drag force</source>
-        <translation type="unfinished"></translation>
+        <translation>Tažná síla</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="978"/>
         <source>Coefficient of restitution (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Návratový koeficient (-):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="981"/>
         <source>Reflection</source>
-        <translation type="unfinished"></translation>
+        <translation>Odraz</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="993"/>
         <source>Custom force</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastní síla</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1003"/>
         <source>Initial particle position</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí pozice částice</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1013"/>
         <source>Initial particle velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí rychlost částice</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1020"/>
         <source>Maximum relative error (%):</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. relativní chyba (%):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1022"/>
         <source>Minimum step (m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimální krok (m):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1024"/>
         <source>Maximum number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. počet kroků:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1027"/>
         <source>Solver</source>
-        <translation type="unfinished">Řešič</translation>
+        <translation>Řešič</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1035"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1040"/>
         <source>Equations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rovnice:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1042"/>
         <source>Number of particles:</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet částic:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1044"/>
         <source>Particles dispersion (m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozptyl částic (m):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1046"/>
         <source>Mass (kg):</source>
-        <translation type="unfinished"></translation>
+        <translation>Hmotnost (kg):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1144"/>
         <source>Scalar</source>
-        <translation type="unfinished">Skalár</translation>
+        <translation>Skalár</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1148"/>
         <source>Magnitude</source>
-        <translation type="unfinished">Modul</translation>
+        <translation>Modul</translation>
     </message>
 </context>
 <context>
@@ -4875,52 +4880,52 @@
     <message>
         <location filename="../../src/preprocessorview.cpp" line="77"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished">&amp;Vlastnosti</translation>
+        <translation>&amp;Vlastnosti</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="78"/>
         <source>Properties</source>
-        <translation type="unfinished">Vlastnosti</translation>
+        <translation>Vlastnosti</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="81"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Smazat</translation>
+        <translation>&amp;Smazat</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="82"/>
         <source>Delete item</source>
-        <translation type="unfinished">Smazat položku</translation>
+        <translation>Smazat položku</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="153"/>
         <source>Materials</source>
-        <translation type="unfinished">Materiály</translation>
+        <translation>Materiály</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="176"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished">Okrajové podmínky</translation>
+        <translation>Okrajové podmínky</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="202"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="208"/>
         <source>Nodes</source>
-        <translation type="unfinished">Uzly</translation>
+        <translation>Uzly</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="234"/>
         <source>Edges</source>
-        <translation type="unfinished">Hrany</translation>
+        <translation>Hrany</translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="261"/>
         <source>Labels</source>
-        <translation type="unfinished">Značky oblastí</translation>
+        <translation>Značky oblastí</translation>
     </message>
 </context>
 <context>
@@ -4929,33 +4934,40 @@
         <location filename="../../src/hermes2d/problem.cpp" line="56"/>
         <location filename="../../src/hermes2d/problem.cpp" line="57"/>
         <source>Clear solutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat řešení</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="316"/>
         <source>Mesh reader</source>
-        <translation type="unfinished"></translation>
+        <translation>Načítání sítě</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="480"/>
         <source>Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit-&gt;Options-&gt;Solver menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování: Matice a RHS budou uloženy na disk. Toto zpomalí výpočet. Můžete to zakázav v menu Úprava-&gt;Nastavení-&gt;Nastavení Řešiče.</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="768"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="853"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="609"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="693"/>
+        <source>Cannot create solver.</source>
+        <translatorcomment>Asi spíš inicialozovat???</translatorcomment>
+        <translation>Nelze vytvořit řešič.</translation>
+    </message>
+    <message>
+        <location filename="../../src/hermes2d/problem.cpp" line="774"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="859"/>
         <source>Problem</source>
-        <translation type="unfinished">Problém</translation>
+        <translation>Problém</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="768"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="774"/>
         <source>Loading initial mesh from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Načítání výchozí šítě z disku</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="853"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="859"/>
         <source>Loading spaces and solutions from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Načítání řešení z disku</translation>
     </message>
 </context>
 <context>
@@ -5122,107 +5134,111 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="791"/>
         <source>Properties</source>
-        <translation type="unfinished">Vlastnosti</translation>
+        <translation>Vlastnosti</translation>
+    </message>
+    <message>
+        <source>F12</source>
+        <translation type="obsolete">F12</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="792"/>
-        <source>F12</source>
-        <translation type="unfinished">F12</translation>
+        <source>Ctrl+1</source>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="793"/>
         <source>Problem properties</source>
-        <translation type="unfinished">Nastavení problému</translation>
+        <translation>Nastavení problému</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="805"/>
         <source>Physical fields</source>
-        <translation type="unfinished">Fyzikální pole</translation>
+        <translation>Fyzikální pole</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="820"/>
         <source>Name:</source>
-        <translation type="unfinished">Název:</translation>
+        <translation>Název:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="822"/>
         <source>Coordinate type:</source>
-        <translation type="unfinished">Souřadnicový systém:</translation>
+        <translation>Souřadnicový systém:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="824"/>
         <source>Linear solver:</source>
-        <translation type="unfinished">Řešič:</translation>
+        <translation>Řešič:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="826"/>
         <source>Mesh type:</source>
-        <translation type="unfinished">Typ sítě:</translation>
+        <translation>Typ sítě:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="829"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Základní</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="838"/>
         <source>Frequency (Hz):</source>
-        <translation type="unfinished">Frekvence (Hz):</translation>
+        <translation>Frekvence (Hz):</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="841"/>
         <source>Harmonic analysis</source>
-        <translation type="unfinished">Harmonická analýza</translation>
+        <translation>Harmonická analýza</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="855"/>
         <source>Number of constant steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet konstantních kroků:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="861"/>
         <source>Method:</source>
-        <translation type="unfinished">Metoda:</translation>
+        <translation>Metoda:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="863"/>
         <source>Order:</source>
-        <translation type="unfinished">Řád:</translation>
+        <translation>Řád:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="865"/>
         <source>Tolerance:</source>
-        <translation type="unfinished">Tolerance:</translation>
+        <translation>Tolerance:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="867"/>
         <source>Total time (s):</source>
-        <translation type="unfinished">Celkový čas (s):</translation>
+        <translation>Celkový čas (s):</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="871"/>
         <source>Constant time step:</source>
-        <translation type="unfinished">Konstantní časový krok:</translation>
+        <translation>Konstantní časový krok:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="874"/>
         <source>Transient analysis</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="887"/>
         <source>Couplings</source>
-        <translation type="unfinished">Sdružení</translation>
+        <translation>Sdružení</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="1054"/>
         <source>Number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet kroků:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="1056"/>
         <source>Aprox. number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prům. počet kroků:</translation>
     </message>
 </context>
 <context>
@@ -5446,57 +5462,57 @@
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="41"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Prohlížeč</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Name</source>
-        <translation type="unfinished">Název</translation>
+        <translation>Název</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Value</source>
-        <translation type="unfinished">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="76"/>
         <source>Copy name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat název</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="79"/>
         <source>Copy value</source>
-        <translation type="unfinished">Kopie do schránky</translation>
+        <translation>Kopírovat hodnotu</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="82"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Smazat</translation>
+        <translation>&amp;Smazat</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="122"/>
         <source>Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Proměnné</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="126"/>
         <source>Other</source>
-        <translation type="unfinished">Ostatní</translation>
+        <translation>Ostatní</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="130"/>
         <source>Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkce</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="134"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Třídy</translation>
     </message>
 </context>
 <context>
@@ -5504,269 +5520,269 @@
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="342"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Nový soubor</translation>
+        <translation>&amp;Nový soubor</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="346"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished">&amp;Otevřít...</translation>
+        <translation>&amp;Otevřít...</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="350"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Uložit</translation>
+        <translation>&amp;Uložit</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="354"/>
         <source>Save &amp;as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit &amp;jako...</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="358"/>
         <source>Save console output as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit výpis konzole jako...</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="364"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Zavřít</translation>
+        <translation>&amp;Zavřít</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="368"/>
         <source>&amp;Print</source>
-        <translation type="unfinished">&amp;Tisk</translation>
+        <translation>&amp;Tisk</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="372"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Zpět</translation>
+        <translation>&amp;Zpět</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="375"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">Zn&amp;ovu</translation>
+        <translation>Zn&amp;ovu</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="378"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Vyjmou&amp;t</translation>
+        <translation>Vyjmou&amp;t</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="382"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Kopírovat</translation>
+        <translation>&amp;Kopírovat</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="386"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Vložit</translation>
+        <translation>&amp;Vložit</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="389"/>
         <source>&amp;Find</source>
-        <translation type="unfinished">&amp;Najít</translation>
+        <translation>&amp;Najít</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="393"/>
         <source>Find &amp;next</source>
-        <translation type="unfinished">Najít &amp;další</translation>
+        <translation>Najít &amp;další</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="397"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="401"/>
         <source>Replace</source>
-        <translation type="unfinished">Nahradit</translation>
+        <translation>Nahradit</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="405"/>
         <source>Indent</source>
-        <translation type="unfinished">Odsadit</translation>
+        <translation>Odsadit</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="406"/>
         <source>Unindent</source>
-        <translation type="unfinished">Zrušit odsazení</translation>
+        <translation>Zrušit odsazení</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="408"/>
         <source>Comment</source>
-        <translation type="unfinished">Komentář</translation>
+        <translation>Komentář</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="410"/>
         <source>Uncomment</source>
-        <translation type="unfinished">Zrušit komentář</translation>
+        <translation>Zrušit komentář</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="411"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="413"/>
         <source>Goto line</source>
-        <translation type="unfinished">Jdi na řádek</translation>
+        <translation>Jdi na řádek</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="414"/>
         <source>Alt+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+G</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="416"/>
         <source>&amp;Run Python script</source>
-        <translation type="unfinished">Spustit &amp;Python skript</translation>
+        <translation>Spustit &amp;Python skript</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="417"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="419"/>
         <source>Replace tabs with spaces</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahradit tabelétory mezerami</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="422"/>
         <source>&amp;Check Python script (PyLint)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zkontrolovat Python skript (PyLint)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="424"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="426"/>
         <source>PyFlakes enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>PyFlakes povoleny</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="431"/>
         <source>PyLint enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>PyLint povolen</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="436"/>
         <source>Print stacktrace</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpis zásobníku volání</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="441"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished">U&amp;končit</translation>
+        <translation>U&amp;končit</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="442"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="443"/>
         <source>Exit editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Opustit editor</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="446"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="515"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Nápově&amp;da</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="450"/>
         <source>&amp;Keyword List</source>
-        <translation type="unfinished"></translation>
+        <translation>Seznam &amp;klíčových slov</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="454"/>
         <source>About &amp;PythonLab</source>
-        <translation type="unfinished"></translation>
+        <translation>O &amp;PythonLabu</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="455"/>
         <source>Show the application&apos;s About box</source>
-        <translation type="unfinished">Zobrazit informace o Agros 2D</translation>
+        <translation>Zobrazit informace o aplikaci</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="459"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished">O &amp;Qt</translation>
+        <translation>O &amp;Qt</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="460"/>
         <source>Show the Qt library&apos;s About box</source>
-        <translation type="unfinished">Zobrazit informace o Qt toolkitu</translation>
+        <translation>Zobrazit informace o Qt knihovnách</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="467"/>
         <source>&amp;Recent files</source>
-        <translation type="unfinished">&amp;Nedávné soubory</translation>
+        <translation>&amp;Nedávné soubory</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="469"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;oubor</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="483"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Upravit</translation>
+        <translation>&amp;Upravit</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="503"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Nás&amp;troje</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="509"/>
         <source>&amp;Options</source>
-        <translation type="unfinished">&amp;Nastavení</translation>
+        <translation>&amp;Nastavení</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="525"/>
         <source>File</source>
-        <translation type="unfinished">Soubor</translation>
+        <translation>Soubor</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="535"/>
         <source>Edit</source>
-        <translation type="unfinished">Upravit</translation>
+        <translation>Upravit</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="548"/>
         <source>Tools</source>
-        <translation type="unfinished">Nástroje</translation>
+        <translation>Nástroje</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="567"/>
         <source>Path</source>
-        <translation type="unfinished">Cesta</translation>
+        <translation>Cesta</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="573"/>
         <source>Working directory: </source>
-        <translation type="unfinished"></translation>
+        <translation>Pracovní adresář:</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="584"/>
         <source>Add new document</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat nový dokument</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="628"/>
         <source>File browser</source>
-        <translation type="unfinished">Prohlížeč souborů</translation>
+        <translation>Prohlížeč souborů</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="651"/>
         <source>Ready</source>
-        <translation type="unfinished">Připraveno</translation>
+        <translation>Připraveno</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="778"/>
         <source>Select directory</source>
-        <translation type="unfinished">Vybrat adresář</translation>
+        <translation>Vybrat adresář</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="785"/>
@@ -5774,72 +5790,73 @@
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1084"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1105"/>
         <source>Untitled</source>
-        <translation type="unfinished">Nepojmenovaný</translation>
+        <translation>Nepojmenovaný</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="798"/>
         <source>Open File</source>
-        <translation type="unfinished">Otevřít soubor</translation>
+        <translation>Otevřít soubor</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="798"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="859"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="895"/>
         <source>Python files (*.py)</source>
-        <translation type="unfinished">Python soubory (*.py)</translation>
+        <translation>Python soubory (*.py)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="815"/>
         <source>Information</source>
-        <translation type="unfinished">Informace</translation>
+        <translation>Informace</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="815"/>
         <source>Script is already opened.</source>
-        <translation type="unfinished">Skript je již otevřen.</translation>
+        <translation>Skript je již otevřen.</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="859"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="895"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="912"/>
         <source>Save file</source>
-        <translation type="unfinished">Uložit soubor</translation>
+        <translation>Uložit soubor</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="881"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
-        <translation type="unfinished">Soubor &apos;%1&apos; nelze uložit.</translation>
+        <translation>Soubor &apos;%1&apos; nelze uložit.</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="912"/>
         <source>Html files (*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML soubory (*.html)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="941"/>
         <source>Print Document</source>
-        <translation type="unfinished">Vytisknout dokument</translation>
+        <translation>Vytisknout dokument</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1017"/>
         <source>Application</source>
-        <translation type="unfinished">Aplikace</translation>
+        <translation>Aplikace</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1017"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished">Soubor &apos;%1&apos; byl změněn. Chcete tyto změny uložit?</translation>
+        <translation>Soubor &apos;%1&apos; byl změněn.
+Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1090"/>
         <source>Python Lab - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Python Lab - %1</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1098"/>
         <source>Line: %1, Col: %2</source>
-        <translation type="unfinished">Řádek: %1, Sloupec: %2</translation>
+        <translation>Řádek: %1, Sloupec: %2</translation>
     </message>
 </context>
 <context>
@@ -5848,24 +5865,24 @@ Do you want to save your changes?</source>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="136"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="181"/>
         <source>Convention</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvence</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="139"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="186"/>
         <source>Warning</source>
-        <translation type="unfinished">Varování</translation>
+        <translation>Varování</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="143"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="191"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="150"/>
         <source>Could not read PyLint output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze načíst výstup z PyLint.</translation>
     </message>
 </context>
 <context>
@@ -5873,12 +5890,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="87"/>
         <source>&amp;Create script from model</source>
-        <translation type="unfinished">&amp;Vytvořit skript z modelu</translation>
+        <translation>&amp;Vytvořit skript z modelu</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="88"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation>Ctrl+M</translation>
     </message>
 </context>
 <context>
@@ -5886,7 +5903,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="695"/>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Konzole</translation>
     </message>
 </context>
 <context>
@@ -5894,7 +5911,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="726"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historie</translation>
     </message>
 </context>
 <context>
@@ -5952,9 +5969,8 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Vodivost</translation>
     </message>
     <message>
-        <location filename="../../src/value.cpp" line="237"/>
         <source>Error</source>
-        <translation>Chyba</translation>
+        <translation type="obsolete">Chyba</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="326"/>
@@ -5970,23 +5986,23 @@ Do you want to save your changes?</source>
         <location filename="../../src/util/enums.cpp" line="334"/>
         <location filename="../../src/util/enums.cpp" line="462"/>
         <source>Normal</source>
-        <translation type="unfinished">Normální</translation>
+        <translation>Normální</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="336"/>
         <source>Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Odkaz</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="338"/>
         <source>Non-existing</source>
-        <translation type="unfinished"></translation>
+        <translation>Neexistující</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="340"/>
         <location filename="../../src/util/enums.cpp" line="466"/>
         <source>Finer</source>
-        <translation type="unfinished">Jemnější</translation>
+        <translation>Jemnější</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="352"/>
@@ -6011,202 +6027,206 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="370"/>
         <source>Fixed step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pevný krok</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="372"/>
         <source>Adaptive (tolerance)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivní (tolerance)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="374"/>
         <source>Adaptive (num steps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivní (počt kroků)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="386"/>
         <source>Matrix volume</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Matice z obj. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="388"/>
         <source>Matrix surface</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Matice z povrch. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="390"/>
         <source>Vector volume</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Vektor z obj. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="392"/>
         <source>Vector surface</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Vektor z povrch. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="406"/>
         <source>Triangle - quad fine div.</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle - kvady jemné děl.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="408"/>
         <source>Triangle - quad rough div.</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle - kvady hrubé děl.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="410"/>
         <source>Triangle - quad join</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle - kvady spojené</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="412"/>
         <source>GMSH - triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH - triangl</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="414"/>
         <source>GMSH - quad</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH - kvad</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="416"/>
         <source>GMSH - quad Delaunay (exp.)</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH - Delaunayho kvad (exp.)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="454"/>
         <source>Extremely coarse</source>
-        <translation type="unfinished">Extrémně řídká</translation>
+        <translation>Extrémně řídká</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="456"/>
         <source>Extra coarse</source>
-        <translation type="unfinished">Extra řídká</translation>
+        <translation>Extra řídká</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="458"/>
         <source>Coarser</source>
-        <translation type="unfinished">Řidší</translation>
+        <translation>Řidší</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="460"/>
         <source>Coarse</source>
-        <translation type="unfinished">Řídká</translation>
+        <translation>Řídká</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="464"/>
         <source>Fine</source>
-        <translation type="unfinished">Jemná</translation>
+        <translation>Jemná</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="468"/>
         <source>Extra fine</source>
-        <translation type="unfinished">Extra jemná</translation>
+        <translation>Extra jemná</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="480"/>
         <source>Agros2D</source>
-        <translation type="unfinished">Agros2D</translation>
+        <translation>Agros2D</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="482"/>
         <source>Jet</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryskáč</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="484"/>
         <source>Copper</source>
-        <translation type="unfinished">Měď</translation>
+        <translation>Měď</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="486"/>
         <source>Hot</source>
-        <translation type="unfinished">Horko</translation>
+        <translation>Horko</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="488"/>
         <source>Cool</source>
-        <translation type="unfinished">Chladno</translation>
+        <translation>Chladno</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="490"/>
         <source>Bone</source>
-        <translation type="unfinished">Kost</translation>
+        <translation>Kost</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="492"/>
         <source>Pink</source>
-        <translation type="unfinished">Růžový</translation>
+        <translation>Růžový</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="494"/>
         <source>Spring</source>
-        <translation type="unfinished">Jaro</translation>
+        <translation>Jaro</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="496"/>
         <source>Summer</source>
-        <translation type="unfinished">Léto</translation>
+        <translation>Léto</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="498"/>
         <source>Autumn</source>
-        <translation type="unfinished">Podzim</translation>
+        <translation>Podzim</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="500"/>
         <source>Winter</source>
-        <translation type="unfinished">Zima</translation>
+        <translation>Zima</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="502"/>
         <source>HSV</source>
-        <translation type="unfinished">HSV</translation>
+        <translation>HSV</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="504"/>
         <source>B/W ascending</source>
-        <translation type="unfinished">ČB stoupající</translation>
+        <translation>ČB stoupající</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="506"/>
         <source>B/W descending</source>
-        <translation type="unfinished">ČB klesající</translation>
+        <translation>ČB klesající</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="518"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Šipka</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="520"/>
         <source>Cone</source>
-        <translation type="unfinished"></translation>
+        <translation>Kužel</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="532"/>
         <source>Tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocas</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="534"/>
         <source>Head</source>
-        <translation type="unfinished"></translation>
+        <translation>Hlava</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="536"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="572"/>
         <source>Picard&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Pickardova metoda</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="574"/>
         <source>Newton&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Newtonova metoda</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="312"/>
@@ -6216,17 +6236,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="296"/>
         <source>Not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepoužité</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="298"/>
         <source>Hard</source>
-        <translation type="unfinished"></translation>
+        <translation>Silné</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="300"/>
         <source>Weak</source>
-        <translation type="unfinished"></translation>
+        <translation>Slabé</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="314"/>
@@ -6662,8 +6682,9 @@ Do you want to save your changes?</source>
         <translation type="obsolete">nic</translation>
     </message>
     <message>
+        <location filename="../../src/value.cpp" line="237"/>
         <source>Value</source>
-        <translation type="obsolete">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
     <message>
         <source>Derivative</source>
@@ -6750,34 +6771,34 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="199"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="211"/>
         <source>Invalid field id &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatné pole id &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="94"/>
         <source>Geometry does not contain nodes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie neobsahuje uzly.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="97"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="99"/>
         <source>Node with index &apos;%1&apos; does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzel s indexem &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="147"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="202"/>
         <source>Number of refinements &apos;%1&apos; is out of range (0 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet zjemnění &apos;%1&apos; je mimo rozsah (0 - 10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="156"/>
         <source>Area must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozměr plochy musí být kladný.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="214"/>
         <source>Polynomial order &apos;%1&apos; is out of range (1 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Řád polynomu &apos;%1&apos; je mimo rozsah (1 - 10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="270"/>
@@ -6787,7 +6808,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="45"/>
         <source>Invalid field id. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatné id pole. Platné indexy: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="66"/>
@@ -6808,83 +6829,84 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyview.cpp" line="399"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="441"/>
         <source>Invalid argument. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný argument. Platné indexy: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="75"/>
-        <source>Number of refenements is out of range (0 - 5).</source>
-        <translation type="unfinished"></translation>
+        <source>Number of refinements is out of range (0 - 5).</source>
+        <translation>Počet zjemnění je mimo rozsah (0 - 5).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="83"/>
         <source>Polynomial order is out of range (1 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Řád polynomu je mimo rozsah (1 - 10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="99"/>
         <source>Nonlinearity tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerance nelinearity musí být pozitivní.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="107"/>
         <source>Nonlinearity steps must be higher than 1.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Nelineární kroky musí být větší než 1.</translatorcomment>
+        <translation>Kroky nelinearity musí být větší než 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="115"/>
         <source>Damping coefficient must be between 0 and 1 .</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeficient tlumení musí být mezi 0 a 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="128"/>
         <source>Number of steps needed to increase the damping coefficient must be between 1 and 5 .</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet kroků potřebných k zvýšení koeficientu tlumení musí být mezi 1 a 5.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="141"/>
         <source>Anderson coefficient must be between 0 and 1 .</source>
-        <translation type="unfinished"></translation>
+        <translation>Andersonův koeficient musí být mezi 0 a 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="149"/>
         <source>Number of last vector must be between 1 and 5 .</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet posledních vektorů musí být mezi 1 a 5.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="165"/>
         <source>Adaptivity tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerance adaptivity musí být pozitivní.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="173"/>
         <source>Adaptivity steps must be higher than 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kroky adaptivity musí být větší než 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="181"/>
         <source>Adaptivity back steps must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vratné kroky adaptivity musí být pozitivní.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="189"/>
         <source>Adaptivity back steps must be higher than 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vratné kroky adaptivity musí být vyšší než 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="202"/>
         <source>Time skip is out of range (0 - %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Časový skok je mimo rozsah (0 - %1).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="211"/>
         <source>Boundary &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hranice &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="216"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="264"/>
         <source>Wrong boundary type &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Špatný typ okrajové podmínky &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="243"/>
@@ -6892,37 +6914,37 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyfield.cpp" line="348"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="397"/>
         <source>Wrong parameter &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Špatný parametr &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="253"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="77"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="129"/>
         <source>Boundary condition &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Okrajová podmínka &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="310"/>
         <source>Material &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Materiál &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="328"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="377"/>
         <source>Size doesn&apos;t match (%1 &gt; %2).</source>
-        <translation type="unfinished">Velikost nesouhlasí (%1 &gt; %2).</translation>
+        <translation>Velikost nesouhlasí (%1 &gt; %2).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="330"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="379"/>
         <source>Size doesn&apos;t match (%1 &lt; %2).</source>
-        <translation type="unfinished">Velikost nesouhlasí (%1 &lt; %2).</translation>
+        <translation>Velikost nesouhlasí (%1 &lt; %2).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="362"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="188"/>
         <source>Material &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Materiál &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="472"/>
@@ -6933,7 +6955,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="530"/>
         <source>Label with index &apos;%1&apos; is &apos;none&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek s indexem&apos;%1&apos; je &apos;prázdný&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="535"/>
@@ -6944,7 +6966,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="621"/>
         <source>Solution is not adaptive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Řešení není adaptivní.</translation>
     </message>
     <message>
         <source>Postprocessor mode &apos;%1&apos; is not implemented.</source>
@@ -6993,7 +7015,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="50"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="91"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished">Úhel &apos;%1&apos; je mimo rozsah.</translation>
+        <translation>Úhel &apos;%1&apos; je mimo rozsah.</translation>
     </message>
     <message>
         <source>Boundary type &apos;%1&apos; is not supported.</source>
@@ -7030,7 +7052,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="202"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="209"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="222"/>
-        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="558"/>
+        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="551"/>
         <source>Problem is not solved.</source>
         <translation>Problém nebyl vyřešen.</translation>
     </message>
@@ -7064,35 +7086,36 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Typ adaptivity: %1</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="403"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="404"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="472"/>
         <source>Solver failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Řešič selhal: %1</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="425"/>
-        <location filename="../../src/hermes2d/solver.cpp" line="722"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="424"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="731"/>
         <source>DOF is zero</source>
-        <translation type="unfinished">Počet stupňů volnosti je nulový</translation>
+        <translation>Počet stupňů volnosti je nulový</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="586"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="595"/>
         <source>Meshes are empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Sítě jsou prázdné</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="832"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="841"/>
         <source>Adaptive process failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivní proces selhal: %1</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="836"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="845"/>
         <source>adaptivity step (error = %1, DOFs = %2/%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>krok adaptivity (chyba = %1, počet st. volnosti  = %2/%3)</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="849"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="858"/>
         <source>initial time step</source>
-        <translation type="unfinished"></translation>
+        <translation>výchozí časový krok</translation>
     </message>
     <message>
         <source>Adaptivity rel. error (step: %2/%3, DOFs: %4/%5): %1%</source>
@@ -7113,247 +7136,251 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/gui/common.cpp" line="160"/>
         <source>Step: %1, time: %2 s</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok: %1, čas: %2 s</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="103"/>
         <source>Couplings dir &apos;%1&apos; doesn&apos;t exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář združení &apos;%1&apos; neexistuje</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="121"/>
         <source>Unable to read coupling file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Není možné našíst soubor sdružení %1: %2</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
         <location filename="../../src/hermes2d/problem.cpp" line="436"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="533"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="553"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="558"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="563"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="602"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="683"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="864"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="532"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="552"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="557"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="562"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="601"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="687"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="870"/>
         <location filename="../../src/hermes2d/solver.cpp" line="48"/>
         <source>Solver</source>
-        <translation type="unfinished">Řešič</translation>
+        <translation>Řešič</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
         <source>mesh generation</source>
-        <translation type="unfinished"></translation>
+        <translation>generování sítě</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="436"/>
-        <source>no field defined.</source>
-        <translation type="unfinished"></translation>
+        <source>No field defined.</source>
+        <translation>Není definované žádné pole.</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="602"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="683"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="601"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="687"/>
         <source>solving problem</source>
-        <translation type="unfinished"></translation>
+        <translation>řešení problému</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="742"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="749"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="758"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="760"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="748"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="755"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="764"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="766"/>
         <location filename="../../src/hermes2d/solver.cpp" line="228"/>
         <source>Solver (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Řešič (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="743"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="749"/>
         <source>transient step %1 (%2%)</source>
-        <translation type="unfinished"></translation>
+        <translation>krok přechodného děje %1 (%2%)</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="750"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="756"/>
         <source>transient step %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation>krok přechodného děje %1/%2</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="758"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="764"/>
         <source>single analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>prostá analýza</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="760"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="766"/>
         <source>coupled analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>sdružená analýza</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="824"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="830"/>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Načítání sítě %1: hranice oblasti &apos;%2&apos; nemá přiřazenou značku hranice</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="84"/>
         <source>Number of particles must be bigger then 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet částic musí být větší než 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="92"/>
         <source>Particles dispersion must be possitive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozptyl částic musí být pozitivní.</translation>
+    </message>
+    <message>
+        <source>x coordinate is out of range.</source>
+        <translation type="obsolete">souřadnice x je mimo rozsah.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="113"/>
-        <source>x coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <source>The x coordinate is out of range.</source>
+        <translation>Souřadnice x je mimo rozsah.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="115"/>
-        <source>y coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <source>The y coordinate is out of range.</source>
+        <translation>Souřadnice y je mimo rozsah.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="128"/>
         <source>Mass must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hmotnost musí být pozitivní.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="141"/>
         <source>Density cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hustota nemůže být záporná.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="149"/>
         <source>Area cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost plochy nemůže být záporná.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="157"/>
         <source>Coefficient cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeficient nemůže být záporný.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="194"/>
         <source>Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).</source>
-        <translation type="unfinished"></translation>
+        <translation>Návratový koeficient musí být mezi 0 (koliduje nepružně) a 1 (koliduje pružně).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="202"/>
         <source>Tolerance cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerance nemůže být záporná.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="210"/>
         <source>Maximum number of steps cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximální počet krokůnemůže být záporný.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="218"/>
         <source>Minimum step cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimální krok nemůže být záporný.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="61"/>
         <source>The frequency must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Frekvence musí být kladná.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="77"/>
         <source>Number of time method order must be greater then 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Řád časové metody musí být větší než 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="85"/>
         <source>The time method tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerance časové metody musí být kladná.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="93"/>
         <source>Number of time steps must be greater then 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet časových kroků musí být větší než 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="101"/>
         <source>The total time must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Celkový čas musí být kladný.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="113"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="128"/>
         <source>Coupling &apos;%1&apos; + &apos;%2&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sdružení &apos;%1&apos; + &apos;%2&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="125"/>
         <source>Invalid coupling type key. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný index typu sdružení. Platné indexy: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="219"/>
         <source>Problem is not transient.</source>
-        <translation type="unfinished"></translation>
+        <translation>Problém není přechodný děj.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="52"/>
         <source>Time step must be in the range from 0 to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Časový krok musí být v intervalu od 0 do %1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="62"/>
         <source>Adaptivity step for active field (%1) must be in the range from 0 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok adaptivity pro aktivní pole (%1) musí být v intrervalu od 0 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="227"/>
         <source>Palette steps must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kroky palety musí být v rozmezí od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="262"/>
         <source>Decimal place must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet desetinných míst musí být v intervalu od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="328"/>
         <source>Contour count must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet vrstevnic musí být v rozsahu od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="369"/>
         <source>Vector count must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet vektorů musí být v rozsahu od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="381"/>
         <source>Vector scale must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Měřítko vektoru musí být v rozmezí od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="461"/>
         <source>Image is not saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek se neuložil.</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="77"/>
         <source>Linearizer processing failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Linearizace selhala: %1</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="703"/>
+        <location filename="../../src/settings.cpp" line="705"/>
         <source>Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba: %1</translation>
     </message>
     <message>
         <location filename="../../src/util/global.cpp" line="131"/>
         <source>Could not find &apos;agros2d_plugin_%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít &apos;agros2d_plugin_%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/util/global.cpp" line="136"/>
         <source>Could not load &apos;agros2d_plugin_%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze nahrát &apos;agros2d_plugin_%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/util/xml.cpp" line="45"/>
-        <source>Schena &apos;%1&apos; is not valid. %2</source>
-        <translation type="unfinished"></translation>
+        <source>Schema &apos;%1&apos; is not valid. %2</source>
+        <translation>Šablona &apos;%1&apos; není platná. %2</translation>
     </message>
 </context>
 <context>
@@ -7361,12 +7388,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="51"/>
         <source>Boundary dialog doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogové okno pro hranice neexistuje.</translation>
     </message>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="80"/>
         <source>Material dialog doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogové okno pro materiály neexistuje.</translation>
     </message>
 </context>
 <context>
@@ -7460,7 +7487,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/reportdialog.cpp" line="89"/>
         <source>Show axes</source>
-        <translation type="unfinished">Zobrazit osy</translation>
+        <translation>Zobrazit osy</translation>
     </message>
     <message>
         <source>Show label</source>
@@ -7679,7 +7706,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/resultsview.cpp" line="36"/>
         <source>Results view</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazení výsledků</translation>
     </message>
     <message>
         <source>Select by marker</source>
@@ -7692,22 +7719,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/resultsview.cpp" line="169"/>
         <source>Volume integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Objemové integrály</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="210"/>
         <source>Surface integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Povrchové integrály</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="244"/>
         <source>Problem is not solved.</source>
-        <translation type="unfinished">Problém nebyl vyřešen.</translation>
+        <translation>Problém nebyl vyřešen.</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="98"/>
         <source>Local point values</source>
-        <translation type="unfinished"></translation>
+        <translation>Hodnoty v lokálních bodech</translation>
     </message>
 </context>
 <context>
@@ -7810,88 +7837,88 @@ Do you want to save your changes?</source>
         <location filename="../../src/scene.cpp" line="546"/>
         <location filename="../../src/scene.cpp" line="551"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="521"/>
         <source>at least one boundary condition has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>musí být přiřazena alespoň jedna okrajová podmínka</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="527"/>
         <source>invalid number of labels (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>chybný počet značek oblastí (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="540"/>
         <source>at least one material has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>musí být přiřazen alespoň jeden materiál</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="546"/>
         <source>invalid number of boundary conditions (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>chybný počet okrajových podmínek (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="551"/>
         <source>invalid number of materials (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>chybný počet materiálů (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1265"/>
         <source>Convert file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Převést soubor?</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1266"/>
         <source>File %1 must be converted to the new version. Do you want to convert and replace current file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor %1 musí být převeden do nové verze. Chcete jej převést a nahradit stávající soubor?</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1267"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Ano</translation>
+        <translation>&amp;Ano</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1267"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Ne</translation>
+        <translation>&amp;Ne</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1938"/>
-        <location filename="../../src/scene.cpp" line="1958"/>
+        <location filename="../../src/scene.cpp" line="1915"/>
+        <location filename="../../src/scene.cpp" line="1935"/>
         <source>Scene</source>
-        <translation type="unfinished"></translation>
+        <translation>Scéna</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1938"/>
+        <location filename="../../src/scene.cpp" line="1915"/>
         <source>Loading solution from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávání řešení z disku</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1958"/>
+        <location filename="../../src/scene.cpp" line="1935"/>
         <source>Saving solution to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukládání řešení na disk</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2110"/>
+        <location filename="../../src/scene.cpp" line="2087"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
-        <translation type="unfinished"></translation>
+        <translation>Existují uzly &apos;%1&apos; se zápornou radiální složkou.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2121"/>
+        <location filename="../../src/scene.cpp" line="2098"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
-        <translation type="unfinished"></translation>
+        <translation>V geometrii jsou křížení (označena červeně). Nejprve odstraňte křížení.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2129"/>
+        <location filename="../../src/scene.cpp" line="2106"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Existují uzly, které nejsou připojeny k žádné spojnici (označené červeně). Všechny uzly musí být spojeny.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2134"/>
+        <location filename="../../src/scene.cpp" line="2111"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Existují uzly, které leží na spojnici, ale nejsou s ní spojené. Nejprve odeberte tyto uzly.</translation>
     </message>
     <message>
         <source>Clear solution</source>
@@ -7927,27 +7954,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="651"/>
         <source>Remove edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrat hranu</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="652"/>
         <source>Remove label</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrat popisek</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="920"/>
         <source>Translation</source>
-        <translation type="unfinished">Posun</translation>
+        <translation>Posun</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="931"/>
         <source>Rotation</source>
-        <translation type="unfinished">Otočení</translation>
+        <translation>Rotace</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="942"/>
         <source>Scale</source>
-        <translation type="unfinished">Zvětšení/zmenšení</translation>
+        <translation>Zvětšení/zmenšení</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1236"/>
@@ -7960,9 +7987,9 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1276"/>
-        <location filename="../../src/scene.cpp" line="1908"/>
+        <location filename="../../src/scene.cpp" line="1885"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
-        <translation type="unfinished">Soubor &apos;%1&apos; nelze uložit (%2).</translation>
+        <translation>Soubor &apos;%1&apos; nelze uložit (%2).</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1254"/>
@@ -8001,7 +8028,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="336"/>
         <source>Boundary condition - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Okrajová podmínka - %1</translation>
     </message>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="353"/>
@@ -8123,7 +8150,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneedge.cpp" line="394"/>
         <source>Edge parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry hrany</translation>
     </message>
     <message>
         <source>Start point:</source>
@@ -8176,12 +8203,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneedge.cpp" line="288"/>
         <source>Boundary condition:</source>
-        <translation type="unfinished">Okrajová podmínka:</translation>
+        <translation>Okrajová podmínka:</translation>
     </message>
     <message>
         <location filename="../../src/sceneedge.cpp" line="289"/>
         <source>Refine towards edge:</source>
-        <translation type="unfinished">Zjemnění sítě k hranám:</translation>
+        <translation>Zjemnění sítě k hranám:</translation>
     </message>
 </context>
 <context>
@@ -8189,12 +8216,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneedge.cpp" line="470"/>
         <source>Edges</source>
-        <translation type="unfinished">Hrany</translation>
+        <translation>Hrany</translation>
     </message>
     <message>
         <location filename="../../src/sceneedge.cpp" line="475"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished">Okrajové podmínky</translation>
+        <translation>Okrajové podmínky</translation>
     </message>
 </context>
 <context>
@@ -8202,12 +8229,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="120"/>
         <source>Equation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rovnice</translation>
     </message>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="167"/>
         <source>Parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry</translation>
     </message>
 </context>
 <context>
@@ -8215,7 +8242,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="268"/>
         <source>Type:</source>
-        <translation type="unfinished">Typ:</translation>
+        <translation>Typ:</translation>
     </message>
 </context>
 <context>
@@ -8429,27 +8456,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenelabel.cpp" line="202"/>
         <source>Global refinement is %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Globální zjemnění je %1.</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="216"/>
         <source>Global order is %1.</source>
-        <translation type="unfinished">Globální řád je %1.</translation>
+        <translation>Globální řád je %1.</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="220"/>
         <source>Material:</source>
-        <translation type="unfinished">Materiál:</translation>
+        <translation>Materiál:</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="221"/>
         <source>Area refinement (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Zjemnění oblasti (-):</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="222"/>
         <source>Polynomial order (-):</source>
-        <translation type="unfinished">Řád polynomu (-):</translation>
+        <translation>Řád polynomu (-):</translation>
     </message>
 </context>
 <context>
@@ -8457,12 +8484,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenelabel.cpp" line="453"/>
         <source>Labels</source>
-        <translation type="unfinished">Značky oblastí</translation>
+        <translation>Značky oblastí</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="458"/>
         <source>Materials</source>
-        <translation type="unfinished">Materiály</translation>
+        <translation>Materiály</translation>
     </message>
 </context>
 <context>
@@ -8475,12 +8502,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerselectdialog.cpp" line="93"/>
         <source>Surface</source>
-        <translation type="unfinished">Povrch</translation>
+        <translation>Povrch</translation>
     </message>
     <message>
         <location filename="../../src/scenemarkerselectdialog.cpp" line="94"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation>Objem</translation>
     </message>
 </context>
 <context>
@@ -8519,7 +8546,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="428"/>
         <source>Material - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Materiál - %1</translation>
     </message>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="486"/>
@@ -8709,12 +8736,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenetransformdialog.cpp" line="123"/>
         <source>Apply</source>
-        <translation type="unfinished">Potvrdit</translation>
+        <translation>Potvrdit</translation>
     </message>
     <message>
         <location filename="../../src/scenetransformdialog.cpp" line="127"/>
         <source>Close</source>
-        <translation type="unfinished">Zavřít</translation>
+        <translation>Zavřít</translation>
     </message>
     <message>
         <location filename="../../src/scenetransformdialog.cpp" line="137"/>
@@ -8896,7 +8923,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_common.cpp" line="303"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
-        <translation type="unfinished">Obrázek nelze uložit do souboru s názvem &apos;%1&apos;.</translation>
+        <translation>Obrázek nelze uložit do souboru &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -8904,7 +8931,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_common2d.cpp" line="68"/>
         <source>Position: [%1; %2]</source>
-        <translation type="unfinished">Pozice: [%1; %2]</translation>
+        <translation>Pozice: [%1; %2]</translation>
     </message>
 </context>
 <context>
@@ -8914,14 +8941,14 @@ Do you want to save your changes?</source>
         <location filename="../../src/sceneview_common3d.cpp" line="54"/>
         <location filename="../../src/sceneview_common3d.cpp" line="58"/>
         <source>Projection to %1%2</source>
-        <translation type="unfinished">Projekce do %1%2</translation>
+        <translation>Projekce do %1%2</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_common3d.cpp" line="51"/>
         <location filename="../../src/sceneview_common3d.cpp" line="55"/>
         <location filename="../../src/sceneview_common3d.cpp" line="59"/>
         <source>Projection to %1%2 plane.</source>
-        <translation type="unfinished">Projekce do roviny %1%2.</translation>
+        <translation>Projekce do roviny %1%2.</translation>
     </message>
 </context>
 <context>
@@ -8930,42 +8957,51 @@ Do you want to save your changes?</source>
         <location filename="../../src/sceneview_mesh.cpp" line="53"/>
         <location filename="../../src/sceneview_mesh.cpp" line="55"/>
         <source>Mesh</source>
-        <translation type="unfinished">Síť</translation>
+        <translation>Síť</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_mesh.cpp" line="54"/>
+        <source>Ctrl+3</source>
+        <translation>Ctrl+3</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="58"/>
         <source>Export VTK order...</source>
-        <translation type="unfinished">Export VTK řádu...</translation>
+        <translation>Export VTK řádu...</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="59"/>
         <source>Export order view as VTK file</source>
-        <translation type="unfinished">Export rozložení řádu jako VTK soubor</translation>
+        <translation>Export rozložení řádu jako VTK soubor</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="62"/>
         <source>Export VTK mesh...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export VTK sítě...</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="63"/>
         <source>Export mesh as VTK file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat síť jako VTK soubor</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="117"/>
+        <source>Export VTK file</source>
+        <translation>Export VTK souboru</translation>
+    </message>
+    <message>
         <source>Export vtk file</source>
-        <translation type="unfinished">Export vtk souboru</translation>
+        <translation type="obsolete">Export vtk souboru</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="117"/>
         <source>VTK files (*.vtk)</source>
-        <translation type="unfinished">VTK soubor (*.vtk)</translation>
+        <translation>VTK soubor (*.vtk)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.h" line="39"/>
         <source>Mesh and polynomial order view</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazení sítě a řádu polynomu</translation>
     </message>
 </context>
 <context>
@@ -8973,60 +9009,69 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="72"/>
         <source>Post 2D</source>
-        <translation type="unfinished"></translation>
+        <translation>Post 2D</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_post2d.cpp" line="73"/>
+        <source>Ctrl+4</source>
+        <translation>Ctrl+4</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="74"/>
         <location filename="../../src/sceneview_post2d.cpp" line="257"/>
         <location filename="../../src/sceneview_post2d.h" line="61"/>
         <source>Postprocessor 2D</source>
-        <translation type="unfinished">Postprocesor 2D</translation>
+        <translation>Postprocesor 2D</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="78"/>
         <source>Local point value</source>
-        <translation type="unfinished">Lokální veličina v bodě</translation>
+        <translation>Hodnota veličiny v bodě</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="82"/>
         <location filename="../../src/sceneview_post2d.cpp" line="83"/>
         <source>Select by marker</source>
-        <translation type="unfinished">Vybrat podle značky</translation>
+        <translation>Vybrat podle značky</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="87"/>
         <source>Local Values</source>
-        <translation type="unfinished">Lokální veličiny</translation>
+        <translation>Lokální hodnoty</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="90"/>
         <source>Surface Integrals</source>
-        <translation type="unfinished">Povrchové integrály</translation>
+        <translation>Povrchové integrály</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="93"/>
         <source>Volume Integrals</source>
-        <translation type="unfinished">Objemové integrály</translation>
+        <translation>Objemové integrály</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="102"/>
         <source>Export VTK scalar...</source>
-        <translation type="unfinished">Export VTK skaláru...</translation>
+        <translation>Export VTK skaláru...</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="103"/>
         <source>Export scalar view as VTK file</source>
-        <translation type="unfinished">Export rozložení skaláru jako VTK soubor</translation>
+        <translation>Export rozložení skaláru jako VTK soubor</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="1293"/>
+        <source>Export VTK file</source>
+        <translation>Eportovat VTK soubor</translation>
+    </message>
+    <message>
         <source>Export vtk file</source>
-        <translation type="unfinished">Export vtk souboru</translation>
+        <translation type="obsolete">Export vtk souboru</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="1293"/>
         <source>VTK files (*.vtk)</source>
-        <translation type="unfinished">VTK soubor (*.vtk)</translation>
+        <translation>VTK soubory (*.vtk)</translation>
     </message>
 </context>
 <context>
@@ -9034,24 +9079,29 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_post3d.cpp" line="83"/>
         <source>Post 3D</source>
-        <translation type="unfinished"></translation>
+        <translation>Post 3D</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_post3d.cpp" line="84"/>
+        <source>Ctrl+5</source>
+        <translation>Ctrl+5</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post3d.cpp" line="85"/>
         <location filename="../../src/sceneview_post3d.cpp" line="149"/>
         <location filename="../../src/sceneview_post3d.h" line="43"/>
         <source>Postprocessor 3D</source>
-        <translation type="unfinished">Postprocesor 2D {3D?}</translation>
+        <translation>Postprocesor 3D</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post3d.cpp" line="143"/>
         <source>Model</source>
-        <translation type="unfinished">Model</translation>
+        <translation>Model</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post3d.cpp" line="146"/>
         <source>Particle tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Sledování částic</translation>
     </message>
 </context>
 <context>
@@ -9059,7 +9109,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="772"/>
         <source>Vel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rych.</translation>
     </message>
 </context>
 <context>
@@ -9068,97 +9118,106 @@ Do you want to save your changes?</source>
         <location filename="../../src/sceneview_geometry.cpp" line="58"/>
         <location filename="../../src/sceneview_geometry.cpp" line="60"/>
         <source>Preprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Preprocesor</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_geometry.cpp" line="59"/>
+        <source>Ctrl+2</source>
+        <translation>Ctrl+2</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="64"/>
         <source>Operate on &amp;nodes</source>
-        <translation type="unfinished">Práce s &amp;uzly</translation>
+        <translation>Práce s &amp;uzly</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="66"/>
         <location filename="../../src/sceneview_geometry.cpp" line="233"/>
         <source>Operate on nodes</source>
-        <translation type="unfinished">Práce s uzly</translation>
+        <translation>Práce s uzly</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="70"/>
         <source>Operate on &amp;edges</source>
-        <translation type="unfinished">Práce s &amp;hranami</translation>
+        <translation>Práce s &amp;hranami</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="72"/>
         <location filename="../../src/sceneview_geometry.cpp" line="236"/>
         <source>Operate on edges</source>
-        <translation type="unfinished">Práce s hranami</translation>
+        <translation>Práce s hranami</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="75"/>
         <source>Operate on &amp;labels</source>
-        <translation type="unfinished">Práce se &amp;značkami oblastí</translation>
+        <translation>Práce se &amp;značkami oblastí</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="77"/>
         <location filename="../../src/sceneview_geometry.cpp" line="239"/>
         <source>Operate on labels</source>
-        <translation type="unfinished">Práce se značkami oblastí</translation>
+        <translation>Práce se značkami oblastí</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="88"/>
         <source>&amp;Select region</source>
-        <translation type="unfinished">&amp;Výběr oblasti</translation>
+        <translation>&amp;Výběr oblasti</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="89"/>
         <source>Select region</source>
-        <translation type="unfinished">Vyběr oblasti</translation>
+        <translation>Vyběr oblasti</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="93"/>
         <source>Object properties</source>
-        <translation type="unfinished">Vlastnosti objektu</translation>
+        <translation>Vlastnosti objektu</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="98"/>
         <source>Swap direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočit směr</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="305"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
-        <translation type="unfinished">&lt;h3&gt;Uzel&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Index: %3</translation>
+        <translation>&lt;h3&gt;Uzel&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Index: %3</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="334"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Boundary conditions:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Refinement:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Angle:&lt;/b&gt; %7 deg.&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %8</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Hrana&lt;/h3&gt;&lt;b&gt;Bod:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Okrajová podmínka:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Zjemnění:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Úhel:&lt;/b&gt; %7 st.&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %8</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="372"/>
+        <source>&lt;h3&gt;Label&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Material:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</source>
+        <translation>&lt;h3&gt;Popisek&lt;/h3&gt;&lt;b&gt;Bod:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Materiál:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Zjemnění oblasti:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Řád polynomu:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</translation>
+    </message>
+    <message>
         <source>&lt;h3&gt;Label&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Materials:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Popisek&lt;/h3&gt;&lt;b&gt;Bod:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Materiál:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="568"/>
         <location filename="../../src/sceneview_geometry.cpp" line="614"/>
         <source>Node</source>
-        <translation type="unfinished">Uzel</translation>
+        <translation>Uzel</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="568"/>
         <location filename="../../src/sceneview_geometry.cpp" line="614"/>
         <source>Radial component must be greater then or equal to zero.</source>
-        <translation type="unfinished">Radiální složka musí být větší nebo rovna nule.</translation>
+        <translation>Radiální složka musí být větší nebo rovna nule.</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="895"/>
         <source>%1, %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.h" line="69"/>
         <source>Geometry editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor geometrie</translation>
     </message>
 </context>
 <context>
@@ -9166,7 +9225,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/gui/scenewidget.cpp" line="53"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info</translation>
     </message>
 </context>
 <context>
@@ -9449,27 +9508,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1521"/>
         <source>Search for:</source>
-        <translation type="unfinished">Vyhledat:</translation>
+        <translation>Vyhledat:</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1522"/>
         <source>Replace with:</source>
-        <translation type="unfinished">Nahradit:</translation>
+        <translation>Nahradit:</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1529"/>
         <source>Find</source>
-        <translation type="unfinished">Najít</translation>
+        <translation>Najít</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1533"/>
         <source>Replace all</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahradit vše</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1536"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrýt</translation>
     </message>
 </context>
 <context>
@@ -9574,365 +9633,370 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="52"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="213"/>
-        <source>Workspace</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="214"/>
-        <source>Script and description</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/settings.cpp" line="53"/>
+        <source>Ctrl+7</source>
+        <translation>Ctrl+7</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="215"/>
-        <location filename="../../src/settings.cpp" line="571"/>
-        <source>Colors</source>
-        <translation type="unfinished">Barvy</translation>
+        <source>Workspace</source>
+        <translation>Pracovní prostor</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="216"/>
+        <source>Script and description</source>
+        <translation>Skript a popis</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="217"/>
+        <location filename="../../src/settings.cpp" line="573"/>
+        <source>Colors</source>
+        <translation>Barvy</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="218"/>
         <source>Mesh and Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Síť a řešič</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="227"/>
+        <location filename="../../src/settings.cpp" line="229"/>
         <source>Apply</source>
-        <translation type="unfinished">Potvrdit</translation>
+        <translation>Potvrdit</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="259"/>
+        <location filename="../../src/settings.cpp" line="261"/>
         <source>Startup script</source>
-        <translation type="unfinished">Definice proměnných</translation>
+        <translation>Spuštěcí skript</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="269"/>
+        <location filename="../../src/settings.cpp" line="271"/>
         <source>Description</source>
-        <translation type="unfinished">Popis</translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="289"/>
-        <source>Show grid</source>
-        <translation type="unfinished">Zobrazit mřížku</translation>
+        <translation>Popis</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="291"/>
-        <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="292"/>
-        <source>Zoom to mouse pointer</source>
-        <translation type="unfinished">Zvětšení k pozici kurzoru myši</translation>
+        <source>Show grid</source>
+        <translation>Zobrazit mřížku</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="293"/>
-        <source>Show rulers</source>
-        <translation type="unfinished">Zobrazit pravítko</translation>
+        <source>Snap to grid</source>
+        <translation>Přichytávat k mřížce</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="294"/>
+        <source>Zoom to mouse pointer</source>
+        <translation>Zvětšení k pozici kurzoru myši</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="295"/>
+        <source>Show rulers</source>
+        <translation>Zobrazit pravítka</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="296"/>
         <source>Show axes</source>
-        <translation type="unfinished">Zobrazit osy</translation>
+        <translation>Zobrazit osy</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="297"/>
+        <location filename="../../src/settings.cpp" line="299"/>
         <source>Grid step:</source>
-        <translation type="unfinished">Krok mřížky:</translation>
+        <translation>Krok mřížky:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="305"/>
+        <location filename="../../src/settings.cpp" line="307"/>
         <source>Grid</source>
-        <translation type="unfinished">Mřížka</translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="314"/>
-        <source>Rulers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mřížka</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="316"/>
+        <source>Rulers:</source>
+        <translation>Pravítka:</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="318"/>
         <source>Postprocessor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprocesor:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="319"/>
+        <location filename="../../src/settings.cpp" line="321"/>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="334"/>
-        <source>Node size:</source>
-        <translation type="unfinished">Velikost uzlů:</translation>
+        <translation>Fonty</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="336"/>
-        <source>Edge width:</source>
-        <translation type="unfinished">Šířka hrany:</translation>
+        <source>Node size:</source>
+        <translation>Velikost uzlů:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="338"/>
+        <source>Edge width:</source>
+        <translation>Šířka hrany:</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="340"/>
         <source>Label size:</source>
-        <translation type="unfinished">Velikost značek oblastí:</translation>
+        <translation>Velikost značek oblastí:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="341"/>
+        <location filename="../../src/settings.cpp" line="343"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="345"/>
+        <location filename="../../src/settings.cpp" line="347"/>
         <source>Ligthing</source>
-        <translation type="unfinished">Osvětlení</translation>
+        <translation>Osvětlení</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="351"/>
+        <location filename="../../src/settings.cpp" line="353"/>
         <source>Gradient background</source>
-        <translation type="unfinished">Gradientní pozadí</translation>
+        <translation>Gradientní pozadí</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="357"/>
+        <location filename="../../src/settings.cpp" line="359"/>
         <source>Bounding box</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohraničovací rámeček</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="360"/>
+        <location filename="../../src/settings.cpp" line="362"/>
         <source>Angle:</source>
-        <translation type="unfinished">Úhel:</translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="363"/>
+        <location filename="../../src/settings.cpp" line="365"/>
         <source>Height:</source>
-        <translation type="unfinished">Výška:</translation>
+        <translation>Výška:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="368"/>
+        <location filename="../../src/settings.cpp" line="370"/>
         <source>3D view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="372"/>
-        <source>Scalar field</source>
-        <translation type="unfinished">Skalární pole</translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="373"/>
-        <source>Contours</source>
-        <translation type="unfinished">Kontury</translation>
+        <translation>3D pohled</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="374"/>
+        <source>Scalar field</source>
+        <translation>Skalární pole</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="375"/>
+        <source>Contours</source>
+        <translation>Vrstevnice</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="376"/>
         <source>Vector field</source>
-        <translation type="unfinished">Vektorové pole</translation>
+        <translation>Vektorové pole</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="381"/>
+        <location filename="../../src/settings.cpp" line="383"/>
         <source>Deform shape</source>
-        <translation type="unfinished">Tvar deformace</translation>
+        <translation>Deformace tvaru</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="384"/>
-        <location filename="../../src/settings.cpp" line="420"/>
-        <location filename="../../src/settings.cpp" line="568"/>
+        <location filename="../../src/settings.cpp" line="386"/>
+        <location filename="../../src/settings.cpp" line="422"/>
+        <location filename="../../src/settings.cpp" line="570"/>
         <source>Default</source>
-        <translation type="unfinished">Výchozí</translation>
+        <translation>Výchozí</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="410"/>
+        <location filename="../../src/settings.cpp" line="412"/>
         <source>Curvilinear elements</source>
-        <translation type="unfinished">Křivočaré elementy</translation>
+        <translation>Křivočaré elementy</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="414"/>
+        <location filename="../../src/settings.cpp" line="416"/>
         <source>Angle segments count:</source>
-        <translation type="unfinished">Počet segmentů úhlu:</translation>
+        <translation>Počet segmentů úhlu:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="417"/>
+        <location filename="../../src/settings.cpp" line="419"/>
         <source>Mesh</source>
-        <translation type="unfinished">Síť</translation>
+        <translation>Síť</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="427"/>
+        <location filename="../../src/settings.cpp" line="429"/>
         <source>Maximum number of DOFs:</source>
-        <translation type="unfinished">Maximální počet st. volnosti:</translation>
+        <translation>Maximální počet st. volnosti:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="434"/>
+        <location filename="../../src/settings.cpp" line="436"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences the selection&lt;br/&gt;of candidates in hp-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&lt;/b&gt;výchozí hodnota je 1.0, tento parametr ovlivňuje výběr &lt;br/&gt;kandidátů při &lt;i&gt;hp&lt;/i&gt;-adaptivitě</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="438"/>
+        <location filename="../../src/settings.cpp" line="440"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
-        <translation type="unfinished">&lt;b&gt;&lt;/b&gt;kvantitativní parametr adaptivní funkce&lt;br/&gt;s různýmy významy pro různé adaptivní strategie</translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="442"/>
-        <source>0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="443"/>
-        <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&lt;/b&gt;kvantitativní parametr adaptivní funkce&lt;br/&gt;s různýmy významy pro různé adaptivní strategie</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="444"/>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="445"/>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="446"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="451"/>
-        <source>arbitrary level</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="452"/>
-        <source>at most one-level</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="453"/>
-        <source>at most two-level</source>
-        <translation type="unfinished"></translation>
+        <source>arbitrary level</source>
+        <translation>libovolný stupeň</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="454"/>
-        <source>at most three-level</source>
-        <translation type="unfinished"></translation>
+        <source>at most one-level</source>
+        <translation>nejvýše jednostupňový</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="455"/>
-        <source>at most four-level</source>
-        <translation type="unfinished"></translation>
+        <source>at most two-level</source>
+        <translation>nejvýše dvoustupňový</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="456"/>
+        <source>at most three-level</source>
+        <translation>nejvýše třístupňový</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="457"/>
+        <source>at most four-level</source>
+        <translation>nejvýše čtyřstupňový</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="458"/>
         <source>at most five-level</source>
-        <translation type="unfinished"></translation>
+        <translation>nejvýše pětistupňový</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="463"/>
+        <location filename="../../src/settings.cpp" line="465"/>
         <source>Use anisotropic refinements</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít anizotropní zjemnění</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="464"/>
+        <location filename="../../src/settings.cpp" line="466"/>
         <source>Use hp reference solution for h and p adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít hp referenční řešení pro h a p adaptivitu</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="470"/>
+        <location filename="../../src/settings.cpp" line="472"/>
         <source>Conv. exp.:</source>
-        <translation type="unfinished">Konv. exp.:</translation>
+        <translation>Konv. exp.:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="473"/>
+        <location filename="../../src/settings.cpp" line="475"/>
         <source>Strategy:</source>
-        <translation type="unfinished">Strategie:</translation>
+        <translation>Strategie:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="476"/>
+        <location filename="../../src/settings.cpp" line="478"/>
         <source>Threshold:</source>
-        <translation type="unfinished">Práh:</translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="479"/>
-        <source>Hanging nodes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Práh:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="481"/>
-        <source>Norm:</source>
-        <translation type="unfinished">Norma:</translation>
+        <source>Hanging nodes:</source>
+        <translation>Visící uzly:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="498"/>
-        <source>Triangle</source>
-        <translation type="unfinished">Trojúhelníková</translation>
+        <location filename="../../src/settings.cpp" line="483"/>
+        <source>Norm:</source>
+        <translation>Norma:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="500"/>
+        <source>Triangle</source>
+        <translation>Trojúhelníková</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="502"/>
         <source>GMSH</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="541"/>
-        <source>Background:</source>
-        <translation type="unfinished">Pozadí:</translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="542"/>
-        <source>Grid:</source>
-        <translation type="unfinished">Mřížka:</translation>
+        <translation>GMSH</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="543"/>
-        <source>Cross:</source>
-        <translation type="unfinished">Kříž:</translation>
+        <source>Background:</source>
+        <translation>Pozadí:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="544"/>
-        <source>Nodes:</source>
-        <translation type="unfinished">Uzly:</translation>
+        <source>Grid:</source>
+        <translation>Mřížka:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="545"/>
-        <source>Edges:</source>
-        <translation type="unfinished">Hrany:</translation>
+        <source>Cross:</source>
+        <translation>Kříž:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="546"/>
-        <source>Labels:</source>
-        <translation type="unfinished">Značky oblastí:</translation>
+        <source>Nodes:</source>
+        <translation>Uzly:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="547"/>
-        <source>Contours:</source>
-        <translation type="unfinished">Kontury:</translation>
+        <source>Edges:</source>
+        <translation>Hrany:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="548"/>
-        <source>Vectors:</source>
-        <translation type="unfinished"></translation>
+        <source>Labels:</source>
+        <translation>Značky oblastí:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="549"/>
-        <source>Initial mesh:</source>
-        <translation type="unfinished">Počáteční síť:</translation>
+        <source>Contours:</source>
+        <translation>Vrstevnice:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="550"/>
-        <source>Solution mesh:</source>
-        <translation type="unfinished">Řešená síť:</translation>
+        <source>Vectors:</source>
+        <translation>Vektory:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="551"/>
-        <source>Highlighted elements:</source>
-        <translation type="unfinished">Zvýrazněné elementy:</translation>
+        <source>Initial mesh:</source>
+        <translation>Počáteční síť:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="552"/>
+        <source>Solution mesh:</source>
+        <translation>Výsledná síť:</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="553"/>
+        <source>Highlighted elements:</source>
+        <translation>Zvýrazněné elementy:</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="554"/>
         <source>Selected elements:</source>
-        <translation type="unfinished">Vybrané elementy:</translation>
+        <translation>Vybrané elementy:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="591"/>
+        <location filename="../../src/settings.cpp" line="593"/>
         <source>refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors, refine all&lt;br/&gt;to keep the mesh symmetric</source>
-        <translation type="unfinished"></translation>
+        <translation>zjemni elementy pokud odmocnin(&lt;b&gt;práh&lt;/b&gt;) krát celková chyba&lt;br/&gt;je zpracována. Pokud má více elementů podobnou chybu, zjmení všechny&lt;br/&gt;pro zachování symetrické matice</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="594"/>
+        <location filename="../../src/settings.cpp" line="596"/>
         <source>refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt; times maximum element error</source>
-        <translation type="unfinished"></translation>
+        <translation>zjemni všechny elementy jejichž chyba je větší &lt;br/&gt; než &lt;b&gt;práh&lt;/b&gt; krát maximální chyba elementu</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="597"/>
+        <location filename="../../src/settings.cpp" line="599"/>
         <source>refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>zjemni všechny elementy jejichž chyba je větší&lt;br/&gt;než &lt;b&gt;práh&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -9975,12 +10039,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/gui/systemoutput.cpp" line="25"/>
         <source>System shell</source>
-        <translation type="unfinished"></translation>
+        <translation>Systémový interpret příkazů</translation>
     </message>
     <message>
         <location filename="../../src/gui/systemoutput.cpp" line="74"/>
         <source>&lt;b&gt;Working directory:&lt;/b&gt; %1&lt;/br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Pracovní adresář:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
 </context>
 <context>
@@ -10190,17 +10254,18 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
         <location filename="../../src/value.cpp" line="436"/>
         <source>Condition couldn&apos;t be evaluated:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Podmínka nemůže být vyčíslena:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="459"/>
         <source>nonlinear %1(%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>nelineární %1(%2)</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="461"/>
         <source>nonlinear</source>
-        <translation type="unfinished"></translation>
+        <translation>nelineární</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="391"/>
@@ -10289,64 +10354,64 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
         <location filename="../../src/videodialog.cpp" line="258"/>
         <location filename="../../src/videodialog.cpp" line="302"/>
         <source>%1 / %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 / %2</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="85"/>
         <location filename="../../src/videodialog.cpp" line="259"/>
         <source>%1 / %2 s</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 / %2 s</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="114"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptivita</translation>
+        <translation>Adaptivita</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="115"/>
         <source>Transient</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="122"/>
         <source>Show video</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit video</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="126"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="136"/>
         <source>Save images to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit obrázek na disk</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="139"/>
         <source>Show grid</source>
-        <translation type="unfinished">Zobrazit mřížku</translation>
+        <translation>Zobrazit mřížku</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="141"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Zobrazit pravítko</translation>
+        <translation>Zobrazit pravítka</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="143"/>
         <source>Show axes</source>
-        <translation type="unfinished">Zobrazit osy</translation>
+        <translation>Zobrazit osy</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="197"/>
         <source>Adaptive step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivní krok:</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="218"/>
         <location filename="../../src/videodialog.cpp" line="271"/>
         <source>Run</source>
-        <translation type="unfinished">Spustit</translation>
+        <translation>Spustit</translation>
     </message>
     <message>
         <source>Viewport</source>

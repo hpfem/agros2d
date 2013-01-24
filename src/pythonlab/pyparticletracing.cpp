@@ -110,9 +110,9 @@ void PyParticleTracing::setInitialPosition(double x, double y)
     RectPoint rect = Agros2D::scene()->boundingBox();
 
     if (x < rect.start.x || x > rect.end.x)
-        throw out_of_range(QObject::tr("x coordinate is out of range.").toStdString());
+        throw out_of_range(QObject::tr("The x coordinate is out of range.").toStdString());
     if (y < rect.start.y || y > rect.end.y)
-        throw out_of_range(QObject::tr("y coordinate is out of range.").toStdString());
+        throw out_of_range(QObject::tr("The y coordinate is out of range.").toStdString());
 
     Agros2D::problem()->configView()->particleStart = Point(x, y);
 }
