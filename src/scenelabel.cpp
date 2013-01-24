@@ -76,23 +76,6 @@ SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
 
 SceneLabel *SceneLabel::findClosestLabel(const Point &point)
 {
-    /*
-    SceneLabel *labelClosest = NULL;
-
-    double distance = numeric_limits<double>::max();
-    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
-    {
-        double labelDistance = label->distance(point);
-        if (label->distance(point) < distance)
-        {
-            distance = labelDistance;
-            labelClosest = label;
-        }
-    }
-
-    return labelClosest;
-    */
-
     QMap<SceneLabel*, QList<Triangle> > labels;
     try
     {
@@ -101,7 +84,6 @@ SceneLabel *SceneLabel::findClosestLabel(const Point &point)
         while (i.hasNext())
         {
             i.next();
-
 
             foreach (Triangle triangle, i.value())
             {
@@ -115,13 +97,24 @@ SceneLabel *SceneLabel::findClosestLabel(const Point &point)
                     return i.key();
                 }
             }
-
         }
     }
     catch (AgrosMeshException &ame)
     {
-        // qDebug() << labels.count();
-        // Agros2D::log()->printError(tr("Geometry"), ame.toString());
+        SceneLabel *labelClosest = NULL;
+
+        double distance = numeric_limits<double>::max();
+        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
+        {
+            double labelDistance = label->distance(point);
+            if (label->distance(point) < distance)
+            {
+                distance = labelDistance;
+                labelClosest = label;
+            }
+        }
+
+        return labelClosest;
     }
 
 

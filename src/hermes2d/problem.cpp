@@ -167,7 +167,7 @@ void Problem::addField(FieldInfo *field)
     if (hasField(field->fieldId()))
         removeField(m_fieldInfos[field->fieldId()]);
 
-    // add to the collection    
+    // add to the collection
     m_fieldInfos[field->fieldId()] = field;
 
     // couplings
@@ -313,11 +313,10 @@ bool Problem::mesh()
         }
         catch (Hermes::Exceptions::Exception& e)
         {
+            delete meshGenerator;
             Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
-            throw;
         }
     }
-    delete meshGenerator;
 
     return false;
 }
@@ -601,7 +600,7 @@ void Problem::solveAction()
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
 
     foreach (Block* block, m_blocks)
-    {       
+    {
         Solver<double> *solver = block->prepareSolver();
         if (!solver)
         {
@@ -668,7 +667,7 @@ void Problem::solveAction()
 
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
-    }    
+    }
 
     // delete solvers
     qDeleteAll(solvers);
@@ -794,7 +793,14 @@ void Problem::readInitialMeshesFromFile()
     QString fileName = cacheProblemDir() + "/initial.mesh";
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
-    meshloader.load(fileName.toStdString().c_str(), meshesVector);
+    try
+    {
+        meshloader.load(fileName.toStdString().c_str(), meshesVector);
+    }
+    catch (Hermes::Exceptions::MeshLoadFailureException& e)
+    {
+        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+    }
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

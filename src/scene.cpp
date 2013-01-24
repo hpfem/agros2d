@@ -552,6 +552,9 @@ bool Scene::checkGeometryAssignement()
         return false;
     }
 
+    // multiple labels in area
+    QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
+
     return true;
 }
 

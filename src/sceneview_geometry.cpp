@@ -612,7 +612,6 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                     (p.x < 0))
             {
                 QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
-
             }
             else
             {

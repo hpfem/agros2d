@@ -563,7 +563,7 @@ LoopsInfo findLoops()
             throw(AgrosMeshException("There is a label outside of the domain"));
     }
 
-    //direct super and sub domains (indexed by loop indices)
+    // direct super and sub domains (indexed by loop indices)
     QList<int> superDomains;
     QList<QList<int> > subDomains;
 
@@ -584,7 +584,7 @@ LoopsInfo findLoops()
             throw (AgrosMeshException("There is no label in some subdomain"));
 
 
-        //sort
+        // sort
         for (int i = 0; i < loopsWithLabel.size(); i++)
         {
             for (int j = 0; j < loopsWithLabel.size() - 1; j++)
@@ -602,7 +602,7 @@ LoopsInfo findLoops()
         int indexOfInmost = loopsWithLabel[0];
         principalLoopOfLabel[actualLabel] = indexOfInmost;
 
-        //swith orientation if neccessary
+        // switch orientation if neccessary
         int windNum = windingNumbers[QPair<SceneLabel*, int>(actualLabel, indexOfInmost)];
         assert(abs(windNum) == 1);
         if(windNum == -1)
@@ -617,7 +617,7 @@ LoopsInfo findLoops()
             int numLabelsPlus1 = labelsInsideLoop[loopsWithLabel[j+1]].size();
             if(numLabelsJ == numLabelsPlus1)
             {
-                throw(AgrosMeshException("There is no label in some subdomain"));
+                throw (AgrosMeshException("There is no label in some subdomain"));
             }
         }
 
@@ -633,7 +633,6 @@ LoopsInfo findLoops()
     }
 
     QMap<SceneLabel*, QList<int> > labelLoopsInfo;
-
     for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
     {
         SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
@@ -649,10 +648,21 @@ LoopsInfo findLoops()
         }
     }
 
+    // check for multiple labels
+    QList<int> usedLoops;
+    foreach (SceneLabel *label, principalLoopOfLabel.keys())
+    {
+        if (!usedLoops.contains(principalLoopOfLabel[label]))
+            usedLoops.append(principalLoopOfLabel[label]);
+        else
+            throw (AgrosMeshException("There is multiple labels in the domain"));
+    }
+
     LoopsInfo loopsInfo;
     loopsInfo.loops = loops;
     loopsInfo.labelToLoops = labelLoopsInfo;
     loopsInfo.outsideLoops = outsideLoops;
+
     return loopsInfo;
 }
 
@@ -744,10 +754,8 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
         polylines.append(polyline);
     }
 
-    for (int l = 0; l < Agros2D::scene()->labels->count(); l++)
+    foreach (SceneLabel* label, Agros2D::scene()->labels->items())
     {
-        SceneLabel* label = Agros2D::scene()->labels->at(l);
-
         // if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
         if (loopsInfo.labelToLoops[label].count() > 0)
         {
