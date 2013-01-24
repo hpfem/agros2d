@@ -6662,7 +6662,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="75"/>
-        <source>Number of refenements is out of range (0 - 5).</source>
+        <source>Number of refinements is out of range (0 - 5).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

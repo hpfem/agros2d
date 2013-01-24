@@ -72,7 +72,7 @@ void PyField::setNumberOfRefinements(const int numberOfRefinements)
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNumberOfRefinements(numberOfRefinements);
     else
-        throw out_of_range(QObject::tr("Number of refenements is out of range (0 - 5).").toStdString());
+        throw out_of_range(QObject::tr("Number of refinements is out of range (0 - 5).").toStdString());
 }
 
 void PyField::setPolynomialOrder(const int polynomialOrder)

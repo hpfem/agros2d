@@ -6042,187 +6042,191 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/util/enums.cpp" line="386"/>
         <source>Matrix volume</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Matice z obj. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="388"/>
         <source>Matrix surface</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Matice z povrch. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="390"/>
         <source>Vector volume</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Vektor z obj. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="392"/>
         <source>Vector surface</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>upřesnit pojem</translatorcomment>
+        <translation>Vektor z povrch. integrálů</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="406"/>
         <source>Triangle - quad fine div.</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle - kvady jemné děl.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="408"/>
         <source>Triangle - quad rough div.</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle - kvady hrubé děl.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="410"/>
         <source>Triangle - quad join</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle - kvady spojené</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="412"/>
         <source>GMSH - triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH - triangl</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="414"/>
         <source>GMSH - quad</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH - kvad</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="416"/>
         <source>GMSH - quad Delaunay (exp.)</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH . Delaunayho kvad (exp.)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="454"/>
         <source>Extremely coarse</source>
-        <translation type="unfinished">Extrémně řídká</translation>
+        <translation>Extrémně řídká</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="456"/>
         <source>Extra coarse</source>
-        <translation type="unfinished">Extra řídká</translation>
+        <translation>Extra řídká</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="458"/>
         <source>Coarser</source>
-        <translation type="unfinished">Řidší</translation>
+        <translation>Řidší</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="460"/>
         <source>Coarse</source>
-        <translation type="unfinished">Řídká</translation>
+        <translation>Řídká</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="464"/>
         <source>Fine</source>
-        <translation type="unfinished">Jemná</translation>
+        <translation>Jemná</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="468"/>
         <source>Extra fine</source>
-        <translation type="unfinished">Extra jemná</translation>
+        <translation>Extra jemná</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="480"/>
         <source>Agros2D</source>
-        <translation type="unfinished">Agros2D</translation>
+        <translation>Agros2D</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="482"/>
         <source>Jet</source>
-        <translation type="unfinished">Tryskáč</translation>
+        <translation>Tryskáč</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="484"/>
         <source>Copper</source>
-        <translation type="unfinished">Měď</translation>
+        <translation>Měď</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="486"/>
         <source>Hot</source>
-        <translation type="unfinished">Horko</translation>
+        <translation>Horko</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="488"/>
         <source>Cool</source>
-        <translation type="unfinished">Chladno</translation>
+        <translation>Chladno</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="490"/>
         <source>Bone</source>
-        <translation type="unfinished">Kost</translation>
+        <translation>Kost</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="492"/>
         <source>Pink</source>
-        <translation type="unfinished">Růžový</translation>
+        <translation>Růžový</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="494"/>
         <source>Spring</source>
-        <translation type="unfinished">Jaro</translation>
+        <translation>Jaro</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="496"/>
         <source>Summer</source>
-        <translation type="unfinished">Léto</translation>
+        <translation>Léto</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="498"/>
         <source>Autumn</source>
-        <translation type="unfinished">Podzim</translation>
+        <translation>Podzim</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="500"/>
         <source>Winter</source>
-        <translation type="unfinished">Zima</translation>
+        <translation>Zima</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="502"/>
         <source>HSV</source>
-        <translation type="unfinished">HSV</translation>
+        <translation>HSV</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="504"/>
         <source>B/W ascending</source>
-        <translation type="unfinished">ČB stoupající</translation>
+        <translation>ČB stoupající</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="506"/>
         <source>B/W descending</source>
-        <translation type="unfinished">ČB klesající</translation>
+        <translation>ČB klesající</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="518"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Šipka</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="520"/>
         <source>Cone</source>
-        <translation type="unfinished"></translation>
+        <translation>Kužel</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="532"/>
         <source>Tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocas</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="534"/>
         <source>Head</source>
-        <translation type="unfinished"></translation>
+        <translation>Hlava</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="536"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="572"/>
         <source>Picard&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Pickardova metoda</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="574"/>
         <source>Newton&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Newtonova metoda</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="312"/>
@@ -6232,17 +6236,17 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/util/enums.cpp" line="296"/>
         <source>Not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepoužité</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="298"/>
         <source>Hard</source>
-        <translation type="unfinished"></translation>
+        <translation>Silné</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="300"/>
         <source>Weak</source>
-        <translation type="unfinished"></translation>
+        <translation>Slabé</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="314"/>
@@ -6680,7 +6684,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/value.cpp" line="237"/>
         <source>Value</source>
-        <translation type="unfinished">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
     <message>
         <source>Derivative</source>
@@ -6767,34 +6771,34 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="199"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="211"/>
         <source>Invalid field id &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatné pole id &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="94"/>
         <source>Geometry does not contain nodes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie neobsahuje uzly.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="97"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="99"/>
         <source>Node with index &apos;%1&apos; does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzel s indexem &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="147"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="202"/>
         <source>Number of refinements &apos;%1&apos; is out of range (0 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet zjemnění &apos;%1&apos; je mimo rozsah (0 - 10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="156"/>
         <source>Area must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozměr plochy musí být kladný.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="214"/>
         <source>Polynomial order &apos;%1&apos; is out of range (1 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Řád polynomu &apos;%1&apos; je mimo rozsah (1 - 10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="270"/>
@@ -6804,7 +6808,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="45"/>
         <source>Invalid field id. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatné id pole. Platné indexy: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="66"/>
@@ -6825,11 +6829,11 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/pythonlab/pyview.cpp" line="399"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="441"/>
         <source>Invalid argument. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný argument. Platné indexy: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="75"/>
-        <source>Number of refenements is out of range (0 - 5).</source>
+        <source>Number of refinements is out of range (0 - 5).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9612,7 +9616,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="52"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nastavení</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="53"/>
