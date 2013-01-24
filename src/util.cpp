@@ -141,7 +141,7 @@ QStringList availableLanguages()
     {
         if (str.startsWith("qt_"))
             list.removeOne(str);
-        if (str.startsWith("plugins_"))
+        if (str.startsWith("plugin_"))
             list.removeOne(str);
     }
 
