@@ -42,7 +42,7 @@ ErrorResult validateXML(const QString &fileName, const QString &schemaFileName)
     schema.setMessageHandler(&schemaMessageHandler);
 
     if (!schema.isValid())
-        return ErrorResult(ErrorResultType_Critical, QObject::tr("Schena '%1' is not valid. %2").
+        return ErrorResult(ErrorResultType_Critical, QObject::tr("Schema '%1' is not valid. %2").
                            arg(schemaFileName).
                            arg(schemaMessageHandler.statusMessage()));
 

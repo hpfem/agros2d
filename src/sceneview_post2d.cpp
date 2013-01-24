@@ -1290,7 +1290,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
             QSettings settings;
             QString dir = settings.value("General/LastVTKDir").toString();
 
-            fn = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+            fn = QFileDialog::getSaveFileName(this, tr("Export VTK file"), dir, tr("VTK files (*.vtk)"));
             if (fn.isEmpty())
                 return;
 

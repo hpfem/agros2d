@@ -433,8 +433,8 @@ void Problem::solveInit()
 
     if (fieldInfos().count() == 0)
     {
-        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("no field defined."));
-        throw AgrosSolverException("No field defined");
+        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No field defined."));
+        throw AgrosSolverException("No field defined.");
     }
 }
 

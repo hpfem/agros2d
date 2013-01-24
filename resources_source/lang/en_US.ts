@@ -3796,12 +3796,12 @@ Do you want to save your changes?</source>
 <context>
     <name>PythonLabAgros</name>
     <message>
-        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="90"/>
+        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="87"/>
         <source>&amp;Create script from model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="91"/>
+        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="88"/>
         <source>Ctrl+M</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4064,7 +4064,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="202"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="209"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="222"/>
-        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="554"/>
+        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="551"/>
         <source>Problem is not solved.</source>
         <translation></translation>
     </message>
@@ -4491,7 +4491,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="436"/>
-        <source>no field defined.</source>
+        <source>No field defined.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4578,12 +4578,12 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="113"/>
-        <source>x coordinate is out of range.</source>
+        <source>The x coordinate is out of range.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="115"/>
-        <source>y coordinate is out of range.</source>
+        <source>The y coordinate is out of range.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4728,13 +4728,13 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/util/xml.cpp" line="45"/>
-        <source>Schena &apos;%1&apos; is not valid. %2</source>
+        <location filename="../../src/value.cpp" line="237"/>
+        <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/value.cpp" line="237"/>
-        <source>Value</source>
+        <location filename="../../src/util/xml.cpp" line="45"/>
+        <source>Schema &apos;%1&apos; is not valid. %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5470,7 +5470,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="117"/>
-        <source>Export vtk file</source>
+        <source>Export VTK file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5541,7 +5541,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="1293"/>
-        <source>Export vtk file</source>
+        <source>Export VTK file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5666,7 +5666,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="372"/>
-        <source>&lt;h3&gt;Label&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Materials:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</source>
+        <source>&lt;h3&gt;Label&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Material:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

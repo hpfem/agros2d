@@ -369,7 +369,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     str = str.left(str.length() - 2);
 
                 label->setHighlighted(true);
-                setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Materials:</b> %3<br/><b>Area refinement:</b> %4<br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
+                setToolTip(tr("<h3>Label</h3><b>Point:</b> [%1; %2]<br/><b>Material:</b> %3<br/><b>Area refinement:</b> %4<br/><b>Polynomial order:</b> %5<br/><b>Index:</b> %6").
                            arg(label->point().x, 0, 'g', 3).
                            arg(label->point().y, 0, 'g', 3).
                            arg(str).
