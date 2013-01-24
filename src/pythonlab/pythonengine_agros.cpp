@@ -78,9 +78,6 @@ void PythonEngineAgros::runPythonHeader()
     // run script
     if (!script.trimmed().isEmpty())
         PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
-    if (script.isEmpty())
-        qDebug() << script;
 }
 
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
