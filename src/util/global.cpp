@@ -133,12 +133,17 @@ void Agros2D::loadPlugin(const QString &plugin)
     }
     if (!loader->load())
     {
-        throw AgrosException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(plugin));
         delete loader;
+        throw AgrosException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(plugin));
         return;
     }
 
     assert(loader->instance());
+    if (Agros2D::singleton()->m_plugins.contains(plugin))
+    {
+        delete Agros2D::singleton()->m_plugins[plugin];
+        Agros2D::singleton()->m_plugins.remove(plugin);
+    }
     Agros2D::singleton()->m_plugins[plugin] = qobject_cast<PluginInterface *>(loader->instance());
     delete loader;
 }

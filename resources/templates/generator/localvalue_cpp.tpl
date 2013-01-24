@@ -103,6 +103,8 @@ void {{CLASS}}LocalValue::calculate()
                 dudx[k] = values->dx[0];
                 dudy[k] = values->dy[0];
 
+                values->free_fn();
+                values->free_ord();
                 delete values;
             }
 
