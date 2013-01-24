@@ -131,6 +131,7 @@ void Agros2D::loadPlugin(const QString &plugin)
         throw AgrosException(QObject::tr("Could not find 'agros2d_plugin_%1'").arg(plugin));
         return;
     }
+
     if (!loader->load())
     {
         delete loader;
