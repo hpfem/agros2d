@@ -56,9 +56,6 @@ void ConfigComputerDialog::load()
     cmbLanguage->setCurrentIndex(cmbLanguage->findText(Agros2D::configComputer()->language));
     if (cmbLanguage->currentIndex() == -1 && cmbLanguage->count() > 0) cmbLanguage->setCurrentIndex(0);
 
-    // default physic field
-    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Agros2D::configComputer()->defaultPhysicField));
-
     // collaboration server
     // txtCollaborationServerURL->setText(Agros2D::configComputer()->collaborationServerURL);
 
@@ -103,9 +100,6 @@ void ConfigComputerDialog::save()
                              tr("Language change"),
                              tr("Interface language has been changed. You must restart the application."));
     Agros2D::configComputer()->language = cmbLanguage->currentText();
-
-    // default physic field
-    Agros2D::configComputer()->defaultPhysicField = cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toString();
 
     // collaboration server
     // QString collaborationServerUrl = txtCollaborationServerURL->text();
@@ -229,16 +223,11 @@ QWidget *ConfigComputerDialog::createMainWidget()
     cmbLanguage = new QComboBox(mainWidget);
     cmbLanguage->addItems(availableLanguages());
 
-    cmbDefaultPhysicField = new QComboBox();
-    fillComboBoxPhysicField(cmbDefaultPhysicField);
-
     QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("UI:")), 0, 0);
     layoutGeneral->addWidget(cmbGUIStyle, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Language:")), 1, 0);
     layoutGeneral->addWidget(cmbLanguage, 1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Default physic field:")), 2, 0);
-    layoutGeneral->addWidget(cmbDefaultPhysicField, 2, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
@@ -544,8 +533,7 @@ void ConfigComputerDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     // unblock signals
     cmbPhysicField->blockSignals(false);
 
-    // default physic field
-    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Agros2D::configComputer()->defaultPhysicField));
+    // physic field
     if (cmbPhysicField->currentIndex() == -1)
         cmbPhysicField->setCurrentIndex(0);
 }

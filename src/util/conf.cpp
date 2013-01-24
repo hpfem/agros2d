@@ -46,10 +46,6 @@ void Config::load()
     // general
     guiStyle = settings.value("General/GUIStyle").toString();
     language = settings.value("General/Language", QLocale::system().name()).toString();
-    defaultPhysicField = settings.value("General/DefaultPhysicField", "electrostatics").toString();
-
-    if (!availableModules().keys().contains(defaultPhysicField))
-        defaultPhysicField = "electrostatic";
 
     collaborationServerURL = settings.value("General/CollaborationServerURL", QString("http://agros2d.org/collaboration/")).toString();
 
@@ -87,7 +83,6 @@ void Config::save()
     // general
     settings.setValue("General/GUIStyle", guiStyle);
     settings.setValue("General/Language", language);
-    settings.setValue("General/DefaultPhysicField", defaultPhysicField);
 
     settings.setValue("General/CollaborationServerURL", collaborationServerURL);
 

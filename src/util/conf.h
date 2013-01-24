@@ -34,7 +34,6 @@ public:
     // general
     QString guiStyle;
     QString language;
-    QString defaultPhysicField;
 
     bool showLogStdOut;
 

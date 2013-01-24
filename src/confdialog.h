@@ -58,7 +58,6 @@ private:
     // main
     QComboBox *cmbGUIStyle;
     QComboBox *cmbLanguage;
-    QComboBox *cmbDefaultPhysicField;
     // LineEditDouble *txtCollaborationServerURL;
 
     // delete files
