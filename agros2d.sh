@@ -28,7 +28,7 @@ case "$1" in
                 ;;
             update )
                 lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts
-                lupdate plugins/plugins.pro -ts $langPath/plugins_cs_CZ.ts $langPath/plugins_en_US.ts $langPath/plugins_pl_PL.ts $langPath/plugins_de_DE.ts
+                lupdate plugins/plugins.pro -ts $langPath/plugin_cs_CZ.ts $langPath/plugin_en_US.ts $langPath/plugin_pl_PL.ts $langPath/plugin_de_DE.ts
                 ;;
             * )
                 echo "Usage: agros2d.sh lang\n\t [release - release language files]\n\t [update - update language files]"

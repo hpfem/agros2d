@@ -1186,13 +1186,13 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1361"/>
+        <location filename="../../src/mainwindow.cpp" line="1360"/>
         <source>Run script: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1592"/>
+        <location filename="../../src/mainwindow.cpp" line="1591"/>
         <source>Export mesh file</source>
         <translation></translation>
     </message>
@@ -1443,12 +1443,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1269"/>
+        <location filename="../../src/mainwindow.cpp" line="1268"/>
         <source>Adaptive step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1592"/>
+        <location filename="../../src/mainwindow.cpp" line="1591"/>
         <source>Mesh files (*.xml)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1523,7 +1523,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1352"/>
+        <location filename="../../src/mainwindow.cpp" line="1351"/>
         <source>Python script (*.py)</source>
         <translation></translation>
     </message>
@@ -1654,14 +1654,14 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1381"/>
+        <location filename="../../src/mainwindow.cpp" line="1380"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="966"/>
         <location filename="../../src/mainwindow.cpp" line="970"/>
-        <location filename="../../src/mainwindow.cpp" line="1381"/>
+        <location filename="../../src/mainwindow.cpp" line="1380"/>
         <source>File open</source>
         <translation></translation>
     </message>
@@ -1707,7 +1707,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1352"/>
+        <location filename="../../src/mainwindow.cpp" line="1351"/>
         <source>Open File</source>
         <translation></translation>
     </message>
@@ -4723,7 +4723,7 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/util/global.cpp" line="136"/>
+        <location filename="../../src/util/global.cpp" line="138"/>
         <source>Could not load &apos;agros2d_plugin_%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>

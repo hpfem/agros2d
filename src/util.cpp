@@ -92,6 +92,7 @@ void setLanguage(const QString &locale)
 
     QTranslator *qtTranslator = new QTranslator();
     QTranslator *appTranslator = new QTranslator();
+    QTranslator *pluginTranslator = new QTranslator();
 
     QString country = locale.section('_',0,0);
     if (QFile::exists(QLibraryInfo::location(QLibraryInfo::TranslationsPath) + "/qt_" + country + ".qm"))
@@ -99,17 +100,25 @@ void setLanguage(const QString &locale)
     else if (QFile::exists(datadir() + LANGUAGEROOT + "/qt_" + country + ".qm"))
         qtTranslator->load(datadir() + LANGUAGEROOT + "/qt_" + country + ".qm");
     else
-        qDebug() << "Qt language file not found.";
+        qDebug() << "Qt locale file not found.";
 
     if (QFile::exists(datadir() + LANGUAGEROOT + QDir::separator() + locale + ".qm"))
         appTranslator->load(datadir() + LANGUAGEROOT + QDir::separator() + locale + ".qm");
     else if (QFile::exists(datadir() + LANGUAGEROOT + "/en_US.qm"))
         appTranslator->load(datadir() + LANGUAGEROOT + "/en_US.qm");
     else
-        qDebug() << "Language file not found.";
+        qDebug() << "Locale file not found.";
+
+    if (QFile::exists(datadir() + LANGUAGEROOT + QDir::separator() + "plugin_" + locale + ".qm"))
+        pluginTranslator->load(datadir() + LANGUAGEROOT + QDir::separator() + "plugin_" + locale + ".qm");
+    else if (QFile::exists(datadir() + LANGUAGEROOT + "/plugin_en_US.qm"))
+        pluginTranslator->load(datadir() + LANGUAGEROOT + "/plugin_en_US.qm");
+    else
+        qDebug() << "Plugin locale file not found.";
 
     QApplication::installTranslator(qtTranslator);
     QApplication::installTranslator(appTranslator);
+    QApplication::installTranslator(pluginTranslator);
 }
 
 QStringList availableLanguages()
@@ -129,8 +138,12 @@ QStringList availableLanguages()
 
     // remove system translations
     foreach (QString str, list)
+    {
         if (str.startsWith("qt_"))
             list.removeOne(str);
+        if (str.startsWith("plugins_"))
+            list.removeOne(str);
+    }
 
     return list;
 }

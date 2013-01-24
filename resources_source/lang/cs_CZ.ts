@@ -2402,13 +2402,13 @@
         <translation>Export DXF...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1361"/>
+        <location filename="../../src/mainwindow.cpp" line="1360"/>
         <source>Run script: %1
 </source>
         <translation>Spustit skript: %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1592"/>
+        <location filename="../../src/mainwindow.cpp" line="1591"/>
         <source>Export mesh file</source>
         <translation>Exportovat soubor se sítí</translation>
     </message>
@@ -2700,12 +2700,12 @@
         <translation>Řešič</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1269"/>
+        <location filename="../../src/mainwindow.cpp" line="1268"/>
         <source>Adaptive step</source>
         <translation>Adaptivní krok</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1592"/>
+        <location filename="../../src/mainwindow.cpp" line="1591"/>
         <source>Mesh files (*.xml)</source>
         <translation>Soubory sítě (*.xml)</translation>
     </message>
@@ -2858,7 +2858,7 @@
         <translation>Soubory Agros2D (*.a2d *.py);;Datové soubory Agros2D (*.a2d);;Python scripty (*.py)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1352"/>
+        <location filename="../../src/mainwindow.cpp" line="1351"/>
         <source>Python script (*.py)</source>
         <translation>Python scripty (*.py)</translation>
     </message>
@@ -3050,14 +3050,14 @@
         <translation>Soubor &apos;%1&apos; nebyl nalezen.</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1381"/>
+        <location filename="../../src/mainwindow.cpp" line="1380"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Soubor &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="966"/>
         <location filename="../../src/mainwindow.cpp" line="970"/>
-        <location filename="../../src/mainwindow.cpp" line="1381"/>
+        <location filename="../../src/mainwindow.cpp" line="1380"/>
         <source>File open</source>
         <translation>Soubor otevřen</translation>
     </message>
@@ -3111,7 +3111,7 @@
         <translation>Soubory PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1352"/>
+        <location filename="../../src/mainwindow.cpp" line="1351"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>
@@ -7373,7 +7373,7 @@ Chcete tyto změny uložit?</translation>
         <translation>Nelze najít &apos;agros2d_plugin_%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/util/global.cpp" line="136"/>
+        <location filename="../../src/util/global.cpp" line="138"/>
         <source>Could not load &apos;agros2d_plugin_%1&apos;</source>
         <translation>Nelze nahrát &apos;agros2d_plugin_%1&apos;</translation>
     </message>

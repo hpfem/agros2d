@@ -61,7 +61,7 @@ public:
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) { assert(0); return NULL; }
 
     // localization	
-    virtual QString getName(QString name);	
+    virtual QString localeName(const QString &name) { assert(0); return NULL; }
 
     // force calculation
     virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) { assert(0); return Point3(); }

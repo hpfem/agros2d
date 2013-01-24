@@ -1241,7 +1241,6 @@ void MainWindow::doSolve()
     {
     }
 
-
     if (Agros2D::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();

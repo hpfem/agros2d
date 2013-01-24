@@ -395,6 +395,7 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv, const QString 
 {    
     PluginInterface *plugin = Agros2D::plugin(fieldId);
     assert(plugin);    
+
     m_id = QString::fromStdString(lv.id());
     m_name = plugin->localeName(QString::fromStdString(lv.name()));
     m_shortname = QString::fromStdString(lv.shortname());

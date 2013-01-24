@@ -155,7 +155,7 @@ template <typename Scalar>
 PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
     m_picardSolver = new PicardSolver<Scalar>();
-    m_picardSolver->set_verbose_output(false);
+    m_picardSolver->set_verbose_output(true);
     m_picardSolver->set_verbose_callback(processSolverOutput);
     m_picardSolver->set_picard_tol(block->nonlinearTolerance());
     m_picardSolver->set_picard_max_iter(block->nonlinearSteps());

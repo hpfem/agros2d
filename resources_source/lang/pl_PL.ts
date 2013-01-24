@@ -3323,7 +3323,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1592"/>
+        <location filename="../../src/mainwindow.cpp" line="1591"/>
         <source>Export mesh file</source>
         <translation>Eksport pliku siatki</translation>
     </message>
@@ -3446,7 +3446,7 @@
         <translation>Ponów operacje</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1592"/>
+        <location filename="../../src/mainwindow.cpp" line="1591"/>
         <source>Mesh files (*.xml)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3623,7 +3623,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1269"/>
+        <location filename="../../src/mainwindow.cpp" line="1268"/>
         <source>Adaptive step</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3852,7 +3852,7 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="966"/>
         <location filename="../../src/mainwindow.cpp" line="970"/>
-        <location filename="../../src/mainwindow.cpp" line="1381"/>
+        <location filename="../../src/mainwindow.cpp" line="1380"/>
         <source>File open</source>
         <translation>Otwórz plik</translation>
     </message>
@@ -3898,23 +3898,23 @@
         <translation>PNG files (*.png)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1352"/>
+        <location filename="../../src/mainwindow.cpp" line="1351"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1352"/>
+        <location filename="../../src/mainwindow.cpp" line="1351"/>
         <source>Python script (*.py)</source>
         <translation>Skrypt Python (*.py)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1361"/>
+        <location filename="../../src/mainwindow.cpp" line="1360"/>
         <source>Run script: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1381"/>
+        <location filename="../../src/mainwindow.cpp" line="1380"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
@@ -8201,7 +8201,7 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/util/global.cpp" line="136"/>
+        <location filename="../../src/util/global.cpp" line="138"/>
         <source>Could not load &apos;agros2d_plugin_%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
