@@ -1040,50 +1040,47 @@ void SceneViewPreprocessor::paintGeometry()
     }
 
     // nodes
-    if ((m_sceneMode == SceneGeometryMode_OperateOnNodes) || (m_sceneMode == SceneGeometryMode_OperateOnEdges))
+    foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {
-        foreach (SceneNode *node, Agros2D::scene()->nodes->items())
+        glColor3d(Agros2D::problem()->configView()->colorNodes.redF(),
+                  Agros2D::problem()->configView()->colorNodes.greenF(),
+                  Agros2D::problem()->configView()->colorNodes.blueF());
+        glPointSize(Agros2D::problem()->configView()->nodeSize);
+
+        glBegin(GL_POINTS);
+        glVertex2d(node->point().x, node->point().y);
+        glEnd();
+
+        glColor3d(Agros2D::problem()->configView()->colorBackground.redF(),
+                  Agros2D::problem()->configView()->colorBackground.greenF(),
+                  Agros2D::problem()->configView()->colorBackground.blueF());
+        glPointSize(Agros2D::problem()->configView()->nodeSize - 2.0);
+
+        glBegin(GL_POINTS);
+        glVertex2d(node->point().x, node->point().y);
+        glEnd();
+
+        if ((node->isSelected()) || (node->isHighlighted()) || (node->isError()) )
         {
-            glColor3d(Agros2D::problem()->configView()->colorNodes.redF(),
-                      Agros2D::problem()->configView()->colorNodes.greenF(),
-                      Agros2D::problem()->configView()->colorNodes.blueF());
-            glPointSize(Agros2D::problem()->configView()->nodeSize);
-
-            glBegin(GL_POINTS);
-            glVertex2d(node->point().x, node->point().y);
-            glEnd();
-
-            glColor3d(Agros2D::problem()->configView()->colorBackground.redF(),
-                      Agros2D::problem()->configView()->colorBackground.greenF(),
-                      Agros2D::problem()->configView()->colorBackground.blueF());
             glPointSize(Agros2D::problem()->configView()->nodeSize - 2.0);
 
+            if (node->isError())
+                glColor3d(Agros2D::problem()->configView()->colorCrossed.redF(),
+                          Agros2D::problem()->configView()->colorCrossed.greenF(),
+                          Agros2D::problem()->configView()->colorCrossed.blueF());
+
+            if (node->isHighlighted())
+                glColor3d(Agros2D::problem()->configView()->colorHighlighted.redF(),
+                          Agros2D::problem()->configView()->colorHighlighted.greenF(),
+                          Agros2D::problem()->configView()->colorHighlighted.blueF());
+            if (node->isSelected())
+                glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
+                          Agros2D::problem()->configView()->colorSelected.greenF(),
+                          Agros2D::problem()->configView()->colorSelected.blueF());
+
             glBegin(GL_POINTS);
             glVertex2d(node->point().x, node->point().y);
             glEnd();
-
-            if ((node->isSelected()) || (node->isHighlighted()) || (node->isError()) )
-            {
-                glPointSize(Agros2D::problem()->configView()->nodeSize - 2.0);
-
-                if (node->isError())
-                    glColor3d(Agros2D::problem()->configView()->colorCrossed.redF(),
-                              Agros2D::problem()->configView()->colorCrossed.greenF(),
-                              Agros2D::problem()->configView()->colorCrossed.blueF());
-
-                if (node->isHighlighted())
-                    glColor3d(Agros2D::problem()->configView()->colorHighlighted.redF(),
-                              Agros2D::problem()->configView()->colorHighlighted.greenF(),
-                              Agros2D::problem()->configView()->colorHighlighted.blueF());
-                if (node->isSelected())
-                    glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
-                              Agros2D::problem()->configView()->colorSelected.greenF(),
-                              Agros2D::problem()->configView()->colorSelected.blueF());
-
-                glBegin(GL_POINTS);
-                glVertex2d(node->point().x, node->point().y);
-                glEnd();
-            }
         }
     }
 
