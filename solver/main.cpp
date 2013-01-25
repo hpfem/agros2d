@@ -31,7 +31,7 @@ const QString CONSOLE_HELP = "help";
 
 int main(int argc, char *argv[])
 {
-    ArgosSolver a(argc, argv);
+    AgrosSolver a(argc, argv);
 
 #ifdef VERSION_BETA
     bool beta = true;

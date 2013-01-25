@@ -27,14 +27,14 @@
 
 #include "hermes2d.h"
 
-ArgosSolver::ArgosSolver(int &argc, char **argv)
+AgrosSolver::AgrosSolver(int &argc, char **argv)
     : QApplication(argc, argv)
 {
     Agros2D::createSingleton();
 }
 
 // reimplemented from QApplication so we can throw exceptions in slots
-bool ArgosSolver::notify(QObject *receiver, QEvent *event)
+bool AgrosSolver::notify(QObject *receiver, QEvent *event)
 {
     try
     {
@@ -64,7 +64,7 @@ bool ArgosSolver::notify(QObject *receiver, QEvent *event)
     return false;
 }
 
-void ArgosSolver::solveProblem()
+void AgrosSolver::solveProblem()
 {
     // log stdout
     if (m_enableLog)
@@ -100,7 +100,7 @@ void ArgosSolver::solveProblem()
     }
 }
 
-void ArgosSolver::runScript()
+void AgrosSolver::runScript()
 {
     // log stdout
     if (m_enableLog)
@@ -141,12 +141,12 @@ void ArgosSolver::runScript()
     }
 }
 
-void ArgosSolver::stdOut(const QString &str)
+void AgrosSolver::stdOut(const QString &str)
 {
     std::cout << str.toStdString() << std::endl;
 }
 
-void ArgosSolver::stdHtml(const QString &str)
+void AgrosSolver::stdHtml(const QString &str)
 {
     std::cout << str.toStdString() << std::endl;
 }

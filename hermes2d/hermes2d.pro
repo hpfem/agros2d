@@ -180,14 +180,9 @@ macx-g++ {
     DEFINES += HAVE_LOG2
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
-    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
-    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/numpy/core/include
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
-    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
     LIBS += -lpthread
-    LIBS += -lpython2.7
-    LIBS += -lqwt
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
@@ -216,7 +211,6 @@ win32-msvc2010 {
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
-    LIBS += -Lc:/Python27/libs
     LIBS += -Lc:/Qt/4.8.2/lib
     LIBS += -Lc:/hpfem/hermes/dependencies/lib
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
@@ -225,7 +219,6 @@ win32-msvc2010 {
     # LIBS += -lblas
     LIBS += -lpthreadVCE2
     LIBS += -lxerces-c_static_3
-    LIBS += -lpython27
     LIBS += -lvcomp
     LIBS += -ladvapi32
     LIBS += -lws2_32
