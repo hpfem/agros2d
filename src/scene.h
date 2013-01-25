@@ -141,15 +141,12 @@ public:
 
     // OBSOLETE - DO NOT USE *************************************************************
     SceneNode *addNode(SceneNode *node);
-    void removeNode(SceneNode *node);
     SceneNode *getNode(const Point &point);
 
     SceneEdge *addEdge(SceneEdge *edge);
-    void removeEdge(SceneEdge *edge);
     SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd, double angle);
 
     SceneLabel *addLabel(SceneLabel *label);
-    void removeLabel(SceneLabel *label);
     SceneLabel *getLabel(const Point &point);
 
     void addBoundary(SceneBoundary *boundary);

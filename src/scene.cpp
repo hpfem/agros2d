@@ -320,36 +320,6 @@ SceneNode *Scene::addNode(SceneNode *node)
     return node;
 }
 
-void Scene::removeNode(SceneNode *node)
-{
-    // clear solution
-    Agros2D::problem()->clearSolution();
-
-    nodes->remove(node);
-    // delete node;
-
-    // clear lying nodes
-    foreach (SceneEdge *edge, edges->items())
-        edge->lyingNodes().removeOne(node);
-
-    // remove all edges connected to this node
-    foreach (SceneEdge *edge, edges->items())
-    {
-        if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
-        {
-            // ToDo: add markers
-            //            m_undoStack->push(new SceneEdgeCommandRemove(edge->nodeStart->point, edge->nodeEnd->point, edge->markers,
-            //                                             edge->angle, edge->refineTowardsEdge));
-            removeEdge(edge);
-        }
-    }
-
-    nodes->items().removeOne(node);
-    // delete node;
-
-    emit invalidated();
-}
-
 SceneNode *Scene::getNode(const Point &point)
 {
     return nodes->get(point);
@@ -371,46 +341,12 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 
     this->checkEdge(edge);
 
-    edge->nodeStart()->connectedEdges().append(edge);
-    edge->nodeEnd()->connectedEdges().append(edge);
 
-    foreach(SceneNode *node, nodes->items())
-    {
-        if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
-            continue;
-
-        if (edge->distance(node->point()) < EPS_ZERO)
-        {
-            node->lyingEdges().append(edge);
-            edge->lyingNodes().append(node);
-        }
-    }
 
     edges->add(edge);
     if (!currentPythonEngine()->isRunning()) emit invalidated();
 
     return edge;
-}
-
-void Scene::removeEdge(SceneEdge *edge)
-{
-    // clear solution
-    Agros2D::problem()->clearSolution();
-
-    // clear crosses
-    foreach(SceneEdge *edgeCheck, edge->crossedEdges())
-        edgeCheck->crossedEdges().removeOne(edge);
-
-    // clear lying edges
-    foreach (SceneNode *node, nodes->items())
-        node->lyingEdges().removeOne(edge);
-
-    edges->items().removeOne(edge);
-
-    edge->nodeStart()->connectedEdges().removeOne(edge);
-    edge->nodeEnd()->connectedEdges().removeOne(edge);
-
-    emit invalidated();
 }
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
@@ -433,17 +369,6 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     if (!currentPythonEngine()->isRunning()) emit invalidated();
 
     return label;
-}
-
-void Scene::removeLabel(SceneLabel *label)
-{
-    // clear solution
-    Agros2D::problem()->clearSolution();
-
-    labels->remove(label);
-    // delete label;
-
-    emit invalidated();
 }
 
 SceneLabel *Scene::getLabel(const Point &point)
@@ -1957,45 +1882,45 @@ void Scene::checkNodeConnect(SceneNode *node)
             isConnected = true;
             foreach (SceneEdge *edgeCheck, node->connectedEdges())
             {
-
-                SceneNode * nodeStart;
-                SceneNode * nodeEnd;
+                SceneNode *nodeStart = NULL;
+                SceneNode *nodeEnd = NULL;
                 if (edgeCheck->nodeStart()->point() == node->point())
                 {
                     nodeStart = nodeCheck;
                     nodeEnd = edgeCheck->nodeEnd();
                 }
-                if (edgeCheck->nodeEnd()->point() == node->point())
+                else if (edgeCheck->nodeEnd()->point() == node->point())
                 {
                     nodeStart = edgeCheck->nodeStart();
                     nodeEnd = nodeCheck;
                 }
 
+                assert(nodeStart);
+                assert(nodeEnd);
+
                 double edgeAngle = edgeCheck->angle();
-                removeEdge(edgeCheck);
+                edges->remove(edgeCheck);
+
                 SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, 0.0);
                 edge->setAngle(edgeAngle);
-                edge->lyingNodes().clear();
             }
         }
     }
 
-    if(isConnected)
+    if (isConnected)
     {
-        removeNode(node);
+        nodes->remove(node);
     }
 }
 
 void Scene::checkNode(SceneNode *node)
-// control if node is not lying on the edge
 {
-
+    /*
+    // control if node is not lying on the edge
     foreach (SceneEdge *edge, node->lyingEdges())
     {
         edge->lyingNodes().removeOne(node);
     }
-
-    node->lyingEdges().clear();
 
     foreach (SceneEdge *edge, edges->items())
     {
@@ -2003,18 +1928,14 @@ void Scene::checkNode(SceneNode *node)
             continue;
 
         if ((edge->distance(node->point()) < EPS_ZERO))
-        {
-            node->lyingEdges().append(edge);
             edge->lyingNodes().append(node);
-        }
-
     }
+    */
 }
 
 void Scene::checkEdge(SceneEdge *edge)
 {
     // clear all crossings
-
     foreach (SceneEdge *edgeCheck, edge->crossedEdges())
     {
         edgeCheck->crossedEdges().removeOne(edge);

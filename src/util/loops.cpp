@@ -744,11 +744,13 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
         for (int j = 0; j < loopsInfo.loops[i].size(); j++)
         {
             SceneEdge *edge = Agros2D::scene()->edges->items().at(loopsInfo.loops[i][j].edge);
-
-            if (loopsInfo.loops[i][j].reverse)
-                addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
-            else
-                addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
+            if ((edge->nodeStart()->connectedEdges().size() > 1) && (edge->nodeEnd()->connectedEdges().size() > 1))
+            {
+                if (loopsInfo.loops[i][j].reverse)
+                    addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
+                else
+                    addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
+            }
         }
 
         polylines.append(polyline);

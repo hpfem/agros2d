@@ -32,17 +32,17 @@ public:
     SceneEdge(SceneNode *m_nodeStart, SceneNode *m_nodeEnd, double m_angle);
 
     inline SceneNode *nodeStart() const { return m_nodeStart; }
-    inline void setNodeStart(SceneNode *nodeStart) { m_nodeStart = nodeStart; }
+    inline void setNodeStart(SceneNode *nodeStart) { m_nodeStart = nodeStart; computeCenter(); }
     inline SceneNode *nodeEnd() const { return m_nodeEnd; }
-    inline void setNodeEnd(SceneNode *nodeEnd) { m_nodeEnd = nodeEnd; }
+    inline void setNodeEnd(SceneNode *nodeEnd) { m_nodeEnd = nodeEnd; computeCenter(); }
     inline double angle() const { return m_angle; }
-    inline void setAngle(double angle) { m_angle = angle; }
+    inline void setAngle(double angle) { m_angle = angle; computeCenter(); }
     void swapDirection();
 
     bool isCrossed() const { return m_crossedEdges.length() > 0; }
     inline QList<SceneEdge *> &crossedEdges() { return m_crossedEdges; } // TODO: make const
-    bool isLyingNode() const { return m_lyingNodes.length() > 0; }
-    QList<SceneNode *> &lyingNodes() { return m_lyingNodes; } // TODO: make const
+    bool isLyingNode() const { return lyingNodes().length() > 0; }
+    QList<SceneNode *> lyingNodes() const;
     bool isOutsideArea() const;
     bool isError() const;
 
@@ -65,8 +65,11 @@ private:
     SceneNode *m_nodeEnd;
     double m_angle;
 
-    QList<SceneEdge *> m_crossedEdges;
-    QList<SceneNode *> m_lyingNodes;
+    QList<SceneEdge *> m_crossedEdges;   
+
+    Point m_centerCache;
+
+    void computeCenter();
 };
 
 Q_DECLARE_METATYPE(SceneEdge *)

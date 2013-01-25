@@ -222,7 +222,7 @@ void PyGeometry::removeNode(int index)
     if (index < 0 || index >= Agros2D::scene()->nodes->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
 
-    Agros2D::scene()->removeNode(Agros2D::scene()->nodes->at(index));
+    Agros2D::scene()->nodes->remove(Agros2D::scene()->nodes->at(index));
 }
 
 void PyGeometry::removeEdge(int index)
@@ -230,7 +230,7 @@ void PyGeometry::removeEdge(int index)
     if (index < 0 || index >= Agros2D::scene()->edges->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
 
-    Agros2D::scene()->removeEdge(Agros2D::scene()->edges->at(index));
+    Agros2D::scene()->edges->remove(Agros2D::scene()->edges->at(index));
 }
 
 void PyGeometry::removeLabel(int index)
@@ -238,7 +238,7 @@ void PyGeometry::removeLabel(int index)
     if (index < 0 || index >= Agros2D::scene()->labels->length())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
 
-    Agros2D::scene()->removeLabel(Agros2D::scene()->labels->at(index));
+    Agros2D::scene()->labels->remove(Agros2D::scene()->labels->at(index));
 }
 
 void PyGeometry::removeNodePoint(double x, double y)

@@ -76,7 +76,7 @@ public:
     /// more methods operating with list data should be defined here
     QList<BasicType*> items() { return data; }
 
-    bool add(BasicType *item);
+    virtual bool add(BasicType *item);
     virtual bool remove(BasicType *item);
     BasicType *at(int i);
     inline int length() { return data.length(); }

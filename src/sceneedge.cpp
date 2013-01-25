@@ -41,6 +41,9 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
     {
         this->addMarker(SceneBoundaryContainer::getNone(field));
     }
+
+    // cache center;
+    computeCenter();
 }
 
 void SceneEdge::swapDirection()
@@ -49,11 +52,14 @@ void SceneEdge::swapDirection()
 
     m_nodeStart = m_nodeEnd;
     m_nodeEnd = tmp;
+
+    // cache center;
+    computeCenter();
 }
 
 Point SceneEdge::center() const
 {
-    return centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
+    return m_centerCache;
 }
 
 double SceneEdge::radius() const
@@ -87,6 +93,7 @@ double SceneEdge::distance(const Point &point) const
 
         Point t = (point - c) / distance;
         double l = ((point - c) - t * R).magnitude();
+
         double z = (t.angle() - (m_nodeStart->point() - c).angle())/M_PI*180.0;
         if (z < 0) z = z + 360.0; // interval (0, 360)
         if ((z > 0) && (z < m_angle)) return l;
@@ -96,6 +103,22 @@ double SceneEdge::distance(const Point &point) const
 
         return qMin(a, b);
     }
+}
+
+QList<SceneNode *> SceneEdge::lyingNodes() const
+{
+    QList<SceneNode *> nodes;
+
+    foreach (SceneNode *node, Agros2D::scene()->nodes->items())
+    {
+        if ((this->nodeStart() == node) || (this->nodeEnd() == node))
+            continue;
+
+        if (this->distance(node->point()) < EPS_ZERO)
+            nodes.append(node);
+    }
+
+    return nodes;
 }
 
 int SceneEdge::segments() const
@@ -142,7 +165,6 @@ SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
     return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
 }
 
-
 SceneEdge *SceneEdge::findClosestEdge(const Point &point)
 {
     SceneEdge *edgeClosest = NULL;
@@ -161,6 +183,11 @@ SceneEdge *SceneEdge::findClosestEdge(const Point &point)
     return edgeClosest;
 }
 
+void SceneEdge::computeCenter()
+{
+    m_centerCache = centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
+}
+
 //************************************************************************************************
 
 void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
@@ -170,9 +197,9 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
         if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
         {
             Agros2D::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart()->point(),
-                                                                        edge->nodeEnd()->point(),
-                                                                        edge->markersKeys(),
-                                                                        edge->angle()));
+                                                                           edge->nodeEnd()->point(),
+                                                                           edge->markersKeys(),
+                                                                           edge->angle()));
             remove(edge);
         }
     }
@@ -431,8 +458,8 @@ bool SceneEdgeDialog::save()
     if (!m_isNew)
     {
         Agros2D::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
-                                                                  sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
-                                                                  sceneEdge->angle(), txtAngle->number()));
+                                                                     sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
+                                                                     sceneEdge->angle(), txtAngle->number()));
     }
 
     sceneEdge->setAngle(txtAngle->number());

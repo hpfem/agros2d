@@ -234,8 +234,8 @@ void DSceneNode::doEditingFinished()
 {
     lblDistance->setText(QString("%1 m").arg(sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number()))));
     lblAngle->setText(QString("%1 deg.").arg(
-            (sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number())) > EPS_ZERO)
-            ? atan2(txtPointY->number(), txtPointX->number()) / M_PI * 180.0 : 0.0));
+                          (sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number())) > EPS_ZERO)
+                          ? atan2(txtPointY->number(), txtPointX->number()) / M_PI * 180.0 : 0.0));
 }
 
 
@@ -307,6 +307,31 @@ void SceneNodeCommandEdit::redo()
         node->setPoint(m_pointNew);
         Agros2D::scene()->invalidate();
     }
+}
+
+QList<SceneEdge *> SceneNode::connectedEdges() const
+{
+    QList<SceneEdge *> edges;
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        if (edge->nodeStart() == this || edge->nodeEnd() == this)
+            edges.append(edge);
+
+    return edges;
+}
+
+QList<SceneEdge *> SceneNode::lyingEdges() const
+{
+    QList<SceneEdge *> edges;
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+    {
+        if ((edge->nodeStart() == this) || (edge->nodeEnd() == this))
+            continue;
+
+        if ((edge->distance(m_point) < EPS_ZERO))
+            edges.append(edge);
+    }
+
+    return edges;
 }
 
 bool SceneNode::isOutsideArea() const

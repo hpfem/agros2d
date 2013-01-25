@@ -35,10 +35,10 @@ public:
     inline void setPoint(const Point &point) { m_point = point; }
 
     // geometry editor
-    bool isConnected() const { return m_connectedEdges.length() > 0; }
-    inline QList<SceneEdge *> &connectedEdges() { return m_connectedEdges; } // TODO: make const
-    bool isLyingOnEdges() const { return m_lyingEdges.length() > 0; }
-    inline QList<SceneEdge *> &lyingEdges() { return m_lyingEdges; }  // TODO: make const
+    bool isConnected() const { return connectedEdges().length() > 0; }
+    QList<SceneEdge *> connectedEdges() const;
+    bool isLyingOnEdges() const { return lyingEdges().length() > 0; }
+    QList<SceneEdge *> lyingEdges() const;
     bool isOutsideArea() const;
     bool isError();
     double distance(const Point &m_point) const;
@@ -50,10 +50,7 @@ public:
     static SceneNode *findClosestNode(const Point &point);
 
 private:
-    Point m_point;
-
-    QList<SceneEdge *> m_connectedEdges;
-    QList<SceneEdge *> m_lyingEdges;
+    Point m_point;   
 };
 
 Q_DECLARE_METATYPE(SceneNode *)
@@ -77,7 +74,6 @@ public:
     //TODO should be in SceneBasicContainer, but I would have to cast the result....
     SceneNodeContainer selected();
     SceneNodeContainer highlighted();
-
 };
 
 
