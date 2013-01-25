@@ -126,4 +126,9 @@ QString {{CLASS}}Interface::localeName(const QString &name)
    return name;	
 }
 
+QString {{CLASS}}Interface::localeDescription()
+{
+    return tr("{{DESCRIPTION}}");
+}
+
 Q_EXPORT_PLUGIN2(agros2d_plugin_{{ID}}, {{CLASS}}Interface)

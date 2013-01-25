@@ -19,6 +19,8 @@
 
 #include "problemdialog.h"
 
+#include "../hermes2d/plugin_interface.h"
+
 #include "util/global.h"
 
 #include "scene.h"
@@ -51,13 +53,15 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
     while (it.hasNext())
     {
         it.next();
-
         // add only missing fields
         if (!fields.contains(it.key()))
         {
             QListWidgetItem *item = new QListWidgetItem(lstFields);
             item->setIcon(icon("fields/" + it.key()));
-            item->setText(it.value());
+
+            PluginInterface *plugin =  Agros2D::plugin(it.key());
+            assert(plugin);
+            item->setText(plugin->localeName(it.value()));            
             item->setData(Qt::UserRole, it.key());
 
             lstFields->addItem(item);

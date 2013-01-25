@@ -64,6 +64,9 @@ public:
     // localization	
     virtual QString localeName(const QString &name);	
 
+    // description of module
+    virtual QString localeDescription();
+
     // force calculation
     virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity);    
 };
