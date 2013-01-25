@@ -23,12 +23,12 @@
 #include "util.h"
 
 
-class ArgosSolver : public QApplication
+class AgrosSolver : public QApplication
 {
     Q_OBJECT
 
 public:
-    ArgosSolver(int& argc, char ** argv);
+    AgrosSolver(int& argc, char ** argv);
 
     // reimplemented from QApplication so we can throw exceptions in slots
     virtual bool notify(QObject *receiver, QEvent *event);
